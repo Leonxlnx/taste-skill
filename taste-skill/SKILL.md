@@ -238,7 +238,7 @@ Premium design without accessibility is not premium — it is exclusionary. Thes
 ```tsx
 // ReducedMotionWrapper.tsx
 'use client';
-import { useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export function AnimatedSection({ children }: { children: React.ReactNode }) {
   const shouldReduce = useReducedMotion();
@@ -389,6 +389,9 @@ export const metadata: Metadata = {
 
 ### Example 2: Generic Button → Magnetic CTA with Nested Icon
 ```tsx
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from '@phosphor-icons/react';
+
 // BEFORE — Default button
 <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
   Get Started →
@@ -418,6 +421,12 @@ export const metadata: Metadata = {
 // AFTER — Staggered entry respecting reduced motion
 'use client';
 import { motion, useReducedMotion } from 'framer-motion';
+
+type Feature = {
+  id: string | number;
+  title: string;
+  description: string;
+};
 
 function FeaturesSection({ features }: { features: Feature[] }) {
   const shouldReduce = useReducedMotion();
