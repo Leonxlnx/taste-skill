@@ -361,6 +361,8 @@ export const metadata: Metadata = {
 
 ### Example 1: Generic Card → Premium Double-Bezel Card
 ```tsx
+import { motion } from 'framer-motion';
+
 // BEFORE — Generic AI slop
 <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
   <h3 className="text-xl font-bold text-gray-900">Feature Title</h3>
