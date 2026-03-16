@@ -478,12 +478,19 @@ export function ThemeToggle() {
 
   useEffect(() => {
     const root = document.documentElement;
+    const applyTheme = (resolvedTheme: 'light' | 'dark') => {
+      root.classList.toggle('dark', resolvedTheme === 'dark');
+    };
+
     if (theme === 'system') {
-      const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', isDark);
+      const mq = matchMedia('(prefers-color-scheme: dark)');
+      applyTheme(mq.matches ? 'dark' : 'light');
+      const handler = (e: MediaQueryListEvent) => applyTheme(e.matches ? 'dark' : 'light');
+      mq.addEventListener('change', handler);
       localStorage.removeItem('theme');
+      return () => mq.removeEventListener('change', handler);
     } else {
-      root.classList.toggle('dark', theme === 'dark');
+      applyTheme(theme);
       localStorage.setItem('theme', theme);
     }
   }, [theme]);
@@ -506,6 +513,7 @@ export function ThemeToggle() {
               : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'
           }`}
           aria-label={`Switch to ${value} mode`}
+          aria-pressed={theme === value}
         >
           <Icon className="h-4 w-4 text-zinc-600 dark:text-zinc-300" weight="bold" />
         </button>

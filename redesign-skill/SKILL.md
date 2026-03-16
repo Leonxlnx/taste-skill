@@ -129,7 +129,7 @@ Check for these problems and fix them:
 - **No skip-to-content link.** Add a hidden link that becomes visible on focus for keyboard users.
 - **Color used alone for meaning.** Error states, status indicators, and validation all need icons or text in addition to color.
 - **Missing `alt` text.** Every meaningful image needs descriptive alt text. Decorative images should have `alt=""` and `role="presentation"`.
-- **No keyboard trap handling.** Modals and menus must trap focus when open and release on close. Test with Tab and Shift+Tab.
+- **No keyboard trap handling.** Modals should trap focus when open and restore on close; menus should allow Tab/Shift+Tab to move away and Escape to close.
 - **Form inputs without labels.** Every `<input>` needs a visible `<label>` with matching `htmlFor`/`id`. Placeholder text is not a label.
 
 ### Performance (Core Web Vitals)
@@ -149,7 +149,7 @@ Check for these problems and fix them:
 - **No meta description.** Add `<meta name="description">` under 160 characters per page.
 - **Missing Open Graph tags.** Add `og:title`, `og:description`, `og:image` (1200x630px), `og:url` for every public page.
 - **No canonical URL.** Add `<link rel="canonical">` to prevent duplicate content issues.
-- **Missing sitemap.xml and robots.txt.** Generate and serve both. In Next.js, export from `app/sitemap.ts` and `app/robots.ts`.
+- **Missing sitemap.xml and robots.txt.** Generate and serve both. Use the project's framework conventions (e.g., Next.js App Router: `app/sitemap.ts` and `app/robots.ts`; Pages Router/static setups: serve from `public/sitemap.xml` and `public/robots.txt`).
 - **Heading hierarchy broken.** One `<h1>` per page. Never skip levels (h1 → h3). Screen readers and crawlers use heading structure.
 - **No structured data (JSON-LD).** Add schema markup for Organization, Product, FAQ, BreadcrumbList as appropriate.
 - **Critical content hidden behind JavaScript.** Hero text, navigation, and primary CTAs must be server-rendered, not loaded client-side.
