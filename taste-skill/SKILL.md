@@ -441,9 +441,9 @@ function FeaturesSection({ features }: { features: Feature[] }) {
   const item = shouldReduce
     ? {}
     : {
-        hidden: { opacity: 0, y: 24, filter: 'blur(4px)' },
+        hidden: { opacity: 0, y: 24 },
         show: {
-          opacity: 1, y: 0, filter: 'blur(0px)',
+          opacity: 1, y: 0,
           transition: { type: 'spring', stiffness: 100, damping: 20 },
         },
       };
