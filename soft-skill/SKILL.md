@@ -107,7 +107,7 @@ Premium is not premium if 15% of users cannot use it. Apply these rules without 
 ## 10. SEO & PERFORMANCE
 * **Core Web Vitals:** LCP < 2.5s (preload hero image, fonts), CLS < 0.1 (explicit image dimensions), INP < 200ms (debounce handlers).
 * **Responsive Images:** Use `<Image>` (Next.js) or `<picture>` with `srcset`. Serve WebP/AVIF. Set explicit `sizes` attribute.
-* **Bundle Size:** Framer Motion (~30KB gz) + GSAP (~25KB gz) — never import both unless genuinely needed. Dynamic import heavy components below the fold.
+* **Bundle Size:** Framer Motion (~57KB gz) + GSAP (~25KB gz) — never import both unless genuinely needed. Dynamic import heavy components below the fold.
 * **Meta Tags:** Every page needs `<title>`, `description`, `og:image`, `twitter:card`, canonical URL. Add JSON-LD structured data.
 * **Semantic Headings:** One `<h1>` per page. Never skip levels. Server-render all critical text content.
 * **Sitemap & Robots:** Generate `sitemap.xml` and `robots.txt`. Index all public pages.

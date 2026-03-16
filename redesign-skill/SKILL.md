@@ -138,7 +138,7 @@ Check for these problems and fix them:
 - **Hero image not preloaded.** Add `priority` (Next.js Image) or `<link rel="preload">` for the largest above-the-fold image. Target LCP < 2.5s.
 - **Fonts not preloaded.** Custom fonts cause FOUT/FOIT. Use `<link rel="preload" as="font" crossorigin>` for critical fonts. Use `font-display: swap`.
 - **No lazy loading below the fold.** Every image and heavy component below the fold should use `loading="lazy"` or `next/dynamic`.
-- **Oversized JavaScript bundle.** Check if Framer Motion (~30KB gz), GSAP (~25KB gz), or other animation libraries are imported but barely used. Tree-shake or dynamically import.
+- **Oversized JavaScript bundle.** Check if Framer Motion (~57KB gz), GSAP (~25KB gz), or other animation libraries are imported but barely used. Tree-shake or dynamically import.
 - **Animations using layout-triggering properties.** `top`, `left`, `width`, `height` cause reflows. Switch to `transform` and `opacity`.
 - **No CLS prevention.** Images without dimensions, dynamically injected banners, and late-loading fonts all cause layout shift. Reserve space with skeletons.
 - **Missing `will-change` cleanup.** If `will-change: transform` is applied, it must be removed when animation completes.

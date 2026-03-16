@@ -79,7 +79,7 @@ To actively combat generic AI designs, systematically implement these high-end c
   * **LCP (Largest Contentful Paint) < 2.5s:** Hero images must use `<Image priority />` (Next.js) or `<link rel="preload">`. Lazy-load everything below the fold. Preload critical fonts with `<link rel="preload" as="font" crossorigin>`.
   * **CLS (Cumulative Layout Shift) < 0.1:** Always set explicit `width` and `height` on images and media. Reserve space for async content with skeleton placeholders. Never inject content above existing content after load.
   * **INP (Interaction to Next Paint) < 200ms:** Debounce scroll handlers. Use `startTransition` for non-urgent state updates. Offload heavy computation to Web Workers.
-* **Bundle Awareness:** Framer Motion adds ~30KB gzipped. GSAP adds ~25KB. Do not import both unless the project genuinely needs both. Tree-shake unused Framer features (`import { motion } from "framer-motion"` not `import * as`). Use dynamic imports (`next/dynamic`) for heavy animation components below the fold.
+* **Bundle Awareness:** Framer Motion adds ~57KB gzipped. GSAP adds ~25KB. Do not import both unless the project genuinely needs both. Tree-shake unused Framer features (`import { motion } from "framer-motion"` not `import * as`). Use dynamic imports (`next/dynamic`) for heavy animation components below the fold.
 * **Image Optimization [MANDATORY]:**
   * Always use Next.js `<Image>` component or `<picture>` with `srcset` for responsive images.
   * Serve WebP/AVIF with fallback. Never serve unoptimized PNGs for photos.
