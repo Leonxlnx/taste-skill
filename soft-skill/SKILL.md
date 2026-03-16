@@ -88,7 +88,7 @@ When generating UI code, follow this exact sequence:
 
 ## 8. ACCESSIBILITY (NON-NEGOTIABLE)
 Premium is not premium if 15% of users cannot use it. Apply these rules without exception:
-* **Contrast:** All text must meet WCAG 2.2 AA (4.5:1 normal, 3:1 large). Ethereal Glass vibes with low-opacity text are beautiful but fail contrast — increase foreground/background contrast by adjusting text color, opacity, weight/size, or surface color.
+* **Contrast:** All text must meet WCAG 2.2 AA (4.5:1 normal, 3:1 large). Ethereal Glass vibes with low-opacity text are beautiful but fail contrast — increase foreground/background contrast by adjusting text color, opacity, or surface color; only use weight/size to qualify as "large text" (3:1 ratio).
 * **Reduced Motion:** Wrap ALL Framer Motion, GSAP, and CSS animations in `prefers-reduced-motion` checks. Spring physics, parallax, scroll hijacks — all must degrade to instant transitions when reduced motion is active. Use stack-appropriate detection: CSS `@media (prefers-reduced-motion: reduce)`, `window.matchMedia` in JS/GSAP, or `useReducedMotion()` only when Framer Motion is already in use. For a complete Framer Motion implementation example, see taste-skill Section 10 (ReducedMotionWrapper.tsx).
 * **Focus Indicators:** Every clickable element needs a visible `focus-visible` ring. Never use `outline-none` without an alternative.
 * **Keyboard Navigation:** Full Tab flow through all interactive elements. Focus traps limited to true modals. Hamburger menus must allow Escape to close and Tab to exit naturally.
