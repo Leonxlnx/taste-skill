@@ -120,6 +120,41 @@ Check for these problems and fix them:
 - **Import hallucinations.** Check that every import actually exists in `package.json` or the project dependencies.
 - **Missing meta tags.** Add proper `<title>`, `description`, `og:image`, and social sharing meta tags.
 
+### Accessibility
+
+- **Missing `prefers-reduced-motion` support.** All animations, transitions, parallax, and auto-playing carousels must disable or simplify when reduced motion is requested. This is the most commonly missed accessibility rule in AI-generated code.
+- **Poor color contrast.** Run all text/background pairs through a contrast checker. WCAG AA requires 4.5:1 for normal text, 3:1 for large text. Low-opacity text on subtle backgrounds usually fails.
+- **No focus indicators.** Every interactive element needs a visible `focus-visible` ring. Never set `outline: none` without a replacement.
+- **Missing ARIA labels.** Icon-only buttons, hamburger menus, close buttons, social links — all need `aria-label`.
+- **No skip-to-content link.** Add a hidden link that becomes visible on focus for keyboard users.
+- **Color used alone for meaning.** Error states, status indicators, and validation all need icons or text in addition to color.
+- **Missing `alt` text.** Every meaningful image needs descriptive alt text. Decorative images should have `alt=""` and `role="presentation"`.
+- **No keyboard trap handling.** Modals should trap focus when open and restore on close; menus should allow Tab/Shift+Tab to move away and Escape to close.
+- **Form inputs without labels.** Every `<input>` needs a visible `<label>` with matching `htmlFor`/`id`. Placeholder text is not a label.
+
+### Performance (Core Web Vitals)
+
+- **No image optimization.** Replace raw PNGs/JPGs with Next.js `<Image>`, `<picture>` with `srcset`, or WebP/AVIF formats. Set explicit `width` and `height` to prevent CLS.
+- **Hero image not preloaded.** Add `priority` (Next.js Image) or `<link rel="preload">` for the largest above-the-fold image. Target LCP < 2.5s.
+- **Fonts not preloaded.** Custom fonts cause FOUT/FOIT. Use `<link rel="preload" as="font" crossorigin>` for critical fonts. Use `font-display: swap`.
+- **No lazy loading below the fold.** Every image and heavy component below the fold should use `loading="lazy"` or `next/dynamic`.
+- **Oversized JavaScript bundle.** Check if Framer Motion (~57KB gz), GSAP (~25KB gz), or other animation libraries are imported but barely used. Tree-shake or dynamically import.
+- **Animations using layout-triggering properties.** `top`, `left`, `width`, `height` cause reflows. Switch to `transform` and `opacity`.
+- **No CLS prevention.** Images without dimensions, dynamically injected banners, and late-loading fonts all cause layout shift. Reserve space with skeletons.
+- **Missing `will-change` cleanup.** If `will-change: transform` is applied, it must be removed when animation completes.
+
+### SEO
+
+- **Missing or generic `<title>` tags.** Each page needs a unique, keyword-rich title under 60 characters.
+- **No meta description.** Add `<meta name="description">` under 160 characters per page.
+- **Missing Open Graph tags.** Add `og:title`, `og:description`, `og:image` (1200x630px), `og:url` for every public page.
+- **No canonical URL.** Add `<link rel="canonical">` to prevent duplicate content issues.
+- **Missing sitemap.xml and robots.txt.** Generate and serve both. Use the project's framework conventions (e.g., Next.js App Router: `app/sitemap.ts` and `app/robots.ts`; Pages Router/static setups: serve from `public/sitemap.xml` and `public/robots.txt`).
+- **Heading hierarchy broken.** One `<h1>` per page. Never skip levels (h1 → h3). Screen readers and crawlers use heading structure.
+- **No structured data (JSON-LD).** Add schema markup for Organization, Product, FAQ, BreadcrumbList as appropriate.
+- **Critical content hidden behind JavaScript.** Hero text, navigation, and primary CTAs must be server-rendered, not loaded client-side.
+- **Images without alt text.** Google indexes alt text. Be descriptive and specific, not generic.
+
 ### Strategic Omissions (What AI Typically Forgets)
 
 - **No legal links.** Add privacy policy and terms of service links in the footer.
@@ -162,11 +197,14 @@ Apply changes in this order for maximum visual impact with minimum risk:
 
 1. **Font swap** — biggest instant improvement, lowest risk
 2. **Color palette cleanup** — remove clashing or oversaturated colors
-3. **Hover and active states** — makes the interface feel alive
-4. **Layout and spacing** — proper grid, max-width, consistent padding
-5. **Replace generic components** — swap cliche patterns for modern alternatives
-6. **Add loading, empty, and error states** — makes it feel finished
-7. **Polish typography scale and spacing** — the premium final touch
+3. **Accessibility fixes** — contrast, focus rings, reduced motion, ARIA labels
+4. **Hover and active states** — makes the interface feel alive
+5. **Layout and spacing** — proper grid, max-width, consistent padding
+6. **Image optimization & performance** — responsive images, preloads, lazy loading
+7. **Replace generic components** — swap cliche patterns for modern alternatives
+8. **Add loading, empty, and error states** — makes it feel finished
+9. **SEO meta tags & structured data** — discoverability and social sharing
+10. **Polish typography scale and spacing** — the premium final touch
 
 ## Rules
 

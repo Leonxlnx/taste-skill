@@ -14,17 +14,27 @@ I'd love to hear your thoughts! If you have suggestions or find any bugs:
 
 There are seven skills in this project. Each one lives in its own folder and contains a `SKILL.md` file.
 
-### 1. taste-skill
-The main design skill. Teaches the AI how to write good-looking frontend code from scratch. Covers layout, typography, colors, spacing, motion, and overall visual quality.
+### 1. taste-skill (14 sections)
+The main design skill. Teaches the AI how to write good-looking frontend code from scratch. Covers layout, typography, colors, spacing, motion, and overall visual quality. **Now includes:** accessibility (WCAG 2.2 AA), Core Web Vitals performance, responsive images, dark/light mode system, SEO meta architecture, and 4 before/after code examples.
 
 ### 2. redesign-skill
-For upgrading existing projects. Instead of rebuilding from zero, this skill walks the AI through auditing what's already there and fixing the biggest design problems first.
+For upgrading existing projects. Instead of rebuilding from zero, this skill walks the AI through auditing what's already there and fixing the biggest design problems first. **Now includes:** accessibility audit, Core Web Vitals audit, SEO audit, and an expanded 10-step fix priority.
 
-### 3. soft-skill
-Focuses on making things look and feel expensive. Covers premium fonts, big breathing whitespace, layered card designs with depth, smooth spring-based animations, and floating navigation. Bans all the generic defaults that make AI output look like a template.
+### 3. soft-skill (11 sections)
+Focuses on making things look and feel expensive. Use for luxury, editorial, or Awwwards-tier builds. Covers premium fonts, big breathing whitespace, layered card designs with depth, smooth spring-based animations, and floating navigation. Bans all the generic defaults that make AI output look like a template. **Now includes:** accessibility, dark/light mode, SEO & performance, and a clear "when to use this vs taste-skill" guide.
 
 ### 4. output-skill
-Stops the AI from being lazy. Prevents placeholder comments, skipped code blocks, and half-finished outputs. Forces the AI to actually write everything instead of cutting corners.
+Stops the AI from being lazy. Prevents placeholder comments, skipped code blocks, and half-finished outputs. Forces the AI to actually write everything instead of cutting corners. **Now includes:** multi-file output handling and iterative request rules.
+
+### When to use which skill
+
+| Scenario | Skill |
+|----------|-------|
+| Building a new SaaS, dashboard, or web app | taste-skill |
+| Building a luxury/editorial/agency site (Awwwards-tier) | soft-skill |
+| Upgrading an existing project | redesign-skill |
+| Any task requiring complete, untruncated output | output-skill |
+| Production build | taste-skill + output-skill (combine both) |
 
 ### 5. minimalist-skill
 For clean, editorial-style interfaces inspired by tools like Notion and Linear. Enforces warm monochrome palettes, serif/sans-serif typographic contrast, massive whitespace, flat bento grids with crisp hairline borders, and muted pastel accents. Blocks gradients, heavy shadows, and generic SaaS patterns.
