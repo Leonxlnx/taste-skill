@@ -29,7 +29,16 @@ I'd love to hear your thoughts! If you have suggestions or find any bugs:
 
 ## Installing
 
-Works via CLI for all major AI coding agents (Cursor, Antigravity, Claude Code, Codex, Windsurf, Copilot, etc.):
+### Claude Code Plugin (Recommended)
+
+```
+/plugin marketplace add Leonxlnx/taste-skill
+/plugin install taste-skill
+```
+
+### Agent Skills CLI
+
+Works via CLI for all major AI coding agents (Cursor, Antigravity, Codex, Windsurf, Copilot, etc.):
 
 ```bash
 npx skills add https://github.com/Leonxlnx/taste-skill
