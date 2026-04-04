@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "A collection of skills that improve how AI tools write frontend code. Instead of generating generic, boring interfaces, the AI builds modern, premium designs with proper animations, spacing, and visual quality.",
   "author": {
-    "name": "Irfanfaraaz",
-    "email": "irfanfaraaz03@gmail.com"
+    "name": "Leonxlnx",
+    "url": "https://github.com/Leonxlnx"
   },
   "homepage": "https://tasteskill.dev",
-  "repository": "https://github.com/irfanfaraaz/taste-skill-plugin",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
   "license": "MIT",
   "keywords": [
     "ui",

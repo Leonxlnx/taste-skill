@@ -32,7 +32,7 @@ I'd love to hear your thoughts! If you have suggestions or find any bugs:
 ### Claude Code Plugin (Recommended)
 
 ```
-/plugin marketplace add irfanfaraaz/taste-skill-plugin
+/plugin marketplace add Leonxlnx/taste-skill
 /plugin install taste-skill
 ```
 
@@ -41,7 +41,7 @@ I'd love to hear your thoughts! If you have suggestions or find any bugs:
 Works via CLI for all major AI coding agents (Cursor, Antigravity, Codex, Windsurf, Copilot, etc.):
 
 ```bash
-npx skills add https://github.com/irfanfaraaz/taste-skill-plugin
+npx skills add https://github.com/Leonxlnx/taste-skill
 ```
 
 ## Skills
