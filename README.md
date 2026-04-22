@@ -1,3 +1,5 @@
+![Taste Skill README Banner](examples/readme-banner.png)
+
 # Taste Skill
 
 <p>
