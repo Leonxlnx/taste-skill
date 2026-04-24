@@ -1,6 +1,8 @@
 taste-skill: The main design skill for premium frontend code. Covers layout, typography, colors, spacing, and motion.
 gpt-taste: Elite Awwwards-level frontend design and GSAP motion skill for premium, deterministic, anti-slop UI generation.
-images-taste-skill: Image-first frontend art direction skill for generating premium website references, deeply analyzing them, and implementing code to match.
+image-to-code-skill: Image-first frontend skill for generating premium website references, deeply analyzing them, and implementing code to match.
+imagegen-frontend-web: Image-generation-only skill for creating premium website design reference images. Does not write code.
+imagegen-frontend-mobile: Image-generation-only skill for creating premium mobile app screen concepts and flows. Does not write code.
 redesign-skill: For upgrading existing projects by auditing and fixing design problems.
 soft-skill: Focuses on an expensive, soft UI look with premium fonts, whitespace, depth, and smooth animations.
 output-skill: Prevents AI from being lazy, skipping code blocks, or using placeholder comments.
