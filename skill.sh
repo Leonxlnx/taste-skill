@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Local skill registry
+AVAILABLE_SKILLS="taste-skill gpt-taste image-to-code-skill imagegen-frontend-web imagegen-frontend-mobile brandkit redesign-skill soft-skill output-skill minimalist-skill brutalist-skill stitch-skill"
+
 declare -A SKILLS=(
   [taste-skill]="skills/taste-skill/SKILL.md"
   [gpt-taste]="skills/gpt-tasteskill/SKILL.md"
@@ -17,8 +19,13 @@ declare -A SKILLS=(
 )
 
 if [[ $# -eq 0 ]]; then
-  echo "Usage: source ./skill.sh <skill-name>"
-  echo "Available skills: ${!SKILLS[@]}"
+  echo "Usage: source ./skill.sh <skill-name>" >&2
+  echo "Available skills: $AVAILABLE_SKILLS" >&2
+  return 2 2>/dev/null || exit 2
+elif [[ -z "${SKILLS[$1]}" ]]; then
+  echo "Unknown skill: $1" >&2
+  echo "Available skills: $AVAILABLE_SKILLS" >&2
+  return 1 2>/dev/null || exit 1
 else
   echo "${SKILLS[$1]}"
 fi
