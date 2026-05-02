@@ -120,6 +120,23 @@ Created with taste-skill:
   <img src="examples/floria-bottom.webp" width="400" />
 </p>
 
+## Screenshots
+
+Visual examples of each web design skill — one HTML page per skill with screenshots.
+
+👉 **[showcase/SCREENSHOTS.md](showcase/SCREENSHOTS.md)** — all 8 skill previews with images embedded
+
+| # | Skill | Description |
+|---|-------|-------------|
+| 1 | **taste-skill** | Motion engine bento, skeleton loaders, spring physics |
+| 2 | **gpt-taste** | GSAP marquee, grid-flow-dense, inline image typography |
+| 3 | **soft-skill** | Double-bezel UI, spring physics, warm cream surfaces |
+| 4 | **minimalist-skill** | Newsreader serif + Geist, pale pastels, accordion FAQ |
+| 5 | **brutalist-skill** | Archivo Black, blueprint grid, aviation red #E61919 |
+| 6 | **output-skill** | Terminal dark, banned pattern enforcement |
+| 7 | **redesign-skill** | Before/after audit, upgrade priority flow |
+| 8 | **stitch-skill** | Atmosphere dials, color roles, anti-patterns |
+
 ## Support the project
 
 If Taste Skill helps you, consider sponsoring:
