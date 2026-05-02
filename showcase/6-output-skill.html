@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>output-skill — Full-Output Enforcement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { mono: ['JetBrains Mono','Courier New','monospace'] } } } }
+  </script>
+  <style>
+    @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0 } }
+    @keyframes progress { from { width: 0 } to { width: 100% } }
+    @keyframes scan { from { transform: translateY(-100%) } to { transform: translateY(100vh) } }
+    .cursor { animation: blink 1s step-end infinite }
+    .scanline { animation: scan 8s linear infinite }
+  </style>
+</head>
+<body class="bg-[#0a0a0a] text-[#e0e0e0] font-mono antialiased">
+
+  <!-- HEADER -->
+  <div class="border-b border-[#e0e0e0]/10 px-6 py-4">
+    <div class="max-w-[1200px] mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-[#e61919]"></div>
+        <span class="text-sm font-bold">OUTPUT_SKILL</span>
+        <span class="text-xs text-[#e0e0e0]/40">v1.0.0</span>
+      </div>
+      <div class="flex items-center gap-6 text-xs text-[#e0e0e0]/40">
+        <span>FULL-OUTPUT ENFORCEMENT</span>
+        <span>// NO PLACEHOLDERS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="px-6 py-20">
+    <div class="max-w-[900px] mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#e61919]/40 text-xs text-[#e61919] mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#e61919]"></span>
+        TRUNCATION DETECTED
+      </div>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6">
+        Stop shipping<br>
+        <span class="text-[#e61919]">half-finished code.</span>
+      </h1>
+      <p class="text-[#e0e0e0]/60 text-lg leading-relaxed max-w-[55ch] mb-8">
+        Output-skill overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly.
+      </p>
+      <div class="font-mono text-sm text-[#e0e0e0]/40">
+        $ npm install @taste-skill/output-skill
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNED PATTERNS -->
+  <section class="px-6 py-16 border-t border-[#e0e0e0]/10">
+    <div class="max-w-[900px] mx-auto">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-3 h-3 rounded-full bg-[#e61919]"></div>
+        <h2 class="text-xl font-bold uppercase tracking-[0.1em]">Banned patterns</h2>
+      </div>
+      <div class="space-y-3">
+        <div class="bg-[#e61919]/5 border border-[#e61919]/20 rounded p-4 flex items-start gap-4">
+          <span class="text-[#e61919] font-bold text-sm shrink-0">ERR</span>
+          <div>
+            <code class="text-sm text-[#e0e0e0]">// ...</code>
+            <span class="text-xs text-[#e0e0e0]/40 ml-3">// ellipsis placeholder</span>
+          </div>
+        </div>
+        <div class="bg-[#e61919]/5 border border-[#e61919]/20 rounded p-4 flex items-start gap-4">
+          <span class="text-[#e61919] font-bold text-sm shrink-0">ERR</span>
+          <div>
+            <code class="text-sm text-[#e0e0e0]">// TODO</code>
+            <span class="text-xs text-[#e0e0e0]/40 ml-3">// incomplete marker</span>
+          </div>
+        </div>
+        <div class="bg-[#e61919]/5 border border-[#e61919]/20 rounded p-4 flex items-start gap-4">
+          <span class="text-[#e61919] font-bold text-sm shrink-0">ERR</span>
+          <div>
+            <code class="text-sm text-[#e0e0e0]">/* ... */</code>
+            <span class="text-xs text-[#e0e0e0]/40 ml-3">// block comment skip</span>
+          </div>
+        </div>
+        <div class="bg-[#e61919]/5 border border-[#e61919]/20 rounded p-4 flex items-start gap-4">
+          <span class="text-[#e0e0e0]/40 font-bold text-sm shrink-0">ERR</span>
+          <div>
+            <code class="text-sm text-[#e0e0e0]/60">"Let me know if you want me to continue"</code>
+            <span class="text-xs text-[#e0e0e0]/40 ml-3">// prose truncation</span>
+          </div>
+        </div>
+        <div class="bg-[#e61919]/5 border border-[#e61919]/20 rounded p-4 flex items-start gap-4">
+          <span class="text-[#e0e0e0]/40 font-bold text-sm shrink-0">ERR</span>
+          <div>
+            <code class="text-sm text-[#e0e0e0]/60">"the rest follows the same pattern"</code>
+            <span class="text-xs text-[#e0e0e0]/40 ml-3">// structural shortcut</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORRECT PATTERNS -->
+  <section class="px-6 py-16 border-t border-[#e0e0e0]/10">
+    <div class="max-w-[900px] mx-auto">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-3 h-3 rounded-full bg-[#4af626]"></div>
+        <h2 class="text-xl font-bold uppercase tracking-[0.1em]">Correct output</h2>
+      </div>
+      <div class="bg-[#4af626]/5 border border-[#4af626]/20 rounded p-4">
+        <div class="text-xs text-[#4af626] mb-3">// complete function — no truncation</div>
+        <pre class="text-sm leading-relaxed overflow-x-auto"><code class="text-[#e0e0e0]"><span class="text-[#4af626]">function</span> <span class="text-[#e0e0e0]">calculateVelocity(tasks) {</span>
+  <span class="text-[#4af626]">const</span> <span class="text-[#e0e0e0]">completed = tasks.filter(t => t.status === </span><span class="text-[#e4c44f]">'done'</span><span class="text-[#e0e0e0]">);</span>
+  <span class="text-[#4af626]">const</span> <span class="text-[#e0e0e0]">total = completed.reduce((sum, t) => sum + t.points, </span><span class="text-[#e61919]">0</span><span class="text-[#e0e0e0]">);</span>
+  <span class="text-[#4af626]">return</span> <span class="text-[#e0e0e0]">total / completed.length;</span>
+<span class="text-[#e0e0e0]">}</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXECUTION PROTOCOL -->
+  <section class="px-6 py-16 border-t border-[#e0e0e0]/10">
+    <div class="max-w-[900px] mx-auto">
+      <h2 class="text-xl font-bold uppercase tracking-[0.1em] mb-8">Execution protocol</h2>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="border border-[#e0e0e0]/20 rounded p-4">
+          <div class="text-2xl font-bold text-[#4af626] mb-2">01</div>
+          <div class="text-sm font-medium">Scope</div>
+          <div class="text-xs text-[#e0e0e0]/40 mt-1">Count deliverables</div>
+        </div>
+        <div class="border border-[#e0e0e0]/20 rounded p-4">
+          <div class="text-2xl font-bold text-[#4af626] mb-2">02</div>
+          <div class="text-sm font-medium">Build</div>
+          <div class="text-xs text-[#e0e0e0]/40 mt-1">Generate complete</div>
+        </div>
+        <div class="border border-[#e0e0e0]/20 rounded p-4">
+          <div class="text-2xl font-bold text-[#4af626] mb-2">03</div>
+          <div class="text-sm font-medium">Cross-check</div>
+          <div class="text-xs text-[#e0e0e0]/40 mt-1">Verify scope count</div>
+        </div>
+        <div class="border border-[#e0e0e0]/20 rounded p-4">
+          <div class="text-2xl font-bold text-[#e4c44f] mb-2">04</div>
+          <div class="text-sm font-medium">If paused</div>
+          <div class="text-xs text-[#e0e0e0]/40 mt-1">Resume from marker</div>
+        </div>
+        <div class="border border-[#e0e0e0]/20 rounded p-4">
+          <div class="text-2xl font-bold text-[#4af626] mb-2">05</div>
+          <div class="text-sm font-medium">Deliver</div>
+          <div class="text-xs text-[#e0e0e0]/40 mt-1">Full output only</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTPUT MONITOR -->
+  <section class="px-6 py-16 border-t border-[#e0e0e0]/10">
+    <div class="max-w-[900px] mx-auto">
+      <h2 class="text-xl font-bold uppercase tracking-[0.1em] mb-8">Output completeness monitor</h2>
+      <div class="bg-[#111] border border-[#e0e0e0]/10 rounded-xl overflow-hidden">
+        <div class="px-4 py-2 border-b border-[#e0e0e0]/10 flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-[#e61919]"></div>
+          <div class="w-2 h-2 rounded-full bg-[#e4c44f]"></div>
+          <div class="w-2 h-2 rounded-full bg-[#4af626]"></div>
+          <span class="text-xs text-[#e0e0e0]/40 ml-2">output-skill — completion trace</span>
+        </div>
+        <div class="p-6 font-mono text-sm space-y-2">
+          <div class="text-[#e0e0e0]/60">> initializing output enforcement...</div>
+          <div class="text-[#4af626]">> scope locked: 7 deliverables</div>
+          <div class="text-[#e0e0e0]/60">> generating deliverables 1-7...</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████</span> component-nav.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████</span> component-hero.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████████</span> component-bento.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████████████</span> component-dashboard.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████████████████</span> page-index.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████████████████████</span> page-about.tsx — COMPLETE</div>
+          <div class="text-[#e0e0e0]/60">> <span class="text-[#e4c44f]">████████████████████████████</span> page-pricing.tsx — COMPLETE</div>
+          <div class="mt-4 h-2 bg-[#e0e0e0]/10 rounded-full overflow-hidden">
+            <div class="h-full bg-[#4af626] rounded-full" style="width:100%"></div>
+          </div>
+          <div class="text-[#4af626] mt-2">> OUTPUT COMPLETE — 7/7 deliverables generated</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-[#e0e0e0]/10 px-6 py-8">
+    <div class="max-w-[1200px] mx-auto flex items-center justify-between text-xs text-[#e0e0e0]/30">
+      <span>OUTPUT_SKILL v1.0.0 // NO PLACEHOLDER PATTERNS // 2026</span>
+      <span>BUILT WITH TASTE-SKILL</span>
+    </div>
+  </footer>
+</body>
+</html>
