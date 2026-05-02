@@ -1,6 +1,6 @@
 # Skill Screenshots
 
-Visual examples of all 8 web design skills from the [taste-skill](https://github.com/leonxlnx/taste-skill) ecosystem.
+Visual examples of all 7 web design skills from the [taste-skill](https://github.com/leonxlnx/taste-skill) ecosystem.
 
 ---
 
@@ -44,15 +44,7 @@ Archivo Black uppercase, blueprint grid, aviation red #E61919, monospace telemet
 
 ---
 
-## 6. output-skill — Full-Output Enforcement
-
-Terminal dark UI: banned patterns in red, correct output in green, execution protocol steps.
-
-![output-skill](screenshot-6-output-skill.png)
-
----
-
-## 7. redesign-skill — Design Audit & Upgrade System
+## 6. redesign-skill — Design Audit & Upgrade System
 
 Before/after comparison, 5-step upgrade priority flow, 6-category audit checklist.
 
@@ -60,7 +52,7 @@ Before/after comparison, 5-step upgrade priority flow, 6-category audit checklis
 
 ---
 
-## 8. stitch-skill — Semantic Design System
+## 7. stitch-skill — Semantic Design System
 
 DESIGN.md visualization: atmosphere dials, color palette roles, typography rules, anti-patterns.
 

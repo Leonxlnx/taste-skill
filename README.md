@@ -133,9 +133,8 @@ Visual examples of each web design skill — one HTML page per skill with screen
 | 3 | **soft-skill** | Double-bezel UI, spring physics, warm cream surfaces |
 | 4 | **minimalist-skill** | Newsreader serif + Geist, pale pastels, accordion FAQ |
 | 5 | **brutalist-skill** | Archivo Black, blueprint grid, aviation red #E61919 |
-| 6 | **output-skill** | Terminal dark, banned pattern enforcement |
-| 7 | **redesign-skill** | Before/after audit, upgrade priority flow |
-| 8 | **stitch-skill** | Atmosphere dials, color roles, anti-patterns |
+| 6 | **redesign-skill** | Before/after audit, upgrade priority flow |
+| 7 | **stitch-skill** | Atmosphere dials, color roles, anti-patterns |
 
 ## Support the project
 
