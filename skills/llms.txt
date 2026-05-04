@@ -10,3 +10,4 @@ output-skill: Prevents AI from being lazy, skipping code blocks, or using placeh
 minimalist-skill: Enforces clean, editorial-style interfaces (Notion/Linear style) with strict monochrome palettes.
 brutalist-skill: Raw mechanical interfaces, Swiss typography, extreme scale contrast. (Beta)
 stitch-skill: Google Stitch-compatible semantic design rules for premium AI UI generation.
+neon-pop-skill: Loud playful ecommerce interfaces with neon colour blocking, bubble typography, sticker graphics, and rounded modular grids. For gift shops, beauty brands, and Gen Z DTC.
