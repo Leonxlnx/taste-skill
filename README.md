@@ -73,6 +73,7 @@ Each skill does one job; you do not need all of them at once. **Implementation s
 | **output-skill** | When the model ships half-finished work: full output, no placeholder comments. |
 | **minimalist-skill** | Editorial product UI (Notion/Linear vibes), restrained palette, crisp structure. |
 | **brutalist-skill** | ⚠️ `BETA` Hard mechanical language: Swiss type, sharp contrast, experimental layout. |
+| **neon-pop-skill** | Loud playful ecommerce interfaces with neon colour blocking, bubble typography, sticker graphics, and rounded modular grids. For gift shops, beauty brands, and Gen Z DTC. |
 | **stitch-skill** | Google Stitch-compatible rules, including optional `DESIGN.md` export format. |
 
 ### Image generation skills
