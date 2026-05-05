@@ -4,6 +4,16 @@ Este archivo es la memoria de arquitectura del proyecto. Léelo al inicio de cad
 
 ---
 
+## Landing Page — Trabajo activo
+
+La landing page pública de Tutory se construye en este repo dentro de la carpeta `tutory-landing/`. Es un proyecto Vite + React completamente independiente del repo principal de Tutory.
+
+**Carpeta:** `/tutory-landing/` (en la raíz de este repo)  
+**Al terminar:** copiar la carpeta `tutory-landing/` al repo principal de Tutory y ejecutar la Sesión 6 de integración.  
+**Todo el trabajo de las Sesiones 1 a 5 va dentro de `tutory-landing/`.** No crear archivos fuera de esa carpeta.
+
+---
+
 ## Contexto del negocio
 
 **Tutory** es una plataforma SaaS de enseñanza de inglés que conecta estudiantes con sus profesores personales. No es una app de ejercicios genérica — es el espacio de trabajo donde el profe gestiona todo el aprendizaje de sus estudiantes.
