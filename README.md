@@ -74,6 +74,7 @@ Each skill does one job; you do not need all of them at once. **Implementation s
 | **minimalist-skill** | Editorial product UI (Notion/Linear vibes), restrained palette, crisp structure. |
 | **brutalist-skill** | ⚠️ `BETA` Hard mechanical language: Swiss type, sharp contrast, experimental layout. |
 | **neon-pop-skill** | Loud playful ecommerce interfaces with neon colour blocking, bubble typography, sticker graphics, and rounded modular grids. For gift shops, beauty brands, and Gen Z DTC. |
+| **dark-schematic-ui-skill** | Premium dark modular interfaces fusing black-on-black grid systems with precise technical diagrams, restrained typography, and subtle signal colour. For SaaS, portfolios, dashboards, AI products, and digital platforms that need to feel precise, scalable, and quietly futuristic. |
 | **stitch-skill** | Google Stitch-compatible rules, including optional `DESIGN.md` export format. |
 
 ### Image generation skills
