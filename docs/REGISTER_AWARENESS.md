@@ -57,7 +57,7 @@ When in doubt, both register reference files in [pbakaus/impeccable](https://git
 | Skill | Default fit | Notes |
 |---|---|---|
 | `design-taste-frontend` | Brand | The default all-rounder; reads brand-leaning when applied to dashboards |
-| `gpt-tasteskill` | Brand | Stricter brand-grade output |
+| `gpt-taste` | Brand | Stricter brand-grade output |
 | `image-to-code-skill` | Brand (websites) | Image-first workflow assumes visual website work |
 | `redesign-existing-projects` | Both | The audit checklist applies to either, but several typography/color rules read brand-default |
 | `soft-skill` | Brand | "$150k agency" register; brand-only |
