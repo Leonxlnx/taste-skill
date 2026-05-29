@@ -17,9 +17,32 @@ declare -A SKILLS=(
   [stitch-skill]="skills/stitch-skill/SKILL.md"
 )
 
-if [[ $# -eq 0 ]]; then
-  echo "Usage: source ./skill.sh <skill-name>"
-  echo "Available skills: ${!SKILLS[@]}"
-else
-  echo "${SKILLS[$1]}"
+print_help() {
+  echo "Usage: ./skill.sh <skill-name>"
+  echo "       ./skill.sh --list"
+  echo
+  echo "Available skills:"
+  printf '%s\n' "${!SKILLS[@]}" | sort
+}
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+  print_help
+  exit 0
 fi
+
+if [[ "$1" == "--list" ]]; then
+  printf '%s\n' "${!SKILLS[@]}" | sort
+  exit 0
+fi
+
+skill_name="$1"
+skill_path="${SKILLS[$skill_name]}"
+
+if [[ -z "$skill_path" ]]; then
+  echo "Unknown skill: $skill_name" >&2
+  echo >&2
+  print_help >&2
+  exit 2
+fi
+
+echo "$skill_path"
