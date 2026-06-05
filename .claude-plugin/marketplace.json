@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "taste-skill",
+  "description": "Portable anti-slop frontend and image-generation skills for Claude Code.",
+  "owner": {
+    "name": "Leonxlnx",
+    "email": "hello@tasteskill.dev"
+  },
+  "plugins": [
+    {
+      "name": "taste-skill",
+      "displayName": "Taste Skill",
+      "description": "Anti-slop frontend and image-generation skills for premium UI design, redesigns, brand kits, and image-to-code workflows.",
+      "source": "./",
+      "author": {
+        "name": "Leonxlnx"
+      },
+      "homepage": "https://tasteskill.dev",
+      "repository": "https://github.com/Leonxlnx/taste-skill",
+      "license": "MIT",
+      "keywords": [
+        "frontend",
+        "design",
+        "skills",
+        "brandkit",
+        "image-generation"
+      ],
+      "category": "development"
+    }
+  ]
+}

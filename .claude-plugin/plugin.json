@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "taste-skill",
+  "displayName": "Taste Skill",
+  "description": "Portable anti-slop frontend and image-generation skills for Claude Code.",
+  "author": {
+    "name": "Leonxlnx"
+  },
+  "homepage": "https://tasteskill.dev",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
+  "license": "MIT",
+  "keywords": [
+    "frontend",
+    "design",
+    "skills",
+    "brandkit",
+    "image-generation"
+  ]
+}
