@@ -74,12 +74,14 @@ You can also copy any `SKILL.md` into your project or paste it into ChatGPT / Co
 
 If you only use Claude Code, you can install the whole repo as a plugin from the included `.claude-plugin/` manifests. Every skill is namespaced under `taste-skill:` (for example, `/taste-skill:imagegen-frontend-web`), so they won't collide with your other skills — no `npx skills` step required.
 
-```bash
+Run these inside Claude Code:
+
+```
 /plugin marketplace add Leonxlnx/taste-skill
 /plugin install taste-skill@taste-skill
 ```
 
-Run `/plugin marketplace update taste-skill` later to pull new versions.
+Run `/plugin update` later to upgrade installed plugins to new versions. Claude Code also checks for updates automatically at startup.
 
 ### Updating from the previous version
 
