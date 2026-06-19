@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Stijl / Neoplastic UI — destijl-neoplastic-ui demo</title>
+<style>
+  /* ============================================================
+     destijl-neoplastic-ui — single-page demo
+     Palette (Mondrian, public domain):
+       Red   #E72119   Blue #0B41CD   Yellow #F9D616
+       Lines #000000   Canvas #FFFFFF
+     Core trick: black structural lines are GRID GAPS over a
+     black grid background — never declared as borders.
+     ============================================================ */
+
+  :root {
+    --red:    #E72119;
+    --blue:   #0B41CD;
+    --yellow: #F9D616;
+    --ink:    #000000;
+    --paper:  #FFFFFF;
+    --line:   10px;            /* heavy, deliberate De Stijl line */
+    --grotesk: 'Futura', 'Neue Haas Grotesk', 'Archivo', 'Helvetica Neue', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--grotesk);
+    line-height: 1.6;
+    padding: var(--line);
+  }
+
+  /* The whole page is one asymmetric composition grid.
+     The black background shows through the gaps as lines. */
+  .composition {
+    display: grid;
+    grid-template-columns: 2fr 1fr 3fr;   /* UNEQUAL tracks on purpose */
+    grid-template-rows: auto auto auto;
+    gap: var(--line);
+    background: var(--ink);                /* gaps render as black lines */
+    border: var(--line) solid var(--ink);  /* frame the whole canvas */
+  }
+
+  .cell { background: var(--paper); padding: 32px; display: flex; flex-direction: column; justify-content: center; }
+  .red    { background: var(--red);    color: var(--paper); }
+  .blue   { background: var(--blue);   color: var(--paper); }
+  .yellow { background: var(--yellow); color: var(--ink);   }
+
+  /* ---- specific plane placements (asymmetric balance) ---- */
+  .masthead   { grid-column: 1 / 3; grid-row: 1; }
+  .masthead h1 {
+    font-size: clamp(2.5rem, 7vw, 6rem);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    font-weight: 800;
+  }
+  .swatch-yellow { grid-column: 3; grid-row: 1; min-height: 160px; }
+
+  .nav        { grid-column: 1; grid-row: 2; gap: 4px; }
+  .nav a { color: var(--ink); text-decoration: none; text-transform: uppercase;
+           font-weight: 700; letter-spacing: 0.04em; padding: 6px 0; display: block; }
+  .nav a:hover { background: var(--ink); color: var(--paper); padding-left: 8px; }
+
+  .swatch-blue { grid-column: 2; grid-row: 2; }
+  .body-copy   { grid-column: 3; grid-row: 2; }
+  .body-copy p { max-width: 48ch; }
+  .body-copy .eyebrow { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 12px; }
+
+  .swatch-red  { grid-column: 1; grid-row: 3; min-height: 140px; }
+  .stat        { grid-column: 2 / 4; grid-row: 3; flex-direction: row; gap: 48px; align-items: baseline; }
+  .stat .num   { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1; }
+
+  /* Rectangular De Stijl button: invert on hover, crisp not springy */
+  .btn {
+    display: inline-block; margin-top: 20px; align-self: flex-start;
+    background: var(--paper); color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 0;
+    padding: 12px 24px; text-transform: uppercase; font-weight: 700;
+    letter-spacing: 0.04em; cursor: pointer; transition: all 150ms linear;
+  }
+  .btn:hover { background: var(--red); color: var(--paper); border-color: var(--red); }
+
+  /* Axis-aligned plane reveal — fill, don't fade-slide */
+  .reveal { animation: wipe 600ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+  @media (max-width: 720px) {
+    .composition { grid-template-columns: 1fr; }
+    .masthead, .swatch-yellow, .nav, .swatch-blue, .body-copy,
+    .swatch-red, .stat { grid-column: 1; grid-row: auto; }
+    .stat { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+  <main class="composition">
+    <section class="cell masthead">
+      <h1>Neoplastic<br>Studio</h1>
+    </section>
+
+    <section class="cell yellow swatch-yellow reveal" aria-hidden="true"></section>
+
+    <nav class="cell nav">
+      <a href="#">Work</a>
+      <a href="#">Method</a>
+      <a href="#">Studio</a>
+      <a href="#">Contact</a>
+    </nav>
+
+    <section class="cell blue swatch-blue reveal" aria-hidden="true"></section>
+
+    <section class="cell body-copy">
+      <p class="eyebrow">Composition No. 1</p>
+      <p>We design with horizontal and vertical lines, rectangular planes, and the
+      three primary colors. Balance comes from asymmetry — one large plane held in
+      tension by several small ones. Nothing curves. Nothing fades.</p>
+      <button class="btn">See the work</button>
+    </section>
+
+    <section class="cell red swatch-red reveal" aria-hidden="true"></section>
+
+    <section class="cell stat">
+      <div><div class="num">1917</div>Founded, Leiden</div>
+      <div><div class="num">03</div>Primary colors only</div>
+      <div><div class="num">90°</div>Every single corner</div>
+    </section>
+  </main>
+</body>
+</html>
