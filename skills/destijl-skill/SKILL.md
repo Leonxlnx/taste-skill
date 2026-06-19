@@ -5,6 +5,8 @@ description: De Stijl / Mondrian neoplasticism. Pure white canvas, thick black g
 
 # Protocol: Neoplastic De Stijl UI Architect
 
+![De Stijl / Mondrian neoplastic UI demo](examples/destijl.png)
+
 ## 1. Protocol Overview
 **Name:** Neoplasticism & De Stijl Compositional UI
 **Description:** A frontend directive for generating interfaces in the visual language of Piet Mondrian and the De Stijl movement (public domain). The system reduces composition to its purest elements: horizontal and vertical black lines, rectangular planes, and the three primary colors plus achromatic white/grey/black. It enforces asymmetric dynamic equilibrium over symmetry, absolute right angles over curves, and structural color over decoration. It deliberately rejects gradients, shadows, organic shapes, and the soft "friendly SaaS" aesthetic.
