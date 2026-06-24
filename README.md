@@ -5,6 +5,15 @@
 # Taste Skill
 
 <p align="center">
+  <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=taste-skill">
+    <img src="assets/atlas-cloud-logo.png" alt="Atlas Cloud" width="140" />
+  </a>
+  <br />
+  <sub><strong>Atlas Cloud</strong> Atlas Cloud provides OpenAI-compatible LLM APIs and async image/video generation APIs for design skills, image generation, and multimodal creative workflows.</sub>
+</p>
+
+
+<p align="center">
   <em>The Anti-Slop Frontend Framework for AI Agents</em>
 </p>
 
