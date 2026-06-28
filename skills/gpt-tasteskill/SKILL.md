@@ -31,7 +31,7 @@ The rest of the page MUST follow the AIDA framework:
 The Hero must breathe. It must NOT be a narrow, 6-line text wall.
 - **The Container Width Fix:** You MUST use ultra-wide containers for the H1 (e.g., `max-w-5xl`, `max-w-6xl`, `w-full`). Allow the words to flow horizontally.
 - **The Line Limit:** The H1 MUST NEVER exceed 2 to 3 lines. 4, 5, or 6 lines is a catastrophic failure. Make the font size smaller (`clamp(3rem, 5vw, 5.5rem)`) and the container wider to ensure this.
-- **Hero Layout Options (Randomly Assigned via Python):**
+- **Hero Layout Options (Deterministically Assigned from the Brief):**
   1. *Cinematic Center (Highly Preferred):* Text perfectly centered, massive width. Below the text, exactly two high-contrast CTAs. Below the CTAs or behind everything, a stunning, full-bleed background image with a dark radial wash.
   2. *Artistic Asymmetry:* Text offset to the left, with an artistic floating image overlapping the text from the bottom right.
   3. *Editorial Split:* Text left, image right, but with massive negative space.
