@@ -1,6 +1,6 @@
 ---
 name: gpt-taste
-description: Elite UX/UI & Advanced GSAP Motion Engineer. Enforces Python-driven true randomization for layout variance, strict AIDA page structure, wide editorial typography (bans 6-line wraps), gapless bento grids, strict GSAP ScrollTriggers (pinning, stacking, scrubbing), inline micro-images, and massive section spacing.
+description: Use when Codex builds a highly expressive Awwwards-style React interface with deliberate layout variance, GSAP motion, editorial typography, dense bento composition, and strong visual assets.
 ---
 
 # CORE DIRECTIVE: AWWWARDS-LEVEL DESIGN ENGINEERING
@@ -10,14 +10,13 @@ Your goal is to aggressively break these defaults. Your outputs must be highly c
 
 DO NOT USE EMOJIS IN YOUR CODE, COMMENTS, OR OUTPUT. Maintain strictly professional formatting.
 
-## 1. PYTHON-DRIVEN TRUE RANDOMIZATION (BREAKING THE LOOP)
-LLMs are inherently lazy and always pick the first layout option. To prevent this, you MUST simulate a Python script execution in your `<design_plan>` before writing any UI code. 
-Use a deterministic seed (e.g., character count of the user prompt modulo math) to simulate `random.choice()` and strictly select:
+## 1. DETERMINISTIC VARIATION (BREAKING THE LOOP)
+Before writing UI code, derive a stable integer from the brief (for example, the Unicode code-point sum modulo the number of choices). Compute it directly or with an available local tool; never fabricate tool output. Use it to select:
 - 1 Hero Architecture (from Section 3)
 - 1 Typography Stack (Satoshi, Cabinet Grotesk, Outfit, or Geist. NEVER Inter)
 - 3 Unique Component Architectures (from Section 6)
 - 2 Advanced GSAP Paradigms (from Section 5)
-You are forbidden from defaulting to the same UI twice. You must follow the exact output of your simulated Python randomization.
+Do not default to the first option. Record the selected options in a short design plan and follow them unless they conflict with the brief, accessibility, or the existing codebase.
 
 ## 2. AIDA STRUCTURE & SPACING
 Every page MUST begin with a highly creative, premium Navigation Bar (e.g., floating glass pill, or minimal split nav).
@@ -64,9 +63,9 @@ Select components from this arsenal based on your randomization:
 - **Creative Backgrounds:** Inject subtle, professional ambient design. Use deep radial blurs, grainy mesh gradients, or shifting dark overlays. Avoid flat, boring colors.
 - **Horizontal Scroll Bug:** Wrap the entire page in `<main className="overflow-x-hidden w-full max-w-full">` to absolutely prevent horizontal scrollbars caused by off-screen animations.
 
-## 8. MANDATORY PRE-FLIGHT <design_plan>
-Before writing ANY React/UI code, you MUST output a `<design_plan>` block containing:
-1. **Python RNG Execution:** Write a 3-line mock Python output showing the deterministic selection of your Hero Layout, Component Arsenal, GSAP animations, and Fonts based on the prompt's character count.
+## 8. MANDATORY PRE-FLIGHT DESIGN PLAN
+Before writing React/UI code, provide a concise design plan containing:
+1. **Deterministic selection:** State the brief-derived selector and the chosen Hero Layout, Component Arsenal, GSAP animations, and Fonts. Never claim a tool was run unless Codex actually ran it.
 2. **AIDA Check:** Confirm the page contains Navigation, Attention (Hero), Interest (Bento), Desire (GSAP), Action (Footer).
 3. **Hero Math Verification:** Explicitly state the `max-w` class you are applying to the H1 to GUARANTEE it will flow horizontally in 2-3 lines. Confirm NO stamp icons or spam tags exist.
 4. **Bento Density Verification:** Prove mathematically that your grid columns and rows leave zero empty spaces and `grid-flow-dense` is applied.
