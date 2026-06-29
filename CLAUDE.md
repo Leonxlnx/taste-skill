@@ -155,3 +155,69 @@ Invoke these via the `Skill` tool (or type `/<name>` in chat):
 ## Copilot / AI Behavior in This Repo
 
 `.github/copilot-instructions.md` sets repo-wide rules: no generic UI, proportional `clamp()` spacing, spring physics for all animations, complete implementations (no TODOs), and read localized `SKILL.md` files for deep style configuration.
+
+---
+
+## K9 Experience Solution — Application Multi-Agents
+
+**Dossier:** `k9-agents/`
+
+Application Next.js privée pour **K9 Experience Solution S.A.R.L.-S** (Luxembourg).
+
+### Informations société
+- **Nom:** K9 Experience Solution S.A.R.L.-S
+- **Adresse:** 177 Rue de Luxembourg, L-8077 Bertrange, Luxembourg
+- **TVA:** LU37311931 · **RCS:** B305408
+- **Gérant:** Dirk Filzen
+- **Tel:** +352 621 782 523 · **Email:** k9.exp.solutions@icloud.com
+- **Statut gérant:** Résident allemand (Schönecken), nationalité belge, travailleur frontalier
+
+### Produits distribués
+| Produit | Fournisseur | Pays |
+|---------|-------------|------|
+| CProFood | CERAL sa | Belgique |
+| Bel'Croc | - | Belgique |
+| G&C Systems (ventilation véhicules) | G&C Systems | Pays-Bas |
+| Firepaw (tapis de course canin) | - | Bulgarie |
+| Dog Runner (tapis de course canin) | - | - |
+
+### Architecture de l'app
+```
+k9-agents/
+  app/
+    api/claude/route.js   ← proxy serveur (clé API jamais exposée au browser)
+    layout.js
+    page.js
+  components/
+    K9Agents.jsx          ← UI principale (appelle /api/claude)
+  .env.local              ← ANTHROPIC_API_KEY (gitignore, ne jamais committer)
+  .env.local.example      ← template vide à copier
+  package.json
+```
+
+### Agents disponibles
+| Agent | Rôle |
+|-------|------|
+| 💰 Agent Tarifs | Prix TVAC (TVA 3%), marges, offres clients (markup min. 50%) |
+| 📣 Agent Marketing | Contenu social media en FR/DE/EN/LU |
+| 🤝 Agent Fournisseurs | Courriers professionnels fournisseurs |
+| ⚖️ Agent Juridique | TVA Luxembourg, documents officiels, administratif |
+| 🚚 Agent Logistique | Stocks, commandes, livraisons |
+| 📊 Agent Marché | Analyse concurrence, tendances, marchés LU/BE/FR/DE/NL |
+| 🧠 Tous les Agents | Lance les 6 agents simultanément |
+
+### Lancer l'app en local
+```bash
+cd k9-agents
+cp .env.local.example .env.local
+# Edite .env.local et mets ta vraie clé ANTHROPIC_API_KEY=sk-ant-...
+npm install
+npm run dev
+# Ouvre http://localhost:3000
+```
+
+### Sécurité clé API
+- La clé API Anthropic est stockée uniquement dans `.env.local` (gitignored)
+- Le browser appelle `/api/claude` (route Next.js serveur)
+- La route serveur ajoute la clé et forward à `api.anthropic.com`
+- Jamais de clé dans le code frontend — jamais visible dans DevTools
