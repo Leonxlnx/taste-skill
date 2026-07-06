@@ -67,6 +67,10 @@ Install a single skill by its **install name** (the `name:` field inside the SKI
 npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-frontend"
 ```
 
+Want to try the frontend skill before installing it locally? Use the hosted preview:
+
+- [Try Design Taste Frontend from chat first](https://app.clawmama.run/skills/m5plob/hermes?utm_source=github&utm_medium=issue&utm_campaign=skill_outreach_leonxlnx_taste_skill_design_taste_frontend)
+
 You can also copy any `SKILL.md` into your project or paste it into ChatGPT / Codex conversations.
 
 ### Updating from the previous version
