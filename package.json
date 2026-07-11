@@ -1,0 +1,18 @@
+{
+  "name": "taste-skill",
+  "private": true,
+  "type": "module",
+  "description": "Maintainer tooling for the taste-skill repo (README asset processing). Not published to npm.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "assets:webp": "node scripts/convert-readme-assets-webp.mjs",
+    "assets:sponsor-row": "node scripts/build-emil-sponsor-row.mjs",
+    "assets:buttons": "node scripts/process-readme-buttons.mjs",
+    "assets:sponsor-badge": "node scripts/process-sponsor-badge.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4"
+  }
+}
