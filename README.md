@@ -37,6 +37,8 @@ Portable **Agent Skills** that upgrade AI-built interfaces: stronger layout, typ
   <a href="#installing"><img src="assets/readme-buttons/btn-tools.webp" alt="Codex, Cursor, Claude" height="45" valign="middle" /></a>
   &nbsp;
   <a href="https://www.tasteskill.dev/changelog"><img src="assets/readme-buttons/btn-changelog.webp" alt="Changelog" height="45" valign="middle" /></a>
+  &nbsp;
+  <img src="https://img.shields.io/endpoint?url=https://gittokens.rsamf.com/badge/Leonxlnx/taste-skill" alt="tokens" valign="middle" />
 </p>
 
 ## Disclaimer
