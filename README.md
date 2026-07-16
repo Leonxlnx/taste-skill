@@ -195,16 +195,6 @@ If Taste Skill helps you, consider sponsoring:
 
 Background writing that shaped these skills lives in [`research/`](research/).
 
-## Star History
-
-<a href="https://www.star-history.com/?repos=Leonxlnx%2Ftaste-skill&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Leonxlnx/taste-skill&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Leonxlnx/taste-skill&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Leonxlnx/taste-skill&type=date&legend=top-left" />
- </picture>
-</a>
-
 ## Common Questions
 
 **How is this different from other AI design skills?**  
