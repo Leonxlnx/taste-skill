@@ -1,16 +1,24 @@
 # Web Design Quality Rules
 
-*Synthesis of four independent research reports produced on 18 July 2026. This document contains the quality rules for later Taste Skill v2 development; it is not the final runtime prompt.*
+*Synthesis of four independent research reports plus an audit of the existing non-image Taste Skill variants. This document contains the quality rules for later Taste Skill v2 development; it is not the final runtime prompt.*
 
 ## 1. Enforcement model
 
 Use the lowest enforcement level that prevents the observed failure.
 
 - **HARD BAN**: Objectively broken, fabricated, deceptive, inaccessible, insecure, materially harmful, or explicitly prohibited by Taste Skill authoring policy. Product-policy bans are marked as such and do not claim the pattern is universally invalid design.
-- **AVOID BY DEFAULT**: A saturated generated default that weakens fit or identity. Allow it only when the brief, content, or product behavior gives it a concrete job.
+- **AVOID BY DEFAULT**: A saturated generated default that weakens fit or identity when chosen without context. It is allowed whenever the explicit user request, supplied content, category, or product behavior gives it a concrete job.
 - **CONTEXTUAL WARNING**: A legitimate technique with meaningful tradeoffs. Require justification and verification.
 
 Popularity alone is never sufficient evidence for a universal design claim. Familiar patterns can improve comprehension. Taste Skill may still prohibit a narrow generator habit when consistently omitting it produces cleaner work.
+
+### Application order
+
+1. Follow the explicit user request, supplied content, existing project, and real product behavior first.
+2. Keep safety, accessibility, security, honesty, and data-loss bans intact.
+3. Apply `AVOID BY DEFAULT` only when the user request, supplied content, and existing project leave the choice open. Never reject a requested hero, card grid, pricing layout, FAQ, or familiar section solely because it appears in this ledger.
+4. For an explicitly requested design, prototype, or concept, clearly labeled mock data and static UI are allowed. Never present them as real, live, connected, verified, or production-ready.
+5. When real content or functionality is unavailable, omit the element or use a clean, neutral placeholder. End the delivery with a short `Still needed` report listing every placeholder, missing asset, unconnected interaction, and unresolved integration.
 
 ## 2. Source reports and traceability
 
@@ -18,6 +26,7 @@ Popularity alone is never sufficient evidence for a universal design claim. Fami
 - **R2**: `../research/anti-slop/visual.md`, focused on color, typography, surfaces, imagery, and brand systems.
 - **R3**: `../research/anti-slop/layout.md`, focused on page architecture, sections, components, and mobile transformation.
 - **R4**: `../research/anti-slop/behavior.md`, focused on interaction, motion, accessibility, responsive behavior, engineering, and QA.
+- **R5**: Existing non-image skills on the repository's `main` branch, audited for additional concrete failure patterns and deduplicated against R1-R4.
 
 Evidence references below point to report sections or pattern IDs. The source reports retain the complete bibliography and URLs. Primary normative authority for accessibility is WCAG 2.2 and the WAI-ARIA Authoring Practices Guide.
 
@@ -108,10 +117,10 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### VIS-010 - Center-aligned reading text and all-caps overuse
 - **Level:** AVOID BY DEFAULT
-- **Rule:** Keep multi-line reading copy left-aligned and reserve uppercase for short labels.
+- **Rule:** Keep multi-line reading copy left-aligned and reserve uppercase for short functional UI labels such as buttons, form labels, navigation items, status tags, table headers, or compact real metadata.
 - **Failure signature:** Centered paragraphs, long all-caps descriptions, and letter-spaced utility styling applied to ordinary prose.
 - **Detection:** Find centered text blocks longer than two lines and uppercase blocks longer than a short phrase.
-- **Exception:** Invitations, posters, ceremonial statements, and short hero copy with deliberate composition.
+- **Exception:** Invitations, posters, ceremonial statements, and short hero copy with deliberate composition. A small uppercase prelabel above a heading is an eyebrow, not a functional label, and remains banned by CNT-009.
 - **Preferred response:** Use alignment and casing according to reading behavior, not decoration.
 - **Evidence:** R2 "All-Caps Overuse" and "Center-Aligned Body Copy."
 
@@ -169,24 +178,42 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Preferred response:** Define shared primitives for color, type, shape, spacing, motion, and language.
 - **Evidence:** R2 Brand findings: token drift, cross-page inconsistency, missing brand primitives.
 
+### VIS-017 - Arbitrary theme inversion inside one page
+- **Level:** AVOID BY DEFAULT; HARD BAN when contrast or meaning breaks
+- **Rule:** Do not flip whole sections between unrelated light and dark themes merely to create variety.
+- **Failure signature:** A coherent dark page suddenly becomes warm paper, then returns to dark, with different text, border, and accent logic in each section.
+- **Detection:** Map background, surface, text, border, and accent tokens by section and inspect every transition.
+- **Exception:** A requested or conceptually justified theme transition may occur when it marks a real narrative or product-state change and remains accessible.
+- **Preferred response:** Keep one page-level theme with controlled tonal variation, or design one deliberate transition with shared tokens and a clear reason.
+- **Evidence:** R5 theme-lock rules, deduplicated against VIS-016.
+
+### VIS-018 - Category palette stereotype
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not equate every premium consumer, artisan, wellness, cookware, or heritage project with beige, cream, brass, clay, ochre, oxblood, and espresso.
+- **Failure signature:** The same warm-craft palette appears before any brand, product, photography, or audience evidence supports it.
+- **Detection:** Compare the proposed palette with supplied assets and the last several category projects; run the brand-swap test.
+- **Exception:** Use the palette when requested or when the actual brand and material world genuinely support it.
+- **Preferred response:** Derive color from the specific product and rotate among coherent warm, cool, monochrome, natural, or saturated directions instead of using a category costume.
+- **Evidence:** R5 premium-consumer palette audit.
+
 ### Page architecture, sections, and layout components
 
 ### LAY-001 - Canonical marketing-section conveyor belt
 - **Level:** AVOID BY DEFAULT
-- **Rule:** Do not automatically generate hero, logos, three features, stats, testimonials, pricing, FAQ, CTA, and footer in that order.
+- **Rule:** When the user request and existing project leave page structure open, do not automatically generate hero, logos, three features, stats, testimonials, pricing, FAQ, CTA, and footer in that order.
 - **Failure signature:** The page sequence follows category convention without reflecting the visitor's actual questions or decision path.
 - **Detection:** Name each section's job and remove it; if nothing important is lost, it was filler.
-- **Exception:** Familiar low-risk products where the conventional journey genuinely matches the buying process.
+- **Exception:** Any conventional sequence is valid when the user requests it or it genuinely matches the content, category, and buying process.
 - **Preferred response:** Derive the section sequence from subject, evidence, objections, and next action.
 - **Evidence:** R1 S-01; R3 Full-page architecture.
 
 ### LAY-002 - Centered hero package emitted by reflex
 - **Level:** AVOID BY DEFAULT
-- **Rule:** Do not default to a giant centered headline, short paragraph, dual CTAs, and a decorative preview below.
+- **Rule:** When no hero direction is supplied, do not reflexively choose a giant centered headline, short paragraph, dual CTAs, and a decorative preview below.
 - **Failure signature:** The first viewport could introduce any software company after a logo swap.
 - **Detection:** Run the brand-swap test and inspect whether the visual anchor proves what the product is.
-- **Exception:** A concise proposition genuinely benefits from central focus and the hero carries real evidence.
-- **Preferred response:** Choose object-led, product-stage, editorial, asymmetric, image-led, or interactive composition based on the brief.
+- **Exception:** Use this composition when requested or when a concise proposition genuinely benefits from central focus and the hero carries useful evidence.
+- **Preferred response:** Choose object-led, product-stage, editorial, asymmetric, image-led, or interactive composition from the request, content, and subject.
 - **Evidence:** R1 S-02; R3 Hero.
 
 ### LAY-003 - Hero fails the first viewport
@@ -209,10 +236,10 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### LAY-005 - Three equal feature cards as the first answer
 - **Level:** AVOID BY DEFAULT
-- **Rule:** Do not turn every set of three copy points into three equal icon cards.
+- **Rule:** When the presentation is unspecified, do not turn every set of three copy points into three equal icon cards.
 - **Failure signature:** Identical card size, icon placement, text length, and hover lift regardless of feature importance.
 - **Detection:** Ask whether the three capabilities have equal weight and whether the cards show any product evidence.
-- **Exception:** Truly peer-level options that benefit from rapid comparison.
+- **Exception:** Use equal cards when requested or when truly peer-level options benefit from rapid comparison.
 - **Preferred response:** Use one dominant capability, annotated product state, scenario sequence, ledger, tabs with changing media, or asymmetric grouping.
 - **Evidence:** R1 S-03; R3 Feature presentation and 4.1.
 
@@ -230,8 +257,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not represent a product with styled rectangles, fake terminals, or hardcoded dashboards that imply functionality the product does not have.
 - **Failure signature:** Browser chrome around static divs, fake live values, decorative chat, or controls that cannot be used.
 - **Detection:** Compare every visible state and control with implemented or supplied product behavior.
-- **Exception:** Clearly labeled concept art, wireframe, or static illustration that makes no functional claim.
-- **Preferred response:** Use real screenshots, generated conceptual imagery labeled as such, recordings, or a working focused prototype.
+- **Exception:** An explicitly requested design prototype may use clearly labeled sample UI, sample data, concept art, wireframes, or static illustrations that make no functional claim.
+- **Preferred response:** Use real screenshots when available. Otherwise use a clean labeled placeholder or sample state and list the missing real product state or integration in the handoff report.
 - **Evidence:** R1 V-11 and B-05; R3 Product demonstrations and 4.16.
 
 ### LAY-008 - Unverified logo wall or social-proof band
@@ -239,8 +266,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not add "Trusted by" proof without supplied, attributable evidence.
 - **Failure signature:** Grayscale logo cloud, anonymous marks, fake companies, or unrelated famous logos.
 - **Detection:** Require a source or user-provided relationship for every logo and claim.
-- **Exception:** A factual integration directory or verified customer list.
-- **Preferred response:** Use one attributable case, documented outcome, real review, or omit the section.
+- **Exception:** A factual integration directory, verified customer list, or an explicitly requested design mockup using neutral logo placeholders clearly marked as samples.
+- **Preferred response:** Use attributable proof when supplied. Otherwise omit the section or use clean neutral placeholders and list the missing logos and permissions in the handoff report.
 - **Evidence:** R1 S-04, C-04; R3 Social proof and 4.8.
 
 ### LAY-009 - Decorative stat band
@@ -248,8 +275,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not create large round metrics merely to add visual authority.
 - **Failure signature:** `99.9%`, `10x`, or millions of users without provenance, context, timeframe, or denominator.
 - **Detection:** Require a source, definition, and date for each number.
-- **Exception:** Verified metrics that answer a visitor's concrete uncertainty.
-- **Preferred response:** Show measured evidence with context, uncertainty, and comparison where relevant.
+- **Exception:** Verified metrics that answer a concrete uncertainty, or clearly labeled sample values in an explicitly requested design prototype.
+- **Preferred response:** Show measured evidence when supplied. Otherwise omit the numbers or use obvious placeholders such as `XX%` and list the required metrics in the handoff report.
 - **Evidence:** R1 S-07 and C-03; R3 4.9.
 
 ### LAY-010 - Biased or decorative comparison
@@ -257,7 +284,7 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not build a comparison whose criteria exist only to make the preferred option win.
 - **Failure signature:** Vague checkmarks, missing labels on mobile, invented competitor limitations, or preselected winner without evidence.
 - **Detection:** Verify criteria, symmetry, sources, and the mobile representation of labels.
-- **Exception:** An explicitly opinionated recommendation supported by transparent criteria.
+- **Exception:** An explicitly opinionated recommendation supported by transparent criteria, or a clearly labeled sample comparison requested for a design prototype.
 - **Preferred response:** Use a compact matrix, paired workflow, cost model, or criterion-by-criterion narrative.
 - **Evidence:** R3 Comparison; R1 C-07.
 
@@ -272,11 +299,11 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### LAY-012 - Three pricing cards with an arbitrary highlighted middle tier
 - **Level:** HARD BAN when prices or savings are invented; otherwise AVOID BY DEFAULT
-- **Rule:** Do not default to three equal plans, a "Most Popular" pill, and a cosmetic billing toggle.
+- **Rule:** When pricing structure is unspecified, do not default to three equal plans, a "Most Popular" pill, and a cosmetic billing toggle.
 - **Failure signature:** Highlighted center plan without usage evidence, crossed-out invented price, or toggle that changes no value.
 - **Detection:** Verify plan data, recommendation logic, toggle behavior, and decisive differences on mobile.
-- **Exception:** Three real tiers with a defensible recommended path.
-- **Preferred response:** Use configuration-first pricing, compact comparison, one recommended path plus alternatives, or usage-based explanation.
+- **Exception:** Three real tiers with a defensible recommended path, or clearly labeled sample pricing when the user explicitly requests a pricing-page design.
+- **Preferred response:** Follow supplied pricing. If none exists, use clean placeholders or visibly labeled sample values and list the required real prices, claims, and billing behavior in the handoff report.
 - **Evidence:** R1 S-06; R3 Pricing and 4.11.
 
 ### LAY-013 - Generic testimonial grid
@@ -284,8 +311,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not create three equal testimonial cards to fill a trust section.
 - **Failure signature:** Stock avatars, generic praise, identical quote lengths, and no product context.
 - **Detection:** Require attribution and source; test whether the quote reduces a specific uncertainty.
-- **Exception:** Verified testimonials with distinct context and permission.
-- **Preferred response:** Use one strong case result, a customer story, documented review, or omit social proof.
+- **Exception:** Verified testimonials with distinct context and permission, or neutral testimonial placeholders in an explicitly requested design prototype.
+- **Preferred response:** Use supplied proof or omit the section. If its design is explicitly requested, use visibly labeled placeholders and list the required quotes, identities, and permissions in the handoff report.
 - **Evidence:** R1 C-02; R3 Testimonials and 4.10.
 
 ### LAY-014 - FAQ added only to extend the page
@@ -333,6 +360,87 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Preferred response:** Show the important item directly, use a manual rail, or expose a stable comparison.
 - **Evidence:** R1 S-09; R3 4.7; R4 2.14-2.15.
 
+### LAY-019 - Hero overloaded with secondary content
+- **Level:** AVOID BY DEFAULT; HARD BAN when the primary action or meaning leaves the first viewport
+- **Rule:** Keep the hero focused on identification, value, and the primary next action. Do not also pack feature lists, pricing teasers, trust microcopy, logo walls, testimonial avatars, and secondary metadata into the same opening composition, or push useful content down with unjustified top padding.
+- **Failure signature:** The hero becomes a miniature landing page, the primary message competes with several unrelated proof and feature blocks, or empty space delays the headline and CTA.
+- **Detection:** List every hero element and move each one below the fold; retain only what the visitor needs before the first decision. Inspect hero top padding on short laptops as well as large desktop screens.
+- **Exception:** A requested dashboard-like launch surface or information-dense product may need more content when hierarchy remains clear and the first viewport still works.
+- **Preferred response:** Move proof, pricing, compatibility, and feature detail into dedicated sections directly after the hero.
+- **Evidence:** R5 hero-stack and first-viewport audit; extends LAY-003 without replacing it.
+
+### LAY-020 - CTA or desktop navigation wraps unnecessarily
+- **Level:** HARD BAN for CTA labels at normal desktop widths; otherwise AVOID BY DEFAULT
+- **Rule:** Keep CTA labels and primary desktop navigation items on one line when usable horizontal space exists.
+- **Failure signature:** A CTA breaks into two lines, a desktop nav becomes two rows, or an oversized header consumes a large part of the first viewport.
+- **Detection:** Render desktop, short-laptop, tablet, localization, and long-label cases; inspect wrapping, collisions, and header height.
+- **Exception:** Very narrow viewports may transform navigation or allow deliberate wrapping in an editorial control, but ordinary CTAs should remain single-line.
+- **Preferred response:** Shorten labels, remove secondary destinations, allow natural control width, or switch navigation at an intentional breakpoint.
+- **Evidence:** R5 CTA-wrap, single-line navigation, and navigation-height checks.
+
+### LAY-021 - Multiple labels for the same CTA intent
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Use one clear label for one action instead of renaming the same intent across navigation, hero, body, and footer.
+- **Failure signature:** `Get in touch`, `Let's talk`, `Contact us`, and `Start a project` all lead to the same destination on one page.
+- **Detection:** Group CTAs by destination and effect, then compare their labels and promised outcomes.
+- **Exception:** Different contexts may require genuinely different actions or a clearer label for accessibility; repetition of the same accurate label is allowed.
+- **Preferred response:** Choose the most concrete label and reuse it consistently wherever the identical action appears.
+- **Evidence:** R5 duplicate-intent CTA audit.
+
+### LAY-022 - Split-header filler composition
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not default to a large headline on the left and a small floating explanation in the far-right corner merely to fill a grid.
+- **Failure signature:** The right paragraph has weak alignment, adds no necessary information, and leaves a large unresolved gap between related text.
+- **Detection:** Stack the body beneath the headline; if comprehension and composition improve, the split was decorative.
+- **Exception:** Use a split header when the columns carry genuinely complementary information, a control, navigation, or a visual and align as one deliberate composition.
+- **Preferred response:** Stack related copy, or build a balanced two-column header with meaningful roles on both sides.
+- **Evidence:** R5 production-test split-header findings.
+
+### LAY-023 - Long list or data dump used as a landing-page section
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not paste a long list, award archive, publication table, capability inventory, or pricing matrix into a marketing page without prioritization.
+- **Failure signature:** Visitors face many similar rows with no grouping, summary, search, disclosure, or path to the full dataset.
+- **Detection:** Count items and identify the decision each item supports; test whether the top items plus a full-list path communicate faster.
+- **Exception:** Dense data is valid when it is the product or the user explicitly needs exhaustive comparison on that page.
+- **Preferred response:** Group, summarize, disclose, paginate, filter, or move exhaustive data to a dedicated surface.
+- **Evidence:** R5 content-density and long-list audit.
+
+### LAY-024 - Divider monotony in lists and specifications
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not use top and bottom hairlines on every row as the automatic treatment for long lists or spec sheets.
+- **Failure signature:** Ten or more identical text rows form a spreadsheet-like wall with borders providing no additional grouping.
+- **Detection:** Remove half the dividers and group rows by meaning; compare scan speed and hierarchy.
+- **Exception:** Real data tables may require consistent row boundaries when they improve tracking, density, and accessibility.
+- **Preferred response:** Use one divider direction, grouped chunks, sparse section rules, cards for featured values, or disclosure for secondary specifications.
+- **Evidence:** R5 list and specification-table audit.
+
+### LAY-025 - Decorative score or progress visualization
+- **Level:** AVOID BY DEFAULT; HARD BAN when values are fabricated or misleading
+- **Rule:** Do not use filled progress tracks, scores, gauges, or percentage bars merely to make a comparison look quantitative.
+- **Failure signature:** Arbitrary partial fills imply measurement without a scale, source, denominator, or real progress state.
+- **Detection:** Ask what the axis, unit, source, and user action are; remove the bar if none exists.
+- **Exception:** Use progress and score visuals for real measurable completion, capacity, performance, or comparison with an accessible numeric equivalent.
+- **Preferred response:** Show the verified number, criterion, and context directly, or use a simpler qualitative comparison.
+- **Evidence:** R5 decorative comparison-visual audit; complements LAY-009 and LAY-010.
+
+### LAY-026 - Ornamental overlays, crosshairs, and rotated edge text
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not add crosshair grids, registration lines, vertically rotated labels, or tags over images solely to make a composition feel art-directed.
+- **Failure signature:** Lines organize no content, edge text is difficult to read, and image pills repeat category or issue metadata with no action or provenance.
+- **Detection:** Remove each ornament and test whether navigation, annotation, identity, or composition loses a necessary function.
+- **Exception:** Explicit editorial, industrial, cartographic, or experimental art direction may use these devices when they serve a real system and remain responsive and readable.
+- **Preferred response:** Let imagery and layout carry the composition; place necessary captions outside media in normal reading order.
+- **Evidence:** R5 production-test decoration audit.
+
+### LAY-027 - Accidental absolute positioning and optical misalignment
+- **Level:** HARD BAN when reading order, interaction, or responsiveness breaks; otherwise AVOID BY DEFAULT
+- **Rule:** Do not use arbitrary absolute coordinates to assemble ordinary sections, and do not accept mathematically centered elements that look visibly misaligned.
+- **Failure signature:** Content drifts, overlaps, detaches from its anchor, or requires many breakpoint-specific offsets; icons and labels look off despite equal numeric spacing.
+- **Detection:** Inspect DOM reading order, remove positioning, resize continuously, localize copy, and perform an optical alignment pass.
+- **Exception:** Intentional editorial layering, diagrams, and bounded overlays may use positioning with stable anchors, fallbacks, and accessible source order.
+- **Preferred response:** Use grid, flex, intrinsic sizing, and small documented optical adjustments instead of coordinate patches.
+- **Evidence:** R5 layout and optical-alignment audit; complements ENG-008.
+
 ### Copy, credibility, imagery, and icons
 
 ### CNT-001 - Generic marketing abstraction
@@ -349,8 +457,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Never invent a customer, quote, portrait, rating, or attribution and present it as real.
 - **Failure signature:** Generated headshot, synthetic name, invented title, fake review, or placeholder avatar framed as social proof.
 - **Detection:** Require a provenance record for every testimonial and identity.
-- **Exception:** Clearly labeled fictional examples in prototypes or storytelling, never framed as evidence.
-- **Preferred response:** Use supplied proof, documented public reviews with permission, or omit the claim.
+- **Exception:** Clearly labeled fictional examples or neutral placeholders in explicitly requested prototypes or storytelling, never framed as real evidence.
+- **Preferred response:** Use supplied proof, omit the claim, or use a clean labeled placeholder and list the missing quote, identity, and permission in the handoff report.
 - **Evidence:** R1 C-02; R2 Imagery; FTC Consumer Reviews and Testimonials Rule.
 
 ### CNT-003 - Invented metric, benchmark, award, or outcome
@@ -358,8 +466,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Never create precise numbers, rankings, adoption claims, awards, or performance outcomes without evidence.
 - **Failure signature:** Plausible but sourceless percentages, customer counts, speedups, or trophy claims.
 - **Detection:** Require source, definition, timeframe, and scope for every quantitative claim.
-- **Exception:** Clearly labeled sample data inside a development fixture.
-- **Preferred response:** Use qualitative explanation, a supplied measurement, or an explicit placeholder outside production.
+- **Exception:** Clearly labeled sample data inside a development fixture or an explicitly requested design prototype.
+- **Preferred response:** Use supplied measurements, omit the claim, or use obvious placeholders such as `XX%` and list the missing source, definition, timeframe, and scope in the handoff report.
 - **Evidence:** R1 C-03 and C-07.
 
 ### CNT-004 - Fake or unauthorized customer and partner logos
@@ -367,8 +475,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not imply a commercial relationship through a logo without verification and permission where required.
 - **Failure signature:** Famous logos inserted as trust decoration or fictional logos presented as customers.
 - **Detection:** Maintain a source and relationship record for every mark.
-- **Exception:** Factual comparison, integration, compatibility, or editorial reference with correct labeling and trademark treatment.
-- **Preferred response:** State the actual relationship or remove the logo.
+- **Exception:** Factual comparison, integration, compatibility, or editorial reference with correct labeling, plus neutral fictional marks used as clearly labeled placeholders in an explicitly requested prototype.
+- **Preferred response:** State the real relationship, remove the logo, or use a neutral placeholder and list the missing asset and permission in the handoff report.
 - **Evidence:** R1 C-04; R3 Social proof.
 
 ### CNT-005 - Placeholder and meta-text shipped as content
@@ -376,8 +484,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not ship lorem ipsum, `href="#"`, TODO copy, generic names, scaffold titles, AI meta-language, or placeholder-image services.
 - **Failure signature:** Demo text or routes remain visible in production.
 - **Detection:** Search for known placeholders, empty links, default metadata, and temporary asset domains.
-- **Exception:** Local development fixtures excluded from production and clearly marked.
-- **Preferred response:** Replace with real content or remove the incomplete surface.
+- **Exception:** Clean, neutral placeholders in local development or explicitly requested design prototypes when they are visibly marked and excluded from production.
+- **Preferred response:** Replace with real content before production. Until then, keep placeholders obvious and list every unresolved content item in the handoff report.
 - **Evidence:** R1 C-05, C-06, I-03, I-06.
 
 ### CNT-006 - Formulaic AI cadence treated as a ban target
@@ -391,20 +499,20 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### CNT-007 - Decorative or mismatched imagery
 - **Level:** AVOID BY DEFAULT
-- **Rule:** Do not use glossy 3D blobs, generic stock photos, code screens, or oversized hero art that adds no information about the subject.
+- **Rule:** Do not use glossy 3D blobs, unrelated stock photos, code screens, or oversized hero art that adds no information about the subject.
 - **Failure signature:** The image could move to an unrelated company without changing meaning.
 - **Detection:** Ask what claim or atmosphere the image uniquely supports; inspect crops at all breakpoints.
-- **Exception:** Purely atmospheric campaign imagery that is intentionally part of the brand world.
-- **Preferred response:** Use product states, objects, environments, people, diagrams, or art direction specific to the subject.
+- **Exception:** Purely atmospheric campaign imagery that is intentionally part of the brand world. Relevant stock photography is a valid fallback when suitable supplied assets or image-generation tools are unavailable.
+- **Preferred response:** Use supplied or generated subject-specific imagery when possible; otherwise choose relevant, licensable stock photography with deliberate cropping and list any temporary asset in the handoff report.
 - **Evidence:** R1 V-10; R2 Imagery findings.
 
 ### CNT-008 - Incoherent icon and illustration system
 - **Level:** AVOID BY DEFAULT; HARD BAN when icon-only controls lack names
-- **Rule:** Do not mix emoji, hand-drawn SVGs, outline-library icons, and unrelated illustration styles without a system.
+- **Rule:** Do not mix emoji, hand-drawn SVGs, outline-library icons, and unrelated illustration styles without a system. Do not hand-draw routine interface glyphs when a coherent installed icon family already covers them.
 - **Failure signature:** Lucide used for every concept, inconsistent stroke weights, emoji features, or invisible labels on controls.
 - **Detection:** Inventory source, stroke, fill, size, optical weight, label, and semantic role.
-- **Exception:** Deliberate collage or expressive work where contrast between systems is part of the concept.
-- **Preferred response:** Choose one icon language, use visible labels for unfamiliar actions, and commission or generate subject-specific illustrations when needed.
+- **Exception:** Deliberate collage or expressive work where contrast between systems is part of the concept. Custom SVG illustration is valid when requested, subject-specific, visually strong, and tested at its rendered size.
+- **Preferred response:** Use one established family for interface icons. Reserve custom SVG work for high-quality illustrations, diagrams, logos, or marks that genuinely require it.
 - **Evidence:** R1 V-12 and A-03; R2 Imagery and Iconography.
 
 ### CNT-009 - Eyebrow, kicker, or overline copy
@@ -451,7 +559,7 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Failure signature:** Active styling changes but data, media, URL, or accessible state does not.
 - **Detection:** Assert the expected state or content change after activation.
 - **Exception:** Static design mockups clearly labeled as non-functional.
-- **Preferred response:** Implement the smallest honest behavior or render a non-interactive representation.
+- **Preferred response:** Implement the smallest honest behavior or render a non-interactive representation and list it as unconnected in the handoff report.
 - **Evidence:** R1 B-06; R4 2.1 and 2.13.
 
 ### INT-003 - Fake form submission or unconditional success
@@ -459,8 +567,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Never show success unless the action succeeded, and never discard user input silently.
 - **Failure signature:** Timeout-based success toast, form with no endpoint, swallowed failure, or submit button outside a real form.
 - **Detection:** Test success, validation, server error, offline, timeout, retry, and duplicate submission paths.
-- **Exception:** A clearly labeled prototype may simulate submission without claiming persistence.
-- **Preferred response:** Connect the action, preserve input on failure, expose pending state, and report the real result.
+- **Exception:** A design-only form may remain unconnected when the interface visibly says that it is a demo and submission is not connected. It must not show a false success state or imply persistence.
+- **Preferred response:** Connect the action when implementation is in scope. Otherwise disable or honestly explain submission and list the required endpoint, validation, persistence, and delivery behavior in the handoff report.
 - **Evidence:** R1 B-03 and B-04; R4 2.2, 2.11-2.12, 7.6-7.10.
 
 ### INT-004 - Fabricated live state
@@ -468,8 +576,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not label hardcoded or random values as live, synced, secure, online, or real-time.
 - **Failure signature:** Perpetual pulse, fake activity feed, static uptime, or timer-backed data unrelated to a source.
 - **Detection:** Trace the displayed state to authoritative data and verify update semantics.
-- **Exception:** Explicit demo or sample data with a visible label.
-- **Preferred response:** Show actual state, explain freshness, or remove the live claim.
+- **Exception:** Explicit demo or sample data with a visible label in an explicitly requested prototype.
+- **Preferred response:** Show actual state, explain freshness, remove the live claim, or use a clearly labeled sample and list the missing data source in the handoff report.
 - **Evidence:** R1 B-05; R4 2.3.
 
 ### INT-005 - Mouse-only pseudo-control
@@ -523,8 +631,35 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Failure signature:** Blank section, infinite spinner, duplicate mutation, optimistic update without rollback, or empty table with no explanation.
 - **Detection:** Force slow, empty, failed, offline, repeated, and cancelled scenarios.
 - **Exception:** Pure static content with no asynchronous or mutable state.
-- **Preferred response:** Preserve layout, user input, and recovery paths while reporting the actual state.
+- **Preferred response:** Match feedback to the wait: preserve the final layout with a skeleton when structure is known, use a compact spinner for short indeterminate waits, show progress only when measurable, and always preserve user input and recovery paths.
 - **Evidence:** R1 B-08 and I-11; R4 Validation and QA failures.
+
+### INT-011 - Modal used for an ordinary inline task
+- **Level:** AVOID BY DEFAULT
+- **Rule:** Do not open a modal for every edit, explanation, confirmation, or secondary action.
+- **Failure signature:** Simple field changes, help text, filters, or low-risk actions repeatedly interrupt context and create nested overlays.
+- **Detection:** Try inline editing, expansion, disclosure, a popover, or a dedicated page and compare interruption and focus complexity.
+- **Exception:** Use a modal when the task genuinely requires focused attention, blocking confirmation, or a bounded temporary workflow.
+- **Preferred response:** Choose the least disruptive surface that preserves context and still meets the complete modal contract when a dialog is necessary.
+- **Evidence:** R5 redesign and component anti-pattern audit; complements INT-008.
+
+### INT-012 - Browser alert used as application feedback
+- **Level:** AVOID BY DEFAULT; HARD BAN when it loses context or blocks recovery
+- **Rule:** Do not use `window.alert()`, `confirm()`, or `prompt()` as routine form, validation, error, or success UI.
+- **Failure signature:** Browser chrome replaces contextual feedback, cannot point to the failing field, blocks interaction, or communicates no recovery path.
+- **Detection:** Search browser-dialog APIs and trigger every validation, destructive, failure, and success path.
+- **Exception:** A tiny internal diagnostic or deliberate no-UI prototype may use a browser dialog when the limitation is disclosed and replacement is out of scope.
+- **Preferred response:** Use inline field errors, contextual status, toast for transient non-critical feedback, or an accessible confirmation dialog for destructive actions.
+- **Evidence:** R5 redesign interaction audit.
+
+### INT-013 - Missing hover, active, or current-state feedback
+- **Level:** HARD BAN when state becomes ambiguous; otherwise AVOID BY DEFAULT
+- **Rule:** Interactive elements must expose the feedback relevant to their input and state, including hover where a pointer exists, visible press or activation, focus, disabled state, selection, and current location.
+- **Failure signature:** Buttons feel inert, selected tabs look identical, active navigation is invisible, or a control appears disabled without behaving as disabled.
+- **Detection:** Walk every state with pointer, keyboard, touch, and assistive technology; compare visual and programmatic state.
+- **Exception:** A state with no meaningful visual distinction is unnecessary, and hover must never be the only feedback path.
+- **Preferred response:** Design a small coherent state set whose visual, behavioral, and accessible representations share one source of truth.
+- **Evidence:** R5 redesign state audit; complements INT-005, INT-006, INT-009, and ACC-008.
 
 ### Motion
 
@@ -560,8 +695,8 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Do not intercept wheel or touch input to replace normal document scrolling without a compelling interaction need.
 - **Failure signature:** Prevented wheel events, forced slide transitions, trapped horizontal scene, or inaccessible in-between content.
 - **Detection:** Test keyboard, touchpad, touch, Page Up/Down, anchor links, browser find, and reduced motion.
-- **Exception:** Bounded data visualization or immersive sequence with clear escape and equivalent navigation.
-- **Preferred response:** Preserve native document scroll and map progress without seizing input.
+- **Exception:** A deliberately immersive, exceptionally polished scrollytelling sequence may control progress when requested or conceptually justified. It still needs clear escape, keyboard and touch support, reachable intermediate content, anchor behavior, reduced-motion handling, and an equivalent navigation path.
+- **Preferred response:** Preserve native document scroll by default. Use controlled scrolling only when it materially creates the experience and survives full interaction, accessibility, and performance testing.
 - **Evidence:** R4 3.5-3.7.
 
 ### MOT-005 - Layout-property animation in hot paths
@@ -599,6 +734,33 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Exception:** A brief, safety-critical transition may gate input when the reason is communicated.
 - **Preferred response:** Make feedback immediate, exits faster than entrances, and animation derive from current state.
 - **Evidence:** R4 3.12-3.13.
+
+### MOT-009 - Continuous input routed through render state
+- **Level:** CONTEXTUAL WARNING; HARD BAN when it causes sustained jank or feedback lag
+- **Rule:** Do not route scroll position, pointer coordinates, drag progress, magnetic hover, or animation-frame values through component render state on every frame.
+- **Failure signature:** Raw scroll handlers call state setters, `requestAnimationFrame` mutates React state, or the page rerenders large trees during pointer movement.
+- **Detection:** Profile renders while scrolling, dragging, and moving the pointer; search scroll, pointer, and rAF callbacks for state updates.
+- **Exception:** Low-frequency derived state such as a section index or threshold crossing may update component state when measured and debounced appropriately.
+- **Preferred response:** Use CSS, IntersectionObserver, animation-library motion values, refs, or an external frame loop that updates only the animated target.
+- **Evidence:** R4 performance findings; R5 existing skill motion audit.
+
+### MOT-010 - Conflicting animation ownership and unnecessary layout measurement
+- **Level:** AVOID BY DEFAULT; HARD BAN when state or cleanup becomes incorrect
+- **Rule:** Do not let multiple animation runtimes control the same element or attach layout-measurement features to static content without a transition need.
+- **Failure signature:** GSAP, Motion, CSS transitions, and custom rAF compete for transforms; static trees carry layout props; route changes leave orphaned timelines.
+- **Detection:** Inventory animation ownership per element, inspect layout measurements, navigate repeatedly, and verify teardown.
+- **Exception:** Separate runtimes may coexist in isolated boundaries with explicit ownership, cleanup, and no shared properties.
+- **Preferred response:** Choose one owner per property and interaction, keep advanced runtimes isolated, and enable layout measurement only for real shared-element or reordering transitions.
+- **Evidence:** R5 animation-library and layout-transition audit; complements MOT-006.
+
+### MOT-011 - Custom cursor as decorative substitution
+- **Level:** AVOID BY DEFAULT; HARD BAN when the native pointer, focus, selection, or input feedback is lost
+- **Rule:** Do not replace the system cursor merely to make a site feel experimental.
+- **Failure signature:** Delayed follower, hidden pointer, unreadable cursor state, touch artifacts, or cursor animation competing with actual controls.
+- **Detection:** Test links, text selection, inputs, drag, zoom, touch, reduced motion, and low-frame-rate hardware.
+- **Exception:** A requested immersive or creative experience may augment the cursor when native semantics remain clear and the effect disables cleanly where inappropriate.
+- **Preferred response:** Keep the native cursor and use local hover feedback unless cursor behavior is central to the concept.
+- **Evidence:** R5 visual and interaction audit.
 
 ### Responsive design and accessibility
 
@@ -710,6 +872,24 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Preferred response:** Avoid fixed heights on text, allow wrapping, and design intrinsic layouts.
 - **Evidence:** R4 5.12 and 6.10; WCAG 2.2 SC 1.4.4, 1.4.10, 1.4.12.
 
+### ACC-013 - Unstable full-viewport sizing on mobile
+- **Level:** HARD BAN when content or controls become unreachable
+- **Rule:** Do not assume legacy `100vh` or `h-screen` equals the visible mobile viewport when browser chrome, virtual keyboards, or safe areas change.
+- **Failure signature:** Hero jumps, CTA drops below the screen, modal is clipped, or the keyboard hides focused controls.
+- **Detection:** Test dynamic browser bars, orientation, virtual keyboard, safe-area insets, short landscape screens, and installed-app mode.
+- **Exception:** `100vh` may be acceptable in a verified environment where the viewport is stable and no essential content depends on the edge.
+- **Preferred response:** Use appropriate dynamic, small, or large viewport units, intrinsic minimum sizing, safe-area padding, and content-driven fallbacks.
+- **Evidence:** R5 viewport-stability audit; complements ACC-001 and ACC-012.
+
+### ACC-014 - Missing page orientation and escape paths
+- **Level:** HARD BAN when users become trapped or cannot identify location; otherwise AVOID BY DEFAULT
+- **Rule:** Larger sites and multi-page flows must provide the orientation aids their structure requires, including a skip link, current-page indication, useful back or parent paths, and a recoverable not-found route.
+- **Failure signature:** Keyboard users repeat the whole header, active navigation is indistinguishable, detail pages dead-end, or a 404 offers no path forward.
+- **Detection:** Traverse the site by keyboard and direct URLs, open nested pages, and request a missing route.
+- **Exception:** A tiny single-page experience may not need every mechanism when equivalent orientation and navigation already exist.
+- **Preferred response:** Add only the structural aids the information architecture needs and expose current state visually and programmatically.
+- **Evidence:** R5 redesign, navigation, and accessibility audit.
+
 ### Frontend implementation and QA
 
 ### ENG-001 - Hydration and first-paint mismatch
@@ -777,11 +957,11 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### ENG-008 - Brittle CSS and stacking workarounds
 - **Level:** HARD BAN when content breaks; otherwise AVOID BY DEFAULT
-- **Rule:** Do not solve layout with magic fixed heights, escalating z-index, `!important` chains, or global selectors that override component boundaries.
-- **Failure signature:** Text clips after copy changes, overlays disappear under accidental stacking contexts, and theme values bypass tokens.
+- **Rule:** Do not solve ordinary layout with magic fixed heights, fragile percentage `calc()` chains, escalating z-index, `!important` chains, or global selectors that override component boundaries.
+- **Failure signature:** Text clips after copy changes, flex widths require repeated arithmetic, overlays disappear under accidental stacking contexts, and theme values bypass tokens.
 - **Detection:** Long-copy, zoom, localization, overlay, and specificity tests.
 - **Exception:** A documented fixed scene or third-party integration may require a scoped workaround.
-- **Preferred response:** Use intrinsic layout, explicit layer tokens, component scope, and semantic variables.
+- **Preferred response:** Use grid or intrinsic layout, explicit layer tokens, component scope, and semantic variables.
 - **Evidence:** R4 6.9-6.12.
 
 ### ENG-009 - Insecure client-side trust boundary
@@ -795,12 +975,66 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### ENG-010 - Shipping without rendered and functional QA
 - **Level:** HARD BAN for completion claims
-- **Rule:** Do not declare a visual frontend complete after source review alone.
+- **Rule:** Do not declare a visual frontend complete after source review alone, and do not hide unfinished content, placeholders, static controls, or missing integrations from the handoff.
 - **Failure signature:** Broken crop, overflow, dead menu, invisible focus, console error, blank state, or metadata defect survives because no browser was used.
-- **Detection:** Production build, desktop and mobile render, console/network review, keyboard walkthrough, interaction test, and accessibility scan.
+- **Detection:** Production build, desktop and mobile render, intermediate-width inspection, console/network review, keyboard walkthrough, interaction test, accessibility scan, and measured LCP, INP, and CLS where the environment allows it.
 - **Exception:** None for a completion claim; unavailable browser evidence must be disclosed as provisional.
-- **Preferred response:** Inspect the rendered result, fix the implementation, and rerun the checks.
+- **Preferred response:** Inspect the rendered result, fix the implementation, rerun the checks, and provide a short `Still needed` report for everything intentionally left incomplete.
 - **Evidence:** R4 Validation and QA; R1 Executive Summary; prior Taste Skill A/B findings.
+
+### ENG-011 - Design-system collision or needless reimplementation
+- **Level:** AVOID BY DEFAULT; HARD BAN when behavior, accessibility, or theming breaks
+- **Rule:** Do not mix unrelated component systems in one product surface or rebuild an official system's complex components from appearance alone when its maintained implementation is available and appropriate.
+- **Failure signature:** Material, Carbon, Fluent, Bootstrap, and shadcn conventions coexist; focus behavior differs by component; tokens are imported and then almost entirely overridden.
+- **Detection:** Inventory component packages, token sources, interaction contracts, CSS resets, and duplicate primitives.
+- **Exception:** A migration may temporarily bridge systems behind explicit boundaries, and a custom aesthetic may build native components when no official system is required.
+- **Preferred response:** Choose one primary system, use official packages for its intended ecosystem, customize through supported tokens, and isolate any migration adapter.
+- **Evidence:** R5 design-system and component-library audit; complements VIS-015.
+
+### ENG-012 - Fragile production font delivery
+- **Level:** CONTEXTUAL WARNING; HARD BAN when text disappears or layout becomes unusable
+- **Rule:** Do not ship unverified external font links, missing weights, blocking loads, or fallbacks whose metrics cause severe layout shift.
+- **Failure signature:** Flash of invisible text, broken cross-origin request, synthetic weight, clipped fallback, or CTA and navigation reflow after font load.
+- **Detection:** Test cold cache, blocked font host, slow network, fallback rendering, `font-display`, and CLS.
+- **Exception:** A reliable hosted font service is valid when privacy, performance, licensing, caching, and fallback behavior meet the project requirements.
+- **Preferred response:** Load only needed families and weights through the framework or a controlled host, define robust fallbacks, and verify failure behavior.
+- **Evidence:** R5 font-delivery audit; complements ENG-007.
+
+### ENG-013 - Silent redesign damage
+- **Level:** HARD BAN
+- **Rule:** During a redesign, do not silently change URLs, route slugs, anchor IDs, information architecture, primary navigation labels, form field names or order, brand marks, legal or consent copy, analytics hooks, SEO metadata, structured data, or existing accessibility behavior.
+- **Failure signature:** Visual modernization breaks bookmarks, search ranking, autofill, tracking, consent, recognition, or keyboard access.
+- **Detection:** Capture a before-state inventory and compare routes, content, forms, identifiers, metadata, analytics, legal surfaces, and accessibility behavior after the redesign.
+- **Exception:** Change an item when the user explicitly approves its scope and the migration, redirect, tracking, content, and compliance consequences are handled.
+- **Preferred response:** Preserve first, then modernize typography, spacing, color, motion, and composition; replace structure only where the agreed redesign requires it.
+- **Evidence:** R5 redesign protocol audit.
+
+### ENG-014 - Unnecessary framework or stack migration
+- **Level:** AVOID BY DEFAULT; HARD BAN when it destroys working behavior or data
+- **Rule:** Do not migrate frameworks, styling systems, state libraries, or build tools merely to make a visual redesign easier.
+- **Failure signature:** A targeted design task becomes a rewrite, dependencies multiply, working routes regress, and review scope expands without user value.
+- **Detection:** Compare the requested outcome with the minimum change possible in the existing stack.
+- **Exception:** Migrate when explicitly requested or when the current stack demonstrably blocks required correctness, maintainability, security, or performance and the user accepts the scope.
+- **Preferred response:** Reuse the existing stack and change the smallest shared layer that produces the required visual and behavioral result.
+- **Evidence:** R5 redesign implementation audit.
+
+### ENG-015 - Incomplete code disguised as delivery
+- **Level:** HARD BAN when complete implementation was requested
+- **Rule:** Do not replace requested files, components, repeated sections, or functional logic with ellipses, `TODO`, skeleton-only output, one example, or prose describing what remains.
+- **Failure signature:** `rest omitted`, missing middle sections, placeholder handlers, shortened later files, or a conclusion claiming completion after partial output.
+- **Detection:** Compare every requested deliverable with the emitted files and search production-bound code for omission markers and placeholder logic.
+- **Exception:** A deliberately scoped prototype or user-approved partial delivery is valid when its boundary and remaining work are explicit.
+- **Preferred response:** Deliver the complete requested scope, split output cleanly when necessary, and continue exactly where interrupted without repeating or compressing later work.
+- **Evidence:** R5 full-output enforcement audit; complements CNT-005 and ENG-010.
+
+### ENG-016 - Required legal, privacy, and consent surfaces omitted
+- **Level:** HARD BAN when the project is legally or contractually required to provide them; otherwise CONTEXTUAL WARNING
+- **Rule:** Do not invent legal text, but do not silently omit required privacy, terms, consent, disclosure, or contact surfaces from a production-bound implementation.
+- **Failure signature:** Tracking or regulated collection is enabled without the required notice or control, or a redesign drops existing legal links and consent behavior.
+- **Detection:** Inspect existing requirements, enabled data collection, supplied jurisdictional guidance, and the pre-redesign footer and consent flows.
+- **Exception:** A design-only prototype may use a clearly labeled placeholder and report that reviewed legal copy is still required.
+- **Preferred response:** Preserve approved copy and behavior, request the missing legal input, use a neutral placeholder only in prototypes, and list the gap in the handoff report.
+- **Evidence:** R5 redesign and production-completeness audit; legal review remains project-specific.
 
 ## 4. Automatic checks
 
@@ -808,15 +1042,19 @@ Automate only what can be checked reliably. A linter cannot decide whether a pur
 
 ### Text and repository search
 
-- Placeholder links and copy: `href="#"`, `javascript:void`, `lorem`, `TODO`, framework starter titles, temporary image domains.
+- Production-bound placeholder links and copy: `href="#"`, `javascript:void`, `lorem`, `TODO`, framework starter titles, temporary image domains. Allow clearly labeled placeholders in explicit design fixtures.
 - Gradient text: `bg-clip-text`, `background-clip: text`, transparent text without forced-colors fallback.
 - Mouse-only controls: click or pointer handlers on static elements.
 - Focus removal: `outline-none` or `outline: none` without a visible replacement.
 - Zoom blocking: `user-scalable=no`, restrictive `maximum-scale`.
 - Suspicious fixed layout: large `min-width`, fixed text-bearing heights, repeated magic offsets.
-- Motion hazards: raw wheel prevention, scroll listeners, timers, rAF, permanent `will-change`, large animated filters.
+- Viewport hazards: `h-screen`, unqualified `100vh`, missing safe-area handling on edge-bound controls.
+- Motion hazards: raw wheel prevention, scroll listeners that update render state, rAF state loops, permanent `will-change`, large animated filters, multiple runtimes controlling the same property.
 - State defects: placeholder success timers, hardcoded live labels, disabled-looking controls without native disabled state.
-- Framework defects: root-level client boundary, SSR-unsafe globals, unstable list keys, uncleaned subscriptions.
+- Feedback defects: routine `window.alert`, `window.confirm`, or `window.prompt`; missing current-page state.
+- Framework defects: root-level client boundary, SSR-unsafe globals, unstable list keys, uncleaned subscriptions, unrelated component-system imports.
+- Delivery omissions: `rest omitted`, ellipses in requested code, placeholder handlers, and unexplained production `TODO` markers.
+- Font hazards: blocking external font links, missing `font-display`, unused families and weights.
 - Security defects: exposed secrets, client-only authorization, privileged endpoints from the browser.
 
 ### Build and browser automation
@@ -825,15 +1063,20 @@ Automate only what can be checked reliably. A linter cannot decide whether a pur
 - Broken route, link, import, and asset crawl.
 - Console and network error capture.
 - Horizontal-overflow probe at representative and in-between widths.
-- Image intrinsic-size, crop, LCP, and layout-shift checks.
+- CTA and primary desktop-navigation wrapping checks.
+- Hero first-viewport and content-stack inspection.
+- Image intrinsic-size, crop, LCP, INP, and layout-shift checks.
 - Keyboard activation and focus-order tests.
 - Menu, dialog, form, tab, filter, carousel, and route-change state tests.
+- Current-page, skip-link, nested-route, back-path, and not-found-route tests where applicable.
 - Slow, empty, error, offline, cancelled, and duplicate-submission scenarios.
+- Cold-cache, blocked-font, fallback-font, and slow-font tests.
 - axe or equivalent accessibility scan, followed by manual checks.
 - Reduced-motion and forced-colors emulation.
 
 ## 5. Human visual checks
 
+- Does the result follow the explicit user request and supplied content before applying default-avoidance heuristics?
 - Does the page still make sense after replacing the logo and company name? If yes, what is insufficiently subject-specific?
 - Does every section have a necessary information or decision job?
 - Is any eyebrow, kicker, overline, or pretitle present? Remove it.
@@ -841,16 +1084,35 @@ Automate only what can be checked reliably. A linter cannot decide whether a pur
 - Can any headline become shorter without losing meaning, or is it wrapping before the available width requires it?
 - Is there one coherent palette, type voice, shape language, imagery direction, and motion language?
 - Does the first viewport identify subject, value, and next action?
+- Is the hero focused, or is it also carrying feature lists, pricing, logo walls, trust strips, and secondary metadata?
+- Do identical CTA intents use one clear label, and do CTAs and primary desktop navigation stay on one line?
 - Does one object, product state, artifact, workflow, or body of evidence persist through the page?
 - Are more than two major sections using the same composition or reveal?
+- Is any split header, long list, row-divider wall, score bar, rotated label, crosshair, or image tag present only to fill a composition?
 - Are cards representing discrete objects, or merely enclosing ordinary text?
 - Are imagery and crops art-directed for their actual slots and mobile transformations?
 - Is proof attributable and proportionate, or merely trust decoration?
 - Does the footer close the composition and provide real utility?
 - Does motion clarify hierarchy, continuity, state, feedback, or narrative?
+- Does each animated property have one owner, or are CSS, Motion, GSAP, and custom loops competing?
 - Does mobile feel recomposed rather than compressed?
+- Do full-height surfaces survive dynamic mobile browser chrome, keyboards, safe areas, and short landscape viewports?
+- Does one component system, theme strategy, and font-delivery path remain coherent?
+- Is every mock value, placeholder, static control, and unconnected integration clearly disclosed?
 
-## 6. Removed or rejected universal claims
+## 6. Required handoff report
+
+When anything remains incomplete, end the delivery with a compact `Still needed` report. Include only applicable items:
+
+- real copy, prices, metrics, testimonials, logos, permissions, or product data;
+- final imagery, licensed stock replacement, or supplied brand assets;
+- forms, endpoints, authentication, persistence, payments, email, analytics, or other integrations not connected;
+- mock values, placeholders, static controls, or simulated states still present;
+- browser, device, accessibility, performance, or production checks not completed.
+
+Do not call an intentionally incomplete prototype production-ready. A design-only result can still be complete as a design when its implementation gaps are stated plainly.
+
+## 7. Removed or rejected universal claims
 
 The synthesis rejected these as universal bans:
 
@@ -864,32 +1126,41 @@ The synthesis rejected these as universal bans:
 - **Familiar layouts are low quality.** Familiarity can reduce learning cost when the layout fits the task.
 - **Visual novelty is the primary goal.** Credibility, comprehension, function, responsiveness, accessibility, and subject fit outrank novelty.
 
-## 7. Highest-priority rules for a future runtime skill
+## 8. Highest-priority rules for a future runtime skill
 
-1. Inspect the brief, existing project, assets, dependencies, and real product behavior before designing.
-2. Name the expected category template, then reject or justify it.
-3. Use one coherent visual system derived from the subject, not generator defaults.
-4. Make the first viewport identify the subject, value, and next action.
-5. Never generate an eyebrow, kicker, overline, or pretitle above a heading.
-6. Remove decorative text that provides no necessary meaning or function.
-7. Compress headlines before styling them and never force premature wrapping.
-8. Give every section one necessary job; remove filler sections.
-9. Include subject-specific evidence that a generic template could not substitute.
-10. Never fabricate testimonials, people, logos, metrics, awards, claims, or live state.
-11. Never present static decoration as functional product UI.
-12. Every visible control must work and expose honest state.
-13. Use native semantics and complete accessible interaction contracts.
-14. Preserve keyboard, touch, zoom, focus, contrast, and reduced-motion access.
-15. Recompose multi-column layouts for mobile instead of compressing them.
-16. Do not let one card, split, grid, or reveal skeleton dominate the page.
-17. Use cards, effects, and motion only when they communicate hierarchy, material, state, continuity, or explanation.
-18. Verify every asset, dependency, route, endpoint, and configuration value.
-19. Keep server-renderable content on the server and isolate interactive leaves when the stack supports it.
-20. Implement real loading, empty, error, pending, success, cancellation, and rollback states where applicable.
-21. Enforce authorization and validation at the trust boundary, never only in the client.
-22. Build and inspect the real page at desktop and mobile sizes.
-23. Do not claim completion until browser, interaction, console, accessibility, and visual checks pass.
+1. Follow the explicit user request, supplied content, existing project, and real product behavior.
+2. Apply default-avoidance rules only where the user request and project leave the decision open.
+3. Name the expected category template, then use, adapt, or reject it according to fit.
+4. Use one coherent visual system derived from the subject, not generator defaults.
+5. Make the first viewport identify the subject, value, and next action.
+6. Keep the hero focused; move feature lists, pricing, logo walls, trust strips, and secondary metadata into later sections.
+7. Keep CTA labels and primary desktop navigation readable on one line and use one label per CTA intent.
+8. Never generate an eyebrow, kicker, overline, or pretitle above a heading.
+9. Remove decorative text that provides no necessary meaning or function.
+10. Compress headlines before styling them and never force premature wrapping.
+11. Give every section one necessary job; remove filler sections.
+12. Use split headers, long lists, dense tables, progress visuals, overlays, and absolute positioning only when their information or composition requires them.
+13. Include subject-specific evidence that a generic template could not substitute.
+14. Never present mock testimonials, people, logos, metrics, awards, claims, or live state as real. Clearly labeled sample content is allowed in explicitly requested design work.
+15. Never present static decoration as functional product UI; clearly label design-only prototypes.
+16. Every production-bound visible control must work and expose honest hover, focus, active, disabled, selected, and current state where applicable.
+17. Use native semantics and complete accessible interaction contracts.
+18. Preserve keyboard, touch, zoom, focus, contrast, reduced-motion, page orientation, and escape-path access.
+19. Recompose multi-column layouts for mobile and use viewport units that survive dynamic browser chrome and keyboards.
+20. Do not let one card, split, grid, or reveal skeleton dominate the page unless the requested concept depends on it.
+21. Use cards, effects, and motion when they fit the requested direction or communicate hierarchy, material, state, continuity, or explanation.
+22. Keep one animation owner per property and avoid continuous render-state updates from scroll, pointer, drag, or rAF.
+23. Use one primary component system and avoid needless reimplementation or framework migration.
+24. Verify every asset, dependency, route, endpoint, configuration value, font path, and required production surface.
+25. Keep server-renderable content on the server and isolate interactive leaves when the stack supports it.
+26. Implement real loading, empty, error, pending, success, cancellation, and rollback states where applicable, choosing skeleton, spinner, or progress by the actual wait.
+27. Preserve routes, information architecture, forms, brand, legal copy, analytics, SEO, and accessibility behavior during redesigns unless change is approved.
+28. Enforce authorization and validation at the trust boundary, never only in the client.
+29. Deliver the full requested implementation without omission markers or prose standing in for code.
+30. Build and inspect the real page at desktop, intermediate, mobile, keyboard, reduced-motion, and fallback-font conditions.
+31. End with a `Still needed` report listing placeholders, missing content, static controls, unconnected integrations, and checks not completed.
+32. Do not claim production completion until browser, interaction, console, performance, accessibility, and visual checks pass.
 
-## 8. Synthesis conclusion
+## 9. Synthesis conclusion
 
-AI web slop is best understood as **unreviewed defaults plus missing truth and verification**, not as a fixed collection of forbidden aesthetics. Most visual and structural patterns should remain saturation warnings and subject-fit tests. Taste Skill v2 additionally makes three narrow authoring-policy bans: no eyebrows, no decorative filler text, and no bloated or prematurely wrapped headlines. The durable corrective loop is: understand the subject, choose deliberately, implement honestly, render, inspect, and revise.
+AI web slop is best understood as **unreviewed defaults plus missing truth and verification**, not as a fixed collection of forbidden aesthetics. The explicit user request and project reality come first. Most visual and structural patterns remain subject-fit tests, not bans. Clearly labeled mock content is valid for requested design work; presenting it as real is not. Taste Skill v2 additionally makes three narrow authoring-policy bans: no eyebrows, no decorative filler text, and no bloated or prematurely wrapped headlines. The durable corrective loop is: understand the request, choose deliberately, implement honestly, render, inspect, disclose unfinished work, and revise.
