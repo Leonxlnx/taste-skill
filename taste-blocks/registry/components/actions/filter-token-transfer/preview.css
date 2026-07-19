@@ -1,7 +1,0 @@
-.tb-token-transfer-preview {
-  display: grid;
-  place-items: center;
-  min-height: 100%;
-  padding: clamp(2rem, 6vw, 5rem);
-  background: #c7ccff;
-}

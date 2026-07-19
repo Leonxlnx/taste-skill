@@ -36,7 +36,7 @@ export interface CatalogMeta {
     budget: string;
   };
   display?: {
-    size?: "standard" | "wide" | "tall" | "full";
+    size?: "standard" | "wide" | "tall";
     homepage?: boolean;
     order?: number;
   };

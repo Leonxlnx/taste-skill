@@ -1,8 +1,0 @@
-.tb-phrase-handoff-preview {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: inherit;
-  padding: clamp(24px, 6cqi, 72px);
-  background: #20231f;
-}

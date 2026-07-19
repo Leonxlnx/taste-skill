@@ -1,9 +1,0 @@
-.tb-directional-link-preview {
-  display: grid;
-  align-content: center;
-  gap: 20px;
-  width: 100%;
-  min-height: inherit;
-  padding: clamp(24px, 7cqi, 72px);
-  background: #d8d6ee;
-}
