@@ -1,0 +1,36 @@
+{
+  "name": "masked-line-reveal",
+  "title": "Masked line reveal",
+  "description": "Reveals a deliberate set of editorial lines from their final position without hiding the complete heading from assistive technology.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Text Motion",
+  "sections": ["Hero", "Introduction or Overview", "Project or Case Study"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["text", "heading", "entrance", "mask", "reduced-motion"],
+  "files": ["masked-line-reveal.tsx", "masked-line-reveal.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "static",
+    "notes": "The visual line fragments are hidden from assistive technology and the complete heading is exposed as one accessible string."
+  },
+  "performance": {
+    "budget": "CSS transform and opacity entrance only; no runtime listener or continuous work."
+  },
+  "display": {
+    "size": "wide",
+    "homepage": true,
+    "order": 11
+  }
+}

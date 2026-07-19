@@ -1,0 +1,22 @@
+.tb-action-group-preview {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: clamp(2rem, 7vw, 5rem);
+  color: #f4f5ee;
+  background: #3d45c6;
+}
+
+.tb-action-group-preview__content {
+  display: grid;
+  justify-items: start;
+  gap: 1.2rem;
+  width: min(100%, 52rem);
+}
+
+.tb-action-group-preview p {
+  min-height: 1.5em;
+  margin: 0;
+  color: #daddff;
+  font: 500 0.83rem/1.4 ui-monospace, monospace;
+}

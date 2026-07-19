@@ -1,0 +1,7 @@
+.tb-copy-preview {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: clamp(2rem, 7vw, 6rem);
+  background: #262927;
+}

@@ -1,0 +1,123 @@
+.tb-object-stage {
+  --tb-osh-ink: #17191b;
+  --tb-osh-paper: #e8ece8;
+  --tb-osh-accent: #d74f36;
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  overflow: hidden;
+  color: var(--tb-osh-ink);
+  background: var(--tb-osh-paper);
+}
+
+.tb-object-stage,
+.tb-object-stage * {
+  box-sizing: border-box;
+}
+
+.tb-object-stage__copy {
+  align-self: end;
+  min-width: 0;
+  padding: clamp(2rem, 5vw, 5.5rem);
+  padding: clamp(2rem, 6cqi, 5.5rem);
+}
+
+.tb-object-stage__title {
+  max-width: 36rem;
+  margin: 0;
+  font-size: clamp(2.8rem, 6.5vw, 6.5rem);
+  font-size: clamp(2.8rem, 8cqi, 6.5rem);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.tb-object-stage__copy p {
+  max-width: 34rem;
+  margin: clamp(1.5rem, 3cqi, 2.5rem) 0 0;
+  font-size: clamp(1rem, 1.8cqi, 1.2rem);
+  line-height: 1.55;
+}
+
+.tb-object-stage__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  margin-top: 1.75rem;
+  padding: 0.45rem 1.15rem;
+  color: #fffaf7;
+  background: var(--tb-osh-ink);
+  border-radius: 0.25rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 150ms ease-out, transform 100ms ease-out;
+}
+
+.tb-object-stage__action:hover {
+  background: var(--tb-osh-accent);
+}
+
+.tb-object-stage__action:active {
+  transform: translateY(1px);
+}
+
+.tb-object-stage__action:focus-visible {
+  outline: 3px solid var(--tb-osh-accent);
+  outline-offset: 4px;
+}
+
+.tb-object-stage__media {
+  min-width: 0;
+  min-height: clamp(20rem, 54cqi, 36rem);
+  padding: clamp(1rem, 2.5cqi, 2.5rem);
+}
+
+@container (min-width: 46rem) {
+  .tb-object-stage__copy,
+  .tb-object-stage__media {
+    min-height: clamp(34rem, 58cqi, 52rem);
+  }
+}
+
+.tb-object-stage__placeholder {
+  width: 100%;
+  min-height: 100%;
+  background: #bcc9c5;
+}
+
+@container (min-width: 28rem) {
+  .tb-object-stage__action {
+    white-space: nowrap;
+  }
+}
+
+@container (max-width: 46rem) {
+  .tb-object-stage__copy {
+    padding: 2rem 1.25rem 2.5rem;
+  }
+
+  .tb-object-stage__media {
+    min-height: clamp(20rem, 70cqi, 28rem);
+    padding: 0 1.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .tb-object-stage__copy {
+    padding: 2rem 1.25rem 2.5rem;
+  }
+
+  .tb-object-stage__media {
+    padding: 0 1.25rem 1.25rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-object-stage__action {
+    border: 2px solid ButtonText;
+  }
+}

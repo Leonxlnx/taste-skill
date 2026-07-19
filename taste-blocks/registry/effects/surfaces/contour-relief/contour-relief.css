@@ -1,0 +1,34 @@
+.tb-contour-relief {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f4f1e8;
+  background:
+    radial-gradient(circle at 22% 45%, rgb(97 193 144 / 0.16), transparent 34%),
+    #17251f;
+}
+
+.tb-contour-relief__lines {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tb-contour-relief__lines path {
+  fill: none;
+  stroke: rgb(207 230 211 / 0.23);
+  stroke-width: 1;
+}
+
+.tb-contour-relief__content {
+  position: relative;
+}
+
+@media (forced-colors: active) {
+  .tb-contour-relief__lines {
+    display: none;
+  }
+}

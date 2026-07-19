@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "seeded-flowlines",
+  "type": "registry:component",
+  "title": "Seeded Flowlines",
+  "description": "A deterministic Canvas field of directional lines with short, quiet trails and a complete static state.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/surfaces/seeded-flowlines/seeded-flowlines.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/seeded-flowlines.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, type ReactNode } from \"react\";\nimport \"./seeded-flowlines.css\";\n\ninterface SeededFlowlinesProps {\n  children?: ReactNode;\n  className?: string;\n}\n\ninterface FlowPoint {\n  x: number;\n  y: number;\n}\n\nfunction seededRandom(seed: number) {\n  let value = seed >>> 0;\n  return () => {\n    value += 0x6d2b79f5;\n    let next = value;\n    next = Math.imul(next ^ (next >>> 15), next | 1);\n    next ^= next + Math.imul(next ^ (next >>> 7), next | 61);\n    return ((next ^ (next >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nfunction buildFlowlines(width: number, height: number) {\n  const random = seededRandom(0x51a7e);\n  const lines: FlowPoint[][] = [];\n  const step = Math.max(5, width / 115);\n\n  for (let lineIndex = 0; lineIndex < 34; lineIndex += 1) {\n    let x = -width * 0.08 - random() * 24;\n    let y = height * (-0.1 + random() * 1.2);\n    const line: FlowPoint[] = [];\n\n    for (let pointIndex = 0; pointIndex < 132; pointIndex += 1) {\n      line.push({ x, y });\n      const angle =\n        -0.08 +\n        Math.sin(y * 0.012 + lineIndex * 0.17) * 0.34 +\n        Math.cos(x * 0.006 + lineIndex * 0.09) * 0.2;\n      x += Math.cos(angle) * step;\n      y += Math.sin(angle) * step;\n    }\n    lines.push(line);\n  }\n\n  return lines;\n}\n\nexport function SeededFlowlines({\n  children,\n  className = \"\",\n}: SeededFlowlinesProps) {\n  const rootRef = useRef<HTMLDivElement>(null);\n  const canvasRef = useRef<HTMLCanvasElement>(null);\n\n  useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    const context = canvas?.getContext(\"2d\");\n    const baseCanvas = document.createElement(\"canvas\");\n    const baseContext = baseCanvas.getContext(\"2d\");\n    if (!root || !canvas || !context || !baseContext) return;\n\n    const reduceMotion = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    let frame = 0;\n    let lastPaint = 0;\n    let inView = false;\n    let width = 1;\n    let height = 1;\n    let dpr = 1;\n    let lines: FlowPoint[][] = [];\n\n    const rasterizeBase = () => {\n      baseContext.setTransform(dpr, 0, 0, dpr, 0, 0);\n      baseContext.clearRect(0, 0, width, height);\n      baseContext.lineCap = \"round\";\n      baseContext.lineJoin = \"round\";\n      baseContext.lineWidth = 0.8;\n      baseContext.strokeStyle = \"rgba(26, 69, 55, 0.15)\";\n      for (const line of lines) {\n        baseContext.beginPath();\n        line.forEach((point, index) => {\n          if (index === 0) baseContext.moveTo(point.x, point.y);\n          else baseContext.lineTo(point.x, point.y);\n        });\n        baseContext.stroke();\n      }\n    };\n\n    const draw = (time = 0) => {\n      context.setTransform(1, 0, 0, 1, 0, 0);\n      context.clearRect(0, 0, canvas.width, canvas.height);\n      context.drawImage(baseCanvas, 0, 0);\n\n      if (reduceMotion.matches || time === 0) return;\n\n      context.setTransform(dpr, 0, 0, dpr, 0, 0);\n      context.lineCap = \"round\";\n      context.globalCompositeOperation = \"multiply\";\n      context.lineWidth = 1.35;\n      for (const [lineIndex, line] of lines.entries()) {\n        const head = Math.floor(\n          ((time / 6800 + lineIndex * 0.061) % 1) * (line.length - 1),\n        );\n        for (let trail = 0; trail < 8; trail += 1) {\n          const pointIndex = (head - trail + line.length - 1) % (line.length - 1);\n          const from = line[pointIndex];\n          const to = line[pointIndex + 1];\n          if (!from || !to) continue;\n          context.strokeStyle = `rgba(190, 78, 46, ${0.2 * (1 - trail / 8)})`;\n          context.beginPath();\n          context.moveTo(from.x, from.y);\n          context.lineTo(to.x, to.y);\n          context.stroke();\n        }\n      }\n      context.globalCompositeOperation = \"source-over\";\n    };\n\n    const stop = () => {\n      cancelAnimationFrame(frame);\n      frame = 0;\n    };\n\n    const tick = (time: number) => {\n      if (time - lastPaint > 50) {\n        draw(time);\n        lastPaint = time;\n      }\n      frame = requestAnimationFrame(tick);\n    };\n\n    const sync = () => {\n      const shouldRun = inView && !document.hidden && !reduceMotion.matches;\n      stop();\n      if (shouldRun) frame = requestAnimationFrame(tick);\n      else draw(0);\n    };\n\n    const resize = () => {\n      const bounds = root.getBoundingClientRect();\n      width = Math.max(1, bounds.width);\n      height = Math.max(1, bounds.height);\n      dpr = window.innerWidth < 640 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);\n      canvas.width = Math.ceil(width * dpr);\n      canvas.height = Math.ceil(height * dpr);\n      baseCanvas.width = canvas.width;\n      baseCanvas.height = canvas.height;\n      lines = buildFlowlines(width, height);\n      rasterizeBase();\n      draw(0);\n    };\n\n    const intersection =\n      \"IntersectionObserver\" in window\n        ? new IntersectionObserver(\n            ([entry]) => {\n              inView = Boolean(entry?.isIntersecting);\n              sync();\n            },\n            { rootMargin: \"0px\" },\n          )\n        : null;\n    const resizeObserver =\n      \"ResizeObserver\" in window ? new ResizeObserver(resize) : null;\n    const handleVisibility = () => sync();\n    const handleMotion = () => sync();\n\n    resize();\n    intersection?.observe(root);\n    resizeObserver?.observe(root);\n    if (!resizeObserver) window.addEventListener(\"resize\", resize);\n    document.addEventListener(\"visibilitychange\", handleVisibility);\n    reduceMotion.addEventListener(\"change\", handleMotion);\n\n    return () => {\n      stop();\n      intersection?.disconnect();\n      resizeObserver?.disconnect();\n      window.removeEventListener(\"resize\", resize);\n      document.removeEventListener(\"visibilitychange\", handleVisibility);\n      reduceMotion.removeEventListener(\"change\", handleMotion);\n    };\n  }, []);\n\n  return (\n    <div ref={rootRef} className={`tb-seeded-flowlines ${className}`.trim()}>\n      <div className=\"tb-seeded-flowlines__fallback\" aria-hidden=\"true\" />\n      <canvas ref={canvasRef} className=\"tb-seeded-flowlines__canvas\" aria-hidden=\"true\" />\n      <div className=\"tb-seeded-flowlines__content\">{children}</div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "registry/effects/surfaces/seeded-flowlines/seeded-flowlines.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/seeded-flowlines.css",
+      "content": ".tb-seeded-flowlines {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  color: #18382c;\n  background: #e8e2d2;\n}\n\n.tb-seeded-flowlines__fallback,\n.tb-seeded-flowlines__canvas {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  width: 100%;\n  height: 100%;\n  pointer-events: none;\n}\n\n.tb-seeded-flowlines__fallback {\n  opacity: 0.65;\n  background:\n    repeating-linear-gradient(8deg, transparent 0 17px, rgb(26 69 55 / 0.08) 17.5px, transparent 18px 34px),\n    linear-gradient(112deg, rgb(255 255 255 / 0.3), transparent 42%);\n}\n\n.tb-seeded-flowlines__content {\n  position: relative;\n}\n\n@media (forced-colors: active) {\n  .tb-seeded-flowlines__fallback,\n  .tb-seeded-flowlines__canvas {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Canvas Effects",
+    "sections": [
+      "Hero",
+      "Problem and Context",
+      "Services, Features, and Capabilities",
+      "How It Works",
+      "Results, Statistics, and Impact"
+    ],
+    "runtime": "canvas",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "The canvas is decorative and aria-hidden. It pauses outside the viewport and in hidden documents, and keeps a static field for reduced motion."
+    },
+    "performance": {
+      "budget": "Canvas 2D at 20 fps; 34 static paths are rasterized on resize, each frame blits that cache and paints at most 272 short trail segments; DPR is capped at 1.5 desktop and 1 mobile."
+    }
+  }
+}

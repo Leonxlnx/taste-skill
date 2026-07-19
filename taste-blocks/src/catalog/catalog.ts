@@ -39,12 +39,16 @@ export const verifiedCatalog = catalog.filter(
   (entry) => entry.status === "verified",
 );
 
-export const homepageCatalog = verifiedCatalog.filter(
+export const visibleCatalog = import.meta.env.DEV
+  ? catalog.filter((entry) => entry.status !== "deprecated")
+  : verifiedCatalog;
+
+export const homepageCatalog = visibleCatalog.filter(
   (entry) => entry.display?.homepage,
 );
 
 export const categories = Array.from(
-  new Set(verifiedCatalog.map((entry) => entry.category)),
+  new Set(visibleCatalog.map((entry) => entry.category)),
 ).sort();
 
 export function findEntry(name: string) {

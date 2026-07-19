@@ -1,0 +1,36 @@
+{
+  "name": "section-theme-handoff",
+  "title": "Section theme handoff",
+  "description": "Hands a coherent color system between meaningful narrative chapters while keeping navigation and content immediately available.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Text Motion",
+  "sections": ["Problem and Context", "How It Works", "Project or Case Study"],
+  "runtime": "dom",
+  "status": "verified",
+  "tags": ["theme", "chapters", "narrative", "color", "reduced-motion"],
+  "files": ["section-theme-handoff.tsx", "section-theme-handoff.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "static",
+    "notes": "Chapter buttons remain available throughout, pressed state is semantic, and content changes do not rely on color or motion alone."
+  },
+  "performance": {
+    "budget": "Theme colors update immediately; only the selected text uses a bounded 180ms transform and opacity entrance."
+  },
+  "display": {
+    "size": "wide",
+    "homepage": true,
+    "order": 18
+  }
+}

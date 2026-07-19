@@ -1,0 +1,36 @@
+{
+  "name": "gallery-title-sync",
+  "title": "Gallery title sync",
+  "description": "Keeps a gallery title and description synchronized with pointer, keyboard, and touch selection without hiding the available items.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Text Motion",
+  "sections": ["Selected Work or Archive", "Gallery or Showreel", "Project or Case Study"],
+  "runtime": "dom",
+  "status": "verified",
+  "tags": ["gallery", "title", "selection", "pointer", "keyboard"],
+  "files": ["gallery-title-sync.tsx", "gallery-title-sync.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "static",
+    "notes": "Every item is a labeled button, selection works without hover, and the complete selected title and description are announced together."
+  },
+  "performance": {
+    "budget": "One state update and one bounded CSS entrance per explicit selection; no image or animation runtime."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 17
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "synopsis-facts-overview",
+  "title": "Synopsis and Facts Overview",
+  "description": "A broad project synopsis paired with a compact set of factual context, without turning the overview into a table.",
+  "type": "registry:block",
+  "kind": "block",
+  "category": "Overview",
+  "sections": ["Introduction or Overview", "Project or Case Study"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["synopsis", "facts", "case-study", "introduction"],
+  "files": ["synopsis-facts-overview.tsx", "synopsis-facts-overview.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "Facts use a semantic description list and remain after the synopsis in DOM order on every viewport."
+  },
+  "performance": {
+    "budget": "Static HTML and CSS only."
+  },
+  "display": {
+    "size": "wide",
+    "homepage": true,
+    "order": 4
+  }
+}

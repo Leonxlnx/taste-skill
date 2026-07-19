@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-label-handoff",
+  "type": "registry:component",
+  "title": "Status label handoff",
+  "description": "Moves a compact status label between real interface states without delaying the underlying state update.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/text/status-label-handoff/status-label-handoff.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/status-label-handoff.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\nimport \"./status-label-handoff.css\";\n\nexport type StatusLabelTone = \"neutral\" | \"active\" | \"success\" | \"warning\";\n\nexport interface StatusLabelHandoffProps {\n  label: string;\n  tone?: StatusLabelTone;\n  className?: string;\n}\n\nexport function StatusLabelHandoff({\n  label,\n  tone = \"neutral\",\n  className = \"\",\n}: StatusLabelHandoffProps) {\n  const current = label.trim() || \"Unknown status\";\n  const previous = useRef(current);\n  const changed = previous.current !== current;\n  const toneLabel: Record<StatusLabelTone, string> = {\n    neutral: \"neutral\",\n    active: \"active\",\n    success: \"successful\",\n    warning: \"warning\",\n  };\n\n  useEffect(() => {\n    previous.current = current;\n  }, [current]);\n\n  return (\n    <span\n      className={`tb-status-label-handoff ${className}`.trim()}\n      data-tone={tone}\n      role=\"status\"\n      aria-live=\"polite\"\n    >\n      <span className=\"tb-status-label-handoff__sr\">\n        Status: {current}. State tone: {toneLabel[tone]}.\n      </span>\n      <span className=\"tb-status-label-handoff__marker\" aria-hidden=\"true\" />\n      <span className=\"tb-status-label-handoff__viewport\" aria-hidden=\"true\">\n        <span\n          className={changed ? \"tb-status-label-handoff__new\" : \"\"}\n          key={current}\n        >\n          {current}\n        </span>\n      </span>\n    </span>\n  );\n}\n\nexport default StatusLabelHandoff;\n"
+    },
+    {
+      "path": "registry/effects/text/status-label-handoff/status-label-handoff.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/status-label-handoff.css",
+      "content": ".tb-status-label-handoff {\n  --tb-status-color: #272b28;\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n  min-height: 36px;\n  padding: 0 13px;\n  border: 1px solid color-mix(in srgb, var(--tb-status-color), transparent 56%);\n  border-radius: 999px;\n  color: var(--tb-status-color);\n  background: color-mix(in srgb, var(--tb-status-color), transparent 91%);\n  font: 650 0.82rem / 1 system-ui, sans-serif;\n  width: max-content;\n}\n\n.tb-status-label-handoff[data-tone=\"active\"] { --tb-status-color: #2354c7; }\n.tb-status-label-handoff[data-tone=\"success\"] { --tb-status-color: #197047; }\n.tb-status-label-handoff[data-tone=\"warning\"] { --tb-status-color: #8c4a12; }\n\n.tb-status-label-handoff__marker {\n  display: inline-grid;\n  width: 1em;\n  height: 1em;\n  place-items: center;\n  font-weight: 800;\n  line-height: 1;\n}\n\n.tb-status-label-handoff__marker::before { content: \"•\"; }\n.tb-status-label-handoff[data-tone=\"active\"] .tb-status-label-handoff__marker::before { content: \"→\"; }\n.tb-status-label-handoff[data-tone=\"success\"] .tb-status-label-handoff__marker::before { content: \"✓\"; }\n.tb-status-label-handoff[data-tone=\"warning\"] .tb-status-label-handoff__marker::before { content: \"!\"; }\n\n.tb-status-label-handoff__viewport {\n  display: inline-grid;\n  overflow: hidden;\n}\n\n.tb-status-label-handoff__viewport > span {\n  grid-area: 1 / 1;\n  white-space: nowrap;\n}\n\n.tb-status-label-handoff__new {\n  animation: tb-status-new 160ms cubic-bezier(0.22, 1, 0.36, 1) both;\n}\n\n.tb-status-label-handoff__sr {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes tb-status-new {\n  from { opacity: 0; transform: translateY(35%); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .tb-status-label-handoff__new {\n    animation: none;\n  }\n}\n\n@media (forced-colors: active) {\n  .tb-status-label-handoff {\n    border-color: ButtonText;\n    color: ButtonText;\n    background: ButtonFace;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Text Motion",
+    "sections": [
+      "Signup, Registration, or Application",
+      "Contact and Inquiry",
+      "How It Works"
+    ],
+    "runtime": "dom",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "The complete current status is exposed through a polite status region; color is never the only state cue."
+    },
+    "performance": {
+      "budget": "One short transform and opacity handoff per status change; no persistent work."
+    }
+  }
+}

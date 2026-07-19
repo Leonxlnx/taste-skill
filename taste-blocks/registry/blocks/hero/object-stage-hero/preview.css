@@ -1,0 +1,20 @@
+.tb-object-stage-preview-media {
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  place-items: end center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 68% 26%, #f5c85e 0 8%, transparent 8.3%),
+    linear-gradient(145deg, #b7c9c6 0 43%, #78918f 43% 67%, #304544 67%);
+}
+
+.tb-object-stage-preview-media span {
+  width: min(62%, 28rem);
+  aspect-ratio: 0.72;
+  margin-bottom: -9%;
+  border-radius: 48% 48% 8% 8% / 30% 30% 7% 7%;
+  background: #d74f36;
+  box-shadow: inset -3rem -2rem 0 rgb(94 28 22 / 0.2);
+  transform: rotate(-5deg);
+}

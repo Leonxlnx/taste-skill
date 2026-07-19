@@ -1,0 +1,36 @@
+{
+  "name": "object-stage-hero",
+  "title": "Object Stage Hero",
+  "description": "A product-led hero that gives one physical or digital object most of the opening frame.",
+  "type": "registry:block",
+  "kind": "block",
+  "category": "Hero",
+  "sections": ["Hero"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["product", "object", "asymmetric", "media"],
+  "files": ["object-stage-hero.tsx", "object-stage-hero.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "Semantic heading and action remain first in DOM order. A fallback is decorative unless the caller supplies a meaningful media label."
+  },
+  "performance": {
+    "budget": "No runtime JavaScript and no required media download."
+  },
+  "display": {
+    "size": "wide",
+    "homepage": true,
+    "order": 1
+  }
+}

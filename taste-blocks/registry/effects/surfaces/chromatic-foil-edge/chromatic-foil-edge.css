@@ -1,0 +1,56 @@
+.tb-chromatic-foil-edge {
+  position: relative;
+  isolation: isolate;
+}
+
+.tb-chromatic-foil-edge::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1px;
+  pointer-events: none;
+  content: "";
+  opacity: 0;
+  background:
+    linear-gradient(
+      112deg,
+      #65d6b4 2%,
+      #f5ed9a 24%,
+      #e984c1 48%,
+      #7d8df5 72%,
+      #65d6b4 98%
+    );
+  transform: scaleX(0.985);
+  transform-origin: center;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tb-chromatic-foil-edge:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tb-chromatic-foil-edge:not(:focus-within)::after {
+    transition:
+      opacity 140ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.tb-chromatic-foil-edge:focus-within::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (forced-colors: active) {
+  .tb-chromatic-foil-edge::after {
+    display: none;
+  }
+}

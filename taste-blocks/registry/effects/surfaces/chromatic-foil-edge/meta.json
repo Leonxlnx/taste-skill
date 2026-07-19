@@ -1,0 +1,42 @@
+{
+  "name": "chromatic-foil-edge",
+  "title": "Chromatic Foil Edge",
+  "description": "A narrow spectral edge that appears on deliberate hover or keyboard focus without animating the whole surface.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Pointer Effects",
+  "sections": [
+    "Services, Features, and Capabilities",
+    "Selected Work or Archive",
+    "Project or Case Study",
+    "Pricing and Plans",
+    "Call to Action"
+  ],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["edge", "hover", "focus", "spectral"],
+  "files": ["chromatic-foil-edge.tsx", "chromatic-foil-edge.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "static",
+    "notes": "Focus-within receives the same visible edge immediately; hover uses a short ease-out, and reduced motion preserves the boundary without a transition."
+  },
+  "performance": {
+    "budget": "One masked pseudo-element with bounded opacity and scale transitions; no background-position animation or loop."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 29
+  }
+}

@@ -1,0 +1,8 @@
+.tb-shared-nav-marker-preview {
+  display: grid;
+  align-content: center;
+  width: 100%;
+  min-height: inherit;
+  padding: clamp(24px, 7cqi, 80px);
+  background: #182229;
+}

@@ -1,0 +1,8 @@
+.tb-masked-line-reveal-preview {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  min-height: inherit;
+  padding: clamp(24px, 6cqi, 72px);
+  background: #d7dfcb;
+}

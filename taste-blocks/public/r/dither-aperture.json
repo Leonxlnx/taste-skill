@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dither-aperture",
+  "type": "registry:component",
+  "title": "Dither Aperture",
+  "description": "A bounded ordered-dot veil with a configurable focal point and an intrinsic 16:9 default size.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/surfaces/dither-aperture/dither-aperture.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/dither-aperture.tsx",
+      "content": "import type { CSSProperties, ReactNode } from \"react\";\nimport \"./dither-aperture.css\";\n\ninterface DitherApertureProps {\n  aspectRatio?: CSSProperties[\"aspectRatio\"];\n  children: ReactNode;\n  className?: string;\n  focus?: string;\n}\n\nexport function DitherAperture({\n  aspectRatio = \"16 / 9\",\n  children,\n  className = \"\",\n  focus = \"70% 38%\",\n}: DitherApertureProps) {\n  const style = {\n    \"--tb-dither-focus\": focus,\n    aspectRatio,\n  } as CSSProperties;\n\n  return (\n    <div className={`tb-dither-aperture ${className}`.trim()} style={style}>\n      <div className=\"tb-dither-aperture__media\">{children}</div>\n      <div className=\"tb-dither-aperture__veil\" aria-hidden=\"true\" />\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "registry/effects/surfaces/dither-aperture/dither-aperture.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/dither-aperture.css",
+      "content": ".tb-dither-aperture {\n  position: relative;\n  isolation: isolate;\n  min-inline-size: 0;\n  aspect-ratio: 16 / 9;\n  overflow: hidden;\n  background: #d8d8d0;\n}\n\n.tb-dither-aperture__media {\n  position: absolute;\n  inset: 0;\n}\n\n.tb-dither-aperture__veil {\n  position: absolute;\n  inset: -2px;\n  pointer-events: none;\n  background:\n    radial-gradient(circle, rgb(20 22 22 / 0.78) 0 1px, transparent 1.2px) 0 0 / 6px 6px,\n    radial-gradient(circle, rgb(20 22 22 / 0.44) 0 0.7px, transparent 1px) 3px 3px / 6px 6px,\n    rgb(223 222 211 / 0.52);\n  -webkit-mask-image: radial-gradient(\n    ellipse 45% 52% at var(--tb-dither-focus),\n    transparent 0 34%,\n    rgb(0 0 0 / 0.18) 49%,\n    #000 78%\n  );\n  mask-image: radial-gradient(\n    ellipse 45% 52% at var(--tb-dither-focus),\n    transparent 0 34%,\n    rgb(0 0 0 / 0.18) 49%,\n    #000 78%\n  );\n}\n\n@media (forced-colors: active) {\n  .tb-dither-aperture__veil {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Surface Effects",
+    "sections": [
+      "Hero",
+      "Selected Work or Archive",
+      "Project or Case Study",
+      "Gallery or Showreel",
+      "Content, Resources, and Events"
+    ],
+    "runtime": "css",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "The dot veil is static and decorative; supplied media keeps its semantics and the aspectRatio prop prevents a zero-height install."
+    },
+    "performance": {
+      "budget": "Three CSS gradients and one mask; no raster texture, script, or animation loop."
+    }
+  }
+}

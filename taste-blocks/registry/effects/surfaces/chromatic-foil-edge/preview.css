@@ -1,0 +1,45 @@
+.tb-chromatic-foil-edge-preview {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  color: #f5f1e8;
+  background: #181817;
+}
+
+.tb-chromatic-foil-edge-preview h2,
+.tb-chromatic-foil-edge-preview p {
+  margin: 0;
+}
+
+.tb-chromatic-foil-edge-preview h2 {
+  max-width: 13ch;
+  font: 560 clamp(2rem, 5vw, 4.4rem) / 0.95 system-ui, sans-serif;
+  letter-spacing: -0.06em;
+}
+
+.tb-chromatic-foil-edge-preview p {
+  max-width: 33rem;
+  margin-top: 1.2rem;
+  color: rgb(245 241 232 / 0.72);
+  font: 450 0.95rem / 1.55 system-ui, sans-serif;
+}
+
+.tb-chromatic-foil-edge-preview button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(245 241 232 / 0.34);
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: 620 0.88rem / 1 system-ui, sans-serif;
+}
+
+.tb-chromatic-foil-edge-preview button:focus-visible {
+  outline: 2px solid #f5f1e8;
+  outline-offset: 5px;
+}

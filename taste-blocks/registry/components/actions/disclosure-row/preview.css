@@ -1,0 +1,12 @@
+.tb-disclosure-preview {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: clamp(2rem, 7vw, 6rem);
+  color: #191b1a;
+  background: #eef0ed;
+}
+
+.tb-disclosure-preview__content {
+  width: min(100%, 54rem);
+}

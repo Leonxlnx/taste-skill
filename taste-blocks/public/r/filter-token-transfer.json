@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "filter-token-transfer",
+  "type": "registry:component",
+  "title": "Filter Token Transfer",
+  "description": "A two-bucket filter control that makes available and applied criteria explicit.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/components/actions/filter-token-transfer/filter-token-transfer.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/filter-token-transfer.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useId, useLayoutEffect, useRef, useState } from \"react\";\nimport \"./filter-token-transfer.css\";\n\nexport interface FilterToken {\n  id: string;\n  label: string;\n}\n\nexport interface FilterTokenTransferProps {\n  tokens: FilterToken[];\n  defaultSelected?: string[];\n  onChange?: (selected: string[]) => void;\n}\n\nexport function FilterTokenTransfer({\n  tokens,\n  defaultSelected = [],\n  onChange,\n}: FilterTokenTransferProps) {\n  const [selected, setSelected] = useState(defaultSelected);\n  const [announcement, setAnnouncement] = useState(\"\");\n  const availableId = useId();\n  const appliedId = useId();\n  const tokenRefs = useRef(new Map<string, HTMLButtonElement>());\n  const pendingFocus = useRef<string | null>(null);\n  const available = tokens.filter((token) => !selected.includes(token.id));\n  const applied = tokens.filter((token) => selected.includes(token.id));\n\n  useLayoutEffect(() => {\n    if (!pendingFocus.current) return;\n    tokenRefs.current.get(pendingFocus.current)?.focus();\n    pendingFocus.current = null;\n  }, [selected]);\n\n  useEffect(() => {\n    const validIds = new Set(tokens.map((token) => token.id));\n    for (const id of tokenRefs.current.keys()) {\n      if (!validIds.has(id)) tokenRefs.current.delete(id);\n    }\n\n    const next = selected.filter((id) => validIds.has(id));\n    if (next.length === selected.length) return;\n    if (pendingFocus.current && !validIds.has(pendingFocus.current)) {\n      pendingFocus.current = null;\n    }\n    setSelected(next);\n    setAnnouncement(\"Unavailable filters removed.\");\n    onChange?.(next);\n  }, [onChange, selected, tokens]);\n\n  function move(token: FilterToken, apply: boolean) {\n    const next = apply\n      ? [...selected, token.id]\n      : selected.filter((id) => id !== token.id);\n    pendingFocus.current = token.id;\n    setSelected(next);\n    setAnnouncement(`${token.label} ${apply ? \"applied\" : \"removed\"}.`);\n    onChange?.(next);\n  }\n\n  return (\n    <div className=\"tb-token-transfer\">\n      <section className=\"tb-token-transfer__bucket\" aria-labelledby={availableId}>\n        <div className=\"tb-token-transfer__header\">\n          <span className=\"tb-token-transfer__label\" id={availableId}>Available</span>\n          <span>{available.length}</span>\n        </div>\n        <div className=\"tb-token-transfer__tokens\">\n          {available.map((token) => (\n            <button\n              aria-label={`Add ${token.label}`}\n              className=\"tb-token-transfer__token\"\n              key={token.id}\n              onClick={() => move(token, true)}\n              ref={(element) => {\n                if (element) tokenRefs.current.set(token.id, element);\n                else tokenRefs.current.delete(token.id);\n              }}\n              type=\"button\"\n            >\n              <span>{token.label}</span>\n              <span aria-hidden=\"true\">Add</span>\n            </button>\n          ))}\n          {!available.length ? <p>All filters are applied.</p> : null}\n        </div>\n      </section>\n      <section className=\"tb-token-transfer__bucket tb-token-transfer__bucket--applied\" aria-labelledby={appliedId}>\n        <div className=\"tb-token-transfer__header\">\n          <span className=\"tb-token-transfer__label\" id={appliedId}>Applied</span>\n          <span>{applied.length}</span>\n        </div>\n        <div className=\"tb-token-transfer__tokens\">\n          {applied.map((token) => (\n            <button\n              aria-label={`Remove ${token.label}`}\n              className=\"tb-token-transfer__token\"\n              key={token.id}\n              onClick={() => move(token, false)}\n              ref={(element) => {\n                if (element) tokenRefs.current.set(token.id, element);\n                else tokenRefs.current.delete(token.id);\n              }}\n              type=\"button\"\n            >\n              <span>{token.label}</span>\n              <span aria-hidden=\"true\">Remove</span>\n            </button>\n          ))}\n          {!applied.length ? <p>No filters applied.</p> : null}\n        </div>\n      </section>\n      <span className=\"tb-token-transfer__status\" aria-live=\"polite\">\n        {announcement}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "registry/components/actions/filter-token-transfer/filter-token-transfer.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/filter-token-transfer.css",
+      "content": ".tb-token-transfer {\n  position: relative;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));\n  gap: 1px;\n  width: min(100%, 58rem);\n  color: #161817;\n  border: 1px solid #161817;\n  background: #161817;\n}\n\n.tb-token-transfer__bucket {\n  min-width: 0;\n  background: #f5f6ef;\n}\n\n.tb-token-transfer__header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  min-height: 3.3rem;\n  padding: 0.7rem 1rem;\n  border-bottom: 1px solid #161817;\n}\n\n.tb-token-transfer__label {\n  font: 700 0.83rem/1 system-ui, sans-serif;\n}\n\n.tb-token-transfer__header > span:last-child {\n  display: grid;\n  place-items: center;\n  min-width: 1.65rem;\n  min-height: 1.65rem;\n  border: 1px solid currentColor;\n  border-radius: 99rem;\n  font: 600 0.72rem/1 ui-monospace, monospace;\n}\n\n.tb-token-transfer__bucket--applied > .tb-token-transfer__header {\n  color: #e7ff7d;\n  background: #161817;\n}\n\n.tb-token-transfer__tokens {\n  display: grid;\n  gap: 0.55rem;\n  align-content: start;\n  min-height: 13rem;\n  padding: 0.8rem;\n}\n\n.tb-token-transfer__tokens > p {\n  margin: auto;\n  color: #70746f;\n  font: 500 0.82rem/1.45 system-ui, sans-serif;\n  text-align: center;\n}\n\n.tb-token-transfer__token {\n  appearance: none;\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  align-items: center;\n  gap: 1rem;\n  width: 100%;\n  min-height: 2.8rem;\n  padding: 0.65rem 0.8rem;\n  color: #161817;\n  border: 1px solid #aeb2ac;\n  background: #fff;\n  font: 620 0.79rem/1.2 system-ui, sans-serif;\n  text-align: left;\n  cursor: pointer;\n  touch-action: manipulation;\n}\n\n.tb-token-transfer__token span:last-child {\n  color: #686d68;\n  font: 500 0.68rem/1 ui-monospace, monospace;\n  text-transform: uppercase;\n}\n\n@media (hover: hover) and (pointer: fine) {\n  .tb-token-transfer__token:hover {\n    border-color: #161817;\n    background: #e7ff7d;\n  }\n}\n\n.tb-token-transfer__token:active {\n  transform: translateY(1px);\n}\n\n.tb-token-transfer__token:focus-visible {\n  position: relative;\n  z-index: 1;\n  outline: 3px solid #3155ff;\n  outline-offset: 2px;\n}\n\n.tb-token-transfer__status {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n}\n\n@media (forced-colors: active) {\n  .tb-token-transfer,\n  .tb-token-transfer__header,\n  .tb-token-transfer__token {\n    border-color: CanvasText;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "chrome",
+    "category": "Navigation",
+    "sections": [
+      "Services, Features, and Capabilities",
+      "Selected Work or Archive",
+      "Content, Resources, and Events"
+    ],
+    "runtime": "dom",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "Every token is a named native button with an explicit Add or Remove label. Focus follows the moved token into its new bucket, removed token IDs are pruned when options change, a polite live region reports changes, and empty buckets remain clear."
+    },
+    "performance": {
+      "budget": "Local array state only; no observers, global listeners, or continuous animation."
+    }
+  }
+}

@@ -1,0 +1,110 @@
+.tb-disclosure {
+  color: #191b1a;
+  border-top: 1px solid #191b1a;
+  background: transparent;
+}
+
+.tb-disclosure:last-child {
+  border-bottom: 1px solid #191b1a;
+}
+
+.tb-disclosure__summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.2rem;
+  align-items: center;
+  gap: 2rem;
+  min-height: 4.8rem;
+  padding: 1rem 0;
+  font: 680 clamp(1.05rem, 1rem + 0.5vw, 1.5rem)/1.2 system-ui, sans-serif;
+  letter-spacing: -0.025em;
+  cursor: pointer;
+  list-style: none;
+  touch-action: manipulation;
+}
+
+.tb-disclosure__summary::-webkit-details-marker {
+  display: none;
+}
+
+.tb-disclosure__summary::marker {
+  content: "";
+}
+
+.tb-disclosure__mark {
+  position: relative;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.tb-disclosure__mark::before,
+.tb-disclosure__mark::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.1rem;
+  height: 2px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+  transition: transform 150ms ease-out;
+}
+
+.tb-disclosure__mark::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.tb-disclosure[open] .tb-disclosure__mark::after {
+  transform: translate(-50%, -50%) rotate(0);
+}
+
+.tb-disclosure__summary:focus-visible {
+  outline: 3px solid #2e53ff;
+  outline-offset: 5px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tb-disclosure__summary:hover {
+    color: #2e53ff;
+  }
+}
+
+.tb-disclosure__body {
+  max-width: 58ch;
+  padding: 0 3rem 1.6rem 0;
+  color: #555b57;
+  font: 450 0.96rem/1.6 system-ui, sans-serif;
+  animation: tb-disclosure-enter 170ms ease-out both;
+}
+
+.tb-disclosure__body > :first-child {
+  margin-top: 0;
+}
+
+.tb-disclosure__body > :last-child {
+  margin-bottom: 0;
+}
+
+@keyframes tb-disclosure-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-disclosure__mark::before,
+  .tb-disclosure__mark::after {
+    transition: none;
+  }
+
+  .tb-disclosure__body {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-disclosure,
+  .tb-disclosure:last-child {
+    border-color: CanvasText;
+  }
+}

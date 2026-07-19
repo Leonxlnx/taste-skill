@@ -1,17 +1,14 @@
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  CopyIcon,
-  GithubLogoIcon,
-  MagnifyingGlassIcon,
-} from "@phosphor-icons/react";
-import { useEffect, useMemo, useState } from "react";
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check";
+import { CopyIcon } from "@phosphor-icons/react/dist/csr/Copy";
+import { GithubLogoIcon } from "@phosphor-icons/react/dist/csr/GithubLogo";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   catalog,
-  categories,
   findEntry,
   homepageCatalog,
-  verifiedCatalog,
+  visibleCatalog,
 } from "../catalog/catalog";
 import type { CatalogEntry } from "../catalog/types";
 import { PreviewStage } from "./PreviewStage";
@@ -100,15 +97,19 @@ function SearchField({
   );
 }
 
-function EntryCard({ entry, index }: { entry: CatalogEntry; index: number }) {
+function EntryCard({
+  entry,
+  index,
+  fill = false,
+}: {
+  entry: CatalogEntry;
+  index: number;
+  fill?: boolean;
+}) {
   return (
     <article
-      className={`entry-card entry-card--${entry.display?.size ?? "standard"}`}
+      className={`entry-card entry-card--${entry.display?.size ?? "standard"}${fill ? " entry-card--fill" : ""}`}
     >
-      <a className="entry-card__preview" href={`#/blocks/${entry.name}`}>
-        <PreviewStage entry={entry} eager={index < 4} />
-        <span className="sr-only">Open {entry.title}</span>
-      </a>
       <div className="entry-card__meta">
         <div>
           <h2>
@@ -131,11 +132,20 @@ function EntryCard({ entry, index }: { entry: CatalogEntry; index: number }) {
           </div>
         </dl>
       </div>
+      <div className="entry-card__preview">
+        <PreviewStage entry={entry} eager={index < 4} />
+      </div>
     </article>
   );
 }
 
-function CatalogGrid({ entries }: { entries: CatalogEntry[] }) {
+function CatalogGrid({
+  entries,
+  fillLast = false,
+}: {
+  entries: CatalogEntry[];
+  fillLast?: boolean;
+}) {
   if (!entries.length) {
     return (
       <div className="empty-state">
@@ -148,7 +158,12 @@ function CatalogGrid({ entries }: { entries: CatalogEntry[] }) {
   return (
     <div className="catalog-grid">
       {entries.map((entry, index) => (
-        <EntryCard entry={entry} index={index} key={entry.name} />
+        <EntryCard
+          entry={entry}
+          fill={fillLast && index === entries.length - 1}
+          index={index}
+          key={entry.name}
+        />
       ))}
     </div>
   );
@@ -156,10 +171,11 @@ function CatalogGrid({ entries }: { entries: CatalogEntry[] }) {
 
 function HomePage() {
   const [query, setQuery] = useState("");
+  const hasDrafts = import.meta.env.DEV && visibleCatalog.some((entry) => entry.status === "draft");
   const visibleEntries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return homepageCatalog;
-    return verifiedCatalog.filter((entry) =>
+    return visibleCatalog.filter((entry) =>
       [
         entry.title,
         entry.description,
@@ -173,6 +189,29 @@ function HomePage() {
         .includes(normalized),
     );
   }, [query]);
+
+  const groups = [
+    {
+      id: "page-blocks",
+      title: "Page blocks",
+      description: "Complete sections with distinct content structures and responsive behavior.",
+      entries: homepageCatalog.filter((entry) => entry.kind === "block"),
+    },
+    {
+      id: "motion-controls",
+      title: "Motion and controls",
+      description: "Text, state, navigation, and interaction patterns with useful static fallbacks.",
+      entries: homepageCatalog.filter(
+        (entry) => (entry.display?.order ?? 0) >= 11 && (entry.display?.order ?? 0) <= 24,
+      ),
+    },
+    {
+      id: "visual-surfaces",
+      title: "Visual surfaces",
+      description: "Bounded CSS, SVG, Canvas, media, and pointer treatments for real compositions.",
+      entries: homepageCatalog.filter((entry) => (entry.display?.order ?? 0) >= 25),
+    },
+  ];
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -200,30 +239,52 @@ function HomePage() {
             and websites.
           </p>
         </div>
-        <div className="masthead__count" aria-label={`${verifiedCatalog.length} verified entries`}>
-          <strong>{verifiedCatalog.length}</strong>
-          <span>verified entries</span>
+        <div
+          className="masthead__count"
+          aria-label={`${visibleCatalog.length} ${hasDrafts ? "local preview" : "verified"} entries`}
+        >
+          <strong>{visibleCatalog.length}</strong>
+          <span>{hasDrafts ? "entries under review" : "verified entries"}</span>
         </div>
         <SearchField value={query} onChange={setQuery} />
       </section>
 
-      <section className="catalog-section" aria-labelledby="selected-heading">
-        <div className="section-heading">
-          <div>
-            <h2 id="selected-heading">
-              {query ? "Search results" : "Selected systems"}
-            </h2>
-            <p>
-              Working specimens with source, reduced-motion behavior, and clear
-              usage boundaries.
-            </p>
+      {query ? (
+        <section className="catalog-section" aria-labelledby="search-results-heading">
+          <div className="section-heading">
+            <div>
+              <h2 id="search-results-heading">Search results</h2>
+              <p>Matches include purpose, website section, runtime, and tags.</p>
+            </div>
+            <a className="text-link" href="#/blocks">
+              Browse all <ArrowRightIcon size={16} aria-hidden="true" />
+            </a>
           </div>
-          <a className="text-link" href="#/blocks">
-            Browse all <ArrowRightIcon size={16} aria-hidden="true" />
-          </a>
-        </div>
-        <CatalogGrid entries={visibleEntries} />
-      </section>
+          <CatalogGrid entries={visibleEntries} />
+        </section>
+      ) : (
+        groups.map((group) => (
+          <section
+            className="catalog-section catalog-section--grouped"
+            aria-labelledby={`${group.id}-heading`}
+            key={group.id}
+          >
+            <div className="section-heading">
+              <div>
+                <h2 id={`${group.id}-heading`}>{group.title}</h2>
+                <p>{group.description}</p>
+              </div>
+              <a className="text-link" href="#/blocks">
+                Browse all <ArrowRightIcon size={16} aria-hidden="true" />
+              </a>
+            </div>
+            <CatalogGrid
+              entries={group.entries}
+              fillLast={group.id === "visual-surfaces"}
+            />
+          </section>
+        ))
+      )}
 
       <section className="source-note">
         <div>
@@ -244,38 +305,46 @@ function HomePage() {
 
 function BlocksPage() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const [kind, setKind] = useState("all");
   const entries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return verifiedCatalog.filter((entry) => {
-      const matchesCategory = category === "all" || entry.category === category;
+    return visibleCatalog.filter((entry) => {
+      const matchesKind = kind === "all" || entry.kind === kind;
       const matchesQuery =
         !normalized ||
         [entry.title, entry.description, ...entry.tags, ...entry.sections]
           .join(" ")
           .toLowerCase()
           .includes(normalized);
-      return matchesCategory && matchesQuery;
+      return matchesKind && matchesQuery;
     });
-  }, [category, query]);
+  }, [kind, query]);
+
+  const kinds = [
+    { value: "all", label: "All" },
+    { value: "block", label: "Page blocks" },
+    { value: "chrome", label: "Site chrome" },
+    { value: "component", label: "Components" },
+    { value: "effect", label: "Effects" },
+  ];
 
   return (
     <main className="inner-page">
       <header className="page-intro">
         <h1>Blocks</h1>
-        <p>Verified components and complete website sections.</p>
+        <p>Components, effects, and complete website sections.</p>
       </header>
       <div className="catalog-tools">
         <SearchField value={query} onChange={setQuery} />
-        <div className="filter-row" aria-label="Filter by category">
-          {["all", ...categories].map((item) => (
+        <div className="filter-row" aria-label="Filter by type">
+          {kinds.map((item) => (
             <button
-              className={category === item ? "is-active" : ""}
-              key={item}
-              onClick={() => setCategory(item)}
+              className={kind === item.value ? "is-active" : ""}
+              key={item.value}
+              onClick={() => setKind(item.value)}
               type="button"
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </div>
@@ -285,22 +354,49 @@ function BlocksPage() {
   );
 }
 
-function CopyInstall({ name }: { name: string }) {
-  const [copied, setCopied] = useState(false);
+function CopyInstall({ name, enabled }: { name: string; enabled: boolean }) {
+  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+  const resetTimer = useRef<number | null>(null);
   const command = `npx shadcn@latest add ${window.location.origin}/r/${name}.json`;
 
+  useEffect(
+    () => () => {
+      if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);
+    },
+    [],
+  );
+
   async function copy() {
-    await navigator.clipboard.writeText(command);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
+    if (!enabled) return;
+    if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);
+
+    try {
+      await navigator.clipboard.writeText(command);
+      setStatus("copied");
+    } catch {
+      setStatus("error");
+    }
+
+    resetTimer.current = window.setTimeout(() => {
+      setStatus("idle");
+      resetTimer.current = null;
+    }, 1800);
+  }
+
+  if (!enabled) {
+    return <p className="install-note">Install command available after verification.</p>;
   }
 
   return (
     <div className="install-command">
       <code>{command}</code>
       <button onClick={copy} type="button">
-        {copied ? <CheckIcon aria-hidden="true" /> : <CopyIcon aria-hidden="true" />}
-        {copied ? "Copied" : "Copy"}
+        {status === "copied" ? (
+          <CheckIcon aria-hidden="true" />
+        ) : (
+          <CopyIcon aria-hidden="true" />
+        )}
+        {status === "copied" ? "Copied" : status === "error" ? "Copy failed" : "Copy"}
       </button>
     </div>
   );
@@ -308,7 +404,10 @@ function CopyInstall({ name }: { name: string }) {
 
 function DetailPage({ slug }: { slug: string }) {
   const entry = findEntry(slug);
-  if (!entry || entry.status !== "verified") {
+  if (
+    !entry ||
+    (entry.status !== "verified" && !(import.meta.env.DEV && entry.status === "draft"))
+  ) {
     return (
       <main className="inner-page not-found">
         <h1>Block not found</h1>
@@ -342,11 +441,11 @@ function DetailPage({ slug }: { slug: string }) {
           </div>
         </dl>
       </header>
-      <PreviewStage entry={entry} eager expanded />
+      <PreviewStage entry={entry} eager expanded key={entry.name} />
       <section className="detail-docs">
         <div>
           <h2>Install</h2>
-          <CopyInstall name={entry.name} />
+          <CopyInstall name={entry.name} enabled={entry.status === "verified"} />
         </div>
         <div>
           <h2>Behavior</h2>
@@ -471,7 +570,6 @@ function Footer() {
         <a href="#/sources">Sources</a>
         <a href="#/license">License</a>
       </nav>
-      <span>v0.1</span>
     </footer>
   );
 }

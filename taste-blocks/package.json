@@ -8,8 +8,10 @@
     "build": "npm run build:registry && tsc -b && vite build",
     "build:registry": "node scripts/build-registry.mjs",
     "check:registry": "node scripts/check-registry.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
     "typecheck": "tsc -b --pretty false",
-    "verify": "npm run check:registry && npm run build"
+    "check": "npm run verify",
+    "verify": "npm run check:secrets && npm run check:registry && npm run build"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

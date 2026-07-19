@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "compact-footer",
+  "type": "registry:block",
+  "title": "Compact Footer",
+  "description": "A restrained site footer that closes with identity, useful destinations, and legal text only.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/blocks/footer/compact-footer/compact-footer.tsx",
+      "type": "registry:block",
+      "target": "components/taste-blocks/compact-footer.tsx",
+      "content": "import \"./compact-footer.css\";\n\nexport interface CompactFooterLink {\n  label: string;\n  href: string;\n}\n\nexport interface CompactFooterProps {\n  brand: string;\n  statement?: string;\n  links: CompactFooterLink[];\n  legalLinks?: CompactFooterLink[];\n  copyright: string;\n}\n\nexport function CompactFooter({\n  brand,\n  statement,\n  links,\n  legalLinks = [],\n  copyright,\n}: CompactFooterProps) {\n  return (\n    <footer className=\"tb-compact-footer\">\n      <div className=\"tb-compact-footer__brand\">\n        <strong>{brand}</strong>\n        {statement ? <p>{statement}</p> : null}\n      </div>\n      <nav aria-label=\"Footer navigation\">\n        {links.map((link) => (\n          <a href={link.href} key={`${link.label}-${link.href}`}>\n            {link.label}\n          </a>\n        ))}\n      </nav>\n      <div className=\"tb-compact-footer__legal\">\n        <span>{copyright}</span>\n        {legalLinks.map((link) => (\n          <a href={link.href} key={`${link.label}-${link.href}`}>\n            {link.label}\n          </a>\n        ))}\n      </div>\n    </footer>\n  );\n}\n"
+    },
+    {
+      "path": "registry/blocks/footer/compact-footer/compact-footer.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/compact-footer.css",
+      "content": ".tb-compact-footer {\n  --tb-cf-ink: #e8ece6;\n  --tb-cf-ground: #242927;\n  --tb-cf-accent: #d8e359;\n  container-type: inline-size;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));\n  gap: clamp(2rem, 5vw, 6rem);\n  align-items: start;\n  padding: clamp(2.25rem, 4%, 4rem) clamp(1.25rem, 5%, 5.5rem);\n  color: var(--tb-cf-ink);\n  background: var(--tb-cf-ground);\n}\n\n.tb-compact-footer,\n.tb-compact-footer * {\n  box-sizing: border-box;\n}\n\n.tb-compact-footer__brand strong {\n  font-size: clamp(1.7rem, 4cqi, 3rem);\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  overflow-wrap: anywhere;\n}\n\n.tb-compact-footer__brand p {\n  max-width: 30rem;\n  margin: 1rem 0 0;\n  color: #bac2bd;\n  line-height: 1.5;\n}\n\n.tb-compact-footer nav {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(7rem, 100%), 1fr));\n  gap: 0.85rem 2rem;\n}\n\n.tb-compact-footer a {\n  width: fit-content;\n  color: inherit;\n  text-decoration-thickness: 0.1em;\n  text-underline-offset: 0.3em;\n  overflow-wrap: anywhere;\n  transition: color 140ms ease-out;\n}\n\n.tb-compact-footer a:hover {\n  color: var(--tb-cf-accent);\n}\n\n.tb-compact-footer a:focus-visible {\n  outline: 3px solid var(--tb-cf-accent);\n  outline-offset: 4px;\n}\n\n.tb-compact-footer__legal {\n  grid-column: 1 / -1;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem 1.5rem;\n  align-items: center;\n  padding-top: 1.5rem;\n  border-top: 1px solid rgb(232 236 230 / 0.24);\n  color: #bac2bd;\n  font-size: 0.82rem;\n}\n\n@media (forced-colors: active) {\n  .tb-compact-footer {\n    border-top: 1px solid CanvasText;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "block",
+    "category": "Footer",
+    "sections": [
+      "Footer"
+    ],
+    "runtime": "css",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "Footer destinations use semantic navigation and all links have visible focus states."
+    },
+    "performance": {
+      "budget": "Static HTML and CSS only."
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "press-depth-button",
+  "title": "Press Depth Button",
+  "description": "A tactile button with a stable hit area and a short, physical press state.",
+  "type": "registry:component",
+  "kind": "component",
+  "category": "Actions",
+  "sections": ["Hero", "Signup, Registration, or Application", "Call to Action"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["button", "press", "tactile", "action", "feedback"],
+  "files": ["press-depth-button.tsx", "press-depth-button.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "simplified",
+    "notes": "Uses a native button, preserves a stable hit area, exposes disabled and pressed states, and keeps a visible focus ring. Reduced motion removes travel while retaining color and border feedback."
+  },
+  "performance": {
+    "budget": "CSS-only feedback; no listeners, timers, or continuous work."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 19
+  }
+}

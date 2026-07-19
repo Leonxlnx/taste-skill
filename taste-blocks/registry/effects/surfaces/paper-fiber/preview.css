@@ -1,0 +1,41 @@
+.tb-paper-fiber-preview {
+  container-type: inline-size;
+  min-height: 340px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.25rem, 7%, 4rem);
+}
+
+.tb-paper-fiber-preview > div {
+  flex: 1 1 20rem;
+  min-width: 0;
+  max-width: 35rem;
+}
+
+.tb-paper-fiber-preview h2,
+.tb-paper-fiber-preview p {
+  margin: 0;
+}
+
+.tb-paper-fiber-preview h2 {
+  max-width: 14ch;
+  font: 500 clamp(2rem, 10cqi, 5rem) / 0.94 Georgia, serif;
+  letter-spacing: -0.05em;
+}
+
+.tb-paper-fiber-preview p {
+  max-width: 42rem;
+  margin-top: 1.5rem;
+  font: 500 0.98rem / 1.6 system-ui, sans-serif;
+}
+
+.tb-paper-fiber-preview .tb-paper-fiber-preview__note {
+  flex: 0 1 13rem;
+  margin: 0;
+  color: rgb(36 34 31 / 0.78);
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}

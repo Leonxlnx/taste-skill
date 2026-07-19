@@ -1,0 +1,36 @@
+{
+  "name": "editorial-statement-hero",
+  "title": "Editorial Statement Hero",
+  "description": "A type-led opening for a concise point of view, with a quiet route into the page.",
+  "type": "registry:block",
+  "kind": "block",
+  "category": "Hero",
+  "sections": ["Hero"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["editorial", "typography", "statement", "portfolio"],
+  "files": ["editorial-statement-hero.tsx", "editorial-statement-hero.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "The composition uses normal document flow, natural wrapping, and a visible keyboard focus treatment."
+  },
+  "performance": {
+    "budget": "CSS and text only."
+  },
+  "display": {
+    "size": "tall",
+    "homepage": true,
+    "order": 2
+  }
+}

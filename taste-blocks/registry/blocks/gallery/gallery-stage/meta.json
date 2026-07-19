@@ -1,0 +1,36 @@
+{
+  "name": "gallery-stage",
+  "title": "Gallery Stage",
+  "description": "An image-led gallery with one dominant frame, supporting views, and captions outside the media.",
+  "type": "registry:block",
+  "kind": "block",
+  "category": "Gallery",
+  "sections": ["Gallery or Showreel", "Project or Case Study"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["gallery", "media", "case-study", "showreel"],
+  "files": ["gallery-stage.tsx", "gallery-stage.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "Figures use visible captions. A fallback is decorative unless the caller supplies a meaningful media label."
+  },
+  "performance": {
+    "budget": "Layout itself is CSS-only. Supplied media should be responsive and lazy-loaded below the fold."
+  },
+  "display": {
+    "size": "tall",
+    "homepage": true,
+    "order": 8
+  }
+}

@@ -1,0 +1,83 @@
+.tb-hold-wrap {
+  display: grid;
+  justify-items: stretch;
+  width: min(100%, 23rem);
+}
+
+.tb-hold {
+  appearance: none;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 4rem;
+  overflow: hidden;
+  color: #f7f7f2;
+  border: 1px solid #2a2d2c;
+  border-radius: 0.35rem;
+  background: #202322;
+  font: 690 0.94rem/1 system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.tb-hold__progress {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #dd4f3f;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.tb-hold[data-state="holding"] .tb-hold__progress {
+  transform: scaleX(1);
+  transition: transform var(--tb-hold-duration) linear;
+}
+
+.tb-hold[data-state="confirmed"] .tb-hold__progress {
+  background: #28784d;
+  transform: scaleX(1);
+}
+
+.tb-hold__label {
+  padding: 0.9rem 1.25rem;
+}
+
+.tb-hold:focus-visible {
+  outline: 3px solid #202322;
+  outline-offset: 4px;
+}
+
+.tb-hold:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tb-hold__instruction,
+.tb-hold__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-hold__progress {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-hold,
+  .tb-hold__progress {
+    border: 1px solid ButtonText;
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "gallery-title-sync",
+  "type": "registry:component",
+  "title": "Gallery title sync",
+  "description": "Keeps a gallery title and description synchronized with pointer, keyboard, and touch selection without hiding the available items.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/text/gallery-title-sync/gallery-title-sync.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/gallery-title-sync.tsx",
+      "content": "\"use client\";\n\nimport { useId, useState, type CSSProperties } from \"react\";\nimport \"./gallery-title-sync.css\";\n\nexport interface GalleryTitleSyncItem {\n  id: string;\n  title: string;\n  description: string;\n  color: string;\n}\n\nexport interface GalleryTitleSyncProps {\n  heading: string;\n  items: GalleryTitleSyncItem[];\n  className?: string;\n}\n\nexport function GalleryTitleSync({\n  heading,\n  items,\n  className = \"\",\n}: GalleryTitleSyncProps) {\n  const headingId = useId();\n  const [activeId, setActiveId] = useState(items[0]?.id ?? \"\");\n  const [hasChanged, setHasChanged] = useState(false);\n  const active = items.find((item) => item.id === activeId) ?? items[0];\n\n  if (!active) return null;\n\n  function select(id: string) {\n    setActiveId(id);\n    setHasChanged(true);\n  }\n\n  const panelStyle = { \"--tb-gallery-color\": active.color } as CSSProperties;\n\n  return (\n    <section className={`tb-gallery-title-sync ${className}`.trim()} aria-labelledby={headingId}>\n      <div className=\"tb-gallery-title-sync__layout\">\n        <div className=\"tb-gallery-title-sync__panel\" style={panelStyle} aria-hidden=\"true\">\n          <div\n            className={`tb-gallery-title-sync__copy${hasChanged ? \" tb-gallery-title-sync__copy--changed\" : \"\"}`}\n            key={active.id}\n          >\n            <h3>{active.title}</h3>\n            <p>{active.description}</p>\n          </div>\n        </div>\n        <div className=\"tb-gallery-title-sync__index\">\n          <h2 id={headingId}>{heading}</h2>\n          <div className=\"tb-gallery-title-sync__announce\" aria-live=\"polite\">\n            Selected: {active.title}. {active.description}\n          </div>\n          <div\n            className=\"tb-gallery-title-sync__items\"\n            role=\"group\"\n            aria-label={`${heading} items`}\n          >\n            {items.map((item, index) => (\n              <button\n                type=\"button\"\n                key={item.id}\n                aria-pressed={item.id === active.id}\n                onClick={() => select(item.id)}\n              >\n                <span\n                  className=\"tb-gallery-title-sync__swatch\"\n                  style={{ \"--tb-gallery-swatch\": item.color } as CSSProperties}\n                  aria-hidden=\"true\"\n                />\n                <span>{String(index + 1).padStart(2, \"0\")} · {item.title}</span>\n              </button>\n            ))}\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n\nexport default GalleryTitleSync;\n"
+    },
+    {
+      "path": "registry/effects/text/gallery-title-sync/gallery-title-sync.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/gallery-title-sync.css",
+      "content": ".tb-gallery-title-sync {\n  container-type: inline-size;\n  min-height: inherit;\n  color: #181a18;\n  background: #f1eee7;\n}\n\n.tb-gallery-title-sync__layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.7fr);\n  min-height: inherit;\n}\n\n.tb-gallery-title-sync__panel {\n  display: flex;\n  align-items: flex-end;\n  min-height: 360px;\n  padding: clamp(26px, 6cqi, 72px);\n  background: var(--tb-gallery-color);\n}\n\n.tb-gallery-title-sync__copy {\n  max-width: 42rem;\n}\n\n.tb-gallery-title-sync__copy--changed {\n  animation: tb-gallery-title-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;\n}\n\n.tb-gallery-title-sync__copy h3 {\n  max-width: 12ch;\n  margin: 0;\n  font: 650 clamp(2.4rem, 8cqi, 6.4rem) / 0.95 system-ui, sans-serif;\n  letter-spacing: -0.06em;\n}\n\n.tb-gallery-title-sync__copy p {\n  max-width: 38ch;\n  margin: 22px 0 0;\n  font: 520 clamp(0.94rem, 2cqi, 1.12rem) / 1.45 system-ui, sans-serif;\n}\n\n.tb-gallery-title-sync__index {\n  display: grid;\n  align-content: space-between;\n  gap: 48px;\n  padding: clamp(24px, 4cqi, 44px);\n  border-left: 1px solid #181a18;\n}\n\n.tb-gallery-title-sync__index h2 {\n  margin: 0;\n  font: 650 clamp(1rem, 2.4cqi, 1.3rem) / 1.2 system-ui, sans-serif;\n  letter-spacing: -0.025em;\n}\n\n.tb-gallery-title-sync__items {\n  display: grid;\n}\n\n.tb-gallery-title-sync__items button {\n  display: grid;\n  grid-template-columns: 18px minmax(0, 1fr);\n  align-items: center;\n  gap: 12px;\n  min-height: 48px;\n  padding: 8px 0;\n  border: 0;\n  border-bottom: 1px solid rgb(24 26 24 / 0.35);\n  border-radius: 0;\n  color: inherit;\n  background: transparent;\n  font: 560 0.78rem / 1.25 system-ui, sans-serif;\n  text-align: left;\n  cursor: pointer;\n}\n\n.tb-gallery-title-sync__items button[aria-pressed=\"true\"] {\n  font-weight: 720;\n}\n\n.tb-gallery-title-sync__items button:focus-visible {\n  outline: 2px solid currentColor;\n  outline-offset: 3px;\n}\n\n.tb-gallery-title-sync__swatch {\n  width: 16px;\n  height: 16px;\n  border: 1px solid currentColor;\n  background: var(--tb-gallery-swatch);\n}\n\n.tb-gallery-title-sync__announce {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes tb-gallery-title-in {\n  from { opacity: 0; transform: translateY(18px); }\n}\n\n@container (max-width: 620px) {\n  .tb-gallery-title-sync__layout {\n    grid-template-columns: 1fr;\n  }\n\n  .tb-gallery-title-sync__panel {\n    min-height: 250px;\n  }\n\n  .tb-gallery-title-sync__index {\n    border-top: 1px solid #181a18;\n    border-left: 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .tb-gallery-title-sync__copy--changed {\n    animation: none;\n  }\n}\n\n@media (forced-colors: active) {\n  .tb-gallery-title-sync,\n  .tb-gallery-title-sync__panel {\n    color: CanvasText;\n    background: Canvas;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Text Motion",
+    "sections": [
+      "Selected Work or Archive",
+      "Gallery or Showreel",
+      "Project or Case Study"
+    ],
+    "runtime": "dom",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "Every item is a labeled button, selection works without hover, and the complete selected title and description are announced together."
+    },
+    "performance": {
+      "budget": "One state update and one bounded CSS entrance per explicit selection; no image or animation runtime."
+    }
+  }
+}

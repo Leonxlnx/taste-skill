@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "phase-rings",
+  "type": "registry:component",
+  "title": "Phase Rings",
+  "description": "A restrained Canvas field of intersecting rings that creates depth behind a quiet foreground.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/surfaces/phase-rings/phase-rings.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/phase-rings.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, type ReactNode } from \"react\";\nimport \"./phase-rings.css\";\n\ninterface PhaseRingsProps {\n  children?: ReactNode;\n  className?: string;\n}\n\nexport function PhaseRings({ children, className = \"\" }: PhaseRingsProps) {\n  const rootRef = useRef<HTMLDivElement>(null);\n  const canvasRef = useRef<HTMLCanvasElement>(null);\n\n  useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    const context = canvas?.getContext(\"2d\");\n    if (!root || !canvas || !context) return;\n\n    const reduceMotion = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    let frame = 0;\n    let lastPaint = 0;\n    let inView = false;\n    let width = 1;\n    let height = 1;\n    let dpr = 1;\n\n    const draw = (time = 0) => {\n      context.setTransform(dpr, 0, 0, dpr, 0, 0);\n      context.clearRect(0, 0, width, height);\n      const sources = [\n        { x: width * 0.18, y: height * 0.84, color: \"rgba(134, 160, 255, 0.19)\" },\n        { x: width * 0.78, y: height * 0.22, color: \"rgba(255, 150, 119, 0.16)\" },\n        { x: width * 0.92, y: height * 0.92, color: \"rgba(229, 220, 181, 0.09)\" },\n      ];\n      const maxRadius = Math.hypot(width, height);\n      const step = maxRadius / 22;\n      const phase = reduceMotion.matches\n        ? 0\n        : Math.sin(time * 0.00028) * Math.min(width, height) * 0.018;\n\n      context.lineWidth = 1;\n      context.globalCompositeOperation = \"screen\";\n      for (const [sourceIndex, source] of sources.entries()) {\n        context.strokeStyle = source.color;\n        for (let ring = 1; ring <= 22; ring += 1) {\n          const radius = ring * step;\n          const offset = (sourceIndex - 1) * phase;\n          context.beginPath();\n          context.arc(source.x, source.y, Math.max(1, radius + offset), 0, Math.PI * 2);\n          context.stroke();\n        }\n      }\n      context.globalCompositeOperation = \"source-over\";\n    };\n\n    const stop = () => {\n      cancelAnimationFrame(frame);\n      frame = 0;\n    };\n\n    const tick = (time: number) => {\n      if (time - lastPaint > 50) {\n        draw(time);\n        lastPaint = time;\n      }\n      frame = requestAnimationFrame(tick);\n    };\n\n    const sync = () => {\n      const shouldRun =\n        inView && !document.hidden && !reduceMotion.matches;\n      stop();\n      if (shouldRun) frame = requestAnimationFrame(tick);\n      else draw(0);\n    };\n\n    const resize = () => {\n      const bounds = root.getBoundingClientRect();\n      width = Math.max(1, bounds.width);\n      height = Math.max(1, bounds.height);\n      dpr = window.innerWidth < 640 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);\n      canvas.width = Math.ceil(width * dpr);\n      canvas.height = Math.ceil(height * dpr);\n      draw(0);\n    };\n\n    const intersection =\n      \"IntersectionObserver\" in window\n        ? new IntersectionObserver(\n            ([entry]) => {\n              inView = Boolean(entry?.isIntersecting);\n              sync();\n            },\n            { rootMargin: \"0px\" },\n          )\n        : null;\n    const resizeObserver =\n      \"ResizeObserver\" in window ? new ResizeObserver(resize) : null;\n    const handleVisibility = () => sync();\n    const handleMotion = () => sync();\n\n    resize();\n    intersection?.observe(root);\n    resizeObserver?.observe(root);\n    if (!resizeObserver) window.addEventListener(\"resize\", resize);\n    document.addEventListener(\"visibilitychange\", handleVisibility);\n    reduceMotion.addEventListener(\"change\", handleMotion);\n\n    return () => {\n      stop();\n      intersection?.disconnect();\n      resizeObserver?.disconnect();\n      window.removeEventListener(\"resize\", resize);\n      document.removeEventListener(\"visibilitychange\", handleVisibility);\n      reduceMotion.removeEventListener(\"change\", handleMotion);\n    };\n  }, []);\n\n  return (\n    <div ref={rootRef} className={`tb-phase-rings ${className}`.trim()}>\n      <div className=\"tb-phase-rings__fallback\" aria-hidden=\"true\" />\n      <canvas ref={canvasRef} className=\"tb-phase-rings__canvas\" aria-hidden=\"true\" />\n      <div className=\"tb-phase-rings__content\">{children}</div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "registry/effects/surfaces/phase-rings/phase-rings.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/phase-rings.css",
+      "content": ".tb-phase-rings {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  color: #f5f2e9;\n  background: #10131a;\n}\n\n.tb-phase-rings__fallback,\n.tb-phase-rings__canvas {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  width: 100%;\n  height: 100%;\n  pointer-events: none;\n}\n\n.tb-phase-rings__fallback {\n  background:\n    radial-gradient(circle at 20% 82%, transparent 0 27%, rgb(134 160 255 / 0.1) 27.3%, transparent 27.7% 33%, rgb(134 160 255 / 0.08) 33.3%, transparent 33.7%),\n    radial-gradient(circle at 78% 22%, transparent 0 22%, rgb(255 150 119 / 0.09) 22.3%, transparent 22.7% 30%, rgb(255 150 119 / 0.07) 30.3%, transparent 30.7%);\n}\n\n.tb-phase-rings__content {\n  position: relative;\n}\n\n@media (forced-colors: active) {\n  .tb-phase-rings__fallback,\n  .tb-phase-rings__canvas {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Canvas Effects",
+    "sections": [
+      "Hero",
+      "Introduction or Overview",
+      "Services, Features, and Capabilities",
+      "How It Works",
+      "Call to Action"
+    ],
+    "runtime": "canvas",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "The canvas is decorative and aria-hidden. Reduced motion, offscreen instances, and hidden documents render a static field."
+    },
+    "performance": {
+      "budget": "Canvas 2D at 20 fps, at most 66 ring strokes, DPR capped at 1.5 desktop and 1 mobile."
+    }
+  }
+}

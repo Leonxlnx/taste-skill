@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "directional-link",
+  "type": "registry:component",
+  "title": "Directional link",
+  "description": "Pairs a concrete link label with restrained directional feedback that matches forward, back, external, or download navigation.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/text/directional-link/directional-link.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/directional-link.tsx",
+      "content": "import type { AnchorHTMLAttributes, ReactNode } from \"react\";\nimport \"./directional-link.css\";\n\nexport type DirectionalLinkDirection = \"forward\" | \"back\" | \"external\" | \"download\";\n\nexport interface DirectionalLinkProps\n  extends AnchorHTMLAttributes<HTMLAnchorElement> {\n  children: ReactNode;\n  direction?: DirectionalLinkDirection;\n}\n\nconst arrows: Record<DirectionalLinkDirection, string> = {\n  forward: \"→\",\n  back: \"←\",\n  external: \"↗\",\n  download: \"↓\",\n};\n\nexport function DirectionalLink({\n  children,\n  direction = \"forward\",\n  className = \"\",\n  ...props\n}: DirectionalLinkProps) {\n  return (\n    <a\n      {...props}\n      className={`tb-directional-link ${className}`.trim()}\n      data-direction={direction}\n    >\n      <span className=\"tb-directional-link__label\">{children}</span>\n      <span className=\"tb-directional-link__arrow\" aria-hidden=\"true\">\n        {arrows[direction]}\n      </span>\n    </a>\n  );\n}\n\nexport default DirectionalLink;\n"
+    },
+    {
+      "path": "registry/effects/text/directional-link/directional-link.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/directional-link.css",
+      "content": ".tb-directional-link {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.72em;\n  min-height: 44px;\n  color: #171816;\n  font: 640 clamp(1rem, 3.6cqi, 1.35rem) / 1.2 system-ui, sans-serif;\n  text-decoration: none;\n  min-width: 0;\n}\n\n.tb-directional-link__label {\n  position: relative;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n\n.tb-directional-link__label::after {\n  position: absolute;\n  right: 0;\n  bottom: -0.2em;\n  left: 0;\n  height: 1px;\n  background: currentColor;\n  content: \"\";\n  transform: scaleX(0.22);\n  transform-origin: left;\n}\n\n.tb-directional-link__arrow {\n  display: inline-block;\n  font-size: 1.2em;\n  flex: 0 0 auto;\n}\n\n.tb-directional-link:focus-visible {\n  border-radius: 2px;\n  outline: 2px solid currentColor;\n  outline-offset: 6px;\n}\n\n.tb-directional-link:focus-visible .tb-directional-link__label::after {\n  transform: scaleX(1);\n}\n\n@media (hover: hover) and (pointer: fine) {\n  .tb-directional-link__label::after,\n  .tb-directional-link__arrow {\n    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);\n  }\n\n  .tb-directional-link:hover .tb-directional-link__label::after {\n    transform: scaleX(1);\n  }\n\n  .tb-directional-link[data-direction=\"forward\"]:hover .tb-directional-link__arrow,\n  .tb-directional-link[data-direction=\"external\"]:hover .tb-directional-link__arrow {\n    transform: translate(4px, -1px);\n  }\n\n  .tb-directional-link[data-direction=\"back\"]:hover .tb-directional-link__arrow {\n    transform: translateX(-4px);\n  }\n\n  .tb-directional-link[data-direction=\"download\"]:hover .tb-directional-link__arrow {\n    transform: translateY(4px);\n  }\n}\n\n.tb-directional-link:focus-visible .tb-directional-link__label::after {\n  transition: none;\n}\n\n@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {\n  .tb-directional-link__label::after,\n  .tb-directional-link__arrow {\n    transition: none;\n  }\n}\n\n@media (forced-colors: active) {\n  .tb-directional-link {\n    color: LinkText;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Text Motion",
+    "sections": [
+      "Selected Work or Archive",
+      "Content, Resources, and Events",
+      "Footer"
+    ],
+    "runtime": "css",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "The text label carries the destination; the animated arrow is decorative, and keyboard focus receives an equally clear state."
+    },
+    "performance": {
+      "budget": "Two short CSS transforms on hover-capable pointers; keyboard focus feedback is immediate and no JavaScript runs."
+    }
+  }
+}

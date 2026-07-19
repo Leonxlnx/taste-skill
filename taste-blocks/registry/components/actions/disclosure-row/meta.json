@@ -1,0 +1,36 @@
+{
+  "name": "disclosure-row",
+  "title": "Disclosure Row",
+  "description": "A native details row that keeps long answers out of the way without hiding the question.",
+  "type": "registry:component",
+  "kind": "chrome",
+  "category": "Content",
+  "sections": ["Services, Features, and Capabilities", "FAQ"],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["details", "disclosure", "faq", "accordion", "content"],
+  "files": ["disclosure-row.tsx", "disclosure-row.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "static",
+    "notes": "Built on native details and summary semantics, so keyboard and assistive technology behavior remain available without JavaScript. Reduced motion removes the entry and marker transitions."
+  },
+  "performance": {
+    "budget": "Native disclosure behavior with CSS-only state styling and no JavaScript lifecycle."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 23
+  }
+}

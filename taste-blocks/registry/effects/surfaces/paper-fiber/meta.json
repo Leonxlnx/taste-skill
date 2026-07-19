@@ -1,0 +1,42 @@
+{
+  "name": "paper-fiber",
+  "title": "Paper Fiber",
+  "description": "A quiet layered paper grain for editorial surfaces with caller-controlled surface and ink colors.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Surface Effects",
+  "sections": [
+    "Hero",
+    "Introduction or Overview",
+    "About and Story",
+    "Project or Case Study",
+    "Content, Resources, and Events"
+  ],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["background", "editorial", "texture", "static"],
+  "files": ["paper-fiber.tsx", "paper-fiber.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "The effect is static and decorative. Callers must validate contrast after choosing custom surface and ink colors."
+  },
+  "performance": {
+    "budget": "Static CSS gradients only; no images, filters, observers, or animation loops."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 25
+  }
+}

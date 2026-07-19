@@ -1,0 +1,58 @@
+.tb-editorial-shutter-preview {
+  position: relative;
+  min-height: 370px;
+  overflow: hidden;
+  color: #f7f2e8;
+  background: #171715;
+}
+
+.tb-editorial-shutter-preview__media,
+.tb-editorial-shutter-preview__scene {
+  position: absolute;
+  inset: 0;
+}
+
+.tb-editorial-shutter-preview__scene {
+  overflow: hidden;
+  background:
+    linear-gradient(142deg, transparent 0 44%, rgb(247 242 232 / 0.86) 44.2% 45%, transparent 45.2%),
+    linear-gradient(115deg, #4c282e, #b44e3b 53%, #ddb55c);
+}
+
+.tb-editorial-shutter-preview__arc {
+  position: absolute;
+  top: 8%;
+  right: 10%;
+  width: min(46vw, 380px);
+  aspect-ratio: 1;
+  border: clamp(1.5rem, 6vw, 4.5rem) solid rgb(42 29 31 / 0.88);
+  border-radius: 50%;
+}
+
+.tb-editorial-shutter-preview__copy {
+  position: absolute;
+  z-index: 2;
+  bottom: clamp(1.5rem, 5vw, 3.5rem);
+  left: clamp(1.5rem, 5vw, 3.5rem);
+  max-width: min(34rem, calc(100% - 3rem));
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  background: rgb(23 23 21 / 0.92);
+}
+
+.tb-editorial-shutter-preview h2,
+.tb-editorial-shutter-preview p {
+  margin: 0;
+}
+
+.tb-editorial-shutter-preview h2 {
+  max-width: 14ch;
+  font: 560 clamp(2rem, 5vw, 4.3rem) / 0.95 Georgia, serif;
+  letter-spacing: -0.055em;
+}
+
+.tb-editorial-shutter-preview p {
+  max-width: 30rem;
+  margin-top: 1rem;
+  color: rgb(247 242 232 / 0.76);
+  font: 450 0.95rem / 1.56 system-ui, sans-serif;
+}

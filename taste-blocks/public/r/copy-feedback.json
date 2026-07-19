@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-feedback",
+  "type": "registry:component",
+  "title": "Copy Feedback",
+  "description": "A copyable value with honest success and failure feedback that stays close to the action.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/components/actions/copy-feedback/copy-feedback.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/copy-feedback.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport \"./copy-feedback.css\";\n\nexport interface CopyFeedbackProps {\n  value: string;\n  label?: string;\n}\n\ntype CopyState = \"idle\" | \"copying\" | \"copied\" | \"error\";\n\nasync function writeClipboard(value: string) {\n  if (window.isSecureContext && navigator.clipboard?.writeText) {\n    await navigator.clipboard.writeText(value);\n    return;\n  }\n\n  const previousFocus =\n    document.activeElement instanceof HTMLElement ? document.activeElement : null;\n  const field = document.createElement(\"textarea\");\n\n  try {\n    field.value = value;\n    field.readOnly = true;\n    field.style.position = \"fixed\";\n    field.style.opacity = \"0\";\n    document.body.append(field);\n    field.focus({ preventScroll: true });\n    field.select();\n    if (!document.execCommand(\"copy\")) throw new Error(\"Clipboard unavailable\");\n  } finally {\n    field.remove();\n    if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });\n  }\n}\n\nexport function CopyFeedback({ value, label = \"Copy value\" }: CopyFeedbackProps) {\n  const [state, setState] = useState<CopyState>(\"idle\");\n  const resetTimer = useRef<number | null>(null);\n  const inFlight = useRef(false);\n  const mounted = useRef(true);\n  const requestId = useRef(0);\n\n  async function copy() {\n    if (inFlight.current) return;\n    inFlight.current = true;\n    const currentRequest = ++requestId.current;\n    if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);\n    resetTimer.current = null;\n    setState(\"copying\");\n\n    let result: CopyState;\n    try {\n      await writeClipboard(value);\n      result = \"copied\";\n    } catch {\n      result = \"error\";\n    }\n\n    if (!mounted.current || currentRequest !== requestId.current) return;\n    inFlight.current = false;\n    setState(result);\n    resetTimer.current = window.setTimeout(() => {\n      setState(\"idle\");\n      resetTimer.current = null;\n    }, 1800);\n  }\n\n  useEffect(() => {\n    requestId.current += 1;\n    inFlight.current = false;\n    if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);\n    resetTimer.current = null;\n    setState(\"idle\");\n  }, [value]);\n\n  useEffect(() => {\n    mounted.current = true;\n    return () => {\n      mounted.current = false;\n      requestId.current += 1;\n      inFlight.current = false;\n      if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);\n    };\n  }, []);\n\n  return (\n    <div className=\"tb-copy\" data-state={state} aria-busy={state === \"copying\"}>\n      <code className=\"tb-copy__value\">{value}</code>\n      <button\n        aria-disabled={state === \"copying\"}\n        className=\"tb-copy__button\"\n        onClick={copy}\n        type=\"button\"\n      >\n        {state === \"copying\"\n          ? \"Copying\"\n          : state === \"copied\"\n            ? \"Copied\"\n            : state === \"error\"\n              ? \"Try again\"\n              : label}\n      </button>\n      <span className=\"tb-copy__status\" aria-live=\"polite\">\n        {state === \"copying\"\n          ? \"Copying value.\"\n          : state === \"copied\"\n            ? \"Copied to clipboard.\"\n            : state === \"error\"\n              ? \"Could not access the clipboard. Select and copy the value manually.\"\n              : \"\"}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "registry/components/actions/copy-feedback/copy-feedback.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/copy-feedback.css",
+      "content": ".tb-copy {\n  position: relative;\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  width: min(100%, 48rem);\n  border: 1px solid #171918;\n  background: #f7f7f2;\n}\n\n.tb-copy__value {\n  min-width: 0;\n  overflow-x: auto;\n  padding: 1.15rem 1.25rem;\n  color: #252826;\n  font: 500 0.83rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;\n  white-space: nowrap;\n  scrollbar-width: thin;\n}\n\n.tb-copy__button {\n  appearance: none;\n  min-width: 7.4rem;\n  min-height: 3.75rem;\n  padding: 0.8rem 1.1rem;\n  color: #f7f7f2;\n  border: 0;\n  border-left: 1px solid #171918;\n  background: #171918;\n  font: 680 0.82rem/1 system-ui, sans-serif;\n  cursor: pointer;\n  touch-action: manipulation;\n  transition: background-color 130ms ease-out;\n}\n\n@media (hover: hover) and (pointer: fine) {\n  .tb-copy__button:hover {\n    background: #3d423f;\n  }\n}\n\n.tb-copy__button:active {\n  background: #000;\n}\n\n.tb-copy__button[aria-disabled=\"true\"] {\n  color: #c9ccc8;\n  background: #3d423f;\n  cursor: wait;\n}\n\n.tb-copy[data-state=\"copied\"] .tb-copy__button {\n  color: #0c2a1b;\n  background: #91edb1;\n}\n\n.tb-copy[data-state=\"error\"] .tb-copy__button {\n  color: #fff8f5;\n  background: #b53c31;\n}\n\n.tb-copy__button:focus-visible {\n  position: relative;\n  z-index: 1;\n  outline: 3px solid #d6ff55;\n  outline-offset: -5px;\n}\n\n.tb-copy__status {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n}\n\n@media (forced-colors: active) {\n  .tb-copy,\n  .tb-copy__button {\n    border-color: ButtonText;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "component",
+    "category": "Actions",
+    "sections": [
+      "Content, Resources, and Events",
+      "Contact and Inquiry"
+    ],
+    "runtime": "dom",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "The copy action remains focusable while busy and ignores repeated activation. A polite live region reports pending, success, or failure state; stale results are discarded when the value changes; fallback copying restores focus; and the full value remains selectable."
+    },
+    "performance": {
+      "budget": "No work until activation; at most one clipboard request and one short reset timeout are active."
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "synopsis-facts-overview",
+  "type": "registry:block",
+  "title": "Synopsis and Facts Overview",
+  "description": "A broad project synopsis paired with a compact set of factual context, without turning the overview into a table.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/blocks/overview/synopsis-facts-overview/synopsis-facts-overview.tsx",
+      "type": "registry:block",
+      "target": "components/taste-blocks/synopsis-facts-overview.tsx",
+      "content": "import \"./synopsis-facts-overview.css\";\n\nexport interface SynopsisFact {\n  label: string;\n  value: string;\n}\n\nexport interface SynopsisFactsOverviewProps {\n  title: string;\n  synopsis: string;\n  facts: SynopsisFact[];\n}\n\nexport function SynopsisFactsOverview({\n  title,\n  synopsis,\n  facts,\n}: SynopsisFactsOverviewProps) {\n  return (\n    <section className=\"tb-synopsis\">\n      <div className=\"tb-synopsis__statement\">\n        <h2>{title}</h2>\n        <p>{synopsis}</p>\n      </div>\n      <dl className=\"tb-synopsis__facts\">\n        {facts.map((fact) => (\n          <div key={`${fact.label}-${fact.value}`}>\n            <dt>{fact.label}</dt>\n            <dd>{fact.value}</dd>\n          </div>\n        ))}\n      </dl>\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "registry/blocks/overview/synopsis-facts-overview/synopsis-facts-overview.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/synopsis-facts-overview.css",
+      "content": ".tb-synopsis {\n  --tb-sfo-ink: #182029;\n  --tb-sfo-paper: #edf1f3;\n  --tb-sfo-panel: #d9e1e5;\n  --tb-sfo-accent: #305cc0;\n  container-type: inline-size;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));\n  gap: clamp(2.5rem, 6vw, 8rem);\n  padding: clamp(2.5rem, 7%, 7rem) clamp(1.25rem, 7%, 7rem);\n  color: var(--tb-sfo-ink);\n  background: var(--tb-sfo-paper);\n}\n\n.tb-synopsis,\n.tb-synopsis * {\n  box-sizing: border-box;\n}\n\n.tb-synopsis__statement {\n  align-self: center;\n  min-width: 0;\n}\n\n.tb-synopsis__statement h2 {\n  max-width: 46rem;\n  margin: 0;\n  font-size: clamp(2.6rem, 6vw, 5.8rem);\n  font-size: clamp(2.6rem, 7.5cqi, 5.8rem);\n  font-weight: 600;\n  line-height: 1;\n  letter-spacing: -0.025em;\n  overflow-wrap: anywhere;\n}\n\n.tb-synopsis__statement p {\n  max-width: 48rem;\n  margin: 2rem 0 0;\n  font-size: clamp(1.1rem, 2cqi, 1.5rem);\n  line-height: 1.5;\n}\n\n.tb-synopsis__facts {\n  display: grid;\n  align-content: start;\n  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));\n  gap: 0.75rem;\n  min-width: 0;\n  margin: 0;\n}\n\n.tb-synopsis__facts > div {\n  min-width: 0;\n  padding: clamp(1.15rem, 2.5cqi, 1.75rem);\n  background: var(--tb-sfo-panel);\n}\n\n.tb-synopsis__facts > div:first-child {\n  background: var(--tb-sfo-accent);\n  color: #f7f8fc;\n}\n\n.tb-synopsis__facts dt {\n  font-size: 0.78rem;\n  font-weight: 700;\n  letter-spacing: 0.02em;\n}\n\n.tb-synopsis__facts dd {\n  margin: 1.25rem 0 0;\n  font-size: clamp(1rem, 2cqi, 1.28rem);\n  line-height: 1.35;\n  overflow-wrap: anywhere;\n}\n\n@container (min-width: 48rem) {\n  .tb-synopsis__facts > div:first-child {\n    grid-column: span 2;\n  }\n}\n\n@media (max-width: 800px) {\n  .tb-synopsis {\n    gap: 3rem;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "block",
+    "category": "Overview",
+    "sections": [
+      "Introduction or Overview",
+      "Project or Case Study"
+    ],
+    "runtime": "css",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "Facts use a semantic description list and remain after the synopsis in DOM order on every viewport."
+    },
+    "performance": {
+      "budget": "Static HTML and CSS only."
+    }
+  }
+}

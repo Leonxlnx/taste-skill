@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "phrase-handoff",
+  "type": "registry:component",
+  "title": "Manual phrase switch",
+  "description": "Lets a reader deliberately switch related phrases in one width-stable position with interruptible feedback.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/effects/text/phrase-handoff/phrase-handoff.tsx",
+      "type": "registry:component",
+      "target": "components/taste-blocks/phrase-handoff.tsx",
+      "content": "\"use client\";\n\nimport { useLayoutEffect, useRef, useState } from \"react\";\nimport \"./phrase-handoff.css\";\n\nexport interface PhraseHandoffProps {\n  prefix: string;\n  phrases: string[];\n  suffix?: string;\n  className?: string;\n}\n\nexport function PhraseHandoff({\n  prefix,\n  phrases,\n  suffix = \"\",\n  className = \"\",\n}: PhraseHandoffProps) {\n  const options = phrases.map((phrase) => phrase.trim()).filter(Boolean);\n  const [index, setIndex] = useState(0);\n  const [direction, setDirection] = useState<\"next\" | \"previous\">(\"next\");\n  const phraseRef = useRef<HTMLSpanElement>(null);\n  const animationRef = useRef<Animation | null>(null);\n\n  const optionCount = Math.max(options.length, 1);\n  const currentIndex = index % optionCount;\n  const current = options[currentIndex] ?? \"\";\n  const previousValue = useRef<string | null>(null);\n  const sentence = [prefix, current, suffix].filter(Boolean).join(\" \");\n\n  useLayoutEffect(() => {\n    const element = phraseRef.current;\n    if (!element) return;\n    if (previousValue.current === null) {\n      previousValue.current = current;\n      return;\n    }\n    if (previousValue.current === current) return;\n    previousValue.current = current;\n\n    const reducedMotion = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    const running = animationRef.current;\n    if (running) {\n      try {\n        running.commitStyles();\n      } catch {\n        // The animation may already be detached during rapid replacement.\n      }\n      running.cancel();\n    }\n\n    if (reducedMotion) {\n      element.style.removeProperty(\"opacity\");\n      element.style.removeProperty(\"transform\");\n      animationRef.current = null;\n      return;\n    }\n\n    const computed = getComputedStyle(element);\n    const settled = computed.transform === \"none\" && computed.opacity === \"1\";\n    const offset = direction === \"next\" ? \"8px\" : \"-8px\";\n    const animation = element.animate(\n      [\n        {\n          opacity: settled ? 0.45 : Number.parseFloat(computed.opacity),\n          transform: settled ? `translateY(${offset})` : computed.transform,\n        },\n        { opacity: 1, transform: \"translateY(0)\" },\n      ],\n      {\n        duration: 180,\n        easing: \"cubic-bezier(0.22, 1, 0.36, 1)\",\n        fill: \"forwards\",\n      },\n    );\n    animationRef.current = animation;\n    animation.onfinish = () => {\n      if (animationRef.current !== animation) return;\n      animation.cancel();\n      element.style.removeProperty(\"opacity\");\n      element.style.removeProperty(\"transform\");\n      animationRef.current = null;\n    };\n\n    return () => {\n      if (animationRef.current !== animation) return;\n      try {\n        animation.commitStyles();\n      } catch {\n        // Detached animations need no retained visual state.\n      }\n      animation.onfinish = null;\n      animation.cancel();\n      animationRef.current = null;\n    };\n  }, [current, direction]);\n\n  if (options.length === 0) return null;\n\n  function move(step: -1 | 1) {\n    setDirection(step === 1 ? \"next\" : \"previous\");\n    setIndex((current) => (current + step + options.length) % options.length);\n  }\n\n  return (\n    <div className={`tb-phrase-handoff ${className}`.trim()}>\n      <p className=\"tb-phrase-handoff__sr\" aria-live=\"polite\">\n        {sentence}\n      </p>\n      <p className=\"tb-phrase-handoff__sentence\" aria-hidden=\"true\">\n        <span>{prefix} </span>\n        <span className=\"tb-phrase-handoff__slot\">\n          {options.map((option) => (\n            <span className=\"tb-phrase-handoff__measure\" key={option} aria-hidden=\"true\">\n              {option}\n            </span>\n          ))}\n          <span\n            className=\"tb-phrase-handoff__phrase\"\n            ref={phraseRef}\n          >\n            {current}\n          </span>\n        </span>\n        {suffix ? <span> {suffix}</span> : null}\n      </p>\n      {options.length > 1 ? (\n        <div className=\"tb-phrase-handoff__controls\" role=\"group\" aria-label=\"Phrase controls\">\n          <button type=\"button\" onClick={() => move(-1)}>\n            Previous\n          </button>\n          <span aria-hidden=\"true\">\n            {currentIndex + 1} / {options.length}\n          </span>\n          <button type=\"button\" onClick={() => move(1)}>\n            Next\n          </button>\n        </div>\n      ) : null}\n    </div>\n  );\n}\n\nexport default PhraseHandoff;\n"
+    },
+    {
+      "path": "registry/effects/text/phrase-handoff/phrase-handoff.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/phrase-handoff.css",
+      "content": ".tb-phrase-handoff {\n  container-type: inline-size;\n  display: grid;\n  gap: clamp(28px, 7cqi, 64px);\n  width: 100%;\n  color: #f4f1e8;\n}\n\n.tb-phrase-handoff__sentence {\n  max-width: 19ch;\n  margin: 0;\n  font: 620 clamp(2rem, 8cqi, 5.4rem) / 1 system-ui, sans-serif;\n  letter-spacing: -0.055em;\n}\n\n.tb-phrase-handoff__slot {\n  display: inline-grid;\n  overflow: clip;\n  margin-block: -0.14em;\n  padding-block: 0.14em;\n  vertical-align: -0.08em;\n}\n\n.tb-phrase-handoff__slot > span {\n  grid-area: 1 / 1;\n}\n\n.tb-phrase-handoff__measure {\n  visibility: hidden;\n}\n\n.tb-phrase-handoff__phrase {\n  display: inline-block;\n  color: #d4ff57;\n}\n\n.tb-phrase-handoff__controls {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  width: min(100%, 390px);\n  font: 600 0.78rem / 1 system-ui, sans-serif;\n}\n\n.tb-phrase-handoff__controls button {\n  min-height: 44px;\n  padding: 0 2px;\n  border: 0;\n  border-bottom: 1px solid currentColor;\n  border-radius: 0;\n  color: inherit;\n  background: transparent;\n  font: inherit;\n  cursor: pointer;\n}\n\n.tb-phrase-handoff__controls button:focus-visible {\n  outline: 2px solid #d4ff57;\n  outline-offset: 5px;\n}\n\n.tb-phrase-handoff__sr {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .tb-phrase-handoff__phrase {\n    opacity: 1 !important;\n    transform: none !important;\n  }\n}\n\n@media (forced-colors: active) {\n  .tb-phrase-handoff,\n  .tb-phrase-handoff__phrase {\n    color: CanvasText;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "effect",
+    "category": "Text Motion",
+    "sections": [
+      "Hero",
+      "Introduction or Overview",
+      "Services, Features, and Capabilities"
+    ],
+    "runtime": "dom",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "static",
+      "notes": "Controls have visible labels, and each update announces the complete sentence instead of isolated animated words."
+    },
+    "performance": {
+      "budget": "State changes only on explicit input; one interruptible 180ms Web Animation runs per change and is canceled on replacement or unmount."
+    }
+  }
+}

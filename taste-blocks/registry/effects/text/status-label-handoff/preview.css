@@ -1,0 +1,30 @@
+.tb-status-label-handoff-preview {
+  display: grid;
+  align-content: center;
+  gap: 36px;
+  width: 100%;
+  min-height: inherit;
+  padding: clamp(24px, 6cqi, 64px);
+  background: #e7e3d8;
+}
+
+.tb-status-label-handoff-preview fieldset {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.tb-status-label-handoff-preview legend { margin-bottom: 12px; }
+
+.tb-status-label-handoff-preview__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tb-status-label-handoff-preview__options button {
+  min-height: 44px;
+  padding: 0 14px;
+}

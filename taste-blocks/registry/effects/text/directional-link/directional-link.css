@@ -1,0 +1,85 @@
+.tb-directional-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.72em;
+  min-height: 44px;
+  color: #171816;
+  font: 640 clamp(1rem, 3.6cqi, 1.35rem) / 1.2 system-ui, sans-serif;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.tb-directional-link__label {
+  position: relative;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tb-directional-link__label::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.2em;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  transform: scaleX(0.22);
+  transform-origin: left;
+}
+
+.tb-directional-link__arrow {
+  display: inline-block;
+  font-size: 1.2em;
+  flex: 0 0 auto;
+}
+
+.tb-directional-link:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
+.tb-directional-link:focus-visible .tb-directional-link__label::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tb-directional-link__label::after,
+  .tb-directional-link__arrow {
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .tb-directional-link:hover .tb-directional-link__label::after {
+    transform: scaleX(1);
+  }
+
+  .tb-directional-link[data-direction="forward"]:hover .tb-directional-link__arrow,
+  .tb-directional-link[data-direction="external"]:hover .tb-directional-link__arrow {
+    transform: translate(4px, -1px);
+  }
+
+  .tb-directional-link[data-direction="back"]:hover .tb-directional-link__arrow {
+    transform: translateX(-4px);
+  }
+
+  .tb-directional-link[data-direction="download"]:hover .tb-directional-link__arrow {
+    transform: translateY(4px);
+  }
+}
+
+.tb-directional-link:focus-visible .tb-directional-link__label::after {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .tb-directional-link__label::after,
+  .tb-directional-link__arrow {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-directional-link {
+    color: LinkText;
+  }
+}

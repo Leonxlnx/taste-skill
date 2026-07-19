@@ -1,0 +1,36 @@
+{
+  "name": "copy-feedback",
+  "title": "Copy Feedback",
+  "description": "A copyable value with honest success and failure feedback that stays close to the action.",
+  "type": "registry:component",
+  "kind": "component",
+  "category": "Actions",
+  "sections": ["Content, Resources, and Events", "Contact and Inquiry"],
+  "runtime": "dom",
+  "status": "verified",
+  "tags": ["clipboard", "copy", "feedback", "code", "share"],
+  "files": ["copy-feedback.tsx", "copy-feedback.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "The copy action remains focusable while busy and ignores repeated activation. A polite live region reports pending, success, or failure state; stale results are discarded when the value changes; fallback copying restores focus; and the full value remains selectable."
+  },
+  "performance": {
+    "budget": "No work until activation; at most one clipboard request and one short reset timeout are active."
+  },
+  "display": {
+    "size": "wide",
+    "homepage": true,
+    "order": 21
+  }
+}

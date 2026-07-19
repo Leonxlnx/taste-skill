@@ -1,0 +1,42 @@
+{
+  "name": "dither-aperture",
+  "title": "Dither Aperture",
+  "description": "A bounded ordered-dot veil with a configurable focal point and an intrinsic 16:9 default size.",
+  "type": "registry:component",
+  "kind": "effect",
+  "category": "Surface Effects",
+  "sections": [
+    "Hero",
+    "Selected Work or Archive",
+    "Project or Case Study",
+    "Gallery or Showreel",
+    "Content, Resources, and Events"
+  ],
+  "runtime": "css",
+  "status": "verified",
+  "tags": ["media", "dither", "mask", "static"],
+  "files": ["dither-aperture.tsx", "dither-aperture.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "unchanged",
+    "notes": "The dot veil is static and decorative; supplied media keeps its semantics and the aspectRatio prop prevents a zero-height install."
+  },
+  "performance": {
+    "budget": "Three CSS gradients and one mask; no raster texture, script, or animation loop."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 27
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "hold-to-confirm",
+  "title": "Hold to Confirm",
+  "description": "A deliberate press-and-hold control for consequential actions, with cancellable progress.",
+  "type": "registry:component",
+  "kind": "component",
+  "category": "Actions",
+  "sections": ["Signup, Registration, or Application"],
+  "runtime": "dom",
+  "status": "verified",
+  "tags": ["button", "confirmation", "hold", "progress", "safety"],
+  "files": ["hold-to-confirm.tsx", "hold-to-confirm.css"],
+  "dependencies": [],
+  "registryDependencies": [],
+  "origin": {
+    "kind": "original",
+    "license": "MIT",
+    "author": "Taste Blocks",
+    "source": null,
+    "revision": null,
+    "path": null,
+    "modified": false
+  },
+  "accessibility": {
+    "reducedMotion": "simplified",
+    "notes": "Pointer and touch users hold and may cancel immediately. Keyboard, assistive technology, and programmatic activation use a clearly labelled two-step native click path. Blur, disabled state, visibility loss, and unmount cancel pending timers; ordinary capture release preserves confirmed feedback."
+  },
+  "performance": {
+    "budget": "One confirmation timer while held and one short status timer after success; both are cleared on every interruption path."
+  },
+  "display": {
+    "size": "standard",
+    "homepage": true,
+    "order": 20
+  }
+}

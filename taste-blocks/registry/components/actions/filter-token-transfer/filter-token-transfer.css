@@ -1,0 +1,117 @@
+.tb-token-transfer {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  gap: 1px;
+  width: min(100%, 58rem);
+  color: #161817;
+  border: 1px solid #161817;
+  background: #161817;
+}
+
+.tb-token-transfer__bucket {
+  min-width: 0;
+  background: #f5f6ef;
+}
+
+.tb-token-transfer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.3rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #161817;
+}
+
+.tb-token-transfer__label {
+  font: 700 0.83rem/1 system-ui, sans-serif;
+}
+
+.tb-token-transfer__header > span:last-child {
+  display: grid;
+  place-items: center;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
+  border: 1px solid currentColor;
+  border-radius: 99rem;
+  font: 600 0.72rem/1 ui-monospace, monospace;
+}
+
+.tb-token-transfer__bucket--applied > .tb-token-transfer__header {
+  color: #e7ff7d;
+  background: #161817;
+}
+
+.tb-token-transfer__tokens {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+  min-height: 13rem;
+  padding: 0.8rem;
+}
+
+.tb-token-transfer__tokens > p {
+  margin: auto;
+  color: #70746f;
+  font: 500 0.82rem/1.45 system-ui, sans-serif;
+  text-align: center;
+}
+
+.tb-token-transfer__token {
+  appearance: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.65rem 0.8rem;
+  color: #161817;
+  border: 1px solid #aeb2ac;
+  background: #fff;
+  font: 620 0.79rem/1.2 system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tb-token-transfer__token span:last-child {
+  color: #686d68;
+  font: 500 0.68rem/1 ui-monospace, monospace;
+  text-transform: uppercase;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tb-token-transfer__token:hover {
+    border-color: #161817;
+    background: #e7ff7d;
+  }
+}
+
+.tb-token-transfer__token:active {
+  transform: translateY(1px);
+}
+
+.tb-token-transfer__token:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #3155ff;
+  outline-offset: 2px;
+}
+
+.tb-token-transfer__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .tb-token-transfer,
+  .tb-token-transfer__header,
+  .tb-token-transfer__token {
+    border-color: CanvasText;
+  }
+}

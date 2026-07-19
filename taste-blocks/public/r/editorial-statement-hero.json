@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "editorial-statement-hero",
+  "type": "registry:block",
+  "title": "Editorial Statement Hero",
+  "description": "A type-led opening for a concise point of view, with a quiet route into the page.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/blocks/hero/editorial-statement-hero/editorial-statement-hero.tsx",
+      "type": "registry:block",
+      "target": "components/taste-blocks/editorial-statement-hero.tsx",
+      "content": "import type { ElementType } from \"react\";\nimport \"./editorial-statement-hero.css\";\n\nexport interface EditorialStatementHeroProps {\n  title: string;\n  summary: string;\n  linkLabel: string;\n  linkHref: string;\n  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;\n}\n\nexport function EditorialStatementHero({\n  title,\n  summary,\n  linkLabel,\n  linkHref,\n  headingLevel = 1,\n}: EditorialStatementHeroProps) {\n  const Heading = `h${headingLevel}` as ElementType;\n\n  return (\n    <section className=\"tb-editorial-hero\">\n      <div className=\"tb-editorial-hero__frame\">\n        <Heading className=\"tb-editorial-hero__title\">{title}</Heading>\n        <div className=\"tb-editorial-hero__close\">\n          <p>{summary}</p>\n          <a href={linkHref}>{linkLabel}</a>\n        </div>\n      </div>\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "registry/blocks/hero/editorial-statement-hero/editorial-statement-hero.css",
+      "type": "registry:style",
+      "target": "components/taste-blocks/editorial-statement-hero.css",
+      "content": ".tb-editorial-hero {\n  --tb-esh-paper: #f1f0ec;\n  --tb-esh-ink: #1b1b1a;\n  --tb-esh-accent: #1d5b46;\n  container-type: inline-size;\n  color: var(--tb-esh-ink);\n  background: var(--tb-esh-paper);\n}\n\n.tb-editorial-hero,\n.tb-editorial-hero * {\n  box-sizing: border-box;\n}\n\n.tb-editorial-hero__frame {\n  display: flex;\n  min-height: 36rem;\n  min-height: clamp(36rem, 68cqi, 52rem);\n  flex-direction: column;\n  justify-content: space-between;\n  padding: clamp(1.25rem, 3cqi, 3rem);\n  border-top: 0.22rem solid currentColor;\n}\n\n.tb-editorial-hero__title {\n  max-width: 78rem;\n  margin: 0;\n  font-size: clamp(3rem, 8vw, 9rem);\n  font-size: clamp(3rem, 10cqi, 9rem);\n  font-weight: 500;\n  line-height: 0.93;\n  letter-spacing: -0.04em;\n  overflow-wrap: anywhere;\n}\n\n.tb-editorial-hero__close {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));\n  align-items: end;\n  gap: 1.5rem 3rem;\n  margin-top: clamp(3rem, 8cqi, 6rem);\n}\n\n.tb-editorial-hero__close p {\n  max-width: 34rem;\n  margin: 0;\n  font-size: clamp(1.05rem, 2cqi, 1.45rem);\n  line-height: 1.45;\n}\n\n.tb-editorial-hero__close a {\n  width: fit-content;\n  justify-self: end;\n  color: inherit;\n  font-size: 1rem;\n  font-weight: 700;\n  text-decoration-thickness: 0.13em;\n  text-underline-offset: 0.32em;\n  transition: color 150ms ease-out;\n}\n\n.tb-editorial-hero__close a:hover {\n  color: var(--tb-esh-accent);\n}\n\n.tb-editorial-hero__close a:focus-visible {\n  outline: 3px solid var(--tb-esh-accent);\n  outline-offset: 5px;\n}\n\n@container (min-width: 28rem) {\n  .tb-editorial-hero__close a {\n    white-space: nowrap;\n  }\n}\n\n@container (max-width: 40rem) {\n  .tb-editorial-hero__close a {\n    justify-self: start;\n  }\n}\n\n@media (max-width: 700px) {\n  .tb-editorial-hero__close a {\n    justify-self: start;\n  }\n}\n"
+    }
+  ],
+  "meta": {
+    "kind": "block",
+    "category": "Hero",
+    "sections": [
+      "Hero"
+    ],
+    "runtime": "css",
+    "origin": {
+      "kind": "original",
+      "license": "MIT",
+      "author": "Taste Blocks",
+      "source": null,
+      "revision": null,
+      "path": null,
+      "modified": false
+    },
+    "accessibility": {
+      "reducedMotion": "unchanged",
+      "notes": "The composition uses normal document flow, natural wrapping, and a visible keyboard focus treatment."
+    },
+    "performance": {
+      "budget": "CSS and text only."
+    }
+  }
+}

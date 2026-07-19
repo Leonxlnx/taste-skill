@@ -1,0 +1,82 @@
+.tb-press-depth {
+  --tb-press-base: #17362b;
+  --tb-press-face: #86f3aa;
+  --tb-press-ink: #0b2118;
+  appearance: none;
+  position: relative;
+  display: inline-grid;
+  min-width: 11.5rem;
+  min-height: 3.5rem;
+  padding: 0 0 0.34rem;
+  color: var(--tb-press-ink);
+  border: 1px solid var(--tb-press-base);
+  border-radius: 0.78rem;
+  background: var(--tb-press-base);
+  box-shadow: 0 0.4rem 0.9rem rgb(16 48 35 / 0.14);
+  font: 700 0.94rem/1 system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tb-press-depth__face {
+  display: grid;
+  place-items: center;
+  min-height: 3.5rem;
+  padding: 0.95rem 1.35rem;
+  border: 1px solid var(--tb-press-base);
+  border-radius: calc(0.78rem - 1px);
+  background: var(--tb-press-face);
+  transform: translateY(-0.32rem);
+  transition:
+    transform 90ms ease-out,
+    background-color 120ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tb-press-depth:hover .tb-press-depth__face {
+    background: #9ff7bc;
+    transform: translateY(-0.4rem);
+  }
+}
+
+.tb-press-depth:active .tb-press-depth__face,
+.tb-press-depth[aria-pressed="true"] .tb-press-depth__face {
+  transform: translateY(0);
+}
+
+.tb-press-depth:focus-visible {
+  outline: 3px solid #17362b;
+  outline-offset: 4px;
+}
+
+.tb-press-depth:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.tb-press-depth:disabled .tb-press-depth__face {
+  transform: translateY(-0.18rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-press-depth__face {
+    transition: background-color 120ms linear;
+    transform: none;
+  }
+
+  .tb-press-depth:hover .tb-press-depth__face,
+  .tb-press-depth:active .tb-press-depth__face,
+  .tb-press-depth[aria-pressed="true"] .tb-press-depth__face {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-press-depth,
+  .tb-press-depth__face {
+    border-color: ButtonText;
+  }
+}

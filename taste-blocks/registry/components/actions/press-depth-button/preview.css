@@ -1,0 +1,22 @@
+.tb-press-depth-preview {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: clamp(2rem, 7vw, 5rem);
+  color: #10251d;
+  background: #dce8df;
+}
+
+.tb-press-depth-preview__content {
+  display: grid;
+  justify-items: start;
+  gap: 1.2rem;
+  width: min(100%, 31rem);
+}
+
+.tb-press-depth-preview p {
+  min-height: 1.4em;
+  margin: 0;
+  color: #3f554b;
+  font: 500 0.83rem/1.4 ui-monospace, monospace;
+}

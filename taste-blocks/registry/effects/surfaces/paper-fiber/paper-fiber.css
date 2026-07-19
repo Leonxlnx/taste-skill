@@ -1,0 +1,53 @@
+.tb-paper-fiber {
+  position: relative;
+  isolation: isolate;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  color: var(--tb-paper-fiber-ink);
+  background-color: var(--tb-paper-fiber-surface);
+}
+
+.tb-paper-fiber::before,
+.tb-paper-fiber::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+}
+
+.tb-paper-fiber::before {
+  opacity: 0.28;
+  background-image:
+    repeating-linear-gradient(
+      8deg,
+      transparent 0 5px,
+      rgb(67 58 42 / 0.09) 5.5px,
+      transparent 6px 13px
+    ),
+    repeating-linear-gradient(
+      98deg,
+      transparent 0 9px,
+      rgb(255 255 255 / 0.2) 9.5px,
+      transparent 10px 19px
+    );
+  background-size: 43px 37px, 61px 53px;
+  mix-blend-mode: multiply;
+}
+
+.tb-paper-fiber::after {
+  opacity: 0.42;
+  background:
+    radial-gradient(circle at 16% 22%, rgb(255 255 255 / 0.55) 0 0.7px, transparent 0.9px),
+    radial-gradient(circle at 68% 64%, rgb(49 42 32 / 0.17) 0 0.55px, transparent 0.8px);
+  background-size: 11px 13px, 17px 19px;
+}
+
+@media (forced-colors: active) {
+  .tb-paper-fiber::before,
+  .tb-paper-fiber::after {
+    display: none;
+  }
+}

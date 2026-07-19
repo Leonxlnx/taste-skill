@@ -1,0 +1,21 @@
+.tb-gallery-preview-media {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 67% 33%, #e9cb57 0 10%, transparent 10.4%),
+    linear-gradient(135deg, #315f5c 0 48%, #d5684d 48% 71%, #b8c8c2 71%);
+}
+
+.tb-gallery-stage figure:nth-child(4n + 2) .tb-gallery-preview-media {
+  background: linear-gradient(25deg, #243636 0 38%, #8fb5ae 38% 62%, #e0b04e 62%);
+}
+
+.tb-gallery-stage figure:nth-child(4n + 3) .tb-gallery-preview-media {
+  background: linear-gradient(125deg, #d65c44 0 28%, #e7e2d1 28% 64%, #315b58 64%);
+}
+
+.tb-gallery-stage figure:nth-child(4n) .tb-gallery-preview-media {
+  background:
+    radial-gradient(circle at 33% 45%, #ddbc4a 0 12%, transparent 12.5%),
+    linear-gradient(100deg, #274541, #a6bbb5 50%, #c85b43);
+}

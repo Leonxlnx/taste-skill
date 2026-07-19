@@ -1,0 +1,189 @@
+.tb-artifact-process {
+  --tb-ap-ink: #eef0e9;
+  --tb-ap-ground: #202a27;
+  --tb-ap-accent: #d7e461;
+  container-type: inline-size;
+  padding: clamp(3rem, 6%, 7rem);
+  color: var(--tb-ap-ink);
+  background: var(--tb-ap-ground);
+}
+
+.tb-artifact-process,
+.tb-artifact-process * {
+  box-sizing: border-box;
+}
+
+.tb-artifact-process > h2 {
+  max-width: 40rem;
+  margin: 0 0 clamp(3rem, 7cqi, 6rem);
+  font-size: clamp(2.6rem, 5.2vw, 5.4rem);
+  font-size: clamp(2.6rem, 7cqi, 5.4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.tb-artifact-process__layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: clamp(2rem, 6cqi, 6rem);
+  align-items: center;
+}
+
+.tb-artifact-process__artifact {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: clamp(22rem, 48cqi, 32rem);
+  align-items: end;
+  padding: clamp(1.25rem, 4cqi, 3rem);
+  overflow: hidden;
+  background: #31413d;
+}
+
+.tb-artifact-process__sheets {
+  position: absolute;
+  inset: 8%;
+  z-index: -1;
+}
+
+.tb-artifact-process__sheets span {
+  position: absolute;
+  inset: 7% 3%;
+  border-radius: 0.25rem;
+  background: #a8b7b2;
+  transform: rotate(-6deg);
+}
+
+.tb-artifact-process__sheets span + span {
+  inset: 3% 8%;
+  background: var(--tb-ap-accent);
+  transform: rotate(4deg);
+}
+
+.tb-artifact-process__document {
+  padding: clamp(1.25rem, 4cqi, 2.5rem);
+  color: #1e2724;
+  background: #f0eee5;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.18);
+}
+
+.tb-artifact-process__document strong {
+  display: block;
+  font-size: clamp(1.5rem, 4cqi, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.tb-artifact-process__document ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tb-artifact-process__document li {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgb(30 39 36 / 0.28);
+  font-size: 0.85rem;
+}
+
+.tb-artifact-process__artifact[data-phase="1"] {
+  background: #4b5842;
+}
+
+.tb-artifact-process__artifact[data-phase="1"] .tb-artifact-process__sheets span {
+  transform: translateX(-4%) rotate(-2deg);
+}
+
+.tb-artifact-process__artifact[data-phase="1"] .tb-artifact-process__sheets span + span {
+  transform: translateX(5%) rotate(7deg);
+}
+
+.tb-artifact-process__artifact[data-phase="2"] {
+  background: #713f35;
+}
+
+.tb-artifact-process__artifact[data-phase="2"] .tb-artifact-process__sheets span {
+  transform: translateY(4%) rotate(-9deg);
+}
+
+.tb-artifact-process__artifact[data-phase="2"] .tb-artifact-process__sheets span + span {
+  transform: translateY(-3%) rotate(1deg);
+}
+
+.tb-artifact-process__phases {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tb-artifact-process__phases button {
+  width: 100%;
+  padding: 1.15rem;
+  border: 1px solid rgb(238 240 233 / 0.24);
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease-out, background-color 150ms ease-out;
+}
+
+.tb-artifact-process__phases button:hover {
+  border-color: rgb(238 240 233 / 0.6);
+}
+
+.tb-artifact-process__phases button[aria-pressed="true"] {
+  border-color: var(--tb-ap-accent);
+  background: rgb(215 228 97 / 0.1);
+}
+
+.tb-artifact-process__phases button:focus-visible {
+  outline: 3px solid var(--tb-ap-accent);
+  outline-offset: 3px;
+}
+
+.tb-artifact-process__phases strong,
+.tb-artifact-process__phases span {
+  display: block;
+}
+
+.tb-artifact-process__phases strong {
+  font-size: clamp(1.2rem, 2.6cqi, 1.7rem);
+}
+
+.tb-artifact-process__phases span {
+  max-width: 34rem;
+  margin-top: 0.55rem;
+  color: #c8d0cc;
+  line-height: 1.5;
+}
+
+@container (max-width: 42rem) {
+  .tb-artifact-process {
+    padding: 3.5rem 1.25rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .tb-artifact-process {
+    padding: 3.5rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-artifact-process__phases button {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .tb-artifact-process__phases button[aria-pressed="true"] {
+    outline: 3px solid Highlight;
+  }
+}

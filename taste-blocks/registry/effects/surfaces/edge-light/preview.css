@@ -1,0 +1,47 @@
+.tb-edge-light-preview {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  color: #eaf1f2;
+  background:
+    linear-gradient(130deg, rgb(91 139 154 / 0.12), transparent 48%),
+    #111718;
+}
+
+.tb-edge-light-preview h2,
+.tb-edge-light-preview p {
+  margin: 0;
+}
+
+.tb-edge-light-preview h2 {
+  max-width: 13ch;
+  font: 560 clamp(2rem, 5vw, 4.2rem) / 0.95 system-ui, sans-serif;
+  letter-spacing: -0.06em;
+}
+
+.tb-edge-light-preview p {
+  max-width: 32rem;
+  margin-top: 1.15rem;
+  color: rgb(234 241 242 / 0.72);
+  font: 450 0.96rem / 1.56 system-ui, sans-serif;
+}
+
+.tb-edge-light-preview button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(234 241 242 / 0.34);
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: 620 0.86rem / 1 system-ui, sans-serif;
+}
+
+.tb-edge-light-preview button:focus-visible {
+  outline: 2px solid #fff7d6;
+  outline-offset: 5px;
+}
