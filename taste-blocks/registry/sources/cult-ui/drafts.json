@@ -1,0 +1,311 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-cult-ui-drafts",
+  "homepage": "https://github.com/nolly-studio/cult-ui",
+  "items": [
+    {
+      "name": "cult-timer",
+      "type": "registry:component",
+      "title": "Timer",
+      "description": "Tracks and formats elapsed time while exposing compound display controls.",
+      "author": "Cult UI",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.544.0",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/cult-timer/timer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/timer.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "timer",
+            "elapsed-time",
+            "status"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/cult-ui/cult-timer.tsx",
+          "source": {
+            "project": "Cult UI",
+            "repository": "https://github.com/nolly-studio/cult-ui",
+            "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/cult-timer/timer.tsx",
+                "upstreamPath": "apps/www/registry/default/ui/timer.tsx",
+                "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/timer.tsx",
+                "upstreamSha256": "sha256:d02a92a289575a0b7ef322e6ffc7db515d8654e898c047e9cb8a4447e5091127",
+                "contentSha256": "sha256:3450d7abcc185d04c93888bedfa2bfed97f29e8ece46c4d8860fee1d545d9acc",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils so the copied support file resolves both in this batch and at the registry target.",
+                  "Disabled per-frame polite announcements and marked the clock icon decorative.",
+                  "Replaced requestAnimationFrame state churn with an adaptive timeout scheduler that updates at 20Hz only for hundredths and once per second for second-only formats.",
+                  "Added elapsed-time accumulation, document-visibility pausing, internal Timer-root IntersectionObserver pausing, and a reduced-motion fallback for the spinning icon without changing the public timer API."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/lib/utils.ts",
+                "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/lib/utils.ts",
+                "upstreamSha256": "sha256:35a351cab62e77fdf0087f9cfce30bb61692302a190da55af40e7267d8eed9be",
+                "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "changes": [
+                  "Removed the unrelated absoluteUrl helper and retained only the cn support closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/default/ui/timer.tsx and apps/www/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 Jordan-Gilliam"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+              "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+              "localPath": "registry/sources/cult-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/cult-timer/timer.tsx",
+              "change": "Changed the cn import to ../../lib/utils, disabled repeated live announcements, marked the icon decorative, replaced requestAnimationFrame updates with an adaptive timeout scheduler, accumulated elapsed time across pauses, paused for document-hidden state and through internal Timer-root visibility observation, and disabled icon spin under reduced motion.",
+              "reason": "Resolve the copied helper, keep elapsed time readable without announcement spam, and prevent continuous work when the timer is hidden, offscreen, or does not need subsecond updates."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed the unrelated absoluteUrl export.",
+              "reason": "Keep the copied support closure minimal and remove the Cult UI site URL default."
+            }
+          ],
+          "dedupe": {
+            "family": "elapsed-time-display",
+            "sourceHash": "sha256:23c38ca51cae0caf8569616c40aaf98da1641582bd0e61c909e2fbce0112383a",
+            "contentHash": "sha256:22b4e38b4bd55b56f85b83f5ba236d1ac87a1c7db350f13d885f6cb3807bff7b",
+            "structureHash": "sha256:eb642e2de4783105ab29c192220cdf050e9500198813316a6dde031589ec09c8"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "cult-distorted-glass",
+      "type": "registry:component",
+      "title": "Distorted Glass",
+      "description": "Renders a repeating radial glass texture through an SVG displacement filter.",
+      "author": "Cult UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/cult-distorted-glass/distorted-glass.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/distorted-glass.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "glass",
+            "svg-filter",
+            "refraction"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/cult-ui/cult-distorted-glass.tsx",
+          "source": {
+            "project": "Cult UI",
+            "repository": "https://github.com/nolly-studio/cult-ui",
+            "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/cult-distorted-glass/distorted-glass.tsx",
+                "upstreamPath": "apps/www/registry/default/ui/distorted-glass.tsx",
+                "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/distorted-glass.tsx",
+                "upstreamSha256": "sha256:2d271df38baa981ee26960c38c9b27445183a97aa591323b2a1af5b87e0c75c3",
+                "contentSha256": "sha256:ac0058d1923340f696af751f2c215c63d249a6d830ccad99c948f1eed841cb3b",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils so the copied support file resolves both in this batch and at the registry target.",
+                  "Marked the filter-definition SVG decorative and removed its exposed title.",
+                  "Replaced the Next.js-only style jsx attribute with standard React styling and corrected the radial-position token spacing.",
+                  "Removed the xl-only visibility gate and fixed breakpoint widths so the glass renders responsively at every viewport size.",
+                  "Generated an instance-scoped SVG filter id with useId, applied the filter inline, and collapsed the definition SVG to prevent cross-instance id and global-selector collisions."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/lib/utils.ts",
+                "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/lib/utils.ts",
+                "upstreamSha256": "sha256:35a351cab62e77fdf0087f9cfce30bb61692302a190da55af40e7267d8eed9be",
+                "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "changes": [
+                  "Removed the unrelated absoluteUrl helper and retained only the cn support closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/default/ui/distorted-glass.tsx and apps/www/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 Jordan-Gilliam"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+              "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+              "localPath": "registry/sources/cult-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/cult-distorted-glass/distorted-glass.tsx",
+              "change": "Changed the cn import to ../../lib/utils, kept the filter SVG decorative, replaced styled-jsx with standard React styling, removed the xl-only visibility/fixed-width classes, and scoped the SVG filter and styles per instance with useId.",
+              "reason": "Resolve the copied helper, retain valid portable CSS and accessibility semantics, render at narrow viewports, and prevent multiple glass instances from sharing a filter id or global style selector."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed the unrelated absoluteUrl export.",
+              "reason": "Keep the copied support closure minimal and remove the Cult UI site URL default."
+            }
+          ],
+          "dedupe": {
+            "family": "distorted-glass-filter",
+            "sourceHash": "sha256:62368cf74c0d669a23d34c6f101b5c529069591168525835dbef4f4d14edb010",
+            "contentHash": "sha256:b2a0b3cf91de39fefd357516e67cc26a93835571b1203a12e7c55708221d0ecb",
+            "structureHash": "sha256:3ece344d12dc255973596c05bc96e6641875181f24d6165c87543bb12a36892d"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "cult-vote-tally",
+      "type": "registry:component",
+      "title": "Vote Tally",
+      "description": "Manages controlled or uncontrolled vote counts through composable list controls.",
+      "author": "Cult UI",
+      "dependencies": [
+        "@radix-ui/react-use-controllable-state@1.2.2"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/cult-vote-tally/vote-tally.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/vote-tally.tsx"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "voting",
+            "compound-component",
+            "controlled-state"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/cult-ui/cult-vote-tally.tsx",
+          "source": {
+            "project": "Cult UI",
+            "repository": "https://github.com/nolly-studio/cult-ui",
+            "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/cult-vote-tally/vote-tally.tsx",
+                "upstreamPath": "apps/www/registry/default/ui/vote-tally.tsx",
+                "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/vote-tally.tsx",
+                "upstreamSha256": "sha256:08deaa946fdfd9eff345992fe270ef55649e25710f481953dd7c1130abdd16da",
+                "contentSha256": "sha256:0d7f3449601ddf974e2c6380e1e772818d3c266240907113ab85685694547b3b",
+                "changes": [
+                  "Marked the optional sorting wrapper presentational, made default trigger names item-specific, and announced count updates politely.",
+                  "Changed the root and item hosts from ul/li to div elements with list/listitem roles so the optional sorting wrapper remains valid HTML and transparent to list semantics."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/default/ui/vote-tally.tsx",
+            "copyright": [
+              "Copyright (c) 2023 Jordan-Gilliam"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+              "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+              "localPath": "registry/sources/cult-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/cult-vote-tally/vote-tally.tsx",
+              "change": "Marked the sorting wrapper presentational, made trigger labels item-specific, made count updates polite live regions, and changed the root/item hosts to div elements with list/listitem roles.",
+              "reason": "Disambiguate repeated controls, expose vote changes, and preserve valid list semantics when the optional sorting wrapper is used."
+            }
+          ],
+          "dedupe": {
+            "family": "vote-tally",
+            "sourceHash": "sha256:e80bca41d2be6635d5504b0d01b0ef74e2cd872faceece5185f4d0fdd7e81686",
+            "contentHash": "sha256:52ac6bf713cd781a83e0f20434dca8c3e7c902626d9b7de81fd15d2fd80271e9",
+            "structureHash": "sha256:5b39424e948b351988eb59789b558fd5243afd97fa2d1c93ace9f42f8b65f838"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
