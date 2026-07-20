@@ -6,6 +6,7 @@
     "dev": "next dev",
     "start": "next start",
     "mcp": "tsx mcp/stdio.ts",
+    "promote": "node scripts/promote-draft.mjs",
     "test:policy": "node scripts/check-policy.test.mjs",
     "test:mcp": "tsx --test mcp/smoke.test.ts",
     "validate": "shadcn registry validate && node scripts/check-policy.mjs",
