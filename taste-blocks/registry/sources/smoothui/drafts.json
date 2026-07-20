@@ -1,0 +1,232 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "smoothui-drafts",
+  "homepage": "https://smoothui.dev",
+  "items": [
+    {
+      "name": "smoothui-button-copy",
+      "type": "registry:component",
+      "title": "Copy Button",
+      "description": "Runs a caller-provided copy action and reports loading, success, and failure without losing focus.",
+      "author": "SmoothUI",
+      "dependencies": [
+        "lucide-react@0.545.0",
+        "motion@12.23.25"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/smoothui-button-copy/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/smoothui-button-copy/index.tsx"
+        }
+      ],
+      "categories": [
+        "buttons-actions"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "buttons-actions",
+          "tags": [
+            "copy",
+            "clipboard",
+            "feedback",
+            "button"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/smoothui/smoothui-button-copy.tsx",
+          "source": {
+            "project": "SmoothUI",
+            "repository": "https://github.com/educlopez/smoothui",
+            "revision": "1fa17cd10e646f704891b89a569fefb9e6f49a20",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/smoothui-button-copy/index.tsx",
+                "upstreamPath": "packages/smoothui/components/button-copy/index.tsx",
+                "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/components/button-copy/index.tsx",
+                "upstreamSha256": "sha256:1c5b07a526057604a0e5688de3a60a5688ba91188f673aaf2afdf1349e684dda",
+                "contentSha256": "sha256:efa9cc741c1887ecf0a3dd9fb3ed601262416be873a94fd24b3a635c5d4c696f",
+                "changes": [
+                  "Made feedback depend on the real onCopy promise, added visible and announced failure feedback, guarded repeat activation, and cleaned up timers.",
+                  "Defaulted the optional minimum loading delay to zero and made the loading icon static."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/smoothui/components/button-copy/index.tsx",
+            "copyright": [
+              "Copyright (c) 2024 Eduardo Calvo"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/LICENSE",
+              "sha256": "sha256:9877f4310c0549e5ce26affe52ba97c4e60325472bdcdd308a92fccd90f119cc",
+              "localPath": "registry/sources/smoothui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/smoothui-button-copy/index.tsx",
+              "change": "Made feedback follow the real onCopy promise, defaulted the optional minimum loading delay to zero, added visible and announced failure feedback, guarded repeat activation, cleaned up timers, and made the loading icon static.",
+              "reason": "Prevent false success, duplicate operations, continuous hidden work, and updates after unmount while preserving the upstream props."
+            }
+          ],
+          "dedupe": {
+            "family": "async-copy-action",
+            "sourceHash": "sha256:75cf76379e607c55b9dd6c175d306318db2997b1d5f29904e9c8495a5a2281de",
+            "contentHash": "sha256:9d97d6791b4913ab81a02b821906ae9aae203c3e3ef7a4b3990dedb56326db28",
+            "structureHash": "sha256:483ed6e774053059d0a92a791e345c4a08b9f9b88d89f10b69cf5a22cec00309"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "smoothui-context-menu",
+      "type": "registry:component",
+      "title": "Context Menu",
+      "description": "Adds an animated keyboard-accessible context menu with nested items.",
+      "author": "SmoothUI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.545.0",
+        "motion@12.23.25",
+        "radix-ui@1.4.3",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/smoothui-context-menu/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/smoothui-context-menu/index.tsx"
+        },
+        {
+          "path": "components/smoothui-context-menu/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/smoothui-context-menu/utils.ts"
+        },
+        {
+          "path": "components/smoothui-context-menu/context-menu-primitive.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/smoothui-context-menu/context-menu-primitive.tsx"
+        },
+        {
+          "path": "components/smoothui-context-menu/animation.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/smoothui-context-menu/animation.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "context-menu",
+            "menu",
+            "submenu",
+            "keyboard"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/smoothui/smoothui-context-menu.tsx",
+          "source": {
+            "project": "SmoothUI",
+            "repository": "https://github.com/educlopez/smoothui",
+            "revision": "1fa17cd10e646f704891b89a569fefb9e6f49a20",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/smoothui-context-menu/index.tsx",
+                "upstreamPath": "packages/smoothui/components/context-menu/index.tsx",
+                "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/components/context-menu/index.tsx",
+                "upstreamSha256": "sha256:56cfbc23e7f8e3018c404948fc16422618181e119e0593200c382114d47e1dc2",
+                "contentSha256": "sha256:2e74f9b3bb7a371d5f5774c19e0e6784a20090a6a426bcc114a3f4c321492442",
+                "changes": [
+                  "Replaced monorepo imports for the context-menu primitive, utility, and animation helper with colocated copied files.",
+                  "Kept the trigger keyboard-focusable, disabled leaf items without an action, and replaced physical icon margins with logical RTL-aware spacing."
+                ]
+              },
+              {
+                "shippedPath": "components/smoothui-context-menu/utils.ts",
+                "upstreamPath": "packages/shadcn-ui/lib/utils.ts",
+                "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/shadcn-ui/lib/utils.ts",
+                "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/smoothui-context-menu/context-menu-primitive.tsx",
+                "upstreamPath": "packages/shadcn-ui/components/ui/context-menu.tsx",
+                "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/shadcn-ui/components/ui/context-menu.tsx",
+                "upstreamSha256": "sha256:0d7f980270dce060c1ab32b4116f15c247a8238f2adafcb661980e4a9d6e95a1",
+                "contentSha256": "sha256:6bcb2afbb4b30fcee858fa6e2c428b65b5c8d9ea3d1ae9b31934300e5fc36f22",
+                "changes": [
+                  "Replaced the monorepo utility alias with the colocated copied utility.",
+                  "Removed the independent CSS open and close animations so reduced-motion handling is controlled by the SmoothUI Motion wrapper.",
+                  "Added logical RTL spacing, chevron mirroring, and viewport-bounded menu widths."
+                ]
+              },
+              {
+                "shippedPath": "components/smoothui-context-menu/animation.ts",
+                "upstreamPath": "packages/smoothui/lib/animation.ts",
+                "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/lib/animation.ts",
+                "upstreamSha256": "sha256:0cc008d84c3ab2e2581a0153d5af22a013e46ad76bf52502ba2bbd1c97dc20a8",
+                "contentSha256": "sha256:0cc008d84c3ab2e2581a0153d5af22a013e46ad76bf52502ba2bbd1c97dc20a8",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/smoothui/components/context-menu/index.tsx, packages/shadcn-ui/lib/utils.ts, packages/shadcn-ui/components/ui/context-menu.tsx, packages/smoothui/lib/animation.ts",
+            "copyright": [
+              "Copyright (c) 2024 Eduardo Calvo"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/LICENSE",
+              "sha256": "sha256:9877f4310c0549e5ce26affe52ba97c4e60325472bdcdd308a92fccd90f119cc",
+              "localPath": "registry/sources/smoothui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/smoothui-context-menu/index.tsx",
+              "change": "Replaced monorepo imports with colocated paths, kept the trigger keyboard-focusable, disabled actionless leaf items, and changed icon margins to logical RTL-aware spacing.",
+              "reason": "Keep the copied component installable, preserve keyboard access, prevent misleading no-op actions, and maintain readable alignment in both text directions."
+            },
+            {
+              "shippedPath": "components/smoothui-context-menu/context-menu-primitive.tsx",
+              "change": "Replaced the monorepo utility alias, removed redundant CSS entry and exit animations, added logical RTL spacing and chevron mirroring, and bounded menu widths to the viewport.",
+              "reason": "Keep reduced-motion output static, avoid narrow-screen overflow, and preserve menu directionality without changing the public contract."
+            }
+          ],
+          "dedupe": {
+            "family": "context-menu",
+            "sourceHash": "sha256:1cb0863631cd5513ee675c4d23131ac9e0cdfffaa56bb4645956cbf2b4d67061",
+            "contentHash": "sha256:d24f41bcf9af2116c4f3b1af7284d077d5edad4300358ea5a1b63edb101049a4",
+            "structureHash": "sha256:2aaa7b7050f7a7f081321188d066a15a8ac607bfae9d2aa77f5d316abca77a7f"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
