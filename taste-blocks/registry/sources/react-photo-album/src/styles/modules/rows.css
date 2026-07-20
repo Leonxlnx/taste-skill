@@ -1,0 +1,21 @@
+.react-photo-album--rows {
+  flex-direction: column;
+  row-gap: calc(var(--react-photo-album--spacing) * 1px);
+
+  & .react-photo-album--track {
+    justify-content: space-between;
+
+    --react-photo-album--track-gaps: calc(
+      var(--react-photo-album--spacing) * (var(--react-photo-album--track-size) - 1) + 2 *
+        var(--react-photo-album--padding) * var(--react-photo-album--track-size)
+    );
+  }
+
+  & .react-photo-album--photo {
+    width: calc(
+      (100% - var(--react-photo-album--track-gaps) * 1px) /
+        (var(--react-photo-album--container-width) - var(--react-photo-album--track-gaps)) *
+        var(--react-photo-album--photo-width) + 2px * var(--react-photo-album--padding)
+    );
+  }
+}

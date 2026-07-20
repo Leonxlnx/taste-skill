@@ -1,0 +1,31 @@
+.react-photo-album {
+  display: flex;
+}
+
+.react-photo-album,
+.react-photo-album * {
+  box-sizing: border-box;
+}
+
+.react-photo-album--track {
+  display: flex;
+  align-items: flex-start;
+}
+
+.react-photo-album--photo {
+  position: relative;
+  padding: calc(var(--react-photo-album--padding) * 1px);
+}
+
+.react-photo-album--image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--react-photo-album--photo-width) / var(--react-photo-album--photo-height);
+}
+
+.react-photo-album--button {
+  cursor: pointer;
+  border: initial;
+  background: initial;
+}

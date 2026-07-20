@@ -1,0 +1,18 @@
+.react-photo-album--masonry {
+  justify-content: space-between;
+
+  & .react-photo-album--track {
+    flex-direction: column;
+    justify-content: flex-start;
+    row-gap: calc(var(--react-photo-album--spacing) * 1px);
+
+    width: calc(
+      (100% - var(--react-photo-album--spacing) * 1px * (var(--react-photo-album--columns) - 1)) /
+        var(--react-photo-album--columns)
+    );
+  }
+
+  & .react-photo-album--photo {
+    width: 100%;
+  }
+}
