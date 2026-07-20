@@ -1,0 +1,672 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "chamaac-ui-drafts",
+  "homepage": "https://www.chamaac.com",
+  "items": [
+    {
+      "name": "chamaac-astral-flow",
+      "type": "registry:component",
+      "title": "Astral Flow",
+      "description": "Renders a layered procedural flow field with three configurable colors and bounded WebGL output.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/astral-flow.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/astral-flow.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "shader",
+            "flow-field",
+            "procedural",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-astral-flow.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/astral-flow.tsx",
+                "upstreamPath": "registry/chamaac/astral-flow/astral-flow.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/astral-flow/astral-flow.tsx",
+                "upstreamSha256": "sha256:ceb27618339251753a52f3229355af588fcbde0eb1e1e003f0e10eaae6ae4f96",
+                "contentSha256": "sha256:4c623714be7f990f5321abc1aebfd8cbd168d39c6a6b6dfcf94e38c9fe91724b",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/astral-flow/astral-flow.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/astral-flow.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "procedural-astral-flow-field",
+            "sourceHash": "sha256:dd5725e4e28be3cd46cf12d002824a8ba43e9bdefcdc7db7a78107dd2fa9889b",
+            "contentHash": "sha256:74ceba1b3feb978819f86262b7d4357fabe8fa362dd2f1f8f082fdd99884a655",
+            "structureHash": "sha256:6b9090fc56d37a3f26b235395183488e1fc52dc16563e1c21619302430c3452a"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "chamaac-electric-mist",
+      "type": "registry:component",
+      "title": "Electric Mist",
+      "description": "Renders a configurable electric mist shader with adjustable detail, distortion, and brightness.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/electric-mist.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/electric-mist.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "shader",
+            "mist",
+            "procedural",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-electric-mist.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/electric-mist.tsx",
+                "upstreamPath": "registry/chamaac/electric-mist/electric-mist.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/electric-mist/electric-mist.tsx",
+                "upstreamSha256": "sha256:bd8f8b9dfe01bd1c04da2b3739422529d5e6ff7f72eec275d69510d614ae36b5",
+                "contentSha256": "sha256:9db07a41237255cc3432dc2f218153c5e4046ee17ba3cdeec401174f10f8b747",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/electric-mist/electric-mist.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/electric-mist.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "procedural-electric-mist-field",
+            "sourceHash": "sha256:15c451b67edab435605915bf4765500c33de2e4f6a416de80f935839698035c4",
+            "contentHash": "sha256:46ba21527032b02cf284ee998bf564f3f277ac0590e54b2f60f1d3cdb917075f",
+            "structureHash": "sha256:db582afbef6297a638725b5fdbe80e6fce46254cf5461557f98845442b5d8f95"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "chamaac-grid-bloom",
+      "type": "registry:component",
+      "title": "Grid Bloom",
+      "description": "Renders a pointer-reactive procedural grid with bloom, flow, distortion, and repulsion controls.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/grid-bloom.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/grid-bloom.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "shader",
+            "grid",
+            "pointer",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-grid-bloom.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/grid-bloom.tsx",
+                "upstreamPath": "registry/chamaac/grid-bloom/grid-bloom.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/grid-bloom/grid-bloom.tsx",
+                "upstreamSha256": "sha256:7d543f648a1160058927759be2e20881df7f90cb9521f74281bc0192c32fc7f8",
+                "contentSha256": "sha256:533f18f12a199d44b6c79497190d2f6f64c252912f4066f7fbf0c74d4890af6b",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+                  "Capped the device-pixel ratio at 1.5 and disabled pointer-driven motion when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/grid-bloom/grid-bloom.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/grid-bloom.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5 and disabled pointer-driven motion when reduced motion is requested.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "pointer-reactive-grid-bloom",
+            "sourceHash": "sha256:8a623c1421dcab3583b04bfe0e1841fc8d6966e3d8948badddb74f405728d02e",
+            "contentHash": "sha256:26f8cadd3ea01269c87cea06f65acd949f62ff6c1de86847edede1413d92404f",
+            "structureHash": "sha256:6ce7e2582394a41f77f2c3b45e3902becb5b1f3ac17fab16eb58c46bdc06bbf4"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "chamaac-light-speed",
+      "type": "registry:component",
+      "title": "Light Speed",
+      "description": "Renders an instanced light-streak tunnel with configurable speed, radius, color, and bloom.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "@react-three/postprocessing@3.0.4",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/light-speed.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/light-speed.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "particles",
+            "tunnel",
+            "bloom",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-light-speed.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/light-speed.tsx",
+                "upstreamPath": "registry/chamaac/light-speed/light-speed.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/light-speed/light-speed.tsx",
+                "upstreamSha256": "sha256:285c08e3566a9ff5ef50a14fd2eaf292e32a2a95a6b6e1be28640f84218c3010",
+                "contentSha256": "sha256:ea8eaa1cd39cb4877c18ff01af9708fe61d93e3a6055636ff9c804750f062de2",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+                  "Capped the device-pixel ratio at 1.5 and clamped the public particle count to 1-4000."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/light-speed/light-speed.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/light-speed.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5 and clamped the public particle count to 1-4000.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "instanced-light-speed-tunnel",
+            "sourceHash": "sha256:782b4e07f22a6ac513085ea2210e3790ba04b9ded0c6eefc23ae30485d9e4a1d",
+            "contentHash": "sha256:dce7c32f6f05ac96f479172504b6d735e7ee0c7ec9792ce0d75bca121b6acec6",
+            "structureHash": "sha256:5f332e3b1ea429a5dbf8d577acc079f708308f1c10fcda2b4482b03add5ac042"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "chamaac-synthesis",
+      "type": "registry:component",
+      "title": "Synthesis",
+      "description": "Renders a configurable three-color procedural field with flow, distortion, glow, and contrast controls.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/synthesis.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/synthesis.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "shader",
+            "color-field",
+            "procedural",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-synthesis.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/synthesis.tsx",
+                "upstreamPath": "registry/chamaac/synthesis/synthesis.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/synthesis/synthesis.tsx",
+                "upstreamSha256": "sha256:0875844f520f805c38ca3b48a97c690d16dc98a910a8ec1ee367de4592831075",
+                "contentSha256": "sha256:f10d10c0dec6b3daed04eb64253470803f5872c8778dbe15ec07cd104a61067b",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/synthesis/synthesis.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/synthesis.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "procedural-synthesis-flow-field",
+            "sourceHash": "sha256:1491067bd8102ff3e6c14055a65453d14dc9d9e635847b078eacc5f06e8fa002",
+            "contentHash": "sha256:c935ff364166a19a51d8eee3956cf8c3e04df36b2de9ca5a9d0dc658ad48765e",
+            "structureHash": "sha256:e8c6cc42f4e128ef1a7e21ad8d626aeade228756f9dd9e2e5c26ef6a8747e887"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "chamaac-waves",
+      "type": "registry:component",
+      "title": "Waves",
+      "description": "Renders a deforming three-color noise surface with configurable amplitude and directional speed.",
+      "author": "Amarnath",
+      "dependencies": [
+        "@react-three/drei@10.7.6",
+        "@react-three/fiber@9.4.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.4.0",
+        "three@0.180.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/chamaac-ui/waves.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chamaac-ui/waves.tsx"
+        },
+        {
+          "path": "components/chamaac-ui/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "shader",
+            "waves",
+            "surface",
+            "webgl"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/chamaac-ui/chamaac-waves.tsx",
+          "source": {
+            "project": "Chamaac UI",
+            "repository": "https://github.com/amarnathdhumal/chamaacui",
+            "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/chamaac-ui/waves.tsx",
+                "upstreamPath": "registry/chamaac/waves/waves.tsx",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/waves/waves.tsx",
+                "upstreamSha256": "sha256:f8bdaad012dcdd12d1ba945ac0518851460d21898dd5b70edfb24af56c17e242",
+                "contentSha256": "sha256:e9a7be2a16c95a364d22500be1fc962f46f3bdeb346f7e7dcb640a520fa4d0d7",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+                  "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+                  "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+                  "Capped the device-pixel ratio at 1.5."
+                ]
+              },
+              {
+                "shippedPath": "components/chamaac-ui/lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+                "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+                "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+                "changes": [
+                  "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/chamaac/waves/waves.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2026 Amarnath"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+              "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+              "localPath": "registry/sources/chamaac-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/chamaac-ui/waves.tsx",
+              "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5.",
+              "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/chamaac-ui/lib/utils.ts",
+              "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+              "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+            }
+          ],
+          "dedupe": {
+            "family": "deformed-noise-wave-surface",
+            "sourceHash": "sha256:cf75aa891026f94dce40b2c5708f81d7445f8b47d304b26c506380327b263c26",
+            "contentHash": "sha256:3f28b6182b4a7fa4bdc86053638a34880b4cfb9278370fb2354b5efc6b0e8590",
+            "structureHash": "sha256:7f339997d2e14af320fb85cb06aef1a590640dced9cd9a8d45b787653188069a"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
