@@ -1,0 +1,158 @@
+.projected-shadow {
+  --projected-shadow-duration: 280ms;
+  --projected-shadow-active-duration: 360ms;
+  --projected-shadow-ease: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --projected-shadow-origin: center;
+  --projected-shadow-projected-opacity: 1;
+  --projected-shadow-projected-active-opacity: 0;
+  --projected-shadow-projected-x: -14%;
+  --projected-shadow-projected-y: -18%;
+  --projected-shadow-projected-scale: 1.08;
+  --projected-shadow-projected-rotate: -8deg;
+  --projected-shadow-projected-active-x: -4%;
+  --projected-shadow-projected-active-y: -5%;
+  --projected-shadow-projected-active-scale: 0.94;
+  --projected-shadow-projected-active-rotate: -3deg;
+  --projected-shadow-contact-opacity: 0;
+  --projected-shadow-contact-active-opacity: 0.72;
+  --projected-shadow-contact-x: -4%;
+  --projected-shadow-contact-y: -5%;
+  --projected-shadow-contact-scale: 0.92;
+  --projected-shadow-contact-rotate: -2deg;
+  --projected-shadow-contact-active-x: 0%;
+  --projected-shadow-contact-active-y: 0%;
+  --projected-shadow-contact-active-scale: 0.89;
+  --projected-shadow-contact-active-rotate: 0deg;
+  --projected-shadow-target-x: 8%;
+  --projected-shadow-target-y: -6%;
+  --projected-shadow-target-scale: 1.06;
+  --projected-shadow-target-rotate: 10deg;
+  --projected-shadow-target-active-x: 0%;
+  --projected-shadow-target-active-y: 0%;
+  --projected-shadow-target-active-scale: 0.86;
+  --projected-shadow-target-active-rotate: 0deg;
+}
+
+.projected-shadow-layer {
+  backface-visibility: hidden;
+  transform-origin: var(--projected-shadow-origin);
+  transition-property: opacity, transform;
+  transition-duration: var(--projected-shadow-duration);
+  transition-timing-function: var(--projected-shadow-ease);
+  will-change: transform, opacity;
+}
+
+.projected-shadow-projected {
+  opacity: var(--projected-shadow-projected-opacity);
+  transform: translate3d(
+      var(--projected-shadow-projected-x),
+      var(--projected-shadow-projected-y),
+      0
+    )
+    scale(var(--projected-shadow-projected-scale))
+    rotate(var(--projected-shadow-projected-rotate));
+}
+
+.projected-shadow-contact {
+  opacity: var(--projected-shadow-contact-opacity);
+  transform: translate3d(
+      var(--projected-shadow-contact-x),
+      var(--projected-shadow-contact-y),
+      0
+    )
+    scale(var(--projected-shadow-contact-scale))
+    rotate(var(--projected-shadow-contact-rotate));
+}
+
+.projected-shadow-target {
+  transform: translate3d(
+      var(--projected-shadow-target-x),
+      var(--projected-shadow-target-y),
+      0
+    )
+    scale(var(--projected-shadow-target-scale))
+    rotate(var(--projected-shadow-target-rotate));
+}
+
+.projected-shadow[data-active="true"] .projected-shadow-layer {
+  transition-duration: var(--projected-shadow-active-duration);
+}
+
+.projected-shadow[data-active="true"] .projected-shadow-projected {
+  opacity: var(--projected-shadow-projected-active-opacity);
+  transform: translate3d(
+      var(--projected-shadow-projected-active-x),
+      var(--projected-shadow-projected-active-y),
+      0
+    )
+    scale(var(--projected-shadow-projected-active-scale))
+    rotate(var(--projected-shadow-projected-active-rotate));
+}
+
+.projected-shadow[data-active="true"] .projected-shadow-contact {
+  opacity: var(--projected-shadow-contact-active-opacity);
+  transform: translate3d(
+      var(--projected-shadow-contact-active-x),
+      var(--projected-shadow-contact-active-y),
+      0
+    )
+    scale(var(--projected-shadow-contact-active-scale))
+    rotate(var(--projected-shadow-contact-active-rotate));
+}
+
+.projected-shadow[data-active="true"] .projected-shadow-target {
+  transform: translate3d(
+      var(--projected-shadow-target-active-x),
+      var(--projected-shadow-target-active-y),
+      0
+    )
+    scale(var(--projected-shadow-target-active-scale))
+    rotate(var(--projected-shadow-target-active-rotate));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .projected-shadow:hover .projected-shadow-layer {
+    transition-duration: var(--projected-shadow-active-duration);
+  }
+
+  .projected-shadow:hover .projected-shadow-projected {
+    opacity: var(--projected-shadow-projected-active-opacity);
+    transform: translate3d(
+        var(--projected-shadow-projected-active-x),
+        var(--projected-shadow-projected-active-y),
+        0
+      )
+      scale(var(--projected-shadow-projected-active-scale))
+      rotate(var(--projected-shadow-projected-active-rotate));
+  }
+
+  .projected-shadow:hover .projected-shadow-contact {
+    opacity: var(--projected-shadow-contact-active-opacity);
+    transform: translate3d(
+        var(--projected-shadow-contact-active-x),
+        var(--projected-shadow-contact-active-y),
+        0
+      )
+      scale(var(--projected-shadow-contact-active-scale))
+      rotate(var(--projected-shadow-contact-active-rotate));
+  }
+
+  .projected-shadow:hover .projected-shadow-target {
+    transform: translate3d(
+        var(--projected-shadow-target-active-x),
+        var(--projected-shadow-target-active-y),
+        0
+      )
+      scale(var(--projected-shadow-target-active-scale))
+      rotate(var(--projected-shadow-target-active-rotate));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projected-shadow .projected-shadow-layer,
+  .projected-shadow[data-active="true"] .projected-shadow-layer,
+  .projected-shadow:hover .projected-shadow-layer {
+    transition-duration: 0ms;
+    will-change: auto;
+  }
+}
