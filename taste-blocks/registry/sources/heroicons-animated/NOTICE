@@ -1,0 +1,7 @@
+Heroicons Animated components
+
+Selected React components are from heroicons-animated at 93c14cc04222375a965ffa33b5d390c474822405.
+The upstream README credits pqoqubbw/icons (Lucide Animated), pinned here at 8989db1262cdd3a95d22b2b2336fcb556dd9b37f, as the original project inspiration and implementation source.
+Their SVG geometry derives from Heroicons 2.2.0 at 0435d4ca364a608cc75e2f8683d374e55abbae26.
+All three upstream MIT licenses are preserved in this directory.
+Only component source is redistributed; no site, tutorial, demo, or brand asset is included.
