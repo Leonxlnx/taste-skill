@@ -1,0 +1,474 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-kibo-ui-drafts",
+  "homepage": "https://github.com/Leonxlnx/taste-skill",
+  "items": [
+    {
+      "name": "kibo-calendar",
+      "type": "registry:component",
+      "title": "Calendar",
+      "description": "Displays dated features in a navigable calendar grid.",
+      "author": "Kibo UI",
+      "dependencies": [
+        "date-fns@4.1.0",
+        "jotai@2.15.0",
+        "lucide-react@0.545.0"
+      ],
+      "registryDependencies": [
+        "button",
+        "command",
+        "popover",
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "components/kibo-calendar/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/calendar.tsx"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "calendar",
+            "schedule",
+            "features"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/kibo-ui/kibo-calendar.tsx",
+          "source": {
+            "project": "Kibo UI",
+            "repository": "https://github.com/shadcnblocks/kibo",
+            "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kibo-calendar/index.tsx",
+                "upstreamPath": "packages/calendar/index.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/calendar/index.tsx",
+                "upstreamSha256": "sha256:e5ae166bf9627e7847924c913c0240a16b3a0199ddb55713cec39d79ecae858d",
+                "contentSha256": "sha256:4425bbee41bd2553617372886a1a00258c330b68cc45a91cdd16c2a3cc0f44cd",
+                "changes": [
+                  "Named the month navigation controls, mirrored their icons for RTL, replaced physical spacing, border, and alignment utilities with logical equivalents, and allowed date controls to wrap.",
+                  "Scoped the month and year atoms to each CalendarProvider and added screen-reader text for every feature status."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/calendar/index.tsx",
+            "copyright": [
+              "Copyright (c) 2023 — Present shadcnblocks"
+            ],
+            "evidence": {
+              "upstreamPath": "license.md",
+              "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+              "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+              "localPath": "registry/sources/kibo-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kibo-calendar/index.tsx",
+              "change": "Named and mirrored the navigation controls, replaced physical layout utilities with logical equivalents, allowed date controls to wrap, scoped calendar atoms per provider, and added screen-reader status text.",
+              "reason": "Make navigation and feature status discoverable to assistive technology, preserve the layout across narrow and right-to-left viewports, and prevent separate calendar instances from sharing navigation state."
+            }
+          ],
+          "dedupe": {
+            "family": "feature-calendar-grid",
+            "sourceHash": "sha256:ddc0d301d477ac7c876d60d097483d38dfc95ac17e6f60bd7d6bc97d8c22ab6f",
+            "contentHash": "sha256:7e30b92a9fa67155a1eab5788b411b394f8bf94218b9864871e344667967151f",
+            "structureHash": "sha256:6d60d3639f01d86d1abc58911442d22a4bae6d4e7e0077b1fe8fdc5568deaca3"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "kibo-choicebox",
+      "type": "registry:component",
+      "title": "Choicebox",
+      "description": "Presents radio choices as composable card rows.",
+      "author": "Kibo UI",
+      "dependencies": [],
+      "registryDependencies": [
+        "field",
+        "radio-group",
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "components/kibo-choicebox/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/choicebox.tsx"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "radio",
+            "choice",
+            "field"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/kibo-ui/kibo-choicebox.tsx",
+          "source": {
+            "project": "Kibo UI",
+            "repository": "https://github.com/shadcnblocks/kibo",
+            "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kibo-choicebox/index.tsx",
+                "upstreamPath": "packages/choicebox/index.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/choicebox/index.tsx",
+                "upstreamSha256": "sha256:4795f41f7db23cd2d059d3344a4c0662e6c039a3c9424791aaef741ade9f992f",
+                "contentSha256": "sha256:acb94405a1a0be62bdf41e86947e4ecfeca4e0f179e334b97621ba85797a7249",
+                "changes": [
+                  "Replaced @repo/shadcn-ui radio-group and utility aliases with @/components/ui/radio-group and @/lib/utils.",
+                  "Generated a stable control id when none is provided and passed it from ChoiceboxItem to ChoiceboxIndicator.",
+                  "Narrowed ChoiceboxItem and ChoiceboxIndicator prop types to remove silently ignored wrapper props and the context-owned value."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/choicebox/index.tsx",
+            "copyright": [
+              "Copyright (c) 2023 — Present shadcnblocks"
+            ],
+            "evidence": {
+              "upstreamPath": "license.md",
+              "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+              "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+              "localPath": "registry/sources/kibo-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kibo-choicebox/index.tsx",
+              "change": "Replaced Kibo's workspace-local aliases, generated a stable shared id for each label and radio indicator, and narrowed the wrapper prop surfaces to behavior they actually implement.",
+              "reason": "Resolve imports through the host project's shadcn aliases, preserve the compound label association without duplicate caller wiring, and avoid advertising props that are silently ignored."
+            }
+          ],
+          "dedupe": {
+            "family": "card-radio-choice",
+            "sourceHash": "sha256:1306978080f986650007668e73a506d83bd98716cf49e48a61b911555a79a7b1",
+            "contentHash": "sha256:db722d6d00402be6999f151b84341fc7383d8b36e39d4edea5f158962e380878",
+            "structureHash": "sha256:576be40b565ad007002082a43a093e5165a542d66cc4df7964818309002692a6"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "kibo-contribution-graph",
+      "type": "registry:component",
+      "title": "Contribution Graph",
+      "description": "Displays activity counts in a contribution calendar.",
+      "author": "Kibo UI",
+      "dependencies": [
+        "date-fns@4.1.0"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "components/kibo-contribution-graph/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/contribution-graph.tsx"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "activity",
+            "calendar",
+            "heatmap"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/kibo-ui/kibo-contribution-graph.tsx",
+          "source": {
+            "project": "Kibo UI",
+            "repository": "https://github.com/shadcnblocks/kibo",
+            "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kibo-contribution-graph/index.tsx",
+                "upstreamPath": "packages/contribution-graph/index.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/contribution-graph/index.tsx",
+                "upstreamSha256": "sha256:a7461e71054d1c326ac2c5d2d613a21284c5dd933e05719a9e563f1ed6c0b900",
+                "contentSha256": "sha256:c951c67e58e65018ab2e873b8769719791916c2d725591aa62a2ca7a457a591d",
+                "changes": [
+                  "Removed the unused weekdays label field, constrained default levels to the four styled intensities, gave contribution cells default image roles and labels, and changed legend margins to logical utilities."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/contribution-graph/index.tsx",
+            "copyright": [
+              "Copyright (c) 2023 — Present shadcnblocks"
+            ],
+            "evidence": {
+              "upstreamPath": "license.md",
+              "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+              "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+              "localPath": "registry/sources/kibo-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kibo-contribution-graph/index.tsx",
+              "change": "Removed a no-op label field, constrained default intensity levels, added default accessible cell semantics, and changed legend margins to logical utilities.",
+              "reason": "Keep the public API truthful, prevent unstyled levels, expose daily values to assistive technology, and preserve the legend in right-to-left layouts."
+            }
+          ],
+          "dedupe": {
+            "family": "contribution-calendar",
+            "sourceHash": "sha256:560f91f82bb20782b6026d380c3546bdc7894cffa3a0d895dd7de3af77cd1542",
+            "contentHash": "sha256:fbc9ae88ac522bfd3cde9edeb05e1e70b4c744bd262f9ff0c0f2b7c71198c4b7",
+            "structureHash": "sha256:074df1b27ed9b24ba6371106f81f01a761617bccbae2448d825f1590317caf17"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "kibo-qr-code",
+      "type": "registry:component",
+      "title": "QR Code",
+      "description": "Generates an SVG QR code from a string.",
+      "author": "Kibo UI",
+      "dependencies": [
+        "culori@4.0.2",
+        "qrcode@1.5.4"
+      ],
+      "devDependencies": [
+        "@types/culori@4.0.1",
+        "@types/qrcode@1.5.5"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "components/kibo-qr-code/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/qr-code.tsx"
+        },
+        {
+          "path": "components/kibo-qr-code/server.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/qr-code-server.tsx"
+        }
+      ],
+      "categories": [
+        "media-galleries"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "media-galleries",
+          "tags": [
+            "qr",
+            "generator",
+            "svg"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/kibo-ui/kibo-qr-code.tsx",
+          "source": {
+            "project": "Kibo UI",
+            "repository": "https://github.com/shadcnblocks/kibo",
+            "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kibo-qr-code/index.tsx",
+                "upstreamPath": "packages/qr-code/index.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/qr-code/index.tsx",
+                "upstreamSha256": "sha256:457ff60279903676499271a15ac51f3305ae6286d31408786f19ce12acefd1a6",
+                "contentSha256": "sha256:1b08bf4617c4a247155a58767e35e72bc873b05804591e6d9264047ba30fe145",
+                "changes": [
+                  "Required an accessible label and defaulted the rendered QR container to an image role.",
+                  "Cleared stale SVG output and ignored obsolete asynchronous completions when QR inputs change.",
+                  "Parsed supported CSS color strings through Culori instead of silently replacing non-oklch values with defaults."
+                ]
+              },
+              {
+                "shippedPath": "components/kibo-qr-code/server.tsx",
+                "upstreamPath": "packages/qr-code/server.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/qr-code/server.tsx",
+                "upstreamSha256": "sha256:bfd86fba5ca902aae8d2893fbe0749b07425fd09e548e69e1d047121e32086dc",
+                "contentSha256": "sha256:765a15e5d3d21410847a7ae79b765fe0c1f4064bede3af859562cc9c75b11e1d",
+                "changes": [
+                  "Required an accessible label and defaulted the rendered QR container to an image role."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/qr-code/index.tsx, packages/qr-code/server.tsx",
+            "copyright": [
+              "Copyright (c) 2023 — Present shadcnblocks"
+            ],
+            "evidence": {
+              "upstreamPath": "license.md",
+              "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+              "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+              "localPath": "registry/sources/kibo-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kibo-qr-code/index.tsx",
+              "change": "Required an accessible label, defaulted the client-rendered QR container to an image role, prevented stale asynchronous output after inputs change, and honored supported CSS color strings.",
+              "reason": "Ensure generated QR graphics have a caller-supplied accessible name, always reflect the latest inputs, and do not silently ignore valid caller-supplied colors."
+            },
+            {
+              "shippedPath": "components/kibo-qr-code/server.tsx",
+              "change": "Required an accessible label and defaulted the server-rendered QR container to an image role.",
+              "reason": "Keep client and server QR output equally identifiable to assistive technology."
+            }
+          ],
+          "dedupe": {
+            "family": "qr-code-generator",
+            "sourceHash": "sha256:79238d1e4b7a50f293ddfe631745f4307188392f96faaaf06cd98eef5e0807c7",
+            "contentHash": "sha256:e22e5070f87c975c51f3e1d2ed0c24ba46ae39cb804071a1e42b198db920d6ce",
+            "structureHash": "sha256:eb151369ac14c7637cef4df81ba1b296614b3f72340f4b05fb6e53a7fcae7af4"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "kibo-relative-time",
+      "type": "registry:component",
+      "title": "Relative Time",
+      "description": "Displays one time across multiple time zones.",
+      "author": "Kibo UI",
+      "dependencies": [
+        "@radix-ui/react-use-controllable-state@1.2.2"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "components/kibo-relative-time/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/relative-time.tsx"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "time",
+            "timezone",
+            "clock"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/kibo-ui/kibo-relative-time.tsx",
+          "source": {
+            "project": "Kibo UI",
+            "repository": "https://github.com/shadcnblocks/kibo",
+            "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kibo-relative-time/index.tsx",
+                "upstreamPath": "packages/relative-time/index.tsx",
+                "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/relative-time/index.tsx",
+                "upstreamSha256": "sha256:97de2ca519b61e7088f5062f13eb8b01f5aeafcb9ce6b81b142f0d0b9c854597",
+                "contentSha256": "sha256:1fbd2f0e5fa0e7656028dfdaa4e77b8a221b8df614cf3d6e101a5df3e9c25f08",
+                "changes": [
+                  "Paused the live clock while its root is offscreen or the document is hidden and replaced left padding with logical inline-start padding.",
+                  "Merged formatting options with the requested timezone and applied per-zone format overrides instead of leaking them to the DOM.",
+                  "Applied the RelativeTimeZoneDate className instead of silently discarding it."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/relative-time/index.tsx",
+            "copyright": [
+              "Copyright (c) 2023 — Present shadcnblocks"
+            ],
+            "evidence": {
+              "upstreamPath": "license.md",
+              "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+              "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+              "localPath": "registry/sources/kibo-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kibo-relative-time/index.tsx",
+              "change": "Observed root and document visibility before running the live clock, changed its spacing to a logical utility, made formatting options honor each zone without leaking props to the DOM, and applied the date display className.",
+              "reason": "Prevent continuous work while hidden or offscreen, preserve spacing in right-to-left layouts, and make the documented formatting and styling API behave consistently."
+            }
+          ],
+          "dedupe": {
+            "family": "multi-zone-relative-time",
+            "sourceHash": "sha256:b0073184d39ae1f722c025735c52aaec0389018cd2830296c92bc2f89f84637b",
+            "contentHash": "sha256:9bd4591830e3e21dc8f5aa4681189b23657be82d314457ff4c72f2394a4e7904",
+            "structureHash": "sha256:974796ce97a3b5ea7fe0ef52aeb77b4a31f1bf9cf5e72a9df8b92d59533698b0"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
