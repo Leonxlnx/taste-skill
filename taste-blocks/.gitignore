@@ -1,5 +1,8 @@
 node_modules/
+.next/
+out/
 dist/
-.vite/
+.vercel/
+*.tsbuildinfo
 .env*
 !.env.example

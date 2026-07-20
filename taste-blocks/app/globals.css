@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@source "../registry";
+@source "../previews";
+
+:root {
+  --background: #f4f4f0;
+  --foreground: #171717;
+  --muted: #686863;
+  --line: #c9c9c2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--foreground);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--background);
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer base {
+  a {
+    color: inherit;
+  }
+}
+
+::selection {
+  color: var(--background);
+  background: var(--foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

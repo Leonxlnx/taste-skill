@@ -1,9 +1,7 @@
 # Third-Party Notices
 
-Taste Blocks prefers original source. Dependency notices and notices for any adapted source will be listed here before those entries are published.
+Notices for copied or adapted component source will be listed here before those components are published.
 
-The catalog currently depends on React, React DOM, Vite, TypeScript, and Phosphor Icons. Their licenses remain available in the installed package metadata and upstream repositories.
-
-The catalog self-hosts Archivo and IBM Plex Mono through Fontsource packages. Both font families are distributed under the SIL Open Font License 1.1. Fontsource package metadata and license files are retained in the dependency installation.
+The catalog application depends on Next.js, React, React DOM, Tailwind CSS, TypeScript, and the shadcn CLI. Their licenses remain available in installed package metadata and upstream repositories.
 
 No React Bits Free or Pro source is included.

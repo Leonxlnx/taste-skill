@@ -2,28 +2,30 @@
   "name": "taste-blocks",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run build:registry && tsc -b && vite build",
-    "build:registry": "node scripts/build-registry.mjs",
-    "check:registry": "node scripts/check-registry.mjs",
-    "typecheck": "tsc -b --pretty false",
-    "verify": "npm run check:registry && npm run build"
+    "dev": "next dev",
+    "start": "next start",
+    "validate": "shadcn registry validate && node scripts/check-policy.mjs",
+    "generate": "shadcn build && node scripts/build-catalog.mjs",
+    "typecheck": "tsc --noEmit --pretty false",
+    "build": "npm run validate && npm run generate && next build",
+    "verify": "npm run typecheck && npm run build"
   },
   "dependencies": {
-    "@fontsource-variable/archivo": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@phosphor-icons/react": "^2.1.10",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@types/node": "^24.2.1",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.2"
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "shadcn": "4.13.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "postcss": "8.5.20"
   }
 }
