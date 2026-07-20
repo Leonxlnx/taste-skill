@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-splitflap-drafts",
+  "homepage": "https://github.com/codemanshan/splitflap",
+  "items": [
+    {
+      "name": "splitflap-display",
+      "type": "registry:component",
+      "title": "Split-Flap Display",
+      "description": "Transitions caller-selected text through a deterministic mechanical split-flap alphabet.",
+      "author": "Cody Shanley",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/splitflap-display/split-flap-display.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/splitflap-display/split-flap-display.tsx"
+        },
+        {
+          "path": "components/splitflap-display/split-flap-slat.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/splitflap-display/split-flap-slat.tsx"
+        },
+        {
+          "path": "components/splitflap-display/split-flap.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/splitflap-display/split-flap.css"
+        }
+      ],
+      "categories": ["text-motion"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": ["text", "mechanical", "split-flap", "controlled", "reduced-motion"],
+          "renderer": "dom",
+          "preview": "previews/drafts/splitflap/splitflap-display.tsx",
+          "source": {
+            "project": "splitflap",
+            "repository": "https://github.com/codemanshan/splitflap",
+            "revision": "535cb5b9cac0c8324a8cff4e6e8ec7eca16d1213",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/splitflap-display/split-flap-display.tsx",
+                "upstreamPath": "registry/split-flap/split-flap-display.tsx",
+                "permalink": "https://github.com/codemanshan/splitflap/blob/535cb5b9cac0c8324a8cff4e6e8ec7eca16d1213/registry/split-flap/split-flap-display.tsx",
+                "upstreamSha256": "sha256:f9df20e18744a7661668b9810cf43cc05bb3cdb20984e5f659c2e793cd7023de",
+                "contentSha256": "sha256:d77c97db836b600fe073c48df372b8ca67a5f0612ad936bf9d5d3ac6a25761c7",
+                "changes": [
+                  "Imported the colocated stylesheet, removed random selection and autonomous cycling, and made refreshSignal the only word-advance trigger.",
+                  "Made the initial word deterministic and live announcements opt-in after all visible slats settle."
+                ]
+              },
+              {
+                "shippedPath": "components/splitflap-display/split-flap-slat.tsx",
+                "upstreamPath": "registry/split-flap/split-flap-slat.tsx",
+                "permalink": "https://github.com/codemanshan/splitflap/blob/535cb5b9cac0c8324a8cff4e6e8ec7eca16d1213/registry/split-flap/split-flap-slat.tsx",
+                "upstreamSha256": "sha256:52d1ba2ac4cabfd023c7b8da9d88e1a4366f52908e05ad561c94a6730c7ef5b5",
+                "contentSha256": "sha256:08df2e7b39a2c61cc58021736aa00b88bb9c16ec87c01f3a7c92b405bb96db45",
+                "changes": [
+                  "Added a settled callback, snapped reduced-motion and unsupported-character transitions, and paused the active timeout while the document is hidden.",
+                  "Replaced the timer list with one visibility-aware pending timer, synchronized the current-character ref so rapid targets cancel and restart safely, and corrected the upstream distance example."
+                ]
+              },
+              {
+                "shippedPath": "components/splitflap-display/split-flap.css",
+                "upstreamPath": "registry/split-flap/split-flap.css",
+                "permalink": "https://github.com/codemanshan/splitflap/blob/535cb5b9cac0c8324a8cff4e6e8ec7eca16d1213/registry/split-flap/split-flap.css",
+                "upstreamSha256": "sha256:d6ecd978df99dfefed5214235b7d330d1c5d095a8fa6f8dc36544192e391290b",
+                "contentSha256": "sha256:ade04a772d7a14a78abbd5a9530f0ba1a2627064408a3c140c9d5ab2ca343e4b",
+                "changes": [
+                  "Added a reusable visually-hidden text class and bounded wide displays with horizontal overflow while preventing slat shrinkage."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/split-flap/split-flap-display.tsx, registry/split-flap/split-flap-slat.tsx, and registry/split-flap/split-flap.css",
+            "copyright": ["Copyright (c) 2026 Cody Shanley"],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/codemanshan/splitflap/blob/535cb5b9cac0c8324a8cff4e6e8ec7eca16d1213/LICENSE",
+              "sha256": "sha256:ce5ab878c7d18bc24be4e87c2a039a352bc5c636f1f5aa15798550ef40a435dd",
+              "localPath": "registry/sources/splitflap/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/splitflap-display/split-flap-display.tsx",
+              "change": "Removed random and automatic word selection, retained refreshSignal as the explicit sequential control, imported the CSS, and delayed optional live text until every slat settles.",
+              "reason": "Keep state changes caller-controlled, avoid unattended motion, and announce only the value actually shown."
+            },
+            {
+              "shippedPath": "components/splitflap-display/split-flap-slat.tsx",
+              "change": "Added settled reporting, unsupported-character and reduced-motion snapping, document-visibility pausing, and single-timer cancellation.",
+              "reason": "Preserve visible text outside the mechanical alphabet and prevent hidden, stale, or post-unmount animation work."
+            },
+            {
+              "shippedPath": "components/splitflap-display/split-flap.css",
+              "change": "Added the semantic text utility and responsive horizontal overflow containment.",
+              "reason": "Expose one nonvisual phrase and keep fixed mechanical slats usable in narrow containers."
+            }
+          ],
+          "dedupe": {
+            "family": "mechanical-split-flap-text",
+            "sourceHash": "sha256:521340c3b24dc6bf565fa5484f32faf1451467ea8aac6abc73dcf08a62c89069",
+            "contentHash": "sha256:a59773f2f4520292ef5636405c72b5e0e812e2524404fa68a56ad8285277cf27",
+            "structureHash": "sha256:032f581f7a62d85e1de23461c6348be678e917f6a32f9791fd7c00b93d439786"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}

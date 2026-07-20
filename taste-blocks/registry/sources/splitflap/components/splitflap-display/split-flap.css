@@ -1,0 +1,239 @@
+/**
+ * Split-Flap Panel — a CSS-3D recreation of Solari-style departure boards.
+ * Built by Cody Shanley · https://codyshanley.com/playground/split-flap?utm_source=github&utm_medium=attribution&utm_campaign=split-flap
+ * MIT licensed. Free to use, modify, and redistribute.
+ *
+ * Font: override with --splitflap-font if you want a specific typeface.
+ * Colors: override per-slat with --slat-ink, --slat-top-grad-a, etc.
+ */
+
+/* ============ SPLIT-FLAP DISPLAY ============ */
+/* Solari-style flipclock mechanism. Four stacked panels inside a perspective
+   container:
+   - static top (shows target letter top half, clipped)
+   - static bottom (shows current letter bottom half, clipped)
+   - flipping top  (current letter, rotates 0 to -90 on X, first half of flip)
+   - flipping bottom (target letter,  rotates 90 to 0 on X, second half)
+   Letter spans full inner slat height, flexbox-centered, clipped by each half. */
+
+.splitflap-display {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  gap: 3px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  vertical-align: baseline;
+  line-height: 1;
+}
+
+.splitflap-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.splitflap-slat {
+  --slat-width: 42px;
+  --slat-height: 62px;
+  --slat-font-size: calc(var(--slat-height) * 0.68);
+  --slat-ink: #1A1A19;
+  --slat-seam-fill: rgba(30, 27, 20, 0.2);
+  --slat-top-grad-a: rgba(253, 252, 249, 0.8);
+  --slat-top-grad-b: rgba(242, 240, 234, 0.8);
+  --slat-bottom-grad-a: rgba(237, 235, 229, 0.8);
+  --slat-bottom-grad-b: rgba(247, 245, 239, 0.8);
+
+  display: inline-block;
+  flex: 0 0 auto;
+  position: relative;
+  width: var(--slat-width);
+  height: var(--slat-height);
+  background: transparent;
+  border-radius: 5px;
+  padding: 0;
+  perspective: 240px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.14)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+  vertical-align: middle;
+  font-family: var(--splitflap-font, system-ui, -apple-system, "Segoe UI", sans-serif);
+  line-height: 1;
+}
+
+.splitflap-inner {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Half clippers — static panels visible when slat is at rest */
+.splitflap-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0); /* force GPU layer — Safari backface fix */
+}
+
+.splitflap-half--top {
+  top: 0;
+  background: linear-gradient(180deg, var(--slat-top-grad-a) 0%, var(--slat-top-grad-b) 100%);
+  border-radius: 5px 5px 0 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -4px 5px -4px rgba(0, 0, 0, 0.07);
+}
+
+.splitflap-half--bottom {
+  bottom: 0;
+  background: linear-gradient(180deg, var(--slat-bottom-grad-a) 0%, var(--slat-bottom-grad-b) 100%);
+  border-radius: 0 0 5px 5px;
+  box-shadow:
+    inset 0 4px 5px -4px rgba(0, 0, 0, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Letter: full inner-slat height, flexbox-centered. The overflow:hidden
+   on each half clips it to show only the top or bottom half of the glyph. */
+.splitflap-letter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--slat-font-size);
+  color: var(--slat-ink);
+  line-height: 1;
+  letter-spacing: 0;
+  user-select: none;
+  pointer-events: none;
+  text-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.48),
+    0 1px 1px rgba(0, 0, 0, 0.38),
+    0 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+.splitflap-half--top .splitflap-letter,
+.splitflap-flipping-top .splitflap-letter { top: 0; }
+
+.splitflap-half--bottom .splitflap-letter,
+.splitflap-flipping-bottom .splitflap-letter { bottom: 0; }
+
+/* Flipping pieces — same visual as the static halves, but animated */
+.splitflap-flipping-top,
+.splitflap-flipping-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  z-index: 2;
+}
+
+.splitflap-flipping-top {
+  top: 0;
+  background: linear-gradient(180deg, var(--slat-top-grad-a) 0%, var(--slat-top-grad-b) 100%);
+  border-radius: 5px 5px 0 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -4px 5px -4px rgba(0, 0, 0, 0.07);
+  transform-origin: bottom center;
+  animation: splitflap-fold 50ms ease-in forwards;
+}
+
+.splitflap-flipping-bottom {
+  bottom: 0;
+  background: linear-gradient(180deg, var(--slat-bottom-grad-a) 0%, var(--slat-bottom-grad-b) 100%);
+  border-radius: 0 0 5px 5px;
+  box-shadow:
+    inset 0 4px 5px -4px rgba(0, 0, 0, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  transform-origin: top center;
+  transform: rotateX(90deg);
+  animation: splitflap-unfold 60ms ease-out 50ms forwards;
+}
+
+@keyframes splitflap-fold {
+  0%   { transform: rotateX(0deg);   filter: brightness(1); }
+  100% { transform: rotateX(-90deg); filter: brightness(0.72); }
+}
+
+@keyframes splitflap-unfold {
+  0%   { transform: rotateX(90deg); filter: brightness(0.72); }
+  100% { transform: rotateX(0deg);  filter: brightness(1); }
+}
+
+/* Frozen mid-flip — for prototype inspection only */
+.splitflap-flipping-top--frozen {
+  animation: none !important;
+  transform: rotateX(-45deg) !important;
+}
+.splitflap-flipping-bottom--frozen {
+  animation: none !important;
+  transform: rotateX(45deg) !important;
+}
+
+/* Size modifiers */
+.splitflap-slat--xl {
+  --slat-width: 120px;
+  --slat-height: 180px;
+}
+
+.splitflap-slat--compact {
+  --slat-width: 28px;
+  --slat-height: 42px;
+}
+
+.splitflap-slat--hero {
+  --slat-width: 28px;
+  --slat-height: 40px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splitflap-flipping-top,
+  .splitflap-flipping-bottom {
+    display: none !important;
+  }
+}
+
+/* ============ SPLIT-FLAP — NO-CARD VARIANT ============ */
+/* Strips gradients, shadows, and rounded corners so only the letters flip.
+   Apply by wrapping the display in a `.splitflap-nocard` scope. */
+
+.splitflap-nocard .splitflap-slat {
+  filter: none;
+}
+
+.splitflap-nocard .splitflap-letter {
+  text-shadow: none;
+}
+
+.splitflap-nocard .splitflap-half--top,
+.splitflap-nocard .splitflap-half--bottom,
+.splitflap-nocard .splitflap-flipping-top,
+.splitflap-nocard .splitflap-flipping-bottom {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.splitflap-nocard .splitflap-slat:has(.splitflap-flipping-top) .splitflap-half--top,
+.splitflap-nocard .splitflap-slat:has(.splitflap-flipping-bottom) .splitflap-half--bottom {
+  visibility: hidden;
+}
