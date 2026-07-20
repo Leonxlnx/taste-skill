@@ -416,7 +416,6 @@ async function validateItem(item, context) {
   claim(names, itemName, itemName, "public name");
   assert(item.type === "registry:component", `${itemName} must have type registry:component`);
   const forbidden = forbiddenIdentity(`${itemName} ${item.title ?? ""}`);
-  assert(!forbidden, `${itemName} uses excluded ${forbidden} terminology`);
   string(item.title, `${itemName}.title`);
   string(item.description, `${itemName}.description`);
   for (const [field, dependencies] of [
@@ -436,6 +435,12 @@ async function validateItem(item, context) {
   assert(tasteblocks.category === item.categories[0], `${itemName}.meta.tasteblocks.category must match categories[0]`);
   strings(tasteblocks.tags, `${itemName}.meta.tasteblocks.tags`, { empty: false });
   assert(allowedRenderers.has(tasteblocks.renderer), `${itemName}.meta.tasteblocks.renderer is unsupported`);
+  const allowedGlyph =
+    item.categories[0] === "icons-microinteractions" &&
+    tasteblocks.renderer === "svg" &&
+    itemName.endsWith("-icon") &&
+    /\bIcon$/.test(item.title);
+  assert(!forbidden || allowedGlyph, `${itemName} uses excluded ${forbidden} terminology`);
   assert(Array.isArray(tasteblocks.modifications), `${itemName}.meta.tasteblocks.modifications must be an array`);
   assert(Array.isArray(tasteblocks.assets), `${itemName}.meta.tasteblocks.assets must be an array`);
 

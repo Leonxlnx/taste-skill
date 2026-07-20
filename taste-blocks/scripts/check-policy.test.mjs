@@ -19,9 +19,13 @@ const supportPath = "lib/utils.ts";
 const support = "export const cn = (...values: string[]) => values.filter(Boolean).join(' ');\n";
 const supportHash = sha256(support);
 
-function componentItem({ name, title, label }) {
+function componentItem({ name, title, label, category = "buttons-actions", renderer = "dom" }) {
   const componentPath = `components/${name}/${name}.tsx`;
-  const component = `import { cn } from "../../lib/utils";\nexport function ${title.replaceAll(" ", "")}() { return <button className={cn("ring")}>${label}</button>; }\n`;
+  const element =
+    renderer === "svg"
+      ? `<svg aria-label="${label}" className={cn("icon")} role="img"><path d="M1 1h10v10H1z" /></svg>`
+      : `<button className={cn("ring")}>${label}</button>`;
+  const component = `import { cn } from "../../lib/utils";\nexport function ${title.replaceAll(" ", "")}() { return ${element}; }\n`;
   const upstream = component.replace('"../../lib/utils"', '"@/lib/utils"');
   const contentHash = sha256(component);
   const upstreamHash = sha256(upstream);
@@ -59,13 +63,13 @@ function componentItem({ name, title, label }) {
         { path: componentPath, type: "registry:component", target: `@components/taste-blocks/${name}.tsx` },
         { path: supportPath, type: "registry:lib", target: "@lib/utils.ts" },
       ],
-      categories: ["buttons-actions"],
+      categories: [category],
       meta: {
         tasteblocks: {
           status: "verified",
-          category: "buttons-actions",
+          category,
           tags: ["focus", "button"],
-          renderer: "dom",
+          renderer,
           preview: `previews/${name}.tsx`,
           source: {
             project: "Example",
@@ -114,6 +118,13 @@ function componentItem({ name, title, label }) {
 const fixtures = [
   componentItem({ name: "focus-ring", title: "Focus Ring", label: "Focus" }),
   componentItem({ name: "press-ring", title: "Press Ring", label: "Press" }),
+  componentItem({
+    name: "lucide-layout-dashboard-icon",
+    title: "Layout Dashboard Icon",
+    label: "Dashboard",
+    category: "icons-microinteractions",
+    renderer: "svg",
+  }),
 ];
 const manifestPath = path.join(sourceDirectory, "registry.json");
 const baselineItems = fixtures.map(({ item }) => item);
@@ -147,10 +158,10 @@ try {
   await writeManifest(baselineItems);
 
   const registry = await loadPublicRegistry(root);
-  assert.deepEqual(registry.items.map(({ name }) => name), ["focus-ring", "press-ring"]);
+  assert.deepEqual(registry.items.map(({ name }) => name), ["focus-ring", "press-ring", "lucide-layout-dashboard-icon"]);
   await execFile(process.execPath, [path.join(scriptDirectory, "build-catalog.mjs")], { cwd: root });
   const catalog = JSON.parse(await readFile(path.join(root, "generated", "catalog.json"), "utf8"));
-  assert.equal(catalog.length, 2);
+  assert.equal(catalog.length, 3);
   assert.equal(catalog[0].modifications[0].shippedPath, "components/focus-ring/focus-ring.tsx");
   assert.equal(catalog[0].status, "verified");
   assert.equal(catalog[0].preview, "/preview/focus-ring");
@@ -179,6 +190,28 @@ try {
   });
   await writeManifest(conflictingSupport);
   await assert.rejects(loadPublicRegistry(root), /reuses support source locator.*different hashes/);
+
+  const iconNearMisses = [
+    (item) => {
+      item.categories = ["buttons-actions"];
+      item.meta.tasteblocks.category = "buttons-actions";
+    },
+    (item) => {
+      item.meta.tasteblocks.renderer = "dom";
+    },
+    (item) => {
+      item.name = "lucide-layout-dashboard-glyph";
+    },
+    (item) => {
+      item.title = "Layout Dashboard Glyph";
+    },
+  ];
+  for (const mutate of iconNearMisses) {
+    const nearMiss = structuredClone(baselineItems);
+    mutate(nearMiss[2]);
+    await writeManifest(nearMiss);
+    await assert.rejects(loadPublicRegistry(root), /uses excluded (?:layout|dashboard) terminology/);
+  }
 
   const forbiddenItem = structuredClone(baselineItems);
   forbiddenItem[0].name = "landing-hero";

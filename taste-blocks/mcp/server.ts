@@ -111,7 +111,12 @@ const catalogComponentSchema = z
     const identity = `${component.name} ${component.title}`
       .replace(/([a-z\d])([A-Z])/g, "$1 $2")
       .replace(/[-_]/g, " ");
-    if (FORBIDDEN_KIND.test(identity)) {
+    const isIconException =
+      component.category === "icons-microinteractions" &&
+      component.renderer === "svg" &&
+      component.name.endsWith("-icon") &&
+      /\bIcon$/.test(component.title);
+    if (FORBIDDEN_KIND.test(identity) && !isIconException) {
       context.addIssue({ code: "custom", path: ["name"], message: "Excluded non-component kind" });
     }
     if (component.preview !== `/preview/${component.name}`) {

@@ -115,6 +115,20 @@ test("Taste Blocks stdio MCP exposes only the read-only component contract", { t
       /Excluded non-component kind/,
     );
   }
+  const iconException = {
+    title: "Layout Dashboard Icon",
+    category: "icons-microinteractions",
+    renderer: "svg",
+  };
+  assert.equal(parseCatalog([fixtureComponent("layout-dashboard-icon", iconException)])[0].name, "layout-dashboard-icon");
+  for (const nearMiss of [
+    fixtureComponent("layout-dashboard-icon", { ...iconException, category: "visual-effects" }),
+    fixtureComponent("layout-dashboard-icon", { ...iconException, renderer: "dom" }),
+    fixtureComponent("layout-dashboard-symbol", iconException),
+    fixtureComponent("layout-dashboard-icon", { ...iconException, title: "Layout Dashboard Icon Set" }),
+  ]) {
+    assert.throws(() => parseCatalog([nearMiss]), /Excluded non-component kind/);
+  }
 
   const temporaryDirectory = await mkdtemp(path.join(tmpdir(), "taste-blocks-mcp-"));
   const catalogPath = path.join(temporaryDirectory, "catalog.json");
