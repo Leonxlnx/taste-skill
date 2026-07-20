@@ -1,0 +1,317 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-magic-ui-drafts",
+  "homepage": "https://github.com/Leonxlnx/taste-skill",
+  "items": [
+    {
+      "name": "magic-kinetic-text",
+      "type": "registry:component",
+      "title": "Kinetic Text",
+      "description": "Renders text whose character weights respond to hover proximity.",
+      "author": "Magic UI",
+      "dependencies": ["clsx@2.1.1", "tailwind-merge@3.4.0"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/magic-kinetic-text/kinetic-text.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/kinetic-text.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": ["text-motion"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": ["text", "hover", "variable-font"],
+          "renderer": "dom",
+          "preview": "previews/drafts/magic-ui/magic-kinetic-text.tsx",
+          "source": {
+            "project": "Magic UI",
+            "repository": "https://github.com/magicuidesign/magicui",
+            "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/magic-kinetic-text/kinetic-text.tsx",
+                "upstreamPath": "apps/www/registry/magicui/kinetic-text.tsx",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/kinetic-text.tsx",
+                "upstreamSha256": "sha256:a02ab6c77ae376778fec3c27b0b1c9d0d7ec0f7e0ac9434d0716eb217556c355",
+                "contentSha256": "sha256:4cfd5dd5ead675fef58fd8fca3bd4a53d62adb42c7cbd98dbf9590cfca57d08a",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/registry/lib/utils.ts",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+                "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/magicui/kinetic-text.tsx and apps/www/registry/lib/utils.ts",
+            "copyright": ["Copyright (c) Magic UI"],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+              "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+              "localPath": "registry/sources/magic-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/magic-kinetic-text/kinetic-text.tsx",
+              "change": "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "reason": "Resolve the bundled upstream utility from both the source batch and the installation targets without relying on a consumer alias."
+            }
+          ],
+          "dedupe": {
+            "family": "variable-font-hover-text",
+            "sourceHash": "sha256:179c9e1ba263603d4cef4b079c803d0fd12fd6d35af774f022adacd4375e0831",
+            "contentHash": "sha256:c3470dddcaf14d918e75d25bbffaeccc68eff6b19b0c646d5d1b9371b536fd4c",
+            "structureHash": "sha256:ba4fe4dad9e25abc0868dcf91b7439775b140c81d659408c6e63e4f45956ae60"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-backlight",
+      "type": "registry:component",
+      "title": "Backlight",
+      "description": "Applies a blurred, saturated backlight glow to one child element.",
+      "author": "Magic UI",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/magic-backlight/backlight.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/backlight.tsx"
+        }
+      ],
+      "categories": ["visual-effects"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": ["glow", "media", "svg-filter"],
+          "renderer": "svg",
+          "preview": "previews/drafts/magic-ui/magic-backlight.tsx",
+          "source": {
+            "project": "Magic UI",
+            "repository": "https://github.com/magicuidesign/magicui",
+            "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/magic-backlight/backlight.tsx",
+                "upstreamPath": "apps/www/registry/magicui/backlight.tsx",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/backlight.tsx",
+                "upstreamSha256": "sha256:d302fbcbfa80f42cf59f3ffbf4451627f6a79d9206d6e3bc1fb3f65511515108",
+                "contentSha256": "sha256:d302fbcbfa80f42cf59f3ffbf4451627f6a79d9206d6e3bc1fb3f65511515108",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/magicui/backlight.tsx",
+            "copyright": ["Copyright (c) Magic UI"],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+              "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+              "localPath": "registry/sources/magic-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "media-backlight-filter",
+            "sourceHash": "sha256:0fd974b6a4443b3e9b49d5b51e690edb5413e278d0e272d924e2ae23038143a4",
+            "contentHash": "sha256:0fd974b6a4443b3e9b49d5b51e690edb5413e278d0e272d924e2ae23038143a4",
+            "structureHash": "sha256:4cc618d4d6e15b4c6ba84f454138666875ecc91b6a31f84142079de87744700e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-terminal",
+      "type": "registry:component",
+      "title": "Terminal",
+      "description": "Sequences animated terminal lines and typing text inside a terminal frame.",
+      "author": "Magic UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@12.23.26",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/magic-terminal/terminal.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/terminal.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": ["media-galleries"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "media-galleries",
+          "tags": ["terminal", "typing", "sequence"],
+          "renderer": "dom",
+          "preview": "previews/drafts/magic-ui/magic-terminal.tsx",
+          "source": {
+            "project": "Magic UI",
+            "repository": "https://github.com/magicuidesign/magicui",
+            "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/magic-terminal/terminal.tsx",
+                "upstreamPath": "apps/www/registry/magicui/terminal.tsx",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/terminal.tsx",
+                "upstreamSha256": "sha256:a0ece03773e1a17862e049f11f72647b5db44dc1400473bdecd3c0e81f43f2d7",
+                "contentSha256": "sha256:ad830c3c214edfae0c225682db28b4111b547c68c067eb6664745c2491aa579c",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/registry/lib/utils.ts",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+                "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/magicui/terminal.tsx and apps/www/registry/lib/utils.ts",
+            "copyright": ["Copyright (c) Magic UI"],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+              "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+              "localPath": "registry/sources/magic-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/magic-terminal/terminal.tsx",
+              "change": "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "reason": "Resolve the bundled upstream utility from both the source batch and the installation targets without relying on a consumer alias."
+            }
+          ],
+          "dedupe": {
+            "family": "terminal-typing-sequence",
+            "sourceHash": "sha256:9bd6c1dc3de770bde9a557b0f41f225e0c0e2153cd0a2d645961909efa1cf1bd",
+            "contentHash": "sha256:2f27688c75ce2d4e415d1382edb6d4708a56c240a94654e4f748671de9802f5e",
+            "structureHash": "sha256:432323fa60e21a193a204a01bd9d64af6598c6985f58c689bb3d83848e5ccc02"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-safari",
+      "type": "registry:component",
+      "title": "Safari",
+      "description": "Frames caller-provided image or video media in a Safari browser mockup.",
+      "author": "Magic UI",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/magic-safari/safari.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/safari.tsx"
+        }
+      ],
+      "categories": ["media-galleries"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "media-galleries",
+          "tags": ["browser", "mockup", "media"],
+          "renderer": "svg",
+          "preview": "previews/drafts/magic-ui/magic-safari.tsx",
+          "source": {
+            "project": "Magic UI",
+            "repository": "https://github.com/magicuidesign/magicui",
+            "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/magic-safari/safari.tsx",
+                "upstreamPath": "apps/www/registry/magicui/safari.tsx",
+                "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/safari.tsx",
+                "upstreamSha256": "sha256:2cb6ce69def86020f6860a3dd8696f0998dac340db932a3eee05e990b2e29f3e",
+                "contentSha256": "sha256:2cb6ce69def86020f6860a3dd8696f0998dac340db932a3eee05e990b2e29f3e",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/registry/magicui/safari.tsx",
+            "copyright": ["Copyright (c) Magic UI"],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+              "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+              "localPath": "registry/sources/magic-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "device-media-frame",
+            "sourceHash": "sha256:97e32fa4e73ff3f4611504395604d4600b8896d83703c2d00bcae03e0c0b9af9",
+            "contentHash": "sha256:97e32fa4e73ff3f4611504395604d4600b8896d83703c2d00bcae03e0c0b9af9",
+            "structureHash": "sha256:8ce8aecac37bef4ea56c0b23d09daf605bab0ec7eda7443e5661f81aa92da2d2"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
