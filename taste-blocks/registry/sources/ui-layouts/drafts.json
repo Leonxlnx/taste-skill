@@ -1,0 +1,639 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-ui-layouts-drafts",
+  "homepage": "https://github.com/Leonxlnx/taste-skill",
+  "items": [
+    {
+      "name": "uilayouts-blur-vignette",
+      "type": "registry:component",
+      "title": "Blur Vignette",
+      "description": "Applies a soft edge blur and mask around caller-provided media or content.",
+      "author": "UI LAYOUT",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/uilayouts-blur-vignette/blur-vignette.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/blur-vignette.tsx"
+        },
+        {
+          "path": "components/uilayouts-blur-vignette/blur-vignette.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/blur-vignette.css"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "blur",
+            "vignette",
+            "mask"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ui-layouts/uilayouts-blur-vignette.tsx",
+          "source": {
+            "project": "UI Layouts Free",
+            "repository": "https://github.com/ui-layouts/uilayouts",
+            "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.tsx",
+                "upstreamPath": "apps/ui-layout/components/ui/blur-vignette.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/blur-vignette.tsx",
+                "upstreamSha256": "sha256:c3847b185a3e5208854c8be001be11ddb91755825e6e0d5c69250555e89a5b73",
+                "contentSha256": "sha256:ba76d50e152cb1d5ad992441f558a5bd48356c20736206224cd18bf51640eeda",
+                "changes": [
+                  "Changed the root-alias utility import to ../../lib/utils and imported the copied component CSS.",
+                  "Marked an empty blur overlay decorative while preserving semantic child content.",
+                  "Normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.css",
+                "upstreamPath": "apps/ui-layout/app/globals.css",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/app/globals.css",
+                "upstreamSha256": "sha256:8eb641289a096f6f1a12ae4192c56251eca333e20c1ca7b1ee73d97effab66f6",
+                "contentSha256": "sha256:76ba85ac604bcdfa609ba71c1dc1ab11e148b7343ad790f63986df971c0faed7",
+                "changes": [
+                  "Extracted only the required blur-vignette utility from the site stylesheet.",
+                  "Converted the Tailwind @utility wrapper to a portable class and added unprefixed mask declarations for non-WebKit browsers."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/ui-layout/lib/utils.ts",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+                "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+                "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+                "changes": [
+                  "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/ui-layout/components/ui/blur-vignette.tsx, the blur-vignette utility in apps/ui-layout/app/globals.css, and apps/ui-layout/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 UI LAYOUT"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+              "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+              "localPath": "registry/sources/ui-layouts/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.tsx",
+              "change": "Rewired local support imports, added the required stylesheet import, marked an empty overlay decorative, and normalized formatting.",
+              "reason": "Make the copied component self-contained and keep an empty visual overlay out of the accessibility tree."
+            },
+            {
+              "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.css",
+              "change": "Extracted the blur-vignette utility as a component class and added standard mask properties beside the upstream WebKit-prefixed properties.",
+              "reason": "Ship the exact required style closure without the site stylesheet and preserve the effect in browsers using unprefixed masks."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+              "reason": "Keep the copied support closure minimal and remove site URLs."
+            }
+          ],
+          "dedupe": {
+            "family": "edge-blur-vignette",
+            "sourceHash": "sha256:5841f72dc2e224dbf89684d832001a340c31f044bbeb153bc0094bb9dd005f26",
+            "contentHash": "sha256:1e3f3b2f98ee824b910e1f4f6de8d9306db25aa0aa9c58a8bdf6aa77d55730c3",
+            "structureHash": "sha256:1a38943af9e6e9e8ccfd9d371fff342fdf80344e161b0578fee7c94e293d8647"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "uilayouts-progressive-carousel",
+      "type": "registry:component",
+      "title": "Progressive Carousel",
+      "description": "Provides direct slide selection with optional timed progress and a controlled pause state.",
+      "author": "UI LAYOUT",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@12.42.2",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/progressive-carousel.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "media-galleries"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "media-galleries",
+          "tags": [
+            "carousel",
+            "progress",
+            "autoplay"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ui-layouts/uilayouts-progressive-carousel.tsx",
+          "source": {
+            "project": "UI Layouts Free",
+            "repository": "https://github.com/ui-layouts/uilayouts",
+            "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+                "upstreamPath": "apps/ui-layout/components/ui/progressive-carousel.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/progressive-carousel.tsx",
+                "upstreamSha256": "sha256:5d18b425f316b2f9732256cc0d4bac91d60dc3b2e4ba73838d84db5f9c5df3ad",
+                "contentSha256": "sha256:42565b22b0356e19dd76c5e073edd6a3eb00f366732ff09b79375adae3d18dbb",
+                "changes": [
+                  "Added the client boundary and changed the root-alias utility import to ../../lib/utils.",
+                  "Made autoplay opt-in with autoPlay defaulting to false and added a controlled paused prop for a stable external pause/resume control.",
+                  "Paused opted-in autoplay while offscreen, hidden, hovered, or keyboard-focused while allowing an explicit fast-forward selection to complete, and stopped autoplay for reduced motion.",
+                  "Fixed fast-forward progress timing and made reduced-motion slide selection immediate.",
+                  "Marked the visual progress fill decorative and exposed the active control with aria-pressed.",
+                  "Normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/ui-layout/lib/utils.ts",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+                "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+                "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+                "changes": [
+                  "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/ui-layout/components/ui/progressive-carousel.tsx and apps/ui-layout/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 UI LAYOUT"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+              "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+              "localPath": "registry/sources/ui-layouts/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+              "change": "Added a client boundary and local import, made autoplay opt-in, exposed a controlled paused prop, corrected fast-forward timing, paused autoplay when hidden or engaged without blocking direct selection, added reduced-motion behavior, and clarified control semantics.",
+              "reason": "Keep the copied carousel portable, prevent unsolicited or unstoppable motion, and give callers a stable pause/resume control contract."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+              "reason": "Keep the copied support closure minimal and remove site URLs."
+            }
+          ],
+          "dedupe": {
+            "family": "progressive-timed-carousel",
+            "sourceHash": "sha256:3a93d67e254c276997e145e55ffb87b34ea7fedfdbe2739cb32a826907e709de",
+            "contentHash": "sha256:b9ec715c60a6e015b3723e1d95f1de245f6fd86aa8e8a8259799880427a1b89f",
+            "structureHash": "sha256:ac004c710d68a1c26356f2290ba8c09a2987070d195fa2e953e293ee5fcb6784"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "uilayouts-image-tabs",
+      "type": "registry:component",
+      "title": "Image Tabs",
+      "description": "Pairs descriptive tabs with a responsive caller-provided visual for the active item.",
+      "author": "UI LAYOUT",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@12.42.2",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/uilayouts-image-tabs/image-tabs.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/image-tabs.tsx"
+        },
+        {
+          "path": "hooks/use-media-query.tsx",
+          "type": "registry:hook",
+          "target": "@hooks/use-media-query.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "media-galleries"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "media-galleries",
+          "tags": [
+            "tabs",
+            "images",
+            "descriptions"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ui-layouts/uilayouts-image-tabs.tsx",
+          "source": {
+            "project": "UI Layouts Free",
+            "repository": "https://github.com/ui-layouts/uilayouts",
+            "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/uilayouts-image-tabs/image-tabs.tsx",
+                "upstreamPath": "apps/ui-layout/components/ui/image-tabs.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/image-tabs.tsx",
+                "upstreamSha256": "sha256:4a8d46d9bb7e785246a473f828f54b58be689c38f8607cadbf88dca89abedeb1",
+                "contentSha256": "sha256:998fe9739fe94aff54445850e680d5483a90579d9a701591d9d302d95dcfcda8",
+                "changes": [
+                  "Changed root-alias imports to the copied hook and utility paths.",
+                  "Moved selection from a clickable div to the existing header as a button and added tablist, tab, and tabpanel relationships.",
+                  "Added arrow, Home, and End keyboard navigation plus reduced-motion transitions.",
+                  "Normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "hooks/use-media-query.tsx",
+                "upstreamPath": "apps/ui-layout/hooks/use-media-query.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/hooks/use-media-query.tsx",
+                "upstreamSha256": "sha256:4b40788a32615b8165a1be8fe3372aa566be1237821448a581f45e69f6adc659",
+                "contentSha256": "sha256:b4b64881a60d5524a93d1ff54efcbda6cd2af3ed211f73e475fb39dfdb2b7fb2",
+                "changes": [
+                  "Normalized formatting without changing behavior."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/ui-layout/lib/utils.ts",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+                "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+                "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+                "changes": [
+                  "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/ui-layout/components/ui/image-tabs.tsx, apps/ui-layout/hooks/use-media-query.tsx, and apps/ui-layout/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 UI LAYOUT"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+              "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+              "localPath": "registry/sources/ui-layouts/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/uilayouts-image-tabs/image-tabs.tsx",
+              "change": "Rewired copied support imports, moved activation to a button, added complete tab semantics and keyboard navigation, and disabled transitions for reduced motion.",
+              "reason": "Preserve the source interaction while making it keyboard-operable and semantically identifiable as tabs."
+            },
+            {
+              "shippedPath": "hooks/use-media-query.tsx",
+              "change": "Normalized formatting.",
+              "reason": "Match the repository source format without changing behavior."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+              "reason": "Keep the copied support closure minimal and remove site URLs."
+            }
+          ],
+          "dedupe": {
+            "family": "descriptive-image-tab-selector",
+            "sourceHash": "sha256:f0e8f8c53a79da9316f7a479aeb169228f94ef3cc7a9ad7f9b7bc9e75b1b2ef2",
+            "contentHash": "sha256:a6bc05caa99ffc17d2a19e34d9c491e7323e4313903a063c82a03b7e1ba80680",
+            "structureHash": "sha256:09c49b7d5634653905e1851a79fb2a06b4a31fdbb660c8ffecdf8d0e75d04445"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "uilayouts-liquid-glass",
+      "type": "registry:component",
+      "title": "Liquid Glass",
+      "description": "Renders an optionally draggable or expandable glass surface with an SVG displacement filter.",
+      "author": "UI LAYOUT",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@12.42.2",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/uilayouts-liquid-glass/liquid-glass.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/liquid-glass.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "glass",
+            "svg-filter",
+            "expandable"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/ui-layouts/uilayouts-liquid-glass.tsx",
+          "source": {
+            "project": "UI Layouts Free",
+            "repository": "https://github.com/ui-layouts/uilayouts",
+            "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/uilayouts-liquid-glass/liquid-glass.tsx",
+                "upstreamPath": "apps/ui-layout/components/ui/liquid-glass.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/liquid-glass.tsx",
+                "upstreamSha256": "sha256:f00ef2b1ba54475581feec8069ce9b092b14c27acb1401a318ac78c2c919bcdc",
+                "contentSha256": "sha256:ec17ac66b8c1785c7eb50aff1591d0360beac6648355856416e175fe7afb0215",
+                "changes": [
+                  "Removed @ts-nocheck by typing the copied Motion props and changed the utility import to ../../lib/utils.",
+                  "Generated a unique SVG filter ID per instance and marked filter layers decorative.",
+                  "Changed draggable to opt in so the default surface has no pointer-only motion.",
+                  "Replaced click and synthetic-button behavior on the content wrapper with a native expansion button carrying aria-expanded.",
+                  "Limited hover and tap scaling to explicit drag mode and retained reduced-motion behavior.",
+                  "Normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/ui-layout/lib/utils.ts",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+                "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+                "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+                "changes": [
+                  "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/ui-layout/components/ui/liquid-glass.tsx and apps/ui-layout/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 UI LAYOUT"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+              "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+              "localPath": "registry/sources/ui-layouts/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/uilayouts-liquid-glass/liquid-glass.tsx",
+              "change": "Typed the source, rewired its local utility, scoped SVG filter IDs, hid decorative layers, made drag opt in, moved expansion to a native button, and limited motion under reduced-motion or non-draggable defaults.",
+              "reason": "Allow multiple instances, preserve type safety, avoid default pointer-only motion, and prevent arbitrary child controls from being nested inside a synthetic button."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+              "reason": "Keep the copied support closure minimal and remove site URLs."
+            }
+          ],
+          "dedupe": {
+            "family": "interactive-liquid-glass-surface",
+            "sourceHash": "sha256:125d04e2d1272578cbaa6aa8fdc3cf9957be3800ebb34f496f702729bf5c7441",
+            "contentHash": "sha256:6df3958fc51fc986dbc7363d9e79ff7ca7eea4cba95ae9656ee7274dc72f85f9",
+            "structureHash": "sha256:fff2da5dc8e59f1f806c9668eef15bca6ebd707022e988c1baccef85de5d6a3e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "uilayouts-code-tabs",
+      "type": "registry:component",
+      "title": "Code Tabs",
+      "description": "Displays one or more caller-provided code samples with accessible tabs, highlighting, and copy controls.",
+      "author": "UI LAYOUT",
+      "dependencies": [
+        "@radix-ui/react-tabs@1.1.16",
+        "clsx@2.1.1",
+        "lucide-react@1.23.0",
+        "shiki@4.3.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/uilayouts-code-tabs/code-tabs.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/code-tabs.tsx"
+        },
+        {
+          "path": "components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/code-tabs-tabs.tsx"
+        },
+        {
+          "path": "components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/code-tabs-copy-button.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "code",
+            "tabs",
+            "syntax-highlighting"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ui-layouts/uilayouts-code-tabs.tsx",
+          "source": {
+            "project": "UI Layouts Free",
+            "repository": "https://github.com/ui-layouts/uilayouts",
+            "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/uilayouts-code-tabs/code-tabs.tsx",
+                "upstreamPath": "apps/ui-layout/components/ui/code-tabs.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/code-tabs.tsx",
+                "upstreamSha256": "sha256:4bd4e60018ecabeb0b0545d0410c1e459e00826bbfb18fa63c1f35159cff0f37",
+                "contentSha256": "sha256:55d849b34fcc427747abdbb8b76199a93240c49bb7a754864defdaf46ad2e1db",
+                "changes": [
+                  "Changed website and root-alias imports to copied local support files.",
+                  "Removed the branded ui-layouts/shadcn logo branch and retained the generic caller-driven tabs API.",
+                  "Added a plain-code fallback for Shiki load failures and horizontal overflow for long lines.",
+                  "Normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+                "upstreamPath": "apps/ui-layout/components/website/ui/tabs.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/website/ui/tabs.tsx",
+                "upstreamSha256": "sha256:191f604e4b9f6ee0b8471f97bbf47baabdf69d68b37c4be35db422c369646390",
+                "contentSha256": "sha256:55c282892f167b2da50ae9bfcb87b9e52b7db06dff57fdebbdb909d31f4f96a5",
+                "changes": [
+                  "Changed the utility import to ../../lib/utils, added a reduced-motion transition class, and normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+                "upstreamPath": "apps/ui-layout/components/website/code-components/copy-button.tsx",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/website/code-components/copy-button.tsx",
+                "upstreamSha256": "sha256:b9182a153f3e468338dc76bdc6b10dd0681e786b837917142e734d1075bb314a",
+                "contentSha256": "sha256:a9e4e38ef9a87989d39958825e5105b1779bc1711a1789f6376211280ce26c58",
+                "changes": [
+                  "Changed the utility import to ../../lib/utils.",
+                  "Replaced the clickable div with a named button, handled clipboard rejection, and cleaned up the reset timer.",
+                  "Added reduced-motion styling and normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/ui-layout/lib/utils.ts",
+                "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+                "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+                "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+                "changes": [
+                  "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/ui-layout/components/ui/code-tabs.tsx, apps/ui-layout/components/website/ui/tabs.tsx, apps/ui-layout/components/website/code-components/copy-button.tsx, and apps/ui-layout/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 UI LAYOUT"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+              "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+              "localPath": "registry/sources/ui-layouts/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/uilayouts-code-tabs/code-tabs.tsx",
+              "change": "Rewired copied support, removed the branded demo mode, and added highlighting failure and long-line fallbacks.",
+              "reason": "Keep one generic component API, remove built-in trademarks, and preserve readable code if optional highlighting fails."
+            },
+            {
+              "shippedPath": "components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+              "change": "Rewired the copied utility and disabled CSS transitions for reduced motion.",
+              "reason": "Make the copied Radix tabs support portable and respect the user motion preference."
+            },
+            {
+              "shippedPath": "components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+              "change": "Rewired the copied utility, changed the clickable div to a named button, handled clipboard failure, cleaned up its timer, and disabled transitions for reduced motion.",
+              "reason": "Make copy keyboard-accessible and prevent stale timers or false success feedback."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+              "reason": "Keep the copied support closure minimal and remove site URLs."
+            }
+          ],
+          "dedupe": {
+            "family": "syntax-highlighted-code-tabs",
+            "sourceHash": "sha256:a35791122d7bf0d98e6bc5151f798391712255ed03c347b4ebad6f6fd3722fb6",
+            "contentHash": "sha256:f423641c07aab715cb22dc759c36b79551d24f899b21978631d4c9ba1ed714d8",
+            "structureHash": "sha256:c6feb96550507faf4d0cb48371fe37b77a3fd1697955c97086895f615b38027c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
