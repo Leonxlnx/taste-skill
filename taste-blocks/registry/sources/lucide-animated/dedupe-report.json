@@ -1,0 +1,1319 @@
+{
+  "source": {
+    "repository": "https://github.com/pqoqubbw/icons",
+    "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+    "inventoryPath": "icons/*.tsx",
+    "lucideReactVersion": "1.8.0",
+    "lucideRepository": "https://github.com/lucide-icons/lucide",
+    "lucideRevision": "3c62e4bfef50fb88dd9618439b46811af912ba4a"
+  },
+  "upstreamComponents": 439,
+  "retained": 31,
+  "rejected": 408,
+  "selected": [
+    "air-vent",
+    "ban",
+    "banana",
+    "bluetooth",
+    "bone",
+    "bot",
+    "circle-dashed",
+    "circle-help",
+    "contrast",
+    "database-backup",
+    "droplet",
+    "fish-symbol",
+    "frame",
+    "gauge",
+    "git-graph",
+    "git-pull-request",
+    "history",
+    "hourglass",
+    "id-card",
+    "mailbox",
+    "nfc",
+    "roller-coaster",
+    "route",
+    "scan-text",
+    "stamp",
+    "stethoscope",
+    "train-track",
+    "vibrate",
+    "waves",
+    "waypoints",
+    "workflow"
+  ],
+  "rejectionReasonCounts": {
+    "autoplay": 1,
+    "brand-rights": 12,
+    "direction-style-state-pack": 92,
+    "existing-semantic": 63,
+    "loop": 39,
+    "motion-shorthand": 110,
+    "quality-or-motion-template": 25,
+    "scale-zero": 5,
+    "semantic-alias": 14,
+    "unclear-or-non-lucide-geometry": 2,
+    "whole-svg-template-motion": 45
+  },
+  "rejectedByReason": {
+    "autoplay": [
+      "volume"
+    ],
+    "brand-rights": [
+      "chrome",
+      "discord",
+      "dribbble",
+      "facebook",
+      "figma",
+      "github",
+      "gitlab",
+      "instagram",
+      "linkedin",
+      "twitch",
+      "twitter",
+      "youtube"
+    ],
+    "direction-style-state-pack": [
+      "align-center",
+      "align-horizontal",
+      "align-left",
+      "align-right",
+      "align-vertical",
+      "arrow-big-down",
+      "arrow-big-down-dash",
+      "arrow-big-left",
+      "arrow-big-left-dash",
+      "arrow-big-right",
+      "arrow-big-right-dash",
+      "arrow-big-up",
+      "arrow-big-up-dash",
+      "arrow-down",
+      "arrow-down-0-1",
+      "arrow-down-1-0",
+      "arrow-down-a-z",
+      "arrow-down-z-a",
+      "arrow-left",
+      "arrow-right",
+      "arrow-up",
+      "bluetooth-connected",
+      "bluetooth-off",
+      "calendar-check",
+      "calendar-check-2",
+      "calendar-cog",
+      "chart-bar-decreasing",
+      "chart-bar-increasing",
+      "chart-column-decreasing",
+      "chart-column-increasing",
+      "chart-no-axes-column-decreasing",
+      "chart-no-axes-column-increasing",
+      "chevron-first",
+      "chevrons-down-up",
+      "chevrons-up-down",
+      "cloud-cog",
+      "cloud-download",
+      "expand",
+      "file-check",
+      "file-check-2",
+      "file-cog",
+      "folder-archive",
+      "folder-check",
+      "folder-clock",
+      "folder-cog",
+      "folder-dot",
+      "folder-down",
+      "folder-git",
+      "folder-git-2",
+      "folder-input",
+      "folder-minus",
+      "folder-output",
+      "folder-plus",
+      "folder-sync",
+      "folder-tree",
+      "folder-up",
+      "folder-x",
+      "gallery-horizontal-end",
+      "gallery-vertical-end",
+      "message-circle-check",
+      "message-circle-dashed",
+      "message-circle-more",
+      "message-circle-plus",
+      "message-circle-x",
+      "message-square-check",
+      "message-square-dashed",
+      "message-square-more",
+      "message-square-plus",
+      "message-square-x",
+      "panel-left-close",
+      "panel-left-open",
+      "panel-right-open",
+      "redo",
+      "redo-dot",
+      "refresh-ccw",
+      "refresh-ccw-dot",
+      "shrink",
+      "square-arrow-down",
+      "square-arrow-left",
+      "square-arrow-right",
+      "square-arrow-up",
+      "square-chevron-down",
+      "square-chevron-left",
+      "square-chevron-right",
+      "square-chevron-up",
+      "sun-dim",
+      "sun-medium",
+      "sun-moon",
+      "undo",
+      "undo-dot",
+      "user-round-check",
+      "user-round-cog"
+    ],
+    "existing-semantic": [
+      "activity",
+      "atom",
+      "battery",
+      "blocks",
+      "bold",
+      "bookmark",
+      "bookmark-check",
+      "bookmark-minus",
+      "bookmark-plus",
+      "bookmark-x",
+      "box",
+      "boxes",
+      "chart-line",
+      "chart-pie",
+      "chevron-down",
+      "chevron-left",
+      "chevron-right",
+      "chevron-up",
+      "chevrons-left-right",
+      "chevrons-right-left",
+      "circle-check",
+      "circle-chevron-left",
+      "circle-chevron-right",
+      "clock",
+      "cloud-upload",
+      "compass",
+      "copy",
+      "dollar-sign",
+      "euro",
+      "eye",
+      "eye-off",
+      "flame",
+      "georgian-lari",
+      "git-branch",
+      "git-commit-horizontal",
+      "git-commit-vertical",
+      "git-compare",
+      "git-compare-arrows",
+      "git-fork",
+      "git-merge",
+      "hand-coins",
+      "indian-rupee",
+      "japanese-yen",
+      "layers",
+      "layout-grid",
+      "link",
+      "mic-off",
+      "philippine-peso",
+      "pound-sterling",
+      "russian-ruble",
+      "saudi-riyal",
+      "sliders-horizontal",
+      "sun",
+      "swiss-franc",
+      "telescope",
+      "turkish-lira",
+      "underline",
+      "user-check",
+      "users",
+      "webhook",
+      "wifi",
+      "x",
+      "zap"
+    ],
+    "loop": [
+      "alarm-clock",
+      "alarm-clock-check",
+      "alarm-clock-minus",
+      "alarm-clock-plus",
+      "alarm-smoke",
+      "ambulance",
+      "audio-lines",
+      "battery-charging",
+      "battery-warning",
+      "biceps-flexed",
+      "bluetooth-searching",
+      "bot-message-square",
+      "brain",
+      "cloud-lightning",
+      "cloud-rain",
+      "cloud-rain-wind",
+      "cloud-snow",
+      "coffee",
+      "construction",
+      "cup-soda",
+      "drum",
+      "ev-charger",
+      "folder-heart",
+      "folder-kanban",
+      "folder-key",
+      "folder-lock",
+      "folder-root",
+      "loader",
+      "loader-circle",
+      "loader-pinwheel",
+      "plug-zap",
+      "rocket",
+      "rocking-chair",
+      "ship",
+      "shower-head",
+      "smartphone-charging",
+      "terminal",
+      "truck",
+      "washing-machine"
+    ],
+    "motion-shorthand": [
+      "a-arrow-down",
+      "a-arrow-up",
+      "accessibility",
+      "airplay",
+      "angry",
+      "annoyed",
+      "arrow-down-left",
+      "arrow-down-right",
+      "arrow-up-left",
+      "arrow-up-right",
+      "badge-alert",
+      "battery-plus",
+      "bell-electric",
+      "book-text",
+      "cart",
+      "cctv",
+      "check",
+      "check-check",
+      "chess-bishop",
+      "chess-king",
+      "chess-knight",
+      "chess-pawn",
+      "circle-chevron-down",
+      "circle-chevron-up",
+      "cloud-sun",
+      "concierge-bell",
+      "connect",
+      "cooking-pot",
+      "corner-down-left",
+      "corner-down-right",
+      "corner-left-down",
+      "corner-left-up",
+      "corner-right-down",
+      "corner-right-up",
+      "corner-up-left",
+      "corner-up-right",
+      "cpu",
+      "credit-card",
+      "cursor-click",
+      "download",
+      "feather",
+      "file-pen-line",
+      "file-text",
+      "folder-code",
+      "frown",
+      "graduation-cap",
+      "grip-horizontal",
+      "grip-vertical",
+      "hand-fist",
+      "hand-grab",
+      "hand-heart",
+      "hand-helping",
+      "hard-drive-download",
+      "hard-drive-upload",
+      "heart-handshake",
+      "key-circle",
+      "key-square",
+      "laugh",
+      "lock",
+      "lock-keyhole",
+      "lock-keyhole-open",
+      "lock-open",
+      "login",
+      "logout",
+      "map-pin",
+      "map-pin-check",
+      "map-pin-check-inside",
+      "map-pin-house",
+      "map-pin-minus",
+      "map-pin-minus-inside",
+      "map-pin-off",
+      "map-pin-plus",
+      "map-pin-plus-inside",
+      "map-pin-x-inside",
+      "meh",
+      "menu",
+      "message-circle",
+      "message-square",
+      "mic",
+      "party-popper",
+      "pause",
+      "phone",
+      "phone-call",
+      "phone-forwarded",
+      "phone-incoming",
+      "phone-missed",
+      "play",
+      "projector",
+      "rabbit",
+      "refresh-cw-off",
+      "satellite-dish",
+      "search",
+      "shield-check",
+      "smile",
+      "smile-plus",
+      "sparkles",
+      "square-pen",
+      "square-stack",
+      "sunset",
+      "timer",
+      "tornado",
+      "trending-down",
+      "trending-up",
+      "trending-up-down",
+      "upload",
+      "user",
+      "wallet",
+      "waves-ladder",
+      "wifi-pen",
+      "wind-arrow-down"
+    ],
+    "quality-or-motion-template": [
+      "cast",
+      "chart-spline",
+      "circle-dollar-sign",
+      "disc-3",
+      "file-chart-line",
+      "file-stack",
+      "fingerprint",
+      "gallery-thumbnails",
+      "git-pull-request-closed",
+      "git-pull-request-create",
+      "grip",
+      "heart-pulse",
+      "italic",
+      "keyboard",
+      "laptop-minimal-check",
+      "layout-panel-top",
+      "mail-check",
+      "monitor-check",
+      "radio",
+      "radio-tower",
+      "smartphone-nfc",
+      "square-activity",
+      "thermometer",
+      "wind",
+      "zap-off"
+    ],
+    "scale-zero": [
+      "airplane",
+      "folders",
+      "scan-face",
+      "send",
+      "wifi-low"
+    ],
+    "semantic-alias": [
+      "archive",
+      "at-sign",
+      "attach-file",
+      "badge-percent",
+      "calendar-days",
+      "clap",
+      "clipboard-check",
+      "delete",
+      "earth",
+      "home",
+      "maximize",
+      "maximize-2",
+      "minimize",
+      "users-round"
+    ],
+    "unclear-or-non-lucide-geometry": [
+      "flask",
+      "syringe"
+    ],
+    "whole-svg-template-motion": [
+      "axe",
+      "battery-full",
+      "battery-low",
+      "battery-medium",
+      "bell",
+      "briefcase-business",
+      "chart-scatter",
+      "cog",
+      "downvote",
+      "fan",
+      "folder-open",
+      "gavel",
+      "hammer",
+      "hand",
+      "hand-metal",
+      "heart",
+      "key",
+      "languages",
+      "moon",
+      "pen-tool",
+      "phone-off",
+      "pickaxe",
+      "plus",
+      "receipt",
+      "receipt-cent",
+      "receipt-euro",
+      "receipt-indian-rupee",
+      "receipt-japanese-yen",
+      "receipt-pound-sterling",
+      "receipt-russian-ruble",
+      "receipt-swiss-franc",
+      "receipt-text",
+      "receipt-turkish-lira",
+      "refresh-cw",
+      "rotate-ccw",
+      "rotate-cw",
+      "router",
+      "settings",
+      "snowflake",
+      "switch-camera",
+      "upvote",
+      "user-round-plus",
+      "wifi-cog",
+      "wifi-sync",
+      "wrench"
+    ]
+  },
+  "semanticAliasMatches": [
+    {
+      "name": "a-arrow-down",
+      "existingItem": "animateicons-a-arrow-down"
+    },
+    {
+      "name": "a-arrow-up",
+      "existingItem": "animateicons-a-arrow-up"
+    },
+    {
+      "name": "accessibility",
+      "existingItem": "animateicons-accessibility"
+    },
+    {
+      "name": "activity",
+      "existingItem": "animateicons-activity"
+    },
+    {
+      "name": "angry",
+      "existingItem": "animateicons-angry"
+    },
+    {
+      "name": "annoyed",
+      "existingItem": "animateicons-annoyed"
+    },
+    {
+      "name": "archive",
+      "canonicalAlias": "archive-box"
+    },
+    {
+      "name": "at-sign",
+      "canonicalAlias": "at-symbol"
+    },
+    {
+      "name": "atom",
+      "existingItem": "animateicons-atom"
+    },
+    {
+      "name": "attach-file",
+      "canonicalAlias": "paperclip"
+    },
+    {
+      "name": "audio-lines",
+      "existingItem": "animateicons-audio-lines"
+    },
+    {
+      "name": "badge-percent",
+      "canonicalAlias": "percent-badge"
+    },
+    {
+      "name": "battery",
+      "existingItem": "animateicons-battery"
+    },
+    {
+      "name": "battery-full",
+      "existingItem": "animateicons-battery-full"
+    },
+    {
+      "name": "bell",
+      "existingItem": "animateicons-bell"
+    },
+    {
+      "name": "biceps-flexed",
+      "existingItem": "animateicons-biceps-flexed"
+    },
+    {
+      "name": "blocks",
+      "existingItem": "animateicons-component-cubes"
+    },
+    {
+      "name": "bold",
+      "existingItem": "heroicons-animated-bold-icon"
+    },
+    {
+      "name": "bookmark",
+      "existingItem": "animateicons-bookmark"
+    },
+    {
+      "name": "bookmark-check",
+      "existingItem": "animateicons-bookmark-check"
+    },
+    {
+      "name": "bookmark-minus",
+      "existingItem": "animateicons-bookmark-minus"
+    },
+    {
+      "name": "bookmark-plus",
+      "existingItem": "animateicons-bookmark-plus"
+    },
+    {
+      "name": "bookmark-x",
+      "existingItem": "animateicons-bookmark-x"
+    },
+    {
+      "name": "box",
+      "existingItem": "animateicons-box"
+    },
+    {
+      "name": "boxes",
+      "existingItem": "animateicons-boxes"
+    },
+    {
+      "name": "brain",
+      "existingItem": "animateicons-brain"
+    },
+    {
+      "name": "calendar-days",
+      "canonicalAlias": "calendar-date-range"
+    },
+    {
+      "name": "chart-line",
+      "existingItem": "animateicons-chart-line"
+    },
+    {
+      "name": "chart-pie",
+      "existingItem": "animateicons-chart-pie"
+    },
+    {
+      "name": "chart-scatter",
+      "existingItem": "animateicons-chart-scatter"
+    },
+    {
+      "name": "check",
+      "existingItem": "animateicons-check"
+    },
+    {
+      "name": "check-check",
+      "existingItem": "animateicons-check-check"
+    },
+    {
+      "name": "chevron-down",
+      "existingItem": "animateicons-chevron-down"
+    },
+    {
+      "name": "chevron-left",
+      "existingItem": "animateicons-chevron-left"
+    },
+    {
+      "name": "chevron-right",
+      "existingItem": "animateicons-chevron-right"
+    },
+    {
+      "name": "chevron-up",
+      "existingItem": "animateicons-chevron-up"
+    },
+    {
+      "name": "chevrons-left-right",
+      "existingItem": "animateicons-chevrons-left-right"
+    },
+    {
+      "name": "chevrons-right-left",
+      "existingItem": "animateicons-chevrons-right-left"
+    },
+    {
+      "name": "circle-check",
+      "existingItem": "animateicons-circle-check"
+    },
+    {
+      "name": "circle-chevron-down",
+      "existingItem": "animateicons-circle-chevron-down"
+    },
+    {
+      "name": "circle-chevron-left",
+      "existingItem": "animateicons-circle-chevron-left"
+    },
+    {
+      "name": "circle-chevron-right",
+      "existingItem": "animateicons-circle-chevron-right"
+    },
+    {
+      "name": "circle-chevron-up",
+      "existingItem": "animateicons-circle-chevron-up"
+    },
+    {
+      "name": "clap",
+      "canonicalAlias": "clapperboard"
+    },
+    {
+      "name": "clipboard-check",
+      "canonicalAlias": "clipboard-document-check"
+    },
+    {
+      "name": "clock",
+      "existingItem": "heroicons-animated-clock-icon"
+    },
+    {
+      "name": "cloud-upload",
+      "existingItem": "animateicons-cloud-upload"
+    },
+    {
+      "name": "coffee",
+      "existingItem": "animateicons-coffee"
+    },
+    {
+      "name": "compass",
+      "existingItem": "animateicons-compass"
+    },
+    {
+      "name": "copy",
+      "existingItem": "animateicons-copy"
+    },
+    {
+      "name": "corner-down-left",
+      "existingItem": "animateicons-corner-down-left"
+    },
+    {
+      "name": "corner-down-right",
+      "existingItem": "animateicons-corner-down-right"
+    },
+    {
+      "name": "corner-left-down",
+      "existingItem": "animateicons-corner-left-down"
+    },
+    {
+      "name": "corner-left-up",
+      "existingItem": "animateicons-corner-left-up"
+    },
+    {
+      "name": "corner-right-down",
+      "existingItem": "animateicons-corner-right-down"
+    },
+    {
+      "name": "corner-right-up",
+      "existingItem": "animateicons-corner-right-up"
+    },
+    {
+      "name": "corner-up-left",
+      "existingItem": "animateicons-corner-up-left"
+    },
+    {
+      "name": "corner-up-right",
+      "existingItem": "animateicons-corner-up-right"
+    },
+    {
+      "name": "credit-card",
+      "existingItem": "animateicons-credit-card"
+    },
+    {
+      "name": "delete",
+      "canonicalAlias": "trash-2"
+    },
+    {
+      "name": "dollar-sign",
+      "existingItem": "animateicons-dollar-sign"
+    },
+    {
+      "name": "download",
+      "existingItem": "animateicons-download"
+    },
+    {
+      "name": "earth",
+      "canonicalAlias": "globe"
+    },
+    {
+      "name": "euro",
+      "existingItem": "animateicons-euro"
+    },
+    {
+      "name": "eye",
+      "existingItem": "animateicons-eye"
+    },
+    {
+      "name": "eye-off",
+      "existingItem": "animateicons-eye-off"
+    },
+    {
+      "name": "flame",
+      "existingItem": "animateicons-flame"
+    },
+    {
+      "name": "folder-open",
+      "existingItem": "animateicons-folder-open"
+    },
+    {
+      "name": "georgian-lari",
+      "existingItem": "animateicons-georgian-lari"
+    },
+    {
+      "name": "git-branch",
+      "existingItem": "animateicons-git-branch"
+    },
+    {
+      "name": "git-commit-horizontal",
+      "existingItem": "animateicons-git-commit-horizontal"
+    },
+    {
+      "name": "git-commit-vertical",
+      "existingItem": "animateicons-git-commit-vertical"
+    },
+    {
+      "name": "git-compare",
+      "existingItem": "animateicons-git-compare"
+    },
+    {
+      "name": "git-compare-arrows",
+      "existingItem": "animateicons-git-compare-arrows"
+    },
+    {
+      "name": "git-fork",
+      "existingItem": "animateicons-git-fork"
+    },
+    {
+      "name": "git-merge",
+      "existingItem": "animateicons-git-merge"
+    },
+    {
+      "name": "hand-coins",
+      "existingItem": "animateicons-hand-coins"
+    },
+    {
+      "name": "heart",
+      "existingItem": "animateicons-heart"
+    },
+    {
+      "name": "home",
+      "canonicalAlias": "house"
+    },
+    {
+      "name": "indian-rupee",
+      "existingItem": "animateicons-indian-rupee"
+    },
+    {
+      "name": "japanese-yen",
+      "existingItem": "animateicons-yen-yuan"
+    },
+    {
+      "name": "key",
+      "existingItem": "animateicons-key"
+    },
+    {
+      "name": "key-square",
+      "existingItem": "animateicons-key-square"
+    },
+    {
+      "name": "layers",
+      "existingItem": "animateicons-layers"
+    },
+    {
+      "name": "layout-grid",
+      "existingItem": "animateicons-grid-panels"
+    },
+    {
+      "name": "link",
+      "existingItem": "animateicons-link"
+    },
+    {
+      "name": "loader",
+      "existingItem": "animateicons-loader"
+    },
+    {
+      "name": "loader-circle",
+      "existingItem": "animateicons-loader-circle"
+    },
+    {
+      "name": "lock",
+      "existingItem": "animateicons-lock"
+    },
+    {
+      "name": "map-pin",
+      "existingItem": "animateicons-map-pin"
+    },
+    {
+      "name": "map-pin-check",
+      "existingItem": "animateicons-map-pin-check"
+    },
+    {
+      "name": "map-pin-check-inside",
+      "existingItem": "animateicons-map-pin-check-inside"
+    },
+    {
+      "name": "maximize",
+      "canonicalAlias": "arrows-pointing-out"
+    },
+    {
+      "name": "maximize-2",
+      "canonicalAlias": "arrows-pointing-out"
+    },
+    {
+      "name": "menu",
+      "existingItem": "animateicons-menu"
+    },
+    {
+      "name": "message-circle",
+      "existingItem": "animateicons-message-circle"
+    },
+    {
+      "name": "mic",
+      "existingItem": "animateicons-mic"
+    },
+    {
+      "name": "mic-off",
+      "existingItem": "animateicons-mic-off"
+    },
+    {
+      "name": "minimize",
+      "canonicalAlias": "arrows-pointing-in"
+    },
+    {
+      "name": "moon",
+      "existingItem": "animateicons-moon"
+    },
+    {
+      "name": "pause",
+      "existingItem": "animateicons-pause"
+    },
+    {
+      "name": "philippine-peso",
+      "existingItem": "animateicons-philippine-peso"
+    },
+    {
+      "name": "phone",
+      "existingItem": "animateicons-phone"
+    },
+    {
+      "name": "phone-call",
+      "existingItem": "animateicons-phone-call"
+    },
+    {
+      "name": "phone-forwarded",
+      "existingItem": "animateicons-phone-forwarded"
+    },
+    {
+      "name": "phone-incoming",
+      "existingItem": "animateicons-phone-incoming"
+    },
+    {
+      "name": "phone-missed",
+      "existingItem": "animateicons-phone-missed"
+    },
+    {
+      "name": "play",
+      "existingItem": "animateicons-play"
+    },
+    {
+      "name": "plus",
+      "existingItem": "animateicons-plus"
+    },
+    {
+      "name": "pound-sterling",
+      "existingItem": "animateicons-pound-sterling"
+    },
+    {
+      "name": "rocket",
+      "existingItem": "animateicons-rocket"
+    },
+    {
+      "name": "russian-ruble",
+      "existingItem": "animateicons-russian-ruble"
+    },
+    {
+      "name": "saudi-riyal",
+      "existingItem": "animateicons-saudi-riyal"
+    },
+    {
+      "name": "search",
+      "existingItem": "animateicons-search"
+    },
+    {
+      "name": "send",
+      "existingItem": "animateicons-send"
+    },
+    {
+      "name": "settings",
+      "existingItem": "animateicons-settings"
+    },
+    {
+      "name": "shield-check",
+      "existingItem": "animateicons-shield-check"
+    },
+    {
+      "name": "sliders-horizontal",
+      "existingItem": "animateicons-sliders-horizontal"
+    },
+    {
+      "name": "snowflake",
+      "existingItem": "animateicons-snow-flake"
+    },
+    {
+      "name": "sparkles",
+      "existingItem": "animateicons-sparkles"
+    },
+    {
+      "name": "sun",
+      "existingItem": "animateicons-sun"
+    },
+    {
+      "name": "swiss-franc",
+      "existingItem": "animateicons-swiss-franc"
+    },
+    {
+      "name": "telescope",
+      "existingItem": "animateicons-telescope"
+    },
+    {
+      "name": "terminal",
+      "existingItem": "animateicons-terminal"
+    },
+    {
+      "name": "trending-down",
+      "existingItem": "animateicons-trending-down"
+    },
+    {
+      "name": "trending-up",
+      "existingItem": "animateicons-trending-up"
+    },
+    {
+      "name": "trending-up-down",
+      "existingItem": "animateicons-trending-up-down"
+    },
+    {
+      "name": "turkish-lira",
+      "existingItem": "animateicons-turkish-lira"
+    },
+    {
+      "name": "underline",
+      "existingItem": "heroicons-animated-underline-icon"
+    },
+    {
+      "name": "upload",
+      "existingItem": "animateicons-upload"
+    },
+    {
+      "name": "user",
+      "existingItem": "animateicons-user"
+    },
+    {
+      "name": "user-check",
+      "existingItem": "animateicons-user-check"
+    },
+    {
+      "name": "users",
+      "existingItem": "animateicons-users"
+    },
+    {
+      "name": "users-round",
+      "canonicalAlias": "users"
+    },
+    {
+      "name": "wallet",
+      "existingItem": "animateicons-wallet"
+    },
+    {
+      "name": "webhook",
+      "existingItem": "animateicons-webhook"
+    },
+    {
+      "name": "wifi",
+      "existingItem": "animateicons-wifi"
+    },
+    {
+      "name": "wifi-cog",
+      "existingItem": "animateicons-wifi-cog"
+    },
+    {
+      "name": "wifi-pen",
+      "existingItem": "animateicons-wifi-pen"
+    },
+    {
+      "name": "wifi-sync",
+      "existingItem": "animateicons-wifi-sync"
+    },
+    {
+      "name": "x",
+      "existingItem": "animateicons-x"
+    },
+    {
+      "name": "zap",
+      "existingItem": "animateicons-zap"
+    }
+  ],
+  "brandExclusions": [
+    "chrome",
+    "discord",
+    "dribbble",
+    "facebook",
+    "figma",
+    "github",
+    "gitlab",
+    "instagram",
+    "linkedin",
+    "twitch",
+    "twitter",
+    "youtube"
+  ],
+  "comparison": {
+    "manifests": [
+      {
+        "path": "registry.json",
+        "sha256": "sha256:1bc25c3c767932faf4927836252bdbd2bfce395c87ad2d2b1957c018427786ac",
+        "items": 15
+      },
+      {
+        "path": "registry/sources/9ui/drafts.json",
+        "sha256": "sha256:962805b13c59a872182ca853b17ddf048aa69cd5030c846a6205dae2104600bd",
+        "items": 2
+      },
+      {
+        "path": "registry/sources/animata/drafts.json",
+        "sha256": "sha256:154f8ccbd87458a4f7bb6beeea2c96e7fdce41da806551368684018657014f38",
+        "items": 4
+      },
+      {
+        "path": "registry/sources/animate-ui/drafts.json",
+        "sha256": "sha256:a30b4270225852713469afb925998644ca6d0f5d24a6b6743653f42691d5eb0f",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/animateicons/drafts.json",
+        "sha256": "sha256:24bec3dc6517926ce98676129d9885b10081696a0647ced695a2b8952e13a0ff",
+        "items": 230
+      },
+      {
+        "path": "registry/sources/beui/drafts.json",
+        "sha256": "sha256:5bba0d3d03d7eb82e5a3186bbfd0945fbb8d9c8ffd7f9cea59fb12cb99af352c",
+        "items": 8
+      },
+      {
+        "path": "registry/sources/carbon-icons-motion/drafts.json",
+        "sha256": "sha256:fb8ac3959ae2aa55bd1dd379197f9261378ca4a3e6e80c16b689c0ce41f40b89",
+        "items": 6
+      },
+      {
+        "path": "registry/sources/chamaac-ui/drafts.json",
+        "sha256": "sha256:aa14600c7cf2557d355b21c22b5c38f03905be70c6fc3301e7c2b5bce2e902e7",
+        "items": 6
+      },
+      {
+        "path": "registry/sources/componentry/drafts.json",
+        "sha256": "sha256:dd325e57284c6500d64556ba2f5d66d0a2f05935b43d0e0ee9e440ac5d6537b7",
+        "items": 8
+      },
+      {
+        "path": "registry/sources/cult-ui/drafts.json",
+        "sha256": "sha256:df07a0d5dd145a38290d804aa0e40581460a321a99c324035fe70fff9f6c0bfe",
+        "items": 3
+      },
+      {
+        "path": "registry/sources/drifttype/drafts.json",
+        "sha256": "sha256:b8e569df7be996a8fb2ea89a07f9bbef9df994a6665e3b0faf2025c63c0e26ce",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/eldora-ui/drafts.json",
+        "sha256": "sha256:4560e2f0c615a0ba4ec5a0995244470c6a4e18bc2ef9be7285252206c72cb31c",
+        "items": 3
+      },
+      {
+        "path": "registry/sources/ericts-ui/drafts.json",
+        "sha256": "sha256:27970c979ee37e4ae340e6d89d152b0ad6f8e030093f88a9af2925eef2ad80c8",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/fancy-components/drafts.json",
+        "sha256": "sha256:5dd977a8107f9807941e4a72d0e57813f32e33aabf2f428e18cbcf5c8ab648f3",
+        "items": 3
+      },
+      {
+        "path": "registry/sources/fluid-functionalism/drafts.json",
+        "sha256": "sha256:571b8e0c97ab0f3b14acf30ebe65910def13e85ea5a3d02d8463397d2cea03b5",
+        "items": 3
+      },
+      {
+        "path": "registry/sources/fontuccine/drafts.json",
+        "sha256": "sha256:1434c669f9d2cc3d8f27b9199690d0f9863388c91d068d978c4a96082baad1ec",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/heroicons-animated/drafts.json",
+        "sha256": "sha256:a08c44c56d7f741c8f42893d7ccc931b409df7945ba17a0d69bff8689b5cc761",
+        "items": 30
+      },
+      {
+        "path": "registry/sources/hextaui/drafts.json",
+        "sha256": "sha256:83461b6943ee73209abcc88f771373abc9a40b44ff5efcb6ea59846514f84cf6",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/kibo-ui/drafts.json",
+        "sha256": "sha256:37bfd30d081d08f268da313d5306e9a5fb69036e659d7f2d44ef81f7f89091ae",
+        "items": 5
+      },
+      {
+        "path": "registry/sources/loading-ui/drafts.json",
+        "sha256": "sha256:7422425712869857e970ea15350435ac71dea0fce8e71d32de871841a7c316f3",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/magic-ui/drafts.json",
+        "sha256": "sha256:90bf2bf7f96798e28388d389697dacddf0a77ed1c45a679f16ef9a4f260d2ee2",
+        "items": 9
+      },
+      {
+        "path": "registry/sources/motion-primitives/drafts.json",
+        "sha256": "sha256:5bf5c10cbea3cc1924c4d5cf18efec8f0d32b09227c173db0a87a84a28746197",
+        "items": 11
+      },
+      {
+        "path": "registry/sources/numberflow/drafts.json",
+        "sha256": "sha256:16191be82d1fa27bb5d4c5d1456336c66c7c11eae0ee1bc5029d7efdd87634bc",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/otp-timer/drafts.json",
+        "sha256": "sha256:5d006739fd2f093b91d9a775abb79e7e35448c330f40e4e178c27d8c04dc745f",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/paper-shaders/drafts.json",
+        "sha256": "sha256:a2e4b4afd57b4258ba50c4f3291ae00a3a1d8faf54b35c4896bed94e43abc324",
+        "items": 0
+      },
+      {
+        "path": "registry/sources/primer-segmented-progress/drafts.json",
+        "sha256": "sha256:866276de39196943fcc22a328dd97e0d5b8ace27aeb0f8ef16205e5450e38337",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/react-aria-starters/drafts.json",
+        "sha256": "sha256:17eca4d41a5da2c81c7cf90fc9b43de051514e87135e9aaa2f54dd42bed7c9a5",
+        "items": 18
+      },
+      {
+        "path": "registry/sources/react-compare-slider/drafts.json",
+        "sha256": "sha256:7806fe61ab7c38d8811226e1db2fc4e374516157e7bca3cb23f3858c1842fd45",
+        "items": 0
+      },
+      {
+        "path": "registry/sources/react-dual-listbox/drafts.json",
+        "sha256": "sha256:5c53ce62d2e6d1892077d41540434e837f7a20c4448f1495ef6ddae903e3eb2c",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/react-error-boundary/drafts.json",
+        "sha256": "sha256:21071f16f7df792d85b66df241625f67da137ebb41c5085fdc92011421a23613",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/react-photo-album/drafts.json",
+        "sha256": "sha256:87fdba70792b399b005bc62957b0d90fba6ac5cb61d31c3c22cbc907b02c6f28",
+        "items": 3
+      },
+      {
+        "path": "registry/sources/react-pull-to-refreshify/drafts.json",
+        "sha256": "sha256:aaeac4cd95dbe4bdf2c704b2161d43dc2330a619269e656f606d508ac644c89b",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/react-responsive-pagination/drafts.json",
+        "sha256": "sha256:6cb99abce39e94b49a2c00dc17f1b2fca43c2d7eb70d94da55d0af29a92d5605",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/react-swipeable-list/drafts.json",
+        "sha256": "sha256:8164b859e1619a3d24736ae4f5974ecbc10948e3dcba5366f970a55975e53db2",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/rich-textarea/drafts.json",
+        "sha256": "sha256:59629b0e8d1236260b414493b1cb467c1791b31ea6a2030029bb37d8e4614e39",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/shadcn-ui/drafts.json",
+        "sha256": "sha256:466167736ba13792a66048027090423f1836af378d0178f18577f8564cf7dec7",
+        "items": 12
+      },
+      {
+        "path": "registry/sources/slot-text/drafts.json",
+        "sha256": "sha256:a9a658112222547f73e25095c90eab7a03b8fa1aa58269bdc98f984207f331d8",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/smoothui/drafts.json",
+        "sha256": "sha256:a63a06aa9a95271dfb3c0e1fd19d263db3294aa88d08ae8ca8335bd0ee22d1db",
+        "items": 2
+      },
+      {
+        "path": "registry/sources/splitflap/drafts.json",
+        "sha256": "sha256:810e8325fd080ae3c7a5b9f82e03f3298d6a1793d194ce38e185c4595f5d562a",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/tremor-raw/drafts.json",
+        "sha256": "sha256:03650a5b7b9880e473b56eb3857f2eda635ceb5fade5b6e9bfa2e70cfb2b9446",
+        "items": 1
+      },
+      {
+        "path": "registry/sources/trickle/drafts.json",
+        "sha256": "sha256:4a5af921333ed73690798a84f10fb2d9b3f12605e81393e2f87c1de54e0d38a6",
+        "items": 6
+      },
+      {
+        "path": "registry/sources/ui-layouts/drafts.json",
+        "sha256": "sha256:4f362f30bc02581261a741a10680355a0487d2755981ddb50a14a587113f7206",
+        "items": 5
+      },
+      {
+        "path": "registry/sources/yarl/drafts.json",
+        "sha256": "sha256:4498a5dfc3b31f27a43a1d93481bf7e2bd40bbfc5e6ca67805b99b0eddb27035",
+        "items": 1
+      }
+    ],
+    "manifestCount": 43,
+    "itemsScanned": 411,
+    "animatedIconItemsScanned": 266,
+    "especially": {
+      "animateicons": 230,
+      "heroiconsAnimated": 30
+    },
+    "collisions": {
+      "semantic": [],
+      "family": [],
+      "source": [],
+      "content": [],
+      "structure": [],
+      "normalizedGeometry": [],
+      "normalizedSvgMotion": [],
+      "rasterizedRestingFrame": []
+    },
+    "rasterAudit": {
+      "method": "SSR 260 existing and 31 retained SVGs at a common 240x240 currentColor stroke, compare SHA-256 RGBA pixels with Sharp, then compare the retained hashes with six source-verified Carbon raster hashes.",
+      "compared": 297,
+      "rendered": 291,
+      "existing": 266,
+      "retained": 31,
+      "collisions": 0
+    }
+  }
+}

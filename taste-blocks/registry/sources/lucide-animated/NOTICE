@@ -1,0 +1,6 @@
+Lucide Animated component subset
+
+Selected React icon components and lib/utils.ts are from https://github.com/pqoqubbw/icons at 8989db1262cdd3a95d22b2b2336fcb556dd9b37f.
+SVG glyph geometry is derived from Lucide React 1.8.0, pinned to 3c62e4bfef50fb88dd9618439b46811af912ba4a; its ISC license and embedded Feather MIT notice are preserved in LUCIDE_LICENSE.
+Lucide's exact brand-policy evidence at that pin is preserved in BRAND_LOGOS_STATEMENT.md; all 12 upstream corporate brand marks were excluded.
+Only component source and its necessary utility are redistributed. No tutorial, demo, application, site, font, or remote asset is included.
