@@ -1,0 +1,950 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-fontuccine-drafts",
+  "homepage": "https://github.com/charbelmalo/fontuccine",
+  "items": [
+    {
+      "name": "fontuccine-tangent-stretch",
+      "type": "registry:component",
+      "title": "Tangent Stretch Text",
+      "description": "Remaps caller-provided font outlines along glyph tangents in response to a configured interaction signal.",
+      "author": "Fontuccine contributors",
+      "dependencies": [
+        "opentype.js@1.3.4"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/fontuccine/react/index.ts",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fontuccine/react/index.ts"
+        },
+        {
+          "path": "components/fontuccine/core/flex-profile.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/flex-profile.ts"
+        },
+        {
+          "path": "components/fontuccine/core/geometry/segments.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/geometry/segments.ts"
+        },
+        {
+          "path": "components/fontuccine/core/kerning.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/kerning.ts"
+        },
+        {
+          "path": "components/fontuccine/core/lut.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/lut.ts"
+        },
+        {
+          "path": "components/fontuccine/core/sampling/outline.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/sampling/outline.ts"
+        },
+        {
+          "path": "components/fontuccine/core/spatial/kdtree.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/spatial/kdtree.ts"
+        },
+        {
+          "path": "components/fontuccine/core/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/types.ts"
+        },
+        {
+          "path": "components/fontuccine/core/winding.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/core/winding.ts"
+        },
+        {
+          "path": "components/fontuccine/dom/overlay.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/dom/overlay.ts"
+        },
+        {
+          "path": "components/fontuccine/engine/attach.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/engine/attach.ts"
+        },
+        {
+          "path": "components/fontuccine/engine/font-load.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/engine/font-load.ts"
+        },
+        {
+          "path": "components/fontuccine/engine/glyphs.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/engine/glyphs.ts"
+        },
+        {
+          "path": "components/fontuccine/engine/tier-select.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/engine/tier-select.ts"
+        },
+        {
+          "path": "components/fontuccine/engine/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/engine/types.ts"
+        },
+        {
+          "path": "components/fontuccine/font/opentype-js.d.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/font/opentype-js.d.ts"
+        },
+        {
+          "path": "components/fontuccine/font/parser.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/font/parser.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/easing.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/easing.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/gating.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/gating.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/reduced-motion.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/reduced-motion.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/spring.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/spring.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/stimuli/hover.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/stimuli/hover.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/stimuli/proximity.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/stimuli/proximity.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/stimuli/scroll-velocity.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/stimuli/scroll-velocity.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/stimuli/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/stimuli/types.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/stretch-controller.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/stretch-controller.ts"
+        },
+        {
+          "path": "components/fontuccine/interaction/ticker.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/interaction/ticker.ts"
+        },
+        {
+          "path": "components/fontuccine/svg/renderer.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/svg/renderer.ts"
+        },
+        {
+          "path": "components/fontuccine/svg/split.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/svg/split.ts"
+        },
+        {
+          "path": "components/fontuccine/vf/detect.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/vf/detect.ts"
+        },
+        {
+          "path": "components/fontuccine/vf/probe.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/vf/probe.ts"
+        },
+        {
+          "path": "components/fontuccine/vf/renderer.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/vf/renderer.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/gl/capability.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/gl/capability.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/gl/device.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/gl/device.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/gl/shaders.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/gl/shaders.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/gl/shared.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/gl/shared.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/lut-texture.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/lut-texture.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/msdf/atlas.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/msdf/atlas.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/msdf/client.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/msdf/client.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/msdf/generator.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/msdf/generator.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/msdf/worker.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/msdf/worker.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/parity.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/parity.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/renderer.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/renderer.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/slice-grid.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/slice-grid.ts"
+        },
+        {
+          "path": "components/fontuccine/webgl/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/webgl/types.ts"
+        },
+        {
+          "path": "components/fontuccine/worker/analysis-worker.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/worker/analysis-worker.ts"
+        },
+        {
+          "path": "components/fontuccine/worker/analyze.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/worker/analyze.ts"
+        },
+        {
+          "path": "components/fontuccine/worker/client.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fontuccine/worker/client.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "typography",
+            "tangent",
+            "stretch"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/fontuccine/fontuccine-tangent-stretch.tsx",
+          "source": {
+            "project": "Fontuccine",
+            "repository": "https://github.com/charbelmalo/fontuccine",
+            "revision": "1261bd116c7915a617ed21c85adab10bba6ca1a7",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/fontuccine/react/index.ts",
+                "upstreamPath": "src/react/index.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/react/index.ts",
+                "upstreamSha256": "sha256:90ac23192aaee9dcd2c3c816bd90f41262f4f7e5c976fa68235ec3ab95a8cd52",
+                "contentSha256": "sha256:81c5b56a0a26bdc6e12908d47dae6b1149d7e59129e28aad27f978c5cc9e3d29",
+                "changes": [
+                  "Added the client-module boundary, removed explicit `.ts` import suffixes, and reused a stable empty configuration across renders."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/flex-profile.ts",
+                "upstreamPath": "src/core/flex-profile.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/flex-profile.ts",
+                "upstreamSha256": "sha256:79f2fc20b64359c851afa7175f70553c299aa081efa692bcbe20746a9f5049e0",
+                "contentSha256": "sha256:0d9c82d04bb1e2ab6da1b505d7cb40919c5c4ef1a38c62c99ff3603da76913c6",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/geometry/segments.ts",
+                "upstreamPath": "src/core/geometry/segments.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/geometry/segments.ts",
+                "upstreamSha256": "sha256:25f9e09ac73881ecee900d905442312b44b9d6d0d2218a3038ffc11f40b2301a",
+                "contentSha256": "sha256:3d09202ba70c72a4e27175621f7c1b867b4f6f81635bb90b6c235a6f5ae2f205",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/kerning.ts",
+                "upstreamPath": "src/core/kerning.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/kerning.ts",
+                "upstreamSha256": "sha256:a24818a495d6b5240ec5a95d33a3123cd5389cf52125661a5bfb646ce7754dfa",
+                "contentSha256": "sha256:6dd91ffd8cefd89556379bbba2737c4c27dd97a0d7781ecd6dc2f8eb79bbab86",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/lut.ts",
+                "upstreamPath": "src/core/lut.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/lut.ts",
+                "upstreamSha256": "sha256:3bd12ee344b734b9fb16f1a4c64bb131e071320fc8e20ed338bed2bc913c5e75",
+                "contentSha256": "sha256:971258c55c5b8db9e45b8dbc5bd2cf25f88dd85560b61cef70049ce9e0b4bce7",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/sampling/outline.ts",
+                "upstreamPath": "src/core/sampling/outline.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/sampling/outline.ts",
+                "upstreamSha256": "sha256:6860960a789b1ed191e83c7196cbffdd4dfed771d1ce69bcb6cabb3e126c3c09",
+                "contentSha256": "sha256:817bc55e3a8f8c3be64c2f9eb7c703971c5d0513a8f04d67a8a5e60021f77899",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/core/spatial/kdtree.ts",
+                "upstreamPath": "src/core/spatial/kdtree.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/spatial/kdtree.ts",
+                "upstreamSha256": "sha256:7fdd7612452e74fbff5eb71cea405f75743669094ad5419e7390c1caafbfd9a7",
+                "contentSha256": "sha256:7fdd7612452e74fbff5eb71cea405f75743669094ad5419e7390c1caafbfd9a7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/core/types.ts",
+                "upstreamPath": "src/core/types.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/types.ts",
+                "upstreamSha256": "sha256:3a96b6ed9462f13dddc5db467a848bf9830e2b90db791cf0c11305f9d5c3120d",
+                "contentSha256": "sha256:3a96b6ed9462f13dddc5db467a848bf9830e2b90db791cf0c11305f9d5c3120d",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/core/winding.ts",
+                "upstreamPath": "src/core/winding.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/core/winding.ts",
+                "upstreamSha256": "sha256:c14f00b0aa55c8f138480fad7b090ca5c4c97ca04300ce6f24fe2e8ab49d1751",
+                "contentSha256": "sha256:a4240265abee4987b321ccc862d070b43048173abb98709bb79c002f1608e0dd",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/dom/overlay.ts",
+                "upstreamPath": "src/dom/overlay.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/dom/overlay.ts",
+                "upstreamSha256": "sha256:82428803d858d063166f3c118c8d56aeffdd16635e94ae835e21ce3a12834e2a",
+                "contentSha256": "sha256:82428803d858d063166f3c118c8d56aeffdd16635e94ae835e21ce3a12834e2a",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/engine/attach.ts",
+                "upstreamPath": "src/engine/attach.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/engine/attach.ts",
+                "upstreamSha256": "sha256:094e4df1d9bb0c69ca560c819b93f85104922d31824100d3bf92df99b4607a75",
+                "contentSha256": "sha256:4ab573c74cb1ef5aeb7de602fef940268e777dd9d2c546aa9da4e12de88c2393",
+                "changes": [
+                  "Removed explicit `.ts` suffixes, kept RTL output as untouched native text, and fell through to SVG when WebGL backend construction failed."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/engine/font-load.ts",
+                "upstreamPath": "src/engine/font-load.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/engine/font-load.ts",
+                "upstreamSha256": "sha256:8386867d0fd7873b824aa1d94b5cfcc8d5b2d7efc633b8bf20b8aad63bb181e9",
+                "contentSha256": "sha256:1cfbdaa6dad93dca89f2a142118b164697ba0bdea2bf20caef8a912eae55a39c",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/engine/glyphs.ts",
+                "upstreamPath": "src/engine/glyphs.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/engine/glyphs.ts",
+                "upstreamSha256": "sha256:e0ef10c79a4f01a7d302f3ca77352742034b3c6316668032f6425201f65296d7",
+                "contentSha256": "sha256:52fdd2a0fbfc33617ead339a87048f9004435440c77fa3e86958e97a694422a3",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/engine/tier-select.ts",
+                "upstreamPath": "src/engine/tier-select.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/engine/tier-select.ts",
+                "upstreamSha256": "sha256:c661a81beb8b29d1898d40ffefdaba411c67aaf6407b77973fa85b6a7fe2d08f",
+                "contentSha256": "sha256:c661a81beb8b29d1898d40ffefdaba411c67aaf6407b77973fa85b6a7fe2d08f",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/engine/types.ts",
+                "upstreamPath": "src/engine/types.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/engine/types.ts",
+                "upstreamSha256": "sha256:18b4f909052aba908fff92db6bacca97b6116d50426616e1f9a123cf39a0c643",
+                "contentSha256": "sha256:2e1e30858c64ea5e7df001d15f9ad8249bbbc8acc8444d4eebee4edf204b918b",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/font/opentype-js.d.ts",
+                "upstreamPath": "src/font/opentype-js.d.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/font/opentype-js.d.ts",
+                "upstreamSha256": "sha256:dccbc65a13b6720f88cccc3763bcfb9178b3c6c41bfbde7effaca39d9285b1a7",
+                "contentSha256": "sha256:dccbc65a13b6720f88cccc3763bcfb9178b3c6c41bfbde7effaca39d9285b1a7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/font/parser.ts",
+                "upstreamPath": "src/font/parser.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/font/parser.ts",
+                "upstreamSha256": "sha256:7d631652140873327d40eebc3ad2886e55dbf4a88e2ab39a4436c8ef165b451a",
+                "contentSha256": "sha256:63b4fc9c299cb6ed4bb3936e98efb7054245cc329f89e0afcb90dc169c90adfa",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/easing.ts",
+                "upstreamPath": "src/interaction/easing.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/easing.ts",
+                "upstreamSha256": "sha256:a2810a700b4f142801d24df12941e4fff8ce67034ea6c5ffa316c6875a267597",
+                "contentSha256": "sha256:ff7a9d904b55f5c87c6ff90e3471c1034193f1ef937f0b73c704f0c51bd79944",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/gating.ts",
+                "upstreamPath": "src/interaction/gating.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/gating.ts",
+                "upstreamSha256": "sha256:5d62ef756fc14fc4c8c769f2a5a533094e472d3d438d55faaa30a9d7a6da8892",
+                "contentSha256": "sha256:f2b1de125c03283b70744976f6775159027b9e85c96199243dffdd1a710b9fe9",
+                "changes": [
+                  "Added document visibility to the viewport gate and removed its listener during cleanup."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/reduced-motion.ts",
+                "upstreamPath": "src/interaction/reduced-motion.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/reduced-motion.ts",
+                "upstreamSha256": "sha256:444c06747638d27dd8930dfe8ebbc268c3941b1d8cbcdf1907195d3293644864",
+                "contentSha256": "sha256:444c06747638d27dd8930dfe8ebbc268c3941b1d8cbcdf1907195d3293644864",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/spring.ts",
+                "upstreamPath": "src/interaction/spring.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/spring.ts",
+                "upstreamSha256": "sha256:a6f46489f71b444d9d9569211662bbcea62681c0176df1f790d82ba77d3c9ad9",
+                "contentSha256": "sha256:a6f46489f71b444d9d9569211662bbcea62681c0176df1f790d82ba77d3c9ad9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/stimuli/hover.ts",
+                "upstreamPath": "src/interaction/stimuli/hover.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/stimuli/hover.ts",
+                "upstreamSha256": "sha256:e7f2efcd6b5bff6e6b37e4be6d362c1bea4b345b7bc0d8503942f5176ba5e0c4",
+                "contentSha256": "sha256:dd4cc166e21ad185fa77a7f20d2e94f147afca289e26c026670d074fa16b9ac0",
+                "changes": [
+                  "Removed explicit `.ts` import suffixes and made touch and pen hover input intentionally static."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/stimuli/proximity.ts",
+                "upstreamPath": "src/interaction/stimuli/proximity.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/stimuli/proximity.ts",
+                "upstreamSha256": "sha256:4d602e3efb491a96f990a75fc9c66635441b97e664d8c62a6b14597055e9c234",
+                "contentSha256": "sha256:5856b4f5000bbcf50c916061d9465821fd04c11a08433a379caf245f389a9bc0",
+                "changes": [
+                  "Removed explicit `.ts` import suffixes and made touch and pen proximity input intentionally static."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/stimuli/scroll-velocity.ts",
+                "upstreamPath": "src/interaction/stimuli/scroll-velocity.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/stimuli/scroll-velocity.ts",
+                "upstreamSha256": "sha256:77a300fa22fab1dc0ff0124035f59a2d9d48a567d82cd94033c46e52278ecbe8",
+                "contentSha256": "sha256:0f2638b5e393d7dd2b39e3b28192188a134f8a6436ccd76f3c58cf95773da2bd",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/stimuli/types.ts",
+                "upstreamPath": "src/interaction/stimuli/types.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/stimuli/types.ts",
+                "upstreamSha256": "sha256:38d8288c6c6b29dec876d994bb08703541c80cff3ff8529836888a609a78d86d",
+                "contentSha256": "sha256:e50701545c20fb2fc22d12e4fb9057cce753aa77c5dc3ff0347c9f6eddb78408",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/stretch-controller.ts",
+                "upstreamPath": "src/interaction/stretch-controller.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/stretch-controller.ts",
+                "upstreamSha256": "sha256:33617c62abbc7339f93ac0a00815517d02eeeafdaed9f265d7ab3977e5d7e995",
+                "contentSha256": "sha256:175aa6aab4511c869c94f24090c698dd637fb317c81f21a16094ca4eae3d38b1",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/interaction/ticker.ts",
+                "upstreamPath": "src/interaction/ticker.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/interaction/ticker.ts",
+                "upstreamSha256": "sha256:51c2773d24310b0a01f8bbd5915d241c6deb1526f96c9955e9ee85dd54b5ac6a",
+                "contentSha256": "sha256:fdf1c543222720b70b7e0801b173daf3850ee85f2cd6956a7473ad2e64d805fb",
+                "changes": [
+                  "Stopped the shared ticker whenever no controller owns activity, including while gated render phases remain mounted."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/svg/renderer.ts",
+                "upstreamPath": "src/svg/renderer.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/svg/renderer.ts",
+                "upstreamSha256": "sha256:41d90882ad371d2c3ecad593c82451ef614e9f6ac5b5d36fa2d5df55567c8d75",
+                "contentSha256": "sha256:15de6672f1bbf0088a08368c3a97f50e40338e1dca2845fb81b1cee3bd9ba7db",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/svg/split.ts",
+                "upstreamPath": "src/svg/split.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/svg/split.ts",
+                "upstreamSha256": "sha256:880600060777ae5ce331778e45c093e7d6becda3957b16467e3825a53c731fee",
+                "contentSha256": "sha256:8643905b6a61942fdc5a63c2fb870b5ca18bbf4f35e9d1f7d5a9628d024305db",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/vf/detect.ts",
+                "upstreamPath": "src/vf/detect.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/vf/detect.ts",
+                "upstreamSha256": "sha256:f65fda690044da2e90bbc9706339dddd73b46d564f2ee319df7bbd2798c227f0",
+                "contentSha256": "sha256:f65fda690044da2e90bbc9706339dddd73b46d564f2ee319df7bbd2798c227f0",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/vf/probe.ts",
+                "upstreamPath": "src/vf/probe.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/vf/probe.ts",
+                "upstreamSha256": "sha256:0f2bc638d3424319d0bbd7f3df2bc7f7ae0ce35a38475bbdedff7c45d191aed4",
+                "contentSha256": "sha256:116b1e6078fbf63a22bb6231543345189c21aaa182cb6fa7a7ce034994011ece",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/vf/renderer.ts",
+                "upstreamPath": "src/vf/renderer.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/vf/renderer.ts",
+                "upstreamSha256": "sha256:dd948fcb6484c99756a1e968ea0ade340e3f6d409bd0d7805d2deb054fa346e0",
+                "contentSha256": "sha256:d14a26c1f570b652ffea22469406c333b752fb4d8b3da4a7719df5790d4c5a4d",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/gl/capability.ts",
+                "upstreamPath": "src/webgl/gl/capability.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/gl/capability.ts",
+                "upstreamSha256": "sha256:ee17a500e0f4335f5c57faadb8c842463c95a288207bb5e479023bba0b0c5cb2",
+                "contentSha256": "sha256:ee17a500e0f4335f5c57faadb8c842463c95a288207bb5e479023bba0b0c5cb2",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/gl/device.ts",
+                "upstreamPath": "src/webgl/gl/device.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/gl/device.ts",
+                "upstreamSha256": "sha256:450693c18c11559d4c8208b28bb9e77d588bd64fb5356aab88945f0f082afe47",
+                "contentSha256": "sha256:812410f57ab34ac4225599268ecd8e50d9f23bc567009975be4d5f68379a2ba8",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/gl/shaders.ts",
+                "upstreamPath": "src/webgl/gl/shaders.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/gl/shaders.ts",
+                "upstreamSha256": "sha256:582808b77ea048bb562bc24564b1dadea24033cb50ccdce6b61bf6e6a6976db7",
+                "contentSha256": "sha256:582808b77ea048bb562bc24564b1dadea24033cb50ccdce6b61bf6e6a6976db7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/gl/shared.ts",
+                "upstreamPath": "src/webgl/gl/shared.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/gl/shared.ts",
+                "upstreamSha256": "sha256:9f115edc92390caca6942c6030eee121d95c2bc66249b021587466c57018f965",
+                "contentSha256": "sha256:02db0f109c33344a4fea67fcf7bf076b988a3941e48b9729b95bc908a0bf321f",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/lut-texture.ts",
+                "upstreamPath": "src/webgl/lut-texture.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/lut-texture.ts",
+                "upstreamSha256": "sha256:4ddceea53c53d423e05151ea7b99e73ed29202951ec8f08a7ff016a6071a3c1e",
+                "contentSha256": "sha256:99c91b465a58e41c0f1adffb117397f66a7b1559d68788a43cc4e2c5bb7539c4",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/msdf/atlas.ts",
+                "upstreamPath": "src/webgl/msdf/atlas.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/msdf/atlas.ts",
+                "upstreamSha256": "sha256:8f751aab5af3c4a3857940fd608fe3104951f2aaa8933f50b26e1b1dc04605c0",
+                "contentSha256": "sha256:8f751aab5af3c4a3857940fd608fe3104951f2aaa8933f50b26e1b1dc04605c0",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/msdf/client.ts",
+                "upstreamPath": "src/webgl/msdf/client.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/msdf/client.ts",
+                "upstreamSha256": "sha256:a415ced8ac66e9fe3014082341aae450cd0b86595365a293ca261033af72561c",
+                "contentSha256": "sha256:66f80b6d25dfedd4bc533b4674ee0b1f4247ca0d76a4fd1df39186073f7242c4",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/msdf/generator.ts",
+                "upstreamPath": "src/webgl/msdf/generator.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/msdf/generator.ts",
+                "upstreamSha256": "sha256:5fbb00df73eb8674a09fc7d7af9b738d1990af71b266790ca4c63929867727b0",
+                "contentSha256": "sha256:663758e73dd8881ec99c1284d7f072e94e0cbb346b018da3335f21079a125d1e",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/msdf/worker.ts",
+                "upstreamPath": "src/webgl/msdf/worker.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/msdf/worker.ts",
+                "upstreamSha256": "sha256:d2565341beff3f866556a34a70450b0468d2aaa09e9513f617dbf12c10ac8092",
+                "contentSha256": "sha256:20b33a5c0b3ccf51bf8ab2052d9a041b6276c3982ed54f393675315007797ede",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/parity.ts",
+                "upstreamPath": "src/webgl/parity.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/parity.ts",
+                "upstreamSha256": "sha256:61fcb842b71661d4005b6a8fa53d2ef9b2086213f499907691a1cf12251aa296",
+                "contentSha256": "sha256:4d3faebede1d33071b71a395e53ec86d486e52acbc5c69c61dda178f350f89ab",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/renderer.ts",
+                "upstreamPath": "src/webgl/renderer.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/renderer.ts",
+                "upstreamSha256": "sha256:b6ad02ae38aaa73b2e1cefab8a5c53b237b31f5581a6229994d59ae3e45810e0",
+                "contentSha256": "sha256:0dd5cc74a1855010c7a322e914e1d5183256a39bb11d93852026eac67ec3fc3b",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/slice-grid.ts",
+                "upstreamPath": "src/webgl/slice-grid.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/slice-grid.ts",
+                "upstreamSha256": "sha256:2167a1b32b43369af1ef1ca3e2bcec6963f816833c76fe87cfb7adfc79c6dfcd",
+                "contentSha256": "sha256:2167a1b32b43369af1ef1ca3e2bcec6963f816833c76fe87cfb7adfc79c6dfcd",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/fontuccine/webgl/types.ts",
+                "upstreamPath": "src/webgl/types.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/webgl/types.ts",
+                "upstreamSha256": "sha256:f94f5fc1fbcd628dfcbe9a9ec3de2b5bea7339b9406db0c55727d5ea43fe0267",
+                "contentSha256": "sha256:f22b3aeeaa6f5e521cc90601ff36cdde2114cc7b4dc310e6c3c591c11cde519c",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/worker/analysis-worker.ts",
+                "upstreamPath": "src/worker/analysis-worker.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/worker/analysis-worker.ts",
+                "upstreamSha256": "sha256:458343fef919e9f4d3f10dc7e26525a8ad8764121afc7fe49cb157b00d279f0e",
+                "contentSha256": "sha256:d86493e645af6304f0258a6c406eee3a785c3350d9479d650beef483deec47f3",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/worker/analyze.ts",
+                "upstreamPath": "src/worker/analyze.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/worker/analyze.ts",
+                "upstreamSha256": "sha256:927398197b17142cac1171714e14877754685c13e3b5c73c507a70c6f01aceed",
+                "contentSha256": "sha256:851d78513375a756e6ebb43175520d8ff14dfe29e22fcea0e5efc9f7e73e4005",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              },
+              {
+                "shippedPath": "components/fontuccine/worker/client.ts",
+                "upstreamPath": "src/worker/client.ts",
+                "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/src/worker/client.ts",
+                "upstreamSha256": "sha256:30581b1469dc58595ef80b4e6a9c940917f731bde80a4b27161012bc921f02c5",
+                "contentSha256": "sha256:d225b484b6ac870c4f856f82ac975769a02913a3e6d31f195daa538addb95ef8",
+                "changes": [
+                  "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/react/index.ts and its exact copied runtime import closure at commit 1261bd116c7915a617ed21c85adab10bba6ca1a7",
+            "copyright": [
+              "Copyright (c) 2026 Fontuccine contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/charbelmalo/fontuccine/blob/1261bd116c7915a617ed21c85adab10bba6ca1a7/LICENSE",
+              "sha256": "sha256:1d8c33c7eee11292a09939ecfbda3e75404dc0530389b921e58735d915a31889",
+              "localPath": "registry/sources/fontuccine/LICENSE"
+            },
+            "notices": [
+              "registry/sources/fontuccine/NOTICE.md"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/fontuccine/react/index.ts",
+              "change": "Added the client-module boundary, removed explicit `.ts` import suffixes, and reused a stable empty configuration across renders.",
+              "reason": "Make the copied hook-based export safe in React server-component projects and avoid needless detach/attach cycles."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/flex-profile.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/geometry/segments.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/kerning.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/lut.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/sampling/outline.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/core/winding.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/engine/attach.ts",
+              "change": "Removed explicit `.ts` suffixes, kept RTL output as untouched native text, and fell through to SVG when WebGL backend construction failed.",
+              "reason": "Keep the copied closure installable under strict TypeScript, preserve complex-script shaping, and prevent a failed GPU context from leaving text transparent."
+            },
+            {
+              "shippedPath": "components/fontuccine/engine/font-load.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/engine/glyphs.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/engine/types.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/font/parser.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/easing.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/gating.ts",
+              "change": "Added document visibility to the viewport gate and removed its listener during cleanup.",
+              "reason": "Pause the engine while its document is hidden and remove every lifecycle listener."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/stimuli/hover.ts",
+              "change": "Removed explicit `.ts` import suffixes and made touch and pen hover input intentionally static.",
+              "reason": "Provide an intentional static result for touch, pen, and no-hover input without adding a second interaction model."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/stimuli/proximity.ts",
+              "change": "Removed explicit `.ts` import suffixes and made touch and pen proximity input intentionally static.",
+              "reason": "Provide an intentional static result for touch, pen, and no-hover input without adding a second interaction model."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/stimuli/scroll-velocity.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Provide an intentional static result for touch, pen, and no-hover input without adding a second interaction model."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/stimuli/types.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Provide an intentional static result for touch, pen, and no-hover input without adding a second interaction model."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/stretch-controller.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/interaction/ticker.ts",
+              "change": "Stopped the shared ticker whenever no controller owns activity, including while gated render phases remain mounted.",
+              "reason": "Prevent offscreen SVG and variable-font render subscriptions from sustaining an idle animation loop."
+            },
+            {
+              "shippedPath": "components/fontuccine/svg/renderer.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/svg/split.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/vf/probe.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/vf/renderer.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/gl/device.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/gl/shared.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/lut-texture.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/msdf/client.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/msdf/generator.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/msdf/worker.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/parity.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/renderer.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/webgl/types.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/worker/analysis-worker.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/worker/analyze.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            },
+            {
+              "shippedPath": "components/fontuccine/worker/client.ts",
+              "change": "Removed explicit `.ts` suffixes from relative imports for consumer TypeScript compatibility.",
+              "reason": "Keep the copied closure installable under standard strict TypeScript settings."
+            }
+          ],
+          "dedupe": {
+            "family": "tangent-aware-glyph-outline-stretch",
+            "sourceHash": "sha256:a6c60cc64f35bed8185e2dfbec0b94939d7b2cd20a475fd05d8467b076c18ba1",
+            "contentHash": "sha256:b9a757309b9f9511d2524803a46fe0e4fba529576668c9aa25774c4e508c58bc",
+            "structureHash": "sha256:671a09979bfc03dac83e0f2b048c92606123b40db8e6540f83431eee090b659e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
