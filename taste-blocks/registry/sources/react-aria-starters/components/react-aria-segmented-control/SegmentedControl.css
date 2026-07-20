@@ -1,0 +1,58 @@
+@import './theme.css';
+@import './utilities.css';
+
+.segmented-control {
+  display: flex;
+  width: fit-content;
+  border-radius: 9999px;
+
+  .react-aria-SelectionIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transition-property: translate, width;
+    transition-duration: 200ms;
+    border-radius: 9999px;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .segmented-control-item {
+    all: unset;
+    display: block;
+    color: var(--gray-1200);
+    font: var(--font-size) system-ui;
+    font-weight: 500;
+    height: var(--spacing-8);
+    outline: none;
+    padding: 0 var(--spacing-3);
+    position: relative;
+    z-index: 1;
+    transition: color 200ms;
+    -webkit-tap-highlight-color: transparent;
+
+    span {
+      display: inline-block;
+      transition: scale 200ms;
+    }
+
+    &[data-pressed] span {
+      scale: 0.9;
+    }
+
+    &[data-selected] {
+      z-index: 0;
+      color: var(--highlight-foreground);
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 4px;
+    }
+  }
+}

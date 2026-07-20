@@ -1,0 +1,46 @@
+@import './theme.css';
+
+.react-aria-Select {
+  color: var(--text-color);
+  position: relative;
+  width: 200px;
+
+  .react-aria-Button {
+    --button-color: var(--gray);
+    padding: 0 var(--spacing-2) 0 var(--spacing-3);
+    width: 100%;
+    min-width: 0;
+
+    &[data-pressed] {
+      scale: 1;
+    }
+  }
+
+  .react-aria-SelectValue {
+    flex: 1;
+    text-align: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &[data-placeholder] {
+      color: var(--text-color-placeholder);
+      font-weight: normal;
+    }
+  }
+
+  .lucide-chevron-down {
+    margin-inline-start: var(--spacing-2);
+  }
+
+  .react-aria-SelectValue {
+    [slot='description'] {
+      display: none;
+    }
+  }
+}
+
+.select-popover[data-trigger='Select'] {
+  width: var(--trigger-width);
+  padding: 0;
+}

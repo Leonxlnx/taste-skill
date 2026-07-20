@@ -1,0 +1,354 @@
+@import './theme.css';
+
+.react-aria-ListBox {
+  max-height: inherit;
+  overflow: auto;
+  border: 0.5px solid var(--border-color);
+  border-radius: calc(var(--radius) + var(--spacing-1));
+  background: var(--overlay-background);
+  forced-color-adjust: none;
+  outline: none;
+  box-sizing: border-box;
+  font: var(--font-size) system-ui;
+  color: var(--text-color);
+
+  &:has(.react-aria-ListBoxSection) {
+    scroll-padding: 24px;
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
+  }
+
+  &[data-empty] {
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+  }
+
+  &[data-drop-target] {
+    outline: 2px solid var(--highlight-background);
+    outline-offset: -1px;
+    background: var(--highlight-overlay);
+  }
+
+  .react-aria-DropIndicator[data-drop-target] {
+    z-index: 3;
+    outline: 1px solid var(--highlight-background);
+  }
+}
+
+.react-aria-ListBoxSection {
+  .react-aria-Header {
+    position: sticky;
+    top: -0.5px;
+    z-index: 2;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    font-variation-settings: initial;
+    padding: var(--spacing-1) var(--spacing-4);
+    background: var(--gray-100);
+    border-block: 0.5px solid var(--gray-400);
+    cursor: default;
+    user-select: none;
+    box-shadow:
+      inset 0px 1px 0px white,
+      inset 0px -4px 8px var(--gray-200);
+
+    @media (prefers-color-scheme: dark) {
+      box-shadow: inset 0px 4px 8px var(--gray-200);
+    }
+  }
+
+  &:first-child .react-aria-Header {
+    margin-top: -0.5px;
+  }
+}
+
+.react-aria-ListBoxItem {
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius);
+  outline: none;
+  cursor: default;
+  color: var(--text-color);
+  font: var(--font-size) system-ui;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--spacing-8);
+  box-sizing: border-box;
+  position: relative;
+  transition-property: background, color, border-radius;
+  transition-duration: 200ms;
+  -webkit-tap-highlight-color: transparent;
+
+  --border-color: var(--gray-300);
+  &:not(:last-child)::after {
+    content: '';
+    display: block;
+    position: absolute;
+  }
+
+  &[data-pressed] {
+    background: var(--highlight-hover);
+    border-radius: var(--radius);
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -2px;
+    z-index: 2;
+  }
+
+  &[data-selected] {
+    background: var(--highlight-background);
+    color: var(--highlight-foreground);
+    --border-color: transparent;
+
+    &[data-focus-visible] {
+      outline-color: var(--highlight-foreground);
+      outline-offset: -4px;
+    }
+
+    &[data-pressed] {
+      background: var(--highlight-background-pressed);
+    }
+
+    &:has(+ [data-selected]),
+    &:has(+ .react-aria-DropIndicator + [data-selected]) {
+      --border-color: rgb(255 255 255 / 0.3);
+    }
+  }
+
+  [slot='label'] {
+    font-weight: 500;
+  }
+
+  [slot='description'] {
+    font-size: var(--font-size-sm);
+  }
+
+  &[href] {
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+  }
+
+  &[data-dragging] {
+    opacity: 0.6;
+  }
+
+  &[data-drop-target] {
+    outline: 2px solid var(--highlight-background);
+    background: var(--highlight-overlay);
+  }
+}
+
+.react-aria-ListBox {
+  &[data-layout='stack'] {
+    display: flex;
+
+    &[data-orientation='vertical'] {
+      flex-direction: column;
+      width: 250px;
+      max-height: 300px;
+      min-height: 100px;
+
+      .react-aria-ListBoxItem {
+        margin-inline: var(--spacing-1);
+
+        &:where(:nth-child(1 of .react-aria-ListBoxItem)) {
+          margin-top: var(--spacing);
+        }
+
+        &:where(:nth-last-child(1 of .react-aria-ListBoxItem)) {
+          margin-bottom: var(--spacing);
+        }
+
+        [role='presentation'] > & {
+          margin: 0; /* virtualizer */
+        }
+
+        &:not(:last-child)::after {
+          bottom: 0;
+          width: calc(100% - var(--spacing-6));
+          border-bottom: 0.5px solid var(--border-color);
+        }
+
+        &[data-selected] {
+          &:has(+ [data-selected]),
+          &:has(+ .react-aria-DropIndicator + [data-selected]) {
+            border-end-start-radius: 0;
+            border-end-end-radius: 0;
+          }
+
+          + [data-selected],
+          + .react-aria-DropIndicator + [data-selected] {
+            border-start-start-radius: 0;
+            border-start-end-radius: 0;
+          }
+        }
+      }
+    }
+
+    &[data-orientation='horizontal'] {
+      flex-direction: row;
+      width: 100%;
+
+      .react-aria-ListBoxItem {
+        min-width: max-content;
+        margin-block: var(--spacing-1);
+
+        &:nth-child(1 of .react-aria-ListBoxItem) {
+          margin-inline-start: var(--spacing);
+        }
+
+        &:nth-last-child(1 of .react-aria-ListBoxItem) {
+          margin-inline-end: var(--spacing);
+        }
+
+        &:not(:last-child)::after {
+          inset-inline-end: 0;
+          height: calc(100% - var(--spacing-2));
+          border-inline-end: 0.5px solid var(--border-color);
+        }
+
+        &[data-selected] {
+          &:has(+ [data-selected]),
+          &:has(+ .react-aria-DropIndicator + [data-selected]) {
+            border-start-end-radius: 0;
+            border-end-end-radius: 0;
+          }
+
+          + [data-selected],
+          + .react-aria-DropIndicator + [data-selected] {
+            border-start-start-radius: 0;
+            border-end-start-radius: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &[data-layout='grid'] {
+    display: grid;
+    gap: var(--spacing-1);
+    width: fit-content;
+    max-width: 100%;
+    padding: var(--spacing-1);
+
+    &[data-orientation='vertical'] {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &[data-orientation='horizontal'] {
+      grid-auto-flow: column;
+      grid-template-rows: auto auto;
+      grid-template-columns: none;
+      grid-auto-columns: 160px;
+    }
+  }
+}
+
+.react-aria-ListBoxLoadingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 100%;
+}
+
+.dropdown-listbox {
+  display: block;
+  max-height: inherit;
+  overflow: auto;
+  border-radius: inherit;
+  forced-color-adjust: none;
+  outline: none;
+  box-sizing: border-box;
+  font: var(--font-size) system-ui;
+  color: var(--text-color);
+
+  &[data-empty] {
+    min-height: var(--spacing-8);
+    padding: var(--spacing-2);
+  }
+
+  .react-aria-Header {
+    padding-left: var(--spacing-7);
+  }
+}
+
+.dropdown-item {
+  padding: calc((var(--spacing-8) - 1lh) / 2) var(--spacing-3) calc((var(--spacing-8) - 1lh) / 2)
+    var(--spacing-6);
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  outline: none;
+  cursor: default;
+  color: var(--text-color);
+  font: var(--font-size) system-ui;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--spacing-8);
+  margin-inline: var(--spacing-1);
+  -webkit-tap-highlight-color: transparent;
+
+  &:first-of-type {
+    margin-top: var(--spacing);
+  }
+
+  &:last-of-type {
+    margin-bottom: var(--spacing);
+  }
+
+  &[data-selected] {
+    font-weight: 500;
+    color: var(--text-color);
+
+    .lucide-check {
+      position: absolute;
+      top: 50%;
+      left: var(--spacing-1);
+      translate: 0 -50%;
+      stroke-width: 3px;
+      width: var(--spacing-4);
+      height: var(--spacing-4);
+    }
+  }
+
+  &[data-pressed] {
+    background: var(--highlight-hover);
+  }
+
+  &[data-focused] {
+    background: var(--highlight-background);
+    color: var(--highlight-foreground);
+  }
+
+  [slot='label'] {
+    font-weight: 500;
+  }
+
+  [slot='description'] {
+    font-size: var(--font-size-sm);
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+  }
+
+  &[href] {
+    text-decoration: none;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,287 @@
+@layer utilities {
+  /* utility that creates a button-like element, which can be optionally selected */
+  .button-base {
+    --button-color: var(--tint);
+    --button-background: oklch(from var(--button-color) var(--lightness-100) var(--chroma-100) h);
+    --button-gradient: oklch(from var(--button-color) var(--lightness-200) var(--chroma-200) h);
+    --button-border: oklch(from var(--button-color) var(--lightness-300) var(--chroma-300) h);
+    --button-highlight: rgb(255 255 255 / 0.8);
+    --button-shadow: oklch(from var(--button-color) var(--lightness-400) var(--chroma-400) h);
+    --button-border-size: 1px;
+    --button-text: oklch(from var(--button-color) var(--lightness-1400) var(--chroma-1400) h);
+    --button-gradient-size: 8px;
+
+    background: var(--button-background);
+    color: var(--button-text);
+    box-shadow:
+      inset 0 -1px 0 var(--button-shadow),
+      /* bottom shadow */ inset 0 0 0 var(--button-border-size) var(--button-border),
+      /* border */ inset 0px calc(var(--button-border-size) + 1px) 0px var(--button-highlight),
+      /* top specular highlight */ inset 0px calc(-1 * var(--button-gradient-size))
+        var(--button-gradient-size) -2px var(--button-gradient); /* inner gradient */
+    outline: none;
+    transition-property: background, color, scale, box-shadow;
+    transition-duration: 200ms;
+    will-change: scale;
+    forced-color-adjust: none;
+    -webkit-tap-highlight-color: transparent;
+
+    @media (prefers-color-scheme: dark) {
+      --button-shadow: oklch(from var(--button-color) var(--lightness-200) var(--chroma-200) h);
+      --button-highlight: rgb(255 255 255 / 0.15);
+      box-shadow:
+        inset 0 var(--button-border-size) 0 var(--button-highlight),
+        /* top specular highlight */ inset 0 calc(-1 * var(--button-border-size)) 0
+          var(--button-shadow),
+        /* bottom shadow */ inset 0 0 0 var(--button-border-size) var(--button-border),
+        /* border */ inset 0 var(--button-gradient-size) var(--button-gradient-size) -2px
+          var(--button-gradient); /* inner gradient */
+    }
+
+    &:where([data-pressed]) {
+      --button-background: oklch(from var(--button-color) var(--lightness-200) var(--chroma-200) h);
+    }
+
+    &:where([data-focus-visible]) {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+
+    &:where([data-variant='secondary']) {
+      --button-color: var(--gray);
+    }
+
+    &:where([data-variant='quiet']) {
+      --button-background: none;
+      --button-text: var(--text-color);
+      box-shadow: 0 0 0 1px transparent;
+
+      &:where([data-hovered], [data-pressed]) {
+        --button-background: var(--tint-200);
+        --button-text: var(--tint-1400);
+        box-shadow: 0 0 0 1px var(--tint-200);
+      }
+    }
+
+    &:where([data-selected]) {
+      --button-background: oklch(from var(--button-color) 55% c h);
+      --button-border: oklch(from var(--button-color) 50% c h);
+      --button-gradient: var(--button-border);
+      --button-highlight: rgb(255 255 255 / 0.2);
+      --button-shadow: oklch(from var(--button-color) 30% c h);
+      --button-text: var(--highlight-foreground);
+
+      box-shadow:
+        inset 0 -1px 0 var(--button-shadow),
+        /* bottom shadow */ inset 0 0 0 1px var(--button-border),
+        /* border */ inset 0 2px 0 var(--button-highlight),
+        /* top specular highlight */ inset 0 calc(-1 * var(--button-gradient-size))
+          var(--button-gradient-size) var(--button-gradient); /* inner gradient */
+
+      @media (prefers-color-scheme: dark) {
+        --button-highlight: rgb(255 255 255 / 0.4);
+        --button-gradient: rgb(255 255 255 / 0.2);
+        --button-shadow: var(--button-border);
+        box-shadow:
+          inset 0 1px 0 var(--button-highlight),
+          /* top specular highlight */ inset 0 var(--button-gradient-size)
+            var(--button-gradient-size) var(--button-gradient),
+          /* inner gradient */ inset 0 0 0 1px var(--button-border); /* border */
+      }
+
+      &:where([data-pressed]) {
+        --button-background: oklch(from var(--button-color) 50% c h);
+      }
+    }
+
+    &:where([data-disabled]) {
+      box-shadow: none;
+      --button-background: var(--border-color-disabled);
+      --button-text: var(--text-color-disabled);
+
+      &:where([data-variant='quiet']) {
+        --button-background: none;
+      }
+    }
+
+    @media (forced-colors: active) {
+      --button-background: ButtonFace;
+      --button-text: ButtonText;
+      --button-border: ButtonBorder;
+      box-shadow: inset 0 0 0 var(--button-border-size) var(--button-border);
+
+      &:where([data-variant='quiet']) {
+        --button-border: transparent;
+        &:where([data-hovered], [data-pressed]) {
+          --button-border: ButtonBorder;
+        }
+      }
+
+      &:where([data-selected]) {
+        --button-background: Highlight;
+        --button-text: HighlightText;
+        --button-border: Highlight;
+      }
+
+      &:where([data-disabled]) {
+        --button-background: ButtonFace;
+        --button-text: GrayText;
+        --button-border: GrayText;
+
+        &:where([data-variant='quiet']) {
+          --button-border: transparent;
+        }
+      }
+    }
+  }
+
+  /* utility that creates a small indicator, such as a checkbox, radio, switch, or slider thumb */
+  .indicator {
+    --indicator-color: var(--gray);
+    --indicator-background: oklch(
+      from var(--indicator-color) var(--lightness-100) var(--chroma-100) h
+    );
+    --indicator-border: oklch(from var(--indicator-color) var(--lightness-800) var(--chroma-800) h);
+    --indicator-drop-shadow: 0 0;
+
+    background: var(--indicator-background);
+    box-shadow:
+      inset 0 0 0 1px var(--indicator-border),
+      /* border */ inset 0 2px 0 white,
+      /* top specular highlight */ inset 0 -4px 2px
+        oklch(from var(--indicator-color) 30% c h / 0.08),
+      /* inner gradient */ var(--indicator-drop-shadow); /* optional drop shadow */
+    will-change: scale;
+
+    @media (prefers-color-scheme: dark) {
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.4),
+        /* top specular highlight */ inset 0 4px 2px rgb(255 255 255 / 0.1),
+        /* inner shadow */ inset 0 0 0 1px var(--indicator-border),
+        /* border */ var(--indicator-drop-shadow); /* optional drop shadow */
+    }
+
+    @media (forced-colors: active) {
+      --indicator-background: ButtonFace;
+      --indicator-border: ButtonBorder;
+      box-shadow: inset 0 0 0 1px var(--indicator-border);
+    }
+
+    &[data-pressed],
+    [data-pressed] & {
+      scale: 0.9;
+    }
+
+    [data-selected] > &,
+    [data-indeterminate] > & {
+      --indicator-color: var(--highlight-background);
+      --indicator-background: var(--indicator-color);
+      --indicator-highlight: rgb(255 255 255 / 0.3);
+      --indicator-shadow: oklch(from var(--indicator-color) 45% c h);
+      --indicator-border: var(--indicator-background);
+      box-shadow:
+        inset 0 -1px 0 var(--indicator-shadow),
+        /* bottom shadow */ inset 0 0 0 1px var(--indicator-border),
+        /* border */ inset 0 2px 0 var(--indicator-highlight),
+        /* top specular highlight */ var(--indicator-drop-shadow); /* optional drop shadow */
+
+      @media (prefers-color-scheme: dark) {
+        --indicator-highlight: rgb(255 255 255 / 0.5);
+        --indicator-gradient: rgb(255 255 255 / 0.12);
+        box-shadow:
+          inset 0 1px 0 var(--indicator-highlight),
+          /* top specular highlight */ inset 0 4px 2px var(--indicator-gradient),
+          /* inner gradient */ inset 0 0 0 1px var(--indicator-border),
+          /* border */ var(--indicator-drop-shadow); /* optional drop shadow */
+      }
+
+      @media (forced-colors: active) {
+        box-shadow: none;
+      }
+    }
+
+    &[data-invalid],
+    [data-invalid] > & {
+      --indicator-color: var(--invalid-color);
+
+      @media (forced-colors: active) {
+        --indicator-border: var(--invalid-color);
+      }
+    }
+
+    &[data-focus-visible],
+    [data-focus-visible] > & {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+
+    &[data-disabled],
+    [data-disabled] > & {
+      background: var(--field-background);
+      box-shadow: inset 0 0 0 1px var(--border-color-disabled);
+    }
+  }
+
+  /* utility that creates an inset effect, used for form fields, slider/progress tracks, etc. */
+  .inset {
+    --inset-background: var(--field-background);
+    --inset-border: var(--border-color);
+    --inset-border-size: 1px;
+    --inset-shadow-offset: 2px;
+    --inset-shadow-size: 4px;
+
+    background: var(--inset-background);
+    box-shadow:
+      inset 0 0 0 var(--inset-border-size) var(--inset-border),
+      /* border */ inset 0 var(--inset-shadow-offset) var(--inset-shadow-size) rgb(0 0 0 / 0.15),
+      /* inner shadow */ 0 1px 0 var(--gray-50); /* bottom specular highlight */
+    transition: box-shadow 200ms;
+    forced-color-adjust: none;
+
+    @media (prefers-color-scheme: dark) {
+      --inset-border: var(--gray-200);
+      --border-color-hover: var(--gray-300);
+      --inset-highlight: var(--gray-400);
+      --inset-shadow-size: 6px;
+      box-shadow:
+        inset 0 calc(-1 * var(--inset-border-size)) 0 var(--inset-highlight),
+        /* bottom specular highlight */ inset 0 0 0 var(--inset-border-size) var(--inset-border),
+        /* border */ inset 0 1px var(--inset-shadow-size) rgb(0 0 0); /* inner shadow */
+    }
+
+    &:where([data-hovered], [data-pressed]) {
+      --inset-border: var(--border-color-hover);
+    }
+
+    @media (forced-colors: active) {
+      --inset-border: ButtonBorder;
+      box-shadow: inset 0 0 0 var(--inset-border-size) var(--inset-border);
+    }
+
+    &:where([data-invalid]) {
+      --inset-border: var(--invalid-color);
+      --inset-highlight: var(--inset-border);
+    }
+
+    &:where([data-disabled]) {
+      box-shadow: inset 0 0 0 1px var(--border-color-disabled);
+    }
+
+    &.track {
+      --inset-shadow-offset: 1px;
+      --inset-shadow-size: 3px;
+
+      @media (prefers-color-scheme: light) {
+        --inset-background: var(--gray-300);
+        --inset-border: var(--gray-500);
+        --inset-border-size: 0.5px;
+      }
+
+      @media (forced-colors: active) {
+        --inset-background: Field;
+        --inset-border: ButtonBorder;
+        --inset-border-size: 1px;
+      }
+    }
+  }
+}

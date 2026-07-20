@@ -1,0 +1,75 @@
+@import './theme.css';
+@import './TextField.css';
+
+.react-aria-SearchField {
+  display: grid;
+  grid-template-areas:
+    'label label label'
+    'icon input button'
+    'help help  help';
+  grid-template-columns: 0px 1fr auto;
+  align-items: center;
+  width: auto;
+  color: var(--text-color);
+
+  .lucide-search {
+    grid-area: icon;
+    z-index: 2;
+    margin-inline-start: var(--spacing-2);
+  }
+
+  &[data-disabled] .lucide-search {
+    color: var(--text-color-disabled);
+  }
+
+  .react-aria-Label {
+    grid-area: label;
+  }
+
+  .react-aria-Input {
+    grid-area: input;
+    width: 100%;
+    border-radius: 9999px;
+    padding: 0 var(--spacing-8);
+
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-decoration {
+      -webkit-appearance: none;
+    }
+  }
+
+  .clear-button {
+    all: unset;
+    grid-area: button;
+    width: var(--spacing-4);
+    height: var(--spacing-4);
+    border-radius: 9999px;
+    margin-left: calc(-1 * var(--spacing-6));
+    text-align: center;
+    background: var(--gray-700);
+    color: var(--gray-50);
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+
+    &[data-pressed] {
+      background: var(--gray-800);
+    }
+
+    &[data-disabled] {
+      background: var(--text-color-disabled);
+    }
+  }
+
+  &[data-empty] .clear-button {
+    display: none;
+  }
+
+  .react-aria-FieldError,
+  [slot='description'] {
+    grid-area: help;
+  }
+}

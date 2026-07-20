@@ -1,0 +1,50 @@
+@import './theme.css';
+@import './utilities.css';
+
+.react-aria-Button {
+  border: none;
+  border-radius: var(--radius);
+  appearance: none;
+  font: var(--font-size) system-ui;
+  font-weight: 500;
+  margin: 0;
+  height: var(--spacing-8);
+  padding: 0 var(--spacing-3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  -webkit-tap-highlight-color: transparent;
+
+  > svg {
+    width: calc(var(--spacing) * 4.5);
+    height: calc(var(--spacing) * 4.5);
+  }
+
+  &:has(> svg:only-child) {
+    width: var(--spacing-8);
+    flex-shrink: 0;
+    padding: 0;
+    border-radius: 9999px;
+  }
+
+  &[data-pressed] {
+    scale: 0.95;
+  }
+
+  .react-aria-ProgressBar {
+    @media (prefers-color-scheme: dark) {
+      --highlight-background: var(--gray-1600);
+    }
+  }
+
+  kbd {
+    font: var(--font-size-sm) system-ui;
+    background: var(--highlight-hover);
+    border: 0.5px solid var(--tint-500);
+    padding: 0 var(--spacing-1);
+    border-radius: var(--radius-sm);
+    margin-inline-start: var(--spacing-3);
+  }
+}

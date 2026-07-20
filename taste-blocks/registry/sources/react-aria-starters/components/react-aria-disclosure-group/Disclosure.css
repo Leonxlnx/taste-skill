@@ -1,0 +1,74 @@
+@import './theme.css';
+
+.react-aria-Disclosure {
+  width: calc(var(--spacing) * 50);
+
+  .react-aria-Heading {
+    margin: 0;
+  }
+
+  .disclosure-button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+    width: 100%;
+    color: var(--text-color);
+    font: var(--font-size) system-ui;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    text-align: start;
+    gap: var(--spacing-1);
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: var(--radius);
+    transition: all 200ms;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+
+    &[data-hovered],
+    &[data-pressed] {
+      background: var(--gray-300);
+      color: var(--text-color-hover);
+    }
+
+    &[data-pressed] {
+      scale: 0.97;
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--focus-ring-color);
+    }
+
+    &[data-disabled] {
+      color: var(--text-color-disabled);
+    }
+
+    svg {
+      rotate: 0deg;
+      transition: rotate 200ms;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3px;
+    }
+  }
+
+  &[data-expanded] .disclosure-button svg {
+    rotate: 90deg;
+  }
+}
+
+.react-aria-DisclosurePanel {
+  color: var(--text-color);
+  height: var(--disclosure-panel-height);
+  transition: height 250ms;
+  overflow: clip;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  div {
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+}

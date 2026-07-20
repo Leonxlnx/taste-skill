@@ -1,0 +1,75 @@
+@import './theme.css';
+@import './utilities.css';
+
+.react-aria-CheckboxField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+
+  [slot='description'],
+  .react-aria-FieldError {
+    margin-left: calc(var(--spacing) * 6.5);
+  }
+
+  &[data-disabled] [slot='description'] {
+    color: var(--text-color-disabled);
+  }
+}
+
+.react-aria-CheckboxButton {
+  --checkmark-color: var(--highlight-foreground);
+
+  display: flex;
+  /* This is needed so the HiddenInput is positioned correctly */
+  position: relative;
+  align-items: center;
+  gap: var(--spacing-2);
+  font: var(--font-size) system-ui;
+  color: var(--text-color);
+  forced-color-adjust: none;
+  -webkit-tap-highlight-color: transparent;
+
+  .indicator {
+    width: calc(var(--spacing) * 4.5);
+    height: calc(var(--spacing) * 4.5);
+    box-sizing: border-box;
+    border-radius: var(--radius-sm);
+    transition: all 200ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  svg {
+    width: calc(100% - var(--spacing-2));
+    height: calc(100% - var(--spacing-2));
+    fill: none;
+    stroke: var(--checkmark-color);
+    stroke-width: 3px;
+    stroke-dasharray: 22px;
+    stroke-dashoffset: 66;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: all 200ms;
+  }
+
+  &[data-selected],
+  &[data-indeterminate] {
+    svg {
+      stroke-dashoffset: 44;
+    }
+  }
+
+  &[data-indeterminate] {
+    svg {
+      stroke: none;
+      fill: var(--checkmark-color);
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+    --checkmark-color: var(--text-color-disabled);
+  }
+}

@@ -1,0 +1,69 @@
+@import './theme.css';
+@import './TextField.css';
+
+.react-aria-NumberField {
+  color: var(--text-color);
+
+  .react-aria-Group {
+    display: flex;
+    width: fit-content;
+    border-radius: var(--radius);
+    position: relative;
+    box-shadow: 0 1px 0 var(--gray-50);
+
+    &[data-invalid]::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      z-index: 2;
+      pointer-events: none;
+      border-radius: inherit;
+      outline: 1px solid var(--invalid-color);
+    }
+
+    &[data-focus-within]::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      z-index: 2;
+      pointer-events: none;
+      border-radius: inherit;
+      outline: 2px solid var(--focus-ring-color);
+    }
+  }
+
+  .react-aria-Button {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: -1px;
+
+    &[slot='decrement'] {
+      border-radius: 0;
+    }
+
+    &[slot='increment'] {
+      border-radius: var(--radius);
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+    }
+  }
+
+  .react-aria-Input {
+    z-index: 1;
+    outline: none;
+    width: 5.25rem;
+    flex: 1;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+
+    &[data-invalid] {
+      border-color: var(--border-color);
+    }
+  }
+
+  [slot='description'] {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,8 @@
+@import './theme.css';
+
+.react-aria-ColorSwatch {
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}

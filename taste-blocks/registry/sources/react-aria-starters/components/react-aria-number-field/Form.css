@@ -1,0 +1,107 @@
+@import './theme.css';
+
+.react-aria-Form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+
+  > .react-aria-Button {
+    align-self: start;
+  }
+}
+
+.react-aria-Form [role='alert'] {
+  border: 2px solid var(--invalid-color);
+  background: var(--overlay-background);
+  border-radius: 6px;
+  padding: 12px;
+  max-width: 250px;
+  outline: none;
+
+  &:focus {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.react-aria-Label {
+  display: block;
+  font: var(--font-size) system-ui;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.react-aria-FieldError {
+  display: block;
+  font: var(--font-size-sm) system-ui;
+  color: var(--invalid-color);
+  margin-top: var(--spacing-1);
+  contain: inline-size;
+}
+
+.field-description {
+  display: block;
+  font: var(--font-size-sm) system-ui;
+  margin-top: var(--spacing-1);
+  contain: inline-size;
+
+  [data-invalid] > & {
+    display: none;
+  }
+}
+
+.field-Button {
+  background: var(--tint-200);
+  color: var(--tint-1400);
+  forced-color-adjust: none;
+  border-radius: var(--radius-sm);
+  border: none;
+  margin-left: calc(-1 * var(--spacing-8) + 4px);
+  height: calc(100% - 8px);
+  aspect-ratio: 1/1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-property: scale, background;
+  transition-duration: 200ms;
+  -webkit-tap-highlight-color: transparent;
+
+  svg {
+    width: var(--spacing-4);
+    height: var(--spacing-4);
+  }
+
+  &:where([data-hovered], [data-pressed]) {
+    background: var(--tint-300);
+    color: var(--tint-1200);
+  }
+
+  @media (forced-colors: active) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  &[data-pressed] {
+    scale: 0.9;
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  &[data-disabled] {
+    background: none;
+    color: var(--text-color-disabled);
+  }
+}

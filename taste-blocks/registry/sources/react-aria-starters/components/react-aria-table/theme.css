@@ -1,0 +1,223 @@
+/* colors */
+:root {
+  /* Change this variable to set the theme color for all components. */
+  /* You can use the below presets, or choose a custom color. */
+  --tint: var(--indigo);
+
+  /* theme colors */
+  /* lightness channel is only used as a multiplier for chroma (see below) */
+  --gray: oklch(0.5 0 0);
+  --red: oklch(0.6 0.181447 27.0726);
+  --orange: oklch(0.7 0.150492 54);
+  --yellow: oklch(0.8 0.128516 73.8032);
+  --turquoise: oklch(0.5 0.081146 205.114);
+  --cyan: oklch(0.4 0.142107 243.926);
+  --green: oklch(0.5 0.121276 155.372);
+  --blue: oklch(0.5 0.22049 266.315);
+  --indigo: oklch(1 0.25049 284.23);
+  --purple: oklch(0.7 0.223324 302);
+  --pink: oklch(0.6 0.177717 347.813);
+
+  /** tint color scale */
+  --tint-100: oklch(from var(--tint) var(--lightness-100) var(--chroma-100) h);
+  --tint-200: oklch(from var(--tint) var(--lightness-200) var(--chroma-200) h);
+  --tint-300: oklch(from var(--tint) var(--lightness-300) var(--chroma-300) h);
+  --tint-400: oklch(from var(--tint) var(--lightness-400) var(--chroma-400) h);
+  --tint-500: oklch(from var(--tint) var(--lightness-500) var(--chroma-500) h);
+  --tint-600: oklch(from var(--tint) var(--lightness-600) var(--chroma-600) h);
+  --tint-700: oklch(from var(--tint) var(--lightness-700) var(--chroma-700) h);
+  --tint-800: oklch(from var(--tint) var(--lightness-800) var(--chroma-800) h);
+  --tint-900: oklch(from var(--tint) var(--lightness-900) var(--chroma-900) h);
+  --tint-1000: oklch(from var(--tint) var(--lightness-1000) var(--chroma-1000) h);
+  --tint-1100: oklch(from var(--tint) var(--lightness-1100) var(--chroma-1100) h);
+  --tint-1200: oklch(from var(--tint) var(--lightness-1200) var(--chroma-1200) h);
+  --tint-1300: oklch(from var(--tint) var(--lightness-1300) var(--chroma-1300) h);
+  --tint-1400: oklch(from var(--tint) var(--lightness-1400) var(--chroma-1400) h);
+  --tint-1500: oklch(from var(--tint) var(--lightness-1500) var(--chroma-1500) h);
+  --tint-1600: oklch(from var(--tint) var(--lightness-1600) var(--chroma-1600) h);
+
+  /* gray scale */
+  --gray-100: oklch(from var(--gray) var(--lightness-100) c h);
+  --gray-200: oklch(from var(--gray) var(--lightness-200) c h);
+  --gray-300: oklch(from var(--gray) var(--lightness-300) c h);
+  --gray-400: oklch(from var(--gray) var(--lightness-400) c h);
+  --gray-500: oklch(from var(--gray) var(--lightness-500) c h);
+  --gray-600: oklch(from var(--gray) var(--lightness-600) c h);
+  --gray-700: oklch(from var(--gray) var(--lightness-700) c h);
+  --gray-800: oklch(from var(--gray) var(--lightness-800) c h);
+  --gray-900: oklch(from var(--gray) var(--lightness-900) c h);
+  --gray-1000: oklch(from var(--gray) var(--lightness-1000) c h);
+  --gray-1100: oklch(from var(--gray) var(--lightness-1100) c h);
+  --gray-1200: oklch(from var(--gray) var(--lightness-1200) c h);
+  --gray-1300: oklch(from var(--gray) var(--lightness-1300) c h);
+  --gray-1400: oklch(from var(--gray) var(--lightness-1400) c h);
+  --gray-1500: oklch(from var(--gray) var(--lightness-1500) c h);
+  --gray-1600: oklch(from var(--gray) var(--lightness-1600) c h);
+}
+
+/* light mode colors */
+:root {
+  --background-color: #f8f8f8;
+  --gray-50: #ffffff;
+
+  --lightness-100: 98.1187%;
+  --lightness-200: 95.2045%;
+  --lightness-300: 91.1434%;
+  --lightness-400: 85.1751%;
+  --lightness-500: 79.1773%;
+  --lightness-600: 72.3297%;
+  --lightness-700: 67.0121%;
+  --lightness-800: 62.3039%;
+  --lightness-900: 57.9699%;
+  --lightness-1000: 51.9076%;
+  --lightness-1100: 46.9058%;
+  --lightness-1200: 41.0821%;
+  --lightness-1300: 35.3616%;
+  --lightness-1400: 29.6725%;
+  --lightness-1500: 24.5366%;
+  --lightness-1600: 16.6959%;
+
+  /* lower chroma at low lightness levels */
+  --chroma-100: calc(l * c * 0.5);
+  --chroma-200: calc(l * c * 0.6);
+  --chroma-300: calc(l * c * 0.7);
+  --chroma-400: calc(l * c * 0.8);
+  --chroma-500: calc(l * c * 0.9);
+  --chroma-600: c;
+  --chroma-700: c;
+  --chroma-800: c;
+  --chroma-900: c;
+  --chroma-1000: c;
+  --chroma-1100: c;
+  --chroma-1200: c;
+  --chroma-1300: c;
+  --chroma-1400: c;
+  --chroma-1500: c;
+  --chroma-1600: c;
+
+  --highlight-hover: rgb(0 0 0 / 0.07);
+  --highlight-pressed: rgb(0 0 0 / 0.15);
+  --overlay-background: var(--gray-50);
+  --overlay-border: rgb(0 0 0 / 0.06);
+  --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.12);
+}
+
+/* dark mode colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1b1b1b;
+    --gray-50: oklch(22% 0 0);
+
+    --lightness-100: 29.6725%;
+    --lightness-200: 35.3616%;
+    --lightness-300: 41.0821%;
+    --lightness-400: 46.9058%;
+    --lightness-500: 51.9076%;
+    --lightness-600: 57.9699%;
+    --lightness-700: 56.1347%;
+    --lightness-800: 59.2866%;
+    --lightness-900: 62.3039%;
+    --lightness-1000: 67.0121%;
+    --lightness-1100: 72.3297%;
+    --lightness-1200: 79.1773%;
+    --lightness-1300: 85.1751%;
+    --lightness-1400: 91.1434%;
+    --lightness-1500: 95.2045%;
+    --lightness-1600: 100%;
+
+    --highlight-hover: rgb(255 255 255 / 0.1);
+    --highlight-pressed: rgb(255 255 255 / 0.2);
+    --overlay-background: var(--gray-100);
+    --overlay-border: rgb(255 255 255 / 0.2);
+    --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.5);
+  }
+}
+
+/* Semantic colors */
+:root {
+  --focus-ring-color: var(--tint-1000);
+  --text-color: var(--gray-1200);
+  --text-color-hover: var(--gray-1300);
+  --text-color-disabled: var(--gray-600);
+  --text-color-placeholder: var(--gray-1000);
+  --link-color: var(--tint-1200);
+  --link-color-secondary: var(--gray-1200);
+  --link-color-pressed: var(--tint-1300);
+  --border-color: var(--gray-400);
+  --border-color-hover: var(--gray-500);
+  --border-color-disabled: var(--gray-300);
+  --field-text-color: var(--gray-1400);
+  --button-background: var(--tint-100);
+  --button-background-pressed: var(--tint-200);
+  /* these colors are the same between light and dark themes
+   * to ensure contrast with the foreground color */
+  --highlight-background: oklch(from var(--tint) 55% c h);
+  --highlight-background-pressed: oklch(from var(--tint) 50% c h);
+  --highlight-background-invalid: oklch(from var(--red) var(--lightness-900) c h);
+  --highlight-foreground: white;
+  --highlight-overlay: oklch(from var(--tint-1000) l c h / 15%);
+  --invalid-color: oklch(from var(--red) var(--lightness-1000) c h);
+  --field-background: var(--gray-50);
+}
+
+/* Windows high contrast mode overrides */
+@media (forced-colors: active) {
+  :root {
+    --background-color: Canvas;
+    --focus-ring-color: Highlight;
+    --text-color: ButtonText;
+    --text-color-hover: ButtonText;
+    --text-color-disabled: GrayText;
+    --text-color-placeholder: ButtonText;
+    --link-color: LinkText;
+    --link-color-secondary: LinkText;
+    --link-color-pressed: LinkText;
+    --border-color: ButtonBorder;
+    --border-color-hover: ButtonBorder;
+    --border-color-pressed: ButtonBorder;
+    --border-color-disabled: GrayText;
+    --field-background: Field;
+    --field-text-color: FieldText;
+    --overlay-background: Canvas;
+    --overlay-border: ButtonBorder;
+    --button-background: ButtonFace;
+    --button-background-pressed: ButtonFace;
+    --highlight-background: Highlight;
+    --highlight-background-pressed: Highlight;
+    --highlight-background-invalid: LinkText;
+    --highlight-foreground: HighlightText;
+    --invalid-color: LinkText;
+  }
+}
+
+/* typography and spacing scale */
+:root {
+  --font-size: 0.875rem; /* 14px */
+  --font-size-sm: 0.75rem; /* 12px */
+  --font-size-lg: 1rem; /* 16px */
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --spacing: 0.25rem; /* 4px */
+  --spacing-1: var(--spacing);
+  --spacing-2: calc(2 * var(--spacing));
+  --spacing-3: calc(3 * var(--spacing));
+  --spacing-4: calc(4 * var(--spacing));
+  --spacing-5: calc(5 * var(--spacing));
+  --spacing-6: calc(6 * var(--spacing));
+  --spacing-7: calc(7 * var(--spacing));
+  --spacing-8: calc(8 * var(--spacing));
+  --spacing-9: calc(9 * var(--spacing));
+  --spacing-10: calc(10 * var(--spacing));
+}
+
+/* Scale up hit targets on high resolution mobile devices. */
+@media (min-resolution: 200dpi) {
+  :root {
+    --spacing: calc(0.25rem * 1.25);
+    --font-size: 1.0625rem; /* 17px */
+    --font-size-sm: 0.9375rem; /* 15px */
+    --font-size-lg: 1.25rem; /* 20px */
+  }
+}

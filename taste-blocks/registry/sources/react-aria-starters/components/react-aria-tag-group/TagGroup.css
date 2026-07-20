@@ -1,0 +1,109 @@
+@import './theme.css';
+@import './utilities.css';
+
+.react-aria-TagGroup {
+  display: flex;
+  flex-direction: column;
+  font: var(--font-size) system-ui;
+  color: var(--text-color);
+
+  [slot='errorMessage'] {
+    margin-top: var(--spacing);
+    font-size: var(--font-size-sm);
+    color: var(--invalid-color);
+  }
+}
+
+.react-aria-TagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.react-aria-Tag {
+  --button-color: var(--gray);
+  --button-gradient-size: 4px;
+  text-shadow: none;
+  forced-color-adjust: none;
+  border-radius: 9999px;
+  height: var(--spacing-5);
+  padding: 0 var(--spacing-3);
+  font: var(--font-size-sm) system-ui;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  transition-property: scale, background, border-color, box-shadow, text-shadow;
+  transition-duration: 200ms;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-tap-highlight-color: transparent;
+
+  &:has(.remove-button) {
+    padding: 0 var(--spacing-1) 0 var(--spacing-2);
+  }
+
+  &[data-pressed] {
+    scale: 0.96;
+  }
+
+  &[data-selected] {
+    --button-color: var(--tint);
+  }
+
+  &[data-href] {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .remove-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--gray-1000);
+    transition: color 200ms;
+    outline: none;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    height: calc(100% - 4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition-property: background, color, scale;
+    transition-duration: 200ms;
+
+    svg {
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+    }
+
+    &:where([data-hovered], [data-pressed]) {
+      background: var(--gray-300);
+      color: var(--gray-1200);
+    }
+
+    @media (forced-colors: active) {
+      background: ButtonFace;
+      color: ButtonText;
+    }
+
+    &[data-pressed] {
+      scale: 0.9;
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: -1px;
+    }
+  }
+
+  &[data-selected] {
+    .remove-button {
+      color: inherit;
+      &[data-hovered] {
+        background: rgb(255 255 255 / 0.2);
+      }
+    }
+  }
+}

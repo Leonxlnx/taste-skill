@@ -1,0 +1,22 @@
+@import './theme.css';
+
+.react-aria-ColorThumb {
+  border: 2px solid white;
+  box-shadow:
+    0 0 0 1px black,
+    inset 0 0 0 1px black;
+  width: calc(var(--spacing) * 4.5);
+  height: calc(var(--spacing) * 4.5);
+  border-radius: 50%;
+  box-sizing: border-box;
+
+  &[data-focus-visible] {
+    width: var(--spacing-6);
+    height: var(--spacing-6);
+  }
+
+  &[data-disabled] {
+    background: gray !important;
+    opacity: 0.5;
+  }
+}

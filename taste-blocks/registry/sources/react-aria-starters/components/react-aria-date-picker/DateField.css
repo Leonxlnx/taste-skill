@@ -1,0 +1,72 @@
+@import './theme.css';
+@import './utilities.css';
+
+.react-aria-DateField {
+  display: flex;
+  flex-direction: column;
+}
+
+.react-aria-DateInput {
+  display: inline;
+  padding: 0 var(--spacing-3);
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  font: var(--font-size) system-ui;
+  color: var(--field-text-color);
+  height: var(--spacing-8);
+  line-height: var(--spacing-8);
+  width: fit-content;
+  min-width: 150px;
+  white-space: nowrap;
+  forced-color-adjust: none;
+  cursor: text;
+
+  &[data-focus-within] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+    cursor: default;
+  }
+}
+
+.react-aria-DateSegment {
+  padding: 2px;
+  font-size: var(--font-size);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--field-text-color);
+  -webkit-tap-highlight-color: transparent;
+
+  &[data-type='literal'] {
+    padding: 0;
+  }
+
+  &[data-placeholder] {
+    color: var(--text-color-placeholder);
+  }
+
+  &:focus {
+    color: var(--highlight-foreground);
+    background: var(--highlight-background);
+    outline: none;
+    border-radius: 4px;
+    caret-color: transparent;
+  }
+
+  &[data-invalid] {
+    color: var(--invalid-color);
+
+    &:focus {
+      background: var(--highlight-background-invalid);
+      color: var(--highlight-foreground);
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+    cursor: default;
+  }
+}

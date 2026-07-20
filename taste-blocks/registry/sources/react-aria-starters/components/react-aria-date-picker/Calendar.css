@@ -1,0 +1,91 @@
+@import './theme.css';
+@import './utilities.css';
+
+.react-aria-Calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  overflow: auto;
+  width: 100%;
+  max-width: fit-content;
+  color: var(--text-color);
+  font: var(--font-size) system-ui;
+
+  .months {
+    display: flex;
+    gap: var(--spacing-3);
+  }
+
+  .month {
+    width: calc(var(--spacing-9) * 7);
+    min-width: calc(var(--spacing-7) * 7);
+    container-type: inline-size;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    margin: 0 var(--spacing-1) var(--spacing-4) var(--spacing-1);
+    min-height: var(--spacing-8);
+
+    .react-aria-CalendarHeading {
+      flex: 1;
+      margin: 0;
+      text-align: center;
+      font-size: var(--font-size-lg);
+    }
+  }
+
+  .react-aria-CalendarGrid {
+    border-spacing: 0;
+  }
+
+  [slot='errorMessage'] {
+    font: var(--font-size-sm) system-ui;
+    color: var(--invalid-color);
+  }
+}
+
+.react-aria-CalendarHeaderCell {
+  font-size: var(--font-size-sm);
+}
+
+.react-aria-CalendarCell {
+  --gap: var(--spacing-1);
+  width: calc((100cqw / 7) - var(--gap));
+  aspect-ratio: 1;
+  margin: calc(var(--gap) / 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size);
+  text-align: center;
+  border-radius: 9999px;
+  cursor: default;
+  forced-color-adjust: none;
+  transition: scale 200ms;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (min-resolution: 200dpi) {
+    @container (width < 300px) {
+      --gap: 0px;
+    }
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
+
+  &[data-pressed] {
+    scale: 0.9;
+  }
+
+  &[data-unavailable] {
+    text-decoration: line-through;
+    color: var(--invalid-color);
+  }
+
+  &[data-invalid] {
+    --button-color: var(--invalid-color);
+  }
+}

@@ -1,0 +1,29 @@
+@import './theme.css';
+
+.react-aria-Toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1);
+  width: fit-content;
+
+  &[data-orientation='horizontal'] {
+    flex-direction: row;
+  }
+
+  &[data-orientation='vertical'] {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .react-aria-Group {
+    display: contents;
+  }
+
+  .react-aria-Separator {
+    &[aria-orientation='vertical'] {
+      height: auto;
+      margin: 0px var(--spacing-1);
+    }
+  }
+}

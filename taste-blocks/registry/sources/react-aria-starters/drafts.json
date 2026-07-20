@@ -1,0 +1,3359 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-react-aria-starters-drafts",
+  "homepage": "https://react-spectrum.adobe.com/react-aria/getting-started.html",
+  "items": [
+    {
+      "name": "react-aria-color-area",
+      "type": "registry:component",
+      "title": "Color Area",
+      "description": "Selects two color channels on a two-dimensional keyboard and pointer surface.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-color-area/ColorArea.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-area/ColorArea.css"
+        },
+        {
+          "path": "components/react-aria-color-area/ColorArea.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-area/ColorArea.tsx"
+        },
+        {
+          "path": "components/react-aria-color-area/ColorThumb.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-area/ColorThumb.css"
+        },
+        {
+          "path": "components/react-aria-color-area/ColorThumb.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-area/ColorThumb.tsx"
+        },
+        {
+          "path": "components/react-aria-color-area/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-area/theme.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "two-dimensional",
+            "keyboard",
+            "pointer",
+            "touch"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-color-area.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-color-area/ColorArea.css",
+                "upstreamPath": "starters/docs/src/ColorArea.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorArea.css",
+                "upstreamSha256": "sha256:7de4d52508c349d0a8a21559041592dd3c9a20d348b7e449160119d2428c68c6",
+                "contentSha256": "sha256:7de4d52508c349d0a8a21559041592dd3c9a20d348b7e449160119d2428c68c6",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-area/ColorArea.tsx",
+                "upstreamPath": "starters/docs/src/ColorArea.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorArea.tsx",
+                "upstreamSha256": "sha256:03848cbccf7720037fcd0f7deed29ab9aea04b09514b5cd3cd41289cb4dfe1b9",
+                "contentSha256": "sha256:03848cbccf7720037fcd0f7deed29ab9aea04b09514b5cd3cd41289cb4dfe1b9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-area/ColorThumb.css",
+                "upstreamPath": "starters/docs/src/ColorThumb.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.css",
+                "upstreamSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "contentSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-area/ColorThumb.tsx",
+                "upstreamPath": "starters/docs/src/ColorThumb.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.tsx",
+                "upstreamSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "contentSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-area/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/ColorArea.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "two-dimensional-color-area",
+            "sourceHash": "sha256:99336c712d8fc50d8aae6ffea4bbd57e23db5cf1c873ada44e249e8d781d8158",
+            "contentHash": "sha256:99336c712d8fc50d8aae6ffea4bbd57e23db5cf1c873ada44e249e8d781d8158",
+            "structureHash": "sha256:f94fec930b1bdff3d1a6e54dec31d10e37f12ed91582eeb9a148729b2b04fff7"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-color-field",
+      "type": "registry:component",
+      "title": "Color Field",
+      "description": "Parses, validates, and edits a color value in a labeled text field.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-color-field/ColorField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/ColorField.css"
+        },
+        {
+          "path": "components/react-aria-color-field/ColorField.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/ColorField.tsx"
+        },
+        {
+          "path": "components/react-aria-color-field/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/Content.css"
+        },
+        {
+          "path": "components/react-aria-color-field/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-color-field/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/Form.css"
+        },
+        {
+          "path": "components/react-aria-color-field/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-color-field/TextField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/TextField.css"
+        },
+        {
+          "path": "components/react-aria-color-field/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/theme.css"
+        },
+        {
+          "path": "components/react-aria-color-field/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-field/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "field",
+            "validation",
+            "keyboard",
+            "form"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-color-field.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-color-field/ColorField.css",
+                "upstreamPath": "starters/docs/src/ColorField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorField.css",
+                "upstreamSha256": "sha256:866a476dd166b8822b5bb65dc77d1033745ebcff72b90761d58fa31acba516ed",
+                "contentSha256": "sha256:866a476dd166b8822b5bb65dc77d1033745ebcff72b90761d58fa31acba516ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/ColorField.tsx",
+                "upstreamPath": "starters/docs/src/ColorField.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorField.tsx",
+                "upstreamSha256": "sha256:541afaf661e515e4684d22bb87acd598cd69608d268186d46936d124de0b074e",
+                "contentSha256": "sha256:541afaf661e515e4684d22bb87acd598cd69608d268186d46936d124de0b074e",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/TextField.css",
+                "upstreamPath": "starters/docs/src/TextField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/TextField.css",
+                "upstreamSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "contentSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-field/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/ColorField.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "validated-color-field",
+            "sourceHash": "sha256:b7d7f2cfbe670b30a8712a1c29f3d9f39d6a11b498a3363cc3aa0d637d75ece2",
+            "contentHash": "sha256:b7d7f2cfbe670b30a8712a1c29f3d9f39d6a11b498a3363cc3aa0d637d75ece2",
+            "structureHash": "sha256:067df102cdbf1b15ce2d8b499d85c3d2265f494e61f65b85932d2e6e6b8f3e0b"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-color-slider",
+      "type": "registry:component",
+      "title": "Color Slider",
+      "description": "Adjusts one channel of a color with localized output and keyboard controls.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-color-slider/ColorSlider.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorSlider.css"
+        },
+        {
+          "path": "components/react-aria-color-slider/ColorSlider.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorSlider.tsx"
+        },
+        {
+          "path": "components/react-aria-color-slider/ColorThumb.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorThumb.css"
+        },
+        {
+          "path": "components/react-aria-color-slider/ColorThumb.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorThumb.tsx"
+        },
+        {
+          "path": "components/react-aria-color-slider/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Content.css"
+        },
+        {
+          "path": "components/react-aria-color-slider/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-color-slider/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Form.css"
+        },
+        {
+          "path": "components/react-aria-color-slider/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-color-slider/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/theme.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "slider",
+            "channel",
+            "keyboard",
+            "touch"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-color-slider.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-color-slider/ColorSlider.css",
+                "upstreamPath": "starters/docs/src/ColorSlider.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSlider.css",
+                "upstreamSha256": "sha256:cc55040780decf7f28dd199be09261903a9009b6c1af5150e57116713fe2a1c7",
+                "contentSha256": "sha256:cc55040780decf7f28dd199be09261903a9009b6c1af5150e57116713fe2a1c7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/ColorSlider.tsx",
+                "upstreamPath": "starters/docs/src/ColorSlider.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSlider.tsx",
+                "upstreamSha256": "sha256:136f08eedbc7fccd525e6b7f3bebfcf06c5e80b3ba1bd09cd1e49b3bff37cf79",
+                "contentSha256": "sha256:136f08eedbc7fccd525e6b7f3bebfcf06c5e80b3ba1bd09cd1e49b3bff37cf79",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/ColorThumb.css",
+                "upstreamPath": "starters/docs/src/ColorThumb.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.css",
+                "upstreamSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "contentSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/ColorThumb.tsx",
+                "upstreamPath": "starters/docs/src/ColorThumb.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.tsx",
+                "upstreamSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "contentSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-slider/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/ColorSlider.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "single-channel-color-slider",
+            "sourceHash": "sha256:4797d3432ee595663bff94d0fa226b775d23b0f56ce9267c1a6852b88333015c",
+            "contentHash": "sha256:4797d3432ee595663bff94d0fa226b775d23b0f56ce9267c1a6852b88333015c",
+            "structureHash": "sha256:bbc56622e11ad560aeeee1a288c3f25b4dde477a0163c3e7be977b1bafb546d9"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-color-swatch-picker",
+      "type": "registry:component",
+      "title": "Color Swatch Picker",
+      "description": "Selects one or more colors from a keyboard-navigable swatch collection.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-color-swatch-picker/ColorSwatch.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-swatch-picker/ColorSwatch.css"
+        },
+        {
+          "path": "components/react-aria-color-swatch-picker/ColorSwatch.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-swatch-picker/ColorSwatch.tsx"
+        },
+        {
+          "path": "components/react-aria-color-swatch-picker/ColorSwatchPicker.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-swatch-picker/ColorSwatchPicker.css"
+        },
+        {
+          "path": "components/react-aria-color-swatch-picker/ColorSwatchPicker.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-swatch-picker/ColorSwatchPicker.tsx"
+        },
+        {
+          "path": "components/react-aria-color-swatch-picker/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-swatch-picker/theme.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "swatches",
+            "selection",
+            "keyboard",
+            "collection"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-color-swatch-picker.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-color-swatch-picker/ColorSwatch.css",
+                "upstreamPath": "starters/docs/src/ColorSwatch.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSwatch.css",
+                "upstreamSha256": "sha256:c0f143596267597993407eef89b56765ab9b679e666047727f5f08bc34d966e2",
+                "contentSha256": "sha256:c0f143596267597993407eef89b56765ab9b679e666047727f5f08bc34d966e2",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-swatch-picker/ColorSwatch.tsx",
+                "upstreamPath": "starters/docs/src/ColorSwatch.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSwatch.tsx",
+                "upstreamSha256": "sha256:755d796ef3a31aa2f94d737d8ab76c7a66654ba7e26b996e8843889450933729",
+                "contentSha256": "sha256:755d796ef3a31aa2f94d737d8ab76c7a66654ba7e26b996e8843889450933729",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-swatch-picker/ColorSwatchPicker.css",
+                "upstreamPath": "starters/docs/src/ColorSwatchPicker.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSwatchPicker.css",
+                "upstreamSha256": "sha256:86836a34ad4c1a1ca0a02a2dff4d4636d8b722bf6812e6d7189d279ba1ad8c09",
+                "contentSha256": "sha256:86836a34ad4c1a1ca0a02a2dff4d4636d8b722bf6812e6d7189d279ba1ad8c09",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-swatch-picker/ColorSwatchPicker.tsx",
+                "upstreamPath": "starters/docs/src/ColorSwatchPicker.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSwatchPicker.tsx",
+                "upstreamSha256": "sha256:fb0665c37a5a98211d6be426ee3fd107e580d11c22777b0e96bce3551bd7508a",
+                "contentSha256": "sha256:fb0665c37a5a98211d6be426ee3fd107e580d11c22777b0e96bce3551bd7508a",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-swatch-picker/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/ColorSwatchPicker.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "selectable-color-swatch-collection",
+            "sourceHash": "sha256:ebf8388aafdb33425bc1d6e301f3ab1a216e94189abb22f8f3bd3af3464b4eb8",
+            "contentHash": "sha256:ebf8388aafdb33425bc1d6e301f3ab1a216e94189abb22f8f3bd3af3464b4eb8",
+            "structureHash": "sha256:7a2a9cb4482257a2822554571e45f0feead06bb77526d148550075159810227c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-color-wheel",
+      "type": "registry:component",
+      "title": "Color Wheel",
+      "description": "Selects hue on a circular keyboard and pointer control.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-color-wheel/ColorThumb.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-wheel/ColorThumb.css"
+        },
+        {
+          "path": "components/react-aria-color-wheel/ColorThumb.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-wheel/ColorThumb.tsx"
+        },
+        {
+          "path": "components/react-aria-color-wheel/ColorWheel.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-wheel/ColorWheel.css"
+        },
+        {
+          "path": "components/react-aria-color-wheel/ColorWheel.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-wheel/ColorWheel.tsx"
+        },
+        {
+          "path": "components/react-aria-color-wheel/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-color-wheel/theme.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "hue",
+            "wheel",
+            "keyboard",
+            "touch"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-color-wheel.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-color-wheel/ColorThumb.css",
+                "upstreamPath": "starters/docs/src/ColorThumb.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.css",
+                "upstreamSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "contentSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-wheel/ColorThumb.tsx",
+                "upstreamPath": "starters/docs/src/ColorThumb.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.tsx",
+                "upstreamSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "contentSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-wheel/ColorWheel.css",
+                "upstreamPath": "starters/docs/src/ColorWheel.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorWheel.css",
+                "upstreamSha256": "sha256:9457da6f3f9fc18bffa0bfe352e59970ee870e4a57af5a59d1741e89a388b4db",
+                "contentSha256": "sha256:9457da6f3f9fc18bffa0bfe352e59970ee870e4a57af5a59d1741e89a388b4db",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-wheel/ColorWheel.tsx",
+                "upstreamPath": "starters/docs/src/ColorWheel.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorWheel.tsx",
+                "upstreamSha256": "sha256:00485799d3fcfb654f45d025105ed23c7a3b72b002eedd9707d982900c6cf114",
+                "contentSha256": "sha256:00485799d3fcfb654f45d025105ed23c7a3b72b002eedd9707d982900c6cf114",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-color-wheel/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/ColorWheel.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "circular-hue-picker",
+            "sourceHash": "sha256:9bd220c86b5aa067e2ee64535cd2c3c5496595765e1160a74067be3e7deecf6b",
+            "contentHash": "sha256:9bd220c86b5aa067e2ee64535cd2c3c5496595765e1160a74067be3e7deecf6b",
+            "structureHash": "sha256:b3a8ee8c15545b39fffc46c0b11719ff1e924dba7fdcad5a181323a435fb106b"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-date-picker",
+      "type": "registry:component",
+      "title": "Date Picker",
+      "description": "Combines a localized segmented date field with an accessible calendar popover.",
+      "author": "Adobe",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-date-picker/Button.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Button.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/Button.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Button.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/Calendar.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Calendar.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/Calendar.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Calendar.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Content.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/DateField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/DateField.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/DateField.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/DateField.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/DatePicker.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/DatePicker.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/DatePicker.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/DatePicker.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Form.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/Popover.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Popover.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/Popover.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/Popover.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-date-picker/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/theme.css"
+        },
+        {
+          "path": "components/react-aria-date-picker/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-picker/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "date",
+            "calendar",
+            "popover",
+            "keyboard",
+            "localization"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-date-picker.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-date-picker/Button.css",
+                "upstreamPath": "starters/docs/src/Button.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.css",
+                "upstreamSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "contentSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Button.tsx",
+                "upstreamPath": "starters/docs/src/Button.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.tsx",
+                "upstreamSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "contentSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Calendar.css",
+                "upstreamPath": "starters/docs/src/Calendar.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Calendar.css",
+                "upstreamSha256": "sha256:a1f83ce4427d8bc66450285a5151b7527f50a97a485a008eb6a8422ea9648e23",
+                "contentSha256": "sha256:a1f83ce4427d8bc66450285a5151b7527f50a97a485a008eb6a8422ea9648e23",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Calendar.tsx",
+                "upstreamPath": "starters/docs/src/Calendar.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Calendar.tsx",
+                "upstreamSha256": "sha256:cc15e96bbb017eaefe069a4e362c5812316b934a834cf1c89a373532caaf3b07",
+                "contentSha256": "sha256:cc15e96bbb017eaefe069a4e362c5812316b934a834cf1c89a373532caaf3b07",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/DateField.css",
+                "upstreamPath": "starters/docs/src/DateField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateField.css",
+                "upstreamSha256": "sha256:ef56bf8a2457ea97ca29dfd34609e4ff6742c0bd0cee2aa0bc3716aaf0e310f8",
+                "contentSha256": "sha256:ef56bf8a2457ea97ca29dfd34609e4ff6742c0bd0cee2aa0bc3716aaf0e310f8",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/DateField.tsx",
+                "upstreamPath": "starters/docs/src/DateField.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateField.tsx",
+                "upstreamSha256": "sha256:a24292496e0da1ec03612704b07bb106cb8c96e2431b986e5613db3e5e438536",
+                "contentSha256": "sha256:a24292496e0da1ec03612704b07bb106cb8c96e2431b986e5613db3e5e438536",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/DatePicker.css",
+                "upstreamPath": "starters/docs/src/DatePicker.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DatePicker.css",
+                "upstreamSha256": "sha256:cbce925b7722eb3d9ecd0672ec5e4c0998a9c248267e3d329b21e63d360f8c65",
+                "contentSha256": "sha256:cbce925b7722eb3d9ecd0672ec5e4c0998a9c248267e3d329b21e63d360f8c65",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/DatePicker.tsx",
+                "upstreamPath": "starters/docs/src/DatePicker.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DatePicker.tsx",
+                "upstreamSha256": "sha256:eff531eac14efdd1ca4af5093ab1c76fa8c068ae4124d26955a30e0a18fc2386",
+                "contentSha256": "sha256:eff531eac14efdd1ca4af5093ab1c76fa8c068ae4124d26955a30e0a18fc2386",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Popover.css",
+                "upstreamPath": "starters/docs/src/Popover.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.css",
+                "upstreamSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "contentSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/Popover.tsx",
+                "upstreamPath": "starters/docs/src/Popover.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.tsx",
+                "upstreamSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "contentSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-picker/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/DatePicker.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "segmented-date-picker-popover",
+            "sourceHash": "sha256:382975121758ba438da4c08352837947cf4922a338b95565d97bbe7cb7c72ec8",
+            "contentHash": "sha256:382975121758ba438da4c08352837947cf4922a338b95565d97bbe7cb7c72ec8",
+            "structureHash": "sha256:237ca1eb3ccb40ed5d7de84950d82e8cbbd7d40e7ab69f1aaa3db7e9f841d244"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-date-range-picker",
+      "type": "registry:component",
+      "title": "Date Range Picker",
+      "description": "Edits a localized start and end date with a shared range calendar popover.",
+      "author": "Adobe",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-date-range-picker/Button.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Button.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Button.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Button.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Calendar.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Calendar.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Calendar.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Calendar.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Content.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/DateField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/DateField.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/DateField.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/DateField.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/DateRangePicker.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/DateRangePicker.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/DateRangePicker.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/DateRangePicker.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Form.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Popover.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Popover.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/Popover.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/Popover.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/RangeCalendar.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/RangeCalendar.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/RangeCalendar.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/RangeCalendar.tsx"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/theme.css"
+        },
+        {
+          "path": "components/react-aria-date-range-picker/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-date-range-picker/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "date",
+            "range",
+            "calendar",
+            "keyboard",
+            "localization"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-date-range-picker.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Button.css",
+                "upstreamPath": "starters/docs/src/Button.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.css",
+                "upstreamSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "contentSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Button.tsx",
+                "upstreamPath": "starters/docs/src/Button.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.tsx",
+                "upstreamSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "contentSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Calendar.css",
+                "upstreamPath": "starters/docs/src/Calendar.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Calendar.css",
+                "upstreamSha256": "sha256:a1f83ce4427d8bc66450285a5151b7527f50a97a485a008eb6a8422ea9648e23",
+                "contentSha256": "sha256:a1f83ce4427d8bc66450285a5151b7527f50a97a485a008eb6a8422ea9648e23",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Calendar.tsx",
+                "upstreamPath": "starters/docs/src/Calendar.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Calendar.tsx",
+                "upstreamSha256": "sha256:cc15e96bbb017eaefe069a4e362c5812316b934a834cf1c89a373532caaf3b07",
+                "contentSha256": "sha256:cc15e96bbb017eaefe069a4e362c5812316b934a834cf1c89a373532caaf3b07",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/DateField.css",
+                "upstreamPath": "starters/docs/src/DateField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateField.css",
+                "upstreamSha256": "sha256:ef56bf8a2457ea97ca29dfd34609e4ff6742c0bd0cee2aa0bc3716aaf0e310f8",
+                "contentSha256": "sha256:ef56bf8a2457ea97ca29dfd34609e4ff6742c0bd0cee2aa0bc3716aaf0e310f8",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/DateField.tsx",
+                "upstreamPath": "starters/docs/src/DateField.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateField.tsx",
+                "upstreamSha256": "sha256:a24292496e0da1ec03612704b07bb106cb8c96e2431b986e5613db3e5e438536",
+                "contentSha256": "sha256:a24292496e0da1ec03612704b07bb106cb8c96e2431b986e5613db3e5e438536",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/DateRangePicker.css",
+                "upstreamPath": "starters/docs/src/DateRangePicker.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateRangePicker.css",
+                "upstreamSha256": "sha256:e4ca8ed4c1a0825d01df38ea49d1cdf150692b8da8c63c8c806babc4b1f913f0",
+                "contentSha256": "sha256:e4ca8ed4c1a0825d01df38ea49d1cdf150692b8da8c63c8c806babc4b1f913f0",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/DateRangePicker.tsx",
+                "upstreamPath": "starters/docs/src/DateRangePicker.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DateRangePicker.tsx",
+                "upstreamSha256": "sha256:f3752c696ca18b9c4f36a4d433b758140badc236937f6c4f20c6ef9bedf82a02",
+                "contentSha256": "sha256:f3752c696ca18b9c4f36a4d433b758140badc236937f6c4f20c6ef9bedf82a02",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Popover.css",
+                "upstreamPath": "starters/docs/src/Popover.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.css",
+                "upstreamSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "contentSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/Popover.tsx",
+                "upstreamPath": "starters/docs/src/Popover.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.tsx",
+                "upstreamSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "contentSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/RangeCalendar.css",
+                "upstreamPath": "starters/docs/src/RangeCalendar.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/RangeCalendar.css",
+                "upstreamSha256": "sha256:b5c9ea0c54a0e124f5a038c007894ee1f1060ba744153ff84eac53cc734469bc",
+                "contentSha256": "sha256:b5c9ea0c54a0e124f5a038c007894ee1f1060ba744153ff84eac53cc734469bc",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/RangeCalendar.tsx",
+                "upstreamPath": "starters/docs/src/RangeCalendar.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/RangeCalendar.tsx",
+                "upstreamSha256": "sha256:6abbf6da51ed38e040f426fc00934567a5ebb42c5c4496e90ba275edc73e8c3e",
+                "contentSha256": "sha256:6abbf6da51ed38e040f426fc00934567a5ebb42c5c4496e90ba275edc73e8c3e",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-date-range-picker/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/DateRangePicker.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "segmented-date-range-picker",
+            "sourceHash": "sha256:d82bd21dea1ba98529344963f178060a62dbd8a5a0cbcb3c88e11d05988842f7",
+            "contentHash": "sha256:d82bd21dea1ba98529344963f178060a62dbd8a5a0cbcb3c88e11d05988842f7",
+            "structureHash": "sha256:81dde72effeaade365c9918a8ebbe7a6cbfe8a880d99ed3396cb38ccc1ea64c4"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-grid-list",
+      "type": "registry:component",
+      "title": "Grid List",
+      "description": "Presents a selectable grid collection with drag handles, sections, and incremental loading support.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-grid-list/Checkbox.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Checkbox.css"
+        },
+        {
+          "path": "components/react-aria-grid-list/Checkbox.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Checkbox.tsx"
+        },
+        {
+          "path": "components/react-aria-grid-list/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Content.css"
+        },
+        {
+          "path": "components/react-aria-grid-list/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-grid-list/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Form.css"
+        },
+        {
+          "path": "components/react-aria-grid-list/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-grid-list/GridList.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/GridList.css"
+        },
+        {
+          "path": "components/react-aria-grid-list/GridList.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/GridList.tsx"
+        },
+        {
+          "path": "components/react-aria-grid-list/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-grid-list/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/theme.css"
+        },
+        {
+          "path": "components/react-aria-grid-list/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-grid-list/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "grid-list",
+            "selection",
+            "drag-and-drop",
+            "keyboard",
+            "collection"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-grid-list.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-grid-list/Checkbox.css",
+                "upstreamPath": "starters/docs/src/Checkbox.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Checkbox.css",
+                "upstreamSha256": "sha256:6c751dae8e523ceef38878fa1e25e82010f82eec17cf472e7913782d0e83e798",
+                "contentSha256": "sha256:6c751dae8e523ceef38878fa1e25e82010f82eec17cf472e7913782d0e83e798",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/Checkbox.tsx",
+                "upstreamPath": "starters/docs/src/Checkbox.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Checkbox.tsx",
+                "upstreamSha256": "sha256:0c9b796c2757e6b1c642ac234bb2ff87c4637a88a8ac9105283b703fc4f123d3",
+                "contentSha256": "sha256:0c9b796c2757e6b1c642ac234bb2ff87c4637a88a8ac9105283b703fc4f123d3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/GridList.css",
+                "upstreamPath": "starters/docs/src/GridList.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/GridList.css",
+                "upstreamSha256": "sha256:45f9a24443b070956de340386931d8fbad304ab65eb8940e1ab5dcf7453278f2",
+                "contentSha256": "sha256:45f9a24443b070956de340386931d8fbad304ab65eb8940e1ab5dcf7453278f2",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/GridList.tsx",
+                "upstreamPath": "starters/docs/src/GridList.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/GridList.tsx",
+                "upstreamSha256": "sha256:82e49b369633a2837d3715d20a00476cdf61751e62e6f23ce7833ec0210495f9",
+                "contentSha256": "sha256:82e49b369633a2837d3715d20a00476cdf61751e62e6f23ce7833ec0210495f9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-grid-list/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/GridList.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "selectable-draggable-grid-list",
+            "sourceHash": "sha256:a6035478ef20f1764cfb09ac1d23fccc3f1265f8d95d83a27a934303a59f91c9",
+            "contentHash": "sha256:a6035478ef20f1764cfb09ac1d23fccc3f1265f8d95d83a27a934303a59f91c9",
+            "structureHash": "sha256:0cfcb7ec0065f77126b799226075ac47a801d2961e83dcebee6572e83e407350"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-tag-group",
+      "type": "registry:component",
+      "title": "Tag Group",
+      "description": "Presents selectable or removable tags with collection keyboard navigation.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-tag-group/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/Content.css"
+        },
+        {
+          "path": "components/react-aria-tag-group/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-tag-group/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/Form.css"
+        },
+        {
+          "path": "components/react-aria-tag-group/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-tag-group/TagGroup.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/TagGroup.css"
+        },
+        {
+          "path": "components/react-aria-tag-group/TagGroup.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/TagGroup.tsx"
+        },
+        {
+          "path": "components/react-aria-tag-group/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/theme.css"
+        },
+        {
+          "path": "components/react-aria-tag-group/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-tag-group/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "tags",
+            "selection",
+            "removal",
+            "keyboard",
+            "collection"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-tag-group.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-tag-group/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/TagGroup.css",
+                "upstreamPath": "starters/docs/src/TagGroup.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/TagGroup.css",
+                "upstreamSha256": "sha256:b7271f9cf09a014292c5ed7777db4d55c7d06d5fd19274a90b9acafa6f75e87f",
+                "contentSha256": "sha256:b7271f9cf09a014292c5ed7777db4d55c7d06d5fd19274a90b9acafa6f75e87f",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/TagGroup.tsx",
+                "upstreamPath": "starters/docs/src/TagGroup.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/TagGroup.tsx",
+                "upstreamSha256": "sha256:8ff67f3afc7ef251ed217fbd8d0ffeca4c05b7cbd02f3897a77a632b9e21bc0a",
+                "contentSha256": "sha256:8ff67f3afc7ef251ed217fbd8d0ffeca4c05b7cbd02f3897a77a632b9e21bc0a",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-tag-group/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/TagGroup.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "selectable-removable-tag-group",
+            "sourceHash": "sha256:a77f81558ecc09c57835f03886e95d1be768c1ac2d605406013128ff88e15f9b",
+            "contentHash": "sha256:a77f81558ecc09c57835f03886e95d1be768c1ac2d605406013128ff88e15f9b",
+            "structureHash": "sha256:f4a52432e70a71b60f68369c8053d80bbf1ad36c7ea9e2670dec16b82ce5ad4f"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-table",
+      "type": "registry:component",
+      "title": "Table",
+      "description": "Renders a sortable, resizable, selectable table with drag and incremental loading hooks.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-table/Checkbox.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Checkbox.css"
+        },
+        {
+          "path": "components/react-aria-table/Checkbox.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Checkbox.tsx"
+        },
+        {
+          "path": "components/react-aria-table/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Content.css"
+        },
+        {
+          "path": "components/react-aria-table/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-table/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Form.css"
+        },
+        {
+          "path": "components/react-aria-table/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-table/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-table/Table.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Table.css"
+        },
+        {
+          "path": "components/react-aria-table/Table.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/Table.tsx"
+        },
+        {
+          "path": "components/react-aria-table/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/theme.css"
+        },
+        {
+          "path": "components/react-aria-table/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-table/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "table",
+            "sorting",
+            "resizing",
+            "selection",
+            "keyboard"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-table.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-table/Checkbox.css",
+                "upstreamPath": "starters/docs/src/Checkbox.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Checkbox.css",
+                "upstreamSha256": "sha256:6c751dae8e523ceef38878fa1e25e82010f82eec17cf472e7913782d0e83e798",
+                "contentSha256": "sha256:6c751dae8e523ceef38878fa1e25e82010f82eec17cf472e7913782d0e83e798",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Checkbox.tsx",
+                "upstreamPath": "starters/docs/src/Checkbox.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Checkbox.tsx",
+                "upstreamSha256": "sha256:0c9b796c2757e6b1c642ac234bb2ff87c4637a88a8ac9105283b703fc4f123d3",
+                "contentSha256": "sha256:0c9b796c2757e6b1c642ac234bb2ff87c4637a88a8ac9105283b703fc4f123d3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Table.css",
+                "upstreamPath": "starters/docs/src/Table.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Table.css",
+                "upstreamSha256": "sha256:fda67dd5dc0c5d29670216cd68960f7b3bd85fc08bf2960525c4cf7bb63c5e25",
+                "contentSha256": "sha256:fda67dd5dc0c5d29670216cd68960f7b3bd85fc08bf2960525c4cf7bb63c5e25",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/Table.tsx",
+                "upstreamPath": "starters/docs/src/Table.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Table.tsx",
+                "upstreamSha256": "sha256:35002fb92724e8c282fd7b5e532ddf746ddc9271ac2631265b51e6a497ef2e97",
+                "contentSha256": "sha256:35002fb92724e8c282fd7b5e532ddf746ddc9271ac2631265b51e6a497ef2e97",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-table/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Table.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "interactive-resizable-data-table",
+            "sourceHash": "sha256:2d15763a61f14c05bd61a18d74e2d4e26b75f5e2e94919bd5a0cbddd9d136130",
+            "contentHash": "sha256:2d15763a61f14c05bd61a18d74e2d4e26b75f5e2e94919bd5a0cbddd9d136130",
+            "structureHash": "sha256:4386601ce016cd4fbdd3eae027c531a9750b646083ec7f396e9793b3609d9b01"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-slider",
+      "type": "registry:component",
+      "title": "Slider",
+      "description": "Selects one value or a numeric range with one or more keyboard-accessible thumbs.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-slider/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Content.css"
+        },
+        {
+          "path": "components/react-aria-slider/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-slider/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Form.css"
+        },
+        {
+          "path": "components/react-aria-slider/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-slider/Slider.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Slider.css"
+        },
+        {
+          "path": "components/react-aria-slider/Slider.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/Slider.tsx"
+        },
+        {
+          "path": "components/react-aria-slider/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/theme.css"
+        },
+        {
+          "path": "components/react-aria-slider/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-slider/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "slider",
+            "range",
+            "multi-thumb",
+            "keyboard",
+            "touch"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-slider.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-slider/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/Slider.css",
+                "upstreamPath": "starters/docs/src/Slider.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Slider.css",
+                "upstreamSha256": "sha256:3f5961e535bb8955c97348536d67b45890ad322670c126019b02c690dfc89298",
+                "contentSha256": "sha256:3f5961e535bb8955c97348536d67b45890ad322670c126019b02c690dfc89298",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/Slider.tsx",
+                "upstreamPath": "starters/docs/src/Slider.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Slider.tsx",
+                "upstreamSha256": "sha256:dadb6907c1391b13e6a4a9576f05ab3108a50ac079fe3221879062555a6ad0b6",
+                "contentSha256": "sha256:dadb6907c1391b13e6a4a9576f05ab3108a50ac079fe3221879062555a6ad0b6",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-slider/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Slider.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "multi-thumb-linear-slider",
+            "sourceHash": "sha256:c3e36865b371b970ed764c2c77bb7ec9b258f4fe662355be23fe5b649d3824d3",
+            "contentHash": "sha256:c3e36865b371b970ed764c2c77bb7ec9b258f4fe662355be23fe5b649d3824d3",
+            "structureHash": "sha256:b8b878f30fdddbeee28d3a5d1ce662d70be99ea9de3ac69e8e1677165eb727de"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-number-field",
+      "type": "registry:component",
+      "title": "Number Field",
+      "description": "Edits a localized numeric value with validation and increment and decrement controls.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-number-field/Button.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Button.css"
+        },
+        {
+          "path": "components/react-aria-number-field/Button.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Button.tsx"
+        },
+        {
+          "path": "components/react-aria-number-field/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Content.css"
+        },
+        {
+          "path": "components/react-aria-number-field/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-number-field/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Form.css"
+        },
+        {
+          "path": "components/react-aria-number-field/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-number-field/NumberField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/NumberField.css"
+        },
+        {
+          "path": "components/react-aria-number-field/NumberField.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/NumberField.tsx"
+        },
+        {
+          "path": "components/react-aria-number-field/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-number-field/TextField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/TextField.css"
+        },
+        {
+          "path": "components/react-aria-number-field/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/theme.css"
+        },
+        {
+          "path": "components/react-aria-number-field/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-number-field/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "number",
+            "stepper",
+            "localization",
+            "validation",
+            "keyboard"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-number-field.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-number-field/Button.css",
+                "upstreamPath": "starters/docs/src/Button.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.css",
+                "upstreamSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "contentSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/Button.tsx",
+                "upstreamPath": "starters/docs/src/Button.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.tsx",
+                "upstreamSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "contentSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/NumberField.css",
+                "upstreamPath": "starters/docs/src/NumberField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/NumberField.css",
+                "upstreamSha256": "sha256:d65c7512c668946d7753014bbcc5f9be598b868ec37b91be9e6c4befab666ca5",
+                "contentSha256": "sha256:d65c7512c668946d7753014bbcc5f9be598b868ec37b91be9e6c4befab666ca5",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/NumberField.tsx",
+                "upstreamPath": "starters/docs/src/NumberField.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/NumberField.tsx",
+                "upstreamSha256": "sha256:c42833ef023187e55a88988ced44ceb6ca59cfd93c38863cf4dd405f68e72c66",
+                "contentSha256": "sha256:c42833ef023187e55a88988ced44ceb6ca59cfd93c38863cf4dd405f68e72c66",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/TextField.css",
+                "upstreamPath": "starters/docs/src/TextField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/TextField.css",
+                "upstreamSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "contentSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-number-field/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/NumberField.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "localized-stepper-number-field",
+            "sourceHash": "sha256:baad5d4e78e064535986035f31ca9dd3355c5bec8a2f34ba2b4183031caf12cf",
+            "contentHash": "sha256:baad5d4e78e064535986035f31ca9dd3355c5bec8a2f34ba2b4183031caf12cf",
+            "structureHash": "sha256:4070230f22022a2d34fb5e8cac99de44bc8d503b34d14d031fb7fb3efac596c6"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-segmented-control",
+      "type": "registry:component",
+      "title": "Segmented Control",
+      "description": "Selects one or more options in a keyboard-navigable segmented control with a selection indicator.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-segmented-control/SegmentedControl.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-segmented-control/SegmentedControl.css"
+        },
+        {
+          "path": "components/react-aria-segmented-control/SegmentedControl.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-segmented-control/SegmentedControl.tsx"
+        },
+        {
+          "path": "components/react-aria-segmented-control/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-segmented-control/theme.css"
+        },
+        {
+          "path": "components/react-aria-segmented-control/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-segmented-control/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "segmented-control",
+            "selection",
+            "toggle",
+            "keyboard",
+            "indicator"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-segmented-control.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-segmented-control/SegmentedControl.css",
+                "upstreamPath": "starters/docs/src/SegmentedControl.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/SegmentedControl.css",
+                "upstreamSha256": "sha256:4a92e3fc534edcf03e33aa984ea4a6f9733b254366bfcc83be774e1ab8ad657a",
+                "contentSha256": "sha256:4a92e3fc534edcf03e33aa984ea4a6f9733b254366bfcc83be774e1ab8ad657a",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-segmented-control/SegmentedControl.tsx",
+                "upstreamPath": "starters/docs/src/SegmentedControl.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/SegmentedControl.tsx",
+                "upstreamSha256": "sha256:a9611ef7d480fbcca3ba4916710d633195a64d4740e372620a64f2e52a10f9f3",
+                "contentSha256": "sha256:a9611ef7d480fbcca3ba4916710d633195a64d4740e372620a64f2e52a10f9f3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-segmented-control/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-segmented-control/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/SegmentedControl.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "selection-indicator-segmented-control",
+            "sourceHash": "sha256:457e0743e3c7153bc4d80a8e7a2e81ae2834ee1fe5ddfca368e14e8500708512",
+            "contentHash": "sha256:457e0743e3c7153bc4d80a8e7a2e81ae2834ee1fe5ddfca368e14e8500708512",
+            "structureHash": "sha256:39ecca0b1ae7f6b7961adcc92affaa4c3694991a7c023a20ebcd61293a5dd21c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-toolbar",
+      "type": "registry:component",
+      "title": "Toolbar",
+      "description": "Groups controls into a single keyboard navigation stop with synchronized orientation contexts.",
+      "author": "Adobe",
+      "dependencies": [
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-toolbar/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-toolbar/theme.css"
+        },
+        {
+          "path": "components/react-aria-toolbar/Toolbar.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-toolbar/Toolbar.css"
+        },
+        {
+          "path": "components/react-aria-toolbar/Toolbar.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-toolbar/Toolbar.tsx"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "toolbar",
+            "controls",
+            "orientation",
+            "keyboard",
+            "navigation"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-toolbar.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-toolbar/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-toolbar/Toolbar.css",
+                "upstreamPath": "starters/docs/src/Toolbar.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Toolbar.css",
+                "upstreamSha256": "sha256:90f3da634601d563c6172713c6e8628f02f9177ac10d4f4e9a24cbc161697ee4",
+                "contentSha256": "sha256:90f3da634601d563c6172713c6e8628f02f9177ac10d4f4e9a24cbc161697ee4",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-toolbar/Toolbar.tsx",
+                "upstreamPath": "starters/docs/src/Toolbar.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Toolbar.tsx",
+                "upstreamSha256": "sha256:133a28429503dbba66dc3240589bc0ee1c5c5504e9cef41f09b8998f396fe01c",
+                "contentSha256": "sha256:133a28429503dbba66dc3240589bc0ee1c5c5504e9cef41f09b8998f396fe01c",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Toolbar.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "roving-focus-control-toolbar",
+            "sourceHash": "sha256:31c56c5f6bfa4ed9ab9517e61055f8372edca736161beac319ac9a457592664d",
+            "contentHash": "sha256:31c56c5f6bfa4ed9ab9517e61055f8372edca736161beac319ac9a457592664d",
+            "structureHash": "sha256:6b12b70f64c8a69f29cdd9eb7da43da0b03555d606f2f1a1d0fa9a7c3529efe5"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-disclosure-group",
+      "type": "registry:component",
+      "title": "Disclosure Group",
+      "description": "Coordinates one or more accessible disclosures with animated, reduced-motion-aware panels.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-disclosure-group/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/Content.css"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/Disclosure.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/Disclosure.css"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/Disclosure.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/Disclosure.tsx"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/DisclosureGroup.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/DisclosureGroup.css"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/DisclosureGroup.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/DisclosureGroup.tsx"
+        },
+        {
+          "path": "components/react-aria-disclosure-group/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-disclosure-group/theme.css"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "disclosure",
+            "accordion",
+            "group",
+            "keyboard",
+            "reduced-motion"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-disclosure-group.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-disclosure-group/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/Disclosure.css",
+                "upstreamPath": "starters/docs/src/Disclosure.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Disclosure.css",
+                "upstreamSha256": "sha256:66bda92c3e89db6f68f91fc2c342ec55537638bd1dc8463aa05fde382e7a808a",
+                "contentSha256": "sha256:66bda92c3e89db6f68f91fc2c342ec55537638bd1dc8463aa05fde382e7a808a",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/Disclosure.tsx",
+                "upstreamPath": "starters/docs/src/Disclosure.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Disclosure.tsx",
+                "upstreamSha256": "sha256:aea6aa393cc251730e92194315eda48a2c05073c0a1e33b124052bc499d28ff4",
+                "contentSha256": "sha256:aea6aa393cc251730e92194315eda48a2c05073c0a1e33b124052bc499d28ff4",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/DisclosureGroup.css",
+                "upstreamPath": "starters/docs/src/DisclosureGroup.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DisclosureGroup.css",
+                "upstreamSha256": "sha256:f2554833a95e549a66187e6df291638a231c22dd759674b7e37c867b144009a6",
+                "contentSha256": "sha256:f2554833a95e549a66187e6df291638a231c22dd759674b7e37c867b144009a6",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/DisclosureGroup.tsx",
+                "upstreamPath": "starters/docs/src/DisclosureGroup.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/DisclosureGroup.tsx",
+                "upstreamSha256": "sha256:4b0b75075bba4684948fd41835556fa2e76ae1dc63f4ca20939b89c7ba6e6c91",
+                "contentSha256": "sha256:4b0b75075bba4684948fd41835556fa2e76ae1dc63f4ca20939b89c7ba6e6c91",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-disclosure-group/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Disclosure.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "coordinated-disclosure-group",
+            "sourceHash": "sha256:2716912e357b93ddc1e40f4a14ee3e24d948ba9e5e5ee8338bf1a982094d96a4",
+            "contentHash": "sha256:2716912e357b93ddc1e40f4a14ee3e24d948ba9e5e5ee8338bf1a982094d96a4",
+            "structureHash": "sha256:2d5f318ffce6652159efba32d80ce4bd348444bd4cc1e6bfd511aa1158f25acd"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-menu",
+      "type": "registry:component",
+      "title": "Menu",
+      "description": "Opens a keyboard-navigable action menu with selection, sections, and nested submenu support.",
+      "author": "Adobe",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-menu/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Content.css"
+        },
+        {
+          "path": "components/react-aria-menu/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-menu/Menu.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Menu.css"
+        },
+        {
+          "path": "components/react-aria-menu/Menu.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Menu.tsx"
+        },
+        {
+          "path": "components/react-aria-menu/Popover.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Popover.css"
+        },
+        {
+          "path": "components/react-aria-menu/Popover.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Popover.tsx"
+        },
+        {
+          "path": "components/react-aria-menu/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/theme.css"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "menu",
+            "submenu",
+            "selection",
+            "keyboard",
+            "popover"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-menu.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-menu/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/Menu.css",
+                "upstreamPath": "starters/docs/src/Menu.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Menu.css",
+                "upstreamSha256": "sha256:19b65a0c707de362c81e17d248aefa9624cdb178734cd892375935b34635f0ca",
+                "contentSha256": "sha256:19b65a0c707de362c81e17d248aefa9624cdb178734cd892375935b34635f0ca",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/Menu.tsx",
+                "upstreamPath": "starters/docs/src/Menu.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Menu.tsx",
+                "upstreamSha256": "sha256:2b932bf28768c2d1d71dfdee05d89a57e2634256b2cb2ebe43f44d9eb574eb8d",
+                "contentSha256": "sha256:2b932bf28768c2d1d71dfdee05d89a57e2634256b2cb2ebe43f44d9eb574eb8d",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/Popover.css",
+                "upstreamPath": "starters/docs/src/Popover.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.css",
+                "upstreamSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "contentSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/Popover.tsx",
+                "upstreamPath": "starters/docs/src/Popover.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.tsx",
+                "upstreamSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "contentSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-menu/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Menu.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "nested-action-menu",
+            "sourceHash": "sha256:bb428297691d98c1cba5f900f4601d776925fddf71bc04cb8baa539bf477fad8",
+            "contentHash": "sha256:bb428297691d98c1cba5f900f4601d776925fddf71bc04cb8baa539bf477fad8",
+            "structureHash": "sha256:0c3fab8b249a56a002796f7ac12b419a906b1ded3afec38d1810a6f8450cca78"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-select",
+      "type": "registry:component",
+      "title": "Select",
+      "description": "Selects an option from a labeled, keyboard-navigable listbox popover.",
+      "author": "Adobe",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-select/Button.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Button.css"
+        },
+        {
+          "path": "components/react-aria-select/Button.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Button.tsx"
+        },
+        {
+          "path": "components/react-aria-select/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Content.css"
+        },
+        {
+          "path": "components/react-aria-select/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-select/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Form.css"
+        },
+        {
+          "path": "components/react-aria-select/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-select/ListBox.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/ListBox.css"
+        },
+        {
+          "path": "components/react-aria-select/ListBox.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/ListBox.tsx"
+        },
+        {
+          "path": "components/react-aria-select/Popover.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Popover.css"
+        },
+        {
+          "path": "components/react-aria-select/Popover.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Popover.tsx"
+        },
+        {
+          "path": "components/react-aria-select/ProgressCircle.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/ProgressCircle.tsx"
+        },
+        {
+          "path": "components/react-aria-select/Select.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Select.css"
+        },
+        {
+          "path": "components/react-aria-select/Select.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/Select.tsx"
+        },
+        {
+          "path": "components/react-aria-select/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/theme.css"
+        },
+        {
+          "path": "components/react-aria-select/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-select/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "select",
+            "listbox",
+            "popover",
+            "keyboard",
+            "form"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-select.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-select/Button.css",
+                "upstreamPath": "starters/docs/src/Button.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.css",
+                "upstreamSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "contentSha256": "sha256:12472e3f531b516181119f289aaa041646b125e961e29c0c01c9b1961e064bd7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Button.tsx",
+                "upstreamPath": "starters/docs/src/Button.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Button.tsx",
+                "upstreamSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "contentSha256": "sha256:5c35697f280e1e21e5f8e85e4f8e4cdffa815e7dcd5177b3b5b07e5fc9330a09",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/ListBox.css",
+                "upstreamPath": "starters/docs/src/ListBox.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ListBox.css",
+                "upstreamSha256": "sha256:f5969d6f6fcce3c73a5915cd08b4aeccf36ea9f1110756de697cd131a7cd0efb",
+                "contentSha256": "sha256:f5969d6f6fcce3c73a5915cd08b4aeccf36ea9f1110756de697cd131a7cd0efb",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/ListBox.tsx",
+                "upstreamPath": "starters/docs/src/ListBox.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ListBox.tsx",
+                "upstreamSha256": "sha256:f4e146d9ea87e54853b9b03937f9bad480bbfff97b523b7659da9b30b3ac3537",
+                "contentSha256": "sha256:f4e146d9ea87e54853b9b03937f9bad480bbfff97b523b7659da9b30b3ac3537",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Popover.css",
+                "upstreamPath": "starters/docs/src/Popover.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.css",
+                "upstreamSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "contentSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Popover.tsx",
+                "upstreamPath": "starters/docs/src/Popover.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.tsx",
+                "upstreamSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "contentSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/ProgressCircle.tsx",
+                "upstreamPath": "starters/docs/src/ProgressCircle.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ProgressCircle.tsx",
+                "upstreamSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "contentSha256": "sha256:d0dbe3a04838179884ad1c185448443b998a96636a24c0a73e86368eb339b758",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Select.css",
+                "upstreamPath": "starters/docs/src/Select.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Select.css",
+                "upstreamSha256": "sha256:7b467084a7af12da99ca562eac6ceb819b3adbb027ab90ce0725226ad56080ef",
+                "contentSha256": "sha256:7b467084a7af12da99ca562eac6ceb819b3adbb027ab90ce0725226ad56080ef",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/Select.tsx",
+                "upstreamPath": "starters/docs/src/Select.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Select.tsx",
+                "upstreamSha256": "sha256:969642e311a6b30ecf2669d550a3e513b3e046e95630af0840c16c745df44486",
+                "contentSha256": "sha256:969642e311a6b30ecf2669d550a3e513b3e046e95630af0840c16c745df44486",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-select/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/Select.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "popover-listbox-select",
+            "sourceHash": "sha256:3556c81cdebd936fff523a5de46f2922db649332241350a4a302f7e0236807b0",
+            "contentHash": "sha256:3556c81cdebd936fff523a5de46f2922db649332241350a4a302f7e0236807b0",
+            "structureHash": "sha256:8927e68381ee981155b01aceb5493bbb1c68084442906ab55e6b6c772c823d5f"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-aria-search-field",
+      "type": "registry:component",
+      "title": "Search Field",
+      "description": "Provides a labeled search input with native search semantics, validation, and a clear control.",
+      "author": "Adobe",
+      "dependencies": [
+        "lucide-react@0.517.0",
+        "react-aria-components@1.19.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-aria-search-field/Content.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/Content.css"
+        },
+        {
+          "path": "components/react-aria-search-field/Content.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/Content.tsx"
+        },
+        {
+          "path": "components/react-aria-search-field/Form.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/Form.css"
+        },
+        {
+          "path": "components/react-aria-search-field/Form.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/Form.tsx"
+        },
+        {
+          "path": "components/react-aria-search-field/SearchField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/SearchField.css"
+        },
+        {
+          "path": "components/react-aria-search-field/SearchField.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/SearchField.tsx"
+        },
+        {
+          "path": "components/react-aria-search-field/TextField.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/TextField.css"
+        },
+        {
+          "path": "components/react-aria-search-field/theme.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/theme.css"
+        },
+        {
+          "path": "components/react-aria-search-field/utilities.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-aria-starters/react-aria-search-field/utilities.css"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "search",
+            "field",
+            "clear",
+            "validation",
+            "keyboard"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-aria-starters/react-aria-search-field.tsx",
+          "source": {
+            "project": "React Aria Vanilla CSS starter",
+            "repository": "https://github.com/adobe/react-spectrum",
+            "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-aria-search-field/Content.css",
+                "upstreamPath": "starters/docs/src/Content.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+                "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/Content.tsx",
+                "upstreamPath": "starters/docs/src/Content.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+                "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/Form.css",
+                "upstreamPath": "starters/docs/src/Form.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+                "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/Form.tsx",
+                "upstreamPath": "starters/docs/src/Form.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+                "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/SearchField.css",
+                "upstreamPath": "starters/docs/src/SearchField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/SearchField.css",
+                "upstreamSha256": "sha256:db597479ede57682d7928b5357255b1c07d6cbcbf0161bdcb0a1b8c0aebe7661",
+                "contentSha256": "sha256:db597479ede57682d7928b5357255b1c07d6cbcbf0161bdcb0a1b8c0aebe7661",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/SearchField.tsx",
+                "upstreamPath": "starters/docs/src/SearchField.tsx",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/SearchField.tsx",
+                "upstreamSha256": "sha256:2dc9e24a9ee2239e36dd036f5d76529f2d92219d2ecabfffeb5f52bee2c43717",
+                "contentSha256": "sha256:2dc9e24a9ee2239e36dd036f5d76529f2d92219d2ecabfffeb5f52bee2c43717",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/TextField.css",
+                "upstreamPath": "starters/docs/src/TextField.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/TextField.css",
+                "upstreamSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "contentSha256": "sha256:a790ba861b0a948994ca6b8f0e4a8512530a8544ed19ac2e1259551d9e8a40a5",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/theme.css",
+                "upstreamPath": "starters/docs/src/theme.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+                "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-aria-search-field/utilities.css",
+                "upstreamPath": "starters/docs/src/utilities.css",
+                "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/utilities.css",
+                "upstreamSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "contentSha256": "sha256:fa6495b71bdd1be7e5c94d71f31bac43c98f6aac6ca01ae544ef90254dd82ca3",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "scope": "starters/docs/src/SearchField.tsx and its exact copied relative import closure",
+            "copyright": [
+              "Copyright 2019 Adobe"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+              "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+              "localPath": "registry/sources/react-aria-starters/LICENSE"
+            },
+            "notices": [
+              "registry/sources/react-aria-starters/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "clearable-semantic-search-field",
+            "sourceHash": "sha256:0e2ade8e49d059060decab82935eead6a07f69a27259ed43799d86e7ffa0883a",
+            "contentHash": "sha256:0e2ade8e49d059060decab82935eead6a07f69a27259ed43799d86e7ffa0883a",
+            "structureHash": "sha256:853c5855f05b735544098d56e360d21b516ceef021ac00b231869f1a9b7ea773"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}

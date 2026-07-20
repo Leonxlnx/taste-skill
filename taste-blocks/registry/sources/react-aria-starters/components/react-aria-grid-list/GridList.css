@@ -1,0 +1,311 @@
+@import './theme.css';
+
+.react-aria-GridList {
+  justify-content: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-2);
+  scroll-padding: var(--spacing-2);
+  border-radius: var(--radius);
+  max-height: inherit;
+  overflow: auto;
+  forced-color-adjust: none;
+  outline: none;
+  width: 100%;
+  max-height: 500px;
+  min-height: 100px;
+  box-sizing: border-box;
+  --grid-item-size: 200px;
+
+  &:has(.react-aria-GridListSection) {
+    scroll-padding: 50px;
+  }
+
+  &[data-layout='grid']:not(:has(.react-aria-GridListSection)):not([data-empty]) {
+    display: grid;
+    grid-auto-rows: min-content;
+
+    &:not([data-orientation='horizontal']) {
+      grid-template-columns: repeat(auto-fit, minmax(100px, var(--grid-item-size)));
+    }
+  }
+
+  &[data-layout='grid'] > .react-aria-GridListSection {
+    grid-template-columns: repeat(auto-fit, minmax(100px, var(--grid-item-size)));
+    grid-auto-rows: min-content;
+  }
+
+  .react-aria-GridListSection:not(:first-child) {
+    margin-top: var(--spacing-4);
+  }
+
+  &[data-layout='stack'] > .react-aria-GridListSection {
+    grid-template-columns: auto;
+    align-items: center;
+  }
+
+  &[data-size='small'] {
+    --grid-item-size: 150px;
+  }
+
+  @media (width < 500px) {
+    &[data-layout='grid'] {
+      --grid-item-size: 150px;
+    }
+
+    &[data-layout='grid']:not(:has(.react-aria-GridListSection)) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &[data-layout='stack']:not([data-empty]) {
+    display: grid;
+    grid-template-columns: auto;
+    align-items: center;
+
+    &[data-orientation='horizontal'] {
+      display: flex;
+      flex-direction: row;
+      justify-content: normal;
+
+      .react-aria-GridListItem {
+        flex-shrink: 0;
+        width: var(--grid-item-size);
+      }
+    }
+  }
+
+  &[data-layout='grid'][data-orientation='horizontal'] {
+    grid-auto-flow: column;
+    grid-template-rows: auto auto;
+    grid-template-columns: none;
+    grid-auto-columns: var(--grid-item-size);
+    justify-content: normal;
+    max-height: none;
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+  }
+
+  &[data-empty] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+  }
+
+  &[data-drop-target] {
+    outline: 2px solid var(--highlight-background);
+    outline-offset: -1px;
+    background: var(--highlight-overlay);
+  }
+
+  .react-aria-DropIndicator {
+    display: none;
+    &[data-drop-target] {
+      display: block;
+      outline: 2px solid var(--highlight-background);
+      outline-offset: -1px;
+      background: var(--highlight-overlay);
+      border-radius: var(--radius);
+    }
+  }
+}
+
+.react-aria-GridListItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  border-radius: var(--radius);
+  outline: none;
+  cursor: default;
+  color: var(--text-color);
+  font: var(--font-size) system-ui;
+  box-sizing: border-box;
+  padding-bottom: var(--spacing-4);
+  background: var(--overlay-background);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  min-width: 0;
+  max-width: 250px;
+  overflow: clip;
+  position: relative;
+  transform: translateZ(0);
+  transition-property: scale;
+  transition-duration: 200ms;
+  -webkit-tap-highlight-color: transparent;
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  &[data-pressed] {
+    scale: 0.98;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    border: 2px solid light-dark(black, white);
+    outline: 2px solid light-dark(rgb(255 255 255 / 0.7), rgb(0 0 0 / 0.7));
+    outline-offset: -4px;
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+
+  &[data-selected] {
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &[data-href] {
+    cursor: pointer;
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled);
+  }
+
+  .react-aria-CheckboxField {
+    position: absolute;
+    top: var(--spacing-4);
+    inset-inline-start: var(--spacing-4);
+
+    .react-aria-CheckboxButton {
+      --focus-ring-color: var(--highlight-foreground);
+      --checkmark-color: light-dark(white, black);
+
+      .indicator {
+        --indicator-border: light-dark(rgb(0 0 0 / 0.9), rgb(255 255 255 / 0.7));
+
+        @media (forced-colors: active) {
+          --indicator-border: ButtonBorder;
+        }
+      }
+
+      &[data-selected] .indicator {
+        --indicator-color: light-dark(black, var(--highlight-foreground));
+        --indicator-shadow: transparent;
+
+        @media (forced-colors: active) {
+          --indicator-color: Highlight;
+          --checkmark-color: HighlightText;
+        }
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        background: light-dark(rgb(255 255 255 / 0.51), rgb(0 0 0 / 0.56));
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 8px 0px;
+        border-radius: var(--radius);
+      }
+    }
+  }
+
+  img {
+    width: 100%;
+    height: var(--grid-item-size);
+    object-fit: cover;
+    padding-bottom: var(--spacing-2);
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    flex-shrink: 0;
+  }
+
+  .react-aria-Text {
+    padding: 0 var(--spacing-4);
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+
+    &:not([slot]) {
+      font-weight: 500;
+    }
+
+    &[slot='description'] {
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .react-aria-Button[slot='drag'] {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: var(--spacing-2);
+    inset-inline-end: var(--spacing-2);
+    border-radius: var(--radius);
+    color: var(--text-color);
+
+    &[data-focus-visible] {
+      border-radius: 4px;
+      outline: 2px solid var(--focus-ring-color);
+    }
+  }
+
+  &[data-dragging] {
+    opacity: 0.6;
+  }
+
+  &[data-drop-target] {
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: 5;
+      outline: 2px solid var(--highlight-background);
+      outline-offset: -2px;
+      background: var(--highlight-overlay);
+    }
+  }
+}
+
+.react-aria-GridListLoadingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 100%;
+}
+
+.react-aria-GridListSection {
+  display: grid;
+  justify-content: center;
+  gap: var(--spacing-4);
+  color: var(--text-color);
+  width: 100%;
+
+  > .react-aria-GridListHeader {
+    grid-column: 1 / -1;
+  }
+}
+
+.react-aria-GridListHeader {
+  position: sticky;
+  z-index: 2;
+  top: calc(var(--spacing-2) * -1);
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  background: var(--gray-100);
+  border: 0.5px solid var(--gray-400);
+  cursor: default;
+  user-select: none;
+  box-shadow:
+    inset 0px 1px 0px white,
+    inset 0px -4px 8px var(--gray-200);
+  border-radius: var(--radius);
+  padding: var(--spacing-1) var(--spacing-4);
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: inset 0px 4px 8px var(--gray-200);
+  }
+}
