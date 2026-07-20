@@ -1,0 +1,20 @@
+@keyframes magic-rippling {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.magic-rippling {
+  animation: magic-rippling var(--duration) ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magic-rippling {
+    animation: none;
+  }
+}
