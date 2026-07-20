@@ -1,0 +1,71 @@
+@keyframes shimmer {
+  from {
+    mask-position: 200%;
+  }
+
+  to {
+    mask-position: 0%;
+  }
+}
+
+.ProgressBarItem {
+  /* these are passed from the component */
+  --progress-width: ;
+  --progress-bg: ;
+
+  width: var(--progress-width);
+  /* stylelint-disable-next-line primer/colors */
+  background-color: var(--progress-bg);
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-animated='true'] {
+      mask-image: linear-gradient(75deg, #000 30%, rgb(0, 0, 0, 0.65) 80%);
+      mask-size: 200%;
+      animation-name: shimmer;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
+  }
+}
+
+.ProgressBarContainer {
+  display: flex;
+  overflow: hidden;
+  background-color: var(--progressBar-track-bgColor, #eaeef2);
+  border-radius: var(--borderRadius-small, 6px);
+  gap: 2px;
+  outline: solid 1px var(--progressBar-track-borderColor, #d0d7de);
+  outline-offset: -1px;
+
+  &:where([data-progress-display='inline']) {
+    display: inline-flex;
+  }
+
+  &:where([data-progress-bar-size='default']) {
+    height: 8px;
+  }
+
+  &:where([data-progress-bar-size='small']) {
+    height: 5px;
+  }
+
+  &:where([data-progress-bar-size='large']) {
+    height: 10px;
+  }
+}
+
+@media (forced-colors: active) {
+  .ProgressBarContainer {
+    --progressBar-track-bgColor: Canvas;
+    --progressBar-track-borderColor: CanvasText;
+  }
+
+  .ProgressBarItem {
+    --progress-bg: LinkText !important;
+  }
+
+  .ProgressBarContainer,
+  .ProgressBarItem {
+    forced-color-adjust: none;
+  }
+}

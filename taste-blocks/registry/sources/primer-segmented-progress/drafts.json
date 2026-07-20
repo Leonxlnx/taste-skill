@@ -1,0 +1,116 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-primer-segmented-progress-drafts",
+  "homepage": "https://github.com/primer/react",
+  "items": [
+    {
+      "name": "primer-segmented-progress",
+      "type": "registry:component",
+      "title": "Segmented Progress",
+      "description": "Displays multiple labelled progress values as segments in one bounded track.",
+      "author": "Primer",
+      "dependencies": ["clsx@2.1.1"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/primer-segmented-progress/index.ts",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/primer-segmented-progress/index.ts"
+        },
+        {
+          "path": "components/primer-segmented-progress/ProgressBar.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/primer-segmented-progress/ProgressBar.tsx"
+        },
+        {
+          "path": "components/primer-segmented-progress/ProgressBar.module.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/primer-segmented-progress/ProgressBar.module.css"
+        }
+      ],
+      "categories": ["status-progress"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": ["segmented", "progress", "breakdown"],
+          "renderer": "dom",
+          "preview": "previews/drafts/primer-segmented-progress/primer-segmented-progress.tsx",
+          "source": {
+            "project": "Primer React",
+            "repository": "https://github.com/primer/react",
+            "revision": "2a67c191a0038df64d2225c0bc11c020c2def03c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/primer-segmented-progress/index.ts",
+                "upstreamPath": "packages/react/src/ProgressBar/index.ts",
+                "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/index.ts",
+                "upstreamSha256": "sha256:6ffd0f7e97fc78e8efb17d6dd5173a8fa461d9a10e0771df564953912432a3ee",
+                "contentSha256": "sha256:6ffd0f7e97fc78e8efb17d6dd5173a8fa461d9a10e0771df564953912432a3ee",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/primer-segmented-progress/ProgressBar.tsx",
+                "upstreamPath": "packages/react/src/ProgressBar/ProgressBar.tsx",
+                "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/ProgressBar.tsx",
+                "upstreamSha256": "sha256:90f9c1991cb79d3aa01a55a18e3419734c5b13a150003f799f2f7fce04e3854f",
+                "contentSha256": "sha256:e0a6bd2bb4035f3e886063e5e7c1b272836c87c2c4237c30a47b9df0be1d7967",
+                "changes": [
+                  "Clamped finite progress and aria-valuenow inputs to 0 through 100 and normalized invalid inputs to zero.",
+                  "Added a fallback fill color when the host does not define the requested Primer color token."
+                ]
+              },
+              {
+                "shippedPath": "components/primer-segmented-progress/ProgressBar.module.css",
+                "upstreamPath": "packages/react/src/ProgressBar/ProgressBar.module.css",
+                "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/ProgressBar.module.css",
+                "upstreamSha256": "sha256:e403d83d039694d0469be7569ddc9f311a04fa5130615fc15a385cee67ce874d",
+                "contentSha256": "sha256:6776c130e81dea3c9026ab6c3a14f5fee2294b85637c89155550769872200ac8",
+                "changes": [
+                  "Added local fallback values for the three Primer track and radius tokens.",
+                  "Scoped forced-color tokens to the component and forced each inline item fill variable to LinkText."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "packages/react/src/ProgressBar/ProgressBar.tsx, packages/react/src/ProgressBar/ProgressBar.module.css, and packages/react/src/ProgressBar/index.ts",
+            "copyright": ["Copyright (c) 2018 GitHub, Inc."],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/LICENSE",
+              "sha256": "sha256:bf4f127cb7d82ed5c00d7095616440211225f4ca3b0195a0ecd0051720df5c18",
+              "localPath": "registry/sources/primer-segmented-progress/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/primer-segmented-progress/ProgressBar.tsx",
+              "change": "Clamped progress values and added a fallback for generated Primer fill tokens.",
+              "reason": "Prevent visual and ARIA overflow from invalid caller values and render without a Primer theme provider."
+            },
+            {
+              "shippedPath": "components/primer-segmented-progress/ProgressBar.module.css",
+              "change": "Added track token fallbacks and scoped the forced-colors overrides to the component classes.",
+              "reason": "Keep the CSS module portable while ensuring inline fill variables cannot defeat Windows forced colors."
+            }
+          ],
+          "dedupe": {
+            "family": "segmented-progress-breakdown",
+            "sourceHash": "sha256:6b98bf0d8b8ed41dc0c2533bed22fb3af98b807378870048377cdda44514e01b",
+            "contentHash": "sha256:132f7c7b22680cc57c359ec15174b0a4e99bffd38ecaccace549983fb78a5ec2",
+            "structureHash": "sha256:646af80be78851d238c278249e96630740f941361a78993bc834a04abee7575e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
