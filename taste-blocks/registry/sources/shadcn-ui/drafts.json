@@ -1134,6 +1134,823 @@
           ]
         }
       }
+    },
+    {
+      "name": "shadcn-attachment",
+      "type": "registry:component",
+      "title": "Attachment",
+      "description": "Displays file metadata, progress state, actions, and a full-card trigger.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "radix-ui@1.4.3",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/attachment.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/attachment.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "attachment",
+            "file",
+            "upload-state"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-attachment.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/attachment.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/attachment.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/attachment.tsx",
+                "upstreamSha256": "sha256:3ddc465b06a4423b2d1e5fabdde98721be936c08a33684449ea0038659f041a2",
+                "contentSha256": "sha256:67baaa82cb987885890973b2469667e086b4c0c4ddcfc009254782426be788b4",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports.",
+                  "Disabled nonessential animation and transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/attachment.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/attachment.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "file-attachment-card",
+            "sourceHash": "sha256:16582942014225ddcc04ee71b5777efd5e2745061a824b0216242fac003b4125",
+            "contentHash": "sha256:3d2468b48aa2e0e0035b5d92eda6d92b2910d4b02982979dd988794ca8d83e20",
+            "structureHash": "sha256:8334c82e67c95f11a227e4661dbc1b7e85e4c9a0ac44810e2bf59260dd624572"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-bubble",
+      "type": "registry:component",
+      "title": "Bubble",
+      "description": "Composes aligned message bubbles with optional reactions.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "radix-ui@1.4.3",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/bubble.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/bubble.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "bubble",
+            "message",
+            "reaction"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-bubble.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/bubble.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/bubble.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/bubble.tsx",
+                "upstreamSha256": "sha256:61d5805b9b588e60a446c5ee971fabd4466b2fce9af5dc940cd33ac9378bdc5f",
+                "contentSha256": "sha256:75cc848d01a4151e0edd0a72b80d4de277e61ac4fcced8595c7b31fb8341d477",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports.",
+                  "Disabled nonessential animation and transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/bubble.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/bubble.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "message-bubble",
+            "sourceHash": "sha256:bb499ff9d3e38e7fe44753737d3eae3493035ba6785c0bb7e9306315172f2f46",
+            "contentHash": "sha256:8833c52d0a721d19b595fb01b24c97fcc903c5cb654cc3b91a0866d89b7f227a",
+            "structureHash": "sha256:da80bdd889a9d8063142b8128fdf2c338981b6e937d898af3cc03e62d234bd32"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-chart",
+      "type": "registry:component",
+      "title": "Chart",
+      "description": "Provides responsive Recharts theming, tooltip, and legend composition.",
+      "author": "shadcn",
+      "dependencies": [
+        "clsx@2.1.1",
+        "recharts@3.8.0",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/chart.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/chart.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "chart",
+            "recharts",
+            "tooltip"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-chart.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/chart.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/chart.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/chart.tsx",
+                "upstreamSha256": "sha256:b0f3a00360f28c4961cb529ad4b9b56f7bda41a3975a7c72ebdc8e48ac99c077",
+                "contentSha256": "sha256:f95cd01582bc8715403267ae6a3e51efdd696f01a38f7164c84665b7f8646363",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/chart.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/chart.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "recharts-theme-container",
+            "sourceHash": "sha256:0f5a23e9fece0cbde7be0c7577d9174092eacd236276a7ea1e7191a6de1ca8cb",
+            "contentHash": "sha256:d2fdf9b520b7653cbd011f8debc1410707f48f482e0c0a3ab9d0634c8cffe8d9",
+            "structureHash": "sha256:d7f736dcb80eb965d0da97f9af6e1f6cd169b2257e4a872733999f082a05aa93"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-message-scroller",
+      "type": "registry:component",
+      "title": "Message Scroller",
+      "description": "Keeps a message viewport anchored while preserving manual scroll position.",
+      "author": "shadcn",
+      "dependencies": [
+        "@shadcn/react@0.2.1",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/message-scroller.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/message-scroller.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "message",
+            "scroll-anchor",
+            "viewport"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-message-scroller.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/message-scroller.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/message-scroller.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/message-scroller.tsx",
+                "upstreamSha256": "sha256:996d6107ddd07261b76aab45faf6497c789090cb29e47257df6c133c3b35fab3",
+                "contentSha256": "sha256:95e514179dc04eeaee799d4d3675429ac2cb2d61114e35033eb89780e8d4ccae",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports.",
+                  "Disabled nonessential animation and transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/message-scroller.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/message-scroller.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "anchored-message-scroller",
+            "sourceHash": "sha256:01bfc279022a2fbdfc43025a6ace2e9f29708ba6cbc3e2cd6775f1a897dc323a",
+            "contentHash": "sha256:3525645f22948d58e8d3427473a93c0b1fed5aba04a337ff2677d0591c65260b",
+            "structureHash": "sha256:a13b2c31d8228b2c305da47816178f66fde8990bd4eb67dc7be7315792f94ba8"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-message",
+      "type": "registry:component",
+      "title": "Message",
+      "description": "Structures aligned conversation content with avatar, header, and footer.",
+      "author": "shadcn",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/message.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/message.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "message",
+            "conversation",
+            "avatar"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-message.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/message.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/message.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/message.tsx",
+                "upstreamSha256": "sha256:47fddd2cadfee8c0aa92d377cfbb4a211711650b93c79fbaa0cbe9d4a14bc32a",
+                "contentSha256": "sha256:e6900eca15e93c823034d4363f474b30bd817e7b1cc4b4e9a828daac572ee756",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/message.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/message.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "conversation-message",
+            "sourceHash": "sha256:ea645b09e1c7ce27085a70929e8ba1a7aa0e72b67f3e807be7b8954cb2fd5f98",
+            "contentHash": "sha256:1ac7568d7f9e96b03782f65e871c2d2a4aa19d9914ae319b1242a902b8f2bad1",
+            "structureHash": "sha256:23c553581ae4521576bc840c3522517de4af125ee3a1458128840f03d1f3fde7"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-navigation-menu",
+      "type": "registry:component",
+      "title": "Navigation Menu",
+      "description": "Provides keyboard-accessible hierarchical navigation with a shared viewport.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/navigation-menu.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/navigation-menu.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "navigation",
+            "menu",
+            "viewport"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-navigation-menu.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/navigation-menu.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/navigation-menu.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/navigation-menu.tsx",
+                "upstreamSha256": "sha256:551957293727a8ad89d95c56a05dea57aa7efd3c37661e883a409cae710dbcc7",
+                "contentSha256": "sha256:4a6cf36bb7a4eaf01a8c4ad7a6b544b499011d6643be9ca4d63557609e52a130",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports.",
+                  "Disabled nonessential animation and transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/navigation-menu.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/navigation-menu.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "hierarchical-navigation-menu",
+            "sourceHash": "sha256:e96bb68a11082ac4440d01669c166b0fa96d61beff35ac76773cdd29fa605d7d",
+            "contentHash": "sha256:d93d557e71de97c5270bf1864f9012b4a2fd779cd063d13317a7c3f269597d59",
+            "structureHash": "sha256:7097c5834d6b7cf9924bf7002c482157e8411e4a21a2fe0bb915b6b8ee599448"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-resizable",
+      "type": "registry:component",
+      "title": "Resizable Panels",
+      "description": "Lets keyboard and pointer users resize adjacent content panels.",
+      "author": "shadcn",
+      "dependencies": [
+        "clsx@2.1.1",
+        "react-resizable-panels@4.5.8",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/radix-nova/resizable.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/resizable.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "resizable",
+            "panels",
+            "separator"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-resizable.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/radix-nova/resizable.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/resizable.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/resizable.tsx",
+                "upstreamSha256": "sha256:ec2bcff328149be0d4bd003df00cb8721363b69b9810d52319747888fb1055a7",
+                "contentSha256": "sha256:2b97957f4ab71897ba085b1aac5b2d46e96c7602b5a21fb1a4af48dab8b0cfdf",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/registry/bases/radix/ui/resizable.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/radix-nova/resizable.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports.",
+              "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+              "reason": "Bundle the exact support closure required by the installed component."
+            }
+          ],
+          "dedupe": {
+            "family": "resizable-panel-group",
+            "sourceHash": "sha256:275dc8b09ec50854f41c8b49ce82daab32f1fcba29ca242bc59227bd3e52d62d",
+            "contentHash": "sha256:dedf327d7a5ee1fb17f20081e12de508b324b8caaf7a641f9613f6fe34203ccd",
+            "structureHash": "sha256:c3c946f4e87564d0a16ddda342ee384d0ca4a768c0f6729ead52c9bce8d7fc96"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
     }
   ]
 }
