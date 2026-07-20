@@ -1,0 +1,200 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-rich-textarea-drafts",
+  "homepage": "https://github.com/inokawa/rich-textarea",
+  "items": [
+    {
+      "name": "rich-textarea",
+      "type": "registry:component",
+      "title": "Rich Textarea",
+      "description": "Decorates plain text through an assistive-technology-hidden backdrop while a native textarea retains editing and form behavior.",
+      "author": "inokawa",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/rich-textarea/textarea.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/rich-textarea/textarea.tsx"
+        },
+        {
+          "path": "components/rich-textarea/dom.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/dom.ts"
+        },
+        {
+          "path": "components/rich-textarea/observer.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/observer.ts"
+        },
+        {
+          "path": "components/rich-textarea/selection.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/selection.ts"
+        },
+        {
+          "path": "components/rich-textarea/useStatic.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/useStatic.ts"
+        },
+        {
+          "path": "components/rich-textarea/useIsomorphicLayoutEffect.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/useIsomorphicLayoutEffect.ts"
+        },
+        {
+          "path": "components/rich-textarea/utils.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/utils.tsx"
+        },
+        {
+          "path": "components/rich-textarea/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/types.ts"
+        },
+        {
+          "path": "components/rich-textarea/vendor/range-at-index.js",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/vendor/range-at-index.js"
+        },
+        {
+          "path": "components/rich-textarea/vendor/range-at-index.d.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/rich-textarea/vendor/range-at-index.d.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "textarea",
+            "decoration",
+            "highlighting",
+            "form",
+            "ime"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/rich-textarea/rich-textarea.tsx",
+          "source": {
+            "project": "Rich Textarea",
+            "repository": "https://github.com/inokawa/rich-textarea",
+            "revision": "044fbb88065f634203fee79ac2d745911505c36f",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/rich-textarea/textarea.tsx",
+                "upstreamPath": "src/textarea.tsx",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/textarea.tsx",
+                "upstreamSha256": "sha256:614432ca8956eeda49cbce1474fcc6dbeb92a4c6ca245e3b151616f5480a2640",
+                "contentSha256": "sha256:614432ca8956eeda49cbce1474fcc6dbeb92a4c6ca245e3b151616f5480a2640",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/dom.ts",
+                "upstreamPath": "src/dom.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/dom.ts",
+                "upstreamSha256": "sha256:cac8d0519552cf11799fd5e0971c70ee6dc8a6bc9ec39c4952761385ab3265ff",
+                "contentSha256": "sha256:cac8d0519552cf11799fd5e0971c70ee6dc8a6bc9ec39c4952761385ab3265ff",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/observer.ts",
+                "upstreamPath": "src/observer.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/observer.ts",
+                "upstreamSha256": "sha256:7f16bb34cd7ce05b4750be1e5bed27d8e0b67dfee5d0800af33e40d75c4c8221",
+                "contentSha256": "sha256:7f16bb34cd7ce05b4750be1e5bed27d8e0b67dfee5d0800af33e40d75c4c8221",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/selection.ts",
+                "upstreamPath": "src/selection.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/selection.ts",
+                "upstreamSha256": "sha256:08d7492b1eeca27820f0a76706833dac561cb2f7e0a4da1c9dae480270db1ad9",
+                "contentSha256": "sha256:08d7492b1eeca27820f0a76706833dac561cb2f7e0a4da1c9dae480270db1ad9",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/useStatic.ts",
+                "upstreamPath": "src/useStatic.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/useStatic.ts",
+                "upstreamSha256": "sha256:6b83aac2636b528856928ed225a32f53ce0db55cb91ff423e25456039cd5ab1b",
+                "contentSha256": "sha256:6b83aac2636b528856928ed225a32f53ce0db55cb91ff423e25456039cd5ab1b",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/useIsomorphicLayoutEffect.ts",
+                "upstreamPath": "src/useIsomorphicLayoutEffect.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/useIsomorphicLayoutEffect.ts",
+                "upstreamSha256": "sha256:437c6c6a716d397ce422220f24837fb562cbc21b969029078baf284d24fc7bea",
+                "contentSha256": "sha256:437c6c6a716d397ce422220f24837fb562cbc21b969029078baf284d24fc7bea",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/utils.tsx",
+                "upstreamPath": "src/utils.tsx",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/utils.tsx",
+                "upstreamSha256": "sha256:ab36756de2c9bb31b3eb3cb94189180cfce41677a3100e12dc560199da413d46",
+                "contentSha256": "sha256:ab36756de2c9bb31b3eb3cb94189180cfce41677a3100e12dc560199da413d46",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/types.ts",
+                "upstreamPath": "src/types.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/types.ts",
+                "upstreamSha256": "sha256:5c37ca9e564ee3d00776f4768c5aa4745e8c4610d537c1c8ca537642fc901cac",
+                "contentSha256": "sha256:5c37ca9e564ee3d00776f4768c5aa4745e8c4610d537c1c8ca537642fc901cac",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/vendor/range-at-index.js",
+                "upstreamPath": "src/vendor/range-at-index.js",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/vendor/range-at-index.js",
+                "upstreamSha256": "sha256:acf8d3ae86a6b2adf9bf7e781c73cfd88d1d4e54298e3edae4f32a9ad6340878",
+                "contentSha256": "sha256:acf8d3ae86a6b2adf9bf7e781c73cfd88d1d4e54298e3edae4f32a9ad6340878",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/rich-textarea/vendor/range-at-index.d.ts",
+                "upstreamPath": "src/vendor/range-at-index.d.ts",
+                "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/vendor/range-at-index.d.ts",
+                "upstreamSha256": "sha256:c8cb5aab066b2a4ef0733f0655c2388f5fcbe0a1bbfe192ceab355c69c292688",
+                "contentSha256": "sha256:c8cb5aab066b2a4ef0733f0655c2388f5fcbe0a1bbfe192ceab355c69c292688",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/textarea.tsx and its imported support closure under src",
+            "copyright": [
+              "Copyright (c) 2021 inokawa"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/LICENSE",
+              "sha256": "sha256:3d77b6ef2ad044224a09656d5361e71cefc7de3d66995dcfc7c3b2e291640b7c",
+              "localPath": "registry/sources/rich-textarea/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [],
+          "dedupe": {
+            "family": "decorated-native-text-entry",
+            "sourceHash": "sha256:3f5de5cb6c9213c898a8d0bb345a5d0ba8387a2f0df0992f42b5b6172d0e70d9",
+            "contentHash": "sha256:3f5de5cb6c9213c898a8d0bb345a5d0ba8387a2f0df0992f42b5b6172d0e70d9",
+            "structureHash": "sha256:e54d93455fdbf904c1ef915c6d1ed7ee7f1fc2e022362953f0210df5ea183ca8"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
