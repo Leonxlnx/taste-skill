@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TextMorph } from "../../../registry/sources/motion-primitives/components/motion-text-morph/text-morph";
+import { TextMorph } from "@/registry/sources/motion-primitives/components/motion-text-morph/text-morph";
 
 export default function MotionTextMorphPreview() {
   const [word, setWord] = useState<"Shape" | "Share">("Shape");

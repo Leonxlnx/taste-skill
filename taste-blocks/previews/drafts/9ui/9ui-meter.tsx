@@ -2,7 +2,7 @@ import {
   Meter,
   MeterLabel,
   MeterValue,
-} from "../../../registry/sources/9ui/components/9ui-meter/meter"
+} from "@/registry/sources/9ui/components/9ui-meter/meter"
 
 export default function NineUiMeterPreview() {
   return (

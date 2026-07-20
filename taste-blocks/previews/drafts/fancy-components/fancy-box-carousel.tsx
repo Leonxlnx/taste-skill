@@ -5,7 +5,7 @@ import { useRef } from "react"
 import BoxCarousel, {
   type BoxCarouselRef,
   type CarouselItem,
-} from "../../../registry/sources/fancy-components/components/fancy-box-carousel/box-carousel"
+} from "@/registry/sources/fancy-components/components/fancy-box-carousel/box-carousel"
 
 const tile = (label: string, background: string) =>
   `data:image/svg+xml,${encodeURIComponent(

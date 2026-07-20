@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { Timer } from "../../../registry/sources/cult-ui/components/cult-timer/timer"
+import { Timer } from "@/registry/sources/cult-ui/components/cult-timer/timer"
 
 export default function CultTimerPreview() {
   const [isRunning, setIsRunning] = useState(false)

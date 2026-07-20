@@ -3,7 +3,7 @@
 import {
   BlurVignette,
   BlurVignetteArticle,
-} from "../../../registry/sources/ui-layouts/components/uilayouts-blur-vignette/blur-vignette";
+} from "@/registry/sources/ui-layouts/components/uilayouts-blur-vignette/blur-vignette";
 
 export default function BlurVignettePreview() {
   return (

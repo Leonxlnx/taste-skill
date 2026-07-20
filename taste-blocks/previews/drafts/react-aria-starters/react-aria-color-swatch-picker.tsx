@@ -1,6 +1,6 @@
 'use client';
 
-import {ColorSwatchPicker, ColorSwatchPickerItem} from '../../../registry/sources/react-aria-starters/components/react-aria-color-swatch-picker/ColorSwatchPicker';
+import {ColorSwatchPicker, ColorSwatchPickerItem} from '@/registry/sources/react-aria-starters/components/react-aria-color-swatch-picker/ColorSwatchPicker';
 
 export default function Preview() {
   return (

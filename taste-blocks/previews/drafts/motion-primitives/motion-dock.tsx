@@ -5,7 +5,7 @@ import {
   DockIcon,
   DockItem,
   DockLabel,
-} from "../../../registry/sources/motion-primitives/components/motion-dock/dock";
+} from "@/registry/sources/motion-primitives/components/motion-dock/dock";
 
 const items = [
   ["Projects", "P"],

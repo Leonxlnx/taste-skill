@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from 'react-aria-components/Button';
-import {Menu, MenuItem, MenuTrigger} from '../../../registry/sources/react-aria-starters/components/react-aria-menu/Menu';
+import {Menu, MenuItem, MenuTrigger} from '@/registry/sources/react-aria-starters/components/react-aria-menu/Menu';
 
 export default function Preview() {
   return (

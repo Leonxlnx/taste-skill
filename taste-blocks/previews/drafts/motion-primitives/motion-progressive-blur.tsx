@@ -1,6 +1,6 @@
 "use client";
 
-import { ProgressiveBlur } from "../../../registry/sources/motion-primitives/components/motion-progressive-blur/progressive-blur";
+import { ProgressiveBlur } from "@/registry/sources/motion-primitives/components/motion-progressive-blur/progressive-blur";
 
 export default function MotionProgressiveBlurPreview() {
   return (

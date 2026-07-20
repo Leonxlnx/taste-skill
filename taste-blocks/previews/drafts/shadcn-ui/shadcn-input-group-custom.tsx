@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import InputGroupCustom from "../../../registry/sources/shadcn-ui/components/shadcn-input-group-custom/input-group-custom"
+import InputGroupCustom from "@/registry/sources/shadcn-ui/components/shadcn-input-group-custom/input-group-custom"
 
 export default function ShadcnInputGroupCustomPreview() {
   const [submitted, setSubmitted] = React.useState(false)

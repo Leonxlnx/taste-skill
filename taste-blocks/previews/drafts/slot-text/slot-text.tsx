@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { SlotText } from "../../../registry/sources/slot-text/components/slot-text/react";
+import { SlotText } from "@/registry/sources/slot-text/components/slot-text/react";
 
 const states = ["Ready", "Syncing…", "Saved ✓", "מוכן"];
 

@@ -3,7 +3,7 @@
 import CardStack, {
   type CardStackItem,
   useCardStack,
-} from "../../../registry/sources/animata/components/animata-card-stack/card-stack";
+} from "@/registry/sources/animata/components/animata-card-stack/card-stack";
 
 type PreviewCard = CardStackItem & {
   title: string;

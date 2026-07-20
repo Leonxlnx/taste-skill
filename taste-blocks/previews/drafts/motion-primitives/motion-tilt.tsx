@@ -1,6 +1,6 @@
 "use client";
 
-import { Tilt } from "../../../registry/sources/motion-primitives/components/motion-tilt/tilt";
+import { Tilt } from "@/registry/sources/motion-primitives/components/motion-tilt/tilt";
 
 export default function MotionTiltPreview() {
   return (

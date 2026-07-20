@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TransitionPanel } from "../../../registry/sources/motion-primitives/components/motion-transition-panel/transition-panel";
+import { TransitionPanel } from "@/registry/sources/motion-primitives/components/motion-transition-panel/transition-panel";
 
 const labels = ["Summary", "Details", "Next"] as const;
 const panels = [

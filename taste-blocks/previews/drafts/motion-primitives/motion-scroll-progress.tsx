@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { ScrollProgress } from "../../../registry/sources/motion-primitives/components/motion-scroll-progress/scroll-progress";
+import { ScrollProgress } from "@/registry/sources/motion-primitives/components/motion-scroll-progress/scroll-progress";
 
 export default function MotionScrollProgressPreview() {
   const containerRef = useRef<HTMLDivElement>(null);

@@ -1,6 +1,6 @@
 "use client"
 
-import { VoteTally } from "../../../registry/sources/cult-ui/components/cult-vote-tally/vote-tally"
+import { VoteTally } from "@/registry/sources/cult-ui/components/cult-vote-tally/vote-tally"
 
 const choices = [
   ["keyboard", "Keyboard navigation", "Complete flows without reaching for a pointer."],

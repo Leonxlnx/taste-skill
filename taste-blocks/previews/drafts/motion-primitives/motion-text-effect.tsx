@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TextEffect } from "../../../registry/sources/motion-primitives/components/motion-text-effect/text-effect";
+import { TextEffect } from "@/registry/sources/motion-primitives/components/motion-text-effect/text-effect";
 
 export default function MotionTextEffectPreview() {
   const [visible, setVisible] = useState(true);

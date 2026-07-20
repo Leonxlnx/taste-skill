@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TextLoop } from "../../../registry/sources/motion-primitives/components/motion-text-loop/text-loop";
+import { TextLoop } from "@/registry/sources/motion-primitives/components/motion-text-loop/text-loop";
 
 export default function MotionTextLoopPreview() {
   const [playing, setPlaying] = useState(false);

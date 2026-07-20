@@ -1,6 +1,6 @@
 "use client"
 
-import { ProgressCircle } from "../../../registry/sources/tremor-raw/components/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle"
+import { ProgressCircle } from "@/registry/sources/tremor-raw/components/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle"
 
 export default function TremorProgressCirclePreview() {
   return (

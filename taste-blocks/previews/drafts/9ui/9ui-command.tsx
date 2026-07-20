@@ -11,7 +11,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "../../../registry/sources/9ui/components/9ui-command/command"
+} from "@/registry/sources/9ui/components/9ui-command/command"
 
 export default function NineUiCommandPreview() {
   const [selection, setSelection] = useState("لم يتم اختيار أمر")

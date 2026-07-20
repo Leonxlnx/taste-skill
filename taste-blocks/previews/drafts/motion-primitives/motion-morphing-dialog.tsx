@@ -8,7 +8,7 @@ import {
   MorphingDialogDescription,
   MorphingDialogTitle,
   MorphingDialogTrigger,
-} from "../../../registry/sources/motion-primitives/components/motion-morphing-dialog/morphing-dialog";
+} from "@/registry/sources/motion-primitives/components/motion-morphing-dialog/morphing-dialog";
 
 export default function MotionMorphingDialogPreview() {
   return (

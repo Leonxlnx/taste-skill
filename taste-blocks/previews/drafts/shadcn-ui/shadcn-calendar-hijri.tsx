@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { HijriCalendar } from "../../../registry/sources/shadcn-ui/components/shadcn-calendar-hijri/calendar-hijri"
+import { HijriCalendar } from "@/registry/sources/shadcn-ui/components/shadcn-calendar-hijri/calendar-hijri"
 
 export default function ShadcnCalendarHijriPreview() {
   const [date, setDate] = React.useState<Date | undefined>(

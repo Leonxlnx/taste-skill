@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidGlassCard } from "../../../registry/sources/ui-layouts/components/uilayouts-liquid-glass/liquid-glass";
+import { LiquidGlassCard } from "@/registry/sources/ui-layouts/components/uilayouts-liquid-glass/liquid-glass";
 
 export default function LiquidGlassPreview() {
   return (

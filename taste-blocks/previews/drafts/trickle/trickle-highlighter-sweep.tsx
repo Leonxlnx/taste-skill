@@ -1,4 +1,4 @@
-import { HighlighterSweep } from "../../../registry/sources/trickle/components/trickle-highlighter-sweep/highlighter-sweep"
+import { HighlighterSweep } from "@/registry/sources/trickle/components/trickle-highlighter-sweep/highlighter-sweep"
 
 const segments = [
   { text: "Source-copied motion " },

@@ -1,6 +1,6 @@
 "use client";
 
-import SwapText from "../../../registry/sources/animata/components/animata-swap-text/swap-text";
+import SwapText from "@/registry/sources/animata/components/animata-swap-text/swap-text";
 
 export default function AnimataSwapTextPreview() {
   return (

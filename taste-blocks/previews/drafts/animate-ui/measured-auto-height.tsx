@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { AutoHeight } from "../../../registry/sources/animate-ui/components/measured-auto-height/auto-height"
+import { AutoHeight } from "@/registry/sources/animate-ui/components/measured-auto-height/auto-height"
 
 export default function MeasuredAutoHeightPreview() {
   const [expanded, setExpanded] = useState(false)

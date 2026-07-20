@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { RichTextarea } from "../../../registry/sources/rich-textarea/components/rich-textarea/textarea"
+import { RichTextarea } from "@/registry/sources/rich-textarea/components/rich-textarea/textarea"
 
 const initialValue =
   "Review the launch note today, then mark urgent details for the team."

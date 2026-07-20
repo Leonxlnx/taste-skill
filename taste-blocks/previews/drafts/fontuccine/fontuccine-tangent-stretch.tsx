@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import {
   Fontuccine,
   type FontuccineConfig,
-} from '../../../registry/sources/fontuccine/components/fontuccine/react';
+} from '@/registry/sources/fontuccine/components/fontuccine/react';
 
 export default function FontuccineTangentStretchPreview() {
   const [fontBuffer, setFontBuffer] = useState<ArrayBuffer>();

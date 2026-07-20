@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarCustomDays } from "../../../registry/sources/shadcn-ui/components/shadcn-calendar-custom-days/calendar-custom-days"
+import { CalendarCustomDays } from "@/registry/sources/shadcn-ui/components/shadcn-calendar-custom-days/calendar-custom-days"
 
 export default function ShadcnCalendarCustomDaysPreview() {
   return (

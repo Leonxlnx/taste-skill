@@ -1,4 +1,4 @@
-import { UnderlineDraw } from "../../../registry/sources/trickle/components/trickle-underline-draw/underline-draw"
+import { UnderlineDraw } from "@/registry/sources/trickle/components/trickle-underline-draw/underline-draw"
 
 export default function TrickleUnderlineDrawPreview() {
   return (

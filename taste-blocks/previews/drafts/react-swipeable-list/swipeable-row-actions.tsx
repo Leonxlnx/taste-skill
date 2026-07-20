@@ -9,7 +9,7 @@ import {
   SwipeAction,
   TrailingActions,
   Type,
-} from '../../../registry/sources/react-swipeable-list/components/react-swipeable-list';
+} from '@/registry/sources/react-swipeable-list/components/react-swipeable-list';
 
 const initialItems = [
   { id: 1, title: 'Quarterly notes', detail: 'Updated 12 minutes ago' },

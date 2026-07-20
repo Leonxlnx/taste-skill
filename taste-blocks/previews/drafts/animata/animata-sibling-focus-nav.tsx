@@ -1,6 +1,6 @@
 "use client";
 
-import SiblingFocusNav from "../../../registry/sources/animata/components/animata-sibling-focus-nav/sibling-focus-nav";
+import SiblingFocusNav from "@/registry/sources/animata/components/animata-sibling-focus-nav/sibling-focus-nav";
 
 const links = ["Overview", "Principles", "Examples", "Notes"];
 

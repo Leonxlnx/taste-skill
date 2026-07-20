@@ -1,6 +1,6 @@
 'use client';
 
-import {SegmentedControl, SegmentedControlItem} from '../../../registry/sources/react-aria-starters/components/react-aria-segmented-control/SegmentedControl';
+import {SegmentedControl, SegmentedControlItem} from '@/registry/sources/react-aria-starters/components/react-aria-segmented-control/SegmentedControl';
 
 export default function Preview() {
   return (

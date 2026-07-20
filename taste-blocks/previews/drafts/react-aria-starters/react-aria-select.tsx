@@ -1,6 +1,6 @@
 'use client';
 
-import {Select, SelectItem} from '../../../registry/sources/react-aria-starters/components/react-aria-select/Select';
+import {Select, SelectItem} from '@/registry/sources/react-aria-starters/components/react-aria-select/Select';
 
 export default function Preview() {
   return (

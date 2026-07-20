@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import NumberFlow from "../../../registry/sources/numberflow/components/number-flow/number-flow";
+import NumberFlow from "@/registry/sources/numberflow/components/number-flow/number-flow";
 
 const step = 125;
 

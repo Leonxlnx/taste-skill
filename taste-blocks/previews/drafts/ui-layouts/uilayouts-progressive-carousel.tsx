@@ -8,7 +8,7 @@ import {
   SliderBtnGroup,
   SliderContent,
   SliderWrapper,
-} from "../../../registry/sources/ui-layouts/components/uilayouts-progressive-carousel/progressive-carousel";
+} from "@/registry/sources/ui-layouts/components/uilayouts-progressive-carousel/progressive-carousel";
 
 const slides = [
   { id: "signal", label: "Signal", color: "from-emerald-400 to-cyan-700" },

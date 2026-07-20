@@ -1,6 +1,6 @@
 "use client";
 
-import { CodeTabs } from "../../../registry/sources/ui-layouts/components/uilayouts-code-tabs/code-tabs";
+import { CodeTabs } from "@/registry/sources/ui-layouts/components/uilayouts-code-tabs/code-tabs";
 
 const tabs = [
   {

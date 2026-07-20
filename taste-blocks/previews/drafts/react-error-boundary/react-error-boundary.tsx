@@ -6,7 +6,7 @@ import {
   ErrorBoundary,
   getErrorMessage,
   type FallbackProps,
-} from "../../../registry/sources/react-error-boundary/components/react-error-boundary";
+} from "@/registry/sources/react-error-boundary/components/react-error-boundary";
 
 function FailurePronePanel({
   onFail,

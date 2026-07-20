@@ -3,8 +3,8 @@
 import { useState, type FormEvent } from 'react';
 
 // @ts-expect-error -- the pinned upstream component is intentionally shipped as JavaScript.
-import DualListBox from '../../../registry/sources/react-dual-listbox/components/react-dual-listbox/index.js';
-import '../../../registry/sources/react-dual-listbox/components/react-dual-listbox/react-dual-listbox.css';
+import DualListBox from '@/registry/sources/react-dual-listbox/components/react-dual-listbox/index.js';
+import '@/registry/sources/react-dual-listbox/components/react-dual-listbox/react-dual-listbox.css';
 
 const options = [
   { value: 'discovery', label: 'Discovery' },

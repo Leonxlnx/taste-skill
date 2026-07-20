@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import Lightbox from "../../../registry/sources/yarl/components/yarl-lightbox/index";
-import "../../../registry/sources/yarl/components/yarl-lightbox/styles.css";
+import Lightbox from "@/registry/sources/yarl/components/yarl-lightbox/index";
+import "@/registry/sources/yarl/components/yarl-lightbox/styles.css";
 
 function image(label: string, background: string, accent: string) {
   return `data:image/svg+xml,${encodeURIComponent(

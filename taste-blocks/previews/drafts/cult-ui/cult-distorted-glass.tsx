@@ -1,4 +1,4 @@
-import { DistortedGlass } from "../../../registry/sources/cult-ui/components/cult-distorted-glass/distorted-glass"
+import { DistortedGlass } from "@/registry/sources/cult-ui/components/cult-distorted-glass/distorted-glass"
 
 export default function CultDistortedGlassPreview() {
   return (

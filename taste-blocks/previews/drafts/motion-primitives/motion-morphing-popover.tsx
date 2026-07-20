@@ -4,7 +4,7 @@ import {
   MorphingPopover,
   MorphingPopoverContent,
   MorphingPopoverTrigger,
-} from "../../../registry/sources/motion-primitives/components/motion-morphing-popover/morphing-popover";
+} from "@/registry/sources/motion-primitives/components/motion-morphing-popover/morphing-popover";
 
 export default function MotionMorphingPopoverPreview() {
   return (

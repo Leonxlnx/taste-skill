@@ -1,4 +1,4 @@
-import { InkBleed } from "../../../registry/sources/trickle/components/trickle-ink-bleed/ink-bleed"
+import { InkBleed } from "@/registry/sources/trickle/components/trickle-ink-bleed/ink-bleed"
 
 export default function TrickleInkBleedPreview() {
   return (

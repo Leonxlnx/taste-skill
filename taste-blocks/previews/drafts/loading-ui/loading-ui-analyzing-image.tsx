@@ -1,4 +1,4 @@
-import { AnalyzingImage } from "../../../registry/sources/loading-ui/components/loading-ui-analyzing-image/analyzing-image";
+import { AnalyzingImage } from "@/registry/sources/loading-ui/components/loading-ui-analyzing-image/analyzing-image";
 
 export default function LoadingUiAnalyzingImagePreview() {
   return (

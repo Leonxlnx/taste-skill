@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedBackground } from "../../../registry/sources/motion-primitives/components/motion-animated-background/animated-background";
+import { AnimatedBackground } from "@/registry/sources/motion-primitives/components/motion-animated-background/animated-background";
 
 const options = [
   ["overview", "Overview"],

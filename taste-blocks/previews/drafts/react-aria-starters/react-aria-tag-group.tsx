@@ -1,6 +1,6 @@
 'use client';
 
-import {Tag, TagGroup} from '../../../registry/sources/react-aria-starters/components/react-aria-tag-group/TagGroup';
+import {Tag, TagGroup} from '@/registry/sources/react-aria-starters/components/react-aria-tag-group/TagGroup';
 
 export default function Preview() {
   return (

@@ -4,7 +4,7 @@ import { useState } from "react"
 
 import ResponsivePagination, {
   dropNavThenEllipsis,
-} from "../../../registry/sources/react-responsive-pagination/components/react-responsive-pagination"
+} from "@/registry/sources/react-responsive-pagination/components/react-responsive-pagination"
 
 const copy = {
   en: {

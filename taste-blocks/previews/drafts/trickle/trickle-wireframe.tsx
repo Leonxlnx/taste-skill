@@ -1,4 +1,4 @@
-import { Wireframe } from "../../../registry/sources/trickle/components/trickle-wireframe/wireframe"
+import { Wireframe } from "@/registry/sources/trickle/components/trickle-wireframe/wireframe"
 
 export default function TrickleWireframePreview() {
   return (

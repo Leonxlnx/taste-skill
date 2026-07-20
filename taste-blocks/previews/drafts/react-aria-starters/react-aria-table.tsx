@@ -1,6 +1,6 @@
 'use client';
 
-import {Cell, Column, Row, Table, TableBody, TableHeader} from '../../../registry/sources/react-aria-starters/components/react-aria-table/Table';
+import {Cell, Column, Row, Table, TableBody, TableHeader} from '@/registry/sources/react-aria-starters/components/react-aria-table/Table';
 
 export default function Preview() {
   return (

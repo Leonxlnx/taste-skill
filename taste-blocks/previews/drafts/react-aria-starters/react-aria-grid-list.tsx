@@ -1,6 +1,6 @@
 'use client';
 
-import {GridList, GridListItem} from '../../../registry/sources/react-aria-starters/components/react-aria-grid-list/GridList';
+import {GridList, GridListItem} from '@/registry/sources/react-aria-starters/components/react-aria-grid-list/GridList';
 
 export default function Preview() {
   return (

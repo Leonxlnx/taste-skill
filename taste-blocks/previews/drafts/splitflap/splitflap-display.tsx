@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { SplitFlapDisplay } from "../../../registry/sources/splitflap/components/splitflap-display/split-flap-display";
+import { SplitFlapDisplay } from "@/registry/sources/splitflap/components/splitflap-display/split-flap-display";
 
 const destinations = ["BERLIN", "PARIS", "LONDON", "ROME"];
 

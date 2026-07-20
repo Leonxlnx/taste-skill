@@ -1,7 +1,7 @@
 'use client';
 
-import {Disclosure, DisclosureHeader, DisclosurePanel} from '../../../registry/sources/react-aria-starters/components/react-aria-disclosure-group/Disclosure';
-import {DisclosureGroup} from '../../../registry/sources/react-aria-starters/components/react-aria-disclosure-group/DisclosureGroup';
+import {Disclosure, DisclosureHeader, DisclosurePanel} from '@/registry/sources/react-aria-starters/components/react-aria-disclosure-group/Disclosure';
+import {DisclosureGroup} from '@/registry/sources/react-aria-starters/components/react-aria-disclosure-group/DisclosureGroup';
 
 export default function Preview() {
   return (

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import CooldownAction from "../../../registry/sources/otp-timer/components/cooldown-action/cooldown-action"
+import CooldownAction from "@/registry/sources/otp-timer/components/cooldown-action/cooldown-action"
 
 export default function CooldownActionPreview() {
   const [exportCount, setExportCount] = useState(0)

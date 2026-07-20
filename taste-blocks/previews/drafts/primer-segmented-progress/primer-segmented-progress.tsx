@@ -1,6 +1,6 @@
 import type {CSSProperties} from 'react'
 
-import {ProgressBar} from '../../../registry/sources/primer-segmented-progress/components/primer-segmented-progress'
+import {ProgressBar} from '@/registry/sources/primer-segmented-progress/components/primer-segmented-progress'
 
 const segments = [
   {label: 'Completed', value: 46, bg: 'success.emphasis', color: '#1f883d'},

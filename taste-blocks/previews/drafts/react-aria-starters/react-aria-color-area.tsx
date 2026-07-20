@@ -1,6 +1,6 @@
 'use client';
 
-import {ColorArea} from '../../../registry/sources/react-aria-starters/components/react-aria-color-area/ColorArea';
+import {ColorArea} from '@/registry/sources/react-aria-starters/components/react-aria-color-area/ColorArea';
 
 export default function Preview() {
   return (

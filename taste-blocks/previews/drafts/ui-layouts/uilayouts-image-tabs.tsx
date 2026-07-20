@@ -8,7 +8,7 @@ import {
   TabItem,
   TabList,
   TabsProvider,
-} from "../../../registry/sources/ui-layouts/components/uilayouts-image-tabs/image-tabs";
+} from "@/registry/sources/ui-layouts/components/uilayouts-image-tabs/image-tabs";
 
 const tabs = [
   { id: "compose", title: "Compose", description: "Shape the initial structure.", color: "from-cyan-400 to-blue-700" },
