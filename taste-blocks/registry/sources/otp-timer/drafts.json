@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "otp-timer-drafts",
+  "homepage": "https://github.com/927tanmay/otp-timer",
+  "items": [
+    {
+      "name": "cooldown-action",
+      "type": "registry:component",
+      "title": "Cooldown Action",
+      "description": "Runs a caller-provided action, then makes it available again after an accurate bounded cooldown.",
+      "author": "Tanmay Sharma & Simran Gupta",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/cooldown-action/cooldown-action.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/cooldown-action.tsx"
+        }
+      ],
+      "categories": [
+        "buttons-actions"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "buttons-actions",
+          "tags": [
+            "cooldown",
+            "retry",
+            "async-action",
+            "countdown"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/otp-timer/cooldown-action.tsx",
+          "source": {
+            "project": "otp-timer",
+            "repository": "https://github.com/927tanmay/otp-timer",
+            "revision": "9c7a6645cb01c471c25632be8842fdb924dadc49",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/cooldown-action/cooldown-action.tsx",
+                "upstreamPath": "src/timer.js",
+                "permalink": "https://github.com/927tanmay/otp-timer/blob/9c7a6645cb01c471c25632be8842fdb924dadc49/src/timer.js",
+                "upstreamSha256": "sha256:c1508cae19d551b0c794efc3595c9d7c973506f82ac380f6e178c070d376dfc0",
+                "contentSha256": "sha256:d75483842029c83255ed0f38dc846e22bfb7e0c27de762a70cd798670563effc",
+                "changes": [
+                  "Converted the PropTypes class source to TypeScript while preserving its existing duration, label, style, class, options, and resend props under the generic Cooldown Action name.",
+                  "Derived the displayed remainder from an end timestamp, paused scheduled updates while the document is hidden, reconciled duration changes, and cleared the timeout and visibility listener on unmount.",
+                  "Awaited the real resend callback, prevented duplicate activation, restarted cooldown only after fulfillment, and left failed actions available with a polite one-time status.",
+                  "Removed hard-coded font, color, border, and typography defaults; added a non-submitting native button, static pending feedback, explicit non-live countdown, and a minimum touch target."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/timer.js",
+            "copyright": [
+              "Copyright (c) 2025 Tanmay Sharma & Simran Gupta"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/927tanmay/otp-timer/blob/9c7a6645cb01c471c25632be8842fdb924dadc49/LICENSE",
+              "sha256": "sha256:013766619425e378f8223a3821d2252edcdba13b3a27aa2e6023c9e50f7deef3",
+              "localPath": "registry/sources/otp-timer/LICENSE"
+            },
+            "notices": [
+              "The pinned upstream LICENSE has trailing spaces on 12 lines; the local evidence copy removes only that trailing whitespace without changing the legal text."
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/cooldown-action/cooldown-action.tsx",
+              "change": "Mechanically typed and generically named the class, replaced decrementing intervals with an end-time scheduler, added visibility and duration reconciliation, awaited and guarded the real action lifecycle, exposed concise status, and removed visual defaults while retaining existing source props.",
+              "reason": "Keep cooldown time correct through tab throttling, make caller success or failure authoritative, preserve native keyboard and form behavior, avoid repeated announcements, honor static reduced-motion behavior, and keep the source-copy API intact."
+            }
+          ],
+          "dedupe": {
+            "family": "cooldown-action",
+            "sourceHash": "sha256:a21215502ef0d0df251e098409c03beded31cc5d45ac8471585021f3f51b48f2",
+            "contentHash": "sha256:07966846ce5d4f6c171748f75626ce226bd0a4a3c43de927bcbc3bb19022d49d",
+            "structureHash": "sha256:15c804df28e9f953c8c1f09aa46e618fd6f3e5addf555deed4b91c882ab226e2"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
