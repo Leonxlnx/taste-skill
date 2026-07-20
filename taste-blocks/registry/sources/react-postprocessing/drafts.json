@@ -1,0 +1,1725 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "react-postprocessing-drafts",
+  "homepage": "https://github.com/pmndrs/react-postprocessing",
+  "items": [
+    {
+      "name": "react-postprocessing-ascii",
+      "type": "registry:component",
+      "title": "ASCII",
+      "description": "Converts a rendered scene into a configurable character-cell shader.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/ASCII.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/ASCII.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "ascii",
+            "shader",
+            "typography"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-ascii.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/ASCII.tsx",
+                "upstreamPath": "src/effects/ASCII.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/ASCII.tsx",
+                "upstreamSha256": "sha256:341ec5073edd15b92c1976d4061f587d43795d3397c86782da2df795f3de480c",
+                "contentSha256": "sha256:12a40bf402d6e4950673483bd5bd094d4365559507309894809e3c8b66c88e00",
+                "changes": [
+                  "Declared the effect as client code, guarded character texture creation during SSR, and dispose the generated texture and effect on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/ASCII.tsx, src/EffectComposer.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/ASCII.tsx",
+              "change": "Declared the effect as client code, guarded character texture creation during SSR, and dispose the generated texture and effect on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "ascii-postprocessing-effect",
+            "sourceHash": "sha256:d739df6230a3197dcefa1f3eb4d6ab2cf0132d934ef31cc144cdcf1d67df258a",
+            "contentHash": "sha256:d61508860bce8110eff745e0cc02d28cdbe4654f3e8f5ed9734291f0000d6279",
+            "structureHash": "sha256:eec4781c29bce5686142c913d39e1aca4641ee4150e6a58c4b2b7d4a1cf29953"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-bloom",
+      "type": "registry:component",
+      "title": "Bloom",
+      "description": "Adds thresholded mipmap bloom to emissive scene content.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Bloom.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Bloom.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "bloom",
+            "glow",
+            "light"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-bloom.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Bloom.tsx",
+                "upstreamPath": "src/effects/Bloom.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Bloom.tsx",
+                "upstreamSha256": "sha256:dcaa05661d8401ddf403227806a3aed6efb82ee80d1d0345e93aa84d4f0072c7",
+                "contentSha256": "sha256:50280da80fb05e15636e109b5c67da5669b9f277098a8b5f8271c2b482c77875",
+                "changes": [
+                  "Declared the effect as client code."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Bloom.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Bloom.tsx",
+              "change": "Declared the effect as client code.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "luminance-bloom-effect",
+            "sourceHash": "sha256:7cf4aa92fa26f068f59bc0ed08d76d69ffd6a3399e3fe2835fda80f286b03b38",
+            "contentHash": "sha256:6e264dafd1c824d3ea41c1b588f0a589d8838dec83307d0bcb0f8aea6ad6ae5e",
+            "structureHash": "sha256:e1b48e38ddad4f40c9087cfea74745b94cfed16207f0842f3ee6f4fe9be2432c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-chromatic-aberration",
+      "type": "registry:component",
+      "title": "Chromatic Aberration",
+      "description": "Offsets color channels with configurable radial modulation.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/ChromaticAberration.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/ChromaticAberration.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "chromatic-aberration",
+            "color",
+            "lens"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-chromatic-aberration.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/ChromaticAberration.tsx",
+                "upstreamPath": "src/effects/ChromaticAberration.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/ChromaticAberration.tsx",
+                "upstreamSha256": "sha256:56fd19ba1bef3ea18f210fb651171abc0bd3a10d14249d93b38f1473c5cd5c9d",
+                "contentSha256": "sha256:048a0e11133367c296457c9aa103f586c1887480c000609be2a8e1bf46d63345",
+                "changes": [
+                  "Declared the effect as client code."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/ChromaticAberration.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/ChromaticAberration.tsx",
+              "change": "Declared the effect as client code.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "chromatic-aberration-effect",
+            "sourceHash": "sha256:2fb51b72ee36d73c941dd84fe7f0feb2732a2c485d279b30243549016398678e",
+            "contentHash": "sha256:425be74ba740d2d3c91e59ea1b7274a17bb1d2f111571df1089dc2c9cbf408f2",
+            "structureHash": "sha256:07b2654495385ca0822ea5e73f831f22e4a40fedb4a72403813e49d0e1f233b9"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-depth-of-field",
+      "type": "registry:component",
+      "title": "Depth of Field",
+      "description": "Applies camera-aware depth blur with target and bokeh controls.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/DepthOfField.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/DepthOfField.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "depth-of-field",
+            "bokeh",
+            "camera"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-depth-of-field.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/DepthOfField.tsx",
+                "upstreamPath": "src/effects/DepthOfField.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/DepthOfField.tsx",
+                "upstreamSha256": "sha256:53ac20d944a9edaef664cca6b4067c362269d5ba3913da863c05a4586bd2443b",
+                "contentSha256": "sha256:0f07daa01870e3c28ba39a978d87d2bf5bf65ac02aa357fc43a05ccca1ff4260",
+                "changes": [
+                  "Declared the effect as client code."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/DepthOfField.tsx, src/EffectComposer.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/DepthOfField.tsx",
+              "change": "Declared the effect as client code.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "depth-of-field-effect",
+            "sourceHash": "sha256:3ada4d1389eb34db32496f6d9bdb0d8932668a005ba95efc363779ffe3e66361",
+            "contentHash": "sha256:9952bd3f8cf125d80f412e5a15e134da2ebec918bd3026baf88d6b2fd4bbdc3b",
+            "structureHash": "sha256:6a8a3da3eedc13902855328fae2421691908677a1893ecb1a1d793215fcbf6c8"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-glitch",
+      "type": "registry:component",
+      "title": "Glitch",
+      "description": "Applies an interruptible sporadic digital glitch with bounded duration and strength controls.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Glitch.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Glitch.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "glitch",
+            "distortion",
+            "temporal"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-glitch.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Glitch.tsx",
+                "upstreamPath": "src/effects/Glitch.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Glitch.tsx",
+                "upstreamSha256": "sha256:1f526ebf102bc3bb07a1a36d498342a0b1637ef212e21f3f5d74d034a21f9ca0",
+                "contentSha256": "sha256:de6896ccc89fb840f1b94f79c62b0b302c47005cbb44d56c6c9cc60bb999c700",
+                "changes": [
+                  "Declared the effect as client code and disable temporal glitches when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Glitch.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Glitch.tsx",
+              "change": "Declared the effect as client code and disable temporal glitches when reduced motion is requested.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "sporadic-glitch-effect",
+            "sourceHash": "sha256:33a56eea4f31737f3dd8ec205c02ec7f7e3c94d50341aa44306eafe9490269e3",
+            "contentHash": "sha256:127672ba261f6cd6df2c2c0c5d8310f0f5c012148011b28b7cedaafb91f001ba",
+            "structureHash": "sha256:9359095e72f0585e880a4074a4207104370e2370dc4977c7e5d845db69efc850"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-god-rays",
+      "type": "registry:component",
+      "title": "God Rays",
+      "description": "Projects volumetric light shafts from a supplied mesh or points source.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/GodRays.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/GodRays.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "god-rays",
+            "volumetric-light",
+            "occlusion"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-god-rays.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/GodRays.tsx",
+                "upstreamPath": "src/effects/GodRays.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/GodRays.tsx",
+                "upstreamSha256": "sha256:7e54cc0c0df5bdae253bd417ff6fc253b290c53d9899eb88aaa7ce09829fbdd2",
+                "contentSha256": "sha256:3ecf8642c0544cd946828ce766af8893ab1ea01d2a1b69a118213601abaf89d8",
+                "changes": [
+                  "Declared the effect as client code and dispose it on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/GodRays.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/GodRays.tsx",
+              "change": "Declared the effect as client code and dispose it on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "mesh-source-god-rays",
+            "sourceHash": "sha256:97750f9fe773ab53d68647aabb88b880f17fccb96ca2433c14b881dc19dcb86b",
+            "contentHash": "sha256:0362fdb17d0355a56507d7a04e8e3a456f59c57625afd296169c24d1a266e1ad",
+            "structureHash": "sha256:0870a3c2e8a81a1667d8b59f08071e4bfaf257bf7cef8e5c357603009946da37"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-grid",
+      "type": "registry:component",
+      "title": "Grid",
+      "description": "Overlays a configurable screen-space grid effect on a rendered scene.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Grid.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Grid.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "grid",
+            "screen-space",
+            "shader"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-grid.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Grid.tsx",
+                "upstreamPath": "src/effects/Grid.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Grid.tsx",
+                "upstreamSha256": "sha256:3d44884ce38fba0f3eebbbac49e8fb0bbbdd6783c94bcbbfed6de747d7547e85",
+                "contentSha256": "sha256:12a3bf85e4af72d4366135af1236bcf5eb74dc10c329fc97f616bd4e5aa8b63c",
+                "changes": [
+                  "Declared the effect as client code and dispose it on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Grid.tsx, src/EffectComposer.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Grid.tsx",
+              "change": "Declared the effect as client code and dispose it on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "screen-space-grid-effect",
+            "sourceHash": "sha256:f4260bd44da699237a7b81aac841b77358deb037924b8a48191952a185aefd8a",
+            "contentHash": "sha256:7b575dcd71ffb12696a73431870eb03c7f9df0c1a6f79da981fb33af7bf8b7c4",
+            "structureHash": "sha256:8cf0133b10ed07059f324518ac3808795b95975424d84fc817fdf81552cf639c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-lut",
+      "type": "registry:component",
+      "title": "LUT",
+      "description": "Applies a supplied 3D lookup texture for real-time color grading.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/LUT.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/LUT.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "lut",
+            "color-grading",
+            "3d-texture"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-lut.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/LUT.tsx",
+                "upstreamPath": "src/effects/LUT.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/LUT.tsx",
+                "upstreamSha256": "sha256:3ee3ceb3a3c8e952680b8f772212e4b1b4cd4c15ef4407c3b01d687772d2eda3",
+                "contentSha256": "sha256:ad2ef5ab85118b21ed9b2faf1a71e2746a67a23e4b71e874cb74d9ca1219e53b",
+                "changes": [
+                  "Declared the effect as client code and dispose it on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/LUT.tsx, src/EffectComposer.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/LUT.tsx",
+              "change": "Declared the effect as client code and dispose it on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "three-dimensional-lut-effect",
+            "sourceHash": "sha256:458fbe65f8c2c6db591b8cf9ba01dfacfd6c3d695ac1cc26ef5e066e9fe9efb5",
+            "contentHash": "sha256:855b5eaba2c93828cb054c3d85f9058d8a5ab0e641daa8882e1fd6fa10f9090d",
+            "structureHash": "sha256:ac0334093672afae256787289360e686f4f43ba8ba5d66f30efef17c8bee44f0"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-outline",
+      "type": "registry:component",
+      "title": "Outline",
+      "description": "Draws configurable visible and hidden edges around selected scene objects.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Outline.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Outline.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/Selection.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/Selection.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "outline",
+            "selection",
+            "edges"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-outline.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Outline.tsx",
+                "upstreamPath": "src/effects/Outline.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Outline.tsx",
+                "upstreamSha256": "sha256:d9478ed3d2df915bb48553e8c1370873d7b497a17ce1e2308d4c963b4b6644f4",
+                "contentSha256": "sha256:58e54b6df636c74419c3b63ff78200dd52aae7f7e839c6aea847904b986fab63",
+                "changes": [
+                  "Declared the effect as client code and disable outline pulsing when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/Selection.tsx",
+                "upstreamPath": "src/Selection.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/Selection.tsx",
+                "upstreamSha256": "sha256:165ac9c05f4791680dc44772bc015f783e17ab3c7076fe074b33485d093290b6",
+                "contentSha256": "sha256:7c4ed1d47105568fb031ca409ec31370223f1bad3f6187469284f08621bee7ee",
+                "changes": [
+                  "Declared the selection helpers as client components."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Outline.tsx, src/EffectComposer.tsx, src/Selection.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Outline.tsx",
+              "change": "Declared the effect as client code and disable outline pulsing when reduced motion is requested.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/Selection.tsx",
+              "change": "Declared the selection helpers as client components.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "selected-object-outline-effect",
+            "sourceHash": "sha256:aea78f88a7f9c75d2477305b47528949d7e14bec1513e1e8ad2c5ef24808bec4",
+            "contentHash": "sha256:6d15feb2531e62d3e120a8de22e460a05ae07ae52ad5b19d2926611062384761",
+            "structureHash": "sha256:627ca626e1d45f0dd9b7a40438289aea4e52742c69316e64ae8a7736a781b7d2"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-pixelation",
+      "type": "registry:component",
+      "title": "Pixelation",
+      "description": "Pixelates the composed scene at a configurable granularity.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Pixelation.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Pixelation.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "pixelation",
+            "retro",
+            "shader"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-pixelation.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Pixelation.tsx",
+                "upstreamPath": "src/effects/Pixelation.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Pixelation.tsx",
+                "upstreamSha256": "sha256:af7fd6593282f1d612f71c1ee2f70a4cde1f84caa4a80670c0b35dba9c5160e4",
+                "contentSha256": "sha256:9cf278032294cc2a68e7a109bdb6d66a4378964da41e1b573a1ae9d6d404a2d1",
+                "changes": [
+                  "Declared the effect as client code and dispose it on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Pixelation.tsx, src/EffectComposer.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Pixelation.tsx",
+              "change": "Declared the effect as client code and dispose it on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "scene-pixelation-effect",
+            "sourceHash": "sha256:d98f7695fdbd7ee9e8929503371ece887c07269b7d3a646f508e406b2a950eb1",
+            "contentHash": "sha256:692efa9ab025b78b5482533487d30c5d3fc102ff26357c24161e04bc8447544f",
+            "structureHash": "sha256:c4a669594f891541acfc5f46af87d4a4e23e3bb4b794ea1a66645c98720ef70c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-ramp",
+      "type": "registry:component",
+      "title": "Ramp",
+      "description": "Blends linear, radial, or mirrored color ramps over or through the scene.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Ramp.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Ramp.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "ramp",
+            "gradient",
+            "mask"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-ramp.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Ramp.tsx",
+                "upstreamPath": "src/effects/Ramp.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Ramp.tsx",
+                "upstreamSha256": "sha256:c0f0b4070ffbb666f0910ae7b0c97f8695b3320062bf072a551ed39840ed3ee2",
+                "contentSha256": "sha256:9574fd2d66725dcd8e9a34f4dc23955834d842fe8b92d33e9657fcfcfaa56621",
+                "changes": [
+                  "Declared the effect as client code."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Ramp.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Ramp.tsx",
+              "change": "Declared the effect as client code.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "configurable-ramp-effect",
+            "sourceHash": "sha256:e61791b0bcb5ce40a279ee956a3e42cc46a6fc99103e7677c37357e75fd7644f",
+            "contentHash": "sha256:1fdd4ef11ef4c126525e3930a2c905cac6e0cb301b0c134ce6ac1ff3d68d941d",
+            "structureHash": "sha256:129c05f73cf1e6106782e23632689d544d1113ac949c04559d56b3a3757d48b0"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-selective-bloom",
+      "type": "registry:component",
+      "title": "Selective Bloom",
+      "description": "Applies bloom only to selected objects and supplied lights.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/SelectiveBloom.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/SelectiveBloom.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/Selection.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/Selection.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "bloom",
+            "selection",
+            "light"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-selective-bloom.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/SelectiveBloom.tsx",
+                "upstreamPath": "src/effects/SelectiveBloom.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/SelectiveBloom.tsx",
+                "upstreamSha256": "sha256:73391270dc0b621c2c304cfc4555314eae6489796777abff69be5c7162410d72",
+                "contentSha256": "sha256:4fb28a591ada7105f055aabb7e2a43ef44429940e232871305e272393b41bf94",
+                "changes": [
+                  "Declared the effect as client code and dispose it on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/Selection.tsx",
+                "upstreamPath": "src/Selection.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/Selection.tsx",
+                "upstreamSha256": "sha256:165ac9c05f4791680dc44772bc015f783e17ab3c7076fe074b33485d093290b6",
+                "contentSha256": "sha256:7c4ed1d47105568fb031ca409ec31370223f1bad3f6187469284f08621bee7ee",
+                "changes": [
+                  "Declared the selection helpers as client components."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/SelectiveBloom.tsx, src/EffectComposer.tsx, src/Selection.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/SelectiveBloom.tsx",
+              "change": "Declared the effect as client code and dispose it on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/Selection.tsx",
+              "change": "Declared the selection helpers as client components.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "selected-object-bloom-effect",
+            "sourceHash": "sha256:0ec31d02ab21993c03573087c5e375ef78e42b7517bc478b3d8bc5fd92fee7b0",
+            "contentHash": "sha256:3ffd4a9895334003f1a3ad683bc01fec980a7da3260a2fe92c4358f12819e212",
+            "structureHash": "sha256:ff0d05e239110870e4e293d2bcff9c9164fbfae52385f4e53531aa397fdaf881"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-tilt-shift",
+      "type": "registry:component",
+      "title": "Tilt Shift",
+      "description": "Applies directional depth-like blur with bounded shader samples.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/TiltShift2.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/TiltShift2.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "tilt-shift",
+            "blur",
+            "focus"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-tilt-shift.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/TiltShift2.tsx",
+                "upstreamPath": "src/effects/TiltShift2.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/TiltShift2.tsx",
+                "upstreamSha256": "sha256:41ca5c04781cb2c2278a5942a1ce7de8a7848b8369d2f9b3982b5bfafefe307d",
+                "contentSha256": "sha256:879e6da917fdf2c5ece1ace617d8818a257dd5d7b6da9ab9d63479878e12251e",
+                "changes": [
+                  "Declared the effect as client code."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/TiltShift2.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/TiltShift2.tsx",
+              "change": "Declared the effect as client code.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "directional-tilt-shift-effect",
+            "sourceHash": "sha256:2b830e97c2f6b895043278562cd00eeeac129b1e1c55120d1f40058f0b2e0b43",
+            "contentHash": "sha256:a82c0deda9ed11fa73251801a97f76c4fa702b79b41f3a5b6943f05c9a067177",
+            "structureHash": "sha256:588ad38651facc366ec1361034c2dc25786262aef02757d0ef9c0afa10fe19c1"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "react-postprocessing-water",
+      "type": "registry:component",
+      "title": "Water Distortion",
+      "description": "Distorts the composed scene with a configurable animated water shader.",
+      "author": "pmndrs and react-postprocessing contributors",
+      "dependencies": [
+        "@react-three/fiber@9.4.0",
+        "postprocessing@6.36.6",
+        "three@0.172.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-postprocessing/effects/Water.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/effects/Water.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/EffectComposer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+        },
+        {
+          "path": "components/react-postprocessing/util.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "water",
+            "distortion",
+            "shader"
+          ],
+          "renderer": "webgl",
+          "preview": "previews/drafts/react-postprocessing/react-postprocessing-water.tsx",
+          "source": {
+            "project": "react-postprocessing",
+            "repository": "https://github.com/pmndrs/react-postprocessing",
+            "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-postprocessing/effects/Water.tsx",
+                "upstreamPath": "src/effects/Water.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Water.tsx",
+                "upstreamSha256": "sha256:f3c065bcb58f8534dba227181b960e2c5e0d53f20b7a1d2e43a8a4abe9675617",
+                "contentSha256": "sha256:221c99a02574b710e329741d0bb8f96619c251ac895f4bbd7ea15332b6e58396",
+                "changes": [
+                  "Declared the effect as client code and set distortion to a static frame when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+                "upstreamPath": "src/EffectComposer.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+                "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+                "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+                "changes": [
+                  "Declared the React Three Fiber composer as a client component.",
+                  "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-postprocessing/util.tsx",
+                "upstreamPath": "src/util.tsx",
+                "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+                "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+                "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+                "changes": [
+                  "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/effects/Water.tsx, src/EffectComposer.tsx, src/util.tsx",
+            "copyright": [
+              "Copyright (c) 2020 react-spring"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+              "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+              "localPath": "registry/sources/react-postprocessing/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-postprocessing/effects/Water.tsx",
+              "change": "Declared the effect as client code and set distortion to a static frame when reduced motion is requested.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+              "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            },
+            {
+              "shippedPath": "components/react-postprocessing/util.tsx",
+              "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+              "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+            }
+          ],
+          "dedupe": {
+            "family": "water-distortion-effect",
+            "sourceHash": "sha256:a4158db7cb7897d94a35ff0ff01419bcf85a2bef51b10ff59fb2883f1c06156d",
+            "contentHash": "sha256:79bddb4f972754a9465b758cea3119d8b66c45ed72d768e81e42b4ea30a4b0df",
+            "structureHash": "sha256:262d3a855207001147a678ce8ad89ad8a219ccab06ab00e5b22b11b43cb72c47"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
