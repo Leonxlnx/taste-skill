@@ -1,34 +1,17 @@
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, readdir, realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { loadRegistry } from "shadcn/registry";
+import { registrySchema } from "shadcn/schema";
 import ts from "typescript";
+import { categories } from "./check-policy.mjs";
 import { aggregateHash, sha256, structureHash } from "./policy-utils.mjs";
-
-export const categories = [
-  "text-motion",
-  "visual-effects",
-  "buttons-actions",
-  "navigation-menus",
-  "media-galleries",
-  "cards-containers",
-  "forms-feedback",
-  "icons-microinteractions",
-  "status-progress",
-];
 
 const allowedCategories = new Set(categories);
 const allowedLicenses = new Set(["MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Apache-2.0", "CC0-1.0"]);
 const allowedAssetLicenses = new Set([...allowedLicenses, "OFL-1.1"]);
 const allowedRenderers = new Set(["dom", "svg", "canvas", "webgl"]);
 const headlineFileTypes = new Set(["registry:component", "registry:ui"]);
-const allowedFileTypes = new Set([
-  "registry:component",
-  "registry:ui",
-  "registry:hook",
-  "registry:lib",
-  "registry:file",
-]);
+const allowedFileTypes = new Set(["registry:component", "registry:ui", "registry:hook", "registry:lib", "registry:file"]);
 const forbiddenTerms = new Set([
   "section",
   "sections",
@@ -97,7 +80,7 @@ function strings(value, label, { empty = true } = {}) {
 }
 
 function exactHash(value, label) {
-  assert(hashPattern.test(value), `${label} must be lowercase SHA-256 with a sha256: prefix`);
+  assert(typeof value === "string" && hashPattern.test(value), `${label} must be lowercase SHA-256 with a sha256: prefix`);
   return value;
 }
 
@@ -130,7 +113,7 @@ function isWithin(root, target) {
 async function localFile(root, realRoot, value, label) {
   relativePath(value, label);
   const resolved = path.resolve(root, value);
-  assert(isWithin(root, resolved), `${label} escapes the project root`);
+  assert(isWithin(root, resolved), `${label} escapes its allowed root`);
   let canonical;
   try {
     canonical = await realpath(resolved);
@@ -138,7 +121,7 @@ async function localFile(root, realRoot, value, label) {
     if (error.code === "ENOENT") throw new Error(`${label} does not exist: ${value}`);
     throw error;
   }
-  assert(isWithin(realRoot, canonical), `${label} resolves outside the project root`);
+  assert(isWithin(realRoot, canonical), `${label} resolves outside its allowed root`);
   assert((await stat(canonical)).isFile(), `${label} is not a file: ${value}`);
   return { content: await readFile(canonical), path: canonical };
 }
@@ -262,14 +245,16 @@ function moduleSpecifiers(content, file) {
   return specifiers;
 }
 
-function assertImportBoundary(specifier, file, root, label) {
+function assertImportBoundary(specifier, file, root, boundaryRoot, label) {
   assert(!/^https?:\/\//i.test(specifier), `${label} imports a remote module: ${specifier}`);
   assert(specifier !== "next" && !specifier.startsWith("next/") && specifier !== "server-only", `${label} imports Next-only module ${specifier}`);
 
   const clean = specifier.split(/[?#]/, 1)[0].replaceAll("\\", "/");
   let projectPath = clean;
   if (clean.startsWith(".")) {
-    projectPath = path.relative(root, path.resolve(path.dirname(file), clean)).replaceAll("\\", "/");
+    const resolvedImport = path.resolve(path.dirname(file), clean);
+    assert(isWithin(boundaryRoot, resolvedImport), `${label} crosses its local source boundary via ${specifier}`);
+    projectPath = path.relative(root, resolvedImport).replaceAll("\\", "/");
   } else {
     projectPath = projectPath.replace(/^[@~#]\//, "").replace(/^@components\//, "components/");
   }
@@ -280,12 +265,12 @@ function assertImportBoundary(specifier, file, root, label) {
   );
 }
 
-function assertSourceText(content, file, root, label) {
+function assertSourceText(content, file, root, label, boundaryRoot = root) {
   assertNoSecrets(content, label);
   assertNoRemoteAssets(content, label);
   assert(!/["']use server["']/.test(content), `${label} contains a Next-only use server directive`);
   if (/\.[cm]?[jt]sx?$/i.test(file)) {
-    for (const specifier of moduleSpecifiers(content, file)) assertImportBoundary(specifier, file, root, label);
+    for (const specifier of moduleSpecifiers(content, file)) assertImportBoundary(specifier, file, root, boundaryRoot, label);
   }
 }
 
@@ -354,7 +339,12 @@ function validateTarget(value, label) {
   if (value === undefined) return;
   string(value, label);
   assert(
-    !/^https?:\/\//i.test(value) && !value.includes("\\") && !path.posix.isAbsolute(value) && !/^[A-Za-z]:\//.test(value) && !value.split("/").includes(".."),
+    !/^https?:\/\//i.test(value) &&
+      !value.includes("\\") &&
+      !path.posix.isAbsolute(value) &&
+      !/^[A-Za-z]:\//.test(value) &&
+      path.posix.normalize(value) === value &&
+      !value.split("/").some((part) => part === "." || part === ".."),
     `${label} must be a safe install target`,
   );
   const normalized = value.replace(/^@[^/]+\//, "").replace(/^src\//, "");
@@ -407,17 +397,29 @@ async function validateAsset(asset, index, root, realRoot, label) {
     }
   }
   rejectRemote(asset, `assets[${index}]`);
+  return local.path;
 }
 
 async function validateItem(item, context) {
-  const { contentHashes, families, names, realRoot, root, sourceHashes, sourceLocators } = context;
+  const {
+    contentHashes,
+    families,
+    names,
+    realRoot,
+    realSourceDirectory,
+    root,
+    sourceDirectory,
+    sourceHashes,
+    sourceId,
+    sourceLocators,
+  } = context;
   const itemName = string(item.name, "registry item name");
   assert(kebabCase.test(itemName), `${itemName} must use globally unique kebab-case`);
-  claim(names, itemName, itemName, "public name");
+  claim(names, itemName, itemName, "draft name");
   assert(item.type === "registry:component", `${itemName} must have type registry:component`);
-  const forbidden = forbiddenIdentity(`${itemName} ${item.title ?? ""}`);
   string(item.title, `${itemName}.title`);
   string(item.description, `${itemName}.description`);
+  const forbidden = forbiddenIdentity(`${itemName} ${item.title}`);
   for (const [field, dependencies] of [
     ["dependencies", item.dependencies ?? []],
     ["registryDependencies", item.registryDependencies ?? []],
@@ -431,7 +433,7 @@ async function validateItem(item, context) {
   assert(allowedCategories.has(item.categories[0]), `${itemName}.categories contains unsupported category ${item.categories[0]}`);
 
   const tasteblocks = object(object(item.meta, `${itemName}.meta`).tasteblocks, `${itemName}.meta.tasteblocks`);
-  assert(tasteblocks.status === "verified", `${itemName} is public but not verified`);
+  assert(tasteblocks.status === "draft", `${itemName}.meta.tasteblocks.status must be draft`);
   assert(tasteblocks.category === item.categories[0], `${itemName}.meta.tasteblocks.category must match categories[0]`);
   strings(tasteblocks.tags, `${itemName}.meta.tasteblocks.tags`, { empty: false });
   assert(allowedRenderers.has(tasteblocks.renderer), `${itemName}.meta.tasteblocks.renderer is unsupported`);
@@ -445,7 +447,8 @@ async function validateItem(item, context) {
   assert(Array.isArray(tasteblocks.assets), `${itemName}.meta.tasteblocks.assets must be an array`);
 
   const preview = relativePath(tasteblocks.preview, `${itemName}.meta.tasteblocks.preview`);
-  assert(preview === `previews/${itemName}.tsx`, `${itemName} preview must be previews/${itemName}.tsx`);
+  const expectedPreview = `previews/drafts/${sourceId}/${itemName}.tsx`;
+  assert(preview === expectedPreview, `${itemName} preview must be ${expectedPreview}`);
   const previewFile = await localFile(root, realRoot, preview, `${itemName} preview`);
   assertSourceText(previewFile.content.toString("utf8"), previewFile.path, root, `${itemName} preview`);
 
@@ -458,8 +461,8 @@ async function validateItem(item, context) {
 
   assert(Array.isArray(item.files) && item.files.length > 0, `${itemName}.files must be a non-empty array`);
   assert(item.files.length === source.files.length, `${itemName}.source.files must map one-to-one to item.files`);
-  const shippedPaths = new Set();
-  const resolvedPaths = new Set();
+  const filesByPath = new Map();
+  const resolvedFiles = new Map();
   const matchedFiles = new Set();
   const structuralFiles = [];
   const upstreamHashes = [];
@@ -469,9 +472,8 @@ async function validateItem(item, context) {
     object(file, `${itemName}.files[${index}]`);
     assert(allowedFileTypes.has(file.type), `${itemName}.files[${index}].type is not a supported component file type`);
     const filePath = relativePath(file.path, `${itemName}.files[${index}].path`);
-    assert(filePath.startsWith("registry/sources/"), `${itemName}.files[${index}].path must stay under registry/sources`);
-    assert(!resolvedPaths.has(filePath), `${itemName} declares ${filePath} more than once`);
-    resolvedPaths.add(filePath);
+    assert(!filesByPath.has(filePath), `${itemName} declares ${filePath} more than once`);
+    filesByPath.set(filePath, { file, index });
     validateTarget(file.target, `${itemName}.files[${index}].target`);
   }
   const headlineIndex = item.files.findIndex((file) => headlineFileTypes.has(file.type));
@@ -481,14 +483,10 @@ async function validateItem(item, context) {
     const label = `${itemName}.source.files[${index}]`;
     object(sourceFile, label);
     const shippedPath = relativePath(sourceFile.shippedPath, `${label}.shippedPath`);
-    assert(!shippedPaths.has(shippedPath), `${itemName} maps shipped path ${shippedPath} more than once`);
-    shippedPaths.add(shippedPath);
-    const matches = item.files
-      .map((file, fileIndex) => ({ file, fileIndex }))
-      .filter(({ file }) => file.path === shippedPath || file.path.endsWith(`/${shippedPath}`));
-    assert(matches.length === 1, `${label}.shippedPath must match exactly one declared item file`);
-    assert(!matchedFiles.has(matches[0].fileIndex), `${itemName}.source.files does not map one-to-one to item.files`);
-    matchedFiles.add(matches[0].fileIndex);
+    const match = filesByPath.get(shippedPath);
+    assert(match, `${label}.shippedPath must exactly match one declared item file`);
+    assert(!matchedFiles.has(match.index), `${itemName}.source.files does not map one-to-one to item.files`);
+    matchedFiles.add(match.index);
 
     const upstreamPath = relativePath(sourceFile.upstreamPath, `${label}.upstreamPath`);
     immutablePermalink(sourceFile.permalink, source.repository, source.revision, upstreamPath, `${label}.permalink`);
@@ -497,15 +495,16 @@ async function validateItem(item, context) {
     strings(sourceFile.changes, `${label}.changes`);
 
     const locator = `${source.repository}\n${source.revision}\n${upstreamPath}`;
-    recordSourceLocator(sourceLocators, locator, itemName, matches[0].fileIndex === headlineIndex, sourceFile);
-    const local = await localFile(root, realRoot, matches[0].file.path, `${itemName} shipped file`);
+    recordSourceLocator(sourceLocators, locator, itemName, match.index === headlineIndex, sourceFile);
+    const local = await localFile(sourceDirectory, realSourceDirectory, match.file.path, `${itemName} shipped file`);
+    resolvedFiles.set(match.file.path, local.path);
     const actualHash = sha256(local.content);
-    assert(actualHash === sourceFile.contentSha256, `${label}.contentSha256 does not match ${matches[0].file.path}`);
+    assert(actualHash === sourceFile.contentSha256, `${label}.contentSha256 does not match ${match.file.path}`);
     if (sourceFile.changes.length === 0) {
       assert(sourceFile.upstreamSha256 === actualHash, `${label}.upstreamSha256 must match an unchanged shipped file`);
     }
-    assertSourceText(local.content.toString("utf8"), local.path, root, `${itemName} shipped file ${matches[0].file.path}`);
-    structuralFiles.push({ path: matches[0].file.path, content: local.content });
+    assertSourceText(local.content.toString("utf8"), local.path, root, `${itemName} shipped file ${match.file.path}`, sourceDirectory);
+    structuralFiles.push({ path: path.relative(root, local.path), content: local.content });
     upstreamHashes.push(sourceFile.upstreamSha256);
     shippedHashes.push(actualHash);
   }
@@ -517,10 +516,10 @@ async function validateItem(item, context) {
   assert(assetFiles.length === tasteblocks.assets.length, `${itemName}.assets must map one-to-one to non-code item files`);
   const mappedAssets = new Set();
   for (const [index, asset] of tasteblocks.assets.entries()) {
-    await validateAsset(asset, index, root, realRoot, `${itemName}.meta.tasteblocks.assets[${index}]`);
+    const assetPath = await validateAsset(asset, index, root, realRoot, `${itemName}.meta.tasteblocks.assets[${index}]`);
     const matches = assetFiles
       .map((file, fileIndex) => ({ file, fileIndex }))
-      .filter(({ file }) => file.path === asset.localPath || file.path.endsWith(`/${asset.localPath}`));
+      .filter(({ file }) => resolvedFiles.get(file.path) === assetPath);
     assert(matches.length === 1 && !mappedAssets.has(matches[0].fileIndex), `${itemName}.assets[${index}] must match exactly one non-code item file`);
     mappedAssets.add(matches[0].fileIndex);
   }
@@ -529,25 +528,74 @@ async function validateItem(item, context) {
   assert(kebabCase.test(dedupe.family), `${itemName}.dedupe.family must be kebab-case`);
   exactHash(dedupe.sourceHash, `${itemName}.dedupe.sourceHash`);
   exactHash(dedupe.contentHash, `${itemName}.dedupe.contentHash`);
+  assert(dedupe.structureHash !== null, `${itemName}.dedupe.structureHash must not be null`);
   exactHash(dedupe.structureHash, `${itemName}.dedupe.structureHash`);
-  assert(dedupe.sourceHash === aggregateHash(upstreamHashes), `${itemName}.dedupe.sourceHash does not recompute`);
-  assert(dedupe.contentHash === aggregateHash(shippedHashes), `${itemName}.dedupe.contentHash does not recompute`);
-  assert(dedupe.structureHash === structureHash(structuralFiles), `${itemName}.dedupe.structureHash does not recompute`);
+  const expectedSourceHash = aggregateHash(upstreamHashes);
+  const expectedContentHash = aggregateHash(shippedHashes);
+  const expectedStructureHash = structureHash(structuralFiles);
+  assert(dedupe.sourceHash === expectedSourceHash, `${itemName}.dedupe.sourceHash does not recompute (expected ${expectedSourceHash})`);
+  assert(dedupe.contentHash === expectedContentHash, `${itemName}.dedupe.contentHash does not recompute (expected ${expectedContentHash})`);
+  assert(
+    dedupe.structureHash === expectedStructureHash,
+    `${itemName}.dedupe.structureHash does not recompute (expected ${expectedStructureHash}, received ${dedupe.structureHash})`,
+  );
   claim(sourceHashes, dedupe.sourceHash, itemName, "source hash");
   claim(contentHashes, dedupe.contentHash, itemName, "content hash");
   claim(families, dedupe.family, itemName, "dedupe family");
 
   const verification = object(tasteblocks.verification, `${itemName}.meta.tasteblocks.verification`);
-  string(verification.reviewedBy, `${itemName}.verification.reviewedBy`);
-  isoDate(verification.reviewedAt, `${itemName}.verification.reviewedAt`);
+  assert(verification.reviewedBy === null, `${itemName}.verification.reviewedBy must be null while draft`);
+  assert(verification.reviewedAt === null, `${itemName}.verification.reviewedAt must be null while draft`);
   const embeddedPayload = JSON.stringify({ css: item.css, cssVars: item.cssVars, tailwind: item.tailwind });
   assertNoRemoteAssets(embeddedPayload, `${itemName} embedded registry styles`);
   assertNoSecrets(JSON.stringify(item), `${itemName} metadata`);
 }
 
-export async function validatePublicRegistry(registry, root = process.cwd()) {
+function schemaError(error) {
+  return error.issues.map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`).join("; ");
+}
+
+function normalizeSourceFilter(sourceFilter) {
+  const sources = sourceFilter === undefined ? [] : Array.isArray(sourceFilter) ? sourceFilter : [sourceFilter];
+  for (const source of sources) assert(kebabCase.test(source), `Invalid source filter: ${source}`);
+  return new Set(sources);
+}
+
+export async function discoverDrafts(root = process.cwd(), sourceFilter) {
+  const resolvedRoot = path.resolve(root);
+  const sourcesRoot = path.join(resolvedRoot, "registry", "sources");
+  let entries;
+  try {
+    entries = await readdir(sourcesRoot, { withFileTypes: true });
+  } catch (error) {
+    if (error.code === "ENOENT") throw new Error(`Draft source directory does not exist: ${sourcesRoot}`);
+    throw error;
+  }
+
+  const requested = normalizeSourceFilter(sourceFilter);
+  const manifests = [];
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (!entry.isDirectory() || (requested.size > 0 && !requested.has(entry.name))) continue;
+    const manifest = path.join(sourcesRoot, entry.name, "drafts.json");
+    try {
+      if ((await stat(manifest)).isFile()) manifests.push({ manifest, source: entry.name });
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+  }
+
+  if (requested.size > 0) {
+    const found = new Set(manifests.map(({ source }) => source));
+    const missing = [...requested].filter((source) => !found.has(source));
+    assert(missing.length === 0, `No source-local drafts.json found for: ${missing.join(", ")}`);
+  }
+  return manifests;
+}
+
+export async function checkDrafts(root = process.cwd(), sourceFilter) {
   const resolvedRoot = path.resolve(root);
   const realRoot = await realpath(resolvedRoot);
+  const manifests = await discoverDrafts(resolvedRoot, sourceFilter);
   const context = {
     contentHashes: new Map(),
     families: new Map(),
@@ -557,18 +605,58 @@ export async function validatePublicRegistry(registry, root = process.cwd()) {
     sourceHashes: new Map(),
     sourceLocators: new Map(),
   };
+  const sources = [];
 
-  for (const item of registry.items) await validateItem(item, context);
-  return registry;
+  for (const { manifest, source } of manifests) {
+    let input;
+    try {
+      input = JSON.parse(await readFile(manifest, "utf8"));
+    } catch (error) {
+      if (error instanceof SyntaxError) throw new Error(`${source}/drafts.json is invalid JSON: ${error.message}`);
+      throw error;
+    }
+    const parsed = registrySchema.safeParse(input);
+    if (!parsed.success) {
+      throw new Error(`${source}/drafts.json fails the official shadcn registry schema: ${schemaError(parsed.error)}`);
+    }
+    const sourceDirectory = path.dirname(manifest);
+    const sourceContext = {
+      ...context,
+      realSourceDirectory: await realpath(sourceDirectory),
+      sourceDirectory,
+      sourceId: source,
+    };
+    for (const item of parsed.data.items) await validateItem(item, sourceContext);
+    sources.push({ count: parsed.data.items.length, source });
+  }
+
+  return { sources, total: sources.reduce((total, source) => total + source.count, 0) };
 }
 
-export async function loadPublicRegistry(root = process.cwd()) {
-  const resolvedRoot = path.resolve(root);
-  const registry = await loadRegistry({ cwd: resolvedRoot, registryFile: "registry.json" });
-  return validatePublicRegistry(registry, resolvedRoot);
+function cliSourceFilter(args) {
+  const sources = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (argument === "--source") {
+      assert(args[index + 1], "--source requires a source id");
+      sources.push(args[++index]);
+    } else if (argument.startsWith("--source=")) {
+      sources.push(argument.slice("--source=".length));
+    } else {
+      assert(!argument.startsWith("-"), `Unknown option: ${argument}`);
+      sources.push(argument);
+    }
+  }
+  return sources;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  const registry = await loadPublicRegistry();
-  console.log(`Policy passed for ${registry.items.length} verified components.`);
+  try {
+    const result = await checkDrafts(process.cwd(), cliSourceFilter(process.argv.slice(2)));
+    for (const source of result.sources) console.log(`${source.source}: ${source.count} drafts`);
+    console.log(`Total: ${result.total} drafts.`);
+  } catch (error) {
+    console.error(`Draft policy failed: ${error.message}`);
+    process.exitCode = 1;
+  }
 }

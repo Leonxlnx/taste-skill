@@ -167,6 +167,11 @@ try {
   assert.equal(catalog[0].preview, "/preview/focus-ring");
   assert.equal(/localPath|shippedPath":"lib|reviewedBy/.test(JSON.stringify(catalog)), false);
 
+  const componentTypedSupport = structuredClone(baselineItems);
+  for (const item of componentTypedSupport) item.files[1].type = "registry:component";
+  await writeManifest(componentTypedSupport);
+  assert.equal((await loadPublicRegistry(root)).items.length, baselineItems.length);
+
   const badModification = structuredClone(baselineItems);
   badModification[0].meta.tasteblocks.modifications[0].shippedPath = "components/missing.tsx";
   await writeManifest(badModification);
@@ -179,7 +184,17 @@ try {
   await writeManifest(duplicateModification);
   await assert.rejects(loadPublicRegistry(root), /duplicate modification records/);
 
+  const duplicateHeadline = structuredClone(baselineItems);
+  const firstHeadline = duplicateHeadline[0].meta.tasteblocks.source.files[0];
+  Object.assign(duplicateHeadline[1].meta.tasteblocks.source.files[0], {
+    upstreamPath: firstHeadline.upstreamPath,
+    permalink: firstHeadline.permalink,
+  });
+  await writeManifest(duplicateHeadline);
+  await assert.rejects(loadPublicRegistry(root), /duplicates headline source locator/);
+
   const conflictingSupport = structuredClone(baselineItems);
+  for (const item of conflictingSupport) item.files[1].type = "registry:component";
   const conflictingFile = conflictingSupport[1].meta.tasteblocks.source.files[1];
   conflictingFile.upstreamSha256 = sha256("different upstream support");
   conflictingFile.changes = ["Adapted a different upstream support file."];
