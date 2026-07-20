@@ -1,0 +1,1147 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-motion-primitives-drafts",
+  "homepage": "https://github.com/ibelick/motion-primitives",
+  "items": [
+    {
+      "name": "motion-animated-background",
+      "type": "registry:component",
+      "title": "Animated Background",
+      "description": "Moves a shared background between selected or hovered child elements.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-animated-background/animated-background.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/animated-background.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "selection",
+            "tabs",
+            "shared-layout"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-animated-background.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-animated-background/animated-background.tsx",
+                "upstreamPath": "components/core/animated-background.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/animated-background.tsx",
+                "upstreamSha256": "sha256:fa592713c408eaf58b21976c20737d84239c42a0b7e47cf9e7843121b1c0852c",
+                "contentSha256": "sha256:090f2c1152c6917b6793bed30114fb60e2dba0858a7ed3211012f590c9cf8667",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Added a useReducedMotion branch that removes the shared layout id and snaps opacity changes.",
+                  "Added focus, blur, and click parity to hover mode so keyboard and touch users can set the same active state."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/animated-background.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-animated-background/animated-background.tsx",
+              "change": "Changed the local utility import, added a reduced-motion snap, and added keyboard/touch parity to hover mode.",
+              "reason": "Resolve the copied helper without a consumer root alias and keep the selection behavior usable without hover or animated layout movement."
+            }
+          ],
+          "dedupe": {
+            "family": "animated-selection-background",
+            "sourceHash": "sha256:135db1d1a2a322e920ca343d73393f2ddfe10c928ef6825379f6839a7c6ad228",
+            "contentHash": "sha256:e428cd30a0d56c913ed5260ed34fcf05ad5c3324c5be2805cd06872125b1ccd7",
+            "structureHash": "sha256:d3356af82f4cf4cef1215d613ce668352fd881bbff1b0ac1cfd4a0d1f7accc37"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-dock",
+      "type": "registry:component",
+      "title": "Dock",
+      "description": "Magnifies application actions according to pointer proximity.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-dock/dock.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/dock.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "dock",
+            "magnification",
+            "toolbar"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-dock.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-dock/dock.tsx",
+                "upstreamPath": "components/core/dock.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/dock.tsx",
+                "upstreamSha256": "sha256:5b624424f0fd8b66f174ecbd4e0d8c260f438d933963126bf34298eadcebf719",
+                "contentSha256": "sha256:a4331875113a63e9920e61670895025da9f291fe2d7d35f02d4e3dc75103b447",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Added useReducedMotion handling that keeps the dock and item widths static and makes tooltip feedback immediate.",
+                  "Changed the focusable role=button wrapper to a native button and require an accessible aria-label."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": [
+              "Motion Primitives docs credit @kashyap20 and cite Build UI – Magnified Dock as inspiration."
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/dock.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-dock/dock.tsx",
+              "change": "Changed the local utility import, disabled magnification for reduced motion, and replaced the simulated button with a labelled native button.",
+              "reason": "Resolve the copied helper, keep the dock static when motion is reduced, and preserve native keyboard/touch activation and naming."
+            }
+          ],
+          "dedupe": {
+            "family": "pointer-magnified-dock",
+            "sourceHash": "sha256:0f3e34315683368409a2ec5a2757ab86c72e155577e39971826f41e676b6bce8",
+            "contentHash": "sha256:6084a47516a76951e91e1fe4e713cd2c3a87abeb068c5a516f099d236daebb5e",
+            "structureHash": "sha256:ebb4bec0ce46ec99b4c7c87f024656f67bbc011fdfb47a036dcf93a312e1e436"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-morphing-dialog",
+      "type": "registry:component",
+      "title": "Morphing Dialog",
+      "description": "Expands a trigger into a modal dialog with shared-layout motion.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.400.0",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-morphing-dialog/morphing-dialog.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/morphing-dialog.tsx"
+        },
+        {
+          "path": "hooks/useClickOutside.tsx",
+          "type": "registry:hook",
+          "target": "@hooks/useClickOutside.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "dialog",
+            "shared-layout",
+            "overlay"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-morphing-dialog.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-morphing-dialog/morphing-dialog.tsx",
+                "upstreamPath": "components/core/morphing-dialog.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/morphing-dialog.tsx",
+                "upstreamSha256": "sha256:3783289015c56be36cd74701468a4d2aa345b48676b7fa12964ace9558e4e33e",
+                "contentSha256": "sha256:c153ec671a84ef187a6c8e18243604156c8a0939aac839e4e4f584b25f6d45b7",
+                "changes": [
+                  "Changed local utility and click-outside imports from root aliases to ../../lib/utils and ../../hooks/useClickOutside.",
+                  "Applied the caller transition through one MotionConfig and added an instant reduced-motion configuration.",
+                  "Connected the internal trigger ref, removed duplicate native-button keyboard handling, fixed dialog label/description ids, and restored focus on close.",
+                  "Scoped keyboard trapping to the open state, focused the dialog when it has no focusable child, and cleaned up the body scroll-lock class on close or unmount.",
+                  "Applied the existing container className and style props that upstream declared but did not forward."
+                ]
+              },
+              {
+                "shippedPath": "hooks/useClickOutside.tsx",
+                "upstreamPath": "hooks/useClickOutside.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/hooks/useClickOutside.tsx",
+                "upstreamSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+                "contentSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/morphing-dialog.tsx, hooks/useClickOutside.tsx, and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-morphing-dialog/morphing-dialog.tsx",
+              "change": "Changed local imports and made narrow reduced-motion, focus, semantic-id, and cleanup repairs without changing the compound component API.",
+              "reason": "Resolve copied helpers, provide an instant reduced-motion path, and make the upstream modal behavior safe enough to stage for browser review."
+            }
+          ],
+          "dedupe": {
+            "family": "shared-layout-dialog",
+            "sourceHash": "sha256:bd56dc9c5d63f392bab5bb0b553271fb1473df87bdfc6c6f0bfbcbfe524d8aa1",
+            "contentHash": "sha256:44db3e8920bd2d017acf658b8ef0a15263264a4ce04eb421e62c8f458c20d9e4",
+            "structureHash": "sha256:c917f89bb203181e7aa300ffc82536638bc1d3d9f4c7b1ebf794209a6150cfa7"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-morphing-popover",
+      "type": "registry:component",
+      "title": "Morphing Popover",
+      "description": "Expands a trigger into a shared-layout popover.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-morphing-popover/morphing-popover.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/morphing-popover.tsx"
+        },
+        {
+          "path": "hooks/useClickOutside.tsx",
+          "type": "registry:hook",
+          "target": "@hooks/useClickOutside.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "popover",
+            "shared-layout",
+            "overlay"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-morphing-popover.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-morphing-popover/morphing-popover.tsx",
+                "upstreamPath": "components/core/morphing-popover.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/morphing-popover.tsx",
+                "upstreamSha256": "sha256:72811cafa2d38d548919e2742325a5360dbd698ca19baf5d1af4c3417e8c425c",
+                "contentSha256": "sha256:728a50badbf14f670f6436ebf543e86056198a3e92ee1195ba0c3312e485c329",
+                "changes": [
+                  "Changed local utility and click-outside imports from root aliases to ../../lib/utils and ../../hooks/useClickOutside.",
+                  "Added an instant useReducedMotion MotionConfig path.",
+                  "Tracked the trigger, moved focus into the open popover, restored it on close, and made the dialog non-modal while retaining Escape and touch outside dismissal.",
+                  "Memoized open and close callbacks so parent rerenders do not tear down and restart the focus effect."
+                ]
+              },
+              {
+                "shippedPath": "hooks/useClickOutside.tsx",
+                "upstreamPath": "hooks/useClickOutside.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/hooks/useClickOutside.tsx",
+                "upstreamSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+                "contentSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/morphing-popover.tsx, hooks/useClickOutside.tsx, and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-morphing-popover/morphing-popover.tsx",
+              "change": "Changed local imports and added reduced-motion plus stable non-modal focus management.",
+              "reason": "Resolve copied helpers, snap the shared-layout transition when requested, and align focus behavior with a dismissible non-modal popover."
+            }
+          ],
+          "dedupe": {
+            "family": "shared-layout-popover",
+            "sourceHash": "sha256:917584025bf928ea8a4c4c714f044381cef74e8deb110f16c7d2b2e14a1fcb4f",
+            "contentHash": "sha256:69ec463508b167897df91773ed98f87c269a1221fa1b3c63ca51dc1b49a9c992",
+            "structureHash": "sha256:83917c3a613f3e9c2a7a3f43990d0955fa9086111f46c218bf3d8caedaba69c2"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-progressive-blur",
+      "type": "registry:component",
+      "title": "Progressive Blur",
+      "description": "Builds a directional blur overlay from layered masks.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-progressive-blur/progressive-blur.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/progressive-blur.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "blur",
+            "mask",
+            "overlay"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-progressive-blur.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-progressive-blur/progressive-blur.tsx",
+                "upstreamPath": "components/core/progressive-blur.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/progressive-blur.tsx",
+                "upstreamSha256": "sha256:28271af357f7f52bf69e6f13f3b0ac33042204e8338427881c28456419b936cd",
+                "contentSha256": "sha256:14a70b1e58c28a4b8663710c641824c1abe6bdba95002fcc4b726f42668b81cb",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Added a zero-duration useReducedMotion transition override for caller-supplied motion props.",
+                  "Marked generated blur layers as decorative."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/progressive-blur.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-progressive-blur/progressive-blur.tsx",
+              "change": "Changed the local utility import, snapped optional motion props for reduced motion, and hid decorative layers from assistive technology.",
+              "reason": "Resolve the copied helper and keep the static blur readable without exposing or animating its generated layers."
+            }
+          ],
+          "dedupe": {
+            "family": "layered-progressive-blur",
+            "sourceHash": "sha256:1e2d5640d45150350a3fc8772a7683a8012030279769a4c017b08b1c9474ab9f",
+            "contentHash": "sha256:0914638338f1eb65c543233bf80085c93c4bf903263d906ae2eb345387149015",
+            "structureHash": "sha256:c76ea7af7d332df9b498f9bd50efe8c340fe9a1d26a5544b20ccb5711d724309"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-scroll-progress",
+      "type": "registry:component",
+      "title": "Scroll Progress",
+      "description": "Maps page or container scroll progress to a horizontal indicator.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-scroll-progress/scroll-progress.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/scroll-progress.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "scroll",
+            "progress",
+            "indicator"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-scroll-progress.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-scroll-progress/scroll-progress.tsx",
+                "upstreamPath": "components/core/scroll-progress.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/scroll-progress.tsx",
+                "upstreamSha256": "sha256:e5decf683e55b351e971ecb47483e12169daaaf1a0a7ba079a2270d8ca6270b3",
+                "contentSha256": "sha256:eeef52652e3c5de98a8cd40b06183021b76b0775fab625e04ff3645f7fa39992",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Used the direct scroll motion value instead of the spring when reduced motion is requested.",
+                  "Allowed a nullable container ref for current React ref typing."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": [
+              "Motion Primitives docs credit @bhataasim1."
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/scroll-progress.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-scroll-progress/scroll-progress.tsx",
+              "change": "Changed the local utility import, bypassed spring lag for reduced motion, and widened the container ref type to include null.",
+              "reason": "Resolve the copied helper, keep progress directly tied to scroll position under reduced motion, and compile with current React ref types."
+            }
+          ],
+          "dedupe": {
+            "family": "scroll-progress-indicator",
+            "sourceHash": "sha256:47bcdeb0c857630df2f1f457640d04050b144db9bce193de7a488371af759a40",
+            "contentHash": "sha256:e3eec70e39fa5b4c3bcac20512b41a1c649945f7ac548aa0664e794eb5d31306",
+            "structureHash": "sha256:db88f589c11ae814d0bcf88371c87d67c7e594bbe9949cea5fdc0f2460b99e81"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-text-effect",
+      "type": "registry:component",
+      "title": "Text Effect",
+      "description": "Reveals text by line, word, or character with configurable variants.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-text-effect/text-effect.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/text-effect.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "reveal",
+            "segmentation"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-text-effect.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-text-effect/text-effect.tsx",
+                "upstreamPath": "components/core/text-effect.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-effect.tsx",
+                "upstreamSha256": "sha256:4b93c0ea6b9d747d69b7a244d5279f790a11a784e73713f3fe17a636abf53484",
+                "contentSha256": "sha256:6fc842b93bb59e1b411338f32a54208bde33c1c48853fd2f1679254501cab075",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Rendered the final semantic text without segmentation or animation when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/text-effect.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-text-effect/text-effect.tsx",
+              "change": "Changed the local utility import and added a final-text reduced-motion branch.",
+              "reason": "Resolve the copied helper and keep the phrase immediately readable as one semantic text node."
+            }
+          ],
+          "dedupe": {
+            "family": "segmented-text-reveal",
+            "sourceHash": "sha256:d4e4bec78cfcd5af49e90b0046dcf2ec9403528e4c271c602c2b2be2b670f075",
+            "contentHash": "sha256:83b74cb035d06329322a41b6710e57dee0a13e464548bd6fd0aa4286df5953b7",
+            "structureHash": "sha256:4257b620d7f6722921cd2baa2f2cb2ed779a79afdb8803bb222d2f84b5542831"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-text-loop",
+      "type": "registry:component",
+      "title": "Text Loop",
+      "description": "Cycles between caller-provided text or content children.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-text-loop/text-loop.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/text-loop.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "cycle",
+            "controlled-motion"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-text-loop.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-text-loop/text-loop.tsx",
+                "upstreamPath": "components/core/text-loop.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-loop.tsx",
+                "upstreamSha256": "sha256:87707ae5f7a3e13f1e6d348e735e65b05d742dc24343d20b6470f8b857d0d2d4",
+                "contentSha256": "sha256:0c3e209577aa91d2627f6154e79770db73579393ab60718b7538b23401941f25",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Changed autoplay to opt-in by default, stopped its interval for reduced motion, and rendered the current child without a transition.",
+                  "Skipped interval setup when fewer than two children are present."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/text-loop.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-text-loop/text-loop.tsx",
+              "change": "Changed the local utility import, made autoplay opt-in, and added reduced-motion and empty/single-child interval guards.",
+              "reason": "Resolve the copied helper and prevent unrequested or unnecessary timed text changes."
+            }
+          ],
+          "dedupe": {
+            "family": "cycling-text-content",
+            "sourceHash": "sha256:d0cd58b00736c243020fd113794222eefa8d457f69e956ab7609dc09e177f26f",
+            "contentHash": "sha256:bae7accdb3fb8b1b097f5294da96dd02f2283c6a343ec883538264bc569390ad",
+            "structureHash": "sha256:fded5b5dd753f26e6f7c47ef2499fff888e3f4f675aa8c531117ff0fc699c255"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-text-morph",
+      "type": "registry:component",
+      "title": "Text Morph",
+      "description": "Morphs matching characters between successive text strings.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-text-morph/text-morph.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/text-morph.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "characters",
+            "shared-layout"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-text-morph.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-text-morph/text-morph.tsx",
+                "upstreamPath": "components/core/text-morph.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-morph.tsx",
+                "upstreamSha256": "sha256:e3839272d22e1b041378263019d0716a29a8b99656b64eb385b66402698c9294",
+                "contentSha256": "sha256:77055804a05e3bcd5197d4b3b3416b5ff639672b8a07b51b79d52bbd6e1860e3",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Rendered the updated text as one static semantic node when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": [
+              "Motion Primitives docs cite the Family app as inspiration."
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/text-morph.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-text-morph/text-morph.tsx",
+              "change": "Changed the local utility import and added an immediate-text reduced-motion branch.",
+              "reason": "Resolve the copied helper and keep updated text readable without character layout motion."
+            }
+          ],
+          "dedupe": {
+            "family": "character-layout-text-morph",
+            "sourceHash": "sha256:fe0ed5412d07c2de7e0b37f4248da5b7293c4912bec945a96628e76a5de5af1b",
+            "contentHash": "sha256:4c2b2db8ce02f2a8b42721e3872629badbcf0016464a837f262466abdf0cfc0c",
+            "structureHash": "sha256:1e597b945b9c8e82d9fec5d1102378c1cb2a84ff6bc66d72f1c6146f34390992"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-tilt",
+      "type": "registry:component",
+      "title": "Tilt",
+      "description": "Applies pointer-position-driven three-dimensional tilt to a child.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "motion@11.12.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-tilt/tilt.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/tilt.tsx"
+        }
+      ],
+      "categories": [
+        "visual-effects"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "visual-effects",
+          "tags": [
+            "tilt",
+            "pointer",
+            "depth"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-tilt.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-tilt/tilt.tsx",
+                "upstreamPath": "components/core/tilt.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/tilt.tsx",
+                "upstreamSha256": "sha256:a572d002cf82f396eea5ea4e04665114bee7ed075ad0123f32bc0dfa5867abf4",
+                "contentSha256": "sha256:7a0559d0147f83c4a3ed2b5dcf5edd2bf728f9101f1f621106a4166111e93ed7",
+                "changes": [
+                  "Added useReducedMotion handling that omits the generated 3D transform and pointer tracking while preserving caller styles."
+                ]
+              }
+            ],
+            "credits": [
+              "Motion Primitives docs credit @AFPedreros."
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/tilt.tsx",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-tilt/tilt.tsx",
+              "change": "Disabled generated transforms and pointer tracking when reduced motion is requested.",
+              "reason": "Keep the child static and its hit area stable without replacing the upstream tilt implementation."
+            }
+          ],
+          "dedupe": {
+            "family": "pointer-tilt",
+            "sourceHash": "sha256:d4900d97cec62e16d559bb02a6e0a7f2004dfd9cfa8f995d32918e399defe811",
+            "contentHash": "sha256:6c9e1f45c1e931bd0935b494a95e8887c935dca841c0b043b0eaefee63a07994",
+            "structureHash": "sha256:23fd1868610338159f8cd85cb140c744e93e3ad56a0531b2079bfd8d26a5649c"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "motion-transition-panel",
+      "type": "registry:component",
+      "title": "Transition Panel",
+      "description": "Transitions between caller-provided panels by active index.",
+      "author": "Motion Primitives",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@11.12.0",
+        "tailwind-merge@2.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/motion-transition-panel/transition-panel.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/transition-panel.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "cards-containers"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "cards-containers",
+          "tags": [
+            "panel",
+            "content",
+            "transition"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/motion-primitives/motion-transition-panel.tsx",
+          "source": {
+            "project": "Motion Primitives",
+            "repository": "https://github.com/ibelick/motion-primitives",
+            "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/motion-transition-panel/transition-panel.tsx",
+                "upstreamPath": "components/core/transition-panel.tsx",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/transition-panel.tsx",
+                "upstreamSha256": "sha256:1b3c67058a09a560a034b7fe52ad1c205b589a63ed80055900e8a66830db0be2",
+                "contentSha256": "sha256:c263c427fabbd2d2374e9146ad865ac5323885365f001fc07df3fc9485a5c61d",
+                "changes": [
+                  "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+                  "Rendered only the active panel with animation props disabled and a zero-duration transition when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+                "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+                "changes": []
+              }
+            ],
+            "credits": []
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/core/transition-panel.tsx and lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2024 ibelick"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENCE.md",
+              "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+              "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+              "localPath": "registry/sources/motion-primitives/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/motion-transition-panel/transition-panel.tsx",
+              "change": "Changed the local utility import and added an instant active-panel reduced-motion branch.",
+              "reason": "Resolve the copied helper and keep inactive panels out of the rendered focus order without enter or exit motion."
+            }
+          ],
+          "dedupe": {
+            "family": "indexed-transition-panel",
+            "sourceHash": "sha256:4ebd10c984213368bbc56978f7223ba299c74409ac689dfd3db999e59a6023aa",
+            "contentHash": "sha256:154df8acf3ff64ea0d38aea40e1914ac6cdf2c69ed4747eacb45a368c113f5af",
+            "structureHash": "sha256:8e8b7bb611ae27d1df7f74ce46508ab503a72854fe2e29d84129436fc50a7e03"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
