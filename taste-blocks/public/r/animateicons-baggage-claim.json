@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-baggage-claim",
+  "title": "Animated Baggage Claim Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated baggage claim SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-baggage-claim/baggage-claim-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface BaggageClaimIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface BaggageClaimIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst BaggageClaimIcon = forwardRef<\n BaggageClaimIconHandle,\n BaggageClaimIconProps\n>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () =>\n     !isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n    stopAnimation: () => controls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) controls.start(\"animate\");\n    else onMouseEnter?.(e as any);\n   },\n   [controls, reduced, isAnimated, onMouseEnter],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) controls.start(\"normal\");\n    else onMouseLeave?.(e as any);\n   },\n   [controls, onMouseLeave],\n  );\n\n  const iconVariants: Variants = {\n   normal: { scale: 1 },\n   animate: {\n    scale: [1, 1.03, 1],\n    transition: {\n     duration: 0.6 * duration,\n     ease: [0.22, 1, 0.36, 1],\n    },\n   },\n  };\n\n  const beltVariants: Variants = {\n   normal: { x: 0 },\n   animate: {\n    x: [0, -2, 2, 0],\n    transition: {\n     duration: 0.7 * duration,\n     ease: \"easeInOut\",\n    },\n   },\n  };\n\n  const bagVariants: Variants = {\n   normal: { y: 0 },\n   animate: {\n    y: [0, -2, 0],\n    transition: {\n     duration: 0.5 * duration,\n     ease: \"easeInOut\",\n     delay: 0.1,\n    },\n   },\n  };\n\n  const wheelVariants: Variants = {\n   normal: { rotate: 0 },\n   animate: {\n    rotate: [0, 360],\n    transition: {\n     duration: 0.6 * duration,\n     ease: \"linear\",\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      initial=\"normal\"\n      animate={controls}\n      variants={iconVariants}\n     >\n      <m.path\n       d=\"M22 18H6a2 2 0 0 1-2-2V7a2 2 0 0 0-2-2\"\n       variants={beltVariants}\n      />\n      <m.path\n       d=\"M17 14V4a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v10\"\n       variants={bagVariants}\n      />\n      <m.rect width=\"13\" height=\"8\" x=\"8\" y=\"6\" rx=\"1\" variants={bagVariants} />\n      <m.circle cx=\"18\" cy=\"20\" r=\"2\" variants={wheelVariants} />\n      <m.circle cx=\"9\" cy=\"20\" r=\"2\" variants={wheelVariants} />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nBaggageClaimIcon.displayName = \"BaggageClaimIcon\";\nexport { BaggageClaimIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-baggage-claim.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "baggage-claim",
+        "animated",
+        "icon",
+        "motion",
+        "baggage",
+        "luggage",
+        "airport",
+        "travel",
+        "suitcase",
+        "claim"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-baggage-claim.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-baggage-claim/baggage-claim-icon.tsx",
+            "upstreamPath": "icons/lucide/baggage-claim-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/baggage-claim-icon.tsx",
+            "upstreamSha256": "sha256:f63411ec9972d481b0f8960b30bd3f88e2511c6a8ac714fc49c5d697655bf920",
+            "contentSha256": "sha256:e03a8db15c69b980827ed124e630231c8eaad528ec0ff4247ecee5daa9bcf350",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/baggage-claim-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-baggage-claim/baggage-claim-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-baggage-claim-icon",
+        "sourceHash": "sha256:7902e34924ab3eae63ee49aedd9dc275a69c681d67ac5365c0e13a83f588a4ac",
+        "contentHash": "sha256:a3f2078461e40cab3748fa4df6cc2cfe0740dc090a67354db2afda9caa9383ff",
+        "structureHash": "sha256:5af79a9c26f57d7ffa91f8c3dc29e055da41e104b9f012a6cd36367aa9acf8e3",
+        "glyph": {
+          "inventoryName": "baggage-claim",
+          "canonicalName": "baggage-claim",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

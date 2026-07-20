@@ -1,0 +1,96 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-commit-inspector",
+  "title": "Commit Inspector",
+  "author": "Vercel",
+  "description": "A collapsible commit inspector with metadata, copy action, and per-file changes.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "avatar",
+    "button",
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/commit.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Avatar, AvatarFallback } from \"@/components/ui/avatar\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport {\r\n  CheckIcon,\r\n  CopyIcon,\r\n  FileIcon,\r\n  GitCommitIcon,\r\n  MinusIcon,\r\n  PlusIcon,\r\n} from \"lucide-react\";\r\nimport type { ComponentProps, HTMLAttributes } from \"react\";\r\nimport { useCallback, useEffect, useRef, useState } from \"react\";\r\n\r\nexport type CommitProps = ComponentProps<typeof Collapsible>;\r\n\r\nexport const Commit = ({ className, children, ...props }: CommitProps) => (\r\n  <Collapsible\r\n    className={cn(\"rounded-lg border bg-background\", className)}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </Collapsible>\r\n);\r\n\r\nexport type CommitHeaderProps = ComponentProps<typeof CollapsibleTrigger>;\r\n\r\nexport const CommitHeader = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitHeaderProps) => (\r\n  <CollapsibleTrigger asChild {...props}>\r\n    <div\r\n      className={cn(\r\n        \"group flex cursor-pointer items-center justify-between gap-4 p-3 text-start transition-colors hover:opacity-80 motion-reduce:transition-none\",\n        className\r\n      )}\r\n    >\r\n      {children}\r\n    </div>\r\n  </CollapsibleTrigger>\r\n);\r\n\r\nexport type CommitHashProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const CommitHash = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitHashProps) => (\r\n  <span className={cn(\"font-mono text-xs\", className)} {...props}>\r\n    <GitCommitIcon className=\"me-1 inline-block size-3\" />\n    {children}\r\n  </span>\r\n);\r\n\r\nexport type CommitMessageProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const CommitMessage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitMessageProps) => (\r\n  <span className={cn(\"font-medium text-sm\", className)} {...props}>\r\n    {children}\r\n  </span>\r\n);\r\n\r\nexport type CommitMetadataProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitMetadata = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitMetadataProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center gap-2 text-muted-foreground text-xs\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitSeparatorProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const CommitSeparator = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitSeparatorProps) => (\r\n  <span className={className} {...props}>\r\n    {children ?? \"•\"}\r\n  </span>\r\n);\r\n\r\nexport type CommitInfoProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitInfo = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitInfoProps) => (\r\n  <div className={cn(\"flex flex-1 flex-col\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitAuthorProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitAuthor = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitAuthorProps) => (\r\n  <div className={cn(\"flex items-center\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitAuthorAvatarProps = ComponentProps<typeof Avatar> & {\r\n  initials: string;\r\n};\r\n\r\nexport const CommitAuthorAvatar = ({\r\n  initials,\r\n  className,\r\n  ...props\r\n}: CommitAuthorAvatarProps) => (\r\n  <Avatar className={cn(\"size-8\", className)} {...props}>\r\n    <AvatarFallback className=\"text-xs\">{initials}</AvatarFallback>\r\n  </Avatar>\r\n);\r\n\r\nexport type CommitTimestampProps = HTMLAttributes<HTMLTimeElement> & {\r\n  date: Date;\r\n};\r\n\r\nconst relativeTimeFormat = new Intl.RelativeTimeFormat(\"en\", {\r\n  numeric: \"auto\",\r\n});\r\n\r\nconst formatRelativeDate = (date: Date) => {\r\n  const days = Math.round(\r\n    (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24)\r\n  );\r\n  return relativeTimeFormat.format(days, \"day\");\r\n};\r\n\r\nexport const CommitTimestamp = ({\r\n  date,\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitTimestampProps) => {\r\n  const [formatted, setFormatted] = useState(\"\");\r\n\r\n  const updateFormatted = useCallback(() => {\r\n    setFormatted(formatRelativeDate(date));\r\n  }, [date]);\r\n\r\n  useEffect(() => {\r\n    updateFormatted();\r\n  }, [updateFormatted]);\r\n\r\n  return (\r\n    <time\r\n      className={cn(\"text-xs\", className)}\r\n      dateTime={date.toISOString()}\r\n      {...props}\r\n    >\r\n      {children ?? formatted}\r\n    </time>\r\n  );\r\n};\r\n\r\nexport type CommitActionsProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nconst handleActionsClick = (e: React.MouseEvent) => e.stopPropagation();\r\nconst handleActionsKeyDown = (e: React.KeyboardEvent) => e.stopPropagation();\r\n\r\nexport const CommitActions = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitActionsProps) => (\r\n  <div\r\n    className={cn(\"flex items-center gap-1\", className)}\r\n    onClick={handleActionsClick}\r\n    onKeyDown={handleActionsKeyDown}\r\n    role=\"group\"\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitCopyButtonProps = ComponentProps<typeof Button> & {\r\n  hash: string;\r\n  onCopy?: () => void;\r\n  onError?: (error: Error) => void;\r\n  timeout?: number;\r\n};\r\n\r\nexport const CommitCopyButton = ({\r\n  hash,\r\n  onCopy,\r\n  onError,\r\n  timeout = 2000,\r\n  children,\r\n  className,\r\n  ...props\r\n}: CommitCopyButtonProps) => {\r\n  const [isCopied, setIsCopied] = useState(false);\r\n  const timeoutRef = useRef<number>(0);\r\n\r\n  const copyToClipboard = useCallback(async () => {\r\n    if (typeof window === \"undefined\" || !navigator?.clipboard?.writeText) {\r\n      onError?.(new Error(\"Clipboard API not available\"));\r\n      return;\r\n    }\r\n\r\n    try {\r\n      if (!isCopied) {\r\n        await navigator.clipboard.writeText(hash);\r\n        setIsCopied(true);\r\n        onCopy?.();\r\n        timeoutRef.current = window.setTimeout(\r\n          () => setIsCopied(false),\r\n          timeout\r\n        );\r\n      }\r\n    } catch (error) {\r\n      onError?.(error as Error);\r\n    }\r\n  }, [hash, onCopy, onError, timeout, isCopied]);\r\n\r\n  useEffect(\r\n    () => () => {\r\n      window.clearTimeout(timeoutRef.current);\r\n    },\r\n    []\r\n  );\r\n\r\n  const Icon = isCopied ? CheckIcon : CopyIcon;\r\n\r\n  return (\r\n    <Button\r\n      className={cn(\"size-7 shrink-0\", className)}\r\n      onClick={copyToClipboard}\r\n      size=\"icon\"\r\n      variant=\"ghost\"\r\n      {...props}\r\n    >\r\n      {children ?? <Icon size={14} />}\r\n    </Button>\r\n  );\r\n};\r\n\r\nexport type CommitContentProps = ComponentProps<typeof CollapsibleContent>;\r\n\r\nexport const CommitContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitContentProps) => (\r\n  <CollapsibleContent className={cn(\"border-t p-3\", className)} {...props}>\r\n    {children}\r\n  </CollapsibleContent>\r\n);\r\n\r\nexport type CommitFilesProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitFiles = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFilesProps) => (\r\n  <div className={cn(\"space-y-1\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitFileProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitFile = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between gap-2 rounded px-2 py-1 text-sm hover:bg-muted/50\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitFileInfoProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitFileInfo = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileInfoProps) => (\r\n  <div className={cn(\"flex min-w-0 items-center gap-2\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nconst fileStatusStyles = {\r\n  added: \"text-green-600 dark:text-green-400\",\r\n  deleted: \"text-red-600 dark:text-red-400\",\r\n  modified: \"text-yellow-600 dark:text-yellow-400\",\r\n  renamed: \"text-blue-600 dark:text-blue-400\",\r\n};\r\n\r\nconst fileStatusLabels = {\r\n  added: \"A\",\r\n  deleted: \"D\",\r\n  modified: \"M\",\r\n  renamed: \"R\",\r\n};\r\n\r\nexport type CommitFileStatusProps = HTMLAttributes<HTMLSpanElement> & {\r\n  status: \"added\" | \"modified\" | \"deleted\" | \"renamed\";\r\n};\r\n\r\nexport const CommitFileStatus = ({\r\n  status,\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileStatusProps) => (\r\n  <span\r\n    className={cn(\r\n      \"font-medium font-mono text-xs\",\r\n      fileStatusStyles[status],\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children ?? fileStatusLabels[status]}\r\n  </span>\r\n);\r\n\r\nexport type CommitFileIconProps = ComponentProps<typeof FileIcon>;\r\n\r\nexport const CommitFileIcon = ({\r\n  className,\r\n  ...props\r\n}: CommitFileIconProps) => (\r\n  <FileIcon\r\n    className={cn(\"size-3.5 shrink-0 text-muted-foreground\", className)}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type CommitFilePathProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const CommitFilePath = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFilePathProps) => (\r\n  <span className={cn(\"truncate font-mono text-xs\", className)} {...props}>\r\n    {children}\r\n  </span>\r\n);\r\n\r\nexport type CommitFileChangesProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const CommitFileChanges = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileChangesProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex shrink-0 items-center gap-1 font-mono text-xs\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type CommitFileAdditionsProps = HTMLAttributes<HTMLSpanElement> & {\r\n  count: number;\r\n};\r\n\r\nexport const CommitFileAdditions = ({\r\n  count,\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileAdditionsProps) => {\r\n  if (count <= 0) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <span\r\n      className={cn(\"text-green-600 dark:text-green-400\", className)}\r\n      {...props}\r\n    >\r\n      {children ?? (\r\n        <>\r\n          <PlusIcon className=\"inline-block size-3\" />\r\n          {count}\r\n        </>\r\n      )}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type CommitFileDeletionsProps = HTMLAttributes<HTMLSpanElement> & {\r\n  count: number;\r\n};\r\n\r\nexport const CommitFileDeletions = ({\r\n  count,\r\n  className,\r\n  children,\r\n  ...props\r\n}: CommitFileDeletionsProps) => {\r\n  if (count <= 0) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <span\r\n      className={cn(\"text-red-600 dark:text-red-400\", className)}\r\n      {...props}\r\n    >\r\n      {children ?? (\r\n        <>\r\n          <MinusIcon className=\"inline-block size-3\" />\r\n          {count}\r\n        </>\r\n      )}\r\n    </span>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/commit.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "git",
+        "commit",
+        "files",
+        "clipboard"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-commit-inspector.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/commit.tsx",
+            "upstreamPath": "packages/elements/src/commit.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/commit.tsx",
+            "upstreamSha256": "sha256:877708682428984f5776dafb774da222fbee837804f220ce699956e32938fa1b",
+            "contentSha256": "sha256:a5d2bf1a0630e148b9870c5bc997d3befe031192af8141bfbab25cf4229950e5",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion handling and logical spacing for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/commit.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/commit.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion handling and logical spacing for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "collapsible-git-commit-inspector",
+        "sourceHash": "sha256:a2bf74f8c1bf38a3130c2d4e4b30f7ea8d7041c87f84e48a0b12af50b39228c1",
+        "contentHash": "sha256:1a7a0930046e152c84a07e49b357ac16999c0816c3fd124566a1976f3d6ab767",
+        "structureHash": "sha256:9dfe49a5caedf86a6af5f0f2439b6babca2673ee60d928c12bcfaf13264c6fdb"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

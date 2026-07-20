@@ -1,0 +1,98 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-web-preview",
+  "title": "Web Preview",
+  "author": "Vercel",
+  "description": "A sandboxed web renderer with URL state, navigation controls, and console output.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "collapsible",
+    "input",
+    "tooltip",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/web-preview.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { Input } from \"@/components/ui/input\";\r\nimport {\r\n  Tooltip,\r\n  TooltipContent,\r\n  TooltipProvider,\r\n  TooltipTrigger,\r\n} from \"@/components/ui/tooltip\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { ChevronDownIcon } from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useMemo,\r\n  useState,\r\n} from \"react\";\r\n\r\nexport interface WebPreviewContextValue {\r\n  url: string;\r\n  setUrl: (url: string) => void;\r\n  consoleOpen: boolean;\r\n  setConsoleOpen: (open: boolean) => void;\r\n}\r\n\r\nconst WebPreviewContext = createContext<WebPreviewContextValue | null>(null);\r\n\r\nconst useWebPreview = () => {\r\n  const context = useContext(WebPreviewContext);\r\n  if (!context) {\r\n    throw new Error(\"WebPreview components must be used within a WebPreview\");\r\n  }\r\n  return context;\r\n};\r\n\r\nexport type WebPreviewProps = ComponentProps<\"div\"> & {\r\n  defaultUrl?: string;\r\n  onUrlChange?: (url: string) => void;\r\n};\r\n\r\nexport const WebPreview = ({\r\n  className,\r\n  children,\r\n  defaultUrl = \"\",\r\n  onUrlChange,\r\n  ...props\r\n}: WebPreviewProps) => {\r\n  const [url, setUrl] = useState(defaultUrl);\r\n  const [consoleOpen, setConsoleOpen] = useState(false);\r\n\r\n  const handleUrlChange = useCallback(\r\n    (newUrl: string) => {\r\n      setUrl(newUrl);\r\n      onUrlChange?.(newUrl);\r\n    },\r\n    [onUrlChange]\r\n  );\r\n\r\n  const contextValue = useMemo<WebPreviewContextValue>(\r\n    () => ({\r\n      consoleOpen,\r\n      setConsoleOpen,\r\n      setUrl: handleUrlChange,\r\n      url,\r\n    }),\r\n    [consoleOpen, handleUrlChange, url]\r\n  );\r\n\r\n  return (\r\n    <WebPreviewContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\r\n          \"flex size-full flex-col rounded-lg border bg-card\",\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children}\r\n      </div>\r\n    </WebPreviewContext.Provider>\r\n  );\r\n};\r\n\r\nexport type WebPreviewNavigationProps = ComponentProps<\"div\">;\r\n\r\nexport const WebPreviewNavigation = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: WebPreviewNavigationProps) => (\r\n  <div\r\n    className={cn(\"flex items-center gap-1 border-b p-2\", className)}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type WebPreviewNavigationButtonProps = ComponentProps<typeof Button> & {\r\n  tooltip?: string;\r\n};\r\n\r\nexport const WebPreviewNavigationButton = ({\r\n  onClick,\r\n  disabled,\r\n  tooltip,\r\n  children,\r\n  ...props\r\n}: WebPreviewNavigationButtonProps) => (\r\n  <TooltipProvider>\r\n    <Tooltip>\r\n      <TooltipTrigger asChild>\r\n        <Button\r\n          className=\"h-8 w-8 p-0 hover:text-foreground\"\r\n          disabled={disabled}\r\n          onClick={onClick}\r\n          size=\"sm\"\r\n          variant=\"ghost\"\r\n          {...props}\r\n        >\r\n          {children}\r\n        </Button>\r\n      </TooltipTrigger>\r\n      <TooltipContent>\r\n        <p>{tooltip}</p>\r\n      </TooltipContent>\r\n    </Tooltip>\r\n  </TooltipProvider>\r\n);\r\n\r\nexport type WebPreviewUrlProps = ComponentProps<typeof Input>;\r\n\r\nexport const WebPreviewUrl = ({\r\n  value,\r\n  onChange,\r\n  onKeyDown,\r\n  ...props\r\n}: WebPreviewUrlProps) => {\r\n  const { url, setUrl } = useWebPreview();\r\n  const [prevUrl, setPrevUrl] = useState(url);\r\n  const [inputValue, setInputValue] = useState(url);\r\n\r\n  // Sync input value with context URL when it changes externally (derived state pattern)\r\n  if (url !== prevUrl) {\r\n    setPrevUrl(url);\r\n    setInputValue(url);\r\n  }\r\n\r\n  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {\r\n    setInputValue(event.target.value);\r\n    onChange?.(event);\r\n  };\r\n\r\n  const handleKeyDown = useCallback(\r\n    (event: React.KeyboardEvent<HTMLInputElement>) => {\r\n      if (event.key === \"Enter\") {\r\n        const target = event.target as HTMLInputElement;\r\n        setUrl(target.value);\r\n      }\r\n      onKeyDown?.(event);\r\n    },\r\n    [setUrl, onKeyDown]\r\n  );\r\n\r\n  return (\r\n    <Input\r\n      className=\"h-8 flex-1 text-sm\"\r\n      onChange={onChange ?? handleChange}\r\n      onKeyDown={handleKeyDown}\r\n      placeholder=\"Enter URL...\"\r\n      value={value ?? inputValue}\r\n      {...props}\r\n    />\r\n  );\r\n};\r\n\r\nexport type WebPreviewBodyProps = ComponentProps<\"iframe\"> & {\r\n  loading?: ReactNode;\r\n};\r\n\r\nexport const WebPreviewBody = ({\r\n  className,\r\n  loading,\r\n  src,\r\n  ...props\r\n}: WebPreviewBodyProps) => {\r\n  const { url } = useWebPreview();\r\n\r\n  return (\r\n    <div className=\"flex-1\">\r\n      <iframe\r\n        className={cn(\"size-full\", className)}\r\n        // oxlint-disable-next-line eslint-plugin-react(iframe-missing-sandbox)\r\n        sandbox=\"allow-scripts allow-forms allow-popups allow-presentation\"\n        src={(src ?? url) || undefined}\r\n        title=\"Preview\"\r\n        {...props}\r\n      />\r\n      {loading}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type WebPreviewConsoleProps = ComponentProps<\"div\"> & {\r\n  logs?: {\r\n    level: \"log\" | \"warn\" | \"error\";\r\n    message: string;\r\n    timestamp: Date;\r\n  }[];\r\n};\r\n\r\nexport const WebPreviewConsole = ({\r\n  className,\r\n  logs = [],\r\n  children,\r\n  ...props\r\n}: WebPreviewConsoleProps) => {\r\n  const { consoleOpen, setConsoleOpen } = useWebPreview();\r\n\r\n  return (\r\n    <Collapsible\r\n      className={cn(\"border-t bg-muted/50 font-mono text-sm\", className)}\r\n      onOpenChange={setConsoleOpen}\r\n      open={consoleOpen}\r\n      {...props}\r\n    >\r\n      <CollapsibleTrigger asChild>\r\n        <Button\r\n          className=\"flex w-full items-center justify-between p-4 text-start font-medium hover:bg-muted/50\"\n          variant=\"ghost\"\r\n        >\r\n          Console\r\n          <ChevronDownIcon\r\n            className={cn(\r\n              \"h-4 w-4 transition-transform duration-200 motion-reduce:transition-none\",\n              consoleOpen && \"rotate-180\"\r\n            )}\r\n          />\r\n        </Button>\r\n      </CollapsibleTrigger>\r\n      <CollapsibleContent\r\n        className={cn(\r\n          \"px-4 pb-4\",\r\n          \"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in motion-reduce:animate-none\"\n        )}\r\n      >\r\n        <div className=\"max-h-48 space-y-1 overflow-y-auto\">\r\n          {logs.length === 0 ? (\r\n            <p className=\"text-muted-foreground\">No console output</p>\r\n          ) : (\r\n            logs.map((log) => (\r\n              <div\r\n                className={cn(\r\n                  \"text-xs\",\r\n                  log.level === \"error\" && \"text-destructive\",\r\n                  log.level === \"warn\" && \"text-yellow-600\",\r\n                  log.level === \"log\" && \"text-foreground\"\r\n                )}\r\n                key={`${log.timestamp.getTime()}-${log.level}-${log.message}`}\r\n              >\r\n                <span className=\"text-muted-foreground\">\r\n                  {log.timestamp.toLocaleTimeString()}\r\n                </span>{\" \"}\r\n                {log.message}\r\n              </div>\r\n            ))\r\n          )}\r\n          {children}\r\n        </div>\r\n      </CollapsibleContent>\r\n    </Collapsible>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/web-preview.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "iframe",
+        "preview",
+        "console",
+        "sandbox"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-web-preview.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/web-preview.tsx",
+            "upstreamPath": "packages/elements/src/web-preview.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/web-preview.tsx",
+            "upstreamSha256": "sha256:7ae44586766db67c5341b36a30340b202e6f45c205457ad98f0817968d162d2c",
+            "contentSha256": "sha256:863104140d2a5111c2da86207cf6357592a6e0b7b9ba299a6727d5895387307f",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Removed allow-same-origin from the iframe sandbox to keep script previews isolated.",
+              "Added reduced-motion handling and logical text alignment for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/web-preview.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/web-preview.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Removed allow-same-origin from the iframe sandbox to keep script previews isolated. Added reduced-motion handling and logical text alignment for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "sandboxed-web-preview",
+        "sourceHash": "sha256:fb9c6abb2d61b5417de41713a4b8e0cf8c2d7392b2b31b205be0b68857c66ebe",
+        "contentHash": "sha256:50ad95d1ee4a307076e4a46b4b27aa36d909f3a951c05ca4d2a92fb68605bcd7",
+        "structureHash": "sha256:6a9c662d4a16207901cad41bd534cdefef46951285bf5e583364779ccdc0c7fc"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

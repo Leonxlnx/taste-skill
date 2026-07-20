@@ -1,0 +1,112 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-resizable",
+  "title": "Resizable Panels",
+  "author": "shadcn",
+  "description": "Lets keyboard and pointer users resize adjacent content panels.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "react-resizable-panels@4.5.8",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/resizable.tsx",
+      "content": "\"use client\"\n\nimport * as ResizablePrimitive from \"react-resizable-panels\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction ResizablePanelGroup({\n  className,\n  ...props\n}: ResizablePrimitive.GroupProps) {\n  return (\n    <ResizablePrimitive.Group\n      data-slot=\"resizable-panel-group\"\n      className={cn(\n        \"flex h-full w-full aria-[orientation=vertical]:flex-col\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {\n  return <ResizablePrimitive.Panel data-slot=\"resizable-panel\" {...props} />\n}\n\nfunction ResizableHandle({\n  withHandle,\n  className,\n  ...props\n}: ResizablePrimitive.SeparatorProps & {\n  withHandle?: boolean\n}) {\n  return (\n    <ResizablePrimitive.Separator\n      data-slot=\"resizable-handle\"\n      className={cn(\n        \"relative flex w-px items-center justify-center bg-border ring-offset-background after:absolute after:inset-y-0 after:start-1/2 after:w-1 after:-translate-x-1/2 rtl:after:translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:start-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 rtl:aria-[orientation=horizontal]:after:-translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90\",\n        className\n      )}\n      {...props}\n    >\n      {withHandle && (\n        <div className=\"z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border\" />\n      )}\n    </ResizablePrimitive.Separator>\n  )\n}\n\nexport { ResizableHandle, ResizablePanel, ResizablePanelGroup }\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/resizable.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "resizable",
+        "panels",
+        "separator"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-resizable.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/radix-nova/resizable.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/resizable.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/resizable.tsx",
+            "upstreamSha256": "sha256:ec2bcff328149be0d4bd003df00cb8721363b69b9810d52319747888fb1055a7",
+            "contentSha256": "sha256:2b97957f4ab71897ba085b1aac5b2d46e96c7602b5a21fb1a4af48dab8b0cfdf",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/registry/bases/radix/ui/resizable.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/radix-nova/resizable.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports.",
+          "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+          "reason": "Bundle the exact support closure required by the installed component."
+        }
+      ],
+      "dedupe": {
+        "family": "resizable-panel-group",
+        "sourceHash": "sha256:275dc8b09ec50854f41c8b49ce82daab32f1fcba29ca242bc59227bd3e52d62d",
+        "contentHash": "sha256:dedf327d7a5ee1fb17f20081e12de508b324b8caaf7a641f9613f6fe34203ccd",
+        "structureHash": "sha256:c3c946f4e87564d0a16ddda342ee384d0ca4a768c0f6729ead52c9bce8d7fc96"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

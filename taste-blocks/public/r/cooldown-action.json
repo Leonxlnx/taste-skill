@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cooldown-action",
+  "title": "Cooldown Action",
+  "author": "Tanmay Sharma & Simran Gupta",
+  "description": "Runs a caller-provided action, then makes it available again after an accurate bounded cooldown.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/otp-timer/components/cooldown-action/cooldown-action.tsx",
+      "content": "\"use client\"\n\nimport { Component, type CSSProperties, type MouseEvent, type ReactNode } from \"react\"\n\nexport type CooldownActionProps = {\n  /** Preserved from upstream; the upstream component does not consume it. */\n  options?: Record<string, unknown>\n  minutes?: number\n  seconds?: number\n  /**\n   * Runs the action. The cooldown restarts after a synchronous return or a\n   * fulfilled promise; a thrown error or rejected promise leaves it available.\n   */\n  resend: () => void | Promise<void>\n  ButtonText?: ReactNode\n  text?: ReactNode\n  textColor?: string\n  background?: string\n  buttonColor?: string\n  buttonStyle?: CSSProperties\n  buttonClassName?: string\n  timerSpanClass?: string\n  timerSpanStyle?: CSSProperties\n}\n\ntype CooldownActionState = {\n  minutes: number\n  seconds: number\n  pending: boolean\n  announcement: string\n}\n\nconst visuallyHidden: CSSProperties = {\n  position: \"absolute\",\n  width: 1,\n  height: 1,\n  padding: 0,\n  margin: -1,\n  overflow: \"hidden\",\n  clip: \"rect(0, 0, 0, 0)\",\n  whiteSpace: \"nowrap\",\n  border: 0,\n}\n\nfunction wholeSeconds(value: number | undefined, fallback: number) {\n  return typeof value === \"number\" && Number.isFinite(value)\n    ? Math.max(0, Math.floor(value))\n    : fallback\n}\n\nfunction cooldownSeconds({ minutes, seconds }: CooldownActionProps) {\n  return wholeSeconds(minutes, 0) * 60 + wholeSeconds(seconds, 30)\n}\n\nfunction splitSeconds(total: number) {\n  return { minutes: Math.floor(total / 60), seconds: total % 60 }\n}\n\nexport default class CooldownAction extends Component<\n  CooldownActionProps,\n  CooldownActionState\n> {\n  private myInterval: ReturnType<typeof setTimeout> | undefined\n  private endAt = 0\n  private mounted = false\n  private actionPending = false\n\n  constructor(props: CooldownActionProps) {\n    super(props)\n    this.state = {\n      ...splitSeconds(cooldownSeconds(props)),\n      pending: false,\n      announcement: \"\",\n    }\n\n    this.handleClick = this.handleClick.bind(this)\n    this.handleVisibilityChange = this.handleVisibilityChange.bind(this)\n    this.otptimer = this.otptimer.bind(this)\n    this.updateTimer = this.updateTimer.bind(this)\n  }\n\n  componentDidMount() {\n    this.mounted = true\n    document.addEventListener(\"visibilitychange\", this.handleVisibilityChange)\n    this.otptimer()\n  }\n\n  componentDidUpdate(previousProps: CooldownActionProps) {\n    if (cooldownSeconds(previousProps) !== cooldownSeconds(this.props)) {\n      this.setState({ announcement: \"\" }, this.otptimer)\n    }\n  }\n\n  componentWillUnmount() {\n    this.mounted = false\n    this.actionPending = false\n    this.clearTimer()\n    document.removeEventListener(\"visibilitychange\", this.handleVisibilityChange)\n  }\n\n  private clearTimer() {\n    if (this.myInterval !== undefined) {\n      clearTimeout(this.myInterval)\n      this.myInterval = undefined\n    }\n  }\n\n  private handleVisibilityChange() {\n    if (document.hidden) {\n      this.clearTimer()\n    } else {\n      this.updateTimer()\n    }\n  }\n\n  otptimer() {\n    this.clearTimer()\n    this.endAt = Date.now() + cooldownSeconds(this.props) * 1000\n    this.updateTimer()\n  }\n\n  private updateTimer() {\n    if (!this.mounted) return\n\n    this.clearTimer()\n    const remainingMilliseconds = Math.max(0, this.endAt - Date.now())\n    const remaining = Math.ceil(remainingMilliseconds / 1000)\n    const next = splitSeconds(remaining)\n\n    this.setState(\n      (current) => ({\n        ...next,\n        pending: current.pending,\n        announcement:\n          remaining === 0 && (current.minutes > 0 || current.seconds > 0)\n            ? \"Action available.\"\n            : current.announcement,\n      }),\n      () => {\n        if (!this.mounted || remaining === 0 || document.hidden) return\n        const remainder = remainingMilliseconds % 1000\n        this.myInterval = setTimeout(\n          this.updateTimer,\n          Math.max(16, remainder || 1000)\n        )\n      }\n    )\n  }\n\n  async handleClick(event: MouseEvent<HTMLButtonElement>) {\n    event.preventDefault()\n    if (\n      this.actionPending ||\n      this.state.minutes > 0 ||\n      this.state.seconds > 0\n    ) {\n      return\n    }\n\n    this.actionPending = true\n    this.setState({ pending: true, announcement: \"Action in progress.\" })\n\n    try {\n      await this.props.resend()\n      this.actionPending = false\n      if (!this.mounted) return\n      this.setState(\n        {\n          pending: false,\n          announcement: \"Action completed. Cooldown started.\",\n        },\n        this.otptimer\n      )\n    } catch {\n      this.actionPending = false\n      if (!this.mounted) return\n      this.setState({\n        pending: false,\n        announcement: \"Action failed. Try again.\",\n      })\n    }\n  }\n\n  render() {\n    const { minutes, seconds, pending, announcement } = this.state\n    const available = minutes === 0 && seconds === 0\n    const actionLabel = this.props.ButtonText || \"Try again\"\n    const countdownLabel = this.props.text || \"Available in:\"\n    const textStyle: CSSProperties | undefined = this.props.textColor\n      ? { color: this.props.textColor }\n      : undefined\n    const buttonStyling: CSSProperties = {\n      minBlockSize: \"2.75rem\",\n      minInlineSize: \"2.75rem\",\n      background: this.props.background,\n      color: this.props.buttonColor,\n      ...this.props.buttonStyle,\n    }\n\n    return (\n      <div style={textStyle}>\n        {available ? (\n          <button\n            aria-busy={pending}\n            className={this.props.buttonClassName}\n            disabled={pending}\n            onClick={this.handleClick}\n            style={buttonStyling}\n            type=\"button\"\n          >\n            <span>{actionLabel}</span>\n            {pending ? <span aria-hidden=\"true\">…</span> : null}\n          </button>\n        ) : (\n          <span\n            aria-live=\"off\"\n            className={this.props.timerSpanClass}\n            style={this.props.timerSpanStyle}\n          >\n            <span>{countdownLabel} </span>\n            {String(minutes).padStart(2, \"0\")}:\n            {String(seconds).padStart(2, \"0\")}\n          </span>\n        )}\n        <span aria-atomic=\"true\" aria-live=\"polite\" role=\"status\" style={visuallyHidden}>\n          {announcement}\n        </span>\n      </div>\n    )\n  }\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/cooldown-action.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "cooldown",
+        "retry",
+        "async-action",
+        "countdown"
+      ],
+      "renderer": "dom",
+      "preview": "previews/cooldown-action.tsx",
+      "source": {
+        "project": "otp-timer",
+        "repository": "https://github.com/927tanmay/otp-timer",
+        "revision": "9c7a6645cb01c471c25632be8842fdb924dadc49",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/cooldown-action/cooldown-action.tsx",
+            "upstreamPath": "src/timer.js",
+            "permalink": "https://github.com/927tanmay/otp-timer/blob/9c7a6645cb01c471c25632be8842fdb924dadc49/src/timer.js",
+            "upstreamSha256": "sha256:c1508cae19d551b0c794efc3595c9d7c973506f82ac380f6e178c070d376dfc0",
+            "contentSha256": "sha256:d75483842029c83255ed0f38dc846e22bfb7e0c27de762a70cd798670563effc",
+            "changes": [
+              "Converted the PropTypes class source to TypeScript while preserving its existing duration, label, style, class, options, and resend props under the generic Cooldown Action name.",
+              "Derived the displayed remainder from an end timestamp, paused scheduled updates while the document is hidden, reconciled duration changes, and cleared the timeout and visibility listener on unmount.",
+              "Awaited the real resend callback, prevented duplicate activation, restarted cooldown only after fulfillment, and left failed actions available with a polite one-time status.",
+              "Removed hard-coded font, color, border, and typography defaults; added a non-submitting native button, static pending feedback, explicit non-live countdown, and a minimum touch target."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/timer.js",
+        "copyright": [
+          "Copyright (c) 2025 Tanmay Sharma & Simran Gupta"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/927tanmay/otp-timer/blob/9c7a6645cb01c471c25632be8842fdb924dadc49/LICENSE",
+          "sha256": "sha256:013766619425e378f8223a3821d2252edcdba13b3a27aa2e6023c9e50f7deef3",
+          "localPath": "registry/sources/otp-timer/LICENSE"
+        },
+        "notices": [
+          "The pinned upstream LICENSE has trailing spaces on 12 lines; the local evidence copy removes only that trailing whitespace without changing the legal text."
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/cooldown-action/cooldown-action.tsx",
+          "change": "Mechanically typed and generically named the class, replaced decrementing intervals with an end-time scheduler, added visibility and duration reconciliation, awaited and guarded the real action lifecycle, exposed concise status, and removed visual defaults while retaining existing source props.",
+          "reason": "Keep cooldown time correct through tab throttling, make caller success or failure authoritative, preserve native keyboard and form behavior, avoid repeated announcements, honor static reduced-motion behavior, and keep the source-copy API intact."
+        }
+      ],
+      "dedupe": {
+        "family": "cooldown-action",
+        "sourceHash": "sha256:a21215502ef0d0df251e098409c03beded31cc5d45ac8471585021f3f51b48f2",
+        "contentHash": "sha256:07966846ce5d4f6c171748f75626ce226bd0a4a3c43de927bcbc3bb19022d49d",
+        "structureHash": "sha256:15c804df28e9f953c8c1f09aa46e618fd6f3e5addf555deed4b91c882ab226e2"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

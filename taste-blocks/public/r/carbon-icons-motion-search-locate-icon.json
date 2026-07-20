@@ -1,0 +1,144 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carbon-icons-motion-search-locate-icon",
+  "title": "Animated Search Locate Icon",
+  "author": "Carbon Design System contributors",
+  "description": "Lifts the search lens while a result line contracts beneath it.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-search-locate-icon/search-locate-motion.tsx",
+      "content": "\"use client\";\n\nimport type { SVGProps } from \"react\";\n\nimport styles from \"./search-locate-motion.module.css\";\n\nexport interface SearchLocateMotionProps extends Omit<SVGProps<SVGSVGElement>, \"title\"> {\n  isAnimated?: boolean;\n  size?: number;\n  title?: string | null;\n}\n\nexport function SearchLocateMotion({\n  className,\n  isAnimated = false,\n  size = 32,\n  title = \"Search locate\",\n  ...props\n}: SearchLocateMotionProps) {\n  const hasAccessibleName = Boolean(title || props[\"aria-label\"] || props[\"aria-labelledby\"]);\n\n  return (\n    <svg\n      fill=\"currentColor\"\n      {...props}\n      aria-hidden={hasAccessibleName ? props[\"aria-hidden\"] : true}\n      className={[isAnimated ? styles.isAnimating : \"\", className].filter(Boolean).join(\" \")}\n      height={size}\n      role={props.role ?? (hasAccessibleName ? \"img\" : undefined)}\n      viewBox=\"0 0 32 32\"\n      width={size}\n    >\n      {title ? <title>{title}</title> : null}\n      <path\n        className={styles.SearchLocate}\n        d=\"M30,27.6l-4.7-4.7c2.7-3.5,2.1-8.5-1.4-11.3S15.4,9.5,12.6,13s-2.1,8.5,1.4,11.3c2.9,2.3,7,2.3,9.9,0l4.7,4.7L30,27.6z M19,24c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6C25,21.3,22.3,24,19,24z\"\n      />\n      <path d=\"M2,1h16v2H2V1z\" />\n      <path className={styles.SearchLocateLine2} d=\"M2,6h16v2H2V6z\" />\n      <path d=\"M2,11h8v2H2V11z\" />\n    </svg>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/carbon-icons-motion-search-locate-icon/search-locate-motion.tsx"
+    },
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-search-locate-icon/search-locate-motion.module.css",
+      "content": ".SearchLocate {\n  transform-origin: 1.1875rem 1.125rem;\n  will-change: transform;\n}\n\n.SearchLocateLine2 {\n  transform-origin: 0.125rem 0.4375rem;\n  will-change: transform;\n}\n\n.isAnimating .SearchLocate {\n  animation: search-locate 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .SearchLocateLine2 {\n  animation: search-locate-line 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n@keyframes search-locate {\n  0% { transform: translateY(0); }\n  50% { transform: translateY(-6px); }\n  100% { transform: translateY(0); }\n}\n\n@keyframes search-locate-line {\n  0% { transform: scaleX(1); }\n  50% { transform: scaleX(0.5); }\n  100% { transform: scaleX(1); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .isAnimating .SearchLocate,\n  .isAnimating .SearchLocateLine2 {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/carbon-icons-motion-search-locate-icon/search-locate-motion.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "search",
+        "locate",
+        "results",
+        "magnifier",
+        "animated",
+        "icon",
+        "carbon",
+        "reduced-motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/carbon-icons-motion-search-locate-icon.tsx",
+      "source": {
+        "project": "Carbon Icons Motion",
+        "repository": "https://github.com/carbon-design-system/icons-motion",
+        "revision": "7e0a7459eb7d8f96fae0649e1450b65af7f75a2b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/carbon-icons-motion-search-locate-icon/search-locate-motion.tsx",
+            "upstreamPath": "src/components/Operations/SearchLocateMotion/SearchLocateMotion.js",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Operations/SearchLocateMotion/SearchLocateMotion.js",
+            "upstreamSha256": "sha256:7508c017d80885f1d774675f62a03fed08534aaeedba44843c241e17e9cd6a3d",
+            "contentSha256": "sha256:0b562c15132429776d93c981601d731ffb1c7e55240756ece97fb947acb0076b",
+            "changes": [
+              "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop.",
+              "Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/carbon-icons-motion-search-locate-icon/search-locate-motion.module.css",
+            "upstreamPath": "src/components/Operations/SearchLocateMotion/search-locate--motion.module.scss",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Operations/SearchLocateMotion/search-locate--motion.module.scss",
+            "upstreamSha256": "sha256:ae25b92a74c650c158c4086b3b651481040c6bebefdc349ff54970990a95d16f",
+            "contentSha256": "sha256:ca3c6ddd7878add404220ab49ddcade93e45628af41d1624d5e4879db5cd9427",
+            "changes": [
+              "Converted the nested SCSS module to an equivalent flat CSS module.",
+              "Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling."
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "geometry": "Inline SVG geometry copied from the official Carbon Icons Motion component blob.",
+        "carbonBasis": {
+          "statement": "The upstream README says the package mirrors Carbon icons but is not tied to a specific Carbon version.",
+          "upstreamPath": "README.md",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/README.md",
+          "sha256": "sha256:3f0e1bd45dc58a966edb3f7ba76d1b0d9231ade1a7cae7b8d7ee36ca12130069"
+        }
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/Operations/SearchLocateMotion/SearchLocateMotion.js, src/components/Operations/SearchLocateMotion/search-locate--motion.module.scss, and their inline Carbon-derived SVG geometry",
+        "copyright": [
+          "Copyright 2015 IBM Corp."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/LICENSE",
+          "sha256": "sha256:c3c4a0200172f8e23c0ea6a0f2c105ac960721c542b63d5de5e9767d195c2e73",
+          "localPath": "registry/sources/carbon-icons-motion/LICENSE"
+        },
+        "notices": [
+          "registry/sources/carbon-icons-motion/NOTICE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/carbon-icons-motion/NOTICE",
+            "sha256": "sha256:95ab19a8acd4553d339b6b0fcfd7c9c93329ceccfa6713364f7a9e5ed42ead46",
+            "changes": [
+              "Created locally because the pinned upstream commit contains no NOTICE file; records attribution and Apache modification marking."
+            ]
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/carbon-icons-motion-search-locate-icon/search-locate-motion.tsx",
+          "change": "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop. Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers.",
+          "reason": "Expose a strict, controlled, portable React SVG component without changing its source geometry."
+        },
+        {
+          "shippedPath": "components/carbon-icons-motion-search-locate-icon/search-locate-motion.module.css",
+          "change": "Converted the nested SCSS module to an equivalent flat CSS module. Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling.",
+          "reason": "Remove the Sass requirement, prevent looping/autoplay, meet the UI timing budget, and honor reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "carbon-search-lens-lifts-as-result-line-contracts",
+        "sourceHash": "sha256:abaa4a9a0a1c712bc5344fb3a8af9d4c3196f9034ab275851339121c7b208a65",
+        "contentHash": "sha256:354b9840ad96a95d2beb6a0716dbd59056bf0a066613516a89f3b73f72fffb86",
+        "structureHash": "sha256:6593e6b5fccbee681fbf37bf2d85f668b7b8cd39a19bbb094d4c6cf1fdc73a65",
+        "geometryHash": "sha256:14e2a7ef51e0b6c19305d2837fa4f3d25c3a86c471d16ed96c4b1e8b925a74e3",
+        "motionHash": "sha256:f0650010e3cf0fb2b77626e7ac21385490149edfd9b6b01f828d82819e4a3450",
+        "rasterHash": "sha256:d45dbfcd09a53299fc2a0e263b5f2b14808536356d4f95c2ae6f4619c0a87de2",
+        "glyph": {
+          "inventoryName": "search-locate",
+          "canonicalName": "search-locate",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": "Generic Carbon-system glyph; no product logo, company mark, or remote asset retained."
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

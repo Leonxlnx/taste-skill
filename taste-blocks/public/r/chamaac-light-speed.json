@@ -1,0 +1,115 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chamaac-light-speed",
+  "title": "Light Speed",
+  "author": "Amarnath",
+  "description": "Renders an instanced light-streak tunnel with configurable speed, radius, color, and bloom.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "@react-three/postprocessing@3.0.4",
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0",
+    "three@0.180.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/light-speed.tsx",
+      "content": "\"use client\";\n\nimport React, { useEffect, useRef, useMemo, useState } from \"react\";\nimport { Canvas, useFrame } from \"@react-three/fiber\";\nimport * as THREE from \"three\";\nimport { EffectComposer, Bloom } from \"@react-three/postprocessing\";\nimport { cn } from \"./lib/utils\";\n\nexport interface LightSpeedProps {\n  /**\n   * Number of particles (stars/lines).\n   * @default 2000\n   */\n  particleCount?: number;\n  /**\n   * Base speed of the warp effect.\n   * @default 4\n   */\n  speed?: number;\n  /**\n   * Base color of the emitted light streaks.\n   * @default \"#33b2ff\"\n   */\n  lightColor?: string;\n  /**\n   * Intensity of the bloom glow.\n   * @default 3.0\n   */\n  intensity?: number;\n  /**\n   * Extent of the cylinder radius in which particles spawn.\n   * @default 25\n   */\n  radius?: number;\n  /**\n   * Length of the cylinder before particles loop back.\n   * @default 150\n   */\n  cylinderLength?: number;\n  className?: string;\n}\n\nfunction Particles({\n  count,\n  baseSpeed,\n  lightColor,\n  intensity,\n  radius,\n  cylinderLength,\n}: {\n  count: number;\n  baseSpeed: number;\n  lightColor: string;\n  intensity: number;\n  radius: number;\n  cylinderLength: number;\n}) {\n  const meshRef = useRef<THREE.InstancedMesh>(null);\n\n  // Object3D to help apply transforms to individual instanced items\n  const dummy = useMemo(() => new THREE.Object3D(), []);\n\n  // Initialize particle properties\n  const particles = useMemo(() => {\n    const temp = [];\n    for (let i = 0; i < count; i++) {\n      const angle = Math.random() * Math.PI * 2;\n      // Start further away from the center to leave a \"tunnel\" for the camera\n      const r = 2 + Math.random() * (radius - 2);\n      const x = Math.cos(angle) * r;\n      const y = Math.sin(angle) * r;\n      let z = (Math.random() - 0.5) * cylinderLength;\n      let speedMultiplier = 0.5 + Math.random() * 0.5;\n\n      // Pre-warm the particle simulation by 1.5 seconds\n      for (let j = 0; j < 90; j++) {\n        z += baseSpeed * speedMultiplier * (1 / 60) * 50;\n        if (z > 5) {\n          z = -cylinderLength / 2;\n          speedMultiplier = 0.5 + Math.random() * 0.5;\n        }\n      }\n\n      temp.push({\n        x,\n        y,\n        z,\n        // Individual random speed multiplier to give depth variation\n        speedMultiplier,\n        // Individual random length to look more organic\n        length: 1 + Math.random() * 2,\n        angle,\n        radius: r,\n      });\n    }\n    return temp;\n  }, [count, radius, cylinderLength]);\n\n  const bloomColor = useMemo(() => {\n    const color = new THREE.Color(lightColor);\n    color.multiplyScalar(intensity);\n    return color;\n  }, [lightColor, intensity]);\n\n  useFrame((state, delta) => {\n    if (!meshRef.current) return;\n\n    // We update each particle's matrix and apply rotation/translation\n    particles.forEach((particle, i) => {\n      // Move particle towards the camera (+Z)\n      // delta makes the movement frame-rate independent.\n      const moveDistance = baseSpeed * particle.speedMultiplier * delta * 50;\n      particle.z += moveDistance;\n\n      // If a particle passes the camera (z > 5), loop it back to the far end\n      if (particle.z > 5) {\n        particle.z = -cylinderLength / 2;\n        particle.speedMultiplier = 0.5 + Math.random() * 0.5;\n      }\n\n      // We place the dummy at the particle coordinates\n      dummy.position.set(particle.x, particle.y, particle.z);\n      // We scale the length on the Z-axis to mimic motion blur/stretched UV spheres\n      // The faster it moves, the more stretched it appears\n      const stretchZ =\n        particle.length + baseSpeed * particle.speedMultiplier * 0.5;\n      // X and Y are scaled small to look thin (like streaks)\n      dummy.scale.set(0.04, 0.04, stretchZ);\n\n      dummy.updateMatrix();\n      meshRef.current!.setMatrixAt(i, dummy.matrix);\n    });\n\n    // Tell Three.js the matrix data has been updated and deserves a re-render\n    meshRef.current.instanceMatrix.needsUpdate = true;\n  });\n\n  return (\n    <instancedMesh\n      ref={meshRef}\n      args={[undefined, undefined, count]}\n      frustumCulled={false}\n    >\n      <sphereGeometry args={[1, 8, 8]} />\n      <meshBasicMaterial\n        color={bloomColor}\n        toneMapped={false}\n        transparent\n        opacity={0.9}\n      />\n    </instancedMesh>\n  );\n}\n\nexport function LightSpeed({\n  particleCount = 1000,\n  speed = 2.4,\n  lightColor = \"#b026ff\",\n  intensity = 3.0,\n  radius = 25,\n  cylinderLength = 150,\n  className,\n}: LightSpeedProps) {\n  const [reduceMotion, setReduceMotion] = useState(false);\n  const safeParticleCount = Math.min(\n    Math.max(Math.floor(particleCount), 1),\n    4000\n  );\n\n  useEffect(() => {\n    const media = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduceMotion(media.matches);\n    update();\n    media.addEventListener(\"change\", update);\n    return () => media.removeEventListener(\"change\", update);\n  }, []);\n\n  return (\n    <div\n      aria-hidden=\"true\"\n      className={cn(\n        \"absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[#05070b]\",\n        className\n      )}\n    >\n      {/*\n        Camera looks down -Z axis. FOV 90 for a wider warping look.\n        It simulates a camera traveling in a cylinder (as per the Ducky3D video).\n      */}\n      <Canvas\n        camera={{ position: [0, 0, 5], fov: 90 }}\n        dpr={[1, 1.5]}\n        frameloop={reduceMotion ? \"demand\" : \"always\"}\n      >\n        {/* The fog acts as the \"Volume cube\" from the tutorial to fade out clipping edges in the distance */}\n        <fogExp2 attach=\"fog\" args={[\"#000000\", 0.025]} />\n        <color attach=\"background\" args={[\"#000000\"]} />\n\n        <Particles\n          count={safeParticleCount}\n          baseSpeed={speed}\n          lightColor={lightColor}\n          intensity={intensity}\n          radius={radius}\n          cylinderLength={cylinderLength}\n        />\n\n        <EffectComposer>\n          {/* Bloom takes any value > 1 and makes it emit a neon outer glow */}\n          <Bloom\n            luminanceThreshold={0.1}\n            luminanceSmoothing={0.9}\n            intensity={1.5}\n            mipmapBlur\n          />\n        </EffectComposer>\n      </Canvas>\n    </div>\n  );\n}\n\nexport default LightSpeed;\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/chamaac-ui/light-speed.tsx"
+    },
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "particles",
+        "tunnel",
+        "bloom",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/chamaac-light-speed.tsx",
+      "source": {
+        "project": "Chamaac UI",
+        "repository": "https://github.com/amarnathdhumal/chamaacui",
+        "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/chamaac-ui/light-speed.tsx",
+            "upstreamPath": "registry/chamaac/light-speed/light-speed.tsx",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/light-speed/light-speed.tsx",
+            "upstreamSha256": "sha256:285c08e3566a9ff5ef50a14fd2eaf292e32a2a95a6b6e1be28640f84218c3010",
+            "contentSha256": "sha256:ea8eaa1cd39cb4877c18ff01af9708fe61d93e3a6055636ff9c804750f062de2",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+              "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+              "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "Capped the device-pixel ratio at 1.5 and clamped the public particle count to 1-4000."
+            ]
+          },
+          {
+            "shippedPath": "components/chamaac-ui/lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+            "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/chamaac/light-speed/light-speed.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Amarnath"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+          "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+          "localPath": "registry/sources/chamaac-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/chamaac-ui/light-speed.tsx",
+          "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5 and clamped the public particle count to 1-4000.",
+          "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+        },
+        {
+          "shippedPath": "components/chamaac-ui/lib/utils.ts",
+          "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+          "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+        }
+      ],
+      "dedupe": {
+        "family": "instanced-light-speed-tunnel",
+        "sourceHash": "sha256:782b4e07f22a6ac513085ea2210e3790ba04b9ded0c6eefc23ae30485d9e4a1d",
+        "contentHash": "sha256:dce7c32f6f05ac96f479172504b6d735e7ee0c7ec9792ce0d75bca121b6acec6",
+        "structureHash": "sha256:5f332e3b1ea429a5dbf8d577acc079f708308f1c10fcda2b4482b03add5ac042"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

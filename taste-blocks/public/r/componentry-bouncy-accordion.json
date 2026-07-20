@@ -1,0 +1,125 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "componentry-bouncy-accordion",
+  "title": "Bouncy Accordion",
+  "author": "Harsh Jadhav",
+  "description": "Expands one accessible row while neighboring rows join and separate with connected spring motion.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "framer-motion@12.42.2",
+    "lucide-react@0.475.0",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/componentry/components/componentry/bouncy-accordion.tsx",
+      "content": "\"use client\";\r\n\r\nimport {\r\n  motion,\r\n  useReducedMotion,\r\n  type Transition,\r\n} from \"framer-motion\";\r\nimport { ChevronDown } from \"lucide-react\";\r\nimport {\r\n  useCallback,\r\n  useId,\r\n  useLayoutEffect,\r\n  useRef,\r\n  useState,\r\n  type ReactNode,\r\n} from \"react\";\r\nimport { EASE_OUT } from \"./lib/ease\";\nimport { cn } from \"./lib/utils\";\n\r\nexport type BouncyAccordionItem = {\r\n  id: string;\r\n  title: ReactNode;\r\n  description?: ReactNode;\r\n  icon?: ReactNode;\r\n  disabled?: boolean;\r\n};\r\n\r\nexport type BouncyAccordionClassNames = {\r\n  root?: string;\r\n  item?: string;\r\n  trigger?: string;\r\n  icon?: string;\r\n  title?: string;\r\n  chevron?: string;\r\n  content?: string;\r\n  description?: string;\r\n};\r\n\r\nexport interface BouncyAccordionProps {\r\n  items: BouncyAccordionItem[];\r\n  value?: string | null;\r\n  defaultValue?: string | null;\r\n  onValueChange?: (value: string | null) => void;\r\n  collapsible?: boolean;\r\n  className?: string;\r\n  classNames?: BouncyAccordionClassNames;\r\n}\r\n\r\n// Local springs keep the accordion's connected groups moving together while\r\n// avoiding scale projection on text-heavy row contents.\r\n// Gap spring: must not overshoot y — positive y overshoot drifts items below\r\n// their mt-3 resting point and briefly overlaps the next item.\r\nconst ROW_TRANSITION: Transition = {\r\n  type: \"spring\",\r\n  duration: 0.55,\r\n  bounce: 0.38,\r\n};\r\n\r\nconst CONTENT_OPEN_TRANSITION: Transition = {\r\n  type: \"spring\",\r\n  duration: 0.58,\r\n  bounce: 0.32,\r\n};\r\n\r\nconst CONTENT_CLOSE_TRANSITION: Transition = {\r\n  type: \"spring\",\r\n  duration: 0.46,\r\n  bounce: 0.26,\r\n};\r\n\r\nconst DESCRIPTION_TRANSITION: Transition = {\r\n  duration: 0.18,\r\n  ease: EASE_OUT,\r\n};\r\n\r\nconst CHEVRON_TRANSITION: Transition = {\r\n  type: \"spring\",\r\n  duration: 0.42,\r\n  bounce: 0.28,\r\n};\r\n\r\n\r\nfunction useControllableAccordionValue({\r\n  value,\r\n  defaultValue,\r\n  onValueChange,\r\n}: {\n  value?: string | null | undefined;\n  defaultValue?: string | null | undefined;\n  onValueChange?: ((value: string | null) => void) | undefined;\n}) {\r\n  const [internalValue, setInternalValue] = useState(defaultValue ?? null);\r\n  const isControlled = value !== undefined;\r\n  const currentValue = value ?? internalValue;\r\n\r\n  const setValue = useCallback(\r\n    (next: string | null) => {\r\n      if (!isControlled) {\r\n        setInternalValue(next);\r\n      }\r\n\r\n      onValueChange?.(next);\r\n    },\r\n    [isControlled, onValueChange],\r\n  );\r\n\r\n  return [currentValue, setValue] as const;\r\n}\r\n\r\nfunction BouncyAccordionRow({\r\n  item,\r\n  open,\r\n  startsGroup,\r\n  endsGroup,\r\n  separatedFromPrevious,\r\n  contentId,\r\n  triggerId,\r\n  reduce,\r\n  classNames,\r\n  onToggle,\r\n}: {\r\n  item: BouncyAccordionItem;\r\n  open: boolean;\r\n  startsGroup: boolean;\r\n  endsGroup: boolean;\r\n  separatedFromPrevious: boolean;\r\n  contentId: string;\r\n  triggerId: string;\r\n  reduce: boolean | null;\r\n  classNames?: BouncyAccordionClassNames | undefined;\n  onToggle: () => void;\r\n}) {\r\n  const contentRef = useRef<HTMLDivElement>(null);\r\n  const [contentHeight, setContentHeight] = useState(0);\r\n\r\n  useLayoutEffect(() => {\r\n    const node = contentRef.current;\r\n    if (!node) return;\r\n\r\n    const updateHeight = () => {\r\n      setContentHeight(node.offsetHeight);\r\n    };\r\n\r\n    updateHeight();\r\n\r\n    const observer = new ResizeObserver(updateHeight);\r\n    observer.observe(node);\r\n\r\n    return () => {\r\n      observer.disconnect();\r\n    };\r\n  }, []);\r\n\r\n  return (\r\n    <motion.div\r\n      initial={false}\r\n      animate={{ marginTop: separatedFromPrevious ? 12 : 0 }}\r\n      transition={reduce ? { duration: 0 } : ROW_TRANSITION}\r\n    >\r\n      <motion.div\r\n        data-state={open ? \"open\" : \"closed\"}\r\n        initial={false}\r\n        animate={{\r\n          borderTopLeftRadius: startsGroup ? 28 : 0,\r\n          borderTopRightRadius: startsGroup ? 28 : 0,\r\n          borderBottomLeftRadius: endsGroup ? 28 : 0,\r\n          borderBottomRightRadius: endsGroup ? 28 : 0,\r\n        }}\r\n        transition={reduce ? { duration: 0 } : ROW_TRANSITION}\r\n        className={cn(\r\n          \"overflow-hidden bg-background border border-border/50 text-foreground shadow-sm\",\r\n          item.disabled && \"opacity-50\",\r\n          classNames?.item,\r\n        )}\r\n      >\r\n        <button\r\n          id={triggerId}\r\n          type=\"button\"\r\n          disabled={item.disabled}\r\n          aria-expanded={open}\r\n          aria-controls={contentId}\r\n          onClick={onToggle}\r\n          className={cn(\n            \"flex min-h-[54px] w-full items-center gap-4 px-5 text-left outline-none transition-colors\",\n            \"focus-visible:bg-muted/25 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset\",\n            \"disabled:pointer-events-none\",\r\n            classNames?.trigger,\r\n          )}\r\n        >\r\n          {item.icon ? (\r\n            <span\r\n              className={cn(\r\n                \"grid h-7 w-7 shrink-0 place-items-center text-muted-foreground\",\r\n                classNames?.icon,\r\n              )}\r\n            >\r\n              {item.icon}\r\n            </span>\r\n          ) : null}\r\n          <span\r\n            className={cn(\r\n              \"min-w-0 flex-1 truncate text-[15px] font-medium text-foreground\",\r\n              classNames?.title,\r\n            )}\r\n          >\r\n            {item.title}\r\n          </span>\r\n          <motion.span\r\n            aria-hidden\r\n            animate={{ rotate: open ? 180 : 0 }}\r\n            transition={reduce ? { duration: 0 } : CHEVRON_TRANSITION}\r\n            className={cn(\r\n              \"grid h-6 w-6 shrink-0 place-items-center text-muted-foreground\",\r\n              classNames?.chevron,\r\n            )}\r\n          >\r\n            <ChevronDown className=\"h-4 w-4\" />\r\n          </motion.span>\r\n        </button>\r\n\r\n        <motion.div\r\n          id={contentId}\r\n          role=\"region\"\n          aria-labelledby={triggerId}\n          aria-hidden={!open}\n          inert={!open}\n          initial={false}\r\n          animate={{\r\n            height: open && item.description ? contentHeight : 0,\r\n          }}\r\n          transition={\r\n            reduce\r\n              ? { duration: 0 }\r\n              : open\r\n                ? CONTENT_OPEN_TRANSITION\r\n                : CONTENT_CLOSE_TRANSITION\r\n          }\r\n          className={cn(\"overflow-hidden\", classNames?.content)}\r\n        >\r\n          <motion.div\r\n            ref={contentRef}\r\n            animate={{\r\n              opacity: open ? 1 : 0,\r\n            }}\r\n            transition={reduce ? { duration: 0 } : DESCRIPTION_TRANSITION}\r\n            className=\"px-5 pb-5\"\r\n          >\r\n            <div\r\n              className={cn(\r\n                \"text-[15px] leading-6 text-muted-foreground\",\r\n                classNames?.description,\r\n              )}\r\n            >\r\n              {item.description}\r\n            </div>\r\n          </motion.div>\r\n        </motion.div>\r\n      </motion.div>\r\n    </motion.div>\r\n  );\r\n}\r\n\r\nexport function BouncyAccordion({\r\n  items,\r\n  value,\r\n  defaultValue = null,\r\n  onValueChange,\r\n  collapsible = true,\r\n  className,\r\n  classNames,\r\n}: BouncyAccordionProps) {\r\n  const reduce = useReducedMotion();\r\n  const baseId = useId();\r\n  const [activeValue, setActiveValue] = useControllableAccordionValue({\r\n    value,\r\n    defaultValue,\r\n    onValueChange,\r\n  });\r\n  const activeIndex = items.findIndex((item) => item.id === activeValue);\r\n\r\n  const toggleItem = useCallback(\r\n    (id: string) => {\r\n      if (activeValue === id) {\r\n        if (collapsible) {\r\n          setActiveValue(null);\r\n        }\r\n        return;\r\n      }\r\n\r\n      setActiveValue(id);\r\n    },\r\n    [activeValue, collapsible, setActiveValue],\r\n  );\r\n\r\n  return (\r\n    <div className={cn(\"w-full\", className, classNames?.root)}>\r\n      {items.map((item, index) => {\r\n        const open = activeValue === item.id;\r\n        const previousIsOpen = activeIndex === index - 1;\r\n        const nextIsOpen = activeIndex === index + 1;\r\n        const startsGroup = open || index === 0 || previousIsOpen;\r\n        const endsGroup = open || index === items.length - 1 || nextIsOpen;\r\n        const separatedFromPrevious = index > 0 && (open || previousIsOpen);\r\n        const contentId = `${baseId}-${item.id}-content`;\r\n        const triggerId = `${baseId}-${item.id}-trigger`;\r\n\r\n        return (\r\n          <BouncyAccordionRow\r\n            key={item.id}\r\n            item={item}\r\n            open={open}\r\n            startsGroup={startsGroup}\r\n            endsGroup={endsGroup}\r\n            separatedFromPrevious={separatedFromPrevious}\r\n            contentId={contentId}\r\n            triggerId={triggerId}\r\n            reduce={reduce}\r\n            classNames={classNames}\r\n            onToggle={() => toggleItem(item.id)}\r\n          />\r\n        );\r\n      })}\r\n    </div>\r\n  );\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/componentry/bouncy-accordion.tsx"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/ease.ts",
+      "content": "export const EASE_OUT = [0.16, 1, 0.3, 1] as const;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/ease.ts"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "accordion",
+        "disclosure",
+        "spring",
+        "controlled"
+      ],
+      "renderer": "dom",
+      "preview": "previews/componentry-bouncy-accordion.tsx",
+      "source": {
+        "project": "Componentry",
+        "repository": "https://github.com/harshjdhv/componentry",
+        "revision": "0c90c9b9e624c483d434cdb85df084fd399f24c3",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/componentry/bouncy-accordion.tsx",
+            "upstreamPath": "packages/ui/src/components/bouncy-accordion.tsx",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/components/bouncy-accordion.tsx",
+            "upstreamSha256": "sha256:0218bf2b4509e2d0689e537b6659172aa5e5f2cb6b095c693fb6c8ce4cd4b3f5",
+            "contentSha256": "sha256:acff79a967b207068d28713a4194c7722ac6fbad138661eaeb2a1ef5dd6f8f9b",
+            "changes": [
+              "Repointed copied helpers, added a visible focus ring, made collapsed content inert, and repaired exact-optional typing for controlled inputs and optional class maps."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/ease.ts",
+            "upstreamPath": "packages/ui/src/lib/ease.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/ease.ts",
+            "upstreamSha256": "sha256:c71fc921935bb74af7822a58c2499630b41ef853dce32399442bb82554329b82",
+            "contentSha256": "sha256:fd1359ec9eb89cf6829e28a2a408080acc578a20facaa5c61a79aca38df36113",
+            "changes": [
+              "Kept only the easing token used by the retained accordion component."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/utils.ts",
+            "upstreamPath": "packages/ui/src/lib/utils.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/utils.ts",
+            "upstreamSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "contentSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/ui/src/components/bouncy-accordion.tsx, packages/ui/src/lib/ease.ts, packages/ui/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Harsh Jadhav"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/LICENSE",
+          "sha256": "sha256:fcd2eb170c2579fd14dae953b7b1103cc85dca0e134e015b7490b850c5b403ab",
+          "localPath": "registry/sources/componentry/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/componentry/bouncy-accordion.tsx",
+          "change": "Repointed copied helpers, added a visible focus ring, made collapsed content inert, and repaired exact-optional typing for controlled inputs and optional class maps.",
+          "reason": "Keep the upstream connected-row motion while preventing hidden controls from receiving focus."
+        },
+        {
+          "shippedPath": "components/componentry/lib/ease.ts",
+          "change": "Kept only the easing token used by the retained accordion component.",
+          "reason": "Keep the copied dependency closure limited to the token this component actually imports."
+        }
+      ],
+      "dedupe": {
+        "family": "connected-motion-accordion",
+        "sourceHash": "sha256:da424312bb13704843bc2548c62cb1a00ea950dfcaa444f1c201f5a858f35cb3",
+        "contentHash": "sha256:9d612c8b87b6d56b8a5f7c3603ddb64792f32691ec61c98a99dc3603a4d8eb78",
+        "structureHash": "sha256:7d0203e78389aafaacc8f2a09a76b3a13f8339d8716b199942c0888f3f8a1a21"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

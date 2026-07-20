@@ -1,0 +1,147 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "heroicons-animated-percent-badge-icon",
+  "title": "Animated Percent Badge Icon",
+  "author": "Heroicons Animated",
+  "description": "Renders the Heroicons Percent Badge glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/heroicons-animated/components/heroicons-animated-percent-badge-icon/percent-badge.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface PercentBadgeIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface PercentBadgeIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst BADGE_VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n    transition: {\n      type: \"spring\",\n      stiffness: 60,\n      damping: 10,\n      duration: 0.28,\n    },\n  },\n  animate: {\n    rotate: 180,\n    transition: {\n      delay: 0.08,\n      type: \"spring\",\n      stiffness: 80,\n      damping: 13,\n    },\n  },\n};\n\nconst PercentBadgeIcon = forwardRef<\n  PercentBadgeIconHandle,\n  PercentBadgeIconProps\n>(({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlledRef = useRef(false);\n\n  useImperativeHandle(ref, () => {\n    isControlledRef.current = true;\n\n    return {\n      startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n      stopAnimation: () => controls.start(\"normal\"),\n    };\n  });\n\n  const handleMouseEnter = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (!isAnimated || reduced) return;\n      if (isControlledRef.current) {\n        onMouseEnter?.(e);\n      } else {\n        controls.start(\"animate\");\n      }\n    },\n    [controls, isAnimated, onMouseEnter, reduced]\n  );\n\n  const handleMouseLeave = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (isControlledRef.current) {\n        onMouseLeave?.(e);\n      } else {\n        controls.start(\"normal\");\n      }\n    },\n    [controls, onMouseLeave]\n  );\n\n  return (\n    <div\n      className={cn(className)}\n      onMouseEnter={handleMouseEnter}\n      onMouseLeave={handleMouseLeave}\n      {...props}\n    >\n      <svg\n        fill=\"none\"\n        height={size}\n        stroke=\"currentColor\"\n        strokeLinecap=\"round\"\n        strokeLinejoin=\"round\"\n        strokeWidth=\"1.5\"\n        viewBox=\"0 0 24 24\"\n        width={size}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        <motion.path\n          animate={controls}\n          d=\"M20.9899 11.994C20.9899 13.2624 20.3603 14.3838 19.3966 15.0625C19.598 16.2238 19.2503 17.4618 18.3537 18.3586C17.457 19.2554 16.2192 19.603 15.058 19.4016C14.3793 20.3653 13.2582 20.9949 11.9901 20.9949C10.7219 20.9949 9.60083 20.3654 8.92216 19.4017C7.7608 19.6034 6.52272 19.2557 5.62589 18.3588C4.72906 17.4618 4.38145 16.2236 4.58306 15.0622C3.61963 14.3834 2.99023 13.2622 2.99023 11.994C2.99023 10.7258 3.61968 9.60457 4.58318 8.92582C4.38168 7.76442 4.7293 6.52634 5.62605 5.62949C6.52282 4.73262 7.76077 4.38496 8.92206 4.5865C9.60071 3.62277 10.7219 2.99316 11.9901 2.99316C13.2582 2.99316 14.3793 3.62272 15.058 4.58638C16.2193 4.38474 17.4574 4.73239 18.3542 5.62932C19.251 6.52624 19.5987 7.76443 19.3971 8.92591C20.3605 9.60467 20.9899 10.7258 20.9899 11.994Z\"\n          style={{ originX: \"50%\", originY: \"50%\" }}\n          variants={BADGE_VARIANTS}\n        />\n        <path d=\"M8.99044 14.9934L14.9903 8.99282\" />\n        <path d=\"M9.74042 9.74289H9.74792V9.75039H9.74042V9.74289ZM10.1154 9.74289C10.1154 9.95002 9.94752 10.1179 9.74042 10.1179C9.53332 10.1179 9.36543 9.95002 9.36543 9.74289C9.36543 9.53576 9.53332 9.36785 9.74042 9.36785C9.94752 9.36785 10.1154 9.53576 10.1154 9.74289Z\" />\n        <path d=\"M14.2403 14.2433H14.2478V14.2508H14.2403V14.2433ZM14.6153 14.2433C14.6153 14.4504 14.4474 14.6184 14.2403 14.6184C14.0332 14.6184 13.8653 14.4504 13.8653 14.2433C13.8653 14.0362 14.0332 13.8683 14.2403 13.8683C14.4474 13.8683 14.6153 14.0362 14.6153 14.2433Z\" />\n      </svg>\n    </div>\n  );\n});\n\nPercentBadgeIcon.displayName = \"PercentBadgeIcon\";\n\nexport { PercentBadgeIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/heroicons-animated-percent-badge-icon.tsx"
+    },
+    {
+      "path": "registry/sources/heroicons-animated/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "percent",
+        "badge",
+        "animated",
+        "icon",
+        "motion",
+        "heroicons"
+      ],
+      "renderer": "svg",
+      "preview": "previews/heroicons-animated-percent-badge-icon.tsx",
+      "source": {
+        "project": "Heroicons Animated",
+        "repository": "https://github.com/heroicons-animated/heroicons-animated",
+        "revision": "93c14cc04222375a965ffa33b5d390c474822405",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/heroicons-animated-percent-badge-icon/percent-badge.tsx",
+            "upstreamPath": "packages/react/src/icons/percent-badge.tsx",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/packages/react/src/icons/percent-badge.tsx",
+            "upstreamSha256": "sha256:258d4acca145852365bdbb5de3d1af318822fce11b0e320d9e8a1f1f29c2153a",
+            "contentSha256": "sha256:0c2f06f4b9d96f1f0f4939defc0fd72bac8adbb01fd47fa8fc7de17490f83fdb",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls.",
+              "Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "src/lib/utils.ts",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/icons/percent-badge.tsx, src/lib/utils.ts, and Heroicons-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2026 Aniket Pawar",
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) Tailwind Labs, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/LICENSE",
+          "sha256": "sha256:523f3bb472b7b76b6137becbf45c4d6019cdfbe7a1eef0807e480f7d1cf7ed40",
+          "localPath": "registry/sources/heroicons-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/heroicons-animated/NOTICE",
+          "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+          "registry/sources/heroicons-animated/HEROICONS_LICENSE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/heroicons-animated/NOTICE",
+            "sha256": "sha256:755f24221919def18af51eb781915dc762ee6688bdc27dc4aca69bb7ee92d951",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/pqoqubbw/icons",
+            "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+            "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/tailwindlabs/heroicons",
+            "revision": "0435d4ca364a608cc75e2f8683d374e55abbae26",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/tailwindlabs/heroicons/blob/0435d4ca364a608cc75e2f8683d374e55abbae26/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/HEROICONS_LICENSE",
+            "sha256": "sha256:60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/heroicons-animated-percent-badge-icon/percent-badge.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls. Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms.",
+          "reason": "Resolved the bundled utility import, added explicit animation disablement and reduced-motion handling, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-percent-badge-icon",
+        "sourceHash": "sha256:8898098d20cc967ffb060b0dd5078dfb022cda210bb9528bd038dd884c817f94",
+        "contentHash": "sha256:98275fd138ca3b898ea0515056343627514652123b9a0a4a68d93d838cd6c249",
+        "structureHash": "sha256:df622d44bca5d08117de7e16ca6dc109655e88d01111370483d26f755f4c4842",
+        "glyph": {
+          "inventoryName": "percent-badge",
+          "canonicalName": "percent-badge",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

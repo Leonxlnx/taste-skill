@@ -1,0 +1,80 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ui-x-virtualized",
+  "title": "Virtualized Collection",
+  "author": "Kwan Jun Wen",
+  "description": "Provides list, grid, and external-scroll virtualizers for rendering large collections efficiently.",
+  "dependencies": [
+    "@base-ui/react@1.6.0",
+    "virtua@0.49.3"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-x/components/ui-x/virtualized.tsx",
+      "content": "\"use client\";\n\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport * as React from \"react\";\nimport { experimental_VGrid as VGrid, VList, Virtualizer } from \"virtua\";\n\nconst VirtualizedContext = React.createContext<{\n  scrollRef: React.RefObject<HTMLDivElement | null>;\n  withScrollRef: boolean;\n}>({\n  scrollRef: { current: null },\n  withScrollRef: false,\n});\n\nfunction useVirtualized() {\n  const context = React.useContext(VirtualizedContext);\n  if (!context) {\n    throw new Error(\"useVirtualized must be used within a <Virtualized />.\");\n  }\n  return context;\n}\n\nfunction Virtualized({ render, ...props }: useRender.ComponentProps<\"div\">) {\n  const scrollRef = React.useRef<HTMLDivElement>(null);\n\n  const element = useRender({\n    render,\n    ref: scrollRef,\n    defaultTagName: \"div\",\n    props: mergeProps<\"div\">(\n      { \"data-slot\": \"virtualized\" } as React.ComponentProps<\"div\">,\n      props,\n    ),\n  });\n\n  return (\n    <VirtualizedContext.Provider value={{ scrollRef, withScrollRef: true }}>\n      {element}\n    </VirtualizedContext.Provider>\n  );\n}\n\nexport interface VirtualizedListProps extends Omit<\n  React.ComponentProps<typeof VList>,\n  \"horizontal\"\n> {\n  orientation?: \"vertical\" | \"horizontal\";\n}\n\nfunction VirtualizedList({\n  orientation = \"vertical\",\n  ...props\n}: VirtualizedListProps) {\n  const { withScrollRef } = useVirtualized();\n\n  if (withScrollRef) {\n    throw new Error(\n      \"<VirtualizedList /> must not be used within a <Virtualized />.\",\n    );\n  }\n\n  return (\n    <VList\n      data-slot=\"virtualized-list\"\n      horizontal={orientation === \"horizontal\"}\n      {...props}\n    />\n  );\n}\n\nfunction VirtualizedGrid(props: React.ComponentProps<typeof VGrid>) {\n  return <VGrid data-slot=\"virtualized-grid\" {...props} />;\n}\n\nfunction VirtualizedVirtualizer({\n  ...props\n}: Omit<React.ComponentProps<typeof Virtualizer>, \"scrollRef\">) {\n  const { scrollRef, withScrollRef } = useVirtualized();\n\n  return (\n    <Virtualizer\n      data-slot=\"virtualized-virtualizer\"\n      scrollRef={withScrollRef ? scrollRef : undefined}\n      {...props}\n    />\n  );\n}\n\nexport {\n  Virtualized,\n  VirtualizedList,\n  VirtualizedGrid,\n  VirtualizedVirtualizer,\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/ui-x/virtualized.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "virtualization",
+        "list",
+        "grid",
+        "performance"
+      ],
+      "renderer": "dom",
+      "preview": "previews/ui-x-virtualized.tsx",
+      "source": {
+        "project": "UI-X",
+        "repository": "https://github.com/junwen-k/ui-x",
+        "revision": "800d4f47fec33524967f97fde59a762df4afbf00",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ui-x/virtualized.tsx",
+            "upstreamPath": "apps/v4/src/registry/new-york/ui/virtualized.tsx",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/registry/new-york/ui/virtualized.tsx",
+            "upstreamSha256": "sha256:c04e9cfd9c209a5361b9674397ff4458d7fd350d5456d7d6593e3d2db49d9e27",
+            "contentSha256": "sha256:c04e9cfd9c209a5361b9674397ff4458d7fd350d5456d7d6593e3d2db49d9e27",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/src/registry/new-york/ui/virtualized.tsx",
+        "copyright": [
+          "Copyright (c) 2025 junwen-k"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/LICENSE.md",
+          "sha256": "sha256:a80d52497975e3a97ebf893008dab7ad8ea176e9b48b179b443c60650af770e2",
+          "localPath": "registry/sources/ui-x/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "virtualized-list-grid-container",
+        "sourceHash": "sha256:ce609329b03cef0c54a1ac56df914171945d40a2723eceeda3019f1b7031af90",
+        "contentHash": "sha256:ce609329b03cef0c54a1ac56df914171945d40a2723eceeda3019f1b7031af90",
+        "structureHash": "sha256:23e152785b3ea3e6bb354d0a70e59652e25c72738581cac204194b61c4d865ca"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

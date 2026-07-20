@@ -1,0 +1,124 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-ripple-button",
+  "title": "Ripple Button",
+  "author": "Magic UI",
+  "description": "Adds bounded pointer and keyboard ripple feedback to a native button.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-ripple-button/ripple-button.tsx",
+      "content": "\"use client\"\n\nimport React, { MouseEvent, useEffect, useState } from \"react\"\n\nimport { cn } from \"../../lib/utils\"\nimport \"./ripple-button.css\"\n\ninterface RippleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  rippleColor?: string\n  duration?: string\n}\n\nexport const RippleButton = React.forwardRef<\n  HTMLButtonElement,\n  RippleButtonProps\n>(\n  (\n    {\n      className,\n      children,\n      rippleColor = \"#ffffff\",\n      duration = \"600ms\",\n      onClick,\n      ...props\n    },\n    ref\n  ) => {\n    const [buttonRipples, setButtonRipples] = useState<\n      Array<{ x: number; y: number; size: number; key: number }>\n    >([])\n\n    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {\n      createRipple(event)\n      onClick?.(event)\n    }\n\n    const createRipple = (event: MouseEvent<HTMLButtonElement>) => {\n      const button = event.currentTarget\n      const rect = button.getBoundingClientRect()\n      const size = Math.max(rect.width, rect.height)\n      const fromKeyboard = event.detail === 0\n      const x = fromKeyboard\n        ? (rect.width - size) / 2\n        : event.clientX - rect.left - size / 2\n      const y = fromKeyboard\n        ? (rect.height - size) / 2\n        : event.clientY - rect.top - size / 2\n\n      const newRipple = { x, y, size, key: Date.now() }\n      setButtonRipples((prevRipples) => [...prevRipples, newRipple])\n    }\n\n    useEffect(() => {\n      let timeout: ReturnType<typeof setTimeout> | null = null\n\n      if (buttonRipples.length > 0) {\n        const lastRipple = buttonRipples[buttonRipples.length - 1]\n        timeout = setTimeout(() => {\n          setButtonRipples((prevRipples) =>\n            prevRipples.filter((ripple) => ripple.key !== lastRipple.key)\n          )\n        }, parseInt(duration))\n      }\n\n      return () => {\n        if (timeout !== null) {\n          clearTimeout(timeout)\n        }\n      }\n    }, [buttonRipples, duration])\n\n    return (\n      <button\n        type=\"button\"\n        className={cn(\n          \"bg-background text-primary relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 px-4 py-2 text-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none\",\n          className\n        )}\n        onClick={handleClick}\n        ref={ref}\n        {...props}\n      >\n        <div className=\"relative z-10\">{children}</div>\n        <span className=\"pointer-events-none absolute inset-0\">\n          {buttonRipples.map((ripple) => (\n            <span\n              className=\"magic-rippling bg-background absolute rounded-full opacity-30\"\n              key={ripple.key}\n              style={\n                {\n                  width: `${ripple.size}px`,\n                  height: `${ripple.size}px`,\n                  top: `${ripple.y}px`,\n                  left: `${ripple.x}px`,\n                  backgroundColor: rippleColor,\n                  transform: `scale(0)`,\n                  \"--duration\": duration,\n                } as React.CSSProperties\n              }\n            />\n          ))}\n        </span>\n      </button>\n    )\n  }\n)\n\nRippleButton.displayName = \"RippleButton\"\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/ripple-button.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/components/magic-ripple-button/ripple-button.css",
+      "content": "@keyframes magic-rippling {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    transform: scale(2);\n    opacity: 0;\n  }\n}\n\n.magic-rippling {\n  animation: magic-rippling var(--duration) ease-out;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .magic-rippling {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/ripple-button.css"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "button",
+        "press",
+        "feedback",
+        "ripple"
+      ],
+      "renderer": "dom",
+      "preview": "previews/magic-ripple-button.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-ripple-button/ripple-button.tsx",
+            "upstreamPath": "apps/www/registry/magicui/ripple-button.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/ripple-button.tsx",
+            "upstreamSha256": "sha256:35f408bf877cb842bf3c135dd0f207a4b9fd30881c60e1979c3cdb3130177983",
+            "contentSha256": "sha256:4fb2bebbe22a145e838e7b12cf0a25dd3aecc4d8989ae334aae05f4552fa3326",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils and imported the colocated stylesheet.",
+              "Centered keyboard-triggered ripples, defaulted the control to type button, added a visible focus treatment, and used the scoped animation class."
+            ]
+          },
+          {
+            "shippedPath": "components/magic-ripple-button/ripple-button.css",
+            "upstreamPath": "apps/www/registry/registry-ui.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/registry-ui.ts",
+            "upstreamSha256": "sha256:ae6f38616db5103b027acfdfb629a09f933b0e4a4413ef5249c2e4d855d8dd08",
+            "contentSha256": "sha256:0affb9cf577bc1a1ee8b5cc0a9e4a0b58052c79fa4f462a50a6f721b11bfe978",
+            "changes": [
+              "Extracted the Ripple Button keyframes into a colocated stylesheet, scoped the animation identifier, and added a reduced-motion override."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/ripple-button.tsx, the Ripple Button registry CSS in apps/www/registry/registry-ui.ts, and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-ripple-button/ripple-button.tsx",
+          "change": "Repointed the bundled utility import, connected the extracted CSS, centered keyboard activation, set the safe button type, and added visible focus styling.",
+          "reason": "Keep the native control safe inside forms and make its feedback usable without pointer coordinates."
+        },
+        {
+          "shippedPath": "components/magic-ripple-button/ripple-button.css",
+          "change": "Extracted and scoped the upstream registry keyframes, then added a reduced-motion rule.",
+          "reason": "Ship the complete animation with exact provenance while preventing motion when the user opts out."
+        }
+      ],
+      "dedupe": {
+        "family": "pointer-ripple-button",
+        "sourceHash": "sha256:c8d7f0832ddb6160ee6268e01776775d2409317c65ccbc733d58bd5af0ea9440",
+        "contentHash": "sha256:2b16ba655fb3aca0c985de9f1a95f3229101258b3241eba71fb41c80132ac46f",
+        "structureHash": "sha256:c84281c38bbbd788a93f6c8500350744026e0aa79a58e27fba31c00561e301bd"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

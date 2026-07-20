@@ -1,0 +1,148 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-unlink",
+  "title": "Animated Unlink Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated unlink SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-unlink/unlink-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface UnlinkIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface UnlinkIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst UnlinkIcon = forwardRef<UnlinkIconHandle, UnlinkIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const leftChainControls = useAnimation();\n  const rightChainControls = useAnimation();\n  const sparksControls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () => {\n     if (!isAnimated || reduced) {\n      leftChainControls.start(\"normal\");\n      rightChainControls.start(\"normal\");\n      sparksControls.start(\"normal\");\n     } else {\n      leftChainControls.start(\"animate\");\n      rightChainControls.start(\"animate\");\n      sparksControls.start(\"animate\");\n     }\n    },\n    stopAnimation: () => {\n     leftChainControls.start(\"normal\");\n     rightChainControls.start(\"normal\");\n     sparksControls.start(\"normal\");\n    },\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     leftChainControls.start(\"animate\");\n     rightChainControls.start(\"animate\");\n     sparksControls.start(\"animate\");\n    } else onMouseEnter?.(e as any);\n   },\n   [\n    leftChainControls,\n    rightChainControls,\n    sparksControls,\n    reduced,\n    isAnimated,\n    onMouseEnter,\n   ],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     leftChainControls.start(\"normal\");\n     rightChainControls.start(\"normal\");\n     sparksControls.start(\"normal\");\n    } else onMouseLeave?.(e as any);\n   },\n   [leftChainControls, rightChainControls, sparksControls],\n  );\n\n  const leftVariants: Variants = {\n   normal: { x: 0, rotate: 0 },\n   animate: {\n    x: [-2, -4, -2, 0],\n    rotate: [-5, -8, -5, 0],\n    transition: { duration: 0.8 * duration, ease: \"easeInOut\" },\n   },\n  };\n\n  const rightVariants: Variants = {\n   normal: { x: 0, rotate: 0 },\n   animate: {\n    x: [2, 4, 2, 0],\n    rotate: [5, 8, 5, 0],\n    transition: { duration: 0.8 * duration, ease: \"easeInOut\" },\n   },\n  };\n\n  const sparksVariants: Variants = {\n   normal: { opacity: 1, pathLength: 1 },\n   animate: {\n    pathLength: [0, 1],\n    opacity: [0, 1, 0, 1],\n    transition: { duration: 0.5 * duration, ease: \"easeInOut\" },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n     >\n      <m.path\n       d=\"m18.84 12.25 1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5.006 5.006 0 0 0-6.95 0l-1.72 1.71\"\n       variants={rightVariants}\n       initial=\"normal\"\n       animate={rightChainControls}\n      />\n      <m.path\n       d=\"m5.17 11.75-1.71 1.71a5.004 5.004 0 0 0 .12 7.07 5.006 5.006 0 0 0 6.95 0l1.71-1.71\"\n       variants={leftVariants}\n       initial=\"normal\"\n       animate={leftChainControls}\n      />\n\n      <m.line\n       x1=\"8\"\n       x2=\"8\"\n       y1=\"2\"\n       y2=\"5\"\n       variants={sparksVariants}\n       initial=\"normal\"\n       animate={sparksControls}\n      />\n      <m.line\n       x1=\"2\"\n       x2=\"5\"\n       y1=\"8\"\n       y2=\"8\"\n       variants={sparksVariants}\n       initial=\"normal\"\n       animate={sparksControls}\n      />\n      <m.line\n       x1=\"16\"\n       x2=\"16\"\n       y1=\"19\"\n       y2=\"22\"\n       variants={sparksVariants}\n       initial=\"normal\"\n       animate={sparksControls}\n      />\n      <m.line\n       x1=\"19\"\n       x2=\"22\"\n       y1=\"16\"\n       y2=\"16\"\n       variants={sparksVariants}\n       initial=\"normal\"\n       animate={sparksControls}\n      />\n     </svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nUnlinkIcon.displayName = \"UnlinkIcon\";\nexport { UnlinkIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-unlink.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "unlink",
+        "animated",
+        "icon",
+        "motion",
+        "break",
+        "disconnect",
+        "remove",
+        "separate"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-unlink.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-unlink/unlink-icon.tsx",
+            "upstreamPath": "icons/lucide/unlink-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/unlink-icon.tsx",
+            "upstreamSha256": "sha256:163138c1322995e19181b8fb19ca4f548a8e1288928007f48f6b61fec000a51a",
+            "contentSha256": "sha256:47318c884da4d27870dee39fd076b98c97550edd57029797140c8b0b75f62248",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/unlink-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-unlink/unlink-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-unlink-icon",
+        "sourceHash": "sha256:646dc05fa9db39253afe81c496afb1f97383247e028748b0274006ed9a064b5c",
+        "contentHash": "sha256:b65fb168c7a4cae8712531c76999cfd407e1385a514d2737b6b970022c78b743",
+        "structureHash": "sha256:37bcf032fce81be87c98aafc6cbeb2dd493360d3ec7e1cb610743af66ff5b216",
+        "glyph": {
+          "inventoryName": "unlink",
+          "canonicalName": "unlink",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "heroicons-animated-hand-raised-icon",
+  "title": "Animated Hand Raised Icon",
+  "author": "Heroicons Animated",
+  "description": "Renders the Heroicons Hand Raised glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/heroicons-animated/components/heroicons-animated-hand-raised-icon/hand-raised.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface HandRaisedIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface HandRaisedIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n    originX: \"50%\",\n    originY: \"90%\",\n  },\n  animate: {\n    rotate: [0, -15, 10, -5, 0],\n    originX: \"50%\",\n    originY: \"90%\",\n    transition: {\n      duration: 0.28,\n      ease: \"easeInOut\",\n    },\n  },\n};\n\nconst HandRaisedIcon = forwardRef<HandRaisedIconHandle, HandRaisedIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) return;\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <motion.svg\n          animate={controls}\n          fill=\"none\"\n          height={size}\n          initial=\"normal\"\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"1.5\"\n          variants={VARIANTS}\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <path d=\"M10.05 4.575C10.05 3.70515 9.34486 3 8.47501 3C7.60516 3 6.90001 3.70515 6.90001 4.575L6.9 7.575M10.05 4.575L10.05 3.075C10.05 2.20515 10.7552 1.5 11.625 1.5C12.4949 1.5 13.2 2.20515 13.2 3.075L13.2 4.575M10.05 4.575L10.125 10.5M13.2 11.25V4.575M13.2 4.575C13.2 3.70515 13.9052 3 14.775 3C15.6449 3 16.35 3.70515 16.35 4.575V15M6.9 7.575C6.9 6.70515 6.19485 6 5.325 6C4.45515 6 3.75 6.70515 3.75 7.575V15.75C3.75 19.4779 6.77208 22.5 10.5 22.5H12.5179C13.9103 22.5 15.2456 21.9469 16.2302 20.9623L17.9623 19.2302C18.9469 18.2456 19.5 16.9103 19.5 15.5179L19.5031 13.494C19.5046 13.3209 19.5701 13.1533 19.7007 13.0227C20.3158 12.4076 20.3158 11.4104 19.7007 10.7953C19.0857 10.1802 18.0884 10.1802 17.4733 10.7953C16.7315 11.5371 16.3578 12.5111 16.3531 13.4815M6.9 7.575V12M13.17 16.318C13.5599 15.9281 14.0035 15.6248 14.477 15.4079C15.0701 15.1362 15.71 15.0003 16.35 15M16.3519 15H16.35\" />\n        </motion.svg>\n      </div>\n    );\n  }\n);\n\nHandRaisedIcon.displayName = \"HandRaisedIcon\";\n\nexport { HandRaisedIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/heroicons-animated-hand-raised-icon.tsx"
+    },
+    {
+      "path": "registry/sources/heroicons-animated/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "hand",
+        "raised",
+        "animated",
+        "icon",
+        "motion",
+        "heroicons"
+      ],
+      "renderer": "svg",
+      "preview": "previews/heroicons-animated-hand-raised-icon.tsx",
+      "source": {
+        "project": "Heroicons Animated",
+        "repository": "https://github.com/heroicons-animated/heroicons-animated",
+        "revision": "93c14cc04222375a965ffa33b5d390c474822405",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/heroicons-animated-hand-raised-icon/hand-raised.tsx",
+            "upstreamPath": "packages/react/src/icons/hand-raised.tsx",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/packages/react/src/icons/hand-raised.tsx",
+            "upstreamSha256": "sha256:98467254d2548178c1e251149f4c4734b03f3fe0eaec08a2c771e5d78fc29fc1",
+            "contentSha256": "sha256:933b4cc6018827dc12c0f45ab21611d17af931c8fec7e32a09e2528122a8b41c",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls.",
+              "Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "src/lib/utils.ts",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/icons/hand-raised.tsx, src/lib/utils.ts, and Heroicons-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2026 Aniket Pawar",
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) Tailwind Labs, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/LICENSE",
+          "sha256": "sha256:523f3bb472b7b76b6137becbf45c4d6019cdfbe7a1eef0807e480f7d1cf7ed40",
+          "localPath": "registry/sources/heroicons-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/heroicons-animated/NOTICE",
+          "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+          "registry/sources/heroicons-animated/HEROICONS_LICENSE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/heroicons-animated/NOTICE",
+            "sha256": "sha256:755f24221919def18af51eb781915dc762ee6688bdc27dc4aca69bb7ee92d951",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/pqoqubbw/icons",
+            "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+            "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/tailwindlabs/heroicons",
+            "revision": "0435d4ca364a608cc75e2f8683d374e55abbae26",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/tailwindlabs/heroicons/blob/0435d4ca364a608cc75e2f8683d374e55abbae26/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/HEROICONS_LICENSE",
+            "sha256": "sha256:60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/heroicons-animated-hand-raised-icon/hand-raised.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls. Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms.",
+          "reason": "Resolved the bundled utility import, added explicit animation disablement and reduced-motion handling, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-hand-raised-icon",
+        "sourceHash": "sha256:726f81a56841162692ead0242accf78bf885c193cd499b1242ab456632142e77",
+        "contentHash": "sha256:a475a107ecee01a652c5f81b2736e93859a37b0e75f75c04534797d9617f61b7",
+        "structureHash": "sha256:b25e91ea8af4f9d26c025800ba605fad1d6ae0ed45f7763c7299bd3e4232198a",
+        "glyph": {
+          "inventoryName": "hand-raised",
+          "canonicalName": "hand-raised",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

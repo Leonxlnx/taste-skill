@@ -1,0 +1,479 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-dual-listbox",
+  "title": "Dual Listbox",
+  "author": "Jake Zatecky",
+  "description": "Transfers caller-provided options between available and selected native listboxes with filtering and reordering.",
+  "dependencies": [
+    "classnames@2.5.1",
+    "lodash@4.17.21",
+    "prop-types@15.8.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/index.js",
+      "content": "'use client';\n\nimport DualListBoxWrapper from './js/DualListBoxWrapper.jsx';\n\nexport default DualListBoxWrapper;\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-dual-listbox/index.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/DualListBoxWrapper.jsx",
+      "content": "import memoize from 'lodash/memoize.js';\nimport PropTypes from 'prop-types';\nimport React from 'react';\n\nimport ObjectValueWrapper from './components/ObjectValueWrapper.jsx';\nimport DualListBox, {\n    propTypes as mainPropTypes,\n    defaultProps as mainDefaults,\n} from './components/DualListBox.jsx';\nimport defaultLang from './lang/default.js';\nimport iconsShape from './shapes/iconsShape.js';\nimport languageShape from './shapes/languageShape.js';\nimport { IconContext, LanguageContext } from './contexts.js';\n\nconst wrapperPropTypes = {\n    icons: iconsShape,\n    lang: languageShape,\n    simpleValue: PropTypes.bool,\n};\n\nconst defaultIcons = {\n    moveToAvailable: <span className=\"rdl-icon rdl-icon-move-to-available\" />,\n    moveAllToAvailable: <span className=\"rdl-icon rdl-icon-move-all-to-available\" />,\n    moveToSelected: <span className=\"rdl-icon rdl-icon-move-to-selected\" />,\n    moveAllToSelected: <span className=\"rdl-icon rdl-icon-move-all-to-selected\" />,\n    moveBottom: <span className=\"rdl-icon rdl-icon-move-bottom\" />,\n    moveDown: <span className=\"rdl-icon rdl-icon-move-down\" />,\n    moveUp: <span className=\"rdl-icon rdl-icon-move-up\" />,\n    moveTop: <span className=\"rdl-icon rdl-icon-move-top\" />,\n};\n\nconst combineMemoized = memoize((newValue, defaultValue) => ({ ...defaultValue, ...newValue }));\n\nfunction DualListBoxWrapper({\n    icons = defaultIcons,\n    lang = defaultLang,\n    simpleValue = true,\n    ...otherProps\n}) {\n    // Merge any language or icon changes with the default\n    const mergedLang = combineMemoized(lang, defaultLang);\n    const mergedIcons = combineMemoized(icons, defaultIcons);\n\n    // Select the dual listbox that aligns to the `simpleValue` setting\n    const ListBoxType = !simpleValue ? ObjectValueWrapper : DualListBox;\n\n    // Set the defaults for the main listbox properties\n    const mainProps = { ...mainDefaults, ...otherProps };\n\n    /* eslint-disable react/jsx-props-no-spreading */\n    return (\n        <LanguageContext.Provider value={mergedLang}>\n            <IconContext.Provider value={mergedIcons}>\n                <ListBoxType {...mainProps} />\n            </IconContext.Provider>\n        </LanguageContext.Provider>\n    );\n    /* eslint-enable */\n}\n\nDualListBoxWrapper.propTypes = { ...wrapperPropTypes, ...mainPropTypes };\n\nexport default DualListBoxWrapper;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/DualListBoxWrapper.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/Action.jsx",
+      "content": "import classNames from 'classnames';\nimport kebabCase from 'lodash/kebabCase';\nimport PropTypes from 'prop-types';\nimport React, { useContext } from 'react';\n\nimport { IconContext, LanguageContext } from '../contexts.js';\nimport capitalizeFirstLetter from '../util/capitalizeFirstLetter.js';\n\nconst propTypes = {\n    direction: PropTypes.oneOf([\n        'toAvailable',\n        'toSelected',\n        'up',\n        'down',\n        'top',\n        'bottom',\n    ]).isRequired,\n    disabled: PropTypes.bool.isRequired,\n    onClick: PropTypes.func.isRequired,\n\n    isMoveAll: PropTypes.bool,\n};\n\nfunction Action({\n    direction,\n    disabled,\n    onClick: parentOnClick,\n    isMoveAll = false,\n}) {\n    function onClick() {\n        parentOnClick({ direction, isMoveAll });\n    }\n\n    function getActionKey() {\n        return `move${isMoveAll ? 'All' : ''}${capitalizeFirstLetter(direction)}`;\n    }\n\n    const actionKey = getActionKey();\n    const { [actionKey]: icon } = useContext(IconContext);\n    const { [actionKey]: label } = useContext(LanguageContext);\n    const classKey = kebabCase(actionKey);\n    const className = classNames({\n        'rdl-btn': true,\n        'rdl-move': true,\n        [`rdl-${classKey}`]: true,\n    });\n\n    return (\n        <button\n            aria-label={label}\n            className={className}\n            disabled={disabled}\n            title={label}\n            type=\"button\"\n            onClick={onClick}\n        >\n            {icon}\n        </button>\n    );\n}\n\nAction.propTypes = propTypes;\n\nexport default Action;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/Action.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/DualListBox.jsx",
+      "content": "import classNames from 'classnames';\nimport escapeRegExp from 'lodash/escapeRegExp.js';\nimport PropTypes from 'prop-types';\nimport React, {\n    useCallback,\n    useEffect,\n    useRef,\n    useState,\n} from 'react';\n\nimport refShape from '../shapes/refShape.js';\nimport optionsShape from '../shapes/optionsShape.js';\nimport valueShape from '../shapes/valueShape.js';\nimport indexesOf from '../util/indexesOf.js';\nimport mergeRefs from '../util/mergeRefs.js';\nimport swapOptions from '../util/swapOptions.js';\nimport { ALIGNMENTS, KEYS } from '../constants.js';\nimport Action from './Action.jsx';\nimport HiddenInput from './HiddenInput.jsx';\nimport ListBox from './ListBox.jsx';\n\nconst propTypes = {\n    options: optionsShape.isRequired,\n    onChange: PropTypes.func.isRequired,\n\n    alignActions: PropTypes.oneOf([ALIGNMENTS.MIDDLE, ALIGNMENTS.TOP]),\n    allowDuplicates: PropTypes.bool,\n    available: valueShape,\n    availableRef: refShape,\n    canFilter: PropTypes.bool,\n    className: PropTypes.string,\n    disabled: PropTypes.bool,\n    filter: PropTypes.shape({\n        available: PropTypes.string.isRequired,\n        selected: PropTypes.string.isRequired,\n    }),\n    filterCallback: PropTypes.func,\n    getOptionLabel: PropTypes.func,\n    getOptionValue: PropTypes.func,\n    htmlDir: PropTypes.string,\n    iconsClass: PropTypes.string,\n    id: PropTypes.string,\n    moveKeys: PropTypes.arrayOf(PropTypes.string),\n    name: PropTypes.string,\n    preserveSelectOrder: PropTypes.bool,\n    required: PropTypes.bool,\n    selected: valueShape,\n    selectedRef: refShape,\n    showHeaderLabels: PropTypes.bool,\n    showNoOptionsText: PropTypes.bool,\n    showOrderButtons: PropTypes.bool,\n    onFilterChange: PropTypes.func,\n};\n\nconst defaultFilter = (option, filterInput, { getOptionLabel }) => {\n    if (filterInput === '') {\n        return true;\n    }\n\n    return (new RegExp(escapeRegExp(filterInput), 'i')).test(getOptionLabel(option));\n};\nconst defaultProps = {\n    alignActions: ALIGNMENTS.MIDDLE,\n    allowDuplicates: false,\n    available: undefined,\n    availableRef: null,\n    canFilter: false,\n    className: null,\n    disabled: false,\n    filter: null,\n    filterCallback: defaultFilter,\n    getOptionLabel: ({ label }) => label,\n    getOptionValue: ({ value }) => value,\n    htmlDir: 'ltr',\n    iconsClass: 'native',\n    id: 'rdl',\n    moveKeys: [KEYS.SPACEBAR, KEYS.ENTER],\n    name: null,\n    preserveSelectOrder: null,\n    required: false,\n    selected: [],\n    selectedRef: null,\n    showHeaderLabels: false,\n    showNoOptionsText: false,\n    showOrderButtons: false,\n    onFilterChange: null,\n};\n\n/* eslint-disable react/require-default-props */\nfunction DualListBox(props) {\n    const { selected, filter: filterProp } = props;\n    const availableRef = useRef(null);\n    const selectedRef = useRef(null);\n    const [filter, setFilter] = useState(filterProp !== null ? filterProp : {\n        available: '',\n        selected: '',\n    });\n    const [selections, setSelections] = useState({\n        available: [],\n        selected: [],\n    });\n\n    // Update the filter state if the caller changes the property\n    useEffect(() => {\n        if (filterProp !== null) {\n            setFilter(filterProp);\n        }\n    }, [filterProp]);\n\n    /**\n     * Flattens a hierarchical list of options to a key/value mapping.\n     *\n     * @param {Array} options\n     *\n     * @returns {Object}\n     */\n    function getValueMap(options) {\n        const { getOptionValue } = props;\n        let valueMap = {};\n\n        options.forEach((option) => {\n            const { options: children } = option;\n            const value = getOptionValue(option);\n\n            if (children !== undefined) {\n                valueMap = { ...valueMap, ...getValueMap(children) };\n            } else {\n                valueMap[value] = option;\n            }\n        });\n\n        return valueMap;\n    }\n\n    /**\n     * Returns the highlighted options from a given element.\n     *\n     * @param {Object} element\n     *\n     * @returns {Array}\n     */\n    function getMarkedOptions(element) {\n        if (element === null) {\n            return [];\n        }\n\n        return Array.from(element.options)\n            .map(({ dataset, label, selected: isSelected }, index) => ({\n                index,\n                isSelected,\n                label,\n                order: parseInt(dataset.order, 10),\n                value: JSON.parse(dataset.value),\n            }))\n            .filter(({ isSelected }) => isSelected);\n    }\n\n    /**\n     * Filter the given options with by filtering function and the search string.\n     *\n     * @param {Array} options\n     * @param {Function} filterer\n     * @param {string} filterInput\n     * @param {boolean} ignoreSearch\n     *\n     * @returns {Array}\n     */\n    function filterOptions(options, filterer, filterInput, ignoreSearch = false) {\n        const { canFilter, filterCallback } = props;\n        const filtered = [];\n\n        options.forEach((option) => {\n            if (option.options !== undefined) {\n                // Recursively filter any children\n                const filteredChildren = filterOptions(\n                    option.options,\n                    filterer,\n                    filterInput,\n                    // If the parent succeeds the search filter, then all children also pass\n                    ignoreSearch || filterCallback(option, filterInput, props),\n                );\n\n                if (filteredChildren.length > 0) {\n                    filtered.push({\n                        ...option,\n                        options: filteredChildren,\n                    });\n                }\n            } else {\n                const subFiltered = [];\n\n                // Run the main (non-search) filterer against the given item\n                const filterResult = filterer(option);\n\n                // For selected options, the filterer returns the indexes of all instances of a\n                // given option, because `allowDuplicates` allows for multiple instances, in\n                // contrast to available options.\n                if (Array.isArray(filterResult)) {\n                    filterResult.forEach((index) => {\n                        subFiltered.push({\n                            ...option,\n                            order: index,\n                        });\n                    });\n                } else if (filterResult) {\n                    // The available options filterer is simpler, as there can only be one instance\n                    subFiltered.push(option);\n                }\n\n                // If any matched options go through, optionally apply user filtering and then add\n                // these options to the filtered list. The text search filtering is applied AFTER\n                // the main filtering to prevent unnecessary calls to the filterCallback function.\n                if (subFiltered.length > 0) {\n                    if (\n                        canFilter &&\n                        !ignoreSearch &&\n                        !filterCallback(option, filterInput, props)\n                    ) {\n                        return;\n                    }\n\n                    subFiltered.forEach((subItem) => {\n                        filtered.push(subItem);\n                    });\n                }\n            }\n        });\n\n        return filtered;\n    }\n\n    /**\n     * Filter the available options.\n     *\n     * @param {Array} options\n     * @param {boolean} ignoreSearch Ignore the search filter.\n     *\n     * @returns {Array}\n     */\n    function filterAvailable(options, ignoreSearch = false) {\n        const { allowDuplicates, available, getOptionValue } = props;\n        const { available: availableFilter } = filter;\n\n        const filters = [];\n\n        // Apply user-defined available restrictions, if any\n        if (available !== undefined) {\n            filters.push((option) => available.indexOf(getOptionValue(option)) >= 0);\n        }\n\n        // If duplicates are not allowed, filter out selected options\n        if (!allowDuplicates) {\n            filters.push((option) => selected.indexOf(getOptionValue(option)) < 0);\n        }\n\n        // Apply each filter function on the option\n        const filterer = (option) => filters.reduce(\n            (previousValue, filterFunction) => previousValue && filterFunction(option),\n            true,\n        );\n\n        return filterOptions(options, filterer, availableFilter, ignoreSearch);\n    }\n\n    /**\n     * Filter the selected options by selection order. This drops the optgroup associations.\n     *\n     * @param {Array} options\n     *\n     * @returns {Array}\n     */\n    function filterSelectedByOrder(options) {\n        const { canFilter, filterCallback } = props;\n        const { selected: selectedFilter } = filter;\n        const valueMap = getValueMap(options);\n\n        // Compile the full details of all selected options, including the selection order\n        const selectedOptions = selected.map((value, index) => ({\n            ...valueMap[value],\n            order: index,\n        }));\n\n        if (canFilter) {\n            return selectedOptions.filter(\n                (selectedOption) => filterCallback(selectedOption, selectedFilter, props),\n            );\n        }\n\n        return selectedOptions;\n    }\n\n    /**\n     * Filter the selected options.\n     *\n     * @param {Array} options\n     * @param {boolean} ignoreSearch Ignore the search filter.\n     *\n     * @returns {Array}\n     */\n    function filterSelected(options, ignoreSearch = false) {\n        const { getOptionValue, preserveSelectOrder } = props;\n        const { selected: selectedFilter } = filter;\n\n        // Filter and order the selections by selection order\n        if (preserveSelectOrder) {\n            return filterSelectedByOrder(options);\n        }\n\n        // Filter and order the selections by the default order\n        return filterOptions(\n            options,\n            (option) => indexesOf(selected, getOptionValue(option)),\n            selectedFilter,\n            ignoreSearch,\n        );\n    }\n\n    /**\n     * Re-arrange the marked options to move up or down in the selected list.\n     *\n     * @param {Array} markedOptions\n     * @param {string} direction\n     *\n     * @returns {Array}\n     */\n    function rearrangeSelected(markedOptions, direction) {\n        let newOrder = [...selected];\n\n        if (markedOptions.length === 0) {\n            return newOrder;\n        }\n\n        if (direction === 'up') {\n            // If all the marked options are already as high as they can get, ignore the\n            // re-arrangement request because they will end of swapping their order amongst\n            // themselves.\n            if (markedOptions[markedOptions.length - 1].order > markedOptions.length - 1) {\n                markedOptions.forEach(({ order }) => {\n                    if (order > 0) {\n                        newOrder = swapOptions(order, order - 1)(newOrder);\n                    }\n                });\n            }\n        } else if (direction === 'down') {\n            // Similar to the above, if all the marked options are already as low as they can get,\n            // ignore the re-arrangement request.\n            if (markedOptions[0].order < selected.length - markedOptions.length) {\n                markedOptions.reverse().forEach(({ order }) => {\n                    if (order < selected.length - 1) {\n                        newOrder = swapOptions(order, order + 1)(newOrder);\n                    }\n                });\n            }\n        }\n\n        return newOrder;\n    }\n\n    /**\n     * Move the marked options to the top or bottom of the selected options.\n     *\n     * @param {Array} markedOptions\n     * @param {string} direction 'top' | 'bottom'\n     *\n     * @returns {Array}\n     */\n    function rearrangeToExtremes(markedOptions, direction) {\n        let unmarked = [...selected];\n\n        // Filter out marked options\n        markedOptions.forEach(({ order }) => {\n            unmarked[order] = null;\n        });\n        unmarked = unmarked.filter((v) => v !== null);\n\n        // Condense marked options raw values\n        const marked = markedOptions.map(({ order }) => selected[order]);\n\n        if (direction === 'top') {\n            return [...marked, ...unmarked];\n        }\n\n        return [...unmarked, ...marked];\n    }\n\n    /**\n     * Recursively make the given set of options selected.\n     *\n     * @param {Array} options\n     *\n     * @returns {String[]}\n     */\n    function makeOptionsSelectedRecursive(options) {\n        const { getOptionValue } = props;\n        let newSelected = [];\n\n        options.forEach((option) => {\n            // Skip disabled options\n            if (option.disabled) {\n                return;\n            }\n\n            if (option.options !== undefined) {\n                newSelected = [\n                    ...newSelected,\n                    ...makeOptionsSelectedRecursive(option.options),\n                ];\n            } else {\n                newSelected.push(getOptionValue(option));\n            }\n        });\n\n        return newSelected;\n    }\n\n    /**\n     * Make all the given options selected, appending them after the existing selections.\n     *\n     * @param {Array} options\n     *\n     * @returns {String[]}\n     */\n    function makeOptionsSelected(options) {\n        const availableOptions = filterAvailable(options);\n\n        return [\n            ...selected,\n            ...makeOptionsSelectedRecursive(availableOptions),\n        ];\n    }\n\n    /**\n     * Recursively unselect the given options, except for those disabled.\n     *\n     * @param {String[]} previousSelected\n     * @param {Array} optionsToRemove\n     *\n     * @returns {String[]}\n     */\n    function makeOptionsUnselectedRecursive(previousSelected, optionsToRemove) {\n        const { getOptionValue } = props;\n        let newSelected = [...previousSelected];\n\n        optionsToRemove.forEach((option) => {\n            if (option.options !== undefined) {\n                // Traverse any parents for leaf options\n                newSelected = makeOptionsUnselectedRecursive(newSelected, option.options);\n            } else if (!option.disabled) {\n                // Remove non-disabled options\n                newSelected = newSelected.filter((oldValue) => (\n                    oldValue !== getOptionValue(option)\n                ));\n            }\n        });\n\n        return newSelected;\n    }\n\n    /**\n     * Make all the given options unselected, except for those disabled.\n     *\n     * @param {Array} options\n     *\n     * @returns {Array}\n     */\n    function makeOptionsUnselected(options) {\n        return makeOptionsUnselectedRecursive(selected, filterSelected(options));\n    }\n\n    /**\n     * Toggle a set of highlighted elements.\n     *\n     * @param {Array} toggleItems\n     * @param {string} controlKey\n     *\n     * @returns {Array}\n     */\n    function toggleHighlighted(toggleItems, controlKey) {\n        const { allowDuplicates } = props;\n        const selectedItems = selected.slice(0);\n        const toggleItemsMap = { ...selectedItems };\n\n        // Add/remove the individual items based on previous state\n        toggleItems.forEach(({ value, order }) => {\n            const inSelectedOptions = selectedItems.indexOf(value) > -1;\n\n            if (inSelectedOptions && (!allowDuplicates || controlKey === 'selected')) {\n                // Toggled items that were previously selected are removed unless `allowDuplicates`\n                // is set to true or the option was sourced from the selected ListBox. We use an\n                // object mapping such that we can remove the exact index of the selected items\n                // without the array re-arranging itself.\n                delete toggleItemsMap[order];\n            } else {\n                selectedItems.push(value);\n            }\n        });\n\n        // Convert object mapping back to an array\n        if (controlKey === 'selected') {\n            return Object.keys(toggleItemsMap).map((key) => toggleItemsMap[key]);\n        }\n\n        return selectedItems;\n    }\n\n    /**\n     * @param {Array} newSelected The new selected values.\n     * @param {Array} selection The options the user highlighted (if any).\n     * @param {string} controlKey The key for the control that fired this event.\n     * @param {boolean} isRearrange Whether the change is a result of re-arrangement.\n     *\n     * @returns {void}\n     */\n    function onChange(newSelected, selection, controlKey, isRearrange = false) {\n        const { onChange: onChangeProp } = props;\n        const userSelection = selection.map(({ index, label, value }) => ({ index, label, value }));\n\n        onChangeProp(newSelected, userSelection, controlKey);\n\n        // Reset selections after moving items for cleaner experience and to remove invalid values\n        // Note that this should not occur for re-arrangement operations\n        if (!isRearrange) {\n            setSelections({\n                ...selections,\n                [controlKey]: [],\n            });\n        }\n    }\n\n    /**\n     * @param {string} direction\n     * @param {boolean} isMoveAll\n     *\n     * @returns {void}\n     */\n    const onActionClick = useCallback(({ direction, isMoveAll }) => {\n        const { options } = props;\n        const isToSelected = direction === 'toSelected';\n        const sourceListBox = isToSelected ? availableRef : selectedRef;\n        const marked = getMarkedOptions(sourceListBox.current);\n        let isRearrangement = false;\n\n        let newSelected;\n\n        if (['up', 'down'].indexOf(direction) > -1) {\n            isRearrangement = true;\n            newSelected = rearrangeSelected(marked, direction);\n        } else if (['top', 'bottom'].indexOf(direction) > -1) {\n            isRearrangement = true;\n            newSelected = rearrangeToExtremes(marked, direction);\n        } else if (isMoveAll) {\n            newSelected = isToSelected ?\n                makeOptionsSelected(options) :\n                makeOptionsUnselected(options);\n        } else {\n            newSelected = toggleHighlighted(\n                marked,\n                isToSelected ? 'available' : 'selected',\n            );\n        }\n\n        onChange(newSelected, marked, isToSelected ? 'available' : 'selected', isRearrangement);\n    }, [selected, filter]);\n\n    /**\n     * @param {Object} event\n     * @param {string} controlKey\n     *\n     * @returns {void}\n     */\n    const onOptionDoubleClick = useCallback((event, controlKey) => {\n        // Prevent double click from parent triggering a selected option\n        if (event.target.tagName === 'OPTGROUP') {\n            return;\n        }\n\n        const marked = getMarkedOptions(event.currentTarget);\n        const newSelected = toggleHighlighted(marked, controlKey);\n\n        onChange(newSelected, marked, controlKey);\n    }, [selected]);\n\n    /**\n     * @param {Event} event\n     * @param {string} controlKey\n     *\n     * @returns {void}\n     */\n    const onOptionKeyUp = useCallback((event, controlKey) => {\n        const { currentTarget, key } = event;\n        const { moveKeys } = props;\n\n        if (moveKeys.indexOf(key) > -1) {\n            const marked = getMarkedOptions(currentTarget);\n            const newSelected = toggleHighlighted(marked, controlKey);\n\n            onChange(newSelected, marked, controlKey);\n        }\n    }, [selected]);\n\n    /**\n     * @param {Event} event\n     * @param {string} controlKey\n     *\n     * @returns {void}\n     */\n    const onSelectionChange = useCallback((event, controlKey) => {\n        const { target: { options } } = event;\n\n        const newSelections = Array.from(options)\n            .filter(({ selected: isSelected }) => isSelected)\n            .map(({ value }) => value);\n\n        setSelections({\n            ...selections,\n            [controlKey]: newSelections,\n        });\n    }, [selections]);\n\n    /**\n     * @param {Event} event\n     *\n     * @returns {void}\n     */\n    const onFilterChangeCallback = useCallback((event) => {\n        const { onFilterChange } = props;\n        const { target: { value, dataset: { controlKey } } } = event;\n\n        const newFilter = { ...filter, [controlKey]: value };\n\n        if (onFilterChange) {\n            onFilterChange(newFilter);\n        } else {\n            setFilter(newFilter);\n        }\n    }, [filter]);\n\n    /**\n     * Focus the selected list-box whenever a form flags this component as invalid.\n     *\n     * @returns {void}\n     */\n    const onHiddenFocus = useCallback(() => {\n        availableRef.current.focus();\n    }, []);\n\n    /**\n     * @param {Array} options\n     *\n     * @returns {Array}\n     */\n    function renderOptions(options) {\n        const { allowDuplicates, getOptionLabel, getOptionValue } = props;\n\n        return options.map((option) => {\n            const label = getOptionLabel(option);\n            const value = getOptionValue(option);\n            const key = !allowDuplicates ?\n                `${value}-${label}` :\n                `${value}-${label}-${option.order}`;\n\n            if (option.options !== undefined) {\n                return (\n                    <optgroup\n                        key={key}\n                        disabled={option.disabled}\n                        label={label}\n                        title={option.title}\n                    >\n                        {renderOptions(option.options)}\n                    </optgroup>\n                );\n            }\n\n            // If we allow duplicates, append the index to keep each entry unique such that the\n            // controlled component can easily update its state\n            const optionValue = !allowDuplicates ? value : `${value}-${option.order}`;\n\n            return (\n                <option\n                    key={key}\n                    data-order={option.order}\n                    data-value={JSON.stringify(value)}\n                    disabled={option.disabled}\n                    title={option.title}\n                    value={optionValue}\n                >\n                    {label}\n                </option>\n            );\n        });\n    }\n\n    /**\n     * @param {string} controlKey\n     * @param {Array} options\n     * @param {React.MutableRefObject} ref\n     * @param {JSX.Element} actions\n     *\n     * @returns {JSX.Element}\n     */\n    function renderListBox(controlKey, options, ref, actions) {\n        const {\n            alignActions,\n            canFilter,\n            [`${controlKey}Ref`]: refProp,\n            disabled,\n            id,\n            showNoOptionsText,\n        } = props;\n\n        // Wrap event handlers with a controlKey reference\n        const wrapHandler = (handler) => ((event) => handler(event, controlKey));\n\n        return (\n            <ListBox\n                actions={alignActions === ALIGNMENTS.TOP ? actions : null}\n                canFilter={canFilter}\n                controlKey={controlKey}\n                disabled={disabled}\n                filterValue={filter[controlKey]}\n                id={id}\n                inputRef={mergeRefs([ref, refProp])}\n                selections={selections[controlKey]}\n                showNoOptionsText={showNoOptionsText}\n                onDoubleClick={wrapHandler(onOptionDoubleClick)}\n                onFilterChange={wrapHandler(onFilterChangeCallback)}\n                onKeyUp={wrapHandler(onOptionKeyUp)}\n                onSelectionChange={wrapHandler(onSelectionChange)}\n            >\n                {options}\n            </ListBox>\n        );\n    }\n\n    const {\n        alignActions,\n        canFilter,\n        className,\n        disabled,\n        htmlDir,\n        iconsClass,\n        id,\n        name,\n        options,\n        preserveSelectOrder,\n        required,\n        showHeaderLabels,\n        showOrderButtons,\n    } = props;\n    const availableOptions = renderOptions(filterAvailable(options));\n    const selectedOptions = renderOptions(filterSelected(options));\n    const makeAction = (direction, isMoveAll = false) => (\n        <Action\n            direction={direction}\n            disabled={disabled}\n            isMoveAll={isMoveAll}\n            onClick={onActionClick}\n        />\n    );\n    const actionsToSelected = (\n        <div className=\"rdl-actions-to-selected\">\n            {makeAction('toSelected', true)}\n            {makeAction('toSelected')}\n        </div>\n    );\n    const actionsToAvailable = (\n        <div className=\"rdl-actions-to-available\">\n            {makeAction('toAvailable')}\n            {makeAction('toAvailable', true)}\n        </div>\n    );\n    const rootClassName = classNames({\n        'react-dual-listbox': true,\n        [`rdl-icons-${iconsClass}`]: true,\n        'rdl-has-filter': canFilter,\n        'rdl-has-header': showHeaderLabels,\n        'rdl-align-top': alignActions === ALIGNMENTS.TOP,\n        ...(className && { [className]: true }),\n    });\n\n    return (\n        <div className={rootClassName} dir={htmlDir} id={id}>\n            <div className=\"rdl-controls\">\n                {renderListBox('available', availableOptions, availableRef, actionsToSelected)}\n                {alignActions === ALIGNMENTS.MIDDLE ? (\n                    <div className=\"rdl-actions\">\n                        {actionsToSelected}\n                        {actionsToAvailable}\n                    </div>\n                ) : null}\n                {renderListBox('selected', selectedOptions, selectedRef, actionsToAvailable)}\n                {preserveSelectOrder && showOrderButtons ? (\n                    <div className=\"rdl-actions\">\n                        {makeAction('top')}\n                        {makeAction('up')}\n                        {makeAction('down')}\n                        {makeAction('bottom')}\n                    </div>\n                ) : null}\n            </div>\n            <HiddenInput\n                availableRef={availableRef}\n                disabled={disabled}\n                name={name}\n                required={required}\n                selected={selected}\n                onFocus={onHiddenFocus}\n            />\n        </div>\n    );\n}\n\nDualListBox.propTypes = propTypes;\n\nexport { propTypes, defaultProps };\nexport default DualListBox;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/DualListBox.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/Filter.jsx",
+      "content": "import PropTypes from 'prop-types';\nimport React, { useContext } from 'react';\n\nimport { LanguageContext } from '../contexts.js';\n\nconst propTypes = {\n    controlKey: PropTypes.string.isRequired,\n    disabled: PropTypes.bool.isRequired,\n    filterValue: PropTypes.string.isRequired,\n    onFilterChange: PropTypes.func.isRequired,\n};\n\nfunction Filter(props) {\n    const {\n        controlKey,\n        disabled,\n        filterValue,\n        onFilterChange,\n    } = props;\n    const {\n        [`${controlKey}FilterPlaceholder`]: filterPlaceholder,\n        [`${controlKey}FilterHeader`]: filterHeader,\n    } = useContext(LanguageContext);\n\n    return (\n        <input\n            aria-label={filterHeader}\n            className=\"rdl-filter\"\n            data-control-key={controlKey}\n            disabled={disabled}\n            placeholder={filterPlaceholder}\n            type=\"search\"\n            value={filterValue}\n            onChange={onFilterChange}\n        />\n    );\n}\n\nFilter.propTypes = propTypes;\n\nexport default Filter;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/Filter.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/HiddenInput.jsx",
+      "content": "import PropTypes from 'prop-types';\nimport React, { useContext, useEffect } from 'react';\n\nimport refShape from '../shapes/refShape.js';\nimport valueShape from '../shapes/valueShape.js';\nimport { LanguageContext } from '../contexts.js';\n\nconst noop = () => {};\nconst propTypes = {\n    availableRef: refShape.isRequired,\n    disabled: PropTypes.bool.isRequired,\n    required: PropTypes.bool.isRequired,\n    selected: valueShape.isRequired,\n    onFocus: PropTypes.func.isRequired,\n\n    name: PropTypes.string,\n};\n\nfunction HiddenInput({\n    availableRef,\n    disabled,\n    required,\n    selected,\n    onFocus,\n    name = null,\n}) {\n    const { hiddenInputLabel, requiredError } = useContext(LanguageContext);\n\n    useEffect(() => {\n        if (!required) {\n            return;\n        }\n\n        // If required, set a validity error when no options are selected\n        const validity = selected.length === 0 ? requiredError : '';\n        availableRef.current.setCustomValidity(validity);\n    }, [selected]);\n\n    const hiddenValue = selected.join(',');\n\n    return (\n        <input\n            aria-label={hiddenInputLabel}\n            className=\"rdl-hidden-input\"\n            disabled={disabled}\n            name={name}\n            required={required}\n            type={required ? 'text' : 'hidden'}\n            value={hiddenValue}\n            onChange={noop}\n            onFocus={onFocus}\n        />\n    );\n}\n\nHiddenInput.propTypes = propTypes;\n\nexport default HiddenInput;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/HiddenInput.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/ListBox.jsx",
+      "content": "import PropTypes from 'prop-types';\nimport React, { Children, useContext } from 'react';\n\nimport { LanguageContext } from '../contexts.js';\nimport capitalizeFirstLetter from '../util/capitalizeFirstLetter.js';\nimport Filter from './Filter.jsx';\n\nconst propTypes = {\n    canFilter: PropTypes.bool.isRequired,\n    children: PropTypes.node.isRequired,\n    controlKey: PropTypes.string.isRequired,\n    disabled: PropTypes.bool.isRequired,\n    filterValue: PropTypes.string.isRequired,\n    inputRef: PropTypes.func.isRequired,\n    selections: PropTypes.arrayOf(\n        PropTypes.oneOfType([PropTypes.string, PropTypes.number]),\n    ).isRequired,\n    showNoOptionsText: PropTypes.bool.isRequired,\n    onDoubleClick: PropTypes.func.isRequired,\n    onFilterChange: PropTypes.func.isRequired,\n    onKeyUp: PropTypes.func.isRequired,\n    onSelectionChange: PropTypes.func.isRequired,\n\n    actions: PropTypes.node,\n    id: PropTypes.string,\n};\n\nfunction ListBox({\n    canFilter,\n    children,\n    controlKey,\n    disabled,\n    filterValue,\n    inputRef,\n    selections,\n    showNoOptionsText,\n    onDoubleClick,\n    onFilterChange,\n    onKeyUp,\n    onSelectionChange,\n    actions = null,\n    id = null,\n}) {\n    // Grab language-specific text\n    const {\n        [`${controlKey}Header`]: header,\n        [`no${capitalizeFirstLetter(controlKey)}Options`]: noOptionsText,\n    } = useContext(LanguageContext);\n\n    // Append the control key to the ID, if provided\n    const inputId = id ? `${id}-${controlKey}` : null;\n\n    function renderFilter() {\n        if (!canFilter) {\n            return null;\n        }\n\n        return (\n            <Filter\n                controlKey={controlKey}\n                disabled={disabled}\n                filterValue={filterValue}\n                onFilterChange={onFilterChange}\n            />\n        );\n    }\n\n    function renderSelect() {\n        if (showNoOptionsText && Children.count(children) === 0) {\n            return (\n                <div className=\"rdl-no-options\">\n                    {noOptionsText}\n                </div>\n            );\n        }\n\n        return (\n            <div className=\"rdl-control-container\">\n                {actions}\n                <select\n                    className=\"rdl-control\"\n                    disabled={disabled}\n                    id={`${inputId}`}\n                    multiple\n                    ref={inputRef}\n                    value={selections}\n                    onChange={onSelectionChange}\n                    onDoubleClick={onDoubleClick}\n                    onKeyUp={onKeyUp}\n                >\n                    {children}\n                </select>\n            </div>\n        );\n    }\n\n    return (\n        <div className={`rdl-list-box rdl-${controlKey}`}>\n            <label className=\"rdl-control-label\" htmlFor={inputId}>\n                {header}\n            </label>\n            {renderFilter()}\n            {renderSelect()}\n        </div>\n    );\n}\n\nListBox.propTypes = propTypes;\n\nexport default ListBox;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/ListBox.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/components/ObjectValueWrapper.jsx",
+      "content": "import React, { useCallback } from 'react';\n\nimport DualListBox, { propTypes } from './DualListBox.jsx';\n\n/**\n * Flatten an array of options to a simple list of values.\n *\n * @param {Array} options\n * @param {function} getOptionValue\n *\n * @returns {Array}\n */\nfunction flattenOptions(options, getOptionValue) {\n    const flattened = [];\n\n    options.forEach((option) => {\n        const value = getOptionValue(option);\n\n        if (value !== undefined) {\n            // Flatten single-level options\n            flattened.push(value);\n        } else if (option.options !== undefined) {\n            // Flatten optgroup options\n            option.options.forEach((subOption) => {\n                flattened.push(getOptionValue(subOption));\n            });\n        }\n    });\n\n    return flattened;\n}\n\nfunction ObjectValueWrapper(props) {\n    const {\n        available,\n        getOptionValue,\n        options,\n        selected,\n        onChange,\n    } = props;\n\n    const simpleAvailable = available ? flattenOptions(available, getOptionValue) : undefined;\n    const simpleSelected = flattenOptions(selected, getOptionValue);\n\n    const simpleOnChange = useCallback((newSelected, userSelection, controlKey) => {\n        const sourceValues = { selected: newSelected };\n        const complexValues = { selected: [] };\n\n        // Reconstruct option objects for both the selected values and user selection\n        Object.keys(sourceValues).forEach((key) => {\n            // Note that complex values become expensive if there are several options\n            sourceValues[key].forEach((value) => {\n                options.forEach((option) => {\n                    const optionValue = getOptionValue(option);\n\n                    if (optionValue) {\n                        // Reconstruct single-level option\n                        if (optionValue === value) {\n                            complexValues[key].push(option);\n                        }\n                    } else {\n                        // Reconstruct optgroup options with those children\n                        const subSelected = [];\n                        option.options.forEach((subOption) => {\n                            if (getOptionValue(subOption) === value) {\n                                subSelected.push(subOption);\n                            }\n                        });\n\n                        if (subSelected.length > 0) {\n                            complexValues[key].push({\n                                ...option,\n                                options: subSelected,\n                            });\n                        }\n                    }\n                });\n            });\n        });\n\n        onChange(complexValues.selected, userSelection, controlKey);\n    }, [getOptionValue, options]);\n\n    /* eslint-disable react/jsx-props-no-spreading */\n    return (\n        <DualListBox\n            {...props}\n            available={simpleAvailable}\n            selected={simpleSelected}\n            onChange={simpleOnChange}\n        />\n    );\n    /* eslint-enable */\n}\n\nObjectValueWrapper.propTypes = propTypes;\n\nexport default ObjectValueWrapper;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/components/ObjectValueWrapper.jsx"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/constants.js",
+      "content": "const KEYS = {\n    SPACEBAR: ' ',\n    ENTER: 'Enter',\n};\n\nconst ALIGNMENTS = {\n    MIDDLE: 'middle',\n    TOP: 'top',\n};\n\nexport { KEYS, ALIGNMENTS };\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/constants.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/contexts.js",
+      "content": "import { createContext } from 'react';\n\nconst IconContext = createContext({});\nconst IdContext = createContext(() => {});\nconst LanguageContext = createContext({});\n\nexport {\n    IconContext,\n    IdContext,\n    LanguageContext,\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/contexts.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/lang/default.js",
+      "content": "export default {\n    availableFilterHeader: 'Filter available',\n    availableFilterPlaceholder: 'Search...',\n    availableHeader: 'Available',\n    hiddenInputLabel: 'All selections',\n    moveAllToAvailable: 'Move all to available',\n    moveAllToSelected: 'Move all to selected',\n    moveToAvailable: 'Move to available',\n    moveToSelected: 'Move to selected',\n    moveBottom: 'Rearrange to bottom',\n    moveDown: 'Rearrange down',\n    moveTop: 'Rearrange to top',\n    moveUp: 'Rearrange up',\n    noAvailableOptions: 'No available options',\n    noSelectedOptions: 'No selected options',\n    requiredError: 'Please select at least one option.',\n    selectedFilterHeader: 'Filter selected',\n    selectedFilterPlaceholder: 'Search...',\n    selectedHeader: 'Selected',\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/lang/default.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/iconsShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nexport default PropTypes.shape({\n    moveToAvailable: PropTypes.node,\n    moveAllToAvailable: PropTypes.node,\n    moveToSelected: PropTypes.node,\n    moveAllToSelected: PropTypes.node,\n    moveBottom: PropTypes.node,\n    moveDown: PropTypes.node,\n    moveUp: PropTypes.node,\n    moveTop: PropTypes.node,\n});\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/iconsShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/languageShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nexport default PropTypes.shape({\n    availableFilterHeader: PropTypes.string,\n    availableFilterPlaceholder: PropTypes.string,\n    availableHeader: PropTypes.string,\n    hiddenInputLabel: PropTypes.string,\n    moveToAvailable: PropTypes.string,\n    moveAllToAvailable: PropTypes.string,\n    moveToSelected: PropTypes.string,\n    moveAllToSelected: PropTypes.string,\n    moveBottom: PropTypes.string,\n    moveDown: PropTypes.string,\n    moveTop: PropTypes.string,\n    moveUp: PropTypes.string,\n    noAvailableOptions: PropTypes.string,\n    noSelectedOptions: PropTypes.string,\n    requiredError: PropTypes.string,\n    selectedFilterHeader: PropTypes.string,\n    selectedFilterPlaceholder: PropTypes.string,\n    selectedHeader: PropTypes.string,\n});\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/languageShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/optgroupShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nimport optionShape from './optionShape.js';\n\nexport default PropTypes.shape({\n    options: PropTypes.arrayOf(optionShape).isRequired,\n\n    // Optional properties\n    disabled: PropTypes.bool,\n    label: PropTypes.node,\n    title: PropTypes.string,\n});\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/optgroupShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/optionShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nexport default PropTypes.shape({\n    disabled: PropTypes.bool,\n    label: PropTypes.string,\n    title: PropTypes.string,\n    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),\n});\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/optionShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/optionsShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nimport optgroupShape from './optgroupShape.js';\nimport optionShape from './optionShape.js';\n\nexport default PropTypes.arrayOf(\n    PropTypes.oneOfType([\n        optgroupShape,\n        optionShape,\n    ]),\n);\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/optionsShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/refShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nconst elementType = typeof Element === 'undefined' ? () => {} : Element;\nconst refShape = PropTypes.oneOfType([\n    PropTypes.func,\n    PropTypes.shape({ current: PropTypes.instanceOf(elementType) }),\n]);\n\nexport default refShape;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/refShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/shapes/valueShape.js",
+      "content": "import PropTypes from 'prop-types';\n\nimport optgroupShape from './optgroupShape.js';\nimport optionShape from './optionShape.js';\n\nexport default PropTypes.arrayOf(\n    PropTypes.oneOfType([\n        PropTypes.number,\n        PropTypes.string,\n        optgroupShape,\n        optionShape,\n    ]),\n);\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/shapes/valueShape.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/util/capitalizeFirstLetter.js",
+      "content": "/**\n * Capitalize the first letter of a given string.\n *\n * @param {string} str\n *\n * @returns {string}\n */\nfunction capitalizeFirstLetter(str) {\n    return str.charAt(0).toUpperCase() + str.slice(1);\n}\n\nexport default capitalizeFirstLetter;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/util/capitalizeFirstLetter.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/util/indexesOf.js",
+      "content": "/**\n * Return an array of indexes for all instances of the given value.\n *\n * @param {Array} list\n * @param {*} value\n *\n * @returns {Array}\n */\nexport default function indexesOf(list, value) {\n    const indexes = [];\n\n    list.forEach((listItem, index) => {\n        if (listItem === value) {\n            indexes.push(index);\n        }\n    });\n\n    return indexes;\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/util/indexesOf.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/util/mergeRefs.js",
+      "content": "/**\n * Merge and set multiple refs for a component.\n *\n * @param {React.MutableRefObject[]} refs\n *\n * @return {Function}\n */\nfunction mergeRefs(refs) {\n    return (c) => {\n        /* eslint-disable no-param-reassign */\n        refs.forEach((ref) => {\n            if (ref !== null) {\n                if (typeof ref === 'function') {\n                    ref(c);\n                } else {\n                    ref.current = c;\n                }\n            }\n        });\n        /* eslint-enable no-param-reassign */\n    };\n}\n\nexport default mergeRefs;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/util/mergeRefs.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/js/util/swapOptions.js",
+      "content": "/**\n * Return a function to swap positions of the given indexes in an ordering.\n *\n * @param {int} index1\n * @param {int} index2\n *\n * @returns {function}\n */\nexport default (index1, index2) => (\n    (options) => {\n        const newOptions = [...options];\n\n        [newOptions[index1], newOptions[index2]] = [\n            newOptions[index2],\n            newOptions[index1],\n        ];\n\n        return newOptions;\n    }\n);\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-dual-listbox/js/util/swapOptions.js"
+    },
+    {
+      "path": "registry/sources/react-dual-listbox/components/react-dual-listbox/react-dual-listbox.css",
+      "content": "@charset \"UTF-8\";\n.react-dual-listbox {\n  box-sizing: border-box;\n  max-width: 100%;\n}\n.react-dual-listbox * {\n  box-sizing: border-box;\n}\n.react-dual-listbox input:disabled,\n.react-dual-listbox select:disabled {\n  cursor: not-allowed;\n  background: #eee;\n}\n.react-dual-listbox button,\n.react-dual-listbox select {\n  font-family: inherit;\n  line-height: 1.42857;\n}\n.react-dual-listbox select {\n  min-height: 146px;\n}\n.rdl-controls {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  height: 100%;\n}\n@media (min-width: 576px) {\n  .rdl-controls {\n    flex-direction: row;\n  }\n}\n\n.rdl-hidden-input {\n  position: absolute;\n  width: 0;\n  height: 0;\n  opacity: 0;\n}\n\n.rdl-list-box {\n  display: flex;\n  min-width: 0;\n  flex: 1 1 0;\n  flex-direction: column;\n  align-self: stretch;\n}\n\n.rdl-filter,\n.rdl-control {\n  display: block;\n  min-width: 0;\n  width: 100%;\n  padding: 8px 12px;\n  font-size: 14px;\n  color: #333;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n}\n\n.rdl-filter {\n  margin-bottom: 10px;\n}\n.rdl-filter:focus:not(:disabled) {\n  outline: 0;\n  border-color: #999999;\n}\n\n.rdl-control-container {\n  display: flex;\n  flex: 1 0 auto;\n  flex-direction: column;\n}\n\n.rdl-control-label {\n  position: absolute;\n  padding: 0 4px 4px;\n  clip: rect(0 0 0 0);\n}\n.rdl-has-header .rdl-control-label {\n  position: static;\n  clip: auto;\n}\n\n.rdl-control {\n  flex: 1 0 auto;\n}\n.rdl-control:focus:not(:disabled) {\n  outline: 0;\n  border-color: #999999;\n}\n.rdl-control optgroup {\n  font: inherit;\n  font-weight: 700;\n}\n\n.rdl-actions {\n  display: flex;\n  flex: 0 0 auto;\n  margin: 10px 0;\n}\n@media (min-width: 576px) {\n  .rdl-actions {\n    flex-direction: column;\n    align-self: flex-end;\n    width: auto;\n    margin: 0 10px;\n  }\n}\n\n.rdl-actions-to-selected,\n.rdl-actions-to-available {\n  display: flex;\n}\n@media (min-width: 576px) {\n  .rdl-actions-to-selected,\n  .rdl-actions-to-available {\n    flex-direction: column;\n  }\n}\n\n@media (min-width: 576px) {\n  .rdl-actions-to-selected {\n    margin-bottom: 5px;\n  }\n}\n.rdl-btn {\n  min-width: 44px;\n  min-height: 44px;\n  padding: 5px 10px;\n  margin: 0 3px;\n  font-size: 14px;\n  color: #333;\n  cursor: pointer;\n  background: #fff;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n}\n.rdl-btn:active:not(:disabled), .rdl-btn:focus:not(:disabled) {\n  background: rgb(229.5, 229.5, 229.5);\n  border-color: #999999;\n}\n.rdl-btn:focus:not(:disabled) {\n  outline: thin dotted;\n  outline-offset: -2px;\n}\n.rdl-btn:hover:not(:disabled) {\n  background: rgb(229.5, 229.5, 229.5);\n  border-color: rgb(179.52, 179.52, 179.52);\n}\n.rdl-btn:disabled {\n  cursor: not-allowed;\n  opacity: 0.5;\n}\n.rdl-btn:last-child {\n  margin-bottom: 0;\n}\n.rdl-btn .rdl-icon {\n  display: inline-block;\n  font-size: 14px;\n  font-style: normal;\n  font-variant: normal;\n  text-align: center;\n  text-rendering: auto;\n}\n@media (min-width: 576px) {\n  .rdl-btn {\n    margin: 0 0 5px;\n  }\n}\n\n.rdl-filter:focus-visible,\n.rdl-control:focus-visible,\n.rdl-btn:focus-visible {\n  outline: 2px solid currentColor;\n  outline-offset: 2px;\n}\n\n.rdl-no-options {\n  height: 100%;\n  padding: 4px 6px;\n}\n\n.rdl-align-top .rdl-available {\n  margin-bottom: 10px;\n}\n.rdl-align-top .rdl-control {\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n.rdl-align-top .rdl-actions-to-available,\n.rdl-align-top .rdl-actions-to-selected {\n  flex-direction: row;\n  margin: 0;\n}\n.rdl-align-top .rdl-list-box .rdl-move {\n  flex: 0 1 50%;\n  margin: 0;\n}\n.rdl-align-top .rdl-list-box .rdl-move:first-child {\n  margin-bottom: 0;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n}\n.rdl-align-top .rdl-list-box .rdl-move:last-child {\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n}\n.rdl-align-top[dir=ltr] .rdl-list-box .rdl-move:first-child {\n  border-right: 0;\n  border-top-right-radius: 0;\n}\n.rdl-align-top[dir=ltr] .rdl-list-box .rdl-move:last-child {\n  border-top-left-radius: 0;\n}\n.rdl-align-top[dir=rtl] .rdl-list-box .rdl-move:first-child {\n  border-left: 0;\n  border-top-left-radius: 0;\n}\n.rdl-align-top[dir=rtl] .rdl-list-box .rdl-move:last-child {\n  border-top-right-radius: 0;\n}\n@media (min-width: 576px) {\n  .rdl-align-top[dir=ltr] .rdl-available {\n    margin: 0 10px 0 0;\n  }\n  .rdl-align-top[dir=ltr] .rdl-selected {\n    margin-left: 10px;\n  }\n  .rdl-align-top[dir=rtl] .rdl-available {\n    margin: 0 0 0 10px;\n  }\n  .rdl-align-top[dir=rtl] .rdl-selected {\n    margin-right: 10px;\n  }\n}\n\n.rdl-icons-fa5 .rdl-icon,\n.rdl-icons-fa6 .rdl-icon {\n  font-family: \"Font Awesome 6 Free\", \"Font Awesome 5 Free\", \"FontAwesome\", sans-serif;\n  font-weight: 900;\n}\n.rdl-icons-fa5 .rdl-icon-move-all-to-selected::before,\n.rdl-icons-fa5 .rdl-icon-move-bottom::before,\n.rdl-icons-fa6 .rdl-icon-move-all-to-selected::before,\n.rdl-icons-fa6 .rdl-icon-move-bottom::before {\n  content: \"\\f103\";\n}\n.rdl-icons-fa5 .rdl-icon-move-to-selected::before,\n.rdl-icons-fa5 .rdl-icon-move-down::before,\n.rdl-icons-fa6 .rdl-icon-move-to-selected::before,\n.rdl-icons-fa6 .rdl-icon-move-down::before {\n  content: \"\\f107\";\n}\n.rdl-icons-fa5 .rdl-icon-move-to-available::before,\n.rdl-icons-fa5 .rdl-icon-move-up::before,\n.rdl-icons-fa6 .rdl-icon-move-to-available::before,\n.rdl-icons-fa6 .rdl-icon-move-up::before {\n  content: \"\\f106\";\n}\n.rdl-icons-fa5 .rdl-icon-move-all-to-available::before,\n.rdl-icons-fa5 .rdl-icon-move-top::before,\n.rdl-icons-fa6 .rdl-icon-move-all-to-available::before,\n.rdl-icons-fa6 .rdl-icon-move-top::before {\n  content: \"\\f102\";\n}\n@media (min-width: 576px) {\n  .rdl-icons-fa5 .rdl-icon-move-to-available::before,\n  .rdl-icons-fa6 .rdl-icon-move-to-available::before {\n    content: \"\\f104\";\n  }\n  .rdl-icons-fa5 .rdl-icon-move-all-to-available::before,\n  .rdl-icons-fa6 .rdl-icon-move-all-to-available::before {\n    content: \"\\f100\";\n  }\n  .rdl-icons-fa5 .rdl-icon-move-to-selected::before,\n  .rdl-icons-fa6 .rdl-icon-move-to-selected::before {\n    content: \"\\f105\";\n  }\n  .rdl-icons-fa5 .rdl-icon-move-all-to-selected::before,\n  .rdl-icons-fa6 .rdl-icon-move-all-to-selected::before {\n    content: \"\\f101\";\n  }\n  .rdl-icons-fa5[dir=rtl] .rdl-icon-move-to-available::before,\n  .rdl-icons-fa6[dir=rtl] .rdl-icon-move-to-available::before {\n    content: \"\\f105\";\n  }\n  .rdl-icons-fa5[dir=rtl] .rdl-icon-move-all-to-available::before,\n  .rdl-icons-fa6[dir=rtl] .rdl-icon-move-all-to-available::before {\n    content: \"\\f101\";\n  }\n  .rdl-icons-fa5[dir=rtl] .rdl-icon-move-to-selected::before,\n  .rdl-icons-fa6[dir=rtl] .rdl-icon-move-to-selected::before {\n    content: \"\\f104\";\n  }\n  .rdl-icons-fa5[dir=rtl] .rdl-icon-move-all-to-selected::before,\n  .rdl-icons-fa6[dir=rtl] .rdl-icon-move-all-to-selected::before {\n    content: \"\\f100\";\n  }\n}\n\n.rdl-icons-native .rdl-icon-move-all-to-selected::before,\n.rdl-icons-native .rdl-icon-move-bottom::before {\n  content: \"⮇\";\n}\n.rdl-icons-native .rdl-icon-move-to-selected::before,\n.rdl-icons-native .rdl-icon-move-down::before {\n  content: \"🠣\";\n}\n.rdl-icons-native .rdl-icon-move-to-available::before,\n.rdl-icons-native .rdl-icon-move-up::before {\n  content: \"🠡\";\n}\n.rdl-icons-native .rdl-icon-move-all-to-available::before,\n.rdl-icons-native .rdl-icon-move-top::before {\n  content: \"⮅\";\n}\n@media (min-width: 576px) {\n  .rdl-icons-native .rdl-icon-move-to-available::before {\n    content: \"⭠\";\n  }\n  .rdl-icons-native .rdl-icon-move-all-to-available::before {\n    content: \"⮄\";\n  }\n  .rdl-icons-native .rdl-icon-move-to-selected::before {\n    content: \"⭢\";\n  }\n  .rdl-icons-native .rdl-icon-move-all-to-selected::before {\n    content: \"⮆\";\n  }\n  .rdl-icons-native[dir=rtl] .rdl-icon-move-to-available::before {\n    content: \"⭢\";\n  }\n  .rdl-icons-native[dir=rtl] .rdl-icon-move-all-to-available::before {\n    content: \"⮆\";\n  }\n  .rdl-icons-native[dir=rtl] .rdl-icon-move-to-selected::before {\n    content: \"⭠\";\n  }\n  .rdl-icons-native[dir=rtl] .rdl-icon-move-all-to-selected::before {\n    content: \"⮄\";\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-dual-listbox/react-dual-listbox.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "transfer-list",
+        "selection",
+        "filtering",
+        "ordering",
+        "form",
+        "rtl"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-dual-listbox.tsx",
+      "source": {
+        "project": "React Dual Listbox",
+        "repository": "https://github.com/jakezatecky/react-dual-listbox",
+        "revision": "a71657198ebd51971cea0161d41fd5304ebda885",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-dual-listbox/index.js",
+            "upstreamPath": "src/index.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/index.js",
+            "upstreamSha256": "sha256:45c7316b735a6cc70816db3366aa107bebffd3fac067f67ecac62e813a7f40ae",
+            "contentSha256": "sha256:687438e84d18023db7704341b34ae0e22728c26ffd9d362f21faa562fee27861",
+            "changes": [
+              "Added a React client boundary and changed the #js package import-map alias to a colocated relative import."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/DualListBoxWrapper.jsx",
+            "upstreamPath": "src/js/DualListBoxWrapper.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/DualListBoxWrapper.jsx",
+            "upstreamSha256": "sha256:e2c789fb4ac6a8c8a7ccd3f35e6df7376ea717c621a31fdc6e7165c8e1c2e244",
+            "contentSha256": "sha256:1e55c4e572df401e92202e70b081f950a90316d0b289fed5a747f6cc8f5e1fb1",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/Action.jsx",
+            "upstreamPath": "src/js/components/Action.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/Action.jsx",
+            "upstreamSha256": "sha256:c4f4469d156814e83acc4356681056f0dba12ade0992a04496dbdb54cfedf0ef",
+            "contentSha256": "sha256:06d8e4c84f4b53b75a387d186b5ddad43b4a7a87cd6263069adde5ed0eaf356b",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/DualListBox.jsx",
+            "upstreamPath": "src/js/components/DualListBox.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/DualListBox.jsx",
+            "upstreamSha256": "sha256:b33da4dce06af4539990b9b1aaf01efcffc62f754259d6668f996f0c9edcf218",
+            "contentSha256": "sha256:ec74f75c1f3ba6252ad36118aad2496f9ed45a7382019441749caf46cb728e1a",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json.",
+              "Changed the default iconsClass from Font Awesome 6 to the upstream native icon mode so the default has no undeclared font requirement."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/Filter.jsx",
+            "upstreamPath": "src/js/components/Filter.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/Filter.jsx",
+            "upstreamSha256": "sha256:8511523cc79c36df9719c9cb83988785e940caa36a34a5ee2e721a46354a3076",
+            "contentSha256": "sha256:293287f51a67210b63927e5af1af1daf24f7ffbb504842003ff73c2f1ea562cc",
+            "changes": [
+              "Changed the #js package import-map alias to a relative path so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/HiddenInput.jsx",
+            "upstreamPath": "src/js/components/HiddenInput.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/HiddenInput.jsx",
+            "upstreamSha256": "sha256:139d91671ecfee4aaf158b532d97e167581c9f42da1429f650ebf145c5609fad",
+            "contentSha256": "sha256:a47ce52643063b6057ffecf4011e4a7eb2ef0634f127188d35d1df14e4a0212b",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/ListBox.jsx",
+            "upstreamPath": "src/js/components/ListBox.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/ListBox.jsx",
+            "upstreamSha256": "sha256:bd3ef4afee68e43c4b7ba71e8997065b7ca667416a031715d7539131aa208a07",
+            "contentSha256": "sha256:6444065be6861741278d9343e632f47fc42383f8c9da9f4eebb3511672210efe",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/components/ObjectValueWrapper.jsx",
+            "upstreamPath": "src/js/components/ObjectValueWrapper.jsx",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/components/ObjectValueWrapper.jsx",
+            "upstreamSha256": "sha256:7bcc6ff4854e9c8059228f09754beacf40f8acce183325f26ad4960ae61bb233",
+            "contentSha256": "sha256:585f058e032d2e93ca8e6943b35ddda4932a0fe545bb3fbf44eafa712a8f8066",
+            "changes": [
+              "Changed the #js package import-map alias to a relative path so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/constants.js",
+            "upstreamPath": "src/js/constants.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/constants.js",
+            "upstreamSha256": "sha256:127cebfe3e85e8fd10f48a76f3067e0d5c364d825f724cbe7a79492b1c1c6452",
+            "contentSha256": "sha256:127cebfe3e85e8fd10f48a76f3067e0d5c364d825f724cbe7a79492b1c1c6452",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/contexts.js",
+            "upstreamPath": "src/js/contexts.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/contexts.js",
+            "upstreamSha256": "sha256:8677cb390539f5a6d8262cbf57e64e2fc908c3fbcc3b8cbeda8a9c0504e00e3f",
+            "contentSha256": "sha256:8677cb390539f5a6d8262cbf57e64e2fc908c3fbcc3b8cbeda8a9c0504e00e3f",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/lang/default.js",
+            "upstreamPath": "src/js/lang/default.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/lang/default.js",
+            "upstreamSha256": "sha256:5e069b31cad9f9e783cdb51324bfd87a465b2b5edf54b87f6c352efc41140e4c",
+            "contentSha256": "sha256:5e069b31cad9f9e783cdb51324bfd87a465b2b5edf54b87f6c352efc41140e4c",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/iconsShape.js",
+            "upstreamPath": "src/js/shapes/iconsShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/iconsShape.js",
+            "upstreamSha256": "sha256:9dd3aca12f3ba5960c57a00d20ef8ded927a1da3dc307b878f3ef20a89b185b9",
+            "contentSha256": "sha256:9dd3aca12f3ba5960c57a00d20ef8ded927a1da3dc307b878f3ef20a89b185b9",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/languageShape.js",
+            "upstreamPath": "src/js/shapes/languageShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/languageShape.js",
+            "upstreamSha256": "sha256:31c338ba09cdca36492013700c4da8bc49cd147ae28800dab4892f77adbd5da0",
+            "contentSha256": "sha256:31c338ba09cdca36492013700c4da8bc49cd147ae28800dab4892f77adbd5da0",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/optgroupShape.js",
+            "upstreamPath": "src/js/shapes/optgroupShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/optgroupShape.js",
+            "upstreamSha256": "sha256:4c95d07a3624a61e9bfd63e5b7f60da5da00e0515a5a730e0a7551b6ba49592e",
+            "contentSha256": "sha256:39f9737196715b33dbe4cd5a9060ea8e85441299c699fad69471c0c265c75c3d",
+            "changes": [
+              "Changed the #js package import-map alias to a relative path so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/optionShape.js",
+            "upstreamPath": "src/js/shapes/optionShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/optionShape.js",
+            "upstreamSha256": "sha256:4b0a08b07fb31c8ea8cdb973ad7c3a6470465eabf2cf2deaebf83d5d971ac98e",
+            "contentSha256": "sha256:4b0a08b07fb31c8ea8cdb973ad7c3a6470465eabf2cf2deaebf83d5d971ac98e",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/optionsShape.js",
+            "upstreamPath": "src/js/shapes/optionsShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/optionsShape.js",
+            "upstreamSha256": "sha256:7be82a1d76d75ff7a676a65db113322b444fe4dfb19bb6bf1076a0dbb61efd0a",
+            "contentSha256": "sha256:350c3b194b2dd95bcb5aa4f8b5325956f4695dc4c02b25d51aa817342a75f5be",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/refShape.js",
+            "upstreamPath": "src/js/shapes/refShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/refShape.js",
+            "upstreamSha256": "sha256:9e9a0abc2c660fbc88096a911b201329837a158338724df533c271a1104634ed",
+            "contentSha256": "sha256:9e9a0abc2c660fbc88096a911b201329837a158338724df533c271a1104634ed",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/shapes/valueShape.js",
+            "upstreamPath": "src/js/shapes/valueShape.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/shapes/valueShape.js",
+            "upstreamSha256": "sha256:991093384ac9191eebbd58cea1714d306521caaba9330395a345c0dfe4f1f36b",
+            "contentSha256": "sha256:cec970eb10f40a93ca0a79c5fe2d9cb53c7c6e2345264255fd884deb831a791d",
+            "changes": [
+              "Changed #js package import-map aliases to relative paths so the copied closure resolves without the upstream package.json."
+            ]
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/util/capitalizeFirstLetter.js",
+            "upstreamPath": "src/js/util/capitalizeFirstLetter.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/util/capitalizeFirstLetter.js",
+            "upstreamSha256": "sha256:479bbd355948ff1b827d353b88943da815c1b20824dfdcafae16efc3e6692aca",
+            "contentSha256": "sha256:479bbd355948ff1b827d353b88943da815c1b20824dfdcafae16efc3e6692aca",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/util/indexesOf.js",
+            "upstreamPath": "src/js/util/indexesOf.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/util/indexesOf.js",
+            "upstreamSha256": "sha256:3f45b9cee27389f47ddca1aa0100808a36ed0f1c71211684fe5495b998e7d28e",
+            "contentSha256": "sha256:3f45b9cee27389f47ddca1aa0100808a36ed0f1c71211684fe5495b998e7d28e",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/util/mergeRefs.js",
+            "upstreamPath": "src/js/util/mergeRefs.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/util/mergeRefs.js",
+            "upstreamSha256": "sha256:28c0e090b51ec0e6b48de8bcd0e040e8f9e38e0c30f3c4c479d47d1783e3ca99",
+            "contentSha256": "sha256:28c0e090b51ec0e6b48de8bcd0e040e8f9e38e0c30f3c4c479d47d1783e3ca99",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/js/util/swapOptions.js",
+            "upstreamPath": "src/js/util/swapOptions.js",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/js/util/swapOptions.js",
+            "upstreamSha256": "sha256:881cb0ef0969251ea51415b3af9003dbc2aa5d3830ccb9b6f5d6d5a6b5480931",
+            "contentSha256": "sha256:881cb0ef0969251ea51415b3af9003dbc2aa5d3830ccb9b6f5d6d5a6b5480931",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-dual-listbox/react-dual-listbox.css",
+            "upstreamPath": "src/scss/react-dual-listbox.scss",
+            "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/src/scss/react-dual-listbox.scss",
+            "upstreamSha256": "sha256:c5c00c6d78fb552751d45723fc83845a8aaaf92e32b6ff737e6f00115d367548",
+            "contentSha256": "sha256:8d6b3cf2b5a6e1d86da367a48d2a636af6741436043fd1d33fa48ae0690290d2",
+            "changes": [
+              "Compiled the upstream SCSS to plain CSS using the upstream 6.1.0 package output and removed its inline source map.",
+              "Added max-width and min-width guards to prevent flex and select overflow at narrow widths and zoom.",
+              "Added 44 px action-button minimums and explicit focus-visible outlines."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/index.js, src/js, and src/scss/react-dual-listbox.scss",
+        "copyright": [
+          "Copyright (c) 2017 Jake Zatecky"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.txt",
+          "permalink": "https://github.com/jakezatecky/react-dual-listbox/blob/a71657198ebd51971cea0161d41fd5304ebda885/LICENSE.txt",
+          "sha256": "sha256:e80770c6f1a0544bd0d5427790f8572629d2120adebf890bb3a7f1a0711b521f",
+          "localPath": "registry/sources/react-dual-listbox/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-dual-listbox/index.js",
+          "change": "Added a use client directive and changed the #js entry import to ./js/DualListBoxWrapper.jsx.",
+          "reason": "Make the hook-based component a portable React client entry without copying the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/DualListBoxWrapper.jsx",
+          "change": "Changed #js imports to colocated relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/Action.jsx",
+          "change": "Changed #js imports to colocated relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/DualListBox.jsx",
+          "change": "Changed #js imports to relative imports and made upstream native icons the default.",
+          "reason": "Resolve the copied closure without a package import map and avoid an undeclared Font Awesome font requirement."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/Filter.jsx",
+          "change": "Changed the #js context import to a relative import.",
+          "reason": "Resolve the copied support file without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/HiddenInput.jsx",
+          "change": "Changed #js imports to colocated relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/ListBox.jsx",
+          "change": "Changed #js imports to colocated relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/components/ObjectValueWrapper.jsx",
+          "change": "Changed the #js component import to a relative import.",
+          "reason": "Resolve the copied support file without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/shapes/optgroupShape.js",
+          "change": "Changed the #js shape import to a relative import.",
+          "reason": "Resolve the copied support file without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/shapes/optionsShape.js",
+          "change": "Changed #js shape imports to relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/js/shapes/valueShape.js",
+          "change": "Changed #js shape imports to relative imports.",
+          "reason": "Resolve copied support files without the upstream package.json import map."
+        },
+        {
+          "shippedPath": "components/react-dual-listbox/react-dual-listbox.css",
+          "change": "Compiled the upstream SCSS to plain CSS, removed the inline source map, and added narrow-width, 44 px target, and focus-visible safeguards.",
+          "reason": "Ship the full visual skin without a Sass build dependency while meeting portability, responsive, touch-target, and focus requirements."
+        }
+      ],
+      "dedupe": {
+        "family": "transfer-list",
+        "sourceHash": "sha256:820259c717820f26da12177dc974d1986a1d04b4c690b8fe6d445efd0a470806",
+        "contentHash": "sha256:4dd366fe02e9b7c535ef0e38b6e84a5e0599d6b120781ee0f3406f60b29fcf03",
+        "structureHash": "sha256:e68eb194f9fd816d826d0177a6541b7815bea2f10adbd2f89eaa7471c373a0cf"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

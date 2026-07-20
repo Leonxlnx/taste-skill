@@ -1,0 +1,194 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-aria-color-slider",
+  "title": "Color Slider",
+  "author": "Adobe",
+  "description": "Adjusts one channel of a color with localized output and keyboard controls.",
+  "dependencies": [
+    "react-aria-components@1.19.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/ColorSlider.css",
+      "content": ".react-aria-ColorSlider {\r\n  display: grid;\r\n  grid-template-areas:\r\n    'label output'\r\n    'track track';\r\n  grid-template-columns: 1fr auto;\r\n  gap: var(--spacing-1);\r\n\r\n  .react-aria-Label {\r\n    grid-area: label;\r\n  }\r\n\r\n  .react-aria-SliderOutput {\r\n    grid-area: output;\r\n    text-align: end;\r\n    font: var(--font-size) system-ui;\r\n    color: var(--text-color);\r\n  }\r\n\r\n  .react-aria-SliderTrack {\r\n    grid-area: track;\r\n    border-radius: var(--radius);\r\n  }\r\n\r\n  &[data-orientation='horizontal'] {\r\n    width: 100%;\r\n    max-width: 300px;\r\n\r\n    .react-aria-SliderTrack {\r\n      height: var(--spacing-6);\r\n    }\r\n\r\n    .react-aria-ColorThumb {\r\n      top: 50%;\r\n    }\r\n  }\r\n\r\n  &[data-orientation='vertical'] {\r\n    height: 200px;\r\n    display: block;\r\n\r\n    .react-aria-Label,\r\n    .react-aria-SliderOutput {\r\n      display: none;\r\n    }\r\n\r\n    .react-aria-SliderTrack {\r\n      width: var(--spacing-6);\r\n      height: 100%;\r\n    }\r\n\r\n    .react-aria-ColorThumb {\r\n      left: 50%;\r\n    }\r\n  }\r\n\r\n  &[data-disabled] {\r\n    .react-aria-SliderTrack {\r\n      background: gray !important;\r\n    }\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorSlider.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/ColorSlider.tsx",
+      "content": "'use client';\r\nimport {\r\n  ColorSlider as AriaColorSlider,\r\n  type ColorSliderProps as AriaColorSliderProps,\r\n  SliderOutput,\r\n  SliderTrack\r\n} from 'react-aria-components/ColorSlider';\r\nimport {Label} from './Form';\r\nimport {ColorThumb} from './ColorThumb';\r\nimport './ColorSlider.css';\r\n\r\nexport interface ColorSliderProps extends AriaColorSliderProps {\r\n  label?: string;\r\n}\r\n\r\nexport function ColorSlider({label, ...props}: ColorSliderProps) {\r\n  return (\r\n    <AriaColorSlider {...props}>\r\n      <Label>{label}</Label>\r\n      <SliderOutput />\r\n      <SliderTrack\r\n        style={({defaultStyle}) => ({\r\n          background: `${defaultStyle.background},\r\n            repeating-conic-gradient(#CCC 0% 25%, white 0% 50%) 50% / 16px 16px`\r\n        })}>\r\n        <ColorThumb />\r\n      </SliderTrack>\r\n    </AriaColorSlider>\r\n  );\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorSlider.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/ColorThumb.css",
+      "content": "@import './theme.css';\r\n\r\n.react-aria-ColorThumb {\r\n  border: 2px solid white;\r\n  box-shadow:\r\n    0 0 0 1px black,\r\n    inset 0 0 0 1px black;\r\n  width: calc(var(--spacing) * 4.5);\r\n  height: calc(var(--spacing) * 4.5);\r\n  border-radius: 50%;\r\n  box-sizing: border-box;\r\n\r\n  &[data-focus-visible] {\r\n    width: var(--spacing-6);\r\n    height: var(--spacing-6);\r\n  }\r\n\r\n  &[data-disabled] {\r\n    background: gray !important;\r\n    opacity: 0.5;\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorThumb.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/ColorThumb.tsx",
+      "content": "import {ColorThumb as AriaColorThumb, type ColorThumbProps} from 'react-aria-components/ColorThumb';\r\nimport './ColorThumb.css';\r\n\r\nexport function ColorThumb(props: ColorThumbProps) {\r\n  return <AriaColorThumb {...props} />;\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/ColorThumb.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/Content.css",
+      "content": ".react-aria-Heading {\r\n  margin: 0;\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Content.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/Content.tsx",
+      "content": "import {Heading as AriaHeading, type HeadingProps} from 'react-aria-components/Heading';\r\nimport {Text as AriaText, type TextProps} from 'react-aria-components/Text';\r\nimport './Content.css';\r\n\r\nexport function Heading(props: HeadingProps) {\r\n  return <AriaHeading {...props} />;\r\n}\r\n\r\nexport function Text(props: TextProps) {\r\n  return <AriaText {...props} />;\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Content.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/Form.css",
+      "content": "@import './theme.css';\r\n\r\n.react-aria-Form {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: var(--spacing-6);\r\n\r\n  > .react-aria-Button {\r\n    align-self: start;\r\n  }\r\n}\r\n\r\n.react-aria-Form [role='alert'] {\r\n  border: 2px solid var(--invalid-color);\r\n  background: var(--overlay-background);\r\n  border-radius: 6px;\r\n  padding: 12px;\r\n  max-width: 250px;\r\n  outline: none;\r\n\r\n  &:focus {\r\n    outline: 2px solid var(--focus-ring-color);\r\n    outline-offset: 2px;\r\n  }\r\n\r\n  h3 {\r\n    margin-top: 0;\r\n  }\r\n\r\n  p {\r\n    margin-bottom: 0;\r\n  }\r\n}\r\n\r\n.react-aria-Label {\r\n  display: block;\r\n  font: var(--font-size) system-ui;\r\n  color: var(--text-color);\r\n  margin-bottom: var(--spacing-2);\r\n  font-weight: 500;\r\n}\r\n\r\n.react-aria-FieldError {\r\n  display: block;\r\n  font: var(--font-size-sm) system-ui;\r\n  color: var(--invalid-color);\r\n  margin-top: var(--spacing-1);\r\n  contain: inline-size;\r\n}\r\n\r\n.field-description {\r\n  display: block;\r\n  font: var(--font-size-sm) system-ui;\r\n  margin-top: var(--spacing-1);\r\n  contain: inline-size;\r\n\r\n  [data-invalid] > & {\r\n    display: none;\r\n  }\r\n}\r\n\r\n.field-Button {\r\n  background: var(--tint-200);\r\n  color: var(--tint-1400);\r\n  forced-color-adjust: none;\r\n  border-radius: var(--radius-sm);\r\n  border: none;\r\n  margin-left: calc(-1 * var(--spacing-8) + 4px);\r\n  height: calc(100% - 8px);\r\n  aspect-ratio: 1/1;\r\n  padding: 0;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  transition-property: scale, background;\r\n  transition-duration: 200ms;\r\n  -webkit-tap-highlight-color: transparent;\r\n\r\n  svg {\r\n    width: var(--spacing-4);\r\n    height: var(--spacing-4);\r\n  }\r\n\r\n  &:where([data-hovered], [data-pressed]) {\r\n    background: var(--tint-300);\r\n    color: var(--tint-1200);\r\n  }\r\n\r\n  @media (forced-colors: active) {\r\n    background: Highlight;\r\n    color: HighlightText;\r\n  }\r\n\r\n  &[data-pressed] {\r\n    scale: 0.9;\r\n  }\r\n\r\n  &[data-focus-visible] {\r\n    outline: 2px solid var(--focus-ring-color);\r\n    outline-offset: 2px;\r\n  }\r\n\r\n  &[data-disabled] {\r\n    background: none;\r\n    color: var(--text-color-disabled);\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Form.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/Form.tsx",
+      "content": "'use client';\r\nimport {Form as RACForm, type FormProps} from 'react-aria-components/Form';\r\nimport {type LabelProps, Label as RACLabel} from 'react-aria-components/Label';\r\nimport {type FieldErrorProps, FieldError as RACFieldError} from 'react-aria-components/FieldError';\r\nimport {type ButtonProps, Button} from 'react-aria-components/Button';\r\nimport {type TextProps} from 'react-aria-components/Text';\r\nimport './Form.css';\r\nimport {Text} from './Content';\r\n\r\nexport function Form(props: FormProps) {\r\n  return <RACForm {...props} />;\r\n}\r\n\r\nexport function Label(props: LabelProps) {\r\n  return <RACLabel {...props} />;\r\n}\r\n\r\nexport function FieldError(props: FieldErrorProps) {\r\n  return <RACFieldError {...props} />;\r\n}\r\n\r\nexport function Description(props: TextProps) {\r\n  return <Text slot=\"description\" className=\"field-description\" {...props} />;\r\n}\r\n\r\nexport function FieldButton(props: ButtonProps) {\r\n  return <Button {...props} className=\"field-Button\" />;\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/Form.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-color-slider/theme.css",
+      "content": "/* colors */\r\n:root {\r\n  /* Change this variable to set the theme color for all components. */\r\n  /* You can use the below presets, or choose a custom color. */\r\n  --tint: var(--indigo);\r\n\r\n  /* theme colors */\r\n  /* lightness channel is only used as a multiplier for chroma (see below) */\r\n  --gray: oklch(0.5 0 0);\r\n  --red: oklch(0.6 0.181447 27.0726);\r\n  --orange: oklch(0.7 0.150492 54);\r\n  --yellow: oklch(0.8 0.128516 73.8032);\r\n  --turquoise: oklch(0.5 0.081146 205.114);\r\n  --cyan: oklch(0.4 0.142107 243.926);\r\n  --green: oklch(0.5 0.121276 155.372);\r\n  --blue: oklch(0.5 0.22049 266.315);\r\n  --indigo: oklch(1 0.25049 284.23);\r\n  --purple: oklch(0.7 0.223324 302);\r\n  --pink: oklch(0.6 0.177717 347.813);\r\n\r\n  /** tint color scale */\r\n  --tint-100: oklch(from var(--tint) var(--lightness-100) var(--chroma-100) h);\r\n  --tint-200: oklch(from var(--tint) var(--lightness-200) var(--chroma-200) h);\r\n  --tint-300: oklch(from var(--tint) var(--lightness-300) var(--chroma-300) h);\r\n  --tint-400: oklch(from var(--tint) var(--lightness-400) var(--chroma-400) h);\r\n  --tint-500: oklch(from var(--tint) var(--lightness-500) var(--chroma-500) h);\r\n  --tint-600: oklch(from var(--tint) var(--lightness-600) var(--chroma-600) h);\r\n  --tint-700: oklch(from var(--tint) var(--lightness-700) var(--chroma-700) h);\r\n  --tint-800: oklch(from var(--tint) var(--lightness-800) var(--chroma-800) h);\r\n  --tint-900: oklch(from var(--tint) var(--lightness-900) var(--chroma-900) h);\r\n  --tint-1000: oklch(from var(--tint) var(--lightness-1000) var(--chroma-1000) h);\r\n  --tint-1100: oklch(from var(--tint) var(--lightness-1100) var(--chroma-1100) h);\r\n  --tint-1200: oklch(from var(--tint) var(--lightness-1200) var(--chroma-1200) h);\r\n  --tint-1300: oklch(from var(--tint) var(--lightness-1300) var(--chroma-1300) h);\r\n  --tint-1400: oklch(from var(--tint) var(--lightness-1400) var(--chroma-1400) h);\r\n  --tint-1500: oklch(from var(--tint) var(--lightness-1500) var(--chroma-1500) h);\r\n  --tint-1600: oklch(from var(--tint) var(--lightness-1600) var(--chroma-1600) h);\r\n\r\n  /* gray scale */\r\n  --gray-100: oklch(from var(--gray) var(--lightness-100) c h);\r\n  --gray-200: oklch(from var(--gray) var(--lightness-200) c h);\r\n  --gray-300: oklch(from var(--gray) var(--lightness-300) c h);\r\n  --gray-400: oklch(from var(--gray) var(--lightness-400) c h);\r\n  --gray-500: oklch(from var(--gray) var(--lightness-500) c h);\r\n  --gray-600: oklch(from var(--gray) var(--lightness-600) c h);\r\n  --gray-700: oklch(from var(--gray) var(--lightness-700) c h);\r\n  --gray-800: oklch(from var(--gray) var(--lightness-800) c h);\r\n  --gray-900: oklch(from var(--gray) var(--lightness-900) c h);\r\n  --gray-1000: oklch(from var(--gray) var(--lightness-1000) c h);\r\n  --gray-1100: oklch(from var(--gray) var(--lightness-1100) c h);\r\n  --gray-1200: oklch(from var(--gray) var(--lightness-1200) c h);\r\n  --gray-1300: oklch(from var(--gray) var(--lightness-1300) c h);\r\n  --gray-1400: oklch(from var(--gray) var(--lightness-1400) c h);\r\n  --gray-1500: oklch(from var(--gray) var(--lightness-1500) c h);\r\n  --gray-1600: oklch(from var(--gray) var(--lightness-1600) c h);\r\n}\r\n\r\n/* light mode colors */\r\n:root {\r\n  --background-color: #f8f8f8;\r\n  --gray-50: #ffffff;\r\n\r\n  --lightness-100: 98.1187%;\r\n  --lightness-200: 95.2045%;\r\n  --lightness-300: 91.1434%;\r\n  --lightness-400: 85.1751%;\r\n  --lightness-500: 79.1773%;\r\n  --lightness-600: 72.3297%;\r\n  --lightness-700: 67.0121%;\r\n  --lightness-800: 62.3039%;\r\n  --lightness-900: 57.9699%;\r\n  --lightness-1000: 51.9076%;\r\n  --lightness-1100: 46.9058%;\r\n  --lightness-1200: 41.0821%;\r\n  --lightness-1300: 35.3616%;\r\n  --lightness-1400: 29.6725%;\r\n  --lightness-1500: 24.5366%;\r\n  --lightness-1600: 16.6959%;\r\n\r\n  /* lower chroma at low lightness levels */\r\n  --chroma-100: calc(l * c * 0.5);\r\n  --chroma-200: calc(l * c * 0.6);\r\n  --chroma-300: calc(l * c * 0.7);\r\n  --chroma-400: calc(l * c * 0.8);\r\n  --chroma-500: calc(l * c * 0.9);\r\n  --chroma-600: c;\r\n  --chroma-700: c;\r\n  --chroma-800: c;\r\n  --chroma-900: c;\r\n  --chroma-1000: c;\r\n  --chroma-1100: c;\r\n  --chroma-1200: c;\r\n  --chroma-1300: c;\r\n  --chroma-1400: c;\r\n  --chroma-1500: c;\r\n  --chroma-1600: c;\r\n\r\n  --highlight-hover: rgb(0 0 0 / 0.07);\r\n  --highlight-pressed: rgb(0 0 0 / 0.15);\r\n  --overlay-background: var(--gray-50);\r\n  --overlay-border: rgb(0 0 0 / 0.06);\r\n  --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.12);\r\n}\r\n\r\n/* dark mode colors */\r\n@media (prefers-color-scheme: dark) {\r\n  :root {\r\n    --background-color: #1b1b1b;\r\n    --gray-50: oklch(22% 0 0);\r\n\r\n    --lightness-100: 29.6725%;\r\n    --lightness-200: 35.3616%;\r\n    --lightness-300: 41.0821%;\r\n    --lightness-400: 46.9058%;\r\n    --lightness-500: 51.9076%;\r\n    --lightness-600: 57.9699%;\r\n    --lightness-700: 56.1347%;\r\n    --lightness-800: 59.2866%;\r\n    --lightness-900: 62.3039%;\r\n    --lightness-1000: 67.0121%;\r\n    --lightness-1100: 72.3297%;\r\n    --lightness-1200: 79.1773%;\r\n    --lightness-1300: 85.1751%;\r\n    --lightness-1400: 91.1434%;\r\n    --lightness-1500: 95.2045%;\r\n    --lightness-1600: 100%;\r\n\r\n    --highlight-hover: rgb(255 255 255 / 0.1);\r\n    --highlight-pressed: rgb(255 255 255 / 0.2);\r\n    --overlay-background: var(--gray-100);\r\n    --overlay-border: rgb(255 255 255 / 0.2);\r\n    --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.5);\r\n  }\r\n}\r\n\r\n/* Semantic colors */\r\n:root {\r\n  --focus-ring-color: var(--tint-1000);\r\n  --text-color: var(--gray-1200);\r\n  --text-color-hover: var(--gray-1300);\r\n  --text-color-disabled: var(--gray-600);\r\n  --text-color-placeholder: var(--gray-1000);\r\n  --link-color: var(--tint-1200);\r\n  --link-color-secondary: var(--gray-1200);\r\n  --link-color-pressed: var(--tint-1300);\r\n  --border-color: var(--gray-400);\r\n  --border-color-hover: var(--gray-500);\r\n  --border-color-disabled: var(--gray-300);\r\n  --field-text-color: var(--gray-1400);\r\n  --button-background: var(--tint-100);\r\n  --button-background-pressed: var(--tint-200);\r\n  /* these colors are the same between light and dark themes\r\n   * to ensure contrast with the foreground color */\r\n  --highlight-background: oklch(from var(--tint) 55% c h);\r\n  --highlight-background-pressed: oklch(from var(--tint) 50% c h);\r\n  --highlight-background-invalid: oklch(from var(--red) var(--lightness-900) c h);\r\n  --highlight-foreground: white;\r\n  --highlight-overlay: oklch(from var(--tint-1000) l c h / 15%);\r\n  --invalid-color: oklch(from var(--red) var(--lightness-1000) c h);\r\n  --field-background: var(--gray-50);\r\n}\r\n\r\n/* Windows high contrast mode overrides */\r\n@media (forced-colors: active) {\r\n  :root {\r\n    --background-color: Canvas;\r\n    --focus-ring-color: Highlight;\r\n    --text-color: ButtonText;\r\n    --text-color-hover: ButtonText;\r\n    --text-color-disabled: GrayText;\r\n    --text-color-placeholder: ButtonText;\r\n    --link-color: LinkText;\r\n    --link-color-secondary: LinkText;\r\n    --link-color-pressed: LinkText;\r\n    --border-color: ButtonBorder;\r\n    --border-color-hover: ButtonBorder;\r\n    --border-color-pressed: ButtonBorder;\r\n    --border-color-disabled: GrayText;\r\n    --field-background: Field;\r\n    --field-text-color: FieldText;\r\n    --overlay-background: Canvas;\r\n    --overlay-border: ButtonBorder;\r\n    --button-background: ButtonFace;\r\n    --button-background-pressed: ButtonFace;\r\n    --highlight-background: Highlight;\r\n    --highlight-background-pressed: Highlight;\r\n    --highlight-background-invalid: LinkText;\r\n    --highlight-foreground: HighlightText;\r\n    --invalid-color: LinkText;\r\n  }\r\n}\r\n\r\n/* typography and spacing scale */\r\n:root {\r\n  --font-size: 0.875rem; /* 14px */\r\n  --font-size-sm: 0.75rem; /* 12px */\r\n  --font-size-lg: 1rem; /* 16px */\r\n  --radius: 8px;\r\n  --radius-sm: 6px;\r\n  --radius-lg: 10px;\r\n  --radius-xl: 16px;\r\n  --spacing: 0.25rem; /* 4px */\r\n  --spacing-1: var(--spacing);\r\n  --spacing-2: calc(2 * var(--spacing));\r\n  --spacing-3: calc(3 * var(--spacing));\r\n  --spacing-4: calc(4 * var(--spacing));\r\n  --spacing-5: calc(5 * var(--spacing));\r\n  --spacing-6: calc(6 * var(--spacing));\r\n  --spacing-7: calc(7 * var(--spacing));\r\n  --spacing-8: calc(8 * var(--spacing));\r\n  --spacing-9: calc(9 * var(--spacing));\r\n  --spacing-10: calc(10 * var(--spacing));\r\n}\r\n\r\n/* Scale up hit targets on high resolution mobile devices. */\r\n@media (min-resolution: 200dpi) {\r\n  :root {\r\n    --spacing: calc(0.25rem * 1.25);\r\n    --font-size: 1.0625rem; /* 17px */\r\n    --font-size-sm: 0.9375rem; /* 15px */\r\n    --font-size-lg: 1.25rem; /* 20px */\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-color-slider/theme.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "color",
+        "slider",
+        "channel",
+        "keyboard",
+        "touch"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-aria-color-slider.tsx",
+      "source": {
+        "project": "React Aria Vanilla CSS starter",
+        "repository": "https://github.com/adobe/react-spectrum",
+        "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-aria-color-slider/ColorSlider.css",
+            "upstreamPath": "starters/docs/src/ColorSlider.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSlider.css",
+            "upstreamSha256": "sha256:cc55040780decf7f28dd199be09261903a9009b6c1af5150e57116713fe2a1c7",
+            "contentSha256": "sha256:cc55040780decf7f28dd199be09261903a9009b6c1af5150e57116713fe2a1c7",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/ColorSlider.tsx",
+            "upstreamPath": "starters/docs/src/ColorSlider.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorSlider.tsx",
+            "upstreamSha256": "sha256:136f08eedbc7fccd525e6b7f3bebfcf06c5e80b3ba1bd09cd1e49b3bff37cf79",
+            "contentSha256": "sha256:136f08eedbc7fccd525e6b7f3bebfcf06c5e80b3ba1bd09cd1e49b3bff37cf79",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/ColorThumb.css",
+            "upstreamPath": "starters/docs/src/ColorThumb.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.css",
+            "upstreamSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+            "contentSha256": "sha256:33acd5f62df1ac43552b67ec9933ddc153b30a187b4cae48234e7d75eeb38aa7",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/ColorThumb.tsx",
+            "upstreamPath": "starters/docs/src/ColorThumb.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/ColorThumb.tsx",
+            "upstreamSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+            "contentSha256": "sha256:22c68526db52394a488cf57cd239dfd26ade8cced9cf94bb35af3584a9e2e722",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/Content.css",
+            "upstreamPath": "starters/docs/src/Content.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+            "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+            "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/Content.tsx",
+            "upstreamPath": "starters/docs/src/Content.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+            "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+            "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/Form.css",
+            "upstreamPath": "starters/docs/src/Form.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.css",
+            "upstreamSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+            "contentSha256": "sha256:fc575d1edd49ad0405f15ba54676d5caf7a0ef9cd55b583eb79a96b8042b9c85",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/Form.tsx",
+            "upstreamPath": "starters/docs/src/Form.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Form.tsx",
+            "upstreamSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+            "contentSha256": "sha256:9144e3c6c1ad552c70e2d0fa3ba1820a089b5d4fbf56c8786e7b86b306221da3",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-color-slider/theme.css",
+            "upstreamPath": "starters/docs/src/theme.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+            "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+            "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "starters/docs/src/ColorSlider.tsx and its exact copied relative import closure",
+        "copyright": [
+          "Copyright 2019 Adobe"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+          "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+          "localPath": "registry/sources/react-aria-starters/LICENSE"
+        },
+        "notices": [
+          "registry/sources/react-aria-starters/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "single-channel-color-slider",
+        "sourceHash": "sha256:4797d3432ee595663bff94d0fa226b775d23b0f56ce9267c1a6852b88333015c",
+        "contentHash": "sha256:4797d3432ee595663bff94d0fa226b775d23b0f56ce9267c1a6852b88333015c",
+        "structureHash": "sha256:bbc56622e11ad560aeeee1a288c3f25b4dde477a0163c3e7be977b1bafb546d9"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

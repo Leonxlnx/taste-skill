@@ -1,0 +1,126 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trickle-ink-bleed",
+  "title": "Ink Bleed",
+  "author": "trickle contributors",
+  "description": "Reveals caller-provided text through a radial ink-mask animation.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.5.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/trickle/components/trickle-ink-bleed/ink-bleed.tsx",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface InkBleedProps {\n  children: React.ReactNode;\n  /** Delay before the bleed begins, in ms. */\n  delay?: number;\n  /** Duration of the bleed, in ms. */\n  duration?: number;\n  /** Origin point as 'X% Y%' (e.g. '50% 50%' for center, '0% 50%' for left). */\n  origin?: string;\n  /** Element tag. Defaults to `span`. */\n  as?: ElementType;\n  className?: string;\n}\n\nexport function InkBleed({\n  children,\n  delay = 0,\n  duration = 1200,\n  origin = '50% 50%',\n  as: Component = 'span',\n  className\n}: InkBleedProps) {\n  return (\n    <Component\n      className={cn('inline-block animate-trickle-ink-bleed', className)}\n      style={{\n        animationDelay: `${delay}ms`,\n        animationDuration: `${duration}ms`,\n        ['--trickle-ink-origin' as string]: origin\n      } as CSSProperties}\n    >\n      {children}\n    </Component>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/trickle-ink-bleed.tsx"
+    },
+    {
+      "path": "registry/sources/trickle/lib/cn.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/cn.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "--animate-trickle-ink-bleed": "trickle-ink-bleed 1.2s cubic-bezier(0.4, 0, 0.2, 1) both"
+    }
+  },
+  "css": {
+    "@keyframes trickle-ink-bleed": {
+      "from": {
+        "-webkit-mask-image": "radial-gradient(circle at 0% 50%, black 0%, transparent 0%)",
+        "mask-image": "radial-gradient(circle at 0% 50%, black 0%, transparent 0%)"
+      },
+      "to": {
+        "-webkit-mask-image": "radial-gradient(circle at 50% 50%, black 100%, transparent 130%)",
+        "mask-image": "radial-gradient(circle at 50% 50%, black 100%, transparent 130%)"
+      }
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ".animate-trickle-ink-bleed": {
+        "animation": "none",
+        "-webkit-mask-image": "none",
+        "mask-image": "none"
+      }
+    }
+  },
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "mask",
+        "ink",
+        "reveal"
+      ],
+      "renderer": "dom",
+      "preview": "previews/trickle-ink-bleed.tsx",
+      "source": {
+        "project": "trickle",
+        "repository": "https://github.com/akaieuan/trickle-UI-kit",
+        "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
+            "upstreamPath": "registry/default/ink-bleed/ink-bleed.tsx",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/ink-bleed/ink-bleed.tsx",
+            "upstreamSha256": "sha256:3e10af09758e0fff6c8e9c5882cb17ce5d080ce7e4a52ce225ea56415ba525e0",
+            "contentSha256": "sha256:b507d941085bc5bf559be5053a32596a2a58ab9b940b85d0561a57f717c164bf",
+            "changes": [
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            ]
+          },
+          {
+            "shippedPath": "lib/cn.ts",
+            "upstreamPath": "lib/cn.ts",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+            "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/default/ink-bleed/ink-bleed.tsx and lib/cn.ts",
+        "copyright": [
+          "Copyright (c) 2026 trickle contributors"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+          "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+          "localPath": "registry/sources/trickle/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        }
+      ],
+      "dedupe": {
+        "family": "ink-mask-text-reveal",
+        "sourceHash": "sha256:be64041f0d80d53c1c19b19db993adee7832d1ce2d1c8c2c711258d3f0ae5d50",
+        "contentHash": "sha256:051a9a49d826713ac87f26296e5b5ae28b380047b3bbab5d656fb0340c6a1261",
+        "structureHash": "sha256:a783e20de8072b661161ef22496c43ffeaa1a341592a20dd48d028e9e91a1676"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,168 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-aria-menu",
+  "title": "Menu",
+  "author": "Adobe",
+  "description": "Opens a keyboard-navigable action menu with selection, sections, and nested submenu support.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@0.517.0",
+    "react-aria-components@1.19.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Content.css",
+      "content": ".react-aria-Heading {\r\n  margin: 0;\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Content.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Content.tsx",
+      "content": "import {Heading as AriaHeading, type HeadingProps} from 'react-aria-components/Heading';\r\nimport {Text as AriaText, type TextProps} from 'react-aria-components/Text';\r\nimport './Content.css';\r\n\r\nexport function Heading(props: HeadingProps) {\r\n  return <AriaHeading {...props} />;\r\n}\r\n\r\nexport function Text(props: TextProps) {\r\n  return <AriaText {...props} />;\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Content.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Menu.css",
+      "content": "@import './theme.css';\r\n\r\n.react-aria-Menu {\r\n  min-height: 0;\r\n  max-height: inherit;\r\n  box-sizing: border-box;\r\n  overflow: auto;\r\n  min-width: 150px;\r\n  box-sizing: border-box;\r\n  outline: none;\r\n  border-radius: inherit;\r\n  display: grid;\r\n  --check-width: 0;\r\n  grid-template-columns: var(--spacing-3) var(--check-width) auto 1fr auto var(--spacing-3);\r\n  grid-auto-rows: max-content;\r\n\r\n  &:has(> [data-selection-mode]) {\r\n    --check-width: var(--spacing-6);\r\n  }\r\n\r\n  &[data-empty] {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    font-style: italic;\r\n    min-height: var(--spacing-8);\r\n  }\r\n}\r\n\r\n.react-aria-MenuItem {\r\n  margin-inline: var(--spacing-1);\r\n  padding: calc((var(--spacing-8) - 1lh) / 2) 0;\r\n  border-radius: calc(var(--radius-lg) - var(--spacing-1));\r\n  outline: none;\r\n  cursor: default;\r\n  color: var(--text-color);\r\n  font: var(--font-size) system-ui;\r\n  position: relative;\r\n  display: grid;\r\n  grid-column-start: 1;\r\n  grid-column-end: -1;\r\n  grid-template-areas:\r\n    '. check icon label end .'\r\n    '. . . desc end .';\r\n  grid-template-columns: subgrid;\r\n  align-items: center;\r\n  forced-color-adjust: none;\r\n  -webkit-tap-highlight-color: transparent;\r\n\r\n  > svg:not(.lucide-check, .lucide-dot, .lucide-chevron-right) {\r\n    grid-area: icon;\r\n    width: var(--spacing-4);\r\n    height: var(--spacing-4);\r\n    justify-self: center;\r\n    margin-inline-end: var(--spacing-2);\r\n  }\r\n\r\n  &:first-of-type {\r\n    margin-top: var(--spacing);\r\n  }\r\n\r\n  &:last-of-type {\r\n    margin-bottom: var(--spacing);\r\n  }\r\n\r\n  &[data-open],\r\n  &[data-pressed] {\r\n    background: var(--highlight-hover);\r\n  }\r\n\r\n  &[data-focused] {\r\n    background: var(--highlight-background);\r\n    color: var(--highlight-foreground);\r\n  }\r\n\r\n  &[data-selection-mode] {\r\n    .lucide-check,\r\n    .lucide-dot {\r\n      grid-area: check;\r\n      width: var(--spacing-4);\r\n      height: var(--spacing-4);\r\n    }\r\n\r\n    .lucide-check {\r\n      stroke-width: 3px;\r\n    }\r\n\r\n    .lucide-dot {\r\n      scale: 3;\r\n    }\r\n  }\r\n\r\n  &[href] {\r\n    text-decoration: none;\r\n    cursor: pointer;\r\n  }\r\n\r\n  &[data-disabled] {\r\n    color: var(--text-color-disabled);\r\n  }\r\n\r\n  .react-aria-Text:not([slot]),\r\n  [slot='label'] {\r\n    grid-area: label;\r\n    font-weight: 500;\r\n  }\r\n\r\n  [slot='description'] {\r\n    font-size: var(--font-size-sm);\r\n    grid-area: desc;\r\n  }\r\n\r\n  kbd {\r\n    grid-area: end;\r\n    justify-self: end;\r\n    margin-inline-start: var(--spacing-4);\r\n    font-family: system-ui;\r\n    font-size: var(--font-size-sm);\r\n    text-align: end;\r\n    background: var(--highlight-hover);\r\n    border: 0.5px solid var(--highlight-pressed);\r\n    padding: 0 var(--spacing-1);\r\n    border-radius: var(--radius-sm);\r\n  }\r\n\r\n  &[data-focused] kbd {\r\n    background: rgb(255 255 255 / 0.1);\r\n    border-color: rgb(255 255 255 / 0.2);\r\n  }\r\n\r\n  .lucide-chevron-right {\r\n    grid-area: end;\r\n    margin-left: var(--spacing-1);\r\n    justify-self: end;\r\n    width: var(--spacing-4);\r\n    height: var(--spacing-4);\r\n  }\r\n}\r\n\r\n.react-aria-MenuSection {\r\n  display: grid;\r\n  grid-column-start: 1;\r\n  grid-column-end: -1;\r\n  --check-width: 0;\r\n  grid-template-columns: var(--spacing-3) var(--check-width) auto 1fr auto var(--spacing-3);\r\n\r\n  &:has(> [data-selection-mode]) {\r\n    --check-width: var(--spacing-6);\r\n  }\r\n\r\n  .react-aria-Header {\r\n    grid-column-start: 1;\r\n    grid-column-end: -1;\r\n    font-size: var(--font-size-sm);\r\n    font-weight: 600;\r\n    font-variation-settings: initial;\r\n    padding: var(--spacing-1) var(--spacing-3);\r\n    background: var(--gray-100);\r\n    border-block: 0.5px solid var(--gray-400);\r\n    cursor: default;\r\n    user-select: none;\r\n    box-shadow:\r\n      inset 0px 1px 0px white,\r\n      inset 0px -4px 8px var(--gray-200);\r\n\r\n    @media (prefers-color-scheme: dark) {\r\n      box-shadow: inset 0px 4px 8px var(--gray-200);\r\n    }\r\n  }\r\n\r\n  &:first-child .react-aria-Header {\r\n    margin-top: -0.5px;\r\n  }\r\n}\r\n\r\n.react-aria-Menu .react-aria-Separator {\r\n  grid-column-start: 1;\r\n  grid-column-end: -1;\r\n  margin: 0 var(--spacing-2);\r\n  border: 0;\r\n  border-top: 0.5px solid var(--border-color);\r\n  height: auto;\r\n  width: auto;\r\n\r\n  .react-aria-MenuItem + & {\r\n    margin-block-start: var(--spacing-1);\r\n  }\r\n\r\n  &:has(+ .react-aria-MenuItem) {\r\n    margin-block-end: var(--spacing-1);\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Menu.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Menu.tsx",
+      "content": "'use client';\r\nimport {Check, ChevronRight, Dot} from 'lucide-react';\r\nimport {\r\n  Menu as AriaMenu,\r\n  MenuItem as AriaMenuItem,\r\n  MenuSection as AriaMenuSection,\r\n  MenuTrigger as AriaMenuTrigger,\r\n  SubmenuTrigger as AriaSubmenuTrigger,\r\n  Header,\r\n  Separator,\r\n  Keyboard,\r\n  type MenuItemProps,\r\n  type MenuProps,\r\n  type MenuSectionProps,\r\n  type MenuTriggerProps,\r\n  type SubmenuTriggerProps\r\n} from 'react-aria-components/Menu';\r\nimport {Popover} from './Popover';\r\nimport {Text} from './Content';\r\nimport React from 'react';\r\nimport './Menu.css';\r\n\r\nexport function MenuTrigger(props: MenuTriggerProps) {\r\n  let [trigger, menu] = React.Children.toArray(props.children) as [\r\n    React.ReactElement,\r\n    React.ReactElement\r\n  ];\r\n  return (\r\n    <AriaMenuTrigger {...props}>\r\n      {trigger}\r\n      <Popover>{menu}</Popover>\r\n    </AriaMenuTrigger>\r\n  );\r\n}\r\n\r\nexport function Menu<T>(props: MenuProps<T>) {\r\n  return <AriaMenu {...props}>{props.children}</AriaMenu>;\r\n}\r\n\r\nexport function MenuItem(props: Omit<MenuItemProps, 'children'> & {children?: React.ReactNode}) {\r\n  let textValue =\r\n    props.textValue || (typeof props.children === 'string' ? props.children : undefined);\r\n  return (\r\n    <AriaMenuItem {...props} textValue={textValue}>\r\n      {({hasSubmenu, isSelected, selectionMode}) => (\r\n        <>\r\n          {isSelected && selectionMode === 'multiple' ? <Check /> : null}\r\n          {isSelected && selectionMode === 'single' ? <Dot /> : null}\r\n          {typeof props.children === 'string' ? (\r\n            <Text slot=\"label\">{props.children}</Text>\r\n          ) : (\r\n            props.children\r\n          )}\r\n          {hasSubmenu && <ChevronRight />}\r\n        </>\r\n      )}\r\n    </AriaMenuItem>\r\n  );\r\n}\r\n\r\nexport function MenuSection<T>(props: MenuSectionProps<T>) {\r\n  return <AriaMenuSection {...props} />;\r\n}\r\n\r\nexport function SubmenuTrigger(props: SubmenuTriggerProps) {\r\n  let [trigger, menu] = React.Children.toArray(props.children) as [\r\n    React.ReactElement,\r\n    React.ReactElement\r\n  ];\r\n  return (\r\n    <AriaSubmenuTrigger {...props}>\r\n      {trigger}\r\n      <Popover hideArrow offset={-2} crossOffset={-4}>\r\n        {menu}\r\n      </Popover>\r\n    </AriaSubmenuTrigger>\r\n  );\r\n}\r\n\r\nexport {Text, Header, Separator, Keyboard};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Menu.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Popover.css",
+      "content": "@import './theme.css';\r\n\r\n.react-aria-Popover {\r\n  --background-color: var(--overlay-background);\r\n\r\n  outline: 1px solid var(--overlay-border);\r\n  box-sizing: border-box;\r\n  filter: drop-shadow(var(--popover-shadow));\r\n  border-radius: var(--radius-lg);\r\n  background: var(--background-color);\r\n  color: var(--text-color);\r\n  transition:\r\n    transform 200ms,\r\n    opacity 200ms;\r\n  font: var(--font-size) system-ui;\r\n  padding: 8px;\r\n\r\n  &[data-trigger='MenuTrigger'],\r\n  &[data-trigger='SubmenuTrigger'] {\r\n    padding: 0;\r\n  }\r\n\r\n  .react-aria-OverlayArrow svg {\r\n    display: block;\r\n    fill: var(--background-color);\r\n    stroke: var(--overlay-border);\r\n    paint-order: stroke;\r\n    stroke-width: 2px;\r\n  }\r\n\r\n  &[data-entering],\r\n  &[data-exiting] {\r\n    transform: var(--origin);\r\n    opacity: 0;\r\n  }\r\n\r\n  &[data-placement='top'] {\r\n    --origin: translateY(8px);\r\n\r\n    &:has(.react-aria-OverlayArrow) {\r\n      margin-bottom: 6px;\r\n    }\r\n  }\r\n\r\n  &[data-placement='bottom'] {\r\n    --origin: translateY(-8px);\r\n\r\n    &:has(.react-aria-OverlayArrow) {\r\n      margin-top: 6px;\r\n    }\r\n\r\n    .react-aria-OverlayArrow svg {\r\n      transform: rotate(180deg);\r\n    }\r\n  }\r\n\r\n  &[data-placement='right'] {\r\n    --origin: translateX(-8px);\r\n\r\n    &:has(.react-aria-OverlayArrow) {\r\n      margin-left: 6px;\r\n    }\r\n\r\n    .react-aria-OverlayArrow svg {\r\n      transform: rotate(90deg);\r\n    }\r\n  }\r\n\r\n  &[data-placement='left'] {\r\n    --origin: translateX(8px);\r\n\r\n    &:has(.react-aria-OverlayArrow) {\r\n      margin-right: 6px;\r\n    }\r\n\r\n    .react-aria-OverlayArrow svg {\r\n      transform: rotate(-90deg);\r\n    }\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Popover.css"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/Popover.tsx",
+      "content": "'use client';\r\nimport {\r\n  OverlayArrow,\r\n  Popover as AriaPopover,\r\n  type PopoverProps as AriaPopoverProps\r\n} from 'react-aria-components/Popover';\r\nimport clsx from 'clsx';\r\nimport './Popover.css';\r\n\r\nexport interface PopoverProps extends Omit<AriaPopoverProps, 'children'> {\r\n  children: React.ReactNode;\r\n  hideArrow?: boolean;\r\n}\r\n\r\nexport function Popover({children, hideArrow, ...props}: PopoverProps) {\r\n  return (\r\n    <AriaPopover {...props} className={clsx('react-aria-Popover', props.className)}>\r\n      {({trigger}) => (\r\n        <>\r\n          {!hideArrow && trigger !== 'MenuTrigger' && trigger !== 'SubmenuTrigger' && (\r\n            <OverlayArrow>\r\n              <svg width={12} height={12} viewBox=\"0 0 12 12\">\r\n                <path d=\"M0 0 L6 6 L12 0\" />\r\n              </svg>\r\n            </OverlayArrow>\r\n          )}\r\n          {children}\r\n        </>\r\n      )}\r\n    </AriaPopover>\r\n  );\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/Popover.tsx"
+    },
+    {
+      "path": "registry/sources/react-aria-starters/components/react-aria-menu/theme.css",
+      "content": "/* colors */\r\n:root {\r\n  /* Change this variable to set the theme color for all components. */\r\n  /* You can use the below presets, or choose a custom color. */\r\n  --tint: var(--indigo);\r\n\r\n  /* theme colors */\r\n  /* lightness channel is only used as a multiplier for chroma (see below) */\r\n  --gray: oklch(0.5 0 0);\r\n  --red: oklch(0.6 0.181447 27.0726);\r\n  --orange: oklch(0.7 0.150492 54);\r\n  --yellow: oklch(0.8 0.128516 73.8032);\r\n  --turquoise: oklch(0.5 0.081146 205.114);\r\n  --cyan: oklch(0.4 0.142107 243.926);\r\n  --green: oklch(0.5 0.121276 155.372);\r\n  --blue: oklch(0.5 0.22049 266.315);\r\n  --indigo: oklch(1 0.25049 284.23);\r\n  --purple: oklch(0.7 0.223324 302);\r\n  --pink: oklch(0.6 0.177717 347.813);\r\n\r\n  /** tint color scale */\r\n  --tint-100: oklch(from var(--tint) var(--lightness-100) var(--chroma-100) h);\r\n  --tint-200: oklch(from var(--tint) var(--lightness-200) var(--chroma-200) h);\r\n  --tint-300: oklch(from var(--tint) var(--lightness-300) var(--chroma-300) h);\r\n  --tint-400: oklch(from var(--tint) var(--lightness-400) var(--chroma-400) h);\r\n  --tint-500: oklch(from var(--tint) var(--lightness-500) var(--chroma-500) h);\r\n  --tint-600: oklch(from var(--tint) var(--lightness-600) var(--chroma-600) h);\r\n  --tint-700: oklch(from var(--tint) var(--lightness-700) var(--chroma-700) h);\r\n  --tint-800: oklch(from var(--tint) var(--lightness-800) var(--chroma-800) h);\r\n  --tint-900: oklch(from var(--tint) var(--lightness-900) var(--chroma-900) h);\r\n  --tint-1000: oklch(from var(--tint) var(--lightness-1000) var(--chroma-1000) h);\r\n  --tint-1100: oklch(from var(--tint) var(--lightness-1100) var(--chroma-1100) h);\r\n  --tint-1200: oklch(from var(--tint) var(--lightness-1200) var(--chroma-1200) h);\r\n  --tint-1300: oklch(from var(--tint) var(--lightness-1300) var(--chroma-1300) h);\r\n  --tint-1400: oklch(from var(--tint) var(--lightness-1400) var(--chroma-1400) h);\r\n  --tint-1500: oklch(from var(--tint) var(--lightness-1500) var(--chroma-1500) h);\r\n  --tint-1600: oklch(from var(--tint) var(--lightness-1600) var(--chroma-1600) h);\r\n\r\n  /* gray scale */\r\n  --gray-100: oklch(from var(--gray) var(--lightness-100) c h);\r\n  --gray-200: oklch(from var(--gray) var(--lightness-200) c h);\r\n  --gray-300: oklch(from var(--gray) var(--lightness-300) c h);\r\n  --gray-400: oklch(from var(--gray) var(--lightness-400) c h);\r\n  --gray-500: oklch(from var(--gray) var(--lightness-500) c h);\r\n  --gray-600: oklch(from var(--gray) var(--lightness-600) c h);\r\n  --gray-700: oklch(from var(--gray) var(--lightness-700) c h);\r\n  --gray-800: oklch(from var(--gray) var(--lightness-800) c h);\r\n  --gray-900: oklch(from var(--gray) var(--lightness-900) c h);\r\n  --gray-1000: oklch(from var(--gray) var(--lightness-1000) c h);\r\n  --gray-1100: oklch(from var(--gray) var(--lightness-1100) c h);\r\n  --gray-1200: oklch(from var(--gray) var(--lightness-1200) c h);\r\n  --gray-1300: oklch(from var(--gray) var(--lightness-1300) c h);\r\n  --gray-1400: oklch(from var(--gray) var(--lightness-1400) c h);\r\n  --gray-1500: oklch(from var(--gray) var(--lightness-1500) c h);\r\n  --gray-1600: oklch(from var(--gray) var(--lightness-1600) c h);\r\n}\r\n\r\n/* light mode colors */\r\n:root {\r\n  --background-color: #f8f8f8;\r\n  --gray-50: #ffffff;\r\n\r\n  --lightness-100: 98.1187%;\r\n  --lightness-200: 95.2045%;\r\n  --lightness-300: 91.1434%;\r\n  --lightness-400: 85.1751%;\r\n  --lightness-500: 79.1773%;\r\n  --lightness-600: 72.3297%;\r\n  --lightness-700: 67.0121%;\r\n  --lightness-800: 62.3039%;\r\n  --lightness-900: 57.9699%;\r\n  --lightness-1000: 51.9076%;\r\n  --lightness-1100: 46.9058%;\r\n  --lightness-1200: 41.0821%;\r\n  --lightness-1300: 35.3616%;\r\n  --lightness-1400: 29.6725%;\r\n  --lightness-1500: 24.5366%;\r\n  --lightness-1600: 16.6959%;\r\n\r\n  /* lower chroma at low lightness levels */\r\n  --chroma-100: calc(l * c * 0.5);\r\n  --chroma-200: calc(l * c * 0.6);\r\n  --chroma-300: calc(l * c * 0.7);\r\n  --chroma-400: calc(l * c * 0.8);\r\n  --chroma-500: calc(l * c * 0.9);\r\n  --chroma-600: c;\r\n  --chroma-700: c;\r\n  --chroma-800: c;\r\n  --chroma-900: c;\r\n  --chroma-1000: c;\r\n  --chroma-1100: c;\r\n  --chroma-1200: c;\r\n  --chroma-1300: c;\r\n  --chroma-1400: c;\r\n  --chroma-1500: c;\r\n  --chroma-1600: c;\r\n\r\n  --highlight-hover: rgb(0 0 0 / 0.07);\r\n  --highlight-pressed: rgb(0 0 0 / 0.15);\r\n  --overlay-background: var(--gray-50);\r\n  --overlay-border: rgb(0 0 0 / 0.06);\r\n  --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.12);\r\n}\r\n\r\n/* dark mode colors */\r\n@media (prefers-color-scheme: dark) {\r\n  :root {\r\n    --background-color: #1b1b1b;\r\n    --gray-50: oklch(22% 0 0);\r\n\r\n    --lightness-100: 29.6725%;\r\n    --lightness-200: 35.3616%;\r\n    --lightness-300: 41.0821%;\r\n    --lightness-400: 46.9058%;\r\n    --lightness-500: 51.9076%;\r\n    --lightness-600: 57.9699%;\r\n    --lightness-700: 56.1347%;\r\n    --lightness-800: 59.2866%;\r\n    --lightness-900: 62.3039%;\r\n    --lightness-1000: 67.0121%;\r\n    --lightness-1100: 72.3297%;\r\n    --lightness-1200: 79.1773%;\r\n    --lightness-1300: 85.1751%;\r\n    --lightness-1400: 91.1434%;\r\n    --lightness-1500: 95.2045%;\r\n    --lightness-1600: 100%;\r\n\r\n    --highlight-hover: rgb(255 255 255 / 0.1);\r\n    --highlight-pressed: rgb(255 255 255 / 0.2);\r\n    --overlay-background: var(--gray-100);\r\n    --overlay-border: rgb(255 255 255 / 0.2);\r\n    --popover-shadow: 0 8px 20px rgba(0 0 0 / 0.5);\r\n  }\r\n}\r\n\r\n/* Semantic colors */\r\n:root {\r\n  --focus-ring-color: var(--tint-1000);\r\n  --text-color: var(--gray-1200);\r\n  --text-color-hover: var(--gray-1300);\r\n  --text-color-disabled: var(--gray-600);\r\n  --text-color-placeholder: var(--gray-1000);\r\n  --link-color: var(--tint-1200);\r\n  --link-color-secondary: var(--gray-1200);\r\n  --link-color-pressed: var(--tint-1300);\r\n  --border-color: var(--gray-400);\r\n  --border-color-hover: var(--gray-500);\r\n  --border-color-disabled: var(--gray-300);\r\n  --field-text-color: var(--gray-1400);\r\n  --button-background: var(--tint-100);\r\n  --button-background-pressed: var(--tint-200);\r\n  /* these colors are the same between light and dark themes\r\n   * to ensure contrast with the foreground color */\r\n  --highlight-background: oklch(from var(--tint) 55% c h);\r\n  --highlight-background-pressed: oklch(from var(--tint) 50% c h);\r\n  --highlight-background-invalid: oklch(from var(--red) var(--lightness-900) c h);\r\n  --highlight-foreground: white;\r\n  --highlight-overlay: oklch(from var(--tint-1000) l c h / 15%);\r\n  --invalid-color: oklch(from var(--red) var(--lightness-1000) c h);\r\n  --field-background: var(--gray-50);\r\n}\r\n\r\n/* Windows high contrast mode overrides */\r\n@media (forced-colors: active) {\r\n  :root {\r\n    --background-color: Canvas;\r\n    --focus-ring-color: Highlight;\r\n    --text-color: ButtonText;\r\n    --text-color-hover: ButtonText;\r\n    --text-color-disabled: GrayText;\r\n    --text-color-placeholder: ButtonText;\r\n    --link-color: LinkText;\r\n    --link-color-secondary: LinkText;\r\n    --link-color-pressed: LinkText;\r\n    --border-color: ButtonBorder;\r\n    --border-color-hover: ButtonBorder;\r\n    --border-color-pressed: ButtonBorder;\r\n    --border-color-disabled: GrayText;\r\n    --field-background: Field;\r\n    --field-text-color: FieldText;\r\n    --overlay-background: Canvas;\r\n    --overlay-border: ButtonBorder;\r\n    --button-background: ButtonFace;\r\n    --button-background-pressed: ButtonFace;\r\n    --highlight-background: Highlight;\r\n    --highlight-background-pressed: Highlight;\r\n    --highlight-background-invalid: LinkText;\r\n    --highlight-foreground: HighlightText;\r\n    --invalid-color: LinkText;\r\n  }\r\n}\r\n\r\n/* typography and spacing scale */\r\n:root {\r\n  --font-size: 0.875rem; /* 14px */\r\n  --font-size-sm: 0.75rem; /* 12px */\r\n  --font-size-lg: 1rem; /* 16px */\r\n  --radius: 8px;\r\n  --radius-sm: 6px;\r\n  --radius-lg: 10px;\r\n  --radius-xl: 16px;\r\n  --spacing: 0.25rem; /* 4px */\r\n  --spacing-1: var(--spacing);\r\n  --spacing-2: calc(2 * var(--spacing));\r\n  --spacing-3: calc(3 * var(--spacing));\r\n  --spacing-4: calc(4 * var(--spacing));\r\n  --spacing-5: calc(5 * var(--spacing));\r\n  --spacing-6: calc(6 * var(--spacing));\r\n  --spacing-7: calc(7 * var(--spacing));\r\n  --spacing-8: calc(8 * var(--spacing));\r\n  --spacing-9: calc(9 * var(--spacing));\r\n  --spacing-10: calc(10 * var(--spacing));\r\n}\r\n\r\n/* Scale up hit targets on high resolution mobile devices. */\r\n@media (min-resolution: 200dpi) {\r\n  :root {\r\n    --spacing: calc(0.25rem * 1.25);\r\n    --font-size: 1.0625rem; /* 17px */\r\n    --font-size-sm: 0.9375rem; /* 15px */\r\n    --font-size-lg: 1.25rem; /* 20px */\r\n  }\r\n}\r\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/react-aria-starters/react-aria-menu/theme.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "menu",
+        "submenu",
+        "selection",
+        "keyboard",
+        "popover"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-aria-menu.tsx",
+      "source": {
+        "project": "React Aria Vanilla CSS starter",
+        "repository": "https://github.com/adobe/react-spectrum",
+        "revision": "1c84a49a1faf50b571c84e00bcf9c60b22ddd03e",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-aria-menu/Content.css",
+            "upstreamPath": "starters/docs/src/Content.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.css",
+            "upstreamSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+            "contentSha256": "sha256:fc2e5affafd334a1530a54fb822b6bd028267c4fe01c232b1087e57896f126ed",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/Content.tsx",
+            "upstreamPath": "starters/docs/src/Content.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Content.tsx",
+            "upstreamSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+            "contentSha256": "sha256:660d711d075d85ed4dd3f309116a1f8c9c0a458e93cffd2cf0cc2affbfa62bf9",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/Menu.css",
+            "upstreamPath": "starters/docs/src/Menu.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Menu.css",
+            "upstreamSha256": "sha256:19b65a0c707de362c81e17d248aefa9624cdb178734cd892375935b34635f0ca",
+            "contentSha256": "sha256:19b65a0c707de362c81e17d248aefa9624cdb178734cd892375935b34635f0ca",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/Menu.tsx",
+            "upstreamPath": "starters/docs/src/Menu.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Menu.tsx",
+            "upstreamSha256": "sha256:2b932bf28768c2d1d71dfdee05d89a57e2634256b2cb2ebe43f44d9eb574eb8d",
+            "contentSha256": "sha256:2b932bf28768c2d1d71dfdee05d89a57e2634256b2cb2ebe43f44d9eb574eb8d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/Popover.css",
+            "upstreamPath": "starters/docs/src/Popover.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.css",
+            "upstreamSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+            "contentSha256": "sha256:f2b9d66e9dcd88842fbc688c8cda5b919fbe070c44d392ccddd861f265f98533",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/Popover.tsx",
+            "upstreamPath": "starters/docs/src/Popover.tsx",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/Popover.tsx",
+            "upstreamSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+            "contentSha256": "sha256:b43ff20fc28ddeb4b9807f1dfda2421d38538a1e9f712aff7844cffbf215dd21",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-aria-menu/theme.css",
+            "upstreamPath": "starters/docs/src/theme.css",
+            "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/starters/docs/src/theme.css",
+            "upstreamSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+            "contentSha256": "sha256:7bd4ad8a77fcf7f890dfb869d5dcebb6c71ea3da09459e5c500bfd9f11c3b6aa",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "starters/docs/src/Menu.tsx and its exact copied relative import closure",
+        "copyright": [
+          "Copyright 2019 Adobe"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/adobe/react-spectrum/blob/1c84a49a1faf50b571c84e00bcf9c60b22ddd03e/LICENSE",
+          "sha256": "sha256:684be984c6146c60a5c9fa2f766a20a25fe7435bf3b93514ff98632afddda715",
+          "localPath": "registry/sources/react-aria-starters/LICENSE"
+        },
+        "notices": [
+          "registry/sources/react-aria-starters/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "nested-action-menu",
+        "sourceHash": "sha256:bb428297691d98c1cba5f900f4601d776925fddf71bc04cb8baa539bf477fad8",
+        "contentHash": "sha256:bb428297691d98c1cba5f900f4601d776925fddf71bc04cb8baa539bf477fad8",
+        "structureHash": "sha256:0c3fab8b249a56a002796f7ac12b419a906b1ded3afec38d1810a6f8450cca78"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

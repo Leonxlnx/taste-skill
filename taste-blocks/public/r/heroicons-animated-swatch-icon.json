@@ -1,0 +1,146 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "heroicons-animated-swatch-icon",
+  "title": "Animated Swatch Icon",
+  "author": "Heroicons Animated",
+  "description": "Renders the Heroicons Swatch glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/heroicons-animated/components/heroicons-animated-swatch-icon/swatch.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface SwatchIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface SwatchIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst SWATCH_VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n  },\n  animate: {\n    rotate: [0, 15, 0],\n    transition: {\n      duration: 0.28,\n      ease: \"easeInOut\",\n    },\n  },\n};\n\nconst SwatchIcon = forwardRef<SwatchIconHandle, SwatchIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) return;\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <motion.svg\n          animate={controls}\n          fill=\"none\"\n          height={size}\n          initial=\"normal\"\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"1.5\"\n          variants={SWATCH_VARIANTS}\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <path d=\"M4.09835 19.9017C5.56282 21.3661 7.93719 21.3661 9.40165 19.9017L15.8033 13.5M6.75 21C4.67893 21 3 19.3211 3 17.25V4.125C3 3.50368 3.50368 3 4.125 3H9.375C9.99632 3 10.5 3.50368 10.5 4.125V8.1967M6.75 21C8.82107 21 10.5 19.3211 10.5 17.25V8.1967M6.75 21H19.875C20.4963 21 21 20.4963 21 19.875V14.625C21 14.0037 20.4963 13.5 19.875 13.5H15.8033M10.5 8.1967L13.3791 5.31757C13.8185 4.87823 14.5308 4.87823 14.9701 5.31757L18.6824 9.02988C19.1218 9.46922 19.1218 10.1815 18.6824 10.6209L15.8033 13.5M6.75 17.25H6.7575V17.2575H6.75V17.25Z\" />\n        </motion.svg>\n      </div>\n    );\n  }\n);\n\nSwatchIcon.displayName = \"SwatchIcon\";\n\nexport { SwatchIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/heroicons-animated-swatch-icon.tsx"
+    },
+    {
+      "path": "registry/sources/heroicons-animated/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "swatch",
+        "animated",
+        "icon",
+        "motion",
+        "heroicons"
+      ],
+      "renderer": "svg",
+      "preview": "previews/heroicons-animated-swatch-icon.tsx",
+      "source": {
+        "project": "Heroicons Animated",
+        "repository": "https://github.com/heroicons-animated/heroicons-animated",
+        "revision": "93c14cc04222375a965ffa33b5d390c474822405",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/heroicons-animated-swatch-icon/swatch.tsx",
+            "upstreamPath": "packages/react/src/icons/swatch.tsx",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/packages/react/src/icons/swatch.tsx",
+            "upstreamSha256": "sha256:ebe22738ee21e99ef3173370c3a4ab03ebeb7c3c3c0025a1a078cdce7ab3c3e0",
+            "contentSha256": "sha256:50c9694365627fc0c772053527291f870e4e339f0c0be30efdef54801257c89f",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls.",
+              "Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "src/lib/utils.ts",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/icons/swatch.tsx, src/lib/utils.ts, and Heroicons-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2026 Aniket Pawar",
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) Tailwind Labs, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/LICENSE",
+          "sha256": "sha256:523f3bb472b7b76b6137becbf45c4d6019cdfbe7a1eef0807e480f7d1cf7ed40",
+          "localPath": "registry/sources/heroicons-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/heroicons-animated/NOTICE",
+          "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+          "registry/sources/heroicons-animated/HEROICONS_LICENSE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/heroicons-animated/NOTICE",
+            "sha256": "sha256:755f24221919def18af51eb781915dc762ee6688bdc27dc4aca69bb7ee92d951",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/pqoqubbw/icons",
+            "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+            "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/tailwindlabs/heroicons",
+            "revision": "0435d4ca364a608cc75e2f8683d374e55abbae26",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/tailwindlabs/heroicons/blob/0435d4ca364a608cc75e2f8683d374e55abbae26/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/HEROICONS_LICENSE",
+            "sha256": "sha256:60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/heroicons-animated-swatch-icon/swatch.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls. Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms.",
+          "reason": "Resolved the bundled utility import, added explicit animation disablement and reduced-motion handling, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-swatch-icon",
+        "sourceHash": "sha256:89860f1849929bd8c2251de6ce4c187c9dfedc4d615173196bf4b0a27ed153bb",
+        "contentHash": "sha256:d99d1ed868439baebd87e66c2cca34efc551a3d2fac1da5aab3a4b839a6684cc",
+        "structureHash": "sha256:685d53d577ea4c07d66f7c186393d5086b0143aded035ba435773f8fc385436d",
+        "glyph": {
+          "inventoryName": "swatch",
+          "canonicalName": "swatch",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

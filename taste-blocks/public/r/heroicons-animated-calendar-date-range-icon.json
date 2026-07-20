@@ -1,0 +1,148 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "heroicons-animated-calendar-date-range-icon",
+  "title": "Animated Calendar Date Range Icon",
+  "author": "Heroicons Animated",
+  "description": "Renders the Heroicons Calendar Date Range glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/heroicons-animated/components/heroicons-animated-calendar-date-range-icon/calendar-date-range.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface CalendarDateRangeIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface CalendarDateRangeIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst FIRST_DOT_VARIANTS: Variants = {\n  normal: {\n    opacity: 1,\n    transition: {\n      duration: 0.2,\n    },\n  },\n  animate: {\n    opacity: [1, 0.3, 1],\n    transition: {\n      delay: 0,\n      duration: 0.28,\n      times: [0, 0.5, 1],\n    },\n  },\n};\n\nconst LINE_VARIANTS: Variants = {\n  normal: {\n    pathLength: 1,\n    opacity: 1,\n    transition: {\n      duration: 0.2,\n    },\n  },\n  animate: (custom: number) => ({\n    pathLength: [0, 1],\n    opacity: [0, 1],\n    transition: {\n      delay: 0.04 + custom * 0.04,\n      duration: 0.28,\n      ease: \"easeOut\",\n    },\n  }),\n};\n\nconst DOT_VARIANTS: Variants = {\n  normal: {\n    opacity: 1,\n    transition: {\n      duration: 0.2,\n    },\n  },\n  animate: (custom: number) => ({\n    opacity: [1, 0.3, 1],\n    transition: {\n      delay: 0.04 + custom * 0.04,\n      duration: 0.28,\n      times: [0, 0.5, 1],\n    },\n  }),\n};\n\nconst RANGE_LINES = [\n  { d: \"M14.25 12.75h2.25\", index: 0 },\n  { d: \"M7.5 15h4.5\", index: 1 },\n] as const;\n\nconst FIRST_DOT = { d: \"M12 12.75h.005v.006H12v-.006Z\" };\n\nconst DOTS = [\n  { d: \"M14.25 15h.005v.005h-.005v-.005Z\", index: 0 },\n  { d: \"M16.5 15h.006v.005H16.5v-.005Z\", index: 1 },\n  { d: \"M7.5 17.25h.005v.005h-.006v-.005Z\", index: 2 },\n  { d: \"M9.75 17.25h.005v.006H9.75v-.006Z\", index: 3 },\n  { d: \"M12 17.25h.006v.006h-.006v-.005Z\", index: 4 },\n  { d: \"M14.25 17.25h.006v.006h-.006v-.006Z\", index: 5 },\n] as const;\n\nconst CalendarDateRangeIcon = forwardRef<\n  CalendarDateRangeIconHandle,\n  CalendarDateRangeIconProps\n>(({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlledRef = useRef(false);\n\n  useImperativeHandle(ref, () => {\n    isControlledRef.current = true;\n\n    return {\n      startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n      stopAnimation: () => controls.start(\"normal\"),\n    };\n  });\n\n  const handleMouseEnter = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (!isAnimated || reduced) return;\n      if (isControlledRef.current) {\n        onMouseEnter?.(e);\n      } else {\n        controls.start(\"animate\");\n      }\n    },\n    [controls, isAnimated, onMouseEnter, reduced]\n  );\n\n  const handleMouseLeave = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (isControlledRef.current) {\n        onMouseLeave?.(e);\n      } else {\n        controls.start(\"normal\");\n      }\n    },\n    [controls, onMouseLeave]\n  );\n\n  return (\n    <div\n      className={cn(className)}\n      onMouseEnter={handleMouseEnter}\n      onMouseLeave={handleMouseLeave}\n      {...props}\n    >\n      <svg\n        fill=\"none\"\n        height={size}\n        stroke=\"currentColor\"\n        strokeLinecap=\"round\"\n        strokeLinejoin=\"round\"\n        strokeWidth=\"1.5\"\n        viewBox=\"0 0 24 24\"\n        width={size}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        <path d=\"M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5\" />\n        <motion.path\n          animate={controls}\n          d={FIRST_DOT.d}\n          initial=\"normal\"\n          variants={FIRST_DOT_VARIANTS}\n        />\n        {RANGE_LINES.map((line) => (\n          <motion.path\n            animate={controls}\n            custom={line.index}\n            d={line.d}\n            initial=\"normal\"\n            key={`line-${line.index}`}\n            variants={LINE_VARIANTS}\n          />\n        ))}\n        {DOTS.map((dot) => (\n          <motion.path\n            animate={controls}\n            custom={dot.index}\n            d={dot.d}\n            initial=\"normal\"\n            key={`dot-${dot.index}`}\n            variants={DOT_VARIANTS}\n          />\n        ))}\n      </svg>\n    </div>\n  );\n});\n\nCalendarDateRangeIcon.displayName = \"CalendarDateRangeIcon\";\n\nexport { CalendarDateRangeIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/heroicons-animated-calendar-date-range-icon.tsx"
+    },
+    {
+      "path": "registry/sources/heroicons-animated/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "calendar",
+        "date",
+        "range",
+        "animated",
+        "icon",
+        "motion",
+        "heroicons"
+      ],
+      "renderer": "svg",
+      "preview": "previews/heroicons-animated-calendar-date-range-icon.tsx",
+      "source": {
+        "project": "Heroicons Animated",
+        "repository": "https://github.com/heroicons-animated/heroicons-animated",
+        "revision": "93c14cc04222375a965ffa33b5d390c474822405",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/heroicons-animated-calendar-date-range-icon/calendar-date-range.tsx",
+            "upstreamPath": "packages/react/src/icons/calendar-date-range.tsx",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/packages/react/src/icons/calendar-date-range.tsx",
+            "upstreamSha256": "sha256:0d2a28205c65772be5adb11df654794bc36b5d37c8f431b4b6e3003c2b24b4cf",
+            "contentSha256": "sha256:d88ec609e66ae3e36e46b6a5d718ee0e482db33b350815eb28285350c1b335cb",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls.",
+              "Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "src/lib/utils.ts",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/icons/calendar-date-range.tsx, src/lib/utils.ts, and Heroicons-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2026 Aniket Pawar",
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) Tailwind Labs, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/LICENSE",
+          "sha256": "sha256:523f3bb472b7b76b6137becbf45c4d6019cdfbe7a1eef0807e480f7d1cf7ed40",
+          "localPath": "registry/sources/heroicons-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/heroicons-animated/NOTICE",
+          "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+          "registry/sources/heroicons-animated/HEROICONS_LICENSE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/heroicons-animated/NOTICE",
+            "sha256": "sha256:755f24221919def18af51eb781915dc762ee6688bdc27dc4aca69bb7ee92d951",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/pqoqubbw/icons",
+            "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+            "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/tailwindlabs/heroicons",
+            "revision": "0435d4ca364a608cc75e2f8683d374e55abbae26",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/tailwindlabs/heroicons/blob/0435d4ca364a608cc75e2f8683d374e55abbae26/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/HEROICONS_LICENSE",
+            "sha256": "sha256:60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/heroicons-animated-calendar-date-range-icon/calendar-date-range.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls. Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms.",
+          "reason": "Resolved the bundled utility import, added explicit animation disablement and reduced-motion handling, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-calendar-date-range-icon",
+        "sourceHash": "sha256:190b4474fde4a6128f43cf0af87dd54b46a8c164f7551d3546b13a3d03b32cf1",
+        "contentHash": "sha256:704a92c1f677ea6bec4163fabec870369e7fda869c20b9cb678fbaa73cf76da0",
+        "structureHash": "sha256:cfec7cceb09047000968ece25a9c7fa4a42145c1c2374164ef749d02df02a788",
+        "glyph": {
+          "inventoryName": "calendar-date-range",
+          "canonicalName": "calendar-date-range",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-kinetic-text",
+  "title": "Kinetic Text",
+  "author": "Magic UI",
+  "description": "Renders text whose character weights respond to hover proximity.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-kinetic-text/kinetic-text.tsx",
+      "content": "import React from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\ntype As = \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"p\" | \"span\"\n\ntype KineticTextProps = React.HTMLAttributes<HTMLElement> & {\n  text: string\n  as?: As\n}\n\nexport function KineticText({\n  text,\n  as: Tag = \"h1\",\n  className = \"\",\n  style,\n  ...rest\n}: KineticTextProps) {\n  const mergedStyle = {\n    \"--hover-padding\": \"calc(1em / 12)\",\n    \"--text-stroke-width\": \"calc(1em * 125 / 6000)\",\n    ...(style as React.CSSProperties | undefined),\n  } as React.CSSProperties\n\n  return (\n    <Tag\n      {...rest}\n      className={cn(\"flex flex-wrap font-[300]\", className)}\n      style={mergedStyle}\n    >\n      {text.split(\"\").map((letter, i) => (\n        <span\n          key={i}\n          aria-hidden=\"true\"\n          className=\"[will-change:font-weight,-webkit-text-stroke-width,padding] [-webkit-text-stroke-color:transparent] [-webkit-text-stroke-width:var(--text-stroke-width)] [transition:font-weight_0.4s,_-webkit-text-stroke-color_0.4s,_padding_0.4s] hover:[padding-inline:var(--hover-padding)] hover:font-[900] hover:[-webkit-text-stroke-color:currentcolor] hover:[-webkit-text-stroke-width:calc(var(--text-stroke-width)*2)] has-[+span+span:hover]:font-[400] has-[+span:hover]:[padding-inline:var(--hover-padding)] has-[+span:hover]:font-[600] [:hover+&]:[padding-inline:var(--hover-padding)] [:hover+&]:font-[600] [:hover+span+&]:font-[400]\"\n        >\n          {letter === \" \" ? \"\\u00A0\" : letter}\n        </span>\n      ))}\n      <span className=\"sr-only\">{text}</span>\n    </Tag>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/kinetic-text.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "hover",
+        "variable-font"
+      ],
+      "renderer": "dom",
+      "preview": "previews/magic-kinetic-text.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-kinetic-text/kinetic-text.tsx",
+            "upstreamPath": "apps/www/registry/magicui/kinetic-text.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/kinetic-text.tsx",
+            "upstreamSha256": "sha256:a02ab6c77ae376778fec3c27b0b1c9d0d7ec0f7e0ac9434d0716eb217556c355",
+            "contentSha256": "sha256:4cfd5dd5ead675fef58fd8fca3bd4a53d62adb42c7cbd98dbf9590cfca57d08a",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/kinetic-text.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-kinetic-text/kinetic-text.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils.",
+          "reason": "Resolve the bundled upstream utility from both the source batch and the installation targets without relying on a consumer alias."
+        }
+      ],
+      "dedupe": {
+        "family": "variable-font-hover-text",
+        "sourceHash": "sha256:179c9e1ba263603d4cef4b079c803d0fd12fd6d35af774f022adacd4375e0831",
+        "contentHash": "sha256:c3470dddcaf14d918e75d25bbffaeccc68eff6b19b0c646d5d1b9371b536fd4c",
+        "structureHash": "sha256:ba4fe4dad9e25abc0868dcf91b7439775b140c81d659408c6e63e4f45956ae60"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

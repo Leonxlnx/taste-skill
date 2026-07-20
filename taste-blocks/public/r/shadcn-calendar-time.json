@@ -1,0 +1,314 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-calendar-time",
+  "title": "Calendar with Time",
+  "author": "shadcn",
+  "description": "Combines a single-date calendar with named native start and end time inputs.",
+  "dependencies": [
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.474.0",
+    "radix-ui@1.4.3",
+    "react-day-picker@9.8.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/shadcn-calendar-time/calendar-time.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Clock2Icon } from \"lucide-react\"\n\nimport { Calendar } from \"../radix-nova/calendar\"\nimport { Card, CardContent, CardFooter } from \"../radix-nova/card\"\nimport { Field, FieldGroup, FieldLabel } from \"../radix-nova/field\"\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupInput,\n} from \"../radix-nova/input-group\"\n\nexport function CalendarWithTime({\n  defaultDate = new Date(new Date().getFullYear(), new Date().getMonth(), 12),\n  defaultEndTime = \"12:30:00\",\n  defaultStartTime = \"10:30:00\",\n  endTimeName,\n  onDateChange,\n  startTimeName,\n}: {\n  defaultDate?: Date\n  defaultEndTime?: string\n  defaultStartTime?: string\n  endTimeName?: string\n  onDateChange?: (date: Date | undefined) => void\n  startTimeName?: string\n}) {\n  const [date, setDate] = React.useState<Date | undefined>(defaultDate)\n  const id = React.useId()\n  const startTimeId = `${id}-start`\n  const endTimeId = `${id}-end`\n\n  return (\n    <Card size=\"sm\" className=\"mx-auto w-fit\">\n      <CardContent>\n        <Calendar\n          mode=\"single\"\n          selected={date}\n          onSelect={(nextDate) => {\n            setDate(nextDate)\n            onDateChange?.(nextDate)\n          }}\n          className=\"p-0\"\n        />\n      </CardContent>\n      <CardFooter className=\"border-t bg-card\">\n        <FieldGroup>\n          <Field>\n            <FieldLabel htmlFor={startTimeId}>Start Time</FieldLabel>\n            <InputGroup>\n              <InputGroupInput\n                id={startTimeId}\n                name={startTimeName}\n                type=\"time\"\n                step=\"1\"\n                defaultValue={defaultStartTime}\n                className=\"appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none\"\n              />\n              <InputGroupAddon>\n                <Clock2Icon className=\"text-muted-foreground\" />\n              </InputGroupAddon>\n            </InputGroup>\n          </Field>\n          <Field>\n            <FieldLabel htmlFor={endTimeId}>End Time</FieldLabel>\n            <InputGroup>\n              <InputGroupInput\n                id={endTimeId}\n                name={endTimeName}\n                type=\"time\"\n                step=\"1\"\n                defaultValue={defaultEndTime}\n                className=\"appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none\"\n              />\n              <InputGroupAddon>\n                <Clock2Icon className=\"text-muted-foreground\" />\n              </InputGroupAddon>\n            </InputGroup>\n          </Field>\n        </FieldGroup>\n      </CardFooter>\n    </Card>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/shadcn-calendar-time/calendar-time.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/calendar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport {\n  DayPicker,\n  getDefaultClassNames,\n  type DayButton,\n  type Locale,\n} from \"react-day-picker\"\n\nimport { cn } from \"../lib/utils\"\nimport { Button, buttonVariants } from \"./button\"\nimport {\n  ChevronLeftIcon,\n  ChevronRightIcon,\n  ChevronDownIcon,\n} from \"lucide-react\"\n\nfunction Calendar({\n  className,\n  classNames,\n  showOutsideDays = true,\n  captionLayout = \"label\",\n  buttonVariant = \"ghost\",\n  locale,\n  formatters,\n  components,\n  ...props\n}: React.ComponentProps<typeof DayPicker> & {\n  buttonVariant?: React.ComponentProps<typeof Button>[\"variant\"]\n}) {\n  const defaultClassNames = getDefaultClassNames()\n\n  return (\n    <DayPicker\n      showOutsideDays={showOutsideDays}\n      className={cn(\n        \"group/calendar bg-background p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent\",\n        String.raw`rtl:**:[.rdp-button\\_next>svg]:rotate-180`,\n        String.raw`rtl:**:[.rdp-button\\_previous>svg]:rotate-180`,\n        className,\n      )}\n      captionLayout={captionLayout}\n      locale={locale}\n      formatters={{\n        formatMonthDropdown: (date) =>\n          date.toLocaleString(locale?.code, { month: \"short\" }),\n        ...formatters,\n      }}\n      classNames={{\n        root: cn(\"w-fit\", defaultClassNames.root),\n        months: cn(\n          \"relative flex flex-col gap-4 md:flex-row\",\n          defaultClassNames.months,\n        ),\n        month: cn(\"flex w-full flex-col gap-4\", defaultClassNames.month),\n        nav: cn(\n          \"absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1\",\n          defaultClassNames.nav,\n        ),\n        button_previous: cn(\n          buttonVariants({ variant: buttonVariant }),\n          \"size-(--cell-size) p-0 select-none aria-disabled:opacity-50\",\n          defaultClassNames.button_previous,\n        ),\n        button_next: cn(\n          buttonVariants({ variant: buttonVariant }),\n          \"size-(--cell-size) p-0 select-none aria-disabled:opacity-50\",\n          defaultClassNames.button_next,\n        ),\n        month_caption: cn(\n          \"flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)\",\n          defaultClassNames.month_caption,\n        ),\n        dropdowns: cn(\n          \"flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium\",\n          defaultClassNames.dropdowns,\n        ),\n        dropdown_root: cn(\n          \"cn-calendar-dropdown-root relative rounded-(--cell-radius)\",\n          defaultClassNames.dropdown_root,\n        ),\n        dropdown: cn(\n          \"absolute inset-0 bg-popover opacity-0\",\n          defaultClassNames.dropdown,\n        ),\n        caption_label: cn(\n          \"font-medium select-none\",\n          captionLayout === \"label\"\n            ? \"cn-calendar-caption text-sm\"\n            : \"cn-calendar-caption-label flex items-center gap-1 rounded-(--cell-radius) text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground\",\n          defaultClassNames.caption_label,\n        ),\n        month_grid: cn(\"w-full border-collapse\", defaultClassNames.month_grid),\n        weekdays: cn(\"flex\", defaultClassNames.weekdays),\n        weekday: cn(\n          \"flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal text-muted-foreground select-none\",\n          defaultClassNames.weekday,\n        ),\n        week: cn(\"mt-2 flex w-full\", defaultClassNames.week),\n        week_number_header: cn(\n          \"w-(--cell-size) select-none\",\n          defaultClassNames.week_number_header,\n        ),\n        week_number: cn(\n          \"text-[0.8rem] text-muted-foreground select-none\",\n          defaultClassNames.week_number,\n        ),\n        day: cn(\n          \"group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-e-(--cell-radius)\",\n          props.showWeekNumber\n            ? \"[&:nth-child(2)[data-selected=true]_button]:rounded-s-(--cell-radius)\"\n            : \"[&:first-child[data-selected=true]_button]:rounded-s-(--cell-radius)\",\n          defaultClassNames.day,\n        ),\n        range_start: cn(\n          \"relative isolate z-0 rounded-s-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:end-0 after:w-4 after:bg-muted\",\n          defaultClassNames.range_start,\n        ),\n        range_middle: cn(\"rounded-none\", defaultClassNames.range_middle),\n        range_end: cn(\n          \"relative isolate z-0 rounded-e-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:start-0 after:w-4 after:bg-muted\",\n          defaultClassNames.range_end,\n        ),\n        today: cn(\n          \"rounded-(--cell-radius) bg-muted text-foreground data-[selected=true]:rounded-none\",\n          defaultClassNames.today,\n        ),\n        outside: cn(\n          \"text-muted-foreground aria-selected:text-muted-foreground\",\n          defaultClassNames.outside,\n        ),\n        disabled: cn(\n          \"text-muted-foreground opacity-50\",\n          defaultClassNames.disabled,\n        ),\n        hidden: cn(\"invisible\", defaultClassNames.hidden),\n        ...classNames,\n      }}\n      components={{\n        Root: ({ className, rootRef, ...props }) => {\n          return (\n            <div\n              data-slot=\"calendar\"\n              ref={rootRef}\n              className={cn(className)}\n              {...props}\n            />\n          )\n        },\n        Chevron: ({ className, orientation, ...props }) => {\n          if (orientation === \"left\") {\n            return (\n              <ChevronLeftIcon\n                className={cn(\"rtl:rotate-180 size-4\", className)}\n                {...props}\n              />\n            )\n          }\n\n          if (orientation === \"right\") {\n            return (\n              <ChevronRightIcon\n                className={cn(\"rtl:rotate-180 size-4\", className)}\n                {...props}\n              />\n            )\n          }\n\n          return (\n            <ChevronDownIcon className={cn(\"size-4\", className)} {...props} />\n          )\n        },\n        DayButton: ({ ...props }) => (\n          <CalendarDayButton locale={locale} {...props} />\n        ),\n        WeekNumber: ({ children, ...props }) => {\n          return (\n            <td {...props}>\n              <div className=\"flex size-(--cell-size) items-center justify-center text-center\">\n                {children}\n              </div>\n            </td>\n          )\n        },\n        ...components,\n      }}\n      {...props}\n    />\n  )\n}\n\nfunction CalendarDayButton({\n  className,\n  day,\n  modifiers,\n  locale,\n  ...props\n}: React.ComponentProps<typeof DayButton> & { locale?: Partial<Locale> }) {\n  const defaultClassNames = getDefaultClassNames()\n\n  const ref = React.useRef<HTMLButtonElement>(null)\n  React.useEffect(() => {\n    if (modifiers.focused) ref.current?.focus()\n  }, [modifiers.focused])\n\n  return (\n    <Button\n      ref={ref}\n      variant=\"ghost\"\n      size=\"icon\"\n      data-day={day.date.toLocaleDateString(locale?.code)}\n      data-selected-single={\n        modifiers.selected &&\n        !modifiers.range_start &&\n        !modifiers.range_end &&\n        !modifiers.range_middle\n      }\n      data-range-start={modifiers.range_start}\n      data-range-end={modifiers.range_end}\n      data-range-middle={modifiers.range_middle}\n      className={cn(\n        \"relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-e-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-s-(--cell-radius) data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground [&>span]:text-xs [&>span]:opacity-70\",\n        defaultClassNames.day,\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Calendar, CalendarDayButton }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/calendar.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/button.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none motion-reduce:transition-none motion-reduce:transform-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/80\",\n        outline:\n          \"border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground\",\n        ghost:\n          \"hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50\",\n        destructive:\n          \"bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean\n  }) {\n  const Comp = asChild ? Slot.Root : \"button\"\n\n  return (\n    <Comp\n      data-slot=\"button\"\n      data-variant={variant}\n      data-size={size}\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/card.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Card({\n  className,\n  size = \"default\",\n  ...props\n}: React.ComponentProps<\"div\"> & { size?: \"default\" | \"sm\" }) {\n  return (\n    <div\n      data-slot=\"card\"\n      data-size={size}\n      className={cn(\n        \"group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction CardHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-header\"\n      className={cn(\n        \"group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction CardTitle({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-title\"\n      className={cn(\n        \"cn-font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction CardDescription({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-description\"\n      className={cn(\"text-sm text-muted-foreground\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction CardAction({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-action\"\n      className={cn(\n        \"col-start-2 row-span-2 row-start-1 self-start justify-self-end\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction CardContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-content\"\n      className={cn(\"px-(--card-spacing)\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction CardFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"card-footer\"\n      className={cn(\n        \"flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  Card,\n  CardHeader,\n  CardFooter,\n  CardTitle,\n  CardAction,\n  CardDescription,\n  CardContent,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/card.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/field.tsx",
+      "content": "\"use client\"\n\nimport { useMemo } from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"../lib/utils\"\nimport { Label } from \"./label\"\nimport { Separator } from \"./separator\"\n\nfunction FieldSet({ className, ...props }: React.ComponentProps<\"fieldset\">) {\n  return (\n    <fieldset\n      data-slot=\"field-set\"\n      className={cn(\n        \"flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldLegend({\n  className,\n  variant = \"legend\",\n  ...props\n}: React.ComponentProps<\"legend\"> & { variant?: \"legend\" | \"label\" }) {\n  return (\n    <legend\n      data-slot=\"field-legend\"\n      data-variant={variant}\n      className={cn(\n        \"mb-1.5 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"field-group\"\n      className={cn(\n        \"group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nconst fieldVariants = cva(\n  \"group/field flex w-full gap-2 data-[invalid=true]:text-destructive\",\n  {\n    variants: {\n      orientation: {\n        vertical: \"flex-col *:w-full [&>.sr-only]:w-auto\",\n        horizontal:\n          \"flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n        responsive:\n          \"flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px\",\n      },\n    },\n    defaultVariants: {\n      orientation: \"vertical\",\n    },\n  },\n)\n\nfunction Field({\n  className,\n  orientation = \"vertical\",\n  ...props\n}: React.ComponentProps<\"div\"> & VariantProps<typeof fieldVariants>) {\n  return (\n    <div\n      role=\"group\"\n      data-slot=\"field\"\n      data-orientation={orientation}\n      className={cn(fieldVariants({ orientation }), className)}\n      {...props}\n    />\n  )\n}\n\nfunction FieldContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"field-content\"\n      className={cn(\n        \"group/field-content flex flex-1 flex-col gap-0.5 leading-snug\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldLabel({\n  className,\n  ...props\n}: React.ComponentProps<typeof Label>) {\n  return (\n    <Label\n      data-slot=\"field-label\"\n      className={cn(\n        \"group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border *:data-[slot=field]:p-2.5 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10\",\n        \"has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldTitle({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"field-label\"\n      className={cn(\n        \"flex w-fit items-center gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldDescription({ className, ...props }: React.ComponentProps<\"p\">) {\n  return (\n    <p\n      data-slot=\"field-description\"\n      className={cn(\n        \"text-start text-sm leading-normal font-normal text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5\",\n        \"last:mt-0 nth-last-2:-mt-1\",\n        \"[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction FieldSeparator({\n  children,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  children?: React.ReactNode\n}) {\n  return (\n    <div\n      data-slot=\"field-separator\"\n      data-content={!!children}\n      className={cn(\n        \"relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2\",\n        className,\n      )}\n      {...props}\n    >\n      <Separator className=\"absolute inset-0 top-1/2\" />\n      {children && (\n        <span\n          className=\"relative mx-auto block w-fit bg-background px-2 text-muted-foreground\"\n          data-slot=\"field-separator-content\"\n        >\n          {children}\n        </span>\n      )}\n    </div>\n  )\n}\n\nfunction FieldError({\n  className,\n  children,\n  errors,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  errors?: Array<{ message?: string } | undefined>\n}) {\n  const content = useMemo(() => {\n    if (children) {\n      return children\n    }\n\n    if (!errors?.length) {\n      return null\n    }\n\n    const uniqueErrors = [\n      ...new Map(errors.map((error) => [error?.message, error])).values(),\n    ]\n\n    if (uniqueErrors?.length == 1) {\n      return uniqueErrors[0]?.message\n    }\n\n    return (\n      <ul className=\"ms-4 flex list-disc flex-col gap-1\">\n        {uniqueErrors.map(\n          (error, index) =>\n            error?.message && <li key={index}>{error.message}</li>,\n        )}\n      </ul>\n    )\n  }, [children, errors])\n\n  if (!content) {\n    return null\n  }\n\n  return (\n    <div\n      role=\"alert\"\n      data-slot=\"field-error\"\n      className={cn(\"text-sm font-normal text-destructive\", className)}\n      {...props}\n    >\n      {content}\n    </div>\n  )\n}\n\nexport {\n  Field,\n  FieldLabel,\n  FieldDescription,\n  FieldError,\n  FieldGroup,\n  FieldLegend,\n  FieldSeparator,\n  FieldSet,\n  FieldContent,\n  FieldTitle,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/field.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/input-group.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"../lib/utils\"\nimport { Button } from \"./button\"\nimport { Input } from \"./input\"\nimport { Textarea } from \"./textarea\"\n\nfunction InputGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"input-group\"\n      role=\"group\"\n      className={cn(\n        \"group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pe-1.5 has-[>[data-align=inline-start]]:[&>input]:ps-1.5\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nconst inputGroupAddonVariants = cva(\n  \"flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      align: {\n        \"inline-start\":\n          \"order-first ps-2 has-[>button]:ms-[-0.3rem] has-[>kbd]:ms-[-0.15rem]\",\n        \"inline-end\":\n          \"order-last pe-2 has-[>button]:me-[-0.3rem] has-[>kbd]:me-[-0.15rem]\",\n        \"block-start\":\n          \"order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2\",\n        \"block-end\":\n          \"order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2\",\n      },\n    },\n    defaultVariants: {\n      align: \"inline-start\",\n    },\n  },\n)\n\nfunction InputGroupAddon({\n  className,\n  align = \"inline-start\",\n  ...props\n}: React.ComponentProps<\"div\"> & VariantProps<typeof inputGroupAddonVariants>) {\n  return (\n    <div\n      role=\"group\"\n      data-slot=\"input-group-addon\"\n      data-align={align}\n      className={cn(inputGroupAddonVariants({ align }), className)}\n      onClick={(e) => {\n        if ((e.target as HTMLElement).closest(\"button\")) {\n          return\n        }\n        e.currentTarget.parentElement?.querySelector(\"input\")?.focus()\n      }}\n      {...props}\n    />\n  )\n}\n\nconst inputGroupButtonVariants = cva(\n  \"flex items-center gap-2 text-sm shadow-none\",\n  {\n    variants: {\n      size: {\n        xs: \"h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5\",\n        sm: \"\",\n        \"icon-xs\":\n          \"size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0\",\n        \"icon-sm\": \"size-8 p-0 has-[>svg]:p-0\",\n      },\n    },\n    defaultVariants: {\n      size: \"xs\",\n    },\n  },\n)\n\nfunction InputGroupButton({\n  className,\n  type = \"button\",\n  variant = \"ghost\",\n  size = \"xs\",\n  ...props\n}: Omit<React.ComponentProps<typeof Button>, \"size\"> &\n  VariantProps<typeof inputGroupButtonVariants>) {\n  return (\n    <Button\n      type={type}\n      data-size={size}\n      variant={variant}\n      className={cn(inputGroupButtonVariants({ size }), className)}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupText({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      className={cn(\n        \"flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupInput({\n  className,\n  ...props\n}: React.ComponentProps<\"input\">) {\n  return (\n    <Input\n      data-slot=\"input-group-control\"\n      className={cn(\n        \"flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupTextarea({\n  className,\n  ...props\n}: React.ComponentProps<\"textarea\">) {\n  return (\n    <Textarea\n      data-slot=\"input-group-control\"\n      className={cn(\n        \"flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupText,\n  InputGroupInput,\n  InputGroupTextarea,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/input-group.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/input.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Input({ className, type, ...props }: React.ComponentProps<\"input\">) {\n  return (\n    <input\n      type={type}\n      data-slot=\"input\"\n      className={cn(\n        \"h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Input }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/input.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/label.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Label as LabelPrimitive } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Label({\n  className,\n  ...props\n}: React.ComponentProps<typeof LabelPrimitive.Root>) {\n  return (\n    <LabelPrimitive.Root\n      data-slot=\"label\"\n      className={cn(\n        \"flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Label }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/label.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/separator.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Separator as SeparatorPrimitive } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Separator({\n  className,\n  orientation = \"horizontal\",\n  decorative = true,\n  ...props\n}: React.ComponentProps<typeof SeparatorPrimitive.Root>) {\n  return (\n    <SeparatorPrimitive.Root\n      data-slot=\"separator\"\n      decorative={decorative}\n      orientation={orientation}\n      className={cn(\n        \"shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px data-vertical:self-stretch\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Separator }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/separator.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/textarea.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Textarea({ className, ...props }: React.ComponentProps<\"textarea\">) {\n  return (\n    <textarea\n      data-slot=\"textarea\"\n      className={cn(\n        \"flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Textarea }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/textarea.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "calendar",
+        "date",
+        "time-range"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-calendar-time.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/shadcn-calendar-time/calendar-time.tsx",
+            "upstreamPath": "apps/v4/examples/radix/calendar-time.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/calendar-time.tsx",
+            "upstreamSha256": "sha256:962d1181586e53d9bd50b6e9281afdf1ed59a317e6e61e8fb11c4be338378bc8",
+            "contentSha256": "sha256:229f056ed4f9a0fce416b1609d60d5f18517189c8eb0afae5c187e0182a40d2c",
+            "changes": [
+              "Changed generated style imports to bundled relative paths.",
+              "Lifted initial date and time values into props, added optional field names and a date callback, and replaced fixed IDs with useId-generated IDs."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/calendar.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/calendar.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/calendar.tsx",
+            "upstreamSha256": "sha256:5f4275762945548864d0fd73d9f13de587417e5aea3e2815a95a1392c80a026d",
+            "contentSha256": "sha256:f268516e9ff518dca21b2dff7d81a47f7fa166d86ccaf1f6540d168d83e43131",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/button.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+            "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+            "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present.",
+              "Disabled transform transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/card.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/card.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/card.tsx",
+            "upstreamSha256": "sha256:c12b939823f0852f24830ad425247111f9f49e6e565d89cda0db742676d42bc2",
+            "contentSha256": "sha256:07303fefbc3fa04cb519e1db06abb2b18d3bb396dc01dd0154f6f8ee3bd301d7",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/field.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/field.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/field.tsx",
+            "upstreamSha256": "sha256:a11361f3ed68a231905f1dd5d5aac2fd578bce196ee6f161ac74d47b42169fd5",
+            "contentSha256": "sha256:03cad9373c9bf0053c91736a313705c2edbaab6740338702e1c463fdbaacf961",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/input-group.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/input-group.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input-group.tsx",
+            "upstreamSha256": "sha256:c6a2f723b6793d673028016507c0c6307f89c7553f552ea5770a755907cae9b0",
+            "contentSha256": "sha256:1c93ff2e4b68af37057d718eac5a53be27903b2f85341968891e0d1f17ae7919",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/input.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/input.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input.tsx",
+            "upstreamSha256": "sha256:cace577b40968ce734f3b5daf42748e2eab820e380822bfc4e1256b2318135d7",
+            "contentSha256": "sha256:dcf4d0c7e714734d91d70a26d3de2140958ea3751a79c13adbb873cb133352c9",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/label.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/label.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/label.tsx",
+            "upstreamSha256": "sha256:88e7b260887a73d6f311e57a94a9f080151222a360bb98eef547f833d5fe2903",
+            "contentSha256": "sha256:d44a926c7c1bbcd2c37c025ec265ab9825f68f970ebb00fe6f60518a012f6858",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/separator.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/separator.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/separator.tsx",
+            "upstreamSha256": "sha256:7ae98811c81382d00522d5d015d2b76d8f552bfec99446cfc50e80c251e6e3ff",
+            "contentSha256": "sha256:637a56a7819e389948eda592a965105bb147723be6048121d180dbb95c7c0992",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/textarea.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/textarea.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/textarea.tsx",
+            "upstreamSha256": "sha256:f58c44c6898edfc1c533284329efcd83428c5cb4bd2d666213c273852d089dd5",
+            "contentSha256": "sha256:568c2c73abe79ea003e0f16f4c4ed5b20f0c0a0540a4cb68de776e129756aa0c",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/examples/radix/calendar-time.tsx, apps/v4/registry/bases/radix/ui/calendar.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/card.tsx, apps/v4/registry/bases/radix/ui/field.tsx, apps/v4/registry/bases/radix/ui/input-group.tsx, apps/v4/registry/bases/radix/ui/input.tsx, apps/v4/registry/bases/radix/ui/label.tsx, apps/v4/registry/bases/radix/ui/separator.tsx, apps/v4/registry/bases/radix/ui/textarea.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/shadcn-calendar-time/calendar-time.tsx",
+          "change": "Changed generated style imports to bundled relative paths. Lifted initial date and time values into props, added optional field names and a date callback, and replaced fixed IDs with useId-generated IDs.",
+          "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+        },
+        {
+          "shippedPath": "components/radix-nova/calendar.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/button.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/card.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/field.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/input-group.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/input.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/label.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/separator.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/textarea.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+          "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+        }
+      ],
+      "dedupe": {
+        "family": "calendar-date-time-range",
+        "sourceHash": "sha256:6dfb6c902b5efebe365629e1b7b9ca57f9010a4757f655129fa4a02ce300c9ef",
+        "contentHash": "sha256:0485c40fa87d0f822a505afc5a8a53afd5ca6561d83f4ee67f2fc97466c6b313",
+        "structureHash": "sha256:089f3541cf33d2a93d42cd03812bb7c11fb949c35fa7cffd011155068011ca02"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

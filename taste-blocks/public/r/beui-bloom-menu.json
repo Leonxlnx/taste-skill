@@ -1,0 +1,122 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-bloom-menu",
+  "title": "Bloom Menu",
+  "author": "Saurabh Chauhan",
+  "description": "Morphs a compact trigger into a caller-supplied action palette with a radial reveal.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@1.16.0",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-bloom-menu/bloom-menu.tsx",
+      "content": "\"use client\";\n\nimport { Plus, X } from \"lucide-react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport { type ComponentType, useEffect, useId, useRef, useState } from \"react\";\nimport { EASE_OUT } from \"../../lib/taste-blocks/beui/ease\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport type BloomMenuItem = {\n  label: string;\n  icon: ComponentType<{ className?: string }>;\n};\n\n// Folder-open feel: a touch of overshoot as the panel expands, kept subtle.\nconst SPRING_FOLDER = {\n  type: \"spring\",\n  stiffness: 300,\n  damping: 32,\n  mass: 0.9,\n} as const;\n\nexport interface BloomMenuProps {\n  items: BloomMenuItem[];\n  onSelect?: (label: string) => void;\n  label?: string;\n  dialogLabel?: string;\n  className?: string;\n}\n\nexport function BloomMenu({\n  items,\n  onSelect,\n  label = \"Create\",\n  dialogLabel = \"Create item\",\n  className,\n}: BloomMenuProps) {\n  const [open, setOpen] = useState(false);\n  const reduce = useReducedMotion();\n  const layoutId = useId();\n  const contentId = useId();\n  const ref = useRef<HTMLDivElement>(null);\n  const triggerRef = useRef<HTMLButtonElement>(null);\n  const panelRef = useRef<HTMLDivElement>(null);\n  const wasOpen = useRef(false);\n\n  useEffect(() => {\n    if (!open) return;\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key === \"Escape\") setOpen(false);\n    };\n    const onPointer = (e: PointerEvent) => {\n      if (ref.current && !ref.current.contains(e.target as Node))\n        setOpen(false);\n    };\n    window.addEventListener(\"keydown\", onKey);\n    window.addEventListener(\"pointerdown\", onPointer);\n    return () => {\n      window.removeEventListener(\"keydown\", onKey);\n      window.removeEventListener(\"pointerdown\", onPointer);\n    };\n  }, [open]);\n\n  useEffect(() => {\n    let frame = 0;\n    if (open) {\n      wasOpen.current = true;\n      frame = requestAnimationFrame(() => {\n        panelRef.current?.querySelector<HTMLButtonElement>(\"button\")?.focus();\n      });\n    } else if (wasOpen.current) {\n      wasOpen.current = false;\n      frame = requestAnimationFrame(() => triggerRef.current?.focus());\n    }\n    return () => cancelAnimationFrame(frame);\n  }, [open]);\n\n  const morph = reduce ? { duration: 0.15 } : SPRING_FOLDER;\n\n  return (\n    <div ref={ref} className={cn(\"relative inline-flex\", className)}>\n      {/* spacer fixes the anchor to the trigger size */}\n      <div className=\"h-11 w-36\" aria-hidden />\n\n      {/* Centering box sized to the OPEN panel and centered on the trigger.\n          place-items-center only centers an item that fits its cell, so the cell\n          must be as wide as the panel — otherwise the overflow left-anchors and\n          the panel expands rightward. The box is a fixed size per viewport (vw\n          doesn't change mid-animation), so its -translate centering never drifts\n          the way a content-sized wrapper would. Both states share its center, so\n          the morph grows from the middle outward in every direction. */}\n      <div className=\"pointer-events-none absolute left-1/2 top-1/2 z-30 grid h-[300px] w-[min(86vw,420px)] -translate-x-1/2 -translate-y-1/2 place-items-center [&>*]:pointer-events-auto\">\n        {/* popLayout pulls the exiting trigger out of grid flow at once, so the\n            grid never briefly holds two rows and shoves the panel off-center */}\n        <AnimatePresence\n          initial={false}\n          mode=\"popLayout\"\n          onExitComplete={() => {\n            if (!open) {\n              requestAnimationFrame(() =>\n                ref.current\n                  ?.querySelector<HTMLButtonElement>(\n                    'button[aria-haspopup=\"dialog\"]',\n                  )\n                  ?.focus(),\n              );\n            }\n          }}\n        >\n          {open ? (\n            <motion.div\n              key=\"panel\"\n              ref={panelRef}\n              id={contentId}\n              role=\"dialog\"\n              aria-label={dialogLabel}\n              layoutId={layoutId}\n              transition={morph}\n              style={{ borderRadius: 16 }}\n              className=\"w-[min(86vw,420px)] overflow-hidden border border-border bg-card\"\n            >\n              <motion.div\n                // `layout` lets framer undo the box's morph scaling so this\n                // content stays crisp instead of stretching with the resize.\n                layout\n                initial={{ opacity: 0 }}\n                animate={{ opacity: 1 }}\n                transition={{ delay: reduce ? 0 : 0.12, duration: 0.2 }}\n              >\n                {/* header */}\n                <div className=\"flex items-center justify-between border-b border-border px-4 py-3\">\n                  <span className=\"text-sm font-medium text-muted-foreground\">\n                    {label}\n                  </span>\n                  <button\n                    type=\"button\"\n                    autoFocus\n                    onClick={() => setOpen(false)}\n                    aria-label=\"Close menu\"\n                    className=\"rounded-md text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring\"\n                  >\n                    <X className=\"h-4 w-4\" />\n                  </button>\n                </div>\n\n                {/* grid */}\n                <motion.div\n                  // Iris reveal: start as a small box at the grid center and open\n                  // outward to all four corners, so the menu grows from the middle\n                  // in every direction instead of wiping top-down.\n                  initial={\n                    reduce ? false : { clipPath: \"inset(45% 34% 45% 34%)\" }\n                  }\n                  animate={{ clipPath: \"inset(0% 0% 0% 0%)\" }}\n                  transition={{\n                    delay: reduce ? 0 : 0.08,\n                    duration: 0.45,\n                    ease: EASE_OUT,\n                  }}\n                  className=\"grid grid-cols-3\"\n                >\n                  {items.map((item, i) => {\n                    // Radial stagger: delay each item by its distance from the\n                    // grid center so the four corners animate together and the\n                    // open reads as center-out, not corner-by-corner.\n                    const cols = 3;\n                    const rows = Math.ceil(items.length / cols);\n                    const col = i % cols;\n                    const row = Math.floor(i / cols);\n                    const dist = Math.hypot(\n                      col - (cols - 1) / 2,\n                      row - (rows - 1) / 2,\n                    );\n                    return (\n                      <button\n                        key={item.label}\n                        type=\"button\"\n                        onClick={() => {\n                          onSelect?.(item.label);\n                          setOpen(false);\n                        }}\n                        // Static cell with hairline borders (no animated fill) so\n                        // the grid lines never flicker as items stagger in. Only the\n                        // inner content animates.\n                        className={cn(\n                          \"flex items-center justify-center px-3 py-6 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground\",\n                          i % 3 !== 2 && \"border-r border-border\",\n                          i < 3 && \"border-b border-border\",\n                        )}\n                      >\n                        <motion.span\n                          initial={\n                            reduce\n                              ? { opacity: 0 }\n                              : { opacity: 0, scale: 0.85, filter: \"blur(6px)\" }\n                          }\n                          animate={{\n                            opacity: 1,\n                            scale: 1,\n                            filter: \"blur(0px)\",\n                          }}\n                        transition={{\n                          delay: reduce ? 0 : 0.1 + dist * 0.07,\n                          type: \"spring\",\n                          stiffness: 440,\n                          damping: 34,\n                          filter: {\n                            delay: reduce ? 0 : 0.1 + dist * 0.07,\n                            duration: 0.18,\n                            ease: EASE_OUT,\n                          },\n                        }}\n                          className=\"flex flex-col items-center gap-2\"\n                        >\n                          <span aria-hidden=\"true\">\n                            <item.icon className=\"h-5 w-5\" />\n                          </span>\n                          <span className=\"text-sm font-medium\">\n                            {item.label}\n                          </span>\n                        </motion.span>\n                      </button>\n                    );\n                  })}\n                </motion.div>\n              </motion.div>\n            </motion.div>\n          ) : (\n            <motion.button\n              key=\"trigger\"\n              ref={triggerRef}\n              autoFocus={wasOpen.current}\n              type=\"button\"\n              layoutId={layoutId}\n              transition={morph}\n              style={{ borderRadius: 16 }}\n              onClick={() => setOpen(true)}\n              aria-haspopup=\"dialog\"\n              aria-expanded={open}\n              aria-controls={open ? contentId : undefined}\n              whileTap={reduce ? undefined : { scale: 0.97 }}\n              className=\"inline-flex h-11 w-36 items-center justify-center border border-border bg-card text-sm font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\"\n            >\n              {/* own `layout` counter-scales the label so it stays crisp while the\n                  button box morphs, instead of stretching with it */}\n              <motion.span\n                layout\n                className=\"inline-flex items-center gap-2 whitespace-nowrap\"\n              >\n                {label}\n                <Plus className=\"h-4 w-4\" />\n              </motion.span>\n            </motion.button>\n          )}\n        </AnimatePresence>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-bloom-menu.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "menu",
+        "morph",
+        "palette",
+        "focus",
+        "responsive"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-bloom-menu.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-bloom-menu/bloom-menu.tsx",
+            "upstreamPath": "components/motion/bloom-menu.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/bloom-menu.tsx",
+            "upstreamSha256": "sha256:061e32209fae92335ffe2cf7636aa6ee9994f043ec347b4da867921c13d1dc79",
+            "contentSha256": "sha256:2c40a5542c00cef18e081ac472ee760ffe5b14c8c202aca3055d6060337126bd",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Removed upstream demo items and their icons from runtime; callers now supply every action.",
+              "Added configurable labels, dialog semantics, explicit focus entry and exit-complete restoration, controls linkage, hidden decorative icons, and visible focus styles.",
+              "Moved item blur interpolation off the spring to prevent invalid negative blur values."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/bloom-menu.tsx, lib/ease.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-bloom-menu/bloom-menu.tsx",
+          "change": "Repointed shared imports, removed embedded demo content, completed focus and dialog behavior, and bounded blur interpolation.",
+          "reason": "Ship a reusable component rather than source-owned sample data while keeping keyboard users inside a clear interaction flow."
+        }
+      ],
+      "dedupe": {
+        "family": "morphing-action-palette",
+        "sourceHash": "sha256:2bec72a9646bc5f0583de65550182d8cb74f5da0c204462ba902f18b5cb83df2",
+        "contentHash": "sha256:3006971723264f27fe40c7ea277ddc2d5a2cc62a6812112f722c37012f3eb2b4",
+        "structureHash": "sha256:9efac899783291c5c9b11837c7580beab514ed511fa66e97b962e1729dc69c67"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

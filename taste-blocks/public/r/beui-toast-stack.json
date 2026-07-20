@@ -1,0 +1,122 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-toast-stack",
+  "title": "Animated Toast Stack",
+  "author": "Saurabh Chauhan",
+  "description": "Manages status-changing notices with actions, timed cleanup, swipe dismissal, and optional portals.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@1.16.0",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-toast-stack/toast-stack.tsx",
+      "content": "\"use client\";\n\nimport {\n  AlertCircle,\n  Bell,\n  Check,\n  Info,\n  LoaderCircle,\n  X,\n  type LucideIcon,\n} from \"lucide-react\";\nimport {\n  AnimatePresence,\n  motion,\n  useReducedMotion,\n  type Transition,\n} from \"motion/react\";\nimport {\n  memo,\n  useCallback,\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n  type ReactNode,\n} from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { EASE_OUT } from \"../../lib/taste-blocks/beui/ease\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport type ToastStatus = \"neutral\" | \"info\" | \"loading\" | \"success\" | \"error\";\nexport type ToastPosition =\n  | \"top-left\"\n  | \"top-center\"\n  | \"top-right\"\n  | \"bottom-left\"\n  | \"bottom-center\"\n  | \"bottom-right\";\n\nexport type AnimatedToastAction = {\n  label: ReactNode;\n  onClick: (toast: AnimatedToast) => void;\n};\n\nexport type AnimatedToast = {\n  id: string;\n  title: ReactNode;\n  description?: ReactNode;\n  status?: ToastStatus;\n  icon?: ReactNode;\n  action?: AnimatedToastAction;\n  duration?: number;\n  dismissible?: boolean;\n  createdAt?: number;\n};\n\nexport type ToastInput = Omit<AnimatedToast, \"id\" | \"createdAt\"> & {\n  id?: string;\n};\n\nexport type ToastClassNames = {\n  root?: string;\n  item?: string;\n  surface?: string;\n  iconWrap?: string;\n  content?: string;\n  title?: string;\n  description?: string;\n  action?: string;\n  close?: string;\n  progress?: string;\n};\n\nexport interface AnimatedToastStackProps {\n  toasts: AnimatedToast[];\n  onDismiss?: (id: string) => void;\n  position?: ToastPosition;\n  placement?: \"static\" | \"fixed\" | \"absolute\";\n  fixed?: boolean;\n  portal?: boolean;\n  portalRoot?: Element | null;\n  maxVisible?: number;\n  className?: string;\n  classNames?: ToastClassNames;\n  icons?: Partial<Record<ToastStatus, ReactNode>>;\n  renderToast?: (toast: AnimatedToast) => ReactNode;\n}\n\nexport interface UseAnimatedToastStackOptions {\n  initialToasts?: ToastInput[];\n  defaultDuration?: number;\n  limit?: number;\n}\n\nconst STACK_SPRING: Transition = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 34,\n  mass: 0.75,\n};\n\nconst CONTENT_TRANSITION = {\n  duration: 0.28,\n  ease: EASE_OUT,\n} as const;\n\nconst STATUS_ICON: Record<ToastStatus, LucideIcon> = {\n  neutral: Bell,\n  info: Info,\n  loading: LoaderCircle,\n  success: Check,\n  error: AlertCircle,\n};\n\nconst STATUS_CLASS: Record<ToastStatus, string> = {\n  neutral: \"text-muted-foreground bg-primary/[0.05]\",\n  info: \"text-primary bg-primary/10\",\n  loading: \"text-primary bg-primary/10\",\n  success: \"text-emerald-600 bg-emerald-500/10 dark:text-emerald-400\",\n  error: \"text-destructive bg-destructive/10\",\n};\n\nconst POSITION_CLASS: Record<ToastPosition, string> = {\n  \"top-left\": \"left-4 top-4\",\n  \"top-center\": \"left-1/2 top-4 -translate-x-1/2\",\n  \"top-right\": \"right-4 top-4\",\n  \"bottom-left\": \"bottom-6 left-4\",\n  \"bottom-center\": \"bottom-6 left-1/2 -translate-x-1/2\",\n  \"bottom-right\": \"bottom-6 right-4\",\n};\n\nlet idSeed = 0;\n\nfunction createToast(\n  input: ToastInput,\n  defaultDuration: number,\n): AnimatedToast {\n  return {\n    duration: defaultDuration,\n    dismissible: true,\n    ...input,\n    id: input.id ?? `toast-${Date.now()}-${idSeed++}`,\n    createdAt: Date.now(),\n  };\n}\n\nexport function useAnimatedToastStack({\n  initialToasts = [],\n  defaultDuration = 4200,\n  limit,\n}: UseAnimatedToastStackOptions = {}) {\n  const toastTimers = useRef<Map<string, { timer: number; signature: string }>>(\n    new Map(),\n  );\n  const [toasts, setToasts] = useState<AnimatedToast[]>(() =>\n    initialToasts.map((toast) => createToast(toast, defaultDuration)),\n  );\n\n  const dismissToast = useCallback((id: string) => {\n    setToasts((current) => current.filter((toast) => toast.id !== id));\n  }, []);\n\n  const clearToasts = useCallback(() => {\n    setToasts([]);\n  }, []);\n\n  const showToast = useCallback(\n    (input: ToastInput) => {\n      const toast = createToast(input, defaultDuration);\n      setToasts((current) => {\n        const next = [...current, toast];\n        return typeof limit === \"number\" ? next.slice(-limit) : next;\n      });\n      return toast.id;\n    },\n    [defaultDuration, limit],\n  );\n\n  const updateToast = useCallback((id: string, patch: Partial<ToastInput>) => {\n    setToasts((current) =>\n      current.map((toast) =>\n        toast.id === id\n          ? {\n              ...toast,\n              ...patch,\n              id,\n              createdAt:\n                patch.duration === undefined ? toast.createdAt : Date.now(),\n            }\n          : toast,\n      ),\n    );\n  }, []);\n\n  useEffect(() => {\n    const activeIds = new Set(toasts.map((toast) => toast.id));\n\n    toastTimers.current.forEach((entry, id) => {\n      if (!activeIds.has(id)) {\n        window.clearTimeout(entry.timer);\n        toastTimers.current.delete(id);\n      }\n    });\n\n    toasts.forEach((toast) => {\n      const duration = toast.duration ?? defaultDuration;\n      const existing = toastTimers.current.get(toast.id);\n\n      if (duration <= 0) {\n        if (existing) {\n          window.clearTimeout(existing.timer);\n          toastTimers.current.delete(toast.id);\n        }\n        return;\n      }\n\n      const createdAt = toast.createdAt ?? Date.now();\n      const signature = `${createdAt}:${duration}`;\n\n      if (existing?.signature === signature) {\n        return;\n      }\n\n      if (existing) {\n        window.clearTimeout(existing.timer);\n      }\n\n      const elapsed = Date.now() - createdAt;\n      const remaining = Math.max(duration - elapsed, 0);\n      const timer = window.setTimeout(() => {\n        toastTimers.current.delete(toast.id);\n        dismissToast(toast.id);\n      }, remaining);\n\n      toastTimers.current.set(toast.id, { timer, signature });\n    });\n  }, [defaultDuration, dismissToast, toasts]);\n\n  useEffect(() => {\n    const timers = toastTimers.current;\n\n    return () => {\n      timers.forEach((entry) => {\n        window.clearTimeout(entry.timer);\n      });\n      timers.clear();\n    };\n  }, []);\n\n  return useMemo(\n    () => ({\n      toasts,\n      showToast,\n      updateToast,\n      dismissToast,\n      clearToasts,\n      setToasts,\n    }),\n    [clearToasts, dismissToast, showToast, toasts, updateToast],\n  );\n}\n\nexport function AnimatedToastStack({\n  toasts,\n  onDismiss,\n  position = \"bottom-right\",\n  placement,\n  fixed = false,\n  portal,\n  portalRoot,\n  maxVisible = 4,\n  className,\n  classNames,\n  icons,\n  renderToast,\n}: AnimatedToastStackProps) {\n  const [portalTarget, setPortalTarget] = useState<Element | null>(null);\n  const visibleToasts = maxVisible > 0 ? toasts.slice(-maxVisible) : [];\n  const isBottom = position.startsWith(\"bottom\");\n  const resolvedPlacement = placement ?? (fixed ? \"fixed\" : \"static\");\n  const shouldPortal = portal ?? resolvedPlacement === \"fixed\";\n\n  useEffect(() => {\n    setPortalTarget(shouldPortal ? (portalRoot ?? document.body) : null);\n  }, [portalRoot, shouldPortal]);\n\n  const stack = (\n    <ol\n      aria-live=\"polite\"\n      aria-atomic=\"false\"\n      className={cn(\n        \"pointer-events-none flex w-[calc(100vw-2rem)] max-w-sm gap-2\",\n        isBottom ? \"flex-col-reverse\" : \"flex-col\",\n        resolvedPlacement === \"fixed\" && \"fixed z-[90]\",\n        resolvedPlacement === \"absolute\" && \"absolute z-20\",\n        resolvedPlacement !== \"static\" && POSITION_CLASS[position],\n        classNames?.root,\n        className,\n      )}\n    >\n      <AnimatePresence initial={false} mode=\"popLayout\">\n        {visibleToasts.map((toast, index) => (\n          <ToastItem\n            key={toast.id}\n            toast={toast}\n            index={index}\n            onDismiss={onDismiss}\n            classNames={classNames}\n            icons={icons}\n            renderToast={renderToast}\n          />\n        ))}\n      </AnimatePresence>\n    </ol>\n  );\n\n  if (shouldPortal && !portalTarget) {\n    return null;\n  }\n\n  if (shouldPortal && portalTarget) {\n    return createPortal(stack, portalTarget);\n  }\n\n  return stack;\n}\n\nconst ToastItem = memo(function ToastItem({\n  toast,\n  index,\n  onDismiss,\n  classNames,\n  icons,\n  renderToast,\n}: {\n  toast: AnimatedToast;\n  index: number;\n  onDismiss?: (id: string) => void;\n  classNames?: ToastClassNames;\n  icons?: Partial<Record<ToastStatus, ReactNode>>;\n  renderToast?: (toast: AnimatedToast) => ReactNode;\n}) {\n  const reduce = useReducedMotion();\n  const status = toast.status ?? \"neutral\";\n  const Icon = STATUS_ICON[status];\n  const iconNode = icons?.[status] ?? toast.icon ?? (\n    <Icon className=\"h-3.5 w-3.5\" />\n  );\n  const canDismiss = toast.dismissible !== false && Boolean(onDismiss);\n\n  return (\n    <motion.li\n      layout={!reduce}\n      initial={\n        reduce\n          ? { opacity: 0 }\n          : { opacity: 0, y: 22, scale: 0.96, filter: \"blur(10px)\" }\n      }\n      animate={\n        reduce\n          ? { opacity: 1 }\n          : { opacity: 1, y: 0, scale: 1, filter: \"blur(0px)\" }\n      }\n      exit={\n        reduce\n          ? { opacity: 0 }\n          : {\n              opacity: 0,\n              x: 32,\n              scale: 0.96,\n              filter: \"blur(8px)\",\n              transition: { duration: 0.18, ease: EASE_OUT },\n            }\n      }\n      transition={\n        reduce\n          ? { duration: 0 }\n          : {\n              ...STACK_SPRING,\n              filter: { duration: 0.22, ease: EASE_OUT },\n              opacity: { duration: 0.18, ease: EASE_OUT },\n            }\n      }\n      drag={canDismiss && !reduce ? \"x\" : false}\n      dragConstraints={{ left: 0, right: 0 }}\n      dragElastic={0.18}\n      onDragEnd={(_, info) => {\n        if (!canDismiss || !onDismiss) return;\n        if (Math.abs(info.offset.x) > 72 || Math.abs(info.velocity.x) > 520) {\n          onDismiss(toast.id);\n        }\n      }}\n      className={cn(\n        \"pointer-events-auto relative will-change-transform\",\n        classNames?.item,\n      )}\n      style={{ zIndex: 20 - index }}\n    >\n      <div\n        className={cn(\n          \"relative overflow-hidden rounded-2xl border border-border bg-card/95 p-3 shadow-2xl backdrop-blur-xl\",\n          classNames?.surface,\n        )}\n      >\n        {renderToast ? (\n          renderToast(toast)\n        ) : (\n          <div className=\"flex items-start gap-3\">\n            <motion.span\n              layout\n              className={cn(\n                \"mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full\",\n                STATUS_CLASS[status],\n                classNames?.iconWrap,\n              )}\n            >\n              <AnimatePresence mode=\"popLayout\" initial={false}>\n                <motion.span\n                  key={status}\n                  initial={\n                    reduce\n                      ? { opacity: 0 }\n                      : { opacity: 0, y: 8, scale: 0.8, filter: \"blur(6px)\" }\n                  }\n                  animate={\n                    reduce\n                      ? { opacity: 1 }\n                      : { opacity: 1, y: 0, scale: 1, filter: \"blur(0px)\" }\n                  }\n                  exit={\n                    reduce\n                      ? { opacity: 0 }\n                      : { opacity: 0, y: -8, scale: 0.9, filter: \"blur(6px)\" }\n                  }\n                  transition={CONTENT_TRANSITION}\n                  className=\"inline-flex\"\n                >\n                  {status === \"loading\" ? (\n                    <span className=\"inline-flex motion-safe:animate-spin\">\n                      {iconNode}\n                    </span>\n                  ) : (\n                    iconNode\n                  )}\n                </motion.span>\n              </AnimatePresence>\n            </motion.span>\n\n            <div className={cn(\"min-w-0 flex-1\", classNames?.content)}>\n              <AnimatePresence mode=\"popLayout\" initial={false}>\n                <motion.div\n                  key={`${toast.id}-${status}-${String(toast.title)}`}\n                  initial={\n                    reduce\n                      ? { opacity: 0 }\n                      : { opacity: 0, y: 8, filter: \"blur(6px)\" }\n                  }\n                  animate={\n                    reduce\n                      ? { opacity: 1 }\n                      : { opacity: 1, y: 0, filter: \"blur(0px)\" }\n                  }\n                  exit={\n                    reduce\n                      ? { opacity: 0 }\n                      : { opacity: 0, y: -8, filter: \"blur(6px)\" }\n                  }\n                  transition={CONTENT_TRANSITION}\n                >\n                  <p\n                    className={cn(\n                      \"truncate text-sm font-medium leading-5 text-foreground\",\n                      classNames?.title,\n                    )}\n                  >\n                    {toast.title}\n                  </p>\n                  {toast.description ? (\n                    <p\n                      className={cn(\n                        \"mt-0.5 line-clamp-2 text-xs leading-4 text-muted-foreground\",\n                        classNames?.description,\n                      )}\n                    >\n                      {toast.description}\n                    </p>\n                  ) : null}\n                </motion.div>\n              </AnimatePresence>\n\n              {toast.action ? (\n                <button\n                  type=\"button\"\n                  onClick={() => toast.action?.onClick(toast)}\n                  className={cn(\n                    \"mt-2 inline-flex h-7 items-center rounded-full bg-primary/[0.06] px-3 text-xs font-medium text-foreground transition-colors hover:bg-primary/[0.1]\",\n                    classNames?.action,\n                  )}\n                >\n                  {toast.action.label}\n                </button>\n              ) : null}\n            </div>\n\n            {canDismiss ? (\n              <button\n                type=\"button\"\n                onClick={() => onDismiss?.(toast.id)}\n                aria-label=\"Dismiss toast\"\n                className={cn(\n                  \"inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/[0.06] hover:text-foreground\",\n                  classNames?.close,\n                )}\n              >\n                <X className=\"h-3.5 w-3.5\" />\n              </button>\n            ) : null}\n          </div>\n        )}\n      </div>\n    </motion.li>\n  );\n});\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-toast-stack.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "toast",
+        "status",
+        "swipe",
+        "portal",
+        "reduced-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-toast-stack.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-toast-stack/toast-stack.tsx",
+            "upstreamPath": "components/motion/animated-toast-stack.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/animated-toast-stack.tsx",
+            "upstreamSha256": "sha256:eb7c0efbc0535042220849c51b536835cc46d9e536168f0164e6c2c40c9cba1d",
+            "contentSha256": "sha256:70a8157379b5d87f6a1fd4715d3d2d920089c96f1a380b895e8728cfbc5eba5a",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Made non-positive maxVisible values render no notices.",
+              "Disabled layout motion and CSS spinner rotation when reduced motion is requested.",
+              "Moved filter and opacity interpolation off the spring to prevent invalid negative blur values."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/animated-toast-stack.tsx, lib/ease.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-toast-stack/toast-stack.tsx",
+          "change": "Repointed shared imports and closed reduced-motion, visibility, and filter interpolation edge cases.",
+          "reason": "Keep the copied stack portable and ensure its motion preference applies to layout and loading indicators."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-status-toast-stack",
+        "sourceHash": "sha256:cd05cd1cacb53e50f8dffc5c15e5c1d1254d96936c5a17b7d89d7e9f5eaf441b",
+        "contentHash": "sha256:8f451605c916de2e28b296ebc99d97d0d8eeebf6603dd77a4f2de47a035d3462",
+        "structureHash": "sha256:89e5dfb275138d49f55cf002e700b8b05b0767a1b763a5c7cc30fbfd120629a5"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

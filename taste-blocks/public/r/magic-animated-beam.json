@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-animated-beam",
+  "title": "Animated Beam",
+  "author": "Magic UI",
+  "description": "Draws a measured SVG connection between two referenced elements.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.23.26",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-animated-beam/animated-beam.tsx",
+      "content": "\"use client\"\n\nimport { useEffect, useId, useState, type RefObject } from \"react\"\nimport { motion, useReducedMotion } from \"motion/react\"\n\nimport { cn } from \"../../lib/utils\"\n\nexport interface AnimatedBeamProps {\n  className?: string\n  containerRef: RefObject<HTMLElement | null> // Container ref\n  fromRef: RefObject<HTMLElement | null>\n  toRef: RefObject<HTMLElement | null>\n  curvature?: number\n  reverse?: boolean\n  pathColor?: string\n  pathWidth?: number\n  pathOpacity?: number\n  gradientStartColor?: string\n  gradientStopColor?: string\n  delay?: number\n  duration?: number\n  repeat?: number\n  repeatDelay?: number\n  startXOffset?: number\n  startYOffset?: number\n  endXOffset?: number\n  endYOffset?: number\n}\n\nexport const AnimatedBeam: React.FC<AnimatedBeamProps> = ({\n  className,\n  containerRef,\n  fromRef,\n  toRef,\n  curvature = 0,\n  reverse = false, // Include the reverse prop\n  duration = 5,\n  delay = 0,\n  pathColor = \"gray\",\n  pathWidth = 2,\n  pathOpacity = 0.2,\n  gradientStartColor = \"#ffaa40\",\n  gradientStopColor = \"#9c40ff\",\n  repeat = 0,\n  repeatDelay = 0,\n  startXOffset = 0,\n  startYOffset = 0,\n  endXOffset = 0,\n  endYOffset = 0,\n}) => {\n  const id = useId()\n  const shouldReduceMotion = useReducedMotion()\n  const [pathD, setPathD] = useState(\"\")\n  const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 })\n\n  // Calculate the gradient coordinates based on the reverse prop\n  const gradientCoordinates = reverse\n    ? {\n        x1: [\"90%\", \"-10%\"],\n        x2: [\"100%\", \"0%\"],\n        y1: [\"0%\", \"0%\"],\n        y2: [\"0%\", \"0%\"],\n      }\n    : {\n        x1: [\"10%\", \"110%\"],\n        x2: [\"0%\", \"100%\"],\n        y1: [\"0%\", \"0%\"],\n        y2: [\"0%\", \"0%\"],\n      }\n\n  useEffect(() => {\n    const updatePath = () => {\n      if (containerRef.current && fromRef.current && toRef.current) {\n        const containerRect = containerRef.current.getBoundingClientRect()\n        const rectA = fromRef.current.getBoundingClientRect()\n        const rectB = toRef.current.getBoundingClientRect()\n\n        const svgWidth = containerRect.width\n        const svgHeight = containerRect.height\n        setSvgDimensions({ width: svgWidth, height: svgHeight })\n\n        const startX =\n          rectA.left - containerRect.left + rectA.width / 2 + startXOffset\n        const startY =\n          rectA.top - containerRect.top + rectA.height / 2 + startYOffset\n        const endX =\n          rectB.left - containerRect.left + rectB.width / 2 + endXOffset\n        const endY =\n          rectB.top - containerRect.top + rectB.height / 2 + endYOffset\n\n        const controlY = startY - curvature\n        const d = `M ${startX},${startY} Q ${\n          (startX + endX) / 2\n        },${controlY} ${endX},${endY}`\n        setPathD(d)\n      }\n    }\n\n    // Initialize ResizeObserver\n    const resizeObserver = new ResizeObserver(() => {\n      updatePath()\n    })\n\n    // Observe the container element\n    if (containerRef.current) {\n      resizeObserver.observe(containerRef.current)\n    }\n\n    // Call the updatePath initially to set the initial path\n    updatePath()\n\n    // Clean up the observer on component unmount\n    return () => {\n      resizeObserver.disconnect()\n    }\n  }, [\n    containerRef,\n    fromRef,\n    toRef,\n    curvature,\n    startXOffset,\n    startYOffset,\n    endXOffset,\n    endYOffset,\n  ])\n\n  return (\n    <svg\n      aria-hidden=\"true\"\n      focusable=\"false\"\n      fill=\"none\"\n      width={svgDimensions.width}\n      height={svgDimensions.height}\n      xmlns=\"http://www.w3.org/2000/svg\"\n      className={cn(\n        \"pointer-events-none absolute top-0 left-0 transform-gpu stroke-2\",\n        className\n      )}\n      viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}\n    >\n      <path\n        d={pathD}\n        stroke={pathColor}\n        strokeWidth={pathWidth}\n        strokeOpacity={pathOpacity}\n        strokeLinecap=\"round\"\n      />\n      <path\n        d={pathD}\n        strokeWidth={pathWidth}\n        stroke={`url(#${id})`}\n        strokeOpacity=\"1\"\n        strokeLinecap=\"round\"\n      />\n      <defs>\n        <motion.linearGradient\n          className=\"transform-gpu\"\n          id={id}\n          gradientUnits={\"userSpaceOnUse\"}\n          initial={\n            shouldReduceMotion\n              ? false\n              : {\n                  x1: \"0%\",\n                  x2: \"0%\",\n                  y1: \"0%\",\n                  y2: \"0%\",\n                }\n          }\n          animate={\n            shouldReduceMotion\n              ? { x1: \"0%\", x2: \"100%\", y1: \"0%\", y2: \"0%\" }\n              : {\n                  x1: gradientCoordinates.x1,\n                  x2: gradientCoordinates.x2,\n                  y1: gradientCoordinates.y1,\n                  y2: gradientCoordinates.y2,\n                }\n          }\n          transition={\n            shouldReduceMotion\n              ? { duration: 0 }\n              : {\n                  delay,\n                  duration,\n                  ease: [0.16, 1, 0.3, 1], // https://easings.net/#easeOutExpo\n                  repeat,\n                  repeatDelay,\n                }\n          }\n        >\n          <stop stopColor={gradientStartColor} stopOpacity=\"0\"></stop>\n          <stop stopColor={gradientStartColor}></stop>\n          <stop offset=\"32.5%\" stopColor={gradientStopColor}></stop>\n          <stop\n            offset=\"100%\"\n            stopColor={gradientStopColor}\n            stopOpacity=\"0\"\n          ></stop>\n        </motion.linearGradient>\n      </defs>\n    </svg>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animated-beam.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "connection",
+        "flow",
+        "svg",
+        "refs"
+      ],
+      "renderer": "svg",
+      "preview": "previews/magic-animated-beam.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-animated-beam/animated-beam.tsx",
+            "upstreamPath": "apps/www/registry/magicui/animated-beam.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/animated-beam.tsx",
+            "upstreamSha256": "sha256:6afa2ee1d01694a428eb8517d48deebe5c6b532dc0ee871800bb9d92aae43e79",
+            "contentSha256": "sha256:04dcdfa4e4e19bb27bdb128339ce64807a0c8dbae75f61a214418f75c0e46005",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "Made the default animation run once, added a reduced-motion static gradient, and marked the visual SVG as decorative."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/animated-beam.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-animated-beam/animated-beam.tsx",
+          "change": "Repointed the bundled utility import, stopped infinite motion by default, added the static reduced-motion state, and hid the visual path from assistive technology.",
+          "reason": "Preserve the connection visual without a decorative perpetual loop or duplicate screen-reader content."
+        }
+      ],
+      "dedupe": {
+        "family": "svg-connection-beam",
+        "sourceHash": "sha256:6e3e8e9c610764bbec34ad1aa9f10a3103b1d7dc11ee5282086a6e541e45a2e7",
+        "contentHash": "sha256:fb971e6346ac3b00f62d3b04758b38419463dba747fc2bae2be29e881d839f83",
+        "structureHash": "sha256:07d3589e87735601ff3b9dab7dbbc0194b97f64f892d8c23a6c481047d45f81a"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-headphones",
+  "title": "Animated Headphones Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated headphones SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-headphones/headphones-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface HeadphonesIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface HeadphonesIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst HeadphonesIcon = forwardRef<HeadphonesIconHandle, HeadphonesIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () =>\n     !isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n    stopAnimation: () => controls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) controls.start(\"animate\");\n    else onMouseEnter?.(e as any);\n   },\n   [controls, reduced, isAnimated, onMouseEnter],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) controls.start(\"normal\");\n    else onMouseLeave?.(e as any);\n   },\n   [controls, onMouseLeave],\n  );\n\n  const headphonesVariants: Variants = {\n   normal: { rotate: 0, scale: 1 },\n   animate: {\n    scale: [1, 1.1, 0.95, 1],\n    rotate: [0, -3, 3, -2, 0],\n    transition: { duration: 1.2 * duration, ease: \"easeInOut\", repeat: 0 },\n   },\n  };\n\n  const earcupVariants: Variants = {\n   normal: { scale: 1, opacity: 1 },\n   animate: {\n    scale: [1, 1.2, 0.9, 1],\n    opacity: [1, 0.7, 1],\n    transition: { duration: 0.9 * duration, ease: \"easeInOut\", repeat: 0 },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      animate={controls}\n      initial=\"normal\"\n      variants={headphonesVariants}\n     >\n      <m.path\n       d=\"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2\n\t            2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2\n\t            2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2\n\t            2 0 0 1 2-2h3\"\n       variants={earcupVariants}\n      />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nHeadphonesIcon.displayName = \"HeadphonesIcon\";\nexport { HeadphonesIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-headphones.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "headphones",
+        "animated",
+        "icon",
+        "motion",
+        "music",
+        "audio",
+        "listen",
+        "sound",
+        "device"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-headphones.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-headphones/headphones-icon.tsx",
+            "upstreamPath": "icons/lucide/headphones-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/headphones-icon.tsx",
+            "upstreamSha256": "sha256:32a988ad5157548b7923b2ef1a4e1c46269e8061a4b2c2e96f634bb9ee71022f",
+            "contentSha256": "sha256:aa3e6a28b706423fa74d5f5212bae7450c65b5b495fe593ea7e99940665d7654",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+              "Removed upstream-authored trailing spaces as a purely mechanical whitespace normalization with no rendered SVG change."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/headphones-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-headphones/headphones-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences. Removed upstream-authored trailing spaces as a purely mechanical whitespace normalization with no rendered SVG change.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias, ensure controlled animation honors explicit disablement and reduced-motion preferences, and normalize upstream trailing whitespace without changing rendered SVG output."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-headphones-icon",
+        "sourceHash": "sha256:43bb4ef8e528213d11881d03f0f3f063a9adf83eef0d353146b5dcc6d4a9da76",
+        "contentHash": "sha256:04a92f3ecdbad00d373c7b7ea5f14de46ae32738d9fea1dafefe6c625c59261e",
+        "structureHash": "sha256:08fcefea78088e7e58372ba5559878bd67f9f373777a38b4169f0fff4aa6e1d8",
+        "glyph": {
+          "inventoryName": "headphones",
+          "canonicalName": "headphones",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

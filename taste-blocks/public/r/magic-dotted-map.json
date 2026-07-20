@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-dotted-map",
+  "title": "Dotted Map",
+  "author": "Magic UI",
+  "description": "Generates a responsive dotted world map with optional markers and overlays.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "svg-dotted-map@2.0.1",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-dotted-map/dotted-map.tsx",
+      "content": "import * as React from \"react\"\nimport { createMap } from \"svg-dotted-map\"\n\nimport { cn } from \"../../lib/utils\"\n\nexport interface Marker {\n  lat: number\n  lng: number\n  size?: number\n  pulse?: boolean\n}\n\n/** addMarkers returns markers with lat/lng removed; only x, y and other props (e.g. size) remain */\ntype MapMarker<M extends Marker> = Omit<M, \"lat\" | \"lng\"> & {\n  x: number\n  y: number\n}\n\nexport interface DottedMapProps<\n  M extends Marker = Marker,\n> extends React.SVGProps<SVGSVGElement> {\n  width?: number\n  height?: number\n  mapSamples?: number\n  markers?: M[]\n  dotColor?: string\n  markerColor?: string\n  dotRadius?: number\n  stagger?: boolean\n  pulse?: boolean\n\n  renderMarkerOverlay?: (args: {\n    marker: MapMarker<M>\n    index: number\n    x: number\n    y: number\n    r: number\n  }) => React.ReactNode\n}\n\nexport function DottedMap<M extends Marker = Marker>({\n  width = 150,\n  height = 75,\n  mapSamples = 5000,\n  markers = [],\n  dotColor = \"currentColor\",\n  markerColor = \"#FF6900\",\n  dotRadius = 0.2,\n  stagger = true,\n  pulse = false,\n  renderMarkerOverlay,\n  className,\n  style,\n  ...svgProps\n}: DottedMapProps<M>) {\n  const { points, addMarkers } = React.useMemo(\n    () => createMap({ width, height, mapSamples }),\n    [width, height, mapSamples]\n  )\n  const processedMarkers = addMarkers(markers)\n\n  // Compute stagger helpers in a single, simple pass\n  const { xStep, yToRowIndex } = React.useMemo(() => {\n    const sorted = [...points].sort((a, b) => a.y - b.y || a.x - b.x)\n    const rowMap = new Map<number, number>()\n    let step = 0\n    let prevY = Number.NaN\n    let prevXInRow = Number.NaN\n\n    for (const p of sorted) {\n      if (p.y !== prevY) {\n        // new row\n        prevY = p.y\n        prevXInRow = Number.NaN\n        if (!rowMap.has(p.y)) rowMap.set(p.y, rowMap.size)\n      }\n      if (!Number.isNaN(prevXInRow)) {\n        const delta = p.x - prevXInRow\n        if (delta > 0) step = step === 0 ? delta : Math.min(step, delta)\n      }\n      prevXInRow = p.x\n    }\n\n    return { xStep: step || 1, yToRowIndex: rowMap }\n  }, [points])\n\n  return (\n    <svg\n      viewBox={`0 0 ${width} ${height}`}\n      className={cn(\"text-gray-500 dark:text-gray-500\", className)}\n      style={{ width: \"100%\", height: \"100%\", ...style }}\n      {...svgProps}\n    >\n      {points.map((point, index) => {\n        const rowIndex = yToRowIndex.get(point.y) ?? 0\n        const offsetX = stagger && rowIndex % 2 === 1 ? xStep / 2 : 0\n        return (\n          <circle\n            cx={point.x + offsetX}\n            cy={point.y}\n            r={dotRadius}\n            fill={dotColor}\n            key={`${point.x}-${point.y}-${index}`}\n          />\n        )\n      })}\n\n      {processedMarkers.map((marker, index) => {\n        const rowIndex = yToRowIndex.get(marker.y) ?? 0\n        const offsetX = stagger && rowIndex % 2 === 1 ? xStep / 2 : 0\n\n        const x = marker.x + offsetX\n        const y = marker.y\n        const r = marker.size ?? dotRadius\n        const shouldPulse = pulse\n          ? marker.pulse !== false\n          : marker.pulse === true\n        const pulseTo = r * 2.8\n\n        return (\n          <g key={`${marker.x}-${marker.y}-${index}`}>\n            <circle cx={x} cy={y} r={r} fill={markerColor} />\n\n            {shouldPulse ? (\n              <g pointerEvents=\"none\" className=\"motion-reduce:hidden\">\n                <circle\n                  cx={x}\n                  cy={y}\n                  r={r}\n                  fill=\"none\"\n                  stroke={markerColor}\n                  strokeOpacity={1}\n                  strokeWidth={0.35}\n                >\n                  <animate\n                    attributeName=\"r\"\n                    values={`${r};${pulseTo}`}\n                    dur=\"1.4s\"\n                    repeatCount=\"indefinite\"\n                  />\n                  <animate\n                    attributeName=\"opacity\"\n                    values=\"1;0\"\n                    dur=\"1.4s\"\n                    repeatCount=\"indefinite\"\n                  />\n                </circle>\n                <circle\n                  cx={x}\n                  cy={y}\n                  r={r}\n                  fill=\"none\"\n                  stroke={markerColor}\n                  strokeOpacity={0.9}\n                  strokeWidth={0.3}\n                >\n                  <animate\n                    attributeName=\"r\"\n                    values={`${r};${pulseTo}`}\n                    dur=\"1.4s\"\n                    begin=\"0.7s\"\n                    repeatCount=\"indefinite\"\n                  />\n                  <animate\n                    attributeName=\"opacity\"\n                    values=\"0.9;0\"\n                    dur=\"1.4s\"\n                    begin=\"0.7s\"\n                    repeatCount=\"indefinite\"\n                  />\n                </circle>\n              </g>\n            ) : null}\n\n            {renderMarkerOverlay?.({\n              marker: { ...marker, x, y },\n              index,\n              x,\n              y,\n              r,\n            })}\n          </g>\n        )\n      })}\n    </svg>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/dotted-map.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "map",
+        "markers",
+        "geography",
+        "svg"
+      ],
+      "renderer": "svg",
+      "preview": "previews/magic-dotted-map.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-dotted-map/dotted-map.tsx",
+            "upstreamPath": "apps/www/registry/magicui/dotted-map.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/dotted-map.tsx",
+            "upstreamSha256": "sha256:9cf9a7edbed239b6e8cfdad588a97400d059ccf8f391d94f3cf033261a5ef7d9",
+            "contentSha256": "sha256:c94b2e74970b879da1611ba176a1a224a26c66611c772031a72d6919ca13e566",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "Memoized map generation and hid optional pulse rings when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/dotted-map.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-dotted-map/dotted-map.tsx",
+          "change": "Repointed the bundled utility import, memoized the expensive map factory, and added a reduced-motion fallback for optional pulse rings.",
+          "reason": "Keep repeated renders and motion preferences safe without changing the component's public map or marker API."
+        }
+      ],
+      "dedupe": {
+        "family": "dotted-geographic-map",
+        "sourceHash": "sha256:f3579fcc2a5c0b392fde299ce470160f79ae1c20baf103f71288194cbc973722",
+        "contentHash": "sha256:b7f2727deabde25aeaa91700052620b70851b11ce05b7b74183911f44347f898",
+        "structureHash": "sha256:956fbc890958d429258210cb14b6d4d3dd09febfbc5a93697eecba719cef1719"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

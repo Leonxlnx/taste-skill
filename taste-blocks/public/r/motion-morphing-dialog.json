@@ -1,0 +1,122 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-morphing-dialog",
+  "title": "Morphing Dialog",
+  "author": "Motion Primitives",
+  "description": "Expands a trigger into a modal dialog with shared-layout motion.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@0.400.0",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-morphing-dialog/morphing-dialog.tsx",
+      "content": "'use client';\n\nimport React, {\n  useCallback,\n  useContext,\n  useEffect,\n  useId,\n  useImperativeHandle,\n  useMemo,\n  useRef,\n  useState,\n} from 'react';\nimport {\n  motion,\n  AnimatePresence,\n  MotionConfig,\n  Transition,\n  Variant,\n  useReducedMotion,\n} from 'motion/react';\nimport { createPortal } from 'react-dom';\nimport { cn } from '../../lib/utils';\nimport { XIcon } from 'lucide-react';\nimport useClickOutside from '../../hooks/useClickOutside';\n\nexport type MorphingDialogContextType = {\n  isOpen: boolean;\n  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;\n  uniqueId: string;\n  triggerRef: React.RefObject<HTMLButtonElement>;\n};\n\nconst MorphingDialogContext =\n  React.createContext<MorphingDialogContextType | null>(null);\n\nfunction useMorphingDialog() {\n  const context = useContext(MorphingDialogContext);\n  if (!context) {\n    throw new Error(\n      'useMorphingDialog must be used within a MorphingDialogProvider'\n    );\n  }\n  return context;\n}\n\nexport type MorphingDialogProviderProps = {\n  children: React.ReactNode;\n  transition?: Transition;\n};\n\nfunction MorphingDialogProvider({\n  children,\n  transition,\n}: MorphingDialogProviderProps) {\n  const [isOpen, setIsOpen] = useState(false);\n  const uniqueId = useId();\n  const triggerRef = useRef<HTMLButtonElement>(null!);\n  const shouldReduceMotion = useReducedMotion();\n\n  const contextValue = useMemo(\n    () => ({\n      isOpen,\n      setIsOpen,\n      uniqueId,\n      triggerRef,\n    }),\n    [isOpen, uniqueId]\n  );\n\n  return (\n    <MorphingDialogContext.Provider value={contextValue}>\n      <MotionConfig\n        reducedMotion={shouldReduceMotion ? 'always' : 'never'}\n        transition={shouldReduceMotion ? { duration: 0 } : transition}\n      >\n        {children}\n      </MotionConfig>\n    </MorphingDialogContext.Provider>\n  );\n}\n\nexport type MorphingDialogProps = {\n  children: React.ReactNode;\n  transition?: Transition;\n};\n\nfunction MorphingDialog({ children, transition }: MorphingDialogProps) {\n  return (\n    <MorphingDialogProvider transition={transition}>\n      {children}\n    </MorphingDialogProvider>\n  );\n}\n\nexport type MorphingDialogTriggerProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: React.CSSProperties;\n  triggerRef?: React.Ref<HTMLButtonElement>;\n};\n\nfunction MorphingDialogTrigger({\n  children,\n  className,\n  style,\n  triggerRef,\n}: MorphingDialogTriggerProps) {\n  const {\n    setIsOpen,\n    isOpen,\n    uniqueId,\n    triggerRef: contextTriggerRef,\n  } = useMorphingDialog();\n\n  useImperativeHandle(triggerRef, () => contextTriggerRef.current!, [\n    contextTriggerRef,\n  ]);\n\n  const handleClick = useCallback(() => {\n    setIsOpen(!isOpen);\n  }, [isOpen, setIsOpen]);\n\n  return (\n    <motion.button\n      ref={contextTriggerRef}\n      type='button'\n      layoutId={`dialog-${uniqueId}`}\n      className={cn('relative cursor-pointer', className)}\n      onClick={handleClick}\n      style={style}\n      aria-haspopup='dialog'\n      aria-expanded={isOpen}\n      aria-controls={`motion-ui-morphing-dialog-content-${uniqueId}`}\n    >\n      {children}\n    </motion.button>\n  );\n}\n\nexport type MorphingDialogContentProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: React.CSSProperties;\n};\n\nfunction MorphingDialogContent({\n  children,\n  className,\n  style,\n}: MorphingDialogContentProps) {\n  const { setIsOpen, isOpen, uniqueId, triggerRef } = useMorphingDialog();\n  const containerRef = useRef<HTMLDivElement>(null!);\n  const [firstFocusableElement, setFirstFocusableElement] =\n    useState<HTMLElement | null>(null);\n  const [lastFocusableElement, setLastFocusableElement] =\n    useState<HTMLElement | null>(null);\n\n  useEffect(() => {\n    if (!isOpen) return;\n\n    const handleKeyDown = (event: KeyboardEvent) => {\n      if (event.key === 'Escape') {\n        setIsOpen(false);\n      }\n      if (event.key === 'Tab') {\n        if (!firstFocusableElement || !lastFocusableElement) return;\n\n        if (event.shiftKey) {\n          if (document.activeElement === firstFocusableElement) {\n            event.preventDefault();\n            lastFocusableElement.focus();\n          }\n        } else {\n          if (document.activeElement === lastFocusableElement) {\n            event.preventDefault();\n            firstFocusableElement.focus();\n          }\n        }\n      }\n    };\n\n    document.addEventListener('keydown', handleKeyDown);\n\n    return () => {\n      document.removeEventListener('keydown', handleKeyDown);\n    };\n  }, [isOpen, setIsOpen, firstFocusableElement, lastFocusableElement]);\n\n  useEffect(() => {\n    if (!isOpen) return;\n\n    document.body.classList.add('overflow-hidden');\n    const focusableElements = containerRef.current?.querySelectorAll(\n      'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n    );\n    if (focusableElements && focusableElements.length > 0) {\n      setFirstFocusableElement(focusableElements[0] as HTMLElement);\n      setLastFocusableElement(\n        focusableElements[focusableElements.length - 1] as HTMLElement\n      );\n      (focusableElements[0] as HTMLElement).focus();\n    } else {\n      containerRef.current?.focus();\n    }\n\n    return () => {\n      document.body.classList.remove('overflow-hidden');\n      triggerRef.current?.focus();\n    };\n  }, [isOpen, triggerRef]);\n\n  useClickOutside(containerRef, () => {\n    if (isOpen) {\n      setIsOpen(false);\n    }\n  });\n\n  return (\n    <motion.div\n      ref={containerRef}\n      id={`motion-ui-morphing-dialog-content-${uniqueId}`}\n      tabIndex={-1}\n      layoutId={`dialog-${uniqueId}`}\n      className={cn('overflow-hidden', className)}\n      style={style}\n      role='dialog'\n      aria-modal='true'\n      aria-labelledby={`motion-ui-morphing-dialog-title-${uniqueId}`}\n      aria-describedby={`motion-ui-morphing-dialog-description-${uniqueId}`}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport type MorphingDialogContainerProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: React.CSSProperties;\n};\n\nfunction MorphingDialogContainer({\n  children,\n  className,\n  style,\n}: MorphingDialogContainerProps) {\n  const { isOpen, uniqueId } = useMorphingDialog();\n  const [mounted, setMounted] = useState(false);\n\n  useEffect(() => {\n    setMounted(true);\n    return () => setMounted(false);\n  }, []);\n\n  if (!mounted) return null;\n\n  return createPortal(\n    <AnimatePresence initial={false} mode='sync'>\n      {isOpen && (\n        <>\n          <motion.div\n            key={`backdrop-${uniqueId}`}\n            className='fixed inset-0 h-full w-full bg-white/40 backdrop-blur-xs dark:bg-black/40'\n            initial={{ opacity: 0 }}\n            animate={{ opacity: 1 }}\n            exit={{ opacity: 0 }}\n          />\n          <div\n            className={cn(\n              'fixed inset-0 z-50 flex items-center justify-center',\n              className\n            )}\n            style={style}\n          >\n            {children}\n          </div>\n        </>\n      )}\n    </AnimatePresence>,\n    document.body\n  );\n}\n\nexport type MorphingDialogTitleProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: React.CSSProperties;\n};\n\nfunction MorphingDialogTitle({\n  children,\n  className,\n  style,\n}: MorphingDialogTitleProps) {\n  const { uniqueId } = useMorphingDialog();\n\n  return (\n    <motion.div\n      id={`motion-ui-morphing-dialog-title-${uniqueId}`}\n      layoutId={`dialog-title-container-${uniqueId}`}\n      className={className}\n      style={style}\n      layout\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport type MorphingDialogSubtitleProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: React.CSSProperties;\n};\n\nfunction MorphingDialogSubtitle({\n  children,\n  className,\n  style,\n}: MorphingDialogSubtitleProps) {\n  const { uniqueId } = useMorphingDialog();\n\n  return (\n    <motion.div\n      layoutId={`dialog-subtitle-container-${uniqueId}`}\n      className={className}\n      style={style}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport type MorphingDialogDescriptionProps = {\n  children: React.ReactNode;\n  className?: string;\n  disableLayoutAnimation?: boolean;\n  variants?: {\n    initial: Variant;\n    animate: Variant;\n    exit: Variant;\n  };\n};\n\nfunction MorphingDialogDescription({\n  children,\n  className,\n  variants,\n  disableLayoutAnimation,\n}: MorphingDialogDescriptionProps) {\n  const { uniqueId } = useMorphingDialog();\n\n  return (\n    <motion.div\n      key={`dialog-description-${uniqueId}`}\n      layoutId={\n        disableLayoutAnimation\n          ? undefined\n          : `dialog-description-content-${uniqueId}`\n      }\n      variants={variants}\n      className={className}\n      initial='initial'\n      animate='animate'\n      exit='exit'\n      id={`motion-ui-morphing-dialog-description-${uniqueId}`}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport type MorphingDialogImageProps = {\n  src: string;\n  alt: string;\n  className?: string;\n  style?: React.CSSProperties;\n};\n\nfunction MorphingDialogImage({\n  src,\n  alt,\n  className,\n  style,\n}: MorphingDialogImageProps) {\n  const { uniqueId } = useMorphingDialog();\n\n  return (\n    <motion.img\n      src={src}\n      alt={alt}\n      className={cn(className)}\n      layoutId={`dialog-img-${uniqueId}`}\n      style={style}\n    />\n  );\n}\n\nexport type MorphingDialogCloseProps = {\n  children?: React.ReactNode;\n  className?: string;\n  variants?: {\n    initial: Variant;\n    animate: Variant;\n    exit: Variant;\n  };\n};\n\nfunction MorphingDialogClose({\n  children,\n  className,\n  variants,\n}: MorphingDialogCloseProps) {\n  const { setIsOpen, uniqueId } = useMorphingDialog();\n\n  const handleClose = useCallback(() => {\n    setIsOpen(false);\n  }, [setIsOpen]);\n\n  return (\n    <motion.button\n      onClick={handleClose}\n      type='button'\n      aria-label='Close dialog'\n      key={`dialog-close-${uniqueId}`}\n      className={cn('absolute top-6 right-6', className)}\n      initial='initial'\n      animate='animate'\n      exit='exit'\n      variants={variants}\n    >\n      {children || <XIcon size={24} />}\n    </motion.button>\n  );\n}\n\nexport {\n  MorphingDialog,\n  MorphingDialogTrigger,\n  MorphingDialogContainer,\n  MorphingDialogContent,\n  MorphingDialogClose,\n  MorphingDialogTitle,\n  MorphingDialogSubtitle,\n  MorphingDialogDescription,\n  MorphingDialogImage,\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/morphing-dialog.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/hooks/useClickOutside.tsx",
+      "content": "import { RefObject, useEffect } from 'react';\n\nfunction useClickOutside<T extends HTMLElement>(\n  ref: RefObject<T>,\n  handler: (event: MouseEvent | TouchEvent) => void\n): void {\n  useEffect(() => {\n    const handleClickOutside = (event: MouseEvent | TouchEvent) => {\n      if (!ref || !ref.current || ref.current.contains(event.target as Node)) {\n        return;\n      }\n\n      handler(event);\n    };\n\n    document.addEventListener('mousedown', handleClickOutside);\n    document.addEventListener('touchstart', handleClickOutside);\n\n    return () => {\n      document.removeEventListener('mousedown', handleClickOutside);\n      document.removeEventListener('touchstart', handleClickOutside);\n    };\n  }, [ref, handler]);\n}\n\nexport default useClickOutside;\n",
+      "type": "registry:hook",
+      "target": "@hooks/useClickOutside.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "dialog",
+        "shared-layout",
+        "overlay"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-morphing-dialog.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-morphing-dialog/morphing-dialog.tsx",
+            "upstreamPath": "components/core/morphing-dialog.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/morphing-dialog.tsx",
+            "upstreamSha256": "sha256:3783289015c56be36cd74701468a4d2aa345b48676b7fa12964ace9558e4e33e",
+            "contentSha256": "sha256:c153ec671a84ef187a6c8e18243604156c8a0939aac839e4e4f584b25f6d45b7",
+            "changes": [
+              "Changed local utility and click-outside imports from root aliases to ../../lib/utils and ../../hooks/useClickOutside.",
+              "Applied the caller transition through one MotionConfig and added an instant reduced-motion configuration.",
+              "Connected the internal trigger ref, removed duplicate native-button keyboard handling, fixed dialog label/description ids, and restored focus on close.",
+              "Scoped keyboard trapping to the open state, focused the dialog when it has no focusable child, and cleaned up the body scroll-lock class on close or unmount.",
+              "Applied the existing container className and style props that upstream declared but did not forward."
+            ]
+          },
+          {
+            "shippedPath": "hooks/useClickOutside.tsx",
+            "upstreamPath": "hooks/useClickOutside.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/hooks/useClickOutside.tsx",
+            "upstreamSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+            "contentSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/morphing-dialog.tsx, hooks/useClickOutside.tsx, and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-morphing-dialog/morphing-dialog.tsx",
+          "change": "Changed local imports and made narrow reduced-motion, focus, semantic-id, and cleanup repairs without changing the compound component API.",
+          "reason": "Resolve copied helpers, provide an instant reduced-motion path, and make the upstream modal behavior safe enough to stage for browser review."
+        }
+      ],
+      "dedupe": {
+        "family": "shared-layout-dialog",
+        "sourceHash": "sha256:bd56dc9c5d63f392bab5bb0b553271fb1473df87bdfc6c6f0bfbcbfe524d8aa1",
+        "contentHash": "sha256:44db3e8920bd2d017acf658b8ef0a15263264a4ce04eb421e62c8f458c20d9e4",
+        "structureHash": "sha256:c917f89bb203181e7aa300ffc82536638bc1d3d9f4c7b1ebf794209a6150cfa7"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

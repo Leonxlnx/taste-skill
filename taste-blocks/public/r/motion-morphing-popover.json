@@ -1,0 +1,120 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-morphing-popover",
+  "title": "Morphing Popover",
+  "author": "Motion Primitives",
+  "description": "Expands a trigger into a shared-layout popover.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-morphing-popover/morphing-popover.tsx",
+      "content": "'use client';\n\nimport {\n  useState,\n  useId,\n  useRef,\n  useEffect,\n  useCallback,\n  createContext,\n  useContext,\n  isValidElement,\n} from 'react';\nimport {\n  AnimatePresence,\n  MotionConfig,\n  motion,\n  Transition,\n  Variants,\n  useReducedMotion,\n} from 'motion/react';\nimport useClickOutside from '../../hooks/useClickOutside';\nimport { cn } from '../../lib/utils';\n\nconst TRANSITION = {\n  type: 'spring',\n  bounce: 0.1,\n  duration: 0.4,\n};\n\ntype MorphingPopoverContextValue = {\n  isOpen: boolean;\n  open: () => void;\n  close: () => void;\n  uniqueId: string;\n  triggerRef: React.RefObject<HTMLElement>;\n  variants?: Variants;\n};\n\nconst MorphingPopoverContext =\n  createContext<MorphingPopoverContextValue | null>(null);\n\nfunction usePopoverLogic({\n  defaultOpen = false,\n  open: controlledOpen,\n  onOpenChange,\n}: {\n  defaultOpen?: boolean;\n  open?: boolean;\n  onOpenChange?: (open: boolean) => void;\n} = {}) {\n  const uniqueId = useId();\n  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);\n  const triggerRef = useRef<HTMLElement>(null!);\n\n  const isOpen = controlledOpen ?? uncontrolledOpen;\n\n  const open = useCallback(() => {\n    if (controlledOpen === undefined) {\n      setUncontrolledOpen(true);\n    }\n    onOpenChange?.(true);\n  }, [controlledOpen, onOpenChange]);\n\n  const close = useCallback(() => {\n    if (controlledOpen === undefined) {\n      setUncontrolledOpen(false);\n    }\n    onOpenChange?.(false);\n  }, [controlledOpen, onOpenChange]);\n\n  return { isOpen, open, close, uniqueId, triggerRef };\n}\n\nexport type MorphingPopoverProps = {\n  children: React.ReactNode;\n  transition?: Transition;\n  defaultOpen?: boolean;\n  open?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  variants?: Variants;\n  className?: string;\n} & React.ComponentProps<'div'>;\n\nfunction MorphingPopover({\n  children,\n  transition = TRANSITION,\n  defaultOpen,\n  open,\n  onOpenChange,\n  variants,\n  className,\n  ...props\n}: MorphingPopoverProps) {\n  const popoverLogic = usePopoverLogic({ defaultOpen, open, onOpenChange });\n  const shouldReduceMotion = useReducedMotion();\n\n  return (\n    <MorphingPopoverContext.Provider value={{ ...popoverLogic, variants }}>\n      <MotionConfig\n        reducedMotion={shouldReduceMotion ? 'always' : 'never'}\n        transition={shouldReduceMotion ? { duration: 0 } : transition}\n      >\n        <div\n          className={cn('relative flex items-center justify-center', className)}\n          key={popoverLogic.uniqueId}\n          {...props}\n        >\n          {children}\n        </div>\n      </MotionConfig>\n    </MorphingPopoverContext.Provider>\n  );\n}\n\nexport type MorphingPopoverTriggerProps = {\n  asChild?: boolean;\n  children: React.ReactNode;\n  className?: string;\n} & React.ComponentProps<typeof motion.button>;\n\nfunction MorphingPopoverTrigger({\n  children,\n  className,\n  asChild = false,\n  ...props\n}: MorphingPopoverTriggerProps) {\n  const context = useContext(MorphingPopoverContext);\n  if (!context) {\n    throw new Error(\n      'MorphingPopoverTrigger must be used within MorphingPopover'\n    );\n  }\n\n  if (asChild && isValidElement(children)) {\n    const MotionComponent = motion.create(\n      children.type as React.ForwardRefExoticComponent<any>\n    );\n    const childProps = children.props as Record<string, unknown>;\n\n    return (\n      <MotionComponent\n        {...childProps}\n        ref={context.triggerRef}\n        onClick={context.open}\n        layoutId={`popover-trigger-${context.uniqueId}`}\n        className={childProps.className}\n        key={context.uniqueId}\n        aria-expanded={context.isOpen}\n        aria-controls={`popover-content-${context.uniqueId}`}\n      />\n    );\n  }\n\n  return (\n    <motion.div\n      key={context.uniqueId}\n      layoutId={`popover-trigger-${context.uniqueId}`}\n      onClick={context.open}\n    >\n      <motion.button\n        {...props}\n        ref={context.triggerRef as React.RefObject<HTMLButtonElement>}\n        type='button'\n        layoutId={`popover-label-${context.uniqueId}`}\n        key={context.uniqueId}\n        className={className}\n        aria-haspopup='dialog'\n        aria-expanded={context.isOpen}\n        aria-controls={`popover-content-${context.uniqueId}`}\n      >\n        {children}\n      </motion.button>\n    </motion.div>\n  );\n}\n\nexport type MorphingPopoverContentProps = {\n  children: React.ReactNode;\n  className?: string;\n} & React.ComponentProps<typeof motion.div>;\n\nfunction MorphingPopoverContent({\n  children,\n  className,\n  ...props\n}: MorphingPopoverContentProps) {\n  const context = useContext(MorphingPopoverContext);\n  if (!context)\n    throw new Error(\n      'MorphingPopoverContent must be used within MorphingPopover'\n    );\n\n  const ref = useRef<HTMLDivElement>(null);\n  useClickOutside(ref, context.close);\n\n  useEffect(() => {\n    if (!context.isOpen) return;\n\n    const focusTarget = ref.current?.querySelector<HTMLElement>(\n      'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n    );\n    (focusTarget ?? ref.current)?.focus();\n\n    const handleKeyDown = (event: KeyboardEvent) => {\n      if (event.key === 'Escape') context.close();\n    };\n\n    document.addEventListener('keydown', handleKeyDown);\n    return () => {\n      document.removeEventListener('keydown', handleKeyDown);\n      context.triggerRef.current?.focus();\n    };\n  }, [context.isOpen, context.close, context.triggerRef]);\n\n  return (\n    <AnimatePresence>\n      {context.isOpen && (\n        <>\n          <motion.div\n            {...props}\n            ref={ref}\n            layoutId={`popover-trigger-${context.uniqueId}`}\n            key={context.uniqueId}\n            id={`popover-content-${context.uniqueId}`}\n            tabIndex={-1}\n            role='dialog'\n            className={cn(\n              'absolute overflow-hidden rounded-md border border-zinc-950/10 bg-white p-2 text-zinc-950 shadow-md dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50',\n              className\n            )}\n            initial='initial'\n            animate='animate'\n            exit='exit'\n            variants={context.variants}\n          >\n            {children}\n          </motion.div>\n        </>\n      )}\n    </AnimatePresence>\n  );\n}\n\nexport { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/morphing-popover.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/hooks/useClickOutside.tsx",
+      "content": "import { RefObject, useEffect } from 'react';\n\nfunction useClickOutside<T extends HTMLElement>(\n  ref: RefObject<T>,\n  handler: (event: MouseEvent | TouchEvent) => void\n): void {\n  useEffect(() => {\n    const handleClickOutside = (event: MouseEvent | TouchEvent) => {\n      if (!ref || !ref.current || ref.current.contains(event.target as Node)) {\n        return;\n      }\n\n      handler(event);\n    };\n\n    document.addEventListener('mousedown', handleClickOutside);\n    document.addEventListener('touchstart', handleClickOutside);\n\n    return () => {\n      document.removeEventListener('mousedown', handleClickOutside);\n      document.removeEventListener('touchstart', handleClickOutside);\n    };\n  }, [ref, handler]);\n}\n\nexport default useClickOutside;\n",
+      "type": "registry:hook",
+      "target": "@hooks/useClickOutside.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "popover",
+        "shared-layout",
+        "overlay"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-morphing-popover.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-morphing-popover/morphing-popover.tsx",
+            "upstreamPath": "components/core/morphing-popover.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/morphing-popover.tsx",
+            "upstreamSha256": "sha256:72811cafa2d38d548919e2742325a5360dbd698ca19baf5d1af4c3417e8c425c",
+            "contentSha256": "sha256:728a50badbf14f670f6436ebf543e86056198a3e92ee1195ba0c3312e485c329",
+            "changes": [
+              "Changed local utility and click-outside imports from root aliases to ../../lib/utils and ../../hooks/useClickOutside.",
+              "Added an instant useReducedMotion MotionConfig path.",
+              "Tracked the trigger, moved focus into the open popover, restored it on close, and made the dialog non-modal while retaining Escape and touch outside dismissal.",
+              "Memoized open and close callbacks so parent rerenders do not tear down and restart the focus effect."
+            ]
+          },
+          {
+            "shippedPath": "hooks/useClickOutside.tsx",
+            "upstreamPath": "hooks/useClickOutside.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/hooks/useClickOutside.tsx",
+            "upstreamSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+            "contentSha256": "sha256:a239b751802f4a67e13d962bdf18118f7b24c7806a3f2ab3c41eca199d624445",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/morphing-popover.tsx, hooks/useClickOutside.tsx, and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-morphing-popover/morphing-popover.tsx",
+          "change": "Changed local imports and added reduced-motion plus stable non-modal focus management.",
+          "reason": "Resolve copied helpers, snap the shared-layout transition when requested, and align focus behavior with a dismissible non-modal popover."
+        }
+      ],
+      "dedupe": {
+        "family": "shared-layout-popover",
+        "sourceHash": "sha256:917584025bf928ea8a4c4c714f044381cef74e8deb110f16c7d2b2e14a1fcb4f",
+        "contentHash": "sha256:69ec463508b167897df91773ed98f87c269a1221fa1b3c63ca51dc1b49a9c992",
+        "structureHash": "sha256:83917c3a613f3e9c2a7a3f43990d0955fa9086111f46c218bf3d8caedaba69c2"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

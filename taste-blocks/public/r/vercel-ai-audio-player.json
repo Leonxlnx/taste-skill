@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-audio-player",
+  "title": "Audio Player",
+  "author": "Vercel",
+  "description": "A composable audio transport with seek, time, mute, and volume controls.",
+  "dependencies": [
+    "media-chrome@4.17.2"
+  ],
+  "registryDependencies": [
+    "button",
+    "button-group",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/audio-player.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\n  ButtonGroup,\n  ButtonGroupText,\n} from \"@/components/ui/button-group\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  MediaControlBar,\r\n  MediaController,\r\n  MediaDurationDisplay,\r\n  MediaMuteButton,\r\n  MediaPlayButton,\r\n  MediaSeekBackwardButton,\r\n  MediaSeekForwardButton,\r\n  MediaTimeDisplay,\r\n  MediaTimeRange,\r\n  MediaVolumeRange,\r\n} from \"media-chrome/react\";\nimport type { ComponentProps, CSSProperties } from \"react\";\n\nexport interface AudioPlayerData {\n  base64: string;\n  mediaType: string;\n}\n\r\nexport type AudioPlayerProps = Omit<\r\n  ComponentProps<typeof MediaController>,\r\n  \"audio\"\r\n>;\r\n\r\nexport const AudioPlayer = ({\r\n  children,\r\n  style,\r\n  ...props\r\n}: AudioPlayerProps) => (\r\n  <MediaController\r\n    audio\r\n    data-slot=\"audio-player\"\r\n    style={\r\n      {\r\n        \"--media-background-color\": \"transparent\",\r\n        \"--media-button-icon-height\": \"1rem\",\r\n        \"--media-button-icon-width\": \"1rem\",\r\n        \"--media-control-background\": \"transparent\",\r\n        \"--media-control-hover-background\": \"var(--color-accent)\",\r\n        \"--media-control-padding\": \"0\",\r\n        \"--media-font\": \"var(--font-sans)\",\r\n        \"--media-font-size\": \"10px\",\r\n        \"--media-icon-color\": \"currentColor\",\r\n        \"--media-preview-time-background\": \"var(--color-background)\",\r\n        \"--media-preview-time-border-radius\": \"var(--radius-md)\",\r\n        \"--media-preview-time-text-shadow\": \"none\",\r\n        \"--media-primary-color\": \"var(--color-primary)\",\r\n        \"--media-range-bar-color\": \"var(--color-primary)\",\r\n        \"--media-range-track-background\": \"var(--color-secondary)\",\r\n        \"--media-secondary-color\": \"var(--color-secondary)\",\r\n        \"--media-text-color\": \"var(--color-foreground)\",\r\n        \"--media-tooltip-arrow-display\": \"none\",\r\n        \"--media-tooltip-background\": \"var(--color-background)\",\r\n        \"--media-tooltip-border-radius\": \"var(--radius-md)\",\r\n        ...style,\r\n      } as CSSProperties\r\n    }\r\n    {...props}\r\n  >\r\n    {children}\r\n  </MediaController>\r\n);\r\n\r\nexport type AudioPlayerElementProps = Omit<ComponentProps<\"audio\">, \"src\"> &\n  (\n    | {\n        data: AudioPlayerData;\n      }\n    | {\r\n        src: string;\r\n      }\r\n  );\r\n\r\nexport const AudioPlayerElement = ({ ...props }: AudioPlayerElementProps) => (\r\n  // oxlint-disable-next-line eslint-plugin-jsx-a11y(media-has-caption) -- audio player captions are provided by consumer\r\n  <audio\r\n    data-slot=\"audio-player-element\"\r\n    slot=\"media\"\r\n    src={\r\n      \"src\" in props\r\n        ? props.src\r\n        : `data:${props.data.mediaType};base64,${props.data.base64}`\r\n    }\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type AudioPlayerControlBarProps = ComponentProps<typeof MediaControlBar>;\r\n\r\nexport const AudioPlayerControlBar = ({\r\n  children,\r\n  ...props\r\n}: AudioPlayerControlBarProps) => (\r\n  <MediaControlBar data-slot=\"audio-player-control-bar\" {...props}>\r\n    <ButtonGroup orientation=\"horizontal\">{children}</ButtonGroup>\r\n  </MediaControlBar>\r\n);\r\n\r\nexport type AudioPlayerPlayButtonProps = ComponentProps<typeof MediaPlayButton>;\r\n\r\nexport const AudioPlayerPlayButton = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerPlayButtonProps) => (\r\n  <Button asChild size=\"icon-sm\" variant=\"outline\">\r\n    <MediaPlayButton\r\n      className={cn(\"bg-transparent\", className)}\r\n      data-slot=\"audio-player-play-button\"\r\n      {...props}\r\n    />\r\n  </Button>\r\n);\r\n\r\nexport type AudioPlayerSeekBackwardButtonProps = ComponentProps<\r\n  typeof MediaSeekBackwardButton\r\n>;\r\n\r\nexport const AudioPlayerSeekBackwardButton = ({\r\n  seekOffset = 10,\r\n  ...props\r\n}: AudioPlayerSeekBackwardButtonProps) => (\r\n  <Button asChild size=\"icon-sm\" variant=\"outline\">\r\n    <MediaSeekBackwardButton\r\n      data-slot=\"audio-player-seek-backward-button\"\r\n      seekOffset={seekOffset}\r\n      {...props}\r\n    />\r\n  </Button>\r\n);\r\n\r\nexport type AudioPlayerSeekForwardButtonProps = ComponentProps<\r\n  typeof MediaSeekForwardButton\r\n>;\r\n\r\nexport const AudioPlayerSeekForwardButton = ({\r\n  seekOffset = 10,\r\n  ...props\r\n}: AudioPlayerSeekForwardButtonProps) => (\r\n  <Button asChild size=\"icon-sm\" variant=\"outline\">\r\n    <MediaSeekForwardButton\r\n      data-slot=\"audio-player-seek-forward-button\"\r\n      seekOffset={seekOffset}\r\n      {...props}\r\n    />\r\n  </Button>\r\n);\r\n\r\nexport type AudioPlayerTimeDisplayProps = ComponentProps<\r\n  typeof MediaTimeDisplay\r\n>;\r\n\r\nexport const AudioPlayerTimeDisplay = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerTimeDisplayProps) => (\r\n  <ButtonGroupText asChild className=\"bg-transparent\">\r\n    <MediaTimeDisplay\r\n      className={cn(\"tabular-nums\", className)}\r\n      data-slot=\"audio-player-time-display\"\r\n      {...props}\r\n    />\r\n  </ButtonGroupText>\r\n);\r\n\r\nexport type AudioPlayerTimeRangeProps = ComponentProps<typeof MediaTimeRange>;\r\n\r\nexport const AudioPlayerTimeRange = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerTimeRangeProps) => (\r\n  <ButtonGroupText asChild className=\"bg-transparent\">\r\n    <MediaTimeRange\r\n      className={cn(\"\", className)}\r\n      data-slot=\"audio-player-time-range\"\r\n      {...props}\r\n    />\r\n  </ButtonGroupText>\r\n);\r\n\r\nexport type AudioPlayerDurationDisplayProps = ComponentProps<\r\n  typeof MediaDurationDisplay\r\n>;\r\n\r\nexport const AudioPlayerDurationDisplay = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerDurationDisplayProps) => (\r\n  <ButtonGroupText asChild className=\"bg-transparent\">\r\n    <MediaDurationDisplay\r\n      className={cn(\"tabular-nums\", className)}\r\n      data-slot=\"audio-player-duration-display\"\r\n      {...props}\r\n    />\r\n  </ButtonGroupText>\r\n);\r\n\r\nexport type AudioPlayerMuteButtonProps = ComponentProps<typeof MediaMuteButton>;\r\n\r\nexport const AudioPlayerMuteButton = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerMuteButtonProps) => (\r\n  <ButtonGroupText asChild className=\"bg-transparent\">\r\n    <MediaMuteButton\r\n      className={cn(\"\", className)}\r\n      data-slot=\"audio-player-mute-button\"\r\n      {...props}\r\n    />\r\n  </ButtonGroupText>\r\n);\r\n\r\nexport type AudioPlayerVolumeRangeProps = ComponentProps<\r\n  typeof MediaVolumeRange\r\n>;\r\n\r\nexport const AudioPlayerVolumeRange = ({\r\n  className,\r\n  ...props\r\n}: AudioPlayerVolumeRangeProps) => (\r\n  <ButtonGroupText asChild className=\"bg-transparent\">\r\n    <MediaVolumeRange\r\n      className={cn(\"\", className)}\r\n      data-slot=\"audio-player-volume-range\"\r\n      {...props}\r\n    />\r\n  </ButtonGroupText>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/audio-player.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "audio",
+        "media",
+        "transport",
+        "seek"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-audio-player.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/audio-player.tsx",
+            "upstreamPath": "packages/elements/src/audio-player.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/audio-player.tsx",
+            "upstreamSha256": "sha256:375c174c83cf3770f1cf8b56a3e18584a773bce2141e451bfefc779d4901b5f3",
+            "contentSha256": "sha256:9699253b1d2a70cac9d7484f239ca79179d92db3ab4c8df59cb32be110c4e54e",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced the AI SDK type-only audio shape with an equivalent local structural type."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/audio-player.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/audio-player.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced the AI SDK type-only audio shape with an equivalent local structural type.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "media-audio-transport",
+        "sourceHash": "sha256:1b877ce218cda6f6e6f82c6406effd7d009721ca35e3bd23895a6a2d9c43506d",
+        "contentHash": "sha256:c9b9931ab2bbbc0fb71542d776e0a2e0a91afe9c20a1e22932505d077694d8de",
+        "structureHash": "sha256:7ca166529113f29128d7dc4c362f8782fa6369e4207df7bca7f75107cb1656f5"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

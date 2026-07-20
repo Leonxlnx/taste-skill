@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-globe",
+  "title": "Globe",
+  "author": "Magic UI",
+  "description": "Renders an interactive WebGL globe with configurable markers and colors.",
+  "dependencies": [
+    "cobe@0.6.5",
+    "clsx@2.1.1",
+    "motion@12.23.26",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-globe/globe.tsx",
+      "content": "\"use client\"\n\nimport { useEffect, useRef } from \"react\"\nimport createGlobe, { type COBEOptions } from \"cobe\"\nimport { useMotionValue, useReducedMotion, useSpring } from \"motion/react\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst MOVEMENT_DAMPING = 1400\nconst MAX_DEVICE_PIXEL_RATIO = 2\nconst MAX_RENDER_SIZE = 1200\n\nconst GLOBE_CONFIG: COBEOptions = {\n  width: 800,\n  height: 800,\n  onRender: () => {},\n  devicePixelRatio: 2,\n  phi: 0,\n  theta: 0.3,\n  dark: 0,\n  diffuse: 0.4,\n  mapSamples: 16000,\n  mapBrightness: 1.2,\n  baseColor: [1, 1, 1],\n  markerColor: [251 / 255, 100 / 255, 21 / 255],\n  glowColor: [1, 1, 1],\n  markers: [\n    { location: [14.5995, 120.9842], size: 0.03 },\n    { location: [19.076, 72.8777], size: 0.1 },\n    { location: [23.8103, 90.4125], size: 0.05 },\n    { location: [30.0444, 31.2357], size: 0.07 },\n    { location: [39.9042, 116.4074], size: 0.08 },\n    { location: [-23.5505, -46.6333], size: 0.1 },\n    { location: [19.4326, -99.1332], size: 0.1 },\n    { location: [40.7128, -74.006], size: 0.1 },\n    { location: [34.6937, 135.5022], size: 0.05 },\n    { location: [41.0082, 28.9784], size: 0.06 },\n  ],\n}\n\nexport function Globe({\n  className,\n  config = GLOBE_CONFIG,\n  ariaLabel = \"Interactive globe\",\n}: {\n  className?: string\n  config?: COBEOptions\n  ariaLabel?: string\n}) {\n  const canvasRef = useRef<HTMLCanvasElement>(null)\n  const phiRef = useRef(0)\n  const devicePixelRatioRef = useRef(1)\n  const renderSizeRef = useRef(1)\n  const pointerInteracting = useRef<number | null>(null)\n  const pointerInteractionMovement = useRef(0)\n  const shouldReduceMotion = useReducedMotion()\n\n  const r = useMotionValue(0)\n  const rs = useSpring(r, {\n    mass: 1,\n    damping: 30,\n    stiffness: 100,\n  })\n\n  const updatePointerInteraction = (value: number | null) => {\n    if (shouldReduceMotion) return\n    pointerInteracting.current = value\n    if (canvasRef.current) {\n      canvasRef.current.style.cursor = value !== null ? \"grabbing\" : \"grab\"\n    }\n  }\n\n  const updateMovement = (clientX: number) => {\n    if (shouldReduceMotion) return\n    if (pointerInteracting.current !== null) {\n      const delta = clientX - pointerInteracting.current\n      pointerInteractionMovement.current = delta\n      r.set(r.get() + delta / MOVEMENT_DAMPING)\n    }\n  }\n\n  useEffect(() => {\n    const canvas = canvasRef.current\n    if (!canvas) return\n\n    let fadeTimer: number | undefined\n    let globe: ReturnType<typeof createGlobe> | null = null\n    let isInView = false\n\n    const measure = () => {\n      const cssSize = Math.max(\n        1,\n        Math.min(canvas.clientWidth, canvas.clientHeight || canvas.clientWidth)\n      )\n      devicePixelRatioRef.current = Math.min(\n        MAX_DEVICE_PIXEL_RATIO,\n        Math.max(\n          1,\n          Math.min(window.devicePixelRatio || 1, config.devicePixelRatio || 1)\n        )\n      )\n      renderSizeRef.current = Math.min(\n        MAX_RENDER_SIZE,\n        Math.max(1, Math.round(cssSize * devicePixelRatioRef.current))\n      )\n    }\n\n    const stop = () => {\n      if (fadeTimer !== undefined) window.clearTimeout(fadeTimer)\n      fadeTimer = undefined\n      canvas.style.opacity = \"0\"\n      pointerInteracting.current = null\n      canvas.style.cursor = shouldReduceMotion ? \"default\" : \"grab\"\n      globe?.destroy()\n      globe = null\n    }\n\n    const start = () => {\n      if (globe) return\n      measure()\n      globe = createGlobe(canvas, {\n        ...config,\n        devicePixelRatio: devicePixelRatioRef.current,\n        width: renderSizeRef.current,\n        height: renderSizeRef.current,\n        onRender: (state) => {\n          if (!shouldReduceMotion && pointerInteracting.current === null) {\n            phiRef.current += 0.005\n          }\n          state.phi = phiRef.current + rs.get()\n          state.width = renderSizeRef.current\n          state.height = renderSizeRef.current\n        },\n      })\n\n      fadeTimer = window.setTimeout(() => {\n        canvas.style.opacity = \"1\"\n      }, 0)\n    }\n\n    const sync = () => {\n      if (isInView && document.visibilityState === \"visible\") start()\n      else stop()\n    }\n\n    const resizeObserver = new ResizeObserver(measure)\n    resizeObserver.observe(canvas)\n\n    const intersectionObserver = new IntersectionObserver(([entry]) => {\n      isInView = entry.isIntersecting\n      sync()\n    })\n    intersectionObserver.observe(canvas)\n\n    document.addEventListener(\"visibilitychange\", sync)\n\n    return () => {\n      document.removeEventListener(\"visibilitychange\", sync)\n      intersectionObserver.disconnect()\n      resizeObserver.disconnect()\n      stop()\n    }\n  }, [rs, config, shouldReduceMotion])\n\n  return (\n    <div\n      className={cn(\n        \"absolute inset-0 mx-auto aspect-square w-full max-w-150\",\n        className\n      )}\n    >\n      <canvas\n        role=\"img\"\n        aria-label={ariaLabel}\n        className={cn(\n          \"size-full opacity-0 transition-opacity duration-500 contain-[layout_paint_size] motion-reduce:transition-none\"\n        )}\n        ref={canvasRef}\n        onPointerDown={(e) => updatePointerInteraction(e.clientX)}\n        onPointerUp={() => updatePointerInteraction(null)}\n        onPointerCancel={() => updatePointerInteraction(null)}\n        onPointerOut={() => updatePointerInteraction(null)}\n        onMouseMove={(e) => updateMovement(e.clientX)}\n        onTouchMove={(e) =>\n          e.touches[0] && updateMovement(e.touches[0].clientX)\n        }\n      />\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/globe.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "globe",
+        "geography",
+        "webgl",
+        "drag"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/magic-globe.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-globe/globe.tsx",
+            "upstreamPath": "apps/www/registry/magicui/globe.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/globe.tsx",
+            "upstreamSha256": "sha256:76422bf378c6503883706fe7af90132f7716dbe383fab7728a95c95e4d16cfd0",
+            "contentSha256": "sha256:071d39489271c840546acc24ac754189a32fc10874e9cd2251775e3555338282",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "Added a configurable canvas label, reduced-motion behavior, strict pointer-state comparison, and pointer-cancel handling.",
+              "Created and destroyed the Cobe instance in response to Page Visibility and Intersection Observer state, with safe restart and cleanup.",
+              "Capped the effective device pixel ratio at 2 and the square render resolution at 1200 pixels while respecting lower device and caller values."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/globe.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-globe/globe.tsx",
+          "change": "Repointed the bundled utility import; added bounded accessibility, reduced-motion, and pointer repairs; gated the Cobe lifecycle on page and viewport visibility; and capped effective DPR and render resolution.",
+          "reason": "Keep the copied globe self-contained and static for reduced motion while preventing its WebGL render loop from consuming resources offscreen, in a hidden tab, or after unmount."
+        }
+      ],
+      "dedupe": {
+        "family": "webgl-interactive-globe",
+        "sourceHash": "sha256:428b5f92fd974b49bb408a6de6eb803adfa7af81f1865c56ebf5ca95bb812a7d",
+        "contentHash": "sha256:d90361f62a874b0b4a38948549fad950f9dc97c6271d6dd690996f257ddb2584",
+        "structureHash": "sha256:00ab40157c95924565381d4022c4592a38ea3098551ed36c39fe14487bb6f193"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

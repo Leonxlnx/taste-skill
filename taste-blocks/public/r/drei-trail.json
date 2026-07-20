@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-trail",
+  "title": "Trail",
+  "author": "pmndrs contributors",
+  "description": "Attaches a configurable MeshLine trail to moving scene content.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "meshline@3.3.1",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/Trail.tsx",
+      "content": "import { createPortal, useFrame, useThree } from '@react-three/fiber'\nimport * as React from 'react'\nimport { ColorRepresentation, Group, Mesh, Object3D, Vector2, Vector3 } from 'three'\nimport { MeshLineGeometry as MeshLineGeometryImpl, MeshLineMaterial } from 'meshline'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\n\ntype Settings = {\n  width: number\n  length: number\n  decay: number\n  /**\n   * Wether to use the target's world or local positions\n   */\n  local: boolean\n  // Min distance between previous and current points\n  stride: number\n  // Number of frames to wait before next calculation\n  interval: number\n}\n\nexport type TrailProps = {\n  color?: ColorRepresentation\n  attenuation?: (width: number) => number\n  target?: React.RefObject<Object3D>\n} & Partial<Settings>\n\nconst defaults: Partial<Settings> = {\n  width: 0.2,\n  length: 1,\n  decay: 1,\n  local: false,\n  stride: 0,\n  interval: 1,\n}\n\nconst shiftLeft = (collection: Float32Array, steps = 1): Float32Array => {\n  collection.set(collection.subarray(steps))\n  collection.fill(-Infinity, -steps)\n  return collection\n}\n\nexport function useTrail(target: Object3D, settings: Partial<Settings>) {\n  const { length, local, decay, interval, stride } = {\n    ...defaults,\n    ...settings,\n  } as Settings\n\n  const points = React.useRef<Float32Array>(null)\n  const [worldPosition] = React.useState(() => new Vector3())\n\n  React.useLayoutEffect(() => {\n    if (target) {\n      points.current = Float32Array.from({ length: length * 10 * 3 }, (_, i) => target.position.getComponent(i % 3))\n    }\n  }, [length, target])\n\n  const prevPosition = React.useRef(new Vector3())\n  const frameCount = React.useRef(0)\n\n  useFrame(() => {\n    if (!target) return\n    if (!points.current) return\n    if (frameCount.current === 0) {\n      let newPosition: Vector3\n      if (local) {\n        newPosition = target.position\n      } else {\n        target.getWorldPosition(worldPosition)\n        newPosition = worldPosition\n      }\n\n      const steps = 1 * decay\n      for (let i = 0; i < steps; i++) {\n        if (newPosition.distanceTo(prevPosition.current) < stride) continue\n\n        shiftLeft(points.current, 3)\n        points.current.set(newPosition.toArray(), points.current.length - 3)\n      }\n      prevPosition.current.copy(newPosition)\n    }\n\n    frameCount.current++\n    frameCount.current = frameCount.current % interval\n  })\n\n  return points\n}\n\nexport type MeshLineGeometry = Mesh & MeshLineGeometryImpl\n\nexport const Trail: ForwardRefComponent<\n  React.PropsWithChildren<TrailProps>,\n  MeshLineGeometry\n> = /* @__PURE__ */ React.forwardRef<MeshLineGeometry, React.PropsWithChildren<TrailProps>>((props, forwardRef) => {\n  const { children } = props\n  const { width, length, decay, local, stride, interval } = {\n    ...defaults,\n    ...props,\n  } as Settings\n\n  const { color = 'hotpink', attenuation, target } = props\n\n  const size = useThree((s) => s.size)\n  const scene = useThree((s) => s.scene)\n\n  const ref = React.useRef<Group>(null!)\n  const [anchor, setAnchor] = React.useState<Object3D>(null!)\n\n  const points = useTrail(anchor, { length, decay, local, stride, interval })\n\n  React.useEffect(() => {\n    const t =\n      target?.current ||\n      ref.current.children.find((o) => {\n        return o instanceof Object3D\n      })\n\n    if (t) {\n      setAnchor(t)\n    }\n  }, [points, target])\n\n  const geo = React.useMemo(() => new MeshLineGeometryImpl(), [])\n  const mat = React.useMemo(() => {\n    const m = new MeshLineMaterial({\n      lineWidth: 0.1 * width,\n      color: color,\n      sizeAttenuation: 1,\n      resolution: new Vector2(size.width, size.height),\n    })\n\n    // Get and apply first <meshLineMaterial /> from children\n    let matOverride: React.ReactElement | undefined\n    if (children) {\n      if (Array.isArray(children)) {\n        matOverride = children.find((child: React.ReactNode) => {\n          const c = child as React.ReactElement\n          return typeof c.type === 'string' && c.type === 'meshLineMaterial'\n        }) as React.ReactElement | undefined\n      } else {\n        const c = children as React.ReactElement\n        if (typeof c.type === 'string' && c.type === 'meshLineMaterial') {\n          matOverride = c\n        }\n      }\n    }\n\n    if (typeof matOverride?.props === 'object' && matOverride?.props !== null) {\n      m.setValues(matOverride.props)\n    }\n\n    return m\n  }, [width, color, size, children])\n\n  React.useEffect(() => {\n    mat.uniforms.resolution.value.set(size.width, size.height)\n  }, [size])\n\n  useFrame(() => {\n    if (!points.current) return\n    geo.setPoints(points.current, attenuation)\n  })\n\n  return (\n    <group>\n      {createPortal(<mesh ref={forwardRef} geometry={geo} material={mat} />, scene)}\n      <group ref={ref}>{children}</group>\n    </group>\n  )\n})\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/Trail.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "trail",
+        "motion",
+        "meshline",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-trail.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/Trail.tsx",
+            "upstreamPath": "src/core/Trail.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/Trail.tsx",
+            "upstreamSha256": "sha256:d63effcf7fc6fa08e16e1f22d0ef839607aeec3bfc67fd3ba9fb778cbcbc6db4",
+            "contentSha256": "sha256:d63effcf7fc6fa08e16e1f22d0ef839607aeec3bfc67fd3ba9fb778cbcbc6db4",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/Trail.tsx, src/helpers/ts-utils.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "meshline-object-motion-trail",
+        "sourceHash": "sha256:359faf61c4e62b16d39205d188df220c86aac8a8ccbc9080a4e3c5e2147333bb",
+        "contentHash": "sha256:359faf61c4e62b16d39205d188df220c86aac8a8ccbc9080a4e3c5e2147333bb",
+        "structureHash": "sha256:fd2cc6fc69576fe473957a80e774536cb149fa7470b37c6dfc08d4c2764a81dc"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

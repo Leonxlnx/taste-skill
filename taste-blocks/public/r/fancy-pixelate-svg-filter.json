@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fancy-pixelate-svg-filter",
+  "title": "Pixelate SVG Filter",
+  "author": "Daniel Petho",
+  "description": "Defines a configurable SVG convolution and tiling filter that pixelates caller-provided content.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/fancy-components/components/fancy-pixelate-svg-filter/pixelate-svg-filter.tsx",
+      "content": "interface PixelateSvgFilterProps {\n  id: string\n  size?: number\n  crossLayers?: boolean\n}\n\nexport default function PixelateSvgFilter({\n  id = \"pixelate-filter\",\n  size = 16,\n  crossLayers = false,\n}: PixelateSvgFilterProps) {\n  return (\n    <svg className=\"absolute inset-0\">\n      <defs>\n        <filter id={id} x=\"0\" y=\"0\" width=\"1\" height=\"1\">\n          {\"First layer: Normal pixelation effect\"}\n          <feConvolveMatrix\n            kernelMatrix=\"1 1 1\n                          1 1 1\n                          1 1 1\"\n            result=\"AVG\"\n          />\n          <feFlood x=\"1\" y=\"1\" width=\"1\" height=\"1\" />\n          <feComposite\n            operator=\"arithmetic\"\n            k1=\"0\"\n            k2=\"1\"\n            k3=\"0\"\n            k4=\"0\"\n            width={size}\n            height={size}\n          />\n          <feTile result=\"TILE\" />\n          <feComposite\n            in=\"AVG\"\n            in2=\"TILE\"\n            operator=\"in\"\n            k1=\"0\"\n            k2=\"1\"\n            k3=\"0\"\n            k4=\"0\"\n          />\n          <feMorphology operator=\"dilate\" radius={size / 2} result={\"NORMAL\"} />\n          {crossLayers && (\n            <>\n              {\"Second layer: Fallback with full-width tiling\"}\n              <feConvolveMatrix\n                kernelMatrix=\"1 1 1\n                              1 1 1\n                              1 1 1\"\n                result=\"AVG\"\n              />\n              <feFlood x=\"1\" y=\"1\" width=\"1\" height=\"1\" />\n              <feComposite\n                in2=\"SourceGraphic\"\n                operator=\"arithmetic\"\n                k1=\"0\"\n                k2=\"1\"\n                k3=\"0\"\n                k4=\"0\"\n                width={size / 2}\n                height={size}\n              />\n              <feTile result=\"TILE\" />\n              <feComposite\n                in=\"AVG\"\n                in2=\"TILE\"\n                operator=\"in\"\n                k1=\"0\"\n                k2=\"1\"\n                k3=\"0\"\n                k4=\"0\"\n              />\n              <feMorphology\n                operator=\"dilate\"\n                radius={size / 2}\n                result={\"FALLBACKX\"}\n              />\n              {\"Third layer: Fallback with full-height tiling\"}\n              <feConvolveMatrix\n                kernelMatrix=\"1 1 1\n                              1 1 1\n                              1 1 1\"\n                result=\"AVG\"\n              />\n              <feFlood x=\"1\" y=\"1\" width=\"1\" height=\"1\" />\n              <feComposite\n                in2=\"SourceGraphic\"\n                operator=\"arithmetic\"\n                k1=\"0\"\n                k2=\"1\"\n                k3=\"0\"\n                k4=\"0\"\n                width={size}\n                height={size / 2}\n              />\n              <feTile result=\"TILE\" />\n              <feComposite\n                in=\"AVG\"\n                in2=\"TILE\"\n                operator=\"in\"\n                k1=\"0\"\n                k2=\"1\"\n                k3=\"0\"\n                k4=\"0\"\n              />\n              <feMorphology\n                operator=\"dilate\"\n                radius={size / 2}\n                result={\"FALLBACKY\"}\n              />\n              <feMerge>\n                <feMergeNode in=\"FALLBACKX\" />\n                <feMergeNode in=\"FALLBACKY\" />\n                <feMergeNode in=\"NORMAL\" />\n              </feMerge>\n            </>\n          )}\n          {!crossLayers && <feMergeNode in=\"NORMAL\" />}\n        </filter>\n      </defs>\n    </svg>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/fancy-pixelate-svg-filter.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "svg",
+        "filter",
+        "pixelate",
+        "convolution"
+      ],
+      "renderer": "svg",
+      "preview": "previews/fancy-pixelate-svg-filter.tsx",
+      "source": {
+        "project": "Fancy Components",
+        "repository": "https://github.com/danielpetho/fancy",
+        "revision": "f9f62c61207b2dd3210476dd98af3c9a5be24094",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/fancy-pixelate-svg-filter/pixelate-svg-filter.tsx",
+            "upstreamPath": "src/fancy/components/filter/pixelate-svg-filter.tsx",
+            "permalink": "https://github.com/danielpetho/fancy/blob/f9f62c61207b2dd3210476dd98af3c9a5be24094/src/fancy/components/filter/pixelate-svg-filter.tsx",
+            "upstreamSha256": "sha256:554b9b58b748c460fe0ff443c25ce575bec47ebc40ef3400a874675fdb392e71",
+            "contentSha256": "sha256:554b9b58b748c460fe0ff443c25ce575bec47ebc40ef3400a874675fdb392e71",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/fancy/components/filter/pixelate-svg-filter.tsx",
+        "copyright": [
+          "Copyright (c) 2024 Daniel Petho"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/danielpetho/fancy/blob/f9f62c61207b2dd3210476dd98af3c9a5be24094/LICENSE",
+          "sha256": "sha256:39b0d9c112b4e80383da88660cbaa64972f741e80205c14fa1b779ff1989cc09",
+          "localPath": "registry/sources/fancy-components/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "pixelate-svg-filter",
+        "sourceHash": "sha256:9bd70fe84e2019238c3ddc4dbc9d80fc388f36f2840cfa1c8c13576dc8cbd7dd",
+        "contentHash": "sha256:9bd70fe84e2019238c3ddc4dbc9d80fc388f36f2840cfa1c8c13576dc8cbd7dd",
+        "structureHash": "sha256:1c3907c3c5f906f9c79508c651cae7cc29aed2a1d154d13d5b53497197897273"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kibo-qr-code",
+  "title": "QR Code",
+  "author": "Kibo UI",
+  "description": "Generates an SVG QR code from a string.",
+  "dependencies": [
+    "culori@4.0.2",
+    "qrcode@1.5.4"
+  ],
+  "devDependencies": [
+    "@types/culori@4.0.1",
+    "@types/qrcode@1.5.5"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-qr-code/index.tsx",
+      "content": "\"use client\";\n\nimport { formatHex, oklch } from \"culori\";\nimport QR from \"qrcode\";\nimport { type HTMLAttributes, useEffect, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type QRCodeProps = HTMLAttributes<HTMLDivElement> & {\n  \"aria-label\": string;\n  data: string;\n  foreground?: string;\n  background?: string;\n  robustness?: \"L\" | \"M\" | \"Q\" | \"H\";\n};\n\nconst getHex = (color: string, fallback: [number, number, number]) =>\n  formatHex(color.trim()) ??\n  formatHex(\n    oklch({ mode: \"oklch\", l: fallback[0], c: fallback[1], h: fallback[2] })\n  );\n\nexport const QRCode = ({\n  data,\n  foreground,\n  background,\n  robustness = \"M\",\n  className,\n  ...props\n}: QRCodeProps) => {\n  const [svg, setSVG] = useState<string | null>(null);\n\n  useEffect(() => {\n    let cancelled = false;\n    setSVG(null);\n\n    const generateQR = async () => {\n      try {\n        const styles = getComputedStyle(document.documentElement);\n        const foregroundColor =\n          foreground ?? styles.getPropertyValue(\"--foreground\");\n        const backgroundColor =\n          background ?? styles.getPropertyValue(\"--background\");\n\n        const foregroundHex = getHex(\n          foregroundColor,\n          [0.21, 0.006, 285.885]\n        );\n        const backgroundHex = getHex(backgroundColor, [0.985, 0, 0]);\n\n        const newSvg = await QR.toString(data, {\n          type: \"svg\",\n          color: {\n            dark: foregroundHex,\n            light: backgroundHex,\n          },\n          width: 200,\n          errorCorrectionLevel: robustness,\n          margin: 0,\n        });\n\n        if (!cancelled) {\n          setSVG(newSvg);\n        }\n      } catch (err) {\n        console.error(err);\n      }\n    };\n\n    generateQR();\n\n    return () => {\n      cancelled = true;\n    };\n  }, [data, foreground, background, robustness]);\n\n  if (!svg) {\n    return null;\n  }\n\n  return (\n    <div\n      className={cn(\"size-full\", \"[&_svg]:size-full\", className)}\n      // biome-ignore lint/security/noDangerouslySetInnerHtml: \"Required for SVG\"\n      dangerouslySetInnerHTML={{ __html: svg }}\n      role=\"img\"\n      {...props}\n    />\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/qr-code.tsx"
+    },
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-qr-code/server.tsx",
+      "content": "import QR from \"qrcode\";\nimport type { HTMLAttributes } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type QRCodeProps = HTMLAttributes<HTMLDivElement> & {\n  \"aria-label\": string;\n  data: string;\n  foreground: string;\n  background: string;\n  robustness?: \"L\" | \"M\" | \"Q\" | \"H\";\n};\n\nexport const QRCode = async ({\n  data,\n  foreground,\n  background,\n  robustness = \"M\",\n  className,\n  ...props\n}: QRCodeProps) => {\n  const svg = await QR.toString(data, {\n    type: \"svg\",\n    color: {\n      dark: foreground,\n      light: background,\n    },\n    width: 200,\n    errorCorrectionLevel: robustness,\n  });\n\n  if (!svg) {\n    throw new Error(\"Failed to generate QR code\");\n  }\n\n  return (\n    <div\n      className={cn(\"size-full\", \"[&_svg]:size-full\", className)}\n      // biome-ignore lint/security/noDangerouslySetInnerHtml: \"Required for SVG\"\n      dangerouslySetInnerHTML={{ __html: svg }}\n      role=\"img\"\n      {...props}\n    />\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/qr-code-server.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "qr",
+        "generator",
+        "svg"
+      ],
+      "renderer": "svg",
+      "preview": "previews/kibo-qr-code.tsx",
+      "source": {
+        "project": "Kibo UI",
+        "repository": "https://github.com/shadcnblocks/kibo",
+        "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kibo-qr-code/index.tsx",
+            "upstreamPath": "packages/qr-code/index.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/qr-code/index.tsx",
+            "upstreamSha256": "sha256:457ff60279903676499271a15ac51f3305ae6286d31408786f19ce12acefd1a6",
+            "contentSha256": "sha256:1b08bf4617c4a247155a58767e35e72bc873b05804591e6d9264047ba30fe145",
+            "changes": [
+              "Required an accessible label and defaulted the rendered QR container to an image role.",
+              "Cleared stale SVG output and ignored obsolete asynchronous completions when QR inputs change.",
+              "Parsed supported CSS color strings through Culori instead of silently replacing non-oklch values with defaults."
+            ]
+          },
+          {
+            "shippedPath": "components/kibo-qr-code/server.tsx",
+            "upstreamPath": "packages/qr-code/server.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/qr-code/server.tsx",
+            "upstreamSha256": "sha256:bfd86fba5ca902aae8d2893fbe0749b07425fd09e548e69e1d047121e32086dc",
+            "contentSha256": "sha256:765a15e5d3d21410847a7ae79b765fe0c1f4064bede3af859562cc9c75b11e1d",
+            "changes": [
+              "Required an accessible label and defaulted the rendered QR container to an image role."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/qr-code/index.tsx, packages/qr-code/server.tsx",
+        "copyright": [
+          "Copyright (c) 2023 — Present shadcnblocks"
+        ],
+        "evidence": {
+          "upstreamPath": "license.md",
+          "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+          "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+          "localPath": "registry/sources/kibo-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kibo-qr-code/index.tsx",
+          "change": "Required an accessible label, defaulted the client-rendered QR container to an image role, prevented stale asynchronous output after inputs change, and honored supported CSS color strings.",
+          "reason": "Ensure generated QR graphics have a caller-supplied accessible name, always reflect the latest inputs, and do not silently ignore valid caller-supplied colors."
+        },
+        {
+          "shippedPath": "components/kibo-qr-code/server.tsx",
+          "change": "Required an accessible label and defaulted the server-rendered QR container to an image role.",
+          "reason": "Keep client and server QR output equally identifiable to assistive technology."
+        }
+      ],
+      "dedupe": {
+        "family": "qr-code-generator",
+        "sourceHash": "sha256:79238d1e4b7a50f293ddfe631745f4307188392f96faaaf06cd98eef5e0807c7",
+        "contentHash": "sha256:e22e5070f87c975c51f3e1d2ed0c24ba46ae39cb804071a1e42b198db920d6ce",
+        "structureHash": "sha256:eb151369ac14c7637cef4df81ba1b296614b3f72340f4b05fb6e53a7fcae7af4"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

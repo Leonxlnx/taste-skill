@@ -1,0 +1,108 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-sparkles",
+  "title": "Sparkles",
+  "author": "pmndrs contributors",
+  "description": "Renders a bounded field of configurable animated shader particles.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/Sparkles.tsx",
+      "content": "import * as React from 'react'\nimport * as THREE from 'three'\nimport { useThree, useFrame, extend, ThreeElement, ThreeElements } from '@react-three/fiber'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\nimport { version } from '../helpers/constants'\n\nclass SparklesImplMaterial extends THREE.ShaderMaterial {\n  constructor() {\n    super({\n      uniforms: {\n        time: { value: 0 },\n        pixelRatio: { value: 1 },\n      },\n      vertexShader: /* glsl */ `\n        uniform float pixelRatio;\n        uniform float time;\n        attribute float size;  \n        attribute float speed;  \n        attribute float opacity;\n        attribute vec3 noise;\n        attribute vec3 color;\n        varying vec3 vColor;\n        varying float vOpacity;\n\n        void main() {\n          vec4 modelPosition = modelMatrix * vec4(position, 1.0);\n          modelPosition.y += sin(time * speed + modelPosition.x * noise.x * 100.0) * 0.2;\n          modelPosition.z += cos(time * speed + modelPosition.x * noise.y * 100.0) * 0.2;\n          modelPosition.x += cos(time * speed + modelPosition.x * noise.z * 100.0) * 0.2;\n          vec4 viewPosition = viewMatrix * modelPosition;\n          vec4 projectionPostion = projectionMatrix * viewPosition;\n          gl_Position = projectionPostion;\n          gl_PointSize = size * 25. * pixelRatio;\n          gl_PointSize *= (1.0 / - viewPosition.z);\n          vColor = color;\n          vOpacity = opacity;\n        }\n      `,\n      fragmentShader: /* glsl */ `\n        varying vec3 vColor;\n        varying float vOpacity;\n        void main() {\n          float distanceToCenter = distance(gl_PointCoord, vec2(0.5));\n          float strength = 0.05 / distanceToCenter - 0.1;\n          gl_FragColor = vec4(vColor, strength * vOpacity);\n          #include <tonemapping_fragment>\n          #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>\n        }\n      `,\n    })\n  }\n\n  get time() {\n    return this.uniforms.time.value as number\n  }\n  set time(value) {\n    this.uniforms.time.value = value\n  }\n  get pixelRatio() {\n    return this.uniforms.pixelRatio.value as number\n  }\n  set pixelRatio(value) {\n    this.uniforms.pixelRatio.value = value\n  }\n}\n\ndeclare module '@react-three/fiber' {\n  interface ThreeElements {\n    sparklesImplMaterial: ThreeElement<typeof SparklesImplMaterial>\n  }\n}\n\nconst isFloat32Array = (def: any): def is Float32Array => def && (def as Float32Array).constructor === Float32Array\n\nconst expandColor = (v: THREE.Color) => [v.r, v.g, v.b]\nconst isVector = (v: any): v is THREE.Vector2 | THREE.Vector3 | THREE.Vector4 =>\n  v instanceof THREE.Vector2 || v instanceof THREE.Vector3 || v instanceof THREE.Vector4\n\nconst normalizeVector = (v: any): number[] => {\n  if (Array.isArray(v)) return v\n  else if (isVector(v)) return v.toArray()\n  return [v, v, v] as number[]\n}\n\nfunction usePropAsIsOrAsAttribute<T extends any>(\n  count: number,\n  prop?: T | Float32Array,\n  setDefault?: (v: T) => number\n) {\n  return React.useMemo(() => {\n    if (prop !== undefined) {\n      if (isFloat32Array(prop)) {\n        return prop as Float32Array\n      } else {\n        if (prop instanceof THREE.Color) {\n          const a = Array.from({ length: count * 3 }, () => expandColor(prop)).flat()\n          return Float32Array.from(a)\n        } else if (isVector(prop) || Array.isArray(prop)) {\n          const a = Array.from({ length: count * 3 }, () => normalizeVector(prop)).flat()\n          return Float32Array.from(a)\n        }\n        return Float32Array.from({ length: count }, () => prop as number)\n      }\n    }\n    return Float32Array.from({ length: count }, setDefault!)\n  }, [prop])\n}\n\nexport type SparklesProps = Omit<ThreeElements['points'], 'ref'> & {\n  /** Number of particles (default: 100) */\n  count?: number\n  /** Speed of particles (default: 1) */\n  speed?: number | Float32Array\n  /** Opacity of particles (default: 1) */\n  opacity?: number | Float32Array\n  /** Color of particles (default: 100) */\n  color?: THREE.ColorRepresentation | Float32Array\n  /** Size of particles (default: randomized between 0 and 1) */\n  size?: number | Float32Array\n  /** The space the particles occupy (default: 1) */\n  scale?: number | [number, number, number] | THREE.Vector3\n  /** Movement factor (default: 1) */\n  noise?: number | [number, number, number] | THREE.Vector3 | Float32Array\n}\n\nexport const Sparkles: ForwardRefComponent<SparklesProps, THREE.Points> = /* @__PURE__ */ React.forwardRef<\n  THREE.Points,\n  SparklesProps\n>(({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, children, ...props }, forwardRef) => {\n  React.useMemo(() => extend({ SparklesImplMaterial }), [])\n  const ref = React.useRef<THREE.Points>(null!)\n  const dpr = useThree((state) => state.viewport.dpr)\n\n  const _scale = normalizeVector(scale)\n  const positions = React.useMemo(\n    () => Float32Array.from(Array.from({ length: count }, () => _scale.map(THREE.MathUtils.randFloatSpread)).flat()),\n    [count, ..._scale]\n  )\n\n  const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)\n  const opacities = usePropAsIsOrAsAttribute<number>(count, opacity)\n  const speeds = usePropAsIsOrAsAttribute<number>(count, speed)\n  const noises = usePropAsIsOrAsAttribute<typeof noise>(count * 3, noise)\n  const colors = usePropAsIsOrAsAttribute<THREE.ColorRepresentation>(\n    color === undefined ? count * 3 : count,\n    !isFloat32Array(color) ? new THREE.Color(color) : color,\n    () => 1\n  )\n\n  useFrame((state) => {\n    if (ref.current && ref.current.material) (ref.current.material as any).time = state.clock.elapsedTime\n  })\n\n  React.useImperativeHandle(forwardRef, () => ref.current, [])\n\n  return (\n    <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={ref}>\n      <bufferGeometry>\n        <bufferAttribute attach=\"attributes-position\" args={[positions, 3]} />\n        <bufferAttribute attach=\"attributes-size\" args={[sizes, 1]} />\n        <bufferAttribute attach=\"attributes-opacity\" args={[opacities, 1]} />\n        <bufferAttribute attach=\"attributes-speed\" args={[speeds, 1]} />\n        <bufferAttribute attach=\"attributes-color\" args={[colors, 3]} />\n        <bufferAttribute attach=\"attributes-noise\" args={[noises, 3]} />\n      </bufferGeometry>\n      {children ? children : <sparklesImplMaterial transparent pixelRatio={dpr} depthWrite={false} />}\n    </points>\n  )\n})\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/Sparkles.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/constants.ts",
+      "content": "import { REVISION } from 'three'\n\nconst getVersion = () => parseInt(REVISION.replace(/\\D+/g, ''))\n\nexport const version = /* @__PURE__ */ getVersion()\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/constants.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "particles",
+        "sparkles",
+        "shader",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-sparkles.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/Sparkles.tsx",
+            "upstreamPath": "src/core/Sparkles.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/Sparkles.tsx",
+            "upstreamSha256": "sha256:0ac8f2babd85faaa962fd689d884d23e7385ebc25457a5822cc4bf4b50d0a30d",
+            "contentSha256": "sha256:0ac8f2babd85faaa962fd689d884d23e7385ebc25457a5822cc4bf4b50d0a30d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/constants.ts",
+            "upstreamPath": "src/helpers/constants.ts",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/constants.ts",
+            "upstreamSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "contentSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/Sparkles.tsx, src/helpers/ts-utils.tsx, src/helpers/constants.ts",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "bounded-sparkle-particle-field",
+        "sourceHash": "sha256:0a70577eee023b308fb98cfc57b3095b837222216d2277947fcf83be8cdaab35",
+        "contentHash": "sha256:0a70577eee023b308fb98cfc57b3095b837222216d2277947fcf83be8cdaab35",
+        "structureHash": "sha256:ed7b67faf3d27638f3688958829ae510d680da92d7a9961ed58cb60aaa394cfe"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

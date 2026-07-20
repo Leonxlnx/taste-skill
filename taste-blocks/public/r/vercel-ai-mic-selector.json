@@ -1,0 +1,98 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-mic-selector",
+  "title": "Microphone Selector",
+  "author": "Vercel",
+  "description": "A searchable audio-input selector with permission and device-change handling.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2",
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "command",
+    "popover",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/mic-selector.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  Command,\r\n  CommandEmpty,\r\n  CommandInput,\r\n  CommandItem,\r\n  CommandList,\r\n} from \"@/components/ui/command\";\r\nimport {\r\n  Popover,\r\n  PopoverContent,\r\n  PopoverTrigger,\r\n} from \"@/components/ui/popover\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { ChevronsUpDownIcon } from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\n\r\nconst deviceIdRegex = /\\(([\\da-fA-F]{4}:[\\da-fA-F]{4})\\)$/;\r\n\r\ninterface MicSelectorContextType {\r\n  data: MediaDeviceInfo[];\r\n  value: string | undefined;\r\n  onValueChange?: (value: string) => void;\r\n  open: boolean;\r\n  onOpenChange?: (open: boolean) => void;\r\n  width: number;\r\n  setWidth?: (width: number) => void;\r\n}\r\n\r\nconst MicSelectorContext = createContext<MicSelectorContextType>({\r\n  data: [],\r\n  onOpenChange: undefined,\r\n  onValueChange: undefined,\r\n  open: false,\r\n  setWidth: undefined,\r\n  value: undefined,\r\n  width: 200,\r\n});\r\n\r\nexport const useAudioDevices = () => {\r\n  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);\r\n  const [loading, setLoading] = useState(true);\r\n  const [error, setError] = useState<string | null>(null);\r\n  const [hasPermission, setHasPermission] = useState(false);\n\n  const loadDevicesWithoutPermission = useCallback(async () => {\n    const mediaDevices = navigator.mediaDevices;\n    if (!mediaDevices) {\n      setDevices([]);\n      setError(\"Audio devices are unavailable in this browser\");\n      setLoading(false);\n      return;\n    }\n\n    try {\n      setLoading(true);\r\n      setError(null);\r\n\r\n      const deviceList = await mediaDevices.enumerateDevices();\n      const audioInputs = deviceList.filter(\r\n        (device) => device.kind === \"audioinput\"\r\n      );\r\n\r\n      setDevices(audioInputs);\r\n    } catch (caughtError) {\r\n      const message =\r\n        caughtError instanceof Error\r\n          ? caughtError.message\r\n          : \"Failed to get audio devices\";\r\n\r\n      setError(message);\r\n      console.error(\"Error getting audio devices:\", message);\r\n    } finally {\r\n      setLoading(false);\r\n    }\r\n  }, []);\r\n\r\n  const loadDevicesWithPermission = useCallback(async () => {\n    if (loading) {\n      return;\n    }\n\n    const mediaDevices = navigator.mediaDevices;\n    if (!mediaDevices) {\n      setDevices([]);\n      setError(\"Audio devices are unavailable in this browser\");\n      setLoading(false);\n      return;\n    }\n\n    try {\n      setLoading(true);\r\n      setError(null);\r\n\r\n      const tempStream = await mediaDevices.getUserMedia({\n        audio: true,\r\n      });\r\n\r\n      for (const track of tempStream.getTracks()) {\r\n        track.stop();\r\n      }\r\n\r\n      const deviceList = await mediaDevices.enumerateDevices();\n      const audioInputs = deviceList.filter(\r\n        (device) => device.kind === \"audioinput\"\r\n      );\r\n\r\n      setDevices(audioInputs);\r\n      setHasPermission(true);\r\n    } catch (caughtError) {\r\n      const message =\r\n        caughtError instanceof Error\r\n          ? caughtError.message\r\n          : \"Failed to get audio devices\";\r\n\r\n      setError(message);\r\n      console.error(\"Error getting audio devices:\", message);\r\n    } finally {\r\n      setLoading(false);\r\n    }\r\n  }, [loading]);\r\n\r\n  useEffect(() => {\r\n    loadDevicesWithoutPermission();\r\n  }, [loadDevicesWithoutPermission]);\r\n\r\n  useEffect(() => {\n    const mediaDevices = navigator.mediaDevices;\n    if (!mediaDevices) {\n      return;\n    }\n\n    const handleDeviceChange = () => {\n      if (hasPermission) {\r\n        loadDevicesWithPermission();\r\n      } else {\r\n        loadDevicesWithoutPermission();\r\n      }\r\n    };\r\n\r\n    mediaDevices.addEventListener(\"devicechange\", handleDeviceChange);\n\r\n    return () => {\r\n      mediaDevices.removeEventListener(\n        \"devicechange\",\r\n        handleDeviceChange\r\n      );\r\n    };\r\n  }, [hasPermission, loadDevicesWithPermission, loadDevicesWithoutPermission]);\r\n\r\n  return {\r\n    devices,\r\n    error,\r\n    hasPermission,\r\n    loadDevices: loadDevicesWithPermission,\r\n    loading,\r\n  };\r\n};\r\n\r\nexport type MicSelectorProps = ComponentProps<typeof Popover> & {\r\n  defaultValue?: string;\r\n  value?: string | undefined;\r\n  onValueChange?: (value: string | undefined) => void;\r\n  open?: boolean;\r\n  onOpenChange?: (open: boolean) => void;\r\n};\r\n\r\nexport const MicSelector = ({\r\n  defaultValue,\r\n  value: controlledValue,\r\n  onValueChange: controlledOnValueChange,\r\n  defaultOpen = false,\r\n  open: controlledOpen,\r\n  onOpenChange: controlledOnOpenChange,\r\n  ...props\r\n}: MicSelectorProps) => {\r\n  const [value, onValueChange] = useControllableState<string | undefined>({\r\n    defaultProp: defaultValue,\r\n    onChange: controlledOnValueChange,\r\n    prop: controlledValue,\r\n  });\r\n  const [open, onOpenChange] = useControllableState({\r\n    defaultProp: defaultOpen,\r\n    onChange: controlledOnOpenChange,\r\n    prop: controlledOpen,\r\n  });\r\n  const [width, setWidth] = useState(200);\r\n  const { devices, loading, hasPermission, loadDevices } = useAudioDevices();\r\n\r\n  useEffect(() => {\r\n    if (open && !hasPermission && !loading) {\r\n      loadDevices();\r\n    }\r\n  }, [open, hasPermission, loading, loadDevices]);\r\n\r\n  const contextValue = useMemo(\r\n    () => ({\r\n      data: devices,\r\n      onOpenChange,\r\n      onValueChange,\r\n      open,\r\n      setWidth,\r\n      value,\r\n      width,\r\n    }),\r\n    [devices, onOpenChange, onValueChange, open, setWidth, value, width]\r\n  );\r\n\r\n  return (\r\n    <MicSelectorContext.Provider value={contextValue}>\r\n      <Popover {...props} onOpenChange={onOpenChange} open={open} />\r\n    </MicSelectorContext.Provider>\r\n  );\r\n};\r\n\r\nexport type MicSelectorTriggerProps = ComponentProps<typeof Button>;\r\n\r\nexport const MicSelectorTrigger = ({\r\n  children,\r\n  ...props\r\n}: MicSelectorTriggerProps) => {\r\n  const { setWidth } = useContext(MicSelectorContext);\r\n  const ref = useRef<HTMLButtonElement>(null);\r\n\r\n  useEffect(() => {\r\n    // Create a ResizeObserver to detect width changes\r\n    const resizeObserver = new ResizeObserver((entries) => {\r\n      for (const entry of entries) {\r\n        const newWidth = (entry.target as HTMLElement).offsetWidth;\r\n        if (newWidth) {\r\n          setWidth?.(newWidth);\r\n        }\r\n      }\r\n    });\r\n\r\n    if (ref.current) {\r\n      resizeObserver.observe(ref.current);\r\n    }\r\n\r\n    // Clean up the observer when component unmounts\r\n    return () => {\r\n      resizeObserver.disconnect();\r\n    };\r\n  }, [setWidth]);\r\n\r\n  return (\r\n    <PopoverTrigger asChild>\r\n      <Button variant=\"outline\" {...props} ref={ref}>\r\n        {children}\r\n        <ChevronsUpDownIcon\r\n          className=\"shrink-0 text-muted-foreground\"\r\n          size={16}\r\n        />\r\n      </Button>\r\n    </PopoverTrigger>\r\n  );\r\n};\r\n\r\nexport type MicSelectorContentProps = ComponentProps<typeof Command> & {\r\n  popoverOptions?: ComponentProps<typeof PopoverContent>;\r\n};\r\n\r\nexport const MicSelectorContent = ({\r\n  className,\r\n  popoverOptions,\r\n  ...props\r\n}: MicSelectorContentProps) => {\r\n  const { width, onValueChange, value } = useContext(MicSelectorContext);\r\n\r\n  return (\r\n    <PopoverContent\r\n      className={cn(\"p-0\", className)}\r\n      style={{ width }}\r\n      {...popoverOptions}\r\n    >\r\n      <Command onValueChange={onValueChange} value={value} {...props} />\r\n    </PopoverContent>\r\n  );\r\n};\r\n\r\nexport type MicSelectorInputProps = ComponentProps<typeof CommandInput> & {\r\n  value?: string;\r\n  defaultValue?: string;\r\n  onValueChange?: (value: string) => void;\r\n};\r\n\r\nexport const MicSelectorInput = ({ ...props }: MicSelectorInputProps) => (\r\n  <CommandInput placeholder=\"Search microphones...\" {...props} />\r\n);\r\n\r\nexport type MicSelectorListProps = Omit<\r\n  ComponentProps<typeof CommandList>,\r\n  \"children\"\r\n> & {\r\n  children: (devices: MediaDeviceInfo[]) => ReactNode;\r\n};\r\n\r\nexport const MicSelectorList = ({\r\n  children,\r\n  ...props\r\n}: MicSelectorListProps) => {\r\n  const { data } = useContext(MicSelectorContext);\r\n\r\n  return <CommandList {...props}>{children(data)}</CommandList>;\r\n};\r\n\r\nexport type MicSelectorEmptyProps = ComponentProps<typeof CommandEmpty>;\r\n\r\nexport const MicSelectorEmpty = ({\r\n  children = \"No microphone found.\",\r\n  ...props\r\n}: MicSelectorEmptyProps) => <CommandEmpty {...props}>{children}</CommandEmpty>;\r\n\r\nexport type MicSelectorItemProps = ComponentProps<typeof CommandItem>;\r\n\r\nexport const MicSelectorItem = (props: MicSelectorItemProps) => {\r\n  const { onValueChange, onOpenChange } = useContext(MicSelectorContext);\r\n\r\n  const handleSelect = useCallback(\r\n    (currentValue: string) => {\r\n      onValueChange?.(currentValue);\r\n      onOpenChange?.(false);\r\n    },\r\n    [onValueChange, onOpenChange]\r\n  );\r\n\r\n  return <CommandItem onSelect={handleSelect} {...props} />;\r\n};\r\n\r\nexport type MicSelectorLabelProps = ComponentProps<\"span\"> & {\r\n  device: MediaDeviceInfo;\r\n};\r\n\r\nexport const MicSelectorLabel = ({\r\n  device,\r\n  className,\r\n  ...props\r\n}: MicSelectorLabelProps) => {\r\n  const matches = device.label.match(deviceIdRegex);\r\n\r\n  if (!matches) {\r\n    return (\r\n      <span className={className} {...props}>\r\n        {device.label}\r\n      </span>\r\n    );\r\n  }\r\n\r\n  const [, deviceId] = matches;\r\n  const name = device.label.replace(deviceIdRegex, \"\");\r\n\r\n  return (\r\n    <span className={className} {...props}>\r\n      <span>{name}</span>\r\n      <span className=\"text-muted-foreground\"> ({deviceId})</span>\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type MicSelectorValueProps = ComponentProps<\"span\">;\r\n\r\nexport const MicSelectorValue = ({\r\n  className,\r\n  ...props\r\n}: MicSelectorValueProps) => {\r\n  const { data, value } = useContext(MicSelectorContext);\r\n  const currentDevice = data.find((d) => d.deviceId === value);\r\n\r\n  if (!currentDevice) {\r\n    return (\r\n      <span className={cn(\"flex-1 text-start\", className)} {...props}>\n        Select microphone...\r\n      </span>\r\n    );\r\n  }\r\n\r\n  return (\r\n    <MicSelectorLabel\r\n      className={cn(\"flex-1 text-start\", className)}\n      device={currentDevice}\r\n      {...props}\r\n    />\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/mic-selector.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "microphone",
+        "device",
+        "permission",
+        "selector"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-mic-selector.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/mic-selector.tsx",
+            "upstreamPath": "packages/elements/src/mic-selector.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/mic-selector.tsx",
+            "upstreamSha256": "sha256:3b69b527315f81114fb99518f5078a183092f16ad4cf4105ef94861da1724dce",
+            "contentSha256": "sha256:bf82744fcb69cdaeca6585915b73df1464c0acdbfcf4cc2b4ea6bf899b9202c0",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added a guard and unavailable state for browsers without navigator.mediaDevices.",
+              "Changed text alignment to logical RTL-aware utilities."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/mic-selector.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/mic-selector.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added a guard and unavailable state for browsers without navigator.mediaDevices. Changed text alignment to logical RTL-aware utilities.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "audio-input-device-selector",
+        "sourceHash": "sha256:6bd24756c76edfbf4684d71f3dd41921c37ad44e8dedab555080d74b8e636a38",
+        "contentHash": "sha256:ea736541982f62c1a419f3b025541fbfaf3b36b48df4f0a43d21cb9bd9de6d5b",
+        "structureHash": "sha256:f9ac5f8ea1c3ac4573e25b0a763623305e2b02186e3b1bc0abed6165ef0fe0f0"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

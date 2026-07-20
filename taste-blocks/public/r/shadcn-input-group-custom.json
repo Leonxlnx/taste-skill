@@ -1,0 +1,203 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-input-group-custom",
+  "title": "Autosizing Input Group",
+  "author": "shadcn",
+  "description": "Combines an autosizing textarea with a submit action in one input group.",
+  "dependencies": [
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "radix-ui@1.4.3",
+    "react-textarea-autosize@8.5.9",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/shadcn-input-group-custom/input-group-custom.tsx",
+      "content": "\"use client\"\n\nimport type * as React from \"react\"\nimport TextareaAutosize from \"react-textarea-autosize\"\n\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n} from \"../radix-nova/input-group\"\n\nexport default function InputGroupCustom({\n  onSubmit,\n  submitLabel = \"Submit\",\n  textareaProps,\n}: {\n  onSubmit: React.FormEventHandler<HTMLFormElement>\n  submitLabel?: React.ReactNode\n  textareaProps?: React.ComponentProps<typeof TextareaAutosize>\n}) {\n  return (\n    <form className=\"grid w-full max-w-sm gap-6\" onSubmit={onSubmit}>\n      <InputGroup>\n        <TextareaAutosize\n          {...textareaProps}\n          data-slot=\"input-group-control\"\n          className={`flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none motion-reduce:transition-none md:text-sm ${textareaProps?.className ?? \"\"}`}\n        />\n        <InputGroupAddon align=\"block-end\">\n          <InputGroupButton\n            type=\"submit\"\n            className=\"ms-auto\"\n            size=\"sm\"\n            variant=\"default\"\n          >\n            {submitLabel}\n          </InputGroupButton>\n        </InputGroupAddon>\n      </InputGroup>\n    </form>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/shadcn-input-group-custom/input-group-custom.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/input-group.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"../lib/utils\"\nimport { Button } from \"./button\"\nimport { Input } from \"./input\"\nimport { Textarea } from \"./textarea\"\n\nfunction InputGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"input-group\"\n      role=\"group\"\n      className={cn(\n        \"group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pe-1.5 has-[>[data-align=inline-start]]:[&>input]:ps-1.5\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nconst inputGroupAddonVariants = cva(\n  \"flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      align: {\n        \"inline-start\":\n          \"order-first ps-2 has-[>button]:ms-[-0.3rem] has-[>kbd]:ms-[-0.15rem]\",\n        \"inline-end\":\n          \"order-last pe-2 has-[>button]:me-[-0.3rem] has-[>kbd]:me-[-0.15rem]\",\n        \"block-start\":\n          \"order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2\",\n        \"block-end\":\n          \"order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2\",\n      },\n    },\n    defaultVariants: {\n      align: \"inline-start\",\n    },\n  },\n)\n\nfunction InputGroupAddon({\n  className,\n  align = \"inline-start\",\n  ...props\n}: React.ComponentProps<\"div\"> & VariantProps<typeof inputGroupAddonVariants>) {\n  return (\n    <div\n      role=\"group\"\n      data-slot=\"input-group-addon\"\n      data-align={align}\n      className={cn(inputGroupAddonVariants({ align }), className)}\n      onClick={(e) => {\n        if ((e.target as HTMLElement).closest(\"button\")) {\n          return\n        }\n        e.currentTarget.parentElement?.querySelector(\"input\")?.focus()\n      }}\n      {...props}\n    />\n  )\n}\n\nconst inputGroupButtonVariants = cva(\n  \"flex items-center gap-2 text-sm shadow-none\",\n  {\n    variants: {\n      size: {\n        xs: \"h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5\",\n        sm: \"\",\n        \"icon-xs\":\n          \"size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0\",\n        \"icon-sm\": \"size-8 p-0 has-[>svg]:p-0\",\n      },\n    },\n    defaultVariants: {\n      size: \"xs\",\n    },\n  },\n)\n\nfunction InputGroupButton({\n  className,\n  type = \"button\",\n  variant = \"ghost\",\n  size = \"xs\",\n  ...props\n}: Omit<React.ComponentProps<typeof Button>, \"size\"> &\n  VariantProps<typeof inputGroupButtonVariants>) {\n  return (\n    <Button\n      type={type}\n      data-size={size}\n      variant={variant}\n      className={cn(inputGroupButtonVariants({ size }), className)}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupText({ className, ...props }: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      className={cn(\n        \"flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupInput({\n  className,\n  ...props\n}: React.ComponentProps<\"input\">) {\n  return (\n    <Input\n      data-slot=\"input-group-control\"\n      className={cn(\n        \"flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction InputGroupTextarea({\n  className,\n  ...props\n}: React.ComponentProps<\"textarea\">) {\n  return (\n    <Textarea\n      data-slot=\"input-group-control\"\n      className={cn(\n        \"flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupText,\n  InputGroupInput,\n  InputGroupTextarea,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/input-group.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/button.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none motion-reduce:transition-none motion-reduce:transform-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/80\",\n        outline:\n          \"border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground\",\n        ghost:\n          \"hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50\",\n        destructive:\n          \"bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean\n  }) {\n  const Comp = asChild ? Slot.Root : \"button\"\n\n  return (\n    <Comp\n      data-slot=\"button\"\n      data-variant={variant}\n      data-size={size}\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/input.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Input({ className, type, ...props }: React.ComponentProps<\"input\">) {\n  return (\n    <input\n      type={type}\n      data-slot=\"input\"\n      className={cn(\n        \"h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Input }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/input.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/textarea.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction Textarea({ className, ...props }: React.ComponentProps<\"textarea\">) {\n  return (\n    <textarea\n      data-slot=\"textarea\"\n      className={cn(\n        \"flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport { Textarea }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/textarea.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "textarea",
+        "autosize",
+        "submit"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-input-group-custom.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/shadcn-input-group-custom/input-group-custom.tsx",
+            "upstreamPath": "apps/v4/examples/radix/input-group-custom.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/input-group-custom.tsx",
+            "upstreamSha256": "sha256:94495a68c5e3396488cf9abf7b5d6386f5896544a417ffe0a08b7c8b755592de",
+            "contentSha256": "sha256:6ea3a4c20911b81efb55a0537e410c87d7ac71fdf0754977e78fc452e91fb1df",
+            "changes": [
+              "Changed the generated style import to a bundled relative path.",
+              "Turned the fixed fixture into a real form with caller-provided submit handling and textarea props, logical alignment, and a reduced-motion transition override."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/input-group.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/input-group.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input-group.tsx",
+            "upstreamSha256": "sha256:c6a2f723b6793d673028016507c0c6307f89c7553f552ea5770a755907cae9b0",
+            "contentSha256": "sha256:1c93ff2e4b68af37057d718eac5a53be27903b2f85341968891e0d1f17ae7919",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/button.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+            "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+            "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present.",
+              "Disabled transform transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/input.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/input.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input.tsx",
+            "upstreamSha256": "sha256:cace577b40968ce734f3b5daf42748e2eab820e380822bfc4e1256b2318135d7",
+            "contentSha256": "sha256:dcf4d0c7e714734d91d70a26d3de2140958ea3751a79c13adbb873cb133352c9",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/textarea.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/textarea.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/textarea.tsx",
+            "upstreamSha256": "sha256:f58c44c6898edfc1c533284329efcd83428c5cb4bd2d666213c273852d089dd5",
+            "contentSha256": "sha256:568c2c73abe79ea003e0f16f4c4ed5b20f0c0a0540a4cb68de776e129756aa0c",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/examples/radix/input-group-custom.tsx, apps/v4/registry/bases/radix/ui/input-group.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/input.tsx, apps/v4/registry/bases/radix/ui/textarea.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/shadcn-input-group-custom/input-group-custom.tsx",
+          "change": "Changed the generated style import to a bundled relative path. Turned the fixed fixture into a real form with caller-provided submit handling and textarea props, logical alignment, and a reduced-motion transition override.",
+          "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+        },
+        {
+          "shippedPath": "components/radix-nova/input-group.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/button.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/input.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/radix-nova/textarea.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+          "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+        }
+      ],
+      "dedupe": {
+        "family": "autosizing-textarea-submit",
+        "sourceHash": "sha256:457ad81c3736723fa9c3345d2094a5f869049f0219918afd3ad82be6699ccdfb",
+        "contentHash": "sha256:00ec4550db2080d654ef2a08b729bc25879f4927729c2b2565c43465ee5ae1d4",
+        "structureHash": "sha256:43ee888139fcf8edd89733c77f31f27470ceef3e9d2002b0effe6fe0b9e6ef4d"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

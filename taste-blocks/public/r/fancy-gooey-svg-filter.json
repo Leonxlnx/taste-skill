@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fancy-gooey-svg-filter",
+  "title": "Gooey SVG Filter",
+  "author": "Daniel Petho",
+  "description": "Defines a configurable SVG blur and color-matrix filter for caller-provided content.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/fancy-components/components/fancy-gooey-svg-filter/gooey-svg-filter.tsx",
+      "content": "const GooeySvgFilter = ({\n  id = \"gooey-filter\",\n  strength = 10,\n}: {\n  id?: string\n  strength?: number\n}) => {\n  return (\n    <svg className=\"hidden absolute\">\n      <defs>\n        <filter id={id}>\n          <feGaussianBlur\n            in=\"SourceGraphic\"\n            stdDeviation={strength}\n            result=\"blur-sm\"\n          />\n          <feColorMatrix\n            in=\"blur-sm\"\n            type=\"matrix\"\n            values=\"1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9\"\n            result=\"goo\"\n          />\n          <feComposite in=\"SourceGraphic\" in2=\"goo\" operator=\"atop\" />\n        </filter>\n      </defs>\n    </svg>\n  )\n}\n\nexport default GooeySvgFilter\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/fancy-gooey-svg-filter.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "svg",
+        "filter",
+        "gooey",
+        "blur"
+      ],
+      "renderer": "svg",
+      "preview": "previews/fancy-gooey-svg-filter.tsx",
+      "source": {
+        "project": "Fancy Components",
+        "repository": "https://github.com/danielpetho/fancy",
+        "revision": "f9f62c61207b2dd3210476dd98af3c9a5be24094",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/fancy-gooey-svg-filter/gooey-svg-filter.tsx",
+            "upstreamPath": "src/fancy/components/filter/gooey-svg-filter.tsx",
+            "permalink": "https://github.com/danielpetho/fancy/blob/f9f62c61207b2dd3210476dd98af3c9a5be24094/src/fancy/components/filter/gooey-svg-filter.tsx",
+            "upstreamSha256": "sha256:d06a3858bb66a1537dabfd3dcb30886997da974a3e1f6d76f9855dc519fcfc90",
+            "contentSha256": "sha256:d06a3858bb66a1537dabfd3dcb30886997da974a3e1f6d76f9855dc519fcfc90",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/fancy/components/filter/gooey-svg-filter.tsx",
+        "copyright": [
+          "Copyright (c) 2024 Daniel Petho"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/danielpetho/fancy/blob/f9f62c61207b2dd3210476dd98af3c9a5be24094/LICENSE",
+          "sha256": "sha256:39b0d9c112b4e80383da88660cbaa64972f741e80205c14fa1b779ff1989cc09",
+          "localPath": "registry/sources/fancy-components/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "gooey-svg-filter",
+        "sourceHash": "sha256:0e1b8da4ec83a6c2c5cb54c99a65fa0080170f6ba618b288fb6b3a9eb2d75a88",
+        "contentHash": "sha256:0e1b8da4ec83a6c2c5cb54c99a65fa0080170f6ba618b288fb6b3a9eb2d75a88",
+        "structureHash": "sha256:160cfc987b4d787aab086a3d3030360db7d8719e2de2b89c288ec0a21f4fb490"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,131 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-postprocessing-tilt-shift",
+  "title": "Tilt Shift",
+  "author": "pmndrs and react-postprocessing contributors",
+  "description": "Applies directional depth-like blur with bounded shader samples.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "postprocessing@6.36.6",
+    "three@0.172.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/effects/TiltShift2.tsx",
+      "content": "'use client'\n\nimport { Uniform } from 'three'\nimport { BlendFunction, Effect, EffectAttribute } from 'postprocessing'\nimport { wrapEffect } from '../util'\n\nconst TiltShiftShader = {\n  fragmentShader: `\n\n    // original shader by Evan Wallace\n\n    #define MAX_ITERATIONS 100\n\n    uniform float blur;\n    uniform float taper;\n    uniform vec2 start;\n    uniform vec2 end;\n    uniform vec2 direction;\n    uniform int samples;\n\n    float random(vec3 scale, float seed) {\n        /* use the fragment position for a different seed per-pixel */\n        return fract(sin(dot(gl_FragCoord.xyz + seed, scale)) * 43758.5453 + seed);\n    }\n\n    void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {\n        vec4 color = vec4(0.0);\n        float total = 0.0;\n        vec2 startPixel = vec2(start.x * resolution.x, start.y * resolution.y);\n        vec2 endPixel = vec2(end.x * resolution.x, end.y * resolution.y);\n        float f_samples = float(samples);\n        float half_samples = f_samples / 2.0;\n\n        // use screen diagonal to normalize blur radii\n        float maxScreenDistance = distance(vec2(0.0), resolution); // diagonal distance\n        float gradientRadius = taper * (maxScreenDistance);\n        float blurRadius = blur * (maxScreenDistance / 16.0);\n\n        /* randomize the lookup values to hide the fixed number of samples */\n        float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0);\n        vec2 normal = normalize(vec2(startPixel.y - endPixel.y, endPixel.x - startPixel.x));\n        float radius = smoothstep(0.0, 1.0, abs(dot(uv * resolution - startPixel, normal)) / gradientRadius) * blurRadius;\n\n        #pragma unroll_loop_start\n        for (int i = 0; i <= MAX_ITERATIONS; i++) {\n            if (i >= samples) { break; } // return early if over sample count\n            float f_i = float(i);\n            float s_i = -half_samples + f_i;\n            float percent = (s_i + offset - 0.5) / half_samples;\n            float weight = 1.0 - abs(percent);\n            vec4 sample_i = texture2D(inputBuffer, uv + normalize(direction) / resolution * percent * radius);\n            /* switch to pre-multiplied alpha to correctly blur transparent images */\n            sample_i.rgb *= sample_i.a;\n            color += sample_i * weight;\n            total += weight;\n        }\n        #pragma unroll_loop_end\n\n        outputColor = color / total;\n\n        /* switch back from pre-multiplied alpha */\n        outputColor.rgb /= outputColor.a + 0.00001;\n    }\n    `,\n}\n\nexport class TiltShiftEffect extends Effect {\n  constructor({\n    blendFunction = BlendFunction.NORMAL,\n    blur = 0.15, // [0, 1], can go beyond 1 for extra\n    taper = 0.5, // [0, 1], can go beyond 1 for extra\n    start = [0.5, 0.0], // [0,1] percentage x,y of screenspace\n    end = [0.5, 1.0], // [0,1] percentage x,y of screenspace\n    samples = 10.0, // number of blur samples\n    direction = [1, 1], // direction of blur\n  } = {}) {\n    super('TiltShiftEffect', TiltShiftShader.fragmentShader, {\n      blendFunction,\n      attributes: EffectAttribute.CONVOLUTION,\n      uniforms: new Map<string, Uniform<number | number[]>>([\n        ['blur', new Uniform(blur)],\n        ['taper', new Uniform(taper)],\n        ['start', new Uniform(start)],\n        ['end', new Uniform(end)],\n        ['samples', new Uniform(samples)],\n        ['direction', new Uniform(direction)],\n      ]),\n    })\n  }\n}\n\nexport const TiltShift2 = /* @__PURE__ */ wrapEffect(TiltShiftEffect, { blendFunction: BlendFunction.NORMAL })\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/effects/TiltShift2.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/EffectComposer.tsx",
+      "content": "'use client'\n\nimport type { TextureDataType, Group, Camera, Scene } from 'three'\nimport { HalfFloatType, NoToneMapping } from 'three'\nimport {\n  type JSX,\n  memo,\n  forwardRef,\n  useMemo,\n  useEffect,\n  useLayoutEffect,\n  createContext,\n  useRef,\n  useImperativeHandle,\n} from 'react'\nimport { useThree, useFrame, type Instance } from '@react-three/fiber'\nimport {\n  EffectComposer as EffectComposerImpl,\n  RenderPass,\n  EffectPass,\n  NormalPass,\n  DepthDownsamplingPass,\n  Effect,\n  Pass,\n  EffectAttribute,\n} from 'postprocessing'\n\nexport const EffectComposerContext = /* @__PURE__ */ createContext<{\n  composer: EffectComposerImpl\n  normalPass: NormalPass | null\n  downSamplingPass: DepthDownsamplingPass | null\n  camera: Camera\n  scene: Scene\n  resolutionScale?: number\n}>(null!)\n\nexport type EffectComposerProps = {\n  enabled?: boolean\n  children: JSX.Element | JSX.Element[]\n  depthBuffer?: boolean\n  /** Only used for SSGI currently, leave it disabled for everything else unless it's needed */\n  enableNormalPass?: boolean\n  stencilBuffer?: boolean\n  autoClear?: boolean\n  resolutionScale?: number\n  multisampling?: number\n  frameBufferType?: TextureDataType\n  renderPriority?: number\n  camera?: Camera\n  scene?: Scene\n}\n\nconst isConvolution = (effect: Effect): boolean =>\n  (effect.getAttributes() & EffectAttribute.CONVOLUTION) === EffectAttribute.CONVOLUTION\n\nexport const EffectComposer = /* @__PURE__ */ memo(\n  /* @__PURE__ */ forwardRef<EffectComposerImpl, EffectComposerProps>(\n    (\n      {\n        children,\n        camera: _camera,\n        scene: _scene,\n        resolutionScale,\n        enabled = true,\n        renderPriority = 1,\n        autoClear = true,\n        depthBuffer,\n        enableNormalPass,\n        stencilBuffer,\n        multisampling = 4,\n        frameBufferType = HalfFloatType,\n      },\n      ref\n    ) => {\n      const { gl, scene: defaultScene, camera: defaultCamera, size } = useThree()\n      const scene = _scene || defaultScene\n      const camera = _camera || defaultCamera\n\n      const [composer, normalPass, downSamplingPass] = useMemo(() => {\n        // Initialize composer\n        const effectComposer = new EffectComposerImpl(gl, {\n          depthBuffer,\n          stencilBuffer,\n          multisampling,\n          frameBufferType,\n        })\n\n        // Add render pass\n        effectComposer.addPass(new RenderPass(scene, camera))\n\n        // Create normal pass\n        let downSamplingPass = null\n        let normalPass = null\n        if (enableNormalPass) {\n          normalPass = new NormalPass(scene, camera)\n          normalPass.enabled = false\n          effectComposer.addPass(normalPass)\n          if (resolutionScale !== undefined) {\n            downSamplingPass = new DepthDownsamplingPass({ normalBuffer: normalPass.texture, resolutionScale })\n            downSamplingPass.enabled = false\n            effectComposer.addPass(downSamplingPass)\n          }\n        }\n\n        return [effectComposer, normalPass, downSamplingPass]\n      }, [\n        camera,\n        gl,\n        depthBuffer,\n        stencilBuffer,\n        multisampling,\n        frameBufferType,\n        scene,\n        enableNormalPass,\n        resolutionScale,\n      ])\n\n      useEffect(() => composer?.setSize(size.width, size.height), [composer, size])\n      useEffect(() => () => composer.dispose(), [composer])\n      useFrame(\n        (_, delta) => {\n          if (enabled) {\n            const currentAutoClear = gl.autoClear\n            gl.autoClear = autoClear\n            if (stencilBuffer && !autoClear) gl.clearStencil()\n            composer.render(delta)\n            gl.autoClear = currentAutoClear\n          }\n        },\n        enabled ? renderPriority : 0\n      )\n\n      const group = useRef<Group>(null!)\n      useLayoutEffect(() => {\n        const passes: Pass[] = []\n\n        // TODO: rewrite all of this with R3F v9\n        const groupInstance = (group.current as Group & { __r3f: Instance<Group> }).__r3f\n\n        if (groupInstance && composer) {\n          const children = groupInstance.children\n\n          for (let i = 0; i < children.length; i++) {\n            const child = children[i].object\n\n            if (child instanceof Effect) {\n              const effects: Effect[] = [child]\n\n              if (!isConvolution(child)) {\n                let next: unknown = null\n                while ((next = children[i + 1]?.object) instanceof Effect) {\n                  if (isConvolution(next)) break\n                  effects.push(next)\n                  i++\n                }\n              }\n\n              const pass = new EffectPass(camera, ...effects)\n              passes.push(pass)\n            } else if (child instanceof Pass) {\n              passes.push(child)\n            }\n          }\n\n          for (const pass of passes) composer?.addPass(pass)\n\n          if (normalPass) normalPass.enabled = true\n          if (downSamplingPass) downSamplingPass.enabled = true\n        }\n\n        return () => {\n          for (const pass of passes) composer?.removePass(pass)\n          if (normalPass) normalPass.enabled = false\n          if (downSamplingPass) downSamplingPass.enabled = false\n        }\n      }, [composer, children, camera, normalPass, downSamplingPass])\n\n      // Disable tone mapping because threejs disallows tonemapping on render targets\n      useEffect(() => {\n        const currentTonemapping = gl.toneMapping\n        gl.toneMapping = NoToneMapping\n        return () => {\n          gl.toneMapping = currentTonemapping\n        }\n      }, [gl])\n\n      // Memoize state, otherwise it would trigger all consumers on every render\n      const state = useMemo(\n        () => ({ composer, normalPass, downSamplingPass, resolutionScale, camera, scene }),\n        [composer, normalPass, downSamplingPass, resolutionScale, camera, scene]\n      )\n\n      // Expose the composer\n      useImperativeHandle(ref, () => composer, [composer])\n\n      return (\n        <EffectComposerContext.Provider value={state}>\n          <group ref={group}>{children}</group>\n        </EffectComposerContext.Provider>\n      )\n    }\n  )\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/util.tsx",
+      "content": "'use client'\n\nimport React, { RefObject } from 'react'\nimport { Vector2 } from 'three'\nimport * as THREE from 'three'\nimport { type ReactThreeFiber, type ThreeElement, extend, useThree } from '@react-three/fiber'\nimport type { Effect, Pass, BlendFunction } from 'postprocessing'\n\nexport const resolveRef = <T,>(ref: T | React.RefObject<T>) =>\n  typeof ref === 'object' && ref != null && 'current' in ref ? ref.current : ref\n\nexport type EffectConstructor = new (...args: any[]) => Effect | Pass\n\nexport type EffectProps<T extends EffectConstructor> = ThreeElement<T> &\n  ConstructorParameters<T>[0] & {\n    blendFunction?: BlendFunction\n    opacity?: number\n  }\n\nlet i = 0\nconst components = new WeakMap<EffectConstructor, React.ExoticComponent<any> | string>()\n\nexport const wrapEffect = <T extends EffectConstructor>(effect: T, defaults?: EffectProps<T>) => {\n  function WrappedEffect({ blendFunction = defaults?.blendFunction, opacity = defaults?.opacity, ...props }) {\n    let Component = components.get(effect)\n    if (!Component) {\n      const key = `@react-three/postprocessing/${effect.name}-${i++}`\n      extend({ [key]: effect })\n      components.set(effect, (Component = key))\n    }\n\n    const camera = useThree((state) => state.camera)\n    const args = [...(defaults?.args ?? []), ...(props.args ?? [{ ...defaults, ...props }])]\n\n    return (\n      <Component\n        camera={camera}\n        blendMode-blendFunction={blendFunction}\n        blendMode-opacity-value={opacity}\n        {...props}\n        args={args}\n      />\n    )\n  }\n\n  return WrappedEffect\n}\n\nexport const useVector2 = (props: Record<string, unknown>, key: string): THREE.Vector2 => {\n  const value = props[key] as ReactThreeFiber.Vector2 | undefined\n  return React.useMemo(() => {\n    if (typeof value === 'number') return new THREE.Vector2(value, value)\n    else if (value) return new THREE.Vector2(...(value as THREE.Vector2Tuple))\n    else return new THREE.Vector2()\n  }, [value])\n}\n\nexport function usePrefersReducedMotion() {\n  const [reduced, setReduced] = React.useState(false)\n\n  React.useEffect(() => {\n    const query = window.matchMedia('(prefers-reduced-motion: reduce)')\n    const update = () => setReduced(query.matches)\n    update()\n    query.addEventListener('change', update)\n    return () => query.removeEventListener('change', update)\n  }, [])\n\n  return reduced\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "tilt-shift",
+        "blur",
+        "focus"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/react-postprocessing-tilt-shift.tsx",
+      "source": {
+        "project": "react-postprocessing",
+        "repository": "https://github.com/pmndrs/react-postprocessing",
+        "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-postprocessing/effects/TiltShift2.tsx",
+            "upstreamPath": "src/effects/TiltShift2.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/TiltShift2.tsx",
+            "upstreamSha256": "sha256:41ca5c04781cb2c2278a5942a1ce7de8a7848b8369d2f9b3982b5bfafefe307d",
+            "contentSha256": "sha256:879e6da917fdf2c5ece1ace617d8818a257dd5d7b6da9ab9d63479878e12251e",
+            "changes": [
+              "Declared the effect as client code."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+            "upstreamPath": "src/EffectComposer.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+            "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+            "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+            "changes": [
+              "Declared the React Three Fiber composer as a client component.",
+              "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/util.tsx",
+            "upstreamPath": "src/util.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+            "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+            "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+            "changes": [
+              "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/effects/TiltShift2.tsx, src/EffectComposer.tsx, src/util.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/react-postprocessing/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-postprocessing/effects/TiltShift2.tsx",
+          "change": "Declared the effect as client code.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+          "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/util.tsx",
+          "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        }
+      ],
+      "dedupe": {
+        "family": "directional-tilt-shift-effect",
+        "sourceHash": "sha256:2b830e97c2f6b895043278562cd00eeeac129b1e1c55120d1f40058f0b2e0b43",
+        "contentHash": "sha256:a82c0deda9ed11fa73251801a97f76c4fa702b79b41f3a5b6943f05c9a067177",
+        "structureHash": "sha256:588ad38651facc366ec1361034c2dc25786262aef02757d0ef9c0afa10fe19c1"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

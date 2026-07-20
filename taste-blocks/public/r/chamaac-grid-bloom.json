@@ -1,0 +1,114 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chamaac-grid-bloom",
+  "title": "Grid Bloom",
+  "author": "Amarnath",
+  "description": "Renders a pointer-reactive procedural grid with bloom, flow, distortion, and repulsion controls.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0",
+    "three@0.180.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/grid-bloom.tsx",
+      "content": "\"use client\";\n\nimport { useRef, useMemo, useEffect, useState } from \"react\";\nimport { Canvas, useFrame, useThree } from \"@react-three/fiber\";\nimport * as THREE from \"three\";\nimport { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nfunction cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n\nconst vertexShader = `\nvarying vec2 vUv;\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4(position, 1.0);\n}\n`;\n\nconst fragmentShader = `\nuniform float iTime;\nuniform vec2 iResolution;\nuniform vec3 uColor;\nuniform float uSpeed;\nuniform float uGridScale;\nuniform float uRotationSpeed;\nuniform float uFadeFalloff;\nuniform float uDistortionAmount;\nuniform float uFlowSpeedX;\nuniform float uFlowSpeedY;\nuniform float uHoverRepulsionRadius;\nuniform float uHoverRepulsionStrength;\nuniform float uHoverLightRadius;\nuniform float uMouseActive;\nuniform vec2 iMouse;\nvarying vec2 vUv;\n\n// Simplex 2D noise\nvec3 permute(vec3 x) { return mod(((x*34.0)+10.0)*x, 289.0); }\nfloat snoise(vec2 v) {\n  const vec4 C = vec4(0.211324865405187, 0.366025403784439,\n           -0.577350269189626, 0.024390243902439);\n  vec2 i  = floor(v + dot(v, C.yy) );\n  vec2 x0 = v -   i + dot(i, C.xx);\n  vec2 i1;\n  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n  vec4 x12 = x0.xyxy + C.xxzz;\n  x12.xy -= i1;\n  i = mod(i, 289.0);\n  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n  + i.x + vec3(0.0, i1.x, 1.0 ));\n  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),\n    dot(x12.zw,x12.zw)), 0.0);\n  m = m*m ;\n  m = m*m ;\n  vec3 x = 2.0 * fract(p * C.www) - 1.0;\n  vec3 h = abs(x) - 0.5;\n  vec3 ox = floor(x + 0.5);\n  vec3 a0 = x - ox;\n  m *= 1.792843 - 0.853735 * ( a0*a0 + h*h );\n  vec3 g;\n  g.x  = a0.x  * x0.x  + h.x  * x0.y;\n  g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n  return 130.0 * dot(m, g);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 unrotatedP = (fragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;\n\n    // Mouse math (distance in unrotated screen space)\n    vec2 mouseP = (iMouse.xy - 0.5 * iResolution.xy) / iResolution.y;\n    vec2 mouseDir = unrotatedP - mouseP;\n    float mouseDist = length(mouseDir);\n    float mouseInfluence = smoothstep(uHoverRepulsionRadius, 0.0, mouseDist) * uMouseActive;\n\n    // Apply soft rotation\n    float rot = iTime * uRotationSpeed * 0.3;\n    mat2 m = mat2(cos(rot), -sin(rot), sin(rot), cos(rot));\n    vec2 p = m * unrotatedP;\n\n    // Organic fluid distortion\n    float noiseDist = snoise(p * 1.5 + iTime * uSpeed * 0.15);\n    vec2 distortedPos = p + vec2(noiseDist * uDistortionAmount);\n\n    // Mouse lens distortion (push grid away from mouse fluidly)\n    vec2 rotatedMouseDir = m * mouseDir;\n    distortedPos += rotatedMouseDir * mouseInfluence * uHoverRepulsionStrength;\n\n    // Apply grid scaling\n    vec2 gridPos = distortedPos * uGridScale;\n\n    // Flowing motion\n    gridPos.x += iTime * uSpeed * uFlowSpeedX;\n    gridPos.y += iTime * uSpeed * uFlowSpeedY;\n\n    vec2 cell = fract(gridPos);\n    vec2 cellCenter = abs(cell - 0.5);\n\n    // Modern glowing lines: thin and smooth\n    float lineWidth = 0.015;\n    float smoothEdge = 0.03;\n    vec2 lines = smoothstep(0.5 - lineWidth - smoothEdge, 0.5 - lineWidth, cellCenter);\n    float gridAlpha = max(lines.x, lines.y);\n\n    // Add pulsing node intersections\n    float intersections = lines.x * lines.y;\n\n    // Randomized glowing orbs at some intersections\n    float glowMask = snoise(floor(gridPos) * 0.4 + iTime * uSpeed * 0.4);\n    float glow = smoothstep(0.2, 0.5, cellCenter.x) * smoothstep(0.2, 0.5, cellCenter.y);\n    glow *= smoothstep(0.3, 0.8, glowMask);\n\n    // Elegant moire/interference pulse\n    float pulseDist = length(p);\n    float pulse = 0.5 + 0.5 * sin(pulseDist * 8.0 - iTime * uSpeed * 1.5 + noiseDist * 2.0);\n\n    // Assemble the bloom layers\n    float finalAlpha = (gridAlpha * 0.3) + (intersections * 0.8) + (glow * 0.6);\n\n    // Airborne brightness modulation\n    finalAlpha *= (0.6 + 0.4 * snoise(p * 4.0 - iTime * uSpeed * 0.5));\n    finalAlpha += finalAlpha * pulse * 0.4;\n\n    // Mouse glow interaction\n    float mouseGlow = smoothstep(uHoverLightRadius, 0.0, mouseDist) * 0.6 * uMouseActive;\n    finalAlpha += mouseGlow * gridAlpha; // Illuminate the grid directly\n\n    // Sophisticated vignette fading\n    float vignette = 1.0 - smoothstep(0.1, uFadeFalloff, pulseDist);\n\n    // Overall ambient breathing breathing\n    float breathing = 0.8 + 0.2 * sin(iTime * uSpeed * 0.8);\n\n    fragColor = vec4(uColor, clamp(finalAlpha * vignette * breathing, 0.0, 1.0));\n}\n\nvoid main() {\n    mainImage(gl_FragColor, vUv * iResolution);\n}\n`;\n\ninterface ShaderPlaneProps {\n  color: string;\n  speed: number;\n  gridScale: number;\n  rotationSpeed: number;\n  fadeFalloff: number;\n  distortionAmount: number;\n  flowSpeedX: number;\n  flowSpeedY: number;\n  hoverLightRadius: number;\n  hoverRepulsionRadius: number;\n  hoverRepulsionStrength: number;\n  enableMouseInteraction: boolean;\n}\n\nconst ShaderPlane = ({\n  color,\n  speed,\n  gridScale,\n  rotationSpeed,\n  fadeFalloff,\n  distortionAmount,\n  flowSpeedX,\n  flowSpeedY,\n  hoverLightRadius,\n  hoverRepulsionRadius,\n  hoverRepulsionStrength,\n  enableMouseInteraction,\n}: ShaderPlaneProps) => {\n  const materialRef = useRef<THREE.ShaderMaterial>(null);\n  const gl = useThree((s) => s.gl);\n  const mouseRef = useRef({\n    x: -1000,\n    y: -1000,\n    targetX: -1000,\n    targetY: -1000,\n    active: 0,\n    targetActive: 0,\n  });\n\n  const uniforms = useMemo(\n    () => ({\n      iTime: { value: 0 },\n      iResolution: { value: new THREE.Vector2() },\n      iMouse: { value: new THREE.Vector2(-1000, -1000) },\n      uMouseActive: { value: 0 },\n      uColor: { value: new THREE.Color(color) },\n      uSpeed: { value: speed },\n      uGridScale: { value: gridScale },\n      uRotationSpeed: { value: rotationSpeed },\n      uFadeFalloff: { value: fadeFalloff },\n      uDistortionAmount: { value: distortionAmount },\n      uFlowSpeedX: { value: flowSpeedX },\n      uFlowSpeedY: { value: flowSpeedY },\n      uHoverLightRadius: { value: hoverLightRadius },\n      uHoverRepulsionRadius: { value: hoverRepulsionRadius },\n      uHoverRepulsionStrength: { value: hoverRepulsionStrength },\n    }),\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n    []\n  );\n\n  useEffect(() => {\n    uniforms.uColor.value.set(color);\n  }, [color, uniforms]);\n  useEffect(() => {\n    uniforms.uSpeed.value = speed;\n  }, [speed, uniforms]);\n  useEffect(() => {\n    uniforms.uGridScale.value = gridScale;\n  }, [gridScale, uniforms]);\n  useEffect(() => {\n    uniforms.uRotationSpeed.value = rotationSpeed;\n  }, [rotationSpeed, uniforms]);\n  useEffect(() => {\n    uniforms.uFadeFalloff.value = fadeFalloff;\n  }, [fadeFalloff, uniforms]);\n  useEffect(() => {\n    uniforms.uDistortionAmount.value = distortionAmount;\n  }, [distortionAmount, uniforms]);\n  useEffect(() => {\n    uniforms.uFlowSpeedX.value = flowSpeedX;\n  }, [flowSpeedX, uniforms]);\n\n  useEffect(() => {\n    uniforms.uFlowSpeedY.value = flowSpeedY;\n  }, [flowSpeedY, uniforms]);\n  useEffect(() => {\n    uniforms.uHoverLightRadius.value = hoverLightRadius;\n  }, [hoverLightRadius, uniforms]);\n  useEffect(() => {\n    uniforms.uHoverRepulsionRadius.value = hoverRepulsionRadius;\n  }, [hoverRepulsionRadius, uniforms]);\n  useEffect(() => {\n    uniforms.uHoverRepulsionStrength.value = hoverRepulsionStrength;\n  }, [hoverRepulsionStrength, uniforms]);\n\n  useEffect(() => {\n    if (!enableMouseInteraction) {\n      mouseRef.current.targetActive = 0;\n      mouseRef.current.active = 0;\n      return;\n    }\n\n    const handlePointerMove = (e: PointerEvent) => {\n      const rect = gl.domElement.getBoundingClientRect();\n      const inside =\n        e.clientX >= rect.left &&\n        e.clientX <= rect.right &&\n        e.clientY >= rect.top &&\n        e.clientY <= rect.bottom;\n\n      mouseRef.current.targetActive = inside ? 1 : 0;\n\n      if (inside) {\n        mouseRef.current.targetX = e.clientX - rect.left;\n        mouseRef.current.targetY = rect.bottom - e.clientY;\n      }\n    };\n\n    const handlePointerLeave = () => {\n      mouseRef.current.targetActive = 0;\n    };\n\n    window.addEventListener(\"pointermove\", handlePointerMove);\n    document.addEventListener(\"pointerleave\", handlePointerLeave);\n\n    return () => {\n      window.removeEventListener(\"pointermove\", handlePointerMove);\n      document.removeEventListener(\"pointerleave\", handlePointerLeave);\n    };\n  }, [gl.domElement, enableMouseInteraction]);\n\n  useFrame((state) => {\n    if (materialRef.current) {\n      // Smooth mouse interpolation (spring-like physics follow)\n      mouseRef.current.x +=\n        (mouseRef.current.targetX - mouseRef.current.x) * 0.1;\n      mouseRef.current.y +=\n        (mouseRef.current.targetY - mouseRef.current.y) * 0.1;\n\n      // Faster fade out physics for the light\n      mouseRef.current.active +=\n        (mouseRef.current.targetActive - mouseRef.current.active) * 0.15;\n\n      materialRef.current.uniforms.iTime.value = state.clock.elapsedTime;\n      materialRef.current.uniforms.iResolution.value.set(\n        state.size.width * state.viewport.dpr,\n        state.size.height * state.viewport.dpr\n      );\n      materialRef.current.uniforms.iMouse.value.set(\n        mouseRef.current.x * state.viewport.dpr,\n        mouseRef.current.y * state.viewport.dpr\n      );\n      materialRef.current.uniforms.uMouseActive.value = mouseRef.current.active;\n    }\n  });\n\n  return (\n    <mesh>\n      <planeGeometry args={[2, 2]} />\n      {/* eslint-disable react/no-unknown-property */}\n      <shaderMaterial\n        ref={materialRef}\n        vertexShader={vertexShader}\n        fragmentShader={fragmentShader}\n        uniforms={uniforms}\n        depthWrite={false}\n        depthTest={false}\n        transparent={true}\n        blending={THREE.AdditiveBlending}\n      />\n      {/* eslint-enable react/no-unknown-property */}\n    </mesh>\n  );\n};\n\nexport interface GridBloomProps {\n  className?: string;\n  /** Bloom color */\n  color?: string;\n  /** Overall animation speed multiplier */\n  speed?: number;\n  /** Density of the grid (higher = more tiles) */\n  gridScale?: number;\n  /** Speed of the slow grid rotation */\n  rotationSpeed?: number;\n  /** Controls how quickly the bloom fades out to the edges. Default: 10.0. Lower = sharper fade. Higher = softer/no fade. */\n  fadeFalloff?: number;\n  /** Amount of noise-based distortion applied to the grid lines. Default: 0.08. Setting to 0.0 gives rigid, straight lines. */\n  distortionAmount?: number;\n  /** Horizontal scrolling speed of the grid. Default: -0.2 */\n  flowSpeedX?: number;\n  /** Vertical scrolling speed of the grid. Default: -0.4 */\n  flowSpeedY?: number;\n  /** Radius of the light illumination under the mouse. Default: 0.5. Higher = larger light aura. */\n  hoverLightRadius?: number;\n  /** Radius of the structural push effect from the mouse. Default: 0.6. */\n  hoverRepulsionRadius?: number;\n  /** Strength of the geometric push effect from the mouse. Default: 0.3. Setting to 0.0 disables the warp. */\n  hoverRepulsionStrength?: number;\n  /** Whether mouse hover interaction (light aura + repulsion) is enabled. Default: true. */\n  enableMouseInteraction?: boolean;\n}\n\nexport default function GridBloom({\n  className,\n  color = \"#e040fb\",\n  speed = 1.0,\n  gridScale = 12.0,\n  rotationSpeed = 0.0,\n  fadeFalloff = 10.0,\n  distortionAmount = 0.05,\n  flowSpeedX = -0.2,\n  flowSpeedY = -0.4,\n  hoverLightRadius = 0.5,\n  hoverRepulsionRadius = 1.0,\n  hoverRepulsionStrength = 0.6,\n  enableMouseInteraction = true,\n}: GridBloomProps) {\n  const [reduceMotion, setReduceMotion] = useState(false);\n\n  useEffect(() => {\n    const media = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduceMotion(media.matches);\n    update();\n    media.addEventListener(\"change\", update);\n    return () => media.removeEventListener(\"change\", update);\n  }, []);\n\n  return (\n    <div\n      aria-hidden=\"true\"\n      className={cn(\n        \"w-full h-full absolute inset-0 pointer-events-none\",\n        className\n      )}\n    >\n      <Canvas\n        camera={{ position: [0, 0, 1] }}\n        gl={{ antialias: false, alpha: true }}\n        dpr={[1, 1.5]}\n        frameloop={reduceMotion ? \"demand\" : \"always\"}\n      >\n        <ShaderPlane\n          color={color}\n          speed={speed}\n          gridScale={gridScale}\n          rotationSpeed={rotationSpeed}\n          fadeFalloff={fadeFalloff}\n          distortionAmount={distortionAmount}\n          flowSpeedX={flowSpeedX}\n          flowSpeedY={flowSpeedY}\n          hoverLightRadius={hoverLightRadius}\n          hoverRepulsionRadius={hoverRepulsionRadius}\n          hoverRepulsionStrength={hoverRepulsionStrength}\n          enableMouseInteraction={enableMouseInteraction && !reduceMotion}\n        />\n      </Canvas>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/chamaac-ui/grid-bloom.tsx"
+    },
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "shader",
+        "grid",
+        "pointer",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/chamaac-grid-bloom.tsx",
+      "source": {
+        "project": "Chamaac UI",
+        "repository": "https://github.com/amarnathdhumal/chamaacui",
+        "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/chamaac-ui/grid-bloom.tsx",
+            "upstreamPath": "registry/chamaac/grid-bloom/grid-bloom.tsx",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/grid-bloom/grid-bloom.tsx",
+            "upstreamSha256": "sha256:7d543f648a1160058927759be2e20881df7f90cb9521f74281bc0192c32fc7f8",
+            "contentSha256": "sha256:533f18f12a199d44b6c79497190d2f6f64c252912f4066f7fbf0c74d4890af6b",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+              "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+              "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "Capped the device-pixel ratio at 1.5 and disabled pointer-driven motion when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "components/chamaac-ui/lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+            "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/chamaac/grid-bloom/grid-bloom.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Amarnath"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+          "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+          "localPath": "registry/sources/chamaac-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/chamaac-ui/grid-bloom.tsx",
+          "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5 and disabled pointer-driven motion when reduced motion is requested.",
+          "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+        },
+        {
+          "shippedPath": "components/chamaac-ui/lib/utils.ts",
+          "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+          "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+        }
+      ],
+      "dedupe": {
+        "family": "pointer-reactive-grid-bloom",
+        "sourceHash": "sha256:8a623c1421dcab3583b04bfe0e1841fc8d6966e3d8948badddb74f405728d02e",
+        "contentHash": "sha256:26f8cadd3ea01269c87cea06f65acd949f62ff6c1de86847edede1413d92404f",
+        "structureHash": "sha256:6ce7e2582394a41f77f2c3b45e3902becb5b1f3ac17fab16eb58c46bdc06bbf4"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

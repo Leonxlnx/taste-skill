@@ -1,0 +1,152 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-postprocessing-selective-bloom",
+  "title": "Selective Bloom",
+  "author": "pmndrs and react-postprocessing contributors",
+  "description": "Applies bloom only to selected objects and supplied lights.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "postprocessing@6.36.6",
+    "three@0.172.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/effects/SelectiveBloom.tsx",
+      "content": "'use client'\n\nimport { SelectiveBloomEffect, BlendFunction } from 'postprocessing'\nimport type { BloomEffectOptions } from 'postprocessing'\nimport React, { Ref, RefObject, forwardRef, useMemo, useEffect, useContext, useRef } from 'react'\nimport { Object3D } from 'three'\nimport { useThree } from '@react-three/fiber'\nimport { EffectComposerContext } from '../EffectComposer'\nimport { selectionContext } from '../Selection'\nimport { resolveRef } from '../util'\n\ntype ObjectRef = RefObject<Object3D>\n\nexport type SelectiveBloomProps = BloomEffectOptions &\n  Partial<{\n    lights: Object3D[] | ObjectRef[]\n    selection: Object3D | Object3D[] | ObjectRef | ObjectRef[]\n    selectionLayer: number\n    inverted: boolean\n    ignoreBackground: boolean\n  }>\n\nconst addLight = (light: Object3D, effect: SelectiveBloomEffect) => light.layers.enable(effect.selection.layer)\nconst removeLight = (light: Object3D, effect: SelectiveBloomEffect) => light.layers.disable(effect.selection.layer)\n\nexport const SelectiveBloom = /* @__PURE__ */ forwardRef(function SelectiveBloom(\n  {\n    selection = [],\n    selectionLayer = 10,\n    lights = [],\n    inverted = false,\n    ignoreBackground = false,\n    luminanceThreshold,\n    luminanceSmoothing,\n    intensity,\n    width,\n    height,\n    kernelSize,\n    mipmapBlur,\n\n    ...props\n  }: SelectiveBloomProps,\n  forwardRef: Ref<SelectiveBloomEffect>\n) {\n  if (lights.length === 0) {\n    console.warn('SelectiveBloom requires lights to work.')\n  }\n\n  const invalidate = useThree((state) => state.invalidate)\n  const { scene, camera } = useContext(EffectComposerContext)\n  const effect = useMemo(() => {\n    const effect = new SelectiveBloomEffect(scene, camera, {\n      blendFunction: BlendFunction.ADD,\n      luminanceThreshold,\n      luminanceSmoothing,\n      intensity,\n      width,\n      height,\n      kernelSize,\n      mipmapBlur,\n      ...props,\n    })\n    effect.inverted = inverted\n    effect.ignoreBackground = ignoreBackground\n    return effect\n  }, [\n    scene,\n    camera,\n    luminanceThreshold,\n    luminanceSmoothing,\n    intensity,\n    width,\n    height,\n    kernelSize,\n    mipmapBlur,\n    inverted,\n    ignoreBackground,\n    props,\n  ])\n\n  const api = useContext(selectionContext)\n\n  useEffect(() => {\n    // Do not allow array selection if declarative selection is active\n    // TODO: array selection should probably be deprecated altogether\n    if (!api && selection) {\n      effect.selection.set(\n        Array.isArray(selection) ? (selection as Object3D[]).map(resolveRef) : [resolveRef(selection) as Object3D]\n      )\n      invalidate()\n      return () => {\n        effect.selection.clear()\n        invalidate()\n      }\n    }\n  }, [effect, selection, api, invalidate])\n\n  useEffect(() => {\n    effect.selection.layer = selectionLayer\n    invalidate()\n  }, [effect, invalidate, selectionLayer])\n\n  useEffect(() => {\n    if (lights && lights.length > 0) {\n      lights.forEach((light) => addLight(resolveRef(light), effect))\n      invalidate()\n      return () => {\n        lights.forEach((light) => removeLight(resolveRef(light), effect))\n        invalidate()\n      }\n    }\n  }, [effect, invalidate, lights, selectionLayer])\n\n  useEffect(() => {\n    if (api && api.enabled) {\n      if (api.selected?.length) {\n        effect.selection.set(api.selected)\n        invalidate()\n        return () => {\n          effect.selection.clear()\n          invalidate()\n        }\n      }\n    }\n  }, [api, effect.selection, invalidate])\n\n  useEffect(() => () => effect.dispose(), [effect])\n\n  return <primitive ref={forwardRef} object={effect} dispose={null} />\n})\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/effects/SelectiveBloom.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/EffectComposer.tsx",
+      "content": "'use client'\n\nimport type { TextureDataType, Group, Camera, Scene } from 'three'\nimport { HalfFloatType, NoToneMapping } from 'three'\nimport {\n  type JSX,\n  memo,\n  forwardRef,\n  useMemo,\n  useEffect,\n  useLayoutEffect,\n  createContext,\n  useRef,\n  useImperativeHandle,\n} from 'react'\nimport { useThree, useFrame, type Instance } from '@react-three/fiber'\nimport {\n  EffectComposer as EffectComposerImpl,\n  RenderPass,\n  EffectPass,\n  NormalPass,\n  DepthDownsamplingPass,\n  Effect,\n  Pass,\n  EffectAttribute,\n} from 'postprocessing'\n\nexport const EffectComposerContext = /* @__PURE__ */ createContext<{\n  composer: EffectComposerImpl\n  normalPass: NormalPass | null\n  downSamplingPass: DepthDownsamplingPass | null\n  camera: Camera\n  scene: Scene\n  resolutionScale?: number\n}>(null!)\n\nexport type EffectComposerProps = {\n  enabled?: boolean\n  children: JSX.Element | JSX.Element[]\n  depthBuffer?: boolean\n  /** Only used for SSGI currently, leave it disabled for everything else unless it's needed */\n  enableNormalPass?: boolean\n  stencilBuffer?: boolean\n  autoClear?: boolean\n  resolutionScale?: number\n  multisampling?: number\n  frameBufferType?: TextureDataType\n  renderPriority?: number\n  camera?: Camera\n  scene?: Scene\n}\n\nconst isConvolution = (effect: Effect): boolean =>\n  (effect.getAttributes() & EffectAttribute.CONVOLUTION) === EffectAttribute.CONVOLUTION\n\nexport const EffectComposer = /* @__PURE__ */ memo(\n  /* @__PURE__ */ forwardRef<EffectComposerImpl, EffectComposerProps>(\n    (\n      {\n        children,\n        camera: _camera,\n        scene: _scene,\n        resolutionScale,\n        enabled = true,\n        renderPriority = 1,\n        autoClear = true,\n        depthBuffer,\n        enableNormalPass,\n        stencilBuffer,\n        multisampling = 4,\n        frameBufferType = HalfFloatType,\n      },\n      ref\n    ) => {\n      const { gl, scene: defaultScene, camera: defaultCamera, size } = useThree()\n      const scene = _scene || defaultScene\n      const camera = _camera || defaultCamera\n\n      const [composer, normalPass, downSamplingPass] = useMemo(() => {\n        // Initialize composer\n        const effectComposer = new EffectComposerImpl(gl, {\n          depthBuffer,\n          stencilBuffer,\n          multisampling,\n          frameBufferType,\n        })\n\n        // Add render pass\n        effectComposer.addPass(new RenderPass(scene, camera))\n\n        // Create normal pass\n        let downSamplingPass = null\n        let normalPass = null\n        if (enableNormalPass) {\n          normalPass = new NormalPass(scene, camera)\n          normalPass.enabled = false\n          effectComposer.addPass(normalPass)\n          if (resolutionScale !== undefined) {\n            downSamplingPass = new DepthDownsamplingPass({ normalBuffer: normalPass.texture, resolutionScale })\n            downSamplingPass.enabled = false\n            effectComposer.addPass(downSamplingPass)\n          }\n        }\n\n        return [effectComposer, normalPass, downSamplingPass]\n      }, [\n        camera,\n        gl,\n        depthBuffer,\n        stencilBuffer,\n        multisampling,\n        frameBufferType,\n        scene,\n        enableNormalPass,\n        resolutionScale,\n      ])\n\n      useEffect(() => composer?.setSize(size.width, size.height), [composer, size])\n      useEffect(() => () => composer.dispose(), [composer])\n      useFrame(\n        (_, delta) => {\n          if (enabled) {\n            const currentAutoClear = gl.autoClear\n            gl.autoClear = autoClear\n            if (stencilBuffer && !autoClear) gl.clearStencil()\n            composer.render(delta)\n            gl.autoClear = currentAutoClear\n          }\n        },\n        enabled ? renderPriority : 0\n      )\n\n      const group = useRef<Group>(null!)\n      useLayoutEffect(() => {\n        const passes: Pass[] = []\n\n        // TODO: rewrite all of this with R3F v9\n        const groupInstance = (group.current as Group & { __r3f: Instance<Group> }).__r3f\n\n        if (groupInstance && composer) {\n          const children = groupInstance.children\n\n          for (let i = 0; i < children.length; i++) {\n            const child = children[i].object\n\n            if (child instanceof Effect) {\n              const effects: Effect[] = [child]\n\n              if (!isConvolution(child)) {\n                let next: unknown = null\n                while ((next = children[i + 1]?.object) instanceof Effect) {\n                  if (isConvolution(next)) break\n                  effects.push(next)\n                  i++\n                }\n              }\n\n              const pass = new EffectPass(camera, ...effects)\n              passes.push(pass)\n            } else if (child instanceof Pass) {\n              passes.push(child)\n            }\n          }\n\n          for (const pass of passes) composer?.addPass(pass)\n\n          if (normalPass) normalPass.enabled = true\n          if (downSamplingPass) downSamplingPass.enabled = true\n        }\n\n        return () => {\n          for (const pass of passes) composer?.removePass(pass)\n          if (normalPass) normalPass.enabled = false\n          if (downSamplingPass) downSamplingPass.enabled = false\n        }\n      }, [composer, children, camera, normalPass, downSamplingPass])\n\n      // Disable tone mapping because threejs disallows tonemapping on render targets\n      useEffect(() => {\n        const currentTonemapping = gl.toneMapping\n        gl.toneMapping = NoToneMapping\n        return () => {\n          gl.toneMapping = currentTonemapping\n        }\n      }, [gl])\n\n      // Memoize state, otherwise it would trigger all consumers on every render\n      const state = useMemo(\n        () => ({ composer, normalPass, downSamplingPass, resolutionScale, camera, scene }),\n        [composer, normalPass, downSamplingPass, resolutionScale, camera, scene]\n      )\n\n      // Expose the composer\n      useImperativeHandle(ref, () => composer, [composer])\n\n      return (\n        <EffectComposerContext.Provider value={state}>\n          <group ref={group}>{children}</group>\n        </EffectComposerContext.Provider>\n      )\n    }\n  )\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/Selection.tsx",
+      "content": "'use client'\n\nimport * as THREE from 'three'\nimport React, { createContext, useState, useContext, useEffect, useRef, useMemo } from 'react'\nimport { type ThreeElements } from '@react-three/fiber'\n\nexport type Api = {\n  selected: THREE.Object3D[]\n  select: React.Dispatch<React.SetStateAction<THREE.Object3D[]>>\n  enabled: boolean\n}\nexport type SelectApi = Omit<ThreeElements['group'], 'ref'> & {\n  enabled?: boolean\n}\n\nexport const selectionContext = /* @__PURE__ */ createContext<Api | null>(null)\n\nexport function Selection({ children, enabled = true }: { enabled?: boolean; children: React.ReactNode }) {\n  const [selected, select] = useState<THREE.Object3D[]>([])\n  const value = useMemo(() => ({ selected, select, enabled }), [selected, select, enabled])\n  return <selectionContext.Provider value={value}>{children}</selectionContext.Provider>\n}\n\nexport function Select({ enabled = false, children, ...props }: SelectApi) {\n  const group = useRef<THREE.Group>(null!)\n  const api = useContext(selectionContext)\n  useEffect(() => {\n    if (api && enabled) {\n      let changed = false\n      const current: THREE.Object3D[] = []\n      group.current.traverse((o) => {\n        o.type === 'Mesh' && current.push(o)\n        if (api.selected.indexOf(o) === -1) changed = true\n      })\n      if (changed) {\n        api.select((state) => [...state, ...current])\n        return () => {\n          api.select((state) => state.filter((selected) => !current.includes(selected)))\n        }\n      }\n    }\n  }, [enabled, children, api])\n  return (\n    <group ref={group} {...props}>\n      {children}\n    </group>\n  )\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-postprocessing/Selection.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/util.tsx",
+      "content": "'use client'\n\nimport React, { RefObject } from 'react'\nimport { Vector2 } from 'three'\nimport * as THREE from 'three'\nimport { type ReactThreeFiber, type ThreeElement, extend, useThree } from '@react-three/fiber'\nimport type { Effect, Pass, BlendFunction } from 'postprocessing'\n\nexport const resolveRef = <T,>(ref: T | React.RefObject<T>) =>\n  typeof ref === 'object' && ref != null && 'current' in ref ? ref.current : ref\n\nexport type EffectConstructor = new (...args: any[]) => Effect | Pass\n\nexport type EffectProps<T extends EffectConstructor> = ThreeElement<T> &\n  ConstructorParameters<T>[0] & {\n    blendFunction?: BlendFunction\n    opacity?: number\n  }\n\nlet i = 0\nconst components = new WeakMap<EffectConstructor, React.ExoticComponent<any> | string>()\n\nexport const wrapEffect = <T extends EffectConstructor>(effect: T, defaults?: EffectProps<T>) => {\n  function WrappedEffect({ blendFunction = defaults?.blendFunction, opacity = defaults?.opacity, ...props }) {\n    let Component = components.get(effect)\n    if (!Component) {\n      const key = `@react-three/postprocessing/${effect.name}-${i++}`\n      extend({ [key]: effect })\n      components.set(effect, (Component = key))\n    }\n\n    const camera = useThree((state) => state.camera)\n    const args = [...(defaults?.args ?? []), ...(props.args ?? [{ ...defaults, ...props }])]\n\n    return (\n      <Component\n        camera={camera}\n        blendMode-blendFunction={blendFunction}\n        blendMode-opacity-value={opacity}\n        {...props}\n        args={args}\n      />\n    )\n  }\n\n  return WrappedEffect\n}\n\nexport const useVector2 = (props: Record<string, unknown>, key: string): THREE.Vector2 => {\n  const value = props[key] as ReactThreeFiber.Vector2 | undefined\n  return React.useMemo(() => {\n    if (typeof value === 'number') return new THREE.Vector2(value, value)\n    else if (value) return new THREE.Vector2(...(value as THREE.Vector2Tuple))\n    else return new THREE.Vector2()\n  }, [value])\n}\n\nexport function usePrefersReducedMotion() {\n  const [reduced, setReduced] = React.useState(false)\n\n  React.useEffect(() => {\n    const query = window.matchMedia('(prefers-reduced-motion: reduce)')\n    const update = () => setReduced(query.matches)\n    update()\n    query.addEventListener('change', update)\n    return () => query.removeEventListener('change', update)\n  }, [])\n\n  return reduced\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "bloom",
+        "selection",
+        "light"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/react-postprocessing-selective-bloom.tsx",
+      "source": {
+        "project": "react-postprocessing",
+        "repository": "https://github.com/pmndrs/react-postprocessing",
+        "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-postprocessing/effects/SelectiveBloom.tsx",
+            "upstreamPath": "src/effects/SelectiveBloom.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/SelectiveBloom.tsx",
+            "upstreamSha256": "sha256:73391270dc0b621c2c304cfc4555314eae6489796777abff69be5c7162410d72",
+            "contentSha256": "sha256:4fb28a591ada7105f055aabb7e2a43ef44429940e232871305e272393b41bf94",
+            "changes": [
+              "Declared the effect as client code and dispose it on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+            "upstreamPath": "src/EffectComposer.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+            "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+            "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+            "changes": [
+              "Declared the React Three Fiber composer as a client component.",
+              "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/Selection.tsx",
+            "upstreamPath": "src/Selection.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/Selection.tsx",
+            "upstreamSha256": "sha256:165ac9c05f4791680dc44772bc015f783e17ab3c7076fe074b33485d093290b6",
+            "contentSha256": "sha256:7c4ed1d47105568fb031ca409ec31370223f1bad3f6187469284f08621bee7ee",
+            "changes": [
+              "Declared the selection helpers as client components."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/util.tsx",
+            "upstreamPath": "src/util.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+            "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+            "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+            "changes": [
+              "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/effects/SelectiveBloom.tsx, src/EffectComposer.tsx, src/Selection.tsx, src/util.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/react-postprocessing/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-postprocessing/effects/SelectiveBloom.tsx",
+          "change": "Declared the effect as client code and dispose it on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+          "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/Selection.tsx",
+          "change": "Declared the selection helpers as client components.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/util.tsx",
+          "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        }
+      ],
+      "dedupe": {
+        "family": "selected-object-bloom-effect",
+        "sourceHash": "sha256:0ec31d02ab21993c03573087c5e375ef78e42b7517bc478b3d8bc5fd92fee7b0",
+        "contentHash": "sha256:3ffd4a9895334003f1a3ad683bc01fec980a7da3260a2fe92c4358f12819e212",
+        "structureHash": "sha256:ff0d05e239110870e4e293d2bcff9c9164fbfae52385f4e53531aa397fdaf881"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

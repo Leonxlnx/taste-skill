@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-text-effect",
+  "title": "Text Effect",
+  "author": "Motion Primitives",
+  "description": "Reveals text by line, word, or character with configurable variants.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-text-effect/text-effect.tsx",
+      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport {\n  AnimatePresence,\n  motion,\n  useReducedMotion,\n} from 'motion/react';\nimport type {\n  TargetAndTransition,\n  Transition,\n  Variant,\n  Variants,\n} from 'motion/react'\nimport React from 'react';\n\nexport type PresetType = 'blur' | 'fade-in-blur' | 'scale' | 'fade' | 'slide';\n\nexport type PerType = 'word' | 'char' | 'line';\n\nexport type TextEffectProps = {\n  children: string;\n  per?: PerType;\n  as?: keyof React.JSX.IntrinsicElements;\n  variants?: {\n    container?: Variants;\n    item?: Variants;\n  };\n  className?: string;\n  preset?: PresetType;\n  delay?: number;\n  speedReveal?: number;\n  speedSegment?: number;\n  trigger?: boolean;\n  onAnimationComplete?: () => void;\n  onAnimationStart?: () => void;\n  segmentWrapperClassName?: string;\n  containerTransition?: Transition;\n  segmentTransition?: Transition;\n  style?: React.CSSProperties;\n};\n\nconst defaultStaggerTimes: Record<PerType, number> = {\n  char: 0.03,\n  word: 0.05,\n  line: 0.1,\n};\n\nconst defaultContainerVariants: Variants = {\n  hidden: { opacity: 0 },\n  visible: {\n    opacity: 1,\n    transition: {\n      staggerChildren: 0.05,\n    },\n  },\n  exit: {\n    transition: { staggerChildren: 0.05, staggerDirection: -1 },\n  },\n};\n\nconst defaultItemVariants: Variants = {\n  hidden: { opacity: 0 },\n  visible: {\n    opacity: 1,\n  },\n  exit: { opacity: 0 },\n};\n\nconst presetVariants: Record<\n  PresetType,\n  { container: Variants; item: Variants }\n> = {\n  blur: {\n    container: defaultContainerVariants,\n    item: {\n      hidden: { opacity: 0, filter: 'blur(12px)' },\n      visible: { opacity: 1, filter: 'blur(0px)' },\n      exit: { opacity: 0, filter: 'blur(12px)' },\n    },\n  },\n  'fade-in-blur': {\n    container: defaultContainerVariants,\n    item: {\n      hidden: { opacity: 0, y: 20, filter: 'blur(12px)' },\n      visible: { opacity: 1, y: 0, filter: 'blur(0px)' },\n      exit: { opacity: 0, y: 20, filter: 'blur(12px)' },\n    },\n  },\n  scale: {\n    container: defaultContainerVariants,\n    item: {\n      hidden: { opacity: 0, scale: 0 },\n      visible: { opacity: 1, scale: 1 },\n      exit: { opacity: 0, scale: 0 },\n    },\n  },\n  fade: {\n    container: defaultContainerVariants,\n    item: {\n      hidden: { opacity: 0 },\n      visible: { opacity: 1 },\n      exit: { opacity: 0 },\n    },\n  },\n  slide: {\n    container: defaultContainerVariants,\n    item: {\n      hidden: { opacity: 0, y: 20 },\n      visible: { opacity: 1, y: 0 },\n      exit: { opacity: 0, y: 20 },\n    },\n  },\n};\n\nconst AnimationComponent: React.FC<{\n  segment: string;\n  variants: Variants;\n  per: 'line' | 'word' | 'char';\n  segmentWrapperClassName?: string;\n}> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {\n  const content =\n    per === 'line' ? (\n      <motion.span variants={variants} className='block'>\n        {segment}\n      </motion.span>\n    ) : per === 'word' ? (\n      <motion.span\n        aria-hidden='true'\n        variants={variants}\n        className='inline-block whitespace-pre'\n      >\n        {segment}\n      </motion.span>\n    ) : (\n      <motion.span className='inline-block whitespace-pre'>\n        {segment.split('').map((char, charIndex) => (\n          <motion.span\n            key={`char-${charIndex}`}\n            aria-hidden='true'\n            variants={variants}\n            className='inline-block whitespace-pre'\n          >\n            {char}\n          </motion.span>\n        ))}\n      </motion.span>\n    );\n\n  if (!segmentWrapperClassName) {\n    return content;\n  }\n\n  const defaultWrapperClassName = per === 'line' ? 'block' : 'inline-block';\n\n  return (\n    <span className={cn(defaultWrapperClassName, segmentWrapperClassName)}>\n      {content}\n    </span>\n  );\n});\n\nAnimationComponent.displayName = 'AnimationComponent';\n\nconst splitText = (text: string, per: PerType) => {\n  if (per === 'line') return text.split('\\n');\n  return text.split(/(\\s+)/);\n};\n\nconst hasTransition = (\n  variant?: Variant\n): variant is TargetAndTransition & { transition?: Transition } => {\n  if (!variant) return false;\n  return (\n    typeof variant === 'object' && 'transition' in variant\n  );\n};\n\nconst createVariantsWithTransition = (\n  baseVariants: Variants,\n  transition?: Transition & { exit?: Transition }\n): Variants => {\n  if (!transition) return baseVariants;\n\n  const { exit: _, ...mainTransition } = transition;\n\n  return {\n    ...baseVariants,\n    visible: {\n      ...baseVariants.visible,\n      transition: {\n        ...(hasTransition(baseVariants.visible)\n          ? baseVariants.visible.transition\n          : {}),\n        ...mainTransition,\n      },\n    },\n    exit: {\n      ...baseVariants.exit,\n      transition: {\n        ...(hasTransition(baseVariants.exit)\n          ? baseVariants.exit.transition\n          : {}),\n        ...mainTransition,\n        staggerDirection: -1,\n      },\n    },\n  };\n};\n\nexport function TextEffect({\n  children,\n  per = 'word',\n  as = 'p',\n  variants,\n  className,\n  preset = 'fade',\n  delay = 0,\n  speedReveal = 1,\n  speedSegment = 1,\n  trigger = true,\n  onAnimationComplete,\n  onAnimationStart,\n  segmentWrapperClassName,\n  containerTransition,\n  segmentTransition,\n  style,\n}: TextEffectProps) {\n  const shouldReduceMotion = useReducedMotion();\n\n  if (shouldReduceMotion) {\n    return trigger\n      ? React.createElement(as, { className, style }, children)\n      : null;\n  }\n\n  const segments = splitText(children, per);\n  const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;\n\n  const baseVariants = preset\n    ? presetVariants[preset]\n    : { container: defaultContainerVariants, item: defaultItemVariants };\n\n  const stagger = defaultStaggerTimes[per] / speedReveal;\n\n  const baseDuration = 0.3 / speedSegment;\n\n  const customStagger = hasTransition(variants?.container?.visible ?? {})\n    ? (variants?.container?.visible as TargetAndTransition).transition\n        ?.staggerChildren\n    : undefined;\n\n  const customDelay = hasTransition(variants?.container?.visible ?? {})\n    ? (variants?.container?.visible as TargetAndTransition).transition\n        ?.delayChildren\n    : undefined;\n\n  const computedVariants = {\n    container: createVariantsWithTransition(\n      variants?.container || baseVariants.container,\n      {\n        staggerChildren: customStagger ?? stagger,\n        delayChildren: customDelay ?? delay,\n        ...containerTransition,\n        exit: {\n          staggerChildren: customStagger ?? stagger,\n          staggerDirection: -1,\n        },\n      }\n    ),\n    item: createVariantsWithTransition(variants?.item || baseVariants.item, {\n      duration: baseDuration,\n      ...segmentTransition,\n    }),\n  };\n\n  return (\n    <AnimatePresence mode='popLayout'>\n      {trigger && (\n        <MotionTag\n          initial='hidden'\n          animate='visible'\n          exit='exit'\n          variants={computedVariants.container}\n          className={className}\n          onAnimationComplete={onAnimationComplete}\n          onAnimationStart={onAnimationStart}\n          style={style}\n        >\n          {per !== 'line' ? <span className='sr-only'>{children}</span> : null}\n          {segments.map((segment, index) => (\n            <AnimationComponent\n              key={`${per}-${index}-${segment}`}\n              segment={segment}\n              variants={computedVariants.item}\n              per={per}\n              segmentWrapperClassName={segmentWrapperClassName}\n            />\n          ))}\n        </MotionTag>\n      )}\n    </AnimatePresence>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/text-effect.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "reveal",
+        "segmentation"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-text-effect.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-text-effect/text-effect.tsx",
+            "upstreamPath": "components/core/text-effect.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-effect.tsx",
+            "upstreamSha256": "sha256:4b93c0ea6b9d747d69b7a244d5279f790a11a784e73713f3fe17a636abf53484",
+            "contentSha256": "sha256:6fc842b93bb59e1b411338f32a54208bde33c1c48853fd2f1679254501cab075",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Rendered the final semantic text without segmentation or animation when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/text-effect.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-text-effect/text-effect.tsx",
+          "change": "Changed the local utility import and added a final-text reduced-motion branch.",
+          "reason": "Resolve the copied helper and keep the phrase immediately readable as one semantic text node."
+        }
+      ],
+      "dedupe": {
+        "family": "segmented-text-reveal",
+        "sourceHash": "sha256:d4e4bec78cfcd5af49e90b0046dcf2ec9403528e4c271c602c2b2be2b670f075",
+        "contentHash": "sha256:83b74cb035d06329322a41b6710e57dee0a13e464548bd6fd0aa4286df5953b7",
+        "structureHash": "sha256:4257b620d7f6722921cd2baa2f2cb2ed779a79afdb8803bb222d2f84b5542831"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

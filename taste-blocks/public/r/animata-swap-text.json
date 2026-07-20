@@ -1,0 +1,116 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animata-swap-text",
+  "title": "Swap Text",
+  "author": "Animata",
+  "description": "Swaps between two caller-provided text values on click or hover.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animata/components/animata-swap-text/swap-text.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\ninterface SwapTextProps extends React.ComponentPropsWithoutRef<\"div\"> {\n  /**\n   * The initial text to display.\n   */\n  initialText: string;\n\n  /**\n   * The final text to display.\n   */\n  finalText: string;\n\n  /**\n   * Whether the component should toggle on hover as well as click.\n   */\n  supportsHover?: boolean;\n\n  /**\n   * The class name for the text.\n   */\n  textClassName?: string;\n\n  /**\n   * The class name for the initial text.\n   */\n  initialTextClassName?: string;\n\n  /**\n   * The class name for the final text.\n   */\n  finalTextClassName?: string;\n\n  /**\n   * Whether to disable the click interaction.\n   */\n  disableClick?: boolean;\n}\n\nexport default function SwapText({\n  initialText,\n  finalText,\n  className,\n  supportsHover = true,\n  textClassName,\n  initialTextClassName,\n  finalTextClassName,\n  disableClick,\n  // The rest of the props are passed to the container div.\n  ...props\n}: SwapTextProps) {\n  const [active, setActive] = useState(false);\n  const [focused, setFocused] = useState(false);\n  const [hovering, setHovering] = useState(false);\n  const hoverEnabled = supportsHover && !disableClick;\n  const visualActive = active || (hoverEnabled && (focused || hovering));\n  const common =\n    \"block transition-transform duration-300 ease-slow motion-reduce:transition-none\";\n\n  const longWord = finalText.length > initialText.length ? finalText : null;\n\n  return (\n    <div {...props} className={cn(\"relative overflow-hidden text-foreground\", className)}>\n      <button\n        type=\"button\"\n        aria-label={visualActive ? finalText : initialText}\n        aria-pressed={active}\n        disabled={disableClick}\n        className={cn(\n          \"w-full touch-manipulation cursor-pointer select-none border-0 bg-transparent p-0 text-left text-3xl font-bold text-inherit outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default\",\n          textClassName,\n        )}\n        onClick={() => !disableClick && setActive((current) => !current)}\n        onBlur={() => setFocused(false)}\n        onFocus={() => hoverEnabled && setFocused(true)}\n        onMouseEnter={() => hoverEnabled && setHovering(true)}\n        onMouseLeave={() => setHovering(false)}\n      >\n        <span\n          aria-hidden=\"true\"\n          className={cn(common, initialTextClassName, {\n            \"flex flex-col\": true,\n            \"-translate-y-full\": visualActive,\n          })}\n        >\n          {initialText}\n          {\n            /* Trick to make sure it can always fit all available words after transition as the second word is set to absolute*/\n            Boolean(longWord?.length) && <span className=\"invisible h-0\">{longWord}</span>\n          }\n        </span>\n        <span\n          aria-hidden=\"true\"\n          className={cn(`${common} absolute top-full`, finalTextClassName, {\n            \"-translate-y-full\": visualActive,\n          })}\n        >\n          {finalText}\n        </span>\n      </button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/swap-text.tsx"
+    },
+    {
+      "path": "registry/sources/animata/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "--ease-slow": "cubic-bezier(.405, 0, .025, 1)"
+    }
+  },
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "swap",
+        "hover"
+      ],
+      "renderer": "dom",
+      "preview": "previews/animata-swap-text.tsx",
+      "source": {
+        "project": "Animata",
+        "repository": "https://github.com/codse/animata",
+        "revision": "de9aabb0eed14e0db944bb07720961ddc450c672",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animata-swap-text/swap-text.tsx",
+            "upstreamPath": "animata/text/swap-text.tsx",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/animata/text/swap-text.tsx",
+            "upstreamSha256": "sha256:97f72d213a2cc55d2bdefaecc4242db3c81fdadc1a4f9694c50d415b9f31a902",
+            "contentSha256": "sha256:cbc022c2a5e178a4f8ac9d31bdfdbe9e1d15a5ed85a23ef95d623d1b8dc6cc77",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Added an explicit client boundary.",
+              "Exposed only the visually current phrase as the button accessible name, marked visual duplicates aria-hidden, and exposed persistent click state with aria-pressed.",
+              "Reduced the transform from 1000ms to 300ms, added a reduced-motion path, and synchronized optional hover behavior with keyboard focus while disabling hover-only behavior when clicks are disabled."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/lib/utils.ts",
+            "upstreamSha256": "sha256:5110cb256546ec57496878e69c7e8f338a0ba9caf3ac75eed9babb51dad06ecd",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Removed unrelated absoluteUrl, lerp, and getDistance exports; retained the upstream cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "animata/text/swap-text.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Animata"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/LICENSE.md",
+          "sha256": "sha256:ff78804659cbc28380d087cae79c494f243f8ef22b1e2ac5ec119b5de9314f05",
+          "localPath": "registry/sources/animata/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animata-swap-text/swap-text.tsx",
+          "change": "Changed the cn import to ../../lib/utils, added a client boundary, made the current phrase the sole accessible name with aria-pressed state, shortened the transition, added reduced-motion handling, and synchronized hover with keyboard focus.",
+          "reason": "Preserve the authored two-phrase swap while making its visible state semantic, its optional hover behavior keyboard-equivalent, and its motion bounded and suppressible."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl, lerp, and getDistance exports.",
+          "reason": "Keep the copied support closure limited to the upstream cn export used by these components."
+        }
+      ],
+      "dedupe": {
+        "family": "interactive-text-swap",
+        "sourceHash": "sha256:01f3b5347628e837f179ff103572bb94ddb92066d105ee0ba6c177b410b40089",
+        "contentHash": "sha256:8363c1bbd2dc3324d2f6b5da643061313892512266828040e36aeaa01a11bc3e",
+        "structureHash": "sha256:3bdacd99804231eef5dd4426cbd806727aae2c6a57ece8364592feaeb9b8a325"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

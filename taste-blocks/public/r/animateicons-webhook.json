@@ -1,0 +1,148 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-webhook",
+  "title": "Animated Webhook Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated webhook SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-webhook/webhook-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface WebhookIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface WebhookIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst WebhookIcon = forwardRef<WebhookIconHandle, WebhookIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: async () => {\n     if (!isAnimated || reduced) {\n      controls.start(\"normal\");\n      return;\n     }\n     await controls.start(\"prime\");\n     await controls.start(\"emit\");\n     await controls.start(\"flow\");\n     await controls.start(\"settle\");\n    },\n    stopAnimation: () => controls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   async (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     await controls.start(\"prime\");\n     await controls.start(\"emit\");\n     await controls.start(\"flow\");\n     await controls.start(\"settle\");\n    } else onMouseEnter?.(e as any);\n   },\n   [controls, reduced, isAnimated, onMouseEnter],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) controls.start(\"normal\");\n    else onMouseLeave?.(e as any);\n   },\n   [controls, onMouseLeave],\n  );\n\n  const svgVariants: Variants = {\n   normal: { scale: 1 },\n   prime: {\n    scale: 0.96,\n    transition: {\n     duration: 0.18 * duration,\n     ease: [0.4, 0, 0.6, 1],\n    },\n   },\n   emit: {\n    scale: 1.04,\n    transition: {\n     duration: 0.22 * duration,\n     ease: [0.34, 1.2, 0.64, 1],\n    },\n   },\n   flow: { scale: 1 },\n   settle: {\n    scale: 1,\n    transition: {\n     duration: 0.3 * duration,\n     ease: [0.33, 1, 0.68, 1],\n    },\n   },\n  };\n\n  const path = (delay = 0): Variants => ({\n   normal: {\n    strokeDasharray: \"0 1\",\n    opacity: 1,\n   },\n   prime: {\n    opacity: 0.6,\n   },\n   emit: {\n    strokeDasharray: \"16 6\",\n    transition: {\n     duration: 0.35 * duration,\n     ease: \"easeOut\",\n    },\n   },\n   flow: {\n    strokeDasharray: [\"16 6\", \"0 1\"],\n    opacity: [1, 0.8, 1],\n    transition: {\n     delay,\n     duration: 0.45 * duration,\n     ease: \"easeInOut\",\n    },\n   },\n   settle: {\n    strokeDasharray: \"0 1\",\n    opacity: 1,\n    transition: {\n     duration: 0.25 * duration,\n    },\n   },\n  });\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      variants={svgVariants}\n      initial=\"normal\"\n      animate={controls}\n     >\n      <m.path\n       d=\"M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2\"\n       variants={path(0)}\n      />\n      <m.path\n       d=\"m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06\"\n       variants={path(0.08)}\n      />\n      <m.path\n       d=\"m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8\"\n       variants={path(0.16)}\n      />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nWebhookIcon.displayName = \"WebhookIcon\";\nexport { WebhookIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-webhook.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "webhook",
+        "animated",
+        "icon",
+        "motion",
+        "api",
+        "integration",
+        "connection",
+        "notification"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-webhook.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-webhook/webhook-icon.tsx",
+            "upstreamPath": "icons/lucide/webhook-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/webhook-icon.tsx",
+            "upstreamSha256": "sha256:ff7abe1a53b73f82f48356aa202701ca8ebd8a454e33b676edb8bff131f063cb",
+            "contentSha256": "sha256:0093ff21a8fc93f0c8498c2413260a9c7a6773dad5d25930a8b4da926e99f6ab",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/webhook-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-webhook/webhook-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-webhook-icon",
+        "sourceHash": "sha256:3799634b4ba5f13f98eb4e14b475ee1f8b12a5993073c34f5a6fcde5f740c4f9",
+        "contentHash": "sha256:dd08dd73b9d643258cb7b6a1fdf3ff71722d44412ce861d0ef1c7bafae0fe694",
+        "structureHash": "sha256:107a4182e99d3e222ee2c20f6238822590febc8ab3f3d1051bf5a7d82d8ab431",
+        "glyph": {
+          "inventoryName": "webhook",
+          "canonicalName": "webhook",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

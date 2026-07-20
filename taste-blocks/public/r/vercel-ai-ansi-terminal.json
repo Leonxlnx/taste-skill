@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-ansi-terminal",
+  "title": "ANSI Terminal",
+  "author": "Vercel",
+  "description": "An ANSI console output viewer with stream state, copy, clear, and autoscroll.",
+  "dependencies": [
+    "ansi-to-react@6.2.6",
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/terminal.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport Ansi from \"ansi-to-react\";\r\nimport { CheckIcon, CopyIcon, TerminalIcon, Trash2Icon } from \"lucide-react\";\r\nimport type { ComponentProps, HTMLAttributes } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\n\r\ninterface TerminalContextType {\r\n  output: string;\r\n  isStreaming: boolean;\r\n  autoScroll: boolean;\r\n  onClear?: () => void;\r\n}\r\n\r\nconst TerminalContext = createContext<TerminalContextType>({\r\n  autoScroll: true,\r\n  isStreaming: false,\r\n  output: \"\",\r\n});\r\n\r\nexport type TerminalHeaderProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TerminalHeader = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalHeaderProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between border-zinc-800 border-b px-4 py-2\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type TerminalTitleProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TerminalTitle = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalTitleProps) => (\r\n  <div\r\n    className={cn(\"flex items-center gap-2 text-sm text-zinc-400\", className)}\r\n    {...props}\r\n  >\r\n    <TerminalIcon className=\"size-4\" />\r\n    {children ?? \"Terminal\"}\r\n  </div>\r\n);\r\n\r\nexport type TerminalStatusProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TerminalStatus = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalStatusProps) => {\r\n  const { isStreaming } = useContext(TerminalContext);\r\n\r\n  if (!isStreaming) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center gap-2 text-xs text-zinc-400\", className)}\r\n      {...props}\r\n    >\r\n      {children}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type TerminalActionsProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TerminalActions = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalActionsProps) => (\r\n  <div className={cn(\"flex items-center gap-1\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type TerminalCopyButtonProps = ComponentProps<typeof Button> & {\r\n  onCopy?: () => void;\r\n  onError?: (error: Error) => void;\r\n  timeout?: number;\r\n};\r\n\r\nexport const TerminalCopyButton = ({\r\n  onCopy,\r\n  onError,\r\n  timeout = 2000,\r\n  children,\r\n  className,\r\n  ...props\r\n}: TerminalCopyButtonProps) => {\r\n  const [isCopied, setIsCopied] = useState(false);\r\n  const timeoutRef = useRef<number>(0);\r\n  const { output } = useContext(TerminalContext);\r\n\r\n  const copyToClipboard = useCallback(async () => {\r\n    if (typeof window === \"undefined\" || !navigator?.clipboard?.writeText) {\r\n      onError?.(new Error(\"Clipboard API not available\"));\r\n      return;\r\n    }\r\n\r\n    try {\r\n      await navigator.clipboard.writeText(output);\r\n      setIsCopied(true);\r\n      onCopy?.();\r\n      timeoutRef.current = window.setTimeout(() => setIsCopied(false), timeout);\r\n    } catch (error) {\r\n      onError?.(error as Error);\r\n    }\r\n  }, [output, onCopy, onError, timeout]);\r\n\r\n  useEffect(\r\n    () => () => {\r\n      window.clearTimeout(timeoutRef.current);\r\n    },\r\n    []\r\n  );\r\n\r\n  const Icon = isCopied ? CheckIcon : CopyIcon;\r\n\r\n  return (\r\n    <Button\r\n      className={cn(\r\n        \"size-7 shrink-0 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100\",\r\n        className\r\n      )}\r\n      onClick={copyToClipboard}\r\n      size=\"icon\"\r\n      variant=\"ghost\"\r\n      {...props}\r\n    >\r\n      {children ?? <Icon size={14} />}\r\n    </Button>\r\n  );\r\n};\r\n\r\nexport type TerminalClearButtonProps = ComponentProps<typeof Button>;\r\n\r\nexport const TerminalClearButton = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: TerminalClearButtonProps) => {\r\n  const { onClear } = useContext(TerminalContext);\r\n\r\n  if (!onClear) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <Button\r\n      className={cn(\r\n        \"size-7 shrink-0 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100\",\r\n        className\r\n      )}\r\n      onClick={onClear}\r\n      size=\"icon\"\r\n      variant=\"ghost\"\r\n      {...props}\r\n    >\r\n      {children ?? <Trash2Icon size={14} />}\r\n    </Button>\r\n  );\r\n};\r\n\r\nexport type TerminalContentProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TerminalContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalContentProps) => {\r\n  const { output, isStreaming, autoScroll } = useContext(TerminalContext);\r\n  const containerRef = useRef<HTMLDivElement>(null);\r\n\r\n  useEffect(() => {\r\n    if (autoScroll && containerRef.current) {\r\n      containerRef.current.scrollTop = containerRef.current.scrollHeight;\r\n    }\r\n  }, [output, autoScroll]);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"max-h-96 overflow-auto p-4 font-mono text-sm leading-relaxed\",\r\n        className\r\n      )}\r\n      ref={containerRef}\r\n      {...props}\r\n    >\r\n      {children ?? (\r\n        <pre className=\"whitespace-pre-wrap break-words\">\r\n          <Ansi>{output}</Ansi>\r\n          {isStreaming && (\r\n            <span className=\"ms-0.5 inline-block h-4 w-2 animate-pulse bg-zinc-100 motion-reduce:animate-none\" />\n          )}\r\n        </pre>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type TerminalProps = HTMLAttributes<HTMLDivElement> & {\r\n  output: string;\r\n  isStreaming?: boolean;\r\n  autoScroll?: boolean;\r\n  onClear?: () => void;\r\n};\r\n\r\nexport const Terminal = ({\r\n  output,\r\n  isStreaming = false,\r\n  autoScroll = true,\r\n  onClear,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TerminalProps) => {\r\n  const contextValue = useMemo(\r\n    () => ({ autoScroll, isStreaming, onClear, output }),\r\n    [autoScroll, isStreaming, onClear, output]\r\n  );\r\n\r\n  return (\r\n    <TerminalContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\r\n          \"flex flex-col overflow-hidden rounded-lg border bg-zinc-950 text-zinc-100\",\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children ?? (\r\n          <>\r\n            <TerminalHeader>\r\n              <TerminalTitle />\r\n              <div className=\"flex items-center gap-1\">\r\n                <TerminalStatus />\r\n                <TerminalActions>\r\n                  <TerminalCopyButton />\r\n                  {onClear && <TerminalClearButton />}\r\n                </TerminalActions>\r\n              </div>\r\n            </TerminalHeader>\r\n            <TerminalContent />\r\n          </>\r\n        )}\r\n      </div>\r\n    </TerminalContext.Provider>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/terminal.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "terminal",
+        "ansi",
+        "console",
+        "streaming"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-ansi-terminal.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/terminal.tsx",
+            "upstreamPath": "packages/elements/src/terminal.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/terminal.tsx",
+            "upstreamSha256": "sha256:04b9b534925054cfe67fdc3bc212eb7261b4912e6e970c4844a195907d3a9a93",
+            "contentSha256": "sha256:52d99a2eda57ff250ea598e33aae16e5411fa84e45ff59f62f904f8ea66732bc",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Disabled the cursor pulse under reduced motion and changed physical spacing to a logical utility."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/terminal.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/terminal.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Disabled the cursor pulse under reduced motion and changed physical spacing to a logical utility.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "ansi-console-output",
+        "sourceHash": "sha256:4276dcdfc180a478463d07f8e3541bfa018f10e7f8e973676e365c564f611b7e",
+        "contentHash": "sha256:9050b184e19142e0f7c6268cafcb8afbcebc1d060d2e9e3c0065b6fc5607af6f",
+        "structureHash": "sha256:1a92941818a5c04455ded50b0dc678768bb6f73e866d096b016439eaf1d3f952"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

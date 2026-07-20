@@ -1,0 +1,76 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-backlight",
+  "title": "Backlight",
+  "author": "Magic UI",
+  "description": "Applies a blurred, saturated backlight glow to one child element.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-backlight/backlight.tsx",
+      "content": "import { useId, type ReactElement } from \"react\"\n\ntype BacklightProps = {\n  children?: ReactElement\n  className?: string\n  blur?: number\n}\n\nexport function Backlight({ blur = 20, children, className }: BacklightProps) {\n  const id = useId()\n\n  return (\n    <div className={className}>\n      <svg width=\"0\" height=\"0\" aria-hidden=\"true\">\n        <filter id={id} y=\"-50%\" x=\"-50%\" width=\"200%\" height=\"200%\">\n          <feGaussianBlur\n            in=\"SourceGraphic\"\n            stdDeviation={blur}\n            result=\"blurred\"\n          ></feGaussianBlur>\n          <feColorMatrix\n            type=\"saturate\"\n            in=\"blurred\"\n            values=\"4\"\n          ></feColorMatrix>\n          <feComposite in=\"SourceGraphic\" operator=\"over\"></feComposite>\n        </filter>\n      </svg>\n\n      <div style={{ filter: `url(#${id})` }}>{children}</div>\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/backlight.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "glow",
+        "media",
+        "svg-filter"
+      ],
+      "renderer": "svg",
+      "preview": "previews/magic-backlight.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-backlight/backlight.tsx",
+            "upstreamPath": "apps/www/registry/magicui/backlight.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/backlight.tsx",
+            "upstreamSha256": "sha256:d302fbcbfa80f42cf59f3ffbf4451627f6a79d9206d6e3bc1fb3f65511515108",
+            "contentSha256": "sha256:d302fbcbfa80f42cf59f3ffbf4451627f6a79d9206d6e3bc1fb3f65511515108",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/backlight.tsx",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "media-backlight-filter",
+        "sourceHash": "sha256:0fd974b6a4443b3e9b49d5b51e690edb5413e278d0e272d924e2ae23038143a4",
+        "contentHash": "sha256:0fd974b6a4443b3e9b49d5b51e690edb5413e278d0e272d924e2ae23038143a4",
+        "structureHash": "sha256:4cc618d4d6e15b4c6ba84f454138666875ecc91b6a31f84142079de87744700e"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

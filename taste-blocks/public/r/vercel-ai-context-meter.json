@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-context-meter",
+  "title": "Context Meter",
+  "author": "Vercel",
+  "description": "A model context meter with token breakdown, capacity, and estimated cost.",
+  "dependencies": [
+    "tokenlens@1.3.1"
+  ],
+  "registryDependencies": [
+    "button",
+    "hover-card",
+    "progress",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/context.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  HoverCard,\r\n  HoverCardContent,\r\n  HoverCardTrigger,\r\n} from \"@/components/ui/hover-card\";\r\nimport { Progress } from \"@/components/ui/progress\";\nimport { cn } from \"@/lib/utils\";\nimport type { ComponentProps } from \"react\";\nimport { createContext, useContext, useMemo } from \"react\";\r\nimport { getUsage } from \"tokenlens\";\r\n\r\nconst PERCENT_MAX = 100;\r\nconst ICON_RADIUS = 10;\r\nconst ICON_VIEWBOX = 24;\r\nconst ICON_CENTER = 12;\r\nconst ICON_STROKE_WIDTH = 2;\r\n\r\ntype ModelId = string;\n\nexport interface ContextUsage {\n  cachedInputTokens?: number;\n  inputTokens?: number;\n  outputTokens?: number;\n  reasoningTokens?: number;\n}\n\r\ninterface ContextSchema {\r\n  usedTokens: number;\n  maxTokens: number;\n  usage?: ContextUsage;\n  modelId?: ModelId;\r\n}\r\n\r\nconst ContextContext = createContext<ContextSchema | null>(null);\r\n\r\nconst useContextValue = () => {\r\n  const context = useContext(ContextContext);\r\n\r\n  if (!context) {\r\n    throw new Error(\"Context components must be used within Context\");\r\n  }\r\n\r\n  return context;\r\n};\r\n\r\nexport type ContextProps = ComponentProps<typeof HoverCard> & ContextSchema;\r\n\r\nexport const Context = ({\r\n  usedTokens,\r\n  maxTokens,\r\n  usage,\r\n  modelId,\r\n  ...props\r\n}: ContextProps) => {\r\n  const contextValue = useMemo(\r\n    () => ({ maxTokens, modelId, usage, usedTokens }),\r\n    [maxTokens, modelId, usage, usedTokens]\r\n  );\r\n\r\n  return (\r\n    <ContextContext.Provider value={contextValue}>\r\n      <HoverCard closeDelay={0} openDelay={0} {...props} />\r\n    </ContextContext.Provider>\r\n  );\r\n};\r\n\r\nconst ContextIcon = () => {\r\n  const { usedTokens, maxTokens } = useContextValue();\r\n  const circumference = 2 * Math.PI * ICON_RADIUS;\r\n  const usedPercent = usedTokens / maxTokens;\r\n  const dashOffset = circumference * (1 - usedPercent);\r\n\r\n  return (\r\n    <svg\r\n      aria-label=\"Model context usage\"\r\n      height=\"20\"\r\n      role=\"img\"\r\n      style={{ color: \"currentcolor\" }}\r\n      viewBox={`0 0 ${ICON_VIEWBOX} ${ICON_VIEWBOX}`}\r\n      width=\"20\"\r\n    >\r\n      <circle\r\n        cx={ICON_CENTER}\r\n        cy={ICON_CENTER}\r\n        fill=\"none\"\r\n        opacity=\"0.25\"\r\n        r={ICON_RADIUS}\r\n        stroke=\"currentColor\"\r\n        strokeWidth={ICON_STROKE_WIDTH}\r\n      />\r\n      <circle\r\n        cx={ICON_CENTER}\r\n        cy={ICON_CENTER}\r\n        fill=\"none\"\r\n        opacity=\"0.7\"\r\n        r={ICON_RADIUS}\r\n        stroke=\"currentColor\"\r\n        strokeDasharray={`${circumference} ${circumference}`}\r\n        strokeDashoffset={dashOffset}\r\n        strokeLinecap=\"round\"\r\n        strokeWidth={ICON_STROKE_WIDTH}\r\n        style={{ transform: \"rotate(-90deg)\", transformOrigin: \"center\" }}\r\n      />\r\n    </svg>\r\n  );\r\n};\r\n\r\nexport type ContextTriggerProps = ComponentProps<typeof Button>;\r\n\r\nexport const ContextTrigger = ({ children, ...props }: ContextTriggerProps) => {\r\n  const { usedTokens, maxTokens } = useContextValue();\r\n  const usedPercent = usedTokens / maxTokens;\r\n  const renderedPercent = new Intl.NumberFormat(\"en-US\", {\r\n    maximumFractionDigits: 1,\r\n    style: \"percent\",\r\n  }).format(usedPercent);\r\n\r\n  return (\r\n    <HoverCardTrigger asChild>\r\n      {children ?? (\r\n        <Button type=\"button\" variant=\"ghost\" {...props}>\r\n          <span className=\"font-medium text-muted-foreground\">\r\n            {renderedPercent}\r\n          </span>\r\n          <ContextIcon />\r\n        </Button>\r\n      )}\r\n    </HoverCardTrigger>\r\n  );\r\n};\r\n\r\nexport type ContextContentProps = ComponentProps<typeof HoverCardContent>;\r\n\r\nexport const ContextContent = ({\r\n  className,\r\n  ...props\r\n}: ContextContentProps) => (\r\n  <HoverCardContent\r\n    className={cn(\"min-w-60 divide-y overflow-hidden p-0\", className)}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type ContextContentHeaderProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextContentHeader = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: ContextContentHeaderProps) => {\r\n  const { usedTokens, maxTokens } = useContextValue();\r\n  const usedPercent = usedTokens / maxTokens;\r\n  const displayPct = new Intl.NumberFormat(\"en-US\", {\r\n    maximumFractionDigits: 1,\r\n    style: \"percent\",\r\n  }).format(usedPercent);\r\n  const used = new Intl.NumberFormat(\"en-US\", {\r\n    notation: \"compact\",\r\n  }).format(usedTokens);\r\n  const total = new Intl.NumberFormat(\"en-US\", {\r\n    notation: \"compact\",\r\n  }).format(maxTokens);\r\n\r\n  return (\r\n    <div className={cn(\"w-full space-y-2 p-3\", className)} {...props}>\r\n      {children ?? (\r\n        <>\r\n          <div className=\"flex items-center justify-between gap-3 text-xs\">\r\n            <p>{displayPct}</p>\r\n            <p className=\"font-mono text-muted-foreground\">\r\n              {used} / {total}\r\n            </p>\r\n          </div>\r\n          <div className=\"space-y-2\">\r\n            <Progress className=\"bg-muted\" value={usedPercent * PERCENT_MAX} />\r\n          </div>\r\n        </>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type ContextContentBodyProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextContentBody = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: ContextContentBodyProps) => (\r\n  <div className={cn(\"w-full p-3\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type ContextContentFooterProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextContentFooter = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: ContextContentFooterProps) => {\r\n  const { modelId, usage } = useContextValue();\r\n  const costUSD = modelId\r\n    ? getUsage({\r\n        modelId,\r\n        usage: {\r\n          input: usage?.inputTokens ?? 0,\r\n          output: usage?.outputTokens ?? 0,\r\n        },\r\n      }).costUSD?.totalUSD\r\n    : undefined;\r\n  const totalCost = new Intl.NumberFormat(\"en-US\", {\r\n    currency: \"USD\",\r\n    style: \"currency\",\r\n  }).format(costUSD ?? 0);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"flex w-full items-center justify-between gap-3 bg-secondary p-3 text-xs\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      {children ?? (\r\n        <>\r\n          <span className=\"text-muted-foreground\">Total cost</span>\r\n          <span>{totalCost}</span>\r\n        </>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nconst TokensWithCost = ({\r\n  tokens,\r\n  costText,\r\n}: {\r\n  tokens?: number;\r\n  costText?: string;\r\n}) => (\r\n  <span>\r\n    {tokens === undefined\r\n      ? \"—\"\r\n      : new Intl.NumberFormat(\"en-US\", {\r\n          notation: \"compact\",\r\n        }).format(tokens)}\r\n    {costText ? (\r\n      <span className=\"ms-2 text-muted-foreground\">• {costText}</span>\n    ) : null}\r\n  </span>\r\n);\r\n\r\nexport type ContextInputUsageProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextInputUsage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: ContextInputUsageProps) => {\r\n  const { usage, modelId } = useContextValue();\r\n  const inputTokens = usage?.inputTokens ?? 0;\r\n\r\n  if (children) {\r\n    return children;\r\n  }\r\n\r\n  if (!inputTokens) {\r\n    return null;\r\n  }\r\n\r\n  const inputCost = modelId\r\n    ? getUsage({\r\n        modelId,\r\n        usage: { input: inputTokens, output: 0 },\r\n      }).costUSD?.totalUSD\r\n    : undefined;\r\n  const inputCostText = new Intl.NumberFormat(\"en-US\", {\r\n    currency: \"USD\",\r\n    style: \"currency\",\r\n  }).format(inputCost ?? 0);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center justify-between text-xs\", className)}\r\n      {...props}\r\n    >\r\n      <span className=\"text-muted-foreground\">Input</span>\r\n      <TokensWithCost costText={inputCostText} tokens={inputTokens} />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type ContextOutputUsageProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextOutputUsage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: ContextOutputUsageProps) => {\r\n  const { usage, modelId } = useContextValue();\r\n  const outputTokens = usage?.outputTokens ?? 0;\r\n\r\n  if (children) {\r\n    return children;\r\n  }\r\n\r\n  if (!outputTokens) {\r\n    return null;\r\n  }\r\n\r\n  const outputCost = modelId\r\n    ? getUsage({\r\n        modelId,\r\n        usage: { input: 0, output: outputTokens },\r\n      }).costUSD?.totalUSD\r\n    : undefined;\r\n  const outputCostText = new Intl.NumberFormat(\"en-US\", {\r\n    currency: \"USD\",\r\n    style: \"currency\",\r\n  }).format(outputCost ?? 0);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center justify-between text-xs\", className)}\r\n      {...props}\r\n    >\r\n      <span className=\"text-muted-foreground\">Output</span>\r\n      <TokensWithCost costText={outputCostText} tokens={outputTokens} />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type ContextReasoningUsageProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextReasoningUsage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: ContextReasoningUsageProps) => {\r\n  const { usage, modelId } = useContextValue();\r\n  const reasoningTokens = usage?.reasoningTokens ?? 0;\r\n\r\n  if (children) {\r\n    return children;\r\n  }\r\n\r\n  if (!reasoningTokens) {\r\n    return null;\r\n  }\r\n\r\n  const reasoningCost = modelId\r\n    ? getUsage({\r\n        modelId,\r\n        usage: { reasoningTokens },\r\n      }).costUSD?.totalUSD\r\n    : undefined;\r\n  const reasoningCostText = new Intl.NumberFormat(\"en-US\", {\r\n    currency: \"USD\",\r\n    style: \"currency\",\r\n  }).format(reasoningCost ?? 0);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center justify-between text-xs\", className)}\r\n      {...props}\r\n    >\r\n      <span className=\"text-muted-foreground\">Reasoning</span>\r\n      <TokensWithCost costText={reasoningCostText} tokens={reasoningTokens} />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type ContextCacheUsageProps = ComponentProps<\"div\">;\r\n\r\nexport const ContextCacheUsage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: ContextCacheUsageProps) => {\r\n  const { usage, modelId } = useContextValue();\r\n  const cacheTokens = usage?.cachedInputTokens ?? 0;\r\n\r\n  if (children) {\r\n    return children;\r\n  }\r\n\r\n  if (!cacheTokens) {\r\n    return null;\r\n  }\r\n\r\n  const cacheCost = modelId\r\n    ? getUsage({\r\n        modelId,\r\n        usage: { cacheReads: cacheTokens, input: 0, output: 0 },\r\n      }).costUSD?.totalUSD\r\n    : undefined;\r\n  const cacheCostText = new Intl.NumberFormat(\"en-US\", {\r\n    currency: \"USD\",\r\n    style: \"currency\",\r\n  }).format(cacheCost ?? 0);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center justify-between text-xs\", className)}\r\n      {...props}\r\n    >\r\n      <span className=\"text-muted-foreground\">Cache</span>\r\n      <TokensWithCost costText={cacheCostText} tokens={cacheTokens} />\r\n    </div>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/context.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "tokens",
+        "context",
+        "usage",
+        "cost"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-context-meter.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/context.tsx",
+            "upstreamPath": "packages/elements/src/context.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/context.tsx",
+            "upstreamSha256": "sha256:e511015bd0d58d4dcc179d672fe2de980ff923654a53541d4396f209bf02c243",
+            "contentSha256": "sha256:3389077b4c78d70534526aeb471ef1c8f33fa8eee2c5c71a4eba39fbdb1920f4",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced the AI SDK type-only usage shape with an equivalent local structural type.",
+              "Changed physical spacing utilities to logical equivalents for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/context.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/context.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced the AI SDK type-only usage shape with an equivalent local structural type. Changed physical spacing utilities to logical equivalents for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "model-context-cost-meter",
+        "sourceHash": "sha256:301d9bbc4b46d04a1bdb2e801c6ab85cb60ae4c568dfe1c516c1144d5e8ff5e9",
+        "contentHash": "sha256:ea61c42dea78820ab61fc24bed9cc14b7c9b89747e042d7016e1d5ae003b74c0",
+        "structureHash": "sha256:d71c585c525e7a83a37e75a645b3348d4a0fcb30424f8c799c6efe446fb9a32a"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

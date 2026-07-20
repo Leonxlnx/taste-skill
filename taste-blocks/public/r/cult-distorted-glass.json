@@ -1,0 +1,112 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cult-distorted-glass",
+  "title": "Distorted Glass",
+  "author": "Cult UI",
+  "description": "Renders a repeating radial glass texture through an SVG displacement filter.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.5.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/cult-ui/components/cult-distorted-glass/distorted-glass.tsx",
+      "content": "\"use client\"\n\nimport { useId } from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\nexport const DistortedGlass = ({ className }: { className?: string }) => {\n  const filterId = `distorted-glass-${useId().replaceAll(\":\", \"\")}`\n\n  return (\n    <div\n      className={cn(\n        \"relative h-[50px] w-full overflow-hidden rounded-b-2xl\",\n        className\n      )}\n    >\n      <div className=\"pointer-events-none absolute bottom-0 z-10 size-full overflow-hidden rounded-b-2xl border border-[#f5f5f51a]\">\n        <div\n          className=\"size-full\"\n          style={{\n            backdropFilter: \"blur(0px)\",\n            background:\n              \"repeating-radial-gradient(circle at 50% 50%, rgb(255 255 255 / 0), rgba(255, 255, 255, 0.2) 10px, rgb(255 255 255) 31px)\",\n            backgroundSize: \"6px 6px\",\n            filter: `url(#${filterId})`,\n          }}\n        />\n      </div>\n      <svg aria-hidden=\"true\" className=\"absolute size-0\" focusable=\"false\">\n        <defs>\n          <filter id={filterId}>\n            <feTurbulence\n              type=\"fractalNoise\"\n              baseFrequency=\"0.12 0.12\"\n              numOctaves=\"1\"\n              result=\"warp\"\n            />\n            <feDisplacementMap\n              xChannelSelector=\"R\"\n              yChannelSelector=\"G\"\n              scale=\"30\"\n              in=\"SourceGraphic\"\n              in2=\"warp\"\n            />\n          </filter>\n        </defs>\n      </svg>\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/distorted-glass.tsx"
+    },
+    {
+      "path": "registry/sources/cult-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "glass",
+        "svg-filter",
+        "refraction"
+      ],
+      "renderer": "svg",
+      "preview": "previews/cult-distorted-glass.tsx",
+      "source": {
+        "project": "Cult UI",
+        "repository": "https://github.com/nolly-studio/cult-ui",
+        "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/cult-distorted-glass/distorted-glass.tsx",
+            "upstreamPath": "apps/www/registry/default/ui/distorted-glass.tsx",
+            "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/distorted-glass.tsx",
+            "upstreamSha256": "sha256:2d271df38baa981ee26960c38c9b27445183a97aa591323b2a1af5b87e0c75c3",
+            "contentSha256": "sha256:ac0058d1923340f696af751f2c215c63d249a6d830ccad99c948f1eed841cb3b",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied support file resolves both in this batch and at the registry target.",
+              "Marked the filter-definition SVG decorative and removed its exposed title.",
+              "Replaced the Next.js-only style jsx attribute with standard React styling and corrected the radial-position token spacing.",
+              "Removed the xl-only visibility gate and fixed breakpoint widths so the glass renders responsively at every viewport size.",
+              "Generated an instance-scoped SVG filter id with useId, applied the filter inline, and collapsed the definition SVG to prevent cross-instance id and global-selector collisions."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/lib/utils.ts",
+            "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/lib/utils.ts",
+            "upstreamSha256": "sha256:35a351cab62e77fdf0087f9cfce30bb61692302a190da55af40e7267d8eed9be",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": [
+              "Removed the unrelated absoluteUrl helper and retained only the cn support closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/default/ui/distorted-glass.tsx and apps/www/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 Jordan-Gilliam"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+          "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+          "localPath": "registry/sources/cult-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/cult-distorted-glass/distorted-glass.tsx",
+          "change": "Changed the cn import to ../../lib/utils, kept the filter SVG decorative, replaced styled-jsx with standard React styling, removed the xl-only visibility/fixed-width classes, and scoped the SVG filter and styles per instance with useId.",
+          "reason": "Resolve the copied helper, retain valid portable CSS and accessibility semantics, render at narrow viewports, and prevent multiple glass instances from sharing a filter id or global style selector."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl export.",
+          "reason": "Keep the copied support closure minimal and remove the Cult UI site URL default."
+        }
+      ],
+      "dedupe": {
+        "family": "distorted-glass-filter",
+        "sourceHash": "sha256:62368cf74c0d669a23d34c6f101b5c529069591168525835dbef4f4d14edb010",
+        "contentHash": "sha256:b2a0b3cf91de39fefd357516e67cc26a93835571b1203a12e7c55708221d0ecb",
+        "structureHash": "sha256:3ece344d12dc255973596c05bc96e6641875181f24d6165c87543bb12a36892d"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

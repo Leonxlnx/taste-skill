@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ruixen-live-waveform",
+  "title": "Ruixen Live Waveform",
+  "author": "Ruixen UI",
+  "description": "Visualizes microphone frequency data or a bounded processing state on a responsive canvas.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@0.545.0",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ruixen-ui/components/ruixen-live-waveform/index.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Square } from \"lucide-react\";\nimport { cn } from \"../shared/ruixen-utils\";\n\nexport interface LiveWaveformProps {\n  /** Enable real-time microphone input visualization */\n  active?: boolean;\n  /** Show animated processing wave pattern */\n  processing?: boolean;\n  /** Bar width in pixels */\n  barWidth?: number;\n  /** Gap between bars in pixels */\n  barGap?: number;\n  /** Bar corner radius */\n  barRadius?: number;\n  /** Bar color — inherits currentColor when unset */\n  barColor?: string;\n  /** Waveform height in pixels */\n  height?: number;\n  /** Apply gradient fade at edges */\n  fadeEdges?: boolean;\n  /** Fade gradient width in pixels */\n  fadeWidth?: number;\n  /** Microphone sensitivity multiplier */\n  sensitivity?: number;\n  /** Callback when stop button is pressed */\n  onStop?: () => void;\n  /** Called when microphone access or setup fails. */\n  onError?: (error: Error) => void;\n  /** Accessible description for the canvas. */\n  label?: string;\n  /** Additional CSS classes */\n  className?: string;\n}\n\nfunction roundedBar(\n  ctx: CanvasRenderingContext2D,\n  x: number,\n  y: number,\n  w: number,\n  h: number,\n  r: number,\n) {\n  const radius = Math.min(r, w / 2, h / 2);\n  ctx.beginPath();\n  ctx.moveTo(x + radius, y);\n  ctx.lineTo(x + w - radius, y);\n  ctx.arcTo(x + w, y, x + w, y + radius, radius);\n  ctx.lineTo(x + w, y + h - radius);\n  ctx.arcTo(x + w, y + h, x + w - radius, y + h, radius);\n  ctx.lineTo(x + radius, y + h);\n  ctx.arcTo(x, y + h, x, y + h - radius, radius);\n  ctx.lineTo(x, y + radius);\n  ctx.arcTo(x, y, x + radius, y, radius);\n  ctx.closePath();\n  ctx.fill();\n}\n\nexport default function LiveWaveform({\n  active = false,\n  processing = false,\n  barWidth = 3,\n  barGap = 2,\n  barRadius = 1.5,\n  barColor,\n  height = 48,\n  fadeEdges = true,\n  fadeWidth = 24,\n  sensitivity = 1,\n  onStop,\n  onError,\n  label = \"Audio waveform\",\n  className,\n}: LiveWaveformProps) {\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const wrapRef = React.useRef<HTMLDivElement>(null);\n  const frameRef = React.useRef<number>(0);\n  const analyserRef = React.useRef<AnalyserNode | null>(null);\n  const streamRef = React.useRef<MediaStream | null>(null);\n  const audioCtxRef = React.useRef<AudioContext | null>(null);\n  const dataRef = React.useRef<Uint8Array<ArrayBuffer> | null>(null);\n  const onErrorRef = React.useRef(onError);\n  const [reduceMotion, setReduceMotion] = React.useState(false);\n  const safeBarWidth = Math.max(0.5, barWidth);\n  const safeBarGap = Math.max(0, barGap);\n  const safeHeight = Math.max(1, height);\n  const safeFadeWidth = Math.max(0, fadeWidth);\n  const safeSensitivity = Math.max(0, sensitivity);\n\n  onErrorRef.current = onError;\n\n  React.useEffect(() => {\n    const query = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduceMotion(query.matches);\n    update();\n    query.addEventListener(\"change\", update);\n    return () => query.removeEventListener(\"change\", update);\n  }, []);\n\n  /* -------- canvas animation -------- */\n  React.useEffect(() => {\n    const cvs = canvasRef.current;\n    const wrap = wrapRef.current;\n    if (!cvs || !wrap) return;\n    const ctx = cvs.getContext(\"2d\");\n    if (!ctx) return;\n\n    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);\n    const resolvedColor = barColor ?? getComputedStyle(cvs).color;\n    let width = 0;\n    let visible = true;\n    let interval = 0;\n\n    const resize = () => {\n      width = wrap.offsetWidth;\n      cvs.width = Math.round(width * dpr);\n      cvs.height = Math.round(safeHeight * dpr);\n      cvs.style.width = `${width}px`;\n      cvs.style.height = `${safeHeight}px`;\n    };\n    resize();\n\n    const ro = new ResizeObserver(() => {\n      resize();\n      if (!active && !processing) paint(performance.now());\n    });\n    ro.observe(wrap);\n\n    const t0 = performance.now();\n\n    const paint = (now: number) => {\n      const w = width;\n      const h = safeHeight;\n\n      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);\n      ctx.clearRect(0, 0, w, h);\n      ctx.fillStyle = resolvedColor;\n\n      const step = safeBarWidth + safeBarGap;\n      const count = Math.ceil(w / step) + 1;\n      const t = (now - t0) / 1000;\n      const cy = h / 2;\n\n      for (let i = 0; i < count; i++) {\n        const x = i * step;\n        const pos = i / count;\n        let bh = 4;\n        let alpha = 1;\n\n        if (processing && !active) {\n          /* layered sine waves → organic flowing animation */\n          const s1 = Math.sin(t * 2.5 + pos * Math.PI * 4) * 0.38;\n          const s2 = Math.sin(t * 1.7 + pos * Math.PI * 6 + 1.3) * 0.24;\n          const s3 = Math.sin(t * 3.3 + pos * Math.PI * 2.5 + 0.8) * 0.14;\n          const amp = (s1 + s2 + s3 + 0.76) / 1.52;\n          bh = Math.max(4, amp * h * 0.82);\n        } else if (active && analyserRef.current) {\n          const an = analyserRef.current;\n          if (\n            !dataRef.current ||\n            dataRef.current.length !== an.frequencyBinCount\n          ) {\n            dataRef.current = new Uint8Array(an.frequencyBinCount);\n          }\n          an.getByteFrequencyData(dataRef.current);\n          const idx = Math.floor(pos * dataRef.current.length);\n          const val = (dataRef.current[idx] / 255) * safeSensitivity;\n          bh = Math.max(4, val * h * 0.85);\n        } else {\n          /* idle: tiny flat bars */\n          alpha = 0.25;\n        }\n\n        if (fadeEdges) {\n          const edge = Math.min(x, w - x - safeBarWidth);\n          if (edge < safeFadeWidth && safeFadeWidth > 0) {\n            alpha *= Math.max(0, edge / safeFadeWidth);\n          }\n        }\n\n        ctx.globalAlpha = alpha;\n        roundedBar(ctx, x, cy - bh / 2, safeBarWidth, bh, barRadius);\n      }\n\n      ctx.globalAlpha = 1;\n    };\n\n    const stop = () => {\n      cancelAnimationFrame(frameRef.current);\n      frameRef.current = 0;\n      window.clearInterval(interval);\n      interval = 0;\n    };\n\n    const start = () => {\n      stop();\n      paint(performance.now());\n      if (!visible || document.hidden || (!active && !processing)) return;\n      if (reduceMotion) {\n        if (active) {\n          interval = window.setInterval(() => paint(performance.now()), 200);\n        }\n        return;\n      }\n      const loop = (now: number) => {\n        paint(now);\n        frameRef.current = requestAnimationFrame(loop);\n      };\n      frameRef.current = requestAnimationFrame(loop);\n    };\n\n    const observer = new IntersectionObserver(([entry]) => {\n      visible = entry?.isIntersecting ?? true;\n      start();\n    });\n    observer.observe(wrap);\n    const handleVisibility = () => start();\n    document.addEventListener(\"visibilitychange\", handleVisibility);\n    start();\n\n    return () => {\n      stop();\n      ro.disconnect();\n      observer.disconnect();\n      document.removeEventListener(\"visibilitychange\", handleVisibility);\n    };\n  }, [\n    active,\n    processing,\n    safeBarWidth,\n    safeBarGap,\n    barRadius,\n    safeHeight,\n    fadeEdges,\n    safeFadeWidth,\n    safeSensitivity,\n    barColor,\n    reduceMotion,\n  ]);\n\n  /* -------- microphone -------- */\n  React.useEffect(() => {\n    if (!active) {\n      streamRef.current?.getTracks().forEach((t) => t.stop());\n      streamRef.current = null;\n      if (audioCtxRef.current) void audioCtxRef.current.close();\n      audioCtxRef.current = null;\n      analyserRef.current = null;\n      return;\n    }\n\n    let cancelled = false;\n\n    (async () => {\n      try {\n        if (!navigator.mediaDevices?.getUserMedia) {\n          throw new Error(\"Microphone input is not supported in this browser.\");\n        }\n        const stream = await navigator.mediaDevices.getUserMedia({\n          audio: true,\n        });\n        if (cancelled) {\n          stream.getTracks().forEach((t) => t.stop());\n          return;\n        }\n        streamRef.current = stream;\n\n        const actx = new AudioContext();\n        audioCtxRef.current = actx;\n\n        const src = actx.createMediaStreamSource(stream);\n        const analyser = actx.createAnalyser();\n        analyser.fftSize = 256;\n        analyser.smoothingTimeConstant = 0.8;\n        src.connect(analyser);\n        analyserRef.current = analyser;\n      } catch (error) {\n        if (!cancelled) {\n          onErrorRef.current?.(\n            error instanceof Error\n              ? error\n              : new Error(\"Microphone access failed.\"),\n          );\n        }\n      }\n    })();\n\n    return () => {\n      cancelled = true;\n      streamRef.current?.getTracks().forEach((t) => t.stop());\n      streamRef.current = null;\n      if (audioCtxRef.current) void audioCtxRef.current.close();\n      audioCtxRef.current = null;\n      analyserRef.current = null;\n    };\n  }, [active]);\n\n  const isLive = processing || active;\n\n  return (\n    <div\n      className={cn(\n        \"relative flex items-center gap-3 rounded-xl border border-border/50 bg-card px-4 py-3\",\n        className,\n      )}\n    >\n      {isLive && onStop && (\n        <button\n          type=\"button\"\n          onClick={onStop}\n          className=\"flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground text-background transition-opacity hover:opacity-80\"\n          aria-label=\"Stop\"\n        >\n          <Square className=\"size-3 fill-current\" />\n        </button>\n      )}\n      <div ref={wrapRef} className=\"min-w-0 flex-1 overflow-hidden\">\n        <canvas\n          ref={canvasRef}\n          role=\"img\"\n          aria-label={label}\n          className=\"block text-foreground\"\n          style={{ height: safeHeight }}\n        >\n          {label}\n        </canvas>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/live-waveform/index.tsx"
+    },
+    {
+      "path": "registry/sources/ruixen-ui/components/shared/ruixen-utils.ts",
+      "content": "import clsx, { type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "audio",
+        "waveform",
+        "microphone",
+        "canvas",
+        "processing"
+      ],
+      "renderer": "canvas",
+      "preview": "previews/ruixen-live-waveform.tsx",
+      "source": {
+        "project": "Ruixen UI",
+        "repository": "https://github.com/ruixenui/ruixen.com",
+        "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ruixen-live-waveform/index.tsx",
+            "upstreamPath": "registry/ruixenui/live-waveform.tsx",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/live-waveform.tsx",
+            "upstreamSha256": "sha256:a16de8414dd64b99d17282e3ba83c06bc800224170337854c5160c16ac70146a",
+            "contentSha256": "sha256:de23be36e111cb60ddb59cfa277212b4a36c2c6b7117d687f2736c2f24d2a108",
+            "changes": [
+              "Repointed the source utility import to the copied Ruixen utility subset.",
+              "Bounded draw geometry and device pixel ratio, cached layout and color reads, paused offscreen and hidden work, and reduced active sampling under reduced motion.",
+              "Added accessible canvas labeling, non-submit stop behavior, caller-owned microphone error reporting, and complete animation, observer, stream, and audio-context cleanup."
+            ]
+          },
+          {
+            "shippedPath": "components/shared/ruixen-utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+            "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+            "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+            "changes": [
+              "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/ruixenui/live-waveform.tsx and the cn subset of lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 Ruixen UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+          "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+          "localPath": "registry/sources/ruixen-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ruixen-live-waveform/index.tsx",
+          "change": "Made the copied canvas loop bounded, visibility-aware, reduced-motion-aware, error-reporting, and fully disposable.",
+          "reason": "Keep the source waveform renderer without perpetual hidden work, unsafe geometry, console-only failures, or leaked browser resources."
+        },
+        {
+          "shippedPath": "components/shared/ruixen-utils.ts",
+          "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+          "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "microphone-processing-waveform",
+        "sourceHash": "sha256:7aace0f80523b0c5750b9300cce8c93e2cf6c48d36e38ab6477c9e4afa04603e",
+        "contentHash": "sha256:815818e3868f784edbec9b5988a948bbf0c726249687f6c30069e4ea5206874a",
+        "structureHash": "sha256:16f7a4baf6dbf81e69ee4365a3aea302805d33d855d6d1a26a260042c48ea2f0"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

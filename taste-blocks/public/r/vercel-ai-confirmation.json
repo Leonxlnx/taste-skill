@@ -1,0 +1,93 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-confirmation",
+  "title": "Action Confirmation",
+  "author": "Vercel",
+  "description": "A state-aware approval prompt for requested, accepted, and rejected actions.",
+  "dependencies": [],
+  "registryDependencies": [
+    "alert",
+    "button",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/confirmation.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Alert, AlertDescription } from \"@/components/ui/alert\";\nimport { Button } from \"@/components/ui/button\";\nimport { cn } from \"@/lib/utils\";\nimport type { ComponentProps, ReactNode } from \"react\";\nimport { createContext, useContext, useMemo } from \"react\";\n\nexport type ConfirmationState =\n  | \"approval-requested\"\n  | \"approval-responded\"\n  | \"input-available\"\n  | \"input-streaming\"\n  | \"output-available\"\n  | \"output-denied\"\n  | \"output-error\";\n\r\ntype ToolUIPartApproval =\r\n  | {\r\n      id: string;\r\n      approved?: never;\r\n      reason?: never;\r\n    }\r\n  | {\r\n      id: string;\r\n      approved: boolean;\r\n      reason?: string;\r\n    }\r\n  | {\r\n      id: string;\r\n      approved: true;\r\n      reason?: string;\r\n    }\r\n  | {\r\n      id: string;\r\n      approved: false;\r\n      reason?: string;\r\n    }\r\n  | undefined;\r\n\r\ninterface ConfirmationContextValue {\n  approval: ToolUIPartApproval;\n  state: ConfirmationState;\n}\r\n\r\nconst ConfirmationContext = createContext<ConfirmationContextValue | null>(\r\n  null\r\n);\r\n\r\nconst useConfirmation = () => {\r\n  const context = useContext(ConfirmationContext);\r\n\r\n  if (!context) {\r\n    throw new Error(\"Confirmation components must be used within Confirmation\");\r\n  }\r\n\r\n  return context;\r\n};\r\n\r\nexport type ConfirmationProps = ComponentProps<typeof Alert> & {\n  approval?: ToolUIPartApproval;\n  state: ConfirmationState;\n};\n\r\nexport const Confirmation = ({\r\n  className,\r\n  approval,\r\n  state,\r\n  ...props\r\n}: ConfirmationProps) => {\r\n  const contextValue = useMemo(() => ({ approval, state }), [approval, state]);\r\n\r\n  if (!approval || state === \"input-streaming\" || state === \"input-available\") {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <ConfirmationContext.Provider value={contextValue}>\r\n      <Alert className={cn(\"flex flex-col gap-2\", className)} {...props} />\r\n    </ConfirmationContext.Provider>\r\n  );\r\n};\r\n\r\nexport type ConfirmationTitleProps = ComponentProps<typeof AlertDescription>;\r\n\r\nexport const ConfirmationTitle = ({\r\n  className,\r\n  ...props\r\n}: ConfirmationTitleProps) => (\r\n  <AlertDescription className={cn(\"inline\", className)} {...props} />\r\n);\r\n\r\nexport interface ConfirmationRequestProps {\r\n  children?: ReactNode;\r\n}\r\n\r\nexport const ConfirmationRequest = ({ children }: ConfirmationRequestProps) => {\r\n  const { state } = useConfirmation();\r\n\r\n  // Only show when approval is requested\r\n  if (state !== \"approval-requested\") {\r\n    return null;\r\n  }\r\n\r\n  return children;\r\n};\r\n\r\nexport interface ConfirmationAcceptedProps {\r\n  children?: ReactNode;\r\n}\r\n\r\nexport const ConfirmationAccepted = ({\r\n  children,\r\n}: ConfirmationAcceptedProps) => {\r\n  const { approval, state } = useConfirmation();\r\n\r\n  // Only show when approved and in response states\r\n  if (\r\n    !approval?.approved ||\r\n    (state !== \"approval-responded\" &&\r\n      state !== \"output-denied\" &&\r\n      state !== \"output-available\")\r\n  ) {\r\n    return null;\r\n  }\r\n\r\n  return children;\r\n};\r\n\r\nexport interface ConfirmationRejectedProps {\r\n  children?: ReactNode;\r\n}\r\n\r\nexport const ConfirmationRejected = ({\r\n  children,\r\n}: ConfirmationRejectedProps) => {\r\n  const { approval, state } = useConfirmation();\r\n\r\n  // Only show when rejected and in response states\r\n  if (\r\n    approval?.approved !== false ||\r\n    (state !== \"approval-responded\" &&\r\n      state !== \"output-denied\" &&\r\n      state !== \"output-available\")\r\n  ) {\r\n    return null;\r\n  }\r\n\r\n  return children;\r\n};\r\n\r\nexport type ConfirmationActionsProps = ComponentProps<\"div\">;\r\n\r\nexport const ConfirmationActions = ({\r\n  className,\r\n  ...props\r\n}: ConfirmationActionsProps) => {\r\n  const { state } = useConfirmation();\r\n\r\n  // Only show when approval is requested\r\n  if (state !== \"approval-requested\") {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"flex items-center justify-end gap-2 self-end\", className)}\r\n      {...props}\r\n    />\r\n  );\r\n};\r\n\r\nexport type ConfirmationActionProps = ComponentProps<typeof Button>;\r\n\r\nexport const ConfirmationAction = (props: ConfirmationActionProps) => (\r\n  <Button className=\"h-8 px-3 text-sm\" type=\"button\" {...props} />\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/confirmation.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "approval",
+        "confirmation",
+        "state",
+        "feedback"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-confirmation.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/confirmation.tsx",
+            "upstreamPath": "packages/elements/src/confirmation.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/confirmation.tsx",
+            "upstreamSha256": "sha256:7cc0befed99499ed9010643e7a90ec619180a3f6e79cba5668cfc84126b96a10",
+            "contentSha256": "sha256:400e963d29912e6dd8620d2e284ab81ba744008fb516d2f655b6fea227635542",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced the AI SDK type-only tool state with an equivalent local state union."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/confirmation.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/confirmation.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced the AI SDK type-only tool state with an equivalent local state union.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "tool-approval-state",
+        "sourceHash": "sha256:d140c823b155ae36a79622e1ca87aa5e080b27b67b71db8f12e9ed6ef3ea6bbf",
+        "contentHash": "sha256:f449126d224d984637a43d085da6394b9ead06d3e68cb52c122dcad5a5e7bc3e",
+        "structureHash": "sha256:9f63a834b4e4036aab3cab90d8e194615adef4c2c742f4fbe5a251c5a0ca9bca"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

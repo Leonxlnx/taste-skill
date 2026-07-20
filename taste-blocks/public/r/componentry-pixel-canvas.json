@@ -1,0 +1,102 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "componentry-pixel-canvas",
+  "title": "Pixel Canvas",
+  "author": "Harsh Jadhav",
+  "description": "Lights a canvas pixel grid around pointer or touch input with configurable trail and glow behavior.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/componentry/components/componentry/pixel-canvas.tsx",
+      "content": "\"use client\";\r\n\r\nimport React, { useEffect, useRef, useCallback } from \"react\";\r\nimport { cn } from \"./lib/utils\";\n\r\ninterface PixelCanvasProps extends React.HTMLAttributes<HTMLDivElement> {\n    /** Size of each pixel cell in pixels */\r\n    gap?: number;\r\n    /** Speed of the trailing decay (higher = faster fade) */\r\n    speed?: number;\r\n    /** Array of colors for pixels - will interpolate through them as trail fades */\r\n    colors?: string[];\r\n    /** Disable mouse tracking */\r\n    noFocus?: boolean;\r\n    /** Variant style */\n    variant?: \"default\" | \"trail\" | \"glow\";\n    /** Accessible name for the generated visual. */\n    label?: string;\n}\r\n\r\ninterface Pixel {\r\n    x: number;\r\n    y: number;\r\n    size: number;\r\n    intensity: number;\r\n    targetIntensity: number;\r\n    colorPhase: number;\r\n}\r\n\r\n// Helper to interpolate between two hex colors\r\nfunction lerpColor(color1: string, color2: string, t: number): string {\r\n    const c1 = hexToRgb(color1);\r\n    const c2 = hexToRgb(color2);\r\n    if (!c1 || !c2) return color1;\r\n\r\n    const r = Math.round(c1.r + (c2.r - c1.r) * t);\r\n    const g = Math.round(c1.g + (c2.g - c1.g) * t);\r\n    const b = Math.round(c1.b + (c2.b - c1.b) * t);\r\n\r\n    return `rgb(${r}, ${g}, ${b})`;\r\n}\r\n\r\nfunction hexToRgb(hex: string): { r: number; g: number; b: number } | null {\r\n    const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);\r\n    return result\r\n        ? {\r\n            r: parseInt(result[1]!, 16),\r\n            g: parseInt(result[2]!, 16),\r\n            b: parseInt(result[3]!, 16),\r\n        }\r\n        : null;\r\n}\r\n\r\nexport function PixelCanvas({\r\n    className,\r\n    gap = 6,\r\n    speed = 0.02,\r\n    colors = [\"#e879f9\", \"#a78bfa\", \"#38bdf8\", \"#22d3ee\"],\r\n    noFocus = false,\n    variant = \"default\",\n    label = \"Interactive pixel field\",\n    ...props\r\n}: PixelCanvasProps) {\r\n    const canvasRef = useRef<HTMLCanvasElement>(null);\r\n    const containerRef = useRef<HTMLDivElement>(null);\r\n    const pixelsRef = useRef<Pixel[][]>([]);\r\n    const mouseRef = useRef({ x: -1000, y: -1000 });\r\n    const animationRef = useRef<number>(0);\r\n    const lastTimeRef = useRef<number>(0);\r\n\r\n    const getColorFromIntensity = useCallback((intensity: number, phase: number) => {\r\n        if (colors.length === 0) return \"#ffffff\";\r\n        if (colors.length === 1) return colors[0]!;\r\n\r\n        // Use phase + intensity to create a shifting color effect\r\n        const t = (phase + intensity) % 1;\r\n        const index = Math.floor(t * (colors.length - 1));\r\n        const nextIndex = Math.min(index + 1, colors.length - 1);\r\n        const localT = (t * (colors.length - 1)) % 1;\r\n\r\n        const color1 = colors[index];\r\n        const color2 = colors[nextIndex];\r\n\r\n        if (!color1) return \"#ffffff\";\r\n        if (!color2) return color1!;\r\n\r\n        return lerpColor(color1, color2, localT);\r\n    }, [colors]);\r\n\r\n    useEffect(() => {\r\n        const canvas = canvasRef.current;\r\n        const container = containerRef.current;\r\n        if (!canvas || !container) return;\r\n\r\n        const ctx = canvas.getContext(\"2d\", { alpha: true });\r\n        if (!ctx) return;\r\n\r\n        let cols = 0;\n        let rows = 0;\n        let running = false;\n        let inViewport = true;\n        let pixelSize = Math.max(gap, 4);\n        const reducedMotion = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n\r\n        const initPixels = () => {\r\n            const rect = container.getBoundingClientRect();\n            pixelSize = Math.max(\n                gap,\n                4,\n                Math.sqrt((rect.width * rect.height) / 60000),\n            );\n            const dpr = Math.min(\n                window.devicePixelRatio || 1,\n                1.75,\n                4096 / Math.max(rect.width, 1),\n                4096 / Math.max(rect.height, 1),\n            );\n\r\n            canvas.width = rect.width * dpr;\r\n            canvas.height = rect.height * dpr;\r\n            canvas.style.width = `${rect.width}px`;\r\n            canvas.style.height = `${rect.height}px`;\r\n            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);\n\r\n            cols = Math.ceil(rect.width / pixelSize);\r\n            rows = Math.ceil(rect.height / pixelSize);\r\n\r\n            const newPixels: Pixel[][] = [];\r\n            for (let i = 0; i < cols; i++) {\r\n                const row: Pixel[] = [];\r\n                for (let j = 0; j < rows; j++) {\r\n                    // Preserve existing intensity if pixel exists\r\n                    const existing = pixelsRef.current[i]?.[j];\r\n                    row.push({\r\n                        x: i * pixelSize,\r\n                        y: j * pixelSize,\r\n                        size: pixelSize - 1,\r\n                        intensity: existing?.intensity ?? 0,\r\n                        targetIntensity: 0,\r\n                        colorPhase: Math.random(), // Random starting phase for color variety\r\n                    });\r\n                }\r\n                newPixels.push(row);\r\n            }\r\n            pixelsRef.current = newPixels;\r\n        };\r\n\r\n        const draw = (timestamp: number) => {\r\n            const deltaTime = timestamp - lastTimeRef.current;\r\n            lastTimeRef.current = timestamp;\r\n\r\n            const rect = container.getBoundingClientRect();\r\n            ctx.clearRect(0, 0, rect.width, rect.height);\r\n\r\n            const { x: mouseX, y: mouseY } = mouseRef.current;\r\n            const pixels = pixelsRef.current;\r\n\r\n            // Influence radius based on variant\r\n            const radius = variant === \"glow\" ? 120 : 80;\r\n            const glowPasses = variant === \"glow\" ? 2 : 1;\r\n\r\n            // Update pixel states\r\n            for (let i = 0; i < cols; i++) {\r\n                const col = pixels[i];\r\n                if (!col) continue;\r\n\r\n                for (let j = 0; j < rows; j++) {\r\n                    const pixel = col[j];\r\n                    if (!pixel) continue;\r\n\r\n                    // Calculate distance from mouse\r\n                    const centerX = pixel.x + pixel.size / 2;\r\n                    const centerY = pixel.y + pixel.size / 2;\r\n                    const dx = mouseX - centerX;\r\n                    const dy = mouseY - centerY;\r\n                    const distance = Math.sqrt(dx * dx + dy * dy);\r\n\r\n                    // Set target intensity based on distance\r\n                    if (distance < radius) {\r\n                        const falloff = 1 - (distance / radius);\r\n                        // Smooth falloff curve\r\n                        pixel.targetIntensity = Math.pow(falloff, 1.5);\r\n                    } else {\r\n                        pixel.targetIntensity = 0;\r\n                    }\r\n\r\n                    // Smooth interpolation towards target\r\n                    const lerpSpeed = pixel.targetIntensity > pixel.intensity\r\n                        ? 0.3 // Quick light up\r\n                        : Math.min(1, Math.max(0.001, speed)); // Slow decay for trailing\n\r\n                    pixel.intensity += (pixel.targetIntensity - pixel.intensity) * lerpSpeed;\r\n\r\n                    // Shift color phase slowly for shimmer effect\r\n                    pixel.colorPhase = (pixel.colorPhase + 0.001 * (deltaTime / 16)) % 1;\r\n\r\n                    // Only draw if visible\r\n                    if (pixel.intensity > 0.01) {\r\n                        const color = getColorFromIntensity(pixel.intensity, pixel.colorPhase);\r\n\r\n                        // Glow effect: draw larger, blurred version first\r\n                        if (variant === \"glow\" && pixel.intensity > 0.2) {\r\n                            for (let g = glowPasses; g > 0; g--) {\r\n                                const glowSize = pixel.size + g * 4;\r\n                                const glowOffset = (glowSize - pixel.size) / 2;\r\n                                ctx.globalAlpha = pixel.intensity * 0.15 / g;\r\n                                ctx.fillStyle = color;\r\n                                ctx.fillRect(\r\n                                    pixel.x - glowOffset,\r\n                                    pixel.y - glowOffset,\r\n                                    glowSize,\r\n                                    glowSize\r\n                                );\r\n                            }\r\n                        }\r\n\r\n                        // Main pixel\r\n                        ctx.globalAlpha = pixel.intensity * 0.9;\r\n                        ctx.fillStyle = color;\r\n\r\n                        if (variant === \"trail\") {\r\n                            // Rounded pixels for trail variant\r\n                            const cornerRadius = pixel.size * 0.3;\r\n                            ctx.beginPath();\r\n                            ctx.roundRect(pixel.x, pixel.y, pixel.size, pixel.size, cornerRadius);\r\n                            ctx.fill();\r\n                        } else {\r\n                            ctx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size);\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n\r\n            ctx.globalAlpha = 1;\r\n            if (running) animationRef.current = requestAnimationFrame(draw);\n        };\r\n\r\n        const onPointerMove = (e: PointerEvent) => {\n            const rect = canvas.getBoundingClientRect();\r\n            mouseRef.current = {\r\n                x: e.clientX - rect.left,\r\n                y: e.clientY - rect.top,\r\n            };\r\n        };\r\n\r\n        const onPointerLeave = () => {\n            mouseRef.current = { x: -1000, y: -1000 };\n        };\n\n        const stop = () => {\n            running = false;\n            cancelAnimationFrame(animationRef.current);\n        };\n\n        const updateLoop = () => {\n            stop();\n            lastTimeRef.current = performance.now();\n            if (inViewport && !document.hidden && !reducedMotion.matches) {\n                running = true;\n                animationRef.current = requestAnimationFrame(draw);\n            } else {\n                const rect = container.getBoundingClientRect();\n                mouseRef.current = reducedMotion.matches\n                    ? { x: rect.width / 2, y: rect.height / 2 }\n                    : { x: -1000, y: -1000 };\n                draw(performance.now());\n            }\n        };\n\r\n        // Initialize\r\n        initPixels();\r\n        lastTimeRef.current = performance.now();\r\n        const resizeObserver = new ResizeObserver(() => {\n            initPixels();\n            if (!running) draw(performance.now());\n        });\n        const intersectionObserver = new IntersectionObserver(([entry]) => {\n            inViewport = entry?.isIntersecting ?? false;\n            updateLoop();\n        });\n        resizeObserver.observe(container);\n        intersectionObserver.observe(container);\n\r\n        // Event listeners\r\n        if (!noFocus) {\n            container.addEventListener(\"pointermove\", onPointerMove);\n            container.addEventListener(\"pointerleave\", onPointerLeave);\n            container.addEventListener(\"pointercancel\", onPointerLeave);\n        }\n        document.addEventListener(\"visibilitychange\", updateLoop);\n        reducedMotion.addEventListener(\"change\", updateLoop);\n        updateLoop();\n\n        return () => {\n            stop();\n            resizeObserver.disconnect();\n            intersectionObserver.disconnect();\n            container.removeEventListener(\"pointermove\", onPointerMove);\n            container.removeEventListener(\"pointerleave\", onPointerLeave);\n            container.removeEventListener(\"pointercancel\", onPointerLeave);\n            document.removeEventListener(\"visibilitychange\", updateLoop);\n            reducedMotion.removeEventListener(\"change\", updateLoop);\n        };\r\n    }, [gap, speed, noFocus, variant, getColorFromIntensity]);\r\n\r\n    return (\r\n        <div\r\n            ref={containerRef}\r\n            className={cn(\"h-full w-full relative overflow-hidden\", className)}\n            role=\"img\"\n            aria-label={label}\n            {...props}\r\n        >\r\n            <canvas ref={canvasRef} aria-hidden=\"true\" className=\"block w-full h-full touch-none\" />\n        </div>\r\n    );\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/componentry/pixel-canvas.tsx"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "pixels",
+        "trail",
+        "pointer",
+        "canvas"
+      ],
+      "renderer": "canvas",
+      "preview": "previews/componentry-pixel-canvas.tsx",
+      "source": {
+        "project": "Componentry",
+        "repository": "https://github.com/harshjdhv/componentry",
+        "revision": "0c90c9b9e624c483d434cdb85df084fd399f24c3",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/componentry/pixel-canvas.tsx",
+            "upstreamPath": "packages/ui/src/components/pixel-canvas.tsx",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/components/pixel-canvas.tsx",
+            "upstreamSha256": "sha256:198d9dd425269334c323b7de3b13c38c1880a43ab2ea1cf04c8989491cbf0b07",
+            "contentSha256": "sha256:487b2720e67cdc8b585f5e960ec1aaa9bf4b57f3705540eb9587935f8f043a19",
+            "changes": [
+              "Repointed the utility import; replaced mouse and touch listeners with pointer events; fixed transform accumulation; bounded pixel density, decay, DPR, and render size; paused while hidden or offscreen; added accessible naming and a static reduced-motion frame."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/utils.ts",
+            "upstreamPath": "packages/ui/src/lib/utils.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/utils.ts",
+            "upstreamSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "contentSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/ui/src/components/pixel-canvas.tsx, packages/ui/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Harsh Jadhav"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/LICENSE",
+          "sha256": "sha256:fcd2eb170c2579fd14dae953b7b1103cc85dca0e134e015b7490b850c5b403ab",
+          "localPath": "registry/sources/componentry/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/componentry/pixel-canvas.tsx",
+          "change": "Repointed the utility import; replaced mouse and touch listeners with pointer events; fixed transform accumulation; bounded pixel density, decay, DPR, and render size; paused while hidden or offscreen; added accessible naming and a static reduced-motion frame.",
+          "reason": "Keep the interactive pixel field responsive and bounded across touch, resize, high-DPR, and reduced-motion conditions."
+        }
+      ],
+      "dedupe": {
+        "family": "pointer-pixel-trail-canvas",
+        "sourceHash": "sha256:7f2b265dfb80c5c4857bf33fefbfe2abd70b521ef61ab247a212472eb369553f",
+        "contentHash": "sha256:2107b7347b787b683ce398c862a7cccc444cc81c4e04f625147221262ec5fc09",
+        "structureHash": "sha256:102ab8ec85d0441106039ef0f667146611e1a7e70d490bfccc1030ced658c4e3"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

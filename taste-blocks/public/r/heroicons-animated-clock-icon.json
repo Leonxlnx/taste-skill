@@ -1,0 +1,146 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "heroicons-animated-clock-icon",
+  "title": "Animated Clock Icon",
+  "author": "Heroicons Animated",
+  "description": "Renders the Heroicons Clock glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/heroicons-animated/components/heroicons-animated-clock-icon/clock.tsx",
+      "content": "\"use client\";\n\nimport type { Transition, Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface ClockIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface ClockIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst HAND_TRANSITION: Transition = {\n  duration: 0.28,\n  ease: [0.4, 0, 0.2, 1],\n};\n\nconst HAND_VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n    originX: \"50%\",\n    originY: \"50%\",\n  },\n  animate: {\n    rotate: 360,\n    originX: \"50%\",\n    originY: \"50%\",\n  },\n};\n\nconst ClockIcon = forwardRef<ClockIconHandle, ClockIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) return;\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <svg\n          fill=\"none\"\n          height={size}\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"1.5\"\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <motion.path\n            animate={controls}\n            d=\"M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z\"\n            initial=\"normal\"\n            transition={HAND_TRANSITION}\n            variants={HAND_VARIANTS}\n          />\n        </svg>\n      </div>\n    );\n  }\n);\n\nClockIcon.displayName = \"ClockIcon\";\n\nexport { ClockIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/heroicons-animated-clock-icon.tsx"
+    },
+    {
+      "path": "registry/sources/heroicons-animated/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "clock",
+        "animated",
+        "icon",
+        "motion",
+        "heroicons"
+      ],
+      "renderer": "svg",
+      "preview": "previews/heroicons-animated-clock-icon.tsx",
+      "source": {
+        "project": "Heroicons Animated",
+        "repository": "https://github.com/heroicons-animated/heroicons-animated",
+        "revision": "93c14cc04222375a965ffa33b5d390c474822405",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/heroicons-animated-clock-icon/clock.tsx",
+            "upstreamPath": "packages/react/src/icons/clock.tsx",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/packages/react/src/icons/clock.tsx",
+            "upstreamSha256": "sha256:3e410ecbb47140dc223e92d1a3e9116891f2da8630a88083928039af802a9ece",
+            "contentSha256": "sha256:ef5931c2e035a18455e21c8b7d17a0b719bcfb53d2577f2dfd222d9ac30d942f",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls.",
+              "Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "src/lib/utils.ts",
+            "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/icons/clock.tsx, src/lib/utils.ts, and Heroicons-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2026 Aniket Pawar",
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) Tailwind Labs, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/heroicons-animated/heroicons-animated/blob/93c14cc04222375a965ffa33b5d390c474822405/LICENSE",
+          "sha256": "sha256:523f3bb472b7b76b6137becbf45c4d6019cdfbe7a1eef0807e480f7d1cf7ed40",
+          "localPath": "registry/sources/heroicons-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/heroicons-animated/NOTICE",
+          "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+          "registry/sources/heroicons-animated/HEROICONS_LICENSE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/heroicons-animated/NOTICE",
+            "sha256": "sha256:755f24221919def18af51eb781915dc762ee6688bdc27dc4aca69bb7ee92d951",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/pqoqubbw/icons",
+            "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/LUCIDE_ANIMATED_LICENSE",
+            "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/tailwindlabs/heroicons",
+            "revision": "0435d4ca364a608cc75e2f8683d374e55abbae26",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/tailwindlabs/heroicons/blob/0435d4ca364a608cc75e2f8683d374e55abbae26/LICENSE",
+            "localPath": "registry/sources/heroicons-animated/HEROICONS_LICENSE",
+            "sha256": "sha256:60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/heroicons-animated-clock-icon/clock.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to the existing imperative and hover controls. Retimed source-authored high-frequency icon motion to at most 280ms per element, with numeric base delays capped at 80ms and stagger steps capped at 40ms.",
+          "reason": "Resolved the bundled utility import, added explicit animation disablement and reduced-motion handling, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-clock-icon",
+        "sourceHash": "sha256:fec06db8836bb361377a59aa4be9724632470cd53f705eab5aff91f562da8b09",
+        "contentHash": "sha256:24db1ee4eb1652eb71d06c259c71295868546c7a574b077b0c8ce0f81a388ff6",
+        "structureHash": "sha256:091ee4fbfcc09e4a373098ac07536d7937b42309f7e0a5d3f1e9f0d7b186c4ba",
+        "glyph": {
+          "inventoryName": "clock",
+          "canonicalName": "clock",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

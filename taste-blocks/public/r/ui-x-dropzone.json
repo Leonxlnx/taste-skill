@@ -1,0 +1,127 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ui-x-dropzone",
+  "title": "Dropzone",
+  "author": "Kwan Jun Wen",
+  "description": "Provides an accessible file input with drag states, validation states, keyboard activation, and accepted-file output.",
+  "dependencies": [
+    "@base-ui/react@1.6.0",
+    "clsx@2.1.1",
+    "lucide-react@0.511.0",
+    "react-dropzone@17.0.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-x/components/ui-x/dropzone.tsx",
+      "content": "\"use client\";\n\nimport { BanIcon, CheckCircle2Icon, UploadIcon } from \"lucide-react\";\nimport * as React from \"react\";\n\nimport { cn } from \"./lib/utils\";\nimport * as DropzonePrimitive from \"./dropzone-primitive\";\n\nfunction Dropzone(props: React.ComponentProps<typeof DropzonePrimitive.Root>) {\n  return <DropzonePrimitive.Root data-slot=\"dropzone\" {...props} />;\n}\n\nfunction DropzoneInput(\n  props: React.ComponentProps<typeof DropzonePrimitive.Input>,\n) {\n  return <DropzonePrimitive.Input data-slot=\"dropzone-input\" {...props} />;\n}\n\nfunction DropzoneZone({\n  className,\n  ...props\n}: React.ComponentProps<typeof DropzonePrimitive.Zone>) {\n  return (\n    <DropzonePrimitive.Zone\n      data-slot=\"dropzone-zone\"\n      className={cn(\n        \"border-input hover:border-accent-foreground/50 hover:bg-accent focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[drag-active]:border-accent-foreground/50 data-[drag-reject]:border-destructive data-[drag-active]:bg-accent data-[drag-reject]:bg-destructive/30 cursor-pointer rounded-lg border-2 border-dashed p-6 shadow-xs transition-colors motion-reduce:transition-none outline-none focus-visible:ring-3 data-[disabled]:cursor-not-allowed data-[disabled]:border-inherit data-[disabled]:bg-inherit data-[disabled]:opacity-50 data-[drag-reject]:cursor-no-drop data-[no-click]:cursor-default\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction DropzoneUploadIcon(props: React.ComponentProps<typeof UploadIcon>) {\n  return (\n    <>\n      <DropzonePrimitive.DragAccepted>\n        <CheckCircle2Icon data-slot=\"dropzone-upload-icon\" {...props} />\n      </DropzonePrimitive.DragAccepted>\n      <DropzonePrimitive.DragRejected>\n        <BanIcon data-slot=\"dropzone-upload-icon\" {...props} />\n      </DropzonePrimitive.DragRejected>\n      <DropzonePrimitive.DragDefault>\n        <UploadIcon data-slot=\"dropzone-upload-icon\" {...props} />\n      </DropzonePrimitive.DragDefault>\n    </>\n  );\n}\n\nfunction DropzoneTrigger(\n  props: React.ComponentProps<typeof DropzonePrimitive.Trigger>,\n) {\n  return <DropzonePrimitive.Trigger data-slot=\"dropzone-trigger\" {...props} />;\n}\n\nfunction DropzoneAccepted(\n  props: React.ComponentProps<typeof DropzonePrimitive.Accepted>,\n) {\n  return (\n    <DropzonePrimitive.Accepted data-slot=\"dropzone-accepted\" {...props} />\n  );\n}\n\nfunction DropzoneRejected(\n  props: React.ComponentProps<typeof DropzonePrimitive.Rejected>,\n) {\n  return (\n    <DropzonePrimitive.Rejected data-slot=\"dropzone-rejected\" {...props} />\n  );\n}\n\nexport {\n  Dropzone,\n  DropzoneInput,\n  DropzoneZone,\n  DropzoneUploadIcon,\n  DropzoneTrigger,\n  DropzoneAccepted,\n  DropzoneRejected,\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/ui-x/dropzone.tsx"
+    },
+    {
+      "path": "registry/sources/ui-x/components/ui-x/dropzone-primitive.tsx",
+      "content": "\"use client\";\n\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport * as React from \"react\";\nimport {\n  type DropzoneOptions,\n  type DropzoneState,\n  FileRejection,\n  FileWithPath,\n  useDropzone as useReactDropzone,\n} from \"react-dropzone\";\n\nexport type DropzoneContextProps = DropzoneState & DropzoneOptions;\n\nconst DropzoneContext = React.createContext<DropzoneContextProps>(\n  {} as DropzoneContextProps,\n);\n\nfunction useDropzone() {\n  const context = React.useContext(DropzoneContext);\n  if (!context) {\n    throw new Error(\"useDropzone must be used within a <Dropzone />.\");\n  }\n\n  return context;\n}\n\nexport interface DropzoneProps extends DropzoneOptions {\n  children:\n    React.ReactNode | ((state: DropzoneContextProps) => React.ReactNode);\n}\n\nfunction Dropzone({ children, ...props }: DropzoneProps) {\n  const state = useReactDropzone(props);\n  const context = { ...state, ...props };\n\n  return (\n    <DropzoneContext.Provider value={context}>\n      {typeof children === \"function\" ? children(context) : children}\n    </DropzoneContext.Provider>\n  );\n}\n\nfunction DropzoneInput({\n  render,\n  ...props\n}: useRender.ComponentProps<\"input\">) {\n  const { getInputProps, disabled } = useDropzone();\n\n  return useRender({\n    render,\n    defaultTagName: \"input\",\n    props: {\n      \"data-slot\": \"dropzone-input\",\n      ...getInputProps({ disabled, ...props }),\n    },\n  });\n}\n\nfunction DropzoneZone({ render, ...props }: useRender.ComponentProps<\"div\">) {\n  const {\n    getRootProps,\n    isFocused,\n    isDragActive,\n    isDragAccept,\n    isDragReject,\n    isFileDialogActive,\n    preventDropOnDocument,\n    noClick,\n    noKeyboard,\n    noDrag,\n    noDragEventsBubbling,\n    disabled,\n  } = useDropzone();\n\n  return useRender({\n    render,\n    defaultTagName: \"div\",\n    props: {\n      \"data-slot\": \"dropzone-zone\",\n      \"data-prevent-drop-on-document\": preventDropOnDocument || undefined,\n      \"data-no-click\": noClick || undefined,\n      \"data-no-keyboard\": noKeyboard || undefined,\n      \"data-no-drag\": noDrag || undefined,\n      \"data-no-drag-events-bubbling\": noDragEventsBubbling || undefined,\n      \"data-disabled\": disabled || undefined,\n      \"data-focused\": isFocused || undefined,\n      \"data-drag-active\": isDragActive || undefined,\n      \"data-drag-accept\": isDragAccept || undefined,\n      \"data-drag-reject\": isDragReject || undefined,\n      \"data-file-dialog-active\": isFileDialogActive || undefined,\n      ...getRootProps(props),\n    },\n  });\n}\n\nfunction DropzoneTrigger({\n  render,\n  ...props\n}: useRender.ComponentProps<\"button\">) {\n  const { open } = useDropzone();\n\n  return useRender({\n    render,\n    defaultTagName: \"button\",\n    props: mergeProps<\"button\">(\n      {\n        \"data-slot\": \"dropzone-trigger\",\n        type: \"button\",\n        onClick: () => open(),\n      } as React.ComponentProps<\"button\">,\n      props,\n    ),\n  });\n}\n\nexport interface DropzoneDragAcceptedProps {\n  children?: React.ReactNode;\n}\n\nfunction DropzoneDragAccepted({ children }: DropzoneDragAcceptedProps) {\n  const { isDragAccept } = useDropzone();\n  if (!isDragAccept) return null;\n  return <div data-slot=\"dropzone-drag-accepted\">{children}</div>;\n}\n\nexport interface DropzoneDragRejectedProps {\n  children?: React.ReactNode;\n}\n\nfunction DropzoneDragRejected({ children }: DropzoneDragRejectedProps) {\n  const { isDragReject } = useDropzone();\n  if (!isDragReject) {\n    return null;\n  }\n\n  return <div data-slot=\"dropzone-drag-rejected\">{children}</div>;\n}\n\nexport interface DropzoneDragDefaultProps {\n  children?: React.ReactNode;\n}\n\nfunction DropzoneDragDefault({ children }: DropzoneDragDefaultProps) {\n  const { isDragActive } = useDropzone();\n  if (isDragActive) {\n    return null;\n  }\n\n  return <div data-slot=\"dropzone-drag-default\">{children}</div>;\n}\n\nexport interface DropzoneAcceptedProps {\n  children: (acceptedFiles: Readonly<FileWithPath[]>) => React.ReactNode;\n}\n\nfunction DropzoneAccepted({ children }: DropzoneAcceptedProps) {\n  const { acceptedFiles } = useDropzone();\n  return <div data-slot=\"dropzone-accepted\">{children(acceptedFiles)}</div>;\n}\n\nexport interface DropzoneRejectedProps {\n  children: (fileRejections: Readonly<FileRejection[]>) => React.ReactNode;\n}\n\nfunction DropzoneRejected({ children }: DropzoneRejectedProps) {\n  const { fileRejections } = useDropzone();\n  return <div data-slot=\"dropzone-rejected\">{children(fileRejections)}</div>;\n}\n\nexport {\n  Dropzone as Root,\n  DropzoneInput as Input,\n  DropzoneZone as Zone,\n  DropzoneTrigger as Trigger,\n  DropzoneDragAccepted as DragAccepted,\n  DropzoneDragRejected as DragRejected,\n  DropzoneDragDefault as DragDefault,\n  DropzoneAccepted as Accepted,\n  DropzoneRejected as Rejected,\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/ui-x/dropzone-primitive.tsx"
+    },
+    {
+      "path": "registry/sources/ui-x/components/ui-x/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/ui-x/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "files",
+        "drag-and-drop",
+        "upload",
+        "validation"
+      ],
+      "renderer": "dom",
+      "preview": "previews/ui-x-dropzone.tsx",
+      "source": {
+        "project": "UI-X",
+        "repository": "https://github.com/junwen-k/ui-x",
+        "revision": "800d4f47fec33524967f97fde59a762df4afbf00",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ui-x/dropzone.tsx",
+            "upstreamPath": "apps/v4/src/registry/new-york/ui/dropzone.tsx",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/registry/new-york/ui/dropzone.tsx",
+            "upstreamSha256": "sha256:e6c69822c394e7a25ed1cd662ad144aff3e105c9a9aae7902769a67bd160d818",
+            "contentSha256": "sha256:fdf970dad6210a4126ced3cea277628ccaf2ed6bc44c7bfb831615c638bb1c7e",
+            "changes": [
+              "Changed UI-X internal and cn aliases to copied source-local imports.",
+              "Disabled the color transition when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "components/ui-x/dropzone-primitive.tsx",
+            "upstreamPath": "apps/v4/src/registry/new-york/ui/dropzone-primitive.tsx",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/registry/new-york/ui/dropzone-primitive.tsx",
+            "upstreamSha256": "sha256:42108e385a351010e3cbdce7b81b5318cdd57070c82daef6e6db5ffdbfe3be4d",
+            "contentSha256": "sha256:18eb02e690d2c3e59dc4c04e42452fd422e961882988c433ca221aeddff845e3",
+            "changes": [
+              "Set the optional trigger to type=button so it cannot submit a parent form."
+            ]
+          },
+          {
+            "shippedPath": "components/ui-x/lib/utils.ts",
+            "upstreamPath": "apps/v4/src/lib/utils.ts",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/src/registry/new-york/ui/dropzone.tsx, apps/v4/src/registry/new-york/ui/dropzone-primitive.tsx, apps/v4/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 junwen-k"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/LICENSE.md",
+          "sha256": "sha256:a80d52497975e3a97ebf893008dab7ad8ea176e9b48b179b443c60650af770e2",
+          "localPath": "registry/sources/ui-x/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ui-x/dropzone.tsx",
+          "change": "Changed UI-X internal and cn aliases to copied source-local imports. Disabled the color transition when reduced motion is requested.",
+          "reason": "Keep the copied component source-local and safe in forms while preserving upstream behavior."
+        },
+        {
+          "shippedPath": "components/ui-x/dropzone-primitive.tsx",
+          "change": "Set the optional trigger to type=button so it cannot submit a parent form.",
+          "reason": "Keep the copied component source-local and safe in forms while preserving upstream behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "accessible-drag-and-drop-file-input",
+        "sourceHash": "sha256:d720bd5d8510a5d0eb944927a8d4dbe9982086eb3737d6bd2c178c6d24979548",
+        "contentHash": "sha256:cfa7aecdcfcd0874c21073d1b16b9a1f6223330e49293a8fcdebe90e391f6560",
+        "structureHash": "sha256:aa1686c7475a632d5a8aa3e50ac9b31c4435b25168aa5ca85a660d5a9b34e453"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

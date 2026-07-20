@@ -1,0 +1,108 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-cylinder-carousel",
+  "title": "Cylinder Carousel",
+  "author": "Saurabh Chauhan",
+  "description": "Rolls caller-provided items around a responsive concave or convex cylindrical projection.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-cylinder-carousel/cylinder-carousel.tsx",
+      "content": "\"use client\";\n\nimport {\n  animate,\n  type AnimationPlaybackControls,\n  motion,\n  type MotionValue,\n  useMotionValue,\n  useReducedMotion,\n  useTransform,\n} from \"motion/react\";\nimport {\n  Children,\n  type PointerEvent as ReactPointerEvent,\n  type ReactNode,\n  useCallback,\n  useEffect,\n  useRef,\n  useState,\n  type WheelEvent as ReactWheelEvent,\n} from \"react\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\n// Carousel-specific: a soft spring that receives the release velocity, so a\n// flick keeps rolling freely, drifts past the snap point and eases back.\nconst GLIDE_SPRING = { stiffness: 40, damping: 20, mass: 3 };\n\n// How far a flick keeps rolling: projected items = release velocity * momentum.\nconst FLICK_MOMENTUM = 0.45;\nconst MAX_FLICK_ITEMS = 6;\n\nexport interface CylinderCarouselProps {\n  children: ReactNode;\n  /** Max item box size in px (square) at full size, i.e. at the container\n   * edge. Balls shrink below this automatically so the row keeps breathing\n   * room in narrow containers. */\n  itemSize?: number;\n  /** How many item slots span the container width. */\n  visibleItems?: number;\n  /** \"concave\" (default): inside of the cylinder — center ball smallest and\n   * dipped, growing toward the edges. \"convex\": outside of the cylinder —\n   * center ball biggest and raised, shrinking toward the edges. */\n  variant?: \"concave\" | \"convex\";\n  /** Scale of the smallest ball (center for concave, edges for convex);\n   * the biggest reaches 1. */\n  minScale?: number;\n  /** Items rolled per item-width dragged — above 1 the wall outruns the\n   * pointer, which reads as a lighter, freer roll. */\n  dragSpeed?: number;\n  /** Curve depth in px: for concave, how far the edge balls ride above the\n   * center one (valley); for convex, how far below (arch). 0 = flat line.\n   * Defaults to 35% of the item size. */\n  arc?: number;\n  /** Snap to the nearest item when the roll settles. */\n  snap?: boolean;\n  /** Roll on its own until interacted with. */\n  autoRotate?: boolean;\n  /** Auto-roll speed in items per second. */\n  autoRotateSpeed?: number;\n  defaultIndex?: number;\n  onIndexChange?: (index: number) => void;\n  /** Stage height in px. Defaults to `itemSize`. */\n  height?: number;\n  className?: string;\n  \"aria-label\"?: string;\n}\n\n// The frame edge sits at this wall angle; how far the wall curves in frame.\nconst THETA_EDGE = (72 * Math.PI) / 180;\n// Wall angle past which a ball is parked far off-stage (always hidden there).\nconst THETA_CLAMP = (95 * Math.PI) / 180;\n\n/**\n * One ball on the inside wall of the cylinder, rendered through a single\n * perspective projection: the ball sits at wall angle θ, the camera slightly\n * above the ball line, so horizontal position, size and height all share one\n * 1/(cosθ + k) depth term. Center = far wall: smallest, highest, moving\n * slowest; edges = nearest: full size, level, moving fastest, sliding off to\n * be clipped. Nothing overlaps, fades or reorders — the edge is the exit.\n */\nfunction CarouselBall({\n  scroll,\n  index,\n  count,\n  alpha,\n  k,\n  projection,\n  gap,\n  edgeOffset,\n  minScale,\n  convex,\n  arc,\n  halfWidth,\n  itemSize,\n  children,\n}: {\n  scroll: MotionValue<number>;\n  index: number;\n  count: number;\n  /** Wall angle per item step, in radians. */\n  alpha: number;\n  /** Camera distance term for the horizontal projection. */\n  k: number;\n  /** Projection strength: maps sinθ/(cosθ+k) to px so θE lands on the edge. */\n  projection: number;\n  /** Uniform slot width in px — convex spacing. */\n  gap: number;\n  /** Offset at which a ball's center sits on the container edge. */\n  edgeOffset: number;\n  minScale: number;\n  convex: boolean;\n  /** Curve depth in px between the center ball and the edge balls. */\n  arc: number;\n  halfWidth: number;\n  itemSize: number;\n  children: ReactNode;\n}) {\n  // Nearest wrapped offset so items loop around continuously.\n  const offset = useTransform(scroll, (s) => {\n    let o = index - s;\n    o -= Math.round(o / count) * count;\n    return o;\n  });\n  // Concave spacing follows the interior perspective (slow, tight center);\n  // convex pairs its big center balls with uniform spacing — the interior\n  // projection would collapse them into each other.\n  const x = useTransform(offset, (o) => {\n    if (convex) return o * gap;\n    const th = Math.max(-THETA_CLAMP, Math.min(THETA_CLAMP, o * alpha));\n    return (projection * Math.sin(th)) / (Math.cos(th) + k);\n  });\n  // Linear in wall angle, not in depth (the depth curve is near-flat around\n  // the center, which made the middle three read as equal): every step is\n  // visibly bigger than the last — growing outward (concave) or inward\n  // (convex).\n  const scale = useTransform(offset, (o) => {\n    const t = Math.min(Math.abs(o) / edgeOffset, THETA_CLAMP / THETA_EDGE);\n    return convex ? 1 - (1 - minScale) * t : minScale + (1 - minScale) * t;\n  });\n  // Parabola centered on the stage — valley for concave (center ball dips\n  // arc/2 below the midline, edges rise arc/2 above), arch for convex — and\n  // deliberately unclamped: a ball keeps following the same curve as it\n  // crosses the edge, so entries never pop.\n  const y = useTransform(x, (px) => {\n    const t = px / halfWidth;\n    const valley = arc * (0.5 - t * t);\n    return convex ? -valley : valley;\n  });\n  // Fully off-stage balls stop painting (matters for canvas/shader children).\n  const visibility = useTransform(x, (px) =>\n    Math.abs(px) > halfWidth + itemSize ? \"hidden\" : \"visible\",\n  );\n\n  return (\n    <motion.div\n      className=\"absolute top-1/2 left-1/2\"\n      style={{\n        x,\n        y,\n        scale,\n        visibility,\n        width: itemSize,\n        height: itemSize,\n        marginLeft: -itemSize / 2,\n        marginTop: -itemSize / 2,\n      }}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport function CylinderCarousel({\n  children,\n  itemSize = 200,\n  visibleItems = 5,\n  variant = \"concave\",\n  minScale = 0.55,\n  dragSpeed = 1.5,\n  arc: arcProp,\n  snap = true,\n  autoRotate = false,\n  autoRotateSpeed = 0.4,\n  defaultIndex = 0,\n  onIndexChange,\n  height,\n  className,\n  \"aria-label\": ariaLabel = \"Carousel\",\n}: CylinderCarouselProps) {\n  const reduce = useReducedMotion() ?? false;\n  const items = Children.toArray(children);\n  const count = items.length;\n\n  const stageRef = useRef<HTMLDivElement>(null);\n  const [width, setWidth] = useState(0);\n  useEffect(() => {\n    const el = stageRef.current;\n    if (!el) return;\n    const ro = new ResizeObserver(([entry]) => {\n      setWidth(entry.contentRect.width);\n    });\n    ro.observe(el);\n    return () => ro.disconnect();\n  }, []);\n  // Sized so `visibleItems` balls sit fully in frame and the next one out on\n  // each side straddles the container edge, half visible.\n  const stageWidth = width || 800;\n  const halfWidth = stageWidth / 2;\n  const edgeOffset = (visibleItems + 1) / 2;\n\n  // Fit: the resting row's diameters may take at most ~66% of the stage — the\n  // rest is air between balls plus the half-visible ball on each edge.\n  // `itemSize` only caps the result.\n  const convex = variant === \"convex\";\n  let scaleSum = 0;\n  for (let i = 0; i < visibleItems; i++) {\n    const t = Math.abs(i - (visibleItems - 1) / 2) / edgeOffset;\n    scaleSum += convex ? 1 - (1 - minScale) * t : minScale + (1 - minScale) * t;\n  }\n  const size = Math.min(itemSize, (stageWidth * 0.65) / scaleSum);\n\n  const gap = stageWidth / (visibleItems + 1);\n  const arc = arcProp ?? size * 0.35;\n\n  // Perspective constants. The ball one slot past the frame edge sits at wall\n  // angle THETA_EDGE with its center right on the container edge — scale 1,\n  // half of it in view; k falls out of the requested minScale (clamped so the\n  // projection stays monotonic up to THETA_CLAMP).\n  const alpha = THETA_EDGE / edgeOffset;\n  const k = Math.max(0.2, (minScale - Math.cos(THETA_EDGE)) / (1 - minScale));\n  const projection =\n    (halfWidth * (Math.cos(THETA_EDGE) + k)) / Math.sin(THETA_EDGE);\n\n  // scroll is in item units (continuous); item i sits at x = (i - scroll) * gap.\n  // Drags write it 1:1 so the wall sticks to the pointer; releases hand the\n  // pointer velocity to a soft spring so the roll glides on and settles free.\n  const scroll = useMotionValue(defaultIndex);\n  const indexRef = useRef(defaultIndex);\n  const [activeIndex, setActiveIndex] = useState(defaultIndex);\n  const glideRef = useRef<AnimationPlaybackControls | null>(null);\n  const draggingRef = useRef(false);\n  const hoverRef = useRef(false);\n\n  useEffect(() => {\n    if (count === 0) return;\n    const unsub = scroll.on(\"change\", (v) => {\n      const idx = ((Math.round(v) % count) + count) % count;\n      if (idx !== indexRef.current) {\n        indexRef.current = idx;\n        setActiveIndex(idx);\n        onIndexChange?.(idx);\n      }\n    });\n    return unsub;\n  }, [scroll, count, onIndexChange]);\n\n  const stopGlide = useCallback(() => {\n    glideRef.current?.stop();\n    glideRef.current = null;\n  }, []);\n\n  // Spring toward `to`, carrying `velocity` (items/s) through so motion never\n  // steps — the roll leaves the finger at finger speed.\n  const glideTo = useCallback(\n    (to: number, velocity: number) => {\n      stopGlide();\n      if (reduce) {\n        scroll.set(to);\n        return;\n      }\n      glideRef.current = animate(scroll, to, {\n        type: \"spring\",\n        ...GLIDE_SPRING,\n        velocity,\n        restDelta: 0.001,\n        restSpeed: 0.005,\n      });\n    },\n    [scroll, stopGlide, reduce],\n  );\n\n  const settle = useCallback(\n    (velocity: number) => {\n      const projected =\n        scroll.get() +\n        Math.max(\n          -MAX_FLICK_ITEMS,\n          Math.min(MAX_FLICK_ITEMS, velocity * FLICK_MOMENTUM),\n        );\n      glideTo(snap ? Math.round(projected) : projected, velocity);\n    },\n    [scroll, snap, glideTo],\n  );\n\n  const drag = useRef({\n    startX: 0,\n    startScroll: 0,\n    lastX: 0,\n    lastT: 0,\n    prevX: 0,\n    prevT: 0,\n  });\n\n  const onPointerDown = useCallback(\n    (e: ReactPointerEvent) => {\n      e.preventDefault();\n      stopGlide();\n      draggingRef.current = true;\n      try {\n        e.currentTarget.setPointerCapture(e.pointerId);\n      } catch {\n        // Synthetic accessibility input may not own an active pointer.\n      }\n      const now = performance.now();\n      drag.current = {\n        startX: e.clientX,\n        startScroll: scroll.get(),\n        lastX: e.clientX,\n        lastT: now,\n        prevX: e.clientX,\n        prevT: now,\n      };\n    },\n    [scroll, stopGlide],\n  );\n\n  const onPointerMove = useCallback(\n    (e: ReactPointerEvent) => {\n      if (!draggingRef.current) return;\n      const d = drag.current;\n      scroll.set(d.startScroll - ((e.clientX - d.startX) * dragSpeed) / gap);\n      d.prevX = d.lastX;\n      d.prevT = d.lastT;\n      d.lastX = e.clientX;\n      d.lastT = performance.now();\n    },\n    [scroll, gap, dragSpeed],\n  );\n\n  const onPointerUp = useCallback(\n    (e: ReactPointerEvent) => {\n      if (!draggingRef.current) return;\n      draggingRef.current = false;\n      if (e.currentTarget.hasPointerCapture(e.pointerId)) {\n        e.currentTarget.releasePointerCapture(e.pointerId);\n      }\n      const d = drag.current;\n      const dt = d.lastT - d.prevT;\n      const vpx = dt > 0 ? (d.lastX - d.prevX) / dt : 0; // px per ms\n      settle((-vpx * dragSpeed * 1000) / gap); // items per second\n    },\n    [settle, gap, dragSpeed],\n  );\n\n  const rollBy = useCallback(\n    (dir: number) => {\n      glideTo(Math.round(scroll.get()) + dir, scroll.getVelocity());\n    },\n    [scroll, glideTo],\n  );\n\n  const wheelSettleRef = useRef<number | undefined>(undefined);\n  const onWheel = useCallback(\n    (e: ReactWheelEvent) => {\n      stopGlide();\n      const delta =\n        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;\n      scroll.set(scroll.get() + delta / gap);\n      if (wheelSettleRef.current) window.clearTimeout(wheelSettleRef.current);\n      wheelSettleRef.current = window.setTimeout(\n        () => settle(scroll.getVelocity()),\n        140,\n      );\n    },\n    [scroll, gap, settle, stopGlide],\n  );\n\n  useEffect(() => {\n    if (!autoRotate || reduce || count === 0) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = (now - last) / 1000;\n      last = now;\n      if (!draggingRef.current && !hoverRef.current && !glideRef.current) {\n        scroll.set(scroll.get() + autoRotateSpeed * dt);\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [autoRotate, autoRotateSpeed, reduce, count, scroll]);\n\n  useEffect(\n    () => () => {\n      stopGlide();\n      if (wheelSettleRef.current) {\n        window.clearTimeout(wheelSettleRef.current);\n      }\n    },\n    [stopGlide],\n  );\n\n  const stageHeight = height ?? size;\n\n  return (\n    <div\n      ref={stageRef}\n      role=\"group\"\n      aria-roledescription=\"carousel\"\n      aria-label={ariaLabel}\n      // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable custom carousel widget\n      tabIndex={0}\n      onKeyDown={(e) => {\n        if (e.key === \"ArrowRight\") {\n          e.preventDefault();\n          rollBy(e.currentTarget.matches(\":dir(rtl)\") ? -1 : 1);\n        } else if (e.key === \"ArrowLeft\") {\n          e.preventDefault();\n          rollBy(e.currentTarget.matches(\":dir(rtl)\") ? 1 : -1);\n        }\n      }}\n      onPointerDown={onPointerDown}\n      onPointerMove={onPointerMove}\n      onPointerUp={onPointerUp}\n      onPointerCancel={onPointerUp}\n      onWheel={onWheel}\n      onPointerEnter={() => {\n        hoverRef.current = true;\n      }}\n      onPointerLeave={() => {\n        hoverRef.current = false;\n      }}\n      className={cn(\n        // clip-path, not overflow: it also clips the GPU-composited balls\n        \"relative w-full touch-none select-none outline-none [clip-path:inset(0)]\",\n        \"cursor-grab active:cursor-grabbing\",\n        \"focus-visible:ring-2 focus-visible:ring-foreground/20\",\n        className,\n      )}\n      style={{ height: stageHeight }}\n    >\n      <span className=\"sr-only\" aria-live=\"polite\">\n        {count > 0 ? `Item ${activeIndex + 1} of ${count}` : \"No items\"}\n      </span>\n      {items.map((item, i) => (\n        <CarouselBall\n          // biome-ignore lint/suspicious/noArrayIndexKey: slides are positional and stable\n          key={i}\n          scroll={scroll}\n          index={i}\n          count={count}\n          alpha={alpha}\n          k={k}\n          projection={projection}\n          gap={gap}\n          edgeOffset={edgeOffset}\n          minScale={minScale}\n          convex={convex}\n          arc={arc}\n          halfWidth={halfWidth}\n          itemSize={size}\n        >\n          {item}\n        </CarouselBall>\n      ))}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-cylinder-carousel.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "carousel",
+        "3d",
+        "drag",
+        "keyboard",
+        "responsive"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-cylinder-carousel.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-cylinder-carousel/cylinder-carousel.tsx",
+            "upstreamPath": "components/motion/cylinder-carousel.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/cylinder-carousel.tsx",
+            "upstreamSha256": "sha256:8a50f8b81057c9d8492c598ba122047c545f72ea25541cba7217942ec6492542",
+            "contentSha256": "sha256:c7d8d7f21a12c9666110cbf959a733ff2dbd711507389c4b2bcd33611089afd3",
+            "changes": [
+              "Changed the project utility alias to its bundled relative import.",
+              "Added an accessible carousel name and live item position, replaced application role with group, and mapped arrow navigation for RTL.",
+              "Stopped active glide controls and cleared the pending wheel timer during unmount.",
+              "Guarded pointer capture when synthetic accessibility input has no active pointer.",
+              "Normalized the malformed indentation around the upstream return block."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/cylinder-carousel.tsx, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-cylinder-carousel/cylinder-carousel.tsx",
+          "change": "Repointed the utility import and tightened semantics, RTL keys, pointer capture, cleanup, and formatting.",
+          "reason": "Install portably without leaking animation work and expose the custom interaction without application-mode semantics."
+        }
+      ],
+      "dedupe": {
+        "family": "cylindrical-perspective-carousel",
+        "sourceHash": "sha256:1f47fc2b13a03fd6ec1eeecbd8bf94c96fcbc1af38c5aaefae953640773938ed",
+        "contentHash": "sha256:96def25b902bfba97b47e65d5289da5b2be4ce2c9ecd483a9a65e99aa09c0561",
+        "structureHash": "sha256:211add058b15b6af90914b9a97c6204c834391162ce7275fe308ad0126ba0996"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

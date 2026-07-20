@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ui-x-phone-input",
+  "title": "Phone Input",
+  "author": "Kwan Jun Wen",
+  "description": "Provides international phone formatting with a searchable country selector, flags, and calling codes.",
+  "dependencies": [
+    "@base-ui/react@1.6.0",
+    "@base-ui/utils@0.3.1",
+    "clsx@2.1.1",
+    "lucide-react@0.511.0",
+    "react-phone-number-input@3.4.17",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [
+    "input",
+    "select"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/ui-x/components/ui-x/phone-input.tsx",
+      "content": "\"use client\";\n\nimport { Select as SelectPrimitive } from \"@base-ui/react/select\";\nimport { CheckIcon, GlobeIcon } from \"lucide-react\";\nimport * as React from \"react\";\nimport { getCountryCallingCode } from \"react-phone-number-input\";\nimport flags from \"react-phone-number-input/flags\";\nimport en from \"react-phone-number-input/locale/en\";\n\nimport { Input } from \"@/components/ui/input\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectValue,\n} from \"@/components/ui/select\";\nimport { cn } from \"./lib/utils\";\nimport * as PhoneInputPrimitive from \"./phone-input-primitive\";\n\ninterface PhoneInputFlagProps extends React.ComponentProps<\n  NonNullable<(typeof flags)[keyof typeof flags]>\n> {\n  country: PhoneInputPrimitive.Country | null;\n}\n\nfunction PhoneInputFlag({ country, ...props }: PhoneInputFlagProps) {\n  const CountryFlag = country ? flags[country] : null;\n\n  return (\n    <div\n      className={cn(\n        \"overflow-hidden rounded-xs [&>svg:not([class*='size-'])]:size-full\",\n        CountryFlag &&\n          \"[&>svg:not([class*='size-'])]:h-4 [&>svg:not([class*='size-'])]:w-6\",\n      )}\n    >\n      {CountryFlag ? (\n        <CountryFlag {...props} />\n      ) : (\n        <GlobeIcon className=\"text-muted-foreground size-4\" />\n      )}\n    </div>\n  );\n}\n\nfunction PhoneInput(\n  props: React.ComponentProps<typeof PhoneInputPrimitive.Root>,\n) {\n  return <PhoneInputPrimitive.Root data-slot=\"phone-input\" {...props} />;\n}\n\nfunction PhoneInputInput(\n  props: React.ComponentProps<typeof PhoneInputPrimitive.Input>,\n) {\n  const render = React.useMemo(() => <Input />, []);\n\n  return (\n    <PhoneInputPrimitive.Input\n      data-slot=\"phone-input-input\"\n      render={render}\n      {...props}\n    />\n  );\n}\n\ntype PhoneInputCountrySelectProps = Omit<\n  React.ComponentProps<typeof Select>,\n  \"value\" | \"onValueChange\"\n>;\n\nfunction PhoneInputCountrySelect(props: PhoneInputCountrySelectProps) {\n  const { country, onCountryChange } = PhoneInputPrimitive.usePhoneInput();\n\n  return (\n    <Select\n      data-slot=\"phone-input-country-select\"\n      value={country ?? \"\"}\n      onValueChange={(value) =>\n        onCountryChange(\n          value === PhoneInputPrimitive.INTERNATIONAL_COUNTRY_CODE\n            ? null\n            : (value as PhoneInputPrimitive.Country),\n        )\n      }\n      {...props}\n    />\n  );\n}\n\nfunction PhoneInputCountrySelectValue({\n  placeholder = <PhoneInputFlag country={null} title=\"International\" />,\n  children,\n  ...props\n}: React.ComponentProps<typeof SelectValue>) {\n  const { country } = PhoneInputPrimitive.usePhoneInput();\n\n  return (\n    <SelectValue\n      data-slot=\"phone-input-country-select-value\"\n      placeholder={placeholder}\n      {...props}\n    >\n      {children ?? <PhoneInputFlag country={country} title={country ?? \"\"} />}\n    </SelectValue>\n  );\n}\n\nfunction PhoneInputCountrySelectContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof SelectContent>) {\n  return (\n    <SelectContent\n      data-slot=\"phone-input-country-select-content\"\n      className={cn(\"w-auto\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction PhoneInputCountrySelectOptions() {\n  return (\n    <>\n      <PhoneInputCountrySelectInternationalItem />\n      {PhoneInputPrimitive.getCountryOptions().map((option) => (\n        <PhoneInputCountrySelectItem\n          key={option.countryCode}\n          value={option.countryCode}\n        />\n      ))}\n    </>\n  );\n}\n\nfunction PhoneInputCountrySelectInternationalItem(\n  props: Omit<React.ComponentProps<typeof SelectItem>, \"value\">,\n) {\n  const { country } = PhoneInputPrimitive.usePhoneInput();\n\n  return (\n    <SelectPrimitive.Item\n      data-slot=\"phone-input-country-select-international-item\"\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center justify-between gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2\",\n      )}\n      value={PhoneInputPrimitive.INTERNATIONAL_COUNTRY_CODE}\n      {...props}\n    >\n      <div className=\"flex items-center gap-2\">\n        <div className=\"flex h-4 w-6 items-center justify-center\">\n          <PhoneInputFlag country={null} title=\"International\" />\n        </div>\n        <SelectPrimitive.ItemText>International</SelectPrimitive.ItemText>\n      </div>\n      {country === null && (\n        <span className=\"absolute right-2 flex size-3.5 items-center justify-center\">\n          <CheckIcon className=\"size-4\" />\n        </span>\n      )}\n    </SelectPrimitive.Item>\n  );\n}\n\ninterface PhoneInputCountrySelectItemProps extends Omit<\n  React.ComponentProps<typeof SelectPrimitive.Item>,\n  \"value\"\n> {\n  value: PhoneInputPrimitive.Country;\n}\n\nfunction PhoneInputCountrySelectItem({\n  className,\n  value,\n  ...props\n}: PhoneInputCountrySelectItemProps) {\n  return (\n    <SelectPrimitive.Item\n      data-slot=\"phone-input-country-select-item\"\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center justify-between gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2\",\n        className,\n      )}\n      value={value}\n      {...props}\n    >\n      <div className=\"flex items-center gap-2\">\n        <div>\n          <PhoneInputFlag country={value} title={value} />\n        </div>\n        <SelectPrimitive.ItemText>{en[value]}</SelectPrimitive.ItemText>\n      </div>\n      <div className=\"text-muted-foreground\">\n        {`+${getCountryCallingCode(value)}`}\n      </div>\n      <span className=\"absolute right-2 flex size-3.5 items-center justify-center\">\n        <SelectPrimitive.ItemIndicator>\n          <CheckIcon className=\"size-4\" />\n        </SelectPrimitive.ItemIndicator>\n      </span>\n    </SelectPrimitive.Item>\n  );\n}\n\nexport type {\n  Country,\n  Value,\n} from \"./phone-input-primitive\";\n\nexport {\n  PhoneInput,\n  PhoneInputFlag,\n  PhoneInputInput,\n  PhoneInputCountrySelect,\n  PhoneInputCountrySelectContent,\n  PhoneInputCountrySelectInternationalItem,\n  PhoneInputCountrySelectItem,\n  PhoneInputCountrySelectOptions,\n  PhoneInputCountrySelectValue,\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/ui-x/phone-input.tsx"
+    },
+    {
+      "path": "registry/sources/ui-x/components/ui-x/phone-input-primitive.tsx",
+      "content": "\"use client\";\n\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useControlled } from \"@base-ui/utils/useControlled\";\nimport { useStableCallback } from \"@base-ui/utils/useStableCallback\";\nimport * as React from \"react\";\nimport {\n  Country,\n  default as ReactPhoneInput,\n  Value,\n  getCountries,\n  getCountryCallingCode,\n} from \"react-phone-number-input/input\";\n\nexport interface PhoneInputBaseProps {\n  value?: Value;\n  defaultValue?: Value;\n  onValueChange?: (value: Value) => void;\n  country?: Country | null;\n  defaultCountry?: Country;\n  onCountryChange?: (country: Country | null) => void;\n  children?: React.ReactNode;\n  disabled?: boolean;\n}\n\nexport interface PhoneInputWithoutInternationalProps extends PhoneInputBaseProps {\n  international?: false;\n  withCountryCallingCode?: never;\n}\n\nexport interface PhoneInputWithInternationalProps extends PhoneInputBaseProps {\n  /**\n   * Forces international format when a country is explicitly selected.\n   *\n   * @warning This prop only takes effect when a country is explicitly selected.\n   *\n   * By default, the component uses national format when a country is selected and international format\n   * when no country is selected.\n   */\n  international: true;\n  /**\n   * Controls the display of country calling code in international format.\n   *\n   * @warning This prop only affects the display when international format is active and a country is explicitly selected.\n   *\n   * By default, the country calling code is omitted when the country is known. Use this prop when you want to ensure\n   * the country calling code is always visible and undeletable, even when the country is already selected.\n   *\n   * For example, setting this to true will always show \"+1\" for US numbers, even when US is selected.\n   */\n  withCountryCallingCode?: boolean;\n}\n\nexport interface PhoneInputWithoutPreferredCountryProps extends PhoneInputBaseProps {\n  preferredCountry?: never;\n  defaultInternationalForPreferredCountry?: never;\n}\n\nexport interface PhoneInputWithPreferredCountryProps extends PhoneInputBaseProps {\n  /**\n   * Suggests a default country while maintaining flexibility for international numbers.\n   * This prop acts as a smart fallback when no country is selected.\n   *\n   * This is useful when you have a strong indication of the user's country (e.g., building a sign up form for a local business)\n   * but want to maintain flexibility for international numbers. When specified, users can enter numbers\n   * in national format for this country while still being able to enter international numbers for any country.\n   *\n   * @description Maps to the `defaultCountry={preferredCountry}` prop in `react-phone-number-input`.\n   */\n  preferredCountry: Country;\n  /**\n   * Controls the initial format of value matching the preferred country.\n   *\n   * By default, when the initial value matches the preferred country, it will be formatted in national format.\n   * Use this prop to force international format even for numbers matching the preferred country.\n   *\n   * @description Maps to `useNationalFormatForDefaultCountryValue={!defaultInternationalForPreferredCountry}` prop in `react-phone-number-input`.\n   */\n  defaultInternationalForPreferredCountry?: boolean;\n}\n\nexport type PhoneInputProps = (\n  PhoneInputWithoutInternationalProps | PhoneInputWithInternationalProps\n) &\n  (\n    PhoneInputWithoutPreferredCountryProps | PhoneInputWithPreferredCountryProps\n  );\n\ninterface PhoneInputContextProps {\n  value: Value;\n  onValueChange: (value: Value) => void;\n  country: Country | null;\n  onCountryChange: (country: Country | null) => void;\n  preferredCountry: Country | undefined;\n  defaultInternationalForPreferredCountry: boolean;\n  international: boolean;\n  withCountryCallingCode: boolean;\n  disabled?: boolean;\n}\n\nexport const PhoneInputContext = React.createContext<PhoneInputContextProps>({\n  value: \"\" as Value,\n  onValueChange: () => {},\n  country: null,\n  onCountryChange: () => {},\n  preferredCountry: undefined,\n  defaultInternationalForPreferredCountry: false,\n  international: false,\n  withCountryCallingCode: false,\n  disabled: false,\n});\n\nfunction usePhoneInput() {\n  const context = React.useContext(PhoneInputContext);\n  if (!context) {\n    throw new Error(\"usePhoneInput must be used within a <PhoneInput />.\");\n  }\n\n  return context;\n}\n\nfunction PhoneInput({\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  country: countryProp,\n  defaultCountry,\n  onCountryChange,\n  preferredCountry,\n  defaultInternationalForPreferredCountry = false,\n  international = false,\n  withCountryCallingCode = false,\n  disabled = false,\n  children,\n}: PhoneInputProps) {\n  const [value, setValueUnwrapped] = useControlled({\n    controlled: valueProp,\n    default: (defaultValue ?? \"\") as Value,\n    name: \"PhoneInput\",\n    state: \"value\",\n  });\n  const setValue = useStableCallback((nextValue: Value) => {\n    setValueUnwrapped(nextValue);\n    onValueChange?.(nextValue);\n  });\n\n  const [country, setCountryUnwrapped] = useControlled({\n    controlled: countryProp,\n    default: defaultCountry ?? null,\n    name: \"PhoneInput\",\n    state: \"country\",\n  });\n  const setCountry = useStableCallback((nextCountry: Country | null) => {\n    setCountryUnwrapped(nextCountry);\n    onCountryChange?.(nextCountry);\n  });\n\n  return (\n    <PhoneInputContext.Provider\n      data-slot=\"phone-input\"\n      value={{\n        value,\n        onValueChange: setValue,\n        country,\n        onCountryChange: setCountry,\n        preferredCountry,\n        defaultInternationalForPreferredCountry,\n        international,\n        withCountryCallingCode,\n        disabled,\n      }}\n    >\n      {children}\n    </PhoneInputContext.Provider>\n  );\n}\n\ninterface PhoneInputInputProps extends Omit<\n  React.ComponentProps<typeof ReactPhoneInput>,\n  | \"value\"\n  | \"onChange\"\n  | \"inputComponent\"\n  | \"international\"\n  | \"withCountryCallingCode\"\n  | \"useNationalFormatForDefaultCountryValue\"\n> {\n  render?: React.ReactElement<React.ComponentProps<\"input\">>;\n  smartCaret?: boolean;\n}\n\nfunction getInputComponent(\n  render: React.ReactElement<React.ComponentProps<\"input\">>,\n) {\n  return function InputComponent(props: React.ComponentProps<\"input\">) {\n    return React.cloneElement(render, mergeProps(props, render.props));\n  };\n}\n\nfunction PhoneInputInput({\n  render,\n  disabled: disabledProp,\n  ...props\n}: PhoneInputInputProps) {\n  const {\n    value,\n    onValueChange,\n    country,\n    preferredCountry,\n    defaultInternationalForPreferredCountry,\n    international,\n    withCountryCallingCode,\n    disabled,\n  } = usePhoneInput();\n\n  const inputComponent = React.useMemo(\n    () => (render ? getInputComponent(render) : undefined),\n    [render],\n  );\n\n  // This is a workaround to prevent infinite rerenders. For more information, see:\n  // https://github.com/catamphetamine/react-phone-number-input/issues/441.\n  const handleChange = useStableCallback((nextValue: Value) => {\n    setTimeout(() => onValueChange(nextValue ?? (\"\" as Value)));\n  });\n\n  return (\n    <ReactPhoneInput\n      data-slot=\"phone-input-input\"\n      inputComponent={inputComponent}\n      country={country ?? undefined}\n      {...(!country && { defaultCountry: preferredCountry })}\n      useNationalFormatForDefaultCountryValue={\n        !defaultInternationalForPreferredCountry\n      }\n      {...(country && { international })}\n      {...(international && { withCountryCallingCode })}\n      value={value}\n      onChange={handleChange}\n      disabled={disabled || disabledProp}\n      {...props}\n    />\n  );\n}\n\nconst INTERNATIONAL_COUNTRY_CODE = \"international\";\n\nfunction PhoneInputCountrySelect({\n  disabled: disabledProp,\n  ...props\n}: React.ComponentProps<\"select\">) {\n  const { country, onCountryChange, disabled } = usePhoneInput();\n\n  return (\n    <select\n      data-slot=\"phone-input-country-select\"\n      value={country ?? \"\"}\n      disabled={disabled || disabledProp}\n      onChange={(event) =>\n        onCountryChange(\n          event.target.value === INTERNATIONAL_COUNTRY_CODE\n            ? null\n            : (event.target.value as Country),\n        )\n      }\n      {...props}\n    />\n  );\n}\n\nfunction PhoneInputCountrySelectOption(props: React.ComponentProps<\"option\">) {\n  return <option data-slot=\"phone-input-country-select-option\" {...props} />;\n}\n\nfunction PhoneInputCountryInternationalSelectOption({\n  ...props\n}: Omit<React.ComponentProps<\"option\">, \"value\">) {\n  return (\n    <PhoneInputCountrySelectOption\n      value={INTERNATIONAL_COUNTRY_CODE}\n      {...props}\n    />\n  );\n}\n\nfunction getCountryOptions() {\n  return getCountries().map((countryCode) => ({\n    countryCode,\n    countryCallingCode: getCountryCallingCode(countryCode),\n  }));\n}\n\nexport {\n  PhoneInput as Root,\n  PhoneInputInput as Input,\n  PhoneInputCountrySelect as CountrySelect,\n  PhoneInputCountrySelectOption as CountrySelectOption,\n  PhoneInputCountryInternationalSelectOption as CountryInternationalSelectOption,\n  getCountryOptions,\n  type Country,\n  type Value,\n  usePhoneInput,\n  INTERNATIONAL_COUNTRY_CODE,\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/ui-x/phone-input-primitive.tsx"
+    },
+    {
+      "path": "registry/sources/ui-x/components/ui-x/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/ui-x/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "phone",
+        "country",
+        "international",
+        "validation"
+      ],
+      "renderer": "dom",
+      "preview": "previews/ui-x-phone-input.tsx",
+      "source": {
+        "project": "UI-X",
+        "repository": "https://github.com/junwen-k/ui-x",
+        "revision": "800d4f47fec33524967f97fde59a762df4afbf00",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ui-x/phone-input.tsx",
+            "upstreamPath": "apps/v4/src/registry/new-york/ui/phone-input.tsx",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/registry/new-york/ui/phone-input.tsx",
+            "upstreamSha256": "sha256:e02699b08523d2bbb1c75db50829ad0403359431da4b0a2e6b81a25148d2fef0",
+            "contentSha256": "sha256:e42aaa50ea272eb232cb6cc757cb5dcfd972779acbc17151188fdd8b2abbb29a",
+            "changes": [
+              "Changed UI-X internal and cn aliases to copied source-local imports."
+            ]
+          },
+          {
+            "shippedPath": "components/ui-x/phone-input-primitive.tsx",
+            "upstreamPath": "apps/v4/src/registry/new-york/ui/phone-input-primitive.tsx",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/registry/new-york/ui/phone-input-primitive.tsx",
+            "upstreamSha256": "sha256:ea48d3559c6f0eae9904e8faed0553b719162fc11c81dd0bd1c4545d2fb5d5ec",
+            "contentSha256": "sha256:ea48d3559c6f0eae9904e8faed0553b719162fc11c81dd0bd1c4545d2fb5d5ec",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/ui-x/lib/utils.ts",
+            "upstreamPath": "apps/v4/src/lib/utils.ts",
+            "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/apps/v4/src/lib/utils.ts",
+            "upstreamSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/src/registry/new-york/ui/phone-input.tsx, apps/v4/src/registry/new-york/ui/phone-input-primitive.tsx, apps/v4/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 junwen-k"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/junwen-k/ui-x/blob/800d4f47fec33524967f97fde59a762df4afbf00/LICENSE.md",
+          "sha256": "sha256:a80d52497975e3a97ebf893008dab7ad8ea176e9b48b179b443c60650af770e2",
+          "localPath": "registry/sources/ui-x/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ui-x/phone-input.tsx",
+          "change": "Changed UI-X internal and cn aliases to copied source-local imports.",
+          "reason": "Keep the copied component source-local and safe in forms while preserving upstream behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "country-aware-international-phone-input",
+        "sourceHash": "sha256:26f961f45bff6c7ff088fb0a450f46ab39720a7f040527e40bf69d5a530508b1",
+        "contentHash": "sha256:1248dbd791e5b8c81e7524a48ade5da94c8516e70c3d7fe4b00ca6053595fe2e",
+        "structureHash": "sha256:27350da2d70aac157bb7fd6b782d8325bfa4099c526ba1c156e6125e02d011c2"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

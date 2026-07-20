@@ -1,0 +1,149 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-paperclip",
+  "title": "Animated Paperclip Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated paperclip SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-paperclip/paperclip-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface PaperclipIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface PaperclipIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst PaperclipIcon = forwardRef<PaperclipIconHandle, PaperclipIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const pathControls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () =>\n     !isAnimated || reduced ? pathControls.start(\"normal\") : pathControls.start(\"animate\"),\n    stopAnimation: () => pathControls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     pathControls.start(\"animate\");\n    } else onMouseEnter?.(e as any);\n   },\n   [pathControls, reduced, onMouseEnter, isAnimated],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     pathControls.start(\"normal\");\n    } else onMouseLeave?.(e as any);\n   },\n   [pathControls, onMouseLeave],\n  );\n\n  const pathVariants: Variants = {\n   normal: { strokeDashoffset: 0 },\n   animate: {\n    strokeDashoffset: [360, 0],\n    transition: { duration: 1.2 * duration, ease: \"easeInOut\" },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n     >\n      <m.path\n       d=\"m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551\"\n       initial=\"normal\"\n       animate={pathControls}\n       variants={pathVariants}\n       style={{ strokeDasharray: 360, strokeLinecap: \"round\" }}\n      />\n     </svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nPaperclipIcon.displayName = \"PaperclipIcon\";\nexport { PaperclipIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-paperclip.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "paperclip",
+        "animated",
+        "icon",
+        "motion",
+        "attachment",
+        "file",
+        "document",
+        "clip",
+        "paper"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-paperclip.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-paperclip/paperclip-icon.tsx",
+            "upstreamPath": "icons/lucide/paperclip-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/paperclip-icon.tsx",
+            "upstreamSha256": "sha256:81d2cfcf4417ff40c1bda411761a7d91f2683602a1927a29454989cd1fc2efda",
+            "contentSha256": "sha256:a837dc6afe5696b67860994ff9ebd5841152438c046055867439414e0cef484a",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/paperclip-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-paperclip/paperclip-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-paperclip-icon",
+        "sourceHash": "sha256:cce3685ba98a8c2afcdae6ed59e7fc338a0cac543fc629065f9aeba663de60ba",
+        "contentHash": "sha256:52d90f0e0daca8ae68f11f96f6e9edf54451be8c6039340df440671da6360ff9",
+        "structureHash": "sha256:344ee7cfb4fba2bacbd83da50932fe609827efa5d073ebfc61eb1a311c7f5fdf",
+        "glyph": {
+          "inventoryName": "paperclip",
+          "canonicalName": "paperclip",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

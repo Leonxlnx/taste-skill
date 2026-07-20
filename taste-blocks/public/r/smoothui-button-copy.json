@@ -1,0 +1,89 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "smoothui-button-copy",
+  "title": "Copy Button",
+  "author": "SmoothUI",
+  "description": "Runs a caller-provided copy action and reports loading, success, and failure without losing focus.",
+  "dependencies": [
+    "lucide-react@0.545.0",
+    "motion@12.23.25"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/smoothui/components/smoothui-button-copy/index.tsx",
+      "content": "\"use client\";\n\nimport { Check, CircleX, Copy, LoaderCircle } from \"lucide-react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport {\n  type ReactNode,\n  useCallback,\n  useEffect,\n  useRef,\n  useState,\n} from \"react\";\n\nexport interface ButtonCopyProps {\n  className?: string;\n  disabled?: boolean;\n  duration?: number;\n  idleIcon?: ReactNode;\n  loadingDuration?: number;\n  loadingIcon?: ReactNode;\n  onCopy?: () => Promise<void> | void;\n  successIcon?: ReactNode;\n}\n\nconst defaultIcons = {\n  idle: <Copy size={16} />,\n  loading: <LoaderCircle size={16} />,\n  error: <CircleX size={16} />,\n  success: <Check size={16} />,\n};\n\nexport default function ButtonCopy({\n  onCopy,\n  idleIcon = defaultIcons.idle,\n  loadingIcon = defaultIcons.loading,\n  successIcon = defaultIcons.success,\n  className = \"\",\n  duration = 2000,\n  loadingDuration = 0,\n  disabled = false,\n}: ButtonCopyProps) {\n  const [buttonState, setButtonState] = useState<\n    \"error\" | \"idle\" | \"loading\" | \"success\"\n  >(\"idle\");\n  const [announcement, setAnnouncement] = useState(\"\");\n  const busyRef = useRef(false);\n  const mountedRef = useRef(true);\n  const resetTimerRef = useRef<number | null>(null);\n  const successTimerRef = useRef<number | null>(null);\n  const shouldReduceMotion = useReducedMotion();\n\n  useEffect(() => {\n    mountedRef.current = true;\n    return () => {\n      mountedRef.current = false;\n      if (resetTimerRef.current !== null) {\n        window.clearTimeout(resetTimerRef.current);\n      }\n      if (successTimerRef.current !== null) {\n        window.clearTimeout(successTimerRef.current);\n      }\n    };\n  }, []);\n\n  const handleClick = useCallback(async () => {\n    if (!onCopy || disabled || busyRef.current) return;\n\n    if (resetTimerRef.current !== null) {\n      window.clearTimeout(resetTimerRef.current);\n      resetTimerRef.current = null;\n    }\n    busyRef.current = true;\n    setButtonState(\"loading\");\n    setAnnouncement(\"Copying\");\n\n    try {\n      await onCopy();\n    } catch {\n      busyRef.current = false;\n      if (!mountedRef.current) return;\n      setButtonState(\"error\");\n      setAnnouncement(\"Copy failed\");\n      resetTimerRef.current = window.setTimeout(() => {\n        if (!mountedRef.current || busyRef.current) return;\n        setButtonState(\"idle\");\n        setAnnouncement(\"\");\n      }, Math.max(0, duration));\n      return;\n    }\n\n    if (!mountedRef.current) return;\n    successTimerRef.current = window.setTimeout(() => {\n      if (!mountedRef.current) return;\n      setButtonState(\"success\");\n      setAnnouncement(\"Copied\");\n      resetTimerRef.current = window.setTimeout(() => {\n        if (!mountedRef.current) return;\n        busyRef.current = false;\n        setButtonState(\"idle\");\n        setAnnouncement(\"\");\n      }, Math.max(0, duration));\n    }, Math.max(0, loadingDuration));\n  }, [disabled, duration, loadingDuration, onCopy]);\n\n  const icons = {\n    error: defaultIcons.error,\n    idle: idleIcon,\n    loading: loadingIcon,\n    success: successIcon,\n  };\n\n  const ariaLabels = {\n    error: \"Copy failed\",\n    idle: \"Copy\",\n    loading: \"Copying...\",\n    success: \"Copied\",\n  };\n\n  return (\n    <div className=\"flex justify-center\">\n      <button\n        aria-busy={buttonState === \"loading\"}\n        aria-disabled={busyRef.current || undefined}\n        aria-label={ariaLabels[buttonState]}\n        className={`relative min-h-[44px] w-auto min-w-[44px] cursor-pointer overflow-hidden rounded-full border bg-background p-3 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 data-[state=error]:text-destructive disabled:opacity-50 ${className}`}\n        data-state={buttonState}\n        disabled={disabled || !onCopy}\n        onClick={handleClick}\n        type=\"button\"\n      >\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          <motion.span\n            animate={\n              shouldReduceMotion\n                ? { opacity: 1 }\n                : { opacity: 1, y: 0, filter: \"blur(0px)\" }\n            }\n            className=\"flex w-full items-center justify-center\"\n            exit={\n              shouldReduceMotion\n                ? { opacity: 0, transition: { duration: 0 } }\n                : { opacity: 0, y: 25, filter: \"blur(10px)\" }\n            }\n            initial={\n              shouldReduceMotion\n                ? { opacity: 1 }\n                : { opacity: 0, y: -25, filter: \"blur(10px)\" }\n            }\n            key={buttonState}\n            transition={\n              shouldReduceMotion\n                ? { duration: 0 }\n                : { type: \"spring\" as const, duration: 0.25, bounce: 0 }\n            }\n          >\n            {icons[buttonState]}\n          </motion.span>\n        </AnimatePresence>\n      </button>\n      <span className=\"sr-only\" role=\"status\">\n        {announcement}\n      </span>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/smoothui-button-copy/index.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "copy",
+        "clipboard",
+        "feedback",
+        "button"
+      ],
+      "renderer": "dom",
+      "preview": "previews/smoothui-button-copy.tsx",
+      "source": {
+        "project": "SmoothUI",
+        "repository": "https://github.com/educlopez/smoothui",
+        "revision": "1fa17cd10e646f704891b89a569fefb9e6f49a20",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/smoothui-button-copy/index.tsx",
+            "upstreamPath": "packages/smoothui/components/button-copy/index.tsx",
+            "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/components/button-copy/index.tsx",
+            "upstreamSha256": "sha256:1c5b07a526057604a0e5688de3a60a5688ba91188f673aaf2afdf1349e684dda",
+            "contentSha256": "sha256:efa9cc741c1887ecf0a3dd9fb3ed601262416be873a94fd24b3a635c5d4c696f",
+            "changes": [
+              "Made feedback depend on the real onCopy promise, added visible and announced failure feedback, guarded repeat activation, and cleaned up timers.",
+              "Defaulted the optional minimum loading delay to zero and made the loading icon static."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/smoothui/components/button-copy/index.tsx",
+        "copyright": [
+          "Copyright (c) 2024 Eduardo Calvo"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/LICENSE",
+          "sha256": "sha256:9877f4310c0549e5ce26affe52ba97c4e60325472bdcdd308a92fccd90f119cc",
+          "localPath": "registry/sources/smoothui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/smoothui-button-copy/index.tsx",
+          "change": "Made feedback follow the real onCopy promise, defaulted the optional minimum loading delay to zero, added visible and announced failure feedback, guarded repeat activation, cleaned up timers, and made the loading icon static.",
+          "reason": "Prevent false success, duplicate operations, continuous hidden work, and updates after unmount while preserving the upstream props."
+        }
+      ],
+      "dedupe": {
+        "family": "async-copy-action",
+        "sourceHash": "sha256:75cf76379e607c55b9dd6c175d306318db2997b1d5f29904e9c8495a5a2281de",
+        "contentHash": "sha256:9d97d6791b4913ab81a02b821906ae9aae203c3e3ef7a4b3990dedb56326db28",
+        "structureHash": "sha256:483ed6e774053059d0a92a791e345c4a08b9f9b88d89f10b69cf5a22cec00309"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

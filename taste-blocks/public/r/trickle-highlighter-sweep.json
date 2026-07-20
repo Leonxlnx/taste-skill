@@ -1,0 +1,135 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trickle-highlighter-sweep",
+  "title": "Highlighter Sweep",
+  "author": "trickle contributors",
+  "description": "Highlights selected text segments in sequence with an expanding background.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.5.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/trickle/components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface HighlighterSegment {\n  text: string;\n  highlight?: boolean;\n  /**\n   * Highlight color as any CSS color value (e.g. `'rgb(254 243 199 / 0.7)'`,\n   * `'oklch(80% 0.18 80 / 0.45)'`, `'#fef3c7'`). Overrides the component-level `color`.\n   */\n  color?: string;\n  /** Extra Tailwind classes for this highlighted segment (does NOT control the highlight color). */\n  highlightClassName?: string;\n}\n\nexport interface HighlighterSweepProps {\n  segments: HighlighterSegment[];\n  /** Default highlight color (any CSS color). Per-segment `color` overrides this. */\n  color?: string;\n  /** Delay before the first highlight begins, in ms. */\n  delay?: number;\n  /** Interval between successive highlights, in ms. */\n  interval?: number;\n  /** Element tag to render. Defaults to `h1`. */\n  as?: ElementType;\n  className?: string;\n  /** Extra classes applied to every highlighted segment. */\n  highlightClassName?: string;\n}\n\nexport function HighlighterSweep({\n  segments,\n  color,\n  delay = 0,\n  interval = 180,\n  as: Component = 'h1',\n  className,\n  highlightClassName\n}: HighlighterSweepProps) {\n  let highlightIdx = 0;\n  return (\n    <Component className={className}>\n      {segments.map((seg, i) => {\n        if (!seg.highlight) {\n          return <span key={i}>{seg.text}</span>;\n        }\n        const idx = highlightIdx++;\n        const segColor = seg.color ?? color;\n        const style: CSSProperties = { animationDelay: `${delay + idx * interval}ms` };\n        if (segColor) {\n          (style as Record<string, string | number>)['--trickle-hl'] = segColor;\n        }\n        return (\n          <span\n            key={i}\n            className={cn(\n              'trickle-highlight-word animate-trickle-highlighter-sweep',\n              seg.highlightClassName ?? highlightClassName\n            )}\n            style={style}\n          >\n            {seg.text}\n          </span>\n        );\n      })}\n    </Component>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/trickle-highlighter-sweep.tsx"
+    },
+    {
+      "path": "registry/sources/trickle/lib/cn.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/cn.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "--animate-trickle-highlighter-sweep": "trickle-highlighter-sweep 0.35s ease-out both"
+    }
+  },
+  "css": {
+    "@keyframes trickle-highlighter-sweep": {
+      "0%": {
+        "background-size": "0% 100%"
+      },
+      "100%": {
+        "background-size": "100% 100%"
+      }
+    },
+    ".trickle-highlight-word": {
+      "--trickle-hl": "oklch(80% 0.18 80 / 0.45)",
+      "padding": "0 0.125rem",
+      "margin": "0 -0.125rem",
+      "border-radius": "0.125rem",
+      "box-decoration-break": "clone",
+      "-webkit-box-decoration-break": "clone",
+      "background-image": "linear-gradient(to right, var(--trickle-hl), var(--trickle-hl))",
+      "background-repeat": "no-repeat",
+      "background-position": "left center",
+      "background-size": "0% 100%"
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ".animate-trickle-highlighter-sweep": {
+        "animation": "none",
+        "background-size": "100% 100%"
+      }
+    }
+  },
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "highlight",
+        "sequence",
+        "emphasis"
+      ],
+      "renderer": "dom",
+      "preview": "previews/trickle-highlighter-sweep.tsx",
+      "source": {
+        "project": "trickle",
+        "repository": "https://github.com/akaieuan/trickle-UI-kit",
+        "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+            "upstreamPath": "registry/default/highlighter-sweep/highlighter-sweep.tsx",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/highlighter-sweep/highlighter-sweep.tsx",
+            "upstreamSha256": "sha256:1bb0f1a0f6e6eb1cf303a299431d3a29d686ddf133070e89cd9128bf9d43dbd5",
+            "contentSha256": "sha256:4d01c870b6e185c3415d9e15d4ba40497a3fdc970d25ae86ffde565db865e7b8",
+            "changes": [
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            ]
+          },
+          {
+            "shippedPath": "lib/cn.ts",
+            "upstreamPath": "lib/cn.ts",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+            "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/default/highlighter-sweep/highlighter-sweep.tsx and lib/cn.ts",
+        "copyright": [
+          "Copyright (c) 2026 trickle contributors"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+          "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+          "localPath": "registry/sources/trickle/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        }
+      ],
+      "dedupe": {
+        "family": "sequential-text-highlighting",
+        "sourceHash": "sha256:a6edad7853b089f52ddae567c6fc35eee198e03f2e492c82b94f8bb92fad0935",
+        "contentHash": "sha256:e9582a497cd60b551ca55954bd13a7f479e70ce82ac0340fee2d3f819f169686",
+        "structureHash": "sha256:a90e155b7daa1f0fac4f9b0b1e85010bc0621b060eb7a6aeeccb0e0000e06e25"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

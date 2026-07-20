@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chamaac-synthesis",
+  "title": "Synthesis",
+  "author": "Amarnath",
+  "description": "Renders a configurable three-color procedural field with flow, distortion, glow, and contrast controls.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0",
+    "three@0.180.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/synthesis.tsx",
+      "content": "\"use client\";\n\nimport { Canvas, useFrame } from \"@react-three/fiber\";\nimport { useMemo, useRef, useEffect, useState } from \"react\";\nimport * as THREE from \"three\";\nimport { cn } from \"./lib/utils\";\n\nconst vertexShader = `\n  varying vec2 vUv;\n  void main() {\n    vUv = uv;\n    gl_Position = vec4(position, 1.0);\n  }\n`;\n\nconst fragmentShader = `\n  uniform vec2 uResolution;\n  uniform float uTime;\n  uniform vec3 uColor1;\n  uniform vec3 uColor2;\n  uniform vec3 uColor3;\n  uniform float uScale;\n  uniform float uComplexity;\n  uniform float uDistortion;\n  uniform float uGlowIntensity;\n  uniform float uFlowFrequency;\n  uniform float uContrast;\n\n  mat2 rot(float a) {\n      float s = sin(a), c = cos(a);\n      return mat2(c, -s, s, c);\n  }\n\n  void main() {\n    float minRes = min(uResolution.x, uResolution.y);\n    vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / minRes;\n\n    vec2 p = uv * uScale;\n    float t = uTime;\n\n    // Multi-layered domain warping with dynamic complexity\n    for(float i = 1.0; i < 20.0; i++) {\n        if(i >= uComplexity) break;\n        p *= rot(t * 0.08 + i * 0.15);\n        p += vec2(\n            sin(p.x * i + t),\n            cos(p.x * i - t)\n        ) * (uDistortion / i);\n    }\n\n    // Wave flow blending with dynamic frequency\n    float flow1 = 0.5 + 0.5 * sin(p.x * (uFlowFrequency * 0.8) + t);\n    float flow2 = 0.5 + 0.5 * sin(p.y * uFlowFrequency + t * 1.1);\n\n    // Mix theme colors (color1, color2, color3)\n    vec3 color = mix(uColor1, uColor2, flow1);\n    color = mix(color, uColor3, flow2);\n\n    // Core glow\n    float dist = length(uv);\n    float glow = exp(-dist * 1.5);\n    color += uColor3 * glow * uGlowIntensity;\n\n    // Dynamic contrast and saturation mapping\n    color = smoothstep(0.0, uContrast, color);\n\n    gl_FragColor = vec4(color, 1.0);\n  }\n`;\n\ninterface SynthesisProps {\n  className?: string;\n  speed?: number;\n  color1?: string;\n  color2?: string;\n  color3?: string;\n  scale?: number;\n  complexity?: number;\n  distortion?: number;\n  glowIntensity?: number;\n  flowFrequency?: number;\n  contrast?: number;\n  backgroundColor?: string;\n}\n\nconst Effect = ({\n  speed,\n  color1,\n  color2,\n  color3,\n  scale,\n  complexity,\n  distortion,\n  glowIntensity,\n  flowFrequency,\n  contrast,\n}: Required<Omit<SynthesisProps, \"className\" | \"backgroundColor\">>) => {\n  const materialRef = useRef<THREE.ShaderMaterial>(null);\n\n  const uniforms = useMemo(\n    () => ({\n      uTime: { value: 0 },\n      uResolution: { value: new THREE.Vector2() },\n      uColor1: { value: new THREE.Color(color1) },\n      uColor2: { value: new THREE.Color(color2) },\n      uColor3: { value: new THREE.Color(color3) },\n      uScale: { value: scale },\n      uComplexity: { value: complexity },\n      uDistortion: { value: distortion },\n      uGlowIntensity: { value: glowIntensity },\n      uFlowFrequency: { value: flowFrequency },\n      uContrast: { value: contrast },\n    }),\n    []\n  );\n\n  useEffect(() => {\n    if (materialRef.current) {\n      materialRef.current.uniforms.uColor1.value.set(color1);\n      materialRef.current.uniforms.uColor2.value.set(color2);\n      materialRef.current.uniforms.uColor3.value.set(color3);\n      materialRef.current.uniforms.uScale.value = scale;\n      materialRef.current.uniforms.uComplexity.value = complexity;\n      materialRef.current.uniforms.uDistortion.value = distortion;\n      materialRef.current.uniforms.uGlowIntensity.value = glowIntensity;\n      materialRef.current.uniforms.uFlowFrequency.value = flowFrequency;\n      materialRef.current.uniforms.uContrast.value = contrast;\n    }\n  }, [\n    color1,\n    color2,\n    color3,\n    scale,\n    complexity,\n    distortion,\n    glowIntensity,\n    flowFrequency,\n    contrast,\n  ]);\n\n  useFrame((state) => {\n    if (materialRef.current) {\n      materialRef.current.uniforms.uTime.value =\n        state.clock.getElapsedTime() * speed;\n      materialRef.current.uniforms.uResolution.value.set(\n        state.size.width,\n        state.size.height\n      );\n    }\n  });\n\n  return (\n    <mesh>\n      <planeGeometry args={[2, 2]} />\n      <shaderMaterial\n        ref={materialRef}\n        vertexShader={vertexShader}\n        fragmentShader={fragmentShader}\n        uniforms={uniforms}\n      />\n    </mesh>\n  );\n};\n\nexport default function Synthesis({\n  className,\n  speed = 0.4,\n  color1 = \"#0f172a\",\n  color2 = \"#3b0764\",\n  color3 = \"#0ea5e9\",\n  scale = 1.0,\n  complexity = 6.0,\n  distortion = 0.6,\n  glowIntensity = 0.4,\n  flowFrequency = 3.0,\n  contrast = 1.2,\n  backgroundColor = \"#000000\",\n}: SynthesisProps) {\n  const [reduceMotion, setReduceMotion] = useState(false);\n\n  useEffect(() => {\n    const media = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduceMotion(media.matches);\n    update();\n    media.addEventListener(\"change\", update);\n    return () => media.removeEventListener(\"change\", update);\n  }, []);\n\n  return (\n    <div\n      aria-hidden=\"true\"\n      className={cn(\n        \"absolute inset-0 w-full h-full pointer-events-none overflow-hidden\",\n        className\n      )}\n      style={{ backgroundColor }}\n    >\n      <Canvas\n        camera={{ position: [0, 0, 1] }}\n        dpr={1}\n        frameloop={reduceMotion ? \"demand\" : \"always\"}\n        gl={{ antialias: false, powerPreference: \"high-performance\" }}\n      >\n        <Effect\n          speed={speed}\n          color1={color1}\n          color2={color2}\n          color3={color3}\n          scale={scale}\n          complexity={complexity}\n          distortion={distortion}\n          glowIntensity={glowIntensity}\n          flowFrequency={flowFrequency}\n          contrast={contrast}\n        />\n      </Canvas>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/chamaac-ui/synthesis.tsx"
+    },
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "shader",
+        "color-field",
+        "procedural",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/chamaac-synthesis.tsx",
+      "source": {
+        "project": "Chamaac UI",
+        "repository": "https://github.com/amarnathdhumal/chamaacui",
+        "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/chamaac-ui/synthesis.tsx",
+            "upstreamPath": "registry/chamaac/synthesis/synthesis.tsx",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/synthesis/synthesis.tsx",
+            "upstreamSha256": "sha256:0875844f520f805c38ca3b48a97c690d16dc98a910a8ec1ee367de4592831075",
+            "contentSha256": "sha256:f10d10c0dec6b3daed04eb64253470803f5872c8778dbe15ec07cd104a61067b",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+              "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+              "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior."
+            ]
+          },
+          {
+            "shippedPath": "components/chamaac-ui/lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+            "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/chamaac/synthesis/synthesis.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Amarnath"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+          "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+          "localPath": "registry/sources/chamaac-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/chamaac-ui/synthesis.tsx",
+          "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+          "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+        },
+        {
+          "shippedPath": "components/chamaac-ui/lib/utils.ts",
+          "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+          "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+        }
+      ],
+      "dedupe": {
+        "family": "procedural-synthesis-flow-field",
+        "sourceHash": "sha256:1491067bd8102ff3e6c14055a65453d14dc9d9e635847b078eacc5f06e8fa002",
+        "contentHash": "sha256:c935ff364166a19a51d8eee3956cf8c3e04df36b2de9ca5a9d0dc658ad48765e",
+        "structureHash": "sha256:e8c6cc42f4e128ef1a7e21ad8d626aeade228756f9dd9e2e5c26ef6a8747e887"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

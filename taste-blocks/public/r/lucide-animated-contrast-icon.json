@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lucide-animated-contrast-icon",
+  "title": "Animated Contrast Icon",
+  "author": "pqoqubbw",
+  "description": "Renders the Lucide Contrast glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/lucide-animated/components/lucide-animated-contrast-icon/contrast.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport interface ContrastIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface ContrastIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst PATH_VARIANT: Variants = {\n  normal: { rotate: 0 },\n  animate: {\n    rotate: 180,\n    transformOrigin: \"left center\",\n    transition: {\n      duration: 0.28,\n      ease: \"easeInOut\",\n    },\n  },\n};\n\nconst ContrastIcon = forwardRef<ContrastIconHandle, ContrastIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) {\n          controls.start(\"normal\");\n          onMouseEnter?.(e);\n          return;\n        }\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <svg\n          fill=\"none\"\n          height={size}\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"2\"\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <circle cx=\"12\" cy=\"12\" r=\"10\" />\n          <motion.path\n            animate={controls}\n            d=\"M12 18a6 6 0 0 0 0-12v12z\"\n            initial=\"normal\"\n            variants={PATH_VARIANT}\n          />\n        </svg>\n      </div>\n    );\n  }\n);\n\nContrastIcon.displayName = \"ContrastIcon\";\n\nexport { ContrastIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/lucide-animated-contrast-icon.tsx"
+    },
+    {
+      "path": "registry/sources/lucide-animated/lib/utils.ts",
+      "content": "import type { ClassValue } from \"clsx\";\nimport { clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "contrast",
+        "animated",
+        "icon",
+        "lucide",
+        "motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/lucide-animated-contrast-icon.tsx",
+      "source": {
+        "project": "Lucide Animated",
+        "repository": "https://github.com/pqoqubbw/icons",
+        "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/lucide-animated-contrast-icon/contrast.tsx",
+            "upstreamPath": "icons/contrast.tsx",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/icons/contrast.tsx",
+            "upstreamGitBlobSha": "6aa4260c0b4460d57ff3275a7ffffb9cef657f04",
+            "upstreamSha256": "sha256:4ea29872a8943703ed0ccc7adca18663e97d7689ff9196533a0a5532f8705a66",
+            "contentSha256": "sha256:c9ee26b1610f2743f47aeaa4a72b5f2e46b35a27e981a3469aa50ec7b5581d67",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts.",
+              "Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/lib/utils.ts",
+            "upstreamGitBlobSha": "88283f0133e161af61a96d8d8d14309591369aac",
+            "upstreamSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "contentSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "icons/contrast.tsx, lib/utils.ts, and Lucide/Feather-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+          "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+          "localPath": "registry/sources/lucide-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/lucide-animated/NOTICE",
+          "registry/sources/lucide-animated/LUCIDE_LICENSE",
+          "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/lucide-animated/NOTICE",
+            "sha256": "sha256:6014a8c793832691319bae3f3c5439487b03c9fd0ddeffad56a14c4530639971",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/LICENSE",
+            "upstreamGitBlobSha": "718bb3f0e44153809972abed31839375804bf652",
+            "localPath": "registry/sources/lucide-animated/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/BRAND_LOGOS_STATEMENT.md",
+            "upstreamGitBlobSha": "6a7404c79b20f6d1fd1d414c052a78c550bf74d5",
+            "localPath": "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/lucide-animated-contrast-icon/contrast.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts. Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps.",
+          "reason": "Resolved the bundled utility, added controlled/reduced-motion safety, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-contrast-icon",
+        "sourceHash": "sha256:37f46a326f3c0c2aad6beca1a95655f4b56072165cfa7ca6b51507a5396dc6a8",
+        "contentHash": "sha256:b0ae12c8341f89598f3595f8741881368246746d81bb768b6b3d07d42859aa55",
+        "structureHash": "sha256:e2db87a36dc08cb6b8476669128219ccb7e2e8fc6794b1f06849018e5324430e",
+        "glyph": {
+          "inventoryName": "contrast",
+          "canonicalName": "contrast",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

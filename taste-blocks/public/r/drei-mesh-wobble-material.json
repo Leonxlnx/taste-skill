@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-mesh-wobble-material",
+  "title": "Mesh Wobble Material",
+  "author": "pmndrs contributors",
+  "description": "Adds controllable vertex wobble to a standard physically lit material.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/MeshWobbleMaterial.tsx",
+      "content": "import * as React from 'react'\nimport { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from 'three'\nimport { ThreeElements, useFrame } from '@react-three/fiber'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\n\ninterface Uniform<T> {\n  value: T\n}\n\nclass WobbleMaterialImpl extends MeshStandardMaterial {\n  _time: Uniform<number>\n  _factor: Uniform<number>\n\n  constructor(parameters: MeshStandardMaterialParameters = {}) {\n    super(parameters)\n    this.setValues(parameters)\n    this._time = { value: 0 }\n    this._factor = { value: 1 }\n  }\n\n  // FIXME Use `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0\n  onBeforeCompile(shader: { vertexShader: string; uniforms: { [uniform: string]: IUniform } }) {\n    shader.uniforms.time = this._time\n    shader.uniforms.factor = this._factor\n\n    shader.vertexShader = `\n      uniform float time;\n      uniform float factor;\n      ${shader.vertexShader}\n    `\n    shader.vertexShader = shader.vertexShader.replace(\n      '#include <begin_vertex>',\n      `float theta = sin( time + position.y ) / 2.0 * factor;\n        float c = cos( theta );\n        float s = sin( theta );\n        mat3 m = mat3( c, 0, s, 0, 1, 0, -s, 0, c );\n        vec3 transformed = vec3( position ) * m;\n        vNormal = vNormal * m;`\n    )\n  }\n\n  get time() {\n    return this._time.value\n  }\n\n  set time(v) {\n    this._time.value = v\n  }\n\n  get factor() {\n    return this._factor.value\n  }\n\n  set factor(v) {\n    this._factor.value = v\n  }\n}\n\ndeclare module '@react-three/fiber' {\n  interface ThreeElements {\n    wobbleMaterialImpl: ThreeElements['meshStandardMaterial'] & {\n      time?: number\n      factor?: number\n      speed?: number\n    }\n  }\n}\n\nexport type WobbleMaterialProps = Omit<ThreeElements['meshStandardMaterial'], 'ref'> & {\n  speed?: number\n  factor?: number\n}\n\nexport const MeshWobbleMaterial: ForwardRefComponent<WobbleMaterialProps, WobbleMaterialImpl> =\n  /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {\n    const [material] = React.useState(() => new WobbleMaterialImpl())\n    useFrame((state) => material && (material.time = state.clock.elapsedTime * speed))\n    return <primitive object={material} ref={ref} attach=\"material\" {...props} />\n  })\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/MeshWobbleMaterial.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "wobble",
+        "material",
+        "motion",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-mesh-wobble-material.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/MeshWobbleMaterial.tsx",
+            "upstreamPath": "src/core/MeshWobbleMaterial.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/MeshWobbleMaterial.tsx",
+            "upstreamSha256": "sha256:855b625260c51a0434bf31f270fdeb0b6efb987ac9eb740fe833eb72d9fff387",
+            "contentSha256": "sha256:855b625260c51a0434bf31f270fdeb0b6efb987ac9eb740fe833eb72d9fff387",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/MeshWobbleMaterial.tsx, src/helpers/ts-utils.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "vertex-wobble-standard-material",
+        "sourceHash": "sha256:a807553e877e52d24a6bdf4e0ceada8ff105fd7d1606b3ebbe1bf7cef872a3cb",
+        "contentHash": "sha256:a807553e877e52d24a6bdf4e0ceada8ff105fd7d1606b3ebbe1bf7cef872a3cb",
+        "structureHash": "sha256:5d866b811bc32333a3894c38c2ad6ec560584bccbedd44bc9d549dba142074b5"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

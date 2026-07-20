@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-hand-coins",
+  "title": "Animated Hand Coins Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated hand coins SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-hand-coins/hand-coins-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface HandCoinsIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface HandCoinsIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst HandCoinsIcon = forwardRef<HandCoinsIconHandle, HandCoinsIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const groupControls = useAnimation();\n  const coinsControls = useAnimation();\n  const handControls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () => {\n     if (!isAnimated || reduced) {\n      groupControls.start(\"normal\");\n      coinsControls.start(\"normal\");\n      handControls.start(\"normal\");\n     } else {\n      groupControls.start(\"animate\");\n      coinsControls.start(\"animate\");\n      handControls.start(\"animate\");\n     }\n    },\n    stopAnimation: () => {\n     groupControls.start(\"normal\");\n     coinsControls.start(\"normal\");\n     handControls.start(\"normal\");\n    },\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     groupControls.start(\"animate\");\n     coinsControls.start(\"animate\");\n     handControls.start(\"animate\");\n    } else onMouseEnter?.(e as any);\n   },\n   [\n    groupControls,\n    coinsControls,\n    handControls,\n    reduced,\n    onMouseEnter,\n    isAnimated,\n   ],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     groupControls.start(\"normal\");\n     coinsControls.start(\"normal\");\n     handControls.start(\"normal\");\n    } else onMouseLeave?.(e as any);\n   },\n   [groupControls, coinsControls, handControls, onMouseLeave],\n  );\n\n  const groupVariants: Variants = {\n   normal: { scale: 1, rotate: 0 },\n   animate: {\n    scale: [1, 1.06, 0.98, 1],\n    rotate: [0, -2, 1, 0],\n    transition: {\n     duration: 0.9 * duration,\n     ease: [0.22, 1, 0.36, 1],\n    },\n   },\n  };\n\n  const coinsVariants: Variants = {\n   normal: { scale: 1, opacity: 1, y: 0 },\n   animate: {\n    scale: [0.7, 1.02, 1],\n    opacity: [0, 1, 1],\n    y: [-6, 0],\n    transition: {\n     duration: 0.6 * duration,\n     ease: \"easeOut\",\n     delay: 0.1,\n    },\n   },\n  };\n\n  const handVariants: Variants = {\n   normal: { pathLength: 1, opacity: 1, y: 0 },\n   animate: {\n    pathLength: [0, 1],\n    opacity: [0.5, 1],\n    y: [2, 0],\n    transition: {\n     duration: 0.9 * duration,\n     ease: \"easeInOut\",\n     delay: 0.2,\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      initial=\"normal\"\n      animate={groupControls}\n      variants={groupVariants}\n     >\n      <m.path\n       d=\"M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17\"\n       initial=\"normal\"\n       animate={handControls}\n       variants={handVariants}\n      />\n      <m.path\n       d=\"m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9\"\n       initial=\"normal\"\n       animate={handControls}\n       variants={handVariants}\n      />\n      <m.path\n       d=\"m2 16 6 6\"\n       initial=\"normal\"\n       animate={handControls}\n       variants={handVariants}\n      />\n      <m.circle\n       cx=\"16\"\n       cy=\"9\"\n       r=\"2.9\"\n       initial=\"normal\"\n       animate={coinsControls}\n       variants={coinsVariants}\n      />\n      <m.circle\n       cx=\"6\"\n       cy=\"5\"\n       r=\"3\"\n       initial=\"normal\"\n       animate={coinsControls}\n       variants={coinsVariants}\n      />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nHandCoinsIcon.displayName = \"HandCoinsIcon\";\nexport { HandCoinsIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-hand-coins.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "hand-coins",
+        "animated",
+        "icon",
+        "motion",
+        "savings",
+        "banking",
+        "money",
+        "finance",
+        "payment",
+        "cash"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-hand-coins.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-hand-coins/hand-coins-icon.tsx",
+            "upstreamPath": "icons/lucide/hand-coins-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/hand-coins-icon.tsx",
+            "upstreamSha256": "sha256:2138584f262ad3de1ae15e39aabbe5de9c85da0930cca8f5a82d8ccf7d00f88b",
+            "contentSha256": "sha256:4b5115d8ec521ddf82e79f6249e3e9d737d72c3631012606290fa95347d9fff1",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/hand-coins-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-hand-coins/hand-coins-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-hand-coins-icon",
+        "sourceHash": "sha256:b0870dc126b23e2a22c2fffeb15628d1621d3da21b464e854802f1131ef93678",
+        "contentHash": "sha256:a5230b1853fbf8ce9bfdfcfb1a1e3de09a8da15929ce28e20748e72c1c839947",
+        "structureHash": "sha256:fbb517800f63c6d55dc47a119efd376a07272852153290bafec589ff07cccbb3",
+        "glyph": {
+          "inventoryName": "hand-coins",
+          "canonicalName": "hand-coins",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

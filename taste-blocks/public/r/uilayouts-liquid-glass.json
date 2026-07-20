@@ -1,0 +1,114 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uilayouts-liquid-glass",
+  "title": "Liquid Glass",
+  "author": "UI LAYOUT",
+  "description": "Renders an optionally draggable or expandable glass surface with an SVG displacement filter.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.42.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-liquid-glass/liquid-glass.tsx",
+      "content": "\"use client\";\n\nimport { motion, type Variants, useReducedMotion } from \"motion/react\";\nimport type React from \"react\";\nimport { useId, useState } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\ntype LiquidGlassCardProps = Omit<\n  React.ComponentProps<typeof motion.div>,\n  \"children\" | \"drag\" | \"draggable\" | \"height\" | \"onClick\" | \"width\"\n> & {\n  children: React.ReactNode;\n  draggable?: boolean;\n  expandable?: boolean;\n  width?: string;\n  height?: string;\n  expandedWidth?: string;\n  expandedHeight?: string;\n  blurIntensity?: \"sm\" | \"md\" | \"lg\" | \"xl\";\n  shadowIntensity?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\";\n  borderRadius?: string;\n  glowIntensity?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\";\n};\n\nexport const LiquidGlassCard = ({\n  children,\n  className = \"\",\n  draggable = false,\n  expandable = false,\n  width,\n  height,\n  expandedWidth,\n  expandedHeight,\n  blurIntensity = \"xl\",\n  borderRadius = \"32px\",\n  glowIntensity = \"sm\",\n  shadowIntensity = \"md\",\n  style,\n  ...props\n}: LiquidGlassCardProps) => {\n  const [isExpanded, setIsExpanded] = useState(false);\n  const shouldReduceMotion = Boolean(useReducedMotion());\n  const filterId = `liquid-glass-${useId().replaceAll(\":\", \"\")}`;\n\n  const blurClasses = {\n    sm: \"backdrop-blur-xs\",\n    md: \"backdrop-blur-md\",\n    lg: \"backdrop-blur-lg\",\n    xl: \"backdrop-blur-xl\",\n  };\n\n  const shadowStyles = {\n    none: \"inset 0 0 0 0 rgba(255, 255, 255, 0)\",\n    xs: \"inset 1px 1px 1px 0 rgba(255, 255, 255, 0.3), inset -1px -1px 1px 0 rgba(255, 255, 255, 0.3)\",\n    sm: \"inset 2px 2px 2px 0 rgba(255, 255, 255, 0.35), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.35)\",\n    md: \"inset 3px 3px 3px 0 rgba(255, 255, 255, 0.45), inset -3px -3px 3px 0 rgba(255, 255, 255, 0.45)\",\n    lg: \"inset 4px 4px 4px 0 rgba(255, 255, 255, 0.5), inset -4px -4px 4px 0 rgba(255, 255, 255, 0.5)\",\n    xl: \"inset 6px 6px 6px 0 rgba(255, 255, 255, 0.55), inset -6px -6px 6px 0 rgba(255, 255, 255, 0.55)\",\n  };\n\n  const glowStyles = {\n    none: \"0 4px 4px rgba(0, 0, 0, 0.05), 0 0 12px rgba(0, 0, 0, 0.05)\",\n    xs: \"0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 16px rgba(255, 255, 255, 0.05)\",\n    sm: \"0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(255, 255, 255, 0.1)\",\n    md: \"0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 32px rgba(255, 255, 255, 0.15)\",\n    lg: \"0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 40px rgba(255, 255, 255, 0.2)\",\n    xl: \"0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 48px rgba(255, 255, 255, 0.25)\",\n  };\n\n  const containerVariants: Variants = expandable\n    ? {\n        collapsed: {\n          width: width || \"auto\",\n          height: height || \"auto\",\n          transition: {\n            duration: shouldReduceMotion ? 0 : 0.4,\n            ease: [0.5, 1.5, 0.5, 1],\n          },\n        },\n        expanded: {\n          width: expandedWidth || \"auto\",\n          height: expandedHeight || \"auto\",\n          transition: {\n            duration: shouldReduceMotion ? 0 : 0.4,\n            ease: [0.5, 1.5, 0.5, 1],\n          },\n        },\n      }\n    : {};\n\n  return (\n    <>\n      <svg\n        aria-hidden=\"true\"\n        focusable=\"false\"\n        style={{ position: \"absolute\", width: 0, height: 0, overflow: \"hidden\" }}\n      >\n        <defs>\n          <filter id={filterId} filterUnits=\"objectBoundingBox\" height=\"100%\" width=\"100%\" x=\"0\" y=\"0\">\n            <feTurbulence\n              baseFrequency=\"0.003 0.007\"\n              numOctaves=\"1\"\n              result=\"turbulence\"\n              type=\"fractalNoise\"\n            />\n            <feDisplacementMap\n              in=\"SourceGraphic\"\n              in2=\"turbulence\"\n              scale=\"200\"\n              xChannelSelector=\"R\"\n              yChannelSelector=\"G\"\n            />\n          </filter>\n        </defs>\n      </svg>\n      <motion.div\n        {...props}\n        animate={expandable ? (isExpanded ? \"expanded\" : \"collapsed\") : undefined}\n        className={cn(\n          \"relative\",\n          draggable && !shouldReduceMotion && \"cursor-grab active:cursor-grabbing\",\n          className,\n        )}\n        drag={!shouldReduceMotion && draggable}\n        dragConstraints={draggable ? { left: 0, right: 0, top: 0, bottom: 0 } : undefined}\n        dragElastic={draggable ? 0.3 : undefined}\n        dragTransition={\n          draggable ? { bounceStiffness: 300, bounceDamping: 10, power: 0.3 } : undefined\n        }\n        style={{\n          ...style,\n          borderRadius,\n          ...(width && !expandable && { width }),\n          ...(height && !expandable && { height }),\n        }}\n        variants={containerVariants}\n        whileDrag={!shouldReduceMotion && draggable ? { scale: 1.02 } : undefined}\n        whileHover={!shouldReduceMotion && draggable ? { scale: 1.01 } : undefined}\n        whileTap={!shouldReduceMotion && draggable ? { scale: 0.98 } : undefined}\n      >\n        <div\n          aria-hidden=\"true\"\n          className={cn(\"absolute inset-0 z-0\", blurClasses[blurIntensity])}\n          style={{ borderRadius, filter: `url(#${filterId})` }}\n        />\n        <div\n          aria-hidden=\"true\"\n          className=\"absolute inset-0 z-10\"\n          style={{ borderRadius, boxShadow: glowStyles[glowIntensity] }}\n        />\n        <div\n          aria-hidden=\"true\"\n          className=\"absolute inset-0 z-20\"\n          style={{ borderRadius, boxShadow: shadowStyles[shadowIntensity] }}\n        />\n        {children}\n        {expandable && (\n          <button\n            aria-expanded={isExpanded}\n            aria-label={isExpanded ? \"Collapse glass card\" : \"Expand glass card\"}\n            className=\"absolute right-3 top-3 z-30 grid size-8 place-items-center rounded-full border border-white/30 bg-black/20 text-lg leading-none text-white backdrop-blur-sm focus-visible:outline-2 focus-visible:outline-offset-2\"\n            onClick={() => setIsExpanded((expanded) => !expanded)}\n            type=\"button\"\n          >\n            <span aria-hidden=\"true\">{isExpanded ? \"−\" : \"+\"}</span>\n          </button>\n        )}\n      </motion.div>\n    </>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/liquid-glass.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "glass",
+        "svg-filter",
+        "expandable"
+      ],
+      "renderer": "svg",
+      "preview": "previews/uilayouts-liquid-glass.tsx",
+      "source": {
+        "project": "UI Layouts Free",
+        "repository": "https://github.com/ui-layouts/uilayouts",
+        "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/uilayouts-liquid-glass/liquid-glass.tsx",
+            "upstreamPath": "apps/ui-layout/components/ui/liquid-glass.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/liquid-glass.tsx",
+            "upstreamSha256": "sha256:f00ef2b1ba54475581feec8069ce9b092b14c27acb1401a318ac78c2c919bcdc",
+            "contentSha256": "sha256:ec17ac66b8c1785c7eb50aff1591d0360beac6648355856416e175fe7afb0215",
+            "changes": [
+              "Removed @ts-nocheck by typing the copied Motion props and changed the utility import to ../../lib/utils.",
+              "Generated a unique SVG filter ID per instance and marked filter layers decorative.",
+              "Changed draggable to opt in so the default surface has no pointer-only motion.",
+              "Replaced click and synthetic-button behavior on the content wrapper with a native expansion button carrying aria-expanded.",
+              "Limited hover and tap scaling to explicit drag mode and retained reduced-motion behavior.",
+              "Normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/ui-layout/lib/utils.ts",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+            "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/ui-layout/components/ui/liquid-glass.tsx and apps/ui-layout/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 UI LAYOUT"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+          "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+          "localPath": "registry/sources/ui-layouts/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/uilayouts-liquid-glass/liquid-glass.tsx",
+          "change": "Typed the source, rewired its local utility, scoped SVG filter IDs, hid decorative layers, made drag opt in, moved expansion to a native button, and limited motion under reduced-motion or non-draggable defaults.",
+          "reason": "Allow multiple instances, preserve type safety, avoid default pointer-only motion, and prevent arbitrary child controls from being nested inside a synthetic button."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+          "reason": "Keep the copied support closure minimal and remove site URLs."
+        }
+      ],
+      "dedupe": {
+        "family": "interactive-liquid-glass-surface",
+        "sourceHash": "sha256:125d04e2d1272578cbaa6aa8fdc3cf9957be3800ebb34f496f702729bf5c7441",
+        "contentHash": "sha256:6df3958fc51fc986dbc7363d9e79ff7ca7eea4cba95ae9656ee7274dc72f85f9",
+        "structureHash": "sha256:fff2da5dc8e59f1f806c9668eef15bca6ebd707022e988c1baccef85de5d6a3e"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

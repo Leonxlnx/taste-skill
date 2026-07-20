@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-speech-input",
+  "title": "Speech Input",
+  "author": "Vercel",
+  "description": "A speech capture control with Web Speech and caller-provided MediaRecorder fallback.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "spinner",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/speech-input.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { Spinner } from \"@/components/ui/spinner\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { MicIcon, SquareIcon } from \"lucide-react\";\r\nimport type { ComponentProps } from \"react\";\r\nimport { useCallback, useEffect, useRef, useState } from \"react\";\r\n\r\ninterface SpeechRecognition extends EventTarget {\r\n  continuous: boolean;\r\n  interimResults: boolean;\r\n  lang: string;\r\n  start(): void;\r\n  stop(): void;\r\n  onstart: ((this: SpeechRecognition, ev: Event) => void) | null;\r\n  onend: ((this: SpeechRecognition, ev: Event) => void) | null;\r\n  onresult:\r\n    | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void)\r\n    | null;\r\n  onerror:\r\n    | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => void)\r\n    | null;\r\n}\r\n\r\ninterface SpeechRecognitionEvent extends Event {\r\n  results: SpeechRecognitionResultList;\r\n  resultIndex: number;\r\n}\r\n\r\ninterface SpeechRecognitionResultList {\r\n  readonly length: number;\r\n  item(index: number): SpeechRecognitionResult;\r\n  [index: number]: SpeechRecognitionResult;\r\n}\r\n\r\ninterface SpeechRecognitionResult {\r\n  readonly length: number;\r\n  item(index: number): SpeechRecognitionAlternative;\r\n  [index: number]: SpeechRecognitionAlternative;\r\n  isFinal: boolean;\r\n}\r\n\r\ninterface SpeechRecognitionAlternative {\r\n  transcript: string;\r\n  confidence: number;\r\n}\r\n\r\ninterface SpeechRecognitionErrorEvent extends Event {\r\n  error: string;\r\n}\r\n\r\ndeclare global {\r\n  interface Window {\r\n    SpeechRecognition: new () => SpeechRecognition;\r\n    webkitSpeechRecognition: new () => SpeechRecognition;\r\n  }\r\n}\r\n\r\ntype SpeechInputMode = \"speech-recognition\" | \"media-recorder\" | \"none\";\r\n\r\nexport type SpeechInputProps = ComponentProps<typeof Button> & {\r\n  onTranscriptionChange?: (text: string) => void;\r\n  /**\r\n   * Callback for when audio is recorded using MediaRecorder fallback.\r\n   * This is called in browsers that don't support the Web Speech API (Firefox, Safari).\r\n   * The callback receives an audio Blob that should be sent to a transcription service.\r\n   * Return the transcribed text, which will be passed to onTranscriptionChange.\r\n   */\r\n  onAudioRecorded?: (audioBlob: Blob) => Promise<string>;\r\n  lang?: string;\r\n};\r\n\r\nconst detectSpeechInputMode = (): SpeechInputMode => {\r\n  if (typeof window === \"undefined\") {\r\n    return \"none\";\r\n  }\r\n\r\n  if (\"SpeechRecognition\" in window || \"webkitSpeechRecognition\" in window) {\r\n    return \"speech-recognition\";\r\n  }\r\n\r\n  if (\"MediaRecorder\" in window && \"mediaDevices\" in navigator) {\r\n    return \"media-recorder\";\r\n  }\r\n\r\n  return \"none\";\r\n};\r\n\r\nexport const SpeechInput = ({\r\n  className,\r\n  onTranscriptionChange,\r\n  onAudioRecorded,\r\n  lang = \"en-US\",\r\n  ...props\r\n}: SpeechInputProps) => {\r\n  const [isListening, setIsListening] = useState(false);\r\n  const [isProcessing, setIsProcessing] = useState(false);\r\n  const [mode] = useState<SpeechInputMode>(detectSpeechInputMode);\r\n  const [isRecognitionReady, setIsRecognitionReady] = useState(false);\r\n  const recognitionRef = useRef<SpeechRecognition | null>(null);\r\n  const mediaRecorderRef = useRef<MediaRecorder | null>(null);\r\n  const streamRef = useRef<MediaStream | null>(null);\r\n  const audioChunksRef = useRef<Blob[]>([]);\r\n  const onTranscriptionChangeRef = useRef<\r\n    SpeechInputProps[\"onTranscriptionChange\"]\r\n  >(onTranscriptionChange);\r\n  const onAudioRecordedRef =\r\n    useRef<SpeechInputProps[\"onAudioRecorded\"]>(onAudioRecorded);\r\n\r\n  // Keep refs in sync\r\n  onTranscriptionChangeRef.current = onTranscriptionChange;\r\n  onAudioRecordedRef.current = onAudioRecorded;\r\n\r\n  // Initialize Speech Recognition when mode is speech-recognition\r\n  useEffect(() => {\r\n    if (mode !== \"speech-recognition\") {\r\n      return;\r\n    }\r\n\r\n    const SpeechRecognition =\r\n      window.SpeechRecognition || window.webkitSpeechRecognition;\r\n    const speechRecognition = new SpeechRecognition();\r\n\r\n    speechRecognition.continuous = true;\r\n    speechRecognition.interimResults = true;\r\n    speechRecognition.lang = lang;\r\n\r\n    const handleStart = () => {\r\n      setIsListening(true);\r\n    };\r\n\r\n    const handleEnd = () => {\r\n      setIsListening(false);\r\n    };\r\n\r\n    const handleResult = (event: Event) => {\r\n      const speechEvent = event as SpeechRecognitionEvent;\r\n      let finalTranscript = \"\";\r\n\r\n      for (\r\n        let i = speechEvent.resultIndex;\r\n        i < speechEvent.results.length;\r\n        i += 1\r\n      ) {\r\n        const result = speechEvent.results[i];\r\n        if (result.isFinal) {\r\n          finalTranscript += result[0]?.transcript ?? \"\";\r\n        }\r\n      }\r\n\r\n      if (finalTranscript) {\r\n        onTranscriptionChangeRef.current?.(finalTranscript);\r\n      }\r\n    };\r\n\r\n    const handleError = () => {\r\n      setIsListening(false);\r\n    };\r\n\r\n    speechRecognition.addEventListener(\"start\", handleStart);\r\n    speechRecognition.addEventListener(\"end\", handleEnd);\r\n    speechRecognition.addEventListener(\"result\", handleResult);\r\n    speechRecognition.addEventListener(\"error\", handleError);\r\n\r\n    recognitionRef.current = speechRecognition;\r\n    setIsRecognitionReady(true);\r\n\r\n    return () => {\r\n      speechRecognition.removeEventListener(\"start\", handleStart);\r\n      speechRecognition.removeEventListener(\"end\", handleEnd);\r\n      speechRecognition.removeEventListener(\"result\", handleResult);\r\n      speechRecognition.removeEventListener(\"error\", handleError);\r\n      speechRecognition.stop();\r\n      recognitionRef.current = null;\r\n      setIsRecognitionReady(false);\r\n    };\r\n  }, [mode, lang]);\r\n\r\n  // Cleanup MediaRecorder and stream on unmount\r\n  useEffect(\r\n    () => () => {\r\n      if (mediaRecorderRef.current?.state === \"recording\") {\r\n        mediaRecorderRef.current.stop();\r\n      }\r\n      if (streamRef.current) {\r\n        for (const track of streamRef.current.getTracks()) {\r\n          track.stop();\r\n        }\r\n      }\r\n    },\r\n    []\r\n  );\r\n\r\n  // Start MediaRecorder recording\r\n  const startMediaRecorder = useCallback(async () => {\r\n    if (!onAudioRecordedRef.current) {\r\n      return;\r\n    }\r\n\r\n    try {\r\n      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });\r\n      streamRef.current = stream;\r\n      const mediaRecorder = new MediaRecorder(stream);\r\n      audioChunksRef.current = [];\r\n\r\n      const handleDataAvailable = (event: BlobEvent) => {\r\n        if (event.data.size > 0) {\r\n          audioChunksRef.current.push(event.data);\r\n        }\r\n      };\r\n\r\n      const handleStop = async () => {\r\n        for (const track of stream.getTracks()) {\r\n          track.stop();\r\n        }\r\n        streamRef.current = null;\r\n\r\n        const audioBlob = new Blob(audioChunksRef.current, {\r\n          type: \"audio/webm\",\r\n        });\r\n\r\n        if (audioBlob.size > 0 && onAudioRecordedRef.current) {\r\n          setIsProcessing(true);\r\n          try {\r\n            const transcript = await onAudioRecordedRef.current(audioBlob);\r\n            if (transcript) {\r\n              onTranscriptionChangeRef.current?.(transcript);\r\n            }\r\n          } catch {\r\n            // Error handling delegated to the onAudioRecorded caller\r\n          } finally {\r\n            setIsProcessing(false);\r\n          }\r\n        }\r\n      };\r\n\r\n      const handleError = () => {\r\n        setIsListening(false);\r\n        for (const track of stream.getTracks()) {\r\n          track.stop();\r\n        }\r\n        streamRef.current = null;\r\n      };\r\n\r\n      mediaRecorder.addEventListener(\"dataavailable\", handleDataAvailable);\r\n      mediaRecorder.addEventListener(\"stop\", handleStop);\r\n      mediaRecorder.addEventListener(\"error\", handleError);\r\n\r\n      mediaRecorderRef.current = mediaRecorder;\r\n      mediaRecorder.start();\r\n      setIsListening(true);\r\n    } catch {\r\n      setIsListening(false);\r\n    }\r\n  }, []);\r\n\r\n  // Stop MediaRecorder recording\r\n  const stopMediaRecorder = useCallback(() => {\r\n    if (mediaRecorderRef.current?.state === \"recording\") {\r\n      mediaRecorderRef.current.stop();\r\n    }\r\n    setIsListening(false);\r\n  }, []);\r\n\r\n  const toggleListening = useCallback(() => {\r\n    if (mode === \"speech-recognition\" && recognitionRef.current) {\r\n      if (isListening) {\r\n        recognitionRef.current.stop();\r\n      } else {\r\n        recognitionRef.current.start();\r\n      }\r\n    } else if (mode === \"media-recorder\") {\r\n      if (isListening) {\r\n        stopMediaRecorder();\r\n      } else {\r\n        startMediaRecorder();\r\n      }\r\n    }\r\n  }, [mode, isListening, startMediaRecorder, stopMediaRecorder]);\r\n\r\n  // Determine if button should be disabled\r\n  const isDisabled =\r\n    mode === \"none\" ||\r\n    (mode === \"speech-recognition\" && !isRecognitionReady) ||\r\n    (mode === \"media-recorder\" && !onAudioRecorded) ||\r\n    isProcessing;\r\n\r\n  return (\r\n    <div className=\"relative inline-flex items-center justify-center\">\r\n      {/* Animated pulse rings */}\r\n      {isListening &&\r\n        [0, 1, 2].map((index) => (\r\n          <div\r\n            className=\"absolute inset-0 animate-ping rounded-full border-2 border-red-400/30 motion-reduce:animate-none\"\n            key={index}\r\n            style={{\r\n              animationDelay: `${index * 0.3}s`,\r\n              animationDuration: \"2s\",\r\n            }}\r\n          />\r\n        ))}\r\n\r\n      {/* Main record button */}\r\n      <Button\r\n        className={cn(\r\n          \"relative z-10 rounded-full transition-all duration-300 motion-reduce:transition-none\",\n          isListening\r\n            ? \"bg-destructive text-white hover:bg-destructive/80 hover:text-white\"\r\n            : \"bg-primary text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground\",\r\n          className\r\n        )}\r\n        disabled={isDisabled}\r\n        onClick={toggleListening}\r\n        {...props}\r\n      >\r\n        {isProcessing && <Spinner />}\r\n        {!isProcessing && isListening && <SquareIcon className=\"size-4\" />}\r\n        {!(isProcessing || isListening) && <MicIcon className=\"size-4\" />}\r\n      </Button>\r\n    </div>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/speech-input.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "speech",
+        "microphone",
+        "recorder",
+        "transcription"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-speech-input.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/speech-input.tsx",
+            "upstreamPath": "packages/elements/src/speech-input.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/speech-input.tsx",
+            "upstreamSha256": "sha256:25747138c9c41cca6f96caf69faa9ff6e39910dabac534c84eba41cbd9ba54d3",
+            "contentSha256": "sha256:23d0b5391f8cf21e8b67cf38e1f7c4c9a52e772974103de09dae880529440edf",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion handling to pulse and button transitions."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/speech-input.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/speech-input.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion handling to pulse and button transitions.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "browser-speech-recorder",
+        "sourceHash": "sha256:72b8f34ba51060e8d9e7db8b5c734fcdb7b3903dfd3c2e6a7fdebf62573ace2c",
+        "contentHash": "sha256:d26c3917c4d7ef629680ba6263bd8f0744757f732d9f8465bc90d3510fc9c7f1",
+        "structureHash": "sha256:0e32bbd4401fcc4c3738f7247c95bf13259d66e28b2eeca1c67941128f9dcc70"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

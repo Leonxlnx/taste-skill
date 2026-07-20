@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "primer-segmented-progress",
+  "title": "Segmented Progress",
+  "author": "Primer",
+  "description": "Displays multiple labelled progress values as segments in one bounded track.",
+  "dependencies": [
+    "clsx@2.1.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/primer-segmented-progress/components/primer-segmented-progress/index.ts",
+      "content": "import {ProgressBar as Bar, Item} from './ProgressBar'\n\nexport type {ProgressBarProps, ProgressBarItemProps} from './ProgressBar'\n\n/**\n * Collection of ProgressBar related components.\n */\nexport const ProgressBar = Object.assign(Bar, {Item})\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/primer-segmented-progress/index.ts"
+    },
+    {
+      "path": "registry/sources/primer-segmented-progress/components/primer-segmented-progress/ProgressBar.tsx",
+      "content": "import React, {forwardRef} from 'react'\nimport {clsx} from 'clsx'\nimport classes from './ProgressBar.module.css'\n\ntype ProgressProp = {\n  className?: string\n  progress?: string | number\n  bg?: string\n}\n\ntype StyledProgressContainerProps = {\n  inline?: boolean\n  barSize?: 'small' | 'default' | 'large'\n  animated?: boolean\n}\n\nfunction clampProgress(progress: string | number | undefined) {\n  const value = typeof progress === 'string' ? Number(progress) : progress\n  return typeof value === 'number' && Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0\n}\n\nexport type ProgressBarItemProps = React.HTMLAttributes<HTMLSpanElement> & {\n  'aria-label'?: string\n  className?: string\n} & ProgressProp\n\nexport const Item = forwardRef<HTMLSpanElement, ProgressBarItemProps>(\n  (\n    {\n      progress,\n      'aria-label': ariaLabel,\n      'aria-valuenow': ariaValueNow,\n      'aria-valuetext': ariaValueText,\n      className,\n      style,\n      bg,\n      ...rest\n    },\n    forwardRef,\n  ) => {\n    const progressAsNumber = clampProgress(progress)\n\n    const ariaAttributes = {\n      'aria-valuenow': Math.round(ariaValueNow === undefined ? progressAsNumber : clampProgress(ariaValueNow)),\n      'aria-valuemin': 0,\n      'aria-valuemax': 100,\n      'aria-valuetext': ariaValueText,\n    }\n\n    const progressBarWidth = '--progress-width'\n    const progressBarBg = '--progress-bg'\n    const styles: {[key: string]: string} = {}\n\n    const bgType = bg && bg.split('.')\n    styles[progressBarWidth] = `${progressAsNumber}%`\n    styles[progressBarBg] =\n      (bgType && `var(--bgColor-${bgType[0]}-${bgType[1] || 'emphasis'}, #1f883d)`) ||\n      'var(--bgColor-success-emphasis, #1f883d)'\n\n    return (\n      <span\n        data-component=\"ProgressBar.Item\"\n        className={clsx(className, classes.ProgressBarItem)}\n        {...rest}\n        role=\"progressbar\"\n        aria-label={ariaLabel}\n        ref={forwardRef}\n        style={{...styles, ...style}}\n        {...ariaAttributes}\n      />\n    )\n  },\n)\n\nItem.displayName = 'ProgressBar.Item'\n\nexport type ProgressBarProps = React.HTMLAttributes<HTMLSpanElement> & {\n  bg?: string\n  className?: string\n} & StyledProgressContainerProps &\n  ProgressProp\n\nexport const ProgressBar = forwardRef<HTMLSpanElement, ProgressBarProps>(\n  (\n    {\n      animated,\n      progress,\n      bg = 'success.emphasis',\n      barSize = 'default',\n      children,\n      'aria-label': ariaLabel,\n      'aria-valuenow': ariaValueNow,\n      'aria-valuetext': ariaValueText,\n      className,\n      inline,\n      ...rest\n    }: ProgressBarProps,\n    forwardRef,\n  ) => {\n    if (children && progress) {\n      throw new Error('You should pass `progress` or children, not both.')\n    }\n\n    // Get the number of non-empty nodes passed as children, this will exclude\n    // booleans, null, and undefined\n    const validChildren = React.Children.toArray(children).length\n\n    return (\n      <span\n        ref={forwardRef}\n        data-component=\"ProgressBar\"\n        className={clsx(className, classes.ProgressBarContainer)}\n        data-progress-display={inline ? 'inline' : 'block'}\n        data-progress-bar-size={barSize}\n        {...rest}\n      >\n        {validChildren ? (\n          children\n        ) : (\n          <Item\n            data-animated={animated}\n            progress={progress}\n            aria-label={ariaLabel}\n            aria-valuenow={ariaValueNow}\n            aria-valuetext={ariaValueText}\n            bg={bg}\n          />\n        )}\n      </span>\n    )\n  },\n)\n\nProgressBar.displayName = 'ProgressBar'\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/primer-segmented-progress/ProgressBar.tsx"
+    },
+    {
+      "path": "registry/sources/primer-segmented-progress/components/primer-segmented-progress/ProgressBar.module.css",
+      "content": "@keyframes shimmer {\n  from {\n    mask-position: 200%;\n  }\n\n  to {\n    mask-position: 0%;\n  }\n}\n\n.ProgressBarItem {\n  /* these are passed from the component */\n  --progress-width: ;\n  --progress-bg: ;\n\n  width: var(--progress-width);\n  /* stylelint-disable-next-line primer/colors */\n  background-color: var(--progress-bg);\n\n  @media (prefers-reduced-motion: no-preference) {\n    &[data-animated='true'] {\n      mask-image: linear-gradient(75deg, #000 30%, rgb(0, 0, 0, 0.65) 80%);\n      mask-size: 200%;\n      animation-name: shimmer;\n      animation-duration: 1s;\n      animation-iteration-count: infinite;\n    }\n  }\n}\n\n.ProgressBarContainer {\n  display: flex;\n  overflow: hidden;\n  background-color: var(--progressBar-track-bgColor, #eaeef2);\n  border-radius: var(--borderRadius-small, 6px);\n  gap: 2px;\n  outline: solid 1px var(--progressBar-track-borderColor, #d0d7de);\n  outline-offset: -1px;\n\n  &:where([data-progress-display='inline']) {\n    display: inline-flex;\n  }\n\n  &:where([data-progress-bar-size='default']) {\n    height: 8px;\n  }\n\n  &:where([data-progress-bar-size='small']) {\n    height: 5px;\n  }\n\n  &:where([data-progress-bar-size='large']) {\n    height: 10px;\n  }\n}\n\n@media (forced-colors: active) {\n  .ProgressBarContainer {\n    --progressBar-track-bgColor: Canvas;\n    --progressBar-track-borderColor: CanvasText;\n  }\n\n  .ProgressBarItem {\n    --progress-bg: LinkText !important;\n  }\n\n  .ProgressBarContainer,\n  .ProgressBarItem {\n    forced-color-adjust: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/primer-segmented-progress/ProgressBar.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "segmented",
+        "progress",
+        "breakdown"
+      ],
+      "renderer": "dom",
+      "preview": "previews/primer-segmented-progress.tsx",
+      "source": {
+        "project": "Primer React",
+        "repository": "https://github.com/primer/react",
+        "revision": "2a67c191a0038df64d2225c0bc11c020c2def03c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/primer-segmented-progress/index.ts",
+            "upstreamPath": "packages/react/src/ProgressBar/index.ts",
+            "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/index.ts",
+            "upstreamSha256": "sha256:6ffd0f7e97fc78e8efb17d6dd5173a8fa461d9a10e0771df564953912432a3ee",
+            "contentSha256": "sha256:6ffd0f7e97fc78e8efb17d6dd5173a8fa461d9a10e0771df564953912432a3ee",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/primer-segmented-progress/ProgressBar.tsx",
+            "upstreamPath": "packages/react/src/ProgressBar/ProgressBar.tsx",
+            "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/ProgressBar.tsx",
+            "upstreamSha256": "sha256:90f9c1991cb79d3aa01a55a18e3419734c5b13a150003f799f2f7fce04e3854f",
+            "contentSha256": "sha256:e0a6bd2bb4035f3e886063e5e7c1b272836c87c2c4237c30a47b9df0be1d7967",
+            "changes": [
+              "Clamped finite progress and aria-valuenow inputs to 0 through 100 and normalized invalid inputs to zero.",
+              "Added a fallback fill color when the host does not define the requested Primer color token."
+            ]
+          },
+          {
+            "shippedPath": "components/primer-segmented-progress/ProgressBar.module.css",
+            "upstreamPath": "packages/react/src/ProgressBar/ProgressBar.module.css",
+            "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/packages/react/src/ProgressBar/ProgressBar.module.css",
+            "upstreamSha256": "sha256:e403d83d039694d0469be7569ddc9f311a04fa5130615fc15a385cee67ce874d",
+            "contentSha256": "sha256:6776c130e81dea3c9026ab6c3a14f5fee2294b85637c89155550769872200ac8",
+            "changes": [
+              "Added local fallback values for the three Primer track and radius tokens.",
+              "Scoped forced-color tokens to the component and forced each inline item fill variable to LinkText."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/ProgressBar/ProgressBar.tsx, packages/react/src/ProgressBar/ProgressBar.module.css, and packages/react/src/ProgressBar/index.ts",
+        "copyright": [
+          "Copyright (c) 2018 GitHub, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/primer/react/blob/2a67c191a0038df64d2225c0bc11c020c2def03c/LICENSE",
+          "sha256": "sha256:bf4f127cb7d82ed5c00d7095616440211225f4ca3b0195a0ecd0051720df5c18",
+          "localPath": "registry/sources/primer-segmented-progress/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/primer-segmented-progress/ProgressBar.tsx",
+          "change": "Clamped progress values and added a fallback for generated Primer fill tokens.",
+          "reason": "Prevent visual and ARIA overflow from invalid caller values and render without a Primer theme provider."
+        },
+        {
+          "shippedPath": "components/primer-segmented-progress/ProgressBar.module.css",
+          "change": "Added track token fallbacks and scoped the forced-colors overrides to the component classes.",
+          "reason": "Keep the CSS module portable while ensuring inline fill variables cannot defeat Windows forced colors."
+        }
+      ],
+      "dedupe": {
+        "family": "segmented-progress-breakdown",
+        "sourceHash": "sha256:6b98bf0d8b8ed41dc0c2533bed22fb3af98b807378870048377cdda44514e01b",
+        "contentHash": "sha256:132f7c7b22680cc57c359ec15174b0a4e99bffd38ecaccace549983fb78a5ec2",
+        "structureHash": "sha256:646af80be78851d238c278249e96630740f941361a78993bc834a04abee7575e"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

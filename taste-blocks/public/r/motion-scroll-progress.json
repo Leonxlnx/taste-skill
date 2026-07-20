@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-scroll-progress",
+  "title": "Scroll Progress",
+  "author": "Motion Primitives",
+  "description": "Maps page or container scroll progress to a horizontal indicator.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-scroll-progress/scroll-progress.tsx",
+      "content": "'use client';\n\nimport {\n  motion,\n  SpringOptions,\n  useReducedMotion,\n  useScroll,\n  useSpring,\n} from 'motion/react';\nimport { cn } from '../../lib/utils';\nimport { RefObject } from 'react';\n\nexport type ScrollProgressProps = {\n  className?: string;\n  springOptions?: SpringOptions;\n  containerRef?: RefObject<HTMLDivElement | null>;\n};\n\nconst DEFAULT_SPRING_OPTIONS: SpringOptions = {\n  stiffness: 200,\n  damping: 50,\n  restDelta: 0.001,\n};\n\nexport function ScrollProgress({\n  className,\n  springOptions,\n  containerRef,\n}: ScrollProgressProps) {\n  const shouldReduceMotion = useReducedMotion();\n  const { scrollYProgress } = useScroll({\n    container: containerRef,\n    layoutEffect: Boolean(containerRef?.current),\n  });\n\n  const smoothedScaleX = useSpring(scrollYProgress, {\n    ...DEFAULT_SPRING_OPTIONS,\n    ...(springOptions ?? {}),\n  });\n  const scaleX = shouldReduceMotion ? scrollYProgress : smoothedScaleX;\n\n  return (\n    <motion.div\n      className={cn('inset-x-0 top-0 h-1 origin-left', className)}\n      style={{\n        scaleX,\n      }}\n    />\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/scroll-progress.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "scroll",
+        "progress",
+        "indicator"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-scroll-progress.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-scroll-progress/scroll-progress.tsx",
+            "upstreamPath": "components/core/scroll-progress.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/scroll-progress.tsx",
+            "upstreamSha256": "sha256:e5decf683e55b351e971ecb47483e12169daaaf1a0a7ba079a2270d8ca6270b3",
+            "contentSha256": "sha256:eeef52652e3c5de98a8cd40b06183021b76b0775fab625e04ff3645f7fa39992",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Used the direct scroll motion value instead of the spring when reduced motion is requested.",
+              "Allowed a nullable container ref for current React ref typing."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": [
+          "Motion Primitives docs credit @bhataasim1."
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/scroll-progress.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-scroll-progress/scroll-progress.tsx",
+          "change": "Changed the local utility import, bypassed spring lag for reduced motion, and widened the container ref type to include null.",
+          "reason": "Resolve the copied helper, keep progress directly tied to scroll position under reduced motion, and compile with current React ref types."
+        }
+      ],
+      "dedupe": {
+        "family": "scroll-progress-indicator",
+        "sourceHash": "sha256:47bcdeb0c857630df2f1f457640d04050b144db9bce193de7a488371af759a40",
+        "contentHash": "sha256:e3eec70e39fa5b4c3bcac20512b41a1c649945f7ac548aa0664e794eb5d31306",
+        "structureHash": "sha256:db88f589c11ae814d0bcf88371c87d67c7e594bbe9949cea5fdc0f2460b99e81"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

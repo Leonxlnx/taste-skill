@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kibo-relative-time",
+  "title": "Relative Time",
+  "author": "Kibo UI",
+  "description": "Displays one time across multiple time zones.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-relative-time/index.tsx",
+      "content": "\"use client\";\n\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\nimport {\n  createContext,\n  type HTMLAttributes,\n  useContext,\n  useEffect,\n  useRef,\n  useState,\n} from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nconst formatDate = (\n  date: Date,\n  timeZone: string,\n  options?: Intl.DateTimeFormatOptions\n) =>\n  new Intl.DateTimeFormat(\"en-US\", {\n    ...(options ?? { dateStyle: \"long\" }),\n    timeZone,\n  }).format(date);\n\nconst formatTime = (\n  date: Date,\n  timeZone: string,\n  options?: Intl.DateTimeFormatOptions\n) =>\n  new Intl.DateTimeFormat(\"en-US\", {\n    ...(options ?? {\n      hour: \"2-digit\",\n      minute: \"2-digit\",\n      second: \"2-digit\",\n    }),\n    timeZone,\n  }).format(date);\n\ntype RelativeTimeContextType = {\n  time: Date;\n  dateFormatOptions?: Intl.DateTimeFormatOptions;\n  timeFormatOptions?: Intl.DateTimeFormatOptions;\n};\n\nconst RelativeTimeContext = createContext<RelativeTimeContextType>({\n  time: new Date(),\n  dateFormatOptions: {\n    dateStyle: \"long\",\n  },\n  timeFormatOptions: {\n    hour: \"2-digit\",\n    minute: \"2-digit\",\n  },\n});\n\nexport type RelativeTimeProps = HTMLAttributes<HTMLDivElement> & {\n  time?: Date;\n  defaultTime?: Date;\n  onTimeChange?: (time: Date) => void;\n  dateFormatOptions?: Intl.DateTimeFormatOptions;\n  timeFormatOptions?: Intl.DateTimeFormatOptions;\n};\n\nexport const RelativeTime = ({\n  time: controlledTime,\n  defaultTime = new Date(),\n  onTimeChange,\n  dateFormatOptions,\n  timeFormatOptions,\n  className,\n  ...props\n}: RelativeTimeProps) => {\n  const [time, setTime] = useControllableState<Date>({\n    defaultProp: defaultTime,\n    prop: controlledTime,\n    onChange: onTimeChange,\n  });\n  const rootRef = useRef<HTMLDivElement>(null);\n  const [isVisible, setIsVisible] = useState(false);\n\n  useEffect(() => {\n    if (controlledTime) {\n      return;\n    }\n\n    const root = rootRef.current;\n    let isIntersecting = false;\n    const updateVisibility = () => {\n      setIsVisible(\n        isIntersecting && document.visibilityState === \"visible\"\n      );\n    };\n    const observer =\n      root && typeof IntersectionObserver !== \"undefined\"\n        ? new IntersectionObserver(([entry]) => {\n            isIntersecting = entry?.isIntersecting ?? false;\n            updateVisibility();\n          })\n        : null;\n\n    if (root && observer) {\n      observer.observe(root);\n    } else {\n      isIntersecting = true;\n      updateVisibility();\n    }\n\n    document.addEventListener(\"visibilitychange\", updateVisibility);\n\n    return () => {\n      observer?.disconnect();\n      document.removeEventListener(\"visibilitychange\", updateVisibility);\n    };\n  }, [controlledTime]);\n\n  useEffect(() => {\n    if (controlledTime || !isVisible) {\n      return;\n    }\n\n    setTime(new Date());\n    const interval = setInterval(() => {\n      setTime(new Date());\n    }, 1000);\n\n    return () => clearInterval(interval);\n  }, [setTime, controlledTime, isVisible]);\n\n  return (\n    <RelativeTimeContext.Provider\n      value={{\n        time: time ?? defaultTime,\n        dateFormatOptions,\n        timeFormatOptions,\n      }}\n    >\n      <div className={cn(\"grid gap-2\", className)} ref={rootRef} {...props} />\n    </RelativeTimeContext.Provider>\n  );\n};\n\nexport type RelativeTimeZoneProps = HTMLAttributes<HTMLDivElement> & {\n  zone: string;\n  dateFormatOptions?: Intl.DateTimeFormatOptions;\n  timeFormatOptions?: Intl.DateTimeFormatOptions;\n};\n\nexport type RelativeTimeZoneContextType = {\n  zone: string;\n  dateFormatOptions?: Intl.DateTimeFormatOptions;\n  timeFormatOptions?: Intl.DateTimeFormatOptions;\n};\n\nconst RelativeTimeZoneContext = createContext<RelativeTimeZoneContextType>({\n  zone: \"UTC\",\n});\n\nexport const RelativeTimeZone = ({\n  zone,\n  dateFormatOptions,\n  timeFormatOptions,\n  className,\n  ...props\n}: RelativeTimeZoneProps) => (\n  <RelativeTimeZoneContext.Provider\n    value={{ zone, dateFormatOptions, timeFormatOptions }}\n  >\n    <div\n      className={cn(\n        \"flex items-center justify-between gap-1.5 text-xs\",\n        className\n      )}\n      {...props}\n    />\n  </RelativeTimeZoneContext.Provider>\n);\n\nexport type RelativeTimeZoneDisplayProps = HTMLAttributes<HTMLDivElement>;\n\nexport const RelativeTimeZoneDisplay = ({\n  className,\n  ...props\n}: RelativeTimeZoneDisplayProps) => {\n  const { time, timeFormatOptions } = useContext(RelativeTimeContext);\n  const { zone, timeFormatOptions: zoneFormatOptions } = useContext(\n    RelativeTimeZoneContext\n  );\n  const display = formatTime(\n    time,\n    zone,\n    zoneFormatOptions ?? timeFormatOptions\n  );\n\n  return (\n    <div\n      className={cn(\"ps-8 text-muted-foreground tabular-nums\", className)}\n      {...props}\n    >\n      {display}\n    </div>\n  );\n};\n\nexport type RelativeTimeZoneDateProps = HTMLAttributes<HTMLDivElement>;\n\nexport const RelativeTimeZoneDate = ({\n  className,\n  ...props\n}: RelativeTimeZoneDateProps) => {\n  const { time, dateFormatOptions } = useContext(RelativeTimeContext);\n  const { zone, dateFormatOptions: zoneFormatOptions } = useContext(\n    RelativeTimeZoneContext\n  );\n  const display = formatDate(\n    time,\n    zone,\n    zoneFormatOptions ?? dateFormatOptions\n  );\n\n  return (\n    <div className={className} {...props}>\n      {display}\n    </div>\n  );\n};\n\nexport type RelativeTimeZoneLabelProps = HTMLAttributes<HTMLDivElement>;\n\nexport const RelativeTimeZoneLabel = ({\n  className,\n  ...props\n}: RelativeTimeZoneLabelProps) => (\n  <div\n    className={cn(\n      \"flex h-4 items-center justify-center rounded-xs bg-secondary px-1.5 font-mono\",\n      className\n    )}\n    {...props}\n  />\n);\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/relative-time.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "time",
+        "timezone",
+        "clock"
+      ],
+      "renderer": "dom",
+      "preview": "previews/kibo-relative-time.tsx",
+      "source": {
+        "project": "Kibo UI",
+        "repository": "https://github.com/shadcnblocks/kibo",
+        "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kibo-relative-time/index.tsx",
+            "upstreamPath": "packages/relative-time/index.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/relative-time/index.tsx",
+            "upstreamSha256": "sha256:97de2ca519b61e7088f5062f13eb8b01f5aeafcb9ce6b81b142f0d0b9c854597",
+            "contentSha256": "sha256:1fbd2f0e5fa0e7656028dfdaa4e77b8a221b8df614cf3d6e101a5df3e9c25f08",
+            "changes": [
+              "Paused the live clock while its root is offscreen or the document is hidden and replaced left padding with logical inline-start padding.",
+              "Merged formatting options with the requested timezone and applied per-zone format overrides instead of leaking them to the DOM.",
+              "Applied the RelativeTimeZoneDate className instead of silently discarding it."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/relative-time/index.tsx",
+        "copyright": [
+          "Copyright (c) 2023 — Present shadcnblocks"
+        ],
+        "evidence": {
+          "upstreamPath": "license.md",
+          "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+          "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+          "localPath": "registry/sources/kibo-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kibo-relative-time/index.tsx",
+          "change": "Observed root and document visibility before running the live clock, changed its spacing to a logical utility, made formatting options honor each zone without leaking props to the DOM, and applied the date display className.",
+          "reason": "Prevent continuous work while hidden or offscreen, preserve spacing in right-to-left layouts, and make the documented formatting and styling API behave consistently."
+        }
+      ],
+      "dedupe": {
+        "family": "multi-zone-relative-time",
+        "sourceHash": "sha256:b0073184d39ae1f722c025735c52aaec0389018cd2830296c92bc2f89f84637b",
+        "contentHash": "sha256:9bd4591830e3e21dc8f5aa4681189b23657be82d314457ff4c72f2394a4e7904",
+        "structureHash": "sha256:974796ce97a3b5ea7fe0ef52aeb77b4a31f1bf9cf5e72a9df8b92d59533698b0"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

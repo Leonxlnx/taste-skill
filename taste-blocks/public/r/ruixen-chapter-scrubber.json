@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ruixen-chapter-scrubber",
+  "title": "Ruixen Chapter Scrubber",
+  "author": "Ruixen UI",
+  "description": "Navigates a caller-provided chapter list through a compact magnifying rail with a contextual preview.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.23.25",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ruixen-ui/components/ruixen-chapter-scrubber/index.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  motion,\n  useMotionValue,\n  useReducedMotion,\n  useSpring,\n  useTransform,\n  type MotionValue,\n} from \"motion/react\";\nimport { cn } from \"../shared/ruixen-utils\";\n\nexport interface Chapter {\n  /** Stable, unique identifier for the chapter. */\n  id: string;\n  /** Bold heading shown at the top of the preview card. */\n  title: string;\n  /** Supporting copy shown under the title (clamped to three lines). */\n  description?: React.ReactNode;\n  /** Small muted label rendered above the title (e.g. a timestamp or step no.). */\n  meta?: React.ReactNode;\n}\n\nexport interface ChapterScrubberProps {\n  /** Chapters rendered top-to-bottom, one uniform tick each. */\n  chapters: Chapter[];\n  /** Which side the preview card opens toward. Auto-flips near a viewport edge. Default `\"right\"`. */\n  side?: \"left\" | \"right\";\n  /** Length a tick reaches at the crest of the magnification, in pixels. Default `56`. */\n  peakLength?: number;\n  /** Resting length of every tick, in pixels. Keep it small. Default `14`. */\n  restLength?: number;\n  /** Height of each row in pixels; the gap between ticks. Smaller = denser. Default `10`. */\n  rowHeight?: number;\n  /** Radius of the magnification wave, in rows — how far the rise reaches from the pointer. Default `4`. */\n  radius?: number;\n  /** Marks one chapter as the persistent \"current\" position (e.g. where an agent is now). */\n  currentIndex?: number;\n  /** Fires when the active (hovered/focused) chapter changes. */\n  onActiveChange?: (chapter: Chapter | null, index: number) => void;\n  /** Fires when a chapter is chosen via click, Enter or Space. */\n  onSelect?: (chapter: Chapter, index: number) => void;\n  /** Accessible name for the rail. Default `\"Chapters\"`. */\n  label?: string;\n  className?: string;\n}\n\nconst CARD_WIDTH = 260;\nconst GAP = 20;\n// Tight, near-critically-damped spring: tracks the cursor with almost no lag\n// and never overshoots — the wave feels attached to the pointer.\nconst POINTER_SPRING = { stiffness: 700, damping: 52, mass: 0.5 };\n// Softer spring for the rise/settle so the wave swells and relaxes gracefully.\nconst STRENGTH_SPRING = { stiffness: 260, damping: 30, mass: 0.6 };\n\nfunction clamp(value: number, min: number, max: number) {\n  return Math.min(Math.max(value, min), max);\n}\n\n// Raised-cosine bump: 1 at the crest, 0 beyond the radius, with zero slope at\n// both ends so the wave has no seams — the source of the buttery falloff.\nfunction bump(distance: number, radius: number) {\n  if (distance >= radius) return 0;\n  return 0.5 * (1 + Math.cos(Math.PI * (distance / radius)));\n}\n\ninterface TickProps {\n  index: number;\n  pointer: MotionValue<number>;\n  strength: MotionValue<number>;\n  radius: number;\n  restLength: number;\n  peakLength: number;\n  isCurrent: boolean;\n  origin: \"left\" | \"right\";\n}\n\nconst Tick = React.memo(function Tick({\n  index,\n  pointer,\n  strength,\n  radius,\n  restLength,\n  peakLength,\n  isCurrent,\n  origin,\n}: TickProps) {\n  const transform = useTransform(() => {\n    const rise = strength.get() * bump(Math.abs(index - pointer.get()), radius);\n    const length = restLength + rise * (peakLength - restLength);\n    return `scale(${length / peakLength}, ${1 + rise * 0.4})`;\n  });\n  const opacity = useTransform(() => {\n    const rise = strength.get() * bump(Math.abs(index - pointer.get()), radius);\n    const base = isCurrent ? 0.55 : 0.22;\n    return base + rise * (1 - base);\n  });\n  return (\n    <motion.span\n      aria-hidden=\"true\"\n      style={{\n        width: peakLength,\n        opacity,\n        transform,\n        transformOrigin: `${origin} center`,\n      }}\n      className={cn(\n        \"block h-[2px] rounded-full\",\n        isCurrent ? \"bg-primary\" : \"bg-foreground\",\n      )}\n    />\n  );\n});\n\nexport function ChapterScrubber({\n  chapters,\n  side = \"right\",\n  peakLength = 56,\n  restLength = 14,\n  rowHeight = 10,\n  radius = 4,\n  currentIndex,\n  onActiveChange,\n  onSelect,\n  label = \"Chapters\",\n  className,\n}: ChapterScrubberProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const containerRef = React.useRef<HTMLDivElement>(null);\n  const listRef = React.useRef<HTMLDivElement>(null);\n  const cardRef = React.useRef<HTMLDivElement>(null);\n  const buttonsRef = React.useRef<Array<HTMLButtonElement | null>>([]);\n  // Namespaced so option ids stay unique across instances and don't depend on\n  // chapter.id being a valid, collision-free DOM id.\n  const baseId = React.useId();\n  const optionId = (index: number) => `${baseId}-opt-${index}`;\n\n  const rawPointer = useMotionValue(0);\n  const rawStrength = useMotionValue(0);\n  const springPointer = useSpring(rawPointer, POINTER_SPRING);\n  const springStrength = useSpring(rawStrength, STRENGTH_SPRING);\n  // Reduced motion: drop the temporal easing but keep the spatial wave, so the\n  // rise is instant rather than sprung.\n  const pointer = prefersReducedMotion ? rawPointer : springPointer;\n  const strength = prefersReducedMotion ? rawStrength : springStrength;\n\n  const [activeIndex, setActiveIndex] = React.useState(0);\n  const [engaged, setEngaged] = React.useState(false);\n  const [flipped, setFlipped] = React.useState(false);\n  const [cardHeight, setCardHeight] = React.useState(0);\n  const hoveringRef = React.useRef(false);\n  const focusedRef = React.useRef<number | null>(null);\n  const activeRef = React.useRef(0);\n\n  const safePeakLength = Math.max(1, peakLength);\n  const safeRestLength = clamp(restLength, 0, safePeakLength);\n  const safeRowHeight = Math.max(1, rowHeight);\n  const safeRadius = Math.max(0.01, radius);\n\n  const commitActive = React.useCallback((index: number) => {\n    if (index !== activeRef.current) {\n      activeRef.current = index;\n      setActiveIndex(index);\n    }\n  }, []);\n\n  const last = chapters.length - 1;\n\n  React.useEffect(() => {\n    onActiveChange?.(\n      engaged ? (chapters[activeIndex] ?? null) : null,\n      engaged ? activeIndex : -1,\n    );\n  }, [engaged, activeIndex, chapters, onActiveChange]);\n\n  // Measure the card so its vertical travel can be clamped to the rail.\n  React.useEffect(() => {\n    if (cardRef.current) setCardHeight(cardRef.current.offsetHeight);\n  }, [activeIndex]);\n\n  // Flip toward the roomier side if the card would spill past the viewport.\n  React.useEffect(() => {\n    if (!engaged) return;\n    const el = containerRef.current;\n    if (!el) return;\n    const rect = el.getBoundingClientRect();\n    const vw = el.ownerDocument.defaultView?.innerWidth ?? 0;\n    const need = CARD_WIDTH + GAP + 8;\n    let useRight = side === \"right\";\n    if (useRight && vw - rect.right < need && rect.left >= need)\n      useRight = false;\n    if (!useRight && rect.left < need && vw - rect.right >= need)\n      useRight = true;\n    setFlipped(useRight !== (side === \"right\"));\n  }, [engaged, activeIndex, side]);\n\n  const resolvedSide =\n    side === \"right\"\n      ? flipped\n        ? \"left\"\n        : \"right\"\n      : flipped\n        ? \"right\"\n        : \"left\";\n\n  const totalHeight = chapters.length * safeRowHeight;\n  // Exactly one tick is tabbable at a time (roving tabindex).\n  const rovingIndex =\n    last < 0 ? 0 : clamp(engaged ? activeIndex : (currentIndex ?? 0), 0, last);\n\n  const cardTransform = useTransform(() => {\n    const half = cardHeight / 2;\n    const center = clamp(\n      (pointer.get() + 0.5) * safeRowHeight,\n      half,\n      Math.max(half, totalHeight - half),\n    );\n    const y = center - half;\n    const progress = strength.get();\n    const x = (resolvedSide === \"right\" ? -6 : 6) * (1 - progress);\n    const scale = 0.97 + progress * 0.03;\n    return `translate3d(${x}px, ${y}px, 0) scale(${scale})`;\n  });\n\n  const engageAt = (pointerRow: number, activeAt: number) => {\n    if (last < 0) return;\n    rawPointer.set(pointerRow);\n    rawStrength.set(1);\n    commitActive(clamp(activeAt, 0, last));\n    if (!engaged) setEngaged(true);\n  };\n\n  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {\n    const el = listRef.current;\n    if (!el) return;\n    const rect = el.getBoundingClientRect();\n    const row = (event.clientY - rect.top) / safeRowHeight - 0.5;\n    hoveringRef.current = true;\n    engageAt(clamp(row, -0.5, last + 0.5), Math.round(row));\n  };\n\n  const handlePointerLeave = () => {\n    hoveringRef.current = false;\n    if (focusedRef.current != null) {\n      rawPointer.set(focusedRef.current);\n    } else {\n      rawStrength.set(0);\n      setEngaged(false);\n    }\n  };\n\n  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {\n    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {\n      focusedRef.current = null;\n      if (!hoveringRef.current) {\n        rawStrength.set(0);\n        setEngaged(false);\n      }\n    }\n  };\n\n  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {\n    if (last < 0) return;\n    let next = focusedRef.current ?? activeRef.current;\n    switch (event.key) {\n      case \"ArrowDown\":\n      case \"ArrowRight\":\n        next = Math.min(last, next + 1);\n        break;\n      case \"ArrowUp\":\n      case \"ArrowLeft\":\n        next = Math.max(0, next - 1);\n        break;\n      case \"Home\":\n        next = 0;\n        break;\n      case \"End\":\n        next = last;\n        break;\n      default:\n        return;\n    }\n    event.preventDefault();\n    rawPointer.set(next);\n    rawStrength.set(1);\n    springPointer.jump(next);\n    springStrength.jump(1);\n    commitActive(next);\n    buttonsRef.current[next]?.focus();\n  };\n\n  return (\n    <div\n      ref={containerRef}\n      style={{ width: safePeakLength }}\n      className={cn(\"relative\", className)}\n    >\n      <div\n        ref={listRef}\n        role=\"listbox\"\n        aria-label={label}\n        aria-orientation=\"vertical\"\n        className=\"flex w-full flex-col\"\n        onPointerMove={handlePointerMove}\n        onPointerLeave={handlePointerLeave}\n        onPointerCancel={handlePointerLeave}\n        onKeyDown={handleKeyDown}\n        onBlur={handleBlur}\n      >\n        {chapters.map((chapter, index) => {\n          const isCurrent = index === currentIndex;\n          const descText =\n            typeof chapter.description === \"string\"\n              ? `. ${chapter.description}`\n              : \"\";\n          return (\n            <button\n              ref={(el) => {\n                buttonsRef.current[index] = el;\n              }}\n              key={chapter.id}\n              id={optionId(index)}\n              type=\"button\"\n              role=\"option\"\n              aria-selected={isCurrent}\n              aria-label={`${chapter.title}${descText}`}\n              tabIndex={index === rovingIndex ? 0 : -1}\n              onFocus={() => {\n                focusedRef.current = index;\n                engageAt(index, index);\n              }}\n              onClick={() => onSelect?.(chapter, index)}\n              style={{ height: safeRowHeight }}\n              className={cn(\n                \"flex w-full items-center rounded-sm outline-none\",\n                \"focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring\",\n                resolvedSide === \"left\" ? \"justify-end\" : \"justify-start\",\n              )}\n            >\n              <Tick\n                index={index}\n                pointer={pointer}\n                strength={strength}\n                radius={safeRadius}\n                restLength={safeRestLength}\n                peakLength={safePeakLength}\n                isCurrent={isCurrent}\n                origin={resolvedSide === \"right\" ? \"left\" : \"right\"}\n              />\n            </button>\n          );\n        })}\n      </div>\n\n      {chapters[activeIndex] ? (\n        <motion.div\n          ref={cardRef}\n          aria-hidden=\"true\"\n          style={{\n            top: 0,\n            transform: cardTransform,\n            opacity: strength,\n            ...(resolvedSide === \"right\"\n              ? { left: safePeakLength + GAP }\n              : { right: safePeakLength + GAP }),\n          }}\n          className={cn(\n            \"pointer-events-none absolute z-10 w-[260px] rounded-2xl border border-border bg-popover px-4 py-3.5 text-popover-foreground\",\n            \"shadow-[0_2px_6px_-2px_rgba(0,0,0,0.08),0_16px_36px_-12px_rgba(0,0,0,0.22)]\",\n            resolvedSide === \"right\" ? \"origin-left\" : \"origin-right\",\n          )}\n        >\n          {chapters[activeIndex].meta ? (\n            <div className=\"mb-1 text-xs font-medium tabular-nums text-muted-foreground\">\n              {chapters[activeIndex].meta}\n            </div>\n          ) : null}\n          <div className=\"truncate text-sm font-semibold leading-snug tracking-[-0.01em]\">\n            {chapters[activeIndex].title}\n          </div>\n          {chapters[activeIndex].description ? (\n            <p className=\"mt-1 line-clamp-3 text-sm leading-relaxed text-muted-foreground\">\n              {chapters[activeIndex].description}\n            </p>\n          ) : null}\n        </motion.div>\n      ) : null}\n    </div>\n  );\n}\n\nexport default ChapterScrubber;\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/chapter-scrubber/index.tsx"
+    },
+    {
+      "path": "registry/sources/ruixen-ui/components/shared/ruixen-utils.ts",
+      "content": "import clsx, { type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "chapters",
+        "scrubber",
+        "listbox",
+        "roving-focus",
+        "reduced-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/ruixen-chapter-scrubber.tsx",
+      "source": {
+        "project": "Ruixen UI",
+        "repository": "https://github.com/ruixenui/ruixen.com",
+        "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ruixen-chapter-scrubber/index.tsx",
+            "upstreamPath": "registry/ruixenui/chapter-scrubber.tsx",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/chapter-scrubber.tsx",
+            "upstreamSha256": "sha256:98cac777bc0b7536938c0ea0fcde1d6d1ffa67010ccd458a2e039ee989a9b5df",
+            "contentSha256": "sha256:ee876a69cbac1883daa59c05ff790044c7ee070fb65824ec5da36fe0ffbd2031",
+            "changes": [
+              "Repointed the source utility import to the copied Ruixen utility subset.",
+              "Bounded caller geometry and the roving focus index, and added pointer cancellation handling.",
+              "Replaced animated width, top, and motion shorthand updates with origin-aware transform strings and made repeated keyboard navigation settle immediately."
+            ]
+          },
+          {
+            "shippedPath": "components/shared/ruixen-utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+            "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+            "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+            "changes": [
+              "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/ruixenui/chapter-scrubber.tsx and the cn subset of lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 Ruixen UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+          "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+          "localPath": "registry/sources/ruixen-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ruixen-chapter-scrubber/index.tsx",
+          "change": "Moved all continuous visual movement to origin-aware transform strings, bounded dynamic inputs, and made arrow-key traversal immediate.",
+          "reason": "Preserve the source magnifying-rail interaction while avoiding layout animation, keyboard lag, invalid geometry, and stale pointer state."
+        },
+        {
+          "shippedPath": "components/shared/ruixen-utils.ts",
+          "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+          "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "magnifying-chapter-rail",
+        "sourceHash": "sha256:e41b368548c266854d8fccd9820e53e52bd2340b22dfcec03435e9e33d72c006",
+        "contentHash": "sha256:642c24203f451dd09e87f53652a30c54a1ea075a3ecdd40fb46613a8b6f150e7",
+        "structureHash": "sha256:ee06f715217ac5294d5c4a1ed98102aa8672e46c983cb050031e50f81536e5f7"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

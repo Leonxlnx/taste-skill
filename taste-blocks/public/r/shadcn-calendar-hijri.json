@@ -1,0 +1,157 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-calendar-hijri",
+  "title": "Hijri Calendar",
+  "author": "shadcn",
+  "description": "Renders a reusable RTL Hijri calendar with a self-hosted Arabic typeface.",
+  "dependencies": [
+    "@fontsource-variable/vazirmatn@5.3.0",
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.474.0",
+    "radix-ui@1.4.3",
+    "react-day-picker@9.8.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/shadcn-calendar-hijri/calendar-hijri.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport \"@fontsource-variable/vazirmatn\"\nimport {\n  ChevronDownIcon,\n  ChevronLeftIcon,\n  ChevronRightIcon,\n} from \"lucide-react\"\nimport { getDefaultClassNames, type DayButton } from \"react-day-picker\"\nimport { DayPicker } from \"react-day-picker/persian\"\n\nimport { cn } from \"../lib/utils\"\nimport { Button, buttonVariants } from \"../radix-nova/button\"\n\nexport function HijriCalendar({\n  className,\n  classNames,\n  showOutsideDays = true,\n  captionLayout = \"label\",\n  buttonVariant = \"ghost\",\n  dir = \"rtl\",\n  formatters,\n  components,\n  style,\n  ...props\n}: React.ComponentProps<typeof DayPicker> & {\n  buttonVariant?: React.ComponentProps<typeof Button>[\"variant\"]\n}) {\n  const defaultClassNames = getDefaultClassNames()\n\n  return (\n    <DayPicker\n      showOutsideDays={showOutsideDays}\n      className={cn(\n        \"group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent\",\n        String.raw`rtl:**:[.rdp-button\\_next>svg]:rotate-180`,\n        String.raw`rtl:**:[.rdp-button\\_previous>svg]:rotate-180`,\n        className,\n      )}\n      captionLayout={captionLayout}\n      dir={dir}\n      style={{ fontFamily: \"Vazirmatn, sans-serif\", ...style }}\n      formatters={{\n        formatMonthDropdown: (date) =>\n          date.toLocaleString(\"default\", { month: \"short\" }),\n        ...formatters,\n      }}\n      classNames={{\n        root: cn(\"w-fit\", defaultClassNames.root),\n        months: cn(\n          \"relative flex flex-col gap-4 md:flex-row\",\n          defaultClassNames.months,\n        ),\n        month: cn(\"flex w-full flex-col gap-4\", defaultClassNames.month),\n        nav: cn(\n          \"absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1\",\n          defaultClassNames.nav,\n        ),\n        button_previous: cn(\n          buttonVariants({ variant: buttonVariant }),\n          \"size-(--cell-size) p-0 select-none aria-disabled:opacity-50\",\n          defaultClassNames.button_previous,\n        ),\n        button_next: cn(\n          buttonVariants({ variant: buttonVariant }),\n          \"size-(--cell-size) p-0 select-none aria-disabled:opacity-50\",\n          defaultClassNames.button_next,\n        ),\n        month_caption: cn(\n          \"flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)\",\n          defaultClassNames.month_caption,\n        ),\n        dropdowns: cn(\n          \"flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium\",\n          defaultClassNames.dropdowns,\n        ),\n        dropdown_root: cn(\n          \"relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50\",\n          defaultClassNames.dropdown_root,\n        ),\n        dropdown: cn(\"absolute inset-0 opacity-0\", defaultClassNames.dropdown),\n        caption_label: cn(\n          \"font-medium select-none\",\n          captionLayout === \"label\"\n            ? \"text-sm\"\n            : \"flex h-8 items-center gap-1 rounded-md pe-1 ps-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground\",\n          defaultClassNames.caption_label,\n        ),\n        month_grid: cn(\"w-full border-collapse\", defaultClassNames.month_grid),\n        weekdays: cn(\"flex\", defaultClassNames.weekdays),\n        weekday: cn(\n          \"flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none\",\n          defaultClassNames.weekday,\n        ),\n        week: cn(\"mt-2 flex w-full\", defaultClassNames.week),\n        week_number_header: cn(\n          \"w-(--cell-size) select-none\",\n          defaultClassNames.week_number_header,\n        ),\n        week_number: cn(\n          \"text-[0.8rem] text-muted-foreground select-none\",\n          defaultClassNames.week_number,\n        ),\n        day: cn(\n          \"group/day relative aspect-square h-full w-full p-0 text-center select-none [&:first-child[data-selected=true]_button]:rounded-s-md [&:last-child[data-selected=true]_button]:rounded-e-md\",\n          defaultClassNames.day,\n        ),\n        range_start: cn(\n          \"rounded-s-md bg-accent\",\n          defaultClassNames.range_start,\n        ),\n        range_middle: cn(\"rounded-none\", defaultClassNames.range_middle),\n        range_end: cn(\"rounded-e-md bg-accent\", defaultClassNames.range_end),\n        today: cn(\n          \"rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none\",\n          defaultClassNames.today,\n        ),\n        outside: cn(\n          \"text-muted-foreground aria-selected:text-muted-foreground\",\n          defaultClassNames.outside,\n        ),\n        disabled: cn(\n          \"text-muted-foreground opacity-50\",\n          defaultClassNames.disabled,\n        ),\n        hidden: cn(\"invisible\", defaultClassNames.hidden),\n        ...classNames,\n      }}\n      components={{\n        Root: ({ className, rootRef, ...props }) => {\n          return (\n            <div\n              data-slot=\"calendar\"\n              ref={rootRef}\n              className={cn(className)}\n              {...props}\n            />\n          )\n        },\n        Chevron: ({ className, orientation, ...props }) => {\n          if (orientation === \"left\") {\n            return (\n              <ChevronLeftIcon className={cn(\"size-4\", className)} {...props} />\n            )\n          }\n\n          if (orientation === \"right\") {\n            return (\n              <ChevronRightIcon\n                className={cn(\"size-4\", className)}\n                {...props}\n              />\n            )\n          }\n\n          return (\n            <ChevronDownIcon className={cn(\"size-4\", className)} {...props} />\n          )\n        },\n        DayButton: CalendarDayButton,\n        WeekNumber: ({ children, ...props }) => {\n          return (\n            <td {...props}>\n              <div className=\"flex size-(--cell-size) items-center justify-center text-center\">\n                {children}\n              </div>\n            </td>\n          )\n        },\n        ...components,\n      }}\n      {...props}\n    />\n  )\n}\n\nfunction CalendarDayButton({\n  className,\n  day,\n  modifiers,\n  ...props\n}: React.ComponentProps<typeof DayButton>) {\n  const defaultClassNames = getDefaultClassNames()\n\n  const ref = React.useRef<HTMLButtonElement>(null)\n  React.useEffect(() => {\n    if (modifiers.focused) ref.current?.focus()\n  }, [modifiers.focused])\n\n  return (\n    <Button\n      ref={ref}\n      variant=\"ghost\"\n      size=\"icon\"\n      data-day={day.date.toLocaleDateString()}\n      data-selected-single={\n        modifiers.selected &&\n        !modifiers.range_start &&\n        !modifiers.range_end &&\n        !modifiers.range_middle\n      }\n      data-range-start={modifiers.range_start}\n      data-range-end={modifiers.range_end}\n      data-range-middle={modifiers.range_middle}\n      className={cn(\n        \"flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70\",\n        defaultClassNames.day,\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/shadcn-calendar-hijri/calendar-hijri.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/button.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none motion-reduce:transition-none motion-reduce:transform-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/80\",\n        outline:\n          \"border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground\",\n        ghost:\n          \"hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50\",\n        destructive:\n          \"bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean\n  }) {\n  const Comp = asChild ? Slot.Root : \"button\"\n\n  return (\n    <Comp\n      data-slot=\"button\"\n      data-variant={variant}\n      data-size={size}\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "calendar",
+        "hijri",
+        "rtl"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-calendar-hijri.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/shadcn-calendar-hijri/calendar-hijri.tsx",
+            "upstreamPath": "apps/v4/examples/radix/calendar-hijri.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/calendar-hijri.tsx",
+            "upstreamSha256": "sha256:54bca767380ca93ca6892cdef52d5233a6a3b4c498b5410fbd1d172c536f9f17",
+            "contentSha256": "sha256:14c2a635abad3b45a249c662e12c91777514f751a0bdd857d2a560df5f9e3be0",
+            "changes": [
+              "Changed utility and generated style imports to bundled relative paths.",
+              "Removed the Next-only Google font loader, self-hosted Vazirmatn through @fontsource-variable/vazirmatn, exported the existing generic calendar instead of the parameterless fixture, and defaulted direction and physical utilities to RTL-safe logical equivalents."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/button.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+            "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+            "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present.",
+              "Disabled transform transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/examples/radix/calendar-hijri.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE",
+          "registry/sources/shadcn-ui/Vazirmatn-OFL.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/shadcn-calendar-hijri/calendar-hijri.tsx",
+          "change": "Changed utility and generated style imports to bundled relative paths. Removed the Next-only Google font loader, self-hosted Vazirmatn through @fontsource-variable/vazirmatn, exported the existing generic calendar instead of the parameterless fixture, and defaulted direction and physical utilities to RTL-safe logical equivalents.",
+          "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+        },
+        {
+          "shippedPath": "components/radix-nova/button.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+          "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+          "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+        }
+      ],
+      "dedupe": {
+        "family": "hijri-calendar",
+        "sourceHash": "sha256:22f35460a5344e86fa1c3f073933269f0a330a40f9cc605157c5e389496619f6",
+        "contentHash": "sha256:4fb6a35e570baad0e790d350182136f6009b2e15305c7fb654b52f019b9865e2",
+        "structureHash": "sha256:0780c3a627c40af329652778bf677b5223a246944f390309d797c86fcfc9188e"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      },
+      "dependencyNotices": [
+        {
+          "dependency": "@fontsource-variable/vazirmatn@5.3.0",
+          "spdx": "OFL-1.1",
+          "copyright": [
+            "Copyright 2015 The Vazirmatn Project Authors (https://github.com/rastikerdar/vazirmatn)"
+          ],
+          "evidence": {
+            "repository": "https://github.com/fontsource/font-files",
+            "revision": "02b28c06b126c852a5b966b44aef777ca923f6f6",
+            "tarball": "https://registry.npmjs.org/@fontsource-variable/vazirmatn/-/vazirmatn-5.3.0.tgz",
+            "integrity": "sha512-ZA68W8JHbMdNzzwjYHUWKB2PH22QpxNEnk0ukcXM+XiqYMV6ZWJZAKuNXcrMR2JjuIAwsfAU3KknCXPI6wXUvw==",
+            "localPath": "registry/sources/shadcn-ui/Vazirmatn-OFL.txt",
+            "sha256": "sha256:e6f4ce7b6c830d5a25a4f8ac777c267cd7d3c180bc2a7150ca57cbb9b280c4b7"
+          }
+        }
+      ]
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

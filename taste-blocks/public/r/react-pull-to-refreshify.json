@@ -1,0 +1,252 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-pull-to-refreshify",
+  "title": "Pull to Refreshify",
+  "author": "liaoliao666",
+  "description": "Refreshes caller-owned content through a scroll-boundary-aware pull gesture or an explicit accessible action.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/PullToRefreshify.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useMemo, useRef, useState } from \"react\";\n\nimport type { PullStatus, PullToRefreshifyProps } from \"./types\";\nimport { Events } from \"./utils/events\";\nimport { getScrollTop } from \"./utils/getScrollTop\";\nimport { useDrag } from \"./utils/useDrag\";\nimport { useScrollParent } from \"./utils/useScrollParent\";\nimport { useUnmountedRef } from \"./utils/useUnmountedRef\";\nimport { useUpdateEffect } from \"./utils/useUpdateEffect\";\n\nconst visuallyHiddenStyle = {\n  position: \"absolute\",\n  width: 1,\n  height: 1,\n  padding: 0,\n  margin: -1,\n  overflow: \"hidden\",\n  clip: \"rect(0, 0, 0, 0)\",\n  whiteSpace: \"nowrap\",\n  border: 0,\n} as const;\n\nconst defaultLiveStatus: Record<PullStatus, string> = {\n  normal: \"\",\n  pulling: \"Pulling to refresh\",\n  canRelease: \"Release to refresh\",\n  refreshing: \"Refreshing\",\n  complete: \"Refresh complete\",\n};\n\nexport const PullToRefreshify = ({\n  className,\n  style,\n  animationDuration = 300,\n  completeDelay = 500,\n  refreshing = false,\n  headHeight = 50,\n  startDistance = 30,\n  resistance = 0.6,\n  threshold = headHeight,\n  onRefresh,\n  disabled = false,\n  prefixCls = \"pull-to-refreshify\",\n  refreshButtonLabel = \"Refresh\",\n  renderStatus,\n  renderText,\n  children,\n}: PullToRefreshifyProps) => {\n  const [pullRef, scrollParentRef] = useScrollParent(!disabled);\n  const unmountedRef = useUnmountedRef();\n  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const refreshRequestedRef = useRef(refreshing);\n  const [reducedMotion, setReducedMotion] = useState(false);\n  const [[offsetY, duration, status], setState] = useState<\n    [number, number, PullStatus]\n  >(\n    refreshing\n      ? [headHeight, animationDuration, \"refreshing\"]\n      : [0, 0, \"normal\"]\n  );\n\n  useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n\n    const media = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReducedMotion(media.matches);\n    update();\n    media.addEventListener(\"change\", update);\n    return () => media.removeEventListener(\"change\", update);\n  }, []);\n\n  useEffect(\n    () => () => {\n      if (completeTimerRef.current !== null) {\n        clearTimeout(completeTimerRef.current);\n      }\n    },\n    []\n  );\n\n  const dispatch = (nextStatus: PullStatus, dragOffsetY = 0) => {\n    if (completeTimerRef.current !== null) {\n      clearTimeout(completeTimerRef.current);\n      completeTimerRef.current = null;\n    }\n\n    switch (nextStatus) {\n      case \"pulling\":\n      case \"canRelease\":\n        setState([dragOffsetY, 0, nextStatus]);\n        break;\n\n      case \"refreshing\":\n        setState([headHeight, animationDuration, nextStatus]);\n        break;\n\n      case \"complete\":\n        setState([headHeight, animationDuration, nextStatus]);\n        if (unmountedRef.current) return;\n        completeTimerRef.current = setTimeout(() => {\n          completeTimerRef.current = null;\n          if (!unmountedRef.current && !refreshRequestedRef.current) {\n            setState([0, animationDuration, \"normal\"]);\n          }\n        }, Math.max(0, completeDelay));\n        break;\n\n      default:\n        setState([0, animationDuration, nextStatus]);\n    }\n  };\n\n  // Skip the first render\n  useUpdateEffect(() => {\n    if (refreshing) {\n      refreshRequestedRef.current = true;\n      dispatch(\"refreshing\");\n    } else {\n      refreshRequestedRef.current = false;\n      dispatch(\"complete\");\n    }\n  }, [refreshing]);\n\n  const triggerRefresh = () => {\n    if (\n      disabled ||\n      refreshing ||\n      refreshRequestedRef.current ||\n      (status !== \"normal\" && status !== \"canRelease\") ||\n      typeof onRefresh !== \"function\"\n    ) {\n      return;\n    }\n\n    refreshRequestedRef.current = true;\n    dispatch(\"refreshing\");\n    try {\n      onRefresh();\n    } catch (error) {\n      refreshRequestedRef.current = false;\n      dispatch(\"normal\");\n      throw error;\n    }\n  };\n\n  // Handle drag events\n  const dragRef = useDrag({\n    onDragMove: (event, { offsetX, offsetY: dragOffsetY }) => {\n      if (\n        // Not set onRefresh event\n        !onRefresh ||\n        // Pull up or continue a horizontal gesture\n        dragOffsetY <= 0 ||\n        Math.abs(dragOffsetY) <= Math.abs(offsetX) ||\n        // Not scrolled to top\n        getScrollTop(scrollParentRef.current) > 0 ||\n        // Refreshing state has been triggered\n        [\"refreshing\", \"complete\"].includes(status) ||\n        disabled\n      ) {\n        return false;\n      }\n\n      // Solve the bug that the low-end Android system only triggers the touchmove event once\n      if (!Events.isSupportsPassive() && event.cancelable) {\n        event.preventDefault();\n      }\n\n      const viewportHeight = Math.max(\n        typeof window === \"undefined\" ? 0 : window.innerHeight,\n        1\n      );\n      const ratio = Math.min(dragOffsetY / viewportHeight, 1);\n      const offset = Math.max(0, dragOffsetY * (1 - ratio) * resistance);\n\n      // Determine whether the condition for releasing immediate refresh is met\n      const action =\n        offset - startDistance < threshold ? \"pulling\" : \"canRelease\";\n\n      dispatch(action, offset);\n      return true;\n    },\n    onDragEnd: (_, { offsetY: dragOffsetY }) => {\n      if (!dragOffsetY) return;\n\n      if (disabled || status !== \"canRelease\") {\n        if (status === \"pulling\" || status === \"canRelease\") {\n          dispatch(\"normal\");\n        }\n        return;\n      }\n\n      triggerRefresh();\n    },\n    onDragCancel: () => {\n      if (status === \"pulling\" || status === \"canRelease\") {\n        dispatch(\"normal\");\n      }\n    },\n  });\n\n  let percent = 0;\n  if (offsetY >= startDistance) {\n    percent =\n      threshold > 0\n        ? ((offsetY - startDistance < threshold\n            ? offsetY - startDistance\n            : threshold) *\n            100) /\n          threshold\n        : 100;\n  }\n\n  const liveStatus = useMemo(\n    () => (renderStatus ? renderStatus(status) : defaultLiveStatus[status]),\n    [renderStatus, status]\n  );\n  const refreshUnavailable = disabled || refreshing || status !== \"normal\";\n  const transitionDuration = reducedMotion ? 0 : duration;\n\n  return (\n    <div\n      ref={dragRef}\n      aria-busy={status === \"refreshing\"}\n      aria-disabled={disabled || undefined}\n      className={className ? `${prefixCls} ${className}` : prefixCls}\n      style={{\n        minHeight: headHeight,\n        overflowY: \"hidden\",\n        touchAction: \"pan-y\",\n        ...style,\n      }}\n    >\n      <div\n        className={`${prefixCls}__controls`}\n        style={{\n          display: \"flex\",\n          justifyContent: \"flex-end\",\n          padding: \"0.5rem\",\n        }}\n      >\n        <button\n          type=\"button\"\n          className={`${prefixCls}__button`}\n          disabled={refreshUnavailable}\n          onClick={triggerRefresh}\n          style={{\n            minHeight: 44,\n            padding: \"0.625rem 0.875rem\",\n            border: \"1px solid currentColor\",\n            borderRadius: \"0.5rem\",\n            background: \"transparent\",\n            color: \"inherit\",\n            cursor: refreshUnavailable ? \"not-allowed\" : \"pointer\",\n            font: \"inherit\",\n            opacity: refreshUnavailable ? 0.55 : 1,\n            touchAction: \"manipulation\",\n            whiteSpace: \"nowrap\",\n          }}\n        >\n          {refreshButtonLabel}\n        </button>\n      </div>\n      <div\n        ref={pullRef}\n        className={`${prefixCls}__content`}\n        style={{\n          willChange: \"transform\",\n          WebkitTransition: `transform ${transitionDuration}ms`,\n          transition: `transform ${transitionDuration}ms`,\n          WebkitTransform: `translate3d(0, ${offsetY}px, 0)`,\n          transform: `translate3d(0, ${offsetY}px, 0)`,\n        }}\n      >\n        <div\n          key={offsetY.toFixed(0)}\n          aria-hidden=\"true\"\n          className={`${prefixCls}__refresh`}\n          style={{\n            display: \"flex\",\n            alignItems: \"center\",\n            justifyContent: \"center\",\n            color: \"inherit\",\n            fontSize: \"14px\",\n            marginTop: -headHeight,\n            height: headHeight,\n          }}\n        >\n          {renderText(status, percent)}\n        </div>\n        <div className={`${prefixCls}__body`}>{children}</div>\n      </div>\n      <span\n        role=\"status\"\n        aria-live=\"polite\"\n        aria-atomic=\"true\"\n        style={visuallyHiddenStyle}\n      >\n        {liveStatus}\n      </span>\n    </div>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/pull-to-refreshify/index.tsx"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/types.ts",
+      "content": "import type { CSSProperties, ReactNode } from \"react\";\n\nexport type PullStatus =\n  | \"normal\"\n  | \"pulling\"\n  | \"canRelease\"\n  | \"refreshing\"\n  | \"complete\";\n\nexport interface PullToRefreshifyProps {\n  className?: string;\n  style?: CSSProperties;\n  /**\n   * Whether to display the refreshing status\n   */\n  refreshing?: boolean;\n  // Handler function when refresh triggered\n  onRefresh: () => void;\n  /**\n   * The time for the delay to disappear after completion, the unit is ms\n   */\n  completeDelay?: number;\n  /**\n   * The time for animation duration, the unit is ms\n   */\n  animationDuration?: number;\n  /**\n   * The height of the head prompt content area, the unit is px\n   */\n  headHeight?: number;\n  /**\n   * How far to start the pulling status, unit is px\n   */\n  startDistance?: number;\n  /**\n   * How far to pull down to trigger refresh, unit is px\n   */\n  threshold?: number;\n  /**\n   * Scale of difficulty to pull down\n   */\n  resistance?: number;\n  /**\n   * Whether the PullToRefresh is disabled\n   */\n  disabled?: boolean;\n  /**\n   * Customize the pulling content according to the pulling status\n   */\n  renderText: (status: PullStatus, percent: number) => ReactNode;\n  /**\n   * Customize the concise status announced when the pull state changes\n   */\n  renderStatus?: (status: PullStatus) => ReactNode;\n  /**\n   * Customize the visible non-gesture refresh action label\n   */\n  refreshButtonLabel?: ReactNode;\n  /**\n   * prefix class\n   */\n  prefixCls?: string;\n  children?: ReactNode;\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/pull-to-refreshify/types.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/events.ts",
+      "content": "let supportsPassive: boolean | undefined;\n\nconst detectPassiveSupport = () => {\n  if (supportsPassive !== undefined) return supportsPassive;\n\n  if (typeof window === \"undefined\") return false;\n  supportsPassive = false;\n\n  const listener = () => {};\n  try {\n    const options = Object.defineProperty({}, \"passive\", {\n      get() {\n        supportsPassive = true;\n      },\n    });\n    window.addEventListener(\"test\", listener, options);\n    window.removeEventListener(\"test\", listener, options);\n  } catch {\n    // Passive event options are optional.\n  }\n\n  return supportsPassive;\n};\n\nexport const Events = {\n  isSupportsPassive: detectPassiveSupport,\n  on(\n    el: Element | Window | Document,\n    type: string,\n    callback: EventListener,\n    options: AddEventListenerOptions | boolean = { passive: false }\n  ) {\n    el.addEventListener(\n      type,\n      callback,\n      detectPassiveSupport() ? options : false\n    );\n  },\n\n  off(\n    el: Element | Window | Document,\n    type: string,\n    callback: EventListener,\n    options: AddEventListenerOptions | boolean = { passive: false }\n  ) {\n    el.removeEventListener(\n      type,\n      callback,\n      detectPassiveSupport() ? options : false\n    );\n  },\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/events.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/getScrollTop.ts",
+      "content": "export type ScrollParent = Element | Window;\n\n/**\n * get element scroll top\n */\nexport const getScrollTop = (ele: ScrollParent | null): number => {\n  if (\n    !ele ||\n    typeof window === \"undefined\" ||\n    typeof document === \"undefined\"\n  ) {\n    return 0;\n  }\n\n  if (\n    ele === window ||\n    ele === document.documentElement ||\n    ele === document.body ||\n    ele === document.scrollingElement\n  ) {\n    return Math.max(\n      0,\n      window.scrollY,\n      document.documentElement.scrollTop,\n      document.body.scrollTop\n    );\n  }\n\n  return Math.max(0, (ele as Element).scrollTop);\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/getScrollTop.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useDrag.ts",
+      "content": "import { useEffect, useRef } from \"react\";\n\nimport { Events } from \"./events\";\nimport { useLatest } from \"./useLatest\";\n\nexport interface DragState {\n  startX: number;\n  startY: number;\n  offsetX: number;\n  offsetY: number;\n}\n\nconst initialDragState: DragState = {\n  startX: 0,\n  startY: 0,\n  offsetX: 0,\n  offsetY: 0,\n};\n\nexport type DragEvent = globalThis.MouseEvent | TouchEvent;\n\nfunction isMouseEvent(event: DragEvent): event is globalThis.MouseEvent {\n  return !(\"touches\" in event);\n}\n\nexport const useDrag = ({\n  onDragStart,\n  onDragMove,\n  onDragEnd,\n  onDragCancel,\n}: {\n  onDragStart?: (event: DragEvent, dragState: DragState) => void;\n  onDragMove?: (event: DragEvent, dragState: DragState) => boolean;\n  onDragEnd?: (event: DragEvent, dragState: DragState) => void;\n  onDragCancel?: (event: Event, dragState: DragState) => void;\n}) => {\n  const ref = useRef<HTMLDivElement | null>(null);\n  const onDragStartRef = useLatest(onDragStart);\n  const onDragMoveRef = useLatest(onDragMove);\n  const onDragEndRef = useLatest(onDragEnd);\n  const onDragCancelRef = useLatest(onDragCancel);\n\n  useEffect(() => {\n    const dragEl = ref.current;\n\n    if (!dragEl || typeof window === \"undefined\") return;\n\n    let dragState: DragState = { ...initialDragState };\n    let isStart = false;\n\n    const initDragState = () => {\n      dragState = { ...initialDragState };\n    };\n\n    const handleDragStart = ((event: DragEvent) => {\n      if (isMouseEvent(event)) {\n        if (event.button !== 0) return;\n      } else if (event.touches.length !== 1) {\n        return;\n      }\n\n      isStart = true;\n      initDragState();\n      if (isMouseEvent(event)) {\n        dragState.startX = event.clientX;\n        dragState.startY = event.clientY;\n      } else {\n        const [touch] = event.touches;\n        dragState.startX = touch.pageX;\n        dragState.startY = touch.pageY;\n      }\n      onDragStartRef.current?.(event, dragState);\n    }) as EventListener;\n\n    const handleDragMove = ((event: DragEvent) => {\n      if (!isStart) return;\n\n      let currentX = 0;\n      let currentY = 0;\n\n      if (isMouseEvent(event)) {\n        currentX = event.clientX;\n        currentY = event.clientY;\n      } else {\n        const [touch] = event.touches;\n        if (!touch) return;\n        currentX = touch.pageX;\n        currentY = touch.pageY;\n      }\n\n      const state = {\n        ...dragState,\n        offsetX: currentX - dragState.startX,\n        offsetY: currentY - dragState.startY,\n      };\n\n      if (onDragMoveRef.current?.(event, state)) {\n        dragState = state;\n      }\n    }) as EventListener;\n\n    const handleDragEnd = ((event: DragEvent) => {\n      if (!isStart) return;\n      isStart = false;\n      onDragEndRef.current?.(event, dragState);\n      initDragState();\n    }) as EventListener;\n\n    const handleDragCancel = ((event: Event) => {\n      if (!isStart) return;\n      isStart = false;\n      onDragCancelRef.current?.(event, dragState);\n      initDragState();\n    }) as EventListener;\n\n    const handleVisibilityChange = () => {\n      if (document.visibilityState === \"hidden\") {\n        handleDragCancel(new Event(\"visibilitychange\"));\n      }\n    };\n\n    Events.on(dragEl, \"touchstart\", handleDragStart);\n    Events.on(dragEl, \"touchmove\", handleDragMove);\n    Events.on(dragEl, \"touchend\", handleDragEnd);\n    Events.on(dragEl, \"touchcancel\", handleDragCancel);\n    Events.on(dragEl, \"mousedown\", handleDragStart);\n    Events.on(window, \"mousemove\", handleDragMove);\n    Events.on(window, \"mouseup\", handleDragEnd);\n    Events.on(window, \"pointercancel\", handleDragCancel);\n    Events.on(window, \"blur\", handleDragCancel);\n    Events.on(document, \"visibilitychange\", handleVisibilityChange);\n\n    return () => {\n      Events.off(dragEl, \"touchstart\", handleDragStart);\n      Events.off(dragEl, \"touchmove\", handleDragMove);\n      Events.off(dragEl, \"touchend\", handleDragEnd);\n      Events.off(dragEl, \"touchcancel\", handleDragCancel);\n      Events.off(dragEl, \"mousedown\", handleDragStart);\n      Events.off(window, \"mousemove\", handleDragMove);\n      Events.off(window, \"mouseup\", handleDragEnd);\n      Events.off(window, \"pointercancel\", handleDragCancel);\n      Events.off(window, \"blur\", handleDragCancel);\n      Events.off(document, \"visibilitychange\", handleVisibilityChange);\n    };\n  }, [onDragCancelRef, onDragEndRef, onDragMoveRef, onDragStartRef]);\n\n  return ref;\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useDrag.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useFirstMountState.ts",
+      "content": "import { useRef } from \"react\";\n\nexport const useFirstMountState = (): boolean => {\n  const isFirst = useRef(true);\n\n  if (isFirst.current) {\n    isFirst.current = false;\n\n    return true;\n  }\n\n  return isFirst.current;\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useFirstMountState.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useLatest.ts",
+      "content": "import { useRef } from \"react\";\n\nexport const useLatest = <T>(value: T): { readonly current: T } => {\n  const ref = useRef(value);\n  ref.current = value;\n  return ref;\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useLatest.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useScrollParent.ts",
+      "content": "import { useEffect, useRef } from \"react\";\n\nimport { Events } from \"./events\";\nimport { getScrollTop } from \"./getScrollTop\";\nimport type { ScrollParent } from \"./getScrollTop\";\n\nconst getScrollParent = (node: Element | null): ScrollParent | null => {\n  if (\n    !node ||\n    typeof window === \"undefined\" ||\n    typeof document === \"undefined\"\n  ) {\n    return null;\n  }\n\n  let current: Element | null = node;\n  while (\n    current &&\n    current !== document.body &&\n    current !== document.documentElement\n  ) {\n    const computedStyle = window.getComputedStyle(current);\n    const canScroll = [computedStyle.overflowY, computedStyle.overflow].some(\n      (value) => [\"scroll\", \"auto\", \"overlay\"].includes(value)\n    );\n\n    if (canScroll && current.scrollHeight > current.clientHeight) {\n      return current;\n    }\n    current = current.parentElement;\n  }\n\n  return window;\n};\n\nexport const useScrollParent = (enabled = true) => {\n  const pullRef = useRef<HTMLDivElement | null>(null);\n  const scrollParentRef = useRef<ScrollParent | null>(null);\n\n  useEffect(() => {\n    if (typeof window === \"undefined\" || typeof document === \"undefined\") {\n      return;\n    }\n\n    let touchStartX: number | null = null;\n    let touchStartY: number | null = null;\n    let observedParent: Element | null = null;\n    let unbindScrollParentEvents = () => {};\n\n    const bindScrollParentEvents = (scrollParent: ScrollParent) => {\n      const handleTouchstart = ((event: TouchEvent) => {\n        const [touch] = event.touches;\n        if (!touch) return;\n        touchStartX = touch.pageX;\n        touchStartY = touch.pageY;\n      }) as EventListener;\n\n      const handleTouchmove = ((event: TouchEvent) => {\n        const [touch] = event.touches;\n        if (!touch || touchStartX === null || touchStartY === null) return;\n\n        const deltaX = touch.pageX - touchStartX;\n        const deltaY = touch.pageY - touchStartY;\n        if (\n          deltaY > 0 &&\n          Math.abs(deltaY) > Math.abs(deltaX) &&\n          event.cancelable &&\n          getScrollTop(scrollParent) === 0 &&\n          event.target &&\n          pullRef.current?.contains(event.target as Node)\n        ) {\n          event.preventDefault();\n        }\n      }) as EventListener;\n\n      const handleTouchend = (() => {\n        touchStartX = null;\n        touchStartY = null;\n      }) as EventListener;\n\n      Events.on(scrollParent, \"touchstart\", handleTouchstart);\n      Events.on(scrollParent, \"touchmove\", handleTouchmove);\n      Events.on(scrollParent, \"touchend\", handleTouchend);\n      Events.on(scrollParent, \"touchcancel\", handleTouchend);\n\n      return () => {\n        Events.off(scrollParent, \"touchstart\", handleTouchstart);\n        Events.off(scrollParent, \"touchmove\", handleTouchmove);\n        Events.off(scrollParent, \"touchend\", handleTouchend);\n        Events.off(scrollParent, \"touchcancel\", handleTouchend);\n      };\n    };\n\n    let resizeObserver: ResizeObserver | null = null;\n    const updateScrollParent = () => {\n      const nextScrollParent = getScrollParent(pullRef.current);\n      if (nextScrollParent === scrollParentRef.current) return;\n\n      unbindScrollParentEvents();\n      unbindScrollParentEvents = () => {};\n      scrollParentRef.current = nextScrollParent;\n\n      if (resizeObserver && observedParent) {\n        resizeObserver.unobserve(observedParent);\n      }\n      observedParent = nextScrollParent instanceof Element ? nextScrollParent : null;\n      if (resizeObserver && observedParent) {\n        resizeObserver.observe(observedParent);\n      }\n\n      if (enabled && nextScrollParent) {\n        unbindScrollParentEvents = bindScrollParentEvents(nextScrollParent);\n      }\n    };\n\n    if (typeof ResizeObserver !== \"undefined\") {\n      resizeObserver = new ResizeObserver(updateScrollParent);\n      if (pullRef.current) resizeObserver.observe(pullRef.current);\n    }\n\n    updateScrollParent();\n    window.addEventListener(\"resize\", updateScrollParent);\n    window.addEventListener(\"orientationchange\", updateScrollParent);\n\n    return () => {\n      unbindScrollParentEvents();\n      resizeObserver?.disconnect();\n      window.removeEventListener(\"resize\", updateScrollParent);\n      window.removeEventListener(\"orientationchange\", updateScrollParent);\n      scrollParentRef.current = null;\n    };\n  }, [enabled]);\n\n  return [pullRef, scrollParentRef] as const;\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useScrollParent.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useUnmountedRef.ts",
+      "content": "import { useRef, useEffect } from \"react\";\n\nexport const useUnmountedRef = () => {\n  const unmountedRef = useRef(false);\n  useEffect(() => {\n    unmountedRef.current = false;\n\n    return () => {\n      unmountedRef.current = true;\n    };\n  }, []);\n  return unmountedRef;\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useUnmountedRef.ts"
+    },
+    {
+      "path": "registry/sources/react-pull-to-refreshify/components/react-pull-to-refreshify/utils/useUpdateEffect.ts",
+      "content": "import { useEffect } from \"react\";\nimport { useFirstMountState } from \"./useFirstMountState\";\n\nexport const useUpdateEffect: typeof useEffect = (effect, deps) => {\n  const isFirstMount = useFirstMountState();\n\n  useEffect(() => {\n    if (!isFirstMount) {\n      return effect();\n    }\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, deps);\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/pull-to-refreshify/utils/useUpdateEffect.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "pull-to-refresh",
+        "touch",
+        "keyboard",
+        "controlled-state",
+        "accessibility"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-pull-to-refreshify.tsx",
+      "source": {
+        "project": "react-pull-to-refreshify@0.1.0",
+        "repository": "https://github.com/HuolalaTech/react-pull-to-refreshify",
+        "revision": "ed0bef5e2714a948450b78073cc1692706ecb705",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-pull-to-refreshify/PullToRefreshify.tsx",
+            "upstreamPath": "lib/PullToRefreshify.tsx",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/PullToRefreshify.tsx",
+            "upstreamSha256": "sha256:9f16ebf5017a4dc5c3b05234c84d2dae3a8ef05f871b052b8c17a1cf60a45311",
+            "contentSha256": "sha256:4628cee70713db3718076745d862a2eb3a2402361ce949f85b33c4920c3ca1b3",
+            "changes": [
+              "Added the client boundary, a visible native Refresh fallback that uses the same refresh dispatcher, pending and disabled state, aria-busy, and one polite atomic caller-owned status.",
+              "Retained the controlled refreshing and completion state machine while adding an immediate dispatch latch, cancellable completion timer, cancel reset, and synchronous callback error recovery.",
+              "Ignored horizontal and off-boundary drags, used the current viewport height for bounded resistance, and preserved an immediate threshold when threshold is zero.",
+              "Limited transitions to transform, removed them under reduced motion, marked the changing visual status presentation-only, and inherited its text color."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/types.ts",
+            "upstreamPath": "lib/types.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/types.ts",
+            "upstreamSha256": "sha256:36d1fd900bce22a57346b025b3173de34a02c1f8522fdec0f7e11b959212cee6",
+            "contentSha256": "sha256:7d5873175b78f94b5380c2388e8ff16071b7e880a8e799e337e2b8b9d0ce2019",
+            "changes": [
+              "Added optional refreshButtonLabel and renderStatus props without changing the existing required API."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/events.ts",
+            "upstreamPath": "lib/utils/events.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/events.ts",
+            "upstreamSha256": "sha256:c09a9cdfdf9d796a42aa296678da57aa1de847769efc6eae6e16a36633cf7699",
+            "contentSha256": "sha256:2e1620af9909ebeb73d7123463c8441f76560462c51d307acebfc36a8d5e4f8a",
+            "changes": [
+              "Deferred passive-listener detection until a browser event path calls it and removed the temporary detection listener."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/getScrollTop.ts",
+            "upstreamPath": "lib/utils/getScrollTop.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/getScrollTop.ts",
+            "upstreamSha256": "sha256:92107dec790ed4f9d153da1e508a74c2c0a7c0ab973e4d63f1564fe1a48c883f",
+            "contentSha256": "sha256:c7bd3a47a78803024e5782356d78a57c07b869cd23105439710abe33dbe91d8a",
+            "changes": [
+              "Accepted a not-yet-resolved scroll parent, guarded DOM globals for server evaluation, normalized page roots, and clamped overscroll bounce below zero."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useDrag.ts",
+            "upstreamPath": "lib/utils/useDrag.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useDrag.ts",
+            "upstreamSha256": "sha256:ac8a44907301e07a9a4fcfa9b55b52e358fe786a65ab6767e01c6f1972184027",
+            "contentSha256": "sha256:4df69f9fc9952f62d7ae6f109c51845cf9b444f63131b5b94681a72a85d68744",
+            "changes": [
+              "Typed native mouse events and the host ref, ignored secondary mouse and multi-touch starts, and added a distinct cancellation callback.",
+              "Captured mouse move and release on window, cancelled on touchcancel, pointercancel, blur, or hidden document state, and removed every global listener on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useFirstMountState.ts",
+            "upstreamPath": "lib/utils/useFirstMountState.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useFirstMountState.ts",
+            "upstreamSha256": "sha256:260a17893da244a80b3c33b3a440364379f3abc1f0afd22acac306f865bf1d52",
+            "contentSha256": "sha256:260a17893da244a80b3c33b3a440364379f3abc1f0afd22acac306f865bf1d52",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useLatest.ts",
+            "upstreamPath": "lib/utils/useLatest.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useLatest.ts",
+            "upstreamSha256": "sha256:345b32f81e76d53a610dbe58c37bcf80893e258b601484abba9ce299ff5a4c33",
+            "contentSha256": "sha256:345b32f81e76d53a610dbe58c37bcf80893e258b601484abba9ce299ff5a4c33",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useScrollParent.ts",
+            "upstreamPath": "lib/utils/useScrollParent.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useScrollParent.ts",
+            "upstreamSha256": "sha256:1e52f7f08a7e06ad138ecc82eb0a4d7d2412c18f88946fd33d0c9c91fdefbe89",
+            "contentSha256": "sha256:7c25017f9a0a281add4952f382630e06764d4ae678cb9f1739fa2bf80d5a6373",
+            "changes": [
+              "Removed server-time window initialization and resolved the nearest actually scrollable ancestor after mount.",
+              "Prevented native overscroll only for downward vertical pulls inside the content, skipped interception while disabled, re-resolved on resize or orientation and observed size changes, and cleaned every observer and listener."
+            ]
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useUnmountedRef.ts",
+            "upstreamPath": "lib/utils/useUnmountedRef.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useUnmountedRef.ts",
+            "upstreamSha256": "sha256:34877d719a6f33e029e062af3349e3ce06ab224e8980fb4ad66b99e1209356ac",
+            "contentSha256": "sha256:34877d719a6f33e029e062af3349e3ce06ab224e8980fb4ad66b99e1209356ac",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-pull-to-refreshify/utils/useUpdateEffect.ts",
+            "upstreamPath": "lib/utils/useUpdateEffect.ts",
+            "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useUpdateEffect.ts",
+            "upstreamSha256": "sha256:cc33909b86692d24bb35823c47e147622a2d37959eb1380358d87055420b79d9",
+            "contentSha256": "sha256:cc33909b86692d24bb35823c47e147622a2d37959eb1380358d87055420b79d9",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "lib/PullToRefreshify.tsx, lib/types.ts, and the complete lib/utils runtime closure",
+        "copyright": [
+          "Copyright (c) 2022 liaoliao666"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/LICENSE",
+          "sha256": "sha256:2e715229e1b2991263b1f47983df427a8225fae1609d47fb0c0fd1b3a3fb70bd",
+          "localPath": "registry/sources/react-pull-to-refreshify/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-pull-to-refreshify/PullToRefreshify.tsx",
+          "change": "Added the client boundary, explicit native refresh fallback, busy and live semantics, duplicate-dispatch and completion-timer guards, drag cancellation, scroll-axis gating, viewport-based bounded resistance, and reduced-motion-safe transform transitions while retaining the upstream state machine and renderText options.",
+          "reason": "Meet the documented SSR, keyboard, assistive-technology, threshold, controlled-refresh, cancellation, cleanup, and reduced-motion gates without replacing the source interaction engine."
+        },
+        {
+          "shippedPath": "components/react-pull-to-refreshify/types.ts",
+          "change": "Added optional refreshButtonLabel and renderStatus props.",
+          "reason": "Keep the required explicit action label and concise live status caller-owned while preserving every existing prop."
+        },
+        {
+          "shippedPath": "components/react-pull-to-refreshify/utils/events.ts",
+          "change": "Made passive-event detection lazy and server-safe and removed its temporary listener.",
+          "reason": "Allow Next server evaluation and avoid retaining a detection listener."
+        },
+        {
+          "shippedPath": "components/react-pull-to-refreshify/utils/getScrollTop.ts",
+          "change": "Guarded DOM access, accepted an unresolved parent, normalized page roots, and clamped negative overscroll.",
+          "reason": "Keep server evaluation safe and make the top-boundary check reliable for page and nested scrolling."
+        },
+        {
+          "shippedPath": "components/react-pull-to-refreshify/utils/useDrag.ts",
+          "change": "Added primary-input checks, a distinct cancel path, window mouse capture, pointer/touch/blur/hidden cancellation, and complete listener cleanup.",
+          "reason": "Complete drags released outside the element, never refresh after cancellation, and remove global work when hidden or unmounted."
+        },
+        {
+          "shippedPath": "components/react-pull-to-refreshify/utils/useScrollParent.ts",
+          "change": "Made scroll-parent discovery client-only and based on actual overflow, limited native-scroll interception to vertical downward pulls, added disabled handling and resize/orientation re-resolution, and cleaned listeners and observation.",
+          "reason": "Preserve nested and page scrolling until the real top boundary while remaining correct across mobile viewport changes and unmounts."
+        }
+      ],
+      "dedupe": {
+        "family": "pull-to-refresh-action",
+        "sourceHash": "sha256:efc3374371c768f714809b08cfa046dd3e1599785e0ca2cb8cf32498ab84efa2",
+        "contentHash": "sha256:aa8ecdf55c071112d909fe21043cca9d9b3efbb0b535a9a7575e5169517517e7",
+        "structureHash": "sha256:924c48d7ed0f10cc3cd2df1e1ceb21e525717446027f5c4866ba80d4e0d76eb5"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

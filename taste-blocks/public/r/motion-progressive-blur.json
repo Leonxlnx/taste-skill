@@ -1,0 +1,105 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-progressive-blur",
+  "title": "Progressive Blur",
+  "author": "Motion Primitives",
+  "description": "Builds a directional blur overlay from layered masks.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-progressive-blur/progressive-blur.tsx",
+      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport { HTMLMotionProps, motion, useReducedMotion } from 'motion/react';\n\nexport const GRADIENT_ANGLES = {\n  top: 0,\n  right: 90,\n  bottom: 180,\n  left: 270,\n};\n\nexport type ProgressiveBlurProps = {\n  direction?: keyof typeof GRADIENT_ANGLES;\n  blurLayers?: number;\n  className?: string;\n  blurIntensity?: number;\n} & HTMLMotionProps<'div'>;\n\nexport function ProgressiveBlur({\n  direction = 'bottom',\n  blurLayers = 8,\n  className,\n  blurIntensity = 0.25,\n  ...props\n}: ProgressiveBlurProps) {\n  const layers = Math.max(blurLayers, 2);\n  const segmentSize = 1 / (blurLayers + 1);\n  const shouldReduceMotion = useReducedMotion();\n\n  return (\n    <div className={cn('relative', className)}>\n      {Array.from({ length: layers }).map((_, index) => {\n        const angle = GRADIENT_ANGLES[direction];\n        const gradientStops = [\n          index * segmentSize,\n          (index + 1) * segmentSize,\n          (index + 2) * segmentSize,\n          (index + 3) * segmentSize,\n        ].map(\n          (pos, posIndex) =>\n            `rgba(255, 255, 255, ${posIndex === 1 || posIndex === 2 ? 1 : 0}) ${pos * 100}%`\n        );\n\n        const gradient = `linear-gradient(${angle}deg, ${gradientStops.join(\n          ', '\n        )})`;\n\n        return (\n          <motion.div\n            key={index}\n            aria-hidden='true'\n            className='pointer-events-none absolute inset-0 rounded-[inherit]'\n            style={{\n              maskImage: gradient,\n              WebkitMaskImage: gradient,\n              backdropFilter: `blur(${index * blurIntensity}px)`,\n              WebkitBackdropFilter: `blur(${index * blurIntensity}px)`,\n            }}\n            {...props}\n            transition={\n              shouldReduceMotion ? { duration: 0 } : props.transition\n            }\n          />\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/progressive-blur.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "blur",
+        "mask",
+        "overlay"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-progressive-blur.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-progressive-blur/progressive-blur.tsx",
+            "upstreamPath": "components/core/progressive-blur.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/progressive-blur.tsx",
+            "upstreamSha256": "sha256:28271af357f7f52bf69e6f13f3b0ac33042204e8338427881c28456419b936cd",
+            "contentSha256": "sha256:14a70b1e58c28a4b8663710c641824c1abe6bdba95002fcc4b726f42668b81cb",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Added a zero-duration useReducedMotion transition override for caller-supplied motion props.",
+              "Marked generated blur layers as decorative."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/progressive-blur.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-progressive-blur/progressive-blur.tsx",
+          "change": "Changed the local utility import, snapped optional motion props for reduced motion, and hid decorative layers from assistive technology.",
+          "reason": "Resolve the copied helper and keep the static blur readable without exposing or animating its generated layers."
+        }
+      ],
+      "dedupe": {
+        "family": "layered-progressive-blur",
+        "sourceHash": "sha256:1e2d5640d45150350a3fc8772a7683a8012030279769a4c017b08b1c9474ab9f",
+        "contentHash": "sha256:0914638338f1eb65c543233bf80085c93c4bf903263d906ae2eb345387149015",
+        "structureHash": "sha256:c76ea7af7d332df9b498f9bd50efe8c340fe9a1d26a5544b20ccb5711d724309"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animata-card-stack",
+  "title": "Card Stack",
+  "author": "Animata",
+  "description": "Cycles a caller-provided stack of cards with click or optional autoplay transitions.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.38.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animata/components/animata-card-stack/card-stack.tsx",
+      "content": "\"use client\";\n\nimport type { HTMLMotionProps, Transition } from \"motion/react\";\nimport { AnimatePresence, motion } from \"motion/react\";\nimport {\n  type ComponentProps,\n  cloneElement,\n  createContext,\n  isValidElement,\n  type ReactNode,\n  use,\n  useCallback,\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n} from \"react\";\nimport { usePrefersReducedMotion } from \"../../hooks/use-prefers-reduced-motion\";\nimport { cn } from \"../../lib/utils\";\n\nexport interface CardStackItem {\n  id: string;\n}\n\nexport interface CardStackLayerMotion {\n  className: string;\n  initial: HTMLMotionProps<\"div\">[\"initial\"];\n  animate: HTMLMotionProps<\"div\">[\"animate\"];\n  exit?: HTMLMotionProps<\"div\">[\"exit\"];\n  transition: Transition;\n  style?: HTMLMotionProps<\"div\">[\"style\"];\n}\n\nconst DEFAULT_STACK_DEPTH = 3;\nconst DEFAULT_AUTOPLAY_INTERVAL = 4500;\n/** How long before the next click is accepted — decoupled from exit spring settle */\nconst STEP_COOLDOWN_MS = 260;\n\n/** Peek offsets as % of each card’s height so stacks scale with card size */\nconst STACK_LAYER_PRESETS = [\n  { y: \"0%\", scale: 1, rotate: 0, zIndex: 20 },\n  { y: \"-5%\", scale: 0.84, rotate: -1, zIndex: 5 },\n  { y: \"-7.5%\", scale: 0.72, rotate: 1, zIndex: 0 },\n] as const;\n\nconst PROMOTE_SPRING: Transition = {\n  type: \"spring\",\n  visualDuration: 0.22,\n  bounce: 0,\n};\n\n/** Top-card press — same transform channel as stack promote / throw */\nconst PRESS_SPRING: Transition = {\n  type: \"spring\",\n  visualDuration: 0.1,\n  bounce: 0,\n};\n\nconst PRESS_SCALE_FACTOR = 0.985;\n\nconst THROW_SPRING: Transition = {\n  type: \"spring\",\n  visualDuration: 0.24,\n  bounce: 0.06,\n  restSpeed: 2,\n  restDelta: 0.001,\n};\n\nexport interface CardStackThrowImpulse {\n  x: string;\n  rotate: number;\n  yVelocity: number;\n  rotateVelocity: number;\n}\n\nexport function createCardStackThrowImpulse(): CardStackThrowImpulse {\n  const drift = Math.random() - 0.5;\n\n  return {\n    x: `${(drift * 7).toFixed(2)}%`,\n    rotate: drift * 6 + (Math.random() - 0.5) * 1.5,\n    yVelocity: 3.5 + Math.random() * 2.8,\n    rotateVelocity: drift * 10,\n  };\n}\n\nconst CARD_STACK_STACK_ORIGIN = \"50% 0%\";\nconst CARD_STACK_EXIT_Y = \"200%\";\n\nexport function getCardStackLayers(\n  reducedMotion: boolean,\n  depth = DEFAULT_STACK_DEPTH,\n): CardStackLayerMotion[] {\n  const stackTransition: Transition = reducedMotion ? { duration: 0 } : PROMOTE_SPRING;\n\n  const layers: CardStackLayerMotion[] = STACK_LAYER_PRESETS.map((preset) => ({\n    className: \"\",\n    initial: {\n      y: preset.y,\n      rotate: preset.rotate,\n      scale: preset.scale,\n      opacity: 1,\n      zIndex: preset.zIndex,\n    },\n    animate: {\n      y: preset.y,\n      rotate: preset.rotate,\n      scale: preset.scale,\n      opacity: 1,\n      zIndex: preset.zIndex,\n    },\n    exit: reducedMotion\n      ? {\n          y: preset.y,\n          scale: preset.scale,\n          opacity: 1,\n          zIndex: preset.zIndex,\n        }\n      : {\n          y: CARD_STACK_EXIT_Y,\n          rotate: 0,\n          scale: 0.93,\n          opacity: 0,\n          zIndex: 30,\n        },\n    transition: stackTransition,\n    style: { transformOrigin: CARD_STACK_STACK_ORIGIN },\n  }));\n\n  return layers.slice(0, depth);\n}\n\nfunction getLayerScale(layer: CardStackLayerMotion): number {\n  const target = layer.animate;\n  if (\n    target &&\n    typeof target === \"object\" &&\n    \"scale\" in target &&\n    typeof target.scale === \"number\"\n  ) {\n    return target.scale;\n  }\n  return 1;\n}\n\nfunction getCardStackInitial(\n  stackIndex: number,\n  depth: number,\n  layer: CardStackLayerMotion,\n): HTMLMotionProps<\"div\">[\"initial\"] {\n  if (stackIndex !== 0 && stackIndex !== depth - 1) {\n    return false;\n  }\n\n  return layer.initial;\n}\n\nfunction getCardStackExit(\n  stackIndex: number,\n  layer: CardStackLayerMotion,\n  reducedMotion: boolean,\n  throwImpulse: CardStackThrowImpulse | null,\n): HTMLMotionProps<\"div\">[\"exit\"] {\n  if (stackIndex !== 0) {\n    return undefined;\n  }\n\n  if (reducedMotion) {\n    return layer.exit;\n  }\n\n  const impulse = throwImpulse ?? createCardStackThrowImpulse();\n\n  return {\n    y: CARD_STACK_EXIT_Y,\n    x: impulse.x,\n    rotate: impulse.rotate,\n    scale: 0.9,\n    opacity: 0,\n    zIndex: 30,\n    transition: {\n      y: { ...THROW_SPRING, velocity: impulse.yVelocity * 0.4 },\n      x: THROW_SPRING,\n      rotate: { ...THROW_SPRING, velocity: impulse.rotateVelocity * 0.35 },\n      scale: THROW_SPRING,\n      opacity: { type: \"tween\", duration: 0.16, ease: [0.4, 0, 1, 1] },\n    },\n  };\n}\n\ninterface CardStackContextValue<T extends CardStackItem = CardStackItem> {\n  items: T[];\n  visibleItems: T[];\n  activeItem: T | undefined;\n  depth: number;\n  isAnimating: boolean;\n  pressActive: boolean;\n  setPressActive: (active: boolean) => void;\n  throwImpulse: CardStackThrowImpulse | null;\n  advance: () => void;\n  handleExitComplete: () => void;\n  reducedMotion: boolean;\n  layers: CardStackLayerMotion[];\n}\n\nconst CardStackContext = createContext<CardStackContextValue | null>(null);\n\nexport function useCardStack<T extends CardStackItem = CardStackItem>() {\n  const context = use(CardStackContext);\n  if (!context) {\n    throw new Error(\"CardStack primitives must be used within <CardStack>.\");\n  }\n  return context as CardStackContextValue<T>;\n}\n\ninterface CardStackRootProps<T extends CardStackItem> {\n  items: T[];\n  depth?: number;\n  autoplay?: boolean;\n  autoplayInterval?: number;\n  onItemsChange?: (items: T[]) => void;\n  children: ReactNode;\n}\n\nfunction CardStackRoot<T extends CardStackItem>({\n  items,\n  depth = DEFAULT_STACK_DEPTH,\n  autoplay = false,\n  autoplayInterval = DEFAULT_AUTOPLAY_INTERVAL,\n  onItemsChange,\n  children,\n}: CardStackRootProps<T>) {\n  const reducedMotion = usePrefersReducedMotion();\n  const stackDepth = Math.min(Math.max(1, depth), STACK_LAYER_PRESETS.length);\n  const layers = useMemo(\n    () => getCardStackLayers(reducedMotion, stackDepth),\n    [reducedMotion, stackDepth],\n  );\n  const [itemList, setItemList] = useState<T[]>([]);\n  const prevItemsRef = useRef<T[] | null>(null);\n  const [isAnimating, setIsAnimating] = useState(false);\n  const [pressActive, setPressActive] = useState(false);\n  const [throwImpulse, setThrowImpulse] = useState<CardStackThrowImpulse | null>(null);\n  const isAnimatingRef = useRef(false);\n  const stepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const autoplayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const advanceRef = useRef<() => void>(() => {});\n  const onItemsChangeRef = useRef(onItemsChange);\n  onItemsChangeRef.current = onItemsChange;\n  const skipItemsChangeNotifyRef = useRef(false);\n  const hasUserRotatedRef = useRef(false);\n\n  const visibleItems = itemList.slice(0, stackDepth);\n  const activeItem = visibleItems[0];\n\n  const clearStepTimer = useCallback(() => {\n    if (stepTimerRef.current !== null) {\n      clearTimeout(stepTimerRef.current);\n      stepTimerRef.current = null;\n    }\n  }, []);\n\n  const clearAutoplayTimer = useCallback(() => {\n    if (autoplayTimerRef.current !== null) {\n      clearTimeout(autoplayTimerRef.current);\n      autoplayTimerRef.current = null;\n    }\n  }, []);\n\n  if (items !== prevItemsRef.current) {\n    clearStepTimer();\n    clearAutoplayTimer();\n    isAnimatingRef.current = false;\n    setIsAnimating(false);\n    skipItemsChangeNotifyRef.current = true;\n    prevItemsRef.current = items;\n    setItemList(items);\n  }\n\n  useEffect(() => {\n    if (skipItemsChangeNotifyRef.current) {\n      skipItemsChangeNotifyRef.current = false;\n      return;\n    }\n    if (!hasUserRotatedRef.current) return;\n    onItemsChangeRef.current?.(itemList as T[]);\n  }, [itemList]);\n\n  const rotateOne = useCallback(() => {\n    hasUserRotatedRef.current = true;\n    setItemList((current) => {\n      if (current.length <= 1) return current;\n      const next = [...current];\n      next.push(next.shift()!);\n      return next;\n    });\n  }, []);\n\n  const finishStep = useCallback(() => {\n    clearStepTimer();\n    if (!isAnimatingRef.current) return false;\n    isAnimatingRef.current = false;\n    setIsAnimating(false);\n    return true;\n  }, [clearStepTimer]);\n\n  const scheduleAutoplay = useCallback(() => {\n    clearAutoplayTimer();\n    if (!autoplay || reducedMotion || itemList.length <= 1) return;\n    if (document.hidden) return;\n\n    autoplayTimerRef.current = setTimeout(() => {\n      autoplayTimerRef.current = null;\n      advanceRef.current();\n    }, autoplayInterval);\n  }, [autoplay, autoplayInterval, clearAutoplayTimer, itemList.length, reducedMotion]);\n\n  const finishStepAndScheduleAutoplay = useCallback(() => {\n    if (finishStep()) {\n      scheduleAutoplay();\n    }\n  }, [finishStep, scheduleAutoplay]);\n\n  const advance = useCallback(() => {\n    if (itemList.length <= 1 || isAnimatingRef.current) return;\n\n    clearAutoplayTimer();\n\n    if (reducedMotion) {\n      rotateOne();\n      scheduleAutoplay();\n      return;\n    }\n\n    isAnimatingRef.current = true;\n    setIsAnimating(true);\n    setThrowImpulse(createCardStackThrowImpulse());\n    clearStepTimer();\n    rotateOne();\n    stepTimerRef.current = setTimeout(finishStepAndScheduleAutoplay, STEP_COOLDOWN_MS);\n  }, [\n    clearAutoplayTimer,\n    clearStepTimer,\n    finishStepAndScheduleAutoplay,\n    itemList.length,\n    reducedMotion,\n    rotateOne,\n    scheduleAutoplay,\n  ]);\n\n  advanceRef.current = advance;\n\n  const handleExitComplete = useCallback(() => {\n    finishStepAndScheduleAutoplay();\n  }, [finishStepAndScheduleAutoplay]);\n\n  useEffect(() => {\n    scheduleAutoplay();\n    return () => {\n      clearStepTimer();\n      clearAutoplayTimer();\n    };\n  }, [clearAutoplayTimer, clearStepTimer, scheduleAutoplay]);\n\n  useEffect(() => {\n    const onVisibilityChange = () => {\n      if (document.hidden) {\n        clearAutoplayTimer();\n        return;\n      }\n      if (!isAnimatingRef.current) {\n        scheduleAutoplay();\n      }\n    };\n\n    document.addEventListener(\"visibilitychange\", onVisibilityChange);\n    return () => document.removeEventListener(\"visibilitychange\", onVisibilityChange);\n  }, [clearAutoplayTimer, scheduleAutoplay]);\n\n  const value = useMemo(\n    () => ({\n      items: itemList,\n      visibleItems,\n      activeItem,\n      depth: stackDepth,\n      isAnimating,\n      pressActive,\n      setPressActive,\n      throwImpulse,\n      advance,\n      handleExitComplete,\n      reducedMotion,\n      layers,\n    }),\n    [\n      itemList,\n      visibleItems,\n      activeItem,\n      stackDepth,\n      isAnimating,\n      pressActive,\n      throwImpulse,\n      advance,\n      handleExitComplete,\n      reducedMotion,\n      layers,\n    ],\n  );\n\n  return <CardStackContext value={value}>{children}</CardStackContext>;\n}\n\nexport interface CardStackTriggerProps {\n  /** When true, renders an absolute inset-0 overlay for click-anywhere advance. When false (default), renders a real `<button>` for a discrete control. */\n  full?: boolean;\n  \"aria-label\"?: string;\n  className?: string;\n  children?: ReactNode;\n  onClick?: (event: React.MouseEvent<HTMLElement>) => void;\n  onKeyDown?: (event: React.KeyboardEvent<HTMLElement>) => void;\n  onPointerDown?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerUp?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerLeave?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerCancel?: (event: React.PointerEvent<HTMLElement>) => void;\n}\n\nfunction useCardStackTriggerHandlers({\n  isAnimating,\n  setPressActive,\n  advance,\n  onClick,\n  onKeyDown,\n  onPointerDown,\n  onPointerUp,\n  onPointerLeave,\n  onPointerCancel,\n}: {\n  isAnimating: boolean;\n  setPressActive: (active: boolean) => void;\n  advance: () => void;\n  onClick?: (event: React.MouseEvent<HTMLElement>) => void;\n  onKeyDown?: (event: React.KeyboardEvent<HTMLElement>) => void;\n  onPointerDown?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerUp?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerLeave?: (event: React.PointerEvent<HTMLElement>) => void;\n  onPointerCancel?: (event: React.PointerEvent<HTMLElement>) => void;\n}) {\n  return {\n    onPointerDown: (event: React.PointerEvent<HTMLElement>) => {\n      onPointerDown?.(event);\n      if (!event.defaultPrevented && !isAnimating) {\n        setPressActive(true);\n      }\n    },\n    onPointerUp: (event: React.PointerEvent<HTMLElement>) => {\n      onPointerUp?.(event);\n      window.setTimeout(() => setPressActive(false), 0);\n    },\n    onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {\n      onPointerLeave?.(event);\n      setPressActive(false);\n    },\n    onPointerCancel: (event: React.PointerEvent<HTMLElement>) => {\n      onPointerCancel?.(event);\n      setPressActive(false);\n    },\n    onClick: (event: React.MouseEvent<HTMLElement>) => {\n      onClick?.(event);\n      if (!event.defaultPrevented) {\n        advance();\n      }\n    },\n    onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {\n      onKeyDown?.(event);\n      if (event.defaultPrevented) return;\n      if (event.key === \"Enter\" || event.key === \" \" || event.key === \"Spacebar\") {\n        event.preventDefault();\n        advance();\n      }\n    },\n  };\n}\n\nfunction CardStackTrigger({\n  full = false,\n  \"aria-label\": ariaLabel = \"Show next card\",\n  className,\n  children,\n  onClick,\n  onKeyDown,\n  onPointerDown,\n  onPointerUp,\n  onPointerLeave,\n  onPointerCancel,\n}: CardStackTriggerProps) {\n  const { advance, isAnimating, setPressActive } = useCardStack();\n  const handlers = useCardStackTriggerHandlers({\n    isAnimating,\n    setPressActive,\n    advance,\n    onClick,\n    onKeyDown,\n    onPointerDown,\n    onPointerUp,\n    onPointerLeave,\n    onPointerCancel,\n  });\n\n  if (full) {\n    return (\n      <button\n        type=\"button\"\n        aria-label={ariaLabel}\n        {...handlers}\n        className={cn(\n          \"absolute inset-0 z-40 cursor-pointer border-0 bg-transparent p-0 outline-none\",\n          \"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n          className,\n        )}\n      />\n    );\n  }\n\n  return (\n    <button\n      type=\"button\"\n      aria-label={ariaLabel}\n      onPointerDown={handlers.onPointerDown}\n      onPointerUp={handlers.onPointerUp}\n      onPointerLeave={handlers.onPointerLeave}\n      onPointerCancel={handlers.onPointerCancel}\n      onClick={handlers.onClick}\n      onKeyDown={onKeyDown}\n      className={cn(\n        \"inline-flex shrink-0 cursor-pointer items-center justify-center outline-none\",\n        \"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n        className,\n      )}\n    >\n      {children}\n    </button>\n  );\n}\n\nfunction CardStackViewport({ className, children, ...props }: ComponentProps<\"div\">) {\n  return (\n    <div className={cn(\"relative w-full overflow-visible\", className)} {...props}>\n      {children}\n    </div>\n  );\n}\n\ninterface CardStackListProps<T extends CardStackItem> {\n  children: (item: T, index: number, layer: CardStackLayerMotion) => ReactNode;\n}\n\nfunction CardStackList<T extends CardStackItem>({ children }: CardStackListProps<T>) {\n  const { visibleItems, layers, handleExitComplete } = useCardStack<T>();\n\n  return (\n    <AnimatePresence initial={false} mode=\"sync\" onExitComplete={handleExitComplete}>\n      {visibleItems.map((item, index) => {\n        const layer = layers[index]!;\n        const node = children(item, index, layer);\n\n        if (isValidElement<CardStackCardProps>(node) && node.type === CardStackCard) {\n          return cloneElement<CardStackCardProps>(node, {\n            key: item.id,\n            stackIndex: index,\n            layer,\n          });\n        }\n\n        return node;\n      })}\n    </AnimatePresence>\n  );\n}\n\ninterface CardStackCardProps extends HTMLMotionProps<\"div\"> {\n  layer: CardStackLayerMotion;\n  stackIndex: number;\n  stackDepth?: number;\n}\n\nfunction CardStackCard({\n  layer,\n  stackIndex,\n  stackDepth,\n  className,\n  style,\n  ...props\n}: CardStackCardProps) {\n  const { depth, isAnimating, pressActive, reducedMotion, throwImpulse } = useCardStack();\n  const total = stackDepth ?? depth;\n\n  const initial = getCardStackInitial(stackIndex, depth, layer);\n  const exit = getCardStackExit(stackIndex, layer, reducedMotion, throwImpulse);\n  const baseScale = getLayerScale(layer);\n  const isPressed = stackIndex === 0 && pressActive && !reducedMotion && !isAnimating;\n  const animateTarget =\n    typeof layer.animate === \"object\" && layer.animate !== null && !Array.isArray(layer.animate)\n      ? layer.animate\n      : {};\n  const animate = isPressed\n    ? { ...animateTarget, scale: baseScale * PRESS_SCALE_FACTOR }\n    : layer.animate;\n  const transition = isPressed ? PRESS_SPRING : layer.transition;\n\n  return (\n    <motion.div\n      className={cn(\n        \"absolute inset-x-0 top-0 w-full will-change-transform motion-reduce:transition-none\",\n        layer.className,\n        className,\n      )}\n      aria-roledescription={`Card ${stackIndex + 1} of ${total}`}\n      style={{\n        transformOrigin: CARD_STACK_STACK_ORIGIN,\n        ...layer.style,\n        ...style,\n      }}\n      initial={initial}\n      animate={animate}\n      exit={exit}\n      transition={transition}\n      {...props}\n    />\n  );\n}\n\nconst CardStack = Object.assign(CardStackRoot, {\n  Trigger: CardStackTrigger,\n  Viewport: CardStackViewport,\n  List: CardStackList,\n  Card: CardStackCard,\n}) as typeof CardStackRoot & {\n  Trigger: typeof CardStackTrigger;\n  Viewport: typeof CardStackViewport;\n  List: typeof CardStackList;\n  Card: typeof CardStackCard;\n};\n\nexport default CardStack;\nexport {\n  CardStack,\n  CardStackCard,\n  CardStackList,\n  CardStackRoot,\n  CardStackTrigger,\n  CardStackViewport,\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/card-stack.tsx"
+    },
+    {
+      "path": "registry/sources/animata/hooks/use-prefers-reduced-motion.ts",
+      "content": "\"use client\";\n\nimport { useSyncExternalStore } from \"react\";\n\nfunction subscribeReducedMotion(callback: () => void) {\n  const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n  if (typeof mq.addEventListener === \"function\") {\n    mq.addEventListener(\"change\", callback);\n    return () => mq.removeEventListener(\"change\", callback);\n  }\n\n  const legacyMq = mq as MediaQueryList & {\n    addListener: (listener: () => void) => void;\n    removeListener: (listener: () => void) => void;\n  };\n  legacyMq.addListener(callback);\n  return () => legacyMq.removeListener(callback);\n}\n\nfunction getReducedMotionSnapshot() {\n  return window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n}\n\nexport function usePrefersReducedMotion() {\n  return useSyncExternalStore(subscribeReducedMotion, getReducedMotionSnapshot, () => false);\n}\n",
+      "type": "registry:hook",
+      "target": "@hooks/use-prefers-reduced-motion.ts"
+    },
+    {
+      "path": "registry/sources/animata/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "cards",
+        "stack",
+        "shuffle"
+      ],
+      "renderer": "dom",
+      "preview": "previews/animata-card-stack.tsx",
+      "source": {
+        "project": "Animata",
+        "repository": "https://github.com/codse/animata",
+        "revision": "de9aabb0eed14e0db944bb07720961ddc450c672",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animata-card-stack/card-stack.tsx",
+            "upstreamPath": "animata/card/card-stack.tsx",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/animata/card/card-stack.tsx",
+            "upstreamSha256": "sha256:c970b5741b897f6f8c38649c175ca050f108ae7c443a7eaf619ba9dc08b75fc3",
+            "contentSha256": "sha256:b50fa98acae1034f8da1910ca6f90eac8c88ee4a54604b48f0011c5dc77d9167",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Changed the reduced-motion hook import from @/hooks/use-prefers-reduced-motion to ../../hooks/use-prefers-reduced-motion for the same source-batch and registry-target portability."
+            ]
+          },
+          {
+            "shippedPath": "hooks/use-prefers-reduced-motion.ts",
+            "upstreamPath": "hooks/use-prefers-reduced-motion.ts",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/hooks/use-prefers-reduced-motion.ts",
+            "upstreamSha256": "sha256:ac0b2e1b3cc655cc4c1a8bb0f02eb05f1abaca8846c95f6ec569722ca44fd7cb",
+            "contentSha256": "sha256:ac0b2e1b3cc655cc4c1a8bb0f02eb05f1abaca8846c95f6ec569722ca44fd7cb",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/lib/utils.ts",
+            "upstreamSha256": "sha256:5110cb256546ec57496878e69c7e8f338a0ba9caf3ac75eed9babb51dad06ecd",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Removed unrelated absoluteUrl, lerp, and getDistance exports; retained the upstream cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "animata/card/card-stack.tsx, hooks/use-prefers-reduced-motion.ts, and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Animata"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/LICENSE.md",
+          "sha256": "sha256:ff78804659cbc28380d087cae79c494f243f8ef22b1e2ac5ec119b5de9314f05",
+          "localPath": "registry/sources/animata/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animata-card-stack/card-stack.tsx",
+          "change": "Changed the cn and reduced-motion hook imports from root aliases to ../../lib/utils and ../../hooks/use-prefers-reduced-motion.",
+          "reason": "Resolve the bundled upstream support files from both the source batch and installation target."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl, lerp, and getDistance exports.",
+          "reason": "Keep the copied support closure limited to the upstream cn export used by these components."
+        }
+      ],
+      "dedupe": {
+        "family": "looping-card-stack",
+        "sourceHash": "sha256:d822fdbec3e9d6f20255ce4eb22b5e87057d5a41e457c6e575e9206a3d23af66",
+        "contentHash": "sha256:46401e6f53b4a23aa8d7ddaa7118fb1e3028719446266bfe0c3666d0f1b2f54b",
+        "structureHash": "sha256:dc4b2cb7f062c09d681b321c449611f0501451c6d25cfd132eb30abf5626a1c7"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

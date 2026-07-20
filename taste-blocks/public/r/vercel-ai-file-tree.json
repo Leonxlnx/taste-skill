@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-file-tree",
+  "title": "File Tree",
+  "author": "Vercel",
+  "description": "A controlled file hierarchy with disclosure, selection, and nested actions.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/file-tree.tsx",
+      "content": "\"use client\";\r\n\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport {\r\n  ChevronRightIcon,\r\n  FileIcon,\r\n  FolderIcon,\r\n  FolderOpenIcon,\r\n} from \"lucide-react\";\r\nimport type { HTMLAttributes, ReactNode } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useMemo,\r\n  useState,\r\n} from \"react\";\r\n\r\ninterface FileTreeContextType {\r\n  expandedPaths: Set<string>;\r\n  togglePath: (path: string) => void;\r\n  selectedPath?: string;\r\n  onSelect?: (path: string) => void;\r\n}\r\n\r\n// Default noop for context default value\r\n// oxlint-disable-next-line eslint(no-empty-function)\r\nconst noop = () => {};\r\n\r\nconst FileTreeContext = createContext<FileTreeContextType>({\r\n  // oxlint-disable-next-line eslint-plugin-unicorn(no-new-builtin)\r\n  expandedPaths: new Set(),\r\n  togglePath: noop,\r\n});\r\n\r\nexport type FileTreeProps = Omit<HTMLAttributes<HTMLDivElement>, \"onSelect\"> & {\r\n  expanded?: Set<string>;\r\n  defaultExpanded?: Set<string>;\r\n  selectedPath?: string;\r\n  onSelect?: (path: string) => void;\r\n  onExpandedChange?: (expanded: Set<string>) => void;\r\n};\r\n\r\nexport const FileTree = ({\r\n  expanded: controlledExpanded,\r\n  defaultExpanded = new Set(),\r\n  selectedPath,\r\n  onSelect,\r\n  onExpandedChange,\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeProps) => {\r\n  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);\r\n  const expandedPaths = controlledExpanded ?? internalExpanded;\r\n\r\n  const togglePath = useCallback(\r\n    (path: string) => {\r\n      const newExpanded = new Set(expandedPaths);\r\n      if (newExpanded.has(path)) {\r\n        newExpanded.delete(path);\r\n      } else {\r\n        newExpanded.add(path);\r\n      }\r\n      setInternalExpanded(newExpanded);\r\n      onExpandedChange?.(newExpanded);\r\n    },\r\n    [expandedPaths, onExpandedChange]\r\n  );\r\n\r\n  const contextValue = useMemo(\r\n    () => ({ expandedPaths, onSelect, selectedPath, togglePath }),\r\n    [expandedPaths, onSelect, selectedPath, togglePath]\r\n  );\r\n\r\n  return (\r\n    <FileTreeContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\r\n          \"rounded-lg border bg-background font-mono text-sm\",\r\n          className\r\n        )}\r\n        {...props}\n      >\r\n        <div className=\"p-2\">{children}</div>\r\n      </div>\r\n    </FileTreeContext.Provider>\r\n  );\r\n};\r\n\r\nexport type FileTreeIconProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const FileTreeIcon = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeIconProps) => (\r\n  <span className={cn(\"shrink-0\", className)} {...props}>\r\n    {children}\r\n  </span>\r\n);\r\n\r\nexport type FileTreeNameProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const FileTreeName = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeNameProps) => (\r\n  <span className={cn(\"truncate\", className)} {...props}>\r\n    {children}\r\n  </span>\r\n);\r\n\r\ninterface FileTreeFolderContextType {\r\n  path: string;\r\n  name: string;\r\n  isExpanded: boolean;\r\n}\r\n\r\nconst FileTreeFolderContext = createContext<FileTreeFolderContextType>({\r\n  isExpanded: false,\r\n  name: \"\",\r\n  path: \"\",\r\n});\r\n\r\nexport type FileTreeFolderProps = HTMLAttributes<HTMLDivElement> & {\r\n  path: string;\r\n  name: string;\r\n};\r\n\r\nexport const FileTreeFolder = ({\r\n  path,\r\n  name,\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeFolderProps) => {\r\n  const { expandedPaths, togglePath, selectedPath, onSelect } =\r\n    useContext(FileTreeContext);\r\n  const isExpanded = expandedPaths.has(path);\r\n  const isSelected = selectedPath === path;\r\n\r\n  const handleOpenChange = useCallback(() => {\r\n    togglePath(path);\r\n  }, [togglePath, path]);\r\n\r\n  const handleSelect = useCallback(() => {\r\n    onSelect?.(path);\r\n  }, [onSelect, path]);\r\n\r\n  const folderContextValue = useMemo(\r\n    () => ({ isExpanded, name, path }),\r\n    [isExpanded, name, path]\r\n  );\r\n\r\n  return (\r\n    <FileTreeFolderContext.Provider value={folderContextValue}>\r\n      <Collapsible onOpenChange={handleOpenChange} open={isExpanded}>\r\n        <div\r\n          className={cn(\"\", className)}\r\n          {...props}\n        >\r\n          <div\r\n            className={cn(\r\n              \"flex w-full items-center gap-1 rounded px-2 py-1 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\",\n              isSelected && \"bg-muted\"\r\n            )}\r\n          >\r\n            <CollapsibleTrigger asChild>\r\n              <button\r\n                className=\"flex shrink-0 cursor-pointer items-center border-none bg-transparent p-0\"\r\n                type=\"button\"\r\n              >\r\n                <ChevronRightIcon\r\n                  className={cn(\r\n                    \"size-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none rtl:-scale-x-100\",\n                    isExpanded && \"rotate-90\"\r\n                  )}\r\n                />\r\n              </button>\r\n            </CollapsibleTrigger>\r\n            <button\r\n              className=\"flex min-w-0 flex-1 cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-start\"\n              onClick={handleSelect}\r\n              type=\"button\"\r\n            >\r\n              <FileTreeIcon>\r\n                {isExpanded ? (\r\n                  <FolderOpenIcon className=\"size-4 text-blue-500\" />\r\n                ) : (\r\n                  <FolderIcon className=\"size-4 text-blue-500\" />\r\n                )}\r\n              </FileTreeIcon>\r\n              <FileTreeName>{name}</FileTreeName>\r\n            </button>\r\n          </div>\r\n          <CollapsibleContent>\r\n            <div className=\"ms-4 border-s ps-2\">{children}</div>\n          </CollapsibleContent>\r\n        </div>\r\n      </Collapsible>\r\n    </FileTreeFolderContext.Provider>\r\n  );\r\n};\r\n\r\ninterface FileTreeFileContextType {\r\n  path: string;\r\n  name: string;\r\n}\r\n\r\nconst FileTreeFileContext = createContext<FileTreeFileContextType>({\r\n  name: \"\",\r\n  path: \"\",\r\n});\r\n\r\nexport type FileTreeFileProps = HTMLAttributes<HTMLDivElement> & {\r\n  path: string;\r\n  name: string;\r\n  icon?: ReactNode;\r\n};\r\n\r\nexport const FileTreeFile = ({\r\n  path,\r\n  name,\r\n  icon,\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeFileProps) => {\r\n  const { selectedPath, onSelect } = useContext(FileTreeContext);\r\n  const isSelected = selectedPath === path;\r\n\r\n  const handleClick = useCallback(() => {\r\n    onSelect?.(path);\r\n  }, [onSelect, path]);\r\n\r\n  const handleKeyDown = useCallback(\r\n    (e: React.KeyboardEvent) => {\r\n      if (e.key === \"Enter\" || e.key === \" \") {\r\n        onSelect?.(path);\r\n      }\r\n    },\r\n    [onSelect, path]\r\n  );\r\n\r\n  const fileContextValue = useMemo(() => ({ name, path }), [name, path]);\r\n\r\n  return (\r\n    <FileTreeFileContext.Provider value={fileContextValue}>\r\n      <div\r\n        className={cn(\r\n          \"flex cursor-pointer items-center gap-1 rounded px-2 py-1 transition-colors hover:bg-muted/50 motion-reduce:transition-none\",\n          isSelected && \"bg-muted\",\r\n          className\r\n        )}\r\n        onClick={handleClick}\r\n        onKeyDown={handleKeyDown}\r\n        {...props}\n      >\r\n        {children ?? (\r\n          <>\r\n            {/* Spacer for alignment */}\r\n            <span className=\"size-4 shrink-0\" />\r\n            <FileTreeIcon>\r\n              {icon ?? <FileIcon className=\"size-4 text-muted-foreground\" />}\r\n            </FileTreeIcon>\r\n            <FileTreeName>{name}</FileTreeName>\r\n          </>\r\n        )}\r\n      </div>\r\n    </FileTreeFileContext.Provider>\r\n  );\r\n};\r\n\r\nexport type FileTreeActionsProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nconst stopPropagation = (e: React.SyntheticEvent) => e.stopPropagation();\r\n\r\nexport const FileTreeActions = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: FileTreeActionsProps) => (\r\n  <div\r\n    className={cn(\"ms-auto flex items-center gap-1\", className)}\n    onClick={stopPropagation}\r\n    onKeyDown={stopPropagation}\r\n    role=\"group\"\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/file-tree.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "files",
+        "tree",
+        "disclosure",
+        "selection"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-file-tree.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/file-tree.tsx",
+            "upstreamPath": "packages/elements/src/file-tree.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/file-tree.tsx",
+            "upstreamSha256": "sha256:9b6946171369d224d5d10df686c3c18ce7608aa4a4792744fc5c313499cec0cb",
+            "contentSha256": "sha256:c02c77030b9335631a6077aa999b70ae0bab04f0b166a43620ae58555da0fe1d",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Removed incomplete ARIA tree roles so native nested buttons expose honest disclosure semantics.",
+              "Added reduced-motion handling and logical spacing for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/file-tree.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/file-tree.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Removed incomplete ARIA tree roles so native nested buttons expose honest disclosure semantics. Added reduced-motion handling and logical spacing for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "selectable-disclosure-file-tree",
+        "sourceHash": "sha256:92bb4c25c3373c8a91d152e799826b11fc8ae0d724788a480ca0c9525d130d66",
+        "contentHash": "sha256:d248bdfefb416e855e339a5e385ca8c8d85b024d36c8dbbd2f582cefa76f3f33",
+        "structureHash": "sha256:3073f59478abaa20a781e90742ebe1de714b3425d151b74e2bac708db637e25c"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

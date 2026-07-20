@@ -1,0 +1,133 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uilayouts-image-tabs",
+  "title": "Image Tabs",
+  "author": "UI LAYOUT",
+  "description": "Pairs descriptive tabs with a responsive caller-provided visual for the active item.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.42.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-image-tabs/image-tabs.tsx",
+      "content": "\"use client\";\n\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport { createContext, type ReactNode, useContext, useId, useState } from \"react\";\n\nimport { useMediaQuery } from \"../../hooks/use-media-query\";\nimport { cn } from \"../../lib/utils\";\n\ninterface TabsContextType {\n  activeTab: string;\n  setActiveTab: (id: string) => void;\n  isDesktop: boolean;\n  baseId: string;\n  shouldReduceMotion: boolean;\n}\n\nconst TabsContext = createContext<TabsContextType | undefined>(undefined);\n\nconst useTabs = () => {\n  const context = useContext(TabsContext);\n  if (!context) {\n    throw new Error(\"Tabs components must be used within a TabsProvider\");\n  }\n  return context;\n};\n\nexport function TabsProvider({\n  children,\n  defaultValue,\n  className,\n}: {\n  children: ReactNode;\n  defaultValue: string;\n  className?: string;\n}) {\n  const [activeTab, setActiveTab] = useState(defaultValue);\n  const isDesktop = useMediaQuery(\"(min-width: 768px)\");\n  const shouldReduceMotion = Boolean(useReducedMotion());\n  const baseId = useId();\n\n  return (\n    <TabsContext.Provider value={{ activeTab, setActiveTab, isDesktop, baseId, shouldReduceMotion }}>\n      <div className={cn(\"h-full w-full\", className)}>{children}</div>\n    </TabsContext.Provider>\n  );\n}\n\nexport function TabList({ children, className }: { children: ReactNode; className?: string }) {\n  return (\n    <div\n      aria-orientation=\"vertical\"\n      className={cn(\"h-fit rounded-xs\", className)}\n      onKeyDown={(event) => {\n        if (![\"ArrowDown\", \"ArrowRight\", \"ArrowUp\", \"ArrowLeft\", \"Home\", \"End\"].includes(event.key)) {\n          return;\n        }\n        const tabs = Array.from(\n          event.currentTarget.querySelectorAll<HTMLButtonElement>('[role=\"tab\"]:not(:disabled)'),\n        );\n        const current = tabs.indexOf(document.activeElement as HTMLButtonElement);\n        if (current < 0 || tabs.length === 0) return;\n        event.preventDefault();\n        const next =\n          event.key === \"Home\"\n            ? 0\n            : event.key === \"End\"\n              ? tabs.length - 1\n              : (current + ([\"ArrowDown\", \"ArrowRight\"].includes(event.key) ? 1 : -1) + tabs.length) %\n                tabs.length;\n        tabs[next].focus();\n        tabs[next].click();\n      }}\n      role=\"tablist\"\n    >\n      {children}\n    </div>\n  );\n}\n\nexport function TabItem({ children, value }: { children: ReactNode; value: string }) {\n  const { activeTab } = useTabs();\n\n  return (\n    <motion.div\n      className={cn(\n        \"mb-2 overflow-hidden rounded-lg border-2 text-sm md:text-base\",\n        activeTab === value\n          ? \"active border-[#F2F2F2] bg-[#F2F2F2] dark:border-[#656fe2] dark:bg-[#E0ECFB]\"\n          : \"border-transparent bg-transparent dark:hover:border-[#656fe2]\",\n      )}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport function TabHeader({ children, value }: { children: ReactNode; value: string }) {\n  const { activeTab, baseId, setActiveTab } = useTabs();\n  const isActive = activeTab === value;\n\n  return (\n    <button\n      aria-controls={`${baseId}-panel-${value}`}\n      aria-selected={isActive}\n      className={cn(\n        \"flex w-full cursor-pointer items-center justify-between p-4 text-left text-sm font-semibold text-black transition-all hover:bg-[#F2F2F2] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-[-2px] md:text-base dark:text-white dark:hover:bg-[#1e2a78] dark:hover:text-white\",\n        isActive && \"active bg-[#F2F2F2] dark:bg-[#1e2a78]\",\n      )}\n      id={`${baseId}-tab-${value}`}\n      onClick={() => setActiveTab(value)}\n      role=\"tab\"\n      tabIndex={isActive ? 0 : -1}\n      type=\"button\"\n    >\n      {children}\n    </button>\n  );\n}\n\nexport function TabDes({ children, value }: { children: ReactNode; value: string }) {\n  const { activeTab, baseId, shouldReduceMotion } = useTabs();\n  return (\n    <AnimatePresence initial={!shouldReduceMotion} mode=\"sync\">\n      {activeTab === value && (\n        <motion.div\n          animate={{ height: \"auto\", opacity: 1 }}\n          aria-labelledby={`${baseId}-tab-${value}`}\n          exit={{ height: 0, opacity: 0 }}\n          id={`${baseId}-panel-${value}`}\n          initial={shouldReduceMotion ? false : { height: 0, opacity: 0 }}\n          role=\"tabpanel\"\n          transition={\n            shouldReduceMotion\n              ? { duration: 0 }\n              : { duration: 0.3, ease: \"easeInOut\", delay: 0.14 }\n          }\n        >\n          {children}\n        </motion.div>\n      )}\n    </AnimatePresence>\n  );\n}\n\nexport function TabImageContainer({\n  children,\n  className,\n}: {\n  children: ReactNode;\n  className?: string;\n}) {\n  const { shouldReduceMotion } = useTabs();\n  return (\n    <div className={className}>\n      <AnimatePresence initial={!shouldReduceMotion} mode=\"popLayout\">\n        {children}\n      </AnimatePresence>\n    </div>\n  );\n}\n\nexport function TabImage({ children, value }: { children: ReactNode; value: string }) {\n  const { activeTab, isDesktop, shouldReduceMotion } = useTabs();\n\n  if (activeTab !== value || !isDesktop) return null;\n\n  return (\n    <motion.div\n      animate={{ opacity: 1, overflow: \"hidden\" }}\n      className=\"h-[400px] overflow-hidden rounded-md p-4\"\n      exit={{ opacity: 0, overflow: \"hidden\" }}\n      initial={shouldReduceMotion ? false : { opacity: 0, overflow: \"hidden\" }}\n      transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.4, delay: 0.2 }}\n    >\n      {children}\n    </motion.div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/image-tabs.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/hooks/use-media-query.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nexport function useMediaQuery(query: string) {\n  const [value, setValue] = useState(false);\n\n  useEffect(() => {\n    function onChange(event: MediaQueryListEvent) {\n      setValue(event.matches);\n    }\n\n    const result = matchMedia(query);\n    result.addEventListener(\"change\", onChange);\n    setValue(result.matches);\n\n    return () => result.removeEventListener(\"change\", onChange);\n  }, [query]);\n\n  return value;\n}\n",
+      "type": "registry:hook",
+      "target": "@hooks/use-media-query.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "tabs",
+        "images",
+        "descriptions"
+      ],
+      "renderer": "dom",
+      "preview": "previews/uilayouts-image-tabs.tsx",
+      "source": {
+        "project": "UI Layouts Free",
+        "repository": "https://github.com/ui-layouts/uilayouts",
+        "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/uilayouts-image-tabs/image-tabs.tsx",
+            "upstreamPath": "apps/ui-layout/components/ui/image-tabs.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/image-tabs.tsx",
+            "upstreamSha256": "sha256:4a8d46d9bb7e785246a473f828f54b58be689c38f8607cadbf88dca89abedeb1",
+            "contentSha256": "sha256:998fe9739fe94aff54445850e680d5483a90579d9a701591d9d302d95dcfcda8",
+            "changes": [
+              "Changed root-alias imports to the copied hook and utility paths.",
+              "Moved selection from a clickable div to the existing header as a button and added tablist, tab, and tabpanel relationships.",
+              "Added arrow, Home, and End keyboard navigation plus reduced-motion transitions.",
+              "Normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "hooks/use-media-query.tsx",
+            "upstreamPath": "apps/ui-layout/hooks/use-media-query.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/hooks/use-media-query.tsx",
+            "upstreamSha256": "sha256:4b40788a32615b8165a1be8fe3372aa566be1237821448a581f45e69f6adc659",
+            "contentSha256": "sha256:b4b64881a60d5524a93d1ff54efcbda6cd2af3ed211f73e475fb39dfdb2b7fb2",
+            "changes": [
+              "Normalized formatting without changing behavior."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/ui-layout/lib/utils.ts",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+            "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/ui-layout/components/ui/image-tabs.tsx, apps/ui-layout/hooks/use-media-query.tsx, and apps/ui-layout/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 UI LAYOUT"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+          "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+          "localPath": "registry/sources/ui-layouts/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/uilayouts-image-tabs/image-tabs.tsx",
+          "change": "Rewired copied support imports, moved activation to a button, added complete tab semantics and keyboard navigation, and disabled transitions for reduced motion.",
+          "reason": "Preserve the source interaction while making it keyboard-operable and semantically identifiable as tabs."
+        },
+        {
+          "shippedPath": "hooks/use-media-query.tsx",
+          "change": "Normalized formatting.",
+          "reason": "Match the repository source format without changing behavior."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+          "reason": "Keep the copied support closure minimal and remove site URLs."
+        }
+      ],
+      "dedupe": {
+        "family": "descriptive-image-tab-selector",
+        "sourceHash": "sha256:f0e8f8c53a79da9316f7a479aeb169228f94ef3cc7a9ad7f9b7bc9e75b1b2ef2",
+        "contentHash": "sha256:a6bc05caa99ffc17d2a19e34d9c491e7323e4313903a063c82a03b7e1ba80680",
+        "structureHash": "sha256:09c49b7d5634653905e1851a79fb2a06b4a31fdbb660c8ffecdf8d0e75d04445"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

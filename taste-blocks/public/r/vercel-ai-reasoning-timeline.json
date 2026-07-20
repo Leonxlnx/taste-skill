@@ -1,0 +1,96 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-reasoning-timeline",
+  "title": "Reasoning Timeline",
+  "author": "Vercel",
+  "description": "An expandable reasoning timeline with steps, status, and supporting results.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2",
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "badge",
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/chain-of-thought.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport type { LucideIcon } from \"lucide-react\";\r\nimport { BrainIcon, ChevronDownIcon, DotIcon } from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport { createContext, memo, useContext, useMemo } from \"react\";\r\n\r\ninterface ChainOfThoughtContextValue {\r\n  isOpen: boolean;\r\n  setIsOpen: (open: boolean) => void;\r\n}\r\n\r\nconst ChainOfThoughtContext = createContext<ChainOfThoughtContextValue | null>(\r\n  null\r\n);\r\n\r\nconst useChainOfThought = () => {\r\n  const context = useContext(ChainOfThoughtContext);\r\n  if (!context) {\r\n    throw new Error(\r\n      \"ChainOfThought components must be used within ChainOfThought\"\r\n    );\r\n  }\r\n  return context;\r\n};\r\n\r\nexport type ChainOfThoughtProps = ComponentProps<\"div\"> & {\r\n  open?: boolean;\r\n  defaultOpen?: boolean;\r\n  onOpenChange?: (open: boolean) => void;\r\n};\r\n\r\nexport const ChainOfThought = memo(\r\n  ({\r\n    className,\r\n    open,\r\n    defaultOpen = false,\r\n    onOpenChange,\r\n    children,\r\n    ...props\r\n  }: ChainOfThoughtProps) => {\r\n    const [isOpen, setIsOpen] = useControllableState({\r\n      defaultProp: defaultOpen,\r\n      onChange: onOpenChange,\r\n      prop: open,\r\n    });\r\n\r\n    const chainOfThoughtContext = useMemo(\r\n      () => ({ isOpen, setIsOpen }),\r\n      [isOpen, setIsOpen]\r\n    );\r\n\r\n    return (\r\n      <ChainOfThoughtContext.Provider value={chainOfThoughtContext}>\r\n        <div className={cn(\"not-prose w-full space-y-4\", className)} {...props}>\r\n          {children}\r\n        </div>\r\n      </ChainOfThoughtContext.Provider>\r\n    );\r\n  }\r\n);\r\n\r\nexport type ChainOfThoughtHeaderProps = ComponentProps<\r\n  typeof CollapsibleTrigger\r\n>;\r\n\r\nexport const ChainOfThoughtHeader = memo(\r\n  ({ className, children, ...props }: ChainOfThoughtHeaderProps) => {\r\n    const { isOpen, setIsOpen } = useChainOfThought();\r\n\r\n    return (\r\n      <Collapsible onOpenChange={setIsOpen} open={isOpen}>\r\n        <CollapsibleTrigger\r\n          className={cn(\r\n            \"flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground motion-reduce:transition-none\",\n            className\r\n          )}\r\n          {...props}\r\n        >\r\n          <BrainIcon className=\"size-4\" />\r\n          <span className=\"flex-1 text-start\">\n            {children ?? \"Chain of Thought\"}\r\n          </span>\r\n          <ChevronDownIcon\r\n            className={cn(\r\n              \"size-4 transition-transform motion-reduce:transition-none\",\n              isOpen ? \"rotate-180\" : \"rotate-0\"\r\n            )}\r\n          />\r\n        </CollapsibleTrigger>\r\n      </Collapsible>\r\n    );\r\n  }\r\n);\r\n\r\nexport type ChainOfThoughtStepProps = ComponentProps<\"div\"> & {\r\n  icon?: LucideIcon;\r\n  label: ReactNode;\r\n  description?: ReactNode;\r\n  status?: \"complete\" | \"active\" | \"pending\";\r\n};\r\n\r\nconst stepStatusStyles = {\r\n  active: \"text-foreground\",\r\n  complete: \"text-muted-foreground\",\r\n  pending: \"text-muted-foreground/50\",\r\n};\r\n\r\nexport const ChainOfThoughtStep = memo(\r\n  ({\r\n    className,\r\n    icon: Icon = DotIcon,\r\n    label,\r\n    description,\r\n    status = \"complete\",\r\n    children,\r\n    ...props\r\n  }: ChainOfThoughtStepProps) => (\r\n    <div\r\n      className={cn(\r\n        \"flex gap-2 text-sm\",\r\n        stepStatusStyles[status],\r\n        \"fade-in-0 slide-in-from-top-2 animate-in motion-reduce:animate-none\",\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      <div className=\"relative mt-0.5\">\r\n        <Icon className=\"size-4\" />\r\n        <div className=\"absolute top-7 bottom-0 left-1/2 -mx-px w-px bg-border\" />\r\n      </div>\r\n      <div className=\"flex-1 space-y-2 overflow-hidden\">\r\n        <div>{label}</div>\r\n        {description && (\r\n          <div className=\"text-muted-foreground text-xs\">{description}</div>\r\n        )}\r\n        {children}\r\n      </div>\r\n    </div>\r\n  )\r\n);\r\n\r\nexport type ChainOfThoughtSearchResultsProps = ComponentProps<\"div\">;\r\n\r\nexport const ChainOfThoughtSearchResults = memo(\r\n  ({ className, ...props }: ChainOfThoughtSearchResultsProps) => (\r\n    <div\r\n      className={cn(\"flex flex-wrap items-center gap-2\", className)}\r\n      {...props}\r\n    />\r\n  )\r\n);\r\n\r\nexport type ChainOfThoughtSearchResultProps = ComponentProps<typeof Badge>;\r\n\r\nexport const ChainOfThoughtSearchResult = memo(\r\n  ({ className, children, ...props }: ChainOfThoughtSearchResultProps) => (\r\n    <Badge\r\n      className={cn(\"gap-1 px-2 py-0.5 font-normal text-xs\", className)}\r\n      variant=\"secondary\"\r\n      {...props}\r\n    >\r\n      {children}\r\n    </Badge>\r\n  )\r\n);\r\n\r\nexport type ChainOfThoughtContentProps = ComponentProps<\r\n  typeof CollapsibleContent\r\n>;\r\n\r\nexport const ChainOfThoughtContent = memo(\r\n  ({ className, children, ...props }: ChainOfThoughtContentProps) => {\r\n    const { isOpen } = useChainOfThought();\r\n\r\n    return (\r\n      <Collapsible open={isOpen}>\r\n        <CollapsibleContent\r\n          className={cn(\r\n            \"mt-2 space-y-3\",\r\n            \"data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 text-popover-foreground outline-none data-[state=closed]:animate-out data-[state=open]:animate-in motion-reduce:animate-none\",\n            className\r\n          )}\r\n          {...props}\r\n        >\r\n          {children}\r\n        </CollapsibleContent>\r\n      </Collapsible>\r\n    );\r\n  }\r\n);\r\n\r\nexport type ChainOfThoughtImageProps = ComponentProps<\"div\"> & {\r\n  caption?: string;\r\n};\r\n\r\nexport const ChainOfThoughtImage = memo(\r\n  ({ className, children, caption, ...props }: ChainOfThoughtImageProps) => (\r\n    <div className={cn(\"mt-2 space-y-2\", className)} {...props}>\r\n      <div className=\"relative flex max-h-[22rem] items-center justify-center overflow-hidden rounded-lg bg-muted p-3\">\r\n        {children}\r\n      </div>\r\n      {caption && <p className=\"text-muted-foreground text-xs\">{caption}</p>}\r\n    </div>\r\n  )\r\n);\r\n\r\nChainOfThought.displayName = \"ChainOfThought\";\r\nChainOfThoughtHeader.displayName = \"ChainOfThoughtHeader\";\r\nChainOfThoughtStep.displayName = \"ChainOfThoughtStep\";\r\nChainOfThoughtSearchResults.displayName = \"ChainOfThoughtSearchResults\";\r\nChainOfThoughtSearchResult.displayName = \"ChainOfThoughtSearchResult\";\r\nChainOfThoughtContent.displayName = \"ChainOfThoughtContent\";\r\nChainOfThoughtImage.displayName = \"ChainOfThoughtImage\";\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/chain-of-thought.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "reasoning",
+        "timeline",
+        "status",
+        "disclosure"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-reasoning-timeline.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/chain-of-thought.tsx",
+            "upstreamPath": "packages/elements/src/chain-of-thought.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/chain-of-thought.tsx",
+            "upstreamSha256": "sha256:ddc63b036299d636483b2041599248226e05ef01afd9c5e32724e3a849def8c4",
+            "contentSha256": "sha256:a6a4898e126d05d5397ddf30e9f0bf7cce09454609bf66bf8e0209bf0f577154",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion classes to upstream transitions and entry animations."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/chain-of-thought.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/chain-of-thought.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion classes to upstream transitions and entry animations.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "expandable-reasoning-step-timeline",
+        "sourceHash": "sha256:4dff112e38c05967b8f9cce0cdfb105ce8a50858624d1e2e003e77bd8cac07ab",
+        "contentHash": "sha256:750a4b8f6cfa1f55d9d77dd4aa6e8a5cf1a411b4fe474aabd0128f1c7c1bfa11",
+        "structureHash": "sha256:7d9d51ab5ce82191d0d15cb8af2242981258145d1fb324599637fa527fc24e4f"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

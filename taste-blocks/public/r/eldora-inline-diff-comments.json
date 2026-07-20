@@ -1,0 +1,237 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "eldora-inline-diff-comments",
+  "title": "Inline Diff Comments",
+  "author": "Eldora UI",
+  "description": "Adds local comment threads and resolution controls to caller-provided code diff lines.",
+  "dependencies": [
+    "@radix-ui/react-avatar@1.1.10",
+    "@radix-ui/react-separator@1.1.7",
+    "@radix-ui/react-slot@1.2.3",
+    "@radix-ui/react-tooltip@1.2.8",
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.544.0",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/eldora-ui/components/eldora-inline-diff-comments/inline-diff-comments.tsx",
+      "content": "\"use client\"\n\nimport { useId, useRef, useState } from \"react\"\nimport { CheckCircle2, MessageSquarePlus, X } from \"lucide-react\"\n\nimport { Avatar, AvatarFallback } from \"../ui/avatar\"\nimport { Badge } from \"../ui/badge\"\nimport { Button } from \"../ui/button\"\nimport { Separator } from \"../ui/separator\"\nimport { Textarea } from \"../ui/textarea\"\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipProvider,\n  TooltipTrigger,\n} from \"../ui/tooltip\"\nimport { cn } from \"../../lib/utils\"\n\nexport type DiffLine =\n  | { kind: \"hunk\"; content: string }\n  | { kind: \"context\"; old: number | null; new: number | null; content: string }\n  | { kind: \"add\"; old: number | null; new: number | null; content: string }\n  | { kind: \"del\"; old: number | null; new: number | null; content: string }\n\nexport type InlineComment = {\n  id: string\n  author: string\n  initials: string\n  body: string\n  createdAt: string\n}\n\nexport interface InlineDiffCommentsProps {\n  diff: readonly DiffLine[]\n  fileName: string\n  className?: string\n  initialComments?: Readonly<Record<number, readonly InlineComment[]>>\n  onComment?: (lineIndex: number, body: string) => void\n  onResolvedChange?: (lineIndex: number, resolved: boolean) => void\n}\n\nexport default function InlineDiffComments({\n  diff,\n  fileName,\n  className,\n  initialComments = {},\n  onComment,\n  onResolvedChange,\n}: InlineDiffCommentsProps) {\n  const instanceId = useId()\n  const [openThreadAt, setOpenThreadAt] = useState<number | null>(null)\n  const [resolvedMap, setResolvedMap] = useState<Record<number, boolean>>({})\n  const [commentsMap, setCommentsMap] = useState<Record<number, InlineComment[]>>(\n    () =>\n      Object.fromEntries(\n        Object.entries(initialComments).map(([index, comments]) => [\n          Number(index),\n          [...comments],\n        ])\n      )\n  )\n  const addButtonRefs = useRef(new Map<number, HTMLButtonElement>())\n\n  function closeThread(index: number, restoreFocus = true) {\n    setOpenThreadAt(null)\n    if (restoreFocus) {\n      requestAnimationFrame(() => addButtonRefs.current.get(index)?.focus())\n    }\n  }\n\n  function toggleResolve(index: number) {\n    setResolvedMap((current) => {\n      const resolved = !current[index]\n      onResolvedChange?.(index, resolved)\n      return { ...current, [index]: resolved }\n    })\n  }\n\n  function addComment(index: number, body: string) {\n    const comment: InlineComment = {\n      id: crypto.randomUUID(),\n      author: \"You\",\n      initials: \"YO\",\n      body,\n      createdAt: \"now\",\n    }\n    setCommentsMap((current) => ({\n      ...current,\n      [index]: [...(current[index] ?? []), comment],\n    }))\n    onComment?.(index, body)\n  }\n\n  return (\n    <TooltipProvider delayDuration={150}>\n      <div\n        role=\"table\"\n        aria-label={`Diff of ${fileName}`}\n        className={cn(\n          \"bg-card overflow-hidden rounded-md border dark:border-white/10\",\n          className\n        )}\n      >\n        <div className=\"flex items-center justify-between border-b px-3 py-2 dark:border-white/10\">\n          <div className=\"flex min-w-0 items-center gap-2\">\n            <span className=\"truncate text-[13px] font-medium\">{fileName}</span>\n            <Badge\n              variant=\"secondary\"\n              aria-label=\"File status: modified\"\n              className=\"h-5 px-1.5 text-[11px]\"\n            >\n              modified\n            </Badge>\n          </div>\n        </div>\n\n        {diff.length === 0 ? (\n          <p className=\"text-muted-foreground px-3 py-6 text-center text-sm\">\n            No diff lines.\n          </p>\n        ) : (\n          <ol role=\"rowgroup\" className=\"divide-y dark:divide-white/10\">\n            {diff.map((line, index) => {\n              const isChange = line.kind === \"add\" || line.kind === \"del\"\n              const isOpen = openThreadAt === index\n              const isResolved = resolvedMap[index] ?? false\n              const threadId = `${instanceId}-thread-${index}`\n              const oldLine = line.kind === \"hunk\" ? \"\" : (line.old ?? \"\")\n              const newLine = line.kind === \"hunk\" ? \"\" : (line.new ?? \"\")\n\n              return (\n                <li\n                  key={`${line.kind}:${oldLine}:${newLine}:${line.content}:${index}`}\n                  role=\"row\"\n                  className={cn(\n                    \"group relative flex items-stretch text-[13px]\",\n                    line.kind === \"hunk\" && \"bg-muted/50 text-muted-foreground\",\n                    line.kind === \"add\" &&\n                      \"bg-emerald-50/60 dark:bg-emerald-950/20\",\n                    line.kind === \"del\" && \"bg-rose-50/60 dark:bg-rose-950/20\"\n                  )}\n                >\n                  <div\n                    role=\"cell\"\n                    className=\"flex w-11 shrink-0 items-center justify-center sm:w-8\"\n                  >\n                    {line.kind !== \"hunk\" ? (\n                      <Tooltip>\n                        <TooltipTrigger asChild>\n                          <Button\n                            ref={(node) => {\n                              if (node) addButtonRefs.current.set(index, node)\n                              else addButtonRefs.current.delete(index)\n                            }}\n                            type=\"button\"\n                            size=\"icon\"\n                            variant=\"secondary\"\n                            aria-label={isOpen ? \"Close inline comment\" : \"Add inline comment\"}\n                            aria-controls={threadId}\n                            aria-expanded={isOpen}\n                            className=\"size-11 rounded-full opacity-100 shadow-sm transition-opacity sm:size-7 sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100 motion-reduce:transition-none\"\n                            onClick={() => {\n                              if (isOpen) closeThread(index, false)\n                              else setOpenThreadAt(index)\n                            }}\n                          >\n                            <MessageSquarePlus className=\"size-4 sm:size-3.5\" />\n                          </Button>\n                        </TooltipTrigger>\n                        <TooltipContent side=\"top\">\n                          {isOpen ? \"Close comment\" : \"Add comment\"}\n                        </TooltipContent>\n                      </Tooltip>\n                    ) : null}\n                  </div>\n\n                  <div\n                    role=\"cell\"\n                    dir=\"ltr\"\n                    className=\"text-muted-foreground grid w-16 shrink-0 grid-cols-2 border-r text-[11px] dark:border-white/10\"\n                  >\n                    <span className=\"px-2 py-1 text-right tabular-nums\">\n                      {line.kind === \"add\" || line.kind === \"hunk\"\n                        ? \"\"\n                        : (line.old ?? \"\")}\n                    </span>\n                    <span className=\"px-2 py-1 text-right tabular-nums\">\n                      {line.kind === \"del\" || line.kind === \"hunk\"\n                        ? \"\"\n                        : (line.new ?? \"\")}\n                    </span>\n                  </div>\n\n                  <div role=\"cell\" className=\"min-w-0 flex-1\">\n                    <pre\n                      dir=\"ltr\"\n                      className={cn(\n                        \"overflow-x-auto px-2 py-1 font-mono text-[12px] leading-5 whitespace-pre\",\n                        isChange && \"pl-5\"\n                      )}\n                    >\n                      <span\n                        aria-hidden=\"true\"\n                        className={cn(\n                          \"mr-1 inline-block w-2 text-center font-semibold\",\n                          line.kind === \"add\" && \"text-emerald-600\",\n                          line.kind === \"del\" && \"text-rose-600\"\n                        )}\n                      >\n                        {line.kind === \"add\"\n                          ? \"+\"\n                          : line.kind === \"del\"\n                            ? \"-\"\n                            : \" \"}\n                      </span>\n                      {line.content}\n                    </pre>\n\n                    {isOpen && line.kind !== \"hunk\" ? (\n                      <div\n                        id={threadId}\n                        className=\"bg-background border-t px-2 py-2 dark:border-white/10\"\n                      >\n                        <InlineThread\n                          resolved={isResolved}\n                          comments={commentsMap[index] ?? []}\n                          onAddComment={(body) => addComment(index, body)}\n                          onToggleResolve={() => toggleResolve(index)}\n                          onClose={() => closeThread(index)}\n                        />\n                      </div>\n                    ) : null}\n                  </div>\n                </li>\n              )\n            })}\n          </ol>\n        )}\n      </div>\n    </TooltipProvider>\n  )\n}\n\nfunction InlineThread({\n  resolved,\n  comments,\n  onAddComment,\n  onToggleResolve,\n  onClose,\n}: {\n  resolved: boolean\n  comments: readonly InlineComment[]\n  onAddComment: (body: string) => void\n  onToggleResolve: () => void\n  onClose: () => void\n}) {\n  const fieldId = useId()\n  const [draft, setDraft] = useState(\"\")\n  const textRef = useRef<HTMLTextAreaElement | null>(null)\n\n  function addComment() {\n    const body = draft.trim()\n    if (!body) return\n    setDraft(\"\")\n    onAddComment(body)\n    requestAnimationFrame(() => textRef.current?.focus())\n  }\n\n  return (\n    <div\n      className=\"bg-card rounded-md border dark:border-white/10\"\n      onKeyDown={(event) => {\n        if (event.key === \"Escape\") {\n          event.preventDefault()\n          onClose()\n        }\n      }}\n    >\n      <div className=\"flex items-center justify-between gap-2 px-2 py-1.5\">\n        <Badge\n          aria-live=\"polite\"\n          className={cn(\n            \"h-5 gap-1 px-1.5 text-[11px]\",\n            resolved\n              ? \"bg-emerald-600 text-white hover:bg-emerald-600/90 dark:bg-emerald-500 dark:hover:bg-emerald-500/90\"\n              : \"bg-secondary text-foreground dark:bg-neutral-800 dark:text-neutral-100\"\n          )}\n        >\n          {resolved ? <CheckCircle2 className=\"size-3.5\" /> : null}\n          {resolved ? \"Resolved\" : \"Open\"}\n        </Badge>\n\n        <div className=\"flex items-center gap-1.5\">\n          <Button\n            type=\"button\"\n            variant={resolved ? \"secondary\" : \"default\"}\n            size=\"sm\"\n            onClick={onToggleResolve}\n            aria-pressed={resolved}\n            className=\"h-8 px-2 text-[12px]\"\n          >\n            {resolved ? \"Reopen\" : \"Resolve\"}\n          </Button>\n          <Button\n            type=\"button\"\n            variant=\"ghost\"\n            size=\"icon\"\n            aria-label=\"Close thread\"\n            onClick={onClose}\n            className=\"size-8\"\n          >\n            <X className=\"size-4\" />\n          </Button>\n        </div>\n      </div>\n\n      <ul aria-live=\"polite\" className=\"space-y-2 px-2 py-2\">\n        {comments.length === 0 ? (\n          <li className=\"text-muted-foreground text-[12px]\">\n            No comments yet.\n          </li>\n        ) : (\n          comments.map((comment) => (\n            <li key={comment.id} className=\"flex items-start gap-2\">\n              <Avatar className=\"size-6\">\n                <AvatarFallback className=\"text-[9px]\">\n                  {comment.initials}\n                </AvatarFallback>\n              </Avatar>\n              <div className=\"min-w-0 flex-1\">\n                <div className=\"flex items-center justify-between gap-2\">\n                  <p className=\"truncate text-[12px] font-medium\">\n                    {comment.author}\n                  </p>\n                  <span className=\"text-muted-foreground shrink-0 text-[10px]\">\n                    {comment.createdAt}\n                  </span>\n                </div>\n                <p className=\"mt-0.5 text-[13px] leading-5 break-words\">\n                  {comment.body}\n                </p>\n              </div>\n            </li>\n          ))\n        )}\n      </ul>\n\n      <Separator />\n\n      <div className=\"flex flex-col gap-2 px-2 py-2\">\n        <label htmlFor={fieldId} className=\"sr-only\">\n          Add a comment\n        </label>\n        <Textarea\n          autoFocus\n          id={fieldId}\n          ref={textRef}\n          value={draft}\n          onChange={(event) => setDraft(event.target.value)}\n          onKeyDown={(event) => {\n            if (event.key === \"Enter\" && (event.metaKey || event.ctrlKey)) {\n              event.preventDefault()\n              addComment()\n            }\n          }}\n          placeholder=\"Comment\"\n          rows={2}\n          className=\"min-h-16 py-1.5 text-[13px]\"\n        />\n        <div className=\"flex items-center justify-end gap-1.5\">\n          <Button\n            type=\"button\"\n            variant=\"ghost\"\n            size=\"sm\"\n            onClick={onClose}\n            className=\"h-8 px-2 text-[12px]\"\n          >\n            Cancel\n          </Button>\n          <Button\n            type=\"button\"\n            size=\"sm\"\n            onClick={addComment}\n            disabled={!draft.trim()}\n            className=\"h-8 px-2 text-[12px]\"\n          >\n            Comment\n          </Button>\n        </div>\n      </div>\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/inline-diff-comments.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/avatar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport * as AvatarPrimitive from \"@radix-ui/react-avatar\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst Avatar = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Root\n    ref={ref}\n    className={cn(\n      \"relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full\",\n      className\n    )}\n    {...props}\n  />\n))\nAvatar.displayName = AvatarPrimitive.Root.displayName\n\nconst AvatarImage = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Image>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Image\n    ref={ref}\n    className={cn(\"aspect-square h-full w-full\", className)}\n    {...props}\n  />\n))\nAvatarImage.displayName = AvatarPrimitive.Image.displayName\n\nconst AvatarFallback = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Fallback>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Fallback\n    ref={ref}\n    className={cn(\n      \"bg-muted flex h-full w-full items-center justify-center rounded-full\",\n      className\n    )}\n    {...props}\n  />\n))\nAvatarFallback.displayName = AvatarPrimitive.Fallback.displayName\n\nexport { Avatar, AvatarImage, AvatarFallback }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/avatar.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/badge.tsx",
+      "content": "import * as React from \"react\"\nimport { Slot } from \"@radix-ui/react-slot\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst badgeVariants = cva(\n  \"inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border border-transparent px-2 py-0.5 text-xs font-medium transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 motion-reduce:transition-none [&>svg]:pointer-events-none [&>svg]:size-3 dark:aria-invalid:ring-destructive/40\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground [a&]:hover:bg-primary/90\",\n        secondary:\n          \"bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90\",\n        destructive:\n          \"bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40\",\n        outline:\n          \"border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground\",\n        ghost: \"[a&]:hover:bg-accent [a&]:hover:text-accent-foreground\",\n        link: \"text-primary underline-offset-4 [a&]:hover:underline\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nfunction Badge({\n  className,\n  variant = \"default\",\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"span\"> &\n  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {\n  const Comp = asChild ? Slot : \"span\"\n\n  return (\n    <Comp\n      data-slot=\"badge\"\n      data-variant={variant}\n      className={cn(badgeVariants({ variant }), className)}\n      {...props}\n    />\n  )\n}\n\nexport { Badge, badgeVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/badge.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/button.tsx",
+      "content": "import * as React from \"react\"\nimport { Slot } from \"@radix-ui/react-slot\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst buttonVariants = cva(\n  \"inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium outline-none transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 motion-reduce:transition-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 dark:aria-invalid:ring-destructive/40\",\n  {\n    variants: {\n      variant: {\n        default:\n          \"bg-primary text-primary-foreground shadow-xs hover:bg-primary/90\",\n        destructive:\n          \"bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40\",\n        outline:\n          \"border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50\",\n        secondary:\n          \"bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80\",\n        ghost:\n          \"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n        rainbow:\n          \"group relative animate-rainbow cursor-pointer border-0 bg-[linear-gradient(#121213,#121213),linear-gradient(#121213_50%,rgba(18,18,19,0.6)_80%,rgba(18,18,19,0)),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] bg-[length:200%] text-primary-foreground [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent] before:absolute before:bottom-[-20%] before:left-1/2 before:z-0 before:h-1/5 before:w-3/5 before:-translate-x-1/2 before:animate-rainbow before:bg-[linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] before:[filter:blur(calc(0.8*1rem))] dark:bg-[linear-gradient(#fff,#fff),linear-gradient(#fff_50%,rgba(255,255,255,0.6)_80%,rgba(0,0,0,0)),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))]\",\n        \"rainbow-outline\":\n          \"group relative animate-rainbow cursor-pointer border-0 border-input bg-[linear-gradient(#fff,#fff),linear-gradient(#fff_50%,rgba(255,255,255,0.6)_80%,rgba(0,0,0,0)),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] bg-[length:200%] px-4 text-foreground [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent] before:absolute before:bottom-[-20%] before:left-1/2 before:z-0 before:h-1/5 before:w-3/5 before:-translate-x-1/2 before:animate-rainbow before:bg-[linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] before:[filter:blur(calc(0.8*1rem))] dark:bg-[linear-gradient(#121213,#121213),linear-gradient(#121213_50%,rgba(18,18,19,0.6)_80%,rgba(0,0,0,0)),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))]\",\n      },\n      size: {\n        default: \"h-9 px-4 py-2 has-[>svg]:px-3\",\n        sm: \"h-8 gap-1.5 rounded-lg px-3 has-[>svg]:px-2.5\",\n        lg: \"h-10 rounded-lg px-6 has-[>svg]:px-4\",\n        icon: \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant,\n  size,\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean\n  }) {\n  const Comp = asChild ? Slot : \"button\"\n\n  return (\n    <Comp\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/button.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/separator.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport * as SeparatorPrimitive from \"@radix-ui/react-separator\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst Separator = React.forwardRef<\n  React.ElementRef<typeof SeparatorPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>\n>(\n  (\n    { className, orientation = \"horizontal\", decorative = true, ...props },\n    ref\n  ) => (\n    <SeparatorPrimitive.Root\n      ref={ref}\n      decorative={decorative}\n      orientation={orientation}\n      className={cn(\n        \"bg-border shrink-0\",\n        orientation === \"horizontal\" ? \"h-[1px] w-full\" : \"h-full w-[1px]\",\n        className\n      )}\n      {...props}\n    />\n  )\n)\nSeparator.displayName = SeparatorPrimitive.Root.displayName\n\nexport { Separator }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/separator.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/textarea.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst Textarea = React.forwardRef<\n  HTMLTextAreaElement,\n  React.TextareaHTMLAttributes<HTMLTextAreaElement>\n>(({ className, ...props }, ref) => {\n  return (\n    <textarea\n      className={cn(\n        \"border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50\",\n        className\n      )}\n      ref={ref}\n      {...props}\n    />\n  )\n})\nTextarea.displayName = \"Textarea\"\n\nexport { Textarea }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/textarea.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/components/ui/tooltip.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport * as TooltipPrimitive from \"@radix-ui/react-tooltip\"\n\nimport { cn } from \"../../lib/utils\"\n\nfunction TooltipProvider({\n  delayDuration = 0,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {\n  return (\n    <TooltipPrimitive.Provider\n      data-slot=\"tooltip-provider\"\n      delayDuration={delayDuration}\n      {...props}\n    />\n  )\n}\n\nfunction Tooltip({\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Root>) {\n  return (\n    <TooltipProvider>\n      <TooltipPrimitive.Root data-slot=\"tooltip\" {...props} />\n    </TooltipProvider>\n  )\n}\n\nfunction TooltipTrigger({\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {\n  return <TooltipPrimitive.Trigger data-slot=\"tooltip-trigger\" {...props} />\n}\n\nfunction TooltipContent({\n  className,\n  sideOffset = 0,\n  children,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Content>) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Content\n        data-slot=\"tooltip-content\"\n        sideOffset={sideOffset}\n        className={cn(\n          \"bg-foreground text-background animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance motion-reduce:animate-none motion-reduce:transition-none\",\n          className\n        )}\n        {...props}\n      >\n        {children}\n        <TooltipPrimitive.Arrow className=\"bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]\" />\n      </TooltipPrimitive.Content>\n    </TooltipPrimitive.Portal>\n  )\n}\n\nexport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/tooltip.tsx"
+    },
+    {
+      "path": "registry/sources/eldora-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "code-review",
+        "comments",
+        "diff",
+        "threads"
+      ],
+      "renderer": "dom",
+      "preview": "previews/eldora-inline-diff-comments.tsx",
+      "source": {
+        "project": "Eldora UI",
+        "repository": "https://github.com/karthikmudunuri/eldoraui",
+        "revision": "2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/eldora-inline-diff-comments/inline-diff-comments.tsx",
+            "upstreamPath": "apps/www/registry/eldoraui/github-inline-comments.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/registry/eldoraui/github-inline-comments.tsx",
+            "upstreamSha256": "sha256:7f61d4d6ed9e0c73b5ad5c9f2fbad35d399ac148a3be3f5f12d241ce9e69cbe6",
+            "contentSha256": "sha256:fd9398fda2d8eb071fbf073871d7c5f8f18b23ab5f91674be5a6b5c1c55c6128",
+            "changes": [
+              "Renamed the exported component to a neutral Inline Diff Comments identity and changed absolute imports to its bundled relative support closure.",
+              "Removed the seeded reviewer comment, added caller-provided initial comments plus comment and resolution callbacks, and retained local comments while threads close and reopen.",
+              "Added empty states, unique field and thread IDs, button types, keyboard submit, Escape close, focus restoration, touch-sized mobile controls, explicit left-to-right code flow, and reduced-motion transitions.",
+              "Stopped replacing code content with an aria-label and made long diff lines scroll without breaking the surrounding component."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/avatar.tsx",
+            "upstreamPath": "apps/www/components/ui/avatar.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/avatar.tsx",
+            "upstreamSha256": "sha256:f27df300437bcfdbf676a1803b99506b1e828a46d7c13a5286e9a94a3057222b",
+            "contentSha256": "sha256:f7fccd85539e82f6e7a897c69b5e96dbdfedd5c14c5c11b0a4f37a8209431df0",
+            "changes": [
+              "Changed the utility import from @/lib/utils to ../../lib/utils for source-batch and installation-target portability."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/badge.tsx",
+            "upstreamPath": "apps/www/components/ui/badge.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/badge.tsx",
+            "upstreamSha256": "sha256:a3909c80ba1f9cd27258f455a4a7aa4753ef667c42ae5dfd53bd707a6107e0c1",
+            "contentSha256": "sha256:f43e024435349659e3fce5b5750d913ab12407aaa34c9469c6f36f752faee7f6",
+            "changes": [
+              "Changed the utility import to ../../lib/utils, normalized utility ordering, and suppressed transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/button.tsx",
+            "upstreamPath": "apps/www/components/ui/button.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/button.tsx",
+            "upstreamSha256": "sha256:8894348e81c0a616e656b84fc62c0c6e64a446de2f5fa4a0fd39785e7749bec0",
+            "contentSha256": "sha256:9843165725c40b795aa43f762458177dc964bebda812cebaafffce92a753f073",
+            "changes": [
+              "Changed the utility import to ../../lib/utils, normalized utility ordering, and suppressed transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/separator.tsx",
+            "upstreamPath": "apps/www/components/ui/separator.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/separator.tsx",
+            "upstreamSha256": "sha256:4bcfbb420d54c125fbd86157f031d81d968909984f4307eb9cafc02aaf5e4e67",
+            "contentSha256": "sha256:45f56561fb4a14ff4a2a9df6cbd624bffda7fb42b642135c7831e6d2d7ce2131",
+            "changes": [
+              "Changed the utility import from @/lib/utils to ../../lib/utils for source-batch and installation-target portability."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/textarea.tsx",
+            "upstreamPath": "apps/www/components/ui/textarea.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/textarea.tsx",
+            "upstreamSha256": "sha256:024023f4d5aef744a7b2f667eb0e7575fd48d79dad7e7d320c5286b9962604d6",
+            "contentSha256": "sha256:1c7eed057ac0f67e2e6ba6282fa8aa70af3e0f470a9c835631c8b35cf00df8a8",
+            "changes": [
+              "Changed the utility import from @/lib/utils to ../../lib/utils for source-batch and installation-target portability."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/tooltip.tsx",
+            "upstreamPath": "apps/www/components/ui/tooltip.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/components/ui/tooltip.tsx",
+            "upstreamSha256": "sha256:c3f84f47ac457985b41d9ae6ced7a7b7683b3c355f1f4ea386afd8a1a8549aa3",
+            "contentSha256": "sha256:6ed1a2bc10e50d88ce8e608b12a64b99cc2de254d3dffb19350e37633e9d0995",
+            "changes": [
+              "Changed the utility import to ../../lib/utils and suppressed tooltip animation and transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/eldoraui/github-inline-comments.tsx, apps/www/components/ui/avatar.tsx, badge.tsx, button.tsx, separator.tsx, textarea.tsx, tooltip.tsx, and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Mudunuri Bhaskara Karthikeya Varma"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/LICENSE.md",
+          "sha256": "sha256:98a4833a2780f22c9f12d39493bbd19e3eb5ab321d4e44cc79c596b52cba4c29",
+          "localPath": "registry/sources/eldora-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/eldora-inline-diff-comments/inline-diff-comments.tsx",
+          "change": "Repointed bundled imports; removed seeded fake discussion data; added caller data and event hooks, persistent local thread state, empty states, unique IDs, semantic button types, keyboard submit and close, focus return, touch-sized mobile controls, direction-safe code, reduced-motion transitions, and horizontal code overflow.",
+          "reason": "Keep the copied diff-review interaction standalone and real-data-ready while repairing keyboard, touch, responsive, RTL, and accessible-name behavior."
+        },
+        {
+          "shippedPath": "components/ui/avatar.tsx",
+          "change": "Changed the utility import to ../../lib/utils.",
+          "reason": "Resolve the bundled support utility from both the source batch and installation target."
+        },
+        {
+          "shippedPath": "components/ui/badge.tsx",
+          "change": "Changed the utility import to ../../lib/utils, normalized class order, and added reduced-motion transition suppression.",
+          "reason": "Keep the copied support component portable and motion-safe."
+        },
+        {
+          "shippedPath": "components/ui/button.tsx",
+          "change": "Changed the utility import to ../../lib/utils, normalized class order, and added reduced-motion transition suppression.",
+          "reason": "Keep the copied support component portable and motion-safe."
+        },
+        {
+          "shippedPath": "components/ui/separator.tsx",
+          "change": "Changed the utility import to ../../lib/utils.",
+          "reason": "Resolve the bundled support utility from both the source batch and installation target."
+        },
+        {
+          "shippedPath": "components/ui/textarea.tsx",
+          "change": "Changed the utility import to ../../lib/utils.",
+          "reason": "Resolve the bundled support utility from both the source batch and installation target."
+        },
+        {
+          "shippedPath": "components/ui/tooltip.tsx",
+          "change": "Changed the utility import to ../../lib/utils and added reduced-motion animation and transition suppression.",
+          "reason": "Keep the copied support component portable and motion-safe."
+        }
+      ],
+      "dedupe": {
+        "family": "inline-diff-comment-thread",
+        "sourceHash": "sha256:42f41415152c66d4e84ae56f70f6551a029ca919f5258563d106cd01ac4ac505",
+        "contentHash": "sha256:2c71bc1fdfe8e1bc9fc3b35fa7cf683fcc311a4b566a24b1a049a4ebc532f15b",
+        "structureHash": "sha256:20f1e5c673ebeb6bdbfd1eef788d61440f044b6c74c5703bafc8249a7194daa2"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

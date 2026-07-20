@@ -1,0 +1,103 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "componentry-circuit-board",
+  "title": "Circuit Board",
+  "author": "Harsh Jadhav",
+  "description": "Draws caller-defined nodes and orthogonal connections with optional directional signal pulses.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "framer-motion@12.42.2",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/componentry/components/componentry/circuit-board.tsx",
+      "content": "\"use client\"\r\n\r\nimport * as React from \"react\"\r\nimport { motion, useReducedMotion } from \"framer-motion\"\nimport { cn } from \"./lib/utils\"\n\r\ninterface CircuitNode {\r\n  id: string\r\n  x: number\r\n  y: number\r\n  label?: string\r\n  icon?: React.ReactNode\r\n  status?: \"active\" | \"inactive\" | \"processing\" | \"error\"\r\n  size?: \"sm\" | \"md\" | \"lg\"\r\n}\r\n\r\ninterface CircuitConnection {\r\n  from: string\r\n  to: string\r\n  animated?: boolean\r\n  bidirectional?: boolean\r\n  color?: string\r\n  pulseColor?: string\r\n}\r\n\r\ninterface CircuitBoardProps extends React.HTMLAttributes<HTMLDivElement> {\r\n  nodes: CircuitNode[]\r\n  connections: CircuitConnection[]\r\n  width?: number\r\n  height?: number\r\n  gridSize?: number\r\n  showGrid?: boolean\r\n  gridColor?: string\r\n  traceColor?: string\r\n  pulseColor?: string\r\n  nodeColor?: string\r\n  pulseSpeed?: number\r\n  traceWidth?: number\n  label?: string\n  /** Force a specific theme variant. Defaults to auto-detect from system. */\r\n  variant?: \"light\" | \"dark\" | \"auto\"\r\n}\r\n\r\nfunction CircuitBoard({\r\n  nodes,\r\n  connections,\r\n  width = 600,\r\n  height = 400,\r\n  gridSize = 20,\r\n  showGrid = true,\r\n  gridColor,\r\n  traceColor,\r\n  pulseColor,\r\n  nodeColor,\r\n  pulseSpeed = 2,\r\n  traceWidth = 2,\n  variant = \"auto\",\n  label = \"Circuit network\",\n  className,\r\n  ...props\r\n}: CircuitBoardProps) {\n  const reduceMotion = useReducedMotion()\n  const definitionId = React.useId().replace(/:/g, \"\")\n  const containerRef = React.useRef<HTMLDivElement>(null)\n  const [visible, setVisible] = React.useState(true)\n  const animateMotion = visible && !reduceMotion\n\n  React.useEffect(() => {\n    const container = containerRef.current\n    if (!container) return\n    let intersecting = true\n    const update = () => setVisible(intersecting && !document.hidden)\n    const observer = new IntersectionObserver(([entry]) => {\n      intersecting = entry?.isIntersecting ?? false\n      update()\n    })\n    observer.observe(container)\n    document.addEventListener(\"visibilitychange\", update)\n    update()\n    return () => {\n      observer.disconnect()\n      document.removeEventListener(\"visibilitychange\", update)\n    }\n  }, [])\n  // Theme-aware color defaults\r\n  const [isDark, setIsDark] = React.useState(true)\r\n\r\n  React.useEffect(() => {\r\n    if (variant !== \"auto\") {\r\n      setIsDark(variant === \"dark\")\r\n      return\r\n    }\r\n\r\n    const mediaQuery = window.matchMedia(\"(prefers-color-scheme: dark)\")\n\n    // Explicit theme classes win; otherwise follow the system preference.\n    const checkTheme = () => {\n      const hasDarkClass = document.documentElement.classList.contains(\"dark\") ||\n        document.body.classList.contains(\"dark\")\n      const hasLightClass = document.documentElement.classList.contains(\"light\") ||\n        document.body.classList.contains(\"light\")\n      const isDarkMode = hasDarkClass || (!hasLightClass && mediaQuery.matches)\n      setIsDark(isDarkMode)\r\n    }\r\n\r\n    checkTheme()\r\n\r\n    // Listen for changes\r\n    const observer = new MutationObserver(checkTheme)\r\n    observer.observe(document.documentElement, { attributes: true, attributeFilter: [\"class\"] })\r\n    observer.observe(document.body, { attributes: true, attributeFilter: [\"class\"] })\r\n\r\n    mediaQuery.addEventListener(\"change\", checkTheme)\n\r\n    return () => {\r\n      observer.disconnect()\r\n      mediaQuery.removeEventListener(\"change\", checkTheme)\r\n    }\r\n  }, [variant])\r\n\r\n  // Compute theme-aware colors\r\n  const computedGridColor = gridColor || (isDark ? \"rgba(163, 163, 163, 0.08)\" : \"rgba(64, 64, 64, 0.12)\")\r\n  const computedTraceColor = traceColor || (isDark ? \"rgba(163, 163, 163, 0.25)\" : \"rgba(64, 64, 64, 0.35)\")\r\n  const computedPulseColor = pulseColor || (isDark ? \"rgba(163, 163, 163, 0.6)\" : \"rgba(64, 64, 64, 0.7)\")\r\n  const computedNodeColor = nodeColor || (isDark ? \"rgba(163, 163, 163, 0.5)\" : \"rgba(64, 64, 64, 0.6)\")\r\n  const nodeMap = React.useMemo(() => {\r\n    return new Map(nodes.map((node) => [node.id, node]))\r\n  }, [nodes])\r\n\r\n  const getNodeSize = React.useCallback((size?: CircuitNode[\"size\"]) => {\r\n    switch (size) {\r\n      case \"sm\":\r\n        return 24\r\n      case \"lg\":\r\n        return 48\r\n      default:\r\n        return 36\r\n    }\r\n  }, [])\r\n\r\n  const calculatePath = React.useCallback(\r\n    (from: CircuitNode, to: CircuitNode): string => {\r\n      const fromSize = getNodeSize(from.size) / 2 + 4\r\n      const toSize = getNodeSize(to.size) / 2 + 4\r\n\r\n      const dx = to.x - from.x\r\n      const dy = to.y - from.y\r\n\r\n      // Calculate start and end points offset from node centers\r\n      let startX = from.x\r\n      let startY = from.y\r\n      let endX = to.x\r\n      let endY = to.y\r\n\r\n      // Create circuit-like paths with right angles\r\n      if (Math.abs(dx) > Math.abs(dy)) {\r\n        // Horizontal first, then vertical\r\n        startX = from.x + (dx > 0 ? fromSize : -fromSize)\r\n        endX = to.x + (dx > 0 ? -toSize : toSize)\r\n        const midX = from.x + dx / 2\r\n        return `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`\r\n      } else {\r\n        // Vertical first, then horizontal\r\n        startY = from.y + (dy > 0 ? fromSize : -fromSize)\r\n        endY = to.y + (dy > 0 ? -toSize : toSize)\r\n        const midY = from.y + dy / 2\r\n        return `M ${startX} ${startY} V ${midY} H ${endX} V ${endY}`\r\n      }\r\n    },\r\n    [getNodeSize]\r\n  )\r\n\r\n  const getStatusColor = (status?: CircuitNode[\"status\"]) => {\r\n    if (isDark) {\r\n      switch (status) {\r\n        case \"active\":\r\n          return \"rgba(163, 163, 163, 0.7)\"\r\n        case \"processing\":\r\n          return \"rgba(163, 163, 163, 0.5)\"\r\n        case \"error\":\r\n          return \"rgba(120, 113, 108, 0.6)\"\r\n        default:\r\n          return computedNodeColor\r\n      }\r\n    } else {\r\n      switch (status) {\r\n        case \"active\":\r\n          return \"rgba(64, 64, 64, 0.8)\"\r\n        case \"processing\":\r\n          return \"rgba(64, 64, 64, 0.6)\"\r\n        case \"error\":\r\n          return \"rgba(180, 83, 83, 0.7)\"\r\n        default:\r\n          return computedNodeColor\r\n      }\r\n    }\r\n  }\r\n\r\n  return (\r\n    <div\n      ref={containerRef}\n      className={cn(\r\n        \"relative overflow-hidden\",\r\n        className\r\n      )}\r\n      style={{ width, height }}\n      role=\"img\"\n      aria-label={label}\n      {...props}\r\n    >\r\n      <svg\n        aria-hidden=\"true\"\n        width={width}\r\n        height={height}\r\n        className=\"absolute inset-0\"\r\n        style={{ overflow: \"visible\" }}\r\n      >\r\n        <defs>\r\n          {/* Glow filter for the pulse effect */}\r\n          <filter id={`${definitionId}-glow`} x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\">\n            <feGaussianBlur stdDeviation=\"3\" result=\"coloredBlur\" />\r\n            <feMerge>\r\n              <feMergeNode in=\"coloredBlur\" />\r\n              <feMergeNode in=\"SourceGraphic\" />\r\n            </feMerge>\r\n          </filter>\r\n\r\n          {/* Grid pattern */}\r\n          {showGrid && (\r\n            <pattern\r\n              id={`${definitionId}-grid`}\n              width={gridSize}\r\n              height={gridSize}\r\n              patternUnits=\"userSpaceOnUse\"\r\n            >\r\n              <circle cx={gridSize / 2} cy={gridSize / 2} r=\"0.5\" fill={computedGridColor} />\r\n            </pattern>\r\n          )}\r\n        </defs>\r\n\r\n        {/* Grid background */}\r\n        {showGrid && (\r\n          <rect width={width} height={height} fill={`url(#${definitionId}-grid)`} />\n        )}\r\n\r\n        {/* Connection traces */}\r\n        {connections.map((conn, i) => {\r\n          const fromNode = nodeMap.get(conn.from)\r\n          const toNode = nodeMap.get(conn.to)\r\n          if (!fromNode || !toNode) return null\r\n\r\n          const path = calculatePath(fromNode, toNode)\r\n          const pathLength = 500 // Approximate path length for animation\r\n\r\n          return (\r\n            <g key={`connection-${i}`}>\r\n              {/* Base trace */}\r\n              <motion.path\r\n                d={path}\r\n                fill=\"none\"\r\n                stroke={conn.color || computedTraceColor}\r\n                strokeWidth={traceWidth}\r\n                strokeLinecap=\"round\"\r\n                strokeLinejoin=\"round\"\r\n                initial={{ pathLength: animateMotion ? 0 : 1 }}\n                animate={{ pathLength: 1 }}\n                transition={{ duration: animateMotion ? 1 : 0, delay: animateMotion ? i * 0.2 : 0 }}\n              />\r\n\r\n              {/* Animated electricity pulse */}\r\n              {conn.animated !== false && (\r\n                <motion.path\r\n                  d={path}\r\n                  fill=\"none\"\r\n                  stroke={conn.pulseColor || computedPulseColor}\r\n                  strokeWidth={traceWidth + 2}\r\n                  strokeLinecap=\"round\"\r\n                  strokeLinejoin=\"round\"\r\n                  filter={`url(#${definitionId}-glow)`}\n                  strokeDasharray={`${pathLength * 0.1} ${pathLength * 0.9}`}\r\n                  initial={{ strokeDashoffset: pathLength }}\r\n                  animate={{ strokeDashoffset: animateMotion ? -pathLength : 0 }}\n                  transition={{\r\n                    duration: pulseSpeed,\r\n                    repeat: animateMotion ? Infinity : 0,\n                    ease: \"linear\",\r\n                    delay: i * 0.3,\r\n                  }}\r\n                />\r\n              )}\r\n\r\n              {/* Bidirectional pulse */}\r\n              {conn.bidirectional && (\r\n                <motion.path\r\n                  d={path}\r\n                  fill=\"none\"\r\n                  stroke={conn.pulseColor || computedPulseColor}\r\n                  strokeWidth={traceWidth + 2}\r\n                  strokeLinecap=\"round\"\r\n                  strokeLinejoin=\"round\"\r\n                  filter={`url(#${definitionId}-glow)`}\n                  strokeDasharray={`${pathLength * 0.1} ${pathLength * 0.9}`}\r\n                  initial={{ strokeDashoffset: -pathLength }}\r\n                  animate={{ strokeDashoffset: animateMotion ? pathLength : 0 }}\n                  transition={{\r\n                    duration: pulseSpeed,\r\n                    repeat: animateMotion ? Infinity : 0,\n                    ease: \"linear\",\r\n                    delay: i * 0.3 + pulseSpeed / 2,\r\n                  }}\r\n                />\r\n              )}\r\n\r\n\r\n            </g>\r\n          )\r\n        })}\r\n      </svg>\r\n\r\n      {/* Nodes */}\r\n      {nodes.map((node, i) => {\r\n        const size = getNodeSize(node.size)\r\n        const statusColor = getStatusColor(node.status)\r\n\r\n        return (\r\n          <motion.div\r\n            key={node.id}\r\n            className=\"absolute flex items-center justify-center\"\r\n            style={{\r\n              left: node.x - size / 2,\r\n              top: node.y - size / 2,\r\n              width: size,\r\n              height: size,\r\n            }}\r\n            initial={{ scale: animateMotion ? 0 : 1, opacity: animateMotion ? 0 : 1 }}\n            animate={{ scale: 1, opacity: 1 }}\r\n            transition={animateMotion ? { delay: i * 0.1 + 0.5, type: \"spring\" } : { duration: 0 }}\n          >\r\n            {/* Node background with pulse */}\r\n            <motion.div\r\n              className=\"absolute inset-0 rounded-lg\"\r\n              style={{ backgroundColor: statusColor }}\r\n              animate={\r\n                node.status === \"processing\"\r\n                  ? { opacity: animateMotion ? [0.2, 0.5, 0.2] : 0.35 }\n                  : { opacity: 0.2 }\r\n              }\r\n              transition={\r\n                node.status === \"processing\"\r\n                  ? { duration: animateMotion ? 1.5 : 0, repeat: animateMotion ? Infinity : 0 }\n                  : {}\r\n              }\r\n            />\r\n\r\n            {/* Node border */}\r\n            <div\r\n              className=\"absolute inset-0 rounded-lg border-2\"\r\n              style={{ borderColor: statusColor }}\r\n            />\r\n\r\n            {/* Inner glow for active nodes */}\r\n            {node.status === \"active\" && (\r\n              <motion.div\r\n                className=\"absolute inset-0 rounded-lg\"\r\n                style={{\r\n                  boxShadow: `0 0 20px ${statusColor}40, inset 0 0 10px ${statusColor}20`,\r\n                }}\r\n                animate={{ opacity: animateMotion ? [0.5, 1, 0.5] : 0.75 }}\n                transition={{ duration: animateMotion ? 2 : 0, repeat: animateMotion ? Infinity : 0 }}\n              />\r\n            )}\r\n\r\n            {/* Node content */}\r\n            <div className=\"relative z-10 flex flex-col items-center justify-center\">\r\n              {node.icon && (\r\n                <div style={{ color: statusColor }}>{node.icon}</div>\r\n              )}\r\n            </div>\r\n\r\n            {/* Label */}\r\n            {node.label && (\r\n              <div\r\n                className=\"absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium\"\r\n                style={{ color: statusColor }}\r\n              >\r\n                {node.label}\r\n              </div>\r\n            )}\r\n          </motion.div>\r\n        )\r\n      })}\r\n    </div>\r\n  )\r\n}\r\n\r\nexport {\n  CircuitBoard,\n  type CircuitNode as CircuitNodeType,\n  type CircuitConnection,\n  type CircuitBoardProps,\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/componentry/circuit-board.tsx"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "circuit",
+        "network",
+        "signals",
+        "svg"
+      ],
+      "renderer": "svg",
+      "preview": "previews/componentry-circuit-board.tsx",
+      "source": {
+        "project": "Componentry",
+        "repository": "https://github.com/harshjdhv/componentry",
+        "revision": "0c90c9b9e624c483d434cdb85df084fd399f24c3",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/componentry/circuit-board.tsx",
+            "upstreamPath": "packages/ui/src/components/circuit-board.tsx",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/components/circuit-board.tsx",
+            "upstreamSha256": "sha256:54df38cef57658a6f467618f3f6a73b30b99ec4620f09424ce8f46c972847026",
+            "contentSha256": "sha256:efed517c2e38117080e939b7a42ba44297a04b97e0c099c501eb39a8bf019212",
+            "changes": [
+              "Repointed the utility import; added collision-free SVG identifiers, an accessible label, system-aware theme detection, viewport and tab pausing, and reduced-motion states; removed fixed example patterns and unrelated auxiliary exports."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/utils.ts",
+            "upstreamPath": "packages/ui/src/lib/utils.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/utils.ts",
+            "upstreamSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "contentSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/ui/src/components/circuit-board.tsx, packages/ui/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Harsh Jadhav"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/LICENSE",
+          "sha256": "sha256:fcd2eb170c2579fd14dae953b7b1103cc85dca0e134e015b7490b850c5b403ab",
+          "localPath": "registry/sources/componentry/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/componentry/circuit-board.tsx",
+          "change": "Repointed the utility import; added collision-free SVG identifiers, an accessible label, system-aware theme detection, viewport and tab pausing, and reduced-motion states; removed fixed example patterns and unrelated auxiliary exports.",
+          "reason": "Ship only the reusable caller-driven network visual without ID collisions, perpetual motion for opted-out users, or bundled demo compositions."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-circuit-network",
+        "sourceHash": "sha256:36128760057aaf28ead7029869921c50298fc8060fd91ada11b15c86a02cfc1a",
+        "contentHash": "sha256:328e1d3e478946474394eb9a2081791b4fd82e5a4b95716666162b6534f667a4",
+        "structureHash": "sha256:6ee045fa774cd012103e457fea142a9b4f1e7d610842a02ee33c45bb098b4562"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

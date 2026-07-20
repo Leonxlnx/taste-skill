@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "elevenlabs-bar-visualizer",
+  "title": "Audio Bar Visualizer",
+  "author": "ElevenLabs UI",
+  "description": "Visualizes live or simulated multi-band audio levels across voice interaction states.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/elevenlabs-ui/components/elevenlabs-bar-visualizer/index.tsx",
+      "content": "\"use client\";\n\nimport {\n  forwardRef,\n  memo,\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n  type HTMLAttributes,\n} from \"react\";\n\nimport { cn } from \"./utils\";\n\nexport interface AudioAnalyserOptions {\n  fftSize?: number;\n  smoothingTimeConstant?: number;\n  minDecibels?: number;\n  maxDecibels?: number;\n}\n\nfunction createAudioAnalyser(\n  mediaStream: MediaStream,\n  options: AudioAnalyserOptions = {},\n) {\n  const audioContext = new (\n    window.AudioContext ||\n    (window as unknown as { webkitAudioContext: typeof AudioContext })\n      .webkitAudioContext\n  )();\n  const source = audioContext.createMediaStreamSource(mediaStream);\n  const analyser = audioContext.createAnalyser();\n\n  if (options.fftSize) analyser.fftSize = options.fftSize;\n  if (options.smoothingTimeConstant !== undefined) {\n    analyser.smoothingTimeConstant = options.smoothingTimeConstant;\n  }\n  if (options.minDecibels !== undefined)\n    analyser.minDecibels = options.minDecibels;\n  if (options.maxDecibels !== undefined)\n    analyser.maxDecibels = options.maxDecibels;\n\n  source.connect(analyser);\n\n  const cleanup = () => {\n    source.disconnect();\n    audioContext.close();\n  };\n\n  return { analyser, audioContext, cleanup };\n}\n\n/**\n * Hook for tracking the volume of an audio stream using the Web Audio API.\n * @param mediaStream - The MediaStream to analyze\n * @param options - Audio analyser options\n * @returns The current volume level (0-1)\n */\nexport function useAudioVolume(\n  mediaStream?: MediaStream | null,\n  options: AudioAnalyserOptions = { fftSize: 32, smoothingTimeConstant: 0 },\n) {\n  const [volume, setVolume] = useState(0);\n  const volumeRef = useRef(0);\n  const frameId = useRef<number | undefined>(undefined);\n\n  // Memoize options to prevent unnecessary re-renders\n  const memoizedOptions = useMemo(\n    () => options,\n    [\n      options.fftSize,\n      options.smoothingTimeConstant,\n      options.minDecibels,\n      options.maxDecibels,\n    ],\n  );\n\n  useEffect(() => {\n    if (!mediaStream) {\n      setVolume(0);\n      volumeRef.current = 0;\n      return;\n    }\n\n    const { analyser, cleanup } = createAudioAnalyser(\n      mediaStream,\n      memoizedOptions,\n    );\n\n    const bufferLength = analyser.frequencyBinCount;\n    const dataArray = new Uint8Array(bufferLength);\n    let lastUpdate = 0;\n    const updateInterval = 1000 / 30; // 30 FPS\n\n    const updateVolume = (timestamp: number) => {\n      if (timestamp - lastUpdate >= updateInterval) {\n        analyser.getByteFrequencyData(dataArray);\n        let sum = 0;\n        for (let i = 0; i < dataArray.length; i++) {\n          const a = dataArray[i];\n          sum += a * a;\n        }\n        const newVolume = Math.sqrt(sum / dataArray.length) / 255;\n\n        // Only update state if volume changed significantly\n        if (Math.abs(newVolume - volumeRef.current) > 0.01) {\n          volumeRef.current = newVolume;\n          setVolume(newVolume);\n        }\n        lastUpdate = timestamp;\n      }\n      frameId.current = requestAnimationFrame(updateVolume);\n    };\n\n    frameId.current = requestAnimationFrame(updateVolume);\n\n    return () => {\n      cleanup();\n      if (frameId.current) {\n        cancelAnimationFrame(frameId.current);\n      }\n    };\n  }, [mediaStream, memoizedOptions]);\n\n  return volume;\n}\n\nexport interface MultiBandVolumeOptions {\n  bands?: number;\n  loPass?: number; // Low frequency cutoff\n  hiPass?: number; // High frequency cutoff\n  updateInterval?: number; // Update interval in ms\n  analyserOptions?: AudioAnalyserOptions;\n}\n\nconst multibandDefaults: MultiBandVolumeOptions = {\n  bands: 5,\n  loPass: 100,\n  hiPass: 600,\n  updateInterval: 32,\n  analyserOptions: { fftSize: 2048 },\n};\n\n// Memoized normalization function to avoid recreating on each render\nconst normalizeDb = (value: number) => {\n  if (value === -Infinity) return 0;\n  const minDb = -100;\n  const maxDb = -10;\n  const db = 1 - (Math.max(minDb, Math.min(maxDb, value)) * -1) / 100;\n  return Math.sqrt(db);\n};\n\n/**\n * Hook for tracking volume across multiple frequency bands\n * @param mediaStream - The MediaStream to analyze\n * @param options - Multiband options\n * @returns Array of volume levels for each frequency band\n */\nexport function useMultibandVolume(\n  mediaStream?: MediaStream | null,\n  options: MultiBandVolumeOptions = {},\n) {\n  const opts = useMemo(\n    () => ({ ...multibandDefaults, ...options }),\n    [\n      options.bands,\n      options.loPass,\n      options.hiPass,\n      options.updateInterval,\n      options.analyserOptions?.fftSize,\n      options.analyserOptions?.smoothingTimeConstant,\n      options.analyserOptions?.minDecibels,\n      options.analyserOptions?.maxDecibels,\n    ],\n  );\n\n  const [frequencyBands, setFrequencyBands] = useState<number[]>(() =>\n    new Array(opts.bands).fill(0),\n  );\n  const bandsRef = useRef<number[]>(new Array(opts.bands).fill(0));\n  const frameId = useRef<number | undefined>(undefined);\n\n  useEffect(() => {\n    if (!mediaStream) {\n      const emptyBands = new Array(opts.bands).fill(0);\n      setFrequencyBands(emptyBands);\n      bandsRef.current = emptyBands;\n      return;\n    }\n\n    const { analyser, cleanup } = createAudioAnalyser(\n      mediaStream,\n      opts.analyserOptions,\n    );\n\n    const bufferLength = analyser.frequencyBinCount;\n    const dataArray = new Float32Array(bufferLength);\n    const sliceStart = opts.loPass!;\n    const sliceEnd = opts.hiPass!;\n    const sliceLength = sliceEnd - sliceStart;\n    const chunkSize = Math.ceil(sliceLength / opts.bands!);\n\n    let lastUpdate = 0;\n    const updateInterval = opts.updateInterval!;\n\n    const updateVolume = (timestamp: number) => {\n      if (timestamp - lastUpdate >= updateInterval) {\n        analyser.getFloatFrequencyData(dataArray);\n\n        // Process directly without creating intermediate arrays\n        const chunks = new Array(opts.bands!);\n\n        for (let i = 0; i < opts.bands!; i++) {\n          let sum = 0;\n          let count = 0;\n          const startIdx = sliceStart + i * chunkSize;\n          const endIdx = Math.min(sliceStart + (i + 1) * chunkSize, sliceEnd);\n\n          for (let j = startIdx; j < endIdx; j++) {\n            sum += normalizeDb(dataArray[j]);\n            count++;\n          }\n\n          chunks[i] = count > 0 ? sum / count : 0;\n        }\n\n        // Only update state if bands changed significantly\n        let hasChanged = false;\n        for (let i = 0; i < chunks.length; i++) {\n          if (Math.abs(chunks[i] - bandsRef.current[i]) > 0.01) {\n            hasChanged = true;\n            break;\n          }\n        }\n\n        if (hasChanged) {\n          bandsRef.current = chunks;\n          setFrequencyBands(chunks);\n        }\n\n        lastUpdate = timestamp;\n      }\n\n      frameId.current = requestAnimationFrame(updateVolume);\n    };\n\n    frameId.current = requestAnimationFrame(updateVolume);\n\n    return () => {\n      cleanup();\n      if (frameId.current) {\n        cancelAnimationFrame(frameId.current);\n      }\n    };\n  }, [mediaStream, opts]);\n\n  return frequencyBands;\n}\n\ntype AnimationState =\n  | \"connecting\"\n  | \"initializing\"\n  | \"listening\"\n  | \"speaking\"\n  | \"thinking\"\n  | undefined;\n\nexport const useBarAnimator = (\n  state: AnimationState,\n  columns: number,\n  interval: number,\n  enableAnimation = true,\n): number[] => {\n  const indexRef = useRef(0);\n  const [currentFrame, setCurrentFrame] = useState<number[]>([]);\n  const animationFrameId = useRef<number | null>(null);\n\n  // Memoize sequence generation\n  const sequence = useMemo(() => {\n    if (state === \"thinking\" || state === \"listening\") {\n      return generateListeningSequenceBar(columns);\n    } else if (state === \"connecting\" || state === \"initializing\") {\n      return generateConnectingSequenceBar(columns);\n    } else if (state === undefined || state === \"speaking\") {\n      return [new Array(columns).fill(0).map((_, idx) => idx)];\n    } else {\n      return [[]];\n    }\n  }, [state, columns]);\n\n  useEffect(() => {\n    indexRef.current = 0;\n    setCurrentFrame(sequence[0] || []);\n  }, [sequence]);\n\n  useEffect(() => {\n    if (!enableAnimation || sequence.length <= 1) return;\n    let startTime = performance.now();\n\n    const animate = (time: DOMHighResTimeStamp) => {\n      const timeElapsed = time - startTime;\n\n      if (timeElapsed >= interval) {\n        indexRef.current = (indexRef.current + 1) % sequence.length;\n        setCurrentFrame(sequence[indexRef.current] || []);\n        startTime = time;\n      }\n\n      animationFrameId.current = requestAnimationFrame(animate);\n    };\n\n    animationFrameId.current = requestAnimationFrame(animate);\n\n    return () => {\n      if (animationFrameId.current !== null) {\n        cancelAnimationFrame(animationFrameId.current);\n      }\n    };\n  }, [enableAnimation, interval, sequence]);\n\n  return currentFrame;\n};\n\n// Memoize sequence generators\nconst generateConnectingSequenceBar = (columns: number): number[][] => {\n  const seq = [];\n  for (let x = 0; x < columns; x++) {\n    seq.push([x, columns - 1 - x]);\n  }\n  return seq;\n};\n\nconst generateListeningSequenceBar = (columns: number): number[][] => {\n  const center = Math.floor(columns / 2);\n  const noIndex = -1;\n  return [[center], [noIndex]];\n};\n\nexport type AgentState =\n  \"connecting\" | \"initializing\" | \"listening\" | \"speaking\" | \"thinking\";\n\nexport interface BarVisualizerProps extends HTMLAttributes<HTMLDivElement> {\n  /** Voice assistant state */\n  state?: AgentState;\n  /** Number of bars to display */\n  barCount?: number;\n  /** Audio source */\n  mediaStream?: MediaStream | null;\n  /** Min/max height as percentage */\n  minHeight?: number;\n  maxHeight?: number;\n  /** Enable demo mode with fake audio data */\n  demo?: boolean;\n  /** Align bars from center instead of bottom */\n  centerAlign?: boolean;\n}\n\nconst BarVisualizerComponent = forwardRef<HTMLDivElement, BarVisualizerProps>(\n  (\n    {\n      state,\n      barCount = 15,\n      mediaStream,\n      minHeight = 20,\n      maxHeight = 100,\n      demo = false,\n      centerAlign = false,\n      className,\n      style,\n      ...props\n    },\n    ref,\n  ) => {\n    const [reducedMotion, setReducedMotion] = useState(false);\n\n    useEffect(() => {\n      const query = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n      const update = () => setReducedMotion(query.matches);\n      update();\n      query.addEventListener(\"change\", update);\n      return () => query.removeEventListener(\"change\", update);\n    }, []);\n\n    // Audio processing\n    const realVolumeBands = useMultibandVolume(mediaStream, {\n      bands: barCount,\n      loPass: 100,\n      hiPass: 200,\n    });\n\n    // Generate fake volume data for demo mode using refs to avoid state updates\n    const fakeVolumeBandsRef = useRef<number[]>(new Array(barCount).fill(0.2));\n    const [fakeVolumeBands, setFakeVolumeBands] = useState<number[]>(() =>\n      new Array(barCount).fill(0.2),\n    );\n    const fakeAnimationRef = useRef<number | undefined>(undefined);\n\n    // Animate fake volume bands for speaking and listening states\n    useEffect(() => {\n      if (!demo || reducedMotion) return;\n\n      if (state !== \"speaking\" && state !== \"listening\") {\n        const bands = new Array(barCount).fill(0.2);\n        fakeVolumeBandsRef.current = bands;\n        setFakeVolumeBands(bands);\n        return;\n      }\n\n      let lastUpdate = 0;\n      const updateInterval = 50;\n      const startTime = Date.now() / 1000;\n\n      const updateFakeVolume = (timestamp: number) => {\n        if (timestamp - lastUpdate >= updateInterval) {\n          const time = Date.now() / 1000 - startTime;\n          const newBands = new Array(barCount);\n\n          for (let i = 0; i < barCount; i++) {\n            const waveOffset = i * 0.5;\n            const baseVolume = Math.sin(time * 2 + waveOffset) * 0.3 + 0.5;\n            const randomNoise = Math.random() * 0.2;\n            newBands[i] = Math.max(0.1, Math.min(1, baseVolume + randomNoise));\n          }\n\n          // Only update if values changed significantly\n          let hasChanged = false;\n          for (let i = 0; i < barCount; i++) {\n            if (Math.abs(newBands[i] - fakeVolumeBandsRef.current[i]) > 0.05) {\n              hasChanged = true;\n              break;\n            }\n          }\n\n          if (hasChanged) {\n            fakeVolumeBandsRef.current = newBands;\n            setFakeVolumeBands(newBands);\n          }\n\n          lastUpdate = timestamp;\n        }\n\n        fakeAnimationRef.current = requestAnimationFrame(updateFakeVolume);\n      };\n\n      fakeAnimationRef.current = requestAnimationFrame(updateFakeVolume);\n\n      return () => {\n        if (fakeAnimationRef.current) {\n          cancelAnimationFrame(fakeAnimationRef.current);\n        }\n      };\n    }, [demo, state, barCount, reducedMotion]);\n\n    // Use fake or real volume data based on demo mode\n    const volumeBands = useMemo(\n      () => (demo ? fakeVolumeBands : realVolumeBands),\n      [demo, fakeVolumeBands, realVolumeBands],\n    );\n\n    // Animation sequencing\n    const highlightedIndices = useBarAnimator(\n      state,\n      barCount,\n      state === \"connecting\"\n        ? 2000 / barCount\n        : state === \"thinking\"\n          ? 150\n          : state === \"listening\"\n            ? 500\n            : 1000,\n      !reducedMotion,\n    );\n\n    return (\n      <div\n        ref={ref}\n        data-state={state}\n        className={cn(\n          \"relative flex justify-center gap-1.5\",\n          centerAlign ? \"items-center\" : \"items-end\",\n          \"bg-muted h-32 w-full overflow-hidden rounded-lg p-4\",\n          className,\n        )}\n        style={{\n          ...style,\n        }}\n        {...props}\n      >\n        {volumeBands.map((volume, index) => {\n          const heightPct = Math.min(\n            maxHeight,\n            Math.max(minHeight, volume * 100 + 5),\n          );\n          const isHighlighted = highlightedIndices?.includes(index) ?? false;\n\n          return (\n            <Bar\n              key={index}\n              heightPct={heightPct}\n              isHighlighted={isHighlighted}\n              state={state}\n            />\n          );\n        })}\n      </div>\n    );\n  },\n);\n\n// Memoized Bar component to prevent unnecessary re-renders\nconst Bar = memo<{\n  heightPct: number;\n  isHighlighted: boolean;\n  state?: AgentState;\n}>(({ heightPct, isHighlighted, state }) => (\n  <div\n    data-highlighted={isHighlighted}\n    className={cn(\n      \"max-w-[12px] min-w-[8px] flex-1 transition-all duration-150\",\n      \"rounded-full\",\n      \"bg-border data-[highlighted=true]:bg-primary\",\n      state === \"speaking\" && \"bg-primary\",\n      state === \"thinking\" && isHighlighted && \"animate-pulse\",\n    )}\n    style={{\n      height: `${heightPct}%`,\n      animationDuration: state === \"thinking\" ? \"300ms\" : undefined,\n    }}\n  />\n));\n\nBar.displayName = \"Bar\";\n\n// Wrap the main component with memo for prop comparison optimization\nconst BarVisualizer = memo(BarVisualizerComponent, (prevProps, nextProps) => {\n  return (\n    prevProps.state === nextProps.state &&\n    prevProps.barCount === nextProps.barCount &&\n    prevProps.mediaStream === nextProps.mediaStream &&\n    prevProps.minHeight === nextProps.minHeight &&\n    prevProps.maxHeight === nextProps.maxHeight &&\n    prevProps.demo === nextProps.demo &&\n    prevProps.centerAlign === nextProps.centerAlign &&\n    prevProps.className === nextProps.className &&\n    JSON.stringify(prevProps.style) === JSON.stringify(nextProps.style)\n  );\n});\n\nBarVisualizerComponent.displayName = \"BarVisualizerComponent\";\nBarVisualizer.displayName = \"BarVisualizer\";\n\nexport { BarVisualizer };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/elevenlabs-ui/elevenlabs-bar-visualizer/index.tsx"
+    },
+    {
+      "path": "registry/sources/elevenlabs-ui/components/elevenlabs-bar-visualizer/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/elevenlabs-ui/elevenlabs-bar-visualizer/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "audio",
+        "frequency",
+        "voice-state",
+        "visualizer"
+      ],
+      "renderer": "dom",
+      "preview": "previews/elevenlabs-bar-visualizer.tsx",
+      "source": {
+        "project": "ElevenLabs UI",
+        "repository": "https://github.com/elevenlabs/ui",
+        "revision": "6e5b681c01ee28073c89a047ebe5ecebf6a7def2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/elevenlabs-bar-visualizer/index.tsx",
+            "upstreamPath": "apps/www/registry/elevenlabs-ui/ui/bar-visualizer.tsx",
+            "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/apps/www/registry/elevenlabs-ui/ui/bar-visualizer.tsx",
+            "upstreamSha256": "sha256:6244d6f95996385c359dbf12968f5980ecabe5155eaea694a753217b86c3f685",
+            "contentSha256": "sha256:857223d04dfc9c46b0c2b2d5b3a86c7223e52c446f81040b89eb4d4b8a71bc17",
+            "changes": [
+              "Changed project aliases to bundled source-local imports and normalized formatting.",
+              "Added native reduced-motion detection so demo and state-sequencing animation stop when requested."
+            ]
+          },
+          {
+            "shippedPath": "components/elevenlabs-bar-visualizer/utils.ts",
+            "upstreamPath": "apps/www/lib/utils.ts",
+            "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/apps/www/lib/utils.ts",
+            "upstreamSha256": "sha256:7f7082a8e4a8137a17d45372a67c6272dbc8eca95451cc2f4645fe866249e3f9",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated site URL helper, kept the upstream cn utility, normalized formatting, and made the closure source-local."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/elevenlabs-ui/ui/bar-visualizer.tsx, apps/www/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 Eleven Labs Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/LICENSE.md",
+          "sha256": "sha256:ad3f66b8568970d067e3bd47b690ad013945a61f972559743946a3a6558dc828",
+          "localPath": "registry/sources/elevenlabs-ui/LICENSE.md"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/elevenlabs-bar-visualizer/index.tsx",
+          "change": "Changed project aliases to bundled source-local imports and normalized formatting. Added native reduced-motion detection so demo and state-sequencing animation stop when requested.",
+          "reason": "Keep the copied component install-complete, source-local, accessible, and production-safe without changing its core upstream design."
+        },
+        {
+          "shippedPath": "components/elevenlabs-bar-visualizer/utils.ts",
+          "change": "Removed the unrelated site URL helper, kept the upstream cn utility, normalized formatting, and made the closure source-local.",
+          "reason": "Keep the copied component install-complete, source-local, accessible, and production-safe without changing its core upstream design."
+        }
+      ],
+      "dedupe": {
+        "family": "audio-frequency-bar-visualizer",
+        "sourceHash": "sha256:b056d61d9dc00a899db988db69ee2d3b133a92adc2927eaff23673885d18815c",
+        "contentHash": "sha256:044e2e06d3452d63a023fef3db0f057afbc162d324367089a8d96f1951e38e51",
+        "structureHash": "sha256:b6a5ef88950005a6b5f6b4675476ead6275b679bf9ded6614c7fb8a04981da8b"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

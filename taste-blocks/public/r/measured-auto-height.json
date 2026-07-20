@@ -1,0 +1,115 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "measured-auto-height",
+  "title": "Measured Auto Height",
+  "author": "Elliot Sutton and contributors",
+  "description": "Transitions a container to the measured height of changing caller-provided content.",
+  "dependencies": [
+    "motion@12.23.12"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animate-ui/components/measured-auto-height/auto-height.tsx",
+      "content": "'use client';\n\nimport * as React from 'react';\nimport {\n  motion,\n  type HTMLMotionProps,\n  type TargetAndTransition,\n  type Transition,\n  useReducedMotion,\n} from 'motion/react';\n\nimport { useAutoHeight } from './use-auto-height';\n\ntype AutoHeightProps = {\n  children: React.ReactNode;\n  deps?: React.DependencyList;\n  animate?: TargetAndTransition;\n  transition?: Transition;\n} & Omit<HTMLMotionProps<'div'>, 'animate'>;\n\nfunction AutoHeight({\n  children,\n  deps = [],\n  transition = {\n    type: 'spring',\n    stiffness: 300,\n    damping: 30,\n    bounce: 0,\n    restDelta: 0.01,\n  },\n  style,\n  animate,\n  ...props\n}: AutoHeightProps) {\n  const { ref, height } = useAutoHeight<HTMLDivElement>(deps);\n  const shouldReduceMotion = useReducedMotion();\n\n  return (\n    <motion.div\n      style={{\n        ...(height === undefined ? {} : { overflow: 'hidden' }),\n        ...style,\n      }}\n      animate={height === undefined ? undefined : { ...animate, height }}\n      transition={shouldReduceMotion ? { duration: 0 } : transition}\n      {...props}\n    >\n      <div ref={ref}>{children}</div>\n    </motion.div>\n  );\n}\n\nexport { AutoHeight, type AutoHeightProps };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/measured-auto-height/auto-height.tsx"
+    },
+    {
+      "path": "registry/sources/animate-ui/components/measured-auto-height/use-auto-height.ts",
+      "content": "'use client';\n\nimport * as React from 'react';\n\ntype AutoHeightOptions = {\n  includeParentBox?: boolean;\n  includeSelfBox?: boolean;\n};\n\nexport function useAutoHeight<T extends HTMLElement = HTMLDivElement>(\n  deps: React.DependencyList = [],\n  options: AutoHeightOptions = {\n    includeParentBox: true,\n    includeSelfBox: false,\n  },\n) {\n  const ref = React.useRef<T | null>(null);\n  const roRef = React.useRef<ResizeObserver | null>(null);\n  const [height, setHeight] = React.useState<number>();\n\n  const measure = React.useCallback(() => {\n    const el = ref.current;\n    if (!el) return 0;\n\n    const base = el.getBoundingClientRect().height || 0;\n\n    let extra = 0;\n\n    if (options.includeParentBox && el.parentElement) {\n      const cs = getComputedStyle(el.parentElement);\n      const paddingY =\n        (parseFloat(cs.paddingTop || '0') || 0) +\n        (parseFloat(cs.paddingBottom || '0') || 0);\n      const borderY =\n        (parseFloat(cs.borderTopWidth || '0') || 0) +\n        (parseFloat(cs.borderBottomWidth || '0') || 0);\n      const isBorderBox = cs.boxSizing === 'border-box';\n      if (isBorderBox) {\n        extra += paddingY + borderY;\n      }\n    }\n\n    if (options.includeSelfBox) {\n      const cs = getComputedStyle(el);\n      const paddingY =\n        (parseFloat(cs.paddingTop || '0') || 0) +\n        (parseFloat(cs.paddingBottom || '0') || 0);\n      const borderY =\n        (parseFloat(cs.borderTopWidth || '0') || 0) +\n        (parseFloat(cs.borderBottomWidth || '0') || 0);\n      const isBorderBox = cs.boxSizing === 'border-box';\n      if (isBorderBox) {\n        extra += paddingY + borderY;\n      }\n    }\n\n    const dpr =\n      typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;\n    const total = Math.ceil((base + extra) * dpr) / dpr;\n\n    return total;\n  }, [options.includeParentBox, options.includeSelfBox]);\n\n  React.useLayoutEffect(() => {\n    const el = ref.current;\n    if (!el) return;\n    let frame = 0;\n\n    setHeight(measure());\n\n    if (roRef.current) {\n      roRef.current.disconnect();\n      roRef.current = null;\n    }\n\n    if (typeof ResizeObserver === 'undefined') return;\n\n    const ro = new ResizeObserver(() => {\n      const next = measure();\n      cancelAnimationFrame(frame);\n      frame = requestAnimationFrame(() => setHeight(next));\n    });\n\n    ro.observe(el);\n\n    roRef.current = ro;\n\n    return () => {\n      cancelAnimationFrame(frame);\n      ro.disconnect();\n      roRef.current = null;\n    };\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [...deps, measure]);\n\n  React.useLayoutEffect(() => {\n    if (height === undefined) {\n      const next = measure();\n      setHeight(next);\n    }\n  }, [height, measure]);\n\n  return { ref, height } as const;\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/measured-auto-height/use-auto-height.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "height",
+        "resize-observer",
+        "content",
+        "container"
+      ],
+      "renderer": "dom",
+      "preview": "previews/measured-auto-height.tsx",
+      "source": {
+        "project": "Animate UI historical MIT snapshot",
+        "repository": "https://github.com/imskyleen/animate-ui",
+        "revision": "38b917762e3b6059c06a7af703071ba11a89091e",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/measured-auto-height/auto-height.tsx",
+            "upstreamPath": "apps/www/registry/primitives/effects/auto-height/index.tsx",
+            "permalink": "https://github.com/imskyleen/animate-ui/blob/38b917762e3b6059c06a7af703071ba11a89091e/apps/www/registry/primitives/effects/auto-height/index.tsx",
+            "upstreamSha256": "sha256:4e845430a68d939435b647ab9d1783f57e9bdbc543ea8a0c0e422db55dd22dd3",
+            "contentSha256": "sha256:d611c801a29f3385a105d71198857a9a654e00df2e0a6f2b3718ef113d689bf1",
+            "changes": [
+              "Changed the hook import to the copied source-local file.",
+              "Removed the broken asChild branch and its Slot dependency.",
+              "Preserved natural height until the first measurement and made measured height authoritative.",
+              "Added an immediate prefers-reduced-motion transition."
+            ]
+          },
+          {
+            "shippedPath": "components/measured-auto-height/use-auto-height.ts",
+            "upstreamPath": "apps/www/registry/hooks/use-auto-height/index.tsx",
+            "permalink": "https://github.com/imskyleen/animate-ui/blob/38b917762e3b6059c06a7af703071ba11a89091e/apps/www/registry/hooks/use-auto-height/index.tsx",
+            "upstreamSha256": "sha256:855863119c180a389d6b08fc7486cb155ee36757ed1a67d4908021a3716110aa",
+            "contentSha256": "sha256:13662e0eb49a0cddc4cfe74da5e0d7d6e1879d01f2ad12ddec7b12b62f189cb1",
+            "changes": [
+              "Represented the initial unmeasured height as undefined instead of zero.",
+              "Coalesced and cancelled queued animation frames during ResizeObserver updates.",
+              "Stopped observing the animated parent and included the measurement callback in effect dependencies."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "Only the two source files listed above at commit 38b917762e3b6059c06a7af703071ba11a89091e",
+        "copyright": [
+          "Copyright (c) 2025 Elliot Sutton"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/imskyleen/animate-ui/blob/38b917762e3b6059c06a7af703071ba11a89091e/LICENSE.md",
+          "sha256": "sha256:d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0",
+          "localPath": "registry/sources/animate-ui/LICENSE"
+        },
+        "notices": [
+          "The upstream root license changed after this snapshot; no file from the later Commons-Clause revisions is included. See registry/sources/animate-ui/NOTICE.md."
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/measured-auto-height/auto-height.tsx",
+          "change": "Localized the hook import, removed broken Slot composition, preserved natural initial height, and added a reduced-motion snap.",
+          "reason": "Keep the copied component self-contained, visible before measurement, and safe for motion-sensitive users without redesigning its measured-height behavior."
+        },
+        {
+          "shippedPath": "components/measured-auto-height/use-auto-height.ts",
+          "change": "Used an undefined initial measurement, coalesced and cancelled ResizeObserver frames, stopped observing the animated parent, and refreshed the effect when measurement logic changes.",
+          "reason": "Prevent a zero-height first render, feedback-loop work, stale measurements, and state updates after cleanup."
+        }
+      ],
+      "dedupe": {
+        "family": "measured-content-height-transition",
+        "sourceHash": "sha256:181ac016f90f1622a24bee6323ee7b1f4876d996a9b3b6c445bc6e0f4206a2d4",
+        "contentHash": "sha256:77f60e00c8546b2046443c6531904d6b3474a16e7570a6c114213148eba6a9e0",
+        "structureHash": "sha256:9cbf930e423dd84ffcd4bd443548cebf52680ef60d8fa3fc0282c3e64123e093"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

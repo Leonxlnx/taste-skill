@@ -1,0 +1,102 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-terminal",
+  "title": "Terminal",
+  "author": "Magic UI",
+  "description": "Sequences animated terminal lines and typing text inside a terminal frame.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.23.26",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-terminal/terminal.tsx",
+      "content": "\"use client\"\n\nimport {\n  Children,\n  createContext,\n  useContext,\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n  type ComponentType,\n  type RefAttributes,\n} from \"react\"\nimport {\n  motion,\n  useInView,\n  type DOMMotionComponents,\n  type HTMLMotionProps,\n  type MotionProps,\n} from \"motion/react\"\n\nimport { cn } from \"../../lib/utils\"\n\ninterface SequenceContextValue {\n  completeItem: (index: number) => void\n  activeIndex: number\n  sequenceStarted: boolean\n}\n\nconst SequenceContext = createContext<SequenceContextValue | null>(null)\n\nconst useSequence = () => useContext(SequenceContext)\n\nconst ItemIndexContext = createContext<number | null>(null)\nconst useItemIndex = () => useContext(ItemIndexContext)\n\nconst motionElements = {\n  article: motion.article,\n  div: motion.div,\n  h1: motion.h1,\n  h2: motion.h2,\n  h3: motion.h3,\n  h4: motion.h4,\n  h5: motion.h5,\n  h6: motion.h6,\n  li: motion.li,\n  p: motion.p,\n  section: motion.section,\n  span: motion.span,\n} as const\n\ntype MotionElementType = Extract<\n  keyof DOMMotionComponents,\n  keyof typeof motionElements\n>\ntype TerminalTypingMotionComponent = ComponentType<\n  Omit<HTMLMotionProps<\"span\">, \"ref\"> & RefAttributes<HTMLElement>\n>\n\ninterface AnimatedSpanProps extends MotionProps {\n  children: React.ReactNode\n  delay?: number\n  className?: string\n  startOnView?: boolean\n}\n\nexport const AnimatedSpan = ({\n  children,\n  delay = 0,\n  className,\n  startOnView = false,\n  ...props\n}: AnimatedSpanProps) => {\n  const elementRef = useRef<HTMLDivElement | null>(null)\n  const isInView = useInView(elementRef as React.RefObject<Element>, {\n    amount: 0.3,\n    once: true,\n  })\n\n  const sequence = useSequence()\n  const itemIndex = useItemIndex()\n  const [hasStarted, setHasStarted] = useState(false)\n  useEffect(() => {\n    if (!sequence || itemIndex === null) return\n    if (!sequence.sequenceStarted) return\n    if (hasStarted) return\n    if (sequence.activeIndex === itemIndex) {\n      setHasStarted(true)\n    }\n  }, [sequence, hasStarted, itemIndex])\n\n  const shouldAnimate = sequence ? hasStarted : startOnView ? isInView : true\n\n  return (\n    <motion.div\n      ref={elementRef}\n      initial={{ opacity: 0, y: -5 }}\n      animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}\n      transition={{ duration: 0.3, delay: sequence ? 0 : delay / 1000 }}\n      className={cn(\"grid text-sm font-normal tracking-tight\", className)}\n      onAnimationComplete={() => {\n        if (!sequence) return\n        if (itemIndex === null) return\n        sequence.completeItem(itemIndex)\n      }}\n      {...props}\n    >\n      {children}\n    </motion.div>\n  )\n}\n\ninterface TypingAnimationProps extends Omit<MotionProps, \"children\"> {\n  children: string\n  className?: string\n  duration?: number\n  delay?: number\n  as?: MotionElementType\n  startOnView?: boolean\n}\n\nexport const TypingAnimation = ({\n  children,\n  className,\n  duration = 60,\n  delay = 0,\n  as: Component = \"span\",\n  startOnView = true,\n  ...props\n}: TypingAnimationProps) => {\n  if (typeof children !== \"string\") {\n    throw new Error(\"TypingAnimation: children must be a string. Received:\")\n  }\n\n  const MotionComponent = motionElements[\n    Component\n  ] as TerminalTypingMotionComponent\n\n  const [displayedText, setDisplayedText] = useState<string>(\"\")\n  const [started, setStarted] = useState(false)\n  const elementRef = useRef<HTMLElement | null>(null)\n  const isInView = useInView(elementRef as React.RefObject<Element>, {\n    amount: 0.3,\n    once: true,\n  })\n\n  const sequence = useSequence()\n  const itemIndex = useItemIndex()\n  const hasSequence = sequence !== null\n  const sequenceStarted = sequence?.sequenceStarted ?? false\n  const sequenceActiveIndex = sequence?.activeIndex ?? null\n  const sequenceCompleteItemRef = useRef<\n    SequenceContextValue[\"completeItem\"] | null\n  >(null)\n  const sequenceItemIndexRef = useRef<number | null>(null)\n\n  useEffect(() => {\n    sequenceCompleteItemRef.current = sequence?.completeItem ?? null\n    sequenceItemIndexRef.current = itemIndex\n  }, [sequence?.completeItem, itemIndex])\n\n  useEffect(() => {\n    let startTimeout: ReturnType<typeof setTimeout> | null = null\n\n    if (hasSequence && itemIndex !== null) {\n      if (sequenceStarted && !started && sequenceActiveIndex === itemIndex) {\n        setStarted(true)\n      }\n    } else if (!startOnView || isInView) {\n      startTimeout = setTimeout(() => setStarted(true), delay)\n    }\n\n    return () => {\n      if (startTimeout !== null) {\n        clearTimeout(startTimeout)\n      }\n    }\n  }, [\n    delay,\n    startOnView,\n    isInView,\n    started,\n    hasSequence,\n    sequenceActiveIndex,\n    sequenceStarted,\n    itemIndex,\n  ])\n\n  useEffect(() => {\n    let typingEffect: ReturnType<typeof setInterval> | null = null\n\n    if (started) {\n      let i = 0\n      typingEffect = setInterval(() => {\n        if (i < children.length) {\n          setDisplayedText(children.substring(0, i + 1))\n          i++\n        } else {\n          if (typingEffect !== null) {\n            clearInterval(typingEffect)\n          }\n          const completeItem = sequenceCompleteItemRef.current\n          const currentItemIndex = sequenceItemIndexRef.current\n          if (completeItem && currentItemIndex !== null) {\n            completeItem(currentItemIndex)\n          }\n        }\n      }, duration)\n    }\n\n    return () => {\n      if (typingEffect !== null) {\n        clearInterval(typingEffect)\n      }\n    }\n  }, [children, duration, started])\n\n  return (\n    <MotionComponent\n      ref={elementRef}\n      className={cn(\"text-sm font-normal tracking-tight\", className)}\n      {...props}\n    >\n      {displayedText}\n    </MotionComponent>\n  )\n}\n\ninterface TerminalProps {\n  children: React.ReactNode\n  className?: string\n  sequence?: boolean\n  startOnView?: boolean\n}\n\nexport const Terminal = ({\n  children,\n  className,\n  sequence = true,\n  startOnView = true,\n}: TerminalProps) => {\n  const containerRef = useRef<HTMLDivElement | null>(null)\n  const isInView = useInView(containerRef as React.RefObject<Element>, {\n    amount: 0.3,\n    once: true,\n  })\n\n  const [activeIndex, setActiveIndex] = useState(0)\n  const sequenceHasStarted = sequence ? !startOnView || isInView : false\n\n  const contextValue = useMemo<SequenceContextValue | null>(() => {\n    if (!sequence) return null\n    return {\n      completeItem: (index: number) => {\n        setActiveIndex((current) => (index === current ? current + 1 : current))\n      },\n      activeIndex,\n      sequenceStarted: sequenceHasStarted,\n    }\n  }, [sequence, activeIndex, sequenceHasStarted])\n\n  const wrappedChildren = useMemo(() => {\n    if (!sequence) return children\n    const array = Children.toArray(children)\n    return array.map((child, index) => (\n      <ItemIndexContext.Provider key={index} value={index}>\n        {child as React.ReactNode}\n      </ItemIndexContext.Provider>\n    ))\n  }, [children, sequence])\n\n  const content = (\n    <div\n      ref={containerRef}\n      className={cn(\n        \"border-border bg-background z-0 h-full max-h-100 w-full max-w-lg rounded-xl border\",\n        className\n      )}\n    >\n      <div className=\"border-border flex flex-col gap-y-2 border-b p-4\">\n        <div className=\"flex flex-row gap-x-2\">\n          <div className=\"h-2 w-2 rounded-full bg-red-500\"></div>\n          <div className=\"h-2 w-2 rounded-full bg-yellow-500\"></div>\n          <div className=\"h-2 w-2 rounded-full bg-green-500\"></div>\n        </div>\n      </div>\n      <pre className=\"p-4\">\n        <code className=\"grid gap-y-1 overflow-auto\">{wrappedChildren}</code>\n      </pre>\n    </div>\n  )\n\n  if (!sequence) return content\n\n  return (\n    <SequenceContext.Provider value={contextValue}>\n      {content}\n    </SequenceContext.Provider>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/terminal.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "terminal",
+        "typing",
+        "sequence"
+      ],
+      "renderer": "dom",
+      "preview": "previews/magic-terminal.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-terminal/terminal.tsx",
+            "upstreamPath": "apps/www/registry/magicui/terminal.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/terminal.tsx",
+            "upstreamSha256": "sha256:a0ece03773e1a17862e049f11f72647b5db44dc1400473bdecd3c0e81f43f2d7",
+            "contentSha256": "sha256:ad830c3c214edfae0c225682db28b4111b547c68c067eb6664745c2491aa579c",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/terminal.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-terminal/terminal.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils.",
+          "reason": "Resolve the bundled upstream utility from both the source batch and the installation targets without relying on a consumer alias."
+        }
+      ],
+      "dedupe": {
+        "family": "terminal-typing-sequence",
+        "sourceHash": "sha256:9bd6c1dc3de770bde9a557b0f41f225e0c0e2153cd0a2d645961909efa1cf1bd",
+        "contentHash": "sha256:2f27688c75ce2d4e415d1382edb6d4708a56c240a94654e4f748671de9802f5e",
+        "structureHash": "sha256:432323fa60e21a193a204a01bd9d64af6598c6985f58c689bb3d83848e5ccc02"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

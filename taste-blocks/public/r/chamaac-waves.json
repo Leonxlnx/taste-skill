@@ -1,0 +1,115 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chamaac-waves",
+  "title": "Waves",
+  "author": "Amarnath",
+  "description": "Renders a deforming three-color noise surface with configurable amplitude and directional speed.",
+  "dependencies": [
+    "@react-three/drei@10.7.6",
+    "@react-three/fiber@9.4.0",
+    "clsx@2.1.1",
+    "tailwind-merge@3.4.0",
+    "three@0.180.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/waves.tsx",
+      "content": "\"use client\";\n\nimport React, { useEffect, useRef, useMemo, useState } from \"react\";\nimport {\n  Canvas,\n  useFrame,\n  extend,\n  ThreeElement,\n  useThree,\n} from \"@react-three/fiber\";\nimport { shaderMaterial } from \"@react-three/drei\";\nimport * as THREE from \"three\";\n\nimport { cn } from \"./lib/utils\";\n\nconst NOISE_GLSL = `\n  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\n  vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\n  vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }\n  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }\n\n  float snoise(vec3 v) {\n    const vec2 C = vec2(1.0/6.0, 1.0/3.0);\n    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);\n    vec3 i  = floor(v + dot(v, C.yyy));\n    vec3 x0 = v - i + dot(i, C.xxx);\n    vec3 g = step(x0.yzx, x0.xyz);\n    vec3 l = 1.0 - g;\n    vec3 i1 = min(g.xyz, l.zxy);\n    vec3 i2 = max(g.xyz, l.zxy);\n    vec3 x1 = x0 - i1 + C.xxx;\n    vec3 x2 = x0 - i2 + C.yyy;\n    vec3 x3 = x0 - D.yyy;\n    i = mod289(i);\n    vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));\n    vec4 j = p - 49.0 * floor(p * (1.0/49.0));\n    vec4 x_ = floor(j * (1.0/7.0));\n    vec4 y_ = floor(j - 7.0 * x_);\n    vec4 x = x_ * (1.0/7.0) + 0.5/7.0;\n    vec4 y = y_ * (1.0/7.0) + 0.5/7.0;\n    vec4 h = 1.0 - abs(x) - abs(y);\n    vec4 b0 = vec4(x.xy, y.xy);\n    vec4 b1 = vec4(x.zw, y.zw);\n    vec4 s0 = floor(b0)*2.0 + 1.0;\n    vec4 s1 = floor(b1)*2.0 + 1.0;\n    vec4 sh = -step(h, vec4(0.0));\n    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;\n    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;\n    vec3 p0 = vec3(a0.xy, h.x);\n    vec3 p1 = vec3(a0.zw, h.y);\n    vec3 p2 = vec3(a1.xy, h.z);\n    vec3 p3 = vec3(a1.zw, h.w);\n    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));\n    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;\n    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n    m = m * m;\n    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));\n  }\n`;\n\nconst WavesMaterial = shaderMaterial(\n  {\n    u_time: 0,\n    u_color_1: new THREE.Color(\"#071697\"),\n    u_color_2: new THREE.Color(\"#00d4ff\"),\n    u_color_3: new THREE.Color(\"#000000\"),\n    u_speed_x: 0.1,\n    u_speed_y: 0.1,\n    u_amp: 1.5,\n    u_noise_freq: 0.2,\n  },\n  // Vertex Shader\n  NOISE_GLSL +\n    `\n  varying float vNoise;\n  varying vec2 vUv;\n  uniform float u_time;\n  uniform float u_speed_x;\n  uniform float u_speed_y;\n  uniform float u_amp;\n  uniform float u_noise_freq;\n\n  void main() {\n    vUv = uv;\n\n    // Directional flow\n    vec3 noisePos = vec3(position.xy * u_noise_freq - vec2(u_time * u_speed_x, 0.0), u_time * u_speed_y);\n\n    float noise = snoise(noisePos);\n    vNoise = noise;\n\n    vec3 pos = position;\n    pos.z += noise * u_amp;\n\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n  }\n  `,\n  // Fragment Shader\n  `\n  varying vec2 vUv;\n  varying float vNoise;\n  uniform vec3 u_color_1;\n  uniform vec3 u_color_2;\n  uniform vec3 u_color_3;\n\n  void main() {\n    float n = vNoise * 0.5 + 0.5;\n\n    vec3 color;\n\n    // Low (Valley) -> Mid -> High (Peak)\n    if (n < 0.5) {\n      color = mix(u_color_3, u_color_1, smoothstep(0.0, 0.5, n));\n    } else {\n      color = mix(u_color_1, u_color_2, smoothstep(0.6, 1.0, n));\n    }\n\n    gl_FragColor = vec4(color, 1.0);\n  }\n  `\n);\n\nextend({ WavesMaterial });\n\ndeclare module \"@react-three/fiber\" {\n  interface ThreeElements {\n    wavesMaterial: ThreeElement<typeof WavesMaterial>;\n  }\n}\n\nfunction Scene({\n  waveColor1,\n  waveColor2,\n  waveColor3,\n  waveSpeedX,\n  waveSpeedY,\n  waveAmpX,\n}: {\n  waveColor1: string;\n  waveColor2: string;\n  waveColor3: string;\n  waveSpeedX: number;\n  waveSpeedY: number;\n  waveAmpX: number;\n}) {\n  const matRef = useRef<\n    THREE.ShaderMaterial & {\n      u_time: number;\n      u_color_1: THREE.Color;\n      u_color_2: THREE.Color;\n      u_color_3: THREE.Color;\n      u_speed_x: number;\n      u_speed_y: number;\n      u_amp: number;\n      u_noise_freq: number;\n    }\n  >(null);\n\n  const { viewport } = useThree();\n\n  useFrame((state) => {\n    if (matRef.current) {\n      matRef.current.u_time = state.clock.getElapsedTime();\n      matRef.current.u_color_1.set(waveColor1);\n      matRef.current.u_color_2.set(waveColor2);\n      matRef.current.u_color_3.set(waveColor3);\n      matRef.current.u_speed_x = waveSpeedX;\n      matRef.current.u_speed_y = waveSpeedY;\n      matRef.current.u_amp = (waveAmpX / 32.0) * 1.5;\n      // Hardcoded freq for now as xGap is removed\n      matRef.current.u_noise_freq = 0.25;\n    }\n  });\n\n  const planeArgs = useMemo<[number, number, number, number]>(\n    () => [viewport.width * 1.5, viewport.height * 1.5, 128, 128],\n    [viewport.width, viewport.height]\n  );\n\n  return (\n    <mesh rotation={[-0.2, 0, 0]}>\n      <planeGeometry args={planeArgs} />\n      <wavesMaterial ref={matRef} key={WavesMaterial.key} transparent={false} />\n    </mesh>\n  );\n}\n\ninterface WavesProps {\n  className?: string;\n  backgroundColor?: string;\n  waveColor1?: string;\n  waveColor2?: string;\n  waveColor3?: string;\n  waveSpeedX?: number;\n  waveSpeedY?: number;\n  waveAmpX?: number;\n}\n\nexport function Waves({\n  className,\n  backgroundColor = \"#000000\",\n  waveColor1 = \"#071697\",\n  waveColor2 = \"#00d4ff\",\n  waveColor3 = \"#000000\",\n  waveSpeedX = 0.0125,\n  waveSpeedY = 0.005,\n  waveAmpX = 32,\n}: WavesProps) {\n  const [reduceMotion, setReduceMotion] = useState(false);\n\n  useEffect(() => {\n    const media = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduceMotion(media.matches);\n    update();\n    media.addEventListener(\"change\", update);\n    return () => media.removeEventListener(\"change\", update);\n  }, []);\n\n  return (\n    <div\n      aria-hidden=\"true\"\n      className={cn(\n        \"absolute inset-0 w-full h-full pointer-events-none z-0\",\n        className\n      )}\n    >\n      <Canvas\n        camera={{ position: [0, 0, 4] }}\n        dpr={[1, 1.5]}\n        frameloop={reduceMotion ? \"demand\" : \"always\"}\n      >\n        <color attach=\"background\" args={[backgroundColor]} />\n        <Scene\n          waveColor1={waveColor1}\n          waveColor2={waveColor2}\n          waveColor3={waveColor3}\n          waveSpeedX={waveSpeedX * 10.0}\n          waveSpeedY={waveSpeedY * 10.0}\n          waveAmpX={waveAmpX}\n        />\n      </Canvas>\n    </div>\n  );\n}\n\nexport default Waves;\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/chamaac-ui/waves.tsx"
+    },
+    {
+      "path": "registry/sources/chamaac-ui/components/chamaac-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/chamaac-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "shader",
+        "waves",
+        "surface",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/chamaac-waves.tsx",
+      "source": {
+        "project": "Chamaac UI",
+        "repository": "https://github.com/amarnathdhumal/chamaacui",
+        "revision": "345d79b1b1d4c89c2394a5c23ac12a9861c383c2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/chamaac-ui/waves.tsx",
+            "upstreamPath": "registry/chamaac/waves/waves.tsx",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/registry/chamaac/waves/waves.tsx",
+            "upstreamSha256": "sha256:f8bdaad012dcdd12d1ba945ac0518851460d21898dd5b70edfb24af56c17e242",
+            "contentSha256": "sha256:e9a7be2a16c95a364d22500be1fc962f46f3bdeb346f7e7dcb640a520fa4d0d7",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local.",
+              "Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden.",
+              "Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior.",
+              "Capped the device-pixel ratio at 1.5."
+            ]
+          },
+          {
+            "shippedPath": "components/chamaac-ui/lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/lib/utils.ts",
+            "upstreamSha256": "sha256:ede53dcdf44c29c9d6f9583e775c2f2d7b8d5205679a6af38bb0e0475c23296f",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/chamaac/waves/waves.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Amarnath"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/amarnathdhumal/chamaacui/blob/345d79b1b1d4c89c2394a5c23ac12a9861c383c2/LICENSE",
+          "sha256": "sha256:d6ba4df1c07c99e1d38dc59ddb858fcb12cbe79edeef48d249c23a60843f6dc9",
+          "localPath": "registry/sources/chamaac-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/chamaac-ui/waves.tsx",
+          "change": "Changed the cn import from @/lib/utils to ./lib/utils so the copied closure remains source-local. Added a native prefers-reduced-motion listener, froze the React Three Fiber frame loop when requested, and marked the decorative output aria-hidden. Normalized line endings and removed upstream trailing whitespace without changing GLSL or React behavior. Capped the device-pixel ratio at 1.5.",
+          "reason": "Keep the copied component installable as a closed source-local registry item while bounding GPU work and respecting reduced-motion preferences."
+        },
+        {
+          "shippedPath": "components/chamaac-ui/lib/utils.ts",
+          "change": "Removed the unrelated Next.js metadata import and constructMetadata helper so the copied cn utility has only its actual component closure.",
+          "reason": "Avoid pulling site-only Next.js metadata and an unrelated SEO helper into standalone shader components."
+        }
+      ],
+      "dedupe": {
+        "family": "deformed-noise-wave-surface",
+        "sourceHash": "sha256:cf75aa891026f94dce40b2c5708f81d7445f8b47d304b26c506380327b263c26",
+        "contentHash": "sha256:3f28b6182b4a7fa4bdc86053638a34880b4cfb9278370fb2354b5efc6b0e8590",
+        "structureHash": "sha256:7f339997d2e14af320fb85cb06aef1a590640dced9cd9a8d45b787653188069a"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

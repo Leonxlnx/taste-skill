@@ -1,0 +1,136 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-overflow-actions",
+  "title": "Overflow Actions",
+  "author": "Saurabh Chauhan",
+  "description": "Reveals secondary caller-provided actions from a measured connected action rail.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@1.16.0",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-overflow-actions/overflow-actions.tsx",
+      "content": "\"use client\";\n\nimport { MoreHorizontal, X } from \"lucide-react\";\nimport {\n  AnimatePresence,\n  motion,\n  useReducedMotion,\n  type Transition,\n  type Variants,\n} from \"motion/react\";\nimport {\n  useCallback,\n  useId,\n  useLayoutEffect,\n  useRef,\n  useState,\n  type ReactNode,\n} from \"react\";\nimport { EASE_OUT } from \"../../lib/taste-blocks/beui/ease\";\nimport { useHoverCapable } from \"../../hooks/taste-blocks/beui/use-hover-capable\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport type OverflowActionsSize = \"sm\" | \"md\";\n\nexport type OverflowActionItem = {\n  id: string;\n  label: ReactNode;\n  icon?: ReactNode;\n  onClick?: () => void;\n  disabled?: boolean;\n  ariaLabel: string;\n};\n\nexport type OverflowActionsClassNames = {\n  root?: string;\n  track?: string;\n  action?: string;\n  primaryAction?: string;\n  overflowAction?: string;\n  toggle?: string;\n  icon?: string;\n  label?: string;\n};\n\nexport interface OverflowActionsProps {\n  primaryActions: OverflowActionItem[];\n  overflowActions: OverflowActionItem[];\n  expanded?: boolean;\n  defaultExpanded?: boolean;\n  onExpandedChange?: (expanded: boolean) => void;\n  onAction?: (item: OverflowActionItem) => void;\n  collapseOnAction?: boolean;\n  size?: OverflowActionsSize;\n  openLabel?: string;\n  closeLabel?: string;\n  className?: string;\n  classNames?: OverflowActionsClassNames;\n}\n\n// This needs a softer layout spring than the app defaults so the overflow group\n// stays visually attached to the toggle while entering and leaving.\nconst SHELL_TRANSITION: Transition = {\n  type: \"spring\",\n  stiffness: 220,\n  damping: 17,\n  mass: 0.85,\n};\n\nconst ICON_VARIANTS: Variants = {\n  hidden: { opacity: 0, filter: \"blur(3px)\" },\n  visible: {\n    opacity: 1,\n    filter: \"blur(0px)\",\n    transition: { duration: 0.18, ease: EASE_OUT },\n  },\n  exit: {\n    opacity: 0,\n    filter: \"blur(3px)\",\n    transition: { duration: 0.18, ease: EASE_OUT },\n  },\n};\n\nconst OVERFLOW_ACTION_VARIANTS: Variants = {\n  hidden: { opacity: 0, filter: \"blur(4px)\" },\n  visible: {\n    opacity: 1,\n    filter: \"blur(0px)\",\n    transition: {\n      opacity: { duration: 0.18, ease: EASE_OUT },\n      filter: { duration: 0.18, ease: EASE_OUT },\n    },\n  },\n  exit: {\n    opacity: 0,\n    filter: \"blur(4px)\",\n    transition: {\n      opacity: { duration: 0.14, ease: EASE_OUT },\n      filter: { duration: 0.14, ease: EASE_OUT },\n    },\n  },\n};\n\nconst TRACK_SIZE_CLASS: Record<OverflowActionsSize, string> = {\n  sm: \"gap-1 p-1 text-xs\",\n  md: \"gap-1.5 p-1.5 text-sm\",\n};\n\nconst GROUP_GAP_CLASS: Record<OverflowActionsSize, string> = {\n  sm: \"gap-1\",\n  md: \"gap-1.5\",\n};\n\nconst ACTION_SIZE_CLASS: Record<OverflowActionsSize, string> = {\n  sm: \"h-8 min-w-8 gap-1.5 px-3\",\n  md: \"h-9 min-w-9 gap-2 px-3.5\",\n};\n\nconst TOGGLE_SIZE_CLASS: Record<OverflowActionsSize, string> = {\n  sm: \"h-8 w-8\",\n  md: \"h-9 w-9\",\n};\n\nconst ICON_SIZE_CLASS: Record<OverflowActionsSize, string> = {\n  sm: \"h-3.5 w-3.5\",\n  md: \"h-4 w-4\",\n};\n\nfunction useControllableExpanded({\n  expanded,\n  defaultExpanded,\n  onExpandedChange,\n}: {\n  expanded?: boolean;\n  defaultExpanded?: boolean;\n  onExpandedChange?: (expanded: boolean) => void;\n}) {\n  const [internalExpanded, setInternalExpanded] = useState(\n    defaultExpanded ?? false,\n  );\n  const isControlled = expanded !== undefined;\n  const value = expanded ?? internalExpanded;\n\n  const setValue = useCallback(\n    (next: boolean) => {\n      if (!isControlled) setInternalExpanded(next);\n      onExpandedChange?.(next);\n    },\n    [isControlled, onExpandedChange],\n  );\n\n  return [value, setValue] as const;\n}\n\nexport function OverflowActions({\n  primaryActions,\n  overflowActions,\n  expanded,\n  defaultExpanded = false,\n  onExpandedChange,\n  onAction,\n  collapseOnAction = false,\n  size = \"md\",\n  openLabel = \"Show extra actions\",\n  closeLabel = \"Hide extra actions\",\n  className,\n  classNames,\n}: OverflowActionsProps) {\n  const reduce = useReducedMotion();\n  const canHover = useHoverCapable();\n  const overflowId = useId();\n  const overflowWrapperRef = useRef<HTMLDivElement>(null);\n  const overflowWrapperStartRef = useRef(0);\n  const toggleRef = useRef<HTMLButtonElement>(null);\n  const [isExpanded, setIsExpanded] = useControllableExpanded({\n    expanded,\n    defaultExpanded,\n    onExpandedChange,\n  });\n\n  const transition = reduce ? { duration: 0 } : SHELL_TRANSITION;\n\n  useLayoutEffect(() => {\n    const overflowNode = overflowWrapperRef.current;\n    if (!overflowNode) return;\n\n    const rect = overflowNode.getBoundingClientRect();\n    const rtl = getComputedStyle(overflowNode).direction === \"rtl\";\n    const start = rtl ? rect.right : rect.left;\n\n    if (!isExpanded) {\n      overflowNode.style.insetInlineStart = `${\n        overflowWrapperStartRef.current - start\n      }px`;\n      return;\n    }\n\n    overflowNode.style.insetInlineStart = \"\";\n    overflowWrapperStartRef.current = start;\n  }, [isExpanded]);\n\n  const handleAction = (item: OverflowActionItem) => {\n    item.onClick?.();\n    onAction?.(item);\n    if (collapseOnAction) setIsExpanded(false);\n  };\n\n  return (\n    <motion.div\n      layout\n      transition={transition}\n      onKeyDown={(event) => {\n        if (event.key !== \"Escape\" || !isExpanded) return;\n        event.preventDefault();\n        setIsExpanded(false);\n        toggleRef.current?.focus();\n      }}\n      className={cn(\"inline-flex\", classNames?.root, className)}\n    >\n      <motion.div\n        layout\n        transition={transition}\n        className={cn(\n          \"relative inline-flex items-center overflow-hidden rounded-full border border-border bg-card\",\n          TRACK_SIZE_CLASS[size],\n          classNames?.track,\n        )}\n      >\n        <motion.div\n          layout\n          transition={transition}\n          className={cn(\"inline-flex items-center\", GROUP_GAP_CLASS[size])}\n        >\n          {primaryActions.map((item) => (\n            <ActionButton\n              key={item.id}\n              item={item}\n              size={size}\n              reduce={reduce}\n              canHover={canHover}\n              onAction={handleAction}\n              layoutTransition={transition}\n              className={cn(classNames?.action, classNames?.primaryAction)}\n              iconClassName={classNames?.icon}\n              labelClassName={classNames?.label}\n            />\n          ))}\n        </motion.div>\n\n        <AnimatePresence mode=\"popLayout\" initial={false}>\n          {isExpanded ? (\n            <motion.div\n              key=\"overflow-actions\"\n              ref={overflowWrapperRef}\n              id={overflowId}\n              layout\n              aria-hidden={!isExpanded}\n              transition={transition}\n              className={cn(\n                \"relative inline-flex w-max items-center\",\n                GROUP_GAP_CLASS[size],\n              )}\n            >\n              {overflowActions.map((item) => (\n                <ActionButton\n                  key={item.id}\n                  item={item}\n                  size={size}\n                  reduce={reduce}\n                  canHover={canHover}\n                  overflow\n                  visible={isExpanded}\n                  variants={OVERFLOW_ACTION_VARIANTS}\n                  onAction={handleAction}\n                  layoutTransition={transition}\n                  className={cn(classNames?.action, classNames?.overflowAction)}\n                  iconClassName={classNames?.icon}\n                  labelClassName={classNames?.label}\n                />\n              ))}\n            </motion.div>\n          ) : null}\n        </AnimatePresence>\n\n        <motion.button\n          ref={toggleRef}\n          type=\"button\"\n          layout\n          aria-expanded={isExpanded}\n          aria-controls={isExpanded ? overflowId : undefined}\n          aria-label={isExpanded ? closeLabel : openLabel}\n          title={isExpanded ? closeLabel : openLabel}\n          onClick={() => setIsExpanded(!isExpanded)}\n          whileTap={reduce ? undefined : { scale: 0.96 }}\n          whileHover={reduce || !canHover ? undefined : { scale: 1.03 }}\n          transition={transition}\n          className={cn(\n            \"relative inline-grid shrink-0 place-items-center rounded-full bg-primary text-primary-foreground outline-none disabled:pointer-events-none disabled:opacity-50\",\n            \"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n            TOGGLE_SIZE_CLASS[size],\n            classNames?.toggle,\n          )}\n        >\n          <AnimatePresence mode=\"popLayout\" initial={false}>\n            <motion.span\n              key={isExpanded ? \"close\" : \"open\"}\n              variants={ICON_VARIANTS}\n              initial={reduce ? { opacity: 0 } : \"hidden\"}\n              animate={reduce ? { opacity: 1 } : \"visible\"}\n              exit={reduce ? { opacity: 0 } : \"exit\"}\n              className=\"inline-grid place-items-center\"\n            >\n              {isExpanded ? (\n                <X className={ICON_SIZE_CLASS[size]} />\n              ) : (\n                <MoreHorizontal className={ICON_SIZE_CLASS[size]} />\n              )}\n            </motion.span>\n          </AnimatePresence>\n        </motion.button>\n      </motion.div>\n    </motion.div>\n  );\n}\n\nfunction ActionButton({\n  item,\n  size,\n  reduce,\n  canHover,\n  overflow,\n  visible = true,\n  variants,\n  onAction,\n  layoutTransition,\n  className,\n  iconClassName,\n  labelClassName,\n}: {\n  item: OverflowActionItem;\n  size: OverflowActionsSize;\n  reduce: boolean | null;\n  canHover: boolean;\n  overflow?: boolean;\n  visible?: boolean;\n  variants?: Variants;\n  onAction: (item: OverflowActionItem) => void;\n  layoutTransition: Transition;\n  className?: string;\n  iconClassName?: string;\n  labelClassName?: string;\n}) {\n  const label = typeof item.label === \"string\" ? item.label : undefined;\n\n  return (\n    <motion.span\n      layout=\"position\"\n      variants={variants}\n      initial={variants ? (reduce ? { opacity: 0 } : \"hidden\") : undefined}\n      animate={variants ? (reduce ? { opacity: 1 } : \"visible\") : undefined}\n      exit={variants ? (reduce ? { opacity: 0 } : \"exit\") : undefined}\n      whileTap={reduce || item.disabled ? undefined : { scale: 0.97 }}\n      whileHover={\n        reduce || !canHover || item.disabled ? undefined : { scale: 1.008 }\n      }\n      transition={layoutTransition}\n      className=\"inline-flex shrink-0\"\n    >\n      <button\n        type=\"button\"\n        disabled={item.disabled}\n        aria-label={item.ariaLabel ?? label}\n        tabIndex={overflow && !visible ? -1 : undefined}\n        title={label}\n        onClick={() => onAction(item)}\n        className={cn(\n          \"inline-flex shrink-0 items-center justify-center rounded-full bg-background font-medium text-foreground outline-none\",\n          \"disabled:pointer-events-none disabled:opacity-45\",\n          \"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n          ACTION_SIZE_CLASS[size],\n          className,\n        )}\n      >\n        {item.icon ? (\n          <span\n            className={cn(\n              \"inline-flex shrink-0 items-center justify-center\",\n              ICON_SIZE_CLASS[size],\n              iconClassName,\n            )}\n          >\n            {item.icon}\n          </span>\n        ) : null}\n        <span className={cn(\"whitespace-nowrap\", labelClassName)}>\n          {item.label}\n        </span>\n      </button>\n    </motion.span>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-overflow-actions.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/hooks/taste-blocks/beui/use-hover-capable.ts",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\n/**\n * Returns true only on devices that have a true hover (mouse / trackpad).\n * Touch devices fire phantom `:hover` on tap that sticks until tap-elsewhere\n * — gate hover-only effects (scale lifts, magnetic pulls) behind this.\n */\nexport function useHoverCapable() {\n  const [canHover, setCanHover] = useState(false);\n\n  useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(hover: hover) and (pointer: fine)\");\n    const update = () => setCanHover(mq.matches);\n    update();\n    mq.addEventListener?.(\"change\", update);\n    return () => mq.removeEventListener?.(\"change\", update);\n  }, []);\n\n  return canHover;\n}\n",
+      "type": "registry:hook",
+      "target": "@hooks/taste-blocks/beui/use-hover-capable.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "actions",
+        "overflow",
+        "toolbar",
+        "keyboard",
+        "rtl"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-overflow-actions.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-overflow-actions/overflow-actions.tsx",
+            "upstreamPath": "components/motion/overflow-actions.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/overflow-actions.tsx",
+            "upstreamSha256": "sha256:e68f7a7ceab9df6a3e343073eef43c806fd11af83437416d354aa93fd6a41301",
+            "contentSha256": "sha256:4b3ff8fdba5431c7ef4c406ced73629f8d8cdc5066448a2a65ccf8f1ed468fd6",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Required an accessible label for each supplied action and retained a string-label fallback.",
+              "Changed exit positioning from physical left to logical inline start for RTL and added Escape collapse with toggle focus restoration.",
+              "Moved overflow blur interpolation off the layout spring to prevent invalid negative blur values."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "hooks/taste-blocks/beui/use-hover-capable.ts",
+            "upstreamPath": "lib/hooks/use-hover-capable.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/hooks/use-hover-capable.ts",
+            "upstreamSha256": "sha256:b5b9397bfa03859e04673c8f1817cf13ff55d2a9688955d6e0459ae70db90d06",
+            "contentSha256": "sha256:b5b9397bfa03859e04673c8f1817cf13ff55d2a9688955d6e0459ae70db90d06",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/overflow-actions.tsx, lib/ease.ts, lib/hooks/use-hover-capable.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-overflow-actions/overflow-actions.tsx",
+          "change": "Repointed shared imports and completed action naming, RTL positioning, Escape behavior, and bounded blur interpolation.",
+          "reason": "Keep the copied rail portable and preserve equivalent keyboard and layout behavior across writing directions."
+        }
+      ],
+      "dedupe": {
+        "family": "revealable-overflow-action-rail",
+        "sourceHash": "sha256:0f8a8368d703671d34efddcf90454f8c3a4bc67c5f025aa56f628538f055b8cc",
+        "contentHash": "sha256:604a26405432aafb4a5cc0b0c8d983aa64dcdcdd849b6c1e4fd8f15f960495a7",
+        "structureHash": "sha256:d585813fd85433241a3fef75da2d0b561ac60a7ebadc7365ad067f48b8b96128"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

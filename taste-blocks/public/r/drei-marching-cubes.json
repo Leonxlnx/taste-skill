@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-marching-cubes",
+  "title": "Marching Cubes",
+  "author": "pmndrs contributors",
+  "description": "Composes metaballs and planes into a live marching-cubes surface.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three-stdlib@2.35.6",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/MarchingCubes.tsx",
+      "content": "import * as THREE from 'three'\nimport * as React from 'react'\nimport { Color, Group } from 'three'\nimport { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'\nimport { ThreeElements, useFrame } from '@react-three/fiber'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\n\ntype Api = {\n  getParent: () => React.RefObject<MarchingCubesImpl>\n}\n\nconst globalContext = /* @__PURE__ */ React.createContext<Api>(null!)\n\nexport type MarchingCubesProps = {\n  resolution?: number\n  maxPolyCount?: number\n  enableUvs?: boolean\n  enableColors?: boolean\n} & Omit<ThreeElements['group'], 'ref'>\n\nexport const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> =\n  /* @__PURE__ */ React.forwardRef(\n    ({ resolution = 28, maxPolyCount = 10000, enableUvs = false, enableColors = false, children, ...props }, ref) => {\n      const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)\n      React.useImperativeHandle(ref, () => marchingCubesRef.current, [])\n      const marchingCubes = React.useMemo(\n        () =>\n          new MarchingCubesImpl(resolution, null as unknown as THREE.Material, enableUvs, enableColors, maxPolyCount),\n        [resolution, maxPolyCount, enableUvs, enableColors]\n      )\n      const api = React.useMemo(() => ({ getParent: () => marchingCubesRef }), [])\n\n      useFrame(() => {\n        marchingCubes.update()\n        marchingCubes.reset()\n      }, -1) // To make sure the reset runs before the balls or planes are added\n\n      return (\n        <>\n          <primitive object={marchingCubes} ref={marchingCubesRef} {...props}>\n            <globalContext.Provider value={api}>{children}</globalContext.Provider>\n          </primitive>\n        </>\n      )\n    }\n  )\n\nexport type MarchingCubeProps = {\n  strength?: number\n  subtract?: number\n  color?: Color\n} & ThreeElements['group']\n\nexport const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(\n  ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {\n    const { getParent } = React.useContext(globalContext)\n    const parentRef = React.useMemo(() => getParent(), [getParent])\n    const cubeRef = React.useRef<Group>(null!)\n    React.useImperativeHandle(ref, () => cubeRef.current, [])\n    const vec = new THREE.Vector3()\n    useFrame((state) => {\n      if (!parentRef.current || !cubeRef.current) return\n      cubeRef.current.getWorldPosition(vec)\n      parentRef.current.addBall(0.5 + vec.x * 0.5, 0.5 + vec.y * 0.5, 0.5 + vec.z * 0.5, strength, subtract, color)\n    })\n    return <group ref={cubeRef} {...props} />\n  }\n)\n\nexport type MarchingPlaneProps = {\n  planeType?: 'x' | 'y' | 'z'\n  strength?: number\n  subtract?: number\n} & ThreeElements['group']\n\nexport const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(\n  ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {\n    const { getParent } = React.useContext(globalContext)\n    const parentRef = React.useMemo(() => getParent(), [getParent])\n    const wallRef = React.useRef<Group>(null!)\n    React.useImperativeHandle(ref, () => wallRef.current, [])\n    const planeType = React.useMemo(\n      () => (_planeType === 'x' ? 'addPlaneX' : _planeType === 'y' ? 'addPlaneY' : 'addPlaneZ'),\n      [_planeType]\n    )\n\n    useFrame(() => {\n      if (!parentRef.current || !wallRef.current) return\n      parentRef.current[planeType](strength, subtract)\n    })\n    return <group ref={wallRef} {...props} />\n  }\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/MarchingCubes.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "metaballs",
+        "surface",
+        "procedural",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-marching-cubes.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/MarchingCubes.tsx",
+            "upstreamPath": "src/core/MarchingCubes.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/MarchingCubes.tsx",
+            "upstreamSha256": "sha256:cb3ecf89c0550b5ab3d3aa2a7ed9f44046e683056a4f60b5c8318bea6c690677",
+            "contentSha256": "sha256:cb3ecf89c0550b5ab3d3aa2a7ed9f44046e683056a4f60b5c8318bea6c690677",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/MarchingCubes.tsx, src/helpers/ts-utils.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "composable-marching-cubes-surface",
+        "sourceHash": "sha256:f7976906c4a9d01a3f29038aeb9d5910226dedb7bb4f3ee40386031fd5294c82",
+        "contentHash": "sha256:f7976906c4a9d01a3f29038aeb9d5910226dedb7bb4f3ee40386031fd5294c82",
+        "structureHash": "sha256:2f1f079f1761dd6f4d69e44bc6c66d11a70af73d5ad1b140503c7afd93d9a5cf"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

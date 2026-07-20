@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-animated-list",
+  "title": "Animated List",
+  "author": "Magic UI",
+  "description": "Reveals caller-provided activity items in a finite sequence.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.23.26",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/magic-ui/components/magic-animated-list/animated-list.tsx",
+      "content": "\"use client\"\n\nimport React, {\n  useEffect,\n  useMemo,\n  useState,\n  type ComponentPropsWithoutRef,\n} from \"react\"\nimport {\n  AnimatePresence,\n  motion,\n  useReducedMotion,\n  type MotionProps,\n} from \"motion/react\"\n\nimport { cn } from \"../../lib/utils\"\n\nexport function AnimatedListItem({\n  children,\n  reduceMotion = false,\n}: {\n  children: React.ReactNode\n  reduceMotion?: boolean\n}) {\n  const animations: MotionProps = reduceMotion\n    ? { initial: false, animate: { opacity: 1 }, transition: { duration: 0 } }\n    : {\n        initial: { scale: 0, opacity: 0 },\n        animate: { scale: 1, opacity: 1, originY: 0 },\n        exit: { scale: 0, opacity: 0 },\n        transition: { type: \"spring\", stiffness: 350, damping: 40 },\n      }\n\n  return (\n    <motion.div {...animations} layout={!reduceMotion} className=\"mx-auto w-full\">\n      {children}\n    </motion.div>\n  )\n}\n\nexport interface AnimatedListProps extends ComponentPropsWithoutRef<\"div\"> {\n  children: React.ReactNode\n  delay?: number\n}\n\nexport const AnimatedList = React.memo(\n  ({ children, className, delay = 1000, ...props }: AnimatedListProps) => {\n    const shouldReduceMotion = useReducedMotion() ?? false\n    const childrenArray = useMemo(\n      () => React.Children.toArray(children),\n      [children]\n    )\n    const [index, setIndex] = useState(0)\n\n    useEffect(() => {\n      if (shouldReduceMotion) {\n        setIndex(Math.max(childrenArray.length - 1, 0))\n        return\n      }\n\n      let timeout: ReturnType<typeof setTimeout> | null = null\n\n      if (index < childrenArray.length - 1) {\n        timeout = setTimeout(() => {\n          setIndex((prevIndex) => (prevIndex + 1) % childrenArray.length)\n        }, delay)\n      }\n\n      return () => {\n        if (timeout !== null) {\n          clearTimeout(timeout)\n        }\n      }\n    }, [index, delay, childrenArray.length, shouldReduceMotion])\n\n    const itemsToShow = useMemo(() => {\n      const result = childrenArray.slice(0, index + 1).reverse()\n      return result\n    }, [index, childrenArray])\n\n    return (\n      <div\n        className={cn(`flex flex-col items-center gap-4`, className)}\n        {...props}\n      >\n        <AnimatePresence>\n          {itemsToShow.map((item) => (\n            <AnimatedListItem\n              key={(item as React.ReactElement).key}\n              reduceMotion={shouldReduceMotion}\n            >\n              {item}\n            </AnimatedListItem>\n          ))}\n        </AnimatePresence>\n      </div>\n    )\n  }\n)\n\nAnimatedList.displayName = \"AnimatedList\"\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animated-list.tsx"
+    },
+    {
+      "path": "registry/sources/magic-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "activity",
+        "notifications",
+        "sequence",
+        "reveal"
+      ],
+      "renderer": "dom",
+      "preview": "previews/magic-animated-list.tsx",
+      "source": {
+        "project": "Magic UI",
+        "repository": "https://github.com/magicuidesign/magicui",
+        "revision": "76d280aa6e203da02d5efca71d7bf5999494e091",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/magic-animated-list/animated-list.tsx",
+            "upstreamPath": "apps/www/registry/magicui/animated-list.tsx",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/magicui/animated-list.tsx",
+            "upstreamSha256": "sha256:9363c5afa61d7aab1919b4500f7325cc8871b35103d5dd60a2a1625fe5e7dc58",
+            "contentSha256": "sha256:89413528298f32be619803f67088bc0d2c09b2f4650470c22aa2ccbead81236e",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils.",
+              "Added a reduced-motion path that reveals all items without scale or timing effects."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/registry/lib/utils.ts",
+            "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/apps/www/registry/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/magicui/animated-list.tsx and apps/www/registry/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Magic UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/magicuidesign/magicui/blob/76d280aa6e203da02d5efca71d7bf5999494e091/LICENSE.md",
+          "sha256": "sha256:0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+          "localPath": "registry/sources/magic-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/magic-animated-list/animated-list.tsx",
+          "change": "Repointed the bundled utility import and added a reduced-motion path that exposes all items immediately without scale transitions.",
+          "reason": "Retain the finite sequencing behavior while honoring the user's motion preference."
+        }
+      ],
+      "dedupe": {
+        "family": "sequential-activity-list",
+        "sourceHash": "sha256:eea661546e8140313f9c7340dd4359dc5f9fa7dbe7f16651f10be4ae24171e09",
+        "contentHash": "sha256:bf6b76e1cb3c60192abea4ac655ab7212fbcc1a763df64805b58894cd334dbb1",
+        "structureHash": "sha256:19068b029f45ca923f751702d44da474a7881e0499d66d713d83746d2ef5b290"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

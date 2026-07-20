@@ -1,0 +1,143 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carbon-icons-motion-cut-icon",
+  "title": "Animated Cut Icon",
+  "author": "Carbon Design System contributors",
+  "description": "Counter-rotates the two scissor blades in one compact cutting gesture.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-cut-icon/cut-motion.tsx",
+      "content": "\"use client\";\n\nimport type { SVGProps } from \"react\";\n\nimport styles from \"./cut-motion.module.css\";\n\nexport interface CutMotionProps extends Omit<SVGProps<SVGSVGElement>, \"title\"> {\n  isAnimated?: boolean;\n  size?: number;\n  title?: string | null;\n}\n\nexport function CutMotion({\n  className,\n  isAnimated = false,\n  size = 32,\n  title = \"Cut\",\n  ...props\n}: CutMotionProps) {\n  const hasAccessibleName = Boolean(title || props[\"aria-label\"] || props[\"aria-labelledby\"]);\n\n  return (\n    <svg\n      fill=\"currentColor\"\n      {...props}\n      aria-hidden={hasAccessibleName ? props[\"aria-hidden\"] : true}\n      className={[isAnimated ? styles.isAnimating : \"\", className].filter(Boolean).join(\" \")}\n      height={size}\n      role={props.role ?? (hasAccessibleName ? \"img\" : undefined)}\n      viewBox=\"0 0 32 32\"\n      width={size}\n    >\n      {title ? <title>{title}</title> : null}\n      <path\n        className={styles.CutRotateUp}\n        d=\"M20.2,16l6.3-3.6c2.4-1.4,3.3-4.4,1.9-6.8c-0.7-1.2-1.8-2.1-3.1-2.4C24.9,3.1,24.4,3,24,3c-2.8,0-5,2.2-5,5c0,0.9,0.2,1.8,0.7,2.5c0.5,0.9,1.4,1.7,2.4,2.1l-3.8,2.2L16.2,16L3,23.7l1,1.7l14.2-8.3L20.2,16z M21.4,9.5c-0.8-1.4-0.4-3.3,1.1-4.1l0,0c1.4-0.8,3.3-0.3,4.1,1.1l0,0c0.8,1.4,0.3,3.3-1.1,4.1l0,0l0,0C24.1,11.5,22.2,11,21.4,9.5L21.4,9.5z\"\n      />\n      <rect fill=\"none\" height=\"32\" width=\"32\" />\n      <path\n        className={styles.CutRotateDown}\n        d=\"M18.2,17.1l3.8,2.2c-1,0.4-1.8,1.2-2.4,2.1c-1.4,2.4-0.6,5.4,1.8,6.8c0.8,0.5,1.7,0.7,2.5,0.7c0.4,0,0.9-0.1,1.3-0.2c2.7-0.7,4.3-3.4,3.6-6.1c-0.3-1.3-1.2-2.4-2.4-3.1L20.2,16l-2-1.2L4,6.6L3,8.3L16.2,16L18.2,17.1z M26.6,25.5c-0.8,1.4-2.7,1.9-4.1,1.1l0,0c-1.4-0.8-1.9-2.7-1.1-4.1l0,0c0.8-1.4,2.7-1.9,4.1-1.1l0,0l0,0C26.9,22.2,27.4,24.1,26.6,25.5L26.6,25.5z\"\n      />\n    </svg>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/carbon-icons-motion-cut-icon/cut-motion.tsx"
+    },
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-cut-icon/cut-motion.module.css",
+      "content": ".CutRotateUp,\n.CutRotateDown {\n  transform-origin: 56.9375% 50%;\n  will-change: transform;\n}\n\n.isAnimating .CutRotateUp {\n  animation: cut-rotate-up 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CutRotateDown {\n  animation: cut-rotate-down 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n@keyframes cut-rotate-up {\n  0% { transform: rotate(0deg); }\n  25% { transform: rotate(27deg); }\n  50% { transform: rotate(15deg); }\n  75% { transform: rotate(27deg); }\n  100% { transform: rotate(0deg); }\n}\n\n@keyframes cut-rotate-down {\n  0% { transform: rotate(0deg); }\n  25% { transform: rotate(-27deg); }\n  50% { transform: rotate(-15deg); }\n  75% { transform: rotate(-27deg); }\n  100% { transform: rotate(0deg); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .isAnimating .CutRotateUp,\n  .isAnimating .CutRotateDown {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/carbon-icons-motion-cut-icon/cut-motion.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "cut",
+        "scissors",
+        "formatting",
+        "animated",
+        "icon",
+        "carbon",
+        "reduced-motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/carbon-icons-motion-cut-icon.tsx",
+      "source": {
+        "project": "Carbon Icons Motion",
+        "repository": "https://github.com/carbon-design-system/icons-motion",
+        "revision": "7e0a7459eb7d8f96fae0649e1450b65af7f75a2b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/carbon-icons-motion-cut-icon/cut-motion.tsx",
+            "upstreamPath": "src/components/Formatting/CutMotion/CutMotion.js",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/CutMotion/CutMotion.js",
+            "upstreamSha256": "sha256:434a33fc5763804fabec508d88adcbcf23c6230a7fce00ecf9933ab0973443ab",
+            "contentSha256": "sha256:83f33803caeed4a3e7e7825aab7ad634807dbedf45230690d3cd5d9ca6ce7c42",
+            "changes": [
+              "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop.",
+              "Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/carbon-icons-motion-cut-icon/cut-motion.module.css",
+            "upstreamPath": "src/components/Formatting/CutMotion/cut--motion.module.scss",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/CutMotion/cut--motion.module.scss",
+            "upstreamSha256": "sha256:ac99ec0b3edac1b8f5d88b5f94545122ddf983df2231906527216aca5b104def",
+            "contentSha256": "sha256:13d73e5761c5ec2cc9e1f79ee752ea6bfb45c7d6f7dec1b2724aee723c051e9b",
+            "changes": [
+              "Converted the nested SCSS module to an equivalent flat CSS module.",
+              "Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling."
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "geometry": "Inline SVG geometry copied from the official Carbon Icons Motion component blob.",
+        "carbonBasis": {
+          "statement": "The upstream README says the package mirrors Carbon icons but is not tied to a specific Carbon version.",
+          "upstreamPath": "README.md",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/README.md",
+          "sha256": "sha256:3f0e1bd45dc58a966edb3f7ba76d1b0d9231ade1a7cae7b8d7ee36ca12130069"
+        }
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/Formatting/CutMotion/CutMotion.js, src/components/Formatting/CutMotion/cut--motion.module.scss, and their inline Carbon-derived SVG geometry",
+        "copyright": [
+          "Copyright 2015 IBM Corp."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/LICENSE",
+          "sha256": "sha256:c3c4a0200172f8e23c0ea6a0f2c105ac960721c542b63d5de5e9767d195c2e73",
+          "localPath": "registry/sources/carbon-icons-motion/LICENSE"
+        },
+        "notices": [
+          "registry/sources/carbon-icons-motion/NOTICE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/carbon-icons-motion/NOTICE",
+            "sha256": "sha256:95ab19a8acd4553d339b6b0fcfd7c9c93329ceccfa6713364f7a9e5ed42ead46",
+            "changes": [
+              "Created locally because the pinned upstream commit contains no NOTICE file; records attribution and Apache modification marking."
+            ]
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/carbon-icons-motion-cut-icon/cut-motion.tsx",
+          "change": "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop. Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers.",
+          "reason": "Expose a strict, controlled, portable React SVG component without changing its source geometry."
+        },
+        {
+          "shippedPath": "components/carbon-icons-motion-cut-icon/cut-motion.module.css",
+          "change": "Converted the nested SCSS module to an equivalent flat CSS module. Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling.",
+          "reason": "Remove the Sass requirement, prevent looping/autoplay, meet the UI timing budget, and honor reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "carbon-counter-rotating-scissor-blades",
+        "sourceHash": "sha256:4e3f13c0cdece7c3c37af3d8259e3972e39055550c94a5c06409ab992cdfbe9f",
+        "contentHash": "sha256:1ac0b1ebad62a436148f42bfbd1d67c7a506a47ed82ce3165dd1081921c2eb7b",
+        "structureHash": "sha256:2bc4c0a883287980a1b345e7457ec54600cf5540cacf6eb07d47d4eebe7d3bad",
+        "geometryHash": "sha256:d025c7cba71f8ea18017f2882b4c634605e1b9165cbd755342424a3e4ae83879",
+        "motionHash": "sha256:b914b2e04c0402a0945d63820f95261ca739f074a6f86823e730e0cc29757c45",
+        "rasterHash": "sha256:ae5646b59283ae582d276ef2a50f04cafd3c9814f907709719964de88ea0572b",
+        "glyph": {
+          "inventoryName": "cut",
+          "canonicalName": "cut",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": "Generic Carbon-system glyph; no product logo, company mark, or remote asset retained."
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

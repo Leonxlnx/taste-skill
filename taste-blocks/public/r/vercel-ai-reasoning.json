@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-reasoning",
+  "title": "Streaming Reasoning",
+  "author": "Vercel",
+  "description": "A streaming-aware reasoning disclosure with rich content and lifecycle behavior.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2",
+    "@streamdown/cjk@1.0.2",
+    "@streamdown/code@1.1.0",
+    "@streamdown/math@1.0.2",
+    "@streamdown/mermaid@1.0.2",
+    "lucide-react@0.577.0",
+    "motion@12.26.2",
+    "streamdown@2.4.0"
+  ],
+  "registryDependencies": [
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/reasoning.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { cjk } from \"@streamdown/cjk\";\r\nimport { code } from \"@streamdown/code\";\r\nimport { math } from \"@streamdown/math\";\r\nimport { mermaid } from \"@streamdown/mermaid\";\r\nimport { BrainIcon, ChevronDownIcon } from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport {\r\n  createContext,\r\n  memo,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\nimport { Streamdown } from \"streamdown\";\r\n\r\nimport { Shimmer } from \"./shimmer\";\r\n\r\ninterface ReasoningContextValue {\r\n  isStreaming: boolean;\r\n  isOpen: boolean;\r\n  setIsOpen: (open: boolean) => void;\r\n  duration: number | undefined;\r\n}\r\n\r\nconst ReasoningContext = createContext<ReasoningContextValue | null>(null);\r\n\r\nexport const useReasoning = () => {\r\n  const context = useContext(ReasoningContext);\r\n  if (!context) {\r\n    throw new Error(\"Reasoning components must be used within Reasoning\");\r\n  }\r\n  return context;\r\n};\r\n\r\nexport type ReasoningProps = ComponentProps<typeof Collapsible> & {\r\n  isStreaming?: boolean;\r\n  open?: boolean;\r\n  defaultOpen?: boolean;\r\n  onOpenChange?: (open: boolean) => void;\r\n  duration?: number;\r\n};\r\n\r\nconst AUTO_CLOSE_DELAY = 1000;\r\nconst MS_IN_S = 1000;\r\n\r\nexport const Reasoning = memo(\r\n  ({\r\n    className,\r\n    isStreaming = false,\r\n    open,\r\n    defaultOpen,\r\n    onOpenChange,\r\n    duration: durationProp,\r\n    children,\r\n    ...props\r\n  }: ReasoningProps) => {\r\n    const resolvedDefaultOpen = defaultOpen ?? isStreaming;\r\n    // Track if defaultOpen was explicitly set to false (to prevent auto-open)\r\n    const isExplicitlyClosed = defaultOpen === false;\r\n\r\n    const [isOpen, setIsOpen] = useControllableState<boolean>({\r\n      defaultProp: resolvedDefaultOpen,\r\n      onChange: onOpenChange,\r\n      prop: open,\r\n    });\r\n    const [duration, setDuration] = useControllableState<number | undefined>({\r\n      defaultProp: undefined,\r\n      prop: durationProp,\r\n    });\r\n\r\n    const hasEverStreamedRef = useRef(isStreaming);\r\n    const [hasAutoClosed, setHasAutoClosed] = useState(false);\r\n    const startTimeRef = useRef<number | null>(null);\r\n\r\n    // Track when streaming starts and compute duration\r\n    useEffect(() => {\r\n      if (isStreaming) {\r\n        hasEverStreamedRef.current = true;\r\n        if (startTimeRef.current === null) {\r\n          startTimeRef.current = Date.now();\r\n        }\r\n      } else if (startTimeRef.current !== null) {\r\n        setDuration(Math.ceil((Date.now() - startTimeRef.current) / MS_IN_S));\r\n        startTimeRef.current = null;\r\n      }\r\n    }, [isStreaming, setDuration]);\r\n\r\n    // Auto-open when streaming starts (unless explicitly closed)\r\n    useEffect(() => {\r\n      if (isStreaming && !isOpen && !isExplicitlyClosed) {\r\n        setIsOpen(true);\r\n      }\r\n    }, [isStreaming, isOpen, setIsOpen, isExplicitlyClosed]);\r\n\r\n    // Auto-close when streaming ends (once only, and only if it ever streamed)\r\n    useEffect(() => {\r\n      if (\r\n        hasEverStreamedRef.current &&\r\n        !isStreaming &&\r\n        isOpen &&\r\n        !hasAutoClosed\r\n      ) {\r\n        const timer = setTimeout(() => {\r\n          setIsOpen(false);\r\n          setHasAutoClosed(true);\r\n        }, AUTO_CLOSE_DELAY);\r\n\r\n        return () => clearTimeout(timer);\r\n      }\r\n    }, [isStreaming, isOpen, setIsOpen, hasAutoClosed]);\r\n\r\n    const handleOpenChange = useCallback(\r\n      (newOpen: boolean) => {\r\n        setIsOpen(newOpen);\r\n      },\r\n      [setIsOpen]\r\n    );\r\n\r\n    const contextValue = useMemo(\r\n      () => ({ duration, isOpen, isStreaming, setIsOpen }),\r\n      [duration, isOpen, isStreaming, setIsOpen]\r\n    );\r\n\r\n    return (\r\n      <ReasoningContext.Provider value={contextValue}>\r\n        <Collapsible\r\n          className={cn(\"not-prose mb-4\", className)}\r\n          onOpenChange={handleOpenChange}\r\n          open={isOpen}\r\n          {...props}\r\n        >\r\n          {children}\r\n        </Collapsible>\r\n      </ReasoningContext.Provider>\r\n    );\r\n  }\r\n);\r\n\r\nexport type ReasoningTriggerProps = ComponentProps<\r\n  typeof CollapsibleTrigger\r\n> & {\r\n  getThinkingMessage?: (isStreaming: boolean, duration?: number) => ReactNode;\r\n};\r\n\r\nconst defaultGetThinkingMessage = (isStreaming: boolean, duration?: number) => {\r\n  if (isStreaming || duration === 0) {\r\n    return <Shimmer duration={1}>Thinking...</Shimmer>;\r\n  }\r\n  if (duration === undefined) {\r\n    return <p>Thought for a few seconds</p>;\r\n  }\r\n  return <p>Thought for {duration} seconds</p>;\r\n};\r\n\r\nexport const ReasoningTrigger = memo(\r\n  ({\r\n    className,\r\n    children,\r\n    getThinkingMessage = defaultGetThinkingMessage,\r\n    ...props\r\n  }: ReasoningTriggerProps) => {\r\n    const { isStreaming, isOpen, duration } = useReasoning();\r\n\r\n    return (\r\n      <CollapsibleTrigger\r\n        className={cn(\r\n          \"flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground motion-reduce:transition-none\",\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children ?? (\r\n          <>\r\n            <BrainIcon className=\"size-4\" />\r\n            {getThinkingMessage(isStreaming, duration)}\r\n            <ChevronDownIcon\r\n              className={cn(\r\n                \"size-4 transition-transform motion-reduce:transition-none\",\n                isOpen ? \"rotate-180\" : \"rotate-0\"\r\n              )}\r\n            />\r\n          </>\r\n        )}\r\n      </CollapsibleTrigger>\r\n    );\r\n  }\r\n);\r\n\r\nexport type ReasoningContentProps = ComponentProps<\r\n  typeof CollapsibleContent\r\n> & {\r\n  children: string;\r\n};\r\n\r\nconst streamdownPlugins = { cjk, code, math, mermaid };\r\n\r\nexport const ReasoningContent = memo(\r\n  ({ className, children, ...props }: ReasoningContentProps) => (\r\n    <CollapsibleContent\r\n      className={cn(\r\n        \"mt-4 text-sm\",\r\n        \"data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 text-muted-foreground outline-none data-[state=closed]:animate-out data-[state=open]:animate-in motion-reduce:animate-none\",\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      <Streamdown plugins={streamdownPlugins}>{children}</Streamdown>\r\n    </CollapsibleContent>\r\n  )\r\n);\r\n\r\nReasoning.displayName = \"Reasoning\";\r\nReasoningTrigger.displayName = \"ReasoningTrigger\";\r\nReasoningContent.displayName = \"ReasoningContent\";\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/reasoning.tsx"
+    },
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/shimmer.tsx",
+      "content": "\"use client\";\r\n\r\nimport { cn } from \"@/lib/utils\";\nimport type { MotionProps } from \"motion/react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport type { CSSProperties, ElementType, JSX } from \"react\";\r\nimport { memo, useMemo } from \"react\";\r\n\r\ntype MotionHTMLProps = MotionProps & Record<string, unknown>;\r\n\r\n// Cache motion components at module level to avoid creating during render\r\nconst motionComponentCache = new Map<\r\n  keyof JSX.IntrinsicElements,\r\n  React.ComponentType<MotionHTMLProps>\r\n>();\r\n\r\nconst getMotionComponent = (element: keyof JSX.IntrinsicElements) => {\r\n  let component = motionComponentCache.get(element);\r\n  if (!component) {\r\n    component = motion.create(element);\r\n    motionComponentCache.set(element, component);\r\n  }\r\n  return component;\r\n};\r\n\r\nexport interface TextShimmerProps {\r\n  children: string;\r\n  as?: ElementType;\r\n  className?: string;\r\n  duration?: number;\r\n  spread?: number;\r\n}\r\n\r\nconst ShimmerComponent = ({\r\n  children,\r\n  as: Component = \"p\",\r\n  className,\r\n  duration = 2,\r\n  spread = 2,\r\n}: TextShimmerProps) => {\n  const reduceMotion = useReducedMotion();\n  const MotionComponent = getMotionComponent(\n    Component as keyof JSX.IntrinsicElements\r\n  );\r\n\r\n  const dynamicSpread = useMemo(\r\n    () => (children?.length ?? 0) * spread,\r\n    [children, spread]\r\n  );\r\n\r\n  return (\r\n    <MotionComponent\r\n      animate={reduceMotion ? undefined : { backgroundPosition: \"0% center\" }}\n      className={cn(\r\n        \"relative inline-block bg-[length:250%_100%,auto] bg-clip-text text-transparent\",\r\n        \"[--bg:linear-gradient(90deg,#0000_calc(50%-var(--spread)),var(--color-background),#0000_calc(50%+var(--spread)))] [background-repeat:no-repeat,padding-box]\",\r\n        className\r\n      )}\r\n      initial={reduceMotion ? false : { backgroundPosition: \"100% center\" }}\n      style={\r\n        {\r\n          \"--spread\": `${dynamicSpread}px`,\r\n          backgroundImage:\r\n            \"var(--bg), linear-gradient(var(--color-muted-foreground), var(--color-muted-foreground))\",\r\n        } as CSSProperties\r\n      }\r\n      transition={\n        reduceMotion\n          ? { duration: 0 }\n          : {\n              duration,\n              ease: \"linear\",\n              repeat: Number.POSITIVE_INFINITY,\n            }\n      }\n    >\r\n      {children}\r\n    </MotionComponent>\r\n  );\r\n};\r\n\r\nexport const Shimmer = memo(ShimmerComponent);\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/vercel-ai-elements/shimmer.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "reasoning",
+        "streaming",
+        "markdown",
+        "disclosure"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-reasoning.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/reasoning.tsx",
+            "upstreamPath": "packages/elements/src/reasoning.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/reasoning.tsx",
+            "upstreamSha256": "sha256:f138cddde35854f73632ff51d48230f8d6e16e0a49a74b44a93b51993a65550e",
+            "contentSha256": "sha256:3edde068893c445b88a5e422770442786372e8ab1267e8128283381f57cbe228",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion classes to disclosure transitions."
+            ]
+          },
+          {
+            "shippedPath": "components/vercel-ai-elements/shimmer.tsx",
+            "upstreamPath": "packages/elements/src/shimmer.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/shimmer.tsx",
+            "upstreamSha256": "sha256:89d2284ee165aa57fec960e17c6c71078d22ad3fb3798ca683d7e3d850919a46",
+            "contentSha256": "sha256:1128e96bd345e80e9d100f85c388130b27566ecd8d76b6ac2e1c5e0e18cec7e2",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Used Motion's reduced-motion preference to stop the repeating shimmer and render a static state."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/reasoning.tsx, packages/elements/src/shimmer.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/reasoning.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion classes to disclosure transitions.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        },
+        {
+          "shippedPath": "components/vercel-ai-elements/shimmer.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Used Motion's reduced-motion preference to stop the repeating shimmer and render a static state.",
+          "reason": "Retain upstream streaming feedback while respecting reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "streaming-reasoning-disclosure",
+        "sourceHash": "sha256:b685e2c820d96c63431adc14d706bc926b31748bb9fc848178459967cb2988bc",
+        "contentHash": "sha256:d6886449ac310b6232d1994436c02d5c4d3bf553ffa24906c0ffebdd8bfd5b03",
+        "structureHash": "sha256:f0a4d178d6763e30d0c6fa504a1dcb4c09606bee28cc0880f898e25c5a83d51f"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

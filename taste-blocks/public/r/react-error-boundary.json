@@ -1,0 +1,198 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-error-boundary",
+  "title": "React Error Boundary",
+  "author": "Brian Vaughn",
+  "description": "Catches descendant React render failures and exposes fallback and reset APIs for recovery.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/index.ts",
+      "content": "\"use client\";\n\nexport { ErrorBoundary } from \"./components/ErrorBoundary\";\nexport { ErrorBoundaryContext } from \"./context/ErrorBoundaryContext\";\nexport { useErrorBoundary } from \"./hooks/useErrorBoundary\";\nexport { getErrorMessage } from \"./utils/getErrorMessage\";\nexport { withErrorBoundary } from \"./utils/withErrorBoundary\";\n\nexport type { ErrorBoundaryContextType } from \"./context/ErrorBoundaryContext\";\nexport type { UseErrorBoundaryApi } from \"./hooks/useErrorBoundary\";\nexport type {\n  ErrorBoundaryProps,\n  ErrorBoundaryPropsWithComponent,\n  ErrorBoundaryPropsWithFallback,\n  ErrorBoundaryPropsWithRender,\n  FallbackProps,\n  OnErrorCallback,\n} from \"./types\";\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-error-boundary/index.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/components/ErrorBoundary.tsx",
+      "content": "import { Component, createElement, type ErrorInfo } from \"react\";\nimport { ErrorBoundaryContext } from \"../context/ErrorBoundaryContext\";\nimport type { ErrorBoundaryProps, FallbackProps } from \"../types\";\n\nconst isDevelopment = process.env.NODE_ENV !== \"production\";\n\ntype ErrorBoundaryState =\n  | {\n      didCatch: true;\n      error: unknown;\n    }\n  | {\n      didCatch: false;\n      error: null;\n    };\n\nconst initialState: ErrorBoundaryState = {\n  didCatch: false,\n  error: null,\n};\n\n/**\n * A reusable React [error boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary) component.\n * Wrap this component around other React components to \"catch\" errors and render a fallback UI.\n *\n * Catches errors thrown while rendering the tree below it.\n *\n * Does not catch errors thrown during:\n * - Server side rendering\n * - Event handlers\n * - Errors thrown in the error boundary itself\n * - Async code that runs after rendering, like `setTimeout` callbacks or unresolved promises\n *\n * Event handler and async errors:\n *\n * - Use `useErrorBoundary` to pass caught errors to the nearest boundary\n * - In React 19, errors thrown from a function passed to the `startTransition` function returned by `useTransition`\n *   are caught by the nearest boundary\n *\n * ℹ️ The component provides several ways to render a fallback: `fallback`, `fallbackRender`, and `FallbackComponent`.\n * Refer to the documentation to determine which is best for your application.\n *\n * ℹ️ This is a **client component**. You can only pass props to it that are serializable or use it in files that have a `\"use client\";` directive.\n */\nexport class ErrorBoundary extends Component<\n  ErrorBoundaryProps,\n  ErrorBoundaryState\n> {\n  constructor(props: ErrorBoundaryProps) {\n    super(props);\n\n    this.resetErrorBoundary = this.resetErrorBoundary.bind(this);\n    this.state = initialState;\n  }\n\n  static getDerivedStateFromError(error: Error) {\n    return { didCatch: true, error };\n  }\n\n  resetErrorBoundary(...args: unknown[]) {\n    const { error } = this.state;\n\n    if (error !== null) {\n      this.props.onReset?.({\n        args,\n        reason: \"imperative-api\",\n      });\n\n      this.setState(initialState);\n    }\n  }\n\n  componentDidCatch(error: unknown, info: ErrorInfo) {\n    this.props.onError?.(error, info);\n  }\n\n  componentDidUpdate(\n    prevProps: ErrorBoundaryProps,\n    prevState: ErrorBoundaryState,\n  ) {\n    const { didCatch } = this.state;\n    const { resetKeys } = this.props;\n\n    // There's an edge case where if the thing that triggered the error happens to *also* be in the resetKeys array,\n    // we'd end up resetting the error boundary immediately.\n    // This would likely trigger a second error to be thrown.\n    // So we make sure that we don't check the resetKeys on the first call of cDU after the error is set.\n\n    if (\n      didCatch &&\n      prevState.error !== null &&\n      hasArrayChanged(prevProps.resetKeys, resetKeys)\n    ) {\n      this.props.onReset?.({\n        next: resetKeys,\n        prev: prevProps.resetKeys,\n        reason: \"keys\",\n      });\n\n      this.setState(initialState);\n    }\n  }\n\n  render() {\n    const { children, fallbackRender, FallbackComponent, fallback } =\n      this.props;\n    const { didCatch, error } = this.state;\n\n    let childToRender = children;\n\n    if (didCatch) {\n      const props: FallbackProps = {\n        error,\n        resetErrorBoundary: this.resetErrorBoundary,\n      };\n\n      if (typeof fallbackRender === \"function\") {\n        childToRender = fallbackRender(props);\n      } else if (FallbackComponent) {\n        childToRender = createElement(FallbackComponent, props);\n      } else if (fallback !== undefined) {\n        childToRender = fallback;\n      } else {\n        if (isDevelopment) {\n          console.error(\n            \"react-error-boundary requires either a fallback, fallbackRender, or FallbackComponent prop\",\n          );\n        }\n\n        throw error;\n      }\n    }\n\n    return createElement(\n      ErrorBoundaryContext.Provider,\n      {\n        value: {\n          didCatch,\n          error,\n          resetErrorBoundary: this.resetErrorBoundary,\n        },\n      },\n      childToRender,\n    );\n  }\n}\n\nfunction hasArrayChanged(a: unknown[] = [], b: unknown[] = []) {\n  return (\n    a.length !== b.length || a.some((item, index) => !Object.is(item, b[index]))\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-error-boundary/components/ErrorBoundary.tsx"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/context/ErrorBoundaryContext.ts",
+      "content": "import { createContext } from \"react\";\n\nexport type ErrorBoundaryContextType = {\n  didCatch: boolean;\n  error: unknown | null;\n  resetErrorBoundary: (...args: unknown[]) => void;\n};\n\nexport const ErrorBoundaryContext =\n  createContext<ErrorBoundaryContextType | null>(null);\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/context/ErrorBoundaryContext.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/hooks/useErrorBoundary.ts",
+      "content": "import { useContext, useMemo, useState } from \"react\";\nimport { ErrorBoundaryContext } from \"../context/ErrorBoundaryContext\";\nimport { assertErrorBoundaryContext } from \"../utils/assertErrorBoundaryContext\";\n\ntype UseErrorBoundaryState =\n  | { error: unknown; hasError: true }\n  | { error: null; hasError: false };\n\nexport type UseErrorBoundaryApi = {\n  error: unknown | null;\n  resetBoundary: () => void;\n  showBoundary: (error: unknown) => void;\n};\n\n/**\n * Convenience hook for imperatively showing or dismissing error boundaries.\n *\n * ⚠️ This hook must only be used within an `ErrorBoundary` subtree.\n */\nexport function useErrorBoundary(): {\n  /**\n   * The currently visible `Error` (if one has been thrown).\n   */\n  error: unknown | null;\n\n  /**\n   * Method to reset and retry the nearest active error boundary (if one is active).\n   */\n  resetBoundary: () => void;\n\n  /**\n   * Trigger the nearest error boundary to display the error provided.\n   *\n   * ℹ️ React handles errors thrown while rendering.\n   * Errors thrown in event handlers, or after async code has run, will not be caught automatically.\n   * This method is a way to imperatively show the nearest error boundary for those errors.\n   */\n  showBoundary: (error: unknown) => void;\n} {\n  const context = useContext(ErrorBoundaryContext);\n\n  assertErrorBoundaryContext(context);\n\n  const { error, resetErrorBoundary } = context;\n\n  const [state, setState] = useState<UseErrorBoundaryState>({\n    error: null,\n    hasError: false,\n  });\n\n  const memoized = useMemo(\n    () => ({\n      error,\n      resetBoundary: () => {\n        resetErrorBoundary();\n        setState({ error: null, hasError: false });\n      },\n      showBoundary: (error: unknown) =>\n        setState({\n          error,\n          hasError: true,\n        }),\n    }),\n    [error, resetErrorBoundary],\n  );\n\n  if (state.hasError) {\n    throw state.error;\n  }\n\n  return memoized;\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-error-boundary/hooks/useErrorBoundary.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/types.ts",
+      "content": "import type {\n  ComponentType,\n  ErrorInfo,\n  PropsWithChildren,\n  ReactNode,\n} from \"react\";\n\nexport type FallbackProps = {\n  error: unknown;\n  resetErrorBoundary: (...args: unknown[]) => void;\n};\n\nexport type OnErrorCallback = (error: unknown, info: ErrorInfo) => void;\n\ntype ErrorBoundarySharedProps = PropsWithChildren<{\n  /**\n   * Optional callback to enable e.g. logging error information to a server.\n   *\n   * @param error Value that was thrown; typically an instance of `Error`\n   * @param info React \"component stack\" identifying where the error was thrown\n   */\n  onError?: (error: unknown, info: ErrorInfo) => void;\n\n  /**\n   * Optional callback to be notified when an error boundary is reset so React can retry the failed render.\n   */\n  onReset?: (\n    details:\n      | { reason: \"imperative-api\"; args: unknown[] }\n      | {\n          reason: \"keys\";\n          prev: unknown[] | undefined;\n          next: unknown[] | undefined;\n        },\n  ) => void;\n\n  /**\n   * When changed, these keys will reset a triggered error boundary.\n   * This can be useful when an error condition may be tied to some specific state (that can be uniquely identified by key).\n   * See the documentation for examples of how to use this prop.\n   */\n  resetKeys?: unknown[];\n}>;\n\nexport type ErrorBoundaryPropsWithComponent = ErrorBoundarySharedProps & {\n  fallback?: never;\n  /**\n   * React component responsible for returning a fallback UI based on a thrown value.\n   *\n   * ```tsx\n   * <ErrorBoundary FallbackComponent={Fallback} />\n   * ```\n   */\n  FallbackComponent: ComponentType<FallbackProps>;\n  fallbackRender?: never;\n};\n\nexport type ErrorBoundaryPropsWithRender = ErrorBoundarySharedProps & {\n  fallback?: never;\n  FallbackComponent?: never;\n  /**\n   * [Render prop](https://react.dev/reference/react/Children#calling-a-render-prop-to-customize-rendering) function responsible for returning a fallback UI based on a thrown value.\n   *\n   * ```tsx\n   * <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <div>...</div>} />\n   * ```\n   */\n  fallbackRender: (props: FallbackProps) => ReactNode;\n};\n\nexport type ErrorBoundaryPropsWithFallback = ErrorBoundarySharedProps & {\n  /**\n   * Static content to render in place of an error if one is thrown.\n   *\n   * ```tsx\n   * <ErrorBoundary fallback={<div className=\"text-red\">Something went wrong</div>} />\n   * ```\n   */\n  fallback: ReactNode;\n  FallbackComponent?: never;\n  fallbackRender?: never;\n};\n\nexport type ErrorBoundaryProps =\n  | ErrorBoundaryPropsWithFallback\n  | ErrorBoundaryPropsWithComponent\n  | ErrorBoundaryPropsWithRender;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/types.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/utils/assertErrorBoundaryContext.ts",
+      "content": "import type { ErrorBoundaryContextType } from \"../context/ErrorBoundaryContext\";\nimport { isErrorBoundaryContext } from \"./isErrorBoundaryContext\";\n\nexport function assertErrorBoundaryContext(\n  value: unknown,\n): asserts value is ErrorBoundaryContextType {\n  if (!isErrorBoundaryContext(value)) {\n    throw new Error(\"ErrorBoundaryContext not found\");\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/utils/assertErrorBoundaryContext.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/utils/getErrorMessage.ts",
+      "content": "export function getErrorMessage(thrown: unknown): string | undefined {\n  switch (typeof thrown) {\n    case \"object\": {\n      if (\n        thrown !== null &&\n        \"message\" in thrown &&\n        typeof thrown.message === \"string\"\n      ) {\n        return thrown.message;\n      }\n      break;\n    }\n    case \"string\": {\n      return thrown;\n    }\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/utils/getErrorMessage.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/utils/isErrorBoundaryContext.ts",
+      "content": "import type { ErrorBoundaryContextType } from \"../context/ErrorBoundaryContext\";\n\nexport function isErrorBoundaryContext(\n  value: unknown,\n): value is ErrorBoundaryContextType {\n  return (\n    value !== null &&\n    typeof value === \"object\" &&\n    \"didCatch\" in value &&\n    typeof value.didCatch === \"boolean\" &&\n    \"error\" in value &&\n    \"resetErrorBoundary\" in value &&\n    typeof value.resetErrorBoundary === \"function\"\n  );\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/utils/isErrorBoundaryContext.ts"
+    },
+    {
+      "path": "registry/sources/react-error-boundary/components/react-error-boundary/utils/withErrorBoundary.ts",
+      "content": "import {\n  createElement,\n  forwardRef,\n  type ComponentClass,\n  type ComponentType,\n} from \"react\";\nimport { ErrorBoundary } from \"../components/ErrorBoundary\";\nimport type { ErrorBoundaryProps } from \"../types\";\n\nexport function withErrorBoundary<\n  Type extends ComponentClass<unknown>,\n  Props extends object,\n>(Component: ComponentType<Props>, errorBoundaryProps: ErrorBoundaryProps) {\n  const Wrapped = forwardRef<InstanceType<Type>, Props>((props, ref) =>\n    createElement(\n      ErrorBoundary,\n      errorBoundaryProps,\n      createElement(Component, { ...props, ref } as Props),\n    ),\n  );\n\n  // Format for display in DevTools\n  const name = Component.displayName || Component.name || \"Unknown\";\n  Wrapped.displayName = `withErrorBoundary(${name})`;\n\n  return Wrapped;\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-error-boundary/utils/withErrorBoundary.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "error-boundary",
+        "render-errors",
+        "fallback",
+        "recovery",
+        "reset"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-error-boundary.tsx",
+      "source": {
+        "project": "React Error Boundary",
+        "repository": "https://github.com/bvaughn/react-error-boundary",
+        "revision": "1ba91f439ecd500f72464ab35feb29545195c999",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-error-boundary/index.ts",
+            "upstreamPath": "lib/index.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/index.ts",
+            "upstreamSha256": "sha256:1c59e1b6149ae840e22cca2eb0bbb1dcca748f1b7845ae326f514e4e65bb445f",
+            "contentSha256": "sha256:1c59e1b6149ae840e22cca2eb0bbb1dcca748f1b7845ae326f514e4e65bb445f",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/components/ErrorBoundary.tsx",
+            "upstreamPath": "lib/components/ErrorBoundary.tsx",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/components/ErrorBoundary.tsx",
+            "upstreamSha256": "sha256:34056bbafe47862ba8d8c74e04dacbb2f3f02c399cfc4ae7db9630b17d659409",
+            "contentSha256": "sha256:70ed1236d3e8fa5e3c3ed1d226dd0f464db9ebefc743ad36713a9a921a717ef6",
+            "changes": [
+              "Replaced import.meta.env.DEV with process.env.NODE_ENV !== \"production\" so the copied client source compiles in the Next host."
+            ]
+          },
+          {
+            "shippedPath": "components/react-error-boundary/context/ErrorBoundaryContext.ts",
+            "upstreamPath": "lib/context/ErrorBoundaryContext.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/context/ErrorBoundaryContext.ts",
+            "upstreamSha256": "sha256:3c006729046390b20a22884a383da53e7b1a9b71cffe31cdf0bb13704f07a462",
+            "contentSha256": "sha256:3c006729046390b20a22884a383da53e7b1a9b71cffe31cdf0bb13704f07a462",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/hooks/useErrorBoundary.ts",
+            "upstreamPath": "lib/hooks/useErrorBoundary.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/hooks/useErrorBoundary.ts",
+            "upstreamSha256": "sha256:41e80b47bac2f1ba736539e93dfcd24233b62d99733d1b10699bccdbfa43aa34",
+            "contentSha256": "sha256:41e80b47bac2f1ba736539e93dfcd24233b62d99733d1b10699bccdbfa43aa34",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/types.ts",
+            "upstreamPath": "lib/types.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/types.ts",
+            "upstreamSha256": "sha256:7d32c9c5d18354c4be70806f116ea5787f089bae8c0ecd8ff9fd2ed33a0dd35d",
+            "contentSha256": "sha256:7d32c9c5d18354c4be70806f116ea5787f089bae8c0ecd8ff9fd2ed33a0dd35d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/utils/assertErrorBoundaryContext.ts",
+            "upstreamPath": "lib/utils/assertErrorBoundaryContext.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/assertErrorBoundaryContext.ts",
+            "upstreamSha256": "sha256:c336eca50417419661288c0e99c7937596c649022195c134dc95e3986a3d8b32",
+            "contentSha256": "sha256:c336eca50417419661288c0e99c7937596c649022195c134dc95e3986a3d8b32",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/utils/getErrorMessage.ts",
+            "upstreamPath": "lib/utils/getErrorMessage.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/getErrorMessage.ts",
+            "upstreamSha256": "sha256:29822a3d17b159a41e021c08826a5f13a71724d74ccb2b36951b7859b11815e6",
+            "contentSha256": "sha256:29822a3d17b159a41e021c08826a5f13a71724d74ccb2b36951b7859b11815e6",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/utils/isErrorBoundaryContext.ts",
+            "upstreamPath": "lib/utils/isErrorBoundaryContext.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/isErrorBoundaryContext.ts",
+            "upstreamSha256": "sha256:17311e0994e8f382711ef78aa6cb09355862af2adc5f4768dfc5ad0e1ea1ca0d",
+            "contentSha256": "sha256:17311e0994e8f382711ef78aa6cb09355862af2adc5f4768dfc5ad0e1ea1ca0d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-error-boundary/utils/withErrorBoundary.ts",
+            "upstreamPath": "lib/utils/withErrorBoundary.ts",
+            "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/withErrorBoundary.ts",
+            "upstreamSha256": "sha256:13e93f03267b064bf4bdad9106011cd5e87b66daf9be3128bdff8d681968e872",
+            "contentSha256": "sha256:13e93f03267b064bf4bdad9106011cd5e87b66daf9be3128bdff8d681968e872",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "lib/index.ts, lib/components/ErrorBoundary.tsx, lib/context/ErrorBoundaryContext.ts, lib/hooks/useErrorBoundary.ts, lib/types.ts, lib/utils/assertErrorBoundaryContext.ts, lib/utils/getErrorMessage.ts, lib/utils/isErrorBoundaryContext.ts, and lib/utils/withErrorBoundary.ts",
+        "copyright": [
+          "Copyright (c) 2020 Brian Vaughn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/LICENSE",
+          "sha256": "sha256:2cdb493db15b320c5787535f9dadd37b13cae6fe0a1cdd7849ccfbce70c389fd",
+          "localPath": "registry/sources/react-error-boundary/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-error-boundary/components/ErrorBoundary.tsx",
+          "change": "Replaced import.meta.env.DEV with process.env.NODE_ENV !== \"production\".",
+          "reason": "Use the development-mode convention supported by the Next host instead of Vite-specific import metadata."
+        }
+      ],
+      "dedupe": {
+        "family": "react-render-error-boundary",
+        "sourceHash": "sha256:8033760eef9af26b14da2b277b9845379d1fb4187cb4d59be83c4acd1200f942",
+        "contentHash": "sha256:c13297095871007408a89a8ecee2f19f7443438b319e99ea8d6eaf6e97b73d43",
+        "structureHash": "sha256:34da5bf44ae2a976716f207aff425577c10aa999b5af1369380c09f32507499b"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animata-sibling-focus-nav",
+  "title": "Sibling Focus Nav",
+  "author": "Animata",
+  "description": "Dims or blurs sibling links while one navigation item is hovered or keyboard-focused.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animata/components/animata-sibling-focus-nav/sibling-focus-nav.tsx",
+      "content": "import { type ComponentProps, createContext, use } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport type SiblingFocusNavMode = \"opacity\" | \"blur\";\n\nconst SiblingFocusNavModeContext = createContext<SiblingFocusNavMode>(\"opacity\");\n\n/** Opacity mode: dim siblings only while a link is hovered or focus-visible. */\nexport const siblingFocusNavOpacityGroupClassName = cn(\n  \"[&:has(>a:hover)>a:not(:hover)]:opacity-30\",\n  \"[&:has(>a:focus-visible)>a:not(:focus-visible)]:opacity-30\",\n);\n\n/** Blur mode: same sibling trick, but with blur-sm instead of opacity. */\nconst siblingFocusNavBlurGroupClassName = cn(\n  \"[&:has(>a:hover)>a:not(:hover)]:blur-sm\",\n  \"[&:has(>a:focus-visible)>a:not(:focus-visible)]:blur-sm\",\n  \"motion-reduce:[&:has(>a:hover)>a:not(:hover)]:blur-none\",\n  \"motion-reduce:[&:has(>a:focus-visible)>a:not(:focus-visible)]:blur-none\",\n);\n\nconst siblingFocusNavLinkBaseClassName = cn(\n  \"inline-flex min-h-11 touch-manipulation items-center outline-none focus-visible:ring-2 focus-visible:ring-ring\",\n);\n\n/** Classes for direct-child links. Merge onto Next.js Link or use SiblingFocusNav.Link. */\nexport function siblingFocusNavLinkClassName(mode: SiblingFocusNavMode = \"opacity\") {\n  return cn(\n    siblingFocusNavLinkBaseClassName,\n    mode === \"opacity\"\n      ? \"transition-opacity duration-200 ease-out motion-reduce:transition-none\"\n      : \"blur-0 transition-[filter] duration-200 ease-out motion-reduce:transition-none\",\n  );\n}\n\nexport function siblingFocusNavGroupClassName(mode: SiblingFocusNavMode = \"opacity\") {\n  return mode === \"blur\" ? siblingFocusNavBlurGroupClassName : siblingFocusNavOpacityGroupClassName;\n}\n\n/** Horizontal separation — padding on links so hover survives the space between items. */\nexport const siblingFocusNavSpacingXClassName = \"[&>a:not(:last-child)]:pe-6\";\n\n/** Vertical separation — same idea for stacked nav rows. */\nexport const siblingFocusNavSpacingYClassName = \"[&>a:not(:last-child)]:pb-2.5\";\n\ntype SiblingFocusNavSpacingAxis = \"x\" | \"y\" | \"none\";\n\ntype SiblingFocusNavRootProps = ComponentProps<\"nav\"> & {\n  mode?: SiblingFocusNavMode;\n  /** Padding-based link separation — keeps hover active between items (no flex gap). */\n  spacingAxis?: SiblingFocusNavSpacingAxis;\n};\n\nfunction siblingFocusNavSpacingClassName(axis: SiblingFocusNavSpacingAxis) {\n  if (axis === \"y\") return siblingFocusNavSpacingYClassName;\n  if (axis === \"none\") return undefined;\n  return siblingFocusNavSpacingXClassName;\n}\n\nfunction SiblingFocusNavRoot({\n  mode = \"opacity\",\n  spacingAxis = \"x\",\n  className,\n  ...props\n}: SiblingFocusNavRootProps) {\n  return (\n    <SiblingFocusNavModeContext.Provider value={mode}>\n      <nav\n        className={cn(\n          \"flex flex-wrap items-center\",\n          siblingFocusNavSpacingClassName(spacingAxis),\n          siblingFocusNavGroupClassName(mode),\n          className,\n        )}\n        {...props}\n      />\n    </SiblingFocusNavModeContext.Provider>\n  );\n}\n\ntype SiblingFocusNavLinkProps = ComponentProps<\"a\"> & {\n  mode?: SiblingFocusNavMode;\n};\n\nfunction SiblingFocusNavLink({ mode, className, ...props }: SiblingFocusNavLinkProps) {\n  const contextMode = use(SiblingFocusNavModeContext);\n  const resolvedMode = mode ?? contextMode;\n\n  return <a className={cn(siblingFocusNavLinkClassName(resolvedMode), className)} {...props} />;\n}\n\nconst SiblingFocusNav = Object.assign(SiblingFocusNavRoot, {\n  Link: SiblingFocusNavLink,\n  linkClassName: siblingFocusNavLinkClassName(\"opacity\"),\n  groupClassName: siblingFocusNavOpacityGroupClassName,\n  getLinkClassName: siblingFocusNavLinkClassName,\n  getGroupClassName: siblingFocusNavGroupClassName,\n  spacingXClassName: siblingFocusNavSpacingXClassName,\n  spacingYClassName: siblingFocusNavSpacingYClassName,\n});\n\nexport default SiblingFocusNav;\nexport { SiblingFocusNavLink };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/sibling-focus-nav.tsx"
+    },
+    {
+      "path": "registry/sources/animata/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "navigation",
+        "focus",
+        "siblings"
+      ],
+      "renderer": "dom",
+      "preview": "previews/animata-sibling-focus-nav.tsx",
+      "source": {
+        "project": "Animata",
+        "repository": "https://github.com/codse/animata",
+        "revision": "de9aabb0eed14e0db944bb07720961ddc450c672",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animata-sibling-focus-nav/sibling-focus-nav.tsx",
+            "upstreamPath": "animata/container/sibling-focus-nav.tsx",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/animata/container/sibling-focus-nav.tsx",
+            "upstreamSha256": "sha256:66edbec2d98ae323de2365b0359ca7b1c6d440f11dcc0cf9bcec823890af84e3",
+            "contentSha256": "sha256:c006f2398aa0a06ec436388c3179f4bb8f7ca5dc475e5cd814553975c9bbfe56",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/lib/utils.ts",
+            "upstreamSha256": "sha256:5110cb256546ec57496878e69c7e8f338a0ba9caf3ac75eed9babb51dad06ecd",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Removed unrelated absoluteUrl, lerp, and getDistance exports; retained the upstream cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "animata/container/sibling-focus-nav.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Animata"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/LICENSE.md",
+          "sha256": "sha256:ff78804659cbc28380d087cae79c494f243f8ef22b1e2ac5ec119b5de9314f05",
+          "localPath": "registry/sources/animata/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animata-sibling-focus-nav/sibling-focus-nav.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils.",
+          "reason": "Resolve the bundled upstream utility from both the source batch and installation target without relying on a consumer root alias."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl, lerp, and getDistance exports.",
+          "reason": "Keep the copied support closure limited to the upstream cn export used by these components."
+        }
+      ],
+      "dedupe": {
+        "family": "sibling-focus-navigation",
+        "sourceHash": "sha256:9a32de0fe9a5a618cd18fc53ce707c418fd619d96a187375ad96d1803170861b",
+        "contentHash": "sha256:44be3c7aa11e9d6a5f0914e9681ab860395aa0f9ebf8e3511bfcfccbc525521d",
+        "structureHash": "sha256:2f1f5da4d93b364b94e907a68534712347a9ae5be295f36dc30bf3a78581a75b"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

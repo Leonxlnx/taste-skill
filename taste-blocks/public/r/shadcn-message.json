@@ -1,0 +1,111 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-message",
+  "title": "Message",
+  "author": "shadcn",
+  "description": "Structures aligned conversation content with avatar, header, and footer.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/message.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction MessageGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"message-group\"\n      className={cn(\"flex min-w-0 flex-col gap-2\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction Message({\n  className,\n  align = \"start\",\n  ...props\n}: React.ComponentProps<\"div\"> & { align?: \"start\" | \"end\" }) {\n  return (\n    <div\n      data-slot=\"message\"\n      data-align={align}\n      className={cn(\n        \"group/message relative flex w-full min-w-0 gap-2 text-sm data-[align=end]:flex-row-reverse\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageAvatar({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"message-avatar\"\n      className={cn(\n        \"flex w-fit min-w-8 shrink-0 items-center justify-center self-end overflow-hidden rounded-full bg-muted group-has-data-[slot=message-footer]/message:-translate-y-8\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"message-content\"\n      className={cn(\n        \"flex w-full min-w-0 flex-col gap-2.5 wrap-break-word group-data-[align=end]/message:*:data-slot:self-end\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"message-header\"\n      className={cn(\n        \"flex max-w-full min-w-0 items-center px-3 text-xs font-medium text-muted-foreground group-has-data-[variant=ghost]/message:px-0\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"message-footer\"\n      className={cn(\n        \"flex max-w-full min-w-0 items-center px-3 text-xs font-medium text-muted-foreground group-has-data-[variant=ghost]/message:px-0 group-data-[align=end]/message:justify-end\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  MessageGroup,\n  Message,\n  MessageAvatar,\n  MessageContent,\n  MessageFooter,\n  MessageHeader,\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/message.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "message",
+        "conversation",
+        "avatar"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-message.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/radix-nova/message.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/message.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/message.tsx",
+            "upstreamSha256": "sha256:47fddd2cadfee8c0aa92d377cfbb4a211711650b93c79fbaa0cbe9d4a14bc32a",
+            "contentSha256": "sha256:e6900eca15e93c823034d4363f474b30bd817e7b1cc4b4e9a828daac572ee756",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/registry/bases/radix/ui/message.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/radix-nova/message.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports.",
+          "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+          "reason": "Bundle the exact support closure required by the installed component."
+        }
+      ],
+      "dedupe": {
+        "family": "conversation-message",
+        "sourceHash": "sha256:ea645b09e1c7ce27085a70929e8ba1a7aa0e72b67f3e807be7b8954cb2fd5f98",
+        "contentHash": "sha256:1ac7568d7f9e96b03782f65e871c2d2a4aa19d9914ae319b1242a902b8f2bad1",
+        "structureHash": "sha256:23c553581ae4521576bc840c3522517de4af125ee3a1458128840f03d1f3fde7"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

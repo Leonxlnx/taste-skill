@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tremor-progress-circle",
+  "title": "Progress Circle",
+  "author": "Tremor",
+  "description": "Shows a bounded scalar value as an accessible circular progress indicator with caller-provided center content.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.2.0",
+    "tailwind-variants@1.0.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/tremor-raw/components/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle.tsx",
+      "content": "// Tremor ProgressCircle [v0.0.3]\n// Modified by Taste Blocks on 2026-07-20: normalized progress values, forwarded accessible labeling, and disabled motion when reduced motion is requested.\n\nimport React from \"react\"\nimport { tv, VariantProps } from \"tailwind-variants\"\n\nimport { cx } from \"../../utils/cx\"\n\nconst progressCircleVariants = tv({\n  slots: {\n    background: \"\",\n    circle: \"\",\n  },\n  variants: {\n    variant: {\n      default: {\n        background: \"stroke-blue-200 dark:stroke-blue-500/30\",\n        circle: \"stroke-blue-500 dark:stroke-blue-500\",\n      },\n      neutral: {\n        background: \"stroke-gray-200 dark:stroke-gray-500/40\",\n        circle: \"stroke-gray-500 dark:stroke-gray-500\",\n      },\n      warning: {\n        background: \"stroke-yellow-200 dark:stroke-yellow-500/30\",\n        circle: \"stroke-yellow-500 dark:stroke-yellow-500\",\n      },\n      error: {\n        background: \"stroke-red-200 dark:stroke-red-500/30\",\n        circle: \"stroke-red-500 dark:stroke-red-500\",\n      },\n      success: {\n        background: \"stroke-emerald-200 dark:stroke-emerald-500/30\",\n        circle: \"stroke-emerald-500 dark:stroke-emerald-500\",\n      },\n    },\n  },\n  defaultVariants: {\n    variant: \"default\",\n  },\n})\n\ninterface ProgressCircleProps\n  extends Omit<React.SVGProps<SVGSVGElement>, \"value\">,\n    VariantProps<typeof progressCircleVariants> {\n  value?: number\n  max?: number\n  showAnimation?: boolean\n  radius?: number\n  strokeWidth?: number\n  children?: React.ReactNode\n}\n\nconst ProgressCircle = React.forwardRef<SVGSVGElement, ProgressCircleProps>(\n  (\n    {\n      value = 0,\n      max = 100,\n      radius = 32,\n      strokeWidth = 6,\n      showAnimation = true,\n      variant,\n      className,\n      children,\n      \"aria-describedby\": ariaDescribedBy,\n      \"aria-label\": ariaLabel,\n      \"aria-labelledby\": ariaLabelledBy,\n      \"aria-valuetext\": ariaValueText,\n      ...props\n    }: ProgressCircleProps,\n    forwardedRef,\n  ) => {\n    const safeMax = Number.isFinite(max) && max > 0 ? max : 100\n    const safeValue = Math.min(\n      safeMax,\n      Math.max(Number.isFinite(value) ? value : 0, 0),\n    )\n    const normalizedRadius = radius - strokeWidth / 2\n    const circumference = normalizedRadius * 2 * Math.PI\n    const offset = circumference - (safeValue / safeMax) * circumference\n\n    const { background, circle } = progressCircleVariants({ variant })\n    return (\n      <div\n        className={cx(\"relative\")}\n        role=\"progressbar\"\n        aria-describedby={ariaDescribedBy}\n        aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : \"Progress\")}\n        aria-labelledby={ariaLabelledBy}\n        aria-valuenow={safeValue}\n        aria-valuemin={0}\n        aria-valuemax={safeMax}\n        aria-valuetext={ariaValueText}\n        data-max={safeMax}\n        data-value={safeValue}\n        tremor-id=\"tremor-raw\"\n      >\n        <svg\n          ref={forwardedRef}\n          width={radius * 2}\n          height={radius * 2}\n          viewBox={`0 0 ${radius * 2} ${radius * 2}`}\n          className={cx(\"-rotate-90 transform\", className)}\n          {...props}\n          aria-hidden=\"true\"\n        >\n          <circle\n            r={normalizedRadius}\n            cx={radius}\n            cy={radius}\n            strokeWidth={strokeWidth}\n            fill=\"transparent\"\n            stroke=\"\"\n            strokeLinecap=\"round\"\n            className={cx(\"transition-colors ease-linear\", background())}\n          />\n          <circle\n            r={normalizedRadius}\n            cx={radius}\n            cy={radius}\n            strokeWidth={strokeWidth}\n            strokeDasharray={`${circumference} ${circumference}`}\n            strokeDashoffset={offset}\n            fill=\"transparent\"\n            stroke=\"\"\n            strokeLinecap=\"round\"\n            className={cx(\n              \"transition-colors ease-linear motion-reduce:transition-none\",\n              circle(),\n              showAnimation &&\n                \"transform-gpu transition-all duration-300 ease-in-out motion-reduce:transition-none\",\n            )}\n          />\n        </svg>\n        <div\n          className={cx(\"absolute inset-0 flex items-center justify-center\")}\n          aria-hidden=\"true\"\n        >\n          {children}\n        </div>\n      </div>\n    )\n  },\n)\n\nProgressCircle.displayName = \"ProgressCircle\"\n\nexport { ProgressCircle, type ProgressCircleProps }\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle.tsx"
+    },
+    {
+      "path": "registry/sources/tremor-raw/components/tremor-progress-circle/src/utils/cx.ts",
+      "content": "// Tremor cx [v0.0.0]\n\nimport clsx, { type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cx(...args: ClassValue[]) {\n  return twMerge(clsx(...args))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/tremor-progress-circle/src/utils/cx.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "progress",
+        "circle",
+        "svg",
+        "status"
+      ],
+      "renderer": "svg",
+      "preview": "previews/tremor-progress-circle.tsx",
+      "source": {
+        "project": "Tremor Raw",
+        "repository": "https://github.com/tremorlabs/tremor",
+        "revision": "ca4d588f47820ff3d514d37fa4ee08a4222dec11",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle.tsx",
+            "upstreamPath": "src/components/ProgressCircle/ProgressCircle.tsx",
+            "permalink": "https://github.com/tremorlabs/tremor/blob/ca4d588f47820ff3d514d37fa4ee08a4222dec11/src/components/ProgressCircle/ProgressCircle.tsx",
+            "upstreamSha256": "sha256:8de300aef8b40af1eaacd4a19e3802127f69a0109dd97487c2ab63cb7c9a93e0",
+            "contentSha256": "sha256:2468549018803650cce5d43b62720d3fd47996e99147d42bcdfca4a5ed7463ac",
+            "changes": [
+              "Added a prominent Apache-2.0 modification notice.",
+              "Normalized invalid maximum and value inputs before geometry, data attributes, and ARIA output.",
+              "Forwarded the caller's accessible name, description, and value text to the progressbar and hid its decorative SVG and center content from assistive technology.",
+              "Disabled the animated stroke transition when reduced motion is requested.",
+              "Removed the unreachable nonnegative-value conditional around the foreground circle."
+            ]
+          },
+          {
+            "shippedPath": "components/tremor-progress-circle/src/utils/cx.ts",
+            "upstreamPath": "src/utils/cx.ts",
+            "permalink": "https://github.com/tremorlabs/tremor/blob/ca4d588f47820ff3d514d37fa4ee08a4222dec11/src/utils/cx.ts",
+            "upstreamSha256": "sha256:1d84c1b1b8afa7708dd626acf536ae1b7f57b3162b3a959b1cf02c5f22e98592",
+            "contentSha256": "sha256:1d84c1b1b8afa7708dd626acf536ae1b7f57b3162b3a959b1cf02c5f22e98592",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/ProgressCircle/ProgressCircle.tsx and src/utils/cx.ts",
+        "copyright": [
+          "Copyright © 2025 Tremor"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/tremorlabs/tremor/blob/ca4d588f47820ff3d514d37fa4ee08a4222dec11/LICENSE",
+          "sha256": "sha256:6e43333ff4b171baacff233a3672365923eb688bf7ce8724eac42868bc4a08eb",
+          "localPath": "registry/sources/tremor-raw/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/tremor-progress-circle/src/components/ProgressCircle/ProgressCircle.tsx",
+          "change": "Added the required modification marker and minimally corrected value normalization, accessible naming and description, decorative semantics, reduced-motion behavior, and an unreachable render branch.",
+          "reason": "Keep Tremor's visual and prop API while making the draft safe for invalid progress inputs and baseline accessibility review."
+        }
+      ],
+      "dedupe": {
+        "family": "circular-scalar-progress",
+        "sourceHash": "sha256:1253cec33614f8aa26ad513db69b6fdfbd149cb32cb114a229ccb1ebb6b482f1",
+        "contentHash": "sha256:ab279e111d2cf63735f0944315079113b1c1e597e686802418a426b97330b4a7",
+        "structureHash": "sha256:d5b1ea0ecda1c7eae0502c7026f16d193253e09434ece9c62213c785db7bb9c3"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "9ui-meter",
+  "title": "Meter",
+  "author": "borabaloglu",
+  "description": "Displays a labeled scalar value within a known range using semantic meter markup.",
+  "dependencies": [
+    "@base-ui/react@1.0.0",
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/9ui/components/9ui-meter/meter.tsx",
+      "content": "import * as React from \"react\"\nimport { Meter as BaseMeter } from \"@base-ui/react/meter\"\n\nimport { cn } from \"../../lib/utils\"\n\nfunction Meter({\n\tclassName,\n\tchildren,\n\t...props\n}: React.ComponentProps<typeof BaseMeter.Root>) {\n\treturn (\n\t\t<BaseMeter.Root\n\t\t\tdata-slot=\"meter\"\n\t\t\tclassName={cn(\"w-full space-y-1.5\", className)}\n\t\t\t{...props}\n\t\t>\n\t\t\t{children}\n\t\t\t<BaseMeter.Track\n\t\t\t\tdata-slot=\"meter-track\"\n\t\t\t\tclassName=\"bg-primary/20 h-2 w-full overflow-hidden rounded-xs\"\n\t\t\t>\n\t\t\t\t<BaseMeter.Indicator\n\t\t\t\t\tdata-slot=\"meter-indicator\"\n\t\t\t\t\tclassName=\"bg-primary\"\n\t\t\t\t/>\n\t\t\t</BaseMeter.Track>\n\t\t</BaseMeter.Root>\n\t)\n}\n\nfunction MeterLabel({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof BaseMeter.Label>) {\n\treturn (\n\t\t<BaseMeter.Label\n\t\t\tdata-slot=\"meter-label\"\n\t\t\tclassName={cn(\"text-sm font-medium\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction MeterValue({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof BaseMeter.Value>) {\n\treturn (\n\t\t<BaseMeter.Value\n\t\t\tdata-slot=\"meter-value\"\n\t\t\tclassName={cn(\"text-sm\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nexport { Meter, MeterLabel, MeterValue }\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/9ui-meter.tsx"
+    },
+    {
+      "path": "registry/sources/9ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "meter",
+        "value",
+        "range",
+        "status",
+        "semantic"
+      ],
+      "renderer": "dom",
+      "preview": "previews/9ui-meter.tsx",
+      "source": {
+        "project": "9ui",
+        "repository": "https://github.com/borabaloglu/9ui",
+        "revision": "3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/9ui-meter/meter.tsx",
+            "upstreamPath": "apps/www/src/components/ui/meter.tsx",
+            "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/meter.tsx",
+            "upstreamSha256": "sha256:a9539d436fdef8817ae8a58baea11d70b55c5d132697d221b188d76041ca5590",
+            "contentSha256": "sha256:dd546eb2823245f0d97a03179fd2ee6a042892fc7bab5d865de6ec0506991945",
+            "changes": [
+              "Changed the cn import from the upstream alias to the copied source-local helper and stopped forwarding root-only props and className to the meter track."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/src/lib/utils.ts",
+            "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/lib/utils.ts",
+            "upstreamSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+            "contentSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/src/components/ui/meter.tsx and apps/www/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 borabaloglu"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/LICENSE.md",
+          "sha256": "sha256:49bb3c9e3771f566f1d689dc9ffc356bd18621b003f974ada322a171a91d341f",
+          "localPath": "registry/sources/9ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/9ui-meter/meter.tsx",
+          "change": "Repointed the cn alias to the copied helper and removed root props and className from Meter.Track.",
+          "reason": "Keep the item self-contained while preventing duplicate IDs, ARIA attributes, value props, and root styling on the visual track."
+        }
+      ],
+      "dedupe": {
+        "family": "semantic-scalar-meter",
+        "sourceHash": "sha256:87fb161f72049922fc873fde6ce11dbdf4a8d4947623ef4e9fa7ffa1fbcdca43",
+        "contentHash": "sha256:0f2af3eda1cfd9674051c8e31c1c7989f471bb38a287390a9f5affe131662b7e",
+        "structureHash": "sha256:417d1129f60a3bf529a72c54705fd995ea96a8928b44ba2a985781db3388ee3e"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

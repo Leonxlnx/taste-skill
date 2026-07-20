@@ -1,0 +1,103 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "componentry-letter-cascade",
+  "title": "Letter Cascade",
+  "author": "Harsh Jadhav",
+  "description": "Flips a text label through staggered front and echo faces on hover, focus, or keyboard activation.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "framer-motion@12.42.2",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/componentry/components/componentry/letter-cascade.tsx",
+      "content": "\"use client\";\r\n\r\nimport { cn } from \"./lib/utils\";\nimport {\r\n    type AnimationOptions,\r\n    motion,\n    stagger,\n    useAnimate,\n    useReducedMotion,\n} from \"framer-motion\";\nimport { useCallback, useState } from \"react\";\r\n\r\ninterface LetterCascadeProps {\r\n    /** The text to animate */\r\n    text: string;\r\n    /** Additional CSS classes for the container */\r\n    className?: string;\r\n    /** CSS classes applied to each individual letter */\r\n    letterClassName?: string;\r\n    /** Stagger delay between each letter in seconds */\r\n    staggerDuration?: number;\r\n    /** Where the stagger wave originates */\r\n    staggerFrom?: \"first\" | \"last\" | \"center\" | number;\r\n    /** Spring stiffness — higher = snappier */\r\n    stiffness?: number;\r\n    /** Spring damping — lower = bouncier */\r\n    damping?: number;\r\n    /** Trigger the animation on click instead of hover */\r\n    triggerOnClick?: boolean;\r\n    /** Callback when the full animation cycle completes */\r\n    onComplete?: () => void;\r\n}\r\n\r\nexport function LetterCascade({\r\n    text,\r\n    className,\r\n    letterClassName,\r\n    staggerDuration = 0.04,\r\n    staggerFrom = \"first\",\r\n    stiffness = 220,\r\n    damping = 16,\r\n    triggerOnClick = false,\r\n    onComplete,\r\n}: LetterCascadeProps) {\r\n    const [scope, animate] = useAnimate();\n    const [blocked, setBlocked] = useState(false);\n    const reduceMotion = useReducedMotion();\n\r\n    const trigger = useCallback(() => {\n        if (blocked) return;\n        if (reduceMotion) {\n            onComplete?.();\n            return;\n        }\n        setBlocked(true);\n\r\n        const merge = (base: AnimationOptions): AnimationOptions => ({\r\n            ...base,\r\n            delay: stagger(staggerDuration, { from: staggerFrom }),\r\n        });\r\n\r\n        const spring: AnimationOptions = {\r\n            type: \"spring\",\r\n            stiffness,\r\n            damping,\r\n        };\r\n\r\n        // ── Phase 1: front tilts back, echo flips in from below ──\r\n        animate(\r\n            \".cascade-front\",\r\n            {\r\n                rotateX: 90,\r\n                opacity: 0,\r\n                y: -6,\r\n                filter: \"blur(4px)\",\r\n            },\r\n            merge(spring)\r\n        ).then(() => {\r\n            // Instantly reset front\r\n            animate(\r\n                \".cascade-front\",\r\n                { rotateX: 0, opacity: 1, y: 0, filter: \"blur(0px)\" },\r\n                { duration: 0 }\r\n            ).then(() => {\r\n                setBlocked(false);\r\n                onComplete?.();\r\n            });\r\n        });\r\n\r\n        animate(\r\n            \".cascade-echo\",\r\n            {\r\n                rotateX: 0,\r\n                opacity: 1,\r\n                y: 0,\r\n                scale: 1,\r\n                filter: \"blur(0px)\",\r\n            },\r\n            merge(spring)\r\n        ).then(() => {\r\n            // Instantly reset echo\r\n            animate(\r\n                \".cascade-echo\",\r\n                {\r\n                    rotateX: -90,\r\n                    opacity: 0,\r\n                    y: 6,\r\n                    scale: 0.8,\r\n                    filter: \"blur(4px)\",\r\n                },\r\n                { duration: 0 }\r\n            );\r\n        });\r\n    }, [\r\n        blocked,\r\n        animate,\r\n        staggerDuration,\r\n        staggerFrom,\r\n        stiffness,\r\n        damping,\n        onComplete,\n        reduceMotion,\n    ]);\n\r\n    return (\r\n        <span\r\n            ref={scope}\r\n            className={cn(\r\n                \"inline-flex cursor-pointer select-none items-center justify-center\",\r\n                className\r\n            )}\r\n            onClick={trigger}\n            {...(triggerOnClick ? {} : { onMouseEnter: trigger })}\n            onFocus={trigger}\n            onKeyDown={(event) => {\n                if (event.key === \"Enter\" || event.key === \" \") {\n                    event.preventDefault();\n                    trigger();\n                }\n            }}\n            role=\"button\"\n            tabIndex={0}\n            aria-label={text}\n        >\n            {Array.from(text).map((letter, i) => (\n                <span\r\n                    key={i}\r\n                    className=\"relative inline-flex whitespace-pre\"\r\n                    style={{ perspective: \"500px\" }}\r\n                >\r\n                    {/* Front face — visible by default, tilts backward on trigger */}\r\n                    <motion.span\n                        aria-hidden=\"true\"\n                        className={cn(\"cascade-front inline-block\", letterClassName)}\r\n                        style={{\r\n                            rotateX: 0,\r\n                            y: 0,\r\n                            transformOrigin: \"bottom center\",\r\n                            backfaceVisibility: \"hidden\",\r\n                        }}\r\n                    >\r\n                        {letter}\r\n                    </motion.span>\r\n\r\n                    {/* Echo face — hidden below, flips up into view on trigger */}\r\n                    <motion.span\n                        aria-hidden=\"true\"\n                        className={cn(\r\n                            \"cascade-echo absolute inset-0 inline-block\",\r\n                            letterClassName\r\n                        )}\r\n                        style={{\r\n                            rotateX: -90,\r\n                            opacity: 0,\r\n                            y: 6,\r\n                            scale: 0.8,\r\n                            filter: \"blur(4px)\",\r\n                            transformOrigin: \"top center\",\r\n                            backfaceVisibility: \"hidden\",\r\n                        }}\r\n                    >\r\n                        {letter}\r\n                    </motion.span>\r\n                </span>\r\n            ))}\r\n        </span>\r\n    );\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/componentry/letter-cascade.tsx"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "letters",
+        "flip",
+        "stagger"
+      ],
+      "renderer": "dom",
+      "preview": "previews/componentry-letter-cascade.tsx",
+      "source": {
+        "project": "Componentry",
+        "repository": "https://github.com/harshjdhv/componentry",
+        "revision": "0c90c9b9e624c483d434cdb85df084fd399f24c3",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/componentry/letter-cascade.tsx",
+            "upstreamPath": "packages/ui/src/components/letter-cascade.tsx",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/components/letter-cascade.tsx",
+            "upstreamSha256": "sha256:39dec1b20a937f5bee41c2c09703c3644bf6155f44178e23c23149643e86d9c7",
+            "contentSha256": "sha256:40a42a25c0b853f1f980a4ac72a7ec4f496b6601d224941bf3aa49e35c02d5de",
+            "changes": [
+              "Repointed the utility import; added click, touch, focus, and keyboard activation, a reduced-motion path, code-point splitting, and hidden duplicate visual glyphs."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/utils.ts",
+            "upstreamPath": "packages/ui/src/lib/utils.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/utils.ts",
+            "upstreamSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "contentSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/ui/src/components/letter-cascade.tsx, packages/ui/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Harsh Jadhav"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/LICENSE",
+          "sha256": "sha256:fcd2eb170c2579fd14dae953b7b1103cc85dca0e134e015b7490b850c5b403ab",
+          "localPath": "registry/sources/componentry/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/componentry/letter-cascade.tsx",
+          "change": "Repointed the utility import; added click, touch, focus, and keyboard activation, a reduced-motion path, code-point splitting, and hidden duplicate visual glyphs.",
+          "reason": "Keep the upstream cascade available beyond hover while exposing the label only once to assistive technology."
+        }
+      ],
+      "dedupe": {
+        "family": "flipping-letter-cascade",
+        "sourceHash": "sha256:24ae71dbdb43eb24ce6da82c35a6eef183986043e90cfbf222f463768f8ee6da",
+        "contentHash": "sha256:47585832380b450a3029d590fa7c77953ce15447b20d889ca271987dc2666a48",
+        "structureHash": "sha256:67af5a5ace38e0e93cc243eaee2f681852026aa2509b8c9d0f616f56c807ec5a"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

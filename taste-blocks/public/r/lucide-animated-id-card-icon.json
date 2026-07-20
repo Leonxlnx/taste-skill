@@ -1,0 +1,151 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lucide-animated-id-card-icon",
+  "title": "Animated Id Card Icon",
+  "author": "pqoqubbw",
+  "description": "Renders the Lucide Id Card glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/lucide-animated/components/lucide-animated-id-card-icon/id-card.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport interface IdCardIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface IdCardIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst VARIANTS: Variants = {\n  normal: {\n    pathLength: 1,\n    opacity: 1,\n  },\n  animate: (custom: number) => ({\n    pathLength: [0, 1],\n    opacity: [0, 1],\n    transition: {\n      duration: 0.28,\n      delay: Math.min(custom, 0.08) * 0.04,\n    },\n  }),\n};\n\nconst IdCardIcon = forwardRef<IdCardIconHandle, IdCardIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) {\n          controls.start(\"normal\");\n          onMouseEnter?.(e);\n          return;\n        }\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <svg\n          fill=\"none\"\n          height={size}\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"2\"\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <motion.path\n            animate={controls}\n            custom={2}\n            d=\"M16 10h2\"\n            variants={VARIANTS}\n          />\n          <motion.path\n            animate={controls}\n            custom={2}\n            d=\"M16 14h2\"\n            variants={VARIANTS}\n          />\n          <motion.path\n            animate={controls}\n            custom={0}\n            d=\"M6.17 15a3 3 0 0 1 5.66 0\"\n            variants={VARIANTS}\n          />\n          <motion.circle\n            animate={controls}\n            custom={1}\n            cx=\"9\"\n            cy=\"11\"\n            r=\"2\"\n            variants={VARIANTS}\n          />\n          <rect height=\"14\" rx=\"2\" width=\"20\" x=\"2\" y=\"5\" />\n        </svg>\n      </div>\n    );\n  }\n);\n\nIdCardIcon.displayName = \"IdCardIcon\";\n\nexport { IdCardIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/lucide-animated-id-card-icon.tsx"
+    },
+    {
+      "path": "registry/sources/lucide-animated/lib/utils.ts",
+      "content": "import type { ClassValue } from \"clsx\";\nimport { clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "id",
+        "card",
+        "animated",
+        "icon",
+        "lucide",
+        "motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/lucide-animated-id-card-icon.tsx",
+      "source": {
+        "project": "Lucide Animated",
+        "repository": "https://github.com/pqoqubbw/icons",
+        "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/lucide-animated-id-card-icon/id-card.tsx",
+            "upstreamPath": "icons/id-card.tsx",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/icons/id-card.tsx",
+            "upstreamGitBlobSha": "0863ea477d4aed627c92a33dec4c98c15179ea59",
+            "upstreamSha256": "sha256:611eac8b69e6c7a0017183d718a05a9d7253a7233959b58ed46368b64c34df79",
+            "contentSha256": "sha256:c589fa21e0389a3f7daa6332217d66bc0d20b9f2c12f6b9132888a0cbf08a14e",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts.",
+              "Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/lib/utils.ts",
+            "upstreamGitBlobSha": "88283f0133e161af61a96d8d8d14309591369aac",
+            "upstreamSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "contentSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "icons/id-card.tsx, lib/utils.ts, and Lucide/Feather-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+          "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+          "localPath": "registry/sources/lucide-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/lucide-animated/NOTICE",
+          "registry/sources/lucide-animated/LUCIDE_LICENSE",
+          "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/lucide-animated/NOTICE",
+            "sha256": "sha256:6014a8c793832691319bae3f3c5439487b03c9fd0ddeffad56a14c4530639971",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/LICENSE",
+            "upstreamGitBlobSha": "718bb3f0e44153809972abed31839375804bf652",
+            "localPath": "registry/sources/lucide-animated/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/BRAND_LOGOS_STATEMENT.md",
+            "upstreamGitBlobSha": "6a7404c79b20f6d1fd1d414c052a78c550bf74d5",
+            "localPath": "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/lucide-animated-id-card-icon/id-card.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts. Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps.",
+          "reason": "Resolved the bundled utility, added controlled/reduced-motion safety, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-id-card-icon",
+        "sourceHash": "sha256:befa05eabfcef7aaec548b45c852cf9ca8747049a8ac268e8c2f7368fd1c8019",
+        "contentHash": "sha256:ec155e0754e5ecfa78971bc6c0ab48cbff6131516bd73c4d47654c9baa7cc81a",
+        "structureHash": "sha256:ea66c0d485640bc9eed28fe4131a18163f1d7aca346c79eaa51f3d5607f134db",
+        "glyph": {
+          "inventoryName": "id-card",
+          "canonicalName": "id-card",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-schema-display",
+  "title": "Schema Display",
+  "author": "Vercel",
+  "description": "An interactive API schema inspector for parameters, request data, and responses.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "badge",
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/schema-display.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { ChevronRightIcon } from \"lucide-react\";\r\nimport type { ComponentProps, HTMLAttributes } from \"react\";\r\nimport { createContext, useContext, useMemo } from \"react\";\r\n\r\ntype HttpMethod = \"GET\" | \"POST\" | \"PUT\" | \"PATCH\" | \"DELETE\";\r\n\r\ninterface SchemaParameter {\r\n  name: string;\r\n  type: string;\r\n  required?: boolean;\r\n  description?: string;\r\n  location?: \"path\" | \"query\" | \"header\";\r\n}\r\n\r\ninterface SchemaProperty {\r\n  name: string;\r\n  type: string;\r\n  required?: boolean;\r\n  description?: string;\r\n  properties?: SchemaProperty[];\r\n  items?: SchemaProperty;\r\n}\r\n\r\ninterface SchemaDisplayContextType {\r\n  method: HttpMethod;\r\n  path: string;\r\n  description?: string;\r\n  parameters?: SchemaParameter[];\r\n  requestBody?: SchemaProperty[];\r\n  responseBody?: SchemaProperty[];\r\n}\r\n\r\nconst SchemaDisplayContext = createContext<SchemaDisplayContextType>({\r\n  method: \"GET\",\r\n  path: \"\",\r\n});\r\n\r\nconst methodStyles: Record<HttpMethod, string> = {\r\n  DELETE: \"bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400\",\r\n  GET: \"bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400\",\r\n  PATCH:\r\n    \"bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400\",\r\n  POST: \"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400\",\r\n  PUT: \"bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400\",\r\n};\r\n\r\nexport type SchemaDisplayHeaderProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const SchemaDisplayHeader = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayHeaderProps) => (\r\n  <div\r\n    className={cn(\"flex items-center gap-3 border-b px-4 py-3\", className)}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type SchemaDisplayMethodProps = ComponentProps<typeof Badge>;\r\n\r\nexport const SchemaDisplayMethod = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayMethodProps) => {\r\n  const { method } = useContext(SchemaDisplayContext);\r\n\r\n  return (\r\n    <Badge\r\n      className={cn(\"font-mono text-xs\", methodStyles[method], className)}\r\n      variant=\"secondary\"\r\n      {...props}\r\n    >\r\n      {children ?? method}\r\n    </Badge>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayPathProps = HTMLAttributes<HTMLSpanElement>;\n\nconst renderPath = (path: string) => {\n  let offset = 0;\n\n  return path.split(/(\\{[^}]+\\})/g).map((part) => {\n    const key = `${offset}-${part}`;\n    offset += part.length;\n\n    return /^\\{[^}]+\\}$/.test(part) ? (\n      <span className=\"text-blue-600 dark:text-blue-400\" key={key}>\n        {part}\n      </span>\n    ) : (\n      part\n    );\n  });\n};\n\nexport const SchemaDisplayPath = ({\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayPathProps) => {\n  const { path } = useContext(SchemaDisplayContext);\n\n  return (\n    <span className={cn(\"font-mono text-sm\", className)} {...props}>\n      {children ?? renderPath(path)}\n    </span>\n  );\n};\n\r\nexport type SchemaDisplayDescriptionProps =\r\n  HTMLAttributes<HTMLParagraphElement>;\r\n\r\nexport const SchemaDisplayDescription = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayDescriptionProps) => {\r\n  const { description } = useContext(SchemaDisplayContext);\r\n\r\n  return (\r\n    <p\r\n      className={cn(\r\n        \"border-b px-4 py-3 text-muted-foreground text-sm\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      {children ?? description}\r\n    </p>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayContentProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const SchemaDisplayContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayContentProps) => (\r\n  <div className={cn(\"divide-y\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type SchemaDisplayParameterProps = HTMLAttributes<HTMLDivElement> &\r\n  SchemaParameter;\r\n\r\nexport const SchemaDisplayParameter = ({\r\n  name,\r\n  type,\r\n  required,\r\n  description,\r\n  location,\r\n  className,\r\n  ...props\r\n}: SchemaDisplayParameterProps) => (\r\n  <div className={cn(\"px-4 py-3 ps-10\", className)} {...props}>\n    <div className=\"flex items-center gap-2\">\r\n      <span className=\"font-mono text-sm\">{name}</span>\r\n      <Badge className=\"text-xs\" variant=\"outline\">\r\n        {type}\r\n      </Badge>\r\n      {location && (\r\n        <Badge className=\"text-xs\" variant=\"secondary\">\r\n          {location}\r\n        </Badge>\r\n      )}\r\n      {required && (\r\n        <Badge\r\n          className=\"bg-red-100 text-red-700 text-xs dark:bg-red-900/30 dark:text-red-400\"\r\n          variant=\"secondary\"\r\n        >\r\n          required\r\n        </Badge>\r\n      )}\r\n    </div>\r\n    {description && (\r\n      <p className=\"mt-1 text-muted-foreground text-sm\">{description}</p>\r\n    )}\r\n  </div>\r\n);\r\n\r\nexport type SchemaDisplayParametersProps = ComponentProps<typeof Collapsible>;\r\n\r\nexport const SchemaDisplayParameters = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayParametersProps) => {\r\n  const { parameters } = useContext(SchemaDisplayContext);\r\n\r\n  return (\r\n    <Collapsible className={cn(className)} defaultOpen {...props}>\r\n      <CollapsibleTrigger className=\"group flex w-full items-center gap-2 px-4 py-3 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\">\n        <ChevronRightIcon className=\"size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90 motion-reduce:transition-none rtl:-scale-x-100\" />\n        <span className=\"font-medium text-sm\">Parameters</span>\r\n        <Badge className=\"ms-auto text-xs\" variant=\"secondary\">\n          {parameters?.length}\r\n        </Badge>\r\n      </CollapsibleTrigger>\r\n      <CollapsibleContent>\r\n        <div className=\"divide-y border-t\">\r\n          {children ??\r\n            parameters?.map((param) => (\r\n              <SchemaDisplayParameter key={param.name} {...param} />\r\n            ))}\r\n        </div>\r\n      </CollapsibleContent>\r\n    </Collapsible>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayPropertyProps = HTMLAttributes<HTMLDivElement> &\r\n  SchemaProperty & {\r\n    depth?: number;\r\n  };\r\n\r\nexport const SchemaDisplayProperty = ({\r\n  name,\r\n  type,\r\n  required,\r\n  description,\r\n  properties,\r\n  items,\r\n  depth = 0,\r\n  className,\r\n  ...props\r\n}: SchemaDisplayPropertyProps) => {\r\n  const hasChildren = properties || items;\r\n  const paddingLeft = 40 + depth * 16;\r\n\r\n  if (hasChildren) {\r\n    return (\r\n      <Collapsible defaultOpen={depth < 2}>\r\n        <CollapsibleTrigger\r\n          className={cn(\r\n            \"group flex w-full items-center gap-2 py-3 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\",\n            className\r\n          )}\r\n          style={{ paddingLeft }}\r\n        >\r\n          <ChevronRightIcon className=\"size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90 motion-reduce:transition-none rtl:-scale-x-100\" />\n          <span className=\"font-mono text-sm\">{name}</span>\r\n          <Badge className=\"text-xs\" variant=\"outline\">\r\n            {type}\r\n          </Badge>\r\n          {required && (\r\n            <Badge\r\n              className=\"bg-red-100 text-red-700 text-xs dark:bg-red-900/30 dark:text-red-400\"\r\n              variant=\"secondary\"\r\n            >\r\n              required\r\n            </Badge>\r\n          )}\r\n        </CollapsibleTrigger>\r\n        {description && (\r\n          <p\r\n            className=\"pb-2 text-muted-foreground text-sm\"\r\n            style={{ paddingLeft: paddingLeft + 24 }}\r\n          >\r\n            {description}\r\n          </p>\r\n        )}\r\n        <CollapsibleContent>\r\n          <div className=\"divide-y border-t\">\r\n            {properties?.map((prop) => (\r\n              <SchemaDisplayProperty\r\n                key={prop.name}\r\n                {...prop}\r\n                depth={depth + 1}\r\n              />\r\n            ))}\r\n            {items && (\r\n              <SchemaDisplayProperty\r\n                {...items}\r\n                depth={depth + 1}\r\n                name={`${name}[]`}\r\n              />\r\n            )}\r\n          </div>\r\n        </CollapsibleContent>\r\n      </Collapsible>\r\n    );\r\n  }\r\n\r\n  return (\r\n    <div\r\n      className={cn(\"py-3 pe-4\", className)}\n      style={{ paddingLeft }}\r\n      {...props}\r\n    >\r\n      <div className=\"flex items-center gap-2\">\r\n        {/* Spacer for alignment */}\r\n        <span className=\"size-4\" />\r\n        <span className=\"font-mono text-sm\">{name}</span>\r\n        <Badge className=\"text-xs\" variant=\"outline\">\r\n          {type}\r\n        </Badge>\r\n        {required && (\r\n          <Badge\r\n            className=\"bg-red-100 text-red-700 text-xs dark:bg-red-900/30 dark:text-red-400\"\r\n            variant=\"secondary\"\r\n          >\r\n            required\r\n          </Badge>\r\n        )}\r\n      </div>\r\n      {description && (\r\n        <p className=\"mt-1 ps-6 text-muted-foreground text-sm\">{description}</p>\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayRequestProps = ComponentProps<typeof Collapsible>;\r\n\r\nexport const SchemaDisplayRequest = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayRequestProps) => {\r\n  const { requestBody } = useContext(SchemaDisplayContext);\r\n\r\n  return (\r\n    <Collapsible className={cn(className)} defaultOpen {...props}>\r\n      <CollapsibleTrigger className=\"group flex w-full items-center gap-2 px-4 py-3 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\">\n        <ChevronRightIcon className=\"size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90 motion-reduce:transition-none rtl:-scale-x-100\" />\n        <span className=\"font-medium text-sm\">Request Body</span>\r\n      </CollapsibleTrigger>\r\n      <CollapsibleContent>\r\n        <div className=\"border-t\">\r\n          {children ??\r\n            requestBody?.map((prop) => (\r\n              <SchemaDisplayProperty key={prop.name} {...prop} depth={0} />\r\n            ))}\r\n        </div>\r\n      </CollapsibleContent>\r\n    </Collapsible>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayResponseProps = ComponentProps<typeof Collapsible>;\r\n\r\nexport const SchemaDisplayResponse = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayResponseProps) => {\r\n  const { responseBody } = useContext(SchemaDisplayContext);\r\n\r\n  return (\r\n    <Collapsible className={cn(className)} defaultOpen {...props}>\r\n      <CollapsibleTrigger className=\"group flex w-full items-center gap-2 px-4 py-3 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\">\n        <ChevronRightIcon className=\"size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90 motion-reduce:transition-none rtl:-scale-x-100\" />\n        <span className=\"font-medium text-sm\">Response</span>\r\n      </CollapsibleTrigger>\r\n      <CollapsibleContent>\r\n        <div className=\"border-t\">\r\n          {children ??\r\n            responseBody?.map((prop) => (\r\n              <SchemaDisplayProperty key={prop.name} {...prop} depth={0} />\r\n            ))}\r\n        </div>\r\n      </CollapsibleContent>\r\n    </Collapsible>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayProps = HTMLAttributes<HTMLDivElement> & {\r\n  method: HttpMethod;\r\n  path: string;\r\n  description?: string;\r\n  parameters?: SchemaParameter[];\r\n  requestBody?: SchemaProperty[];\r\n  responseBody?: SchemaProperty[];\r\n};\r\n\r\nexport const SchemaDisplay = ({\r\n  method,\r\n  path,\r\n  description,\r\n  parameters,\r\n  requestBody,\r\n  responseBody,\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayProps) => {\r\n  const contextValue = useMemo(\r\n    () => ({\r\n      description,\r\n      method,\r\n      parameters,\r\n      path,\r\n      requestBody,\r\n      responseBody,\r\n    }),\r\n    [description, method, parameters, path, requestBody, responseBody]\r\n  );\r\n\r\n  return (\r\n    <SchemaDisplayContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\r\n          \"overflow-hidden rounded-lg border bg-background\",\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children ?? (\r\n          <>\r\n            <SchemaDisplayHeader>\r\n              <div className=\"flex items-center gap-3\">\r\n                <SchemaDisplayMethod />\r\n                <SchemaDisplayPath />\r\n              </div>\r\n            </SchemaDisplayHeader>\r\n            {description && <SchemaDisplayDescription />}\r\n            <SchemaDisplayContent>\r\n              {parameters && parameters.length > 0 && (\r\n                <SchemaDisplayParameters />\r\n              )}\r\n              {requestBody && requestBody.length > 0 && (\r\n                <SchemaDisplayRequest />\r\n              )}\r\n              {responseBody && responseBody.length > 0 && (\r\n                <SchemaDisplayResponse />\r\n              )}\r\n            </SchemaDisplayContent>\r\n          </>\r\n        )}\r\n      </div>\r\n    </SchemaDisplayContext.Provider>\r\n  );\r\n};\r\n\r\nexport type SchemaDisplayBodyProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const SchemaDisplayBody = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayBodyProps) => (\r\n  <div className={cn(\"divide-y\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type SchemaDisplayExampleProps = HTMLAttributes<HTMLPreElement>;\r\n\r\nexport const SchemaDisplayExample = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: SchemaDisplayExampleProps) => (\r\n  <pre\r\n    className={cn(\r\n      \"mx-4 mb-4 overflow-auto rounded-md bg-muted p-4 font-mono text-sm\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </pre>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/schema-display.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "schema",
+        "api",
+        "request",
+        "response"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-schema-display.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/schema-display.tsx",
+            "upstreamPath": "packages/elements/src/schema-display.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/schema-display.tsx",
+            "upstreamSha256": "sha256:805ca0b043ff5beb21f15b616df19df995fd4ecd3c48f8a9bc2ce588c86adfe7",
+            "contentSha256": "sha256:d489d27abb4727d5f92d6d8f7f8e5f51e3993d2f60681834c00f489cde0eef21",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced caller-controlled dangerouslySetInnerHTML path highlighting with React text nodes.",
+              "Added reduced-motion handling and logical spacing and icon direction for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/schema-display.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/schema-display.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced caller-controlled dangerouslySetInnerHTML path highlighting with React text nodes. Added reduced-motion handling and logical spacing and icon direction for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "interactive-api-schema",
+        "sourceHash": "sha256:aaaa284e9e9a82976c602ee58e45c000cc501c425d316268624fb4278da52807",
+        "contentHash": "sha256:b67f3afd5f851025f8a9a37eccdf1ad135ae0fd7c0a743a010f2e36b7686ed05",
+        "structureHash": "sha256:84a35d662f5e0fb1ac96e01820e2b266e92b6f9b8c816401ce7c6fc1fdd43976"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-dock",
+  "title": "Dock",
+  "author": "Motion Primitives",
+  "description": "Magnifies application actions according to pointer proximity.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-dock/dock.tsx",
+      "content": "'use client';\n\nimport {\n  motion,\n  MotionValue,\n  useMotionValue,\n  useSpring,\n  useTransform,\n  useReducedMotion,\n  type SpringOptions,\n  AnimatePresence,\n} from 'motion/react';\nimport {\n  Children,\n  cloneElement,\n  createContext,\n  useContext,\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n} from 'react';\nimport { cn } from '../../lib/utils';\n\nconst DOCK_HEIGHT = 128;\nconst DEFAULT_MAGNIFICATION = 80;\nconst DEFAULT_DISTANCE = 150;\nconst DEFAULT_PANEL_HEIGHT = 64;\n\nexport type DockProps = {\n  children: React.ReactNode;\n  className?: string;\n  distance?: number;\n  panelHeight?: number;\n  magnification?: number;\n  spring?: SpringOptions;\n};\n\nexport type DockItemProps = {\n  className?: string;\n  children: React.ReactNode;\n  onClick?: React.MouseEventHandler<HTMLButtonElement>;\n  'aria-label': string;\n};\n\nexport type DockLabelProps = {\n  className?: string;\n  children: React.ReactNode;\n};\n\nexport type DockIconProps = {\n  className?: string;\n  children: React.ReactNode;\n};\n\nexport type DocContextType = {\n  mouseX: MotionValue;\n  spring: SpringOptions;\n  magnification: number;\n  distance: number;\n  shouldReduceMotion: boolean | null;\n};\n\nexport type DockProviderProps = {\n  children: React.ReactNode;\n  value: DocContextType;\n};\n\nconst DockContext = createContext<DocContextType | undefined>(undefined);\n\nfunction DockProvider({ children, value }: DockProviderProps) {\n  return <DockContext.Provider value={value}>{children}</DockContext.Provider>;\n}\n\nfunction useDock() {\n  const context = useContext(DockContext);\n  if (!context) {\n    throw new Error('useDock must be used within an DockProvider');\n  }\n  return context;\n}\n\nfunction Dock({\n  children,\n  className,\n  spring = { mass: 0.1, stiffness: 150, damping: 12 },\n  magnification = DEFAULT_MAGNIFICATION,\n  distance = DEFAULT_DISTANCE,\n  panelHeight = DEFAULT_PANEL_HEIGHT,\n}: DockProps) {\n  const mouseX = useMotionValue(Infinity);\n  const isHovered = useMotionValue(0);\n  const shouldReduceMotion = useReducedMotion();\n\n  const maxHeight = useMemo(() => {\n    return Math.max(DOCK_HEIGHT, magnification + magnification / 2 + 4);\n  }, [magnification]);\n\n  const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);\n  const height = useSpring(heightRow, spring);\n\n  return (\n    <motion.div\n      style={{\n        height: shouldReduceMotion ? panelHeight : height,\n        scrollbarWidth: 'none',\n      }}\n      className='mx-2 flex max-w-full items-end overflow-x-auto'\n    >\n      <motion.div\n        onMouseMove={({ pageX }) => {\n          if (shouldReduceMotion) return;\n          isHovered.set(1);\n          mouseX.set(pageX);\n        }}\n        onMouseLeave={() => {\n          isHovered.set(0);\n          mouseX.set(Infinity);\n        }}\n        className={cn(\n          'mx-auto flex w-fit gap-4 rounded-2xl bg-gray-50 px-4 dark:bg-neutral-900',\n          className\n        )}\n        style={{ height: panelHeight }}\n        role='toolbar'\n        aria-label='Application dock'\n      >\n        <DockProvider\n          value={{\n            mouseX,\n            spring,\n            distance,\n            magnification,\n            shouldReduceMotion,\n          }}\n        >\n          {children}\n        </DockProvider>\n      </motion.div>\n    </motion.div>\n  );\n}\n\nfunction DockItem({\n  children,\n  className,\n  onClick,\n  'aria-label': ariaLabel,\n}: DockItemProps) {\n  const ref = useRef<HTMLButtonElement>(null);\n\n  const { distance, magnification, mouseX, spring, shouldReduceMotion } =\n    useDock();\n\n  const isHovered = useMotionValue(0);\n\n  const mouseDistance = useTransform(mouseX, (val) => {\n    const domRect = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };\n    return val - domRect.x - domRect.width / 2;\n  });\n\n  const widthTransform = useTransform(\n    mouseDistance,\n    [-distance, 0, distance],\n    [40, magnification, 40]\n  );\n\n  const width = useSpring(widthTransform, spring);\n\n  return (\n    <motion.button\n      ref={ref}\n      style={{ width: shouldReduceMotion ? 40 : width }}\n      onHoverStart={() => isHovered.set(1)}\n      onHoverEnd={() => isHovered.set(0)}\n      onFocus={() => isHovered.set(1)}\n      onBlur={() => isHovered.set(0)}\n      className={cn(\n        'relative inline-flex items-center justify-center',\n        className\n      )}\n      type='button'\n      aria-label={ariaLabel}\n      onClick={onClick}\n    >\n      {Children.map(children, (child) =>\n        cloneElement(child as React.ReactElement, { width, isHovered })\n      )}\n    </motion.button>\n  );\n}\n\nfunction DockLabel({ children, className, ...rest }: DockLabelProps) {\n  const { shouldReduceMotion } = useDock();\n  const restProps = rest as Record<string, unknown>;\n  const isHovered = restProps['isHovered'] as MotionValue<number>;\n  const [isVisible, setIsVisible] = useState(false);\n\n  useEffect(() => {\n    const unsubscribe = isHovered.on('change', (latest) => {\n      setIsVisible(latest === 1);\n    });\n\n    return () => unsubscribe();\n  }, [isHovered]);\n\n  return (\n    <AnimatePresence>\n      {isVisible && (\n        <motion.div\n          initial={{ opacity: 0, y: 0 }}\n          animate={{ opacity: 1, y: -10 }}\n          exit={{ opacity: 0, y: 0 }}\n          transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}\n          className={cn(\n            'absolute -top-6 left-1/2 w-fit whitespace-pre rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs text-neutral-700 dark:border-neutral-900 dark:bg-neutral-800 dark:text-white',\n            className\n          )}\n          role='tooltip'\n          style={{ x: '-50%' }}\n        >\n          {children}\n        </motion.div>\n      )}\n    </AnimatePresence>\n  );\n}\n\nfunction DockIcon({ children, className, ...rest }: DockIconProps) {\n  const restProps = rest as Record<string, unknown>;\n  const width = restProps['width'] as MotionValue<number>;\n\n  const widthTransform = useTransform(width, (val) => val / 2);\n\n  return (\n    <motion.div\n      style={{ width: widthTransform }}\n      className={cn('flex items-center justify-center', className)}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nexport { Dock, DockIcon, DockItem, DockLabel };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/dock.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "dock",
+        "magnification",
+        "toolbar"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-dock.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-dock/dock.tsx",
+            "upstreamPath": "components/core/dock.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/dock.tsx",
+            "upstreamSha256": "sha256:5b624424f0fd8b66f174ecbd4e0d8c260f438d933963126bf34298eadcebf719",
+            "contentSha256": "sha256:a4331875113a63e9920e61670895025da9f291fe2d7d35f02d4e3dc75103b447",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Added useReducedMotion handling that keeps the dock and item widths static and makes tooltip feedback immediate.",
+              "Changed the focusable role=button wrapper to a native button and require an accessible aria-label."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": [
+          "Motion Primitives docs credit @kashyap20 and cite Build UI – Magnified Dock as inspiration."
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/dock.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-dock/dock.tsx",
+          "change": "Changed the local utility import, disabled magnification for reduced motion, and replaced the simulated button with a labelled native button.",
+          "reason": "Resolve the copied helper, keep the dock static when motion is reduced, and preserve native keyboard/touch activation and naming."
+        }
+      ],
+      "dedupe": {
+        "family": "pointer-magnified-dock",
+        "sourceHash": "sha256:0f3e34315683368409a2ec5a2757ab86c72e155577e39971826f41e676b6bce8",
+        "contentHash": "sha256:6084a47516a76951e91e1fe4e713cd2c3a87abeb068c5a516f099d236daebb5e",
+        "structureHash": "sha256:ebb4bec0ce46ec99b4c7c87f024656f67bbc011fdfb47a036dcf93a312e1e436"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-slide-action",
+  "title": "Slide Action",
+  "author": "Saurabh Chauhan",
+  "description": "Requires a measured drag to the logical far edge before confirming an action.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-slide-action/slide-action.tsx",
+      "content": "\"use client\";\n\nimport {\n  animate,\n  motion,\n  useMotionValue,\n  useReducedMotion,\n  useTransform,\n} from \"motion/react\";\nimport {\n  useEffect,\n  useLayoutEffect,\n  useRef,\n  useState,\n  type HTMLAttributes,\n  type KeyboardEvent,\n  type ReactNode,\n} from \"react\";\nimport {\n  EASE_OUT,\n  SPRING_LAYOUT,\n  SPRING_PRESS,\n} from \"../../lib/taste-blocks/beui/ease\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport interface SlideActionButtonProps\n  extends Omit<HTMLAttributes<HTMLDivElement>, \"children\"> {\n  children: ReactNode;\n  completeLabel?: ReactNode;\n  threshold?: number;\n  resetDelay?: number;\n  onComplete?: () => void;\n  thumbClassName?: string;\n  fillClassName?: string;\n}\n\nexport function SlideActionButton({\n  children,\n  completeLabel = \"Complete\",\n  threshold = 0.82,\n  resetDelay = 1200,\n  onComplete,\n  thumbClassName,\n  fillClassName,\n  className,\n  ...rest\n}: SlideActionButtonProps) {\n  const reduce = useReducedMotion();\n  const trackRef = useRef<HTMLDivElement>(null);\n  const thumbRef = useRef<HTMLButtonElement>(null);\n  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const completedRef = useRef(false);\n  const directionRef = useRef<\"ltr\" | \"rtl\">(\"ltr\");\n  const x = useMotionValue(0);\n  const [maxDistance, setMaxDistance] = useState(0);\n  const [direction, setDirection] = useState<\"ltr\" | \"rtl\">(\"ltr\");\n  const [completed, setCompleted] = useState(false);\n  const safeDistance = Math.max(maxDistance, 1);\n  const endpoint = direction === \"rtl\" ? -safeDistance : safeDistance;\n  const dragProgress = useTransform(x, [0, endpoint], [0, 1]);\n  const fillProgress = useTransform(x, [0, endpoint], [0, 1]);\n  const labelOpacity = useTransform(\n    x,\n    [0, endpoint * 0.35, endpoint * 0.65],\n    [1, 0.75, 0],\n  );\n  const iconPath = useTransform(\n    dragProgress,\n    [0, 0.5, 1],\n    [\"M 8 5 L 15 12 L 8 19\", \"M 7 8 L 12 14 L 17 10\", \"M 5 12 L 10 17 L 19 7\"],\n  );\n\n  useLayoutEffect(() => {\n    const track = trackRef.current;\n    const thumb = thumbRef.current;\n    if (!track || !thumb) return;\n\n    const measure = () => {\n      const nextDirection =\n        getComputedStyle(track).direction === \"rtl\" ? \"rtl\" : \"ltr\";\n      if (directionRef.current !== nextDirection) {\n        directionRef.current = nextDirection;\n        setDirection(nextDirection);\n        x.set(0);\n      }\n      setMaxDistance(Math.max(track.clientWidth - thumb.clientWidth - 8, 0));\n    };\n\n    measure();\n    const observer = new ResizeObserver(measure);\n    observer.observe(track);\n    observer.observe(thumb);\n    return () => observer.disconnect();\n  }, [x]);\n\n  useEffect(\n    () => () => {\n      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);\n    },\n    [],\n  );\n\n  const moveTo = (target: number) => {\n    if (reduce) {\n      x.set(target);\n      return;\n    }\n    animate(x, target, SPRING_LAYOUT);\n  };\n\n  const reset = () => {\n    completedRef.current = false;\n    setCompleted(false);\n    moveTo(0);\n  };\n\n  const complete = () => {\n    if (completedRef.current || maxDistance === 0) return;\n    completedRef.current = true;\n    setCompleted(true);\n    moveTo(direction === \"rtl\" ? -maxDistance : maxDistance);\n    onComplete?.();\n\n    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);\n    resetTimerRef.current = setTimeout(reset, resetDelay);\n  };\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if (event.key !== \"Enter\" && event.key !== \" \") return;\n    event.preventDefault();\n    complete();\n  };\n\n  return (\n    <div\n      ref={trackRef}\n      className={cn(\n        \"relative h-16 w-72 overflow-hidden rounded-[22px] bg-primary/10 p-1\",\n        \"ring-1 ring-primary/10\",\n        className,\n      )}\n      {...rest}\n    >\n      <motion.span\n        aria-hidden=\"true\"\n        style={{\n          scaleX: fillProgress,\n          transformOrigin: direction === \"rtl\" ? \"right\" : \"left\",\n        }}\n        className={cn(\n          \"absolute inset-0 bg-primary will-change-transform\",\n          fillClassName,\n        )}\n      />\n\n      <motion.span\n        aria-hidden=\"true\"\n        style={{ opacity: labelOpacity }}\n        className=\"pointer-events-none absolute inset-0 grid place-items-center ps-10 text-sm font-medium text-foreground\"\n      >\n        {children}\n      </motion.span>\n\n      <motion.span\n        aria-live=\"polite\"\n        animate={{ opacity: completed ? 1 : 0 }}\n        transition={{ duration: reduce ? 0 : 0.15, ease: EASE_OUT }}\n        className=\"pointer-events-none absolute inset-0 grid place-items-center text-sm font-medium text-primary-foreground\"\n      >\n        {completed ? completeLabel : null}\n      </motion.span>\n\n      <motion.button\n        ref={thumbRef}\n        type=\"button\"\n        aria-label={typeof children === \"string\" ? children : \"Slide action\"}\n        drag={completed ? false : \"x\"}\n        dragConstraints={\n          direction === \"rtl\"\n            ? { left: -maxDistance, right: 0 }\n            : { left: 0, right: maxDistance }\n        }\n        dragElastic={0}\n        dragMomentum={false}\n        style={{ x }}\n        onDragEnd={() => {\n          if (Math.abs(x.get()) >= maxDistance * threshold) complete();\n          else moveTo(0);\n        }}\n        onKeyDown={handleKeyDown}\n        whileTap={reduce || completed ? undefined : { scale: 0.94 }}\n        transition={SPRING_PRESS}\n        className={cn(\n          \"relative z-10 grid size-14 touch-none cursor-grab place-items-center rounded-[18px] bg-primary text-primary-foreground shadow-sm\",\n          \"outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n          completed && \"cursor-default bg-background text-foreground\",\n          thumbClassName,\n        )}\n      >\n        <motion.svg\n          viewBox=\"0 0 24 24\"\n          aria-hidden=\"true\"\n          className=\"size-5 rtl:rotate-180\"\n        >\n          <motion.path\n            d={iconPath}\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            strokeWidth=\"2\"\n          />\n        </motion.svg>\n      </motion.button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-slide-action.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "drag",
+        "confirmation",
+        "touch",
+        "keyboard",
+        "rtl"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-slide-action.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-slide-action/slide-action.tsx",
+            "upstreamPath": "components/motion/slide-action-button.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/slide-action-button.tsx",
+            "upstreamSha256": "sha256:79d5bc11c6e8ca0bfe1efd14149ee968d86aa388a7ebebe9dbade875fc2a6bd7",
+            "contentSha256": "sha256:ba83bcd530cbc4d07d7d6f3ae9675961c0adea21d22510499b71f84bc233d445",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Measured inherited text direction and mapped drag constraints, progress, fill origin, logical padding, completion threshold, and arrow orientation for RTL."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/slide-action-button.tsx, lib/ease.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-slide-action/slide-action.tsx",
+          "change": "Repointed shared imports and added direction-aware drag geometry.",
+          "reason": "Install without project aliases and keep the confirmation gesture equivalent in LTR and RTL."
+        }
+      ],
+      "dedupe": {
+        "family": "draggable-confirmation-action",
+        "sourceHash": "sha256:6c8caf2794e7f9bc021806104cfd30f4cbe35f37a05e73354ff04f186ce05bfe",
+        "contentHash": "sha256:5a310eaaad5743be79086fa5ce9b211af7fd84f6fd2eeea936814106ff476007",
+        "structureHash": "sha256:d11994abb2e726a72144a4c0f996b5f82fac92b7ada3fd9b5c3c0df6a6822c79"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

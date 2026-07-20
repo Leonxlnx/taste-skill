@@ -1,0 +1,149 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-headset",
+  "title": "Animated Headset Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated headset SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-headset/headset-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface HeadsetIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface HeadsetIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst HeadsetIcon = forwardRef<HeadsetIconHandle, HeadsetIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const frameControls = useAnimation();\n  const tailControls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () => {\n     if (!isAnimated || reduced) {\n      frameControls.start(\"normal\");\n      tailControls.start(\"normal\");\n     } else {\n      frameControls.start(\"animate\");\n      tailControls.start(\"animate\");\n     }\n    },\n    stopAnimation: () => {\n     frameControls.start(\"normal\");\n     tailControls.start(\"normal\");\n    },\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     frameControls.start(\"animate\");\n     tailControls.start(\"animate\");\n    } else onMouseEnter?.(e as any);\n   },\n   [frameControls, tailControls, reduced, onMouseEnter, isAnimated],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     frameControls.start(\"normal\");\n     tailControls.start(\"normal\");\n    } else onMouseLeave?.(e as any);\n   },\n   [frameControls, tailControls, onMouseLeave],\n  );\n\n  const frameVariants: Variants = {\n   normal: { strokeDashoffset: 0, scale: 1, rotate: 0 },\n   animate: {\n    strokeDashoffset: [240, 40, 0],\n    scale: [1, 0.96, 1.06, 1],\n    rotate: [0, -2, 1, 0],\n    transition: {\n     duration: 0.95 * duration,\n     ease: [0.2, 0.85, 0.25, 1],\n     times: [0, 0.35, 0.75, 1],\n    },\n   },\n  };\n\n  const tailVariants: Variants = {\n   normal: { strokeDashoffset: 0, x: 0, opacity: 1 },\n   animate: {\n    strokeDashoffset: [100, 20, 0],\n    x: [10, -4, 0],\n    opacity: [0, 1, 1],\n    transition: {\n     duration: 0.7 * duration,\n     ease: [0.22, 0.9, 0.28, 1],\n     delay: 0.18,\n     times: [0, 0.5, 1],\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n     >\n      <m.path\n       d=\"M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z\"\n       initial=\"normal\"\n       animate={frameControls}\n       variants={frameVariants}\n       style={{ strokeDasharray: 240, transformOrigin: \"12px 12px\" }}\n      />\n      <m.path\n       d=\"M21 16v2a4 4 0 0 1-4 4h-5\"\n       initial=\"normal\"\n       animate={tailControls}\n       variants={tailVariants}\n       style={{ strokeDasharray: 100, strokeLinecap: \"round\" }}\n      />\n     </svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nHeadsetIcon.displayName = \"HeadsetIcon\";\nexport { HeadsetIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-headset.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "headset",
+        "animated",
+        "icon",
+        "motion",
+        "support",
+        "call",
+        "agent",
+        "operator",
+        "audio"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-headset.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-headset/headset-icon.tsx",
+            "upstreamPath": "icons/lucide/headset-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/headset-icon.tsx",
+            "upstreamSha256": "sha256:e4c8a89623836f8d00f57591a2034496a68cf0cc3c6374dca1753c5c572b4684",
+            "contentSha256": "sha256:5a357ed1426e7403485059821217fb2957fad5a687d9519dd8b175405fb3740f",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/headset-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-headset/headset-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-headset-icon",
+        "sourceHash": "sha256:da9d903b6698a822915b7f06a9396a1d58a41d7b4d6bb28c348e183e4860bd9e",
+        "contentHash": "sha256:0c47a997c453e359b7c3443fd42285a9760bcc4d3e46883b96affcf045a030ad",
+        "structureHash": "sha256:9e4ee4e1d8e16e02bc8d019f442510fd4abfa6db4dcdeb179375a93bfb2138f5",
+        "glyph": {
+          "inventoryName": "headset",
+          "canonicalName": "headset",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

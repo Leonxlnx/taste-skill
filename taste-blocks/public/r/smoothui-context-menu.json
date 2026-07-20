@@ -1,0 +1,143 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "smoothui-context-menu",
+  "title": "Context Menu",
+  "author": "SmoothUI",
+  "description": "Adds an animated keyboard-accessible context menu with nested items.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@0.545.0",
+    "motion@12.23.25",
+    "radix-ui@1.4.3",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/smoothui/components/smoothui-context-menu/index.tsx",
+      "content": "\"use client\";\n\nimport {\n  ContextMenuContent,\n  ContextMenuGroup,\n  ContextMenuItem,\n  ContextMenuLabel,\n  ContextMenu as ContextMenuRoot,\n  ContextMenuSeparator,\n  ContextMenuShortcut,\n  ContextMenuSub,\n  ContextMenuSubContent,\n  ContextMenuSubTrigger,\n  ContextMenuTrigger,\n} from \"./context-menu-primitive\";\nimport { cn } from \"./utils\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport type React from \"react\";\nimport { SPRING_DEFAULT } from \"./animation\";\n\nexport interface ContextMenuProps {\n  /** The trigger element that opens the context menu on right-click */\n  children: React.ReactNode;\n  /** Optional CSS class for the content container */\n  className?: string;\n  /** Menu items to render */\n  items: ContextMenuItemConfig[];\n}\n\nexport interface ContextMenuItemConfig {\n  /** Nested submenu items */\n  children?: ContextMenuItemConfig[];\n  /** Whether the item is disabled */\n  disabled?: boolean;\n  /** Renders a group label instead of an item */\n  groupLabel?: string;\n  /** Optional icon to display before the label */\n  icon?: React.ReactNode;\n  /** Unique key for the item */\n  key: string;\n  /** Display label */\n  label: string;\n  /** Callback when item is selected */\n  onSelect?: () => void;\n  /** Renders a separator instead of an item */\n  separator?: boolean;\n  /** Optional keyboard shortcut text to display */\n  shortcut?: string;\n  /** Destructive variant styling */\n  variant?: \"default\" | \"destructive\";\n}\n\nexport default function ContextMenu({\n  children,\n  items,\n  className,\n}: ContextMenuProps) {\n  const shouldReduceMotion = useReducedMotion();\n\n  const renderItem = (item: ContextMenuItemConfig, index: number) => {\n    if (item.separator) {\n      return <ContextMenuSeparator key={item.key} />;\n    }\n\n    if (item.groupLabel) {\n      return (\n        <ContextMenuLabel key={item.key}>{item.groupLabel}</ContextMenuLabel>\n      );\n    }\n\n    if (item.children && item.children.length > 0) {\n      return (\n        <ContextMenuSub key={item.key}>\n          <ContextMenuSubTrigger disabled={item.disabled}>\n            {item.icon && <span className=\"me-2\">{item.icon}</span>}\n            {item.label}\n          </ContextMenuSubTrigger>\n          <ContextMenuSubContent>\n            {item.children.map((child, childIndex) =>\n              renderItem(child, childIndex)\n            )}\n          </ContextMenuSubContent>\n        </ContextMenuSub>\n      );\n    }\n\n    return (\n      <motion.div\n        animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}\n        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -4 }}\n        key={item.key}\n        transition={\n          shouldReduceMotion\n            ? { duration: 0 }\n            : { ...SPRING_DEFAULT, delay: index * 0.02 }\n        }\n      >\n        <ContextMenuItem\n          disabled={item.disabled || !item.onSelect}\n          onSelect={item.onSelect}\n          variant={item.variant}\n        >\n          {item.icon && <span className=\"me-2\">{item.icon}</span>}\n          {item.label}\n          {item.shortcut && (\n            <ContextMenuShortcut>{item.shortcut}</ContextMenuShortcut>\n          )}\n        </ContextMenuItem>\n      </motion.div>\n    );\n  };\n\n  return (\n    <ContextMenuRoot>\n      <ContextMenuTrigger asChild tabIndex={0}>\n        {children}\n      </ContextMenuTrigger>\n      <ContextMenuContent className={cn(\"origin-top\", className)}>\n        <motion.div\n          animate={\n            shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }\n          }\n          initial={\n            shouldReduceMotion\n              ? { opacity: 1 }\n              : { opacity: 0, scale: 0.95, y: -4 }\n          }\n          transition={shouldReduceMotion ? { duration: 0 } : SPRING_DEFAULT}\n        >\n          <ContextMenuGroup>\n            {items.map((item, index) => renderItem(item, index))}\n          </ContextMenuGroup>\n        </motion.div>\n      </ContextMenuContent>\n    </ContextMenuRoot>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/smoothui-context-menu/index.tsx"
+    },
+    {
+      "path": "registry/sources/smoothui/components/smoothui-context-menu/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/smoothui-context-menu/utils.ts"
+    },
+    {
+      "path": "registry/sources/smoothui/components/smoothui-context-menu/context-menu-primitive.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { ContextMenu as ContextMenuPrimitive } from \"radix-ui\"\nimport { CheckIcon, ChevronRightIcon, CircleIcon } from \"lucide-react\"\n\nimport { cn } from \"./utils\"\n\nfunction ContextMenu({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {\n  return <ContextMenuPrimitive.Root data-slot=\"context-menu\" {...props} />\n}\n\nfunction ContextMenuTrigger({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {\n  return (\n    <ContextMenuPrimitive.Trigger data-slot=\"context-menu-trigger\" {...props} />\n  )\n}\n\nfunction ContextMenuGroup({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {\n  return (\n    <ContextMenuPrimitive.Group data-slot=\"context-menu-group\" {...props} />\n  )\n}\n\nfunction ContextMenuPortal({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {\n  return (\n    <ContextMenuPrimitive.Portal data-slot=\"context-menu-portal\" {...props} />\n  )\n}\n\nfunction ContextMenuSub({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {\n  return <ContextMenuPrimitive.Sub data-slot=\"context-menu-sub\" {...props} />\n}\n\nfunction ContextMenuRadioGroup({\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {\n  return (\n    <ContextMenuPrimitive.RadioGroup\n      data-slot=\"context-menu-radio-group\"\n      {...props}\n    />\n  )\n}\n\nfunction ContextMenuSubTrigger({\n  className,\n  inset,\n  children,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger> & {\n  inset?: boolean\n}) {\n  return (\n    <ContextMenuPrimitive.SubTrigger\n      data-slot=\"context-menu-sub-trigger\"\n      data-inset={inset}\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[inset]:ps-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n        className\n      )}\n      {...props}\n    >\n      {children}\n      <ChevronRightIcon className=\"ms-auto rtl:rotate-180\" />\n    </ContextMenuPrimitive.SubTrigger>\n  )\n}\n\nfunction ContextMenuSubContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>) {\n  return (\n    <ContextMenuPrimitive.SubContent\n      data-slot=\"context-menu-sub-content\"\n      className={cn(\n        \"bg-popover text-popover-foreground z-50 max-w-[calc(100vw-1rem)] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction ContextMenuContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {\n  return (\n    <ContextMenuPrimitive.Portal>\n      <ContextMenuPrimitive.Content\n        data-slot=\"context-menu-content\"\n        className={cn(\n          \"bg-popover text-popover-foreground z-50 max-h-(--radix-context-menu-content-available-height) max-w-[calc(100vw-1rem)] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md\",\n          className\n        )}\n        {...props}\n      />\n    </ContextMenuPrimitive.Portal>\n  )\n}\n\nfunction ContextMenuItem({\n  className,\n  inset,\n  variant = \"default\",\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Item> & {\n  inset?: boolean\n  variant?: \"default\" | \"destructive\"\n}) {\n  return (\n    <ContextMenuPrimitive.Item\n      data-slot=\"context-menu-item\"\n      data-inset={inset}\n      data-variant={variant}\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:ps-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction ContextMenuCheckboxItem({\n  className,\n  children,\n  checked,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem>) {\n  return (\n    <ContextMenuPrimitive.CheckboxItem\n      data-slot=\"context-menu-checkbox-item\"\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pe-2 ps-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n        className\n      )}\n      checked={checked}\n      {...props}\n    >\n      <span className=\"pointer-events-none absolute start-2 flex size-3.5 items-center justify-center\">\n        <ContextMenuPrimitive.ItemIndicator>\n          <CheckIcon className=\"size-4\" />\n        </ContextMenuPrimitive.ItemIndicator>\n      </span>\n      {children}\n    </ContextMenuPrimitive.CheckboxItem>\n  )\n}\n\nfunction ContextMenuRadioItem({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem>) {\n  return (\n    <ContextMenuPrimitive.RadioItem\n      data-slot=\"context-menu-radio-item\"\n      className={cn(\n        \"focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pe-2 ps-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n        className\n      )}\n      {...props}\n    >\n      <span className=\"pointer-events-none absolute start-2 flex size-3.5 items-center justify-center\">\n        <ContextMenuPrimitive.ItemIndicator>\n          <CircleIcon className=\"size-2 fill-current\" />\n        </ContextMenuPrimitive.ItemIndicator>\n      </span>\n      {children}\n    </ContextMenuPrimitive.RadioItem>\n  )\n}\n\nfunction ContextMenuLabel({\n  className,\n  inset,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Label> & {\n  inset?: boolean\n}) {\n  return (\n    <ContextMenuPrimitive.Label\n      data-slot=\"context-menu-label\"\n      data-inset={inset}\n      className={cn(\n        \"text-foreground px-2 py-1.5 text-sm font-medium data-[inset]:ps-8\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction ContextMenuSeparator({\n  className,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) {\n  return (\n    <ContextMenuPrimitive.Separator\n      data-slot=\"context-menu-separator\"\n      className={cn(\"bg-border -mx-1 my-1 h-px\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction ContextMenuShortcut({\n  className,\n  ...props\n}: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"context-menu-shortcut\"\n      className={cn(\n        \"text-muted-foreground ms-auto text-xs tracking-widest\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nexport {\n  ContextMenu,\n  ContextMenuTrigger,\n  ContextMenuContent,\n  ContextMenuItem,\n  ContextMenuCheckboxItem,\n  ContextMenuRadioItem,\n  ContextMenuLabel,\n  ContextMenuSeparator,\n  ContextMenuShortcut,\n  ContextMenuGroup,\n  ContextMenuPortal,\n  ContextMenuSub,\n  ContextMenuSubContent,\n  ContextMenuSubTrigger,\n  ContextMenuRadioGroup,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/smoothui-context-menu/context-menu-primitive.tsx"
+    },
+    {
+      "path": "registry/sources/smoothui/components/smoothui-context-menu/animation.ts",
+      "content": "/**\n * Shared animation constants for SmoothUI components.\n *\n * Spring configs follow project guidelines:\n * - Duration 0.2–0.25s for UI elements\n * - Bounce ≤ 0.1 for standard UI (higher only for playful/drag interactions)\n *\n * Easing curves use cubic-bezier arrays compatible with Motion's `ease` property.\n */\n\n/** Default spring for most UI animations */\nexport const SPRING_DEFAULT = {\n  type: \"spring\" as const,\n  duration: 0.25,\n  bounce: 0.1,\n};\n\n/** Snappy spring for quick, no-overshoot transitions */\nexport const SPRING_SNAPPY = {\n  type: \"spring\" as const,\n  duration: 0.2,\n  bounce: 0,\n};\n\n/** Ease-out curve for entering elements — cubic-bezier(.23, 1, .32, 1) */\nexport const EASE_OUT = [0.23, 1, 0.32, 1] as const;\n\n/** Ease-in-out curve for moving elements — cubic-bezier(0.645, 0.045, 0.355, 1) */\nexport const EASE_IN_OUT = [0.645, 0.045, 0.355, 1] as const;\n\n/** Instant transition for reduced-motion contexts */\nexport const DURATION_INSTANT = { duration: 0 };\n\n/** Standard animation durations (seconds) */\nexport const DURATION = {\n  fast: 0.15,\n  default: 0.25,\n  slow: 0.3,\n  complex: 0.4,\n} as const;\n\nexport type SpringConfig = typeof SPRING_DEFAULT;\nexport type EasingCurve = readonly [number, number, number, number];\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/smoothui-context-menu/animation.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "context-menu",
+        "menu",
+        "submenu",
+        "keyboard"
+      ],
+      "renderer": "dom",
+      "preview": "previews/smoothui-context-menu.tsx",
+      "source": {
+        "project": "SmoothUI",
+        "repository": "https://github.com/educlopez/smoothui",
+        "revision": "1fa17cd10e646f704891b89a569fefb9e6f49a20",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/smoothui-context-menu/index.tsx",
+            "upstreamPath": "packages/smoothui/components/context-menu/index.tsx",
+            "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/components/context-menu/index.tsx",
+            "upstreamSha256": "sha256:56cfbc23e7f8e3018c404948fc16422618181e119e0593200c382114d47e1dc2",
+            "contentSha256": "sha256:2e74f9b3bb7a371d5f5774c19e0e6784a20090a6a426bcc114a3f4c321492442",
+            "changes": [
+              "Replaced monorepo imports for the context-menu primitive, utility, and animation helper with colocated copied files.",
+              "Kept the trigger keyboard-focusable, disabled leaf items without an action, and replaced physical icon margins with logical RTL-aware spacing."
+            ]
+          },
+          {
+            "shippedPath": "components/smoothui-context-menu/utils.ts",
+            "upstreamPath": "packages/shadcn-ui/lib/utils.ts",
+            "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/shadcn-ui/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/smoothui-context-menu/context-menu-primitive.tsx",
+            "upstreamPath": "packages/shadcn-ui/components/ui/context-menu.tsx",
+            "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/shadcn-ui/components/ui/context-menu.tsx",
+            "upstreamSha256": "sha256:0d7f980270dce060c1ab32b4116f15c247a8238f2adafcb661980e4a9d6e95a1",
+            "contentSha256": "sha256:6bcb2afbb4b30fcee858fa6e2c428b65b5c8d9ea3d1ae9b31934300e5fc36f22",
+            "changes": [
+              "Replaced the monorepo utility alias with the colocated copied utility.",
+              "Removed the independent CSS open and close animations so reduced-motion handling is controlled by the SmoothUI Motion wrapper.",
+              "Added logical RTL spacing, chevron mirroring, and viewport-bounded menu widths."
+            ]
+          },
+          {
+            "shippedPath": "components/smoothui-context-menu/animation.ts",
+            "upstreamPath": "packages/smoothui/lib/animation.ts",
+            "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/packages/smoothui/lib/animation.ts",
+            "upstreamSha256": "sha256:0cc008d84c3ab2e2581a0153d5af22a013e46ad76bf52502ba2bbd1c97dc20a8",
+            "contentSha256": "sha256:0cc008d84c3ab2e2581a0153d5af22a013e46ad76bf52502ba2bbd1c97dc20a8",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/smoothui/components/context-menu/index.tsx, packages/shadcn-ui/lib/utils.ts, packages/shadcn-ui/components/ui/context-menu.tsx, packages/smoothui/lib/animation.ts",
+        "copyright": [
+          "Copyright (c) 2024 Eduardo Calvo"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/educlopez/smoothui/blob/1fa17cd10e646f704891b89a569fefb9e6f49a20/LICENSE",
+          "sha256": "sha256:9877f4310c0549e5ce26affe52ba97c4e60325472bdcdd308a92fccd90f119cc",
+          "localPath": "registry/sources/smoothui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/smoothui-context-menu/index.tsx",
+          "change": "Replaced monorepo imports with colocated paths, kept the trigger keyboard-focusable, disabled actionless leaf items, and changed icon margins to logical RTL-aware spacing.",
+          "reason": "Keep the copied component installable, preserve keyboard access, prevent misleading no-op actions, and maintain readable alignment in both text directions."
+        },
+        {
+          "shippedPath": "components/smoothui-context-menu/context-menu-primitive.tsx",
+          "change": "Replaced the monorepo utility alias, removed redundant CSS entry and exit animations, added logical RTL spacing and chevron mirroring, and bounded menu widths to the viewport.",
+          "reason": "Keep reduced-motion output static, avoid narrow-screen overflow, and preserve menu directionality without changing the public contract."
+        }
+      ],
+      "dedupe": {
+        "family": "context-menu",
+        "sourceHash": "sha256:1cb0863631cd5513ee675c4d23131ac9e0cdfffaa56bb4645956cbf2b4d67061",
+        "contentHash": "sha256:d24f41bcf9af2116c4f3b1af7284d077d5edad4300358ea5a1b63edb101049a4",
+        "structureHash": "sha256:2aaa7b7050f7a7f081321188d066a15a8ac607bfae9d2aa77f5d316abca77a7f"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

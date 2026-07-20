@@ -1,0 +1,89 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-tilt",
+  "title": "Tilt",
+  "author": "Motion Primitives",
+  "description": "Applies pointer-position-driven three-dimensional tilt to a child.",
+  "dependencies": [
+    "motion@11.12.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-tilt/tilt.tsx",
+      "content": "'use client';\n\nimport React, { useRef } from 'react';\nimport {\n  motion,\n  useMotionTemplate,\n  useMotionValue,\n  useSpring,\n  useTransform,\n  useReducedMotion,\n  MotionStyle,\n  SpringOptions,\n} from 'motion/react';\n\nexport type TiltProps = {\n  children: React.ReactNode;\n  className?: string;\n  style?: MotionStyle;\n  rotationFactor?: number;\n  isRevese?: boolean;\n  springOptions?: SpringOptions;\n};\n\nexport function Tilt({\n  children,\n  className,\n  style,\n  rotationFactor = 15,\n  isRevese = false,\n  springOptions,\n}: TiltProps) {\n  const ref = useRef<HTMLDivElement>(null);\n  const shouldReduceMotion = useReducedMotion();\n\n  const x = useMotionValue(0);\n  const y = useMotionValue(0);\n\n  const xSpring = useSpring(x, springOptions);\n  const ySpring = useSpring(y, springOptions);\n\n  const rotateX = useTransform(\n    ySpring,\n    [-0.5, 0.5],\n    isRevese\n      ? [rotationFactor, -rotationFactor]\n      : [-rotationFactor, rotationFactor]\n  );\n  const rotateY = useTransform(\n    xSpring,\n    [-0.5, 0.5],\n    isRevese\n      ? [-rotationFactor, rotationFactor]\n      : [rotationFactor, -rotationFactor]\n  );\n\n  const transform = useMotionTemplate`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!ref.current) return;\n\n    const rect = ref.current.getBoundingClientRect();\n    const width = rect.width;\n    const height = rect.height;\n    const mouseX = e.clientX - rect.left;\n    const mouseY = e.clientY - rect.top;\n\n    const xPos = mouseX / width - 0.5;\n    const yPos = mouseY / height - 0.5;\n\n    x.set(xPos);\n    y.set(yPos);\n  };\n\n  const handleMouseLeave = () => {\n    x.set(0);\n    y.set(0);\n  };\n\n  return (\n    <motion.div\n      ref={ref}\n      className={className}\n      style={{\n        transformStyle: shouldReduceMotion ? undefined : 'preserve-3d',\n        ...style,\n        ...(shouldReduceMotion ? {} : { transform }),\n      }}\n      onMouseMove={shouldReduceMotion ? undefined : handleMouseMove}\n      onMouseLeave={shouldReduceMotion ? undefined : handleMouseLeave}\n    >\n      {children}\n    </motion.div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/tilt.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "tilt",
+        "pointer",
+        "depth"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-tilt.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-tilt/tilt.tsx",
+            "upstreamPath": "components/core/tilt.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/tilt.tsx",
+            "upstreamSha256": "sha256:a572d002cf82f396eea5ea4e04665114bee7ed075ad0123f32bc0dfa5867abf4",
+            "contentSha256": "sha256:7a0559d0147f83c4a3ed2b5dcf5edd2bf728f9101f1f621106a4166111e93ed7",
+            "changes": [
+              "Added useReducedMotion handling that omits the generated 3D transform and pointer tracking while preserving caller styles."
+            ]
+          }
+        ],
+        "credits": [
+          "Motion Primitives docs credit @AFPedreros."
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/tilt.tsx",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-tilt/tilt.tsx",
+          "change": "Disabled generated transforms and pointer tracking when reduced motion is requested.",
+          "reason": "Keep the child static and its hit area stable without replacing the upstream tilt implementation."
+        }
+      ],
+      "dedupe": {
+        "family": "pointer-tilt",
+        "sourceHash": "sha256:d4900d97cec62e16d559bb02a6e0a7f2004dfd9cfa8f995d32918e399defe811",
+        "contentHash": "sha256:6c9e1f45c1e931bd0935b494a95e8887c935dca841c0b043b0eaefee63a07994",
+        "structureHash": "sha256:23fd1868610338159f8cd85cb140c744e93e3ad56a0531b2079bfd8d26a5649c"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

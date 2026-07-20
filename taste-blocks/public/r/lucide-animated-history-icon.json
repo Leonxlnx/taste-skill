@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lucide-animated-history-icon",
+  "title": "Animated History Icon",
+  "author": "pqoqubbw",
+  "description": "Renders the Lucide History glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/lucide-animated/components/lucide-animated-history-icon/history.tsx",
+      "content": "\"use client\";\n\nimport type { Transition, Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport interface HistoryIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface HistoryIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst ARROW_TRANSITION: Transition = {\n  duration: 0.28,\n  ease: \"easeInOut\",\n};\n\nconst ARROW_VARIANTS: Variants = {\n  normal: {\n    rotate: \"0deg\",\n  },\n  animate: {\n    rotate: \"-50deg\",\n  },\n};\n\nconst HAND_TRANSITION: Transition = {\n  duration: 0.28,\n  ease: [0.4, 0, 0.2, 1],\n};\n\nconst HAND_VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n    originX: \"0%\",\n    originY: \"100%\",\n  },\n  animate: {\n    rotate: -360,\n    originX: \"0%\",\n    originY: \"100%\",\n  },\n};\n\nconst MINUTE_HAND_TRANSITION: Transition = {\n  duration: 0.28,\n  ease: \"easeInOut\",\n};\n\nconst MINUTE_HAND_VARIANTS: Variants = {\n  normal: {\n    rotate: 0,\n    originX: \"0%\",\n    originY: \"0%\",\n  },\n  animate: {\n    rotate: -45,\n    originX: \"0%\",\n    originY: \"0%\",\n  },\n};\n\nconst HistoryIcon = forwardRef<HistoryIconHandle, HistoryIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) {\n          controls.start(\"normal\");\n          onMouseEnter?.(e);\n          return;\n        }\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <svg\n          fill=\"none\"\n          height={size}\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"2\"\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <motion.g\n            animate={controls}\n            transition={ARROW_TRANSITION}\n            variants={ARROW_VARIANTS}\n          >\n            <path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\" />\n            <path d=\"M3 3v5h5\" />\n          </motion.g>\n          <motion.line\n            animate={controls}\n            initial=\"normal\"\n            transition={HAND_TRANSITION}\n            variants={HAND_VARIANTS}\n            x1=\"12\"\n            x2=\"12\"\n            y1=\"12\"\n            y2=\"7\"\n          />\n          <motion.line\n            animate={controls}\n            initial=\"normal\"\n            transition={MINUTE_HAND_TRANSITION}\n            variants={MINUTE_HAND_VARIANTS}\n            x1=\"12\"\n            x2=\"16\"\n            y1=\"12\"\n            y2=\"14\"\n          />\n        </svg>\n      </div>\n    );\n  }\n);\n\nHistoryIcon.displayName = \"HistoryIcon\";\n\nexport { HistoryIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/lucide-animated-history-icon.tsx"
+    },
+    {
+      "path": "registry/sources/lucide-animated/lib/utils.ts",
+      "content": "import type { ClassValue } from \"clsx\";\nimport { clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "history",
+        "animated",
+        "icon",
+        "lucide",
+        "motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/lucide-animated-history-icon.tsx",
+      "source": {
+        "project": "Lucide Animated",
+        "repository": "https://github.com/pqoqubbw/icons",
+        "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/lucide-animated-history-icon/history.tsx",
+            "upstreamPath": "icons/history.tsx",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/icons/history.tsx",
+            "upstreamGitBlobSha": "ea9465b379f6ef1d0e737b8efb444a7fd41a1eeb",
+            "upstreamSha256": "sha256:bb6b022562f32036e7050e1516b718e63a0ad437ca1e0161ba1f6b3ef7d60ba8",
+            "contentSha256": "sha256:6db657a90d1fc0c0a6997d3f88f111c36a2fb1811d85c996ac760619bb74163d",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts.",
+              "Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/lib/utils.ts",
+            "upstreamGitBlobSha": "88283f0133e161af61a96d8d8d14309591369aac",
+            "upstreamSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "contentSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "icons/history.tsx, lib/utils.ts, and Lucide/Feather-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+          "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+          "localPath": "registry/sources/lucide-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/lucide-animated/NOTICE",
+          "registry/sources/lucide-animated/LUCIDE_LICENSE",
+          "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/lucide-animated/NOTICE",
+            "sha256": "sha256:6014a8c793832691319bae3f3c5439487b03c9fd0ddeffad56a14c4530639971",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/LICENSE",
+            "upstreamGitBlobSha": "718bb3f0e44153809972abed31839375804bf652",
+            "localPath": "registry/sources/lucide-animated/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/BRAND_LOGOS_STATEMENT.md",
+            "upstreamGitBlobSha": "6a7404c79b20f6d1fd1d414c052a78c550bf74d5",
+            "localPath": "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/lucide-animated-history-icon/history.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts. Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps.",
+          "reason": "Resolved the bundled utility, added controlled/reduced-motion safety, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-history-icon",
+        "sourceHash": "sha256:c2b106d9c11cab5ac2461dae001413b296579fe5871ebeb392492e07d833f8c7",
+        "contentHash": "sha256:4ba269e88c2090127a7852b055df3b1055cf0925069d18d39b12551d02d4a6db",
+        "structureHash": "sha256:4a2b71d160e852382d5508e54646e1271e44d72bfeb101966a44963f2b71ce91",
+        "glyph": {
+          "inventoryName": "history",
+          "canonicalName": "history",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

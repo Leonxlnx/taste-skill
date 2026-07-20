@@ -1,0 +1,108 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-stars",
+  "title": "Stars",
+  "author": "pmndrs contributors",
+  "description": "Renders a configurable depth-aware star field with controlled density and fade.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/Stars.tsx",
+      "content": "import * as React from 'react'\nimport { ThreeElement, useFrame } from '@react-three/fiber'\nimport { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\nimport { version } from '../helpers/constants'\n\nexport type StarsProps = {\n  radius?: number\n  depth?: number\n  count?: number\n  factor?: number\n  saturation?: number\n  fade?: boolean\n  speed?: number\n}\n\nclass StarfieldMaterial extends ShaderMaterial {\n  constructor() {\n    super({\n      uniforms: { time: { value: 0.0 }, fade: { value: 1.0 } },\n      vertexShader: /* glsl */ `\n      uniform float time;\n      attribute float size;\n      varying vec3 vColor;\n      void main() {\n        vColor = color;\n        vec4 mvPosition = modelViewMatrix * vec4(position, 0.5);\n        gl_PointSize = size * (30.0 / -mvPosition.z) * (3.0 + sin(time + 100.0));\n        gl_Position = projectionMatrix * mvPosition;\n      }`,\n      fragmentShader: /* glsl */ `\n      uniform sampler2D pointTexture;\n      uniform float fade;\n      varying vec3 vColor;\n      void main() {\n        float opacity = 1.0;\n        if (fade == 1.0) {\n          float d = distance(gl_PointCoord, vec2(0.5, 0.5));\n          opacity = 1.0 / (1.0 + exp(16.0 * (d - 0.25)));\n        }\n        gl_FragColor = vec4(vColor, opacity);\n\n        #include <tonemapping_fragment>\n\t      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>\n      }`,\n    })\n  }\n}\n\ndeclare module '@react-three/fiber' {\n  interface ThreeElements {\n    starfieldMaterial: ThreeElement<typeof StarfieldMaterial>\n  }\n}\n\nconst genStar = (r: number) => {\n  return new Vector3().setFromSpherical(new Spherical(r, Math.acos(1 - Math.random() * 2), Math.random() * 2 * Math.PI))\n}\n\nexport const Stars: ForwardRefComponent<StarsProps, Points> = /* @__PURE__ */ React.forwardRef(\n  ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }, ref) => {\n    const material = React.useRef<StarfieldMaterial>(null)\n    const [position, color, size] = React.useMemo(() => {\n      const positions: any[] = []\n      const colors: any[] = []\n      const sizes = Array.from({ length: count }, () => (0.5 + 0.5 * Math.random()) * factor)\n      const color = new Color()\n      let r = radius + depth\n      const increment = depth / count\n      for (let i = 0; i < count; i++) {\n        r -= increment * Math.random()\n        positions.push(...genStar(r).toArray())\n        color.setHSL(i / count, saturation, 0.9)\n        colors.push(color.r, color.g, color.b)\n      }\n      return [new Float32Array(positions), new Float32Array(colors), new Float32Array(sizes)]\n    }, [count, depth, factor, radius, saturation])\n    useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.elapsedTime * speed))\n\n    const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())\n\n    return (\n      <points ref={ref as React.RefObject<Points>}>\n        <bufferGeometry>\n          <bufferAttribute attach=\"attributes-position\" args={[position, 3]} />\n          <bufferAttribute attach=\"attributes-color\" args={[color, 3]} />\n          <bufferAttribute attach=\"attributes-size\" args={[size, 1]} />\n        </bufferGeometry>\n        <primitive\n          ref={material}\n          object={starfieldMaterial}\n          attach=\"material\"\n          blending={AdditiveBlending}\n          uniforms-fade-value={fade}\n          depthWrite={false}\n          transparent\n          vertexColors\n        />\n      </points>\n    )\n  }\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/Stars.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/constants.ts",
+      "content": "import { REVISION } from 'three'\n\nconst getVersion = () => parseInt(REVISION.replace(/\\D+/g, ''))\n\nexport const version = /* @__PURE__ */ getVersion()\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/constants.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "stars",
+        "particles",
+        "space",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-stars.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/Stars.tsx",
+            "upstreamPath": "src/core/Stars.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/Stars.tsx",
+            "upstreamSha256": "sha256:def7e608726586f2ac0de9acfea0501acadba5fdf3243bd1739a5d474ed5e241",
+            "contentSha256": "sha256:def7e608726586f2ac0de9acfea0501acadba5fdf3243bd1739a5d474ed5e241",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/constants.ts",
+            "upstreamPath": "src/helpers/constants.ts",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/constants.ts",
+            "upstreamSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "contentSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/Stars.tsx, src/helpers/ts-utils.tsx, src/helpers/constants.ts",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "depth-aware-star-particle-field",
+        "sourceHash": "sha256:2a7ab6c495c05be603025958c61f00d35c82f81a9d716dcd98096eb63dc54d70",
+        "contentHash": "sha256:2a7ab6c495c05be603025958c61f00d35c82f81a9d716dcd98096eb63dc54d70",
+        "structureHash": "sha256:270f0828a9352655fe78d7d7ee4a5d34fd69ee336430756804991643dd72d97f"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

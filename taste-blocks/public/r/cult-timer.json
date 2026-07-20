@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cult-timer",
+  "title": "Timer",
+  "author": "Cult UI",
+  "description": "Tracks and formats elapsed time while exposing compound display controls.",
+  "dependencies": [
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.544.0",
+    "tailwind-merge@3.5.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/cult-ui/components/cult-timer/timer.tsx",
+      "content": "\"use client\"\n\nimport React, { useCallback, useEffect, useRef, useState } from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Clock } from \"lucide-react\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst timerVariants = cva(\n  [\n    \"inline-flex items-center gap-2 font-medium rounded-full transition-all duration-200\",\n    \"\",\n  ],\n  {\n    variants: {\n      variant: {\n        default:\n          \"bg-background text-foreground border border-border shadow-[0_2px_4px_rgba(0,0,0,0.02),_0px_1px_2px_rgba(0,0,0,0.04)] shadow-[inset_0px_-2.10843px_0px_0px_hsl(var(--muted)),_0px_1.20482px_6.3253px_0px_hsl(var(--muted))]\",\n        outline:\n          \"border border-input bg-background text-foreground  shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)]\",\n        ghost: \"bg-transparent text-foreground \",\n        destructive:\n          \"bg-destructive/10 text-destructive border border-destructive/20\",\n      },\n      size: {\n        sm: \"text-xs px-2 py-1 h-6 gap-1.5\",\n        md: \"text-sm px-2.5 py-1.5 h-7 gap-2\",\n        lg: \"text-base px-3 py-2 h-8 gap-2.5\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"md\",\n    },\n  }\n)\n\nconst timerIconVariants = cva(\"transition-transform duration-[2000ms]\", {\n  variants: {\n    size: {\n      sm: \"w-3 h-3\",\n      md: \"w-3.5 h-3.5\",\n      lg: \"w-4 h-4\",\n    },\n    loading: {\n      true: \"animate-spin motion-reduce:animate-none\",\n      false: \"\",\n    },\n  },\n  defaultVariants: {\n    size: \"md\",\n    loading: false,\n  },\n})\n\nconst timerDisplayVariants = cva(\"font-mono tabular-nums tracking-tight\", {\n  variants: {\n    size: {\n      sm: \"text-xs\",\n      md: \"text-sm\",\n      lg: \"text-base\",\n    },\n  },\n  defaultVariants: {\n    size: \"md\",\n  },\n})\n\nexport type TimerRootProps = {\n  /** Whether the timer is in loading/running state */\n  loading?: boolean\n} & VariantProps<typeof timerVariants> &\n  React.HTMLAttributes<HTMLDivElement>\n\nexport type TimerIconProps = {\n  /** Custom icon to display instead of default Clock */\n  icon?: React.ComponentType<{ className?: string }>\n} & VariantProps<typeof timerIconVariants> &\n  React.HTMLAttributes<HTMLDivElement>\n\nexport type TimerDisplayProps = {\n  /** Time value to display */\n  time: string\n  /** Optional label for accessibility */\n  label?: string\n} & VariantProps<typeof timerDisplayVariants> &\n  React.HTMLAttributes<HTMLDivElement>\n\nexport type UseTimerOptions = {\n  /** Whether the timer should be running */\n  loading?: boolean\n  /** Callback fired on each tick with elapsed time */\n  onTick?: (seconds: number, milliseconds: number) => void\n  /** Whether to reset timer when loading state changes */\n  resetOnLoadingChange?: boolean\n  /** Time format to use */\n  format?: \"SS.MS\" | \"MM:SS\" | \"HH:MM:SS\"\n}\n\nexport type UseTimerReturn = {\n  /** Total elapsed seconds */\n  elapsedTime: number\n  /** Current milliseconds (0-999) */\n  milliseconds: number\n  /** Formatted time strings */\n  formattedTime: {\n    seconds: string\n    milliseconds: string\n    display: string\n  }\n  /** Whether timer is currently running */\n  isRunning: boolean\n  /** Reset timer to 0 */\n  reset: () => void\n  /** Start the timer */\n  start: () => void\n  /** Stop the timer */\n  stop: () => void\n}\n\n/**\n * Root container for timer components\n */\nexport const TimerRoot = React.forwardRef<HTMLDivElement, TimerRootProps>(\n  ({ variant, size, loading, className, children, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={cn(timerVariants({ variant, size }), className)}\n        role=\"timer\"\n        aria-live=\"off\"\n        aria-atomic=\"true\"\n        {...props}\n      >\n        {children}\n      </div>\n    )\n  }\n)\nTimerRoot.displayName = \"TimerRoot\"\n\n/**\n * Icon component for timer with loading animation\n */\nexport const TimerIcon = React.forwardRef<HTMLDivElement, TimerIconProps>(\n  ({ size, loading, icon: Icon = Clock, className, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        aria-hidden=\"true\"\n        className={cn(timerIconVariants({ size, loading }), className)}\n        {...props}\n      >\n        <Icon className=\"w-full h-full\" />\n      </div>\n    )\n  }\n)\nTimerIcon.displayName = \"TimerIcon\"\n\n/**\n * Display component for formatted time\n */\nexport const TimerDisplay = React.forwardRef<HTMLDivElement, TimerDisplayProps>(\n  ({ size, time, label, className, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={cn(timerDisplayVariants({ size }), className)}\n        aria-label={label || `Timer: ${time}`}\n        {...props}\n      >\n        {time}\n      </div>\n    )\n  }\n)\nTimerDisplay.displayName = \"TimerDisplay\"\n\nexport type TimerProps = TimerRootProps &\n  UseTimerOptions & {\n    /** Time format to display */\n    format?: \"SS.MS\" | \"MM:SS\" | \"HH:MM:SS\"\n  } & React.HTMLAttributes<HTMLDivElement>\n\nfunction useElementInView(element: HTMLDivElement | null) {\n  const [isInView, setIsInView] = useState(false)\n\n  useEffect(() => {\n    if (!element) {\n      setIsInView(false)\n      return\n    }\n    if (typeof IntersectionObserver === \"undefined\") {\n      setIsInView(true)\n      return\n    }\n\n    const observer = new IntersectionObserver(\n      ([entry]) => setIsInView(entry?.isIntersecting ?? true),\n      { threshold: 0 }\n    )\n    observer.observe(element)\n    return () => observer.disconnect()\n  }, [element])\n\n  return isInView\n}\n\nexport const Timer = React.forwardRef<HTMLDivElement, TimerProps>(\n  (\n    {\n      loading = false,\n      onTick,\n      resetOnLoadingChange = true,\n      format = \"SS.MS\",\n      variant,\n      size,\n      className,\n      ...props\n    },\n    ref\n  ) => {\n    const [timerElement, setTimerElement] = useState<HTMLDivElement | null>(null)\n    const isInView = useElementInView(timerElement)\n    const { formattedTime, isRunning } = useTimerState(\n      isInView,\n      { loading, onTick, resetOnLoadingChange, format }\n    )\n\n    const composedRef = useCallback(\n      (node: HTMLDivElement | null) => {\n        setTimerElement(node)\n        if (typeof ref === \"function\") {\n          ref(node)\n        } else if (ref) {\n          ;(ref as React.MutableRefObject<HTMLDivElement | null>).current = node\n        }\n      },\n      [ref]\n    )\n\n    return (\n      <TimerRoot\n        ref={composedRef}\n        variant={variant}\n        size={size}\n        loading={loading}\n        className={className}\n        {...props}\n      >\n        <TimerIcon size={size} loading={isRunning && isInView} />\n        <TimerDisplay size={size} time={formattedTime.display} />\n      </TimerRoot>\n    )\n  }\n)\nTimer.displayName = \"Timer\"\n\n/**\n * Hook for managing timer state and formatting\n */\nexport function useTimer(options: UseTimerOptions = {}): UseTimerReturn {\n  return useTimerState(true, options)\n}\n\nfunction useTimerState(isInView: boolean, {\n  loading = false,\n  onTick,\n  resetOnLoadingChange = true,\n  format = \"SS.MS\",\n}: UseTimerOptions = {}): UseTimerReturn {\n  const [elapsedMilliseconds, setElapsedMilliseconds] = useState(0)\n  const [isRunning, setIsRunning] = useState(false)\n  const [isDocumentVisible, setIsDocumentVisible] = useState(\n    () => typeof document === \"undefined\" || !document.hidden\n  )\n  const accumulatedRef = useRef(0)\n  const startedAtRef = useRef<number | null>(null)\n  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)\n\n  const clearTick = useCallback(() => {\n    if (timeoutRef.current !== null) {\n      clearTimeout(timeoutRef.current)\n      timeoutRef.current = null\n    }\n  }, [])\n\n  const suspendClock = useCallback(() => {\n    clearTick()\n    if (startedAtRef.current === null) return\n    accumulatedRef.current += performance.now() - startedAtRef.current\n    startedAtRef.current = null\n  }, [clearTick])\n\n  const reset = useCallback(() => {\n    accumulatedRef.current = 0\n    if (startedAtRef.current !== null) {\n      startedAtRef.current = performance.now()\n    }\n    setElapsedMilliseconds(0)\n  }, [])\n\n  const start = useCallback(() => {\n    setIsRunning(true)\n  }, [])\n\n  const stop = useCallback(() => {\n    suspendClock()\n    setElapsedMilliseconds(accumulatedRef.current)\n    setIsRunning(false)\n  }, [suspendClock])\n\n  useEffect(() => {\n    const onVisibilityChange = () => {\n      setIsDocumentVisible(!document.hidden)\n    }\n\n    document.addEventListener(\"visibilitychange\", onVisibilityChange)\n    return () =>\n      document.removeEventListener(\"visibilitychange\", onVisibilityChange)\n  }, [])\n\n  const isActive = isRunning && isDocumentVisible && isInView\n\n  useEffect(() => {\n    if (!isActive) {\n      suspendClock()\n      return\n    }\n\n    startedAtRef.current = performance.now()\n    const interval = format === \"SS.MS\" ? 50 : 1000\n\n    const updateTimer = () => {\n      if (startedAtRef.current === null) return\n      const elapsed =\n        accumulatedRef.current + performance.now() - startedAtRef.current\n      setElapsedMilliseconds(elapsed)\n      const remainder = elapsed % interval\n      timeoutRef.current = setTimeout(\n        updateTimer,\n        Math.max(16, interval - remainder)\n      )\n    }\n\n    updateTimer()\n\n    return () => {\n      suspendClock()\n    }\n  }, [format, isActive, suspendClock])\n\n  useEffect(() => {\n    if (loading) {\n      if (resetOnLoadingChange) {\n        reset()\n      }\n      start()\n    } else {\n      stop()\n    }\n  }, [loading, resetOnLoadingChange, reset, start, stop])\n\n  const elapsedTime = Math.floor(elapsedMilliseconds / 1000)\n  const milliseconds = Math.floor(elapsedMilliseconds % 1000)\n\n  useEffect(() => {\n    onTick?.(elapsedTime, milliseconds)\n  }, [elapsedTime, milliseconds, onTick])\n\n  const formatTime = useCallback(\n    (totalSeconds: number, ms: number) => {\n      const hours = Math.floor(totalSeconds / 3600)\n      const minutes = Math.floor((totalSeconds % 3600) / 60)\n      const seconds = totalSeconds % 60\n\n      switch (format) {\n        case \"HH:MM:SS\":\n          return {\n            seconds: seconds.toString().padStart(2, \"0\"),\n            milliseconds: Math.floor(ms / 10)\n              .toString()\n              .padStart(2, \"0\"),\n            display: `${hours.toString().padStart(2, \"0\")}:${minutes\n              .toString()\n              .padStart(2, \"0\")}:${seconds.toString().padStart(2, \"0\")}`,\n          }\n        case \"MM:SS\":\n          const totalMinutes = Math.floor(totalSeconds / 60)\n          const remainingSeconds = totalSeconds % 60\n          return {\n            seconds: remainingSeconds.toString().padStart(2, \"0\"),\n            milliseconds: Math.floor(ms / 10)\n              .toString()\n              .padStart(2, \"0\"),\n            display: `${totalMinutes\n              .toString()\n              .padStart(2, \"0\")}:${remainingSeconds\n              .toString()\n              .padStart(2, \"0\")}`,\n          }\n        case \"SS.MS\":\n        default:\n          return {\n            seconds: totalSeconds.toString().padStart(2, \"0\"),\n            milliseconds: Math.floor(ms / 10)\n              .toString()\n              .padStart(2, \"0\"),\n            display: `${totalSeconds.toString().padStart(2, \"0\")}.${Math.floor(\n              ms / 10\n            )\n              .toString()\n              .padStart(2, \"0\")}`,\n          }\n      }\n    },\n    [format]\n  )\n\n  const formattedTime = formatTime(elapsedTime, milliseconds)\n\n  return {\n    elapsedTime,\n    milliseconds,\n    formattedTime,\n    isRunning,\n    reset,\n    start,\n    stop,\n  }\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/timer.tsx"
+    },
+    {
+      "path": "registry/sources/cult-ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "timer",
+        "elapsed-time",
+        "status"
+      ],
+      "renderer": "dom",
+      "preview": "previews/cult-timer.tsx",
+      "source": {
+        "project": "Cult UI",
+        "repository": "https://github.com/nolly-studio/cult-ui",
+        "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/cult-timer/timer.tsx",
+            "upstreamPath": "apps/www/registry/default/ui/timer.tsx",
+            "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/timer.tsx",
+            "upstreamSha256": "sha256:d02a92a289575a0b7ef322e6ffc7db515d8654e898c047e9cb8a4447e5091127",
+            "contentSha256": "sha256:3450d7abcc185d04c93888bedfa2bfed97f29e8ece46c4d8860fee1d545d9acc",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied support file resolves both in this batch and at the registry target.",
+              "Disabled per-frame polite announcements and marked the clock icon decorative.",
+              "Replaced requestAnimationFrame state churn with an adaptive timeout scheduler that updates at 20Hz only for hundredths and once per second for second-only formats.",
+              "Added elapsed-time accumulation, document-visibility pausing, internal Timer-root IntersectionObserver pausing, and a reduced-motion fallback for the spinning icon without changing the public timer API."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/lib/utils.ts",
+            "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/lib/utils.ts",
+            "upstreamSha256": "sha256:35a351cab62e77fdf0087f9cfce30bb61692302a190da55af40e7267d8eed9be",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": [
+              "Removed the unrelated absoluteUrl helper and retained only the cn support closure."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/default/ui/timer.tsx and apps/www/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 Jordan-Gilliam"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+          "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+          "localPath": "registry/sources/cult-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/cult-timer/timer.tsx",
+          "change": "Changed the cn import to ../../lib/utils, disabled repeated live announcements, marked the icon decorative, replaced requestAnimationFrame updates with an adaptive timeout scheduler, accumulated elapsed time across pauses, paused for document-hidden state and through internal Timer-root visibility observation, and disabled icon spin under reduced motion.",
+          "reason": "Resolve the copied helper, keep elapsed time readable without announcement spam, and prevent continuous work when the timer is hidden, offscreen, or does not need subsecond updates."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl export.",
+          "reason": "Keep the copied support closure minimal and remove the Cult UI site URL default."
+        }
+      ],
+      "dedupe": {
+        "family": "elapsed-time-display",
+        "sourceHash": "sha256:23c38ca51cae0caf8569616c40aaf98da1641582bd0e61c909e2fbce0112383a",
+        "contentHash": "sha256:22b4e38b4bd55b56f85b83f5ba236d1ac87a1c7db350f13d885f6cb3807bff7b",
+        "structureHash": "sha256:eb642e2de4783105ab29c192220cdf050e9500198813316a6dde031589ec09c8"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

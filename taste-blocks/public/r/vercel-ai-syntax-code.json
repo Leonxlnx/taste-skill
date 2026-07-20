@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-syntax-code",
+  "title": "Syntax Code",
+  "author": "Vercel",
+  "description": "Asynchronous syntax highlighting with line numbers, language selection, and copy controls.",
+  "dependencies": [
+    "lucide-react@0.577.0",
+    "shiki@3.22.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "select",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/code-block.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  Select,\r\n  SelectContent,\r\n  SelectItem,\r\n  SelectTrigger,\r\n  SelectValue,\r\n} from \"@/components/ui/select\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { CheckIcon, CopyIcon } from \"lucide-react\";\r\nimport type { ComponentProps, CSSProperties, HTMLAttributes } from \"react\";\r\nimport {\r\n  createContext,\r\n  memo,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\nimport type {\r\n  BundledLanguage,\r\n  BundledTheme,\r\n  HighlighterGeneric,\r\n  ThemedToken,\r\n} from \"shiki\";\r\nimport { createHighlighter } from \"shiki\";\r\n\r\n// Shiki uses bitflags for font styles: 1=italic, 2=bold, 4=underline\r\n// oxlint-disable-next-line eslint(no-bitwise)\r\nconst isItalic = (fontStyle: number | undefined) => fontStyle && fontStyle & 1;\r\n// oxlint-disable-next-line eslint(no-bitwise)\r\nconst isBold = (fontStyle: number | undefined) => fontStyle && fontStyle & 2;\r\nconst isUnderline = (fontStyle: number | undefined) =>\r\n  // oxlint-disable-next-line eslint(no-bitwise)\r\n  fontStyle && fontStyle & 4;\r\n\r\n// Transform tokens to include pre-computed keys to avoid noArrayIndexKey lint\r\ninterface KeyedToken {\r\n  token: ThemedToken;\r\n  key: string;\r\n}\r\ninterface KeyedLine {\r\n  tokens: KeyedToken[];\r\n  key: string;\r\n}\r\n\r\nconst addKeysToTokens = (lines: ThemedToken[][]): KeyedLine[] =>\r\n  lines.map((line, lineIdx) => ({\r\n    key: `line-${lineIdx}`,\r\n    tokens: line.map((token, tokenIdx) => ({\r\n      key: `line-${lineIdx}-${tokenIdx}`,\r\n      token,\r\n    })),\r\n  }));\r\n\r\n// Token rendering component\r\nconst TokenSpan = ({ token }: { token: ThemedToken }) => (\r\n  <span\r\n    className=\"dark:!bg-[var(--shiki-dark-bg)] dark:!text-[var(--shiki-dark)]\"\r\n    style={\r\n      {\r\n        backgroundColor: token.bgColor,\r\n        color: token.color,\r\n        fontStyle: isItalic(token.fontStyle) ? \"italic\" : undefined,\r\n        fontWeight: isBold(token.fontStyle) ? \"bold\" : undefined,\r\n        textDecoration: isUnderline(token.fontStyle) ? \"underline\" : undefined,\r\n        ...token.htmlStyle,\r\n      } as CSSProperties\r\n    }\r\n  >\r\n    {token.content}\r\n  </span>\r\n);\r\n\r\n// Line number styles using CSS counters\r\nconst LINE_NUMBER_CLASSES = cn(\r\n  \"block\",\r\n  \"before:content-[counter(line)]\",\r\n  \"before:inline-block\",\r\n  \"before:[counter-increment:line]\",\r\n  \"before:w-8\",\r\n  \"before:me-4\",\n  \"before:text-right\",\r\n  \"before:text-muted-foreground/50\",\r\n  \"before:font-mono\",\r\n  \"before:select-none\"\r\n);\r\n\r\n// Line rendering component\r\nconst LineSpan = ({\r\n  keyedLine,\r\n  showLineNumbers,\r\n}: {\r\n  keyedLine: KeyedLine;\r\n  showLineNumbers: boolean;\r\n}) => (\r\n  <span className={showLineNumbers ? LINE_NUMBER_CLASSES : \"block\"}>\r\n    {keyedLine.tokens.length === 0\r\n      ? \"\\n\"\r\n      : keyedLine.tokens.map(({ token, key }) => (\r\n          <TokenSpan key={key} token={token} />\r\n        ))}\r\n  </span>\r\n);\r\n\r\n// Types\r\ntype CodeBlockProps = HTMLAttributes<HTMLDivElement> & {\r\n  code: string;\r\n  language: BundledLanguage;\r\n  showLineNumbers?: boolean;\r\n};\r\n\r\ninterface TokenizedCode {\r\n  tokens: ThemedToken[][];\r\n  fg: string;\r\n  bg: string;\r\n}\r\n\r\ninterface CodeBlockContextType {\r\n  code: string;\r\n}\r\n\r\n// Context\r\nconst CodeBlockContext = createContext<CodeBlockContextType>({\r\n  code: \"\",\r\n});\r\n\r\n// Highlighter cache (singleton per language)\r\nconst highlighterCache = new Map<\r\n  string,\r\n  Promise<HighlighterGeneric<BundledLanguage, BundledTheme>>\r\n>();\r\n\r\n// Token cache\r\nconst tokensCache = new Map<string, TokenizedCode>();\r\n\r\n// Subscribers for async token updates\r\nconst subscribers = new Map<string, Set<(result: TokenizedCode) => void>>();\r\n\r\nconst getTokensCacheKey = (code: string, language: BundledLanguage) => {\n  return `${language}\\0${code}`;\n};\n\r\nconst getHighlighter = (\r\n  language: BundledLanguage\r\n): Promise<HighlighterGeneric<BundledLanguage, BundledTheme>> => {\r\n  const cached = highlighterCache.get(language);\r\n  if (cached) {\r\n    return cached;\r\n  }\r\n\r\n  const highlighterPromise = createHighlighter({\r\n    langs: [language],\r\n    themes: [\"github-light\", \"github-dark\"],\r\n  });\r\n\r\n  highlighterCache.set(language, highlighterPromise);\r\n  return highlighterPromise;\r\n};\r\n\r\n// Create raw tokens for immediate display while highlighting loads\r\nconst createRawTokens = (code: string): TokenizedCode => ({\r\n  bg: \"transparent\",\r\n  fg: \"inherit\",\r\n  tokens: code.split(\"\\n\").map((line) =>\r\n    line === \"\"\r\n      ? []\r\n      : [\r\n          {\r\n            color: \"inherit\",\r\n            content: line,\r\n          } as ThemedToken,\r\n        ]\r\n  ),\r\n});\r\n\r\n// Synchronous highlight with callback for async results\r\nexport const highlightCode = (\r\n  code: string,\r\n  language: BundledLanguage,\r\n  // oxlint-disable-next-line eslint-plugin-promise(prefer-await-to-callbacks)\r\n  callback?: (result: TokenizedCode) => void\r\n): TokenizedCode | null => {\r\n  const tokensCacheKey = getTokensCacheKey(code, language);\r\n\r\n  // Return cached result if available\r\n  const cached = tokensCache.get(tokensCacheKey);\r\n  if (cached) {\r\n    return cached;\r\n  }\r\n\r\n  // Subscribe callback if provided\r\n  if (callback) {\r\n    if (!subscribers.has(tokensCacheKey)) {\r\n      subscribers.set(tokensCacheKey, new Set());\r\n    }\r\n    subscribers.get(tokensCacheKey)?.add(callback);\r\n  }\r\n\r\n  // Start highlighting in background - fire-and-forget async pattern\r\n  getHighlighter(language)\r\n    // oxlint-disable-next-line eslint-plugin-promise(prefer-await-to-then)\r\n    .then((highlighter) => {\r\n      const availableLangs = highlighter.getLoadedLanguages();\r\n      const langToUse = availableLangs.includes(language) ? language : \"text\";\r\n\r\n      const result = highlighter.codeToTokens(code, {\r\n        lang: langToUse,\r\n        themes: {\r\n          dark: \"github-dark\",\r\n          light: \"github-light\",\r\n        },\r\n      });\r\n\r\n      const tokenized: TokenizedCode = {\r\n        bg: result.bg ?? \"transparent\",\r\n        fg: result.fg ?? \"inherit\",\r\n        tokens: result.tokens,\r\n      };\r\n\r\n      // Cache the result\r\n      tokensCache.set(tokensCacheKey, tokenized);\r\n\r\n      // Notify all subscribers\r\n      const subs = subscribers.get(tokensCacheKey);\r\n      if (subs) {\r\n        for (const sub of subs) {\r\n          sub(tokenized);\r\n        }\r\n        subscribers.delete(tokensCacheKey);\r\n      }\r\n    })\r\n    // oxlint-disable-next-line eslint-plugin-promise(prefer-await-to-then), eslint-plugin-promise(prefer-await-to-callbacks)\r\n    .catch((error) => {\r\n      console.error(\"Failed to highlight code:\", error);\r\n      subscribers.delete(tokensCacheKey);\r\n    });\r\n\r\n  return null;\r\n};\r\n\r\nconst CodeBlockBody = memo(\r\n  ({\r\n    tokenized,\r\n    showLineNumbers,\r\n    className,\r\n  }: {\r\n    tokenized: TokenizedCode;\r\n    showLineNumbers: boolean;\r\n    className?: string;\r\n  }) => {\r\n    const preStyle = useMemo(\r\n      () => ({\r\n        backgroundColor: tokenized.bg,\r\n        color: tokenized.fg,\r\n      }),\r\n      [tokenized.bg, tokenized.fg]\r\n    );\r\n\r\n    const keyedLines = useMemo(\r\n      () => addKeysToTokens(tokenized.tokens),\r\n      [tokenized.tokens]\r\n    );\r\n\r\n    return (\r\n      <pre\r\n        className={cn(\r\n          \"dark:!bg-[var(--shiki-dark-bg)] dark:!text-[var(--shiki-dark)] m-0 p-4 text-sm\",\r\n          className\r\n        )}\r\n        style={preStyle}\r\n      >\r\n        <code\r\n          className={cn(\r\n            \"font-mono text-sm\",\r\n            showLineNumbers && \"[counter-increment:line_0] [counter-reset:line]\"\r\n          )}\r\n        >\r\n          {keyedLines.map((keyedLine) => (\r\n            <LineSpan\r\n              key={keyedLine.key}\r\n              keyedLine={keyedLine}\r\n              showLineNumbers={showLineNumbers}\r\n            />\r\n          ))}\r\n        </code>\r\n      </pre>\r\n    );\r\n  },\r\n  (prevProps, nextProps) =>\r\n    prevProps.tokenized === nextProps.tokenized &&\r\n    prevProps.showLineNumbers === nextProps.showLineNumbers &&\r\n    prevProps.className === nextProps.className\r\n);\r\n\r\nCodeBlockBody.displayName = \"CodeBlockBody\";\r\n\r\nexport const CodeBlockContainer = ({\r\n  className,\r\n  language,\r\n  style,\r\n  ...props\r\n}: HTMLAttributes<HTMLDivElement> & { language: string }) => (\r\n  <div\r\n    className={cn(\r\n      \"group relative w-full overflow-hidden rounded-md border bg-background text-foreground\",\r\n      className\r\n    )}\r\n    data-language={language}\r\n    style={{\r\n      containIntrinsicSize: \"auto 200px\",\r\n      contentVisibility: \"auto\",\r\n      ...style,\r\n    }}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport const CodeBlockHeader = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: HTMLAttributes<HTMLDivElement>) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between border-b bg-muted/80 px-3 py-2 text-muted-foreground text-xs\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport const CodeBlockTitle = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: HTMLAttributes<HTMLDivElement>) => (\r\n  <div className={cn(\"flex items-center gap-2\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport const CodeBlockFilename = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: HTMLAttributes<HTMLSpanElement>) => (\r\n  <span className={cn(\"font-mono\", className)} {...props}>\r\n    {children}\r\n  </span>\r\n);\r\n\r\nexport const CodeBlockActions = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: HTMLAttributes<HTMLDivElement>) => (\r\n  <div\r\n    className={cn(\"-my-1 -me-1 flex items-center gap-2\", className)}\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport const CodeBlockContent = ({\r\n  code,\r\n  language,\r\n  showLineNumbers = false,\r\n}: {\r\n  code: string;\r\n  language: BundledLanguage;\r\n  showLineNumbers?: boolean;\r\n}) => {\r\n  // Memoized raw tokens for immediate display\r\n  const rawTokens = useMemo(() => createRawTokens(code), [code]);\r\n\r\n  // Synchronous cache lookup — avoids setState in effect for cached results\r\n  const syncTokens = useMemo(\r\n    () => highlightCode(code, language) ?? rawTokens,\r\n    [code, language, rawTokens]\r\n  );\r\n\r\n  // Async highlighting result (populated after shiki loads)\r\n  const [asyncTokens, setAsyncTokens] = useState<TokenizedCode | null>(null);\r\n  const asyncKeyRef = useRef({ code, language });\r\n\r\n  // Invalidate stale async tokens synchronously during render\r\n  if (\r\n    asyncKeyRef.current.code !== code ||\r\n    asyncKeyRef.current.language !== language\r\n  ) {\r\n    asyncKeyRef.current = { code, language };\r\n    setAsyncTokens(null);\r\n  }\r\n\r\n  useEffect(() => {\r\n    let cancelled = false;\r\n\r\n    highlightCode(code, language, (result) => {\r\n      if (!cancelled) {\r\n        setAsyncTokens(result);\r\n      }\r\n    });\r\n\r\n    return () => {\r\n      cancelled = true;\r\n    };\r\n  }, [code, language]);\r\n\r\n  const tokenized = asyncTokens ?? syncTokens;\r\n\r\n  return (\r\n    <div className=\"relative overflow-auto\">\r\n      <CodeBlockBody showLineNumbers={showLineNumbers} tokenized={tokenized} />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport const CodeBlock = ({\r\n  code,\r\n  language,\r\n  showLineNumbers = false,\r\n  className,\r\n  children,\r\n  ...props\r\n}: CodeBlockProps) => {\r\n  const contextValue = useMemo(() => ({ code }), [code]);\r\n\r\n  return (\r\n    <CodeBlockContext.Provider value={contextValue}>\r\n      <CodeBlockContainer className={className} language={language} {...props}>\r\n        {children}\r\n        <CodeBlockContent\r\n          code={code}\r\n          language={language}\r\n          showLineNumbers={showLineNumbers}\r\n        />\r\n      </CodeBlockContainer>\r\n    </CodeBlockContext.Provider>\r\n  );\r\n};\r\n\r\nexport type CodeBlockCopyButtonProps = ComponentProps<typeof Button> & {\r\n  onCopy?: () => void;\r\n  onError?: (error: Error) => void;\r\n  timeout?: number;\r\n};\r\n\r\nexport const CodeBlockCopyButton = ({\r\n  onCopy,\r\n  onError,\r\n  timeout = 2000,\r\n  children,\r\n  className,\r\n  ...props\r\n}: CodeBlockCopyButtonProps) => {\r\n  const [isCopied, setIsCopied] = useState(false);\r\n  const timeoutRef = useRef<number>(0);\r\n  const { code } = useContext(CodeBlockContext);\r\n\r\n  const copyToClipboard = useCallback(async () => {\r\n    if (typeof window === \"undefined\" || !navigator?.clipboard?.writeText) {\r\n      onError?.(new Error(\"Clipboard API not available\"));\r\n      return;\r\n    }\r\n\r\n    try {\r\n      if (!isCopied) {\r\n        await navigator.clipboard.writeText(code);\r\n        setIsCopied(true);\r\n        onCopy?.();\r\n        timeoutRef.current = window.setTimeout(\r\n          () => setIsCopied(false),\r\n          timeout\r\n        );\r\n      }\r\n    } catch (error) {\r\n      onError?.(error as Error);\r\n    }\r\n  }, [code, onCopy, onError, timeout, isCopied]);\r\n\r\n  useEffect(\r\n    () => () => {\r\n      window.clearTimeout(timeoutRef.current);\r\n    },\r\n    []\r\n  );\r\n\r\n  const Icon = isCopied ? CheckIcon : CopyIcon;\r\n\r\n  return (\r\n    <Button\r\n      className={cn(\"shrink-0\", className)}\r\n      onClick={copyToClipboard}\r\n      size=\"icon\"\r\n      variant=\"ghost\"\r\n      {...props}\r\n    >\r\n      {children ?? <Icon size={14} />}\r\n    </Button>\r\n  );\r\n};\r\n\r\nexport type CodeBlockLanguageSelectorProps = ComponentProps<typeof Select>;\r\n\r\nexport const CodeBlockLanguageSelector = (\r\n  props: CodeBlockLanguageSelectorProps\r\n) => <Select {...props} />;\r\n\r\nexport type CodeBlockLanguageSelectorTriggerProps = ComponentProps<\r\n  typeof SelectTrigger\r\n>;\r\n\r\nexport const CodeBlockLanguageSelectorTrigger = ({\r\n  className,\r\n  ...props\r\n}: CodeBlockLanguageSelectorTriggerProps) => (\r\n  <SelectTrigger\r\n    className={cn(\r\n      \"h-7 border-none bg-transparent px-2 text-xs shadow-none\",\r\n      className\r\n    )}\r\n    size=\"sm\"\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type CodeBlockLanguageSelectorValueProps = ComponentProps<\r\n  typeof SelectValue\r\n>;\r\n\r\nexport const CodeBlockLanguageSelectorValue = (\r\n  props: CodeBlockLanguageSelectorValueProps\r\n) => <SelectValue {...props} />;\r\n\r\nexport type CodeBlockLanguageSelectorContentProps = ComponentProps<\r\n  typeof SelectContent\r\n>;\r\n\r\nexport const CodeBlockLanguageSelectorContent = ({\r\n  align = \"end\",\r\n  ...props\r\n}: CodeBlockLanguageSelectorContentProps) => (\r\n  <SelectContent align={align} {...props} />\r\n);\r\n\r\nexport type CodeBlockLanguageSelectorItemProps = ComponentProps<\r\n  typeof SelectItem\r\n>;\r\n\r\nexport const CodeBlockLanguageSelectorItem = (\r\n  props: CodeBlockLanguageSelectorItemProps\r\n) => <SelectItem {...props} />;\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/code-block.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "code",
+        "syntax",
+        "shiki",
+        "clipboard"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-syntax-code.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/code-block.tsx",
+            "upstreamPath": "packages/elements/src/code-block.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/code-block.tsx",
+            "upstreamSha256": "sha256:5c7285171c5aa741749a1642a85f492a9b5e80dc4ccb704b5c3f58c45efebd04",
+            "contentSha256": "sha256:344f5ab4f8ede48d17a21f9164d33f397dd11e0108b5f1e5a274e4d216577439",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced the collision-prone abbreviated token cache key with the complete language and source pair.",
+              "Changed physical spacing utilities to logical equivalents for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/code-block.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/code-block.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced the collision-prone abbreviated token cache key with the complete language and source pair. Changed physical spacing utilities to logical equivalents for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "async-syntax-highlighted-code",
+        "sourceHash": "sha256:fb583be87adfa443b8c39c7dac086d8cfa1e3f1d32cf3de562fe52727f80b954",
+        "contentHash": "sha256:28143567b296d2944e838fcc8fb5558121c42f96ca54a7b8accb42f512a0d224",
+        "structureHash": "sha256:d76ec5b77601f206c3bdd2d7db0c9a2d3598b8fa07e0112402dd61819a57e68d"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

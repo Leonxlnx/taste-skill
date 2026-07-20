@@ -1,0 +1,103 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-contact-shadows",
+  "title": "Contact Shadows",
+  "author": "pmndrs contributors",
+  "description": "Renders bounded, blurred contact shadows beneath arbitrary scene content.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three-stdlib@2.35.6",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/ContactShadows.tsx",
+      "content": "// The author of the original code is @mrdoob https://twitter.com/mrdoob\n// https://threejs.org/examples/?q=con#webgl_shadow_contact\n\nimport * as React from 'react'\nimport * as THREE from 'three'\nimport { ThreeElements, useFrame, useThree } from '@react-three/fiber'\nimport { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\n\nexport type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> & {\n  opacity?: number\n  width?: number\n  height?: number\n  blur?: number\n  near?: number\n  far?: number\n  smooth?: boolean\n  resolution?: number\n  frames?: number\n  scale?: number | [x: number, y: number]\n  color?: THREE.ColorRepresentation\n  depthWrite?: boolean\n}\n\nexport const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(\n  (\n    {\n      scale = 10,\n      frames = Infinity,\n      opacity = 1,\n      width = 1,\n      height = 1,\n      blur = 1,\n      near = 0,\n      far = 10,\n      resolution = 512,\n      smooth = true,\n      color = '#000000',\n      depthWrite = false,\n      renderOrder,\n      ...props\n    },\n    fref\n  ) => {\n    const ref = React.useRef<THREE.Group>(null!)\n    const scene = useThree((state) => state.scene)\n    const gl = useThree((state) => state.gl)\n    const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)\n\n    width = width * (Array.isArray(scale) ? scale[0] : scale || 1)\n    height = height * (Array.isArray(scale) ? scale[1] : scale || 1)\n\n    const [\n      renderTarget,\n      planeGeometry,\n      depthMaterial,\n      blurPlane,\n      horizontalBlurMaterial,\n      verticalBlurMaterial,\n      renderTargetBlur,\n    ] = React.useMemo(() => {\n      const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)\n      const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)\n      renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false\n      const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)\n      const blurPlane = new THREE.Mesh(planeGeometry)\n      const depthMaterial = new THREE.MeshDepthMaterial()\n      depthMaterial.depthTest = depthMaterial.depthWrite = false\n      depthMaterial.onBeforeCompile = (shader) => {\n        shader.uniforms = {\n          ...shader.uniforms,\n          ucolor: { value: new THREE.Color(color) },\n        }\n        shader.fragmentShader = shader.fragmentShader.replace(\n          `void main() {`, //\n          `uniform vec3 ucolor;\n           void main() {\n          `\n        )\n        shader.fragmentShader = shader.fragmentShader.replace(\n          'vec4( vec3( 1.0 - fragCoordZ ), opacity );',\n          // Colorize the shadow, multiply by the falloff so that the center can remain darker\n          'vec4( ucolor * fragCoordZ * 2.0, ( 1.0 - fragCoordZ ) * 1.0 );'\n        )\n      }\n\n      const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)\n      const verticalBlurMaterial = new THREE.ShaderMaterial(VerticalBlurShader)\n      verticalBlurMaterial.depthTest = horizontalBlurMaterial.depthTest = false\n      return [\n        renderTarget,\n        planeGeometry,\n        depthMaterial,\n        blurPlane,\n        horizontalBlurMaterial,\n        verticalBlurMaterial,\n        renderTargetBlur,\n      ]\n    }, [resolution, width, height, scale, color])\n\n    const blurShadows = (blur: number) => {\n      blurPlane.visible = true\n\n      blurPlane.material = horizontalBlurMaterial\n      horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture\n      horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256\n\n      gl.setRenderTarget(renderTargetBlur)\n      gl.render(blurPlane, shadowCamera.current)\n\n      blurPlane.material = verticalBlurMaterial\n      verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture\n      verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256\n\n      gl.setRenderTarget(renderTarget)\n      gl.render(blurPlane, shadowCamera.current)\n\n      blurPlane.visible = false\n    }\n\n    let count = 0\n    let initialBackground: THREE.Color | THREE.Texture | null\n    let initialOverrideMaterial: THREE.Material | null\n    useFrame(() => {\n      if (shadowCamera.current && (frames === Infinity || count < frames)) {\n        count++\n\n        initialBackground = scene.background\n        initialOverrideMaterial = scene.overrideMaterial\n\n        ref.current.visible = false\n        scene.background = null\n        scene.overrideMaterial = depthMaterial\n\n        gl.setRenderTarget(renderTarget)\n        gl.render(scene, shadowCamera.current)\n\n        blurShadows(blur)\n        if (smooth) blurShadows(blur * 0.4)\n        gl.setRenderTarget(null)\n\n        ref.current.visible = true\n        scene.overrideMaterial = initialOverrideMaterial\n        scene.background = initialBackground\n      }\n    })\n\n    React.useImperativeHandle(fref, () => ref.current, [])\n\n    return (\n      <group rotation-x={Math.PI / 2} {...props} ref={ref}>\n        <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>\n          <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />\n        </mesh>\n        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />\n      </group>\n    )\n  }\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/ContactShadows.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "shadows",
+        "lighting",
+        "grounding",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-contact-shadows.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/ContactShadows.tsx",
+            "upstreamPath": "src/core/ContactShadows.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/ContactShadows.tsx",
+            "upstreamSha256": "sha256:ac47cde6a8c655ebc04753868e52b9a6d84e59110e8e6f46d8f67857b622780b",
+            "contentSha256": "sha256:7c890be23d6e45bd7f9420c3201911bd9341736002562b55867275d496b75781",
+            "changes": [
+              "Typed the internal blur strength parameter as number for strict TypeScript consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/ContactShadows.tsx, src/helpers/ts-utils.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/drei/core/ContactShadows.tsx",
+          "change": "Typed the internal blur strength parameter as number for strict TypeScript consumers.",
+          "reason": "Keep the copied component compatible with strict TypeScript consumers without changing runtime behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "blurred-contact-shadow-renderer",
+        "sourceHash": "sha256:252e679ac43d67e8d60719595d12102d80a5b4c8f4c521d90a02f2e32dda669e",
+        "contentHash": "sha256:cb0dad210d0c3c3b00a797882d4efc50ec0fe2fcf68329623bd625f8578b116a",
+        "structureHash": "sha256:7ab572ae5b9e595179d19eb71848fbe15a6527a6af4bbc7d71973bfd64db1abe"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

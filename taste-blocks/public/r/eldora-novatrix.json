@@ -1,0 +1,89 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "eldora-novatrix",
+  "title": "Novatrix",
+  "author": "Eldora UI",
+  "description": "Renders a configurable OGL cosine field with optional pointer response.",
+  "dependencies": [
+    "ogl@1.0.11"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/eldora-ui/components/eldora-novatrix/novatrix.tsx",
+      "content": "\"use client\"\n\nimport type { HTMLAttributes } from \"react\"\nimport { useEffect, useRef } from \"react\"\nimport { Color, Mesh, Program, Renderer, Triangle } from \"ogl\"\n\nconst vertexShader = `\nattribute vec2 uv;\nattribute vec2 position;\n\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4(position, 0, 1);\n}\n`\n\nconst fragmentShader = `\nprecision highp float;\n\nuniform float uTime;\nuniform vec3 uColor;\nuniform vec3 uResolution;\nuniform vec2 uMouse;\nuniform float uAmplitude;\nuniform float uSpeed;\n\nvarying vec2 vUv;\n\nvoid main() {\n  float mr = min(uResolution.x, uResolution.y);\n  vec2 uv = (vUv.xy * 2.0 - 1.0) * uResolution.xy / mr;\n\n  uv += (uMouse - vec2(0.5)) * uAmplitude;\n\n  float d = -uTime * 0.5 * uSpeed;\n  float a = 0.0;\n  for (float i = 0.0; i < 8.0; ++i) {\n    a += cos(i - d - a * uv.x);\n    d += sin(uv.y * i + a);\n  }\n  d += uTime * 0.5 * uSpeed;\n  vec3 col = vec3(cos(uv * vec2(d, a)) * 0.6 + 0.4, cos(a + d) * 0.5 + 0.5);\n  col = cos(col * cos(vec3(d, a, 2.5)) * 0.5 + 0.5) * uColor;\n  gl_FragColor = vec4(col, 1.0);\n}\n`\n\nconst defaultColor: [number, number, number] = [1, 1, 1]\n\nexport interface NovatrixProps\n  extends Omit<HTMLAttributes<HTMLDivElement>, \"color\"> {\n  color?: [number, number, number]\n  speed?: number\n  amplitude?: number\n  mouseReact?: boolean\n}\n\nfunction clamp(value: number, minimum: number, maximum: number, fallback: number) {\n  return Number.isFinite(value)\n    ? Math.min(maximum, Math.max(minimum, value))\n    : fallback\n}\n\nexport default function Novatrix({\n  color = defaultColor,\n  speed = 1,\n  amplitude = 0.1,\n  mouseReact = false,\n  className,\n  style,\n  ...rest\n}: NovatrixProps) {\n  const containerRef = useRef<HTMLDivElement>(null)\n  const red = clamp(color[0], 0, 1, 1)\n  const green = clamp(color[1], 0, 1, 1)\n  const blue = clamp(color[2], 0, 1, 1)\n  const safeSpeed = clamp(speed, 0, 4, 1)\n  const safeAmplitude = clamp(amplitude, 0, 1, 0.1)\n  const fallbackColor = `rgb(${Math.round(red * 255)} ${Math.round(green * 255)} ${Math.round(blue * 255)})`\n\n  useEffect(() => {\n    const currentContainer = containerRef.current\n    if (!currentContainer) return\n    const container: HTMLDivElement = currentContainer\n\n    const motionQuery = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    let reducedMotion = motionQuery.matches\n    let pageVisible = document.visibilityState !== \"hidden\"\n    let inViewport = true\n    let animationFrame = 0\n    let renderer: Renderer | null = null\n    let resizeObserver: ResizeObserver | null = null\n    let intersectionObserver: IntersectionObserver | null = null\n\n    try {\n      renderer = new Renderer({\n        dpr: Math.min(window.devicePixelRatio || 1, 2),\n      })\n    } catch {\n      return\n    }\n\n    const gl = renderer.gl\n    gl.clearColor(red, green, blue, 1)\n\n    const geometry = new Triangle(gl)\n    const program = new Program(gl, {\n      vertex: vertexShader,\n      fragment: fragmentShader,\n      uniforms: {\n        uTime: { value: 0 },\n        uColor: { value: new Color(red, green, blue) },\n        uResolution: {\n          value: new Color(1, 1, 1),\n        },\n        uMouse: { value: new Float32Array([0.5, 0.5]) },\n        uAmplitude: { value: safeAmplitude },\n        uSpeed: { value: safeSpeed },\n      },\n    })\n    const mesh = new Mesh(gl, { geometry, program })\n\n    function render(time: number) {\n      program.uniforms.uTime.value = time * 0.001\n      renderer?.render({ scene: mesh })\n    }\n\n    function shouldAnimate() {\n      return !reducedMotion && pageVisible && inViewport\n    }\n\n    function schedule() {\n      if (animationFrame === 0 && shouldAnimate()) {\n        animationFrame = requestAnimationFrame(frame)\n      }\n    }\n\n    function frame(time: number) {\n      animationFrame = 0\n      render(time)\n      schedule()\n    }\n\n    function stop() {\n      if (animationFrame !== 0) cancelAnimationFrame(animationFrame)\n      animationFrame = 0\n    }\n\n    function resize() {\n      const width = container.clientWidth\n      const height = container.clientHeight\n      if (width === 0 || height === 0 || !renderer) return\n      renderer.setSize(width, height)\n      program.uniforms.uResolution.value = new Color(\n        gl.canvas.width,\n        gl.canvas.height,\n        gl.canvas.width / gl.canvas.height\n      )\n      render(reducedMotion ? 0 : performance.now())\n    }\n\n    function handlePointerMove(event: PointerEvent) {\n      if (!mouseReact || reducedMotion) return\n      const rect = container.getBoundingClientRect()\n      if (rect.width === 0 || rect.height === 0) return\n      program.uniforms.uMouse.value[0] = (event.clientX - rect.left) / rect.width\n      program.uniforms.uMouse.value[1] =\n        1 - (event.clientY - rect.top) / rect.height\n    }\n\n    function handleMotionChange(event: MediaQueryListEvent) {\n      reducedMotion = event.matches\n      if (reducedMotion) {\n        stop()\n        render(0)\n      } else {\n        schedule()\n      }\n    }\n\n    function handleVisibilityChange() {\n      pageVisible = document.visibilityState !== \"hidden\"\n      if (pageVisible) schedule()\n      else stop()\n    }\n\n    gl.canvas.style.display = \"block\"\n    container.appendChild(gl.canvas)\n    resizeObserver = new ResizeObserver(resize)\n    resizeObserver.observe(container)\n\n    intersectionObserver = new IntersectionObserver(([entry]) => {\n      inViewport = entry?.isIntersecting ?? false\n      if (inViewport) schedule()\n      else stop()\n    })\n    intersectionObserver.observe(container)\n\n    if (mouseReact) container.addEventListener(\"pointermove\", handlePointerMove)\n    motionQuery.addEventListener(\"change\", handleMotionChange)\n    document.addEventListener(\"visibilitychange\", handleVisibilityChange)\n    resize()\n    render(0)\n    schedule()\n\n    return () => {\n      stop()\n      resizeObserver?.disconnect()\n      intersectionObserver?.disconnect()\n      if (mouseReact) {\n        container.removeEventListener(\"pointermove\", handlePointerMove)\n      }\n      motionQuery.removeEventListener(\"change\", handleMotionChange)\n      document.removeEventListener(\"visibilitychange\", handleVisibilityChange)\n      if (gl.canvas.parentElement === container) container.removeChild(gl.canvas)\n      gl.getExtension(\"WEBGL_lose_context\")?.loseContext()\n    }\n  }, [red, green, blue, safeSpeed, safeAmplitude, mouseReact])\n\n  return (\n    <div\n      {...rest}\n      ref={containerRef}\n      aria-hidden=\"true\"\n      className={`h-full w-full overflow-hidden ${className ?? \"\"}`}\n      style={{ backgroundColor: fallbackColor, ...style }}\n    />\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/novatrix.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "shader",
+        "cosine-field",
+        "pointer",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/eldora-novatrix.tsx",
+      "source": {
+        "project": "Eldora UI",
+        "repository": "https://github.com/karthikmudunuri/eldoraui",
+        "revision": "2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/eldora-novatrix/novatrix.tsx",
+            "upstreamPath": "apps/www/registry/eldoraui/novatrix-background.tsx",
+            "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/apps/www/registry/eldoraui/novatrix-background.tsx",
+            "upstreamSha256": "sha256:7d20fb899a8b8bced5f9fcf0f01c05638caf9a9e7c9fe17a7fff89eba1bcb30f",
+            "contentSha256": "sha256:c9a6c7e72a8cf94fd93a163537b11722675ba7d80d78b275ee069048d109fd75",
+            "changes": [
+              "Added native div props, caller class and style support, decorative semantics, bounded numeric inputs, and a stable color fallback.",
+              "Capped device pixel ratio, replaced window-only sizing with ResizeObserver, and replaced mouse-only tracking with pointer tracking.",
+              "Rendered one static reduced-motion frame, paused animation outside the viewport and in hidden documents, handled WebGL construction failure, and tightened cleanup."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/eldoraui/novatrix-background.tsx",
+        "copyright": [
+          "Copyright (c) Mudunuri Bhaskara Karthikeya Varma"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/karthikmudunuri/eldoraui/blob/2ef4f1eb4f4a6dea6fc2bdd4d87b6a3f2ff65321/LICENSE.md",
+          "sha256": "sha256:98a4833a2780f22c9f12d39493bbd19e3eb5ab321d4e44cc79c596b52cba4c29",
+          "localPath": "registry/sources/eldora-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/eldora-novatrix/novatrix.tsx",
+          "change": "Added a native wrapper API, bounded shader inputs, capped DPR, ResizeObserver sizing, pointer input, reduced-motion still rendering, viewport and visibility suspension, defensive renderer creation, and safe canvas/context cleanup.",
+          "reason": "Preserve the copied shader while preventing unbounded GPU work, offscreen animation, mouse-only behavior, and stale canvas resources."
+        }
+      ],
+      "dedupe": {
+        "family": "ogl-novatrix-cosine-field",
+        "sourceHash": "sha256:0117af4fc572cad66d21b14585cfccff29baa21e52f5b8bec338fc9a5e5f0fe2",
+        "contentHash": "sha256:4e4cec30520b1c42311e401cfd1f3a1563bd7515440ea47a3bb66af3c61b0195",
+        "structureHash": "sha256:2e8103fd2d83a2dca140d9359b3d474d9d5ad8a782dc9cafc2ff1a7417202cc6"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

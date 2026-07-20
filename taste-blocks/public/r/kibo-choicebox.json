@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kibo-choicebox",
+  "title": "Choicebox",
+  "author": "Kibo UI",
+  "description": "Presents radio choices as composable card rows.",
+  "dependencies": [],
+  "registryDependencies": [
+    "field",
+    "radio-group",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-choicebox/index.tsx",
+      "content": "\"use client\";\n\nimport {\n  RadioGroup,\n  RadioGroupItem,\n} from \"@/components/ui/radio-group\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  type ComponentProps,\n  createContext,\n  type HTMLAttributes,\n  useContext,\n  useId,\n} from \"react\";\nimport {\n  Field,\n  FieldContent,\n  FieldDescription,\n  FieldLabel,\n  FieldTitle,\n} from \"@/components/ui/field\";\n\nexport type ChoiceboxProps = ComponentProps<typeof RadioGroup>;\n\nexport const Choicebox = ({ className, ...props }: ChoiceboxProps) => (\n  <RadioGroup className={cn(\"w-full\", className)} {...props} />\n);\n\ntype ChoiceboxItemContextValue = {\n  value: ChoiceboxItemProps[\"value\"];\n  id?: ChoiceboxItemProps[\"id\"];\n};\n\nconst ChoiceboxItemContext = createContext<ChoiceboxItemContextValue | null>(\n  null\n);\n\nconst useChoiceboxItemContext = () => {\n  const context = useContext(ChoiceboxItemContext);\n\n  if (!context) {\n    throw new Error(\n      \"useChoiceboxItemContext must be used within a ChoiceboxItem\"\n    );\n  }\n\n  return context;\n};\n\nexport type ChoiceboxItemProps = Pick<\n  ComponentProps<typeof RadioGroupItem>,\n  \"children\" | \"className\" | \"id\" | \"value\"\n>;\n\nexport const ChoiceboxItem = ({\n  className,\n  children,\n  value,\n  id,\n}: ChoiceboxItemProps) => {\n  const generatedId = useId();\n  const itemId = id ?? generatedId;\n\n  return (\n    <ChoiceboxItemContext.Provider value={{ value, id: itemId }}>\n      <FieldLabel htmlFor={itemId}>\n        <Field className={className} orientation=\"horizontal\">\n          {children}\n        </Field>\n      </FieldLabel>\n    </ChoiceboxItemContext.Provider>\n  );\n};\n\nexport type ChoiceboxItemHeaderProps = ComponentProps<typeof FieldContent>;\n\nexport const ChoiceboxItemHeader = ({\n  className,\n  ...props\n}: ChoiceboxItemHeaderProps) => (\n  <FieldContent className={className} {...props} />\n);\n\nexport type ChoiceboxItemTitleProps = ComponentProps<typeof FieldTitle>;\n\nexport const ChoiceboxItemTitle = ({\n  className,\n  ...props\n}: ChoiceboxItemTitleProps) => <FieldTitle className={className} {...props} />;\n\nexport type ChoiceboxItemSubtitleProps = HTMLAttributes<HTMLSpanElement>;\n\nexport const ChoiceboxItemSubtitle = ({\n  className,\n  ...props\n}: ChoiceboxItemSubtitleProps) => (\n  <span\n    className={cn(\"font-normal text-muted-foreground text-xs\", className)}\n    {...props}\n  />\n);\n\nexport type ChoiceboxItemDescriptionProps = ComponentProps<\n  typeof FieldDescription\n>;\n\nexport const ChoiceboxItemDescription = ({\n  className,\n  ...props\n}: ChoiceboxItemDescriptionProps) => (\n  <FieldDescription className={className} {...props} />\n);\n\nexport type ChoiceboxIndicatorProps = Omit<\n  ComponentProps<typeof RadioGroupItem>,\n  \"value\"\n>;\n\nexport const ChoiceboxIndicator = (props: ChoiceboxIndicatorProps) => {\n  const context = useChoiceboxItemContext();\n\n  return (\n    <RadioGroupItem\n      {...props}\n      id={props.id ?? context.id}\n      value={context.value}\n    />\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/choicebox.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "radio",
+        "choice",
+        "field"
+      ],
+      "renderer": "dom",
+      "preview": "previews/kibo-choicebox.tsx",
+      "source": {
+        "project": "Kibo UI",
+        "repository": "https://github.com/shadcnblocks/kibo",
+        "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kibo-choicebox/index.tsx",
+            "upstreamPath": "packages/choicebox/index.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/choicebox/index.tsx",
+            "upstreamSha256": "sha256:4795f41f7db23cd2d059d3344a4c0662e6c039a3c9424791aaef741ade9f992f",
+            "contentSha256": "sha256:acb94405a1a0be62bdf41e86947e4ecfeca4e0f179e334b97621ba85797a7249",
+            "changes": [
+              "Replaced @repo/shadcn-ui radio-group and utility aliases with @/components/ui/radio-group and @/lib/utils.",
+              "Generated a stable control id when none is provided and passed it from ChoiceboxItem to ChoiceboxIndicator.",
+              "Narrowed ChoiceboxItem and ChoiceboxIndicator prop types to remove silently ignored wrapper props and the context-owned value."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/choicebox/index.tsx",
+        "copyright": [
+          "Copyright (c) 2023 — Present shadcnblocks"
+        ],
+        "evidence": {
+          "upstreamPath": "license.md",
+          "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+          "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+          "localPath": "registry/sources/kibo-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kibo-choicebox/index.tsx",
+          "change": "Replaced Kibo's workspace-local aliases, generated a stable shared id for each label and radio indicator, and narrowed the wrapper prop surfaces to behavior they actually implement.",
+          "reason": "Resolve imports through the host project's shadcn aliases, preserve the compound label association without duplicate caller wiring, and avoid advertising props that are silently ignored."
+        }
+      ],
+      "dedupe": {
+        "family": "card-radio-choice",
+        "sourceHash": "sha256:1306978080f986650007668e73a506d83bd98716cf49e48a61b911555a79a7b1",
+        "contentHash": "sha256:db722d6d00402be6999f151b84341fc7383d8b36e39d4edea5f158962e380878",
+        "structureHash": "sha256:576be40b565ad007002082a43a093e5165a542d66cc4df7964818309002692a6"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

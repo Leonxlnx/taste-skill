@@ -1,0 +1,105 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-animated-background",
+  "title": "Animated Background",
+  "author": "Motion Primitives",
+  "description": "Moves a shared background between selected or hovered child elements.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-animated-background/animated-background.tsx",
+      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport {\n  AnimatePresence,\n  Transition,\n  motion,\n  useReducedMotion,\n} from 'motion/react';\nimport {\n  Children,\n  cloneElement,\n  ReactElement,\n  useEffect,\n  useState,\n  useId,\n} from 'react';\n\nexport type AnimatedBackgroundProps = {\n  children:\n    | ReactElement<{ 'data-id': string }>[]\n    | ReactElement<{ 'data-id': string }>;\n  defaultValue?: string;\n  onValueChange?: (newActiveId: string | null) => void;\n  className?: string;\n  transition?: Transition;\n  enableHover?: boolean;\n};\n\nexport function AnimatedBackground({\n  children,\n  defaultValue,\n  onValueChange,\n  className,\n  transition,\n  enableHover = false,\n}: AnimatedBackgroundProps) {\n  const [activeId, setActiveId] = useState<string | null>(null);\n  const uniqueId = useId();\n  const shouldReduceMotion = useReducedMotion();\n\n  const handleSetActiveId = (id: string | null) => {\n    setActiveId(id);\n\n    if (onValueChange) {\n      onValueChange(id);\n    }\n  };\n\n  useEffect(() => {\n    if (defaultValue !== undefined) {\n      setActiveId(defaultValue);\n    }\n  }, [defaultValue]);\n\n  return Children.map(children, (child: any, index) => {\n    const id = child.props['data-id'];\n\n    const interactionProps = enableHover\n      ? {\n          onMouseEnter: () => handleSetActiveId(id),\n          onMouseLeave: () => handleSetActiveId(null),\n          onFocus: () => handleSetActiveId(id),\n          onBlur: () => handleSetActiveId(null),\n          onClick: () => handleSetActiveId(id),\n        }\n      : {\n          onClick: () => handleSetActiveId(id),\n        };\n\n    return cloneElement(\n      child,\n      {\n        key: index,\n        className: cn('relative inline-flex', child.props.className),\n        'data-checked': activeId === id ? 'true' : 'false',\n        ...interactionProps,\n      },\n      <>\n        <AnimatePresence initial={false}>\n          {activeId === id && (\n            <motion.div\n              layoutId={shouldReduceMotion ? undefined : `background-${uniqueId}`}\n              className={cn('absolute inset-0', className)}\n              transition={shouldReduceMotion ? { duration: 0 } : transition}\n              initial={{ opacity: defaultValue ? 1 : 0 }}\n              animate={{\n                opacity: 1,\n              }}\n              exit={{\n                opacity: 0,\n              }}\n            />\n          )}\n        </AnimatePresence>\n        <div className='z-10'>{child.props.children}</div>\n      </>\n    );\n  });\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animated-background.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "selection",
+        "tabs",
+        "shared-layout"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-animated-background.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-animated-background/animated-background.tsx",
+            "upstreamPath": "components/core/animated-background.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/animated-background.tsx",
+            "upstreamSha256": "sha256:fa592713c408eaf58b21976c20737d84239c42a0b7e47cf9e7843121b1c0852c",
+            "contentSha256": "sha256:090f2c1152c6917b6793bed30114fb60e2dba0858a7ed3211012f590c9cf8667",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Added a useReducedMotion branch that removes the shared layout id and snaps opacity changes.",
+              "Added focus, blur, and click parity to hover mode so keyboard and touch users can set the same active state."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/animated-background.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-animated-background/animated-background.tsx",
+          "change": "Changed the local utility import, added a reduced-motion snap, and added keyboard/touch parity to hover mode.",
+          "reason": "Resolve the copied helper without a consumer root alias and keep the selection behavior usable without hover or animated layout movement."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-selection-background",
+        "sourceHash": "sha256:135db1d1a2a322e920ca343d73393f2ddfe10c928ef6825379f6839a7c6ad228",
+        "contentHash": "sha256:e428cd30a0d56c913ed5260ed34fcf05ad5c3324c5be2805cd06872125b1ccd7",
+        "structureHash": "sha256:d3356af82f4cf4cef1215d613ce668352fd881bbff1b0ac1cfd4a0d1f7accc37"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

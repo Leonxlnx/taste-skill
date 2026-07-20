@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-float",
+  "title": "Float",
+  "author": "pmndrs contributors",
+  "description": "Applies configurable floating and rotational motion to arbitrary 3D children.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/Float.tsx",
+      "content": "import * as React from 'react'\nimport { ThreeElements, useFrame } from '@react-three/fiber'\nimport * as THREE from 'three'\nimport { ForwardRefComponent } from '../helpers/ts-utils'\n\nexport type FloatProps = Omit<ThreeElements['group'], 'ref'> & {\n  enabled?: boolean\n  speed?: number\n  rotationIntensity?: number\n  floatIntensity?: number\n  children?: React.ReactNode\n  floatingRange?: [number?, number?]\n  autoInvalidate?: boolean\n}\n\nexport const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<\n  THREE.Group,\n  FloatProps\n>(\n  (\n    {\n      children,\n      enabled = true,\n      speed = 1,\n      rotationIntensity = 1,\n      floatIntensity = 1,\n      floatingRange = [-0.1, 0.1],\n      autoInvalidate = false,\n      ...props\n    },\n    forwardRef\n  ) => {\n    const ref = React.useRef<THREE.Group>(null!)\n    React.useImperativeHandle(forwardRef, () => ref.current, [])\n    const offset = React.useRef(Math.random() * 10000)\n    useFrame((state) => {\n      if (!enabled || speed === 0) return\n\n      if (autoInvalidate) state.invalidate()\n\n      const t = offset.current + state.clock.elapsedTime\n      ref.current.rotation.x = (Math.cos((t / 4) * speed) / 8) * rotationIntensity\n      ref.current.rotation.y = (Math.sin((t / 4) * speed) / 8) * rotationIntensity\n      ref.current.rotation.z = (Math.sin((t / 4) * speed) / 20) * rotationIntensity\n      let yPosition = Math.sin((t / 4) * speed) / 10\n      yPosition = THREE.MathUtils.mapLinear(yPosition, -0.1, 0.1, floatingRange?.[0] ?? -0.1, floatingRange?.[1] ?? 0.1)\n      ref.current.position.y = yPosition * floatIntensity\n      ref.current.updateMatrix()\n    })\n    return (\n      <group {...props}>\n        <group ref={ref} matrixAutoUpdate={false}>\n          {children}\n        </group>\n      </group>\n    )\n  }\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/Float.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/ts-utils.tsx",
+      "content": "import { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react'\n\n/**\n * Allows using a TS v4 labeled tuple even with older typescript versions\n */\nexport type NamedArrayTuple<T extends (...args: any) => any> = Parameters<T>\n\n/**\n * Utility type to declare the type of a `forwardRef` component so that the type is not \"evaluated\" in the declaration\n * file.\n */\nexport type ForwardRefComponent<P, T> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>\n\nexport type NonFunctionKeys<T> = { [K in keyof T]-?: T[K] extends Function ? never : K }[keyof T]\nexport type Overwrite<T, O> = Omit<T, NonFunctionKeys<O>> & O\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/ts-utils.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "float",
+        "motion",
+        "transform",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-float.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/Float.tsx",
+            "upstreamPath": "src/core/Float.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/Float.tsx",
+            "upstreamSha256": "sha256:9cef7b5ec6e0aee408df44dc19bc143991a34d38b1500d927d3b221d4f4f8cd7",
+            "contentSha256": "sha256:9cef7b5ec6e0aee408df44dc19bc143991a34d38b1500d927d3b221d4f4f8cd7",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/ts-utils.tsx",
+            "upstreamPath": "src/helpers/ts-utils.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/ts-utils.tsx",
+            "upstreamSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "contentSha256": "sha256:000f4565e65cca54b20853e85377fe4e88023ed53fdd59184cb81fe6ca027cc4",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/Float.tsx, src/helpers/ts-utils.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "floating-three-dimensional-transform",
+        "sourceHash": "sha256:7078385ffe8e3598bcc3d54c7accdc145f639c84a4332d0726dbd4709201c595",
+        "contentHash": "sha256:7078385ffe8e3598bcc3d54c7accdc145f639c84a4332d0726dbd4709201c595",
+        "structureHash": "sha256:b6134cf11b75a7d219435f2a26c12e3147a4acc37e593efa80b5752fb677f8c1"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

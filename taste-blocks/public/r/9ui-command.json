@@ -1,0 +1,127 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "9ui-command",
+  "title": "Command",
+  "author": "borabaloglu",
+  "description": "Provides a searchable command list with grouped items, keyboard navigation, and an optional modal presentation.",
+  "dependencies": [
+    "@base-ui/react@1.0.0",
+    "clsx@2.1.1",
+    "cmdk-base@1.0.0",
+    "lucide-react@0.469.0",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/9ui/components/9ui-command/command.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Command as CommandBase } from \"cmdk-base\"\nimport { SearchIcon } from \"lucide-react\"\n\nimport {\n\tDialog,\n\tDialogContent,\n\tDialogDescription,\n\tDialogHeader,\n\tDialogTitle,\n} from \"./9ui-command-dialog\"\n\nimport { cn } from \"../../lib/utils\"\n\nfunction Command({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof CommandBase>) {\n\treturn (\n\t\t<CommandBase\n\t\t\tdata-slot=\"command\"\n\t\t\tclassName={cn(\n\t\t\t\t\"bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md border outline-none\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandDialog({\n\ttitle = \"Command Palette\",\n\tdescription = \"Search for a command to run...\",\n\tclassName,\n\tshowCloseButton = false,\n\tchildren,\n\t...props\n}: React.ComponentProps<typeof Dialog> & {\n\ttitle?: string\n\tdescription?: string\n\tclassName?: string\n\tshowCloseButton?: boolean\n\tchildren?: React.ReactNode\n}) {\n\treturn (\n\t\t<Dialog {...props}>\n\t\t\t<DialogHeader className=\"sr-only\">\n\t\t\t\t<DialogTitle>{title}</DialogTitle>\n\t\t\t\t<DialogDescription>{description}</DialogDescription>\n\t\t\t</DialogHeader>\n\t\t\t<DialogContent\n\t\t\t\tclassName={cn(\"overflow-hidden p-0\", className)}\n\t\t\t\tshowCloseButton={showCloseButton}\n\t\t\t>\n\t\t\t\t<Command>{children}</Command>\n\t\t\t</DialogContent>\n\t\t</Dialog>\n\t)\n}\n\nfunction CommandInput({\n\tclassName,\n\tdisabled,\n\t...props\n}: React.ComponentProps<typeof CommandBase.Input>) {\n\treturn (\n\t\t<div\n\t\t\tdata-slot=\"command-input-wrapper\"\n\t\t\tclassName=\"flex h-9 items-center gap-2 border-b px-3\"\n\t\t>\n\t\t\t<SearchIcon className=\"size-4 shrink-0 opacity-50\" />\n\t\t\t<CommandBase.Input\n\t\t\t\tdata-slot=\"command-input\"\n\t\t\t\tclassName={cn(\n\t\t\t\t\t\"placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50\",\n\t\t\t\t\tclassName\n\t\t\t\t)}\n\t\t\t\tdata-disabled={disabled}\n\t\t\t\tdisabled={disabled}\n\t\t\t\t{...props}\n\t\t\t/>\n\t\t</div>\n\t)\n}\n\nfunction CommandList({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof CommandBase.List>) {\n\treturn (\n\t\t<CommandBase.List\n\t\t\tdata-slot=\"command-list\"\n\t\t\tclassName={cn(\n\t\t\t\t\"max-h-[300px] overflow-x-hidden overflow-y-auto outline-hidden\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandEmpty({\n\t...props\n}: React.ComponentProps<typeof CommandBase.Empty>) {\n\treturn (\n\t\t<CommandBase.Empty\n\t\t\tdata-slot=\"command-empty\"\n\t\t\tclassName=\"py-6 text-center text-sm\"\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandGroup({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof CommandBase.Group>) {\n\treturn (\n\t\t<CommandBase.Group\n\t\t\tdata-slot=\"command-group\"\n\t\t\tclassName={cn(\n\t\t\t\t\"text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandSeparator({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof CommandBase.Separator>) {\n\treturn (\n\t\t<CommandBase.Separator\n\t\t\tdata-slot=\"command-separator\"\n\t\t\tclassName={cn(\"bg-border -mx-1 h-px\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandItem({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof CommandBase.Item>) {\n\treturn (\n\t\t<CommandBase.Item\n\t\t\tdata-slot=\"command-item\"\n\t\t\tclassName={cn(\n\t\t\t\t\"data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction CommandShortcut({\n\tclassName,\n\t...props\n}: React.ComponentProps<\"span\">) {\n\treturn (\n\t\t<span\n\t\t\tdata-slot=\"command-shortcut\"\n\t\t\tclassName={cn(\n\t\t\t\t\"text-muted-foreground ms-auto flex items-center gap-1 text-xs tracking-widest\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nexport {\n\tCommand,\n\tCommandDialog,\n\tCommandInput,\n\tCommandList,\n\tCommandEmpty,\n\tCommandGroup,\n\tCommandItem,\n\tCommandShortcut,\n\tCommandSeparator,\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/9ui-command.tsx"
+    },
+    {
+      "path": "registry/sources/9ui/components/9ui-command/9ui-command-dialog.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Dialog as BaseDialog } from \"@base-ui/react/dialog\"\nimport { XIcon } from \"lucide-react\"\n\nimport { cn } from \"../../lib/utils\"\n\nfunction Dialog({ ...props }: React.ComponentProps<typeof BaseDialog.Root>) {\n\treturn <BaseDialog.Root data-slot=\"dialog\" {...props} />\n}\n\nfunction DialogPortal({\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Portal>) {\n\treturn <BaseDialog.Portal data-slot=\"dialog-portal\" {...props} />\n}\n\nfunction DialogTrigger({\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Trigger>) {\n\treturn <BaseDialog.Trigger data-slot=\"dialog-trigger\" {...props} />\n}\n\nfunction DialogClose({\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Close>) {\n\treturn <BaseDialog.Close data-slot=\"dialog-close\" {...props} />\n}\n\nfunction DialogOverlay({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Backdrop>) {\n\treturn (\n\t\t<BaseDialog.Backdrop\n\t\t\tdata-slot=\"dialog-overlay\"\n\t\t\tclassName={cn(\n\t\t\t\t\"fixed inset-0 bg-black/50 transition-all duration-200 [&[data-ending-style]]:opacity-0 [&[data-starting-style]]:opacity-0\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction DialogContent({\n\tclassName,\n\tchildren,\n\tshowCloseButton = true,\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Popup> & {\n\tshowCloseButton?: boolean\n}) {\n\treturn (\n\t\t<DialogPortal data-slot=\"dialog-portal\">\n\t\t\t<DialogOverlay />\n\t\t\t<BaseDialog.Popup\n\t\t\t\tdata-slot=\"dialog-content\"\n\t\t\t\tclassName={cn(\n\t\t\t\t\t\"bg-popover text-popover-foreground fixed top-[100vh] left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-full gap-4 rounded-lg border p-6 shadow-lg transition-all duration-200 outline-none data-ending-style:translate-y-full data-ending-style:opacity-0 data-starting-style:translate-y-full data-starting-style:opacity-0 max-sm:rounded-b-none sm:top-[50%] sm:w-[32rem] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:scale-[calc(1-0.1*var(--nested-dialogs))] data-ending-style:sm:translate-y-[-50%] data-ending-style:sm:scale-95 data-starting-style:sm:translate-y-[-50%] data-starting-style:sm:scale-95\",\n\t\t\t\t\tclassName\n\t\t\t\t)}\n\t\t\t\t{...props}\n\t\t\t>\n\t\t\t\t{children}\n\t\t\t\t{showCloseButton && (\n\t\t\t\t\t<DialogClose className=\"ring-offset-popover focus:ring-ring text-muted-foreground absolute top-4 end-4 rounded-xs opacity-50 transition-opacity hover:opacity-100 focus:ring-[3px] focus:ring-offset-2 focus:outline-hidden [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\">\n\t\t\t\t\t\t<XIcon />\n\t\t\t\t\t\t<span className=\"sr-only\">Close</span>\n\t\t\t\t\t</DialogClose>\n\t\t\t\t)}\n\t\t\t</BaseDialog.Popup>\n\t\t</DialogPortal>\n\t)\n}\n\nfunction DialogHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n\treturn (\n\t\t<div\n\t\t\tdata-slot=\"dialog-header\"\n\t\t\tclassName={cn(\"flex flex-col gap-2 text-center sm:text-start\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction DialogFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n\treturn (\n\t\t<div\n\t\t\tdata-slot=\"dialog-footer\"\n\t\t\tclassName={cn(\n\t\t\t\t\"flex flex-col-reverse gap-2 sm:flex-row sm:justify-end\",\n\t\t\t\tclassName\n\t\t\t)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction DialogTitle({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Title>) {\n\treturn (\n\t\t<BaseDialog.Title\n\t\t\tdata-slot=\"dialog-title\"\n\t\t\tclassName={cn(\"text-lg leading-none font-semibold\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nfunction DialogDescription({\n\tclassName,\n\t...props\n}: React.ComponentProps<typeof BaseDialog.Description>) {\n\treturn (\n\t\t<BaseDialog.Description\n\t\t\tdata-slot=\"dialog-description\"\n\t\t\tclassName={cn(\"text-muted-foreground text-sm\", className)}\n\t\t\t{...props}\n\t\t/>\n\t)\n}\n\nexport {\n\tDialog,\n\tDialogPortal,\n\tDialogOverlay,\n\tDialogClose,\n\tDialogTrigger,\n\tDialogContent,\n\tDialogHeader,\n\tDialogFooter,\n\tDialogTitle,\n\tDialogDescription,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/9ui-command-dialog.tsx"
+    },
+    {
+      "path": "registry/sources/9ui/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "command",
+        "search",
+        "keyboard",
+        "listbox",
+        "dialog"
+      ],
+      "renderer": "dom",
+      "preview": "previews/9ui-command.tsx",
+      "source": {
+        "project": "9ui",
+        "repository": "https://github.com/borabaloglu/9ui",
+        "revision": "3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/9ui-command/command.tsx",
+            "upstreamPath": "apps/www/src/components/ui/command.tsx",
+            "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/command.tsx",
+            "upstreamSha256": "sha256:2118d62bdfb78f92a2af9e20dcd6062daa733d1f89fe1acc59e787aedd3f691a",
+            "contentSha256": "sha256:b1b9d3fedb39ef22525b95c539a56f88c7388d9faa7140d63c27acaacebf2769",
+            "changes": [
+              "Changed the dialog and cn imports from upstream aliases to source-local relative paths and changed the shortcut margin to a logical RTL-aware utility."
+            ]
+          },
+          {
+            "shippedPath": "components/9ui-command/9ui-command-dialog.tsx",
+            "upstreamPath": "apps/www/src/components/ui/dialog.tsx",
+            "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/dialog.tsx",
+            "upstreamSha256": "sha256:fada575542fd784ae7f170ccc067f29f269bc9d78db58a01bee3326a6ff063a6",
+            "contentSha256": "sha256:f6e48d42233ee117c8fb78b50ffa76748e349a2ad9154d525559e05399608270",
+            "changes": [
+              "Renamed the internal support file, changed Base UI and cn imports to portable source-local subpaths, and replaced physical right/text-left utilities with logical RTL-aware utilities."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/www/src/lib/utils.ts",
+            "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/lib/utils.ts",
+            "upstreamSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+            "contentSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/src/components/ui/command.tsx, apps/www/src/components/ui/dialog.tsx, and apps/www/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 borabaloglu"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/LICENSE.md",
+          "sha256": "sha256:49bb3c9e3771f566f1d689dc9ffc356bd18621b003f974ada322a171a91d341f",
+          "localPath": "registry/sources/9ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/9ui-command/command.tsx",
+          "change": "Repointed local aliases to copied support files and changed ml-auto to ms-auto.",
+          "reason": "Keep the item self-contained and preserve shortcut alignment in both LTR and RTL directions."
+        },
+        {
+          "shippedPath": "components/9ui-command/9ui-command-dialog.tsx",
+          "change": "Renamed the support target, used the Base UI dialog subpath and copied cn helper, and changed right/text-left utilities to end/text-start.",
+          "reason": "Avoid a generic public Dialog target while keeping the copied closure portable and RTL-aware."
+        }
+      ],
+      "dedupe": {
+        "family": "filterable-command-menu",
+        "sourceHash": "sha256:85064d6236d33e0d3a423e7ea84419c33eaf01567cb8004a0b44e625163d3552",
+        "contentHash": "sha256:e5d523ab4a5a94433dd7f6815ad409b44b28bf4563e213d3b642aedd5e65d682",
+        "structureHash": "sha256:7da5f8c20801a3d1c91b6952968947be64431d0e98ec5831f7ef900dbda5447b"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

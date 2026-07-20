@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kibo-contribution-graph",
+  "title": "Contribution Graph",
+  "author": "Kibo UI",
+  "description": "Displays activity counts in a contribution calendar.",
+  "dependencies": [
+    "date-fns@4.1.0"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-contribution-graph/index.tsx",
+      "content": "\"use client\";\n\nimport type { Day as WeekDay } from \"date-fns\";\nimport {\n  differenceInCalendarDays,\n  eachDayOfInterval,\n  formatISO,\n  getDay,\n  getMonth,\n  getYear,\n  nextDay,\n  parseISO,\n  subWeeks,\n} from \"date-fns\";\nimport {\n  type CSSProperties,\n  createContext,\n  Fragment,\n  type HTMLAttributes,\n  type ReactNode,\n  useContext,\n  useMemo,\n} from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type Activity = {\n  date: string;\n  count: number;\n  level: number;\n};\n\ntype Week = Array<Activity | undefined>;\n\nexport type Labels = {\n  months?: string[];\n  totalCount?: string;\n  legend?: {\n    less?: string;\n    more?: string;\n  };\n};\n\ntype MonthLabel = {\n  weekIndex: number;\n  label: string;\n};\n\nconst DEFAULT_MONTH_LABELS = [\n  \"Jan\",\n  \"Feb\",\n  \"Mar\",\n  \"Apr\",\n  \"May\",\n  \"Jun\",\n  \"Jul\",\n  \"Aug\",\n  \"Sep\",\n  \"Oct\",\n  \"Nov\",\n  \"Dec\",\n];\n\nconst DEFAULT_LABELS: Labels = {\n  months: DEFAULT_MONTH_LABELS,\n  totalCount: \"{{count}} activities in {{year}}\",\n  legend: {\n    less: \"Less\",\n    more: \"More\",\n  },\n};\n\ntype ContributionGraphContextType = {\n  data: Activity[];\n  weeks: Week[];\n  blockMargin: number;\n  blockRadius: number;\n  blockSize: number;\n  fontSize: number;\n  labels: Labels;\n  labelHeight: number;\n  maxLevel: number;\n  totalCount: number;\n  weekStart: WeekDay;\n  year: number;\n  width: number;\n  height: number;\n};\n\nconst ContributionGraphContext =\n  createContext<ContributionGraphContextType | null>(null);\n\nconst useContributionGraph = () => {\n  const context = useContext(ContributionGraphContext);\n\n  if (!context) {\n    throw new Error(\n      \"ContributionGraph components must be used within a ContributionGraph\"\n    );\n  }\n\n  return context;\n};\n\nconst fillHoles = (activities: Activity[]): Activity[] => {\n  if (activities.length === 0) {\n    return [];\n  }\n\n  // Sort activities by date to ensure correct date range\n  const sortedActivities = [...activities].sort((a, b) =>\n    a.date.localeCompare(b.date)\n  );\n\n  const calendar = new Map<string, Activity>(\n    activities.map((a) => [a.date, a])\n  );\n\n  const firstActivity = sortedActivities[0] as Activity;\n  const lastActivity = sortedActivities.at(-1);\n\n  if (!lastActivity) {\n    return [];\n  }\n\n  return eachDayOfInterval({\n    start: parseISO(firstActivity.date),\n    end: parseISO(lastActivity.date),\n  }).map((day) => {\n    const date = formatISO(day, { representation: \"date\" });\n\n    if (calendar.has(date)) {\n      return calendar.get(date) as Activity;\n    }\n\n    return {\n      date,\n      count: 0,\n      level: 0,\n    };\n  });\n};\n\nconst groupByWeeks = (\n  activities: Activity[],\n  weekStart: WeekDay = 0\n): Week[] => {\n  if (activities.length === 0) {\n    return [];\n  }\n\n  const normalizedActivities = fillHoles(activities);\n  const firstActivity = normalizedActivities[0] as Activity;\n  const firstDate = parseISO(firstActivity.date);\n  const firstCalendarDate =\n    getDay(firstDate) === weekStart\n      ? firstDate\n      : subWeeks(nextDay(firstDate, weekStart), 1);\n\n  const paddedActivities = [\n    ...(new Array(differenceInCalendarDays(firstDate, firstCalendarDate)).fill(\n      undefined\n    ) as Activity[]),\n    ...normalizedActivities,\n  ];\n\n  const numberOfWeeks = Math.ceil(paddedActivities.length / 7);\n\n  return new Array(numberOfWeeks)\n    .fill(undefined)\n    .map((_, weekIndex) =>\n      paddedActivities.slice(weekIndex * 7, weekIndex * 7 + 7)\n    );\n};\n\nconst getMonthLabels = (\n  weeks: Week[],\n  monthNames: string[] = DEFAULT_MONTH_LABELS\n): MonthLabel[] => {\n  return weeks\n    .reduce<MonthLabel[]>((labels, week, weekIndex) => {\n      const firstActivity = week.find((activity) => activity !== undefined);\n\n      if (!firstActivity) {\n        throw new Error(\n          `Unexpected error: Week ${weekIndex + 1} is empty: [${week}].`\n        );\n      }\n\n      const month = monthNames[getMonth(parseISO(firstActivity.date))];\n\n      if (!month) {\n        const monthName = new Date(firstActivity.date).toLocaleString(\"en-US\", {\n          month: \"short\",\n        });\n        throw new Error(\n          `Unexpected error: undefined month label for ${monthName}.`\n        );\n      }\n\n      const prevLabel = labels.at(-1);\n\n      if (weekIndex === 0 || !prevLabel || prevLabel.label !== month) {\n        return labels.concat({ weekIndex, label: month });\n      }\n\n      return labels;\n    }, [])\n    .filter(({ weekIndex }, index, labels) => {\n      const minWeeks = 3;\n\n      if (index === 0) {\n        return labels[1] && labels[1].weekIndex - weekIndex >= minWeeks;\n      }\n\n      if (index === labels.length - 1) {\n        return weeks.slice(weekIndex).length >= minWeeks;\n      }\n\n      return true;\n    });\n};\n\nexport type ContributionGraphProps = HTMLAttributes<HTMLDivElement> & {\n  data: Activity[];\n  blockMargin?: number;\n  blockRadius?: number;\n  blockSize?: number;\n  fontSize?: number;\n  labels?: Labels;\n  maxLevel?: number;\n  style?: CSSProperties;\n  totalCount?: number;\n  weekStart?: WeekDay;\n  children: ReactNode;\n  className?: string;\n};\n\nexport const ContributionGraph = ({\n  data,\n  blockMargin = 4,\n  blockRadius = 2,\n  blockSize = 12,\n  fontSize = 14,\n  labels: labelsProp = undefined,\n  maxLevel: maxLevelProp = 4,\n  style = {},\n  totalCount: totalCountProp = undefined,\n  weekStart = 0,\n  className,\n  ...props\n}: ContributionGraphProps) => {\n  const maxLevel = Math.min(4, Math.max(1, maxLevelProp));\n  const weeks = useMemo(() => groupByWeeks(data, weekStart), [data, weekStart]);\n  const LABEL_MARGIN = 8;\n\n  const labels = { ...DEFAULT_LABELS, ...labelsProp };\n  const labelHeight = fontSize + LABEL_MARGIN;\n\n  const year =\n    data.length > 0\n      ? getYear(parseISO(data[0].date))\n      : new Date().getFullYear();\n\n  const totalCount =\n    typeof totalCountProp === \"number\"\n      ? totalCountProp\n      : data.reduce((sum, activity) => sum + activity.count, 0);\n\n  const width = weeks.length * (blockSize + blockMargin) - blockMargin;\n  const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin;\n\n  if (data.length === 0) {\n    return null;\n  }\n\n  return (\n    <ContributionGraphContext.Provider\n      value={{\n        data,\n        weeks,\n        blockMargin,\n        blockRadius,\n        blockSize,\n        fontSize,\n        labels,\n        labelHeight,\n        maxLevel,\n        totalCount,\n        weekStart,\n        year,\n        width,\n        height,\n      }}\n    >\n      <div\n        className={cn(\"flex w-max max-w-full flex-col gap-2\", className)}\n        style={{ fontSize, ...style }}\n        {...props}\n      />\n    </ContributionGraphContext.Provider>\n  );\n};\n\nexport type ContributionGraphBlockProps = HTMLAttributes<SVGRectElement> & {\n  activity: Activity;\n  dayIndex: number;\n  weekIndex: number;\n};\n\nexport const ContributionGraphBlock = ({\n  activity,\n  dayIndex,\n  weekIndex,\n  className,\n  \"aria-label\": ariaLabel,\n  role = \"img\",\n  ...props\n}: ContributionGraphBlockProps) => {\n  const { blockSize, blockMargin, blockRadius, labelHeight, maxLevel } =\n    useContributionGraph();\n\n  if (activity.level < 0 || activity.level > maxLevel) {\n    throw new RangeError(\n      `Provided activity level ${activity.level} for ${activity.date} is out of range. It must be between 0 and ${maxLevel}.`\n    );\n  }\n\n  return (\n    <rect\n      aria-label={ariaLabel ?? `${activity.date}: ${activity.count} activities`}\n      className={cn(\n        'data-[level=\"0\"]:fill-muted',\n        'data-[level=\"1\"]:fill-muted-foreground/20',\n        'data-[level=\"2\"]:fill-muted-foreground/40',\n        'data-[level=\"3\"]:fill-muted-foreground/60',\n        'data-[level=\"4\"]:fill-muted-foreground/80',\n        className\n      )}\n      data-count={activity.count}\n      data-date={activity.date}\n      data-level={activity.level}\n      height={blockSize}\n      rx={blockRadius}\n      ry={blockRadius}\n      role={role}\n      width={blockSize}\n      x={(blockSize + blockMargin) * weekIndex}\n      y={labelHeight + (blockSize + blockMargin) * dayIndex}\n      {...props}\n    />\n  );\n};\n\nexport type ContributionGraphCalendarProps = Omit<\n  HTMLAttributes<HTMLDivElement>,\n  \"children\"\n> & {\n  hideMonthLabels?: boolean;\n  className?: string;\n  children: (props: {\n    activity: Activity;\n    dayIndex: number;\n    weekIndex: number;\n  }) => ReactNode;\n};\n\nexport const ContributionGraphCalendar = ({\n  hideMonthLabels = false,\n  className,\n  children,\n  ...props\n}: ContributionGraphCalendarProps) => {\n  const { weeks, width, height, blockSize, blockMargin, labels } =\n    useContributionGraph();\n\n  const monthLabels = useMemo(\n    () => getMonthLabels(weeks, labels.months),\n    [weeks, labels.months]\n  );\n\n  return (\n    <div\n      className={cn(\"max-w-full overflow-x-auto overflow-y-hidden\", className)}\n      {...props}\n    >\n      <svg\n        className=\"block overflow-visible\"\n        height={height}\n        viewBox={`0 0 ${width} ${height}`}\n        width={width}\n      >\n        <title>Contribution Graph</title>\n        {!hideMonthLabels && (\n          <g className=\"fill-current\">\n            {monthLabels.map(({ label, weekIndex }) => (\n              <text\n                dominantBaseline=\"hanging\"\n                key={weekIndex}\n                x={(blockSize + blockMargin) * weekIndex}\n              >\n                {label}\n              </text>\n            ))}\n          </g>\n        )}\n        {weeks.map((week, weekIndex) =>\n          week.map((activity, dayIndex) => {\n            if (!activity) {\n              return null;\n            }\n\n            return (\n              <Fragment key={`${weekIndex}-${dayIndex}`}>\n                {children({ activity, dayIndex, weekIndex })}\n              </Fragment>\n            );\n          })\n        )}\n      </svg>\n    </div>\n  );\n};\n\nexport type ContributionGraphFooterProps = HTMLAttributes<HTMLDivElement>;\n\nexport const ContributionGraphFooter = ({\n  className,\n  ...props\n}: ContributionGraphFooterProps) => (\n  <div\n    className={cn(\n      \"flex flex-wrap gap-1 whitespace-nowrap sm:gap-x-4\",\n      className\n    )}\n    {...props}\n  />\n);\n\nexport type ContributionGraphTotalCountProps = Omit<\n  HTMLAttributes<HTMLDivElement>,\n  \"children\"\n> & {\n  children?: (props: { totalCount: number; year: number }) => ReactNode;\n};\n\nexport const ContributionGraphTotalCount = ({\n  className,\n  children,\n  ...props\n}: ContributionGraphTotalCountProps) => {\n  const { totalCount, year, labels } = useContributionGraph();\n\n  if (children) {\n    return <>{children({ totalCount, year })}</>;\n  }\n\n  return (\n    <div className={cn(\"text-muted-foreground\", className)} {...props}>\n      {labels.totalCount\n        ? labels.totalCount\n            .replace(\"{{count}}\", String(totalCount))\n            .replace(\"{{year}}\", String(year))\n        : `${totalCount} activities in ${year}`}\n    </div>\n  );\n};\n\nexport type ContributionGraphLegendProps = Omit<\n  HTMLAttributes<HTMLDivElement>,\n  \"children\"\n> & {\n  children?: (props: { level: number }) => ReactNode;\n};\n\nexport const ContributionGraphLegend = ({\n  className,\n  children,\n  ...props\n}: ContributionGraphLegendProps) => {\n  const { labels, maxLevel, blockSize, blockRadius } = useContributionGraph();\n\n  return (\n    <div\n      className={cn(\"ms-auto flex items-center gap-[3px]\", className)}\n      {...props}\n    >\n      <span className=\"me-1 text-muted-foreground\">\n        {labels.legend?.less || \"Less\"}\n      </span>\n      {new Array(maxLevel + 1).fill(undefined).map((_, level) =>\n        children ? (\n          <Fragment key={level}>{children({ level })}</Fragment>\n        ) : (\n          <svg height={blockSize} key={level} width={blockSize}>\n            <title>{`${level} contributions`}</title>\n            <rect\n              className={cn(\n                \"stroke-[1px] stroke-border\",\n                'data-[level=\"0\"]:fill-muted',\n                'data-[level=\"1\"]:fill-muted-foreground/20',\n                'data-[level=\"2\"]:fill-muted-foreground/40',\n                'data-[level=\"3\"]:fill-muted-foreground/60',\n                'data-[level=\"4\"]:fill-muted-foreground/80'\n              )}\n              data-level={level}\n              height={blockSize}\n              rx={blockRadius}\n              ry={blockRadius}\n              width={blockSize}\n            />\n          </svg>\n        )\n      )}\n      <span className=\"ms-1 text-muted-foreground\">\n        {labels.legend?.more || \"More\"}\n      </span>\n    </div>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/contribution-graph.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "activity",
+        "calendar",
+        "heatmap"
+      ],
+      "renderer": "svg",
+      "preview": "previews/kibo-contribution-graph.tsx",
+      "source": {
+        "project": "Kibo UI",
+        "repository": "https://github.com/shadcnblocks/kibo",
+        "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kibo-contribution-graph/index.tsx",
+            "upstreamPath": "packages/contribution-graph/index.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/contribution-graph/index.tsx",
+            "upstreamSha256": "sha256:a7461e71054d1c326ac2c5d2d613a21284c5dd933e05719a9e563f1ed6c0b900",
+            "contentSha256": "sha256:c951c67e58e65018ab2e873b8769719791916c2d725591aa62a2ca7a457a591d",
+            "changes": [
+              "Removed the unused weekdays label field, constrained default levels to the four styled intensities, gave contribution cells default image roles and labels, and changed legend margins to logical utilities."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/contribution-graph/index.tsx",
+        "copyright": [
+          "Copyright (c) 2023 — Present shadcnblocks"
+        ],
+        "evidence": {
+          "upstreamPath": "license.md",
+          "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+          "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+          "localPath": "registry/sources/kibo-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kibo-contribution-graph/index.tsx",
+          "change": "Removed a no-op label field, constrained default intensity levels, added default accessible cell semantics, and changed legend margins to logical utilities.",
+          "reason": "Keep the public API truthful, prevent unstyled levels, expose daily values to assistive technology, and preserve the legend in right-to-left layouts."
+        }
+      ],
+      "dedupe": {
+        "family": "contribution-calendar",
+        "sourceHash": "sha256:560f91f82bb20782b6026d380c3546bdc7894cffa3a0d895dd7de3af77cd1542",
+        "contentHash": "sha256:fbc9ae88ac522bfd3cde9edeb05e1e70b4c744bd262f9ff0c0f2b7c71198c4b7",
+        "structureHash": "sha256:074df1b27ed9b24ba6371106f81f01a761617bccbae2448d825f1590317caf17"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

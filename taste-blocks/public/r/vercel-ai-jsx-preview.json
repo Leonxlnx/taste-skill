@@ -1,0 +1,93 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-jsx-preview",
+  "title": "JSX Preview",
+  "author": "Vercel",
+  "description": "A trusted-input JSX renderer with streaming completion and error fallback.",
+  "dependencies": [
+    "lucide-react@0.577.0",
+    "react-jsx-parser@2.4.1"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/jsx-preview.tsx",
+      "content": "\"use client\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\nimport { AlertCircle } from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport {\r\n  createContext,\r\n  memo,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\nimport type { TProps as JsxParserProps } from \"react-jsx-parser\";\r\nimport JsxParser from \"react-jsx-parser\";\r\n\r\ninterface JSXPreviewContextValue {\r\n  jsx: string;\r\n  processedJsx: string;\r\n  isStreaming: boolean;\r\n  error: Error | null;\r\n  setError: (error: Error | null) => void;\r\n  setLastGoodJsx: (jsx: string) => void;\r\n  components: JsxParserProps[\"components\"];\r\n  bindings: JsxParserProps[\"bindings\"];\r\n  onErrorProp?: (error: Error) => void;\r\n}\r\n\r\nconst JSXPreviewContext = createContext<JSXPreviewContextValue | null>(null);\r\n\r\nconst TAG_REGEX = /<\\/?([a-zA-Z][a-zA-Z0-9]*)\\s*([^>]*?)(\\/)?>/;\r\n\r\nexport const useJSXPreview = () => {\r\n  const context = useContext(JSXPreviewContext);\r\n  if (!context) {\r\n    throw new Error(\"JSXPreview components must be used within JSXPreview\");\r\n  }\r\n  return context;\r\n};\r\n\r\nconst matchJsxTag = (code: string) => {\r\n  if (code.trim() === \"\") {\r\n    return null;\r\n  }\r\n\r\n  const match = code.match(TAG_REGEX);\r\n\r\n  if (!match || match.index === undefined) {\r\n    return null;\r\n  }\r\n\r\n  const [fullMatch, tagName, attributes, selfClosing] = match;\r\n\r\n  let type: \"self-closing\" | \"closing\" | \"opening\";\r\n  if (selfClosing) {\r\n    type = \"self-closing\";\r\n  } else if (fullMatch.startsWith(\"</\")) {\r\n    type = \"closing\";\r\n  } else {\r\n    type = \"opening\";\r\n  }\r\n\r\n  return {\r\n    attributes: attributes.trim(),\r\n    endIndex: match.index + fullMatch.length,\r\n    startIndex: match.index,\r\n    tag: fullMatch,\r\n    tagName,\r\n    type,\r\n  };\r\n};\r\n\r\nconst stripIncompleteTag = (text: string) => {\r\n  // Find the last '<' that isn't part of a complete tag\r\n  const lastOpen = text.lastIndexOf(\"<\");\r\n  if (lastOpen === -1) {\r\n    return text;\r\n  }\r\n\r\n  const afterOpen = text.slice(lastOpen);\r\n  // If there's no closing '>' after the last '<', it's an incomplete tag\r\n  if (!afterOpen.includes(\">\")) {\r\n    return text.slice(0, lastOpen);\r\n  }\r\n\r\n  return text;\r\n};\r\n\r\nconst completeJsxTag = (code: string) => {\r\n  const stack: string[] = [];\r\n  let result = \"\";\r\n  let currentPosition = 0;\r\n\r\n  while (currentPosition < code.length) {\r\n    const match = matchJsxTag(code.slice(currentPosition));\r\n    if (!match) {\r\n      // No more tags found, strip any trailing incomplete tag\r\n      result += stripIncompleteTag(code.slice(currentPosition));\r\n      break;\r\n    }\r\n    const { tagName, type, endIndex } = match;\r\n\r\n    // Include any text content before this tag\r\n    result += code.slice(currentPosition, currentPosition + endIndex);\r\n\r\n    if (type === \"opening\") {\r\n      stack.push(tagName);\r\n    } else if (type === \"closing\") {\r\n      stack.pop();\r\n    }\r\n\r\n    currentPosition += endIndex;\r\n  }\r\n\r\n  return (\r\n    result +\r\n    stack\r\n      .toReversed()\r\n      .map((tag) => `</${tag}>`)\r\n      .join(\"\")\r\n  );\r\n};\r\n\r\nexport type JSXPreviewProps = ComponentProps<\"div\"> & {\r\n  jsx: string;\r\n  isStreaming?: boolean;\r\n  components?: JsxParserProps[\"components\"];\r\n  bindings?: JsxParserProps[\"bindings\"];\r\n  onError?: (error: Error) => void;\r\n};\r\n\r\nexport const JSXPreview = memo(\r\n  ({\r\n    jsx,\r\n    isStreaming = false,\r\n    components,\r\n    bindings,\r\n    onError,\r\n    className,\r\n    children,\r\n    ...props\r\n  }: JSXPreviewProps) => {\r\n    const [prevJsx, setPrevJsx] = useState(jsx);\r\n    const [error, setError] = useState<Error | null>(null);\r\n    const [_lastGoodJsx, setLastGoodJsx] = useState(\"\");\r\n\r\n    // Clear error when jsx changes (derived state pattern)\r\n    if (jsx !== prevJsx) {\r\n      setPrevJsx(jsx);\r\n      setError(null);\r\n    }\r\n\r\n    const processedJsx = useMemo(\r\n      () => (isStreaming ? completeJsxTag(jsx) : jsx),\r\n      [jsx, isStreaming]\r\n    );\r\n\r\n    const contextValue = useMemo(\r\n      () => ({\r\n        bindings,\r\n        components,\r\n        error,\r\n        isStreaming,\r\n        jsx,\r\n        onErrorProp: onError,\r\n        processedJsx,\r\n        setError,\r\n        setLastGoodJsx,\r\n      }),\r\n      [\r\n        bindings,\r\n        components,\r\n        error,\r\n        isStreaming,\r\n        jsx,\r\n        onError,\r\n        processedJsx,\r\n        setError,\r\n      ]\r\n    );\r\n\r\n    return (\r\n      <JSXPreviewContext.Provider value={contextValue}>\r\n        <div className={cn(\"relative\", className)} {...props}>\r\n          {children}\r\n        </div>\r\n      </JSXPreviewContext.Provider>\r\n    );\r\n  }\r\n);\r\n\r\nJSXPreview.displayName = \"JSXPreview\";\r\n\r\nexport type JSXPreviewContentProps = Omit<ComponentProps<\"div\">, \"children\">;\r\n\r\nexport const JSXPreviewContent = memo(\r\n  ({ className, ...props }: JSXPreviewContentProps) => {\r\n    const {\r\n      processedJsx,\r\n      isStreaming,\r\n      components,\r\n      bindings,\r\n      setError,\r\n      setLastGoodJsx,\r\n      onErrorProp,\r\n    } = useJSXPreview();\r\n    const errorReportedRef = useRef<string | null>(null);\r\n    const lastGoodJsxRef = useRef(\"\");\r\n    const [hadError, setHadError] = useState(false);\r\n\r\n    // Reset error tracking when jsx changes\r\n    useEffect(() => {\r\n      errorReportedRef.current = null;\r\n      setHadError(false);\r\n    }, [processedJsx]);\r\n\r\n    const handleError = useCallback(\r\n      (err: Error) => {\r\n        // Prevent duplicate error reports for the same jsx\r\n        if (errorReportedRef.current === processedJsx) {\r\n          return;\r\n        }\r\n        errorReportedRef.current = processedJsx;\r\n\r\n        // During streaming, suppress errors and fall back to last good JSX\r\n        if (isStreaming) {\r\n          setHadError(true);\r\n          return;\r\n        }\r\n\r\n        setError(err);\r\n        onErrorProp?.(err);\r\n      },\r\n      [processedJsx, isStreaming, onErrorProp, setError]\r\n    );\r\n\r\n    // Track the last JSX that rendered without error\r\n    useEffect(() => {\r\n      if (!errorReportedRef.current) {\r\n        lastGoodJsxRef.current = processedJsx;\r\n        setLastGoodJsx(processedJsx);\r\n      }\r\n    }, [processedJsx, setLastGoodJsx]);\r\n\r\n    // During streaming, if the current JSX errored, re-render with last good version\r\n    const displayJsx =\r\n      isStreaming && hadError ? lastGoodJsxRef.current : processedJsx;\r\n\r\n    return (\r\n      <div className={cn(\"jsx-preview-content\", className)} {...props}>\r\n        <JsxParser\r\n          bindings={bindings}\r\n          components={components}\r\n          jsx={displayJsx}\r\n          onError={handleError}\r\n          renderInWrapper={false}\r\n        />\r\n      </div>\r\n    );\r\n  }\r\n);\r\n\r\nJSXPreviewContent.displayName = \"JSXPreviewContent\";\r\n\r\nexport type JSXPreviewErrorProps = ComponentProps<\"div\"> & {\r\n  children?: ReactNode | ((error: Error) => ReactNode);\r\n};\r\n\r\nconst renderChildren = (\r\n  children: ReactNode | ((error: Error) => ReactNode),\r\n  error: Error\r\n): ReactNode => {\r\n  if (typeof children === \"function\") {\r\n    return children(error);\r\n  }\r\n  return children;\r\n};\r\n\r\nexport const JSXPreviewError = memo(\r\n  ({ className, children, ...props }: JSXPreviewErrorProps) => {\r\n    const { error } = useJSXPreview();\r\n\r\n    if (!error) {\r\n      return null;\r\n    }\r\n\r\n    return (\r\n      <div\r\n        className={cn(\r\n          \"flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-destructive text-sm\",\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children ? (\r\n          renderChildren(children, error)\r\n        ) : (\r\n          <>\r\n            <AlertCircle className=\"size-4 shrink-0\" />\r\n            <span>{error.message}</span>\r\n          </>\r\n        )}\r\n      </div>\r\n    );\r\n  }\r\n);\r\n\r\nJSXPreviewError.displayName = \"JSXPreviewError\";\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/jsx-preview.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "jsx",
+        "renderer",
+        "streaming",
+        "error"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-jsx-preview.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/jsx-preview.tsx",
+            "upstreamPath": "packages/elements/src/jsx-preview.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/jsx-preview.tsx",
+            "upstreamSha256": "sha256:0701c0610bd651fbe1d8f2cf35ec3598571381d2641b5da6daac9c677eac5d8d",
+            "contentSha256": "sha256:cedcfcdd1be7949ffa63f688b5a67690e8369ee85e5b2e3cd933e3087aa79b5f",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/jsx-preview.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/jsx-preview.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "streaming-jsx-renderer",
+        "sourceHash": "sha256:5299ba9b690a9a7d7e50f7a169aa82b4eaef157e5145db41e22883127d45524c",
+        "contentHash": "sha256:1c3eed79b59c170349372f775530fb67698c4c8d8dd27de92b50b5f635c4ced1",
+        "structureHash": "sha256:cc6f4dc49df339afaeb2b4013212cdc847a872042ebf5bfc6bb11c8c2ded768a"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

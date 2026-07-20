@@ -1,0 +1,149 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-circle-chevron-right",
+  "title": "Animated Circle Chevron Right Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated circle chevron right SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-circle-chevron-right/circle-chevron-right-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface CircleChevronRightIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface CircleChevronRightIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst CircleChevronRightIcon = forwardRef<\n CircleChevronRightIconHandle,\n CircleChevronRightIconProps\n>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const circleControls = useAnimation();\n  const arrowControls = useAnimation();\n  const isControlled = useRef(false);\n  const tickControls = useAnimation();\n  const reduced = useReducedMotion();\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () => {\n     if (!isAnimated || reduced) {\n      circleControls.start(\"normal\");\n      tickControls.start(\"normal\");\n      arrowControls.start(\"normal\");\n     } else {\n      circleControls.start(\"animate\");\n      tickControls.start(\"animate\");\n      arrowControls.start(\"animate\");\n     }\n    },\n    stopAnimation: () => {\n     circleControls.start(\"normal\");\n     tickControls.start(\"normal\");\n     arrowControls.start(\"normal\");\n    },\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     circleControls.start(\"animate\");\n     tickControls.start(\"animate\");\n     arrowControls.start(\"animate\");\n    } else {\n     onMouseEnter?.(e as any);\n    }\n   },\n   [circleControls, tickControls, reduced, onMouseEnter, isAnimated],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     circleControls.start(\"normal\");\n     tickControls.start(\"normal\");\n     arrowControls.start(\"normal\");\n    } else {\n     onMouseLeave?.(e as any);\n    }\n   },\n   [circleControls, tickControls, onMouseLeave],\n  );\n\n  const circleVariants: Variants = {\n   normal: { scale: 1, opacity: 1 },\n   animate: {\n    scale: [1, 1.1, 0.9, 1.05, 1],\n    opacity: 1,\n    transition: {\n     duration: 1.2 * duration,\n     ease: \"easeInOut\",\n    },\n   },\n  };\n\n  const arrowVariants: Variants = {\n   normal: { y: 0, opacity: 1 },\n   animate: {\n    x: [-10, 0],\n    opacity: [0, 1],\n    transition: {\n     duration: 0.6 * duration,\n     ease: \"easeOut\",\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n     >\n      <m.circle\n       cx=\"12\"\n       cy=\"12\"\n       r=\"10\"\n       animate={circleControls}\n       initial=\"normal\"\n       variants={circleVariants}\n      />\n      <m.path\n       d=\"m10 8 4 4-4 4\"\n       animate={arrowControls}\n       initial=\"normal\"\n       variants={arrowVariants}\n      />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nCircleChevronRightIcon.displayName = \"CircleChevronRightIcon\";\nexport { CircleChevronRightIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-circle-chevron-right.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "circle-chevron-right",
+        "animated",
+        "icon",
+        "motion",
+        "next",
+        "forward",
+        "more",
+        "east",
+        "continue"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-circle-chevron-right.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-circle-chevron-right/circle-chevron-right-icon.tsx",
+            "upstreamPath": "icons/lucide/circle-chevron-right-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/circle-chevron-right-icon.tsx",
+            "upstreamSha256": "sha256:040be831c5514acb1ec49b49646913c2f3a128630be9d52981bbcd09132689ff",
+            "contentSha256": "sha256:ea5f5be13302c3d3e3cec37d9a3ce75b2ed6c808e4624097e31509b1f946ed7f",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/circle-chevron-right-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-circle-chevron-right/circle-chevron-right-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-circle-chevron-right-icon",
+        "sourceHash": "sha256:823046cd5d7c84fd1e603bd74863cf99a9e03f7429ec7d42f0b9d0fa0cd95c13",
+        "contentHash": "sha256:a01750684fa0f8d68e5cb82a7db2d5a549b3c1371b84a47d423a6a5d32d695b1",
+        "structureHash": "sha256:19abed00ff3e782dcefccc795e85e468df669a275891a2da7ff95cff05a0bac8",
+        "glyph": {
+          "inventoryName": "circle-chevron-right",
+          "canonicalName": "circle-chevron-right",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

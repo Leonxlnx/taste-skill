@@ -1,0 +1,104 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-transition-panel",
+  "title": "Transition Panel",
+  "author": "Motion Primitives",
+  "description": "Transitions between caller-provided panels by active index.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-transition-panel/transition-panel.tsx",
+      "content": "'use client';\nimport {\n  AnimatePresence,\n  Transition,\n  Variant,\n  motion,\n  MotionProps,\n  useReducedMotion,\n} from 'motion/react';\nimport { cn } from '../../lib/utils';\n\nexport type TransitionPanelProps = {\n  children: React.ReactNode[];\n  className?: string;\n  transition?: Transition;\n  activeIndex: number;\n  variants?: { enter: Variant; center: Variant; exit: Variant };\n} & MotionProps;\n\nexport function TransitionPanel({\n  children,\n  className,\n  transition,\n  variants,\n  activeIndex,\n  ...motionProps\n}: TransitionPanelProps) {\n  const shouldReduceMotion = useReducedMotion();\n\n  if (shouldReduceMotion) {\n    return (\n      <div className={cn('relative', className)}>\n        <motion.div\n          {...motionProps}\n          initial={false}\n          animate={undefined}\n          exit={undefined}\n          transition={{ duration: 0 }}\n        >\n          {children[activeIndex]}\n        </motion.div>\n      </div>\n    );\n  }\n\n  return (\n    <div className={cn('relative', className)}>\n      <AnimatePresence\n        initial={false}\n        mode='popLayout'\n        custom={motionProps.custom}\n      >\n        <motion.div\n          key={activeIndex}\n          variants={variants}\n          transition={transition}\n          initial='enter'\n          animate='center'\n          exit='exit'\n          {...motionProps}\n        >\n          {children[activeIndex]}\n        </motion.div>\n      </AnimatePresence>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/transition-panel.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "panel",
+        "content",
+        "transition"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-transition-panel.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-transition-panel/transition-panel.tsx",
+            "upstreamPath": "components/core/transition-panel.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/transition-panel.tsx",
+            "upstreamSha256": "sha256:1b3c67058a09a560a034b7fe52ad1c205b589a63ed80055900e8a66830db0be2",
+            "contentSha256": "sha256:c263c427fabbd2d2374e9146ad865ac5323885365f001fc07df3fc9485a5c61d",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Rendered only the active panel with animation props disabled and a zero-duration transition when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/transition-panel.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-transition-panel/transition-panel.tsx",
+          "change": "Changed the local utility import and added an instant active-panel reduced-motion branch.",
+          "reason": "Resolve the copied helper and keep inactive panels out of the rendered focus order without enter or exit motion."
+        }
+      ],
+      "dedupe": {
+        "family": "indexed-transition-panel",
+        "sourceHash": "sha256:4ebd10c984213368bbc56978f7223ba299c74409ac689dfd3db999e59a6023aa",
+        "contentHash": "sha256:154df8acf3ff64ea0d38aea40e1914ac6cdf2c69ed4747eacb45a368c113f5af",
+        "structureHash": "sha256:8e8b7bb611ae27d1df7f74ce46508ab503a72854fe2e29d84129436fc50a7e03"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

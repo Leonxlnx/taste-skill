@@ -1,0 +1,157 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-notification-stack",
+  "title": "Notification Stack",
+  "author": "Saurabh Chauhan",
+  "description": "Expands a compact stack of caller-provided notices on hover, focus, or tap.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "lucide-react@1.16.0",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-notification-stack/notification-stack.tsx",
+      "content": "\"use client\";\n\nimport { ArrowUpRight, BellOff } from \"lucide-react\";\nimport { motion, useReducedMotion, type Transition } from \"motion/react\";\nimport {\n  useCallback,\n  useRef,\n  useState,\n  type FocusEvent,\n  type KeyboardEvent,\n  type ReactNode,\n} from \"react\";\nimport { ActionSwapText } from \"./beui-action-swap\";\nimport { EASE_OUT, SPRING_LAYOUT } from \"../../lib/taste-blocks/beui/ease\";\nimport { useHoverCapable } from \"../../hooks/taste-blocks/beui/use-hover-capable\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport type NotificationStackItem = {\n  id: string;\n  title: ReactNode;\n  description?: ReactNode;\n  trailing?: ReactNode;\n};\n\nexport type NotificationStackClassNames = {\n  stack?: string;\n  card?: string;\n  content?: string;\n  title?: string;\n  description?: string;\n  trailing?: string;\n  footer?: string;\n  count?: string;\n};\n\nexport interface NotificationStackProps {\n  items: NotificationStackItem[];\n  expanded?: boolean;\n  defaultExpanded?: boolean;\n  onExpandedChange?: (expanded: boolean) => void;\n  onViewAll?: () => void;\n  maxVisible?: number;\n  collapsedLabel?: string;\n  expandedLabel?: string;\n  emptyLabel?: string;\n  className?: string;\n  classNames?: NotificationStackClassNames;\n}\n\nconst STACK_PEEK = 8;\nconst STACK_INSET = 12;\n\nfunction useControllableExpanded({\n  expanded,\n  defaultExpanded,\n  onExpandedChange,\n}: {\n  expanded?: boolean;\n  defaultExpanded: boolean;\n  onExpandedChange?: (expanded: boolean) => void;\n}) {\n  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);\n  const isControlled = expanded !== undefined;\n  const value = expanded ?? internalExpanded;\n\n  const setValue = useCallback(\n    (next: boolean) => {\n      if (!isControlled) setInternalExpanded(next);\n      onExpandedChange?.(next);\n    },\n    [isControlled, onExpandedChange],\n  );\n\n  return [value, setValue] as const;\n}\n\nfunction NotificationCardContent({\n  item,\n  classNames,\n}: {\n  item: NotificationStackItem;\n  classNames?: NotificationStackClassNames;\n}) {\n  return (\n    <span\n      className={cn(\"flex min-w-0 flex-col gap-1.5 py-4\", classNames?.content)}\n    >\n      <span className=\"flex min-w-0 items-start justify-between gap-3\">\n        <span\n          className={cn(\n            \"min-w-0 text-sm font-medium leading-snug\",\n            classNames?.title,\n          )}\n        >\n          {item.title}\n        </span>\n        {item.trailing ? (\n          <span className={cn(\"shrink-0 text-xs\", classNames?.trailing)}>\n            {item.trailing}\n          </span>\n        ) : null}\n      </span>\n      {item.description ? (\n        <span\n          className={cn(\n            \"text-xs leading-relaxed text-muted-foreground\",\n            classNames?.description,\n          )}\n        >\n          {item.description}\n        </span>\n      ) : null}\n    </span>\n  );\n}\n\nexport function NotificationStack({\n  items,\n  expanded,\n  defaultExpanded = false,\n  onExpandedChange,\n  onViewAll,\n  maxVisible = 3,\n  collapsedLabel = \"Notifications\",\n  expandedLabel = \"View all\",\n  emptyLabel = \"All caught up\",\n  className,\n  classNames,\n}: NotificationStackProps) {\n  const reduce = useReducedMotion();\n  const canHover = useHoverCapable();\n  const hasFocus = useRef(false);\n  const [isExpanded, setIsExpanded] = useControllableExpanded({\n    expanded,\n    defaultExpanded,\n    onExpandedChange,\n  });\n\n  const visibleItems = items.slice(0, Math.max(1, maxVisible));\n  const primaryItem = visibleItems[0];\n  const transition: Transition = reduce ? { duration: 0 } : SPRING_LAYOUT;\n  const cardTransition: Transition = reduce\n    ? { duration: 0 }\n    : { duration: 0.32, ease: EASE_OUT };\n  const backgroundTransition: Transition = reduce\n    ? { duration: 0 }\n    : { duration: 0.26, ease: EASE_OUT };\n\n  if (!primaryItem) {\n    return (\n      <div\n        className={cn(\n          \"flex w-full max-w-[22rem] items-center justify-center gap-2 rounded-3xl bg-muted/70 px-5 py-8 text-sm font-medium text-muted-foreground\",\n          className,\n        )}\n      >\n        <BellOff className=\"h-4 w-4\" aria-hidden=\"true\" />\n        {emptyLabel}\n      </div>\n    );\n  }\n\n  const handleBlur = (event: FocusEvent<HTMLButtonElement>) => {\n    if (event.currentTarget.contains(event.relatedTarget)) return;\n    hasFocus.current = false;\n    setIsExpanded(false);\n  };\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if (event.key !== \"Escape\") return;\n    event.preventDefault();\n    setIsExpanded(false);\n    event.currentTarget.blur();\n  };\n\n  const handleClick = () => {\n    if (!isExpanded) {\n      setIsExpanded(true);\n      return;\n    }\n\n    if (onViewAll) {\n      onViewAll();\n      return;\n    }\n\n    setIsExpanded(false);\n  };\n\n  return (\n    <motion.button\n      type=\"button\"\n      initial={false}\n      aria-expanded={isExpanded}\n      aria-label={\n        isExpanded\n          ? onViewAll\n            ? `${items.length} notifications. ${expandedLabel}.`\n            : `${items.length} notifications. Collapse notifications.`\n          : `${items.length} notifications. Expand notifications.`\n      }\n      onPointerEnter={() => {\n        if (canHover) setIsExpanded(true);\n      }}\n      onPointerLeave={() => {\n        if (canHover && !hasFocus.current) setIsExpanded(false);\n      }}\n      onFocus={() => {\n        hasFocus.current = true;\n        setIsExpanded(true);\n      }}\n      onBlur={handleBlur}\n      onKeyDown={handleKeyDown}\n      onClick={handleClick}\n      className={cn(\n        \"relative z-10 block w-full max-w-[22rem] cursor-pointer rounded-3xl text-left text-foreground outline-none\",\n        \"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n        className,\n      )}\n    >\n      {/* This invisible first card gives the button its compact intrinsic footprint. */}\n      <span aria-hidden=\"true\" className=\"invisible block p-3\">\n        <span className=\"block\">\n          <span\n            className={cn(\n              \"block rounded-2xl border border-transparent px-4\",\n              classNames?.card,\n            )}\n          >\n            <NotificationCardContent\n              item={primaryItem}\n              classNames={classNames}\n            />\n          </span>\n        </span>\n        <span className=\"mt-2 block h-9\" />\n      </span>\n\n      <span className=\"absolute inset-x-0 bottom-0 block p-3\">\n        <motion.span\n          aria-hidden=\"true\"\n          layout\n          initial={false}\n          transition={backgroundTransition}\n          className=\"absolute inset-0 rounded-3xl bg-muted\"\n        />\n        <span\n          className={cn(\n            \"relative z-10 grid gap-1\",\n            !isExpanded && \"pb-2\",\n            classNames?.stack,\n          )}\n        >\n          {visibleItems.map((item, index) => {\n            const isPrimary = index === 0;\n\n            return (\n              <motion.span\n                key={item.id}\n                layout=\"position\"\n                initial={false}\n                animate={{\n                  y: isExpanded ? 0 : index * STACK_PEEK,\n                  clipPath: isExpanded\n                    ? \"inset(0px 0px round 16px)\"\n                    : `inset(0px ${index * STACK_INSET}px round 16px)`,\n                }}\n                transition={cardTransition}\n                className={cn(\n                  \"block rounded-2xl border border-border/60 bg-background px-4\",\n                  classNames?.card,\n                )}\n                style={{\n                  zIndex: visibleItems.length - index,\n                  gridColumn: 1,\n                  gridRow: isExpanded ? index + 1 : 1,\n                }}\n              >\n                <span\n                  className={cn(\n                    \"block\",\n                    !isPrimary && !isExpanded && \"invisible\",\n                  )}\n                >\n                  <NotificationCardContent\n                    item={item}\n                    classNames={classNames}\n                  />\n                </span>\n              </motion.span>\n            );\n          })}\n        </span>\n\n        <motion.span\n          layout=\"position\"\n          transition={transition}\n          className={cn(\n            \"relative z-10 mt-2 flex min-h-9 items-center gap-2 px-1\",\n            classNames?.footer,\n          )}\n        >\n          <span\n            className={cn(\n              \"grid size-7 shrink-0 place-items-center rounded-full bg-orange-600 text-xs font-medium text-white shadow-[inset_0_1px_2px_rgb(0_0_0/0.2),inset_0_-1px_0_rgb(255_255_255/0.16)] dark:bg-orange-500\",\n              classNames?.count,\n            )}\n          >\n            {items.length}\n          </span>\n          <span className=\"flex items-center text-sm font-medium\">\n            <ActionSwapText\n              value={isExpanded ? \"expanded\" : \"collapsed\"}\n              animation=\"roll\"\n            >\n              {isExpanded ? (\n                <span className=\"inline-flex items-center gap-1\">\n                  {expandedLabel}\n                  <ArrowUpRight className=\"size-4\" aria-hidden=\"true\" />\n                </span>\n              ) : (\n                collapsedLabel\n              )}\n            </ActionSwapText>\n          </span>\n        </motion.span>\n      </span>\n    </motion.button>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-notification-stack.tsx"
+    },
+    {
+      "path": "registry/sources/beui/components/beui-notification-stack/beui-action-swap.tsx",
+      "content": "\"use client\";\n\nimport {\n  AnimatePresence,\n  motion,\n  useReducedMotion,\n  type HTMLMotionProps,\n  type Variants,\n} from \"motion/react\";\nimport { useLayoutEffect, useRef, useState, type ReactNode } from \"react\";\nimport {\n  EASE_OUT,\n  EASE_OUT_CSS,\n  SPRING_PRESS,\n  SPRING_SWAP,\n} from \"../../lib/taste-blocks/beui/ease\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport type ActionSwapItem = {\n  id: string;\n  label: ReactNode;\n  icon?: ReactNode;\n  ariaLabel?: string;\n};\n\nexport type ActionSwapButtonVariant =\n  | \"primary\"\n  | \"secondary\"\n  | \"outline\"\n  | \"ghost\";\nexport type ActionSwapButtonSize = \"sm\" | \"md\" | \"lg\" | \"icon\";\nexport type ActionSwapAnimation = \"blur\" | \"roll\" | \"cascade\";\n\n/** Animations with a single-element variant set (cascade animates per letter). */\ntype CoreAnimation = \"blur\" | \"roll\";\n\nexport interface ActionSwapButtonProps\n  extends Omit<HTMLMotionProps<\"button\">, \"children\" | \"onChange\"> {\n  items: ActionSwapItem[];\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string, item: ActionSwapItem) => void;\n  variant?: ActionSwapButtonVariant;\n  size?: ActionSwapButtonSize;\n  animation?: ActionSwapAnimation;\n  iconOnly?: boolean;\n  cycle?: boolean;\n}\n\nexport interface ActionSwapTextProps {\n  value: string;\n  children: ReactNode;\n  animation?: ActionSwapAnimation;\n  className?: string;\n}\n\nexport interface ActionSwapIconProps {\n  value: string;\n  children: ReactNode;\n  animation?: ActionSwapAnimation;\n  className?: string;\n}\n\nconst BLUR_TRANSITION = { duration: 0.2, ease: \"easeInOut\" } as const;\nconst ROLL_TRANSITION = SPRING_SWAP;\nconst ROLL_EXIT_TRANSITION = { duration: 0.14, ease: EASE_OUT } as const;\nconst SWAP_BLUR = \"blur(8px)\";\nconst ROLL_BLUR = \"blur(3px)\";\n\n// Cascade rolls the label one letter at a time, left to right. The leaving\n// and landing strings overlap as independent layers (no shared cells), so\n// proportional glyph widths never jitter. Exits cascade at half the enter\n// stagger so the tail of the old label lingers briefly.\nconst CASCADE_STAGGER = 0.025;\n\nconst CASCADE_LETTER_VARIANTS: Variants = {\n  initial: { opacity: 0, y: \"105%\", filter: ROLL_BLUR },\n  animate: (delay: number = 0) => ({\n    opacity: 1,\n    y: \"0%\",\n    filter: \"blur(0px)\",\n    transition: {\n      ...SPRING_SWAP,\n      delay,\n      filter: { duration: 0.18, ease: EASE_OUT, delay },\n    },\n  }),\n  exit: (delay: number = 0) => ({\n    opacity: 0,\n    y: \"-105%\",\n    filter: ROLL_BLUR,\n    transition: { duration: 0.16, ease: EASE_OUT, delay: delay * 0.5 },\n  }),\n};\n\nconst TEXT_VARIANTS: Record<CoreAnimation, Variants> = {\n  blur: {\n    initial: { opacity: 0, scale: 0.94, filter: SWAP_BLUR },\n    animate: {\n      opacity: 1,\n      scale: 1,\n      filter: \"blur(0px)\",\n      transition: BLUR_TRANSITION,\n    },\n    exit: {\n      opacity: 0,\n      scale: 0.94,\n      filter: SWAP_BLUR,\n      transition: BLUR_TRANSITION,\n    },\n  },\n  roll: {\n    initial: { opacity: 0, y: \"90%\", filter: ROLL_BLUR },\n    animate: {\n      opacity: 1,\n      y: \"0%\",\n      filter: \"blur(0px)\",\n      transition: {\n        ...ROLL_TRANSITION,\n        filter: { duration: 0.18, ease: EASE_OUT },\n      },\n    },\n    exit: {\n      opacity: 0,\n      y: \"-90%\",\n      filter: ROLL_BLUR,\n      transition: ROLL_EXIT_TRANSITION,\n    },\n  },\n};\n\nconst ICON_VARIANTS: Record<CoreAnimation, Variants> = {\n  blur: {\n    initial: { opacity: 0, scale: 0.25, filter: SWAP_BLUR },\n    animate: {\n      opacity: 1,\n      scale: 1,\n      filter: \"blur(0px)\",\n      transition: BLUR_TRANSITION,\n    },\n    exit: {\n      opacity: 0,\n      scale: 0.25,\n      filter: SWAP_BLUR,\n      transition: BLUR_TRANSITION,\n    },\n  },\n  roll: {\n    initial: { opacity: 0, y: 12, filter: ROLL_BLUR },\n    animate: {\n      opacity: 1,\n      y: 0,\n      filter: \"blur(0px)\",\n      transition: {\n        ...ROLL_TRANSITION,\n        filter: { duration: 0.18, ease: EASE_OUT },\n      },\n    },\n    exit: {\n      opacity: 0,\n      y: -12,\n      filter: ROLL_BLUR,\n      transition: ROLL_EXIT_TRANSITION,\n    },\n  },\n};\n\nconst VARIANT_CLASS: Record<ActionSwapButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground hover:bg-primary/90\",\n  secondary: \"border border-border bg-card text-foreground hover:border-border\",\n  outline:\n    \"border border-border bg-transparent text-foreground hover:bg-primary/5\",\n  ghost: \"text-muted-foreground hover:bg-primary/5 hover:text-foreground\",\n};\n\nconst SIZE_CLASS: Record<ActionSwapButtonSize, string> = {\n  sm: \"h-8 gap-1.5 rounded-full px-3 text-xs\",\n  md: \"h-10 gap-2 rounded-full px-4 text-sm\",\n  lg: \"h-12 gap-2.5 rounded-full px-5 text-base\",\n  icon: \"h-10 w-10 rounded-full\",\n};\n\nexport function ActionSwapText({\n  value,\n  children,\n  animation = \"blur\",\n  className,\n}: ActionSwapTextProps) {\n  const reduce = useReducedMotion();\n  const measureRef = useRef<HTMLSpanElement>(null);\n  const [width, setWidth] = useState<number>();\n\n  useLayoutEffect(() => {\n    const nextWidth = measureRef.current?.offsetWidth;\n    if (!nextWidth) return;\n    setWidth((currentWidth) =>\n      currentWidth === nextWidth ? currentWidth : nextWidth,\n    );\n  });\n\n  // Cascade needs a plain string to split into letters; non-string content\n  // and reduced motion fall back to the closest single-element animation.\n  const label = typeof children === \"string\" ? children : null;\n  const cascade = animation === \"cascade\" && label !== null && !reduce;\n  const coreAnimation: CoreAnimation =\n    animation === \"cascade\" ? \"roll\" : animation;\n\n  return (\n    <span\n      className={cn(\n        \"relative inline-block overflow-hidden whitespace-nowrap align-bottom\",\n        className,\n      )}\n      style={{\n        width,\n        transition: reduce ? undefined : `width 220ms ${EASE_OUT_CSS}`,\n      }}\n    >\n      <span\n        ref={measureRef}\n        aria-hidden\n        className=\"invisible inline-block whitespace-nowrap\"\n      >\n        {children}\n      </span>\n      {cascade ? (\n        <>\n          {/* Letters are decorative fragments; readers get the whole label. */}\n          <span className=\"sr-only\">{label}</span>\n          <AnimatePresence initial={false}>\n            <motion.span\n              key={`cascade-${value}`}\n              aria-hidden\n              initial=\"initial\"\n              animate=\"animate\"\n              exit=\"exit\"\n              className=\"absolute left-0 top-0 inline-block whitespace-pre\"\n            >\n              {label.split(\"\").map((char, i) => (\n                <motion.span\n                  // biome-ignore lint/suspicious/noArrayIndexKey: position is the slot identity — the letter at a position is exactly what rolls.\n                  key={i}\n                  custom={i * CASCADE_STAGGER}\n                  variants={CASCADE_LETTER_VARIANTS}\n                  className=\"inline-block whitespace-pre will-change-[opacity,filter,transform]\"\n                >\n                  {char}\n                </motion.span>\n              ))}\n            </motion.span>\n          </AnimatePresence>\n        </>\n      ) : (\n        <AnimatePresence initial={false}>\n          <motion.span\n            key={`${animation}-${value}`}\n            variants={TEXT_VARIANTS[coreAnimation]}\n            initial={reduce ? false : \"initial\"}\n            animate={\n              reduce\n                ? { opacity: 1, filter: \"blur(0px)\", scale: 1, y: 0 }\n                : \"animate\"\n            }\n            exit={reduce ? undefined : \"exit\"}\n            className=\"absolute left-0 top-0 inline-block will-change-[opacity,filter,transform]\"\n          >\n            {children}\n          </motion.span>\n        </AnimatePresence>\n      )}\n    </span>\n  );\n}\n\nexport function ActionSwapIcon({\n  value,\n  children,\n  animation = \"blur\",\n  className,\n}: ActionSwapIconProps) {\n  const reduce = useReducedMotion();\n  // Icons are single elements — cascade maps to its closest motion, roll.\n  const coreAnimation: CoreAnimation =\n    animation === \"cascade\" ? \"roll\" : animation;\n\n  return (\n    <span\n      className={cn(\n        \"relative inline-grid shrink-0 place-items-center overflow-hidden\",\n        className,\n      )}\n    >\n      <AnimatePresence mode=\"popLayout\" initial={false}>\n        <motion.span\n          key={`${animation}-${value}`}\n          aria-hidden\n          variants={ICON_VARIANTS[coreAnimation]}\n          initial={reduce ? false : \"initial\"}\n          animate={\n            reduce\n              ? { opacity: 1, filter: \"blur(0px)\", scale: 1, y: 0 }\n              : \"animate\"\n          }\n          exit={reduce ? undefined : \"exit\"}\n          className=\"col-start-1 row-start-1 inline-flex items-center justify-center will-change-[opacity,filter,transform]\"\n        >\n          {children}\n        </motion.span>\n      </AnimatePresence>\n    </span>\n  );\n}\n\nexport function ActionSwapButton({\n  items,\n  value,\n  defaultValue,\n  onValueChange,\n  variant = \"secondary\",\n  size = \"md\",\n  animation = \"blur\",\n  iconOnly = size === \"icon\",\n  cycle = true,\n  className,\n  disabled,\n  onClick,\n  ...rest\n}: ActionSwapButtonProps) {\n  const reduce = useReducedMotion();\n  const [internalValue, setInternalValue] = useState(\n    defaultValue ?? items[0]?.id,\n  );\n  const currentValue = value ?? internalValue;\n  const activeIndex = Math.max(\n    0,\n    items.findIndex((item) => item.id === currentValue),\n  );\n  const activeItem = items[activeIndex] ?? items[0];\n  const hasIcon = items.some((item) => item.icon);\n  const nextItem =\n    cycle && items.length > 0\n      ? items[(activeIndex + 1) % items.length]\n      : undefined;\n\n  if (!activeItem) return null;\n\n  const accessibleLabel =\n    activeItem.ariaLabel ??\n    (iconOnly && typeof activeItem.label === \"string\"\n      ? activeItem.label\n      : undefined);\n\n  return (\n    <motion.button\n      type=\"button\"\n      disabled={disabled}\n      whileTap={reduce || disabled ? undefined : { scale: 0.97 }}\n      transition={SPRING_PRESS}\n      className={cn(\n        \"inline-flex items-center justify-center overflow-hidden font-medium transition-colors\",\n        \"disabled:pointer-events-none disabled:opacity-50\",\n        VARIANT_CLASS[variant],\n        SIZE_CLASS[size],\n        className,\n      )}\n      aria-label={accessibleLabel}\n      onClick={(event) => {\n        onClick?.(event);\n        if (event.defaultPrevented || disabled || !cycle || !nextItem) return;\n        if (value === undefined) setInternalValue(nextItem.id);\n        onValueChange?.(nextItem.id, nextItem);\n      }}\n      {...rest}\n    >\n      {hasIcon ? (\n        <ActionSwapIcon\n          value={activeItem.id}\n          animation={animation}\n          className=\"h-4 w-4\"\n        >\n          {activeItem.icon ?? null}\n        </ActionSwapIcon>\n      ) : null}\n      {!iconOnly ? (\n        <ActionSwapText value={activeItem.id} animation={animation}>\n          {activeItem.label}\n        </ActionSwapText>\n      ) : null}\n    </motion.button>\n  );\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/beui-action-swap.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/hooks/taste-blocks/beui/use-hover-capable.ts",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\n/**\n * Returns true only on devices that have a true hover (mouse / trackpad).\n * Touch devices fire phantom `:hover` on tap that sticks until tap-elsewhere\n * — gate hover-only effects (scale lifts, magnetic pulls) behind this.\n */\nexport function useHoverCapable() {\n  const [canHover, setCanHover] = useState(false);\n\n  useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(hover: hover) and (pointer: fine)\");\n    const update = () => setCanHover(mq.matches);\n    update();\n    mq.addEventListener?.(\"change\", update);\n    return () => mq.removeEventListener?.(\"change\", update);\n  }, []);\n\n  return canHover;\n}\n",
+      "type": "registry:hook",
+      "target": "@hooks/taste-blocks/beui/use-hover-capable.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "notifications",
+        "stack",
+        "focus",
+        "touch",
+        "reduced-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-notification-stack.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-notification-stack/notification-stack.tsx",
+            "upstreamPath": "components/motion/notification-stack.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/notification-stack.tsx",
+            "upstreamSha256": "sha256:50bc63db48d1047cd6af9677c33761f48b9e03015160abf0b9b3d8287352f0e0",
+            "contentSha256": "sha256:a9638a283d715adb2af3cd0f0c03bdd2d3c67802767b01194580b2428b370e00",
+            "changes": [
+              "Changed project aliases to bundled relative imports and renamed the bundled action-swap support import.",
+              "Made the expanded accessible label describe collapse when no view-all action exists."
+            ]
+          },
+          {
+            "shippedPath": "components/beui-notification-stack/beui-action-swap.tsx",
+            "upstreamPath": "components/motion/action-swap.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/action-swap.tsx",
+            "upstreamSha256": "sha256:a511e69114465af7671072731dbe9aa613941d2b853d0eca91213c91c57d0199",
+            "contentSha256": "sha256:28456c8707ea434dcbca7bea83d140591fcbbae5d82db2fd3c8ddd0ae6f4731a",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Normalized source formatting without changing the action-swap runtime.",
+              "Moved roll and cascade filter interpolation off springs to prevent invalid negative blur values."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "hooks/taste-blocks/beui/use-hover-capable.ts",
+            "upstreamPath": "lib/hooks/use-hover-capable.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/hooks/use-hover-capable.ts",
+            "upstreamSha256": "sha256:b5b9397bfa03859e04673c8f1817cf13ff55d2a9688955d6e0459ae70db90d06",
+            "contentSha256": "sha256:b5b9397bfa03859e04673c8f1817cf13ff55d2a9688955d6e0459ae70db90d06",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/notification-stack.tsx, components/motion/action-swap.tsx, lib/ease.ts, lib/hooks/use-hover-capable.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-notification-stack/notification-stack.tsx",
+          "change": "Repointed and renamed bundled support imports, normalized support formatting, and corrected the expanded label.",
+          "reason": "Install the full copied dependency closure without collisions and keep the announced action consistent with runtime behavior."
+        },
+        {
+          "shippedPath": "components/beui-notification-stack/beui-action-swap.tsx",
+          "change": "Changed project aliases to bundled relative imports. Normalized source formatting and bounded roll and cascade filter interpolation.",
+          "reason": "Keep the copied dependency closure portable at its registry installation targets."
+        }
+      ],
+      "dedupe": {
+        "family": "expandable-notification-stack",
+        "sourceHash": "sha256:1856896ffab4de585d318ca63edf791995398de6818a27418ba187027211b31f",
+        "contentHash": "sha256:9c2e118f9beb50c72bc8fe24e0bbe63527ddcc890e99aa8db966cd8fc0d8d024",
+        "structureHash": "sha256:b06a07e2ca32f3322216074c657308b7adc4d45d50cc2d6133b03b8bb36c5895"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

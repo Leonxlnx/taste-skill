@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "extend-document-viewer-sidebar",
+  "title": "Document Viewer Sidebar",
+  "author": "Extend UI contributors",
+  "description": "Switches a thumbnail rail between inline and overlay modes from measured viewer width while preserving open and closed states.",
+  "dependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/extend-ui/components/extend-ui/document-viewer-sidebar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst INLINE_THUMBNAIL_SIDEBAR_MIN_WIDTH = 768\n\nexport function useElementWidth<TElement extends HTMLElement>() {\n  const ref = React.useRef<TElement | null>(null)\n  const [width, setWidth] = React.useState(0)\n\n  React.useLayoutEffect(() => {\n    const element = ref.current\n    if (!element) return\n\n    const updateWidth = () => {\n      const nextWidth = element.getBoundingClientRect().width\n\n      // Keep the last real measurement while the element is hidden or\n      // detached (keep-alive preview pools, display:none ancestors): a\n      // zero-width pass would re-lay-out the viewer for nothing, clearing\n      // its rendered canvases, and force a blank-then-repaint flash when\n      // the element comes back at its old size.\n      if (nextWidth === 0) return\n      setWidth(nextWidth)\n    }\n\n    updateWidth()\n\n    const observer = new ResizeObserver(updateWidth)\n    observer.observe(element)\n\n    return () => observer.disconnect()\n  }, [])\n\n  return [ref, width] as const\n}\n\nexport function useInlineThumbnailSidebar(width: number) {\n  return width >= INLINE_THUMBNAIL_SIDEBAR_MIN_WIDTH\n}\n\nexport function DocumentViewerThumbnailSidebar({\n  children,\n  className,\n  closedInlineClassName = \"-ms-40\",\n  inline,\n  open,\n  widthClassName = \"w-40\",\n}: {\n  children: React.ReactNode\n  className?: string\n  closedInlineClassName?: string\n  inline: boolean\n  open: boolean\n  widthClassName?: string\n}) {\n  const [transitionsReady, setTransitionsReady] = React.useState(false)\n  const shouldAnimateSidebar = transitionsReady && open\n\n  React.useEffect(() => {\n    let secondFrameId = 0\n    const firstFrameId = window.requestAnimationFrame(() => {\n      secondFrameId = window.requestAnimationFrame(() => {\n        setTransitionsReady(true)\n      })\n    })\n\n    return () => {\n      window.cancelAnimationFrame(firstFrameId)\n      window.cancelAnimationFrame(secondFrameId)\n    }\n  }, [])\n\n  return (\n    <aside\n      data-document-thumbnail-sidebar=\"\"\n      data-sidebar-mode={inline ? \"inline\" : \"overlay\"}\n      data-sidebar-open={open ? \"true\" : \"false\"}\n      className={cn(\n        \"absolute inset-y-0 start-0 z-30 shrink-0 overflow-hidden border-e bg-sidebar shadow-lg\",\n        widthClassName,\n        shouldAnimateSidebar\n          ? \"transition-[translate,margin-inline-start,border-color] duration-200 ease-out motion-reduce:transition-none\"\n          : \"transition-none\",\n        inline && \"relative z-auto translate-x-0 shadow-none\",\n        open\n          ? \"ms-0 translate-x-0\"\n          : inline\n            ? cn(\"pointer-events-auto border-e-0\", closedInlineClassName)\n            : \"pointer-events-none -translate-x-full border-e-0 rtl:translate-x-full\",\n        className\n      )}\n    >\n      {children}\n    </aside>\n  )\n}\n\nexport function DocumentViewerSidebarSkeleton({\n  className,\n  inline,\n}: {\n  className?: string\n  inline: boolean\n}) {\n  if (!inline) return null\n\n  return (\n    <div className={cn(\"w-40 shrink-0 border-e bg-sidebar p-4\", className)}>\n      <div className=\"mx-auto h-28 w-20 overflow-hidden rounded-md bg-background shadow-xs\">\n        <div className=\"h-full animate-pulse bg-muted\" />\n      </div>\n      <div className=\"mx-auto mt-3 h-3 w-10 rounded-full bg-muted\" />\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/extend-ui/document-viewer-sidebar.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "documents",
+        "thumbnail-navigation",
+        "responsive",
+        "sidebar"
+      ],
+      "renderer": "dom",
+      "preview": "previews/extend-document-viewer-sidebar.tsx",
+      "source": {
+        "project": "Extend UI",
+        "repository": "https://github.com/extend-hq/ui",
+        "revision": "6d6d33df18ec39455df00f6315f16d2cfd89563b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/extend-ui/document-viewer-sidebar.tsx",
+            "upstreamPath": "apps/v4/components/ui/document-viewer-sidebar.tsx",
+            "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/apps/v4/components/ui/document-viewer-sidebar.tsx",
+            "upstreamSha256": "sha256:7a15e357e81e0e90480da6584936ef6ea6ad7f0ce2c82c7cab8494b753f38f65",
+            "contentSha256": "sha256:78a76320b6b12d695d362218438567ce4225f9ed7bcab9ad5acd4d686133257e",
+            "changes": [
+              "Replaced physical left, margin, and border utilities with logical equivalents, mirrored the overlay exit direction in RTL, and disabled the entrance transition for reduced motion."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/components/ui/document-viewer-sidebar.tsx",
+        "copyright": [
+          "Copyright (c) 2026 CrowdView Inc, dba Extend",
+          "Portions Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/LICENSE.md",
+          "sha256": "sha256:9f05510549c7c2ad283764dfe0e527278e5fb075fb750a9f1dd148f3763269e5",
+          "localPath": "registry/sources/extend-ui/LICENSE"
+        },
+        "notices": [
+          "Direct dependency licenses are recorded in registry/sources/extend-ui/DEPENDENCIES.md."
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/extend-ui/document-viewer-sidebar.tsx",
+          "change": "Replaced physical left, margin, and border utilities with logical equivalents, mirrored the overlay exit direction in RTL, and disabled the entrance transition for reduced motion.",
+          "reason": "Make the source-backed sidebar directionally correct and respect the user's motion preference without changing its responsive behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "responsive-document-thumbnail-sidebar",
+        "sourceHash": "sha256:3a9e0ff74b40caa2b52fc05903b8239e660541a0fbf5a36264ef09e28518019b",
+        "contentHash": "sha256:2b939efa4c67b62f82fc1db192cf99f80e23c732e9fb78dd914a122093e5ceb7",
+        "structureHash": "sha256:3142436f8b7af2b42b7ba95e2a62990dde2f8d8ddb47eb3549d90e0de9f5ebf5"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

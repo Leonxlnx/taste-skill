@@ -1,0 +1,139 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-message-scroller",
+  "title": "Message Scroller",
+  "author": "shadcn",
+  "description": "Keeps a message viewport anchored while preserving manual scroll position.",
+  "dependencies": [
+    "@shadcn/react@0.2.1",
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.474.0",
+    "radix-ui@1.4.3",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/message-scroller.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport {\n  MessageScroller as MessageScrollerPrimitive,\n  useMessageScroller,\n  useMessageScrollerScrollable,\n  useMessageScrollerVisibility,\n} from \"@shadcn/react/message-scroller\"\n\nimport { cn } from \"../lib/utils\"\nimport { Button } from \"./button\"\nimport { ArrowDownIcon } from \"lucide-react\"\n\nfunction MessageScrollerProvider(\n  props: React.ComponentProps<typeof MessageScrollerPrimitive.Provider>\n) {\n  return <MessageScrollerPrimitive.Provider {...props} />\n}\n\nfunction MessageScroller({\n  className,\n  ...props\n}: React.ComponentProps<typeof MessageScrollerPrimitive.Root>) {\n  return (\n    <MessageScrollerPrimitive.Root\n      data-slot=\"message-scroller\"\n      className={cn(\n        \"group/message-scroller relative flex size-full min-h-0 flex-col overflow-hidden\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageScrollerViewport({\n  className,\n  ...props\n}: React.ComponentProps<typeof MessageScrollerPrimitive.Viewport>) {\n  return (\n    <MessageScrollerPrimitive.Viewport\n      data-slot=\"message-scroller-viewport\"\n      className={cn(\n        \"size-full min-h-0 min-w-0 scroll-fade-b scrollbar-thin scrollbar-gutter-stable overflow-y-auto overscroll-contain contain-content data-autoscrolling:scrollbar-thumb-transparent data-autoscrolling:scrollbar-track-transparent motion-reduce:animate-none\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageScrollerContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof MessageScrollerPrimitive.Content>) {\n  return (\n    <MessageScrollerPrimitive.Content\n      data-slot=\"message-scroller-content\"\n      className={cn(\"flex h-max min-h-full flex-col gap-6\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction MessageScrollerItem({\n  className,\n  scrollAnchor = false,\n  ...props\n}: React.ComponentProps<typeof MessageScrollerPrimitive.Item>) {\n  return (\n    <MessageScrollerPrimitive.Item\n      data-slot=\"message-scroller-item\"\n      scrollAnchor={scrollAnchor}\n      className={cn(\n        \"min-w-0 shrink-0 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction MessageScrollerButton({\n  direction = \"end\",\n  className,\n  children,\n  render,\n  variant = \"secondary\",\n  size = \"icon-sm\",\n  ...props\n}: React.ComponentProps<typeof MessageScrollerPrimitive.Button> &\n  Pick<React.ComponentProps<typeof Button>, \"variant\" | \"size\">) {\n  return (\n    <MessageScrollerPrimitive.Button\n      data-slot=\"message-scroller-button\"\n      data-direction={direction}\n      data-variant={variant}\n      data-size={size}\n      direction={direction}\n      className={cn(\n        \"absolute inset-s-1/2 -translate-x-1/2 rtl:translate-x-1/2 border-border bg-background text-foreground transition-[translate,scale,opacity] duration-200 hover:bg-muted hover:text-foreground data-[active=false]:pointer-events-none data-[active=false]:scale-95 data-[active=false]:opacity-0 data-[active=false]:duration-400 data-[active=false]:ease-[cubic-bezier(0.7,0,0.84,0)] data-[active=true]:translate-y-0 data-[active=true]:scale-100 data-[active=true]:opacity-100 data-[active=true]:ease-[cubic-bezier(0.23,1,0.32,1)] data-[direction=end]:bottom-4 data-[direction=end]:data-[active=false]:translate-y-full data-[direction=start]:top-4 data-[direction=start]:data-[active=false]:-translate-y-full rtl:translate-x-1/2 data-[direction=start]:[&_svg]:rotate-180 motion-reduce:transition-none\",\n        className\n      )}\n      render={render ?? <Button variant={variant} size={size} />}\n      {...props}\n    >\n      {children ?? (\n        <>\n          <ArrowDownIcon\n          />\n          <span className=\"sr-only\">\n            {direction === \"end\" ? \"Scroll to end\" : \"Scroll to start\"}\n          </span>\n        </>\n      )}\n    </MessageScrollerPrimitive.Button>\n  )\n}\n\nexport {\n  MessageScrollerProvider,\n  MessageScroller,\n  MessageScrollerViewport,\n  MessageScrollerContent,\n  MessageScrollerItem,\n  MessageScrollerButton,\n  useMessageScroller,\n  useMessageScrollerScrollable,\n  useMessageScrollerVisibility,\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/message-scroller.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/button.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none motion-reduce:transition-none motion-reduce:transform-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/80\",\n        outline:\n          \"border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground\",\n        ghost:\n          \"hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50\",\n        destructive:\n          \"bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean\n  }) {\n  const Comp = asChild ? Slot.Root : \"button\"\n\n  return (\n    <Comp\n      data-slot=\"button\"\n      data-variant={variant}\n      data-size={size}\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "message",
+        "scroll-anchor",
+        "viewport"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-message-scroller.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/radix-nova/message-scroller.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/message-scroller.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/message-scroller.tsx",
+            "upstreamSha256": "sha256:996d6107ddd07261b76aab45faf6497c789090cb29e47257df6c133c3b35fab3",
+            "contentSha256": "sha256:95e514179dc04eeaee799d4d3675429ac2cb2d61114e35033eb89780e8d4ccae",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports.",
+              "Disabled nonessential animation and transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/radix-nova/button.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+            "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+            "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports where present.",
+              "Disabled transform transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/registry/bases/radix/ui/message-scroller.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/radix-nova/message-scroller.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+          "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+        },
+        {
+          "shippedPath": "components/radix-nova/button.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+          "reason": "Bundle the exact support closure required by the installed component."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+          "reason": "Bundle the exact support closure required by the installed component."
+        }
+      ],
+      "dedupe": {
+        "family": "anchored-message-scroller",
+        "sourceHash": "sha256:01bfc279022a2fbdfc43025a6ace2e9f29708ba6cbc3e2cd6775f1a897dc323a",
+        "contentHash": "sha256:3525645f22948d58e8d3427473a93c0b1fed5aba04a337ff2677d0591c65260b",
+        "structureHash": "sha256:a13b2c31d8228b2c305da47816178f66fde8990bd4eb67dc7be7315792f94ba8"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

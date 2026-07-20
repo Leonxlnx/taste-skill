@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-list-chevrons-up-down",
+  "title": "Animated List Chevrons Up Down Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated list chevrons up down SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-list-chevrons-up-down/list-chevrons-up-down-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface ListChevronsUpDownIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface ListChevronsUpDownIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst ListChevronsUpDownIcon = forwardRef<\n ListChevronsUpDownIconHandle,\n ListChevronsUpDownIconProps\n>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 0.9,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () =>\n     !isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n    stopAnimation: () => controls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) controls.start(\"animate\");\n    else onMouseEnter?.(e as any);\n   },\n   [controls, reduced, isAnimated, onMouseEnter],\n  );\n\n  const handleLeave = useCallback(\n   (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     controls.start(\"normal\");\n    } else {\n     onMouseLeave?.(e);\n    }\n   },\n   [controls, onMouseLeave],\n  );\n\n  const lineVariant: Variants = {\n   normal: { x: 0, opacity: 1 },\n   animate: {\n    x: [0, -2, 2, 0],\n    opacity: [1, 0.9, 0.9, 1],\n    transition: {\n     duration: 0.75 * duration,\n     ease: \"easeInOut\",\n     repeat: 0,\n    },\n   },\n  };\n\n  const topChevron: Variants = {\n   normal: { y: 0, opacity: 1, rotate: 0 },\n   animate: {\n    y: [0, -4, -2, 0],\n    rotate: [0, -4, -2, 0],\n    opacity: [1, 0.9, 0.95, 1],\n    transition: {\n     duration: 0.9 * duration,\n     ease: \"easeOut\",\n     repeat: 0,\n     delay: 0.04,\n    },\n   },\n  };\n\n  const bottomChevron: Variants = {\n   normal: { y: 0, opacity: 1, rotate: 0 },\n   animate: {\n    y: [0, 4, 2, 0],\n    rotate: [0, 4, 2, 0],\n    opacity: [1, 0.9, 0.95, 1],\n    transition: {\n     duration: 0.9 * duration,\n     ease: \"easeOut\",\n     repeat: 0,\n     delay: 0.12,\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth={2}\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      animate={controls}\n      initial=\"normal\"\n     >\n      <m.path d=\"M3 5h8\" variants={lineVariant} stroke=\"currentColor\" />\n      <m.path\n       d=\"M3 12h8\"\n       variants={lineVariant}\n       stroke=\"currentColor\"\n       transition={{ delay: 0.06 }}\n      />\n      <m.path\n       d=\"M3 19h8\"\n       variants={lineVariant}\n       stroke=\"currentColor\"\n       transition={{ delay: 0.12 }}\n      />\n      <m.path d=\"m15 8 3-3 3 3\" variants={topChevron} stroke=\"currentColor\" />\n      <m.path\n       d=\"m15 16 3 3 3-3\"\n       variants={bottomChevron}\n       stroke=\"currentColor\"\n      />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nListChevronsUpDownIcon.displayName = \"ListChevronsUpDownIcon\";\nexport { ListChevronsUpDownIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-list-chevrons-up-down.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "list-chevrons-up-down",
+        "animated",
+        "icon",
+        "motion",
+        "list",
+        "options",
+        "expand",
+        "collapse",
+        "accordion",
+        "menu"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-list-chevrons-up-down.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-list-chevrons-up-down/list-chevrons-up-down-icon.tsx",
+            "upstreamPath": "icons/lucide/list-chevrons-up-down-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/list-chevrons-up-down-icon.tsx",
+            "upstreamSha256": "sha256:561b512eb65eef969bac0f675c1a4135d3b46f17be22a1a9f1239bdcb1d8b21f",
+            "contentSha256": "sha256:63761f06bd74fe78db2e7aeddac16cbc64c474aa1ed61c543156da569ec3ca10",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/list-chevrons-up-down-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-list-chevrons-up-down/list-chevrons-up-down-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-list-chevrons-up-down-icon",
+        "sourceHash": "sha256:589dc9bc8ae95683d630389c8c1646b91897dccb46d7ca719486830f10b9a899",
+        "contentHash": "sha256:2c85c39d70a357ed29ad8f7f7a75d2964e726f482c47a1dee4542b15e5bb4380",
+        "structureHash": "sha256:428a54f1bfc47627c33b527b9e2822ff38d0ea442ed5778639d88625f82ca6d6",
+        "glyph": {
+          "inventoryName": "list-chevrons-up-down",
+          "canonicalName": "list-chevrons-up-down",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

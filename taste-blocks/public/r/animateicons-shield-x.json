@@ -1,0 +1,149 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-shield-x",
+  "title": "Animated Shield X Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated shield x SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-shield-x/shield-x-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface ShieldXIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface ShieldXIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst ShieldXIcon = forwardRef<ShieldXIconHandle, ShieldXIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const shieldControls = useAnimation();\n  const x1Controls = useAnimation();\n  const x2Controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () => {\n     if (!isAnimated || reduced) {\n      shieldControls.start(\"normal\");\n      x1Controls.start(\"normal\");\n      x2Controls.start(\"normal\");\n     } else {\n      shieldControls.start(\"animate\");\n      x1Controls.start(\"animate\");\n      x2Controls.start(\"animate\");\n     }\n    },\n    stopAnimation: () => {\n     shieldControls.start(\"normal\");\n     x1Controls.start(\"normal\");\n     x2Controls.start(\"normal\");\n    },\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) {\n     shieldControls.start(\"animate\");\n     x1Controls.start(\"animate\");\n     x2Controls.start(\"animate\");\n    } else onMouseEnter?.(e as any);\n   },\n   [shieldControls, x1Controls, x2Controls, reduced, onMouseEnter, isAnimated],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) {\n     shieldControls.start(\"normal\");\n     x1Controls.start(\"normal\");\n     x2Controls.start(\"normal\");\n    } else onMouseLeave?.(e as any);\n   },\n   [shieldControls, x1Controls, x2Controls, onMouseLeave],\n  );\n\n  const shieldVariants: Variants = {\n   normal: { strokeDashoffset: 0, scale: 1, rotate: 0 },\n   animate: {\n    strokeDashoffset: [300, 24, 0],\n    scale: [1, 0.98, 1.04, 1],\n    rotate: [0, -2, 1, 0],\n    transition: {\n     duration: 1.0 * duration,\n     ease: [0.18, 0.85, 0.25, 1],\n     times: [0, 0.35, 0.75, 1],\n    },\n   },\n  };\n\n  const x1Variants: Variants = {\n   normal: { strokeDashoffset: 0, opacity: 1 },\n   animate: {\n    strokeDashoffset: [40, 0],\n    opacity: [0, 1],\n    transition: {\n     duration: 0.5 * duration,\n     ease: [0.22, 0.9, 0.28, 1],\n     delay: 0.28,\n    },\n   },\n  };\n\n  const x2Variants: Variants = {\n   normal: { strokeDashoffset: 0, opacity: 1 },\n   animate: {\n    strokeDashoffset: [40, 0],\n    opacity: [0, 1],\n    transition: {\n     duration: 0.5 * duration,\n     ease: [0.22, 0.9, 0.28, 1],\n     delay: 0.36,\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\"inline-flex items-center justify-center\", className)}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n     >\n      <m.path\n       d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"\n       initial=\"normal\"\n       animate={shieldControls}\n       variants={shieldVariants}\n       style={{ strokeDasharray: 300, transformOrigin: \"12px 12px\" }}\n      />\n      <m.path\n       d=\"m14.5 9.5-5 5\"\n       initial=\"normal\"\n       animate={x1Controls}\n       variants={x1Variants}\n       style={{ strokeDasharray: 40, strokeLinecap: \"round\" }}\n      />\n      <m.path\n       d=\"m9.5 9.5 5 5\"\n       initial=\"normal\"\n       animate={x2Controls}\n       variants={x2Variants}\n       style={{ strokeDasharray: 40, strokeLinecap: \"round\" }}\n      />\n     </svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nShieldXIcon.displayName = \"ShieldXIcon\";\nexport { ShieldXIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-shield-x.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "shield-x",
+        "animated",
+        "icon",
+        "motion",
+        "unshielded",
+        "insecure",
+        "unsafe",
+        "vulnerable",
+        "open"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-shield-x.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-shield-x/shield-x-icon.tsx",
+            "upstreamPath": "icons/lucide/shield-x-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/shield-x-icon.tsx",
+            "upstreamSha256": "sha256:68b82ded4f764006fe1cbd76bfd8b041b7ac520082949f5e35b32521d1534499",
+            "contentSha256": "sha256:ac18c0538486ae4ce778616a2b2b886483d6e3774d319301872f31d58ab26d86",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/shield-x-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-shield-x/shield-x-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-shield-x-icon",
+        "sourceHash": "sha256:25a71aff3a923c467d5729e131511d3942533ca043d6af54ebd660208e73c8e7",
+        "contentHash": "sha256:ce0c2b704e58bdf000b866b201dbbc4429eac94278a2dfc771e9a6aa38a630ad",
+        "structureHash": "sha256:ba7ce27bfd25cbe19c0e050ef8c68e2bc155535fd57fd167a1b9e19d81ac37d5",
+        "glyph": {
+          "inventoryName": "shield-x",
+          "canonicalName": "shield-x",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

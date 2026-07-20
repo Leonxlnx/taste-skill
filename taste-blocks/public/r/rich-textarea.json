@@ -1,0 +1,204 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rich-textarea",
+  "title": "Rich Textarea",
+  "author": "inokawa",
+  "description": "Decorates plain text through an assistive-technology-hidden backdrop while a native textarea retains editing and form behavior.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/textarea.tsx",
+      "content": "import {\n  useEffect,\n  useRef,\n  useState,\n  useMemo,\n  useCallback,\n  forwardRef,\n  useImperativeHandle,\n  memo,\n  type RefObject,\n} from \"react\";\nimport type React from \"react\";\nimport rangeAtIndex from \"./vendor/range-at-index.js\";\nimport {\n  hasPercentageUnit,\n  stopPropagation,\n  syncBackdropStyle,\n} from \"./dom.js\";\nimport { type SelectionRange, initSelectionStore } from \"./selection.js\";\nimport { useIsomorphicLayoutEffect } from \"./useIsomorphicLayoutEffect.js\";\nimport type { CaretPosition, Renderer } from \"./types.js\";\nimport { CARET_DETECTOR, refKey } from \"./utils.js\";\nimport { useStatic } from \"./useStatic.js\";\nimport { type TextareaRect, createTextareaObserver } from \"./observer.js\";\n\ntype BackdropHandle = (value: string) => void;\n\nconst Backdrop /*#__PURE__*/ = memo(\n  ({\n    _ref: backdropRef,\n    _handle: handle,\n    _render: render,\n    _width: width,\n  }: {\n    _ref: RefObject<HTMLDivElement | null>;\n    _handle: RefObject<BackdropHandle | null>;\n    _render: Renderer | undefined;\n    _width: number;\n  }) => {\n    const [value, setValue] = useState(\"\");\n\n    useImperativeHandle(handle, () => setValue, []);\n\n    return (\n      <div\n        ref={backdropRef}\n        aria-hidden\n        style={useMemo(\n          (): React.CSSProperties => ({\n            width,\n            transform: \"translate(0px, 0px)\",\n            pointerEvents: \"none\",\n            userSelect: \"none\",\n            msUserSelect: \"none\",\n            WebkitUserSelect: \"none\",\n            // https://github.com/inokawa/rich-textarea/issues/56\n            boxSizing: \"content-box\",\n            // https://stackoverflow.com/questions/2545542/font-size-rendering-inconsistencies-on-an-iphone\n            textSizeAdjust: \"100%\",\n            WebkitTextSizeAdjust: \"100%\",\n            MozTextSizeAdjust: \"100%\",\n          }),\n          [width],\n        )}\n        // Stop propagation of events dispatched on backdrop\n        onClick={stopPropagation}\n        onMouseDown={stopPropagation}\n        onMouseUp={stopPropagation}\n        onMouseOver={stopPropagation}\n        onMouseOut={stopPropagation}\n        onMouseMove={stopPropagation}\n      >\n        {useMemo(() => (render ? render(value) : value), [value, render])}\n        {CARET_DETECTOR}\n      </div>\n    );\n  },\n);\n\n/**\n * Methods of {@link RichTextarea}.\n *\n * All the others not mentioned are proxied to ref of [textarea](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement).\n *\n * | Name              | Type     | Description                                                               |\n * | ----------------- | -------- | ------------------------------------------------------------------------- |\n * | selectionStart    | `number` | Same as original but has handling of composition event                    |\n * | selectionEnd      | `number` | Same as original but has handling of composition event                    |\n * | setRangeText      |          | Same as original but has fallback to `document.execCommand(\"insertText\")` |\n */\nexport interface RichTextareaHandle extends HTMLTextAreaElement {}\n\n/**\n * Props of {@link RichTextarea}.\n *\n * For other props not mentioned below will be passed to [textarea](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement).\n */\nexport interface RichTextareaProps\n  extends Omit<React.ComponentProps<\"textarea\">, \"children\"> {\n  /**\n   *\n   * Render function to create customized view from value.\n   *\n   * This function should return ReactNodes which texts are positioned the same as textarea (see examples for detailed usage).\n   *\n   * On the rendered nodes, currently limited event handlers will work.\n   * - `onClick`\n   * - `onMouseOver`\n   * - `onMouseOut`\n   * - `onMouseMove`\n   * - `onMouseDown`\n   * - `onMouseUp`\n   * @defaultValue undefined\n   */\n  children?: Renderer;\n  /**\n   * If true, textarea height is automatically resized and height of style prop does not work.\n   * Set `maxHeight` to style prop if you need limit.\n   * Set `rows` prop to 1 if you need single-line textarea.\n   * @defaultValue undefined\n   */\n  autoHeight?: boolean;\n  /**\n   * Called when selection in textarea changes. It gives position of caret at the time, which is useful to position menu.\n   * @defaultValue undefined\n   */\n  onSelectionChange?: (pos: CaretPosition) => void;\n}\n\n/**\n * Textarea component with some extra props. See {@link RichTextareaProps} and {@link RichTextareaHandle}.\n */\nexport const RichTextarea = /*#__PURE__*/ forwardRef<\n  RichTextareaHandle,\n  RichTextareaProps\n>(\n  (\n    {\n      children: render,\n      autoHeight,\n      style,\n      onChange,\n      onKeyDown,\n      onSelectionChange,\n      ...props\n    },\n    ref,\n  ): React.ReactElement => {\n    const textAreaRef = useRef<HTMLTextAreaElement>(null);\n    const backdropRef = useRef<HTMLDivElement>(null);\n    const backdropHandle = useRef<BackdropHandle>(null);\n    const [[width, height, hPadding, vPadding], setRect] =\n      useState<TextareaRect>([0, 0, 0, 0]);\n    const [focused, setFocused] = useState<boolean>(false);\n\n    const caretColorRef = useRef(\"\");\n\n    const [[selectionStart, selectionEnd], setSelection] =\n      useState<SelectionRange>([null, null]);\n    const selectionStore = useStatic(() =>\n      initSelectionStore(textAreaRef, setSelection),\n    );\n\n    const totalWidth = width + hPadding;\n    const totalHeight = height + vPadding;\n\n    const isSizeCalculated = !!(totalWidth + totalHeight);\n\n    useImperativeHandle(ref, () => {\n      const el = textAreaRef[refKey]!;\n      const overrides = {\n        get selectionStart() {\n          return selectionStore._getSelectionStart();\n        },\n        get selectionEnd() {\n          return selectionStore._getSelectionEnd();\n        },\n        setRangeText(\n          text: string,\n          start: number,\n          end: number,\n          preserve?: SelectionMode,\n        ) {\n          if (el.setRangeText) {\n            el.setRangeText(text, start, end, preserve);\n          } else {\n            el.focus();\n            el.selectionStart = start;\n            el.selectionEnd = end;\n            document.execCommand(\"insertText\", false, text);\n          }\n          // Invoke onChange to lift state up\n          el.dispatchEvent(new Event(\"input\", { bubbles: true }));\n        },\n      };\n\n      return new Proxy(el, {\n        get(target, prop: keyof HTMLTextAreaElement) {\n          if ((overrides as any)[prop]) {\n            return (overrides as any)[prop];\n          }\n          const value = target[prop];\n          return typeof value === \"function\" ? value.bind(target) : value;\n        },\n        set(target, prop, value) {\n          (target as any)[prop] = value;\n          return true;\n        },\n      }) as HTMLTextAreaElement;\n    }, []);\n\n    useIsomorphicLayoutEffect(() => {\n      const textarea = textAreaRef[refKey];\n      const backdrop = backdropRef[refKey];\n      if (!textarea || !backdrop) return;\n\n      return createTextareaObserver(\n        textarea,\n        backdrop,\n        selectionStore,\n        setRect,\n        setFocused,\n      );\n    }, []);\n\n    useIsomorphicLayoutEffect(() => {\n      const textarea = textAreaRef[refKey];\n      if (!textarea) return;\n      // Sync value on init and change\n      backdropHandle[refKey]!(textarea.value);\n    }, [props.value]);\n\n    useIsomorphicLayoutEffect(() => {\n      // Sync backdrop style\n      const textarea = textAreaRef[refKey];\n      const backdrop = backdropRef[refKey];\n      if (!backdrop || !textarea) return;\n      syncBackdropStyle(textarea, backdrop, caretColorRef, style);\n    }, [style]);\n\n    useEffect(() => {\n      if (selectionStart == null || selectionEnd == null || !onSelectionChange)\n        return;\n      if (!focused) {\n        onSelectionChange({\n          focused: false,\n          selectionStart: selectionStart,\n          selectionEnd: selectionEnd,\n        });\n      } else {\n        const range = rangeAtIndex(\n          backdropRef[refKey]!,\n          selectionStart,\n          selectionStart + 1,\n        ) as Range;\n        const rect = range.getBoundingClientRect();\n        onSelectionChange({\n          focused: true,\n          top: rect.top,\n          left: rect.left,\n          height: rect.height,\n          selectionStart: selectionStart,\n          selectionEnd: selectionEnd,\n        });\n      }\n    }, [focused, selectionStart, selectionEnd]);\n\n    useEffect(() => {\n      const textarea = textAreaRef[refKey];\n      if (!autoHeight || !textarea) return;\n      textarea.style.height = \"auto\";\n      textarea.style.height = `${textarea.scrollHeight}px`;\n    });\n\n    return (\n      <div\n        style={useMemo((): React.CSSProperties => {\n          let w: React.CSSProperties[\"width\"] = totalWidth;\n          let h: React.CSSProperties[\"height\"] = totalHeight;\n          // Prefer prop style to avoid miscalculation https://github.com/inokawa/rich-textarea/issues/39\n          if (style) {\n            if (hasPercentageUnit(style.width)) {\n              w = style.width;\n            }\n            if (hasPercentageUnit(style.height)) {\n              h = style.height;\n            }\n          }\n          return {\n            display: \"inline-block\",\n            position: \"relative\",\n            width: w,\n            height: h,\n          };\n        }, [totalWidth, totalHeight, style])}\n      >\n        <div\n          style={useMemo((): React.CSSProperties => {\n            const s: React.CSSProperties = {\n              position: \"absolute\",\n              overflow: \"hidden\",\n              top: 0,\n              left: 0,\n              width: totalWidth,\n              height: totalHeight,\n            };\n            if (!style) return s;\n            ([\"background\", \"backgroundColor\"] as const).forEach((k) => {\n              if (style[k]) s[k] = style[k] as any;\n            });\n            return s;\n          }, [totalWidth, totalHeight, style])}\n        >\n          <Backdrop\n            _ref={backdropRef}\n            _handle={backdropHandle}\n            _render={render}\n            _width={width}\n          />\n        </div>\n        <textarea\n          {...props}\n          ref={textAreaRef}\n          style={useMemo(\n            () => ({\n              ...style,\n              background: \"transparent\",\n              margin: 0,\n              // Set `position: absolute` to fix bug that sometimes texts disappear in Chrome for unknown reason\n              position: \"absolute\",\n              // And remove it until element size is calculated to avoid layout shift on mount\n              // https://github.com/inokawa/rich-textarea/issues/21\n              ...(!isSizeCalculated && {\n                position: undefined,\n                verticalAlign: \"top\",\n              }),\n            }),\n            [style, isSizeCalculated],\n          )}\n          onChange={useCallback(\n            (e: React.ChangeEvent<HTMLTextAreaElement>) => {\n              backdropHandle[refKey]?.(e.target.value);\n              onChange?.(e);\n            },\n            [onChange],\n          )}\n          onKeyDown={useCallback(\n            (e: React.KeyboardEvent<HTMLTextAreaElement>) => {\n              // Ignore keydown events during IME composition.\n              // Safari sometimes fires keydown event after compositionend so also ignore it.\n              // https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event#ignoring_keydown_during_ime_composition\n              if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) {\n                return;\n              }\n\n              onKeyDown?.(e);\n              selectionStore._updateSeletion();\n            },\n            [onKeyDown],\n          )}\n        />\n      </div>\n    );\n  },\n);\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/rich-textarea/textarea.tsx"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/dom.ts",
+      "content": "import { refKey } from \"./utils.js\";\n\n/**\n * @internal\n */\nexport const isSafari = (): boolean => {\n  if (typeof navigator === \"undefined\") {\n    return false;\n  }\n  const ua = navigator.userAgent.toLowerCase();\n  return ua.indexOf(\"safari\") > -1 && ua.indexOf(\"chrome\") <= -1;\n};\n\nconst TEXT_STYLE_KEYS: (keyof React.CSSProperties)[] = [\n  \"direction\",\n  \"padding\",\n  \"paddingTop\",\n  \"paddingBottom\",\n  \"paddingLeft\",\n  \"paddingRight\",\n  \"margin\",\n  \"marginTop\",\n  \"marginBottom\",\n  \"marginLeft\",\n  \"marginRight\",\n  \"border\",\n  \"borderWidth\",\n  \"borderTopWidth\",\n  \"borderBottomWidth\",\n  \"borderLeftWidth\",\n  \"borderRightWidth\",\n  \"borderStyle\",\n  \"borderTopStyle\",\n  \"borderBottomStyle\",\n  \"borderLeftStyle\",\n  \"borderRightStyle\",\n  \"fontSize\",\n  \"fontFamily\",\n  \"fontStyle\",\n  \"fontVariant\",\n  \"fontWeight\",\n  \"fontStretch\",\n  \"fontSizeAdjust\",\n  \"textAlign\",\n  \"textTransform\",\n  \"textIndent\",\n  \"letterSpacing\",\n  \"wordSpacing\",\n  \"lineHeight\",\n  \"whiteSpace\",\n  \"wordBreak\",\n  \"overflowWrap\",\n  \"tabSize\",\n  \"MozTabSize\",\n];\n\nconst getPropertyValue = (style: CSSStyleDeclaration, key: string): string => {\n  return style.getPropertyValue(key);\n};\nconst setProperty = (\n  style: CSSStyleDeclaration,\n  key: string,\n  value: string\n) => {\n  style.setProperty(key, value);\n};\n\nconst getValueFromStyle = (style: CSSStyleDeclaration, key: string): number => {\n  const value = getPropertyValue(style, key);\n  if (!value) {\n    return 0;\n  } else {\n    return parseInt(value, 10);\n  }\n};\n\n/**\n * @internal\n */\nexport const getStyle = (e: Element) => getComputedStyle(e);\n\n/**\n * @internal\n */\nexport const hasPercentageUnit = (\n  widthOrHeight: React.CSSProperties[\"width\"] | React.CSSProperties[\"height\"]\n): boolean => {\n  return typeof widthOrHeight === \"string\" && widthOrHeight.endsWith(\"%\");\n};\n\n/**\n * @internal\n */\nexport const getVerticalPadding = (style: CSSStyleDeclaration): number => {\n  return (\n    getValueFromStyle(style, \"padding-top\") +\n    getValueFromStyle(style, \"padding-bottom\") +\n    getValueFromStyle(style, \"border-top\") +\n    getValueFromStyle(style, \"border-bottom\")\n  );\n};\n\n/**\n * @internal\n */\nexport const getHorizontalPadding = (style: CSSStyleDeclaration): number => {\n  return (\n    getValueFromStyle(style, \"padding-left\") +\n    getValueFromStyle(style, \"padding-right\") +\n    getValueFromStyle(style, \"border-left\") +\n    getValueFromStyle(style, \"border-right\")\n  );\n};\n\n/**\n * @internal\n */\nexport const getPointedElement = (\n  textarea: HTMLElement,\n  backdrop: HTMLElement,\n  e: MouseEvent\n): HTMLElement | null => {\n  const POINTER_EVENTS = \"pointer-events\";\n\n  const textareaStyle = textarea.style;\n  const backdropStyle = backdrop.style;\n  const prev = getPropertyValue(textareaStyle, POINTER_EVENTS);\n  const backPrev = getPropertyValue(backdropStyle, POINTER_EVENTS);\n  setProperty(textareaStyle, POINTER_EVENTS, \"none\");\n  setProperty(backdropStyle, POINTER_EVENTS, \"auto\");\n\n  const pointed = document.elementFromPoint(\n    e.clientX,\n    e.clientY\n  ) as HTMLElement | null;\n\n  setProperty(textareaStyle, POINTER_EVENTS, prev);\n  setProperty(backdropStyle, POINTER_EVENTS, backPrev);\n\n  if (isInsideBackdrop(pointed, backdrop)) {\n    return pointed;\n  } else {\n    return null;\n  }\n};\n\nconst isInsideBackdrop = (\n  pointed: HTMLElement | null,\n  backdrop: HTMLElement\n): boolean => !!pointed && backdrop !== pointed && backdrop.contains(pointed);\n\nconst dispatchMouseEvent = (\n  target: HTMLElement,\n  type: string,\n  init: MouseEventInit\n) => {\n  target.dispatchEvent(new MouseEvent(type, init));\n};\n\n/**\n * @internal\n */\nexport const dispatchClonedMouseEvent = (\n  pointed: HTMLElement,\n  e: MouseEvent\n) => {\n  dispatchMouseEvent(pointed, e.type, e);\n};\n\n/**\n * @internal\n */\nexport const dispatchMouseMoveEvent = (\n  pointed: HTMLElement | null,\n  prevPointed: HTMLElement | null,\n  e: MouseEvent\n) => {\n  if (pointed) {\n    dispatchClonedMouseEvent(pointed, e);\n  }\n\n  if (prevPointed !== pointed) {\n    dispatchMouseOutEvent(prevPointed, e);\n    if (pointed) {\n      dispatchMouseEvent(pointed, \"mouseover\", e);\n    }\n  }\n};\n\n/**\n * @internal\n */\nexport const dispatchMouseOutEvent = (\n  prevPointed: HTMLElement | null,\n  e: MouseEvent\n) => {\n  if (prevPointed) {\n    dispatchMouseEvent(prevPointed, \"mouseout\", e);\n  }\n};\n\n/**\n * @internal\n */\nexport const stopPropagation = (event: React.MouseEvent) => {\n  event.stopPropagation();\n};\n\n/**\n * @internal\n */\nexport const syncBackdropStyle = (\n  textarea: HTMLElement,\n  backdrop: HTMLElement,\n  caretColorRef: React.MutableRefObject<string>,\n  style?: React.CSSProperties\n) => {\n  const computedTextAreaStyle = getStyle(textarea);\n  const textareaStyle = textarea.style;\n  const backdropStyle = backdrop.style;\n  if (!caretColorRef[refKey]) {\n    caretColorRef[refKey] = getPropertyValue(computedTextAreaStyle, \"color\");\n  }\n\n  TEXT_STYLE_KEYS.forEach((k) => {\n    backdropStyle[k as any] = computedTextAreaStyle[k as any]!;\n  });\n  textareaStyle.color = backdropStyle.borderColor = \"transparent\";\n  textareaStyle.caretColor = style?.caretColor || caretColorRef[refKey];\n};\n\n/**\n * @internal\n */\nexport const listenEvent = <\n  E extends HTMLElement | Document,\n  K extends keyof GlobalEventHandlersEventMap,\n>(\n  el: E,\n  key: K,\n  cb: (this: E, ev: GlobalEventHandlersEventMap[K]) => void\n) => {\n  el.addEventListener(key, cb as EventListenerOrEventListenerObject);\n  return () => {\n    el.removeEventListener(key, cb as EventListenerOrEventListenerObject);\n  };\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/dom.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/observer.ts",
+      "content": "import {\n  dispatchClonedMouseEvent,\n  dispatchMouseMoveEvent,\n  dispatchMouseOutEvent,\n  getHorizontalPadding,\n  getPointedElement,\n  getStyle,\n  getVerticalPadding,\n  listenEvent,\n} from \"./dom.js\";\nimport { type SelectionStore } from \"./selection.js\";\n\n/**\n * @internal\n */\nexport type TextareaRect = [\n  width: number,\n  height: number,\n  hPadding: number,\n  vPadding: number,\n];\n\n/**\n * @internal\n */\nexport const createTextareaObserver = (\n  textarea: HTMLTextAreaElement | HTMLInputElement,\n  backdrop: HTMLDivElement,\n  selectionStore: SelectionStore,\n  onResize: (size: TextareaRect) => void,\n  onFocus: (value: boolean) => void\n) => {\n  let prevPointed: HTMLElement | null = null;\n\n  const observer = new ResizeObserver(([entry]) => {\n    const {\n      contentRect: { width, height },\n      borderBoxSize,\n    } = entry!;\n    if (borderBoxSize && borderBoxSize[0]) {\n      onResize([\n        width,\n        height,\n        borderBoxSize[0].inlineSize - width,\n        borderBoxSize[0].blockSize - height,\n      ]);\n      return;\n    }\n    const style = getStyle(textarea);\n    onResize([\n      width,\n      height,\n      getHorizontalPadding(style),\n      getVerticalPadding(style),\n    ]);\n  });\n\n  const cleanUpOnFocus = listenEvent(textarea, \"focus\", () => {\n    onFocus(true);\n  });\n  const cleanUpOnBlur = listenEvent(textarea, \"blur\", () => {\n    onFocus(false);\n  });\n  const cleanUpOnScroll = listenEvent(textarea, \"scroll\", () => {\n    const { scrollTop, scrollLeft } = textarea;\n    backdrop.style.transform = `translate(${-scrollLeft}px, ${-scrollTop}px)`;\n  });\n  const cleanUpOnMouseDown = listenEvent(textarea, \"mousedown\", (e) => {\n    selectionStore._updateSeletion();\n    const cleanup = listenEvent(document, \"mouseup\", () => {\n      selectionStore._updateSeletion();\n      cleanup();\n    });\n    const pointed = getPointedElement(textarea, backdrop, e);\n    if (pointed) {\n      dispatchClonedMouseEvent(pointed, e);\n    }\n  });\n  const cleanUpOnMouseUp = listenEvent(textarea, \"mouseup\", (e) => {\n    const pointed = getPointedElement(textarea, backdrop, e);\n    if (pointed) {\n      dispatchClonedMouseEvent(pointed, e);\n    }\n  });\n  const cleanUpOnMouseMove = listenEvent(textarea, \"mousemove\", (e) => {\n    const p = getPointedElement(textarea, backdrop, e);\n    dispatchMouseMoveEvent(p, prevPointed, e);\n    prevPointed = p;\n  });\n  const cleanUpOnMouseLeave = listenEvent(textarea, \"mouseleave\", (e) => {\n    dispatchMouseOutEvent(prevPointed, e);\n    prevPointed = null;\n  });\n  const cleanUpOnClick = listenEvent(textarea, \"click\", (e) => {\n    const pointed = getPointedElement(textarea, backdrop, e);\n    if (pointed) {\n      dispatchClonedMouseEvent(pointed, e);\n    }\n  });\n  const cleanUpOnInput = listenEvent(textarea, \"input\", () => {\n    selectionStore._updateSeletion();\n  });\n  const cleanUpOnCompositionStart = listenEvent(\n    textarea,\n    \"compositionstart\",\n    (e) => {\n      selectionStore._setComposition(e);\n    }\n  );\n  const cleanUpOnCompositionUpdate = listenEvent(\n    textarea,\n    \"compositionupdate\",\n    (e) => {\n      selectionStore._setComposition(e);\n    }\n  );\n  const cleanUpOnCompositionEnd = listenEvent(\n    textarea,\n    \"compositionend\",\n    () => {\n      selectionStore._setComposition();\n    }\n  );\n  observer.observe(textarea);\n  return () => {\n    cleanUpOnFocus();\n    cleanUpOnBlur();\n    cleanUpOnScroll();\n    cleanUpOnMouseDown();\n    cleanUpOnMouseUp();\n    cleanUpOnMouseMove();\n    cleanUpOnMouseLeave();\n    cleanUpOnClick();\n    cleanUpOnInput();\n    cleanUpOnCompositionStart();\n    cleanUpOnCompositionUpdate();\n    cleanUpOnCompositionEnd();\n    observer.disconnect();\n  };\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/observer.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/selection.ts",
+      "content": "import { min, refKey } from \"./utils.js\";\n\n/**\n * @internal\n */\nexport type SelectionRange = [number | null, number | null];\n\n/**\n * @internal\n */\nexport const initSelectionStore = (\n  ref: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>,\n  onSelectionUpdate: (range: SelectionRange) => void\n) => {\n  let prevSelection: [number | null, number | null] = [null, null];\n  let compositionEvent: CompositionEvent | void;\n  const getSelection = (): [number | null, number | null] => {\n    const selectionStart = handle._getSelectionStart();\n    const selectionEnd = handle._getSelectionEnd();\n    if (\n      prevSelection[0] === selectionStart &&\n      prevSelection[1] === selectionEnd\n    ) {\n      return prevSelection;\n    }\n    prevSelection = [selectionStart, selectionEnd];\n    return prevSelection;\n  };\n  const handle = {\n    _updateSeletion() {\n      setTimeout(() => {\n        onSelectionUpdate(getSelection());\n      });\n    },\n    _setComposition(event: CompositionEvent | void) {\n      compositionEvent = event;\n    },\n    _getSelectionStart(): number {\n      const el = ref[refKey];\n      if (!el) return 0;\n      const pos = el.selectionStart!;\n      if (!compositionEvent) return pos;\n      // compensate selection range during compositioning\n      return min(pos, el.selectionEnd! - compositionEvent.data.length);\n    },\n    _getSelectionEnd(): number {\n      const el = ref[refKey];\n      if (!el) return 0;\n      const pos = el.selectionEnd!;\n      // compensate selection range during compositioning\n      if (!compositionEvent) return pos;\n      return min(pos, el.selectionStart! + compositionEvent.data.length);\n    },\n  };\n  return handle;\n};\n\n/**\n * @internal\n */\nexport type SelectionStore = ReturnType<typeof initSelectionStore>;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/selection.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/useStatic.ts",
+      "content": "import { useRef } from \"react\";\nimport { refKey } from \"./utils.js\";\n\n/**\n * @internal\n */\nexport const useStatic = <T>(init: () => T): T => {\n  const ref = useRef<T>(undefined);\n  return ref[refKey] || (ref[refKey] = init());\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/useStatic.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/useIsomorphicLayoutEffect.ts",
+      "content": "import { useEffect, useLayoutEffect } from \"react\";\n\n/**\n * https://gist.github.com/gaearon/e7d97cdf38a2907924ea12e4ebdf3c85\n * @internal\n */\nexport const useIsomorphicLayoutEffect =\n  typeof window !== \"undefined\" ? useLayoutEffect : useEffect;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/useIsomorphicLayoutEffect.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/utils.tsx",
+      "content": "/**\n * @internal\n */\nexport const { min, max } = Math;\n\n/**\n * @internal\n */\nexport const refKey = \"current\";\n\n/**\n * for caret position detection\n * @internal\n */\nexport const CARET_DETECTOR = (\n  <span style={{ color: \"transparent\" }}>{\"\\u200b\"}</span>\n);\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/utils.tsx"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/types.ts",
+      "content": "export type Renderer = (value: string) => React.ReactNode;\n\nexport type CaretPosition =\n  | {\n      focused: false;\n      selectionStart: number;\n      selectionEnd: number;\n    }\n  | {\n      focused: true;\n      selectionStart: number;\n      selectionEnd: number;\n      top: number;\n      left: number;\n      height: number;\n    };\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/types.ts"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/vendor/range-at-index.js",
+      "content": "import { max } from \"../utils.js\";\n\n/**\n * range-at-index\n * https://github.com/webmodules/range-at-index/\n * Nathan Rajlich\n *\n * Forked from version 1.0.4; includes the following modifications:\n * 1) Change module.exports to export default.\n * 2) Fix for https://github.com/inokawa/rich-textarea/issues/160\n **/\n\n/**\n * Returns a Range instance selecting text within HTML Element `el`,\n * at the given `start` and `end` offsets.\n *\n * @param {HTMLElement} el - DOM element to select text within\n * @public\n */\n\nfunction RangeAtIndex(el, index, offset, range) {\n  var doc = el.ownerDocument;\n  if (!range) range = doc.createRange();\n\n  let iterator = doc.createNodeIterator(el, NodeFilter.SHOW_TEXT, null, false);\n\n  let start = {};\n  let end = {};\n  let node, val, len;\n\n  while ((node = iterator.nextNode())) {\n    val = node.nodeValue;\n    len = val.length;\n\n    if (!start.node && len > index) {\n      start.node = node;\n      start.offset = index;\n    }\n\n    if (!end.node && len >= offset) {\n      end.node = node;\n      end.offset = offset;\n    }\n\n    index -= len;\n    offset -= len;\n  }\n\n  // update the range with the start and end offsets\n  if (start.node) range.setStart(start.node, max(start.offset, 0));\n  if (end.node) range.setEnd(end.node, max(end.offset, 0));\n\n  return range;\n}\n\nexport default RangeAtIndex;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/vendor/range-at-index.js"
+    },
+    {
+      "path": "registry/sources/rich-textarea/components/rich-textarea/vendor/range-at-index.d.ts",
+      "content": "declare function RangeAtIndex(\n  el: HTMLElement,\n  index: number,\n  offset: number,\n  range?: Range\n): Range;\n\nexport default RangeAtIndex;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/rich-textarea/vendor/range-at-index.d.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "textarea",
+        "decoration",
+        "highlighting",
+        "form",
+        "ime"
+      ],
+      "renderer": "dom",
+      "preview": "previews/rich-textarea.tsx",
+      "source": {
+        "project": "Rich Textarea",
+        "repository": "https://github.com/inokawa/rich-textarea",
+        "revision": "044fbb88065f634203fee79ac2d745911505c36f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/rich-textarea/textarea.tsx",
+            "upstreamPath": "src/textarea.tsx",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/textarea.tsx",
+            "upstreamSha256": "sha256:614432ca8956eeda49cbce1474fcc6dbeb92a4c6ca245e3b151616f5480a2640",
+            "contentSha256": "sha256:614432ca8956eeda49cbce1474fcc6dbeb92a4c6ca245e3b151616f5480a2640",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/dom.ts",
+            "upstreamPath": "src/dom.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/dom.ts",
+            "upstreamSha256": "sha256:cac8d0519552cf11799fd5e0971c70ee6dc8a6bc9ec39c4952761385ab3265ff",
+            "contentSha256": "sha256:cac8d0519552cf11799fd5e0971c70ee6dc8a6bc9ec39c4952761385ab3265ff",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/observer.ts",
+            "upstreamPath": "src/observer.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/observer.ts",
+            "upstreamSha256": "sha256:7f16bb34cd7ce05b4750be1e5bed27d8e0b67dfee5d0800af33e40d75c4c8221",
+            "contentSha256": "sha256:7f16bb34cd7ce05b4750be1e5bed27d8e0b67dfee5d0800af33e40d75c4c8221",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/selection.ts",
+            "upstreamPath": "src/selection.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/selection.ts",
+            "upstreamSha256": "sha256:08d7492b1eeca27820f0a76706833dac561cb2f7e0a4da1c9dae480270db1ad9",
+            "contentSha256": "sha256:08d7492b1eeca27820f0a76706833dac561cb2f7e0a4da1c9dae480270db1ad9",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/useStatic.ts",
+            "upstreamPath": "src/useStatic.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/useStatic.ts",
+            "upstreamSha256": "sha256:6b83aac2636b528856928ed225a32f53ce0db55cb91ff423e25456039cd5ab1b",
+            "contentSha256": "sha256:6b83aac2636b528856928ed225a32f53ce0db55cb91ff423e25456039cd5ab1b",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/useIsomorphicLayoutEffect.ts",
+            "upstreamPath": "src/useIsomorphicLayoutEffect.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/useIsomorphicLayoutEffect.ts",
+            "upstreamSha256": "sha256:437c6c6a716d397ce422220f24837fb562cbc21b969029078baf284d24fc7bea",
+            "contentSha256": "sha256:437c6c6a716d397ce422220f24837fb562cbc21b969029078baf284d24fc7bea",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/utils.tsx",
+            "upstreamPath": "src/utils.tsx",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/utils.tsx",
+            "upstreamSha256": "sha256:ab36756de2c9bb31b3eb3cb94189180cfce41677a3100e12dc560199da413d46",
+            "contentSha256": "sha256:ab36756de2c9bb31b3eb3cb94189180cfce41677a3100e12dc560199da413d46",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/types.ts",
+            "upstreamPath": "src/types.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/types.ts",
+            "upstreamSha256": "sha256:5c37ca9e564ee3d00776f4768c5aa4745e8c4610d537c1c8ca537642fc901cac",
+            "contentSha256": "sha256:5c37ca9e564ee3d00776f4768c5aa4745e8c4610d537c1c8ca537642fc901cac",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/vendor/range-at-index.js",
+            "upstreamPath": "src/vendor/range-at-index.js",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/vendor/range-at-index.js",
+            "upstreamSha256": "sha256:acf8d3ae86a6b2adf9bf7e781c73cfd88d1d4e54298e3edae4f32a9ad6340878",
+            "contentSha256": "sha256:acf8d3ae86a6b2adf9bf7e781c73cfd88d1d4e54298e3edae4f32a9ad6340878",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/rich-textarea/vendor/range-at-index.d.ts",
+            "upstreamPath": "src/vendor/range-at-index.d.ts",
+            "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/src/vendor/range-at-index.d.ts",
+            "upstreamSha256": "sha256:c8cb5aab066b2a4ef0733f0655c2388f5fcbe0a1bbfe192ceab355c69c292688",
+            "contentSha256": "sha256:c8cb5aab066b2a4ef0733f0655c2388f5fcbe0a1bbfe192ceab355c69c292688",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/textarea.tsx and its imported support closure under src",
+        "copyright": [
+          "Copyright (c) 2021 inokawa"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/inokawa/rich-textarea/blob/044fbb88065f634203fee79ac2d745911505c36f/LICENSE",
+          "sha256": "sha256:3d77b6ef2ad044224a09656d5361e71cefc7de3d66995dcfc7c3b2e291640b7c",
+          "localPath": "registry/sources/rich-textarea/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "decorated-native-text-entry",
+        "sourceHash": "sha256:3f5de5cb6c9213c898a8d0bb345a5d0ba8387a2f0df0992f42b5b6172d0e70d9",
+        "contentHash": "sha256:3f5de5cb6c9213c898a8d0bb345a5d0ba8387a2f0df0992f42b5b6172d0e70d9",
+        "structureHash": "sha256:e54d93455fdbf904c1ef915c6d1ed7ee7f1fc2e022362953f0210df5ea183ca8"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

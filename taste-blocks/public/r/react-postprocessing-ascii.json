@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-postprocessing-ascii",
+  "title": "ASCII",
+  "author": "pmndrs and react-postprocessing contributors",
+  "description": "Converts a rendered scene into a configurable character-cell shader.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "postprocessing@6.36.6",
+    "three@0.172.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/effects/ASCII.tsx",
+      "content": "'use client'\n\n// From: https://github.com/emilwidlund/ASCII\n// https://twitter.com/emilwidlund/status/1652386482420609024\n\nimport { forwardRef, useEffect, useMemo } from 'react'\nimport { CanvasTexture, Color, NearestFilter, RepeatWrapping, Texture, Uniform } from 'three'\nimport { Effect } from 'postprocessing'\n\nconst fragment = `\nuniform sampler2D uCharacters;\nuniform float uCharactersCount;\nuniform float uCellSize;\nuniform bool uInvert;\nuniform vec3 uColor;\n\nconst vec2 SIZE = vec2(16.);\n\nvec3 greyscale(vec3 color, float strength) {\n    float g = dot(color, vec3(0.299, 0.587, 0.114));\n    return mix(color, vec3(g), strength);\n}\n\nvec3 greyscale(vec3 color) {\n    return greyscale(color, 1.0);\n}\n\nvoid mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {\n    vec2 cell = resolution / uCellSize;\n    vec2 grid = 1.0 / cell;\n    vec2 pixelizedUV = grid * (0.5 + floor(uv / grid));\n    vec4 pixelized = texture2D(inputBuffer, pixelizedUV);\n    float greyscaled = greyscale(pixelized.rgb).r;\n\n    if (uInvert) {\n        greyscaled = 1.0 - greyscaled;\n    }\n\n    float characterIndex = floor((uCharactersCount - 1.0) * greyscaled);\n    vec2 characterPosition = vec2(mod(characterIndex, SIZE.x), floor(characterIndex / SIZE.y));\n    vec2 offset = vec2(characterPosition.x, -characterPosition.y) / SIZE;\n    vec2 charUV = mod(uv * (cell / SIZE), 1.0 / SIZE) - vec2(0., 1.0 / SIZE) + offset;\n    vec4 asciiCharacter = texture2D(uCharacters, charUV);\n\n    asciiCharacter.rgb = uColor * asciiCharacter.r;\n    asciiCharacter.a = pixelized.a;\n    outputColor = asciiCharacter;\n}\n`\n\ninterface IASCIIEffectProps {\n  font?: string\n  characters?: string\n  fontSize?: number\n  cellSize?: number\n  color?: string\n  invert?: boolean\n}\n\nclass ASCIIEffect extends Effect {\n  constructor({\n    font = 'arial',\n    characters = ` .:,'-^=*+?!|0#X%WM@`,\n    fontSize = 54,\n    cellSize = 16,\n    color = '#ffffff',\n    invert = false,\n  }: IASCIIEffectProps = {}) {\n    const uniforms = new Map<string, Uniform>([\n      ['uCharacters', new Uniform(new Texture())],\n      ['uCellSize', new Uniform(cellSize)],\n      ['uCharactersCount', new Uniform(characters.length)],\n      ['uColor', new Uniform(new Color(color))],\n      ['uInvert', new Uniform(invert)],\n    ])\n\n    super('ASCIIEffect', fragment, { uniforms })\n\n    const charactersTextureUniform = this.uniforms.get('uCharacters')\n\n    if (charactersTextureUniform) {\n      charactersTextureUniform.value = this.createCharactersTexture(characters, font, fontSize)\n    }\n  }\n\n  /** Draws the characters on a Canvas and returns a texture */\n  public createCharactersTexture(characters: string, font: string, fontSize: number): Texture {\n    if (typeof document === 'undefined') return new Texture()\n    const canvas = document.createElement('canvas')\n    const SIZE = 1024\n    const MAX_PER_ROW = 16\n    const CELL = SIZE / MAX_PER_ROW\n\n    canvas.width = canvas.height = SIZE\n    const texture = new CanvasTexture(canvas, undefined, RepeatWrapping, RepeatWrapping, NearestFilter, NearestFilter)\n    const context = canvas.getContext('2d')\n\n    if (!context) {\n      throw new Error('Context not available')\n    }\n\n    context.clearRect(0, 0, SIZE, SIZE)\n    context.font = `${fontSize}px ${font}`\n    context.textAlign = 'center'\n    context.textBaseline = 'middle'\n    context.fillStyle = '#fff'\n\n    for (let i = 0; i < characters.length; i++) {\n      const char = characters[i]\n      const x = i % MAX_PER_ROW\n      const y = Math.floor(i / MAX_PER_ROW)\n      context.fillText(char, x * CELL + CELL / 2, y * CELL + CELL / 2)\n    }\n\n    texture.needsUpdate = true\n    return texture\n  }\n}\n\nexport const ASCII = /* @__PURE__ */ forwardRef<ASCIIEffect, IASCIIEffectProps>(\n  (\n    {\n      font = 'arial',\n      characters = ` .:,'-^=*+?!|0#X%WM@`,\n      fontSize = 54,\n      cellSize = 16,\n      color = '#ffffff',\n      invert = false,\n    },\n    fref\n  ) => {\n    const effect = useMemo(\n      () => new ASCIIEffect({ characters, font, fontSize, cellSize, color, invert }),\n      [characters, fontSize, cellSize, color, invert, font]\n    )\n    useEffect(\n      () => () => {\n        effect.uniforms.get('uCharacters')?.value?.dispose?.()\n        effect.dispose()\n      },\n      [effect]\n    )\n    return <primitive ref={fref} object={effect} />\n  }\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/effects/ASCII.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/EffectComposer.tsx",
+      "content": "'use client'\n\nimport type { TextureDataType, Group, Camera, Scene } from 'three'\nimport { HalfFloatType, NoToneMapping } from 'three'\nimport {\n  type JSX,\n  memo,\n  forwardRef,\n  useMemo,\n  useEffect,\n  useLayoutEffect,\n  createContext,\n  useRef,\n  useImperativeHandle,\n} from 'react'\nimport { useThree, useFrame, type Instance } from '@react-three/fiber'\nimport {\n  EffectComposer as EffectComposerImpl,\n  RenderPass,\n  EffectPass,\n  NormalPass,\n  DepthDownsamplingPass,\n  Effect,\n  Pass,\n  EffectAttribute,\n} from 'postprocessing'\n\nexport const EffectComposerContext = /* @__PURE__ */ createContext<{\n  composer: EffectComposerImpl\n  normalPass: NormalPass | null\n  downSamplingPass: DepthDownsamplingPass | null\n  camera: Camera\n  scene: Scene\n  resolutionScale?: number\n}>(null!)\n\nexport type EffectComposerProps = {\n  enabled?: boolean\n  children: JSX.Element | JSX.Element[]\n  depthBuffer?: boolean\n  /** Only used for SSGI currently, leave it disabled for everything else unless it's needed */\n  enableNormalPass?: boolean\n  stencilBuffer?: boolean\n  autoClear?: boolean\n  resolutionScale?: number\n  multisampling?: number\n  frameBufferType?: TextureDataType\n  renderPriority?: number\n  camera?: Camera\n  scene?: Scene\n}\n\nconst isConvolution = (effect: Effect): boolean =>\n  (effect.getAttributes() & EffectAttribute.CONVOLUTION) === EffectAttribute.CONVOLUTION\n\nexport const EffectComposer = /* @__PURE__ */ memo(\n  /* @__PURE__ */ forwardRef<EffectComposerImpl, EffectComposerProps>(\n    (\n      {\n        children,\n        camera: _camera,\n        scene: _scene,\n        resolutionScale,\n        enabled = true,\n        renderPriority = 1,\n        autoClear = true,\n        depthBuffer,\n        enableNormalPass,\n        stencilBuffer,\n        multisampling = 4,\n        frameBufferType = HalfFloatType,\n      },\n      ref\n    ) => {\n      const { gl, scene: defaultScene, camera: defaultCamera, size } = useThree()\n      const scene = _scene || defaultScene\n      const camera = _camera || defaultCamera\n\n      const [composer, normalPass, downSamplingPass] = useMemo(() => {\n        // Initialize composer\n        const effectComposer = new EffectComposerImpl(gl, {\n          depthBuffer,\n          stencilBuffer,\n          multisampling,\n          frameBufferType,\n        })\n\n        // Add render pass\n        effectComposer.addPass(new RenderPass(scene, camera))\n\n        // Create normal pass\n        let downSamplingPass = null\n        let normalPass = null\n        if (enableNormalPass) {\n          normalPass = new NormalPass(scene, camera)\n          normalPass.enabled = false\n          effectComposer.addPass(normalPass)\n          if (resolutionScale !== undefined) {\n            downSamplingPass = new DepthDownsamplingPass({ normalBuffer: normalPass.texture, resolutionScale })\n            downSamplingPass.enabled = false\n            effectComposer.addPass(downSamplingPass)\n          }\n        }\n\n        return [effectComposer, normalPass, downSamplingPass]\n      }, [\n        camera,\n        gl,\n        depthBuffer,\n        stencilBuffer,\n        multisampling,\n        frameBufferType,\n        scene,\n        enableNormalPass,\n        resolutionScale,\n      ])\n\n      useEffect(() => composer?.setSize(size.width, size.height), [composer, size])\n      useEffect(() => () => composer.dispose(), [composer])\n      useFrame(\n        (_, delta) => {\n          if (enabled) {\n            const currentAutoClear = gl.autoClear\n            gl.autoClear = autoClear\n            if (stencilBuffer && !autoClear) gl.clearStencil()\n            composer.render(delta)\n            gl.autoClear = currentAutoClear\n          }\n        },\n        enabled ? renderPriority : 0\n      )\n\n      const group = useRef<Group>(null!)\n      useLayoutEffect(() => {\n        const passes: Pass[] = []\n\n        // TODO: rewrite all of this with R3F v9\n        const groupInstance = (group.current as Group & { __r3f: Instance<Group> }).__r3f\n\n        if (groupInstance && composer) {\n          const children = groupInstance.children\n\n          for (let i = 0; i < children.length; i++) {\n            const child = children[i].object\n\n            if (child instanceof Effect) {\n              const effects: Effect[] = [child]\n\n              if (!isConvolution(child)) {\n                let next: unknown = null\n                while ((next = children[i + 1]?.object) instanceof Effect) {\n                  if (isConvolution(next)) break\n                  effects.push(next)\n                  i++\n                }\n              }\n\n              const pass = new EffectPass(camera, ...effects)\n              passes.push(pass)\n            } else if (child instanceof Pass) {\n              passes.push(child)\n            }\n          }\n\n          for (const pass of passes) composer?.addPass(pass)\n\n          if (normalPass) normalPass.enabled = true\n          if (downSamplingPass) downSamplingPass.enabled = true\n        }\n\n        return () => {\n          for (const pass of passes) composer?.removePass(pass)\n          if (normalPass) normalPass.enabled = false\n          if (downSamplingPass) downSamplingPass.enabled = false\n        }\n      }, [composer, children, camera, normalPass, downSamplingPass])\n\n      // Disable tone mapping because threejs disallows tonemapping on render targets\n      useEffect(() => {\n        const currentTonemapping = gl.toneMapping\n        gl.toneMapping = NoToneMapping\n        return () => {\n          gl.toneMapping = currentTonemapping\n        }\n      }, [gl])\n\n      // Memoize state, otherwise it would trigger all consumers on every render\n      const state = useMemo(\n        () => ({ composer, normalPass, downSamplingPass, resolutionScale, camera, scene }),\n        [composer, normalPass, downSamplingPass, resolutionScale, camera, scene]\n      )\n\n      // Expose the composer\n      useImperativeHandle(ref, () => composer, [composer])\n\n      return (\n        <EffectComposerContext.Provider value={state}>\n          <group ref={group}>{children}</group>\n        </EffectComposerContext.Provider>\n      )\n    }\n  )\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "ascii",
+        "shader",
+        "typography"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/react-postprocessing-ascii.tsx",
+      "source": {
+        "project": "react-postprocessing",
+        "repository": "https://github.com/pmndrs/react-postprocessing",
+        "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-postprocessing/effects/ASCII.tsx",
+            "upstreamPath": "src/effects/ASCII.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/ASCII.tsx",
+            "upstreamSha256": "sha256:341ec5073edd15b92c1976d4061f587d43795d3397c86782da2df795f3de480c",
+            "contentSha256": "sha256:12a40bf402d6e4950673483bd5bd094d4365559507309894809e3c8b66c88e00",
+            "changes": [
+              "Declared the effect as client code, guarded character texture creation during SSR, and dispose the generated texture and effect on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+            "upstreamPath": "src/EffectComposer.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+            "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+            "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+            "changes": [
+              "Declared the React Three Fiber composer as a client component.",
+              "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/effects/ASCII.tsx, src/EffectComposer.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/react-postprocessing/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-postprocessing/effects/ASCII.tsx",
+          "change": "Declared the effect as client code, guarded character texture creation during SSR, and dispose the generated texture and effect on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+          "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        }
+      ],
+      "dedupe": {
+        "family": "ascii-postprocessing-effect",
+        "sourceHash": "sha256:d739df6230a3197dcefa1f3eb4d6ab2cf0132d934ef31cc144cdcf1d67df258a",
+        "contentHash": "sha256:d61508860bce8110eff745e0cc02d28cdbe4654f3e8f5ed9734291f0000d6279",
+        "structureHash": "sha256:eec4781c29bce5686142c913d39e1aca4641ee4150e6a58c4b2b7d4a1cf29953"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animata-disclose-image",
+  "title": "Disclose Image",
+  "author": "Animata",
+  "description": "Reveals a caller-provided image with paired sliding panels after it loads.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animata/components/animata-disclose-image/disclose-image.tsx",
+      "content": "\"use client\";\n\nimport { type ImgHTMLAttributes, useState } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\ninterface DiscloseImageProps extends ImgHTMLAttributes<HTMLImageElement> {\n  /** Class name for both sliding panels. */\n  doorClassName?: string;\n\n  /** If true, the panels slide vertically. */\n  vertical?: boolean;\n}\n\nexport default function DiscloseImage({\n  className,\n  doorClassName,\n  onLoad,\n  vertical = false,\n  ...props\n}: DiscloseImageProps) {\n  const [imageLoaded, setImageLoaded] = useState(false);\n  const baseClassName =\n    \"ease-slow duration-mid absolute bg-sky-500 transition-transform motion-reduce:hidden\";\n\n  return (\n    <div className=\"relative aspect-[13/16] w-full overflow-hidden rounded-md bg-yellow-100\">\n      {/* Use `next/image` and remove the line below. */}\n      {/* eslint-disable-next-line @next/next/no-img-element */}\n      <img\n        alt=\"\"\n        {...props}\n        onLoad={(event) => {\n          setImageLoaded(true);\n          onLoad?.(event);\n        }}\n        className={cn(\"h-full w-full object-cover\", className)}\n      />\n\n      <div\n        aria-hidden=\"true\"\n        className={cn(baseClassName, doorClassName, {\n          \"top-0 h-1/2 w-full\": vertical,\n          \"-translate-y-full\": vertical && imageLoaded,\n          \"inset-y-0 left-0 w-1/2\": !vertical,\n          \"-translate-x-full\": !vertical && imageLoaded,\n        })}\n      />\n      <div\n        aria-hidden=\"true\"\n        className={cn(baseClassName, doorClassName, {\n          \"bottom-0 h-1/2 w-full\": vertical,\n          \"translate-y-full\": vertical && imageLoaded,\n          \"inset-y-0 right-0 w-1/2\": !vertical,\n          \"translate-x-full\": !vertical && imageLoaded,\n        })}\n      />\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/disclose-image.tsx"
+    },
+    {
+      "path": "registry/sources/animata/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "--ease-slow": "cubic-bezier(.405, 0, .025, 1)",
+      "--duration-mid": "3s"
+    }
+  },
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "image",
+        "reveal",
+        "panels"
+      ],
+      "renderer": "dom",
+      "preview": "previews/animata-disclose-image.tsx",
+      "source": {
+        "project": "Animata",
+        "repository": "https://github.com/codse/animata",
+        "revision": "de9aabb0eed14e0db944bb07720961ddc450c672",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animata-disclose-image/disclose-image.tsx",
+            "upstreamPath": "animata/image/disclose-image.tsx",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/animata/image/disclose-image.tsx",
+            "upstreamSha256": "sha256:f21230012262949c328f148475ba685b3900b90edbcbea038630fb4ed7966841",
+            "contentSha256": "sha256:4cf94bc6284c52320615966eb327bcfc564cffac99251f27ecf20a9280ee45ab",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Added an explicit client boundary and replaced the fixed outer dimensions with a responsive aspect frame that inherits its width from the caller's parent layout.",
+              "Preserved caller onLoad handlers, replaced tw-animate-css-only entrance utilities with core transform transitions, and hid the disclosure panels under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/lib/utils.ts",
+            "upstreamSha256": "sha256:5110cb256546ec57496878e69c7e8f338a0ba9caf3ac75eed9babb51dad06ecd",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Removed unrelated absoluteUrl, lerp, and getDistance exports; retained the upstream cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "animata/image/disclose-image.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) Animata"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/codse/animata/blob/de9aabb0eed14e0db944bb07720961ddc450c672/LICENSE.md",
+          "sha256": "sha256:ff78804659cbc28380d087cae79c494f243f8ef22b1e2ac5ec119b5de9314f05",
+          "localPath": "registry/sources/animata/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animata-disclose-image/disclose-image.tsx",
+          "change": "Changed the cn import to ../../lib/utils, added an explicit client boundary, replaced fixed dimensions with a parent-sized responsive aspect frame, preserved caller onLoad handlers, replaced plugin-only entrance utilities with core transform transitions, and added a reduced-motion panel fallback.",
+          "reason": "Keep the copied component portable and responsive while preserving its paired-panel reveal without requiring undeclared animation CSS or forcing motion-sensitive users through the transition."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed the unrelated absoluteUrl, lerp, and getDistance exports.",
+          "reason": "Keep the copied support closure limited to the upstream cn export used by these components."
+        }
+      ],
+      "dedupe": {
+        "family": "image-panel-disclosure",
+        "sourceHash": "sha256:bf7c023a6de0d2e63612930f9ba41e037fb3c7a60af65cfd3a1c7a00f062481f",
+        "contentHash": "sha256:a77df478bc293f5a5d727b6895b6d9388b1e398362505e1e0420f3a73187c5b4",
+        "structureHash": "sha256:f993125bd93c627c2d1eb7cc79dda61d0950c376c4231d0f75a793fbd84bd9c9"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

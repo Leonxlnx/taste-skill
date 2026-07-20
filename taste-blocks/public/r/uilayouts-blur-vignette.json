@@ -1,0 +1,132 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uilayouts-blur-vignette",
+  "title": "Blur Vignette",
+  "author": "UI LAYOUT",
+  "description": "Applies a soft edge blur and mask around caller-provided media or content.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-blur-vignette/blur-vignette.tsx",
+      "content": "\"use client\";\n\nimport type React from \"react\";\nimport { createContext, useContext } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\nimport \"./blur-vignette.css\";\n\ninterface BlurVignetteContextProps {\n  radius?: string;\n  inset?: string;\n  transitionLength?: string;\n  blur?: string;\n}\n\nconst BlurVignetteContext = createContext<BlurVignetteContextProps>({\n  radius: \"24px\",\n  inset: \"20px\",\n  transitionLength: \"44px\",\n  blur: \"6px\",\n});\n\nexport const useBlurVignetteContext = () => useContext(BlurVignetteContext);\n\ninterface BlurVignetteProps {\n  classname?: string;\n  children: React.ReactNode;\n  radius?: string;\n  inset?: string;\n  transitionLength?: string;\n  blur?: string;\n  blurclassname?: string;\n}\n\nexport const BlurVignette: React.FC<BlurVignetteProps> = ({\n  classname,\n  children,\n  radius = \"24px\",\n  inset = \"20px\",\n  transitionLength = \"44px\",\n  blur = \"6px\",\n}) => {\n  return (\n    <BlurVignetteContext.Provider value={{ radius, inset, transitionLength, blur }}>\n      <div\n        className={cn(\"relative aspect-square overflow-hidden\", classname)}\n        style={{ borderRadius: radius }}\n      >\n        {children}\n      </div>\n    </BlurVignetteContext.Provider>\n  );\n};\n\ninterface BlurVignetteArticleProps {\n  children?: React.ReactNode;\n  classname?: string;\n}\n\nexport const BlurVignetteArticle: React.FC<BlurVignetteArticleProps> = ({\n  children,\n  classname,\n}) => {\n  const { radius, inset, transitionLength, blur } = useBlurVignetteContext();\n\n  return (\n    <div\n      aria-hidden={children ? undefined : true}\n      className={cn(\"blur-vignette bottom-0 left-0 z-1 h-full w-full\", classname)}\n      style={\n        {\n          \"--radius\": radius,\n          \"--inset\": inset,\n          \"--transition-length\": transitionLength,\n          \"--blur\": blur,\n        } as React.CSSProperties\n      }\n    >\n      {children}\n    </div>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/blur-vignette.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-blur-vignette/blur-vignette.css",
+      "content": ".blur-vignette {\n  position: absolute;\n  inset: 0;\n  border-radius: var(--radius);\n  -webkit-backdrop-filter: blur(var(--blur));\n  backdrop-filter: blur(var(--blur));\n  --r: max(var(--transition-length), calc(var(--radius) - var(--inset)));\n  --corner-size: calc(var(--r) + var(--inset)) calc(var(--r) + var(--inset));\n  --corner-gradient:\n    transparent 0px, transparent calc(var(--r) - var(--transition-length)), black var(--r);\n  --fill-gradient:\n    black, black var(--inset), transparent calc(var(--inset) + var(--transition-length)),\n    transparent calc(100% - var(--transition-length) - var(--inset)),\n    black calc(100% - var(--inset));\n  --fill-narrow-size: calc(100% - (var(--inset) + var(--r)) * 2);\n  --fill-farther-position: calc(var(--inset) + var(--r));\n  -webkit-mask-image:\n    linear-gradient(to right, var(--fill-gradient)), linear-gradient(to bottom, var(--fill-gradient)),\n    radial-gradient(at bottom right, var(--corner-gradient)),\n    radial-gradient(at bottom left, var(--corner-gradient)),\n    radial-gradient(at top left, var(--corner-gradient)),\n    radial-gradient(at top right, var(--corner-gradient));\n  mask-image:\n    linear-gradient(to right, var(--fill-gradient)), linear-gradient(to bottom, var(--fill-gradient)),\n    radial-gradient(at bottom right, var(--corner-gradient)),\n    radial-gradient(at bottom left, var(--corner-gradient)),\n    radial-gradient(at top left, var(--corner-gradient)),\n    radial-gradient(at top right, var(--corner-gradient));\n  -webkit-mask-size:\n    100% var(--fill-narrow-size), var(--fill-narrow-size) 100%, var(--corner-size),\n    var(--corner-size), var(--corner-size), var(--corner-size);\n  mask-size:\n    100% var(--fill-narrow-size), var(--fill-narrow-size) 100%, var(--corner-size),\n    var(--corner-size), var(--corner-size), var(--corner-size);\n  -webkit-mask-position:\n    0 var(--fill-farther-position), var(--fill-farther-position) 0, 0 0, 100% 0, 100% 100%,\n    0 100%;\n  mask-position:\n    0 var(--fill-farther-position), var(--fill-farther-position) 0, 0 0, 100% 0, 100% 100%,\n    0 100%;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/blur-vignette.css"
+    },
+    {
+      "path": "registry/sources/ui-layouts/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "blur",
+        "vignette",
+        "mask"
+      ],
+      "renderer": "dom",
+      "preview": "previews/uilayouts-blur-vignette.tsx",
+      "source": {
+        "project": "UI Layouts Free",
+        "repository": "https://github.com/ui-layouts/uilayouts",
+        "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.tsx",
+            "upstreamPath": "apps/ui-layout/components/ui/blur-vignette.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/blur-vignette.tsx",
+            "upstreamSha256": "sha256:c3847b185a3e5208854c8be001be11ddb91755825e6e0d5c69250555e89a5b73",
+            "contentSha256": "sha256:ba76d50e152cb1d5ad992441f558a5bd48356c20736206224cd18bf51640eeda",
+            "changes": [
+              "Changed the root-alias utility import to ../../lib/utils and imported the copied component CSS.",
+              "Marked an empty blur overlay decorative while preserving semantic child content.",
+              "Normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.css",
+            "upstreamPath": "apps/ui-layout/app/globals.css",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/app/globals.css",
+            "upstreamSha256": "sha256:8eb641289a096f6f1a12ae4192c56251eca333e20c1ca7b1ee73d97effab66f6",
+            "contentSha256": "sha256:76ba85ac604bcdfa609ba71c1dc1ab11e148b7343ad790f63986df971c0faed7",
+            "changes": [
+              "Extracted only the required blur-vignette utility from the site stylesheet.",
+              "Converted the Tailwind @utility wrapper to a portable class and added unprefixed mask declarations for non-WebKit browsers."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/ui-layout/lib/utils.ts",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+            "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/ui-layout/components/ui/blur-vignette.tsx, the blur-vignette utility in apps/ui-layout/app/globals.css, and apps/ui-layout/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 UI LAYOUT"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+          "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+          "localPath": "registry/sources/ui-layouts/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.tsx",
+          "change": "Rewired local support imports, added the required stylesheet import, marked an empty overlay decorative, and normalized formatting.",
+          "reason": "Make the copied component self-contained and keep an empty visual overlay out of the accessibility tree."
+        },
+        {
+          "shippedPath": "components/uilayouts-blur-vignette/blur-vignette.css",
+          "change": "Extracted the blur-vignette utility as a component class and added standard mask properties beside the upstream WebKit-prefixed properties.",
+          "reason": "Ship the exact required style closure without the site stylesheet and preserve the effect in browsers using unprefixed masks."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+          "reason": "Keep the copied support closure minimal and remove site URLs."
+        }
+      ],
+      "dedupe": {
+        "family": "edge-blur-vignette",
+        "sourceHash": "sha256:5841f72dc2e224dbf89684d832001a340c31f044bbeb153bc0094bb9dd005f26",
+        "contentHash": "sha256:1e3f3b2f98ee824b910e1f4f6de8d9306db25aa0aa9c58a8bdf6aa77d55730c3",
+        "structureHash": "sha256:1a38943af9e6e9e8ccfd9d371fff342fdf80344e161b0578fee7c94e293d8647"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

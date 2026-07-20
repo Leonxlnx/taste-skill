@@ -1,0 +1,151 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lucide-animated-circle-help-icon",
+  "title": "Animated Circle Help Icon",
+  "author": "pqoqubbw",
+  "description": "Renders the Lucide Circle Help glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/lucide-animated/components/lucide-animated-circle-help-icon/circle-help.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport interface CircleHelpIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface CircleHelpIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst VARIANTS: Variants = {\n  normal: { rotate: 0 },\n  animate: { rotate: [0, -10, 10, -10, 0] },\n};\n\nconst CircleHelpIcon = forwardRef<CircleHelpIconHandle, CircleHelpIconProps>(\n  ({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n    const controls = useAnimation();\n    const reduced = useReducedMotion();\n    const isControlledRef = useRef(false);\n\n    useImperativeHandle(ref, () => {\n      isControlledRef.current = true;\n\n      return {\n        startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n        stopAnimation: () => controls.start(\"normal\"),\n      };\n    });\n\n    const handleMouseEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) {\n          controls.start(\"normal\");\n          onMouseEnter?.(e);\n          return;\n        }\n        if (isControlledRef.current) {\n          onMouseEnter?.(e);\n        } else {\n          controls.start(\"animate\");\n        }\n      },\n      [controls, isAnimated, onMouseEnter, reduced]\n    );\n\n    const handleMouseLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (isControlledRef.current) {\n          onMouseLeave?.(e);\n        } else {\n          controls.start(\"normal\");\n        }\n      },\n      [controls, onMouseLeave]\n    );\n\n    return (\n      <div\n        className={cn(className)}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <svg\n          fill=\"none\"\n          height={size}\n          stroke=\"currentColor\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          strokeWidth=\"2\"\n          viewBox=\"0 0 24 24\"\n          width={size}\n          xmlns=\"http://www.w3.org/2000/svg\"\n        >\n          <circle cx=\"12\" cy=\"12\" r=\"10\" />\n          <motion.g\n            animate={controls}\n            transition={{\n              duration: 0.28,\n              ease: \"easeInOut\",\n            }}\n            variants={VARIANTS}\n          >\n            <path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\" />\n            <path d=\"M12 17h.01\" />\n          </motion.g>\n        </svg>\n      </div>\n    );\n  }\n);\n\nCircleHelpIcon.displayName = \"CircleHelpIcon\";\n\nexport { CircleHelpIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/lucide-animated-circle-help-icon.tsx"
+    },
+    {
+      "path": "registry/sources/lucide-animated/lib/utils.ts",
+      "content": "import type { ClassValue } from \"clsx\";\nimport { clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "circle",
+        "help",
+        "animated",
+        "icon",
+        "lucide",
+        "motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/lucide-animated-circle-help-icon.tsx",
+      "source": {
+        "project": "Lucide Animated",
+        "repository": "https://github.com/pqoqubbw/icons",
+        "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/lucide-animated-circle-help-icon/circle-help.tsx",
+            "upstreamPath": "icons/circle-help.tsx",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/icons/circle-help.tsx",
+            "upstreamGitBlobSha": "9b3bf03195b9bd0777567ed904f344fbebe73b61",
+            "upstreamSha256": "sha256:47e7d6e920f31689c9f2a7c16f39f876ef066f0941f89e0a884f9841dfb7884e",
+            "contentSha256": "sha256:311fbc12272089f50bb3a6bbd0b9c45c3a645dfbaeacc8d9e759ec58f98677f8",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts.",
+              "Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/lib/utils.ts",
+            "upstreamGitBlobSha": "88283f0133e161af61a96d8d8d14309591369aac",
+            "upstreamSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "contentSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "icons/circle-help.tsx, lib/utils.ts, and Lucide/Feather-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+          "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+          "localPath": "registry/sources/lucide-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/lucide-animated/NOTICE",
+          "registry/sources/lucide-animated/LUCIDE_LICENSE",
+          "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/lucide-animated/NOTICE",
+            "sha256": "sha256:6014a8c793832691319bae3f3c5439487b03c9fd0ddeffad56a14c4530639971",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/LICENSE",
+            "upstreamGitBlobSha": "718bb3f0e44153809972abed31839375804bf652",
+            "localPath": "registry/sources/lucide-animated/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/BRAND_LOGOS_STATEMENT.md",
+            "upstreamGitBlobSha": "6a7404c79b20f6d1fd1d414c052a78c550bf74d5",
+            "localPath": "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/lucide-animated-circle-help-icon/circle-help.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts. Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps.",
+          "reason": "Resolved the bundled utility, added controlled/reduced-motion safety, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-circle-help-icon",
+        "sourceHash": "sha256:20a9441b803c65f17ef47a9fea3c944e9ecd3b4e4f57835544585796ecd6cffc",
+        "contentHash": "sha256:d07e3e229a5a81aff329804a72c960ea3e545453d15cf3760cc041cc8cfe1364",
+        "structureHash": "sha256:a21f1273e00d50de2817e9a8980af429494bfaf974b9ecdcdca6d618974c420d",
+        "glyph": {
+          "inventoryName": "circle-help",
+          "canonicalName": "circle-help",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

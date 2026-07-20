@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-test-results",
+  "title": "Test Results",
+  "author": "Vercel",
+  "description": "A hierarchical test report with progress, suite disclosure, status, and errors.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "badge",
+    "collapsible",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/test-results.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport {\r\n  Collapsible,\r\n  CollapsibleContent,\r\n  CollapsibleTrigger,\r\n} from \"@/components/ui/collapsible\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport {\r\n  CheckCircle2Icon,\r\n  ChevronRightIcon,\r\n  CircleDotIcon,\r\n  CircleIcon,\r\n  XCircleIcon,\r\n} from \"lucide-react\";\r\nimport type { ComponentProps, HTMLAttributes } from \"react\";\r\nimport { createContext, useContext, useMemo } from \"react\";\r\n\r\ntype TestStatus = \"passed\" | \"failed\" | \"skipped\" | \"running\";\r\n\r\ninterface TestResultsSummary {\r\n  passed: number;\r\n  failed: number;\r\n  skipped: number;\r\n  total: number;\r\n  duration?: number;\r\n}\r\n\r\ninterface TestResultsContextType {\r\n  summary?: TestResultsSummary;\r\n}\r\n\r\nconst TestResultsContext = createContext<TestResultsContextType>({});\r\n\r\nconst formatDuration = (ms: number) => {\r\n  if (ms < 1000) {\r\n    return `${ms}ms`;\r\n  }\r\n  return `${(ms / 1000).toFixed(2)}s`;\r\n};\r\n\r\nexport type TestResultsHeaderProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TestResultsHeader = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsHeaderProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between border-b px-4 py-3\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type TestResultsDurationProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const TestResultsDuration = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsDurationProps) => {\r\n  const { summary } = useContext(TestResultsContext);\r\n\r\n  if (!summary?.duration) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <span className={cn(\"text-muted-foreground text-sm\", className)} {...props}>\r\n      {children ?? formatDuration(summary.duration)}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type TestResultsSummaryProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TestResultsSummary = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsSummaryProps) => {\r\n  const { summary } = useContext(TestResultsContext);\r\n\r\n  if (!summary) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <div className={cn(\"flex items-center gap-3\", className)} {...props}>\r\n      {children ?? (\r\n        <>\r\n          <Badge\r\n            className=\"gap-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400\"\r\n            variant=\"secondary\"\r\n          >\r\n            <CheckCircle2Icon className=\"size-3\" />\r\n            {summary.passed} passed\r\n          </Badge>\r\n          {summary.failed > 0 && (\r\n            <Badge\r\n              className=\"gap-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400\"\r\n              variant=\"secondary\"\r\n            >\r\n              <XCircleIcon className=\"size-3\" />\r\n              {summary.failed} failed\r\n            </Badge>\r\n          )}\r\n          {summary.skipped > 0 && (\r\n            <Badge\r\n              className=\"gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400\"\r\n              variant=\"secondary\"\r\n            >\r\n              <CircleIcon className=\"size-3\" />\r\n              {summary.skipped} skipped\r\n            </Badge>\r\n          )}\r\n        </>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type TestResultsProps = HTMLAttributes<HTMLDivElement> & {\r\n  summary?: TestResultsSummary;\r\n};\r\n\r\nexport const TestResults = ({\r\n  summary,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsProps) => {\r\n  const contextValue = useMemo(() => ({ summary }), [summary]);\r\n\r\n  return (\r\n    <TestResultsContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\"rounded-lg border bg-background\", className)}\r\n        {...props}\r\n      >\r\n        {children ??\r\n          (summary && (\r\n            <TestResultsHeader>\r\n              <TestResultsSummary />\r\n              <TestResultsDuration />\r\n            </TestResultsHeader>\r\n          ))}\r\n      </div>\r\n    </TestResultsContext.Provider>\r\n  );\r\n};\r\n\r\nexport type TestResultsProgressProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TestResultsProgress = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsProgressProps) => {\r\n  const { summary } = useContext(TestResultsContext);\r\n\r\n  if (!summary) {\r\n    return null;\r\n  }\r\n\r\n  const passedPercent = (summary.passed / summary.total) * 100;\r\n  const failedPercent = (summary.failed / summary.total) * 100;\r\n\r\n  return (\r\n    <div className={cn(\"space-y-2\", className)} {...props}>\r\n      {children ?? (\r\n        <>\r\n          <div className=\"flex h-2 overflow-hidden rounded-full bg-muted\">\r\n            <div\r\n              className=\"bg-green-500 transition-all motion-reduce:transition-none\"\n              style={{ width: `${passedPercent}%` }}\r\n            />\r\n            <div\r\n              className=\"bg-red-500 transition-all motion-reduce:transition-none\"\n              style={{ width: `${failedPercent}%` }}\r\n            />\r\n          </div>\r\n          <div className=\"flex justify-between text-muted-foreground text-xs\">\r\n            <span>\r\n              {summary.passed}/{summary.total} tests passed\r\n            </span>\r\n            <span>{passedPercent.toFixed(0)}%</span>\r\n          </div>\r\n        </>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type TestResultsContentProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TestResultsContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestResultsContentProps) => (\r\n  <div className={cn(\"space-y-2 p-4\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\ninterface TestSuiteContextType {\r\n  name: string;\r\n  status: TestStatus;\r\n}\r\n\r\nconst TestSuiteContext = createContext<TestSuiteContextType>({\r\n  name: \"\",\r\n  status: \"passed\",\r\n});\r\n\r\nconst statusStyles: Record<TestStatus, string> = {\r\n  failed: \"text-red-600 dark:text-red-400\",\r\n  passed: \"text-green-600 dark:text-green-400\",\r\n  running: \"text-blue-600 dark:text-blue-400\",\r\n  skipped: \"text-yellow-600 dark:text-yellow-400\",\r\n};\r\n\r\nconst statusIcons: Record<TestStatus, React.ReactNode> = {\r\n  failed: <XCircleIcon className=\"size-4\" />,\r\n  passed: <CheckCircle2Icon className=\"size-4\" />,\r\n  running: <CircleDotIcon className=\"size-4 animate-pulse motion-reduce:animate-none\" />,\n  skipped: <CircleIcon className=\"size-4\" />,\r\n};\r\n\r\nconst TestStatusIcon = ({ status }: { status: TestStatus }) => (\r\n  <span className={cn(\"shrink-0\", statusStyles[status])}>\r\n    {statusIcons[status]}\r\n  </span>\r\n);\r\n\r\nexport type TestSuiteProps = ComponentProps<typeof Collapsible> & {\r\n  name: string;\r\n  status: TestStatus;\r\n};\r\n\r\nexport const TestSuite = ({\r\n  name,\r\n  status,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestSuiteProps) => {\r\n  const contextValue = useMemo(() => ({ name, status }), [name, status]);\r\n\r\n  return (\r\n    <TestSuiteContext.Provider value={contextValue}>\r\n      <Collapsible className={cn(\"rounded-lg border\", className)} {...props}>\r\n        {children}\r\n      </Collapsible>\r\n    </TestSuiteContext.Provider>\r\n  );\r\n};\r\n\r\nexport type TestSuiteNameProps = ComponentProps<typeof CollapsibleTrigger>;\r\n\r\nexport const TestSuiteName = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestSuiteNameProps) => {\r\n  const { name, status } = useContext(TestSuiteContext);\r\n\r\n  return (\r\n    <CollapsibleTrigger\r\n      className={cn(\r\n        \"group flex w-full items-center gap-2 px-4 py-3 text-start transition-colors hover:bg-muted/50 motion-reduce:transition-none\",\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      <ChevronRightIcon className=\"size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90 motion-reduce:transition-none\" />\n      <TestStatusIcon status={status} />\r\n      <span className=\"font-medium text-sm\">{children ?? name}</span>\r\n    </CollapsibleTrigger>\r\n  );\r\n};\r\n\r\nexport type TestSuiteStatsProps = HTMLAttributes<HTMLDivElement> & {\r\n  passed?: number;\r\n  failed?: number;\r\n  skipped?: number;\r\n};\r\n\r\nexport const TestSuiteStats = ({\r\n  passed = 0,\r\n  failed = 0,\r\n  skipped = 0,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestSuiteStatsProps) => (\r\n  <div\r\n    className={cn(\"ms-auto flex items-center gap-2 text-xs\", className)}\n    {...props}\r\n  >\r\n    {children ?? (\r\n      <>\r\n        {passed > 0 && (\r\n          <span className=\"text-green-600 dark:text-green-400\">\r\n            {passed} passed\r\n          </span>\r\n        )}\r\n        {failed > 0 && (\r\n          <span className=\"text-red-600 dark:text-red-400\">\r\n            {failed} failed\r\n          </span>\r\n        )}\r\n        {skipped > 0 && (\r\n          <span className=\"text-yellow-600 dark:text-yellow-400\">\r\n            {skipped} skipped\r\n          </span>\r\n        )}\r\n      </>\r\n    )}\r\n  </div>\r\n);\r\n\r\nexport type TestSuiteContentProps = ComponentProps<typeof CollapsibleContent>;\r\n\r\nexport const TestSuiteContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestSuiteContentProps) => (\r\n  <CollapsibleContent className={cn(\"border-t\", className)} {...props}>\r\n    <div className=\"divide-y\">{children}</div>\r\n  </CollapsibleContent>\r\n);\r\n\r\ninterface TestContextType {\r\n  name: string;\r\n  status: TestStatus;\r\n  duration?: number;\r\n}\r\n\r\nconst TestContext = createContext<TestContextType>({\r\n  name: \"\",\r\n  status: \"passed\",\r\n});\r\n\r\nexport type TestNameProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const TestName = ({ className, children, ...props }: TestNameProps) => {\r\n  const { name } = useContext(TestContext);\r\n\r\n  return (\r\n    <span className={cn(\"flex-1\", className)} {...props}>\r\n      {children ?? name}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type TestDurationProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const TestDuration = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestDurationProps) => {\r\n  const { duration } = useContext(TestContext);\r\n\r\n  if (duration === undefined) {\r\n    return null;\r\n  }\r\n\r\n  return (\r\n    <span\r\n      className={cn(\"ms-auto text-muted-foreground text-xs\", className)}\n      {...props}\r\n    >\r\n      {children ?? `${duration}ms`}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type TestStatusProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const TestStatus = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestStatusProps) => {\r\n  const { status } = useContext(TestContext);\r\n\r\n  return (\r\n    <span\r\n      className={cn(\"shrink-0\", statusStyles[status], className)}\r\n      {...props}\r\n    >\r\n      {children ?? statusIcons[status]}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type TestProps = HTMLAttributes<HTMLDivElement> & {\r\n  name: string;\r\n  status: TestStatus;\r\n  duration?: number;\r\n};\r\n\r\nexport const Test = ({\r\n  name,\r\n  status,\r\n  duration,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestProps) => {\r\n  const contextValue = useMemo(\r\n    () => ({ duration, name, status }),\r\n    [duration, name, status]\r\n  );\r\n\r\n  return (\r\n    <TestContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\"flex items-center gap-2 px-4 py-2 text-sm\", className)}\r\n        {...props}\r\n      >\r\n        {children ?? (\r\n          <>\r\n            <TestStatus />\r\n            <TestName />\r\n            {duration !== undefined && <TestDuration />}\r\n          </>\r\n        )}\r\n      </div>\r\n    </TestContext.Provider>\r\n  );\r\n};\r\n\r\nexport type TestErrorProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const TestError = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestErrorProps) => (\r\n  <div\r\n    className={cn(\r\n      \"mt-2 rounded-md bg-red-50 p-3 dark:bg-red-900/20\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type TestErrorMessageProps = HTMLAttributes<HTMLParagraphElement>;\r\n\r\nexport const TestErrorMessage = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestErrorMessageProps) => (\r\n  <p\r\n    className={cn(\r\n      \"font-medium text-red-700 text-sm dark:text-red-400\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </p>\r\n);\r\n\r\nexport type TestErrorStackProps = HTMLAttributes<HTMLPreElement>;\r\n\r\nexport const TestErrorStack = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: TestErrorStackProps) => (\r\n  <pre\r\n    className={cn(\r\n      \"mt-2 overflow-auto font-mono text-red-600 text-xs dark:text-red-400\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </pre>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/test-results.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "tests",
+        "status",
+        "progress",
+        "errors"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-test-results.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/test-results.tsx",
+            "upstreamPath": "packages/elements/src/test-results.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/test-results.tsx",
+            "upstreamSha256": "sha256:71fb2b77cfa34e6d7d3b1cc06a765622f755bcec193d3d539f4bead0e937f346",
+            "contentSha256": "sha256:c40723f5390bd303fca6dd8c5d629ac1912c0aaddccbeea496a193cf44658e75",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion handling and logical spacing and text alignment for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/test-results.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/test-results.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion handling and logical spacing and text alignment for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "hierarchical-test-result-report",
+        "sourceHash": "sha256:a1125a215cccabb603467d2fffdbb4afd6385104a47576c350260dff1f367fd9",
+        "contentHash": "sha256:e78d2add38bb879c5b54e1f8599ed18d788cc6828c9cee91985c8267f27b6310",
+        "structureHash": "sha256:6239c91af8b366208ba716ca465156b23366196c627e98c013364daafc5821ff"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

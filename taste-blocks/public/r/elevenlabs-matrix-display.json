@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "elevenlabs-matrix-display",
+  "title": "LED Matrix Display",
+  "author": "ElevenLabs UI",
+  "description": "Renders accessible animated LED matrices from frames, patterns, or live volume levels.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/elevenlabs-ui/components/elevenlabs-matrix-display/index.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { useEffect, useMemo, useRef, useState } from \"react\";\n\nimport { cn } from \"./utils\";\n\nexport type Frame = number[][];\ntype MatrixMode = \"default\" | \"vu\";\n\ninterface CellPosition {\n  x: number;\n  y: number;\n}\n\ninterface MatrixProps extends React.HTMLAttributes<HTMLDivElement> {\n  rows: number;\n  cols: number;\n  pattern?: Frame;\n  frames?: Frame[];\n  fps?: number;\n  autoplay?: boolean;\n  loop?: boolean;\n  size?: number;\n  gap?: number;\n  palette?: {\n    on: string;\n    off: string;\n  };\n  brightness?: number;\n  ariaLabel?: string;\n  onFrame?: (index: number) => void;\n  mode?: MatrixMode;\n  levels?: number[];\n}\n\nfunction clamp(value: number): number {\n  return Math.max(0, Math.min(1, value));\n}\n\nfunction ensureFrameSize(frame: Frame, rows: number, cols: number): Frame {\n  const result: Frame = [];\n  for (let r = 0; r < rows; r++) {\n    const row = frame[r] || [];\n    result.push([]);\n    for (let c = 0; c < cols; c++) {\n      result[r][c] = row[c] ?? 0;\n    }\n  }\n  return result;\n}\n\nfunction useAnimation(\n  frames: Frame[] | undefined,\n  options: {\n    fps: number;\n    autoplay: boolean;\n    loop: boolean;\n    onFrame?: (index: number) => void;\n  },\n): { frameIndex: number; isPlaying: boolean } {\n  const [frameIndex, setFrameIndex] = useState(0);\n  const [isPlaying, setIsPlaying] = useState(options.autoplay);\n  const [reducedMotion, setReducedMotion] = useState(false);\n  const frameIdRef = useRef<number | undefined>(undefined);\n  const lastTimeRef = useRef<number>(0);\n  const accumulatorRef = useRef<number>(0);\n\n  useEffect(() => {\n    const query = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReducedMotion(query.matches);\n    update();\n    query.addEventListener(\"change\", update);\n    return () => query.removeEventListener(\"change\", update);\n  }, []);\n\n  useEffect(() => {\n    if (!frames || frames.length === 0 || !isPlaying || reducedMotion) {\n      return;\n    }\n\n    const frameInterval = 1000 / options.fps;\n\n    const animate = (currentTime: number) => {\n      if (lastTimeRef.current === 0) {\n        lastTimeRef.current = currentTime;\n      }\n\n      const deltaTime = currentTime - lastTimeRef.current;\n      lastTimeRef.current = currentTime;\n      accumulatorRef.current += deltaTime;\n\n      if (accumulatorRef.current >= frameInterval) {\n        accumulatorRef.current -= frameInterval;\n\n        setFrameIndex((prev) => {\n          const next = prev + 1;\n          if (next >= frames.length) {\n            if (options.loop) {\n              options.onFrame?.(0);\n              return 0;\n            } else {\n              setIsPlaying(false);\n              return prev;\n            }\n          }\n          options.onFrame?.(next);\n          return next;\n        });\n      }\n\n      frameIdRef.current = requestAnimationFrame(animate);\n    };\n\n    frameIdRef.current = requestAnimationFrame(animate);\n\n    return () => {\n      if (frameIdRef.current) {\n        cancelAnimationFrame(frameIdRef.current);\n      }\n    };\n  }, [\n    frames,\n    isPlaying,\n    options.fps,\n    options.loop,\n    options.onFrame,\n    reducedMotion,\n  ]);\n\n  useEffect(() => {\n    setFrameIndex(0);\n    setIsPlaying(options.autoplay && !reducedMotion);\n    lastTimeRef.current = 0;\n    accumulatorRef.current = 0;\n  }, [frames, options.autoplay, reducedMotion]);\n\n  return { frameIndex, isPlaying };\n}\n\nfunction emptyFrame(rows: number, cols: number): Frame {\n  return Array.from({ length: rows }, () => Array(cols).fill(0));\n}\n\nfunction setPixel(frame: Frame, row: number, col: number, value: number): void {\n  if (row >= 0 && row < frame.length && col >= 0 && col < frame[0].length) {\n    frame[row][col] = value;\n  }\n}\n\nexport const digits: Frame[] = [\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [0, 0, 1, 0, 0],\n    [0, 1, 1, 0, 0],\n    [0, 0, 1, 0, 0],\n    [0, 0, 1, 0, 0],\n    [0, 0, 1, 0, 0],\n    [0, 0, 1, 0, 0],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [0, 0, 0, 0, 1],\n    [0, 0, 0, 1, 0],\n    [0, 0, 1, 0, 0],\n    [0, 1, 0, 0, 0],\n    [1, 1, 1, 1, 1],\n  ],\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [0, 0, 0, 0, 1],\n    [0, 0, 1, 1, 0],\n    [0, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [0, 0, 0, 1, 0],\n    [0, 0, 1, 1, 0],\n    [0, 1, 0, 1, 0],\n    [1, 0, 0, 1, 0],\n    [1, 1, 1, 1, 1],\n    [0, 0, 0, 1, 0],\n    [0, 0, 0, 1, 0],\n  ],\n  [\n    [1, 1, 1, 1, 1],\n    [1, 0, 0, 0, 0],\n    [1, 1, 1, 1, 0],\n    [0, 0, 0, 0, 1],\n    [0, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 0],\n    [1, 0, 0, 0, 0],\n    [1, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [1, 1, 1, 1, 1],\n    [0, 0, 0, 0, 1],\n    [0, 0, 0, 1, 0],\n    [0, 0, 1, 0, 0],\n    [0, 1, 0, 0, 0],\n    [0, 1, 0, 0, 0],\n    [0, 1, 0, 0, 0],\n  ],\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n  [\n    [0, 1, 1, 1, 0],\n    [1, 0, 0, 0, 1],\n    [1, 0, 0, 0, 1],\n    [0, 1, 1, 1, 1],\n    [0, 0, 0, 0, 1],\n    [0, 0, 0, 0, 1],\n    [0, 1, 1, 1, 0],\n  ],\n];\n\nexport const chevronLeft: Frame = [\n  [0, 0, 0, 1, 0],\n  [0, 0, 1, 0, 0],\n  [0, 1, 0, 0, 0],\n  [0, 0, 1, 0, 0],\n  [0, 0, 0, 1, 0],\n];\n\nexport const chevronRight: Frame = [\n  [0, 1, 0, 0, 0],\n  [0, 0, 1, 0, 0],\n  [0, 0, 0, 1, 0],\n  [0, 0, 1, 0, 0],\n  [0, 1, 0, 0, 0],\n];\n\nexport const loader: Frame[] = (() => {\n  const frames: Frame[] = [];\n  const size = 7;\n  const center = 3;\n  const radius = 2.5;\n\n  for (let frame = 0; frame < 12; frame++) {\n    const f = emptyFrame(size, size);\n    for (let i = 0; i < 8; i++) {\n      const angle = (frame / 12) * Math.PI * 2 + (i / 8) * Math.PI * 2;\n      const x = Math.round(center + Math.cos(angle) * radius);\n      const y = Math.round(center + Math.sin(angle) * radius);\n      const brightness = 1 - i / 10;\n      setPixel(f, y, x, Math.max(0.2, brightness));\n    }\n    frames.push(f);\n  }\n\n  return frames;\n})();\n\nexport const pulse: Frame[] = (() => {\n  const frames: Frame[] = [];\n  const size = 7;\n  const center = 3;\n\n  for (let frame = 0; frame < 16; frame++) {\n    const f = emptyFrame(size, size);\n    const phase = (frame / 16) * Math.PI * 2;\n    const intensity = (Math.sin(phase) + 1) / 2;\n\n    setPixel(f, center, center, 1);\n\n    const radius = Math.floor((1 - intensity) * 3) + 1;\n    for (let dy = -radius; dy <= radius; dy++) {\n      for (let dx = -radius; dx <= radius; dx++) {\n        const dist = Math.sqrt(dx * dx + dy * dy);\n        if (Math.abs(dist - radius) < 0.7) {\n          setPixel(f, center + dy, center + dx, intensity * 0.6);\n        }\n      }\n    }\n\n    frames.push(f);\n  }\n\n  return frames;\n})();\n\nexport function vu(columns: number, levels: number[]): Frame {\n  const rows = 7;\n  const frame = emptyFrame(rows, columns);\n\n  for (let col = 0; col < Math.min(columns, levels.length); col++) {\n    const level = Math.max(0, Math.min(1, levels[col]));\n    const height = Math.floor(level * rows);\n\n    for (let row = 0; row < rows; row++) {\n      const rowFromBottom = rows - 1 - row;\n      if (rowFromBottom < height) {\n        let brightness = 1;\n        if (row < rows * 0.3) {\n          brightness = 1;\n        } else if (row < rows * 0.6) {\n          brightness = 0.8;\n        } else {\n          brightness = 0.6;\n        }\n        frame[row][col] = brightness;\n      }\n    }\n  }\n\n  return frame;\n}\n\nexport const wave: Frame[] = (() => {\n  const frames: Frame[] = [];\n  const rows = 7;\n  const cols = 7;\n\n  for (let frame = 0; frame < 24; frame++) {\n    const f = emptyFrame(rows, cols);\n    const phase = (frame / 24) * Math.PI * 2;\n\n    for (let col = 0; col < cols; col++) {\n      const colPhase = (col / cols) * Math.PI * 2;\n      const height = Math.sin(phase + colPhase) * 2.5 + 3.5;\n      const row = Math.floor(height);\n\n      if (row >= 0 && row < rows) {\n        setPixel(f, row, col, 1);\n        const frac = height - row;\n        if (row > 0) setPixel(f, row - 1, col, 1 - frac);\n        if (row < rows - 1) setPixel(f, row + 1, col, frac);\n      }\n    }\n\n    frames.push(f);\n  }\n\n  return frames;\n})();\n\nexport const snake: Frame[] = (() => {\n  const frames: Frame[] = [];\n  const rows = 7;\n  const cols = 7;\n  const path: Array<[number, number]> = [];\n\n  let x = 0;\n  let y = 0;\n  let dx = 1;\n  let dy = 0;\n\n  const visited = new Set<string>();\n  while (path.length < rows * cols) {\n    path.push([y, x]);\n    visited.add(`${y},${x}`);\n\n    const nextX = x + dx;\n    const nextY = y + dy;\n\n    if (\n      nextX >= 0 &&\n      nextX < cols &&\n      nextY >= 0 &&\n      nextY < rows &&\n      !visited.has(`${nextY},${nextX}`)\n    ) {\n      x = nextX;\n      y = nextY;\n    } else {\n      const newDx = -dy;\n      const newDy = dx;\n      dx = newDx;\n      dy = newDy;\n\n      const nextX = x + dx;\n      const nextY = y + dy;\n\n      if (\n        nextX >= 0 &&\n        nextX < cols &&\n        nextY >= 0 &&\n        nextY < rows &&\n        !visited.has(`${nextY},${nextX}`)\n      ) {\n        x = nextX;\n        y = nextY;\n      } else {\n        break;\n      }\n    }\n  }\n\n  const snakeLength = 5;\n  for (let frame = 0; frame < path.length; frame++) {\n    const f = emptyFrame(rows, cols);\n\n    for (let i = 0; i < snakeLength; i++) {\n      const idx = frame - i;\n      if (idx >= 0 && idx < path.length) {\n        const [y, x] = path[idx];\n        const brightness = 1 - i / snakeLength;\n        setPixel(f, y, x, brightness);\n      }\n    }\n\n    frames.push(f);\n  }\n\n  return frames;\n})();\n\nexport const Matrix = React.forwardRef<HTMLDivElement, MatrixProps>(\n  (\n    {\n      rows,\n      cols,\n      pattern,\n      frames,\n      fps = 12,\n      autoplay = true,\n      loop = true,\n      size = 10,\n      gap = 2,\n      palette = {\n        on: \"currentColor\",\n        off: \"var(--muted-foreground)\",\n      },\n      brightness = 1,\n      ariaLabel,\n      onFrame,\n      mode = \"default\",\n      levels,\n      className,\n      ...props\n    },\n    ref,\n  ) => {\n    const { frameIndex } = useAnimation(frames, {\n      fps,\n      autoplay: autoplay && !pattern,\n      loop,\n      onFrame,\n    });\n\n    const currentFrame = useMemo(() => {\n      if (mode === \"vu\" && levels && levels.length > 0) {\n        return ensureFrameSize(vu(cols, levels), rows, cols);\n      }\n\n      if (pattern) {\n        return ensureFrameSize(pattern, rows, cols);\n      }\n\n      if (frames && frames.length > 0) {\n        return ensureFrameSize(frames[frameIndex] || frames[0], rows, cols);\n      }\n\n      return ensureFrameSize([], rows, cols);\n    }, [pattern, frames, frameIndex, rows, cols, mode, levels]);\n\n    const cellPositions = useMemo(() => {\n      const positions: CellPosition[][] = [];\n\n      for (let row = 0; row < rows; row++) {\n        positions[row] = [];\n        for (let col = 0; col < cols; col++) {\n          positions[row][col] = {\n            x: col * (size + gap),\n            y: row * (size + gap),\n          };\n        }\n      }\n\n      return positions;\n    }, [rows, cols, size, gap]);\n\n    const svgDimensions = useMemo(() => {\n      return {\n        width: cols * (size + gap) - gap,\n        height: rows * (size + gap) - gap,\n      };\n    }, [rows, cols, size, gap]);\n\n    const isAnimating = !pattern && frames && frames.length > 0;\n\n    return (\n      <div\n        ref={ref}\n        role=\"img\"\n        aria-label={ariaLabel ?? \"matrix display\"}\n        aria-live={isAnimating ? \"polite\" : undefined}\n        className={cn(\"relative inline-block\", className)}\n        style={\n          {\n            \"--matrix-on\": palette.on,\n            \"--matrix-off\": palette.off,\n            \"--matrix-gap\": `${gap}px`,\n            \"--matrix-size\": `${size}px`,\n          } as React.CSSProperties\n        }\n        {...props}\n      >\n        <svg\n          width={svgDimensions.width}\n          height={svgDimensions.height}\n          viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}\n          xmlns=\"http://www.w3.org/2000/svg\"\n          className=\"block\"\n          style={{ overflow: \"visible\" }}\n        >\n          <defs>\n            <radialGradient id=\"matrix-pixel-on\" cx=\"50%\" cy=\"50%\" r=\"50%\">\n              <stop offset=\"0%\" stopColor=\"var(--matrix-on)\" stopOpacity=\"1\" />\n              <stop\n                offset=\"70%\"\n                stopColor=\"var(--matrix-on)\"\n                stopOpacity=\"0.85\"\n              />\n              <stop\n                offset=\"100%\"\n                stopColor=\"var(--matrix-on)\"\n                stopOpacity=\"0.6\"\n              />\n            </radialGradient>\n\n            <radialGradient id=\"matrix-pixel-off\" cx=\"50%\" cy=\"50%\" r=\"50%\">\n              <stop\n                offset=\"0%\"\n                stopColor=\"var(--muted-foreground)\"\n                stopOpacity=\"1\"\n              />\n              <stop\n                offset=\"100%\"\n                stopColor=\"var(--muted-foreground)\"\n                stopOpacity=\"0.7\"\n              />\n            </radialGradient>\n\n            <filter\n              id=\"matrix-glow\"\n              x=\"-50%\"\n              y=\"-50%\"\n              width=\"200%\"\n              height=\"200%\"\n            >\n              <feGaussianBlur stdDeviation=\"2\" result=\"blur\" />\n              <feComposite in=\"SourceGraphic\" in2=\"blur\" operator=\"over\" />\n            </filter>\n          </defs>\n\n          <style>\n            {`\n              .matrix-pixel {\n                transition: opacity 300ms ease-out, transform 150ms ease-out;\n                transform-origin: center;\n                transform-box: fill-box;\n              }\n              .matrix-pixel-active {\n                filter: url(#matrix-glow);\n              }\n            `}\n          </style>\n\n          {currentFrame.map((row, rowIndex) =>\n            row.map((value, colIndex) => {\n              const pos = cellPositions[rowIndex]?.[colIndex];\n              if (!pos) return null;\n\n              const opacity = clamp(brightness * value);\n              const isActive = opacity > 0.5;\n              const isOn = opacity > 0.05;\n              const fill = isOn\n                ? \"url(#matrix-pixel-on)\"\n                : \"url(#matrix-pixel-off)\";\n\n              const scale = isActive ? 1.1 : 1;\n              const radius = (size / 2) * 0.9;\n\n              return (\n                <circle\n                  key={`${rowIndex}-${colIndex}`}\n                  className={cn(\n                    \"matrix-pixel\",\n                    isActive && \"matrix-pixel-active\",\n                    !isOn && \"opacity-20 dark:opacity-[0.1]\",\n                  )}\n                  cx={pos.x + size / 2}\n                  cy={pos.y + size / 2}\n                  r={radius}\n                  fill={fill}\n                  opacity={isOn ? opacity : 0.1}\n                  style={{\n                    transform: `scale(${scale})`,\n                  }}\n                />\n              );\n            }),\n          )}\n        </svg>\n      </div>\n    );\n  },\n);\n\nMatrix.displayName = \"Matrix\";\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/elevenlabs-ui/elevenlabs-matrix-display/index.tsx"
+    },
+    {
+      "path": "registry/sources/elevenlabs-ui/components/elevenlabs-matrix-display/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/elevenlabs-ui/elevenlabs-matrix-display/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "matrix",
+        "led",
+        "animation",
+        "audio"
+      ],
+      "renderer": "dom",
+      "preview": "previews/elevenlabs-matrix-display.tsx",
+      "source": {
+        "project": "ElevenLabs UI",
+        "repository": "https://github.com/elevenlabs/ui",
+        "revision": "6e5b681c01ee28073c89a047ebe5ecebf6a7def2",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/elevenlabs-matrix-display/index.tsx",
+            "upstreamPath": "apps/www/registry/elevenlabs-ui/ui/matrix.tsx",
+            "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/apps/www/registry/elevenlabs-ui/ui/matrix.tsx",
+            "upstreamSha256": "sha256:f074f26d5d9060b53c794893993c2ab8b7c13d6de0c1a4135cad069d0ecf0141",
+            "contentSha256": "sha256:5c6946e449253a1c99d170ffffd04c22e2d1ab6ccd579472dc9094f1f4fe96ad",
+            "changes": [
+              "Changed project aliases to bundled source-local imports and normalized formatting.",
+              "Added native reduced-motion detection that freezes autoplay while retaining caller-supplied static patterns."
+            ]
+          },
+          {
+            "shippedPath": "components/elevenlabs-matrix-display/utils.ts",
+            "upstreamPath": "apps/www/lib/utils.ts",
+            "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/apps/www/lib/utils.ts",
+            "upstreamSha256": "sha256:7f7082a8e4a8137a17d45372a67c6272dbc8eca95451cc2f4645fe866249e3f9",
+            "contentSha256": "sha256:d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+            "changes": [
+              "Removed the unrelated site URL helper, kept the upstream cn utility, normalized formatting, and made the closure source-local."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/elevenlabs-ui/ui/matrix.tsx, apps/www/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 Eleven Labs Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/elevenlabs/ui/blob/6e5b681c01ee28073c89a047ebe5ecebf6a7def2/LICENSE.md",
+          "sha256": "sha256:ad3f66b8568970d067e3bd47b690ad013945a61f972559743946a3a6558dc828",
+          "localPath": "registry/sources/elevenlabs-ui/LICENSE.md"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/elevenlabs-matrix-display/index.tsx",
+          "change": "Changed project aliases to bundled source-local imports and normalized formatting. Added native reduced-motion detection that freezes autoplay while retaining caller-supplied static patterns.",
+          "reason": "Keep the copied component install-complete, source-local, accessible, and production-safe without changing its core upstream design."
+        },
+        {
+          "shippedPath": "components/elevenlabs-matrix-display/utils.ts",
+          "change": "Removed the unrelated site URL helper, kept the upstream cn utility, normalized formatting, and made the closure source-local.",
+          "reason": "Keep the copied component install-complete, source-local, accessible, and production-safe without changing its core upstream design."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-led-matrix-display",
+        "sourceHash": "sha256:a619137a53652b9e02f0063206198e0e1196a1cfdd8430f21baf1844f3fd7086",
+        "contentHash": "sha256:1e2f6b0318ea0a0e59f6523289ca66a17d51474f7ea3e1b89bbdb07b288ebbb0",
+        "structureHash": "sha256:09af3c7aff66488617d4a6b48c13e9312cddc99d59cef2ea40dcf524b9b95bfc"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

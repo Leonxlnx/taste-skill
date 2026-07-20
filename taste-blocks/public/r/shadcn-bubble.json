@@ -1,0 +1,114 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shadcn-bubble",
+  "title": "Bubble",
+  "author": "shadcn",
+  "description": "Composes aligned message bubbles with optional reactions.",
+  "dependencies": [
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "radix-ui@1.4.3",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/shadcn-ui/components/radix-nova/bubble.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { Slot } from \"radix-ui\"\n\nimport { cn } from \"../lib/utils\"\n\nfunction BubbleGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"bubble-group\"\n      className={cn(\"flex min-w-0 flex-col gap-2\", className)}\n      {...props}\n    />\n  )\n}\n\nconst bubbleVariants = cva(\n  \"group/bubble relative flex w-fit max-w-[80%] min-w-0 flex-col gap-1 group-data-[align=end]/message:self-end data-[align=end]:self-end data-[variant=ghost]:max-w-full\",\n  {\n    variants: {\n      variant: {\n        default:\n          \"*:data-[slot=bubble-content]:bg-primary *:data-[slot=bubble-content]:text-primary-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-primary/80\",\n        secondary:\n          \"*:data-[slot=bubble-content]:bg-secondary *:data-[slot=bubble-content]:text-secondary-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]\",\n        muted:\n          \"*:data-[slot=bubble-content]:bg-muted [&>[data-slot=bubble-content]:is(button,a):hover]:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_5%)]\",\n        tinted:\n          \"*:data-[slot=bubble-content]:bg-[oklch(from_var(--primary)_0.93_calc(c*0.4)_h)] *:data-[slot=bubble-content]:text-foreground dark:*:data-[slot=bubble-content]:bg-[oklch(from_var(--primary)_0.3_calc(c*0.4)_h)] [&>[data-slot=bubble-content]:is(button,a):hover]:bg-[oklch(from_var(--primary)_0.88_calc(c*0.5)_h)] dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-[oklch(from_var(--primary)_0.35_calc(c*0.5)_h)]\",\n        outline:\n          \"*:data-[slot=bubble-content]:border-border *:data-[slot=bubble-content]:bg-background [&>[data-slot=bubble-content]:is(button,a):hover]:bg-muted [&>[data-slot=bubble-content]:is(button,a):hover]:text-foreground dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-input/30\",\n        ghost:\n          \"border-none *:data-[slot=bubble-content]:rounded-none *:data-[slot=bubble-content]:bg-transparent *:data-[slot=bubble-content]:p-0 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-muted [&>[data-slot=bubble-content]:is(button,a):hover]:text-foreground dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-muted/50\",\n        destructive:\n          \"*:data-[slot=bubble-content]:bg-destructive/10 *:data-[slot=bubble-content]:text-destructive dark:*:data-[slot=bubble-content]:bg-destructive/20 [&>[data-slot=bubble-content]:is(button,a):hover]:bg-destructive/20 dark:[&>[data-slot=bubble-content]:is(button,a):hover]:bg-destructive/30\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nfunction Bubble({\n  variant = \"default\",\n  align = \"start\",\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  VariantProps<typeof bubbleVariants> & {\n    align?: \"start\" | \"end\"\n  }) {\n  return (\n    <div\n      data-slot=\"bubble\"\n      data-variant={variant}\n      data-align={align}\n      className={cn(bubbleVariants({ variant }), className)}\n      {...props}\n    />\n  )\n}\n\nfunction BubbleContent({\n  asChild = false,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  asChild?: boolean\n}) {\n  const Comp = asChild ? Slot.Root : \"div\"\n\n  return (\n    <Comp\n      data-slot=\"bubble-content\"\n      className={cn(\n        \"w-fit max-w-full min-w-0 overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:self-end [button]:text-start [button,a]:transition-colors [button,a]:outline-none [button,a]:focus-visible:border-ring [button,a]:focus-visible:ring-3 [button,a]:focus-visible:ring-ring/50 motion-reduce:transition-none\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nconst bubbleReactionsVariants = cva(\n  \"absolute z-10 flex w-fit shrink-0 items-center justify-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-sm ring-3 ring-card has-[button]:p-0\",\n  {\n    variants: {\n      side: {\n        top: \"top-0 -translate-y-3/4\",\n        bottom: \"bottom-0 translate-y-3/4\",\n      },\n      align: {\n        start: \"start-3\",\n        end: \"end-3\",\n      },\n    },\n    defaultVariants: {\n      side: \"bottom\",\n      align: \"end\",\n    },\n  }\n)\n\nfunction BubbleReactions({\n  side = \"bottom\",\n  align = \"end\",\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  align?: \"start\" | \"end\"\n  side?: \"top\" | \"bottom\"\n}) {\n  return (\n    <div\n      data-slot=\"bubble-reactions\"\n      data-align={align}\n      data-side={side}\n      className={cn(bubbleReactionsVariants({ side, align }), className)}\n      {...props}\n    />\n  )\n}\n\nexport { BubbleGroup, Bubble, BubbleContent, BubbleReactions }\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/shadcn-ui/radix-nova/bubble.tsx"
+    },
+    {
+      "path": "registry/sources/shadcn-ui/components/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "bubble",
+        "message",
+        "reaction"
+      ],
+      "renderer": "dom",
+      "preview": "previews/shadcn-bubble.tsx",
+      "source": {
+        "project": "shadcn/ui",
+        "repository": "https://github.com/shadcn-ui/ui",
+        "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/radix-nova/bubble.tsx",
+            "upstreamPath": "apps/v4/registry/bases/radix/ui/bubble.tsx",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/bubble.tsx",
+            "upstreamSha256": "sha256:61d5805b9b588e60a446c5ee971fabd4466b2fce9af5dc940cd33ac9378bdc5f",
+            "contentSha256": "sha256:75cc848d01a4151e0edd0a72b80d4de277e61ac4fcced8595c7b31fb8341d477",
+            "changes": [
+              "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file.",
+              "Changed generated source aliases to bundled relative imports.",
+              "Disabled nonessential animation and transitions under reduced motion."
+            ]
+          },
+          {
+            "shippedPath": "components/lib/utils.ts",
+            "upstreamPath": "apps/v4/lib/utils.ts",
+            "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+            "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+            "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+            "changes": [
+              "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/registry/bases/radix/ui/bubble.tsx, apps/v4/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+          "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+          "localPath": "registry/sources/shadcn-ui/LICENSE"
+        },
+        "notices": [
+          "registry/sources/shadcn-ui/NOTICE"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/radix-nova/bubble.tsx",
+          "change": "Applied shadcn/ui's pinned radix-nova style transform and official RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports. Disabled nonessential animation and transitions under reduced motion.",
+          "reason": "Ship the official component family with its generated styling, bidirectional behavior, portable imports, and reduced-motion fallback."
+        },
+        {
+          "shippedPath": "components/lib/utils.ts",
+          "change": "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item.",
+          "reason": "Bundle the exact support closure required by the installed component."
+        }
+      ],
+      "dedupe": {
+        "family": "message-bubble",
+        "sourceHash": "sha256:bb499ff9d3e38e7fe44753737d3eae3493035ba6785c0bb7e9306315172f2f46",
+        "contentHash": "sha256:8833c52d0a721d19b595fb01b24c97fcc903c5cb654cc3b91a0866d89b7f227a",
+        "structureHash": "sha256:da80bdd889a9d8063142b8128fdf2c338981b6e937d898af3cc03e62d234bd32"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

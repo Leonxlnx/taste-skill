@@ -1,0 +1,144 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carbon-icons-motion-center-circle-icon",
+  "title": "Animated Center Circle Icon",
+  "author": "Carbon Design System contributors",
+  "description": "Converges four guides while the target ring contracts and returns.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-center-circle-icon/center-circle-motion.tsx",
+      "content": "\"use client\";\n\nimport type { SVGProps } from \"react\";\n\nimport styles from \"./center-circle-motion.module.css\";\n\nexport interface CenterCircleMotionProps extends Omit<SVGProps<SVGSVGElement>, \"title\"> {\n  isAnimated?: boolean;\n  size?: number;\n  title?: string | null;\n}\n\nexport function CenterCircleMotion({\n  className,\n  isAnimated = false,\n  size = 32,\n  title = \"Center circle\",\n  ...props\n}: CenterCircleMotionProps) {\n  const hasAccessibleName = Boolean(title || props[\"aria-label\"] || props[\"aria-labelledby\"]);\n\n  return (\n    <svg\n      fill=\"currentColor\"\n      {...props}\n      aria-hidden={hasAccessibleName ? props[\"aria-hidden\"] : true}\n      className={[isAnimated ? styles.isAnimating : \"\", className].filter(Boolean).join(\" \")}\n      height={size}\n      role={props.role ?? (hasAccessibleName ? \"img\" : undefined)}\n      viewBox=\"0 0 32 32\"\n      width={size}\n    >\n      {title ? <title>{title}</title> : null}\n      <path\n        className={styles.CenterCircle}\n        d=\"M27,16c0,6.1-4.9,11-11,11S5,22.1,5,16S9.9,5,16,5S27,9.9,27,16z\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n      />\n      <path className={styles.CenterCircleTop} d=\"M17,2h-2v8h2V2z\" />\n      <path className={styles.CenterCircleRight} d=\"M10.1,17v-2h-8v2H10.1z\" />\n      <path className={styles.CenterCircleBottom} d=\"M15,29.9h2v-8h-2V29.9z\" />\n      <path className={styles.CenterCircleLeft} d=\"M29.9,17v-2h-8v2H29.9z\" />\n      <path d=\"M29.9,17v-2h-8v2H29.9z M15,29.9h2v-8h-2V29.9z M10.1,17v-2h-8v2H10.1z M17,2h-2v8h2V2z\" />\n    </svg>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/carbon-icons-motion-center-circle-icon/center-circle-motion.tsx"
+    },
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-center-circle-icon/center-circle-motion.module.css",
+      "content": ".CenterCircle {\n  stroke-miterlimit: 10;\n  stroke-width: 2px;\n  transform-origin: 1rem 1rem;\n  vector-effect: non-scaling-stroke;\n  will-change: transform;\n}\n\n.CenterCircleTop,\n.CenterCircleRight,\n.CenterCircleLeft,\n.CenterCircleBottom {\n  will-change: transform;\n}\n\n.isAnimating .CenterCircle {\n  animation: center-circle 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CenterCircleTop {\n  animation: center-circle-top 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CenterCircleRight {\n  animation: center-circle-right 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CenterCircleLeft {\n  animation: center-circle-left 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CenterCircleBottom {\n  animation: center-circle-bottom 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n@keyframes center-circle {\n  0% { transform: scale(1); }\n  50% { transform: scale(0.8); }\n  100% { transform: scale(1); }\n}\n\n@keyframes center-circle-top {\n  0% { transform: translateY(0); }\n  50% { transform: translateY(2px); }\n  100% { transform: translateY(0); }\n}\n\n@keyframes center-circle-bottom {\n  0% { transform: translateY(0); }\n  50% { transform: translateY(-2px); }\n  100% { transform: translateY(0); }\n}\n\n@keyframes center-circle-right {\n  0% { transform: translateX(0); }\n  50% { transform: translateX(2px); }\n  100% { transform: translateX(0); }\n}\n\n@keyframes center-circle-left {\n  0% { transform: translateX(0); }\n  50% { transform: translateX(-2px); }\n  100% { transform: translateX(0); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .isAnimating .CenterCircle,\n  .isAnimating .CenterCircleTop,\n  .isAnimating .CenterCircleRight,\n  .isAnimating .CenterCircleLeft,\n  .isAnimating .CenterCircleBottom {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/carbon-icons-motion-center-circle-icon/center-circle-motion.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "center",
+        "target",
+        "align",
+        "circle",
+        "animated",
+        "icon",
+        "carbon",
+        "reduced-motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/carbon-icons-motion-center-circle-icon.tsx",
+      "source": {
+        "project": "Carbon Icons Motion",
+        "repository": "https://github.com/carbon-design-system/icons-motion",
+        "revision": "7e0a7459eb7d8f96fae0649e1450b65af7f75a2b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/carbon-icons-motion-center-circle-icon/center-circle-motion.tsx",
+            "upstreamPath": "src/components/Operations/CenterCircleMotion/CenterCircleMotion.js",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Operations/CenterCircleMotion/CenterCircleMotion.js",
+            "upstreamSha256": "sha256:6a7d42980b84d6a2de329de3d518afd5fdbb8334e8894bb473f6d7b29543238a",
+            "contentSha256": "sha256:9280fd21af463b77d6b7ac5d7b3ef74bfc7fb461c84a56626345c3a4e9613d6f",
+            "changes": [
+              "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop.",
+              "Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/carbon-icons-motion-center-circle-icon/center-circle-motion.module.css",
+            "upstreamPath": "src/components/Operations/CenterCircleMotion/center-circle--motion.module.scss",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Operations/CenterCircleMotion/center-circle--motion.module.scss",
+            "upstreamSha256": "sha256:73ac2c943d522c22b8a4ea631b3351148438583b583d0b9fa4ed29cdad77c9e0",
+            "contentSha256": "sha256:d96a69cef0ab192a0565f8f315411cbf6a3a62ea865284ed8425bf7e133a9d5e",
+            "changes": [
+              "Converted the nested SCSS module to an equivalent flat CSS module.",
+              "Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling."
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "geometry": "Inline SVG geometry copied from the official Carbon Icons Motion component blob.",
+        "carbonBasis": {
+          "statement": "The upstream README says the package mirrors Carbon icons but is not tied to a specific Carbon version.",
+          "upstreamPath": "README.md",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/README.md",
+          "sha256": "sha256:3f0e1bd45dc58a966edb3f7ba76d1b0d9231ade1a7cae7b8d7ee36ca12130069"
+        }
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/Operations/CenterCircleMotion/CenterCircleMotion.js, src/components/Operations/CenterCircleMotion/center-circle--motion.module.scss, and their inline Carbon-derived SVG geometry",
+        "copyright": [
+          "Copyright 2015 IBM Corp."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/LICENSE",
+          "sha256": "sha256:c3c4a0200172f8e23c0ea6a0f2c105ac960721c542b63d5de5e9767d195c2e73",
+          "localPath": "registry/sources/carbon-icons-motion/LICENSE"
+        },
+        "notices": [
+          "registry/sources/carbon-icons-motion/NOTICE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/carbon-icons-motion/NOTICE",
+            "sha256": "sha256:95ab19a8acd4553d339b6b0fcfd7c9c93329ceccfa6713364f7a9e5ed42ead46",
+            "changes": [
+              "Created locally because the pinned upstream commit contains no NOTICE file; records attribution and Apache modification marking."
+            ]
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/carbon-icons-motion-center-circle-icon/center-circle-motion.tsx",
+          "change": "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop. Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers.",
+          "reason": "Expose a strict, controlled, portable React SVG component without changing its source geometry."
+        },
+        {
+          "shippedPath": "components/carbon-icons-motion-center-circle-icon/center-circle-motion.module.css",
+          "change": "Converted the nested SCSS module to an equivalent flat CSS module. Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling.",
+          "reason": "Remove the Sass requirement, prevent looping/autoplay, meet the UI timing budget, and honor reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "carbon-four-way-guides-converge-on-ring",
+        "sourceHash": "sha256:08184faf88dca871d645baf22cbd04fe1cf431cc3c9ef2a1941117ac55d637b8",
+        "contentHash": "sha256:c15661484e639244d846007d590954ab135cc246ed1b25b8eb9d39ba50e2ca4a",
+        "structureHash": "sha256:b3bff2d974b327417fc55fec4db810642741f9708de1c632751d6a1ee57847d9",
+        "geometryHash": "sha256:35fbd0317e7cdeb3279d1f9e8e8f6d05fde7ee3f199343014f7f8f38e0bafb19",
+        "motionHash": "sha256:9a9d286f8afe90a1e7db49d2202141ea0ed6ae8c6e88c146c44303d496d993e9",
+        "rasterHash": "sha256:2eb5aca831e91f21218dc71bd603fdd3d1e5d86c730e84ac4fa1642fef953429",
+        "glyph": {
+          "inventoryName": "center-circle",
+          "canonicalName": "center-circle",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": "Generic Carbon-system glyph; no product logo, company mark, or remote asset retained."
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

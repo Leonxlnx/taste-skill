@@ -1,0 +1,158 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uilayouts-code-tabs",
+  "title": "Code Tabs",
+  "author": "UI LAYOUT",
+  "description": "Displays one or more caller-provided code samples with accessible tabs, highlighting, and copy controls.",
+  "dependencies": [
+    "@radix-ui/react-tabs@1.1.16",
+    "clsx@2.1.1",
+    "lucide-react@1.23.0",
+    "shiki@4.3.1",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-code-tabs/code-tabs.tsx",
+      "content": "\"use client\";\n\nimport { type ReactNode, useEffect, useState } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\nimport { CopyButton } from \"./code-tabs-copy-button\";\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from \"./code-tabs-tabs\";\n\nexport type CodeTabInput = {\n  id: string;\n  label: ReactNode;\n  code: string;\n  lang?: string;\n};\n\nexport function CodeTabs({\n  tabs,\n  defaultValue,\n  className,\n}: {\n  tabs: CodeTabInput[];\n  defaultValue?: string;\n  className?: string;\n}) {\n  const [highlighted, setHighlighted] = useState<Record<string, string>>({});\n\n  useEffect(() => {\n    let cancelled = false;\n    (async () => {\n      try {\n        const { codeToHtml } = await import(\"shiki/bundle/web\");\n        const entries = await Promise.all(\n          tabs.map(async (tab) => {\n            const html = await codeToHtml(tab.code, {\n              lang: tab.lang ?? \"tsx\",\n              themes: { light: \"github-light\", dark: \"slack-dark\" },\n            });\n            return [tab.id, html] as const;\n          }),\n        );\n        if (!cancelled) setHighlighted(Object.fromEntries(entries));\n      } catch {\n        if (!cancelled) setHighlighted({});\n      }\n    })();\n    return () => {\n      cancelled = true;\n    };\n  }, [tabs]);\n\n  if (tabs.length === 0) return null;\n\n  if (tabs.length === 1) {\n    const tab = tabs[0];\n    return (\n      <div className={cn(\"relative overflow-x-auto rounded bg-zinc-900 p-4\", className)}>\n        <CopyButton classname=\"absolute right-2 top-2\" code={tab.code} />\n        {highlighted[tab.id] ? (\n          <div dangerouslySetInnerHTML={{ __html: highlighted[tab.id] }} />\n        ) : (\n          <pre className=\"opacity-50\">\n            <code>{tab.code}</code>\n          </pre>\n        )}\n      </div>\n    );\n  }\n\n  const initialValue = tabs.some((tab) => tab.id === defaultValue) ? defaultValue : tabs[0].id;\n\n  return (\n    <Tabs\n      className={cn(\"relative my-5 rounded-xl border bg-muted p-1 backdrop-blur-md\", className)}\n      defaultValue={initialValue}\n    >\n      <TabsList aria-label=\"Code examples\" className=\"mx-1 mt-1 rounded-lg border-0 bg-transparent\">\n        {tabs.map((tab) => (\n          <TabsTrigger\n            className=\"gap-1 data-[state=active]:border data-[state=active]:bg-card\"\n            key={tab.id}\n            value={tab.id}\n          >\n            {tab.label}\n          </TabsTrigger>\n        ))}\n      </TabsList>\n\n      {tabs.map((tab) => (\n        <TabsContent className=\"mt-1 overflow-x-auto border-none\" key={tab.id} value={tab.id}>\n          <CopyButton classname=\"absolute right-3 top-1.5 border bg-card\" code={tab.code} />\n          {highlighted[tab.id] ? (\n            <div\n              className=\"cliblocks rounded-xl border-none px-2 py-1\"\n              dangerouslySetInnerHTML={{ __html: highlighted[tab.id] }}\n            />\n          ) : (\n            <pre className=\"cliblocks rounded-xl px-2 py-1 opacity-50\">\n              <code>{tab.code}</code>\n            </pre>\n          )}\n        </TabsContent>\n      ))}\n    </Tabs>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/code-tabs.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+      "content": "\"use client\";\n\nimport * as TabsPrimitive from \"@radix-ui/react-tabs\";\nimport * as React from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nconst Tabs = TabsPrimitive.Root;\n\nconst TabsList = React.forwardRef<\n  React.ElementRef<typeof TabsPrimitive.List>,\n  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>\n>(({ className, ...props }, ref) => (\n  <TabsPrimitive.List\n    ref={ref}\n    className={cn(\n      \"inline-flex h-10 items-center justify-center rounded-md border bg-input p-1 text-muted-foreground\",\n      className,\n    )}\n    {...props}\n  />\n));\nTabsList.displayName = TabsPrimitive.List.displayName;\n\nconst TabsTrigger = React.forwardRef<\n  React.ElementRef<typeof TabsPrimitive.Trigger>,\n  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>\n>(({ className, ...props }, ref) => (\n  <TabsPrimitive.Trigger\n    ref={ref}\n    className={cn(\n      \"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-xs motion-reduce:transition-none\",\n      className,\n    )}\n    {...props}\n  />\n));\nTabsTrigger.displayName = TabsPrimitive.Trigger.displayName;\n\ninterface TabsContentProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> {\n  manualType?: boolean;\n}\n\nconst TabsContent = React.forwardRef<\n  React.ElementRef<typeof TabsPrimitive.Content>,\n  TabsContentProps\n>(({ className, manualType, ...props }, ref) => (\n  <TabsPrimitive.Content\n    ref={ref}\n    className={cn(\n      \"mt-2 ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2\",\n      className,\n      manualType && \"rounded-lg border bg-muted p-3\",\n    )}\n    {...props}\n  />\n));\nTabsContent.displayName = TabsPrimitive.Content.displayName;\n\nexport { Tabs, TabsContent, TabsList, TabsTrigger };\n",
+      "type": "registry:ui",
+      "target": "@components/taste-blocks/code-tabs-tabs.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+      "content": "\"use client\";\n\nimport { CheckCheck, Copy } from \"lucide-react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport function CopyButton({ code, classname }: { code: string; classname?: string }) {\n  const [status, setStatus] = useState<\"idle\" | \"copied\" | \"failed\">(\"idle\");\n  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);\n\n  useEffect(() => {\n    return () => {\n      if (resetTimer.current) clearTimeout(resetTimer.current);\n    };\n  }, []);\n\n  const onCopy = async () => {\n    try {\n      await navigator.clipboard.writeText(code);\n      setStatus(\"copied\");\n    } catch {\n      setStatus(\"failed\");\n    }\n    if (resetTimer.current) clearTimeout(resetTimer.current);\n    resetTimer.current = setTimeout(() => setStatus(\"idle\"), 1000);\n  };\n\n  return (\n    <button\n      aria-label={status === \"copied\" ? \"Code copied\" : status === \"failed\" ? \"Copy failed\" : \"Copy code\"}\n      className={cn(\n        \"absolute right-2 top-2 grid h-8 w-9 cursor-pointer place-content-center rounded-md border-2 bg-card backdrop-blur-2xl transition-shadow hover:border-blue-300 hover:shadow-[0px_1px_10px_5px_#9abaf7] focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none dark:hover:border-blue-500 dark:hover:shadow-[0px_1px_10px_5px_#3f7ef3]\",\n        classname,\n      )}\n      onClick={onCopy}\n      type=\"button\"\n    >\n      {status === \"copied\" ? (\n        <CheckCheck aria-hidden=\"true\" className=\"h-4 w-4 text-foreground/80\" />\n      ) : (\n        <Copy aria-hidden=\"true\" className=\"h-4 w-4 text-foreground/80\" />\n      )}\n    </button>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/code-tabs-copy-button.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "code",
+        "tabs",
+        "syntax-highlighting"
+      ],
+      "renderer": "dom",
+      "preview": "previews/uilayouts-code-tabs.tsx",
+      "source": {
+        "project": "UI Layouts Free",
+        "repository": "https://github.com/ui-layouts/uilayouts",
+        "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/uilayouts-code-tabs/code-tabs.tsx",
+            "upstreamPath": "apps/ui-layout/components/ui/code-tabs.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/code-tabs.tsx",
+            "upstreamSha256": "sha256:4bd4e60018ecabeb0b0545d0410c1e459e00826bbfb18fa63c1f35159cff0f37",
+            "contentSha256": "sha256:55d849b34fcc427747abdbb8b76199a93240c49bb7a754864defdaf46ad2e1db",
+            "changes": [
+              "Changed website and root-alias imports to copied local support files.",
+              "Removed the branded ui-layouts/shadcn logo branch and retained the generic caller-driven tabs API.",
+              "Added a plain-code fallback for Shiki load failures and horizontal overflow for long lines.",
+              "Normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+            "upstreamPath": "apps/ui-layout/components/website/ui/tabs.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/website/ui/tabs.tsx",
+            "upstreamSha256": "sha256:191f604e4b9f6ee0b8471f97bbf47baabdf69d68b37c4be35db422c369646390",
+            "contentSha256": "sha256:55c282892f167b2da50ae9bfcb87b9e52b7db06dff57fdebbdb909d31f4f96a5",
+            "changes": [
+              "Changed the utility import to ../../lib/utils, added a reduced-motion transition class, and normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+            "upstreamPath": "apps/ui-layout/components/website/code-components/copy-button.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/website/code-components/copy-button.tsx",
+            "upstreamSha256": "sha256:b9182a153f3e468338dc76bdc6b10dd0681e786b837917142e734d1075bb314a",
+            "contentSha256": "sha256:a9e4e38ef9a87989d39958825e5105b1779bc1711a1789f6376211280ce26c58",
+            "changes": [
+              "Changed the utility import to ../../lib/utils.",
+              "Replaced the clickable div with a named button, handled clipboard rejection, and cleaned up the reset timer.",
+              "Added reduced-motion styling and normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/ui-layout/lib/utils.ts",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+            "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/ui-layout/components/ui/code-tabs.tsx, apps/ui-layout/components/website/ui/tabs.tsx, apps/ui-layout/components/website/code-components/copy-button.tsx, and apps/ui-layout/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 UI LAYOUT"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+          "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+          "localPath": "registry/sources/ui-layouts/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/uilayouts-code-tabs/code-tabs.tsx",
+          "change": "Rewired copied support, removed the branded demo mode, and added highlighting failure and long-line fallbacks.",
+          "reason": "Keep one generic component API, remove built-in trademarks, and preserve readable code if optional highlighting fails."
+        },
+        {
+          "shippedPath": "components/uilayouts-code-tabs/code-tabs-tabs.tsx",
+          "change": "Rewired the copied utility and disabled CSS transitions for reduced motion.",
+          "reason": "Make the copied Radix tabs support portable and respect the user motion preference."
+        },
+        {
+          "shippedPath": "components/uilayouts-code-tabs/code-tabs-copy-button.tsx",
+          "change": "Rewired the copied utility, changed the clickable div to a named button, handled clipboard failure, cleaned up its timer, and disabled transitions for reduced motion.",
+          "reason": "Make copy keyboard-accessible and prevent stale timers or false success feedback."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+          "reason": "Keep the copied support closure minimal and remove site URLs."
+        }
+      ],
+      "dedupe": {
+        "family": "syntax-highlighted-code-tabs",
+        "sourceHash": "sha256:a35791122d7bf0d98e6bc5151f798391712255ed03c347b4ebad6f6fd3722fb6",
+        "contentHash": "sha256:f423641c07aab715cb22dc759c36b79551d24f899b21978631d4c9ba1ed714d8",
+        "structureHash": "sha256:c6feb96550507faf4d0cb48371fe37b77a3fd1697955c97086895f615b38027c"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

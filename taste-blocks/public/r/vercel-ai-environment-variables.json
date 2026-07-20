@@ -1,0 +1,95 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-environment-variables",
+  "title": "Environment Variables",
+  "author": "Vercel",
+  "description": "A masked environment-variable list with reveal, required state, and copy formats.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "badge",
+    "button",
+    "switch",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/environment-variables.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { Switch } from \"@/components/ui/switch\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { CheckIcon, CopyIcon, EyeIcon, EyeOffIcon } from \"lucide-react\";\r\nimport type { ComponentProps, HTMLAttributes } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\n\r\ninterface EnvironmentVariablesContextType {\r\n  showValues: boolean;\r\n  setShowValues: (show: boolean) => void;\r\n}\r\n\r\n// Default noop for context default value\r\n// oxlint-disable-next-line eslint(no-empty-function)\r\nconst noop = () => {};\r\n\r\nconst EnvironmentVariablesContext =\r\n  createContext<EnvironmentVariablesContextType>({\r\n    setShowValues: noop,\r\n    showValues: false,\r\n  });\r\n\r\nexport type EnvironmentVariablesProps = HTMLAttributes<HTMLDivElement> & {\r\n  showValues?: boolean;\r\n  defaultShowValues?: boolean;\r\n  onShowValuesChange?: (show: boolean) => void;\r\n};\r\n\r\nexport const EnvironmentVariables = ({\r\n  showValues: controlledShowValues,\r\n  defaultShowValues = false,\r\n  onShowValuesChange,\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariablesProps) => {\r\n  const [internalShowValues, setInternalShowValues] =\r\n    useState(defaultShowValues);\r\n  const showValues = controlledShowValues ?? internalShowValues;\r\n\r\n  const setShowValues = useCallback(\r\n    (show: boolean) => {\r\n      setInternalShowValues(show);\r\n      onShowValuesChange?.(show);\r\n    },\r\n    [onShowValuesChange]\r\n  );\r\n\r\n  const contextValue = useMemo(\r\n    () => ({ setShowValues, showValues }),\r\n    [setShowValues, showValues]\r\n  );\r\n\r\n  return (\r\n    <EnvironmentVariablesContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\"rounded-lg border bg-background\", className)}\r\n        {...props}\r\n      >\r\n        {children}\r\n      </div>\r\n    </EnvironmentVariablesContext.Provider>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariablesHeaderProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const EnvironmentVariablesHeader = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariablesHeaderProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between border-b px-4 py-3\",\r\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type EnvironmentVariablesTitleProps = HTMLAttributes<HTMLHeadingElement>;\r\n\r\nexport const EnvironmentVariablesTitle = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariablesTitleProps) => (\r\n  <h3 className={cn(\"font-medium text-sm\", className)} {...props}>\r\n    {children ?? \"Environment Variables\"}\r\n  </h3>\r\n);\r\n\r\nexport type EnvironmentVariablesToggleProps = ComponentProps<typeof Switch>;\r\n\r\nexport const EnvironmentVariablesToggle = ({\r\n  className,\r\n  ...props\r\n}: EnvironmentVariablesToggleProps) => {\r\n  const { showValues, setShowValues } = useContext(EnvironmentVariablesContext);\r\n\r\n  return (\r\n    <div className={cn(\"flex items-center gap-2\", className)}>\r\n      <span className=\"text-muted-foreground text-xs\">\r\n        {showValues ? <EyeIcon size={14} /> : <EyeOffIcon size={14} />}\r\n      </span>\r\n      <Switch\r\n        aria-label=\"Toggle value visibility\"\r\n        checked={showValues}\r\n        onCheckedChange={setShowValues}\r\n        {...props}\r\n      />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariablesContentProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const EnvironmentVariablesContent = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariablesContentProps) => (\r\n  <div className={cn(\"divide-y\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\ninterface EnvironmentVariableContextType {\r\n  name: string;\r\n  value: string;\r\n}\r\n\r\nconst EnvironmentVariableContext =\r\n  createContext<EnvironmentVariableContextType>({\r\n    name: \"\",\r\n    value: \"\",\r\n  });\r\n\r\nexport type EnvironmentVariableGroupProps = HTMLAttributes<HTMLDivElement>;\r\n\r\nexport const EnvironmentVariableGroup = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariableGroupProps) => (\r\n  <div className={cn(\"flex items-center gap-2\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type EnvironmentVariableNameProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const EnvironmentVariableName = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariableNameProps) => {\r\n  const { name } = useContext(EnvironmentVariableContext);\r\n\r\n  return (\r\n    <span className={cn(\"font-mono text-sm\", className)} {...props}>\r\n      {children ?? name}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariableValueProps = HTMLAttributes<HTMLSpanElement>;\r\n\r\nexport const EnvironmentVariableValue = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariableValueProps) => {\r\n  const { value } = useContext(EnvironmentVariableContext);\r\n  const { showValues } = useContext(EnvironmentVariablesContext);\r\n\r\n  const displayValue = showValues\r\n    ? value\r\n    : \"•\".repeat(Math.min(value.length, 20));\r\n\r\n  return (\r\n    <span\r\n      className={cn(\r\n        \"font-mono text-muted-foreground text-sm\",\r\n        !showValues && \"select-none\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      {children ?? displayValue}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariableProps = HTMLAttributes<HTMLDivElement> & {\r\n  name: string;\r\n  value: string;\r\n};\r\n\r\nexport const EnvironmentVariable = ({\r\n  name,\r\n  value,\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariableProps) => {\r\n  const envVarContextValue = useMemo(() => ({ name, value }), [name, value]);\r\n\r\n  return (\r\n    <EnvironmentVariableContext.Provider value={envVarContextValue}>\r\n      <div\r\n        className={cn(\r\n          \"flex items-center justify-between gap-4 px-4 py-3\",\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children ?? (\r\n          <>\r\n            <div className=\"flex items-center gap-2\">\r\n              <EnvironmentVariableName />\r\n            </div>\r\n            <EnvironmentVariableValue />\r\n          </>\r\n        )}\r\n      </div>\r\n    </EnvironmentVariableContext.Provider>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariableCopyButtonProps = ComponentProps<\r\n  typeof Button\r\n> & {\r\n  onCopy?: () => void;\r\n  onError?: (error: Error) => void;\r\n  timeout?: number;\r\n  copyFormat?: \"name\" | \"value\" | \"export\";\r\n};\r\n\r\nexport const EnvironmentVariableCopyButton = ({\r\n  onCopy,\r\n  onError,\r\n  timeout = 2000,\r\n  copyFormat = \"value\",\r\n  children,\r\n  className,\r\n  ...props\r\n}: EnvironmentVariableCopyButtonProps) => {\r\n  const [isCopied, setIsCopied] = useState(false);\r\n  const timeoutRef = useRef<number>(0);\r\n  const { name, value } = useContext(EnvironmentVariableContext);\r\n\r\n  const getTextToCopy = useCallback((): string => {\r\n    const formatMap = {\r\n      export: () => `export ${name}=\"${value}\"`,\r\n      name: () => name,\r\n      value: () => value,\r\n    };\r\n    return formatMap[copyFormat]();\r\n  }, [name, value, copyFormat]);\r\n\r\n  const copyToClipboard = useCallback(async () => {\r\n    if (typeof window === \"undefined\" || !navigator?.clipboard?.writeText) {\r\n      onError?.(new Error(\"Clipboard API not available\"));\r\n      return;\r\n    }\r\n\r\n    try {\r\n      await navigator.clipboard.writeText(getTextToCopy());\r\n      setIsCopied(true);\r\n      onCopy?.();\r\n      timeoutRef.current = window.setTimeout(() => setIsCopied(false), timeout);\r\n    } catch (error) {\r\n      onError?.(error as Error);\r\n    }\r\n  }, [getTextToCopy, onCopy, onError, timeout]);\r\n\r\n  useEffect(\r\n    () => () => {\r\n      window.clearTimeout(timeoutRef.current);\r\n    },\r\n    []\r\n  );\r\n\r\n  const Icon = isCopied ? CheckIcon : CopyIcon;\r\n\r\n  return (\r\n    <Button\r\n      className={cn(\"size-6 shrink-0\", className)}\r\n      onClick={copyToClipboard}\r\n      size=\"icon\"\r\n      variant=\"ghost\"\r\n      {...props}\r\n    >\r\n      {children ?? <Icon size={12} />}\r\n    </Button>\r\n  );\r\n};\r\n\r\nexport type EnvironmentVariableRequiredProps = ComponentProps<typeof Badge>;\r\n\r\nexport const EnvironmentVariableRequired = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: EnvironmentVariableRequiredProps) => (\r\n  <Badge className={cn(\"text-xs\", className)} variant=\"secondary\" {...props}>\r\n    {children ?? \"Required\"}\r\n  </Badge>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/environment-variables.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "environment",
+        "masking",
+        "clipboard",
+        "settings"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-environment-variables.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/environment-variables.tsx",
+            "upstreamPath": "packages/elements/src/environment-variables.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/environment-variables.tsx",
+            "upstreamSha256": "sha256:6b685aacb47e7bcb62e15b74b4e0b0bd7beffb892f3769ad7fc3580e00aae88b",
+            "contentSha256": "sha256:d60c1cb9406bbc91585585a9c0f817ad6657b8a7409f3657b0c320000cff274b",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/environment-variables.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/environment-variables.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "masked-environment-variable-list",
+        "sourceHash": "sha256:9bf740b881a9431a989b49b34590b28dfd494a7f56f9257dbdc29f71f529365b",
+        "contentHash": "sha256:bd81d558762471ff3a15d9b76f4d5a19c956efadf3bbecc0c2dd71bedd629654",
+        "structureHash": "sha256:c18f6bb383a340e1b7eb2f4fbec4f049a67c6d0f37b5da9c2ea6e81a90778f5b"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

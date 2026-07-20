@@ -1,0 +1,81 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-ascii-renderer",
+  "title": "ASCII Renderer",
+  "author": "pmndrs contributors",
+  "description": "Projects a React Three Fiber scene through a configurable text renderer.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three-stdlib@2.35.6",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/AsciiRenderer.tsx",
+      "content": "import * as React from 'react'\nimport { useFrame, useThree } from '@react-three/fiber'\nimport { AsciiEffect } from 'three-stdlib'\n\nexport type AsciiRendererProps = {\n  /** Render index, default: 1 */\n  renderIndex?: number\n  /** CSS background color (can be \"transparent\"), default: black */\n  bgColor?: string\n  /** CSS character color, default: white */\n  fgColor?: string\n  /** Characters, default: ' .:-+*=%@#' */\n  characters?: string\n  /** Invert character, default: true */\n  invert?: boolean\n  /** Colorize output (very expensive!), default: false */\n  color?: boolean\n  /** Level of detail, default: 0.15 */\n  resolution?: number\n}\n\nexport function AsciiRenderer({\n  renderIndex = 1,\n  bgColor = 'black',\n  fgColor = 'white',\n  characters = ' .:-+*=%@#',\n  invert = true,\n  color = false,\n  resolution = 0.15,\n}: AsciiRendererProps) {\n  // Reactive state\n  const { size, gl, scene, camera } = useThree()\n\n  // Create effect\n  const effect = React.useMemo(() => {\n    const effect = new AsciiEffect(gl, characters, { invert, color, resolution })\n    effect.domElement.style.position = 'absolute'\n    effect.domElement.style.top = '0px'\n    effect.domElement.style.left = '0px'\n    effect.domElement.style.pointerEvents = 'none'\n    return effect\n  }, [characters, invert, color, resolution])\n\n  // Styling\n  React.useLayoutEffect(() => {\n    effect.domElement.style.color = fgColor\n    effect.domElement.style.backgroundColor = bgColor\n  }, [fgColor, bgColor])\n\n  // Append on mount, remove on unmount\n  React.useEffect(() => {\n    gl.domElement.style.opacity = '0'\n    gl.domElement.parentNode!.appendChild(effect.domElement)\n    return () => {\n      gl.domElement.style.opacity = '1'\n      gl.domElement.parentNode!.removeChild(effect.domElement)\n    }\n  }, [effect])\n\n  // Set size\n  React.useEffect(() => {\n    effect.setSize(size.width, size.height)\n  }, [effect, size])\n\n  // Take over render-loop (that is what the index is for)\n  useFrame((state) => {\n    effect.render(scene, camera)\n  }, renderIndex)\n\n  // return something to not break type signatures\n  return <></>\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/AsciiRenderer.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "ascii",
+        "renderer",
+        "webgl",
+        "text"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-ascii-renderer.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/AsciiRenderer.tsx",
+            "upstreamPath": "src/core/AsciiRenderer.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/AsciiRenderer.tsx",
+            "upstreamSha256": "sha256:400fa7caa51f18640dff73ea4bc0dc3e90cc3fc7258d793ffc3b83a49e24d7f1",
+            "contentSha256": "sha256:400fa7caa51f18640dff73ea4bc0dc3e90cc3fc7258d793ffc3b83a49e24d7f1",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/AsciiRenderer.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "webgl-ascii-scene-renderer",
+        "sourceHash": "sha256:bfa6ae26845d8349f126276435554c1c87fff6d27ba1f6f9c372960a488c8caa",
+        "contentHash": "sha256:bfa6ae26845d8349f126276435554c1c87fff6d27ba1f6f9c372960a488c8caa",
+        "structureHash": "sha256:f141ebb2978ef651fed074b79777954900af26c8b577be49d3df4736feb0a1cd"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beui-hold-action",
+  "title": "Hold Action",
+  "author": "Saurabh Chauhan",
+  "description": "Confirms a deliberate action only after a continuous pointer or keyboard hold.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.18.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/beui/components/beui-hold-action/hold-action.tsx",
+      "content": "\"use client\";\n\nimport { motion, useReducedMotion, type HTMLMotionProps } from \"motion/react\";\nimport {\n  forwardRef,\n  useRef,\n  useState,\n  type KeyboardEvent,\n  type PointerEvent,\n  type ReactNode,\n} from \"react\";\nimport { EASE_OUT, SPRING_PRESS } from \"../../lib/taste-blocks/beui/ease\";\nimport { cn } from \"../../lib/taste-blocks/beui/utils\";\n\nexport interface HoldActionButtonProps\n  extends Omit<\n    HTMLMotionProps<\"button\">,\n    | \"children\"\n    | \"type\"\n    | \"onClick\"\n    | \"onPointerDown\"\n    | \"onPointerUp\"\n    | \"onPointerCancel\"\n    | \"onPointerLeave\"\n    | \"onKeyDown\"\n    | \"onKeyUp\"\n  > {\n  children: ReactNode;\n  type?: \"vertical\" | \"horizontal\";\n  holdingLabel?: ReactNode;\n  completeLabel?: ReactNode;\n  holdDuration?: number;\n  onHoldComplete?: () => void;\n  fillClassName?: string;\n  labelClassName?: string;\n}\n\nexport const HoldActionButton = forwardRef<\n  HTMLButtonElement,\n  HoldActionButtonProps\n>(function HoldActionButton(\n  {\n    children,\n    type = \"vertical\",\n    holdingLabel = \"Keep holding\",\n    completeLabel = \"Done\",\n    holdDuration = 1600,\n    onHoldComplete,\n    fillClassName,\n    labelClassName,\n    className,\n    disabled,\n    ...rest\n  },\n  ref,\n) {\n  const reduce = useReducedMotion();\n  const completedRef = useRef(false);\n  const [holding, setHolding] = useState(false);\n  const [completed, setCompleted] = useState(false);\n\n  const startHold = () => {\n    if (disabled || holding) return;\n    completedRef.current = false;\n    setCompleted(false);\n    setHolding(true);\n  };\n\n  const cancelHold = () => {\n    setHolding(false);\n    setCompleted(false);\n  };\n\n  const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {\n    if (event.button !== 0) return;\n    try {\n      event.currentTarget.setPointerCapture(event.pointerId);\n    } catch {\n      // Synthetic accessibility input may not own an active pointer.\n    }\n    startHold();\n  };\n\n  const handlePointerUp = (event: PointerEvent<HTMLButtonElement>) => {\n    if (event.currentTarget.hasPointerCapture(event.pointerId)) {\n      event.currentTarget.releasePointerCapture(event.pointerId);\n    }\n    cancelHold();\n  };\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if ((event.key === \" \" || event.key === \"Enter\") && !event.repeat) {\n      event.preventDefault();\n      startHold();\n    }\n  };\n\n  const handleKeyUp = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if (event.key === \" \" || event.key === \"Enter\") {\n      event.preventDefault();\n      cancelHold();\n    }\n  };\n\n  const handleFillComplete = () => {\n    if (!holding || completedRef.current) return;\n    completedRef.current = true;\n    setCompleted(true);\n    onHoldComplete?.();\n  };\n\n  const active = holding || completed;\n  const activeTransform =\n    type === \"horizontal\" ? \"scaleX(1)\" : \"translateY(0%)\";\n  const idleTransform =\n    type === \"horizontal\" ? \"scaleX(0)\" : \"translateY(115%)\";\n\n  return (\n    <motion.button\n      ref={ref}\n      type=\"button\"\n      disabled={disabled}\n      aria-label={typeof children === \"string\" ? children : undefined}\n      onPointerDown={handlePointerDown}\n      onPointerUp={handlePointerUp}\n      onPointerCancel={cancelHold}\n      onPointerLeave={cancelHold}\n      onKeyDown={handleKeyDown}\n      onKeyUp={handleKeyUp}\n      onContextMenu={(event) => event.preventDefault()}\n      whileTap={reduce || disabled ? undefined : { scale: 0.98 }}\n      transition={SPRING_PRESS}\n      className={cn(\n        \"relative inline-grid h-16 min-w-72 touch-none select-none place-items-center overflow-hidden rounded-[22px] bg-primary px-8 text-primary-foreground\",\n        \"outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n        \"disabled:pointer-events-none disabled:opacity-50\",\n        className,\n      )}\n      {...rest}\n    >\n      <motion.span\n        aria-hidden=\"true\"\n        style={{\n          transformOrigin:\n            type === \"horizontal\" ? \"var(--beui-hold-origin)\" : \"center\",\n        }}\n        initial={false}\n        animate={\n          reduce\n            ? { opacity: active ? 1 : 0, transform: \"none\" }\n            : {\n                opacity: 1,\n                transform: active ? activeTransform : idleTransform,\n              }\n        }\n        transition={\n          active\n            ? { duration: holdDuration / 1000, ease: \"linear\" }\n            : { duration: reduce ? 0.15 : 0.24, ease: EASE_OUT }\n        }\n        onAnimationComplete={handleFillComplete}\n        className={cn(\n          \"absolute inset-0 bg-sky-400 will-change-[opacity,transform] [--beui-hold-origin:left] rtl:[--beui-hold-origin:right]\",\n          fillClassName,\n        )}\n      >\n        {!reduce ? (\n          type === \"horizontal\" ? (\n            <motion.svg\n              viewBox=\"0 0 24 240\"\n              preserveAspectRatio=\"none\"\n              aria-hidden=\"true\"\n              animate={{\n                transform: active ? \"translateY(-50%)\" : \"translateY(0%)\",\n              }}\n              transition={{\n                duration: 1.1,\n                ease: \"linear\",\n                repeat: active ? Number.POSITIVE_INFINITY : 0,\n              }}\n              className=\"absolute -end-5 top-0 h-[200%] w-6 text-sky-400 rtl:-scale-x-100\"\n            >\n              <path\n                d=\"M0 0h12C2 20 2 40 12 60s10 40 0 60-10 40 0 60 10 40 0 60H0Z\"\n                fill=\"currentColor\"\n              />\n            </motion.svg>\n          ) : (\n            <motion.svg\n              viewBox=\"0 0 240 24\"\n              preserveAspectRatio=\"none\"\n              aria-hidden=\"true\"\n              animate={{\n                transform: active ? \"translateX(-50%)\" : \"translateX(0%)\",\n              }}\n              transition={{\n                duration: 1.1,\n                ease: \"linear\",\n                repeat: active ? Number.POSITIVE_INFINITY : 0,\n              }}\n              className=\"absolute -top-5 left-0 h-6 w-[200%] text-sky-400\"\n            >\n              <path\n                d=\"M0 12C20 2 40 2 60 12s40 10 60 0 40-10 60 0 40 10 60 0v12H0Z\"\n                fill=\"currentColor\"\n              />\n            </motion.svg>\n          )\n        ) : null}\n      </motion.span>\n\n      <span\n        className={cn(\n          \"relative z-10 grid place-items-center text-base font-medium tracking-[-0.01em]\",\n          labelClassName,\n        )}\n      >\n        <motion.span\n          animate={{ opacity: active ? 0 : 1 }}\n          transition={{ duration: reduce ? 0 : 0.12, ease: EASE_OUT }}\n          className=\"col-start-1 row-start-1\"\n        >\n          {children}\n        </motion.span>\n        <motion.span\n          aria-hidden={!holding || completed}\n          animate={{ opacity: holding && !completed ? 1 : 0 }}\n          transition={{ duration: reduce ? 0 : 0.12, ease: EASE_OUT }}\n          className=\"col-start-1 row-start-1\"\n        >\n          {holdingLabel}\n        </motion.span>\n        <motion.span\n          aria-hidden={!completed}\n          animate={{ opacity: completed ? 1 : 0 }}\n          transition={{ duration: reduce ? 0 : 0.12, ease: EASE_OUT }}\n          className=\"col-start-1 row-start-1\"\n        >\n          {completeLabel}\n        </motion.span>\n      </span>\n    </motion.button>\n  );\n});\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/beui-hold-action.tsx"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/ease.ts",
+      "content": "// Shared motion tokens. Easing curves mirror the CSS custom properties in\n// globals.css; springs are the canonical physics used across components.\n// Strong custom variants — defaults like `ease-in`/`ease-out` feel weak.\n\nexport const EASE_OUT = [0.16, 1, 0.3, 1] as const;\nexport const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const;\nexport const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;\n\n/** CSS string form of EASE_OUT for inline style transitions. */\nexport const EASE_OUT_CSS = \"cubic-bezier(0.16, 1, 0.3, 1)\";\n\n/** Press feedback on buttons and other tappable surfaces. */\nexport const SPRING_PRESS = {\n  type: \"spring\",\n  stiffness: 500,\n  damping: 30,\n  mass: 0.6,\n} as const;\n\n/** Content swaps — label/icon slots trading places inside a control. */\nexport const SPRING_SWAP = {\n  type: \"spring\",\n  stiffness: 460,\n  damping: 30,\n  mass: 0.55,\n} as const;\n\n/** Overlay panel entrances — modals and sheets summoned by pointer. */\nexport const SPRING_PANEL = {\n  type: \"spring\",\n  stiffness: 420,\n  damping: 40,\n  mass: 0.5,\n} as const;\n\n/** Shared-layout glides — pills, indicators and panels morphing between positions. */\nexport const SPRING_LAYOUT = {\n  type: \"spring\",\n  stiffness: 360,\n  damping: 32,\n  mass: 0.6,\n} as const;\n\n/** Cursor-follow physics for decorative mouse tracking (magnetic, tilt, dock). */\nexport const SPRING_MOUSE = {\n  stiffness: 200,\n  damping: 15,\n  mass: 0.3,\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/ease.ts"
+    },
+    {
+      "path": "registry/sources/beui/lib/taste-blocks/beui/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/taste-blocks/beui/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "buttons-actions",
+      "tags": [
+        "hold",
+        "confirmation",
+        "keyboard",
+        "rtl",
+        "reduced-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/beui-hold-action.tsx",
+      "source": {
+        "project": "beUI",
+        "repository": "https://github.com/starc007/ui-components",
+        "revision": "fb312ce6811cca8ba7b46a5c8fa30c28b5861148",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/beui-hold-action/hold-action.tsx",
+            "upstreamPath": "components/motion/hold-action-button.tsx",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/components/motion/hold-action-button.tsx",
+            "upstreamSha256": "sha256:3b9874e24dbed6215b669d8b985282ae8d5dea7971b6013ec8e5a6d5c22fd564",
+            "contentSha256": "sha256:b72aec77a8f675c4b497bac788da1a94d21f3770377a35aa9fabae47279922e8",
+            "changes": [
+              "Changed project aliases to bundled relative imports.",
+              "Made the horizontal fill grow from the logical inline start and mirrored its wave in RTL.",
+              "Guarded pointer capture when synthetic accessibility input has no active pointer."
+            ]
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/ease.ts",
+            "upstreamPath": "lib/ease.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/ease.ts",
+            "upstreamSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "contentSha256": "sha256:a24fb30b2859fbd652f8a4c5a7db0ff50f66adb4e581aa009e5105ea54a07105",
+            "changes": []
+          },
+          {
+            "shippedPath": "lib/taste-blocks/beui/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/motion/hold-action-button.tsx, lib/ease.ts, lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Saurabh Chauhan"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/starc007/ui-components/blob/fb312ce6811cca8ba7b46a5c8fa30c28b5861148/LICENSE",
+          "sha256": "sha256:9e27b491d5691a1bd95708e79de23beb2962f33fe6c1ee31ab639f43009a0b20",
+          "localPath": "registry/sources/beui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/beui-hold-action/hold-action.tsx",
+          "change": "Repointed shared imports, made the horizontal fill direction-aware, and guarded pointer capture.",
+          "reason": "Keep the copied component portable while preserving correct progress direction in RTL interfaces."
+        }
+      ],
+      "dedupe": {
+        "family": "hold-to-confirm-action",
+        "sourceHash": "sha256:59749f263dfe8622154292cb68e01df7732f7c3742496a439fda07f619de4eb3",
+        "contentHash": "sha256:0bac20bbf3a497e93dc15d4f6eb55a7f3d2463ede345e768f5613814d75990c1",
+        "structureHash": "sha256:a447964398937f4f22a52de3a5f3c12234b1d0d2b6cd9382d64dbd57d396cd52"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "buttons-actions"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ruixen-spark-chart",
+  "title": "Ruixen Spark Chart",
+  "author": "Ruixen UI",
+  "description": "Scrubs a caller-provided sparkline with pointer, touch, or keyboard input and reports the active value.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ruixen-ui/components/ruixen-spark-chart/index.tsx",
+      "content": "\"use client\";\n\nimport {\n  useCallback,\n  useEffect,\n  useId,\n  useMemo,\n  useRef,\n  useState,\n} from \"react\";\n\nimport { cn } from \"../shared/ruixen-utils\";\n\nexport interface SparkChartProps {\n  data: number[];\n  color?: string;\n  height?: number;\n  formatValue?: (value: number) => string;\n  onValueChange?: (value: number, index: number) => void;\n  onActiveChange?: (active: boolean) => void;\n  label?: string;\n  className?: string;\n}\n\n/* ─── Geometry ─────────────────────────────────────────── */\n\nconst VW = 400;\nconst LABEL_H = 26;\nconst PAD_B = 4;\n\nfunction buildPath(data: number[], h: number): string {\n  const n = data.length;\n  if (n < 2) return \"\";\n\n  const min = Math.min(...data);\n  const max = Math.max(...data);\n  const range = max - min || 1;\n\n  const pts = data.map((v, i) => ({\n    x: (i / (n - 1)) * VW,\n    y: LABEL_H + (1 - (v - min) / range) * (h - LABEL_H - PAD_B),\n  }));\n\n  const t = 0.4;\n  let d = `M ${pts[0].x} ${pts[0].y}`;\n\n  for (let i = 0; i < n - 1; i++) {\n    const p0 = pts[Math.max(0, i - 1)];\n    const p1 = pts[i];\n    const p2 = pts[i + 1];\n    const p3 = pts[Math.min(n - 1, i + 2)];\n\n    d += ` C ${p1.x + ((p2.x - p0.x) * t) / 3} ${\n      p1.y + ((p2.y - p0.y) * t) / 3\n    }, ${p2.x - ((p3.x - p1.x) * t) / 3} ${\n      p2.y - ((p3.y - p1.y) * t) / 3\n    }, ${p2.x} ${p2.y}`;\n  }\n\n  return d;\n}\n\nfunction findPointAtX(\n  path: SVGPathElement,\n  targetX: number,\n): { x: number; y: number } {\n  const total = path.getTotalLength();\n  let lo = 0;\n  let hi = total;\n\n  for (let i = 0; i < 25; i++) {\n    const mid = (lo + hi) / 2;\n    if (path.getPointAtLength(mid).x < targetX) lo = mid;\n    else hi = mid;\n  }\n\n  const pt = path.getPointAtLength((lo + hi) / 2);\n  return { x: pt.x, y: pt.y };\n}\n\nfunction interpolate(\n  data: number[],\n  pct: number,\n): { value: number; index: number } {\n  const idx = pct * (data.length - 1);\n  const lo = Math.floor(idx);\n  const hi = Math.min(Math.ceil(idx), data.length - 1);\n  const t = idx - lo;\n  return {\n    value: data[lo] + (data[hi] - data[lo]) * t,\n    index: Math.round(idx),\n  };\n}\n\n/* ─── Component ────────────────────────────────────────── */\n\nexport function SparkChart({\n  data,\n  color = \"hsl(217, 91%, 60%)\",\n  height = 160,\n  formatValue,\n  onValueChange,\n  onActiveChange,\n  label = \"Data trend\",\n  className,\n}: SparkChartProps) {\n  const uid = useId();\n  const containerRef = useRef<HTMLDivElement>(null);\n  const pathRef = useRef<SVGPathElement>(null);\n\n  const dotRef = useRef<HTMLDivElement>(null);\n  const lineRef = useRef<HTMLDivElement>(null);\n  const revealRef = useRef<SVGGElement>(null);\n  const labelRef = useRef<HTMLSpanElement>(null);\n\n  const activeRef = useRef(false);\n  const [active, setActive] = useState(false);\n  const [activeIndex, setActiveIndex] = useState(() =>\n    Math.max(0, data.length - 1),\n  );\n\n  const chartHeight = Math.max(LABEL_H + PAD_B + 1, height);\n  const hasData = data.length >= 2 && data.every(Number.isFinite);\n\n  const pathD = useMemo(\n    () => (hasData ? buildPath(data, chartHeight) : \"\"),\n    [chartHeight, data, hasData],\n  );\n  const fillD = useMemo(\n    () => (pathD ? `${pathD} L ${VW} ${chartHeight} L 0 ${chartHeight} Z` : \"\"),\n    [chartHeight, pathD],\n  );\n\n  useEffect(() => {\n    setActiveIndex((index) => Math.min(index, Math.max(0, data.length - 1)));\n  }, [data.length]);\n\n  const setInteractionActive = useCallback(\n    (next: boolean) => {\n      if (activeRef.current === next) return;\n      activeRef.current = next;\n      setActive(next);\n      onActiveChange?.(next);\n    },\n    [onActiveChange],\n  );\n\n  const updateAtPercent = useCallback(\n    (rawPercent: number) => {\n      const path = pathRef.current;\n      if (!path || !hasData) return;\n\n      const pct = Math.max(0, Math.min(1, rawPercent));\n      const svgX = pct * VW;\n      const pt = findPointAtX(path, svgX);\n      const pctY = pt.y / chartHeight;\n      const { value, index } = interpolate(data, pct);\n      setActiveIndex(index);\n\n      if (dotRef.current) {\n        dotRef.current.style.left = `${pct * 100}%`;\n        dotRef.current.style.top = `${pctY * 100}%`;\n      }\n      if (lineRef.current) {\n        lineRef.current.style.left = `${pct * 100}%`;\n      }\n      if (revealRef.current) {\n        revealRef.current.style.clipPath = `inset(0 ${(1 - pct) * 100}% 0 0)`;\n      }\n      if (labelRef.current && formatValue) {\n        labelRef.current.style.left = `${pct * 100}%`;\n        labelRef.current.textContent = formatValue(value);\n      }\n\n      onValueChange?.(value, index);\n    },\n    [chartHeight, data, formatValue, hasData, onValueChange],\n  );\n\n  const updateFromClientX = useCallback(\n    (clientX: number) => {\n      const element = containerRef.current;\n      if (!element || element.offsetWidth === 0) return;\n      const rect = element.getBoundingClientRect();\n      updateAtPercent((clientX - rect.left) / rect.width);\n    },\n    [updateAtPercent],\n  );\n\n  const handleLeave = useCallback(() => {\n    setInteractionActive(false);\n    if (revealRef.current) {\n      revealRef.current.style.clipPath = \"inset(0 0% 0 0)\";\n    }\n  }, [setInteractionActive]);\n\n  const safeIndex = Math.min(activeIndex, Math.max(0, data.length - 1));\n  const activeValue = data[safeIndex];\n\n  const handleKeyDown = useCallback(\n    (event: React.KeyboardEvent<HTMLDivElement>) => {\n      if (!hasData) return;\n      let next = safeIndex;\n      switch (event.key) {\n        case \"ArrowRight\":\n        case \"ArrowUp\":\n          next = Math.min(data.length - 1, safeIndex + 1);\n          break;\n        case \"ArrowLeft\":\n        case \"ArrowDown\":\n          next = Math.max(0, safeIndex - 1);\n          break;\n        case \"Home\":\n          next = 0;\n          break;\n        case \"End\":\n          next = data.length - 1;\n          break;\n        default:\n          return;\n      }\n      event.preventDefault();\n      setInteractionActive(true);\n      updateAtPercent(next / (data.length - 1));\n    },\n    [data.length, hasData, safeIndex, setInteractionActive, updateAtPercent],\n  );\n\n  const gradMutedId = `sg-m-${uid}`;\n  const gradColorId = `sg-c-${uid}`;\n\n  return (\n    <div\n      ref={containerRef}\n      dir=\"ltr\"\n      role=\"slider\"\n      aria-label={label}\n      aria-disabled={!hasData}\n      aria-valuemin={0}\n      aria-valuemax={Math.max(0, data.length - 1)}\n      aria-valuenow={safeIndex}\n      aria-valuetext={\n        activeValue === undefined\n          ? \"No data\"\n          : (formatValue?.(activeValue) ?? String(activeValue))\n      }\n      tabIndex={hasData ? 0 : -1}\n      className={cn(\n        \"relative cursor-crosshair select-none touch-pan-y outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2\",\n        className,\n      )}\n      style={{ height: chartHeight }}\n      onFocus={() => {\n        setInteractionActive(true);\n        if (hasData) updateAtPercent(safeIndex / (data.length - 1));\n      }}\n      onBlur={handleLeave}\n      onKeyDown={handleKeyDown}\n      onPointerEnter={(event) => {\n        if (!hasData) return;\n        setInteractionActive(true);\n        updateFromClientX(event.clientX);\n      }}\n      onPointerLeave={handleLeave}\n      onPointerDown={(event) => {\n        if (!hasData || event.button !== 0) return;\n        event.currentTarget.setPointerCapture(event.pointerId);\n        setInteractionActive(true);\n        updateFromClientX(event.clientX);\n      }}\n      onPointerMove={(event) => {\n        if (!hasData) return;\n        if (\n          event.pointerType === \"touch\" &&\n          !event.currentTarget.hasPointerCapture(event.pointerId)\n        )\n          return;\n        updateFromClientX(event.clientX);\n      }}\n      onPointerCancel={handleLeave}\n    >\n      <svg\n        aria-hidden=\"true\"\n        viewBox={`0 0 ${VW} ${chartHeight}`}\n        preserveAspectRatio=\"none\"\n        className=\"absolute inset-0 h-full w-full\"\n      >\n        <defs>\n          <linearGradient id={gradMutedId} x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n            <stop offset=\"0%\" stopColor=\"currentColor\" stopOpacity=\"0.08\" />\n            <stop offset=\"100%\" stopColor=\"currentColor\" stopOpacity=\"0\" />\n          </linearGradient>\n          <linearGradient id={gradColorId} x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n            <stop offset=\"0%\" stopColor={color} stopOpacity=\"0.14\" />\n            <stop offset=\"100%\" stopColor={color} stopOpacity=\"0\" />\n          </linearGradient>\n        </defs>\n\n        {/* Muted base — full path, always visible (the \"right side\" on scrub) */}\n        <g className=\"text-muted-foreground\">\n          <path d={fillD} fill={`url(#${gradMutedId})`} />\n          <path\n            ref={pathRef}\n            d={pathD}\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeOpacity=\"0.3\"\n            strokeWidth=\"2.2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            vectorEffect=\"non-scaling-stroke\"\n          />\n        </g>\n\n        {/* Colored overlay — full at rest, clips to scrub position on hover */}\n        <g ref={revealRef} style={{ clipPath: \"inset(0 0% 0 0)\" }}>\n          <path d={fillD} fill={`url(#${gradColorId})`} />\n          <path\n            d={pathD}\n            fill=\"none\"\n            stroke={color}\n            strokeWidth=\"2.2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            vectorEffect=\"non-scaling-stroke\"\n          />\n        </g>\n      </svg>\n\n      {/* Scrub label */}\n      {formatValue && (\n        <span\n          ref={labelRef}\n          className={cn(\n            \"pointer-events-none absolute top-0 -translate-x-1/2\",\n            \"rounded-md bg-muted px-2 py-0.5\",\n            \"text-[13px] font-medium tabular-nums text-foreground\",\n            \"transition-opacity duration-100\",\n            active ? \"opacity-100\" : \"opacity-0\",\n          )}\n        />\n      )}\n\n      {/* Scrub line */}\n      <div\n        ref={lineRef}\n        className=\"pointer-events-none absolute top-0 bottom-0 w-px -translate-x-1/2 bg-border transition-opacity duration-100\"\n        style={{ opacity: active ? 1 : 0 }}\n      />\n\n      {/* Indicator dot */}\n      <div\n        ref={dotRef}\n        className=\"pointer-events-none absolute size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-100\"\n        style={{\n          backgroundColor: color,\n          boxShadow: \"0 0 0 2px #fff, 0 0 8px 2px rgba(0,0,0,0.12)\",\n          opacity: active ? 1 : 0,\n        }}\n      />\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/spark-chart/index.tsx"
+    },
+    {
+      "path": "registry/sources/ruixen-ui/components/shared/ruixen-utils.ts",
+      "content": "import clsx, { type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "sparkline",
+        "chart",
+        "scrubber",
+        "keyboard",
+        "touch"
+      ],
+      "renderer": "svg",
+      "preview": "previews/ruixen-spark-chart.tsx",
+      "source": {
+        "project": "Ruixen UI",
+        "repository": "https://github.com/ruixenui/ruixen.com",
+        "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ruixen-spark-chart/index.tsx",
+            "upstreamPath": "registry/ruixenui/spark-chart.tsx",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/spark-chart.tsx",
+            "upstreamSha256": "sha256:3a52ed9598508deeb16b10a7d984dbc70a4168e45891976b3bb8d618eca02042",
+            "contentSha256": "sha256:58ab3e6f8111ee9aa10045363b125f135d8eca94b790b7e1e6b74ce614bc4e77",
+            "changes": [
+              "Repointed the source utility import to the copied Ruixen utility subset.",
+              "Added finite-data and geometry guards, slider semantics, keyboard navigation, touch-safe pointer capture, focus feedback, and caller-owned accessible labeling.",
+              "Removed the automatic 800 millisecond draw-in animation and retained only direct scrub feedback."
+            ]
+          },
+          {
+            "shippedPath": "components/shared/ruixen-utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+            "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+            "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+            "changes": [
+              "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/ruixenui/spark-chart.tsx and the cn subset of lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 Ruixen UI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+          "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+          "localPath": "registry/sources/ruixen-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ruixen-spark-chart/index.tsx",
+          "change": "Added bounded input handling and equivalent pointer, touch, focus, and keyboard scrubbing while removing the source load animation.",
+          "reason": "Keep the original path-following chart interaction without pointer-only access, invalid geometry, scroll blocking, or frequent decorative motion."
+        },
+        {
+          "shippedPath": "components/shared/ruixen-utils.ts",
+          "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+          "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+        }
+      ],
+      "dedupe": {
+        "family": "interactive-sparkline-scrubber",
+        "sourceHash": "sha256:0a2aa98b16aee17acd29df763f2945fdabd563dbfa68407aa1fa93b91c1559d3",
+        "contentHash": "sha256:3b138289ae6e443de97d1f09bbec1967912e0c090a3f60aa20ed7a3412c9f92d",
+        "structureHash": "sha256:953d8cc4cdde4c8272ada044d3bf28328dbee75640474e2e61f9074080696642"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

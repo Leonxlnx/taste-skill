@@ -1,0 +1,87 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cult-vote-tally",
+  "title": "Vote Tally",
+  "author": "Cult UI",
+  "description": "Manages controlled or uncontrolled vote counts through composable list controls.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/cult-ui/components/cult-vote-tally/vote-tally.tsx",
+      "content": "\"use client\"\n\nimport {\n  Children,\n  createContext,\n  isValidElement,\n  useCallback,\n  useContext,\n  useMemo,\n  type ComponentProps,\n  type MouseEvent,\n} from \"react\"\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\"\n\n/* -----------------------------------------------------------------------------\n * Types\n * -------------------------------------------------------------------------- */\n\nexport type VoteTallyValue = Record<string, number>\n\nexport interface VoteTallyRootProps\n  extends Omit<ComponentProps<\"div\">, \"defaultValue\"> {\n  /** Current vote counts (controlled) */\n  value?: VoteTallyValue\n  /** Initial vote counts (uncontrolled) */\n  defaultValue?: VoteTallyValue\n  /** Callback when votes change */\n  onValueChange?: (value: VoteTallyValue) => void\n  /** Set of item IDs the current user has voted for */\n  votedItems?: Set<string>\n  /** Default voted items (uncontrolled) */\n  defaultVotedItems?: Set<string>\n  /** Callback when user votes/unvotes */\n  onVotedItemsChange?: (votedItems: Set<string>) => void\n  /** Whether voting is disabled */\n  disabled?: boolean\n}\n\nexport interface VoteTallyItemProps extends ComponentProps<\"div\"> {\n  /** Unique identifier for this item */\n  value: string\n  /** Whether this specific item is disabled */\n  disabled?: boolean\n}\n\nexport type VoteTallyTriggerProps = ComponentProps<\"button\">\n\nexport type VoteTallyCountProps = ComponentProps<\"span\">\n\nexport type VoteTallyTitleProps = ComponentProps<\"span\">\n\nexport type VoteTallyDescriptionProps = ComponentProps<\"span\">\n\nexport interface VoteTallyGroupProps extends ComponentProps<\"div\"> {\n  /** Sort items by vote count */\n  sortBy?: \"votes-asc\" | \"votes-desc\" | \"none\"\n}\n\n/* -----------------------------------------------------------------------------\n * Context\n * -------------------------------------------------------------------------- */\n\ninterface VoteTallyContextValue {\n  votes: VoteTallyValue\n  votedItems: Set<string>\n  disabled: boolean\n  vote: (itemId: string) => void\n  unvote: (itemId: string) => void\n  toggleVote: (itemId: string) => void\n  getVoteCount: (itemId: string) => number\n  hasVoted: (itemId: string) => boolean\n}\n\nconst VoteTallyContext = createContext<VoteTallyContextValue | null>(null)\n\nfunction useVoteTallyContext() {\n  const context = useContext(VoteTallyContext)\n  if (!context) {\n    throw new Error(\"VoteTally components must be used within VoteTally.Root\")\n  }\n  return context\n}\n\ninterface VoteTallyItemContextValue {\n  itemId: string\n  disabled: boolean\n}\n\nconst VoteTallyItemContext = createContext<VoteTallyItemContextValue | null>(\n  null\n)\n\nfunction useVoteTallyItemContext() {\n  const context = useContext(VoteTallyItemContext)\n  if (!context) {\n    throw new Error(\n      \"VoteTally.Item sub-components must be used within VoteTally.Item\"\n    )\n  }\n  return context\n}\n\n/* -----------------------------------------------------------------------------\n * Root\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyRoot({\n  value: controlledValue,\n  defaultValue = {},\n  onValueChange,\n  votedItems: controlledVotedItems,\n  defaultVotedItems,\n  onVotedItemsChange,\n  disabled = false,\n  children,\n  ...props\n}: VoteTallyRootProps) {\n  const [votes, setVotes] = useControllableState<VoteTallyValue>({\n    prop: controlledValue,\n    defaultProp: defaultValue,\n    onChange: onValueChange,\n  })\n\n  const [votedItemsArray, setVotedItemsArray] = useControllableState({\n    prop: controlledVotedItems ? Array.from(controlledVotedItems) : undefined,\n    defaultProp: defaultVotedItems ? Array.from(defaultVotedItems) : [],\n    onChange: (arr) => onVotedItemsChange?.(new Set(arr)),\n  })\n\n  const votedItems = useMemo(() => new Set(votedItemsArray), [votedItemsArray])\n\n  const vote = useCallback(\n    (itemId: string) => {\n      if (disabled || votedItems.has(itemId)) {\n        return\n      }\n\n      setVotes((prev) => ({\n        ...prev,\n        [itemId]: (prev?.[itemId] ?? 0) + 1,\n      }))\n      setVotedItemsArray((prev) => [...(prev ?? []), itemId])\n    },\n    [disabled, votedItems, setVotes, setVotedItemsArray]\n  )\n\n  const unvote = useCallback(\n    (itemId: string) => {\n      if (disabled || !votedItems.has(itemId)) {\n        return\n      }\n\n      setVotes((prev) => ({\n        ...prev,\n        [itemId]: Math.max((prev?.[itemId] ?? 0) - 1, 0),\n      }))\n      setVotedItemsArray((prev) => (prev ?? []).filter((id) => id !== itemId))\n    },\n    [disabled, votedItems, setVotes, setVotedItemsArray]\n  )\n\n  const toggleVote = useCallback(\n    (itemId: string) => {\n      if (votedItems.has(itemId)) {\n        unvote(itemId)\n      } else {\n        vote(itemId)\n      }\n    },\n    [votedItems, vote, unvote]\n  )\n\n  const getVoteCount = useCallback(\n    (itemId: string) => votes?.[itemId] ?? 0,\n    [votes]\n  )\n\n  const hasVoted = useCallback(\n    (itemId: string) => votedItems.has(itemId),\n    [votedItems]\n  )\n\n  const contextValue = useMemo(\n    () => ({\n      votes: votes ?? {},\n      votedItems,\n      disabled,\n      vote,\n      unvote,\n      toggleVote,\n      getVoteCount,\n      hasVoted,\n    }),\n    [\n      votes,\n      votedItems,\n      disabled,\n      vote,\n      unvote,\n      toggleVote,\n      getVoteCount,\n      hasVoted,\n    ]\n  )\n\n  return (\n    <VoteTallyContext.Provider value={contextValue}>\n      <div\n        aria-label=\"Vote tally list\"\n        data-disabled={disabled ? true : undefined}\n        role=\"list\"\n        {...props}\n      >\n        {children}\n      </div>\n    </VoteTallyContext.Provider>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Group (optional sorting wrapper)\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyGroup({\n  sortBy = \"none\",\n  children,\n  ...props\n}: VoteTallyGroupProps) {\n  const { votes } = useVoteTallyContext()\n\n  const sortedChildren = useMemo(() => {\n    if (sortBy === \"none\") {\n      return children\n    }\n\n    const childArray = Children.toArray(children)\n\n    return childArray.sort((a, b) => {\n      if (!(isValidElement(a) && isValidElement(b))) {\n        return 0\n      }\n\n      const aValue = (a.props as VoteTallyItemProps).value\n      const bValue = (b.props as VoteTallyItemProps).value\n      const aVotes = votes[aValue] ?? 0\n      const bVotes = votes[bValue] ?? 0\n\n      return sortBy === \"votes-desc\" ? bVotes - aVotes : aVotes - bVotes\n    })\n  }, [children, sortBy, votes])\n\n  return (\n    <div role=\"presentation\" {...props}>\n      {sortedChildren}\n    </div>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Item\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyItem({\n  value,\n  disabled: itemDisabled = false,\n  children,\n  ...props\n}: VoteTallyItemProps) {\n  const {\n    disabled: rootDisabled,\n    hasVoted,\n    getVoteCount,\n  } = useVoteTallyContext()\n  const disabled = rootDisabled || itemDisabled\n  const voted = hasVoted(value)\n  const voteCount = getVoteCount(value)\n\n  const itemContextValue = useMemo(\n    () => ({ itemId: value, disabled }),\n    [value, disabled]\n  )\n\n  return (\n    <VoteTallyItemContext.Provider value={itemContextValue}>\n      <div\n        data-disabled={disabled ? true : undefined}\n        data-item={value}\n        role=\"listitem\"\n        data-slot=\"vote-tally-item\"\n        data-vote-count={voteCount}\n        data-voted={voted ? true : undefined}\n        {...props}\n      >\n        {children}\n      </div>\n    </VoteTallyItemContext.Provider>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Trigger\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyTrigger({\n  children,\n  onClick,\n  ...props\n}: VoteTallyTriggerProps) {\n  const { toggleVote, hasVoted, disabled: rootDisabled } = useVoteTallyContext()\n  const { itemId, disabled: itemDisabled } = useVoteTallyItemContext()\n\n  const disabled = rootDisabled || itemDisabled\n  const voted = hasVoted(itemId)\n\n  const handleClick = useCallback(\n    (event: MouseEvent<HTMLButtonElement>) => {\n      onClick?.(event)\n      if (!(event.defaultPrevented || disabled)) {\n        toggleVote(itemId)\n      }\n    },\n    [onClick, disabled, toggleVote, itemId]\n  )\n\n  return (\n    <button\n      aria-label={voted ? `Remove vote from ${itemId}` : `Vote for ${itemId}`}\n      aria-pressed={voted}\n      data-slot=\"vote-tally-trigger\"\n      data-state={voted ? \"voted\" : \"idle\"}\n      disabled={disabled}\n      onClick={handleClick}\n      type=\"button\"\n      {...props}\n    >\n      {children}\n    </button>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Count\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyCount({ children, ...props }: VoteTallyCountProps) {\n  const { getVoteCount } = useVoteTallyContext()\n  const { itemId } = useVoteTallyItemContext()\n\n  const count = getVoteCount(itemId)\n\n  return (\n    <span\n      aria-atomic=\"true\"\n      aria-live=\"polite\"\n      data-slot=\"vote-tally-count\"\n      {...props}\n    >\n      {children ?? count}\n    </span>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Title\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyTitle({ children, ...props }: VoteTallyTitleProps) {\n  return (\n    <span data-slot=\"vote-tally-title\" {...props}>\n      {children}\n    </span>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Description\n * -------------------------------------------------------------------------- */\n\nfunction VoteTallyDescription({\n  children,\n  ...props\n}: VoteTallyDescriptionProps) {\n  return (\n    <span data-slot=\"vote-tally-description\" {...props}>\n      {children}\n    </span>\n  )\n}\n\n/* -----------------------------------------------------------------------------\n * Hook for external access\n * -------------------------------------------------------------------------- */\n\nexport function useVoteTally() {\n  return useVoteTallyContext()\n}\n\n/* -----------------------------------------------------------------------------\n * Export\n * -------------------------------------------------------------------------- */\n\nexport const VoteTally = {\n  Root: VoteTallyRoot,\n  Group: VoteTallyGroup,\n  Item: VoteTallyItem,\n  Trigger: VoteTallyTrigger,\n  Count: VoteTallyCount,\n  Title: VoteTallyTitle,\n  Description: VoteTallyDescription,\n}\n\nexport {\n  VoteTallyRoot,\n  VoteTallyGroup,\n  VoteTallyItem,\n  VoteTallyTrigger,\n  VoteTallyCount,\n  VoteTallyTitle,\n  VoteTallyDescription,\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vote-tally.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "voting",
+        "compound-component",
+        "controlled-state"
+      ],
+      "renderer": "dom",
+      "preview": "previews/cult-vote-tally.tsx",
+      "source": {
+        "project": "Cult UI",
+        "repository": "https://github.com/nolly-studio/cult-ui",
+        "revision": "a3308bad8496b036adf2fbd29d50b877fb3c5987",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/cult-vote-tally/vote-tally.tsx",
+            "upstreamPath": "apps/www/registry/default/ui/vote-tally.tsx",
+            "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/apps/www/registry/default/ui/vote-tally.tsx",
+            "upstreamSha256": "sha256:08deaa946fdfd9eff345992fe270ef55649e25710f481953dd7c1130abdd16da",
+            "contentSha256": "sha256:0d7f3449601ddf974e2c6380e1e772818d3c266240907113ab85685694547b3b",
+            "changes": [
+              "Marked the optional sorting wrapper presentational, made default trigger names item-specific, and announced count updates politely.",
+              "Changed the root and item hosts from ul/li to div elements with list/listitem roles so the optional sorting wrapper remains valid HTML and transparent to list semantics."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/www/registry/default/ui/vote-tally.tsx",
+        "copyright": [
+          "Copyright (c) 2023 Jordan-Gilliam"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/nolly-studio/cult-ui/blob/a3308bad8496b036adf2fbd29d50b877fb3c5987/LICENSE.md",
+          "sha256": "sha256:d0470e1591e3b0f38e13719d20ef872ee68adbc5fa1a843e0a761ef5bdd5cc63",
+          "localPath": "registry/sources/cult-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/cult-vote-tally/vote-tally.tsx",
+          "change": "Marked the sorting wrapper presentational, made trigger labels item-specific, made count updates polite live regions, and changed the root/item hosts to div elements with list/listitem roles.",
+          "reason": "Disambiguate repeated controls, expose vote changes, and preserve valid list semantics when the optional sorting wrapper is used."
+        }
+      ],
+      "dedupe": {
+        "family": "vote-tally",
+        "sourceHash": "sha256:e80bca41d2be6635d5504b0d01b0ef74e2cd872faceece5185f4d0fdd7e81686",
+        "contentHash": "sha256:52ac6bf713cd781a83e0f20434dca8c3e7c902626d9b7de81fd15d2fd80271e9",
+        "structureHash": "sha256:5b39424e948b351988eb59789b558fd5243afd97fa2d1c93ace9f42f8b65f838"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

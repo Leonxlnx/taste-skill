@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-postprocessing-grid",
+  "title": "Grid",
+  "author": "pmndrs and react-postprocessing contributors",
+  "description": "Overlays a configurable screen-space grid effect on a rendered scene.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "postprocessing@6.36.6",
+    "three@0.172.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/effects/Grid.tsx",
+      "content": "'use client'\n\nimport React, { Ref, forwardRef, useEffect, useMemo, useLayoutEffect } from 'react'\nimport { GridEffect } from 'postprocessing'\nimport { useThree } from '@react-three/fiber'\n\ntype GridProps = ConstructorParameters<typeof GridEffect>[0] &\n  Partial<{\n    size: {\n      width: number\n      height: number\n    }\n  }>\n\nexport const Grid = /* @__PURE__ */ forwardRef(function Grid({ size, ...props }: GridProps, ref: Ref<GridEffect>) {\n  const invalidate = useThree((state) => state.invalidate)\n  const effect = useMemo(() => new GridEffect(props), [props])\n  useLayoutEffect(() => {\n    if (size) effect.setSize(size.width, size.height)\n    invalidate()\n  }, [effect, size, invalidate])\n  useEffect(() => () => effect.dispose(), [effect])\n  return <primitive ref={ref} object={effect} dispose={null} />\n})\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/effects/Grid.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/EffectComposer.tsx",
+      "content": "'use client'\n\nimport type { TextureDataType, Group, Camera, Scene } from 'three'\nimport { HalfFloatType, NoToneMapping } from 'three'\nimport {\n  type JSX,\n  memo,\n  forwardRef,\n  useMemo,\n  useEffect,\n  useLayoutEffect,\n  createContext,\n  useRef,\n  useImperativeHandle,\n} from 'react'\nimport { useThree, useFrame, type Instance } from '@react-three/fiber'\nimport {\n  EffectComposer as EffectComposerImpl,\n  RenderPass,\n  EffectPass,\n  NormalPass,\n  DepthDownsamplingPass,\n  Effect,\n  Pass,\n  EffectAttribute,\n} from 'postprocessing'\n\nexport const EffectComposerContext = /* @__PURE__ */ createContext<{\n  composer: EffectComposerImpl\n  normalPass: NormalPass | null\n  downSamplingPass: DepthDownsamplingPass | null\n  camera: Camera\n  scene: Scene\n  resolutionScale?: number\n}>(null!)\n\nexport type EffectComposerProps = {\n  enabled?: boolean\n  children: JSX.Element | JSX.Element[]\n  depthBuffer?: boolean\n  /** Only used for SSGI currently, leave it disabled for everything else unless it's needed */\n  enableNormalPass?: boolean\n  stencilBuffer?: boolean\n  autoClear?: boolean\n  resolutionScale?: number\n  multisampling?: number\n  frameBufferType?: TextureDataType\n  renderPriority?: number\n  camera?: Camera\n  scene?: Scene\n}\n\nconst isConvolution = (effect: Effect): boolean =>\n  (effect.getAttributes() & EffectAttribute.CONVOLUTION) === EffectAttribute.CONVOLUTION\n\nexport const EffectComposer = /* @__PURE__ */ memo(\n  /* @__PURE__ */ forwardRef<EffectComposerImpl, EffectComposerProps>(\n    (\n      {\n        children,\n        camera: _camera,\n        scene: _scene,\n        resolutionScale,\n        enabled = true,\n        renderPriority = 1,\n        autoClear = true,\n        depthBuffer,\n        enableNormalPass,\n        stencilBuffer,\n        multisampling = 4,\n        frameBufferType = HalfFloatType,\n      },\n      ref\n    ) => {\n      const { gl, scene: defaultScene, camera: defaultCamera, size } = useThree()\n      const scene = _scene || defaultScene\n      const camera = _camera || defaultCamera\n\n      const [composer, normalPass, downSamplingPass] = useMemo(() => {\n        // Initialize composer\n        const effectComposer = new EffectComposerImpl(gl, {\n          depthBuffer,\n          stencilBuffer,\n          multisampling,\n          frameBufferType,\n        })\n\n        // Add render pass\n        effectComposer.addPass(new RenderPass(scene, camera))\n\n        // Create normal pass\n        let downSamplingPass = null\n        let normalPass = null\n        if (enableNormalPass) {\n          normalPass = new NormalPass(scene, camera)\n          normalPass.enabled = false\n          effectComposer.addPass(normalPass)\n          if (resolutionScale !== undefined) {\n            downSamplingPass = new DepthDownsamplingPass({ normalBuffer: normalPass.texture, resolutionScale })\n            downSamplingPass.enabled = false\n            effectComposer.addPass(downSamplingPass)\n          }\n        }\n\n        return [effectComposer, normalPass, downSamplingPass]\n      }, [\n        camera,\n        gl,\n        depthBuffer,\n        stencilBuffer,\n        multisampling,\n        frameBufferType,\n        scene,\n        enableNormalPass,\n        resolutionScale,\n      ])\n\n      useEffect(() => composer?.setSize(size.width, size.height), [composer, size])\n      useEffect(() => () => composer.dispose(), [composer])\n      useFrame(\n        (_, delta) => {\n          if (enabled) {\n            const currentAutoClear = gl.autoClear\n            gl.autoClear = autoClear\n            if (stencilBuffer && !autoClear) gl.clearStencil()\n            composer.render(delta)\n            gl.autoClear = currentAutoClear\n          }\n        },\n        enabled ? renderPriority : 0\n      )\n\n      const group = useRef<Group>(null!)\n      useLayoutEffect(() => {\n        const passes: Pass[] = []\n\n        // TODO: rewrite all of this with R3F v9\n        const groupInstance = (group.current as Group & { __r3f: Instance<Group> }).__r3f\n\n        if (groupInstance && composer) {\n          const children = groupInstance.children\n\n          for (let i = 0; i < children.length; i++) {\n            const child = children[i].object\n\n            if (child instanceof Effect) {\n              const effects: Effect[] = [child]\n\n              if (!isConvolution(child)) {\n                let next: unknown = null\n                while ((next = children[i + 1]?.object) instanceof Effect) {\n                  if (isConvolution(next)) break\n                  effects.push(next)\n                  i++\n                }\n              }\n\n              const pass = new EffectPass(camera, ...effects)\n              passes.push(pass)\n            } else if (child instanceof Pass) {\n              passes.push(child)\n            }\n          }\n\n          for (const pass of passes) composer?.addPass(pass)\n\n          if (normalPass) normalPass.enabled = true\n          if (downSamplingPass) downSamplingPass.enabled = true\n        }\n\n        return () => {\n          for (const pass of passes) composer?.removePass(pass)\n          if (normalPass) normalPass.enabled = false\n          if (downSamplingPass) downSamplingPass.enabled = false\n        }\n      }, [composer, children, camera, normalPass, downSamplingPass])\n\n      // Disable tone mapping because threejs disallows tonemapping on render targets\n      useEffect(() => {\n        const currentTonemapping = gl.toneMapping\n        gl.toneMapping = NoToneMapping\n        return () => {\n          gl.toneMapping = currentTonemapping\n        }\n      }, [gl])\n\n      // Memoize state, otherwise it would trigger all consumers on every render\n      const state = useMemo(\n        () => ({ composer, normalPass, downSamplingPass, resolutionScale, camera, scene }),\n        [composer, normalPass, downSamplingPass, resolutionScale, camera, scene]\n      )\n\n      // Expose the composer\n      useImperativeHandle(ref, () => composer, [composer])\n\n      return (\n        <EffectComposerContext.Provider value={state}>\n          <group ref={group}>{children}</group>\n        </EffectComposerContext.Provider>\n      )\n    }\n  )\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "grid",
+        "screen-space",
+        "shader"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/react-postprocessing-grid.tsx",
+      "source": {
+        "project": "react-postprocessing",
+        "repository": "https://github.com/pmndrs/react-postprocessing",
+        "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-postprocessing/effects/Grid.tsx",
+            "upstreamPath": "src/effects/Grid.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Grid.tsx",
+            "upstreamSha256": "sha256:3d44884ce38fba0f3eebbbac49e8fb0bbbdd6783c94bcbbfed6de747d7547e85",
+            "contentSha256": "sha256:12a3bf85e4af72d4366135af1236bcf5eb74dc10c329fc97f616bd4e5aa8b63c",
+            "changes": [
+              "Declared the effect as client code and dispose it on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+            "upstreamPath": "src/EffectComposer.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+            "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+            "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+            "changes": [
+              "Declared the React Three Fiber composer as a client component.",
+              "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/effects/Grid.tsx, src/EffectComposer.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/react-postprocessing/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-postprocessing/effects/Grid.tsx",
+          "change": "Declared the effect as client code and dispose it on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+          "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        }
+      ],
+      "dedupe": {
+        "family": "screen-space-grid-effect",
+        "sourceHash": "sha256:f4260bd44da699237a7b81aac841b77358deb037924b8a48191952a185aefd8a",
+        "contentHash": "sha256:7b575dcd71ffb12696a73431870eb03c7f9df0c1a6f79da981fb33af7bf8b7c4",
+        "structureHash": "sha256:8cf0133b10ed07059f324518ac3808795b95975424d84fc817fdf81552cf639c"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

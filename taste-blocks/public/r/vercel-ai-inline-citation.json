@@ -1,0 +1,96 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-inline-citation",
+  "title": "Inline Citation",
+  "author": "Vercel",
+  "description": "An inline citation trigger with an accessible hover card and multi-source carousel.",
+  "dependencies": [
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "badge",
+    "carousel",
+    "hover-card",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/inline-citation.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport type { CarouselApi } from \"@/components/ui/carousel\";\r\nimport {\r\n  Carousel,\r\n  CarouselContent,\r\n  CarouselItem,\r\n} from \"@/components/ui/carousel\";\r\nimport {\r\n  HoverCard,\r\n  HoverCardContent,\r\n  HoverCardTrigger,\r\n} from \"@/components/ui/hover-card\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { ArrowLeftIcon, ArrowRightIcon } from \"lucide-react\";\r\nimport type { ComponentProps } from \"react\";\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useState,\r\n} from \"react\";\r\n\r\nexport type InlineCitationProps = ComponentProps<\"span\">;\r\n\r\nexport const InlineCitation = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationProps) => (\r\n  <span\r\n    className={cn(\"group inline items-center gap-1\", className)}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type InlineCitationTextProps = ComponentProps<\"span\">;\r\n\r\nexport const InlineCitationText = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationTextProps) => (\r\n  <span\r\n    className={cn(\n      \"transition-colors group-hover:bg-accent motion-reduce:transition-none\",\n      className\n    )}\n    {...props}\r\n  />\r\n);\r\n\r\nexport type InlineCitationCardProps = ComponentProps<typeof HoverCard>;\r\n\r\nexport const InlineCitationCard = (props: InlineCitationCardProps) => (\r\n  <HoverCard closeDelay={0} openDelay={0} {...props} />\r\n);\r\n\r\nexport type InlineCitationCardTriggerProps = ComponentProps<typeof Badge> & {\r\n  sources: string[];\r\n};\r\n\r\nexport const InlineCitationCardTrigger = ({\r\n  sources,\r\n  className,\r\n  ...props\r\n}: InlineCitationCardTriggerProps) => (\r\n  <HoverCardTrigger asChild>\r\n    <Badge\r\n      className={cn(\"ms-1 rounded-full\", className)}\n      variant=\"secondary\"\r\n      {...props}\r\n    >\r\n      {sources[0] ? (\r\n        <>\r\n          {new URL(sources[0]).hostname}{\" \"}\r\n          {sources.length > 1 && `+${sources.length - 1}`}\r\n        </>\r\n      ) : (\r\n        \"unknown\"\r\n      )}\r\n    </Badge>\r\n  </HoverCardTrigger>\r\n);\r\n\r\nexport type InlineCitationCardBodyProps = ComponentProps<\"div\">;\r\n\r\nexport const InlineCitationCardBody = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationCardBodyProps) => (\r\n  <HoverCardContent className={cn(\"relative w-80 p-0\", className)} {...props} />\r\n);\r\n\r\nconst CarouselApiContext = createContext<CarouselApi | undefined>(undefined);\r\n\r\nconst useCarouselApi = () => {\r\n  const context = useContext(CarouselApiContext);\r\n  return context;\r\n};\r\n\r\nexport type InlineCitationCarouselProps = ComponentProps<typeof Carousel>;\r\n\r\nexport const InlineCitationCarousel = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: InlineCitationCarouselProps) => {\r\n  const [api, setApi] = useState<CarouselApi>();\r\n\r\n  return (\r\n    <CarouselApiContext.Provider value={api}>\r\n      <Carousel className={cn(\"w-full\", className)} setApi={setApi} {...props}>\r\n        {children}\r\n      </Carousel>\r\n    </CarouselApiContext.Provider>\r\n  );\r\n};\r\n\r\nexport type InlineCitationCarouselContentProps = ComponentProps<\"div\">;\r\n\r\nexport const InlineCitationCarouselContent = (\r\n  props: InlineCitationCarouselContentProps\r\n) => <CarouselContent {...props} />;\r\n\r\nexport type InlineCitationCarouselItemProps = ComponentProps<\"div\">;\r\n\r\nexport const InlineCitationCarouselItem = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationCarouselItemProps) => (\r\n  <CarouselItem\r\n    className={cn(\"w-full space-y-2 p-4 ps-8\", className)}\n    {...props}\r\n  />\r\n);\r\n\r\nexport type InlineCitationCarouselHeaderProps = ComponentProps<\"div\">;\r\n\r\nexport const InlineCitationCarouselHeader = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationCarouselHeaderProps) => (\r\n  <div\r\n    className={cn(\r\n      \"flex items-center justify-between gap-2 rounded-t-md bg-secondary p-2\",\r\n      className\r\n    )}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type InlineCitationCarouselIndexProps = ComponentProps<\"div\">;\r\n\r\nexport const InlineCitationCarouselIndex = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: InlineCitationCarouselIndexProps) => {\r\n  const api = useCarouselApi();\r\n  const [current, setCurrent] = useState(0);\r\n  const [count, setCount] = useState(0);\r\n\r\n  const syncState = useCallback(() => {\r\n    if (!api) {\r\n      return;\r\n    }\r\n    setCount(api.scrollSnapList().length);\r\n    setCurrent(api.selectedScrollSnap() + 1);\r\n  }, [api]);\r\n\r\n  useEffect(() => {\r\n    if (!api) {\r\n      return;\r\n    }\r\n\r\n    syncState();\r\n\r\n    api.on(\"select\", syncState);\r\n\r\n    return () => {\r\n      api.off(\"select\", syncState);\r\n    };\r\n  }, [api, syncState]);\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"flex flex-1 items-center justify-end px-3 py-1 text-muted-foreground text-xs\",\r\n        className\r\n      )}\r\n      {...props}\r\n    >\r\n      {children ?? `${current}/${count}`}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport type InlineCitationCarouselPrevProps = ComponentProps<\"button\">;\r\n\r\nexport const InlineCitationCarouselPrev = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationCarouselPrevProps) => {\r\n  const api = useCarouselApi();\r\n\r\n  const handleClick = useCallback(() => {\r\n    if (api) {\r\n      api.scrollPrev();\r\n    }\r\n  }, [api]);\r\n\r\n  return (\r\n    <button\r\n      aria-label=\"Previous\"\r\n      className={cn(\"shrink-0\", className)}\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n      {...props}\r\n    >\r\n      <ArrowLeftIcon className=\"size-4 text-muted-foreground rtl:rotate-180\" />\n    </button>\r\n  );\r\n};\r\n\r\nexport type InlineCitationCarouselNextProps = ComponentProps<\"button\">;\r\n\r\nexport const InlineCitationCarouselNext = ({\r\n  className,\r\n  ...props\r\n}: InlineCitationCarouselNextProps) => {\r\n  const api = useCarouselApi();\r\n\r\n  const handleClick = useCallback(() => {\r\n    if (api) {\r\n      api.scrollNext();\r\n    }\r\n  }, [api]);\r\n\r\n  return (\r\n    <button\r\n      aria-label=\"Next\"\r\n      className={cn(\"shrink-0\", className)}\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n      {...props}\r\n    >\r\n      <ArrowRightIcon className=\"size-4 text-muted-foreground rtl:rotate-180\" />\n    </button>\r\n  );\r\n};\r\n\r\nexport type InlineCitationSourceProps = ComponentProps<\"div\"> & {\r\n  title?: string;\r\n  url?: string;\r\n  description?: string;\r\n};\r\n\r\nexport const InlineCitationSource = ({\r\n  title,\r\n  url,\r\n  description,\r\n  className,\r\n  children,\r\n  ...props\r\n}: InlineCitationSourceProps) => (\r\n  <div className={cn(\"space-y-1\", className)} {...props}>\r\n    {title && (\r\n      <h4 className=\"truncate font-medium text-sm leading-tight\">{title}</h4>\r\n    )}\r\n    {url && (\r\n      <p className=\"truncate break-all text-muted-foreground text-xs\">{url}</p>\r\n    )}\r\n    {description && (\r\n      <p className=\"line-clamp-3 text-muted-foreground text-sm leading-relaxed\">\r\n        {description}\r\n      </p>\r\n    )}\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type InlineCitationQuoteProps = ComponentProps<\"blockquote\">;\r\n\r\nexport const InlineCitationQuote = ({\r\n  children,\r\n  className,\r\n  ...props\r\n}: InlineCitationQuoteProps) => (\r\n  <blockquote\r\n    className={cn(\r\n      \"border-muted border-s-2 ps-3 text-muted-foreground text-sm italic\",\n      className\r\n    )}\r\n    {...props}\r\n  >\r\n    {children}\r\n  </blockquote>\r\n);\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/inline-citation.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "citation",
+        "sources",
+        "carousel",
+        "reference"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-inline-citation.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/inline-citation.tsx",
+            "upstreamPath": "packages/elements/src/inline-citation.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/inline-citation.tsx",
+            "upstreamSha256": "sha256:c7dc2a67386bc06d23fa42344f48f3b45e51f1f91b22e44801a2902acdf64018",
+            "contentSha256": "sha256:fb99dd7aee7a5ef503e30810133c84f2e99822af8528da47341533f42cc4de9a",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Added reduced-motion handling and logical spacing and icon direction for RTL."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/inline-citation.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/inline-citation.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Added reduced-motion handling and logical spacing and icon direction for RTL.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "hover-citation-carousel",
+        "sourceHash": "sha256:60518e2f4c19332273ca988ee7ec1efa95914b3643f213a391d04a701d93e900",
+        "contentHash": "sha256:5031e7e875f8872d48d1e125abfd504f0cb0e4a9c575d1a24a1b54e3f308b1cc",
+        "structureHash": "sha256:04fcd95abbcc6e4cf815f595b7b17e9b78b08b24854bf886764240909fba4f92"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

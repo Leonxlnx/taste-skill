@@ -1,0 +1,114 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uilayouts-progressive-carousel",
+  "title": "Progressive Carousel",
+  "author": "UI LAYOUT",
+  "description": "Provides direct slide selection with optional timed progress and a controlled pause state.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.42.2",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ui-layouts/components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+      "content": "\"use client\";\n\nimport { AnimatePresence, motion, useInView, useReducedMotion } from \"motion/react\";\nimport React, {\n  createContext,\n  type FC,\n  type ReactNode,\n  useContext,\n  useEffect,\n  useRef,\n  useState,\n} from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\ninterface ProgressSliderContextType {\n  active: string;\n  progress: number;\n  handleButtonClick: (value: string) => void;\n  vertical: boolean;\n}\n\nexport interface ProgressSliderProps {\n  children: ReactNode;\n  autoPlay?: boolean;\n  paused?: boolean;\n  duration?: number;\n  fastDuration?: number;\n  vertical?: boolean;\n  activeSlider: string;\n  className?: string;\n}\n\ninterface SliderContentProps {\n  children: ReactNode;\n  className?: string;\n}\n\ninterface SliderWrapperProps {\n  children: ReactNode;\n  value: string;\n  className?: string;\n}\n\ninterface ProgressBarProps {\n  children: ReactNode;\n  className?: string;\n}\n\ninterface SliderBtnProps {\n  children: ReactNode;\n  value: string;\n  className?: string;\n  progressBarClass?: string;\n}\n\nconst ProgressSliderContext = createContext<ProgressSliderContextType | undefined>(undefined);\n\nexport const useProgressSliderContext = (): ProgressSliderContextType => {\n  const context = useContext(ProgressSliderContext);\n  if (!context) {\n    throw new Error(\"useProgressSliderContext must be used within a ProgressSlider\");\n  }\n  return context;\n};\n\nexport const ProgressSlider: FC<ProgressSliderProps> = ({\n  children,\n  autoPlay = false,\n  paused = false,\n  duration = 5000,\n  fastDuration = 400,\n  vertical = false,\n  activeSlider,\n  className,\n}) => {\n  const [active, setActive] = useState(activeSlider);\n  const [progress, setProgress] = useState(0);\n  const [isFastForward, setIsFastForward] = useState(false);\n  const [interactionPaused, setInteractionPaused] = useState(false);\n  const [pageVisible, setPageVisible] = useState(true);\n  const [sliderValues, setSliderValues] = useState<string[]>([]);\n  const frame = useRef(0);\n  const firstFrameTime = useRef(0);\n  const fastForwardStart = useRef(0);\n  const targetValue = useRef<string | null>(null);\n  const rootRef = useRef<HTMLDivElement>(null);\n  const isInView = useInView(rootRef);\n  const shouldReduceMotion = useReducedMotion();\n\n  useEffect(() => {\n    const getChildren = React.Children.toArray(children).find(\n      (child) => (child as React.ReactElement<{ children?: ReactNode }>).type === SliderContent,\n    ) as React.ReactElement<{ children?: ReactNode }> | undefined;\n\n    const values = getChildren\n      ? React.Children.toArray(getChildren.props.children).map(\n          (child) => (child as React.ReactElement<{ value: string }>).props.value,\n        )\n      : [];\n    setSliderValues(values);\n  }, [children]);\n\n  useEffect(() => {\n    const updateVisibility = () => setPageVisible(document.visibilityState === \"visible\");\n    updateVisibility();\n    document.addEventListener(\"visibilitychange\", updateVisibility);\n    return () => document.removeEventListener(\"visibilitychange\", updateVisibility);\n  }, []);\n\n  useEffect(() => {\n    if (\n      sliderValues.length === 0 ||\n      !pageVisible ||\n      !isInView ||\n      shouldReduceMotion ||\n      (!isFastForward && (!autoPlay || paused || interactionPaused))\n    ) {\n      return;\n    }\n\n    firstFrameTime.current = performance.now();\n    const animate = (now: number) => {\n      const currentDuration = Math.max(1, isFastForward ? fastDuration : duration);\n      const timeFraction = (now - firstFrameTime.current) / currentDuration;\n\n      if (timeFraction <= 1) {\n        setProgress(\n          isFastForward\n            ? fastForwardStart.current + (100 - fastForwardStart.current) * timeFraction\n            : timeFraction * 100,\n        );\n        frame.current = requestAnimationFrame(animate);\n        return;\n      }\n\n      if (isFastForward) {\n        setIsFastForward(false);\n        if (targetValue.current !== null) {\n          setActive(targetValue.current);\n          targetValue.current = null;\n        }\n      } else {\n        const currentIndex = sliderValues.indexOf(active);\n        setActive(sliderValues[(currentIndex + 1) % sliderValues.length]);\n      }\n      setProgress(0);\n    };\n\n    frame.current = requestAnimationFrame(animate);\n    return () => cancelAnimationFrame(frame.current);\n  }, [active, autoPlay, duration, fastDuration, interactionPaused, isFastForward, isInView, pageVisible, paused, shouldReduceMotion, sliderValues]);\n\n  const handleButtonClick = (value: string) => {\n    if (value === active) return;\n    if (shouldReduceMotion) {\n      setActive(value);\n      setProgress(0);\n      return;\n    }\n\n    fastForwardStart.current = autoPlay && !paused && !interactionPaused ? progress : 0;\n    setProgress(fastForwardStart.current);\n    targetValue.current = value;\n    setIsFastForward(true);\n  };\n\n  return (\n    <ProgressSliderContext.Provider value={{ active, progress, handleButtonClick, vertical }}>\n      <div\n        ref={rootRef}\n        className={cn(\"relative\", className)}\n        onBlurCapture={(event) => {\n          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {\n            setInteractionPaused(false);\n          }\n        }}\n        onFocusCapture={() => setInteractionPaused(true)}\n        onMouseEnter={() => setInteractionPaused(true)}\n        onMouseLeave={() => setInteractionPaused(false)}\n      >\n        {children}\n      </div>\n    </ProgressSliderContext.Provider>\n  );\n};\n\nexport const SliderContent: FC<SliderContentProps> = ({ children, className }) => {\n  return <div className={className}>{children}</div>;\n};\n\nexport const SliderWrapper: FC<SliderWrapperProps> = ({ children, value, className }) => {\n  const { active } = useProgressSliderContext();\n  const shouldReduceMotion = useReducedMotion();\n\n  return (\n    <AnimatePresence initial={!shouldReduceMotion} mode=\"popLayout\">\n      {active === value && (\n        <motion.div\n          key={value}\n          animate={{ opacity: 1 }}\n          className={className}\n          exit={{ opacity: 0 }}\n          initial={shouldReduceMotion ? false : { opacity: 0 }}\n          transition={shouldReduceMotion ? { duration: 0 } : undefined}\n        >\n          {children}\n        </motion.div>\n      )}\n    </AnimatePresence>\n  );\n};\n\nexport const SliderBtnGroup: FC<ProgressBarProps> = ({ children, className }) => {\n  return <div className={className}>{children}</div>;\n};\n\nexport const SliderBtn: FC<SliderBtnProps> = ({ children, value, className, progressBarClass }) => {\n  const { active, progress, handleButtonClick, vertical } = useProgressSliderContext();\n  const isActive = active === value;\n\n  return (\n    <button\n      aria-pressed={isActive}\n      className={cn(\"relative\", isActive ? \"opacity-100\" : \"opacity-50\", className)}\n      onClick={() => handleButtonClick(value)}\n      type=\"button\"\n    >\n      {children}\n      <span aria-hidden=\"true\" className=\"absolute inset-0 -z-10 max-h-full max-w-full overflow-hidden\">\n        <span\n          className={cn(\"absolute left-0\", progressBarClass)}\n          style={{ [vertical ? \"height\" : \"width\"]: isActive ? `${progress}%` : \"0%\" }}\n        />\n      </span>\n    </button>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/progressive-carousel.tsx"
+    },
+    {
+      "path": "registry/sources/ui-layouts/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "carousel",
+        "progress",
+        "autoplay"
+      ],
+      "renderer": "dom",
+      "preview": "previews/uilayouts-progressive-carousel.tsx",
+      "source": {
+        "project": "UI Layouts Free",
+        "repository": "https://github.com/ui-layouts/uilayouts",
+        "revision": "fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+            "upstreamPath": "apps/ui-layout/components/ui/progressive-carousel.tsx",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/components/ui/progressive-carousel.tsx",
+            "upstreamSha256": "sha256:5d18b425f316b2f9732256cc0d4bac91d60dc3b2e4ba73838d84db5f9c5df3ad",
+            "contentSha256": "sha256:42565b22b0356e19dd76c5e073edd6a3eb00f366732ff09b79375adae3d18dbb",
+            "changes": [
+              "Added the client boundary and changed the root-alias utility import to ../../lib/utils.",
+              "Made autoplay opt-in with autoPlay defaulting to false and added a controlled paused prop for a stable external pause/resume control.",
+              "Paused opted-in autoplay while offscreen, hidden, hovered, or keyboard-focused while allowing an explicit fast-forward selection to complete, and stopped autoplay for reduced motion.",
+              "Fixed fast-forward progress timing and made reduced-motion slide selection immediate.",
+              "Marked the visual progress fill decorative and exposed the active control with aria-pressed.",
+              "Normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "apps/ui-layout/lib/utils.ts",
+            "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/apps/ui-layout/lib/utils.ts",
+            "upstreamSha256": "sha256:e5cfefb5de4d4e1f22ec85ef7229f06154fbad3a19cdcf64cb19b5b738e9f996",
+            "contentSha256": "sha256:4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+            "changes": [
+              "Retained only the upstream cn helper and removed site configuration, URLs, and unrelated timing helpers."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/ui-layout/components/ui/progressive-carousel.tsx and apps/ui-layout/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 UI LAYOUT"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/ui-layouts/uilayouts/blob/fcc2c596d38c0d7d72b0a4550f75c17a652c0bf6/LICENSE",
+          "sha256": "sha256:25d698c61ceea4d42107ef85ef37d4449f1169ca24c7ee288db434688071e1e3",
+          "localPath": "registry/sources/ui-layouts/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/uilayouts-progressive-carousel/progressive-carousel.tsx",
+          "change": "Added a client boundary and local import, made autoplay opt-in, exposed a controlled paused prop, corrected fast-forward timing, paused autoplay when hidden or engaged without blocking direct selection, added reduced-motion behavior, and clarified control semantics.",
+          "reason": "Keep the copied carousel portable, prevent unsolicited or unstoppable motion, and give callers a stable pause/resume control contract."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Removed unrelated site configuration and timing helpers, retaining cn only.",
+          "reason": "Keep the copied support closure minimal and remove site URLs."
+        }
+      ],
+      "dedupe": {
+        "family": "progressive-timed-carousel",
+        "sourceHash": "sha256:3a93d67e254c276997e145e55ffb87b34ea7fedfdbe2739cb32a826907e709de",
+        "contentHash": "sha256:b9ec715c60a6e015b3723e1d95f1de245f6fd86aa8e8a8259799880427a1b89f",
+        "structureHash": "sha256:ac004c710d68a1c26356f2290ba8c09a2987070d195fa2e953e293ee5fcb6784"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "componentry-particle-typography",
+  "title": "Particle Typography",
+  "author": "Harsh Jadhav",
+  "description": "Samples caller text into a canvas particle field that disperses around pointer or touch input.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.3.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/componentry/components/componentry/cursor-driven-particle-typography.tsx",
+      "content": "\"use client\";\r\n\r\nimport { cn } from \"./lib/utils\";\nimport React, { useEffect, useRef } from \"react\";\r\n\r\nexport interface CursorDrivenParticleTypographyProps {\r\n    /** Additional CSS classes */\r\n    className?: string;\r\n    /** The text to render */\r\n    text: string;\r\n    /** Font size in pixels */\r\n    fontSize?: number;\r\n    /** Font family */\r\n    fontFamily?: string;\r\n    /** Size of each particle */\r\n    particleSize?: number;\r\n    /** Density of particles (lower number = more particles, minimum 1) */\r\n    particleDensity?: number;\r\n    /** How strongly the cursor pushes particles away */\r\n    dispersionStrength?: number;\r\n    /** Speed at which particles return to origin */\r\n    returnSpeed?: number;\r\n    /** Custom color for particles. Overrides inherited text color if set. */\n    color?: string;\n    /** Accessible name for the generated text visual. */\n    label?: string;\n}\r\n\r\nclass Particle {\r\n    x: number;\r\n    y: number;\r\n    originX: number;\r\n    originY: number;\r\n    vx: number;\r\n    vy: number;\r\n    size: number;\r\n    color: string;\r\n    dispersion: number;\r\n    returnSpd: number;\r\n\r\n    constructor(\r\n        x: number,\r\n        y: number,\r\n        size: number,\r\n        color: string,\r\n        dispersion: number,\r\n        returnSpd: number\r\n    ) {\r\n        this.x = x + (Math.random() - 0.5) * 10; // start with slight randomness\r\n        this.y = y + (Math.random() - 0.5) * 10;\r\n        this.originX = x;\r\n        this.originY = y;\r\n        this.vx = (Math.random() - 0.5) * 5;\r\n        this.vy = (Math.random() - 0.5) * 5;\r\n        this.size = size;\r\n        this.color = color;\r\n        this.dispersion = dispersion;\r\n        this.returnSpd = returnSpd;\r\n    }\r\n\r\n    update(mouseX: number, mouseY: number) {\r\n        const dx = mouseX - this.x;\r\n        const dy = mouseY - this.y;\r\n        const distance = Math.sqrt(dx * dx + dy * dy);\r\n\r\n        // Physics interaction with mouse\r\n        const interactionRadius = 120; // 120px interaction radius\r\n\r\n        if (distance > 0.001 && distance < interactionRadius && mouseX !== -1000 && mouseY !== -1000) {\n            const forceDirectionX = dx / distance;\r\n            const forceDirectionY = dy / distance;\r\n\r\n            const force = (interactionRadius - distance) / interactionRadius;\r\n\r\n            // Calculate repulsion\r\n            const repulsionX = forceDirectionX * force * this.dispersion;\r\n            const repulsionY = forceDirectionY * force * this.dispersion;\r\n\r\n            this.vx -= repulsionX;\r\n            this.vy -= repulsionY;\r\n        }\r\n\r\n        // Return to origin (spring physics)\r\n        this.vx += (this.originX - this.x) * this.returnSpd;\r\n        this.vy += (this.originY - this.y) * this.returnSpd;\r\n\r\n        // Friction\r\n        this.vx *= 0.85;\r\n        this.vy *= 0.85;\r\n\r\n        // Add subtle noise/jitter when close to origin\r\n        const distToOrigin = Math.sqrt(\r\n            Math.pow(this.x - this.originX, 2) + Math.pow(this.y - this.originY, 2)\r\n        );\r\n        if (distToOrigin < 1 && Math.random() > 0.95) {\r\n            this.vx += (Math.random() - 0.5) * 0.2;\r\n            this.vy += (Math.random() - 0.5) * 0.2;\r\n        }\r\n\r\n        this.x += this.vx;\r\n        this.y += this.vy;\r\n    }\r\n\r\n    draw(ctx: CanvasRenderingContext2D) {\r\n        ctx.fillStyle = this.color;\r\n        ctx.beginPath();\r\n        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\r\n        ctx.fill();\r\n    }\r\n}\r\n\r\nexport function CursorDrivenParticleTypography({\r\n    className,\r\n    text,\r\n    fontSize = 120,\r\n    fontFamily = \"Inter, sans-serif\",\r\n    particleSize = 1.5,\r\n    particleDensity = 6,\r\n    dispersionStrength = 15,\r\n    returnSpeed = 0.08,\n    color,\n    label = text,\n}: CursorDrivenParticleTypographyProps) {\n    const canvasRef = useRef<HTMLCanvasElement>(null);\r\n    const containerRef = useRef<HTMLDivElement>(null);\r\n\r\n    useEffect(() => {\r\n        const canvas = canvasRef.current;\r\n        if (!canvas) return;\r\n        const ctx = canvas.getContext(\"2d\", { willReadFrequently: true });\r\n        if (!ctx) return;\r\n\r\n        let animationFrameId: number;\n        let particles: Particle[] = [];\n        let running = false;\n        let inViewport = true;\n        const reducedMotion = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n\r\n        let mouseX = -1000;\r\n        let mouseY = -1000;\r\n\r\n        let containerWidth = 0;\r\n        let containerHeight = 0;\r\n\r\n        const init = () => {\r\n            const container = containerRef.current;\r\n            if (!container) return;\r\n\r\n            containerWidth = container.clientWidth;\r\n            containerHeight = container.clientHeight;\r\n\r\n            const dpr = Math.min(\n                window.devicePixelRatio || 1,\n                1.75,\n                4096 / Math.max(containerWidth, 1),\n                4096 / Math.max(containerHeight, 1),\n            );\n            canvas.width = Math.max(1, Math.round(containerWidth * dpr));\n            canvas.height = Math.max(1, Math.round(containerHeight * dpr));\n            canvas.style.width = `${containerWidth}px`;\r\n            canvas.style.height = `${containerHeight}px`;\r\n\r\n            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);\n\r\n            // Determine text color\r\n            const computedStyle = window.getComputedStyle(container);\r\n            const textColor = color || computedStyle.color || \"#000000\";\r\n\r\n            ctx.clearRect(0, 0, containerWidth, containerHeight);\r\n\r\n            // Draw text to generate pixel map\r\n            ctx.fillStyle = textColor;\r\n            // Responsive font size based on container width if text is large\r\n            const effectiveFontSize = Math.min(fontSize, containerWidth * 0.15);\r\n            ctx.font = `bold ${effectiveFontSize}px ${fontFamily}`;\r\n            ctx.textAlign = \"center\";\r\n            ctx.textBaseline = \"middle\";\r\n\r\n            // Draw standard text first to measure it\r\n            ctx.fillText(text, containerWidth / 2, containerHeight / 2);\r\n\r\n            // Get pixel data\r\n            const textCoordinates = ctx.getImageData(0, 0, canvas.width, canvas.height);\r\n            particles = [];\r\n\r\n            // Create particles from text pixels\r\n            // Step by density multiplied by dpr\r\n            const step = Math.max(\n                1,\n                Math.floor(particleDensity * dpr),\n                Math.ceil(Math.sqrt((textCoordinates.width * textCoordinates.height) / 60000)),\n            );\n            for (let y = 0; y < textCoordinates.height; y += step) {\r\n                for (let x = 0; x < textCoordinates.width; x += step) {\r\n                    const index = (y * textCoordinates.width + x) * 4;\r\n                    const alpha = textCoordinates.data[index + 3] || 0;\r\n\r\n                    if (alpha > 128) {\r\n                        particles.push(\r\n                            new Particle(\r\n                                x / dpr,\r\n                                y / dpr,\r\n                                particleSize,\r\n                                textColor,\r\n                                dispersionStrength,\r\n                                returnSpeed\r\n                            )\r\n                        );\r\n                    }\r\n                }\r\n            }\r\n        };\r\n\r\n        const animate = () => {\r\n            ctx.clearRect(0, 0, containerWidth, containerHeight);\r\n\r\n            particles.forEach((particle) => {\r\n                particle.update(mouseX, mouseY);\r\n                particle.draw(ctx);\r\n            });\r\n            if (running) animationFrameId = requestAnimationFrame(animate);\n        };\r\n\r\n        const handlePointerMove = (e: PointerEvent) => {\n            const rect = canvas.getBoundingClientRect();\r\n            mouseX = e.clientX - rect.left;\r\n            mouseY = e.clientY - rect.top;\r\n        };\r\n\r\n        const handlePointerLeave = () => {\n            mouseX = -1000;\r\n            mouseY = -1000;\r\n        };\r\n\r\n        const handleResize = () => {\r\n            init();\r\n        };\r\n\r\n        const stop = () => {\n            running = false;\n            cancelAnimationFrame(animationFrameId);\n        };\n\n        const updateLoop = () => {\n            stop();\n            if (inViewport && !document.hidden && !reducedMotion.matches) {\n                running = true;\n                animationFrameId = requestAnimationFrame(animate);\n            } else {\n                mouseX = -1000;\n                mouseY = -1000;\n                if (reducedMotion.matches) {\n                    for (const particle of particles) {\n                        particle.x = particle.originX;\n                        particle.y = particle.originY;\n                        particle.vx = 0;\n                        particle.vy = 0;\n                    }\n                }\n                animate();\n            }\n        };\n\n        // Initialize with a short delay to ensure fonts/layout are ready\n        const timeoutId = setTimeout(() => {\n            init();\n            updateLoop();\n        }, 100);\n\r\n        const resizeObserver = new ResizeObserver(() => {\n            handleResize();\n            if (!running) animate();\n        });\n        const intersectionObserver = new IntersectionObserver(([entry]) => {\n            inViewport = entry?.isIntersecting ?? false;\n            updateLoop();\n        });\n\r\n        if (containerRef.current) {\r\n            resizeObserver.observe(containerRef.current);\n            intersectionObserver.observe(containerRef.current);\n        }\r\n\r\n        // Re-initialize particles when the theme changes (detects class changes on html tag)\r\n        const themeObserver = new MutationObserver(() => {\r\n            init();\r\n        });\r\n        themeObserver.observe(document.documentElement, {\r\n            attributes: true,\r\n            attributeFilter: [\"class\"]\r\n        });\r\n\r\n        canvas.addEventListener(\"pointermove\", handlePointerMove);\n        canvas.addEventListener(\"pointerleave\", handlePointerLeave);\n        canvas.addEventListener(\"pointercancel\", handlePointerLeave);\n        document.addEventListener(\"visibilitychange\", updateLoop);\n        reducedMotion.addEventListener(\"change\", updateLoop);\n\r\n        return () => {\r\n            clearTimeout(timeoutId);\n            stop();\n            resizeObserver.disconnect();\n            intersectionObserver.disconnect();\n            themeObserver.disconnect();\n            canvas.removeEventListener(\"pointermove\", handlePointerMove);\n            canvas.removeEventListener(\"pointerleave\", handlePointerLeave);\n            canvas.removeEventListener(\"pointercancel\", handlePointerLeave);\n            document.removeEventListener(\"visibilitychange\", updateLoop);\n            reducedMotion.removeEventListener(\"change\", updateLoop);\n        };\r\n    }, [text, fontSize, fontFamily, particleSize, particleDensity, dispersionStrength, returnSpeed, color]);\r\n\r\n    return (\r\n        <div\r\n            ref={containerRef}\n            className={cn(\"w-full h-full min-h-[400px] flex items-center justify-center relative touch-none\", className)}\n            role=\"img\"\n            aria-label={label}\n        >\r\n            <canvas\r\n                ref={canvasRef}\n                aria-hidden=\"true\"\n                className=\"block w-full h-full\"\r\n            />\r\n        </div>\r\n    );\r\n}\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/componentry/cursor-driven-particle-typography.tsx"
+    },
+    {
+      "path": "registry/sources/componentry/components/componentry/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"tailwind-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/componentry/lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "particles",
+        "pointer",
+        "canvas"
+      ],
+      "renderer": "canvas",
+      "preview": "previews/componentry-particle-typography.tsx",
+      "source": {
+        "project": "Componentry",
+        "repository": "https://github.com/harshjdhv/componentry",
+        "revision": "0c90c9b9e624c483d434cdb85df084fd399f24c3",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/componentry/cursor-driven-particle-typography.tsx",
+            "upstreamPath": "packages/ui/src/components/cursor-driven-particle-typography.tsx",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/components/cursor-driven-particle-typography.tsx",
+            "upstreamSha256": "sha256:9c275035059bb30e569a38c4761c31089bc2bf6f7fae9471f1ceb9acb9289f2e",
+            "contentSha256": "sha256:f509b65e33c8e9c3b986460049ecade5789c10472b90d5b31463bca045c9db5c",
+            "changes": [
+              "Repointed the utility import; fixed zero-distance physics and listener cleanup; added pointer parity, accessible naming, particle and DPR caps, visibility pausing, and an origin-aligned reduced-motion frame."
+            ]
+          },
+          {
+            "shippedPath": "components/componentry/lib/utils.ts",
+            "upstreamPath": "packages/ui/src/lib/utils.ts",
+            "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/packages/ui/src/lib/utils.ts",
+            "upstreamSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "contentSha256": "sha256:74a147991a119f1c4cdc25a4d9b22713632fa32eb136e55ab6939b006d71b9d6",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/ui/src/components/cursor-driven-particle-typography.tsx, packages/ui/src/lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 Harsh Jadhav"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/harshjdhv/componentry/blob/0c90c9b9e624c483d434cdb85df084fd399f24c3/LICENSE",
+          "sha256": "sha256:fcd2eb170c2579fd14dae953b7b1103cc85dca0e134e015b7490b850c5b403ab",
+          "localPath": "registry/sources/componentry/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/componentry/cursor-driven-particle-typography.tsx",
+          "change": "Repointed the utility import; fixed zero-distance physics and listener cleanup; added pointer parity, accessible naming, particle and DPR caps, visibility pausing, and an origin-aligned reduced-motion frame.",
+          "reason": "Keep the interactive sampled typography usable on touch and bounded on dense or high-DPR displays."
+        }
+      ],
+      "dedupe": {
+        "family": "cursor-particle-typography",
+        "sourceHash": "sha256:dfdc165a3113cbffff1dd17a07f8f231353732fca94acbc925539da9eb01df15",
+        "contentHash": "sha256:9055646d4b13bdd0d0d463d8bc9f976d55f286cb5fc368904c863525c434bdde",
+        "structureHash": "sha256:95c12e35d6a84f6887456ba40bd46ce1b94589fbf3a843d35f1cbf7c4f7451c6"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

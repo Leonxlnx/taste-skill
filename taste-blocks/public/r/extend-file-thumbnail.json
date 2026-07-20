@@ -1,0 +1,80 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "extend-file-thumbnail",
+  "title": "File Thumbnail",
+  "author": "Extend UI contributors",
+  "description": "Displays an externally generated file preview with bounded loading, reveal, error, and fallback states.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/extend-ui/components/extend-ui/file-thumbnail.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport type ThumbnailFile = {\n  name: string\n  type: string\n}\n\nexport type FileThumbnailProps = {\n  file: ThumbnailFile | File\n  className?: string\n  previewAspectRatio?: number\n  previewClassName?: string\n  previewContent?: React.ReactNode\n  previewImageUrl?: string | null\n  isLoading?: boolean\n  hasError?: boolean\n}\n\nfunction cx(...classes: Array<string | false | null | undefined>) {\n  return classes.filter(Boolean).join(\" \")\n}\n\n// Preview URLs that have completed a reveal this session. View/tab switches\n// remount thumbnails; URLs in this set render instantly instead of replaying\n// the blur-in, so only an image's first load animates.\nconst revealedPreviewImageUrls = new Set<string>()\n\nexport function FileThumbnailLoadingOverlay() {\n  return (\n    <div\n      aria-hidden=\"true\"\n      className=\"absolute inset-0 z-10 overflow-hidden bg-muted\"\n    >\n      <div className=\"absolute inset-0 bg-muted\" />\n      <div className=\"absolute inset-0 animate-pulse bg-background/55 motion-reduce:animate-none\" />\n    </div>\n  )\n}\n\nexport function FileThumbnail({\n  className,\n  previewAspectRatio,\n  previewClassName,\n  previewContent,\n  previewImageUrl,\n  isLoading = false,\n  hasError = false,\n}: FileThumbnailProps) {\n  const imageRef = React.useRef<HTMLImageElement | null>(null)\n  const revealFrameRef = React.useRef<number | null>(null)\n  const [loadedPreviewImageUrl, setLoadedPreviewImageUrl] = React.useState<\n    string | null\n  >(() =>\n    previewImageUrl && revealedPreviewImageUrls.has(previewImageUrl)\n      ? previewImageUrl\n      : null\n  )\n  const [failedPreviewImageUrl, setFailedPreviewImageUrl] = React.useState<\n    string | null\n  >(null)\n  const imageFailed = Boolean(\n    previewImageUrl && failedPreviewImageUrl === previewImageUrl\n  )\n  const isImageLoading = Boolean(\n    previewImageUrl &&\n      loadedPreviewImageUrl !== previewImageUrl &&\n      !imageFailed &&\n      !revealedPreviewImageUrls.has(previewImageUrl)\n  )\n  const showLoading = isLoading || isImageLoading\n  const hasPreviewContent = Boolean(previewContent)\n  const showFallback =\n    !showLoading &&\n    (hasError || imageFailed || (!previewImageUrl && !hasPreviewContent))\n  const cancelImageReveal = React.useCallback(() => {\n    if (revealFrameRef.current === null) return\n\n    window.cancelAnimationFrame(revealFrameRef.current)\n    revealFrameRef.current = null\n  }, [])\n  const markImageLoaded = React.useCallback(\n    (image: HTMLImageElement, imageUrl: string | null | undefined) => {\n      if (!imageUrl) return\n\n      const didLoad = image.naturalWidth > 0 && image.naturalHeight > 0\n\n      setFailedPreviewImageUrl(didLoad ? null : imageUrl)\n      if (didLoad) {\n        revealedPreviewImageUrls.add(imageUrl)\n        cancelImageReveal()\n        revealFrameRef.current = window.requestAnimationFrame(() => {\n          revealFrameRef.current = window.requestAnimationFrame(() => {\n            setLoadedPreviewImageUrl(imageUrl)\n            revealFrameRef.current = null\n          })\n        })\n      }\n    },\n    [cancelImageReveal]\n  )\n\n  React.useEffect(() => {\n    cancelImageReveal()\n  }, [cancelImageReveal, previewImageUrl])\n\n  React.useEffect(() => cancelImageReveal, [cancelImageReveal])\n\n  React.useEffect(() => {\n    const image = imageRef.current\n\n    if (!image || !previewImageUrl) return\n\n    if (image.complete) {\n      markImageLoaded(image, previewImageUrl)\n    }\n  }, [markImageLoaded, previewImageUrl])\n\n  return (\n    <div\n      className={cx(\n        \"group overflow-hidden rounded-lg border bg-background text-foreground\",\n        className\n      )}\n    >\n      <div\n        className={cx(\n          \"relative aspect-square overflow-hidden bg-muted [contain:layout_paint]\",\n          previewClassName\n        )}\n        style={\n          previewAspectRatio\n            ? { aspectRatio: String(previewAspectRatio) }\n            : undefined\n        }\n      >\n        {previewImageUrl ? (\n          // eslint-disable-next-line @next/next/no-img-element -- Preview URLs can be transient object or presigned URLs outside Next image optimization.\n          <img\n            ref={imageRef}\n            src={previewImageUrl}\n            alt=\"\"\n            draggable={false}\n            loading=\"lazy\"\n            decoding=\"async\"\n            className={cx(\n              \"absolute inset-0 block size-full object-cover transition-[opacity,filter] duration-[160ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none\",\n              showLoading ? \"opacity-0 blur-sm\" : \"blur-0 opacity-100\"\n            )}\n            onLoad={(event) => {\n              markImageLoaded(event.currentTarget, previewImageUrl)\n            }}\n            onError={() => {\n              if (previewImageUrl) {\n                revealedPreviewImageUrls.delete(previewImageUrl)\n                cancelImageReveal()\n                setFailedPreviewImageUrl(previewImageUrl)\n                setLoadedPreviewImageUrl((currentUrl) =>\n                  currentUrl === previewImageUrl ? null : currentUrl\n                )\n              }\n            }}\n          />\n        ) : null}\n        {previewContent ? (\n          <div\n            className={cx(\n              \"absolute inset-0 size-full transition-[opacity,filter] duration-[160ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none\",\n              showLoading ? \"opacity-0 blur-sm\" : \"blur-0 opacity-100\"\n            )}\n          >\n            {previewContent}\n          </div>\n        ) : null}\n        {showLoading ? <FileThumbnailLoadingOverlay /> : null}\n        {showFallback ? (\n          <div className=\"absolute inset-0 bg-muted\" aria-hidden=\"true\" />\n        ) : null}\n      </div>\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/extend-ui/file-thumbnail.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "file-preview",
+        "thumbnail",
+        "loading",
+        "fallback"
+      ],
+      "renderer": "dom",
+      "preview": "previews/extend-file-thumbnail.tsx",
+      "source": {
+        "project": "Extend UI",
+        "repository": "https://github.com/extend-hq/ui",
+        "revision": "6d6d33df18ec39455df00f6315f16d2cfd89563b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/extend-ui/file-thumbnail.tsx",
+            "upstreamPath": "apps/v4/components/ui/file-thumbnail.tsx",
+            "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/apps/v4/components/ui/file-thumbnail.tsx",
+            "upstreamSha256": "sha256:bd0e95c5b74d2393a20ee9defe773a50d0395e27dc66d03381cd19750ec06687",
+            "contentSha256": "sha256:bd0e95c5b74d2393a20ee9defe773a50d0395e27dc66d03381cd19750ec06687",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/components/ui/file-thumbnail.tsx",
+        "copyright": [
+          "Copyright (c) 2026 CrowdView Inc, dba Extend",
+          "Portions Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/LICENSE.md",
+          "sha256": "sha256:9f05510549c7c2ad283764dfe0e527278e5fb075fb750a9f1dd148f3763269e5",
+          "localPath": "registry/sources/extend-ui/LICENSE"
+        },
+        "notices": [
+          "Direct dependency licenses are recorded in registry/sources/extend-ui/DEPENDENCIES.md."
+        ]
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "document-file-thumbnail",
+        "sourceHash": "sha256:56f1197931f315d8acb23c6b0a6b14bb0f9383b917073efec43fa89b3a28962a",
+        "contentHash": "sha256:56f1197931f315d8acb23c6b0a6b14bb0f9383b917073efec43fa89b3a28962a",
+        "structureHash": "sha256:5bee933d0ce9a596dacfa3ef459dc4a57650d331fe764e7cb6a1b0f79f0d3f1f"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

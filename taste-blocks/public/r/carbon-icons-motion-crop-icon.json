@@ -1,0 +1,143 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carbon-icons-motion-crop-icon",
+  "title": "Animated Crop Icon",
+  "author": "Carbon Design System contributors",
+  "description": "Moves opposing crop corners together and back to explain the crop action.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-crop-icon/crop-motion.tsx",
+      "content": "\"use client\";\n\nimport type { SVGProps } from \"react\";\n\nimport styles from \"./crop-motion.module.css\";\n\nexport interface CropMotionProps extends Omit<SVGProps<SVGSVGElement>, \"title\"> {\n  isAnimated?: boolean;\n  size?: number;\n  title?: string | null;\n}\n\nexport function CropMotion({\n  className,\n  isAnimated = false,\n  size = 32,\n  title = \"Crop\",\n  ...props\n}: CropMotionProps) {\n  const hasAccessibleName = Boolean(title || props[\"aria-label\"] || props[\"aria-labelledby\"]);\n\n  return (\n    <svg\n      fill=\"currentColor\"\n      {...props}\n      aria-hidden={hasAccessibleName ? props[\"aria-hidden\"] : true}\n      className={[isAnimated ? styles.isAnimating : \"\", className].filter(Boolean).join(\" \")}\n      height={size}\n      role={props.role ?? (hasAccessibleName ? \"img\" : undefined)}\n      viewBox=\"0 0 32 32\"\n      width={size}\n    >\n      {title ? <title>{title}</title> : null}\n      <path className={styles.CropTop} d=\"M25,20H23V9H12V7H23a2,2,0,0,1,2,2Z\" />\n      <path className={styles.CropBottom} d=\"M9,23V2H7V7H2V9H7V23a2,2,0,0,0,2,2H23v5h2V25h5V23Z\" />\n      <rect fill=\"none\" height=\"32\" width=\"32\" />\n    </svg>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/carbon-icons-motion-crop-icon/crop-motion.tsx"
+    },
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-crop-icon/crop-motion.module.css",
+      "content": ".CropTop,\n.CropBottom {\n  will-change: transform;\n}\n\n.isAnimating .CropTop {\n  animation: crop-top 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n.isAnimating .CropBottom {\n  animation: crop-bottom 280ms cubic-bezier(0.4, 0.14, 0.3, 1);\n}\n\n@keyframes crop-top {\n  0% { transform: translate(0, 0); }\n  50% { transform: translate(-2px, 2px); }\n  100% { transform: translate(0, 0); }\n}\n\n@keyframes crop-bottom {\n  0% { transform: translate(0, 0); }\n  50% { transform: translate(2px, -2px); }\n  100% { transform: translate(0, 0); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .isAnimating .CropTop,\n  .isAnimating .CropBottom {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/carbon-icons-motion-crop-icon/crop-motion.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "crop",
+        "formatting",
+        "corners",
+        "animated",
+        "icon",
+        "carbon",
+        "reduced-motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/carbon-icons-motion-crop-icon.tsx",
+      "source": {
+        "project": "Carbon Icons Motion",
+        "repository": "https://github.com/carbon-design-system/icons-motion",
+        "revision": "7e0a7459eb7d8f96fae0649e1450b65af7f75a2b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/carbon-icons-motion-crop-icon/crop-motion.tsx",
+            "upstreamPath": "src/components/Formatting/CropMotion/CropMotion.js",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/CropMotion/CropMotion.js",
+            "upstreamSha256": "sha256:908ceadafb3c1ea3160a170f373a45b11d53960ed876763d606507b61883e8c2",
+            "contentSha256": "sha256:3fd4b6a39f381ce75e472e7254a0bd15cfc3932391ab0b2c65dca5239a0d6076",
+            "changes": [
+              "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop.",
+              "Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/carbon-icons-motion-crop-icon/crop-motion.module.css",
+            "upstreamPath": "src/components/Formatting/CropMotion/crop--motion.module.scss",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/CropMotion/crop--motion.module.scss",
+            "upstreamSha256": "sha256:c92d017a51c97df3b5fc196b5a69cf5b17db62e3045f3da3f04e277da7b2e7e7",
+            "contentSha256": "sha256:a131f174ac4696cca9df965ba7083531d7bb62786a9b38790bee11640e95a69d",
+            "changes": [
+              "Converted the nested SCSS module to an equivalent flat CSS module.",
+              "Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling."
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "geometry": "Inline SVG geometry copied from the official Carbon Icons Motion component blob.",
+        "carbonBasis": {
+          "statement": "The upstream README says the package mirrors Carbon icons but is not tied to a specific Carbon version.",
+          "upstreamPath": "README.md",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/README.md",
+          "sha256": "sha256:3f0e1bd45dc58a966edb3f7ba76d1b0d9231ade1a7cae7b8d7ee36ca12130069"
+        }
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/Formatting/CropMotion/CropMotion.js, src/components/Formatting/CropMotion/crop--motion.module.scss, and their inline Carbon-derived SVG geometry",
+        "copyright": [
+          "Copyright 2015 IBM Corp."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/LICENSE",
+          "sha256": "sha256:c3c4a0200172f8e23c0ea6a0f2c105ac960721c542b63d5de5e9767d195c2e73",
+          "localPath": "registry/sources/carbon-icons-motion/LICENSE"
+        },
+        "notices": [
+          "registry/sources/carbon-icons-motion/NOTICE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/carbon-icons-motion/NOTICE",
+            "sha256": "sha256:95ab19a8acd4553d339b6b0fcfd7c9c93329ceccfa6713364f7a9e5ed42ead46",
+            "changes": [
+              "Created locally because the pinned upstream commit contains no NOTICE file; records attribution and Apache modification marking."
+            ]
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/carbon-icons-motion-crop-icon/crop-motion.tsx",
+          "change": "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop. Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers.",
+          "reason": "Expose a strict, controlled, portable React SVG component without changing its source geometry."
+        },
+        {
+          "shippedPath": "components/carbon-icons-motion-crop-icon/crop-motion.module.css",
+          "change": "Converted the nested SCSS module to an equivalent flat CSS module. Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling.",
+          "reason": "Remove the Sass requirement, prevent looping/autoplay, meet the UI timing budget, and honor reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "carbon-opposed-diagonal-crop-corners",
+        "sourceHash": "sha256:71fe934d78a7f05390deb199b71eb72238e53af3266b80e10b83d9b5e99f9cdc",
+        "contentHash": "sha256:c2fae72c16a2bb8e612958e8f654d187d8d49db3d0e71d02df6ff5247aee139a",
+        "structureHash": "sha256:5de46d03075bea7d822faaa8847c2674190c10818236244ba42b2ec988c7f5af",
+        "geometryHash": "sha256:54dc96c8b4839e618f69e741a331317a159aaad784a7d7c14f03418b71957a1e",
+        "motionHash": "sha256:aa33ff19be76a17b7b0711e91a5ebe8944f0d5c0f44dad762d1b2f07ba0042f2",
+        "rasterHash": "sha256:25916b6ed0d8adaa8ddca512bb4bb42326c3cbcfd30c8d3e47f5f3b080e3c90f",
+        "glyph": {
+          "inventoryName": "crop",
+          "canonicalName": "crop",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": "Generic Carbon-system glyph; no product logo, company mark, or remote asset retained."
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

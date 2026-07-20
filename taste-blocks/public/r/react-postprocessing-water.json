@@ -1,0 +1,131 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-postprocessing-water",
+  "title": "Water Distortion",
+  "author": "pmndrs and react-postprocessing contributors",
+  "description": "Distorts the composed scene with a configurable animated water shader.",
+  "dependencies": [
+    "@react-three/fiber@9.4.0",
+    "postprocessing@6.36.6",
+    "three@0.172.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/effects/Water.tsx",
+      "content": "'use client'\n\nimport { Uniform } from 'three'\nimport { BlendFunction, Effect, EffectAttribute } from 'postprocessing'\nimport { type EffectProps, usePrefersReducedMotion, wrapEffect } from '../util'\n\nconst WaterShader = {\n  fragmentShader: /* glsl */ `\n    uniform float factor;\n\n    void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {\n      vec2 vUv = uv;\n      float frequency = 6.0 * factor;\n      float amplitude = 0.015 * factor;\n      float x = vUv.y * frequency + time * 0.7; \n      float y = vUv.x * frequency + time * 0.3;\n      vUv.x += cos(x + y) * amplitude * cos(y);\n      vUv.y += sin(x - y) * amplitude * cos(y);\n      vec4 rgba = texture(inputBuffer, vUv);\n      outputColor = rgba;\n    }\n  `,\n}\n\nexport class WaterEffectImpl extends Effect {\n  constructor({ blendFunction = BlendFunction.NORMAL, factor = 0 } = {}) {\n    super('WaterEffect', WaterShader.fragmentShader, {\n      blendFunction,\n      attributes: EffectAttribute.CONVOLUTION,\n      uniforms: new Map<string, Uniform<number | number[]>>([['factor', new Uniform(factor)]]),\n    })\n  }\n}\n\nconst WaterEffectWrapped = /* @__PURE__ */ wrapEffect(WaterEffectImpl, {\n  blendFunction: BlendFunction.NORMAL,\n})\n\nexport type WaterEffectProps = EffectProps<typeof WaterEffectImpl>\n\nexport function WaterEffect(props: WaterEffectProps) {\n  const reducedMotion = usePrefersReducedMotion()\n  return <WaterEffectWrapped {...props} factor={reducedMotion ? 0 : props.factor} />\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/effects/Water.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/EffectComposer.tsx",
+      "content": "'use client'\n\nimport type { TextureDataType, Group, Camera, Scene } from 'three'\nimport { HalfFloatType, NoToneMapping } from 'three'\nimport {\n  type JSX,\n  memo,\n  forwardRef,\n  useMemo,\n  useEffect,\n  useLayoutEffect,\n  createContext,\n  useRef,\n  useImperativeHandle,\n} from 'react'\nimport { useThree, useFrame, type Instance } from '@react-three/fiber'\nimport {\n  EffectComposer as EffectComposerImpl,\n  RenderPass,\n  EffectPass,\n  NormalPass,\n  DepthDownsamplingPass,\n  Effect,\n  Pass,\n  EffectAttribute,\n} from 'postprocessing'\n\nexport const EffectComposerContext = /* @__PURE__ */ createContext<{\n  composer: EffectComposerImpl\n  normalPass: NormalPass | null\n  downSamplingPass: DepthDownsamplingPass | null\n  camera: Camera\n  scene: Scene\n  resolutionScale?: number\n}>(null!)\n\nexport type EffectComposerProps = {\n  enabled?: boolean\n  children: JSX.Element | JSX.Element[]\n  depthBuffer?: boolean\n  /** Only used for SSGI currently, leave it disabled for everything else unless it's needed */\n  enableNormalPass?: boolean\n  stencilBuffer?: boolean\n  autoClear?: boolean\n  resolutionScale?: number\n  multisampling?: number\n  frameBufferType?: TextureDataType\n  renderPriority?: number\n  camera?: Camera\n  scene?: Scene\n}\n\nconst isConvolution = (effect: Effect): boolean =>\n  (effect.getAttributes() & EffectAttribute.CONVOLUTION) === EffectAttribute.CONVOLUTION\n\nexport const EffectComposer = /* @__PURE__ */ memo(\n  /* @__PURE__ */ forwardRef<EffectComposerImpl, EffectComposerProps>(\n    (\n      {\n        children,\n        camera: _camera,\n        scene: _scene,\n        resolutionScale,\n        enabled = true,\n        renderPriority = 1,\n        autoClear = true,\n        depthBuffer,\n        enableNormalPass,\n        stencilBuffer,\n        multisampling = 4,\n        frameBufferType = HalfFloatType,\n      },\n      ref\n    ) => {\n      const { gl, scene: defaultScene, camera: defaultCamera, size } = useThree()\n      const scene = _scene || defaultScene\n      const camera = _camera || defaultCamera\n\n      const [composer, normalPass, downSamplingPass] = useMemo(() => {\n        // Initialize composer\n        const effectComposer = new EffectComposerImpl(gl, {\n          depthBuffer,\n          stencilBuffer,\n          multisampling,\n          frameBufferType,\n        })\n\n        // Add render pass\n        effectComposer.addPass(new RenderPass(scene, camera))\n\n        // Create normal pass\n        let downSamplingPass = null\n        let normalPass = null\n        if (enableNormalPass) {\n          normalPass = new NormalPass(scene, camera)\n          normalPass.enabled = false\n          effectComposer.addPass(normalPass)\n          if (resolutionScale !== undefined) {\n            downSamplingPass = new DepthDownsamplingPass({ normalBuffer: normalPass.texture, resolutionScale })\n            downSamplingPass.enabled = false\n            effectComposer.addPass(downSamplingPass)\n          }\n        }\n\n        return [effectComposer, normalPass, downSamplingPass]\n      }, [\n        camera,\n        gl,\n        depthBuffer,\n        stencilBuffer,\n        multisampling,\n        frameBufferType,\n        scene,\n        enableNormalPass,\n        resolutionScale,\n      ])\n\n      useEffect(() => composer?.setSize(size.width, size.height), [composer, size])\n      useEffect(() => () => composer.dispose(), [composer])\n      useFrame(\n        (_, delta) => {\n          if (enabled) {\n            const currentAutoClear = gl.autoClear\n            gl.autoClear = autoClear\n            if (stencilBuffer && !autoClear) gl.clearStencil()\n            composer.render(delta)\n            gl.autoClear = currentAutoClear\n          }\n        },\n        enabled ? renderPriority : 0\n      )\n\n      const group = useRef<Group>(null!)\n      useLayoutEffect(() => {\n        const passes: Pass[] = []\n\n        // TODO: rewrite all of this with R3F v9\n        const groupInstance = (group.current as Group & { __r3f: Instance<Group> }).__r3f\n\n        if (groupInstance && composer) {\n          const children = groupInstance.children\n\n          for (let i = 0; i < children.length; i++) {\n            const child = children[i].object\n\n            if (child instanceof Effect) {\n              const effects: Effect[] = [child]\n\n              if (!isConvolution(child)) {\n                let next: unknown = null\n                while ((next = children[i + 1]?.object) instanceof Effect) {\n                  if (isConvolution(next)) break\n                  effects.push(next)\n                  i++\n                }\n              }\n\n              const pass = new EffectPass(camera, ...effects)\n              passes.push(pass)\n            } else if (child instanceof Pass) {\n              passes.push(child)\n            }\n          }\n\n          for (const pass of passes) composer?.addPass(pass)\n\n          if (normalPass) normalPass.enabled = true\n          if (downSamplingPass) downSamplingPass.enabled = true\n        }\n\n        return () => {\n          for (const pass of passes) composer?.removePass(pass)\n          if (normalPass) normalPass.enabled = false\n          if (downSamplingPass) downSamplingPass.enabled = false\n        }\n      }, [composer, children, camera, normalPass, downSamplingPass])\n\n      // Disable tone mapping because threejs disallows tonemapping on render targets\n      useEffect(() => {\n        const currentTonemapping = gl.toneMapping\n        gl.toneMapping = NoToneMapping\n        return () => {\n          gl.toneMapping = currentTonemapping\n        }\n      }, [gl])\n\n      // Memoize state, otherwise it would trigger all consumers on every render\n      const state = useMemo(\n        () => ({ composer, normalPass, downSamplingPass, resolutionScale, camera, scene }),\n        [composer, normalPass, downSamplingPass, resolutionScale, camera, scene]\n      )\n\n      // Expose the composer\n      useImperativeHandle(ref, () => composer, [composer])\n\n      return (\n        <EffectComposerContext.Provider value={state}>\n          <group ref={group}>{children}</group>\n        </EffectComposerContext.Provider>\n      )\n    }\n  )\n)\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-postprocessing/EffectComposer.tsx"
+    },
+    {
+      "path": "registry/sources/react-postprocessing/components/react-postprocessing/util.tsx",
+      "content": "'use client'\n\nimport React, { RefObject } from 'react'\nimport { Vector2 } from 'three'\nimport * as THREE from 'three'\nimport { type ReactThreeFiber, type ThreeElement, extend, useThree } from '@react-three/fiber'\nimport type { Effect, Pass, BlendFunction } from 'postprocessing'\n\nexport const resolveRef = <T,>(ref: T | React.RefObject<T>) =>\n  typeof ref === 'object' && ref != null && 'current' in ref ? ref.current : ref\n\nexport type EffectConstructor = new (...args: any[]) => Effect | Pass\n\nexport type EffectProps<T extends EffectConstructor> = ThreeElement<T> &\n  ConstructorParameters<T>[0] & {\n    blendFunction?: BlendFunction\n    opacity?: number\n  }\n\nlet i = 0\nconst components = new WeakMap<EffectConstructor, React.ExoticComponent<any> | string>()\n\nexport const wrapEffect = <T extends EffectConstructor>(effect: T, defaults?: EffectProps<T>) => {\n  function WrappedEffect({ blendFunction = defaults?.blendFunction, opacity = defaults?.opacity, ...props }) {\n    let Component = components.get(effect)\n    if (!Component) {\n      const key = `@react-three/postprocessing/${effect.name}-${i++}`\n      extend({ [key]: effect })\n      components.set(effect, (Component = key))\n    }\n\n    const camera = useThree((state) => state.camera)\n    const args = [...(defaults?.args ?? []), ...(props.args ?? [{ ...defaults, ...props }])]\n\n    return (\n      <Component\n        camera={camera}\n        blendMode-blendFunction={blendFunction}\n        blendMode-opacity-value={opacity}\n        {...props}\n        args={args}\n      />\n    )\n  }\n\n  return WrappedEffect\n}\n\nexport const useVector2 = (props: Record<string, unknown>, key: string): THREE.Vector2 => {\n  const value = props[key] as ReactThreeFiber.Vector2 | undefined\n  return React.useMemo(() => {\n    if (typeof value === 'number') return new THREE.Vector2(value, value)\n    else if (value) return new THREE.Vector2(...(value as THREE.Vector2Tuple))\n    else return new THREE.Vector2()\n  }, [value])\n}\n\nexport function usePrefersReducedMotion() {\n  const [reduced, setReduced] = React.useState(false)\n\n  React.useEffect(() => {\n    const query = window.matchMedia('(prefers-reduced-motion: reduce)')\n    const update = () => setReduced(query.matches)\n    update()\n    query.addEventListener('change', update)\n    return () => query.removeEventListener('change', update)\n  }, [])\n\n  return reduced\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-postprocessing/util.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "water",
+        "distortion",
+        "shader"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/react-postprocessing-water.tsx",
+      "source": {
+        "project": "react-postprocessing",
+        "repository": "https://github.com/pmndrs/react-postprocessing",
+        "revision": "90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-postprocessing/effects/Water.tsx",
+            "upstreamPath": "src/effects/Water.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/effects/Water.tsx",
+            "upstreamSha256": "sha256:f3c065bcb58f8534dba227181b960e2c5e0d53f20b7a1d2e43a8a4abe9675617",
+            "contentSha256": "sha256:221c99a02574b710e329741d0bb8f96619c251ac895f4bbd7ea15332b6e58396",
+            "changes": [
+              "Declared the effect as client code and set distortion to a static frame when reduced motion is requested."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+            "upstreamPath": "src/EffectComposer.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/EffectComposer.tsx",
+            "upstreamSha256": "sha256:cd9e9cac9dab8ae64fac878f8c3710f73e31db35bf4089da0cda246618e325c8",
+            "contentSha256": "sha256:f90186bd8d9aba4de806b17704922cc6da12067568ae2f9e9dd273062079cd9d",
+            "changes": [
+              "Declared the React Three Fiber composer as a client component.",
+              "Reduced default multisampling from 8 to 4 and dispose the composer on unmount."
+            ]
+          },
+          {
+            "shippedPath": "components/react-postprocessing/util.tsx",
+            "upstreamPath": "src/util.tsx",
+            "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/src/util.tsx",
+            "upstreamSha256": "sha256:d31715e4c844ad668cefb195bd82953ea22e20cecae0c2c4ec9da9d9e0347c7e",
+            "contentSha256": "sha256:24b6d33896e3a07b0ac067df43ed22e10cb454b08a90d799426f21bc51e65de0",
+            "changes": [
+              "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/effects/Water.tsx, src/EffectComposer.tsx, src/util.tsx",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/react-postprocessing/blob/90d10d59fe5a1a86e027c1bedd36dcf3b87ddd1c/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/react-postprocessing/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-postprocessing/effects/Water.tsx",
+          "change": "Declared the effect as client code and set distortion to a static frame when reduced motion is requested.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/EffectComposer.tsx",
+          "change": "Declared the React Three Fiber composer as a client component. Reduced default multisampling from 8 to 4 and dispose the composer on unmount.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        },
+        {
+          "shippedPath": "components/react-postprocessing/util.tsx",
+          "change": "Declared the React helpers as client code, made wrapEffect return explicit for React refresh transforms, removed circular JSON serialization from effect arguments, and added a native prefers-reduced-motion hook used by temporal effects.",
+          "reason": "Keep the copied component Next-compatible, motion-safe, bounded, and leak-free without changing its authored visual model."
+        }
+      ],
+      "dedupe": {
+        "family": "water-distortion-effect",
+        "sourceHash": "sha256:a4158db7cb7897d94a35ff0ff01419bcf85a2bef51b10ff59fb2883f1c06156d",
+        "contentHash": "sha256:79bddb4f972754a9465b758cea3119d8b66c45ed72d768e81e42b4ea30a4b0df",
+        "structureHash": "sha256:262d3a855207001147a678ce8ad89ad8a219ccab06ab00e5b22b11b43cb72c47"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

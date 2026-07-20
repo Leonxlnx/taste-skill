@@ -1,0 +1,138 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trickle-pixelate",
+  "title": "Pixelate",
+  "author": "trickle contributors",
+  "description": "Resolves text characters from a blurred pixelated state in deterministic order.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "tailwind-merge@3.5.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/trickle/components/trickle-pixelate/pixelate.tsx",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface PixelateProps {\n  /** The text to reveal pixel-by-pixel. */\n  text: string;\n  /** Delay before resolving begins, in ms. */\n  delay?: number;\n  /** Total resolve duration, in ms. */\n  duration?: number;\n  /** Element tag. */\n  as?: ElementType;\n  className?: string;\n}\n\nfunction shuffledIndices(length: number): number[] {\n  const arr: number[] = Array.from({ length }, (_, i) => i);\n  let seed = length * 9301 + 49297;\n  for (let i = arr.length - 1; i > 0; i--) {\n    seed = (seed * 9301 + 49297) % 233280;\n    const j = Math.floor((seed / 233280) * (i + 1));\n    const tmp = arr[i]!;\n    arr[i] = arr[j]!;\n    arr[j] = tmp;\n  }\n  return arr;\n}\n\nexport function Pixelate({\n  text,\n  delay = 0,\n  duration = 1400,\n  as: Component = 'span',\n  className\n}: PixelateProps) {\n  const order = shuffledIndices(text.length);\n  const stepMs = text.length > 0 ? Math.max(20, Math.floor(duration / text.length)) : 0;\n  return (\n    <Component className={cn('inline-block', className)} aria-label={text}>\n      {text.split('').map((char, i) => (\n        <span\n          key={i}\n          aria-hidden='true'\n          className='inline-block whitespace-pre animate-trickle-pixelate'\n          style={{\n            animationDelay: `${delay + (order[i] ?? 0) * stepMs}ms`,\n            animationDuration: `${stepMs * 2}ms`,\n            animationFillMode: 'both'\n          } as CSSProperties}\n        >\n          {char}\n        </span>\n      ))}\n    </Component>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/trickle-pixelate.tsx"
+    },
+    {
+      "path": "registry/sources/trickle/lib/cn.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/cn.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "--animate-trickle-pixelate": "trickle-pixelate 1.4s cubic-bezier(0.5, 0, 0.2, 1) both"
+    }
+  },
+  "css": {
+    "@keyframes trickle-pixelate": {
+      "0%": {
+        "filter": "blur(10px) contrast(1.4) brightness(0.8)",
+        "letter-spacing": "0.15em",
+        "opacity": "0"
+      },
+      "30%": {
+        "filter": "blur(8px) contrast(1.3)",
+        "opacity": "0.6"
+      },
+      "60%": {
+        "filter": "blur(3px) contrast(1.1)",
+        "letter-spacing": "0.02em",
+        "opacity": "0.95"
+      },
+      "100%": {
+        "filter": "blur(0) contrast(1)",
+        "letter-spacing": "0",
+        "opacity": "1"
+      }
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ".animate-trickle-pixelate": {
+        "animation": "none",
+        "filter": "none",
+        "opacity": "1",
+        "letter-spacing": "0"
+      }
+    }
+  },
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "pixelate",
+        "characters",
+        "reveal"
+      ],
+      "renderer": "dom",
+      "preview": "previews/trickle-pixelate.tsx",
+      "source": {
+        "project": "trickle",
+        "repository": "https://github.com/akaieuan/trickle-UI-kit",
+        "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/trickle-pixelate/pixelate.tsx",
+            "upstreamPath": "registry/default/pixelate/pixelate.tsx",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/pixelate/pixelate.tsx",
+            "upstreamSha256": "sha256:b4ecaff807b2c815749961d9e996eec0fb05df8e320e85285145ab91081fc96e",
+            "contentSha256": "sha256:fac24f263d0da24ad89a430ff024eaa012a0f6f85a738c937d603e6d48a155e4",
+            "changes": [
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            ]
+          },
+          {
+            "shippedPath": "lib/cn.ts",
+            "upstreamPath": "lib/cn.ts",
+            "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+            "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/default/pixelate/pixelate.tsx and lib/cn.ts",
+        "copyright": [
+          "Copyright (c) 2026 trickle contributors"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+          "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+          "localPath": "registry/sources/trickle/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/trickle-pixelate/pixelate.tsx",
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        }
+      ],
+      "dedupe": {
+        "family": "shuffled-character-pixelate-reveal",
+        "sourceHash": "sha256:835fee192c5d2b3ad1941744611917f1efbd6251bfecf1c4c9744ec1efd0c4a0",
+        "contentHash": "sha256:56aec81b7e30f1fcfc6d7b2e75c4e196aaa7adcebeecbd0f15060f08c5422a6d",
+        "structureHash": "sha256:9661ef411df8e2fd0aa992b7cebe60e96d352f5fe154b7ad538f26cd23a8e447"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

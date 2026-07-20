@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "extend-file-upload",
+  "title": "File Upload",
+  "author": "Extend UI contributors",
+  "description": "Accepts files through click, keyboard, or drag and drop, validates file types, and renders a compact ready-state list.",
+  "dependencies": [
+    "@hugeicons/core-free-icons@4.2.0",
+    "@hugeicons/react@1.1.6",
+    "border-beam@1.0.1"
+  ],
+  "registryDependencies": [
+    "card",
+    "extend-file-thumbnail",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/extend-ui/components/extend-ui/file-upload.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport {\n  FileImageIcon,\n  FileSpreadsheetIcon,\n  FileUploadIcon,\n  Upload01Icon,\n} from \"@hugeicons/core-free-icons\"\nimport { HugeiconsIcon } from \"@hugeicons/react\"\nimport { BorderBeam } from \"border-beam\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Card } from \"@/components/ui/card\"\nimport { FileThumbnail } from \"@/components/taste-blocks/extend-ui/file-thumbnail\"\n\ntype FileUploadItem = {\n  id: string\n  name: string\n  type: string\n  size: number\n  url: string\n}\n\ntype AcceptedFileType = {\n  label: string\n  icon: React.ComponentProps<typeof HugeiconsIcon>[\"icon\"]\n}\n\ntype FileUploadProps = {\n  accept?: string\n  acceptedFileTypes?: AcceptedFileType[]\n  borderBeamTheme?: React.ComponentProps<typeof BorderBeam>[\"theme\"]\n  browseLabel?: string\n  className?: string\n  description?: string\n  draggingLabel?: string\n  multiple?: boolean\n  showBorderBeam?: boolean\n  showFileList?: boolean\n  title?: string\n  onFilesAccepted?: (files: File[]) => void\n  onFilesChange?: (files: FileUploadItem[]) => void\n}\n\nconst ACCEPTED_FILE_TYPES: AcceptedFileType[] = [\n  { label: \"Image\", icon: FileImageIcon },\n  { label: \"PDF\", icon: FileUploadIcon },\n  { label: \"Sheet\", icon: FileSpreadsheetIcon },\n]\nconst DEFAULT_ACCEPT = [\n  \".pdf\",\n  \".doc\",\n  \".docx\",\n  \".xlsx\",\n  \".csv\",\n  \".png\",\n  \".jpg\",\n  \".jpeg\",\n  \"application/pdf\",\n  \"application/msword\",\n  \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\n  \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n  \"text/csv\",\n  \"image/png\",\n  \"image/jpeg\",\n].join(\",\")\nconst ICON_TRANSFORMS = [\n  {\n    idle: \"translate(-78%, -50%) rotate(-8deg)\",\n    active: \"translate(-114%, -50%) rotate(-12deg) scale(1.08)\",\n  },\n  {\n    idle: \"translate(-50%, -50%) rotate(0deg)\",\n    active: \"translate(-50%, -50%) rotate(0deg) scale(1.18)\",\n  },\n  {\n    idle: \"translate(-22%, -50%) rotate(8deg)\",\n    active: \"translate(14%, -50%) rotate(12deg) scale(1.08)\",\n  },\n]\n\nfunction formatBytes(bytes: number) {\n  if (bytes === 0) return \"0 B\"\n\n  const units = [\"B\", \"KB\", \"MB\", \"GB\"]\n  const index = Math.min(\n    Math.floor(Math.log(bytes) / Math.log(1024)),\n    units.length - 1\n  )\n\n  return `${(bytes / 1024 ** index).toFixed(index === 0 ? 0 : 1)} ${\n    units[index]\n  }`\n}\n\nfunction matchesAccept(file: File, accept?: string) {\n  if (!accept) return true\n\n  return accept.split(\",\").some((rawToken) => {\n    const token = rawToken.trim().toLowerCase()\n\n    if (!token) return false\n    if (token.startsWith(\".\")) return file.name.toLowerCase().endsWith(token)\n    if (token.endsWith(\"/*\")) {\n      return file.type.toLowerCase().startsWith(token.slice(0, -1))\n    }\n\n    return file.type.toLowerCase() === token\n  })\n}\n\nfunction toUploadItems(files: FileList | File[]): FileUploadItem[] {\n  return Array.from(files).map((file) => ({\n    id: `${file.name}-${file.size}-${file.lastModified}`,\n    name: file.name,\n    type: file.type || \"Unknown type\",\n    size: file.size,\n    url: URL.createObjectURL(file),\n  }))\n}\n\nfunction UploadIconCluster({\n  acceptedFileTypes,\n  isDragging,\n}: {\n  acceptedFileTypes: AcceptedFileType[]\n  isDragging: boolean\n}) {\n  const singleIcon = acceptedFileTypes.length === 1\n\n  return (\n    <div className=\"relative h-14 w-36\">\n      {acceptedFileTypes.map((item, index) => (\n        <Card\n          key={item.label}\n          className={cn(\n            \"absolute top-1/2 left-1/2 grid size-12 place-items-center rounded-xl bg-background text-muted-foreground transition-[transform,color,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] before:rounded-[calc(var(--radius-xl)-1px)]\",\n            \"motion-reduce:transition-none\",\n            index === 1 && \"z-10\",\n            isDragging &&\n              \"bg-popover text-foreground shadow-md shadow-black/10 not-dark:bg-clip-border dark:shadow-black/25\"\n          )}\n          style={{\n            transform: singleIcon\n              ? `translate(-50%, -50%) scale(${isDragging ? 1.14 : 1})`\n              : isDragging\n                ? ICON_TRANSFORMS[index]?.active\n                : ICON_TRANSFORMS[index]?.idle,\n          }}\n        >\n          <HugeiconsIcon icon={item.icon} className=\"size-5\" />\n        </Card>\n      ))}\n    </div>\n  )\n}\n\nexport function FileUpload({\n  accept = DEFAULT_ACCEPT,\n  acceptedFileTypes = ACCEPTED_FILE_TYPES,\n  borderBeamTheme = \"light\",\n  browseLabel = \"Browse files\",\n  className,\n  description = \"PDF, DOC/DOCX, XLSX, CSV, PNG, or JPG\",\n  draggingLabel = \"Drop to add\",\n  multiple = true,\n  showBorderBeam = true,\n  showFileList = true,\n  title = \"Click to upload or drop files\",\n  onFilesAccepted,\n  onFilesChange,\n}: FileUploadProps) {\n  const dragDepthRef = React.useRef(0)\n  const inputRef = React.useRef<HTMLInputElement>(null)\n  const [isDragging, setIsDragging] = React.useState(false)\n  const [files, setFiles] = React.useState<FileUploadItem[]>([])\n  const [rejectionMessage, setRejectionMessage] = React.useState<string | null>(\n    null\n  )\n\n  const commitFiles = React.useCallback(\n    (nextFiles: FileList | File[]) => {\n      const acceptedFiles = Array.from(nextFiles)\n        .filter((file) => matchesAccept(file, accept))\n        .slice(0, multiple ? undefined : 1)\n\n      if (acceptedFiles.length === 0) {\n        setRejectionMessage(\"This file type is not supported here.\")\n        return\n      }\n\n      setRejectionMessage(null)\n      onFilesAccepted?.(acceptedFiles)\n\n      const items = toUploadItems(acceptedFiles)\n      setFiles((previousFiles) => {\n        previousFiles.forEach((file) => URL.revokeObjectURL(file.url))\n        return items\n      })\n      onFilesChange?.(items)\n    },\n    [accept, multiple, onFilesAccepted, onFilesChange]\n  )\n\n  React.useEffect(() => {\n    return () => {\n      files.forEach((file) => URL.revokeObjectURL(file.url))\n    }\n  }, [files])\n\n  const openFileDialog = React.useCallback(() => {\n    inputRef.current?.click()\n  }, [])\n\n  const dropzone = (\n    <div\n      role=\"button\"\n      tabIndex={0}\n      className={cn(\n        \"relative flex min-h-64 cursor-pointer flex-col items-center justify-center gap-5 overflow-hidden rounded-[1.125rem] border border-dashed bg-background px-6 py-10 text-center transition-[border-color,background-color] duration-200 ease-out\",\n        \"outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none\",\n        isDragging\n          ? \"border-foreground/40 bg-accent/35\"\n          : \"border-foreground/20 hover:border-foreground/35 hover:bg-muted/35 dark:border-foreground/25 dark:hover:border-foreground/40\"\n      )}\n      onClick={openFileDialog}\n      onDragEnter={(event) => {\n        event.preventDefault()\n        dragDepthRef.current += 1\n        setIsDragging(true)\n      }}\n      onDragLeave={(event) => {\n        event.preventDefault()\n        dragDepthRef.current = Math.max(0, dragDepthRef.current - 1)\n        if (dragDepthRef.current === 0) setIsDragging(false)\n      }}\n      onDragOver={(event) => event.preventDefault()}\n      onDrop={(event) => {\n        event.preventDefault()\n        dragDepthRef.current = 0\n        setIsDragging(false)\n        if (event.dataTransfer.files.length > 0) {\n          commitFiles(event.dataTransfer.files)\n        }\n      }}\n      onKeyDown={(event) => {\n        if (event.key === \"Enter\" || event.key === \" \") {\n          event.preventDefault()\n          openFileDialog()\n        }\n      }}\n    >\n      <UploadIconCluster\n        acceptedFileTypes={acceptedFileTypes}\n        isDragging={isDragging}\n      />\n      <div className=\"space-y-1\">\n        <div className=\"text-sm font-medium\">{title}</div>\n        <div className=\"text-xs text-muted-foreground\">{description}</div>\n        {rejectionMessage ? (\n          <div aria-live=\"polite\" className=\"text-xs text-destructive\">\n            {rejectionMessage}\n          </div>\n        ) : null}\n      </div>\n      <div className=\"inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground\">\n        <HugeiconsIcon icon={Upload01Icon} className=\"size-3.5\" />\n        <span>{isDragging ? draggingLabel : browseLabel}</span>\n      </div>\n      <input\n        ref={inputRef}\n        type=\"file\"\n        accept={accept}\n        multiple={multiple}\n        className=\"hidden\"\n        onChange={(event) => {\n          if (event.target.files) {\n            commitFiles(event.target.files)\n            event.currentTarget.value = \"\"\n          }\n        }}\n      />\n    </div>\n  )\n\n  return (\n    <div className={cn(\"space-y-3\", className)}>\n      {showBorderBeam ? (\n        <BorderBeam\n          active={isDragging}\n          borderRadius={18}\n          brightness={2.4}\n          className=\"rounded-[1.125rem]\"\n          colorVariant=\"ocean\"\n          duration={2.4}\n          size=\"md\"\n          strength={1}\n          theme={borderBeamTheme}\n        >\n          {dropzone}\n        </BorderBeam>\n      ) : (\n        dropzone\n      )}\n      {showFileList && files.length > 0 ? (\n        <div className=\"rounded-xl border bg-background\">\n          {files.map((file) => (\n            <div\n              key={file.id}\n              className=\"flex items-center gap-3 border-b px-3 py-2.5 last:border-b-0\"\n            >\n              <FileThumbnail\n                file={{\n                  name: file.name,\n                  type: file.type,\n                }}\n                previewImageUrl={\n                  file.type.startsWith(\"image/\") ? file.url : null\n                }\n                className=\"size-10 shrink-0 rounded-lg\"\n              />\n              <div className=\"min-w-0 flex-1\">\n                <div className=\"truncate text-sm font-medium\">{file.name}</div>\n                <div className=\"truncate text-xs text-muted-foreground\">\n                  {file.type} - {formatBytes(file.size)}\n                </div>\n              </div>\n              <div className=\"rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground\">\n                Ready\n              </div>\n            </div>\n          ))}\n        </div>\n      ) : null}\n    </div>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/extend-ui/file-upload.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "upload",
+        "dropzone",
+        "file-validation",
+        "keyboard"
+      ],
+      "renderer": "dom",
+      "preview": "previews/extend-file-upload.tsx",
+      "source": {
+        "project": "Extend UI",
+        "repository": "https://github.com/extend-hq/ui",
+        "revision": "6d6d33df18ec39455df00f6315f16d2cfd89563b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/extend-ui/file-upload.tsx",
+            "upstreamPath": "apps/v4/registry/new-york-v4/ui/file-upload.tsx",
+            "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/apps/v4/registry/new-york-v4/ui/file-upload.tsx",
+            "upstreamSha256": "sha256:9614fc9a6cfd95f5be028cb86c39768ef1792ebadd26e055363c2c9f03097420",
+            "contentSha256": "sha256:c25342d5ba79fa072dcd7eeffeb3875b44f8c760de6111db280632fc1e2ca772",
+            "changes": [
+              "Repointed the FileThumbnail import to the Taste Blocks install target.",
+              "Added a visible keyboard focus ring and a polite live-region announcement for rejected files."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "apps/v4/registry/new-york-v4/ui/file-upload.tsx",
+        "copyright": [
+          "Copyright (c) 2026 CrowdView Inc, dba Extend",
+          "Portions Copyright (c) 2023 shadcn"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/LICENSE.md",
+          "sha256": "sha256:9f05510549c7c2ad283764dfe0e527278e5fb075fb750a9f1dd148f3763269e5",
+          "localPath": "registry/sources/extend-ui/LICENSE"
+        },
+        "notices": [
+          "Direct dependency licenses are recorded in registry/sources/extend-ui/DEPENDENCIES.md."
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/extend-ui/file-upload.tsx",
+          "change": "Repointed the FileThumbnail import to the Taste Blocks install target. Added a visible keyboard focus ring and a polite live-region announcement for rejected files.",
+          "reason": "Keep the copied component install-complete with its source-backed thumbnail dependency and expose validation feedback to keyboard and screen-reader users."
+        }
+      ],
+      "dedupe": {
+        "family": "multi-format-file-upload",
+        "sourceHash": "sha256:edd88ae9f793ad87fd2cf940cce1bed93628c7e633ffa81151b2b0e259835d6d",
+        "contentHash": "sha256:cb72e84447a7eb284b6c62c2ff4055641a6964ef0d9abd76aa0cf10d9825db9e",
+        "structureHash": "sha256:029d8f84d0ad0195f3c1f20297319589a752fe547efbac8ca623f2d452eecb46"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

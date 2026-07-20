@@ -1,0 +1,105 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-text-loop",
+  "title": "Text Loop",
+  "author": "Motion Primitives",
+  "description": "Cycles between caller-provided text or content children.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@11.12.0",
+    "tailwind-merge@2.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/motion-primitives/components/motion-text-loop/text-loop.tsx",
+      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport {\n  motion,\n  AnimatePresence,\n  Transition,\n  Variants,\n  AnimatePresenceProps,\n  useReducedMotion,\n} from 'motion/react';\nimport { useState, useEffect, Children } from 'react';\n\nexport type TextLoopProps = {\n  children: React.ReactNode[];\n  className?: string;\n  interval?: number;\n  transition?: Transition;\n  variants?: Variants;\n  onIndexChange?: (index: number) => void;\n  trigger?: boolean;\n  mode?: AnimatePresenceProps['mode'];\n};\n\nexport function TextLoop({\n  children,\n  className,\n  interval = 2,\n  transition = { duration: 0.3 },\n  variants,\n  onIndexChange,\n  trigger = false,\n  mode = 'popLayout',\n}: TextLoopProps) {\n  const [currentIndex, setCurrentIndex] = useState(0);\n  const items = Children.toArray(children);\n  const shouldReduceMotion = useReducedMotion();\n\n  useEffect(() => {\n    if (!trigger || shouldReduceMotion || items.length < 2) return;\n\n    const intervalMs = interval * 1000;\n    const timer = setInterval(() => {\n      setCurrentIndex((current) => {\n        const next = (current + 1) % items.length;\n        onIndexChange?.(next);\n        return next;\n      });\n    }, intervalMs);\n    return () => clearInterval(timer);\n  }, [items.length, interval, onIndexChange, shouldReduceMotion, trigger]);\n\n  const motionVariants: Variants = {\n    initial: { y: 20, opacity: 0 },\n    animate: { y: 0, opacity: 1 },\n    exit: { y: -20, opacity: 0 },\n  };\n\n  if (shouldReduceMotion) {\n    return (\n      <div className={cn('relative inline-block whitespace-nowrap', className)}>\n        {items[currentIndex]}\n      </div>\n    );\n  }\n\n  return (\n    <div className={cn('relative inline-block whitespace-nowrap', className)}>\n      <AnimatePresence mode={mode} initial={false}>\n        <motion.div\n          key={currentIndex}\n          initial='initial'\n          animate='animate'\n          exit='exit'\n          transition={transition}\n          variants={variants || motionVariants}\n        >\n          {items[currentIndex]}\n        </motion.div>\n      </AnimatePresence>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/text-loop.tsx"
+    },
+    {
+      "path": "registry/sources/motion-primitives/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "text-motion",
+      "tags": [
+        "text",
+        "cycle",
+        "controlled-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/motion-text-loop.tsx",
+      "source": {
+        "project": "Motion Primitives",
+        "repository": "https://github.com/ibelick/motion-primitives",
+        "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/motion-text-loop/text-loop.tsx",
+            "upstreamPath": "components/core/text-loop.tsx",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-loop.tsx",
+            "upstreamSha256": "sha256:87707ae5f7a3e13f1e6d348e735e65b05d742dc24343d20b6470f8b857d0d2d4",
+            "contentSha256": "sha256:0c3e209577aa91d2627f6154e79770db73579393ab60718b7538b23401941f25",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
+              "Changed autoplay to opt-in by default, stopped its interval for reduced motion, and rendered the current child without a transition.",
+              "Skipped interval setup when fewer than two children are present."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/lib/utils.ts",
+            "upstreamSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "contentSha256": "sha256:9304a861c8673bee09e0f12de31773abbde503b02e59dfd74763ddec2e37cf05",
+            "changes": []
+          }
+        ],
+        "credits": []
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/core/text-loop.tsx and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2024 ibelick"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENCE.md",
+          "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/LICENCE.md",
+          "sha256": "sha256:f668f5ef3635eb906f10b1eea9a32e449eb6e1a183ab6879ef6d56c0980dd2f3",
+          "localPath": "registry/sources/motion-primitives/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/motion-text-loop/text-loop.tsx",
+          "change": "Changed the local utility import, made autoplay opt-in, and added reduced-motion and empty/single-child interval guards.",
+          "reason": "Resolve the copied helper and prevent unrequested or unnecessary timed text changes."
+        }
+      ],
+      "dedupe": {
+        "family": "cycling-text-content",
+        "sourceHash": "sha256:d0cd58b00736c243020fd113794222eefa8d457f69e956ab7609dc09e177f26f",
+        "contentHash": "sha256:bae7accdb3fb8b1b097f5294da96dd02f2283c6a343ec883538264bc569390ad",
+        "structureHash": "sha256:fded5b5dd753f26e6f7c47ef2499fff888e3f4f675aa8c531117ff0fc699c255"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "text-motion"
+  ],
+  "type": "registry:component"
+}

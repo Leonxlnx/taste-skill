@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ericts-projected-shadow",
+  "title": "Projected Shadow",
+  "author": "EricTS UI contributors",
+  "description": "Separates a supplied mark into target, contact, and projected layers that gather through controlled state or fine-pointer hover.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/ericts-ui/components/ericts-projected-shadow/projected-shadow-animation.tsx",
+      "content": "import * as React from \"react\";\n\nimport { cn } from \"./utils\";\n\nimport \"./projected-shadow-animation.css\";\n\ntype ProjectedShadowTimingValue = number | string;\ntype CssVariableStyle = React.CSSProperties & Record<`--${string}`, string>;\n\nexport type ProjectedShadowProps = React.ComponentPropsWithoutRef<\"span\"> & {\n  /** Keep the gathered state active without requiring hover. */\n  active?: boolean;\n  /** Animation duration for release. Numeric values are converted to ms. */\n  duration?: ProjectedShadowTimingValue;\n  /** Animation duration for gather. Numeric values are converted to ms. */\n  activeDuration?: ProjectedShadowTimingValue;\n  /** CSS easing used by the transform and opacity transitions. */\n  ease?: string;\n  /** Optional decorative content for the shadow layers. Defaults to children. */\n  shadow?: React.ReactNode;\n  /** Classes applied to the visible animated child wrapper. */\n  targetClassName?: string;\n  /** Classes applied to the far projected shadow layer. */\n  projectedShadowClassName?: string;\n  /** Classes applied to the close contact shadow layer. */\n  contactShadowClassName?: string;\n  /** Hide the far projected shadow layer. */\n  showProjectedShadow?: boolean;\n  /** Hide the close contact shadow layer. */\n  showContactShadow?: boolean;\n};\n\nexport function ProjectedShadow({\n  active,\n  activeDuration,\n  children,\n  className,\n  contactShadowClassName,\n  duration,\n  ease,\n  projectedShadowClassName,\n  shadow,\n  showContactShadow = true,\n  showProjectedShadow = true,\n  style,\n  targetClassName,\n  ...props\n}: ProjectedShadowProps) {\n  const shadowContent = shadow ?? children;\n\n  return (\n    <span\n      data-slot=\"projected-shadow\"\n      data-active={active ? \"true\" : undefined}\n      className={cn(\n        \"projected-shadow relative inline-flex items-center justify-center\",\n        className,\n      )}\n      style={getProjectedShadowStyle({ activeDuration, duration, ease }, style)}\n      {...props}\n    >\n      {showProjectedShadow ? (\n        <span\n          aria-hidden=\"true\"\n          data-slot=\"projected-shadow-projected\"\n          className={cn(\n            \"projected-shadow-layer projected-shadow-projected pointer-events-none absolute inset-0 z-0 inline-flex text-current blur-[6px]\",\n            projectedShadowClassName,\n          )}\n        >\n          {shadowContent}\n        </span>\n      ) : null}\n\n      {showContactShadow ? (\n        <span\n          aria-hidden=\"true\"\n          data-slot=\"projected-shadow-contact\"\n          className={cn(\n            \"projected-shadow-layer projected-shadow-contact pointer-events-none absolute inset-0 z-0 inline-flex text-current\",\n            contactShadowClassName,\n          )}\n        >\n          {shadowContent}\n        </span>\n      ) : null}\n\n      <span\n        data-slot=\"projected-shadow-target\"\n        className={cn(\n          \"projected-shadow-layer projected-shadow-target relative z-10 inline-flex text-current\",\n          targetClassName,\n        )}\n      >\n        {children}\n      </span>\n    </span>\n  );\n}\n\nfunction getProjectedShadowStyle(\n  {\n    activeDuration,\n    duration,\n    ease,\n  }: Pick<ProjectedShadowProps, \"activeDuration\" | \"duration\" | \"ease\">,\n  style: React.CSSProperties | undefined,\n) {\n  if (activeDuration === undefined && duration === undefined && ease === undefined) {\n    return style;\n  }\n\n  return {\n    ...style,\n    ...(activeDuration !== undefined\n      ? { \"--projected-shadow-active-duration\": toCssTime(activeDuration) }\n      : {}),\n    ...(duration !== undefined\n      ? { \"--projected-shadow-duration\": toCssTime(duration) }\n      : {}),\n    ...(ease !== undefined ? { \"--projected-shadow-ease\": ease } : {}),\n  } as CssVariableStyle;\n}\n\nfunction toCssTime(value: ProjectedShadowTimingValue) {\n  return typeof value === \"number\" ? `${value}ms` : value;\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/ericts-projected-shadow/projected-shadow-animation.tsx"
+    },
+    {
+      "path": "registry/sources/ericts-ui/components/ericts-projected-shadow/projected-shadow-animation.css",
+      "content": ".projected-shadow {\n  --projected-shadow-duration: 280ms;\n  --projected-shadow-active-duration: 360ms;\n  --projected-shadow-ease: cubic-bezier(0.165, 0.84, 0.44, 1);\n  --projected-shadow-origin: center;\n  --projected-shadow-projected-opacity: 1;\n  --projected-shadow-projected-active-opacity: 0;\n  --projected-shadow-projected-x: -14%;\n  --projected-shadow-projected-y: -18%;\n  --projected-shadow-projected-scale: 1.08;\n  --projected-shadow-projected-rotate: -8deg;\n  --projected-shadow-projected-active-x: -4%;\n  --projected-shadow-projected-active-y: -5%;\n  --projected-shadow-projected-active-scale: 0.94;\n  --projected-shadow-projected-active-rotate: -3deg;\n  --projected-shadow-contact-opacity: 0;\n  --projected-shadow-contact-active-opacity: 0.72;\n  --projected-shadow-contact-x: -4%;\n  --projected-shadow-contact-y: -5%;\n  --projected-shadow-contact-scale: 0.92;\n  --projected-shadow-contact-rotate: -2deg;\n  --projected-shadow-contact-active-x: 0%;\n  --projected-shadow-contact-active-y: 0%;\n  --projected-shadow-contact-active-scale: 0.89;\n  --projected-shadow-contact-active-rotate: 0deg;\n  --projected-shadow-target-x: 8%;\n  --projected-shadow-target-y: -6%;\n  --projected-shadow-target-scale: 1.06;\n  --projected-shadow-target-rotate: 10deg;\n  --projected-shadow-target-active-x: 0%;\n  --projected-shadow-target-active-y: 0%;\n  --projected-shadow-target-active-scale: 0.86;\n  --projected-shadow-target-active-rotate: 0deg;\n}\n\n.projected-shadow-layer {\n  backface-visibility: hidden;\n  transform-origin: var(--projected-shadow-origin);\n  transition-property: opacity, transform;\n  transition-duration: var(--projected-shadow-duration);\n  transition-timing-function: var(--projected-shadow-ease);\n  will-change: transform, opacity;\n}\n\n.projected-shadow-projected {\n  opacity: var(--projected-shadow-projected-opacity);\n  transform: translate3d(\n      var(--projected-shadow-projected-x),\n      var(--projected-shadow-projected-y),\n      0\n    )\n    scale(var(--projected-shadow-projected-scale))\n    rotate(var(--projected-shadow-projected-rotate));\n}\n\n.projected-shadow-contact {\n  opacity: var(--projected-shadow-contact-opacity);\n  transform: translate3d(\n      var(--projected-shadow-contact-x),\n      var(--projected-shadow-contact-y),\n      0\n    )\n    scale(var(--projected-shadow-contact-scale))\n    rotate(var(--projected-shadow-contact-rotate));\n}\n\n.projected-shadow-target {\n  transform: translate3d(\n      var(--projected-shadow-target-x),\n      var(--projected-shadow-target-y),\n      0\n    )\n    scale(var(--projected-shadow-target-scale))\n    rotate(var(--projected-shadow-target-rotate));\n}\n\n.projected-shadow[data-active=\"true\"] .projected-shadow-layer {\n  transition-duration: var(--projected-shadow-active-duration);\n}\n\n.projected-shadow[data-active=\"true\"] .projected-shadow-projected {\n  opacity: var(--projected-shadow-projected-active-opacity);\n  transform: translate3d(\n      var(--projected-shadow-projected-active-x),\n      var(--projected-shadow-projected-active-y),\n      0\n    )\n    scale(var(--projected-shadow-projected-active-scale))\n    rotate(var(--projected-shadow-projected-active-rotate));\n}\n\n.projected-shadow[data-active=\"true\"] .projected-shadow-contact {\n  opacity: var(--projected-shadow-contact-active-opacity);\n  transform: translate3d(\n      var(--projected-shadow-contact-active-x),\n      var(--projected-shadow-contact-active-y),\n      0\n    )\n    scale(var(--projected-shadow-contact-active-scale))\n    rotate(var(--projected-shadow-contact-active-rotate));\n}\n\n.projected-shadow[data-active=\"true\"] .projected-shadow-target {\n  transform: translate3d(\n      var(--projected-shadow-target-active-x),\n      var(--projected-shadow-target-active-y),\n      0\n    )\n    scale(var(--projected-shadow-target-active-scale))\n    rotate(var(--projected-shadow-target-active-rotate));\n}\n\n@media (hover: hover) and (pointer: fine) {\n  .projected-shadow:hover .projected-shadow-layer {\n    transition-duration: var(--projected-shadow-active-duration);\n  }\n\n  .projected-shadow:hover .projected-shadow-projected {\n    opacity: var(--projected-shadow-projected-active-opacity);\n    transform: translate3d(\n        var(--projected-shadow-projected-active-x),\n        var(--projected-shadow-projected-active-y),\n        0\n      )\n      scale(var(--projected-shadow-projected-active-scale))\n      rotate(var(--projected-shadow-projected-active-rotate));\n  }\n\n  .projected-shadow:hover .projected-shadow-contact {\n    opacity: var(--projected-shadow-contact-active-opacity);\n    transform: translate3d(\n        var(--projected-shadow-contact-active-x),\n        var(--projected-shadow-contact-active-y),\n        0\n      )\n      scale(var(--projected-shadow-contact-active-scale))\n      rotate(var(--projected-shadow-contact-active-rotate));\n  }\n\n  .projected-shadow:hover .projected-shadow-target {\n    transform: translate3d(\n        var(--projected-shadow-target-active-x),\n        var(--projected-shadow-target-active-y),\n        0\n      )\n      scale(var(--projected-shadow-target-active-scale))\n      rotate(var(--projected-shadow-target-active-rotate));\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .projected-shadow .projected-shadow-layer,\n  .projected-shadow[data-active=\"true\"] .projected-shadow-layer,\n  .projected-shadow:hover .projected-shadow-layer {\n    transition-duration: 0ms;\n    will-change: auto;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/ericts-projected-shadow/projected-shadow-animation.css"
+    },
+    {
+      "path": "registry/sources/ericts-ui/components/ericts-projected-shadow/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/ericts-projected-shadow/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "projected-shadow",
+        "layered-shadow",
+        "controlled-state",
+        "reduced-motion"
+      ],
+      "renderer": "dom",
+      "preview": "previews/ericts-projected-shadow.tsx",
+      "source": {
+        "project": "EricTS UI",
+        "repository": "https://github.com/EricTsai83/ericts-ui",
+        "revision": "5b5d0a15dbe88dd5811713ebd2dcfbca3b8ba53d",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/ericts-projected-shadow/projected-shadow-animation.tsx",
+            "upstreamPath": "registry/base/ui/projected-shadow-animation.tsx",
+            "permalink": "https://github.com/EricTsai83/ericts-ui/blob/5b5d0a15dbe88dd5811713ebd2dcfbca3b8ba53d/registry/base/ui/projected-shadow-animation.tsx",
+            "upstreamSha256": "sha256:4b0a8d65aea9092dabcaadb9a7c6a49d010be195c2ef557701cb7198e886ade1",
+            "contentSha256": "sha256:085750d38b3acf9f5a30a255d5372f13cd5098bc45384d40d964c4cc6556ebcc",
+            "changes": [
+              "Repointed the shared class-name helper import to the copied support file beside the component."
+            ]
+          },
+          {
+            "shippedPath": "components/ericts-projected-shadow/projected-shadow-animation.css",
+            "upstreamPath": "registry/base/ui/projected-shadow-animation.css",
+            "permalink": "https://github.com/EricTsai83/ericts-ui/blob/5b5d0a15dbe88dd5811713ebd2dcfbca3b8ba53d/registry/base/ui/projected-shadow-animation.css",
+            "upstreamSha256": "sha256:8c944dbef3fdd45da12d2cf7c6550f7b130d142ecc17ccc82046fff4c441f255",
+            "contentSha256": "sha256:173b65b536584dbd942b6d6e7bc9169fd89435b7c6a28a8b4d32559e09790f19",
+            "changes": [
+              "Raised reduced-motion selector specificity so active and hovered layers cannot restore transition duration."
+            ]
+          },
+          {
+            "shippedPath": "components/ericts-projected-shadow/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/EricTsai83/ericts-ui/blob/5b5d0a15dbe88dd5811713ebd2dcfbca3b8ba53d/lib/utils.ts",
+            "upstreamSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "contentSha256": "sha256:7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "registry/base/ui/projected-shadow-animation.tsx, registry/base/ui/projected-shadow-animation.css, and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2026 EricTS UI contributors"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/EricTsai83/ericts-ui/blob/5b5d0a15dbe88dd5811713ebd2dcfbca3b8ba53d/LICENSE",
+          "sha256": "sha256:3e19f1106cdf920742542861b7785ff38bfb80e0ea6d38a88b87cd081df524ff",
+          "localPath": "registry/sources/ericts-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/ericts-projected-shadow/projected-shadow-animation.tsx",
+          "change": "Changed the class-name helper import from the upstream application alias to a source-local relative path.",
+          "reason": "Keep the shadcn payload closed and installable without importing the upstream application's site utilities."
+        },
+        {
+          "shippedPath": "components/ericts-projected-shadow/projected-shadow-animation.css",
+          "change": "Made the reduced-motion transition-duration rule at least as specific as the active and hover duration rules.",
+          "reason": "Prevent the active 360 ms duration from winning the cascade when the user requests reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "gathered-projected-shadow",
+        "sourceHash": "sha256:98c30a120f6455ba3d36b1941961f95fb294bbf30aa39c3baf0ff796ae3ce4f0",
+        "contentHash": "sha256:18e96cd73987dfcef5fcdc8924dbe7b094ddeb935452a668fb2a69212d3fe8c2",
+        "structureHash": "sha256:60915d24cc71383ed751658e8d17dae768db2c739f846e1371e360ba5faa2480"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

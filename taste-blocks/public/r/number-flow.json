@@ -1,0 +1,81 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-flow",
+  "title": "Number Flow",
+  "author": "Maxwell Barvian",
+  "description": "Formats localized numeric values and transitions only the digits and symbols that change.",
+  "dependencies": [
+    "esm-env@1.1.4",
+    "number-flow@0.6.2"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/numberflow/components/number-flow/number-flow.tsx",
+      "content": "'use client'\n\n// This has to be in a separate file for #95.\n//  Make sure tsup outputs both files.\n\nimport * as React from 'react'\nimport NumberFlowLite, {\n\ttype Value,\n\ttype Format,\n\ttype Props,\n\trenderInnerHTML,\n\tformatToData,\n\ttype Data,\n\tprefersReducedMotion as _prefersReducedMotion,\n\tcanAnimate as _canAnimate,\n\tdefine\n} from 'number-flow/lite'\nimport { BROWSER } from 'esm-env'\n\nconst REACT_MAJOR = parseInt(React.version.match(/^(\\d+)\\./)?.[1]!)\nconst isReact19 = REACT_MAJOR >= 19\n\n// Can't wait to not have to do this in React 19:\nconst OBSERVED_ATTRIBUTES = ['data', 'digits'] as const\ntype ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number]\nexport class NumberFlowElement extends NumberFlowLite {\n\tstatic observedAttributes = isReact19 ? [] : OBSERVED_ATTRIBUTES\n\tattributeChangedCallback(attr: ObservedAttribute, _oldValue: string, newValue: string) {\n\t\tthis[attr] = JSON.parse(newValue)\n\t}\n}\n\ndefine('number-flow-react', NumberFlowElement)\n\ntype BaseProps = React.HTMLAttributes<NumberFlowElement> &\n\tPartial<Props> & {\n\t\tisolate?: boolean\n\t\twillChange?: boolean\n\t\tonAnimationsStart?: (e: CustomEvent<undefined>) => void\n\t\tonAnimationsFinish?: (e: CustomEvent<undefined>) => void\n\t}\n\ntype NumberFlowImplProps = BaseProps & {\n\tinnerRef: React.MutableRefObject<NumberFlowElement | undefined>\n\tgroup?: GroupContext\n\tdata: Data\n}\n\n// You're supposed to cache these between uses:\n// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString\n// Serialize to strings b/c React:\nconst formatters: Record<string, Intl.NumberFormat> = {}\n\n// Tiny workaround to support React 19 until it's released:\nfunction identity<T>(v: T) {\n\treturn v\n}\nconst serialize = isReact19 ? identity : JSON.stringify\n\nfunction splitProps<T extends Record<string, any>>(\n\tprops: T\n): [Omit<Props, 'digits'>, Omit<T, keyof Omit<Props, 'digits'>>] {\n\tconst {\n\t\ttransformTiming,\n\t\tspinTiming,\n\t\topacityTiming,\n\t\tanimated,\n\t\trespectMotionPreference,\n\t\ttrend,\n\t\tplugins,\n\t\t...rest\n\t} = props\n\n\treturn [\n\t\t{\n\t\t\ttransformTiming,\n\t\t\tspinTiming,\n\t\t\topacityTiming,\n\t\t\tanimated,\n\t\t\trespectMotionPreference,\n\t\t\ttrend,\n\t\t\tplugins\n\t\t},\n\t\trest\n\t]\n}\n\ntype NumberFlowImplState = {}\ntype NumberFlowImplSnapshot = (() => void) | null // React doesn't like undefined\n// We need a class component to use getSnapshotBeforeUpdate:\nclass NumberFlowImpl extends React.Component<\n\tNumberFlowImplProps,\n\tNumberFlowImplState,\n\tNumberFlowImplSnapshot\n> {\n\tconstructor(props: NumberFlowImplProps) {\n\t\tsuper(props)\n\t\tthis.handleRef = this.handleRef.bind(this)\n\t}\n\n\t// Update the non-`data` props to avoid JSON serialization\n\t// Data needs to be set in render still:\n\tupdateProperties(prevProps?: Readonly<NumberFlowImplProps>) {\n\t\tif (!this.el) return\n\n\t\tthis.el.batched = !this.props.isolate\n\t\tconst [nonData] = splitProps(this.props)\n\t\tObject.entries(nonData).forEach(([k, v]) => {\n\t\t\t// @ts-ignore\n\t\t\tthis.el![k] = v ?? NumberFlowElement.defaultProps[k]\n\t\t})\n\n\t\tif (prevProps?.onAnimationsStart)\n\t\t\tthis.el.removeEventListener('animationsstart', prevProps.onAnimationsStart as EventListener)\n\t\tif (this.props.onAnimationsStart)\n\t\t\tthis.el.addEventListener('animationsstart', this.props.onAnimationsStart as EventListener)\n\n\t\tif (prevProps?.onAnimationsFinish)\n\t\t\tthis.el.removeEventListener('animationsfinish', prevProps.onAnimationsFinish as EventListener)\n\t\tif (this.props.onAnimationsFinish)\n\t\t\tthis.el.addEventListener('animationsfinish', this.props.onAnimationsFinish as EventListener)\n\t}\n\n\toverride componentDidMount() {\n\t\tthis.updateProperties()\n\t\tif (isReact19 && this.el) {\n\t\t\t// React 19 needs this because the attributeChangedCallback isn't called:\n\t\t\tthis.el.digits = this.props.digits\n\t\t\tthis.el.data = this.props.data\n\t\t}\n\t}\n\n\toverride getSnapshotBeforeUpdate(prevProps: Readonly<NumberFlowImplProps>) {\n\t\tthis.updateProperties(prevProps)\n\t\tif (prevProps.data !== this.props.data) {\n\t\t\tif (this.props.group) {\n\t\t\t\tthis.props.group.willUpdate()\n\t\t\t\treturn () => this.props.group?.didUpdate()\n\t\t\t}\n\t\t\tif (!this.props.isolate) {\n\t\t\t\tthis.el?.willUpdate()\n\t\t\t\treturn () => this.el?.didUpdate()\n\t\t\t}\n\t\t}\n\t\treturn null\n\t}\n\n\toverride componentDidUpdate(\n\t\t_: Readonly<NumberFlowImplProps>,\n\t\t__: NumberFlowImplState,\n\t\tdidUpdate: NumberFlowImplSnapshot\n\t) {\n\t\tdidUpdate?.()\n\t}\n\n\tprivate el?: NumberFlowElement\n\n\thandleRef(el: NumberFlowElement) {\n\t\tif (this.props.innerRef) this.props.innerRef.current = el\n\t\tthis.el = el\n\t}\n\n\toverride render() {\n\t\tconst [\n\t\t\t_,\n\t\t\t{\n\t\t\t\tinnerRef,\n\t\t\t\tclassName,\n\t\t\t\tdata,\n\t\t\t\tnonce,\n\t\t\t\twillChange,\n\t\t\t\tisolate,\n\t\t\t\tgroup,\n\t\t\t\tdigits,\n\t\t\t\tonAnimationsStart,\n\t\t\t\tonAnimationsFinish,\n\t\t\t\t...rest\n\t\t\t}\n\t\t] = splitProps(this.props)\n\n\t\treturn (\n\t\t\t// @ts-expect-error missing types\n\t\t\t<number-flow-react\n\t\t\t\tref={this.handleRef}\n\t\t\t\tdata-will-change={willChange ? '' : undefined}\n\t\t\t\t// Have to rename this:\n\t\t\t\tclass={className}\n\t\t\t\tnonce={nonce}\n\t\t\t\t{...rest}\n\t\t\t\tdangerouslySetInnerHTML={{\n\t\t\t\t\t__html: BROWSER ? '' : renderInnerHTML(data, { nonce, elementSuffix: '-react' })\n\t\t\t\t}}\n\t\t\t\tsuppressHydrationWarning\n\t\t\t\tdigits={serialize(digits)}\n\t\t\t\t// Make sure data is set last, everything else is updated:\n\t\t\t\tdata={serialize(data)}\n\t\t\t/>\n\t\t)\n\t}\n}\n\nexport type NumberFlowProps = BaseProps & {\n\tvalue: Value\n\tlocales?: Intl.LocalesArgument\n\tformat?: Format\n\tprefix?: string\n\tsuffix?: string\n}\n\nconst NumberFlow = React.forwardRef<NumberFlowElement, NumberFlowProps>(function NumberFlow(\n\t{ value, locales, format, prefix, suffix, ...props },\n\t_ref\n) {\n\tReact.useImperativeHandle(_ref, () => ref.current!, [])\n\tconst ref = React.useRef<NumberFlowElement | undefined>(undefined)\n\tconst group = React.useContext(NumberFlowGroupContext)\n\tgroup?.useRegister(ref)\n\n\tconst localesString = React.useMemo(() => (locales ? JSON.stringify(locales) : ''), [locales])\n\tconst formatString = React.useMemo(() => (format ? JSON.stringify(format) : ''), [format])\n\tconst data = React.useMemo(() => {\n\t\tconst formatter = (formatters[`${localesString}:${formatString}`] ??= new Intl.NumberFormat(\n\t\t\tlocales,\n\t\t\tformat\n\t\t))\n\t\treturn formatToData(value, formatter, prefix, suffix)\n\t}, [value, localesString, formatString, prefix, suffix])\n\n\treturn <NumberFlowImpl {...props} group={group} data={data} innerRef={ref} />\n})\n\nexport default NumberFlow\n\n// NumberFlowGroup\n\ntype GroupContext = {\n\tuseRegister: (ref: React.MutableRefObject<NumberFlowElement | undefined>) => void\n\twillUpdate: () => void\n\tdidUpdate: () => void\n}\n\nconst NumberFlowGroupContext = React.createContext<GroupContext | undefined>(undefined)\n\nexport function NumberFlowGroup({ children }: { children: React.ReactNode }) {\n\tconst flows = React.useRef(new Set<React.MutableRefObject<NumberFlowElement | undefined>>())\n\tconst updating = React.useRef(false)\n\tconst pending = React.useRef(new WeakMap<NumberFlowElement, boolean>())\n\tconst value = React.useMemo<GroupContext>(\n\t\t() => ({\n\t\t\tuseRegister(ref) {\n\t\t\t\tReact.useEffect(() => {\n\t\t\t\t\tflows.current.add(ref)\n\t\t\t\t\treturn () => {\n\t\t\t\t\t\tflows.current.delete(ref)\n\t\t\t\t\t}\n\t\t\t\t}, [])\n\t\t\t},\n\t\t\twillUpdate() {\n\t\t\t\tif (updating.current) return\n\t\t\t\tupdating.current = true\n\t\t\t\tflows.current.forEach((ref) => {\n\t\t\t\t\tconst f = ref.current\n\t\t\t\t\tif (!f || !f.created) return\n\t\t\t\t\tf.willUpdate()\n\t\t\t\t\tpending.current.set(f, true)\n\t\t\t\t})\n\t\t\t},\n\t\t\tdidUpdate() {\n\t\t\t\tflows.current.forEach((ref) => {\n\t\t\t\t\tconst f = ref.current\n\t\t\t\t\tif (!f || !pending.current.get(f)) return\n\t\t\t\t\tf.didUpdate()\n\t\t\t\t\tpending.current.delete(f)\n\t\t\t\t})\n\t\t\t\tupdating.current = false\n\t\t\t}\n\t\t}),\n\t\t[]\n\t)\n\n\treturn <NumberFlowGroupContext.Provider value={value}>{children}</NumberFlowGroupContext.Provider>\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/number-flow.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "status-progress",
+      "tags": [
+        "number",
+        "numeric-transition",
+        "localization",
+        "reduced-motion",
+        "currency"
+      ],
+      "renderer": "dom",
+      "preview": "previews/number-flow.tsx",
+      "source": {
+        "project": "NumberFlow",
+        "repository": "https://github.com/barvian/number-flow",
+        "revision": "a7b78f5d4d4b1e2cd4cb53d09d7158461bad493a",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/number-flow/number-flow.tsx",
+            "upstreamPath": "packages/react/src/NumberFlow.tsx",
+            "permalink": "https://github.com/barvian/number-flow/blob/a7b78f5d4d4b1e2cd4cb53d09d7158461bad493a/packages/react/src/NumberFlow.tsx",
+            "upstreamSha256": "sha256:fe32c3a0637315d8233920460e25f643636ff43d469e7a7dd40ba27ac792d4d0",
+            "contentSha256": "sha256:fe32c3a0637315d8233920460e25f643636ff43d469e7a7dd40ba27ac792d4d0",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react/src/NumberFlow.tsx",
+        "copyright": [
+          "Copyright (c) 2024 Maxwell Barvian"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE.md",
+          "permalink": "https://github.com/barvian/number-flow/blob/a7b78f5d4d4b1e2cd4cb53d09d7158461bad493a/LICENSE.md",
+          "sha256": "sha256:f8a3eac9fd2ae94f18a2bf0459e57d90da539f015a7ec4ad6186a5ca33a6aa9a",
+          "localPath": "registry/sources/numberflow/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "localized-numeric-transition",
+        "sourceHash": "sha256:eae25b74dca7d0fba3db7e8a5c5042bd217e86d4e8540f72782f7fe52c5ee90a",
+        "contentHash": "sha256:eae25b74dca7d0fba3db7e8a5c5042bd217e86d4e8540f72782f7fe52c5ee90a",
+        "structureHash": "sha256:c9058a15b4a39339fd906fe063bf3b4cda6a41ef00119eb3ad09a0047c03da90"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "status-progress"
+  ],
+  "type": "registry:component"
+}

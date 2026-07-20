@@ -1,0 +1,147 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animateicons-bike",
+  "title": "Animated Bike Icon",
+  "author": "AnimateIcons",
+  "description": "Renders an animated bike SVG icon with hover and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/animateicons/components/animateicons-bike/bike-icon.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"../../lib/utils\";\nimport type { Variants } from \"motion/react\";\nimport {\n LazyMotion,\n domMin,\n m,\n useAnimation,\n useReducedMotion,\n} from \"motion/react\";\nimport {\n forwardRef,\n useCallback,\n useImperativeHandle,\n useRef,\n type HTMLAttributes,\n} from \"react\";\nexport interface BikeIconHandle {\n startAnimation: () => void;\n stopAnimation: () => void;\n}\n\ninterface BikeIconProps extends Omit<\n HTMLAttributes<HTMLDivElement>,\n | \"color\"\n | \"onDrag\"\n | \"onDragStart\"\n | \"onDragEnd\"\n | \"onAnimationStart\"\n | \"onAnimationEnd\"\n | \"onAnimationIteration\"\n> {\n size?: number;\n duration?: number;\n isAnimated?: boolean;\n color?: string;\n}\n\nconst BikeIcon = forwardRef<BikeIconHandle, BikeIconProps>(\n (\n  {\n   onMouseEnter,\n   onMouseLeave,\n   className,\n   size = 24,\n   duration = 1.4,\n   isAnimated = true,\n   color,\n   ...props\n  },\n  ref,\n ) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlled = useRef(false);\n\n  useImperativeHandle(ref, () => {\n   isControlled.current = true;\n   return {\n    startAnimation: () =>\n     !isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n    stopAnimation: () => controls.start(\"normal\"),\n   };\n  });\n\n  const handleEnter = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isAnimated || reduced) return;\n    if (!isControlled.current) controls.start(\"animate\");\n    else onMouseEnter?.(e as any);\n   },\n   [controls, reduced, isAnimated, onMouseEnter],\n  );\n\n  const handleLeave = useCallback(\n   (e?: React.MouseEvent<HTMLDivElement>) => {\n    if (!isControlled.current) controls.start(\"normal\");\n    else onMouseLeave?.(e as any);\n   },\n   [controls, onMouseLeave],\n  );\n\n  const bikeVariants: Variants = {\n   normal: { x: 0 },\n   animate: {\n    x: [0, 40, -40, 0],\n    transition: {\n     duration,\n     ease: \"easeInOut\",\n     times: [0, 0.4, 0.401, 1],\n    },\n   },\n  };\n\n  const wheelVariants: Variants = {\n   normal: { rotate: 0 },\n   animate: {\n    rotate: 720,\n    transition: {\n     duration,\n     ease: \"linear\",\n    },\n   },\n  };\n\n  const frontWheelVariants: Variants = {\n   normal: { rotate: 0 },\n   animate: {\n    rotate: 720,\n    transition: {\n     duration,\n     ease: \"linear\",\n     delay: 0.06,\n    },\n   },\n  };\n\n  const pedalVariants: Variants = {\n   normal: { rotate: 0 },\n   animate: {\n    rotate: 720,\n    transition: {\n     duration,\n     ease: \"linear\",\n    },\n   },\n  };\n\n  return (\n   <LazyMotion features={domMin} strict>\n    <m.div\n     className={cn(\n      \"inline-flex items-center justify-center overflow-hidden\",\n      className,\n     )}\n     onMouseEnter={handleEnter}\n     onMouseLeave={handleLeave}\n     {...props}\n     style={{ color, ...props.style }}\n    >\n     <m.svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"2\"\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      animate={controls}\n      initial=\"normal\"\n      variants={bikeVariants}\n     >\n      <m.g\n       variants={wheelVariants}\n       style={{ transformOrigin: \"5.5px 17.5px\" }}\n       initial=\"normal\"\n       animate={controls}\n      >\n       <circle cx=\"5.5\" cy=\"17.5\" r=\"3.5\" />\n      </m.g>\n\n      <m.g\n       variants={frontWheelVariants}\n       style={{ transformOrigin: \"18.5px 17.5px\" }}\n       initial=\"normal\"\n       animate={controls}\n      >\n       <circle cx=\"18.5\" cy=\"17.5\" r=\"3.5\" />\n      </m.g>\n\n      <m.g\n       variants={pedalVariants}\n       style={{ transformOrigin: \"12px 14px\" }}\n       initial=\"normal\"\n       animate={controls}\n      >\n       <circle cx=\"12\" cy=\"14\" r=\"0.8\" />\n      </m.g>\n\n      <circle cx=\"15\" cy=\"5\" r=\"1\" />\n\n      <path d=\"M12 17.5V14l-3-3 4-3 2 3h2\" />\n     </m.svg>\n    </m.div>\n   </LazyMotion>\n  );\n },\n);\n\nBikeIcon.displayName = \"BikeIcon\";\nexport { BikeIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/animateicons-bike.tsx"
+    },
+    {
+      "path": "registry/sources/animateicons/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n\treturn twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "bike",
+        "animated",
+        "icon",
+        "motion",
+        "bicycle",
+        "cycle",
+        "cycling"
+      ],
+      "renderer": "svg",
+      "preview": "previews/animateicons-bike.tsx",
+      "source": {
+        "project": "AnimateIcons",
+        "repository": "https://github.com/Avijit07x/animateicons",
+        "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/animateicons-bike/bike-icon.tsx",
+            "upstreamPath": "icons/lucide/bike-icon.tsx",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/icons/lucide/bike-icon.tsx",
+            "upstreamSha256": "sha256:b349325bf68654edcbbd2eb856cc49be133f18603ae51f4d1ee277284b20ebea",
+            "contentSha256": "sha256:384cdf628ec7be95274f47b4e323fb3a14cd95931c3c5dc80b1ca8c2665e257b",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target.",
+              "Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/lib/utils.ts",
+            "upstreamSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "contentSha256": "sha256:d4e88046feb9d35abf37f88947afbab4574fd0a17c0e2663443b8ff8c12c4233",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT AND ISC",
+        "scope": "icons/lucide/bike-icon.tsx, lib/utils.ts, and Lucide-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2025 Avijit Dey",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/Avijit07x/animateicons/blob/380adb3b8eda68ee9c26e846ab8f9799d77f8815/LICENSE",
+          "sha256": "sha256:a8716f1e7c79c0575b30f5b686ea663a4530872ea6dee668fc2a7900ee88f1ac",
+          "localPath": "registry/sources/animateicons/LICENSE"
+        },
+        "notices": [
+          "registry/sources/animateicons/NOTICE",
+          "registry/sources/animateicons/LUCIDE_LICENSE",
+          "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/animateicons/NOTICE",
+            "sha256": "sha256:70802c914af22e594466ef03f0ef0b9232cba532cdd08735672f9affcf2253fe",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/LICENSE",
+            "localPath": "registry/sources/animateicons/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "8fc6b70aa562d584159b1ccfffc1cb759712a1b9",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/8fc6b70aa562d584159b1ccfffc1cb759712a1b9/BRAND_LOGOS_STATEMENT.md",
+            "localPath": "registry/sources/animateicons/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/animateicons-bike/bike-icon.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file both in this source batch and at its registry target. Guarded imperative startAnimation against isAnimated={false} and reduced-motion preferences.",
+          "reason": "Resolve the bundled upstream helper without a consumer alias and ensure controlled animation honors explicit disablement and reduced-motion preferences."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-bike-icon",
+        "sourceHash": "sha256:b3a8a2be4d272a8a45225fa7ba29a8388578ff07290ba451a4534abcac2409c9",
+        "contentHash": "sha256:f48dd5e13b9f87246d22377380f22c669a4d5626486fc09cc659ba09fe1703f4",
+        "structureHash": "sha256:551712d6a610b061d81dc9c41f429132e777d18de7828ca8f42ebcc7db66f02c",
+        "glyph": {
+          "inventoryName": "bike",
+          "canonicalName": "bike",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

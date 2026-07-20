@@ -1,0 +1,98 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-voice-selector",
+  "title": "Voice Selector",
+  "author": "Vercel",
+  "description": "A searchable voice dialog with metadata, selection, and preview-control states.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2",
+    "lucide-react@0.577.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "command",
+    "dialog",
+    "spinner",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/voice-selector.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport {\r\n  Command,\r\n  CommandDialog,\r\n  CommandEmpty,\r\n  CommandGroup,\r\n  CommandInput,\r\n  CommandItem,\r\n  CommandList,\r\n  CommandSeparator,\r\n  CommandShortcut,\r\n} from \"@/components/ui/command\";\r\nimport {\r\n  Dialog,\r\n  DialogContent,\r\n  DialogTitle,\r\n  DialogTrigger,\r\n} from \"@/components/ui/dialog\";\r\nimport { Spinner } from \"@/components/ui/spinner\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport {\r\n  CircleSmallIcon,\r\n  MarsIcon,\r\n  MarsStrokeIcon,\r\n  NonBinaryIcon,\r\n  PauseIcon,\r\n  PlayIcon,\r\n  TransgenderIcon,\r\n  VenusAndMarsIcon,\r\n  VenusIcon,\r\n} from \"lucide-react\";\r\nimport type { ComponentProps, ReactNode } from \"react\";\r\nimport { createContext, useCallback, useContext, useMemo } from \"react\";\r\n\r\ninterface VoiceSelectorContextValue {\r\n  value: string | undefined;\r\n  setValue: (value: string | undefined) => void;\r\n  open: boolean;\r\n  setOpen: (open: boolean) => void;\r\n}\r\n\r\nconst VoiceSelectorContext = createContext<VoiceSelectorContextValue | null>(\r\n  null\r\n);\r\n\r\nexport const useVoiceSelector = () => {\r\n  const context = useContext(VoiceSelectorContext);\r\n  if (!context) {\r\n    throw new Error(\r\n      \"VoiceSelector components must be used within VoiceSelector\"\r\n    );\r\n  }\r\n  return context;\r\n};\r\n\r\nexport type VoiceSelectorProps = ComponentProps<typeof Dialog> & {\r\n  value?: string;\r\n  defaultValue?: string;\r\n  onValueChange?: (value: string | undefined) => void;\r\n};\r\n\r\nexport const VoiceSelector = ({\r\n  value: valueProp,\r\n  defaultValue,\r\n  onValueChange,\r\n  open: openProp,\r\n  defaultOpen = false,\r\n  onOpenChange,\r\n  children,\r\n  ...props\r\n}: VoiceSelectorProps) => {\r\n  const [value, setValue] = useControllableState({\r\n    defaultProp: defaultValue,\r\n    onChange: onValueChange,\r\n    prop: valueProp,\r\n  });\r\n\r\n  const [open, setOpen] = useControllableState({\r\n    defaultProp: defaultOpen,\r\n    onChange: onOpenChange,\r\n    prop: openProp,\r\n  });\r\n\r\n  const voiceSelectorContext = useMemo(\r\n    () => ({ open, setOpen, setValue, value }),\r\n    [value, setValue, open, setOpen]\r\n  );\r\n\r\n  return (\r\n    <VoiceSelectorContext.Provider value={voiceSelectorContext}>\r\n      <Dialog onOpenChange={setOpen} open={open} {...props}>\r\n        {children}\r\n      </Dialog>\r\n    </VoiceSelectorContext.Provider>\r\n  );\r\n};\r\n\r\nexport type VoiceSelectorTriggerProps = ComponentProps<typeof DialogTrigger>;\r\n\r\nexport const VoiceSelectorTrigger = (props: VoiceSelectorTriggerProps) => (\r\n  <DialogTrigger {...props} />\r\n);\r\n\r\nexport type VoiceSelectorContentProps = ComponentProps<typeof DialogContent> & {\r\n  title?: ReactNode;\r\n};\r\n\r\nexport const VoiceSelectorContent = ({\r\n  className,\r\n  children,\r\n  title = \"Voice Selector\",\r\n  ...props\r\n}: VoiceSelectorContentProps) => (\r\n  <DialogContent\r\n    aria-describedby={undefined}\r\n    className={cn(\"p-0\", className)}\r\n    {...props}\r\n  >\r\n    <DialogTitle className=\"sr-only\">{title}</DialogTitle>\r\n    <Command className=\"**:data-[slot=command-input-wrapper]:h-auto\">\r\n      {children}\r\n    </Command>\r\n  </DialogContent>\r\n);\r\n\r\nexport type VoiceSelectorDialogProps = ComponentProps<typeof CommandDialog>;\r\n\r\nexport const VoiceSelectorDialog = (props: VoiceSelectorDialogProps) => (\r\n  <CommandDialog {...props} />\r\n);\r\n\r\nexport type VoiceSelectorInputProps = ComponentProps<typeof CommandInput>;\r\n\r\nexport const VoiceSelectorInput = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorInputProps) => (\r\n  <CommandInput className={cn(\"h-auto py-3.5\", className)} {...props} />\r\n);\r\n\r\nexport type VoiceSelectorListProps = ComponentProps<typeof CommandList>;\r\n\r\nexport const VoiceSelectorList = (props: VoiceSelectorListProps) => (\r\n  <CommandList {...props} />\r\n);\r\n\r\nexport type VoiceSelectorEmptyProps = ComponentProps<typeof CommandEmpty>;\r\n\r\nexport const VoiceSelectorEmpty = (props: VoiceSelectorEmptyProps) => (\r\n  <CommandEmpty {...props} />\r\n);\r\n\r\nexport type VoiceSelectorGroupProps = ComponentProps<typeof CommandGroup>;\r\n\r\nexport const VoiceSelectorGroup = (props: VoiceSelectorGroupProps) => (\r\n  <CommandGroup {...props} />\r\n);\r\n\r\nexport type VoiceSelectorItemProps = ComponentProps<typeof CommandItem>;\r\n\r\nexport const VoiceSelectorItem = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorItemProps) => (\r\n  <CommandItem className={cn(\"px-4 py-2\", className)} {...props} />\r\n);\r\n\r\nexport type VoiceSelectorShortcutProps = ComponentProps<typeof CommandShortcut>;\r\n\r\nexport const VoiceSelectorShortcut = (props: VoiceSelectorShortcutProps) => (\r\n  <CommandShortcut {...props} />\r\n);\r\n\r\nexport type VoiceSelectorSeparatorProps = ComponentProps<\r\n  typeof CommandSeparator\r\n>;\r\n\r\nexport const VoiceSelectorSeparator = (props: VoiceSelectorSeparatorProps) => (\r\n  <CommandSeparator {...props} />\r\n);\r\n\r\nexport type VoiceSelectorGenderProps = ComponentProps<\"span\"> & {\r\n  value?:\r\n    | \"male\"\r\n    | \"female\"\r\n    | \"transgender\"\r\n    | \"androgyne\"\r\n    | \"non-binary\"\r\n    | \"intersex\";\r\n};\r\n\r\nexport const VoiceSelectorGender = ({\r\n  className,\r\n  value,\r\n  children,\r\n  ...props\r\n}: VoiceSelectorGenderProps) => {\r\n  let icon: ReactNode | null = null;\r\n\r\n  switch (value) {\r\n    case \"male\": {\r\n      icon = <MarsIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    case \"female\": {\r\n      icon = <VenusIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    case \"transgender\": {\r\n      icon = <TransgenderIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    case \"androgyne\": {\r\n      icon = <MarsStrokeIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    case \"non-binary\": {\r\n      icon = <NonBinaryIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    case \"intersex\": {\r\n      icon = <VenusAndMarsIcon className=\"size-4\" />;\r\n      break;\r\n    }\r\n    default: {\r\n      icon = <CircleSmallIcon className=\"size-4\" />;\r\n    }\r\n  }\r\n\r\n  return (\r\n    <span className={cn(\"text-muted-foreground text-xs\", className)} {...props}>\r\n      {children ?? icon}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type VoiceSelectorAccentProps = ComponentProps<\"span\"> & {\r\n  value?:\r\n    | \"american\"\r\n    | \"british\"\r\n    | \"australian\"\r\n    | \"canadian\"\r\n    | \"irish\"\r\n    | \"scottish\"\r\n    | \"indian\"\r\n    | \"south-african\"\r\n    | \"new-zealand\"\r\n    | \"spanish\"\r\n    | \"french\"\r\n    | \"german\"\r\n    | \"italian\"\r\n    | \"portuguese\"\r\n    | \"brazilian\"\r\n    | \"mexican\"\r\n    | \"argentinian\"\r\n    | \"japanese\"\r\n    | \"chinese\"\r\n    | \"korean\"\r\n    | \"russian\"\r\n    | \"arabic\"\r\n    | \"dutch\"\r\n    | \"swedish\"\r\n    | \"norwegian\"\r\n    | \"danish\"\r\n    | \"finnish\"\r\n    | \"polish\"\r\n    | \"turkish\"\r\n    | \"greek\"\r\n    | string;\r\n};\r\n\r\nexport const VoiceSelectorAccent = ({\r\n  className,\r\n  value,\r\n  children,\r\n  ...props\r\n}: VoiceSelectorAccentProps) => {\r\n  let emoji: string | null = null;\r\n\r\n  switch (value) {\r\n    case \"american\": {\r\n      emoji = \"🇺🇸\";\r\n      break;\r\n    }\r\n    case \"british\": {\r\n      emoji = \"🇬🇧\";\r\n      break;\r\n    }\r\n    case \"australian\": {\r\n      emoji = \"🇦🇺\";\r\n      break;\r\n    }\r\n    case \"canadian\": {\r\n      emoji = \"🇨🇦\";\r\n      break;\r\n    }\r\n    case \"irish\": {\r\n      emoji = \"🇮🇪\";\r\n      break;\r\n    }\r\n    case \"scottish\": {\r\n      emoji = \"🏴󠁧󠁢󠁳󠁣󠁴󠁿\";\r\n      break;\r\n    }\r\n    case \"indian\": {\r\n      emoji = \"🇮🇳\";\r\n      break;\r\n    }\r\n    case \"south-african\": {\r\n      emoji = \"🇿🇦\";\r\n      break;\r\n    }\r\n    case \"new-zealand\": {\r\n      emoji = \"🇳🇿\";\r\n      break;\r\n    }\r\n    case \"spanish\": {\r\n      emoji = \"🇪🇸\";\r\n      break;\r\n    }\r\n    case \"french\": {\r\n      emoji = \"🇫🇷\";\r\n      break;\r\n    }\r\n    case \"german\": {\r\n      emoji = \"🇩🇪\";\r\n      break;\r\n    }\r\n    case \"italian\": {\r\n      emoji = \"🇮🇹\";\r\n      break;\r\n    }\r\n    case \"portuguese\": {\r\n      emoji = \"🇵🇹\";\r\n      break;\r\n    }\r\n    case \"brazilian\": {\r\n      emoji = \"🇧🇷\";\r\n      break;\r\n    }\r\n    case \"mexican\": {\r\n      emoji = \"🇲🇽\";\r\n      break;\r\n    }\r\n    case \"argentinian\": {\r\n      emoji = \"🇦🇷\";\r\n      break;\r\n    }\r\n    case \"japanese\": {\r\n      emoji = \"🇯🇵\";\r\n      break;\r\n    }\r\n    case \"chinese\": {\r\n      emoji = \"🇨🇳\";\r\n      break;\r\n    }\r\n    case \"korean\": {\r\n      emoji = \"🇰🇷\";\r\n      break;\r\n    }\r\n    case \"russian\": {\r\n      emoji = \"🇷🇺\";\r\n      break;\r\n    }\r\n    case \"arabic\": {\r\n      emoji = \"🇸🇦\";\r\n      break;\r\n    }\r\n    case \"dutch\": {\r\n      emoji = \"🇳🇱\";\r\n      break;\r\n    }\r\n    case \"swedish\": {\r\n      emoji = \"🇸🇪\";\r\n      break;\r\n    }\r\n    case \"norwegian\": {\r\n      emoji = \"🇳🇴\";\r\n      break;\r\n    }\r\n    case \"danish\": {\r\n      emoji = \"🇩🇰\";\r\n      break;\r\n    }\r\n    case \"finnish\": {\r\n      emoji = \"🇫🇮\";\r\n      break;\r\n    }\r\n    case \"polish\": {\r\n      emoji = \"🇵🇱\";\r\n      break;\r\n    }\r\n    case \"turkish\": {\r\n      emoji = \"🇹🇷\";\r\n      break;\r\n    }\r\n    case \"greek\": {\r\n      emoji = \"🇬🇷\";\r\n      break;\r\n    }\r\n    default: {\r\n      emoji = null;\r\n    }\r\n  }\r\n\r\n  return (\r\n    <span className={cn(\"text-muted-foreground text-xs\", className)} {...props}>\r\n      {children ?? emoji}\r\n    </span>\r\n  );\r\n};\r\n\r\nexport type VoiceSelectorAgeProps = ComponentProps<\"span\">;\r\n\r\nexport const VoiceSelectorAge = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorAgeProps) => (\r\n  <span\r\n    className={cn(\"text-muted-foreground text-xs tabular-nums\", className)}\r\n    {...props}\r\n  />\r\n);\r\n\r\nexport type VoiceSelectorNameProps = ComponentProps<\"span\">;\r\n\r\nexport const VoiceSelectorName = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorNameProps) => (\r\n  <span\r\n    className={cn(\"flex-1 truncate text-start font-medium\", className)}\n    {...props}\r\n  />\r\n);\r\n\r\nexport type VoiceSelectorDescriptionProps = ComponentProps<\"span\">;\r\n\r\nexport const VoiceSelectorDescription = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorDescriptionProps) => (\r\n  <span className={cn(\"text-muted-foreground text-xs\", className)} {...props} />\r\n);\r\n\r\nexport type VoiceSelectorAttributesProps = ComponentProps<\"div\">;\r\n\r\nexport const VoiceSelectorAttributes = ({\r\n  className,\r\n  children,\r\n  ...props\r\n}: VoiceSelectorAttributesProps) => (\r\n  <div className={cn(\"flex items-center text-xs\", className)} {...props}>\r\n    {children}\r\n  </div>\r\n);\r\n\r\nexport type VoiceSelectorBulletProps = ComponentProps<\"span\">;\r\n\r\nexport const VoiceSelectorBullet = ({\r\n  className,\r\n  ...props\r\n}: VoiceSelectorBulletProps) => (\r\n  <span\r\n    aria-hidden=\"true\"\r\n    className={cn(\"select-none text-border\", className)}\r\n    {...props}\r\n  >\r\n    &bull;\r\n  </span>\r\n);\r\n\r\nexport type VoiceSelectorPreviewProps = Omit<\r\n  ComponentProps<\"button\">,\r\n  \"children\"\r\n> & {\r\n  playing?: boolean;\r\n  loading?: boolean;\r\n  onPlay?: () => void;\r\n};\r\n\r\nexport const VoiceSelectorPreview = ({\r\n  className,\r\n  playing,\r\n  loading,\r\n  onPlay,\r\n  onClick,\r\n  ...props\r\n}: VoiceSelectorPreviewProps) => {\r\n  const handleClick = useCallback(\r\n    (event: React.MouseEvent<HTMLButtonElement>) => {\r\n      event.stopPropagation();\r\n      onClick?.(event);\r\n      onPlay?.();\r\n    },\r\n    [onClick, onPlay]\r\n  );\r\n\r\n  let icon = <PlayIcon className=\"size-3\" />;\r\n\r\n  if (loading) {\r\n    icon = <Spinner className=\"size-3\" />;\r\n  } else if (playing) {\r\n    icon = <PauseIcon className=\"size-3\" />;\r\n  }\r\n\r\n  return (\r\n    <Button\r\n      aria-label={playing ? \"Pause preview\" : \"Play preview\"}\r\n      className={cn(\"size-6\", className)}\r\n      disabled={loading}\r\n      onClick={handleClick}\r\n      size=\"icon-sm\"\r\n      type=\"button\"\r\n      variant=\"outline\"\r\n      {...props}\r\n    >\r\n      {icon}\r\n    </Button>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/voice-selector.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "voice",
+        "search",
+        "dialog",
+        "selector"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-voice-selector.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/voice-selector.tsx",
+            "upstreamPath": "packages/elements/src/voice-selector.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/voice-selector.tsx",
+            "upstreamSha256": "sha256:c777aa17525ea3664880f52e762dc1f49d4e9b32f0b815cc839677bff406aa3d",
+            "contentSha256": "sha256:dd40bd9a218cfa74f09bb1276eef72b9ea9e278dadad219552d0a77c09089d8b",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Changed text alignment to a logical RTL-aware utility."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/voice-selector.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/voice-selector.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Changed text alignment to a logical RTL-aware utility.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "searchable-voice-selector",
+        "sourceHash": "sha256:424f3145b89832680a9673017bbf83c26b2e702e2c8902db649915d5175a9fb3",
+        "contentHash": "sha256:75d5fe7c618e495ae03abfbdfb23bbd08f9e599cc673c1be9b462b54ccd71d74",
+        "structureHash": "sha256:420f4eac932c8f030542b6f5e4420b1d171f04e23cf0b3e6884b86b8aa69b240"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

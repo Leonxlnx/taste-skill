@@ -1,0 +1,144 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carbon-icons-motion-magic-wand-icon",
+  "title": "Animated Magic Wand Icon",
+  "author": "Carbon Design System contributors",
+  "description": "Rocks a wand while three independently timed sparkles pulse around it.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.tsx",
+      "content": "\"use client\";\n\nimport type { SVGProps } from \"react\";\n\nimport styles from \"./magic-wand-motion.module.css\";\n\nexport interface MagicWandMotionProps extends Omit<SVGProps<SVGSVGElement>, \"title\"> {\n  isAnimated?: boolean;\n  size?: number;\n  title?: string | null;\n}\n\nexport function MagicWandMotion({\n  className,\n  isAnimated = false,\n  size = 32,\n  title = \"Magic wand\",\n  ...props\n}: MagicWandMotionProps) {\n  const hasAccessibleName = Boolean(title || props[\"aria-label\"] || props[\"aria-labelledby\"]);\n\n  return (\n    <svg\n      fill=\"currentColor\"\n      {...props}\n      aria-hidden={hasAccessibleName ? props[\"aria-hidden\"] : true}\n      className={[isAnimated ? styles.isAnimating : \"\", className].filter(Boolean).join(\" \")}\n      height={size}\n      role={props.role ?? (hasAccessibleName ? \"img\" : undefined)}\n      viewBox=\"0 0 32 32\"\n      width={size}\n    >\n      {title ? <title>{title}</title> : null}\n      <path\n        className={styles.Wand}\n        d=\"M29.4141,24,12,6.5859a2.0476,2.0476,0,0,0-2.8281,0l-2.586,2.586a2.0021,2.0021,0,0,0,0,2.8281L23.999,29.4141a2.0024,2.0024,0,0,0,2.8281,0l2.587-2.5865a1.9993,1.9993,0,0,0,0-2.8281ZM8,10.5859,10.5859,8l5,5-2.5866,2.5869-5-5ZM25.4131,28l-11-10.999L17,14.4141l11,11Z\"\n      />\n      <g className={styles.SparkleLeftContainer}>\n        <path className={styles.SparkleLeft} d=\"M2.586 14.586H5.414V17.414H2.586z\" />\n      </g>\n      <path className={styles.SparkleCenter} d=\"M2.586 2.586H5.414V5.414H2.586z\" />\n      <g className={styles.SparkleRightContainer}>\n        <path className={styles.SparkleRight} d=\"M14.586 2.586H17.414V5.414H14.586z\" />\n      </g>\n    </svg>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/carbon-icons-motion-magic-wand-icon/magic-wand-motion.tsx"
+    },
+    {
+      "path": "registry/sources/carbon-icons-motion/components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.module.css",
+      "content": ".Wand {\n  transform-origin: 90% 90%;\n  will-change: transform;\n}\n\n.SparkleLeft,\n.SparkleCenter,\n.SparkleRight {\n  transform: rotate(45deg);\n  will-change: transform;\n}\n\n.SparkleLeft,\n.SparkleLeftContainer {\n  transform-origin: 12.5% 50%;\n}\n\n.SparkleCenter {\n  transform-origin: 12.5% 12.5%;\n}\n\n.SparkleRight,\n.SparkleRightContainer {\n  transform-origin: 50% 12.5%;\n}\n\n.SparkleLeftContainer,\n.SparkleRightContainer {\n  will-change: transform;\n}\n\n.isAnimating .Wand { animation: wand 280ms; }\n.isAnimating .SparkleLeft { animation: sparkle-left-translate 280ms; }\n.isAnimating .SparkleLeftContainer { animation: sparkle-left-scale 280ms; }\n.isAnimating .SparkleCenter { animation: sparkle-center-scale 280ms; }\n.isAnimating .SparkleRight { animation: sparkle-right-translate 280ms; }\n.isAnimating .SparkleRightContainer { animation: sparkle-right-scale 280ms; }\n\n@keyframes wand {\n  0% { transform: rotate(0); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }\n  38.3% { transform: rotate(4deg); animation-timing-function: cubic-bezier(0.66, 0, 0.34, 1); }\n  56.6% { transform: rotate(-4deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }\n  100% { transform: rotate(0); }\n}\n\n@keyframes sparkle-left-translate {\n  0% { transform: translateY(0) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }\n  38.3% { transform: translateY(2px) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }\n  100% { transform: translateY(0) rotate(45deg); }\n}\n\n@keyframes sparkle-left-scale {\n  0% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  16.6% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  43.3% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  60% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  100% { transform: scale(1); }\n}\n\n@keyframes sparkle-center-scale {\n  0% { transform: scale(1) rotate(45deg); }\n  23.3% { transform: scale(1) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  50% { transform: scale(1.5) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }\n  66.6% { transform: scale(1) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  83.3% { transform: scale(1.5) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }\n  100% { transform: scale(1) rotate(45deg); }\n}\n\n@keyframes sparkle-right-translate {\n  0% { transform: translateX(0) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }\n  38.3% { transform: translateX(2px) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }\n  100% { transform: translateX(0) rotate(45deg); }\n}\n\n@keyframes sparkle-right-scale {\n  0% { transform: scale(1); }\n  13.3% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  30% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  56.6% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  73.3% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }\n  100% { transform: scale(1); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .isAnimating .Wand,\n  .isAnimating .SparkleLeft,\n  .isAnimating .SparkleLeftContainer,\n  .isAnimating .SparkleCenter,\n  .isAnimating .SparkleRight,\n  .isAnimating .SparkleRightContainer {\n    animation: none;\n  }\n}\n",
+      "type": "registry:file",
+      "target": "@components/taste-blocks/carbon-icons-motion-magic-wand-icon/magic-wand-motion.module.css"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "magic",
+        "wand",
+        "sparkles",
+        "formatting",
+        "animated",
+        "icon",
+        "carbon",
+        "reduced-motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/carbon-icons-motion-magic-wand-icon.tsx",
+      "source": {
+        "project": "Carbon Icons Motion",
+        "repository": "https://github.com/carbon-design-system/icons-motion",
+        "revision": "7e0a7459eb7d8f96fae0649e1450b65af7f75a2b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.tsx",
+            "upstreamPath": "src/components/Formatting/MagicWandMotion/MagicWandMotion.js",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/MagicWandMotion/MagicWandMotion.js",
+            "upstreamSha256": "sha256:80ccded6b1cd155630f7d0b87b0295c5cbfe2a03e48d61abda6725f640935d12",
+            "contentSha256": "sha256:0a8ddefb27d9b9f962140484deaa8788dff2604f4268fe0466c57cd9149279b5",
+            "changes": [
+              "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop.",
+              "Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers."
+            ]
+          },
+          {
+            "shippedPath": "components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.module.css",
+            "upstreamPath": "src/components/Formatting/MagicWandMotion/magic-wand--motion.module.scss",
+            "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/src/components/Formatting/MagicWandMotion/magic-wand--motion.module.scss",
+            "upstreamSha256": "sha256:bb1da19d72f7f65a314556e1bcb1bbf6ebf1b66fe56fc8fb78a8970e1a0f5b3f",
+            "contentSha256": "sha256:3f5334a30e8b66da41d7994eb75bcc8a3a43ef2ba67c4e35286932c7f6e98275",
+            "changes": [
+              "Converted the nested SCSS module to an equivalent flat CSS module.",
+              "Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling."
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "geometry": "Inline SVG geometry copied from the official Carbon Icons Motion component blob.",
+        "carbonBasis": {
+          "statement": "The upstream README says the package mirrors Carbon icons but is not tied to a specific Carbon version.",
+          "upstreamPath": "README.md",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/README.md",
+          "sha256": "sha256:3f0e1bd45dc58a966edb3f7ba76d1b0d9231ade1a7cae7b8d7ee36ca12130069"
+        }
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "src/components/Formatting/MagicWandMotion/MagicWandMotion.js, src/components/Formatting/MagicWandMotion/magic-wand--motion.module.scss, and their inline Carbon-derived SVG geometry",
+        "copyright": [
+          "Copyright 2015 IBM Corp."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/carbon-design-system/icons-motion/blob/7e0a7459eb7d8f96fae0649e1450b65af7f75a2b/LICENSE",
+          "sha256": "sha256:c3c4a0200172f8e23c0ea6a0f2c105ac960721c542b63d5de5e9767d195c2e73",
+          "localPath": "registry/sources/carbon-icons-motion/LICENSE"
+        },
+        "notices": [
+          "registry/sources/carbon-icons-motion/NOTICE"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/carbon-icons-motion/NOTICE",
+            "sha256": "sha256:95ab19a8acd4553d339b6b0fcfd7c9c93329ceccfa6713364f7a9e5ed42ead46",
+            "changes": [
+              "Created locally because the pinned upstream commit contains no NOTICE file; records attribution and Apache modification marking."
+            ]
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.tsx",
+          "change": "Converted the upstream JavaScript component to strict TSX, removed its mirrored effect/ref wrapper, and renamed isAnimating to the controlled isAnimated prop. Forwarded SVG props, preserved the upstream inline geometry, and made the title and inherited color accessible to consumers.",
+          "reason": "Expose a strict, controlled, portable React SVG component without changing its source geometry."
+        },
+        {
+          "shippedPath": "components/carbon-icons-motion-magic-wand-icon/magic-wand-motion.module.css",
+          "change": "Converted the nested SCSS module to an equivalent flat CSS module. Compacted the source-authored active keyframes into one non-looping 280 ms interaction and added prefers-reduced-motion handling.",
+          "reason": "Remove the Sass requirement, prevent looping/autoplay, meet the UI timing budget, and honor reduced motion."
+        }
+      ],
+      "dedupe": {
+        "family": "carbon-wand-rock-with-three-offset-sparkles",
+        "sourceHash": "sha256:a50b8d99bb1225c49559e3b59f749ba1ead043588b0524f64b0d261e9a3438b8",
+        "contentHash": "sha256:2183e9600a29060c8fae6bf429d5dddbe38eba0394c9f1a52bab8c71acb1889e",
+        "structureHash": "sha256:560af96b49373cefa233ba7b289b790ec12e642e9c559e3bf4fd7ac1102a7394",
+        "geometryHash": "sha256:a16926705ee943f3cf48f62ecaf4f70ec7224efe0294b4d2e1f5f1c4c2c6a322",
+        "motionHash": "sha256:261854f8a8c3db30de9185ea7bde66283f59076c794de1838b7b8e5de2dcaebc",
+        "rasterHash": "sha256:37a298090b762cb6c1b55db6cd9d8d1ca1a3c55315850bdbef3944be35937bee",
+        "glyph": {
+          "inventoryName": "magic-wand",
+          "canonicalName": "magic-wand",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": "Generic Carbon-system glyph; no product logo, company mark, or remote asset retained."
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}

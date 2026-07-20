@@ -1,0 +1,378 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-responsive-pagination",
+  "title": "Responsive Pagination",
+  "author": "jonelantha",
+  "description": "Chooses the widest pagination composition that fits its measured container.",
+  "dependencies": [
+    "prop-types@15.8.1"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/index.tsx",
+      "content": "'use client';\n\nimport React, { memo, useEffect } from 'react';\nimport type { ReactNode, FC } from 'react';\nimport PropTypes from 'prop-types';\nimport { usePaginationItems } from './hooks/usePaginationItems.tsx';\nimport type { PaginationItem } from './paginationItem.ts';\nimport type { NarrowBehaviour } from './narrowBehaviour.ts';\nimport type { LabelBehaviour } from './labelBehaviour.tsx';\nimport { defaultLabelBehaviour } from './labelBehaviour.tsx';\nimport { incRenderCount } from './debug.ts';\n\nexport * from './narrowBehaviour.ts';\nexport * from './presets.tsx';\nexport * from './labelBehaviour.tsx';\n\ndeclare const process: { env: { NODE_ENV: string } };\n\n/**\n * @public\n */\nconst ResponsivePaginationComponent: FC<ResponsivePaginationProps> =\n  memo(ResponsivePagination);\nexport default ResponsivePaginationComponent;\n\nfunction ResponsivePagination(props: ResponsivePaginationProps) {\n  incRenderCount();\n\n  if (process.env.NODE_ENV !== 'production') {\n    checkLegacyProps(props);\n  }\n\n  const {\n    current,\n    total,\n    onPageChange: handlePageChange,\n    maxWidth,\n    narrowBehaviour,\n    navigationLabel = 'Pagination',\n    direction = 'ltr',\n    className,\n    containerClassName,\n    extraClassName = 'm-0 flex max-w-full list-none items-center justify-center gap-1 p-0',\n    pageItemClassName = 'shrink-0',\n    pageLinkClassName =\n      'flex size-11 items-center justify-center rounded-full border border-transparent text-sm font-medium text-neutral-700 no-underline outline-none hover:bg-neutral-100 focus-visible:border-neutral-950 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2',\n    activeItemClassName = '[&>a]:bg-neutral-950 [&>a]:text-white',\n    inactiveItemClassName = '',\n    disabledItemClassName = 'pointer-events-none opacity-40',\n    navClassName,\n    previousClassName,\n    nextClassName,\n    classMerge = defaultClassMerge,\n    previousLabel = direction === 'rtl' ? '→' : '←',\n    nextLabel = direction === 'rtl' ? '←' : '→',\n    ariaPreviousLabel = 'Previous page',\n    ariaNextLabel = 'Next page',\n    ariaPageLabel,\n    renderNav = 'anchor-disabled-span',\n    ariaCurrentAttr = true,\n    linkHref = 'hash',\n    labelBehaviour: getLabel = defaultLabelBehaviour,\n  } = props;\n\n  const { visible, items, ref, clearCache } = usePaginationItems(current, total, {\n    handlePageChange,\n    previousLabel,\n    nextLabel,\n    ariaPreviousLabel,\n    ariaNextLabel,\n    ariaPageLabel,\n    ariaCurrentAttr,\n    linkHref,\n    maxWidth,\n    omitNav: ['none', false].includes(renderNav),\n    narrowBehaviour,\n  });\n\n  useEffect(() => {\n    return () => clearCache();\n  }, [\n    clearCache,\n    className,\n    containerClassName,\n    pageItemClassName,\n    pageLinkClassName,\n    activeItemClassName,\n    inactiveItemClassName,\n    disabledItemClassName,\n    navClassName,\n    previousClassName,\n    nextClassName,\n    classMerge,\n  ]);\n\n  if (items.length === 0) return null;\n\n  function getContainerClassName() {\n    if (className !== undefined) {\n      return className;\n    } else if (containerClassName !== undefined) {\n      return containerClassName;\n    } else if (extraClassName) {\n      return `pagination ${extraClassName}`;\n    } else {\n      return 'pagination';\n    }\n  }\n\n  function getListItemClassName(item: PaginationItem) {\n    return classNames(classMerge, [\n      pageItemClassName,\n      item.gotoPage === undefined\n        ? disabledItemClassName\n        : item.active\n          ? activeItemClassName\n          : inactiveItemClassName,\n      item.type === 'next' && (nextClassName ?? navClassName),\n      item.type === 'previous' && (previousClassName ?? navClassName),\n    ]);\n  }\n\n  return (\n    <nav aria-label={navigationLabel} dir={direction}>\n      <ul\n        className={getContainerClassName()}\n        ref={ref}\n        {...(!visible && { style: { visibility: 'hidden' } })}\n      >\n        {items.map(item => (\n          <li\n            key={item.key}\n            className={getListItemClassName(item)}\n            {...item.listItemProps}\n          >\n            {item.type === 'previous' || item.type === 'next' ? (\n              renderNav === 'button' ? (\n                <button className={pageLinkClassName} {...item.buttonProps}>\n                  {getLabel(item)}\n                </button>\n              ) : item.gotoPage !== undefined || renderNav === 'anchor' ? (\n                <a className={pageLinkClassName} {...item.anchorProps}>\n                  {getLabel(item)}\n                </a>\n              ) : (\n                <span className={pageLinkClassName} {...item.spanAsAnchorProps}>\n                  {getLabel(item)}\n                </span>\n              )\n            ) : item.type === 'ellipsis' ? (\n              <span className={pageLinkClassName}>{getLabel(item)}</span>\n            ) : (\n              // page\n              <a className={pageLinkClassName} {...item.anchorProps}>\n                {getLabel(item)}\n              </a>\n            )}\n          </li>\n        ))}\n      </ul>\n    </nav>\n  );\n}\n\nfunction classNames(\n  classMerge: (classNames: string[]) => string,\n  names: (string | false | undefined)[],\n) {\n  return classMerge(names.filter((name): name is string => Boolean(name)));\n}\n\nconst defaultClassMerge = (classNames: string[]) => classNames.join(' ');\n\n/**\n * @public\n */\nexport type ResponsivePaginationProps = {\n  current: number;\n  total: number;\n  onPageChange: (page: number) => void;\n  maxWidth?: number;\n  narrowBehaviour?: NarrowBehaviour;\n  navigationLabel?: string;\n  direction?: 'ltr' | 'rtl';\n  className?: string;\n  containerClassName?: string;\n  extraClassName?: string;\n  pageItemClassName?: string;\n  pageLinkClassName?: string;\n  activeItemClassName?: string;\n  inactiveItemClassName?: string;\n  disabledItemClassName?: string;\n  disabledLinkClassName?: string;\n  navClassName?: string;\n  previousClassName?: string;\n  nextClassName?: string;\n  classMerge?: (classNames: string[]) => string;\n  previousLabel?: string | ReactNode;\n  nextLabel?: string | ReactNode;\n  ariaPreviousLabel?: string;\n  ariaNextLabel?: string;\n  ariaPageLabel?: (page: number, active: boolean) => string | undefined;\n  renderNav?: boolean | 'none' | 'anchor' | 'anchor-disabled-span' | 'button';\n  ariaCurrentAttr?: boolean;\n  linkHref?: ((page: number) => string) | 'hash' | 'omit';\n  labelBehaviour?: LabelBehaviour;\n};\n\nResponsivePagination.propTypes = {\n  current: PropTypes.number.isRequired,\n  total: PropTypes.number.isRequired,\n  onPageChange: PropTypes.func.isRequired,\n  maxWidth: PropTypes.number,\n  narrowBehaviour: PropTypes.func,\n  navigationLabel: PropTypes.string,\n  direction: PropTypes.oneOf(['ltr', 'rtl'] as const),\n  className: PropTypes.string,\n  containerClassName: PropTypes.string,\n  extraClassName: PropTypes.string,\n  pageItemClassName: PropTypes.string,\n  pageLinkClassName: PropTypes.string,\n  activeItemClassName: PropTypes.string,\n  inactiveItemClassName: PropTypes.string,\n  disabledItemClassName: PropTypes.string,\n  disabledLinkClassName: PropTypes.string,\n  navClassName: PropTypes.string,\n  previousClassName: PropTypes.string,\n  nextClassName: PropTypes.string,\n  classMerge: PropTypes.func,\n  previousLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),\n  nextLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),\n  ariaPreviousLabel: PropTypes.string,\n  ariaNextLabel: PropTypes.string,\n  ariaPageLabel: PropTypes.func,\n  renderNav: PropTypes.oneOfType([\n    PropTypes.bool,\n    PropTypes.oneOf(['none', 'anchor', 'anchor-disabled-span', 'button'] as const),\n  ]),\n  ariaCurrentAttr: PropTypes.bool,\n  linkHref: PropTypes.oneOfType([\n    PropTypes.func,\n    PropTypes.oneOf(['hash', 'omit'] as const),\n  ]),\n  labelBehaviour: PropTypes.func,\n};\n\nconst legacyUsageWarnings: string[] = [];\n\nfunction checkLegacyProps(props: { [key in string]: unknown }) {\n  for (const legacyProp of [\n    'srOnlyClassName',\n    'a11yActiveLabel',\n    'narrowStrategy',\n  ]) {\n    if (\n      props[legacyProp] !== undefined &&\n      !legacyUsageWarnings.includes(legacyProp)\n    ) {\n      console.warn(\n        `react-responsive-pagination: '${legacyProp}' prop no longer supported, please see migration guide: https://react-responsive-pagination.elantha.com/migration`,\n      );\n      legacyUsageWarnings.push(legacyProp);\n    }\n  }\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-responsive-pagination/index.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/debug.ts",
+      "content": "let renderCount = 0;\n\nexport function incRenderCount() {\n  renderCount++;\n}\n\nexport function getRenderCount() {\n  return renderCount;\n}\n\nexport function resetRenderCount() {\n  renderCount = 0;\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/debug.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/compositionItem.ts",
+      "content": "import { UnsupportedValueError } from './helpers/util.ts';\n\ntype CompositionPage = { type: 'page'; page: number };\ntype CompositionActivePage = { type: 'active'; page: number };\ntype CompositionEllipsis = { type: '…L' | '…R'; page: undefined };\ntype CompositionPrevious = { type: '<'; page: number | undefined };\ntype CompositionNext = { type: '>'; page: number | undefined };\n\nexport type CompositionItem =\n  | CompositionPage\n  | CompositionActivePage\n  | CompositionEllipsis\n  | CompositionPrevious\n  | CompositionNext;\n\nexport function createActivePage(page: number): CompositionActivePage {\n  return { type: 'active', page };\n}\n\nexport function createPage(page: number): CompositionPage {\n  return { type: 'page', page };\n}\n\nexport function createNavPrevious(page: number | undefined): CompositionPrevious {\n  return { type: '<', page };\n}\n\nexport function createNavNext(page: number | undefined): CompositionNext {\n  return { type: '>', page };\n}\n\nexport function createEllipsis(ellipsisPos: 'L' | 'R'): CompositionEllipsis {\n  return { type: `…${ellipsisPos}`, page: undefined };\n}\n\nexport function isNav(\n  item: CompositionItem,\n): item is CompositionPrevious | CompositionNext {\n  return item.type === '<' || item.type === '>';\n}\n\nexport function isEllipsis(item: CompositionItem): item is CompositionEllipsis {\n  return item.type === '…L' || item.type === '…R';\n}\n\nexport function containsEllipsis(composition: ReadonlyArray<CompositionItem>) {\n  return composition.some(isEllipsis);\n}\n\nexport function isPageWithNumber(\n  item: CompositionItem,\n  page: number,\n): item is CompositionPage {\n  return item.type === 'page' && item.page === page;\n}\n\nexport function getLastPage(composition: ReadonlyArray<CompositionItem>) {\n  return Math.max(\n    ...composition\n      .filter(\n        (item): item is CompositionPage | CompositionActivePage =>\n          item.type === 'active' || item.type === 'page',\n      )\n      .map(item => item.page),\n  );\n}\n\nexport function compositionMatches(\n  composition: ReadonlyArray<CompositionItem>,\n  startIndex: number,\n  pattern: (number | '#' | '…' | '*')[],\n) {\n  if (startIndex < 0) return;\n\n  return pattern.every((matchItem, patternIndex) => {\n    if (!composition[startIndex + patternIndex]) return false;\n\n    const { type, page } = composition[startIndex + patternIndex];\n\n    if (typeof matchItem === 'number') {\n      return type === 'page' && page === matchItem;\n    } else if (matchItem === '#') {\n      return type === 'page';\n    } else if (matchItem === '…') {\n      return type === '…L' || type === '…R';\n    } else if (matchItem === '*') {\n      return type === 'active';\n    } else {\n      throw new UnsupportedValueError(matchItem);\n    }\n  });\n}\n\nexport function compositionMatchesEnd(\n  composition: ReadonlyArray<CompositionItem>,\n  endIndex: number,\n  pattern: (number | '#' | '…' | '*')[],\n) {\n  return compositionMatches(composition, endIndex - pattern.length + 1, pattern);\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/compositionItem.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/paginationItem.ts",
+      "content": "import type {\n  AnchorHTMLAttributes,\n  ButtonHTMLAttributes,\n  HTMLAttributes,\n  ReactNode,\n} from 'react';\nimport type { CompositionItem } from './compositionItem.ts';\nimport { preventDefault } from './helpers/dom.ts';\n\ntype BaseItem = {\n  type: string;\n  key: string;\n  label: string | ReactNode;\n  a11yLabel?: string;\n  active?: boolean | undefined;\n  gotoPage?: number | undefined;\n  listItemProps?: HTMLAttributes<HTMLLIElement> | undefined;\n};\n\ntype PageItem = BaseItem & {\n  type: 'page';\n  gotoPage: number;\n  active?: boolean;\n  anchorProps: AnchorHTMLAttributes<HTMLAnchorElement>;\n};\n\ntype NavBase = BaseItem & {\n  type: NavType;\n  anchorProps: AnchorHTMLAttributes<HTMLAnchorElement>;\n  buttonProps: ButtonHTMLAttributes<HTMLButtonElement>;\n};\n\ntype NavItem = NavBase & {\n  gotoPage: number;\n};\n\ntype NavDisabledItem = NavBase & {\n  gotoPage?: undefined;\n  spanAsAnchorProps: HTMLAttributes<HTMLSpanElement>;\n};\n\ntype EllipsisItem = BaseItem & {\n  type: 'ellipsis';\n  gotoPage?: undefined;\n};\n\nexport type PaginationItem = NavItem | NavDisabledItem | EllipsisItem | PageItem;\n\nexport type NavType = 'next' | 'previous';\n\nexport type CompositionToPaginationItemsOptions = {\n  handlePageChange: ((page: number) => void) | undefined;\n  previousLabel: string | ReactNode;\n  nextLabel: string | ReactNode;\n  ariaPreviousLabel: string;\n  ariaNextLabel: string;\n  ariaPageLabel: ((page: number, active: boolean) => string | undefined) | undefined;\n  ariaCurrentAttr: boolean;\n  linkHref: ((page: number) => string) | 'hash' | 'omit';\n};\n\nexport const compositionToPaginationItems = (\n  compositionItems: CompositionItem[],\n  {\n    handlePageChange,\n    previousLabel,\n    nextLabel,\n    ariaPreviousLabel,\n    ariaNextLabel,\n    ariaPageLabel,\n    ariaCurrentAttr,\n    linkHref,\n  }: CompositionToPaginationItemsOptions,\n): PaginationItem[] =>\n  compositionItems.map(({ type, page }) => {\n    switch (type) {\n      case '<':\n      case '>': {\n        const fullType = type === '<' ? 'previous' : 'next';\n        const label = type === '<' ? previousLabel : nextLabel;\n        const optionsAriaLabel = type === '<' ? ariaPreviousLabel : ariaNextLabel;\n        const ariaLabel = optionsAriaLabel === label ? undefined : optionsAriaLabel;\n\n        return {\n          type: fullType,\n          key: `${fullType}${page === undefined ? '_disabled' : ''}`,\n          label,\n          a11yLabel: ariaLabel,\n          ...(page === undefined\n            ? {\n                anchorProps: {\n                  'aria-label': ariaLabel,\n                  'aria-disabled': 'true',\n                  role: 'link',\n                },\n                spanAsAnchorProps: {\n                  'aria-label': ariaLabel,\n                  'aria-disabled': 'true',\n                  role: 'link',\n                },\n                buttonProps: {\n                  'aria-label': ariaLabel,\n                  disabled: true,\n                },\n              }\n            : {\n                gotoPage: page,\n                anchorProps: {\n                  href: getHref(linkHref, page),\n                  onClick:\n                    handlePageChange && preventDefault(() => handlePageChange(page)),\n                  'aria-label': ariaLabel,\n                },\n                buttonProps: {\n                  onClick: handlePageChange && (() => handlePageChange(page)),\n                  'aria-label': ariaLabel,\n                },\n              }),\n        };\n      }\n      case '…L':\n      case '…R':\n        return {\n          type: 'ellipsis',\n          key: `ellipsis_${type === '…L' ? 'l' : 'r'}`,\n          label: '…',\n          listItemProps: { 'aria-hidden': 'true' },\n          gotoPage: undefined,\n        };\n      default: {\n        const ariaLabel = ariaPageLabel?.(page, type === 'active');\n        return {\n          type: 'page',\n          key: `${type}_${page}`,\n          label: page.toString(),\n          a11yLabel: ariaLabel,\n          gotoPage: page,\n          active: type === 'active',\n          listItemProps:\n            type === 'active' && ariaCurrentAttr\n              ? { 'aria-current': 'page' }\n              : undefined,\n          anchorProps: {\n            href: getHref(linkHref, page),\n            onClick:\n              handlePageChange && preventDefault(() => handlePageChange(page)),\n            'aria-label': ariaLabel,\n          },\n        };\n      }\n    }\n  });\n\nfunction getHref(\n  linkHref: ((page: number) => string) | 'hash' | 'omit',\n  page: number,\n) {\n  if (typeof linkHref === 'function') {\n    return linkHref(page);\n  } else if (linkHref === 'hash') {\n    return '#';\n  } else {\n    return undefined;\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/paginationItem.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/labelBehaviour.tsx",
+      "content": "import React from 'react';\nimport type { ReactNode } from 'react';\nimport type { PaginationItem } from './paginationItem.ts';\n\n/**\n * @public\n */\nexport type LabelBehaviour = (item: PaginationItem) => ReactNode;\n\n/**\n * @public\n */\nexport function defaultLabelBehaviour({\n  a11yLabel,\n  label,\n}: PaginationItem): ReactNode {\n  return !a11yLabel ? label : <span aria-hidden=\"true\">{label}</span>;\n}\n\n/**\n * @public\n */\nexport function srOnlySpanLabel({\n  a11yActiveLabel = '(current)',\n  srOnlyClassName = 'sr-only',\n}: {\n  a11yActiveLabel?: string;\n  srOnlyClassName?: string;\n} = {}) {\n  // eslint-disable-next-line react/display-name\n  return (item: PaginationItem): ReactNode => {\n    const activePage = item.gotoPage !== undefined && item.active;\n    const srOnlyLabel =\n      activePage && a11yActiveLabel ? ` ${a11yActiveLabel}` : item.a11yLabel;\n\n    return (\n      <>\n        {!item.a11yLabel ? item.label : <span aria-hidden=\"true\">{item.label}</span>}\n        {srOnlyLabel && <span className={srOnlyClassName}>{srOnlyLabel}</span>}\n      </>\n    );\n  };\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/labelBehaviour.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/narrowBehaviour.ts",
+      "content": "import type { CompositionItem } from './compositionItem.ts';\nimport {\n  containsEllipsis,\n  createEllipsis,\n  getLastPage,\n  isEllipsis,\n  isNav,\n  isPageWithNumber,\n  compositionMatches,\n  compositionMatchesEnd,\n} from './compositionItem.ts';\nimport { findLastIndex } from './helpers/util.ts';\n\n/**\n * NarrowBehaviours will yield their narrowest composition first and then\n * yield a less narrow composition\n * They should not yield the initialComposition\n * @public\n */\nexport type NarrowBehaviour = (\n  composition: ReadonlyArray<CompositionItem>,\n  metaData?: NarrowBehaviourMetaData,\n) => Generator<CompositionItem[]>;\n\ntype NarrowBehaviourMetaData = {\n  appliedBehaviours?: NarrowBehaviour[];\n};\n\n/**\n * @public\n */\nexport function* dropEllipsis(\n  initialComposition: ReadonlyArray<CompositionItem>,\n  metaData?: NarrowBehaviourMetaData,\n) {\n  const indicesToDrop: number[] = [];\n\n  if (metaData?.appliedBehaviours?.includes(dropFirstAndLast)) {\n    // 1, 2 => …, 2 => 2\n    const firstPageIndex = initialComposition.findIndex(item =>\n      isPageWithNumber(item, 1),\n    );\n    if (compositionMatches(initialComposition, firstPageIndex, [1, 2])) {\n      indicesToDrop.push(firstPageIndex);\n    }\n\n    // n-1, n => n-1, … => n-1\n    /** last page */\n    const n = getLastPage(initialComposition);\n    const lastPageIndex = findLastIndex(initialComposition, item =>\n      isPageWithNumber(item, n),\n    );\n    if (compositionMatchesEnd(initialComposition, lastPageIndex, [n - 1, n])) {\n      indicesToDrop.push(lastPageIndex);\n    }\n  }\n\n  if (containsEllipsis(initialComposition) || indicesToDrop.length > 0) {\n    yield initialComposition.filter(\n      (item, index) => !isEllipsis(item) && !indicesToDrop.includes(index),\n    );\n  }\n}\n\n/**\n * @public\n */\nexport function* dropNav(initialComposition: ReadonlyArray<CompositionItem>) {\n  yield initialComposition.filter(item => !isNav(item));\n}\n\n/**\n * @public\n */\nexport function* dropFirstAndLast(\n  initialComposition: ReadonlyArray<CompositionItem>,\n  metaData?: NarrowBehaviourMetaData,\n) {\n  const ellipsisDropped = metaData?.appliedBehaviours?.includes(dropEllipsis);\n\n  const composition = initialComposition.slice();\n\n  /**\n   * normal\n   * 1*                 1*\n   * 1, 2*              1, 2*\n   * 1, 2, 3*           1, 2, 3*\n   * 1, 2, 3, 4*        …, 3, 4*\n   * 1, …, p, p+1*      …, p, p+1* (p>=4)\n   *\n   * after dropEllipsis\n   * 1*                 1*\n   * 1, 2*              1, 2*\n   * 1, 2, 3*           2, 3*\n   * 1, 2, 3, 4*        3, 4*\n   * 1, p, p+1*         p, p+1  (p>=4)\n   */\n\n  const firstPageIndex = composition.findIndex(item => isPageWithNumber(item, 1));\n\n  if (ellipsisDropped) {\n    if (compositionMatches(composition, firstPageIndex, [1, 2, 3, '*'])) {\n      composition.splice(firstPageIndex, 2);\n    } else if (compositionMatches(composition, firstPageIndex, [1, '#', '*'])) {\n      composition.splice(firstPageIndex, 1);\n    }\n  } else {\n    if (compositionMatches(composition, firstPageIndex, [1, 2, 3, '*'])) {\n      composition.splice(firstPageIndex, 2, createEllipsis('L'));\n    } else if (compositionMatches(composition, firstPageIndex, [1, '…', '#'])) {\n      composition.splice(firstPageIndex, 1);\n    }\n  }\n\n  /** last page */\n  const n = getLastPage(composition);\n  const lastPageIndex = findLastIndex(composition, item =>\n    isPageWithNumber(item, n),\n  );\n\n  if (ellipsisDropped) {\n    if (compositionMatchesEnd(composition, lastPageIndex, ['*', n - 2, n - 1, n])) {\n      composition.splice(lastPageIndex - 1, 2);\n    } else if (compositionMatchesEnd(composition, lastPageIndex, ['*', '#', n])) {\n      composition.splice(lastPageIndex, 1);\n    }\n  } else {\n    if (compositionMatchesEnd(composition, lastPageIndex, ['*', n - 2, n - 1, n])) {\n      composition.splice(lastPageIndex - 1, 2, createEllipsis('R'));\n    } else if (compositionMatchesEnd(composition, lastPageIndex, ['#', '…', n])) {\n      composition.splice(lastPageIndex, 1);\n    }\n  }\n\n  if (initialComposition.length !== composition.length) {\n    yield composition;\n  }\n}\n\n/**\n * @public\n */\nexport function* dropEllipsisThenNav(\n  initialComposition: ReadonlyArray<CompositionItem>,\n) {\n  if (containsEllipsis(initialComposition)) {\n    yield initialComposition.filter(item => !isEllipsis(item) && !isNav(item));\n    yield initialComposition.filter(item => !isEllipsis(item));\n  } else {\n    yield initialComposition.filter(item => !isNav(item));\n  }\n}\n\n/**\n * @public\n */\nexport function* dropNavThenEllipsis(\n  initialComposition: ReadonlyArray<CompositionItem>,\n) {\n  if (containsEllipsis(initialComposition)) {\n    yield initialComposition.filter(item => !isEllipsis(item) && !isNav(item));\n  }\n  yield initialComposition.filter(item => !isNav(item));\n}\n\n/**\n * When combining NarrowBehaviours the behaviours will be applied in order:\n * the first behaviour will be used before subsequent behaviours\n * Compositions yielded from combineBehaviours will initially have\n * all behaviours applied in their narrowest form and then work through\n * each behaviour in turn (from last to first)\n */\n\n/**\n * Combine two or more narrowBehaviours\n * @public\n */\nexport const combine =\n  (...behaviours: ReadonlyArray<NarrowBehaviour>): NarrowBehaviour =>\n  initialComposition =>\n    combineRecursive(behaviours, [], initialComposition);\n\nfunction* combineRecursive(\n  behaviours: ReadonlyArray<NarrowBehaviour>,\n  previousBehaviours: NarrowBehaviour[],\n  initialComposition: ReadonlyArray<CompositionItem>,\n): Generator<CompositionItem[]> {\n  // if no behaviours then we are done\n  if (behaviours.length === 0) return;\n\n  const [firstBehaviour, ...remainingBehaviours] = behaviours;\n\n  const firstBehaviourCompositions = firstBehaviour(initialComposition, {\n    appliedBehaviours: previousBehaviours,\n  });\n\n  const firstResult = firstBehaviourCompositions.next();\n\n  if (firstResult.done) {\n    // if this behaviour did not yield anything then just move on to the next behaviour\n    yield* combineRecursive(\n      remainingBehaviours,\n      [...previousBehaviours, firstBehaviour],\n      initialComposition,\n    );\n  } else {\n    const firstComposition = firstResult.value;\n    // the first composition will be the most reduced\n    // this will be the composition for lower priority behaviours to\n    // be applied on top of\n    yield* combineRecursive(\n      remainingBehaviours,\n      [...previousBehaviours, firstBehaviour],\n      firstComposition,\n    );\n\n    // then yield this composition without any other behaviours applied\n    yield firstComposition;\n    // then yield the remaining compositions from this behaviour\n    yield* firstBehaviourCompositions;\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/narrowBehaviour.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/presets.tsx",
+      "content": "import type { LabelBehaviour } from './labelBehaviour.tsx';\nimport { srOnlySpanLabel } from './labelBehaviour.tsx';\n\n/**\n * @public\n */\nexport const v1_bootstrap4PaginationPreset: {\n  ariaCurrentAttr: false;\n  labelBehaviour: LabelBehaviour;\n} = {\n  ariaCurrentAttr: false,\n  labelBehaviour: /*#__PURE__*/ srOnlySpanLabel(),\n};\n\n/**\n * legacy - may be removed\n * @public\n */\nexport const bootstrap4PaginationPreset = {};\n\n/**\n * legacy - may be removed\n * @public\n */\nexport const bootstrap5PaginationPreset = {};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/presets.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/compositions/index.ts",
+      "content": "import {\n  createActivePage,\n  createNavNext,\n  createNavPrevious,\n} from '../compositionItem.ts';\nimport type { CompositionItem } from '../compositionItem.ts';\nimport { zipIterators } from '../helpers/iterator.ts';\nimport type { NarrowBehaviour } from '../narrowBehaviour.ts';\nimport { narrowToWideRanges } from './ranges.ts';\n\nexport function* narrowToWideCompositions({\n  current,\n  total,\n  narrowBehaviour,\n  omitNav,\n}: {\n  current: number;\n  total: number;\n  narrowBehaviour: NarrowBehaviour | undefined;\n  omitNav: boolean;\n}) {\n  if (total < 1) return;\n\n  const clampedCurrent = Math.max(1, Math.min(current, total));\n\n  const compositions = narrowToWideCompositionsUnfiltered(\n    clampedCurrent,\n    total,\n    omitNav,\n  );\n\n  for (const initialComposition of compositions) {\n    if (narrowBehaviour) yield* narrowBehaviour(initialComposition);\n\n    yield initialComposition;\n\n    yield* compositions;\n  }\n}\n\nexport function* narrowToWideCompositionsUnfiltered(\n  current: number,\n  total: number,\n  omitNav: boolean,\n): Generator<CompositionItem[]> {\n  const navPrevious = createNavPrevious(current > 1 ? current - 1 : undefined);\n  const navNext = createNavNext(current < total ? current + 1 : undefined);\n  const activePage = createActivePage(current);\n\n  const leftRanges = narrowToWideRanges(1, current - 1, 'L');\n  const rightRanges = narrowToWideRanges(current + 1, total, 'R');\n\n  const staggeredPairs = staggeredIterationRightRangeFirst(leftRanges, rightRanges);\n\n  for (const { leftRange, rightRange } of staggeredPairs) {\n    if (omitNav) {\n      yield [...leftRange, activePage, ...rightRange];\n    } else {\n      yield [navPrevious, ...leftRange, activePage, ...rightRange, navNext];\n    }\n  }\n}\n\nfunction* staggeredIterationRightRangeFirst(\n  leftRanges: IterableIterator<CompositionItem[]>,\n  rightRanges: IterableIterator<CompositionItem[]>,\n) {\n  const zippedRanges = zipIterators(leftRanges, rightRanges);\n\n  const initial = zippedRanges.next();\n\n  if (initial.done) return;\n\n  let [leftRange = [], rightRange = []] = initial.value;\n\n  yield { leftRange, rightRange };\n\n  for (const [nextLeftRange, nextRightRange] of zippedRanges) {\n    if (nextRightRange) {\n      rightRange = nextRightRange;\n      yield { leftRange, rightRange };\n    }\n\n    if (nextLeftRange) {\n      leftRange = nextLeftRange;\n      yield { leftRange, rightRange };\n    }\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/compositions/index.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/compositions/ranges.ts",
+      "content": "import { createEllipsis, createPage } from '../compositionItem.ts';\n\nfunction* narrowToWidePaginationItemRanges(\n  start: number,\n  end: number,\n  collapsePos: 'L' | 'R',\n) {\n  for (const range of narrowToWideNumberRanges(start, end, collapsePos)) {\n    yield range.map(item =>\n      item === '…' ? createEllipsis(collapsePos) : createPage(item),\n    );\n  }\n}\n\nexport { narrowToWidePaginationItemRanges as narrowToWideRanges };\n\nfunction* narrowToWideNumberRanges(\n  first: number,\n  last: number,\n  collapsePos: 'L' | 'R',\n) {\n  const fullWidth = last - first + 1;\n\n  for (let iterationWidth = 1; iterationWidth < fullWidth; iterationWidth++) {\n    const range = getCollapsedRange(first, last, iterationWidth, collapsePos);\n\n    if (range) yield range;\n  }\n\n  yield getFullRange(first, last);\n}\n\nfunction getCollapsedRange(\n  first: number,\n  last: number,\n  requiredWidth: number,\n  collapsePos: 'L' | 'R',\n): NumberRange | undefined {\n  if (requiredWidth < 3) return;\n\n  const widthOfRange = requiredWidth - 2;\n\n  return collapsePos === 'L'\n    ? [first, '…', ...getFullRange(last - (widthOfRange - 1), last)]\n    : [...getFullRange(first, first + (widthOfRange - 1)), '…', last];\n}\n\nfunction getFullRange(start: number, end: number) {\n  if (end < start) return [];\n\n  return Array.from(Array(end - start + 1).keys(), i => i + start);\n}\n\ntype NumberRange = NumberRangeItem[];\n\ntype NumberRangeItem = number | '…';\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/compositions/ranges.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/helpers/dom.ts",
+      "content": "import type { MouseEventHandler } from 'react';\n\nexport function preventDefault(handler: () => void): MouseEventHandler {\n  return e => {\n    e.preventDefault();\n    handler();\n  };\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/helpers/dom.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/helpers/iterator.ts",
+      "content": "export function* zipIterators<T, U>(\n  xs: IterableIterator<T>,\n  ys: IterableIterator<U>,\n): Generator<[T | undefined, U | undefined]> {\n  while (true) {\n    const xResult = xs.next();\n    const yResult = ys.next();\n\n    if (xResult.done && yResult.done) break;\n\n    yield [xResult.value, yResult.value];\n  }\n}\n\nexport function lastWhere<P>(xs: Iterable<P>, predicate: (x: P) => boolean) {\n  let lastSoFar: P | undefined;\n\n  for (const x of xs) {\n    if (!predicate(x)) break;\n\n    lastSoFar = x;\n  }\n\n  return lastSoFar;\n}\n\nexport function iteratorNext<P>(xs: IterableIterator<P>) {\n  const xResult = xs.next();\n\n  return xResult.done ? undefined : xResult.value;\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/helpers/iterator.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/helpers/react.ts",
+      "content": "import { useEffect, useLayoutEffect } from 'react';\n\nexport const useIsomorphicLayoutEffect =\n  typeof window !== 'undefined' ? useLayoutEffect : useEffect;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/helpers/react.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/helpers/style.ts",
+      "content": "// V3-TODO: use logical properties throughout\n\nexport function getElementWidth(element: Element) {\n  const style = getComputedStyle(element);\n\n  const overrideInlineMarginStart = style.getPropertyValue(\n    '--pagination-override-margin-inline-start',\n  );\n  const overrideInlineMarginEnd = style.getPropertyValue(\n    '--pagination-override-margin-inline-end',\n  );\n\n  return (\n    styleMetricToInt(overrideInlineMarginStart || style.marginLeft) +\n    getWidth(element) +\n    styleMetricToInt(overrideInlineMarginEnd || style.marginRight)\n  );\n}\n\nexport function getContentWidth(element: Element) {\n  const style = getComputedStyle(element);\n\n  return (\n    element.getBoundingClientRect().width -\n    styleMetricToInt(style.borderLeftWidth) -\n    styleMetricToInt(style.paddingLeft) -\n    styleMetricToInt(style.paddingRight) -\n    styleMetricToInt(style.borderRightWidth)\n  );\n}\n\nexport function getNonContentWidth(element: Element) {\n  const style = getComputedStyle(element);\n\n  return (\n    styleMetricToInt(style.marginLeft) +\n    styleMetricToInt(style.borderLeftWidth) +\n    styleMetricToInt(style.paddingLeft) +\n    styleMetricToInt(style.paddingRight) +\n    styleMetricToInt(style.borderRightWidth) +\n    styleMetricToInt(style.marginRight)\n  );\n}\n\nexport function getColumnGap(element: Element) {\n  const style = getComputedStyle(element);\n\n  const columnGap = style.columnGap;\n\n  if (columnGap === 'normal' || !columnGap) return 0;\n\n  if (columnGap.indexOf('px') === -1) {\n    if (process.env.NODE_ENV !== 'production') {\n      console.log(`react-responsive-pagination: gap not supported: ${columnGap}`);\n    }\n    return 0;\n  }\n\n  return styleMetricToIntRounded(columnGap);\n}\n\nexport function getWidth(element: Element) {\n  return element.getBoundingClientRect().width;\n}\n\nfunction styleMetricToInt(styleAttribute: string | null) {\n  return styleAttribute ? parseInt(styleAttribute) : 0;\n}\n\n// V3-TODO: use for all metrics\nfunction styleMetricToIntRounded(styleAttribute: string) {\n  return Math.ceil(parseFloat(styleAttribute));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/helpers/style.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/helpers/util.ts",
+      "content": "export function sanatizeInteger(maybeInteger: unknown) {\n  return typeof maybeInteger === 'number' && Number.isInteger(maybeInteger)\n    ? maybeInteger\n    : undefined;\n}\n\nexport function sanatizeBoolean(maybeBoolean: unknown) {\n  return typeof maybeBoolean === 'boolean' ? maybeBoolean : undefined;\n}\n\n// V3-TODO: use native findLastIndex\nexport function findLastIndex<T>(\n  array: ReadonlyArray<T>,\n  predicate: (item: T) => boolean,\n) {\n  for (let k = array.length - 1; k >= 0; k--) {\n    if (predicate(array[k])) return k;\n  }\n\n  return -1;\n}\n\nexport class UnsupportedValueError extends Error {\n  constructor(value: never) {\n    super('Unsupported value: ' + value);\n  }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-responsive-pagination/helpers/util.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/useAvailableWidth.ts",
+      "content": "import { useState } from 'react';\nimport { useContentWidth } from './useContentWidth.ts';\n\nexport function useAvailableWidth(overrideWidth: number | undefined) {\n  const [element, setElement] = useState<Element | null>(null);\n\n  const parentElement = element?.parentElement ?? undefined;\n\n  const width = useContentWidth(\n    overrideWidth === undefined ? parentElement : undefined,\n  );\n\n  return {\n    width: overrideWidth ?? width,\n    ref: setElement,\n  };\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/useAvailableWidth.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/useContentWidth.ts",
+      "content": "import { useCallback, useEffect, useRef, useState } from 'react';\nimport { getContentWidth } from '../helpers/style.ts';\nimport { useIsomorphicLayoutEffect } from '../helpers/react.ts';\nimport { flushSync } from 'react-dom';\n\nexport function useContentWidth(element: Element | undefined) {\n  const [width, setWidth] = useState<number>();\n  const widthRef = useRef<number>(undefined);\n\n  const syncWidth = useCallback(() => {\n    const newWidth = element ? getContentWidth(element) : undefined;\n\n    if (widthRef.current !== newWidth) {\n      widthRef.current = newWidth;\n      setWidth(newWidth);\n    }\n  }, [element]);\n\n  useIsomorphicLayoutEffect(syncWidth);\n\n  useEffect(() => {\n    if (!element) return;\n\n    const resizeObserver = new ResizeObserver(\n      withResizeLoopDetection(() => flushSync(syncWidth)),\n    );\n\n    resizeObserver.observe(element);\n\n    return () => {\n      resizeObserver.disconnect();\n    };\n  }, [element, syncWidth]);\n\n  return width;\n}\n\nfunction withResizeLoopDetection(callback: () => void) {\n  return (entries: ResizeObserverEntry[], resizeObserver: ResizeObserver) => {\n    const elements = entries.map(entry => entry.target);\n\n    const rectsBefore = elements.map(element => element.getBoundingClientRect());\n\n    callback();\n\n    const rectsAfter = elements.map(element => element.getBoundingClientRect());\n\n    const changedElements = elements.filter(\n      (_, i) => !areRectSizesEqual(rectsBefore[i], rectsAfter[i]),\n    );\n\n    changedElements.forEach(element =>\n      unobserveUntilNextFrame(element, resizeObserver),\n    );\n  };\n}\n\nfunction unobserveUntilNextFrame(element: Element, resizeObserver: ResizeObserver) {\n  resizeObserver.unobserve(element);\n\n  requestAnimationFrame(() => {\n    resizeObserver.observe(element);\n  });\n}\n\nfunction areRectSizesEqual(rect1: DOMRect, rect2: DOMRect) {\n  return rect1.width === rect2.width && rect1.height === rect2.height;\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/useContentWidth.ts"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/useFoutDetector.tsx",
+      "content": "import { useRef } from 'react';\nimport { useIsomorphicLayoutEffect } from '../helpers/react.ts';\nimport { getWidth } from '../helpers/style.ts';\nimport { flushSync } from 'react-dom';\n\nexport function useFoutDetector(\n  getElements: (element: Element | null) => Element[] | null,\n  handleFout: () => void,\n) {\n  const containerRef = useRef<Element | null>(null);\n\n  useIsomorphicLayoutEffect(() => {\n    const elements = getElements(containerRef.current);\n\n    if (!elements) return;\n\n    const widthsAtRender = new Map(\n      elements.map(element => [element, getWidth(element)]),\n    );\n\n    const resizeObserver = new ResizeObserver(entries => {\n      const hasAnElementChangedSignificantly = entries\n        .map(entry => widthsAtRender.get(entry.target)! - getWidth(entry.target))\n        .some(difference => difference < -0.5 || difference > 0.5);\n\n      hasAnElementChangedSignificantly && flushSync(handleFout);\n    });\n\n    elements.forEach(element => resizeObserver.observe(element));\n\n    return () => resizeObserver.disconnect();\n  });\n\n  return containerRef;\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/useFoutDetector.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/usePaginationItems.tsx",
+      "content": "import { isValidElement, useEffect } from 'react';\nimport type { ReactNode } from 'react';\nimport { narrowToWideCompositions } from '../compositions/index.ts';\nimport { sanatizeInteger, sanatizeBoolean } from '../helpers/util.ts';\nimport type { NarrowBehaviour } from '../narrowBehaviour.ts';\nimport { compositionToPaginationItems } from '../paginationItem.ts';\nimport type { CompositionToPaginationItemsOptions } from '../paginationItem.ts';\nimport { useWidestComposition } from './useWidestComposition.tsx';\n\ntype UsePaginationItemsOptions = Partial<CompositionToPaginationItemsOptions> & {\n  maxWidth?: number;\n  omitNav?: boolean;\n  narrowBehaviour?: NarrowBehaviour;\n};\n\nexport function usePaginationItems(\n  inputCurrent: number,\n  inputTotal: number,\n  inputOptions?: UsePaginationItemsOptions,\n) {\n  const { current, total, options } = sanatizeInputs(\n    inputCurrent,\n    inputTotal,\n    inputOptions,\n  );\n\n  const narrowToWideCompositionsProvider = () =>\n    narrowToWideCompositions({\n      current,\n      total,\n      narrowBehaviour: options.narrowBehaviour,\n      omitNav: options.omitNav,\n    });\n\n  const {\n    visible,\n    items: compositionItems,\n    ref,\n    clearCache,\n  } = useWidestComposition(narrowToWideCompositionsProvider, options.maxWidth);\n\n  const previousLabelCacheKey = labelCacheKey(options.previousLabel);\n  const nextLabelCacheKey = labelCacheKey(options.nextLabel);\n\n  useEffect(() => {\n    return () => clearCache();\n  }, [clearCache, previousLabelCacheKey, nextLabelCacheKey]);\n\n  const items = compositionToPaginationItems(compositionItems, options);\n\n  return { visible, items, ref, clearCache };\n}\n\nfunction sanatizeInputs(\n  current: number,\n  total: number,\n  options?: UsePaginationItemsOptions,\n) {\n  return {\n    current: sanatizeInteger(current) ?? 0,\n    total: sanatizeInteger(total) ?? 0,\n    options: {\n      handlePageChange: options?.handlePageChange,\n      nextLabel: options?.nextLabel || '»',\n      previousLabel: options?.previousLabel || '«',\n      ariaNextLabel: options?.ariaNextLabel || 'Next',\n      ariaPreviousLabel: options?.ariaPreviousLabel || 'Previous',\n      ariaPageLabel: options?.ariaPageLabel,\n      ariaCurrentAttr: sanatizeBoolean(options?.ariaCurrentAttr) ?? true,\n      linkHref: options?.linkHref ?? 'hash',\n      maxWidth: options?.maxWidth,\n      omitNav: sanatizeBoolean(options?.omitNav) ?? false,\n      narrowBehaviour: options?.narrowBehaviour,\n    },\n  };\n}\n\nfunction labelCacheKey(item: string | ReactNode) {\n  if (isValidElement(item)) {\n    process.env.NODE_ENV !== 'production' && showReactElementLabelWarning();\n\n    // This is not exhaustive\n    // but should pick up on many situations when an element changes\n    switch (typeof item.type) {\n      case 'string':\n        return `element-str-${item.type}`;\n\n      case 'function':\n        return `element-fn-${item.type.name}`;\n\n      default:\n        return 'element';\n    }\n  } else if (Array.isArray(item)) {\n    process.env.NODE_ENV !== 'production' && showReactElementLabelWarning();\n\n    return 'element-array';\n  } else {\n    return item;\n  }\n}\n\nlet reactElementLabelWarningShown = false;\n\nfunction showReactElementLabelWarning() {\n  if (reactElementLabelWarningShown) return;\n\n  console.log(\n    'react-responsive-pagination: using React elements for labels is experimental, please see: https://react-responsive-pagination.elantha.com/faq#using-react-components-for-labels',\n  );\n  reactElementLabelWarningShown = true;\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/usePaginationItems.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/useWidestComposition.tsx",
+      "content": "import { useCallback, useState } from 'react';\nimport type { CompositionItem } from '../compositionItem.ts';\nimport { useAvailableWidth } from './useAvailableWidth.ts';\nimport { useFoutDetector } from './useFoutDetector.tsx';\nimport { useWidthCalculator } from './useWidthCalculator.tsx';\nimport { iteratorNext, lastWhere } from '../helpers/iterator.ts';\n\nexport function useWidestComposition(\n  narrowToWideCompositionsProvider: () => IterableIterator<CompositionItem[]>,\n  maxWidth?: number,\n): {\n  items: CompositionItem[];\n  ref: (element: Element | null) => void;\n  visible: boolean;\n  clearCache: () => void;\n} {\n  const { widthCalculator, metricsRender, clearCache } = useWidthCalculator();\n\n  const foutDetectorRef = useFoutDetector(getItemsDomElements, clearCache);\n\n  const { width = 0, ref: availableWidthRef } = useAvailableWidth(maxWidth);\n\n  const ref = useCallback(\n    (element: Element | null) => {\n      foutDetectorRef.current = element;\n      availableWidthRef?.(element);\n    },\n    [foutDetectorRef, availableWidthRef],\n  );\n\n  const [showPlaceholder, setShowPlaceholder] = useState(true);\n  if (showPlaceholder) {\n    const firstComposition = iteratorNext(narrowToWideCompositionsProvider());\n    return {\n      visible: false,\n      items: firstComposition ?? [],\n      ref(containerElement) {\n        setShowPlaceholder(false);\n        ref(containerElement);\n      },\n      clearCache,\n    };\n  }\n\n  if (metricsRender) {\n    return {\n      visible: false,\n      items: metricsRender.items,\n      ref(containerElement) {\n        metricsRender.ref(containerElement);\n        ref(containerElement);\n      },\n      clearCache,\n    };\n  }\n\n  return {\n    visible: true,\n    items: getLargestFittingCompositionWithFallback(\n      narrowToWideCompositionsProvider,\n      widthCalculator,\n      width,\n    ),\n    ref,\n    clearCache,\n  };\n}\n\nfunction getLargestFittingCompositionWithFallback(\n  getNarrowToWideCompositions: () => IterableIterator<CompositionItem[]>,\n  getCompositionWidth: (items: CompositionItem[]) => number,\n  maxWidth: number,\n) {\n  const narrowToWideCompositions = getNarrowToWideCompositions();\n\n  const firstComposition = iteratorNext(narrowToWideCompositions) ?? [];\n\n  const doesCompositionFit = (composition: CompositionItem[]) =>\n    getCompositionWidth(composition) < maxWidth;\n\n  return lastWhere(narrowToWideCompositions, doesCompositionFit) ?? firstComposition;\n}\n\nfunction getItemsDomElements(viewDomElement: Element | null) {\n  return viewDomElement && Array.from(viewDomElement.children);\n}\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/useWidestComposition.tsx"
+    },
+    {
+      "path": "registry/sources/react-responsive-pagination/components/react-responsive-pagination/hooks/useWidthCalculator.tsx",
+      "content": "import { useState, useCallback } from 'react';\nimport {\n  getElementWidth,\n  getNonContentWidth,\n  getColumnGap,\n} from '../helpers/style.ts';\nimport type { CompositionItem } from '../compositionItem.ts';\nimport {\n  createActivePage,\n  createEllipsis,\n  createNavNext,\n  createNavPrevious,\n  createPage,\n} from '../compositionItem.ts';\n\nexport function useWidthCalculator(): MetricsRenderResult | CalculatorResult {\n  const [widthCalculator, setWidthCalculator] = useState<\n    WidthCalculator | undefined\n  >(undefined);\n\n  const clearCache = useCallback(() => setWidthCalculator(undefined), []);\n\n  if (!widthCalculator) {\n    return {\n      metricsRender: {\n        items: itemsToMeasure,\n        ref(containerElement) {\n          const metrics = getMetricsFromMetricsRender(containerElement);\n\n          metrics && setWidthCalculator(() => createWidthCalculator(metrics));\n        },\n      },\n      clearCache,\n    };\n  }\n\n  return {\n    widthCalculator,\n    clearCache,\n  };\n}\n\ntype MetricsRenderResult = {\n  metricsRender: {\n    items: CompositionItem[];\n    ref: (element: Element | null) => void;\n  };\n  widthCalculator?: undefined;\n  clearCache: () => void;\n};\n\ntype CalculatorResult = {\n  metricsRender?: undefined;\n  widthCalculator: WidthCalculator;\n  clearCache: () => void;\n};\n\nfunction getMetricsFromMetricsRender(containerElement: Element | null) {\n  if (!containerElement) return;\n\n  return [\n    getNonContentWidth(containerElement),\n    getColumnGap(containerElement),\n    ...Array.from(containerElement.children).map(getElementWidth),\n  ] as Metrics;\n}\n\nfunction createWidthCalculator([\n  outerFrameWidth,\n  columnGap,\n  pageSingleDigitWidth,\n  pageDoubleDigitWidth,\n  activeSingleDigitWidth,\n  activeDoubleDigitWidth,\n  navPreviousEnabledWidth,\n  navPreviousDisabledWidth,\n  navNextEnabledWidth,\n  navNextDisabledWidth,\n  ellipsisWidth,\n]: Metrics) {\n  const getItemWidth = ({ type, page }: CompositionItem) => {\n    switch (type) {\n      case 'page':\n        return (\n          pageSingleDigitWidth +\n          (pageDoubleDigitWidth - pageSingleDigitWidth) *\n            (page.toString().length - 1)\n        );\n\n      case 'active':\n        return (\n          activeSingleDigitWidth +\n          (activeDoubleDigitWidth - activeSingleDigitWidth) *\n            (page.toString().length - 1)\n        );\n\n      case '<':\n        return page !== undefined\n          ? navPreviousEnabledWidth\n          : navPreviousDisabledWidth;\n\n      case '>':\n        return page !== undefined ? navNextEnabledWidth : navNextDisabledWidth;\n\n      case '…L':\n      case '…R':\n        return ellipsisWidth;\n\n      default: {\n        const _exCheck: never = type;\n        return _exCheck;\n      }\n    }\n  };\n\n  return (items: CompositionItem[]) =>\n    outerFrameWidth +\n    columnGap * Math.max(items.length - 1, 0) +\n    items.reduce((acc, item) => acc + getItemWidth(item), 0);\n}\n\nconst itemsToMeasure: ItemsToMeasure = [\n  createPage(8),\n  createPage(88),\n  createActivePage(8),\n  createActivePage(88),\n  createNavPrevious(0),\n  createNavPrevious(undefined),\n  createNavNext(0),\n  createNavNext(undefined),\n  createEllipsis('L'),\n];\n\ntype Metrics = [\n  OuterWidth: number,\n  Gap: number,\n  PageSingleDigit: number,\n  PageDoubleDigit: number,\n  ActiveSingleDigit: number,\n  ActiveDoubleDigit: number,\n  NavPreviousEnabled: number,\n  NavPreviousDisabled: number,\n  NavNextEnabled: number,\n  NavNextDisabled: number,\n  Ellipsis: number,\n];\n\ntype ItemsToMeasure = [\n  PageSingleDigit: CompositionItem,\n  PageDoubleDigit: CompositionItem,\n  ActiveSingleDigit: CompositionItem,\n  ActiveDoubleDigit: CompositionItem,\n  NavPreviousEnabled: CompositionItem,\n  NavPreviousDisabled: CompositionItem,\n  NavNextEnabled: CompositionItem,\n  NavNextDisabled: CompositionItem,\n  Ellipsis: CompositionItem,\n];\n\ntype WidthCalculator = (items: CompositionItem[]) => number;\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-responsive-pagination/hooks/useWidthCalculator.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "navigation-menus",
+      "tags": [
+        "pagination",
+        "responsive",
+        "resize-observer",
+        "adaptive",
+        "navigation"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-responsive-pagination.tsx",
+      "source": {
+        "project": "React Responsive Pagination",
+        "repository": "https://github.com/jonelantha/react-responsive-pagination",
+        "revision": "a4b8427065ff62e4f8187215da4d5157a0345809",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-responsive-pagination/index.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/index.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/index.tsx",
+            "upstreamSha256": "sha256:374ee401aefba6a2938452df0d73864fed5c92f977ce244b15036637ce40a749",
+            "contentSha256": "sha256:511d21a1e9a7ef7c28feead558870c1027762c9859a81d9598969b95a6785c4e",
+            "changes": [
+              "Added a use client directive so the hook-based source installs inside a Next.js client boundary.",
+              "Wrapped the upstream list in a localized nav landmark and added an explicit direction prop with direction-aware previous and next defaults.",
+              "Replaced the Bootstrap-oriented default class tokens with local Tailwind layout, 44-pixel target, active, disabled, and focus-visible classes while retaining the upstream class override API.",
+              "Corrected local TypeScript import specifiers to the actual copied .tsx file extensions so source-copy runtimes resolve them."
+            ]
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/debug.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/debug.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/debug.ts",
+            "upstreamSha256": "sha256:70a4a987396999602d7575e08096b5795163ed974680de02a954578ff9fc7bc9",
+            "contentSha256": "sha256:70a4a987396999602d7575e08096b5795163ed974680de02a954578ff9fc7bc9",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/compositionItem.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/compositionItem.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/compositionItem.ts",
+            "upstreamSha256": "sha256:4803aa42f47128f63e2a5ac423e34e668cd0178e95992f0c2483e920983c66df",
+            "contentSha256": "sha256:4803aa42f47128f63e2a5ac423e34e668cd0178e95992f0c2483e920983c66df",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/paginationItem.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/paginationItem.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/paginationItem.ts",
+            "upstreamSha256": "sha256:20fe8f3430e9b2e6f062d7e617c88f1c2602e2a62dde76eb84175b0e1057b907",
+            "contentSha256": "sha256:20fe8f3430e9b2e6f062d7e617c88f1c2602e2a62dde76eb84175b0e1057b907",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/labelBehaviour.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/labelBehaviour.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/labelBehaviour.tsx",
+            "upstreamSha256": "sha256:f39d02233e63e43e1c3e77c3bdeb269457f15c8f50ec5041cebdce9f340f0c97",
+            "contentSha256": "sha256:f39d02233e63e43e1c3e77c3bdeb269457f15c8f50ec5041cebdce9f340f0c97",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/narrowBehaviour.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/narrowBehaviour.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/narrowBehaviour.ts",
+            "upstreamSha256": "sha256:8c6c39feeb05fad072624804414e946bcb84c391112428d218bd8d81cf6ea8b1",
+            "contentSha256": "sha256:8c6c39feeb05fad072624804414e946bcb84c391112428d218bd8d81cf6ea8b1",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/presets.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/presets.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/presets.tsx",
+            "upstreamSha256": "sha256:0a4fb0bbe6531dd5b5ba1fa827670a59e54b3dac53c022e71072800ef1b74657",
+            "contentSha256": "sha256:8a6b90e8d9700083cb86eb378f4ee7e2bf3dd25c5b54fd95241983fe5517fb65",
+            "changes": [
+              "Corrected local TypeScript import specifiers to the actual copied .tsx file extension so source-copy runtimes resolve it."
+            ]
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/compositions/index.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/compositions/index.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/compositions/index.ts",
+            "upstreamSha256": "sha256:3e15a401a04f09754f8c91de8a111916e876efb484f519e1bfe51554ddb85d72",
+            "contentSha256": "sha256:3e15a401a04f09754f8c91de8a111916e876efb484f519e1bfe51554ddb85d72",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/compositions/ranges.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/compositions/ranges.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/compositions/ranges.ts",
+            "upstreamSha256": "sha256:d4267432fa7cb7f455c1edc43f3a09c324b45a8251c5070242504434d914c33b",
+            "contentSha256": "sha256:d4267432fa7cb7f455c1edc43f3a09c324b45a8251c5070242504434d914c33b",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/helpers/dom.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/helpers/dom.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/helpers/dom.ts",
+            "upstreamSha256": "sha256:ab15abe483c601dc19145247649778349edc0890b57c5f1ca496af276e466bf5",
+            "contentSha256": "sha256:ab15abe483c601dc19145247649778349edc0890b57c5f1ca496af276e466bf5",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/helpers/iterator.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/helpers/iterator.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/helpers/iterator.ts",
+            "upstreamSha256": "sha256:2761bf0596bd4d74d5d5e812cafbbc3e39788bd0774dfa3a2bb834898b8860b4",
+            "contentSha256": "sha256:2761bf0596bd4d74d5d5e812cafbbc3e39788bd0774dfa3a2bb834898b8860b4",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/helpers/react.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/helpers/react.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/helpers/react.ts",
+            "upstreamSha256": "sha256:3f11ca23fff5239a93a18db61ab20c140b01b2372cc3b744fc8785babed005fa",
+            "contentSha256": "sha256:3f11ca23fff5239a93a18db61ab20c140b01b2372cc3b744fc8785babed005fa",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/helpers/style.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/helpers/style.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/helpers/style.ts",
+            "upstreamSha256": "sha256:814e91365ce7955c4b96a56719f76177ad107013fb64dd0104defc539532279c",
+            "contentSha256": "sha256:814e91365ce7955c4b96a56719f76177ad107013fb64dd0104defc539532279c",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/helpers/util.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/helpers/util.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/helpers/util.ts",
+            "upstreamSha256": "sha256:db6f8b3c6d051cd538f600204c799680f79be91885e92cdf11e980f635ebc108",
+            "contentSha256": "sha256:db6f8b3c6d051cd538f600204c799680f79be91885e92cdf11e980f635ebc108",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/useAvailableWidth.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/useAvailableWidth.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/useAvailableWidth.ts",
+            "upstreamSha256": "sha256:1b90570110bbdd3946a22522eb6864daa6743ecf4993d4f46d5ea9ba14899985",
+            "contentSha256": "sha256:1b90570110bbdd3946a22522eb6864daa6743ecf4993d4f46d5ea9ba14899985",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/useContentWidth.ts",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/useContentWidth.ts",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/useContentWidth.ts",
+            "upstreamSha256": "sha256:ca34d109e1bca1e1516123e8c76f44b07b0eb38366031e83bbd26439ef336e8c",
+            "contentSha256": "sha256:ca34d109e1bca1e1516123e8c76f44b07b0eb38366031e83bbd26439ef336e8c",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/useFoutDetector.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/useFoutDetector.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/useFoutDetector.tsx",
+            "upstreamSha256": "sha256:028b9383b3bfe8f17c3b6a95159a603cdad97e5e1256204f437d4b5fb6707dd7",
+            "contentSha256": "sha256:028b9383b3bfe8f17c3b6a95159a603cdad97e5e1256204f437d4b5fb6707dd7",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/usePaginationItems.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/usePaginationItems.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/usePaginationItems.tsx",
+            "upstreamSha256": "sha256:7874878636f1725d6e81fb6e2257d3e2aef6daf9781b5b949ec443aecba14915",
+            "contentSha256": "sha256:a80bd4a9f48a6fedc13b69f4a489adb8c27f238554480a521ec7b64307c242d6",
+            "changes": [
+              "Corrected a local TypeScript import specifier to the actual copied .tsx file extension so source-copy runtimes resolve it."
+            ]
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/useWidestComposition.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/useWidestComposition.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/useWidestComposition.tsx",
+            "upstreamSha256": "sha256:e5bb458a59c44e921c701132c194c638d7c0a69fae7f5f864e887a5ea6e86c99",
+            "contentSha256": "sha256:583f5fdc5d03b215f8fc36b592b6cf09964f01b15412321353ada71906893f3e",
+            "changes": [
+              "Corrected local TypeScript import specifiers to the actual copied .tsx file extensions so source-copy runtimes resolve them."
+            ]
+          },
+          {
+            "shippedPath": "components/react-responsive-pagination/hooks/useWidthCalculator.tsx",
+            "upstreamPath": "packages/react-responsive-pagination/src/hooks/useWidthCalculator.tsx",
+            "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/packages/react-responsive-pagination/src/hooks/useWidthCalculator.tsx",
+            "upstreamSha256": "sha256:881a16fa0f3a13322e827524b2f601a937266f92f4878a57595ad0b42dac424a",
+            "contentSha256": "sha256:881a16fa0f3a13322e827524b2f601a937266f92f4878a57595ad0b42dac424a",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/react-responsive-pagination/src runtime closure",
+        "copyright": [
+          "Copyright (c) 2021 jonelantha"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/jonelantha/react-responsive-pagination/blob/a4b8427065ff62e4f8187215da4d5157a0345809/LICENSE",
+          "sha256": "sha256:e43bf8c85aeba824a2de33dfcf936e65dab03dffce241fcc8e35e5ced473edb7",
+          "localPath": "registry/sources/react-responsive-pagination/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-responsive-pagination/index.tsx",
+          "change": "Added the client directive, labeled nav wrapper, explicit direction-aware defaults, local Tailwind interaction classes, and resolvable .tsx import specifiers.",
+          "reason": "Provide the documented Next.js portability, semantic, localization, RTL, touch-target, focus-visible, and source-copy resolution adaptations without changing the measured composition algorithm."
+        },
+        {
+          "shippedPath": "components/react-responsive-pagination/presets.tsx",
+          "change": "Corrected labelBehaviour import specifiers from .ts to the copied .tsx extension.",
+          "reason": "Make the exact source closure executable after source-copy installation."
+        },
+        {
+          "shippedPath": "components/react-responsive-pagination/hooks/usePaginationItems.tsx",
+          "change": "Corrected the useWidestComposition import specifier from .ts to the copied .tsx extension.",
+          "reason": "Make the exact source closure executable after source-copy installation."
+        },
+        {
+          "shippedPath": "components/react-responsive-pagination/hooks/useWidestComposition.tsx",
+          "change": "Corrected useFoutDetector and useWidthCalculator import specifiers from .ts to their copied .tsx extensions.",
+          "reason": "Make the exact source closure executable after source-copy installation."
+        }
+      ],
+      "dedupe": {
+        "family": "measured-adaptive-pagination",
+        "sourceHash": "sha256:936fb3ea7f55355b862d0c78f36f1ac29ad352f412728f53ad4383996b001656",
+        "contentHash": "sha256:8d74df3162a0fbc062d34bf4aaf9369248da6f7ba5be16ee9170f1d540679f39",
+        "structureHash": "sha256:42ff5871f8764bf143e50102492197d746114ac74d32e44eab802ea9b0668e43"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "navigation-menus"
+  ],
+  "type": "registry:component"
+}

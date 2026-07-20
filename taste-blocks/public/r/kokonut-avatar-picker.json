@@ -1,0 +1,180 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kokonut-avatar-picker",
+  "title": "Avatar Picker",
+  "author": "kokonutUI",
+  "description": "Collects an avatar choice and validated username through a compact, animated profile setup form.",
+  "dependencies": [
+    "@radix-ui/react-slot@1.2.4",
+    "class-variance-authority@0.7.1",
+    "clsx@2.1.1",
+    "lucide-react@0.556.0",
+    "motion@12.23.25",
+    "tailwind-merge@3.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/kokonut-ui/components/kokonut-avatar-picker/avatar-picker.tsx",
+      "content": "\"use client\"\n\n/**\n * @author: @dorianbaffier\n * @description: Avatar Picker\n * @version: 2.0.0\n * @date: 2026-02-22\n * @license: MIT\n * @website: https://kokonutui.com\n * @github: https://github.com/kokonut-labs/kokonutui\n */\n\nimport { Check, ChevronRight, User2 } from \"lucide-react\"\nimport type { Variants } from \"motion/react\"\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\"\nimport { type FormEvent, useId, useState } from \"react\"\n\nimport { Button } from \"../ui/button\"\nimport { Card, CardContent } from \"../ui/card\"\nimport { Input } from \"../ui/input\"\nimport { cn } from \"../../lib/utils\"\n\ninterface Avatar {\n  id: number\n  art: React.ReactNode\n  alt: string\n  accent: string\n}\n\nfunction AvatarOne() {\n  return (\n    <svg aria-hidden=\"true\" fill=\"none\" height=\"40\" viewBox=\"0 0 36 36\" width=\"40\">\n      <rect fill=\"#ff005b\" height=\"36\" width=\"36\" />\n      <rect\n        fill=\"#ffb238\"\n        height=\"36\"\n        rx=\"6\"\n        transform=\"translate(9 -5) rotate(219 18 18) scale(1)\"\n        width=\"36\"\n      />\n      <g transform=\"translate(4.5 -4) rotate(9 18 18)\">\n        <path d=\"M15 19c2 1 4 1 6 0\" fill=\"none\" stroke=\"#000\" strokeLinecap=\"round\" />\n        <rect fill=\"#000\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"10\" y=\"14\" />\n        <rect fill=\"#000\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"24\" y=\"14\" />\n      </g>\n    </svg>\n  )\n}\n\nfunction AvatarTwo() {\n  return (\n    <svg aria-hidden=\"true\" fill=\"none\" height=\"40\" viewBox=\"0 0 36 36\" width=\"40\">\n      <rect fill=\"#ff7d10\" height=\"36\" width=\"36\" />\n      <rect\n        fill=\"#0a0310\"\n        height=\"36\"\n        rx=\"6\"\n        transform=\"translate(5 -1) rotate(55 18 18) scale(1.1)\"\n        width=\"36\"\n      />\n      <g transform=\"translate(7 -6) rotate(-5 18 18)\">\n        <path d=\"M15 20c2 1 4 1 6 0\" fill=\"none\" stroke=\"#fff\" strokeLinecap=\"round\" />\n        <rect fill=\"#fff\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"14\" y=\"14\" />\n        <rect fill=\"#fff\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"20\" y=\"14\" />\n      </g>\n    </svg>\n  )\n}\n\nfunction AvatarThree() {\n  return (\n    <svg aria-hidden=\"true\" fill=\"none\" height=\"40\" viewBox=\"0 0 36 36\" width=\"40\">\n      <rect fill=\"#0a0310\" height=\"36\" width=\"36\" />\n      <rect\n        fill=\"#ff005b\"\n        height=\"36\"\n        rx=\"36\"\n        transform=\"translate(-3 7) rotate(227 18 18) scale(1.2)\"\n        width=\"36\"\n      />\n      <g transform=\"translate(-3 3.5) rotate(7 18 18)\">\n        <path d=\"M13,21 a1,0.75 0 0,0 10,0\" fill=\"#fff\" />\n        <rect fill=\"#fff\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"12\" y=\"14\" />\n        <rect fill=\"#fff\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"22\" y=\"14\" />\n      </g>\n    </svg>\n  )\n}\n\nfunction AvatarFour() {\n  return (\n    <svg aria-hidden=\"true\" fill=\"none\" height=\"40\" viewBox=\"0 0 36 36\" width=\"40\">\n      <rect fill=\"#d8fcb3\" height=\"36\" width=\"36\" />\n      <rect\n        fill=\"#89fcb3\"\n        height=\"36\"\n        rx=\"6\"\n        transform=\"translate(9 -5) rotate(219 18 18) scale(1)\"\n        width=\"36\"\n      />\n      <g transform=\"translate(4.5 -4) rotate(9 18 18)\">\n        <path d=\"M15 19c2 1 4 1 6 0\" fill=\"none\" stroke=\"#000\" strokeLinecap=\"round\" />\n        <rect fill=\"#000\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"10\" y=\"14\" />\n        <rect fill=\"#000\" height=\"2\" rx=\"1\" width=\"1.5\" x=\"24\" y=\"14\" />\n      </g>\n    </svg>\n  )\n}\n\nconst avatars: Avatar[] = [\n  { id: 1, art: <AvatarOne />, alt: \"Avatar 1\", accent: \"255, 0, 91\" },\n  { id: 2, art: <AvatarTwo />, alt: \"Avatar 2\", accent: \"255, 125, 16\" },\n  { id: 3, art: <AvatarThree />, alt: \"Avatar 3\", accent: \"255, 0, 91\" },\n  { id: 4, art: <AvatarFour />, alt: \"Avatar 4\", accent: \"137, 252, 179\" },\n]\n\nexport interface AvatarPickerProps {\n  onComplete: (data: { username: string; avatarId: number }) => void\n  className?: string\n  title?: string\n  description?: string\n  submitLabel?: string\n  defaultUsername?: string\n  defaultAvatarId?: number\n}\n\nconst containerVariants: Variants = {\n  initial: { opacity: 0 },\n  animate: {\n    opacity: 1,\n    transition: { staggerChildren: 0.06, delayChildren: 0.05 },\n  },\n}\n\nconst thumbnailVariants: Variants = {\n  initial: { opacity: 0, y: 6 },\n  animate: {\n    opacity: 1,\n    y: 0,\n    transition: { duration: 0.28, ease: \"easeOut\" },\n  },\n}\n\nexport default function AvatarPicker({\n  onComplete,\n  className,\n  title = \"Pick your avatar\",\n  description = \"Choose one to get started\",\n  submitLabel = \"Continue\",\n  defaultUsername = \"\",\n  defaultAvatarId = avatars[0].id,\n}: AvatarPickerProps) {\n  const [selectedAvatar, setSelectedAvatar] = useState(\n    avatars.find((avatar) => avatar.id === defaultAvatarId) ?? avatars[0],\n  )\n  const [username, setUsername] = useState(defaultUsername)\n  const [isFocused, setIsFocused] = useState(false)\n  const shouldReduceMotion = useReducedMotion()\n  const usernameId = useId()\n  const countId = `${usernameId}-count`\n  const errorId = `${usernameId}-error`\n  const trimmedUsername = username.trim()\n  const isValid = trimmedUsername.length >= 3\n  const showError = trimmedUsername.length > 0 && !isValid\n\n  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {\n    event.preventDefault()\n    if (!isValid) return\n    onComplete({ username: trimmedUsername, avatarId: selectedAvatar.id })\n  }\n\n  return (\n    <Card\n      className={cn(\n        \"relative mx-auto w-full max-w-[400px] border-border bg-card\",\n        className,\n      )}\n    >\n      <CardContent className=\"p-6 sm:p-8\">\n        <form className=\"space-y-8\" onSubmit={handleSubmit}>\n          <div className=\"space-y-1 text-center\">\n            <h2 className=\"font-semibold text-xl tracking-tight\">{title}</h2>\n            <p className=\"text-muted-foreground text-sm\">{description}</p>\n          </div>\n\n          <div className=\"flex flex-col items-center gap-4\">\n            <div className=\"relative h-40 w-40\">\n              <motion.div\n                animate={{\n                  boxShadow: `0 0 0 2px rgba(${selectedAvatar.accent}, 0.55), 0 6px 24px rgba(${selectedAvatar.accent}, 0.18)`,\n                }}\n                aria-hidden=\"true\"\n                className=\"pointer-events-none absolute inset-0 rounded-full\"\n                transition={\n                  shouldReduceMotion\n                    ? { duration: 0 }\n                    : { duration: 0.45, ease: \"easeOut\" }\n                }\n              />\n\n              <div className=\"relative h-full w-full overflow-hidden rounded-full\">\n                <AnimatePresence mode=\"wait\">\n                  <motion.div\n                    animate={{ opacity: 1 }}\n                    aria-label={selectedAvatar.alt}\n                    className=\"absolute inset-0 flex items-center justify-center\"\n                    exit={{ opacity: 0 }}\n                    initial={{ opacity: 0 }}\n                    key={selectedAvatar.id}\n                    role=\"img\"\n                    transition={\n                      shouldReduceMotion\n                        ? { duration: 0 }\n                        : { duration: 0.2, ease: \"easeOut\" }\n                    }\n                  >\n                    <div className=\"scale-[4] transform\">{selectedAvatar.art}</div>\n                  </motion.div>\n                </AnimatePresence>\n              </div>\n            </div>\n\n            <AnimatePresence mode=\"wait\">\n              <motion.span\n                animate={{ opacity: 1 }}\n                className=\"text-[11px] text-muted-foreground uppercase tracking-[0.12em]\"\n                exit={{ opacity: 0 }}\n                initial={{ opacity: 0 }}\n                key={selectedAvatar.id}\n                transition={\n                  shouldReduceMotion\n                    ? { duration: 0 }\n                    : { duration: 0.16, ease: \"easeOut\" }\n                }\n              >\n                {selectedAvatar.alt}\n              </motion.span>\n            </AnimatePresence>\n\n            <motion.div\n              animate=\"animate\"\n              className=\"grid grid-cols-4 gap-2 sm:gap-3\"\n              initial=\"initial\"\n              variants={containerVariants}\n            >\n              {avatars.map((avatar) => {\n                const isSelected = selectedAvatar.id === avatar.id\n                return (\n                  <motion.button\n                    aria-label={`Select ${avatar.alt}`}\n                    aria-pressed={isSelected}\n                    className={cn(\n                      \"relative h-14 w-14 overflow-hidden rounded-xl border bg-muted transition-[opacity,box-shadow] duration-200 ease-out motion-reduce:transition-none\",\n                      isSelected\n                        ? \"border-foreground/20 opacity-100 ring-2 ring-foreground/70 ring-offset-2 ring-offset-background\"\n                        : \"border-border opacity-50 [@media(hover:hover)]:hover:opacity-100\",\n                    )}\n                    key={avatar.id}\n                    onClick={() => setSelectedAvatar(avatar)}\n                    type=\"button\"\n                    variants={thumbnailVariants}\n                    whileHover={shouldReduceMotion ? {} : { scale: 1.06 }}\n                    whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}\n                  >\n                    <div className=\"absolute inset-0 flex items-center justify-center\">\n                      <div className=\"scale-[2.3] transform\">{avatar.art}</div>\n                    </div>\n                    {isSelected && (\n                      <div className=\"absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-tl-md bg-foreground\">\n                        <Check aria-hidden=\"true\" className=\"h-3 w-3 text-background\" />\n                      </div>\n                    )}\n                  </motion.button>\n                )\n              })}\n            </motion.div>\n          </div>\n\n          <div className=\"space-y-4\">\n            <div className=\"space-y-2\">\n              <div className=\"flex items-center justify-between\">\n                <label className=\"font-medium text-sm\" htmlFor={usernameId}>\n                  Username\n                </label>\n                <span\n                  className={cn(\n                    \"text-xs tabular-nums transition-colors duration-200 ease-out motion-reduce:transition-none\",\n                    username.length >= 18\n                      ? \"text-amber-500 dark:text-amber-400\"\n                      : \"text-muted-foreground/50\",\n                  )}\n                  id={countId}\n                >\n                  {username.length}/20\n                </span>\n              </div>\n\n              <div className=\"relative\">\n                <Input\n                  aria-describedby={`${countId}${showError ? ` ${errorId}` : \"\"}`}\n                  aria-invalid={showError}\n                  autoComplete=\"username\"\n                  className={cn(\n                    \"h-10 pl-9 text-sm\",\n                    showError &&\n                      \"border-destructive/50 focus-visible:ring-destructive\",\n                  )}\n                  id={usernameId}\n                  maxLength={20}\n                  name=\"username\"\n                  onBlur={() => setIsFocused(false)}\n                  onChange={(event) => setUsername(event.target.value)}\n                  onFocus={() => setIsFocused(true)}\n                  placeholder=\"your_username\"\n                  spellCheck={false}\n                  type=\"text\"\n                  value={username}\n                />\n                <User2\n                  aria-hidden=\"true\"\n                  className={cn(\n                    \"absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transition-colors duration-200 ease-out motion-reduce:transition-none\",\n                    isFocused ? \"text-foreground\" : \"text-muted-foreground\",\n                  )}\n                />\n              </div>\n\n              <AnimatePresence>\n                {showError && (\n                  <motion.p\n                    animate={{ opacity: 1, y: 0 }}\n                    className=\"ml-0.5 text-destructive text-xs\"\n                    exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -4 }}\n                    id={errorId}\n                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -4 }}\n                    role=\"alert\"\n                    transition={{ duration: shouldReduceMotion ? 0 : 0.15, ease: \"easeOut\" }}\n                  >\n                    Username must be at least 3 characters\n                  </motion.p>\n                )}\n              </AnimatePresence>\n            </div>\n\n            <Button className=\"group h-10 w-full text-sm\" disabled={!isValid} type=\"submit\">\n              {submitLabel}\n              <ChevronRight\n                aria-hidden=\"true\"\n                className=\"ml-1 h-4 w-4 transition-transform duration-200 ease-out motion-reduce:transition-none [@media(hover:hover)]:group-hover:translate-x-0.5\"\n              />\n            </Button>\n          </div>\n        </form>\n      </CardContent>\n    </Card>\n  )\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/kokonut-avatar-picker.tsx"
+    },
+    {
+      "path": "registry/sources/kokonut-ui/components/ui/button.tsx",
+      "content": "import { Slot } from \"@radix-ui/react-slot\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport * as React from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst buttonVariants = cva(\n  \"inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-sm ring-offset-white transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0\",\n  {\n    variants: {\n      variant: {\n        default:\n          \"bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90\",\n        destructive:\n          \"bg-red-500 text-zinc-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-zinc-50 dark:hover:bg-red-900/90\",\n        outline:\n          \"border border-zinc-200 bg-white hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50\",\n        secondary:\n          \"bg-zinc-100 text-zinc-900 hover:bg-zinc-100/80 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-800/80\",\n        ghost:\n          \"hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50\",\n        link: \"text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50\",\n      },\n      size: {\n        default: \"h-10 px-4 py-2\",\n        sm: \"h-9 rounded-md px-3\",\n        lg: \"h-11 rounded-md px-8\",\n        icon: \"h-10 w-10\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nexport interface ButtonProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  asChild?: boolean\n}\n\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\n    const Comp = asChild ? Slot : \"button\"\n    return (\n      <Comp\n        className={cn(buttonVariants({ variant, size, className }))}\n        ref={ref}\n        {...props}\n      />\n    )\n  },\n)\nButton.displayName = \"Button\"\n\nexport { Button, buttonVariants }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/button.tsx"
+    },
+    {
+      "path": "registry/sources/kokonut-ui/components/ui/card.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\nconst Card = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    className={cn(\n      \"rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-xs dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50\",\n      className,\n    )}\n    ref={ref}\n    {...props}\n  />\n))\nCard.displayName = \"Card\"\n\nconst CardHeader = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    className={cn(\"flex flex-col space-y-1.5 p-6\", className)}\n    ref={ref}\n    {...props}\n  />\n))\nCardHeader.displayName = \"CardHeader\"\n\nconst CardTitle = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    className={cn(\n      \"font-semibold text-2xl leading-none tracking-tight\",\n      className,\n    )}\n    ref={ref}\n    {...props}\n  />\n))\nCardTitle.displayName = \"CardTitle\"\n\nconst CardDescription = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    className={cn(\"text-sm text-zinc-500 dark:text-zinc-400\", className)}\n    ref={ref}\n    {...props}\n  />\n))\nCardDescription.displayName = \"CardDescription\"\n\nconst CardContent = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div className={cn(\"p-6 pt-0\", className)} ref={ref} {...props} />\n))\nCardContent.displayName = \"CardContent\"\n\nconst CardFooter = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    className={cn(\"flex items-center p-6 pt-0\", className)}\n    ref={ref}\n    {...props}\n  />\n))\nCardFooter.displayName = \"CardFooter\"\n\nexport {\n  Card,\n  CardHeader,\n  CardFooter,\n  CardTitle,\n  CardDescription,\n  CardContent,\n}\n",
+      "type": "registry:ui",
+      "target": "@components/ui/card.tsx"
+    },
+    {
+      "path": "registry/sources/kokonut-ui/components/ui/input.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"../../lib/utils\"\n\nexport interface InputProps\n  extends React.InputHTMLAttributes<HTMLInputElement> {}\n\nconst Input = React.forwardRef<HTMLInputElement, InputProps>(\n  ({ className, type, ...props }, ref) => (\n    <input\n      className={cn(\n        \"flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:font-medium file:text-sm file:text-zinc-950 placeholder:text-zinc-500 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300 dark:placeholder:text-zinc-400 dark:file:text-zinc-50\",\n        className,\n      )}\n      ref={ref}\n      type={type}\n      {...props}\n    />\n  ),\n)\nInput.displayName = \"Input\"\n\nexport { Input }\n",
+      "type": "registry:ui",
+      "target": "@components/ui/input.tsx"
+    },
+    {
+      "path": "registry/sources/kokonut-ui/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "forms-feedback",
+      "tags": [
+        "avatar",
+        "profile",
+        "validated-input",
+        "selection"
+      ],
+      "renderer": "dom",
+      "preview": "previews/kokonut-avatar-picker.tsx",
+      "source": {
+        "project": "Kokonut UI",
+        "repository": "https://github.com/kokonut-labs/kokonutui",
+        "revision": "4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kokonut-avatar-picker/avatar-picker.tsx",
+            "upstreamPath": "components/kokonutui/avatar-picker.tsx",
+            "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/kokonutui/avatar-picker.tsx",
+            "upstreamSha256": "sha256:cd01dbf9b1fcfa4dc71f7a40c826ae4d6ba4dff9606bdec7309fc9d282a13363",
+            "contentSha256": "sha256:49497fef8bd80df87dd10b01a958d6891e310663f04eec9a90c9badb93d24958",
+            "changes": [
+              "Renamed the exported component to AvatarPicker, made completion explicit, and added configurable labels and defaults while preserving the upstream avatar art and visual composition.",
+              "Replaced duplicate fixed SVG mask IDs with viewport-clipped artwork and generated a unique username field ID so multiple instances remain valid.",
+              "Changed the clickable container into a native form, added Enter submission, accessible error and counter associations, and meaningful selected-art semantics.",
+              "Made the thumbnail strip fit narrow viewports, gated hover-only movement to hover-capable devices, and disabled movement and transitions for reduced motion.",
+              "Changed application aliases to the bundled relative support closure and normalized formatting."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/button.tsx",
+            "upstreamPath": "components/ui/button.tsx",
+            "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/button.tsx",
+            "upstreamSha256": "sha256:6ccf1b15a9db001a2e682ee288f4c77b6ced9988325cc070a61a8056eb6c02e2",
+            "contentSha256": "sha256:396f54f5ad8820aaf2b169d4e0e7edcc636dc6f18abf18a04bf3801acef7cf2b",
+            "changes": [
+              "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the component API or variants."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/card.tsx",
+            "upstreamPath": "components/ui/card.tsx",
+            "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/card.tsx",
+            "upstreamSha256": "sha256:cf27e9441dcf2882fc35483b84c4e231918186ec7e4b50c63984f48c3cb84aa0",
+            "contentSha256": "sha256:7adffde373558cdf7467c18482b24e633f671e536ef662f8d62b2ee6de8151f0",
+            "changes": [
+              "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the card primitives."
+            ]
+          },
+          {
+            "shippedPath": "components/ui/input.tsx",
+            "upstreamPath": "components/ui/input.tsx",
+            "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/input.tsx",
+            "upstreamSha256": "sha256:543afece30d075d11dc87dfd90295cfa196d4fc7ee56021fc6865f177723dea6",
+            "contentSha256": "sha256:d4add37f0033c049c25b186d04e443770968f3c6d634335a521aaff4bf0ac971",
+            "changes": [
+              "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the input API."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/lib/utils.ts",
+            "upstreamSha256": "sha256:9e45d6d21e0d57bf85930ba2bf6fdd9f5f0175d1129844356081a6050975deb1",
+            "contentSha256": "sha256:51bbf14cd1f84f49aab2e0dbee420137015d56b6677bb439e83a908cd292cce1",
+            "changes": [
+              "Normalized formatting and line endings without changing behavior."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "components/kokonutui/avatar-picker.tsx, components/ui/button.tsx, components/ui/card.tsx, components/ui/input.tsx, and lib/utils.ts",
+        "copyright": [
+          "Copyright (c) 2025 kokonutUI"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/LICENSE",
+          "sha256": "sha256:b2e018ad1fd564608cc1ee0c2ad675ce5202c8ed9f5f68e6d09e7b6bc881d5d2",
+          "localPath": "registry/sources/kokonut-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kokonut-avatar-picker/avatar-picker.tsx",
+          "change": "Kept the upstream art and composition while making IDs instance-safe, submission real, copy configurable, narrow layouts stable, and motion accessible.",
+          "reason": "The copied visual was strong, but fixed IDs, click-only submission, narrow overflow, and incomplete reduced-motion behavior prevented production use."
+        },
+        {
+          "shippedPath": "components/ui/button.tsx",
+          "change": "Repointed the utility import and normalized formatting.",
+          "reason": "Keep the copied dependency closure installable outside the upstream application."
+        },
+        {
+          "shippedPath": "components/ui/card.tsx",
+          "change": "Repointed the utility import and normalized formatting.",
+          "reason": "Keep the copied dependency closure installable outside the upstream application."
+        },
+        {
+          "shippedPath": "components/ui/input.tsx",
+          "change": "Repointed the utility import and normalized formatting.",
+          "reason": "Keep the copied dependency closure installable outside the upstream application."
+        },
+        {
+          "shippedPath": "lib/utils.ts",
+          "change": "Normalized formatting and line endings.",
+          "reason": "Match the source batch formatting without changing the copied helper."
+        }
+      ],
+      "dedupe": {
+        "family": "avatar-profile-setup",
+        "sourceHash": "sha256:cefc351bd468f9d754ded94eca388920db8dec0cfc4014ed0d930162c1f3a901",
+        "contentHash": "sha256:0fe706c30882f1076b6400722538b55bed02bb33b6c834f1f3e137cefecc4325",
+        "structureHash": "sha256:7258e4326ff774664ffcc69e90a4eb84c8797a5a0f37d9cd85990ec2a3059fae"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "forms-feedback"
+  ],
+  "type": "registry:component"
+}

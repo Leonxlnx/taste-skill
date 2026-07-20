@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drei-outlines",
+  "title": "Outlines",
+  "author": "pmndrs contributors",
+  "description": "Draws configurable screen-space or world-space outlines around mesh geometry.",
+  "dependencies": [
+    "@react-three/fiber@9.0.0",
+    "three-mesh-bvh@0.8.3",
+    "three-stdlib@2.35.6",
+    "three@0.159.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/drei/components/drei/core/Outlines.tsx",
+      "content": "import * as THREE from 'three'\nimport * as React from 'react'\nimport { shaderMaterial } from './shaderMaterial'\nimport { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'\nimport { toCreasedNormals } from 'three-stdlib'\nimport { version } from '../helpers/constants'\n\nconst OutlinesMaterial = /* @__PURE__ */ shaderMaterial(\n  {\n    screenspace: false,\n    color: /* @__PURE__ */ new THREE.Color('black'),\n    opacity: 1,\n    thickness: 0.05,\n    size: /* @__PURE__ */ new THREE.Vector2(),\n  },\n  `#include <common>\n   #include <morphtarget_pars_vertex>\n   #include <skinning_pars_vertex>\n   #include <clipping_planes_pars_vertex>\n   uniform float thickness;\n   uniform bool screenspace;\n   uniform vec2 size;\n   void main() {\n     #if defined (USE_SKINNING)\n\t     #include <beginnormal_vertex>\n       #include <morphnormal_vertex>\n       #include <skinbase_vertex>\n       #include <skinnormal_vertex>\n       #include <defaultnormal_vertex>\n     #endif\n     #include <begin_vertex>\n\t   #include <morphtarget_vertex>\n\t   #include <skinning_vertex>\n     #include <project_vertex>\n     #include <clipping_planes_vertex>\n     vec4 tNormal = vec4(normal, 0.0);\n     vec4 tPosition = vec4(transformed, 1.0);\n     #ifdef USE_INSTANCING\n       tNormal = instanceMatrix * tNormal;\n       tPosition = instanceMatrix * tPosition;\n     #endif\n     if (screenspace) {\n       vec3 newPosition = tPosition.xyz + tNormal.xyz * thickness;\n       gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0); \n     } else {\n       vec4 clipPosition = projectionMatrix * modelViewMatrix * tPosition;\n       vec4 clipNormal = projectionMatrix * modelViewMatrix * tNormal;\n       vec2 offset = normalize(clipNormal.xy) * thickness / size * clipPosition.w * 2.0;\n       clipPosition.xy += offset;\n       gl_Position = clipPosition;\n     }\n   }`,\n  `uniform vec3 color;\n   uniform float opacity;\n   #include <clipping_planes_pars_fragment>\n   void main(){\n     #include <clipping_planes_fragment>\n     gl_FragColor = vec4(color, opacity);\n     #include <tonemapping_fragment>\n     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>\n   }`\n)\n\nexport type OutlinesProps = Omit<ThreeElements['group'], 'ref'> & {\n  /** Outline color, default: black */\n  color?: ReactThreeFiber.Color\n  /** Line thickness is independent of zoom, default: false */\n  screenspace?: boolean\n  /** Outline opacity, default: 1 */\n  opacity?: number\n  /** Outline transparency, default: false */\n  transparent?: boolean\n  /** Outline thickness, default 0.05 */\n  thickness?: number\n  /** Geometry crease angle (0 === no crease), default: Math.PI */\n  angle?: number\n  clippingPlanes?: THREE.Plane[]\n  toneMapped?: boolean\n  polygonOffset?: boolean\n  polygonOffsetFactor?: number\n  renderOrder?: number\n}\n\nexport function Outlines({\n  color = 'black',\n  opacity = 1,\n  transparent = false,\n  screenspace = false,\n  toneMapped = true,\n  polygonOffset = false,\n  polygonOffsetFactor = 0,\n  renderOrder = 0,\n  thickness = 0.05,\n  angle = Math.PI,\n  clippingPlanes,\n  ...props\n}: OutlinesProps) {\n  const ref = React.useRef<THREE.Group>(null)\n  const [material] = React.useState(() => new OutlinesMaterial({ side: THREE.BackSide }))\n  const { gl } = useThree()\n  const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())\n  React.useMemo(() => extend({ OutlinesMaterial }), [])\n\n  const oldAngle = React.useRef(0)\n  const oldGeometry = React.useRef<THREE.BufferGeometry>(null)\n  React.useLayoutEffect(() => {\n    const group = ref.current\n    if (!group) return\n\n    const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh\n    if (parent && parent.geometry) {\n      if (oldAngle.current !== angle || oldGeometry.current !== parent.geometry) {\n        oldAngle.current = angle\n        oldGeometry.current = parent.geometry\n\n        // Remove old mesh\n        let mesh = group.children?.[0] as any\n        if (mesh) {\n          if (angle) mesh.geometry.dispose()\n          group.remove(mesh)\n        }\n\n        if (parent.skeleton) {\n          mesh = new THREE.SkinnedMesh()\n          mesh.material = material\n          mesh.bind(parent.skeleton, parent.bindMatrix)\n          group.add(mesh)\n        } else if (parent.isInstancedMesh) {\n          mesh = new THREE.InstancedMesh(parent.geometry, material, parent.count)\n          mesh.instanceMatrix = parent.instanceMatrix\n          group.add(mesh)\n        } else {\n          mesh = new THREE.Mesh()\n          mesh.material = material\n          group.add(mesh)\n        }\n        mesh.geometry = angle ? toCreasedNormals(parent.geometry, angle) : parent.geometry\n        mesh.morphTargetInfluences = parent.morphTargetInfluences\n        mesh.morphTargetDictionary = parent.morphTargetDictionary\n      }\n    }\n  })\n\n  React.useLayoutEffect(() => {\n    const group = ref.current\n    if (!group) return\n\n    const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>\n    if (mesh) {\n      mesh.renderOrder = renderOrder\n\n      const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh\n      applyProps(mesh, {\n        morphTargetInfluences: parent.morphTargetInfluences,\n        morphTargetDictionary: parent.morphTargetDictionary,\n      })\n      applyProps(mesh.material, {\n        transparent,\n        thickness,\n        color,\n        opacity,\n        size: contextSize,\n        screenspace,\n        toneMapped,\n        polygonOffset,\n        polygonOffsetFactor,\n        clippingPlanes,\n        clipping: clippingPlanes && clippingPlanes.length > 0,\n      })\n    }\n  })\n\n  React.useEffect(() => {\n    return () => {\n      // Dispose everything on unmount\n      const group = ref.current\n      if (!group) return\n\n      const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>\n      if (mesh) {\n        if (angle) mesh.geometry.dispose()\n        group.remove(mesh)\n      }\n    }\n  }, [])\n\n  return <group ref={ref} {...props} />\n}\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/drei/core/Outlines.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/core/shaderMaterial.tsx",
+      "content": "import * as THREE from 'three'\nimport { type ConstructorRepresentation } from '@react-three/fiber'\nimport { type MeshBVHUniformStruct } from 'three-mesh-bvh'\n\ntype UniformValue =\n  | THREE.Texture\n  | THREE.TypedArray\n  | THREE.Matrix4\n  | THREE.Matrix3\n  | THREE.Quaternion\n  | THREE.Vector4\n  | THREE.Vector3\n  | THREE.Vector2\n  | THREE.Color\n  | MeshBVHUniformStruct // TODO: remove?\n  | number\n  | boolean\n  | null\n\ntype Uniforms = Record<string, UniformValue | Record<string, UniformValue> | Array<UniformValue>>\n\nexport function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMaterial & U>(\n  uniforms: U,\n  vertexShader: string,\n  fragmentShader: string,\n  onInit?: (material?: M) => void\n) {\n  return class extends THREE.ShaderMaterial {\n    static key = THREE.MathUtils.generateUUID()\n\n    constructor(parameters?: THREE.ShaderMaterialParameters) {\n      super({ vertexShader, fragmentShader, ...parameters })\n\n      for (const key in uniforms) {\n        this.uniforms[key] = new THREE.Uniform(uniforms[key])\n        Object.defineProperty(this, key, {\n          get() {\n            return this.uniforms[key].value\n          },\n          set(value) {\n            this.uniforms[key].value = value\n          },\n        })\n      }\n      this.uniforms = THREE.UniformsUtils.clone(this.uniforms)\n\n      onInit?.(this as unknown as M)\n    }\n  } as unknown as ConstructorRepresentation<M> & { key: string }\n}\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/core/shaderMaterial.tsx"
+    },
+    {
+      "path": "registry/sources/drei/components/drei/helpers/constants.ts",
+      "content": "import { REVISION } from 'three'\n\nconst getVersion = () => parseInt(REVISION.replace(/\\D+/g, ''))\n\nexport const version = /* @__PURE__ */ getVersion()\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/drei/helpers/constants.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "visual-effects",
+      "tags": [
+        "outline",
+        "mesh",
+        "shader",
+        "webgl"
+      ],
+      "renderer": "webgl",
+      "preview": "previews/drei-outlines.tsx",
+      "source": {
+        "project": "Drei",
+        "repository": "https://github.com/pmndrs/drei",
+        "revision": "c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/drei/core/Outlines.tsx",
+            "upstreamPath": "src/core/Outlines.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/Outlines.tsx",
+            "upstreamSha256": "sha256:0be7a00397a623ef578c09bc6fbaf65873b1686a059bac63b6287f5d058930bb",
+            "contentSha256": "sha256:0be7a00397a623ef578c09bc6fbaf65873b1686a059bac63b6287f5d058930bb",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/core/shaderMaterial.tsx",
+            "upstreamPath": "src/core/shaderMaterial.tsx",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/core/shaderMaterial.tsx",
+            "upstreamSha256": "sha256:9c68e459b901a8575c6a45f1d7405f123661797e5b0129bd6ce5c44c33969b92",
+            "contentSha256": "sha256:9c68e459b901a8575c6a45f1d7405f123661797e5b0129bd6ce5c44c33969b92",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/drei/helpers/constants.ts",
+            "upstreamPath": "src/helpers/constants.ts",
+            "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/src/helpers/constants.ts",
+            "upstreamSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "contentSha256": "sha256:7e8a829fbabccbc6fbff867513ad0538e80e8e013c5a0b43864f2ea037787b69",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "src/core/Outlines.tsx, src/core/shaderMaterial.tsx, src/helpers/constants.ts",
+        "copyright": [
+          "Copyright (c) 2020 react-spring"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pmndrs/drei/blob/c9d3d0dc9473f026c83965a7eb8c7f7a1a1bf0ae/LICENSE",
+          "sha256": "sha256:2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+          "localPath": "registry/sources/drei/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [],
+      "dedupe": {
+        "family": "mesh-geometry-outline-renderer",
+        "sourceHash": "sha256:736608e2d6416313aea262f70900a769a516d1e78b1308a2e73ded4c77ec0292",
+        "contentHash": "sha256:736608e2d6416313aea262f70900a769a516d1e78b1308a2e73ded4c77ec0292",
+        "structureHash": "sha256:0fc8fa9719e9ff567ca413350f12737a134923fae7d85bfceedec80acbc9a5ce"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "visual-effects"
+  ],
+  "type": "registry:component"
+}

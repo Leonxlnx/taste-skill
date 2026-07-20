@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vercel-ai-transcription",
+  "title": "Interactive Transcription",
+  "author": "Vercel",
+  "description": "A synchronized transcript whose segments expose active, past, and seek states.",
+  "dependencies": [
+    "@radix-ui/react-use-controllable-state@1.2.2"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/vercel-ai-elements/components/vercel-ai-elements/transcription.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useControllableState } from \"@radix-ui/react-use-controllable-state\";\nimport { cn } from \"@/lib/utils\";\nimport type { ComponentProps, ReactNode } from \"react\";\nimport { createContext, useCallback, useContext, useMemo } from \"react\";\r\n\r\nexport interface TranscriptionSegment {\n  endSecond: number;\n  startSecond: number;\n  text: string;\n}\n\r\ninterface TranscriptionContextValue {\r\n  segments: TranscriptionSegment[];\r\n  currentTime: number;\r\n  onTimeUpdate: (time: number) => void;\r\n  onSeek?: (time: number) => void;\r\n}\r\n\r\nconst TranscriptionContext = createContext<TranscriptionContextValue | null>(\r\n  null\r\n);\r\n\r\nconst useTranscription = () => {\r\n  const context = useContext(TranscriptionContext);\r\n  if (!context) {\r\n    throw new Error(\r\n      \"Transcription components must be used within Transcription\"\r\n    );\r\n  }\r\n  return context;\r\n};\r\n\r\nexport type TranscriptionProps = Omit<ComponentProps<\"div\">, \"children\"> & {\r\n  segments: TranscriptionSegment[];\r\n  currentTime?: number;\r\n  onSeek?: (time: number) => void;\r\n  children: (segment: TranscriptionSegment, index: number) => ReactNode;\r\n};\r\n\r\nexport const Transcription = ({\r\n  segments,\r\n  currentTime: externalCurrentTime,\r\n  onSeek,\r\n  className,\r\n  children,\r\n  ...props\r\n}: TranscriptionProps) => {\r\n  const [currentTime, setCurrentTime] = useControllableState({\r\n    defaultProp: 0,\r\n    onChange: onSeek,\r\n    prop: externalCurrentTime,\r\n  });\r\n\r\n  const contextValue = useMemo(\r\n    () => ({ currentTime, onSeek, onTimeUpdate: setCurrentTime, segments }),\r\n    [currentTime, onSeek, setCurrentTime, segments]\r\n  );\r\n\r\n  return (\r\n    <TranscriptionContext.Provider value={contextValue}>\r\n      <div\r\n        className={cn(\r\n          \"flex flex-wrap gap-1 text-sm leading-relaxed\",\r\n          className\r\n        )}\r\n        data-slot=\"transcription\"\r\n        {...props}\r\n      >\r\n        {segments\r\n          .filter((segment) => segment.text.trim())\r\n          .map((segment, index) => children(segment, index))}\r\n      </div>\r\n    </TranscriptionContext.Provider>\r\n  );\r\n};\r\n\r\nexport type TranscriptionSegmentProps = ComponentProps<\"button\"> & {\r\n  segment: TranscriptionSegment;\r\n  index: number;\r\n};\r\n\r\nexport const TranscriptionSegment = ({\r\n  segment,\r\n  index,\r\n  className,\r\n  onClick,\r\n  ...props\r\n}: TranscriptionSegmentProps) => {\r\n  const { currentTime, onSeek } = useTranscription();\r\n\r\n  const isActive =\r\n    currentTime >= segment.startSecond && currentTime < segment.endSecond;\r\n  const isPast = currentTime >= segment.endSecond;\r\n\r\n  const handleClick = useCallback(\r\n    (event: React.MouseEvent<HTMLButtonElement>) => {\r\n      if (onSeek) {\r\n        onSeek(segment.startSecond);\r\n      }\r\n      onClick?.(event);\r\n    },\r\n    [onSeek, segment.startSecond, onClick]\r\n  );\r\n\r\n  return (\r\n    <button\r\n      className={cn(\r\n        \"inline text-start\",\n        isActive && \"text-primary\",\r\n        isPast && \"text-muted-foreground\",\r\n        !(isActive || isPast) && \"text-muted-foreground/60\",\r\n        onSeek && \"cursor-pointer hover:text-foreground\",\r\n        !onSeek && \"cursor-default\",\r\n        className\r\n      )}\r\n      data-active={isActive}\r\n      data-index={index}\r\n      data-slot=\"transcription-segment\"\r\n      onClick={handleClick}\r\n      type=\"button\"\r\n      {...props}\r\n    >\r\n      {segment.text}\r\n    </button>\r\n  );\r\n};\r\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/vercel-ai-elements/transcription.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "transcript",
+        "seek",
+        "timing",
+        "audio"
+      ],
+      "renderer": "dom",
+      "preview": "previews/vercel-ai-transcription.tsx",
+      "source": {
+        "project": "Vercel AI Elements",
+        "repository": "https://github.com/vercel/ai-elements",
+        "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/vercel-ai-elements/transcription.tsx",
+            "upstreamPath": "packages/elements/src/transcription.tsx",
+            "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/transcription.tsx",
+            "upstreamSha256": "sha256:c9edab6a677ec9fdd09fdd5657bf56fcc674457e52ab7c6f686107c6ba787e29",
+            "contentSha256": "sha256:ad278999d4838a25e0379d175966a613aca7352b207613fc8fbd187cd32eb36d",
+            "changes": [
+              "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
+              "Replaced the AI SDK type-only segment shape with an equivalent local structural type.",
+              "Changed text alignment to a logical RTL-aware utility."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "scope": "packages/elements/src/transcription.tsx",
+        "copyright": [
+          "Copyright 2023 Vercel, Inc."
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
+          "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "localPath": "registry/sources/vercel-ai-elements/LICENSE"
+        },
+        "notices": [
+          "registry/sources/vercel-ai-elements/NOTICE",
+          "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/vercel-ai-elements/transcription.tsx",
+          "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Replaced the AI SDK type-only segment shape with an equivalent local structural type. Changed text alignment to a logical RTL-aware utility.",
+          "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
+        }
+      ],
+      "dedupe": {
+        "family": "seekable-transcript",
+        "sourceHash": "sha256:704aa4dd5fbeaf2fc5e49c001f91a7cc6804aeee0cad3aeda233d3435f2e16e2",
+        "contentHash": "sha256:423b33ff6e39a68098597b263554c04a6a46dafd0e83a78ff48781e724f96ff3",
+        "structureHash": "sha256:842050a685edbf67eb3cf99ca34e85fb10da6ac780f634090c9f7ba9ce223b91"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}

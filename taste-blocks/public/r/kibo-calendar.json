@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kibo-calendar",
+  "title": "Calendar",
+  "author": "Kibo UI",
+  "description": "Displays dated features in a navigable calendar grid.",
+  "dependencies": [
+    "date-fns@4.1.0",
+    "jotai@2.15.0",
+    "lucide-react@0.545.0"
+  ],
+  "registryDependencies": [
+    "button",
+    "command",
+    "popover",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/sources/kibo-ui/components/kibo-calendar/index.tsx",
+      "content": "\"use client\";\n\nimport { getDay, getDaysInMonth, isSameDay } from \"date-fns\";\nimport { atom, Provider as JotaiProvider, useAtom } from \"jotai\";\nimport {\n  Check,\n  ChevronLeftIcon,\n  ChevronRightIcon,\n  ChevronsUpDown,\n} from \"lucide-react\";\nimport {\n  createContext,\n  memo,\n  type ReactNode,\n  useCallback,\n  useContext,\n  useMemo,\n  useState,\n} from \"react\";\nimport { Button } from \"@/components/ui/button\";\nimport {\n  Command,\n  CommandEmpty,\n  CommandGroup,\n  CommandInput,\n  CommandItem,\n  CommandList,\n} from \"@/components/ui/command\";\nimport {\n  Popover,\n  PopoverContent,\n  PopoverTrigger,\n} from \"@/components/ui/popover\";\nimport { cn } from \"@/lib/utils\";\n\nexport type CalendarState = {\n  month: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;\n  year: number;\n};\n\nconst monthAtom = atom<CalendarState[\"month\"]>(\n  new Date().getMonth() as CalendarState[\"month\"]\n);\nconst yearAtom = atom<CalendarState[\"year\"]>(new Date().getFullYear());\n\nexport const useCalendarMonth = () => useAtom(monthAtom);\nexport const useCalendarYear = () => useAtom(yearAtom);\n\ntype CalendarContextProps = {\n  locale: Intl.LocalesArgument;\n  startDay: number;\n};\n\nconst CalendarContext = createContext<CalendarContextProps>({\n  locale: \"en-US\",\n  startDay: 0,\n});\n\nexport type Status = {\n  id: string;\n  name: string;\n  color: string;\n};\n\nexport type Feature = {\n  id: string;\n  name: string;\n  startAt: Date;\n  endAt: Date;\n  status: Status;\n};\n\ntype ComboboxProps = {\n  value: string;\n  setValue: (value: string) => void;\n  data: {\n    value: string;\n    label: string;\n  }[];\n  labels: {\n    button: string;\n    empty: string;\n    search: string;\n  };\n  className?: string;\n};\n\nexport const monthsForLocale = (\n  localeName: Intl.LocalesArgument,\n  monthFormat: Intl.DateTimeFormatOptions[\"month\"] = \"long\"\n) => {\n  const format = new Intl.DateTimeFormat(localeName, { month: monthFormat })\n    .format;\n\n  return [...new Array(12).keys()].map((m) =>\n    format(new Date(Date.UTC(2021, m, 2)))\n  );\n};\n\nexport const daysForLocale = (\n  locale: Intl.LocalesArgument,\n  startDay: number\n) => {\n  const weekdays: string[] = [];\n  const baseDate = new Date(2024, 0, startDay);\n\n  for (let i = 0; i < 7; i++) {\n    weekdays.push(\n      new Intl.DateTimeFormat(locale, { weekday: \"short\" }).format(baseDate)\n    );\n    baseDate.setDate(baseDate.getDate() + 1);\n  }\n\n  return weekdays;\n};\n\nconst Combobox = ({\n  value,\n  setValue,\n  data,\n  labels,\n  className,\n}: ComboboxProps) => {\n  const [open, setOpen] = useState(false);\n\n  return (\n    <Popover onOpenChange={setOpen} open={open}>\n      <PopoverTrigger asChild>\n        <Button\n          aria-expanded={open}\n          className={cn(\"w-40 justify-between capitalize\", className)}\n          variant=\"outline\"\n        >\n          {value\n            ? data.find((item) => item.value === value)?.label\n            : labels.button}\n          <ChevronsUpDown className=\"ms-2 h-4 w-4 shrink-0 opacity-50\" />\n        </Button>\n      </PopoverTrigger>\n      <PopoverContent className=\"w-40 p-0\">\n        <Command\n          filter={(value, search) => {\n            const label = data.find((item) => item.value === value)?.label;\n\n            return label?.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;\n          }}\n        >\n          <CommandInput placeholder={labels.search} />\n          <CommandList>\n            <CommandEmpty>{labels.empty}</CommandEmpty>\n            <CommandGroup>\n              {data.map((item) => (\n                <CommandItem\n                  className=\"capitalize\"\n                  key={item.value}\n                  onSelect={(currentValue) => {\n                    setValue(currentValue === value ? \"\" : currentValue);\n                    setOpen(false);\n                  }}\n                  value={item.value}\n                >\n                  <Check\n                    className={cn(\n                      \"me-2 h-4 w-4\",\n                      value === item.value ? \"opacity-100\" : \"opacity-0\"\n                    )}\n                  />\n                  {item.label}\n                </CommandItem>\n              ))}\n            </CommandGroup>\n          </CommandList>\n        </Command>\n      </PopoverContent>\n    </Popover>\n  );\n};\n\ntype OutOfBoundsDayProps = {\n  day: number;\n};\n\nconst OutOfBoundsDay = ({ day }: OutOfBoundsDayProps) => (\n  <div className=\"relative h-full w-full bg-secondary p-1 text-muted-foreground text-xs\">\n    {day}\n  </div>\n);\n\nexport type CalendarBodyProps = {\n  features: Feature[];\n  children: (props: { feature: Feature }) => ReactNode;\n};\n\nexport const CalendarBody = ({ features, children }: CalendarBodyProps) => {\n  const [month] = useCalendarMonth();\n  const [year] = useCalendarYear();\n  const { startDay } = useContext(CalendarContext);\n\n  // Memoize expensive date calculations\n  const currentMonthDate = useMemo(\n    () => new Date(year, month, 1),\n    [year, month]\n  );\n  const daysInMonth = useMemo(\n    () => getDaysInMonth(currentMonthDate),\n    [currentMonthDate]\n  );\n  const firstDay = useMemo(\n    () => (getDay(currentMonthDate) - startDay + 7) % 7,\n    [currentMonthDate, startDay]\n  );\n\n  // Memoize previous month calculations\n  const prevMonthData = useMemo(() => {\n    const prevMonth = month === 0 ? 11 : month - 1;\n    const prevMonthYear = month === 0 ? year - 1 : year;\n    const prevMonthDays = getDaysInMonth(new Date(prevMonthYear, prevMonth, 1));\n    const prevMonthDaysArray = Array.from(\n      { length: prevMonthDays },\n      (_, i) => i + 1\n    );\n    return { prevMonthDays, prevMonthDaysArray };\n  }, [month, year]);\n\n  // Memoize next month calculations\n  const nextMonthData = useMemo(() => {\n    const nextMonth = month === 11 ? 0 : month + 1;\n    const nextMonthYear = month === 11 ? year + 1 : year;\n    const nextMonthDays = getDaysInMonth(new Date(nextMonthYear, nextMonth, 1));\n    const nextMonthDaysArray = Array.from(\n      { length: nextMonthDays },\n      (_, i) => i + 1\n    );\n    return { nextMonthDaysArray };\n  }, [month, year]);\n\n  // Memoize features filtering by day to avoid recalculating on every render\n  const featuresByDay = useMemo(() => {\n    const result: { [day: number]: Feature[] } = {};\n    for (let day = 1; day <= daysInMonth; day++) {\n      result[day] = features.filter((feature) => {\n        return isSameDay(new Date(feature.endAt), new Date(year, month, day));\n      });\n    }\n    return result;\n  }, [features, daysInMonth, year, month]);\n\n  const days: ReactNode[] = [];\n\n  for (let i = 0; i < firstDay; i++) {\n    const day =\n      prevMonthData.prevMonthDaysArray[\n        prevMonthData.prevMonthDays - firstDay + i\n      ];\n\n    if (day) {\n      days.push(<OutOfBoundsDay day={day} key={`prev-${i}`} />);\n    }\n  }\n\n  for (let day = 1; day <= daysInMonth; day++) {\n    const featuresForDay = featuresByDay[day] || [];\n\n    days.push(\n      <div\n        className=\"relative flex h-full w-full flex-col gap-1 p-1 text-muted-foreground text-xs\"\n        key={day}\n      >\n        {day}\n        <div>\n          {featuresForDay.slice(0, 3).map((feature) => children({ feature }))}\n        </div>\n        {featuresForDay.length > 3 && (\n          <span className=\"block text-muted-foreground text-xs\">\n            +{featuresForDay.length - 3} more\n          </span>\n        )}\n      </div>\n    );\n  }\n\n  const remainingDays = 7 - ((firstDay + daysInMonth) % 7);\n  if (remainingDays < 7) {\n    for (let i = 0; i < remainingDays; i++) {\n      const day = nextMonthData.nextMonthDaysArray[i];\n\n      if (day) {\n        days.push(<OutOfBoundsDay day={day} key={`next-${i}`} />);\n      }\n    }\n  }\n\n  return (\n    <div className=\"grid flex-grow grid-cols-7\">\n      {days.map((day, index) => (\n        <div\n          className={cn(\n            \"relative aspect-square overflow-hidden border-t border-e\",\n            index % 7 === 6 && \"border-e-0\"\n          )}\n          key={index}\n        >\n          {day}\n        </div>\n      ))}\n    </div>\n  );\n};\n\nexport type CalendarDatePickerProps = {\n  className?: string;\n  children: ReactNode;\n};\n\nexport const CalendarDatePicker = ({\n  className,\n  children,\n}: CalendarDatePickerProps) => (\n  <div className={cn(\"flex flex-wrap items-center gap-1\", className)}>\n    {children}\n  </div>\n);\n\nexport type CalendarMonthPickerProps = {\n  className?: string;\n};\n\nexport const CalendarMonthPicker = ({\n  className,\n}: CalendarMonthPickerProps) => {\n  const [month, setMonth] = useCalendarMonth();\n  const { locale } = useContext(CalendarContext);\n\n  // Memoize month data to avoid recalculating date formatting\n  const monthData = useMemo(() => {\n    return monthsForLocale(locale).map((month, index) => ({\n      value: index.toString(),\n      label: month,\n    }));\n  }, [locale]);\n\n  return (\n    <Combobox\n      className={className}\n      data={monthData}\n      labels={{\n        button: \"Select month\",\n        empty: \"No month found\",\n        search: \"Search month\",\n      }}\n      setValue={(value) =>\n        setMonth(Number.parseInt(value, 10) as CalendarState[\"month\"])\n      }\n      value={month.toString()}\n    />\n  );\n};\n\nexport type CalendarYearPickerProps = {\n  className?: string;\n  start: number;\n  end: number;\n};\n\nexport const CalendarYearPicker = ({\n  className,\n  start,\n  end,\n}: CalendarYearPickerProps) => {\n  const [year, setYear] = useCalendarYear();\n\n  return (\n    <Combobox\n      className={className}\n      data={Array.from({ length: end - start + 1 }, (_, i) => ({\n        value: (start + i).toString(),\n        label: (start + i).toString(),\n      }))}\n      labels={{\n        button: \"Select year\",\n        empty: \"No year found\",\n        search: \"Search year\",\n      }}\n      setValue={(value) => setYear(Number.parseInt(value, 10))}\n      value={year.toString()}\n    />\n  );\n};\n\nexport type CalendarDatePaginationProps = {\n  className?: string;\n};\n\nexport const CalendarDatePagination = ({\n  className,\n}: CalendarDatePaginationProps) => {\n  const [month, setMonth] = useCalendarMonth();\n  const [year, setYear] = useCalendarYear();\n\n  const handlePreviousMonth = useCallback(() => {\n    if (month === 0) {\n      setMonth(11);\n      setYear(year - 1);\n    } else {\n      setMonth((month - 1) as CalendarState[\"month\"]);\n    }\n  }, [month, year, setMonth, setYear]);\n\n  const handleNextMonth = useCallback(() => {\n    if (month === 11) {\n      setMonth(0);\n      setYear(year + 1);\n    } else {\n      setMonth((month + 1) as CalendarState[\"month\"]);\n    }\n  }, [month, year, setMonth, setYear]);\n\n  return (\n    <div className={cn(\"flex items-center gap-2\", className)}>\n      <Button\n        aria-label=\"Previous month\"\n        onClick={handlePreviousMonth}\n        size=\"icon\"\n        variant=\"ghost\"\n      >\n        <ChevronLeftIcon aria-hidden=\"true\" className=\"rtl:rotate-180\" size={16} />\n      </Button>\n      <Button\n        aria-label=\"Next month\"\n        onClick={handleNextMonth}\n        size=\"icon\"\n        variant=\"ghost\"\n      >\n        <ChevronRightIcon aria-hidden=\"true\" className=\"rtl:rotate-180\" size={16} />\n      </Button>\n    </div>\n  );\n};\n\nexport type CalendarDateProps = {\n  children: ReactNode;\n};\n\nexport const CalendarDate = ({ children }: CalendarDateProps) => (\n  <div className=\"flex flex-wrap items-center justify-between gap-2 p-3\">\n    {children}\n  </div>\n);\n\nexport type CalendarHeaderProps = {\n  className?: string;\n};\n\nexport const CalendarHeader = ({ className }: CalendarHeaderProps) => {\n  const { locale, startDay } = useContext(CalendarContext);\n\n  // Memoize days data to avoid recalculating date formatting\n  const daysData = useMemo(() => {\n    return daysForLocale(locale, startDay);\n  }, [locale, startDay]);\n\n  return (\n    <div className={cn(\"grid flex-grow grid-cols-7\", className)}>\n      {daysData.map((day) => (\n        <div className=\"p-3 text-end text-muted-foreground text-xs\" key={day}>\n          {day}\n        </div>\n      ))}\n    </div>\n  );\n};\n\nexport type CalendarItemProps = {\n  feature: Feature;\n  className?: string;\n};\n\nexport const CalendarItem = memo(\n  ({ feature, className }: CalendarItemProps) => (\n    <div className={cn(\"flex items-center gap-2\", className)}>\n      <div\n        aria-hidden=\"true\"\n        className=\"h-2 w-2 shrink-0 rounded-full\"\n        style={{\n          backgroundColor: feature.status.color,\n        }}\n      />\n      <span className=\"truncate\">{feature.name}</span>\n      <span className=\"sr-only\">, {feature.status.name}</span>\n    </div>\n  )\n);\n\nCalendarItem.displayName = \"CalendarItem\";\n\nexport type CalendarProviderProps = {\n  locale?: Intl.LocalesArgument;\n  startDay?: number;\n  children: ReactNode;\n  className?: string;\n};\n\nexport const CalendarProvider = ({\n  locale = \"en-US\",\n  startDay = 0,\n  children,\n  className,\n}: CalendarProviderProps) => (\n  <CalendarContext.Provider value={{ locale, startDay }}>\n    <JotaiProvider>\n      <div className={cn(\"relative flex flex-col\", className)}>{children}</div>\n    </JotaiProvider>\n  </CalendarContext.Provider>\n);\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/calendar.tsx"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "cards-containers",
+      "tags": [
+        "calendar",
+        "schedule",
+        "features"
+      ],
+      "renderer": "dom",
+      "preview": "previews/kibo-calendar.tsx",
+      "source": {
+        "project": "Kibo UI",
+        "repository": "https://github.com/shadcnblocks/kibo",
+        "revision": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/kibo-calendar/index.tsx",
+            "upstreamPath": "packages/calendar/index.tsx",
+            "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/packages/calendar/index.tsx",
+            "upstreamSha256": "sha256:e5ae166bf9627e7847924c913c0240a16b3a0199ddb55713cec39d79ecae858d",
+            "contentSha256": "sha256:4425bbee41bd2553617372886a1a00258c330b68cc45a91cdd16c2a3cc0f44cd",
+            "changes": [
+              "Named the month navigation controls, mirrored their icons for RTL, replaced physical spacing, border, and alignment utilities with logical equivalents, and allowed date controls to wrap.",
+              "Scoped the month and year atoms to each CalendarProvider and added screen-reader text for every feature status."
+            ]
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "packages/calendar/index.tsx",
+        "copyright": [
+          "Copyright (c) 2023 — Present shadcnblocks"
+        ],
+        "evidence": {
+          "upstreamPath": "license.md",
+          "permalink": "https://github.com/shadcnblocks/kibo/blob/3d63cdb15b79d972e3dc38a10997987672f9b263/license.md",
+          "sha256": "sha256:1fe9198b595ddadef7e2d99e3e1698c036db61c81e91c7b42df90d59f563b2ba",
+          "localPath": "registry/sources/kibo-ui/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/kibo-calendar/index.tsx",
+          "change": "Named and mirrored the navigation controls, replaced physical layout utilities with logical equivalents, allowed date controls to wrap, scoped calendar atoms per provider, and added screen-reader status text.",
+          "reason": "Make navigation and feature status discoverable to assistive technology, preserve the layout across narrow and right-to-left viewports, and prevent separate calendar instances from sharing navigation state."
+        }
+      ],
+      "dedupe": {
+        "family": "feature-calendar-grid",
+        "sourceHash": "sha256:ddc0d301d477ac7c876d60d097483d38dfc95ac17e6f60bd7d6bc97d8c22ab6f",
+        "contentHash": "sha256:7e30b92a9fa67155a1eab5788b411b394f8bf94218b9864871e344667967151f",
+        "structureHash": "sha256:6d60d3639f01d86d1abc58911442d22a4bae6d4e7e0077b1fe8fdc5568deaca3"
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "cards-containers"
+  ],
+  "type": "registry:component"
+}

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lucide-animated-roller-coaster-icon",
+  "title": "Animated Roller Coaster Icon",
+  "author": "pqoqubbw",
+  "description": "Renders the Lucide Roller Coaster glyph with source-authored on-demand motion and imperative controls.",
+  "dependencies": [
+    "clsx@2.1.1",
+    "motion@12.40.0",
+    "tailwind-merge@3.6.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/lucide-animated/components/lucide-animated-roller-coaster-icon/roller-coaster.tsx",
+      "content": "\"use client\";\n\nimport type { Variants } from \"motion/react\";\nimport { motion, useAnimation, useReducedMotion } from \"motion/react\";\nimport type { HTMLAttributes } from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef } from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nexport interface RollerCoasterIconHandle {\n  startAnimation: () => void;\n  stopAnimation: () => void;\n}\n\ninterface RollerCoasterIconProps extends HTMLAttributes<HTMLDivElement> {\n  size?: number;\n  isAnimated?: boolean;\n}\n\nconst VARIANTS: Variants = {\n  normal: {\n    pathLength: 1,\n    opacity: 1,\n  },\n  animate: (custom: number) => ({\n    pathLength: [0, 1],\n    opacity: [0, 1],\n    transition: {\n      delay: 0.04 * custom,\n      opacity: { delay: 0.04 * custom },\n    },\n  }),\n};\n\nconst RollerCoasterIcon = forwardRef<\n  RollerCoasterIconHandle,\n  RollerCoasterIconProps\n>(({ onMouseEnter, onMouseLeave, className, size = 28, isAnimated = true, ...props }, ref) => {\n  const controls = useAnimation();\n  const reduced = useReducedMotion();\n  const isControlledRef = useRef(false);\n\n  useImperativeHandle(ref, () => {\n    isControlledRef.current = true;\n\n    return {\n      startAnimation: () => (!isAnimated || reduced ? controls.start(\"normal\") : controls.start(\"animate\")),\n      stopAnimation: () => controls.start(\"normal\"),\n    };\n  });\n\n  const handleMouseEnter = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (!isAnimated || reduced) {\n        controls.start(\"normal\");\n        onMouseEnter?.(e);\n        return;\n      }\n        if (isControlledRef.current) {\n        onMouseEnter?.(e);\n      } else {\n        controls.start(\"animate\");\n      }\n    },\n    [controls, isAnimated, onMouseEnter, reduced]\n  );\n\n  const handleMouseLeave = useCallback(\n    (e: React.MouseEvent<HTMLDivElement>) => {\n      if (isControlledRef.current) {\n        onMouseLeave?.(e);\n      } else {\n        controls.start(\"normal\");\n      }\n    },\n    [controls, onMouseLeave]\n  );\n\n  return (\n    <div\n      className={cn(className)}\n      onMouseEnter={handleMouseEnter}\n      onMouseLeave={handleMouseLeave}\n      {...props}\n    >\n      <svg\n        fill=\"none\"\n        height={size}\n        stroke=\"currentColor\"\n        strokeLinecap=\"round\"\n        strokeLinejoin=\"round\"\n        strokeWidth=\"2\"\n        viewBox=\"0 0 24 24\"\n        width={size}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        <motion.path animate={controls} d=\"M6 19V5\" variants={VARIANTS} />\n        <motion.path animate={controls} d=\"M10 19V6.8\" variants={VARIANTS} />\n        <motion.path animate={controls} d=\"M14 19v-7.8\" variants={VARIANTS} />\n        <motion.path animate={controls} d=\"M18 5v4\" variants={VARIANTS} />\n        <motion.path animate={controls} d=\"M18 19v-6\" variants={VARIANTS} />\n        <motion.path animate={controls} d=\"M22 19V9\" variants={VARIANTS} />\n        <motion.path\n          animate={controls}\n          custom={2}\n          d=\"M2 19V9a4 4 0 0 1 4-4c2 0 4 1.33 6 4s4 4 6 4a4 4 0 1 0-3-6.65\"\n          variants={VARIANTS}\n        />\n      </svg>\n    </div>\n  );\n});\n\nRollerCoasterIcon.displayName = \"RollerCoasterIcon\";\n\nexport { RollerCoasterIcon };\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/lucide-animated-roller-coaster-icon.tsx"
+    },
+    {
+      "path": "registry/sources/lucide-animated/lib/utils.ts",
+      "content": "import type { ClassValue } from \"clsx\";\nimport { clsx } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/utils.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "icons-microinteractions",
+      "tags": [
+        "roller",
+        "coaster",
+        "animated",
+        "icon",
+        "lucide",
+        "motion"
+      ],
+      "renderer": "svg",
+      "preview": "previews/lucide-animated-roller-coaster-icon.tsx",
+      "source": {
+        "project": "Lucide Animated",
+        "repository": "https://github.com/pqoqubbw/icons",
+        "revision": "8989db1262cdd3a95d22b2b2336fcb556dd9b37f",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/lucide-animated-roller-coaster-icon/roller-coaster.tsx",
+            "upstreamPath": "icons/roller-coaster.tsx",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/icons/roller-coaster.tsx",
+            "upstreamGitBlobSha": "77f15b18e205a4578593a5b2ef69ece9fce8b1ab",
+            "upstreamSha256": "sha256:f1b886a944b6a9f3941f3ec47a9626b014f4e5578e498cdd99bd837d31c4df0a",
+            "contentSha256": "sha256:307d41a13012b32d03e970b28d249b27b33f22f5e4f930bc0bf78cccec2c2f77",
+            "changes": [
+              "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file.",
+              "Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts.",
+              "Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps."
+            ]
+          },
+          {
+            "shippedPath": "lib/utils.ts",
+            "upstreamPath": "lib/utils.ts",
+            "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/lib/utils.ts",
+            "upstreamGitBlobSha": "88283f0133e161af61a96d8d8d14309591369aac",
+            "upstreamSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "contentSha256": "sha256:340b34c6ed5ed3d07311c59c51a89c9ca86db91f18a35e82d153a79547a16ceb",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "icons/roller-coaster.tsx, lib/utils.ts, and Lucide/Feather-derived SVG geometry",
+        "copyright": [
+          "Copyright (c) 2024-2026 pqoqubbw",
+          "Copyright (c) 2026 Lucide Icons and Contributors",
+          "Copyright (c) 2013-present Cole Bemis"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/pqoqubbw/icons/blob/8989db1262cdd3a95d22b2b2336fcb556dd9b37f/LICENSE",
+          "sha256": "sha256:b77c01c81935b05f8f5ec43652cd6a29675e1b1b7505ac66cd9ac1f4ef4ac3ef",
+          "localPath": "registry/sources/lucide-animated/LICENSE"
+        },
+        "notices": [
+          "registry/sources/lucide-animated/NOTICE",
+          "registry/sources/lucide-animated/LUCIDE_LICENSE",
+          "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md"
+        ],
+        "noticeEvidence": [
+          {
+            "localPath": "registry/sources/lucide-animated/NOTICE",
+            "sha256": "sha256:6014a8c793832691319bae3f3c5439487b03c9fd0ddeffad56a14c4530639971",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "LICENSE",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/LICENSE",
+            "upstreamGitBlobSha": "718bb3f0e44153809972abed31839375804bf652",
+            "localPath": "registry/sources/lucide-animated/LUCIDE_LICENSE",
+            "sha256": "sha256:b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+            "changes": []
+          },
+          {
+            "repository": "https://github.com/lucide-icons/lucide",
+            "revision": "3c62e4bfef50fb88dd9618439b46811af912ba4a",
+            "upstreamPath": "BRAND_LOGOS_STATEMENT.md",
+            "permalink": "https://github.com/lucide-icons/lucide/blob/3c62e4bfef50fb88dd9618439b46811af912ba4a/BRAND_LOGOS_STATEMENT.md",
+            "upstreamGitBlobSha": "6a7404c79b20f6d1fd1d414c052a78c550bf74d5",
+            "localPath": "registry/sources/lucide-animated/BRAND_LOGOS_STATEMENT.md",
+            "sha256": "sha256:047e3df18f621e50c1b8a56c5e1fa591069d1c70f1d8124683f459bbeb25630c",
+            "changes": []
+          }
+        ]
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/lucide-animated-roller-coaster-icon/roller-coaster.tsx",
+          "change": "Changed the cn import from @/lib/utils to ../../lib/utils so the copied source resolves its bundled support file. Added isAnimated and prefers-reduced-motion guards to imperative and hover animation starts. Bounded source-authored high-frequency motion to 280ms durations, 80ms delays, and 40ms stagger steps.",
+          "reason": "Resolved the bundled utility, added controlled/reduced-motion safety, and bounded high-frequency timing."
+        }
+      ],
+      "dedupe": {
+        "family": "animated-roller-coaster-icon",
+        "sourceHash": "sha256:f8fd92612ab745827782500e7272c5a8d9cf904a59cd46a62f56713416a32ab0",
+        "contentHash": "sha256:955d614c0b98336749983fe54e71aa14e33d51c16b0ba6d380b397c868ddeb02",
+        "structureHash": "sha256:0fb9e5d2e569c70faca762b57d669246b50d82736cd579e8ada107d4eb4267fb",
+        "glyph": {
+          "inventoryName": "roller-coaster",
+          "canonicalName": "roller-coaster",
+          "aliases": []
+        }
+      },
+      "rights": {
+        "trademarkReviewRequired": false,
+        "notice": null
+      },
+      "verification": {
+        "reviewedBy": "Codex",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "icons-microinteractions"
+  ],
+  "type": "registry:component"
+}
