@@ -1,0 +1,22 @@
+Taste Blocks Vercel AI Elements source notice
+
+Component source was copied from Vercel AI Elements at commit
+0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b.
+
+Copyright 2023 Vercel, Inc.
+
+The upstream repository declares Apache License 2.0 but does not contain an
+upstream NOTICE file and stores only a short license header in LICENSE. That
+exact upstream file is preserved as LICENSE, and the complete Apache License
+2.0 text is included as LICENSE-APACHE-2.0.txt.
+
+All shipped source files are modified copies. The per-file changes and exact
+upstream and shipped SHA-256 hashes are recorded in drafts.json.
+
+shadcn/ui source is not copied into this directory. Registry dependencies are
+installed separately from shadcn/ui and remain under shadcn/ui's MIT license.
+Other package dependencies are not vendored here and remain under their own
+declared licenses.
+
+Vercel names and marks belong to their respective owners. This distribution
+does not imply endorsement.
