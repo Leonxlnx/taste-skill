@@ -1,6 +1,6 @@
 'use client';
 
-import { Warp } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/warp';
+import { Warp } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/warp';
 
 export default function PaperWarpPreview() {
   return (

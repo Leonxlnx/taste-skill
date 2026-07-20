@@ -1,6 +1,6 @@
 'use client';
 
-import { GodRays } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/god-rays';
+import { GodRays } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/god-rays';
 
 export default function PaperGodRaysPreview() {
   return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { Dithering } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/dithering';
+import { Dithering } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/dithering';
 
 export default function PaperDitheringPreview() {
   return (

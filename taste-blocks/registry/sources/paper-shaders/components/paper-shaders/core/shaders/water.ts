@@ -1,6 +1,10 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, simplexNoise } from '../shader-utils.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { ShaderMotionParams } from '../shader-mount';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing';
+import { declarePI, rotation2, simplexNoise } from '../shader-utils';
 
 /**
  * Water-like surface distortion with natural caustic realism. Works as an image filter or standalone animated texture.

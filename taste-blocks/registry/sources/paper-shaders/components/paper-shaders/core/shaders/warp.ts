@@ -1,7 +1,11 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, colorBandingFix } from '../shader-utils.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { vec4 } from '../types';
+import type { ShaderMotionParams } from '../shader-mount';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing';
+import { declarePI, rotation2, colorBandingFix } from '../shader-utils';
 
 export const warpMeta = {
   maxColorCount: 10,

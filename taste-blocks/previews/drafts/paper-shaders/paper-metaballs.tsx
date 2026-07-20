@@ -1,6 +1,6 @@
 'use client';
 
-import { Metaballs } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/metaballs';
+import { Metaballs } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/metaballs';
 
 export default function PaperMetaballsPreview() {
   return (

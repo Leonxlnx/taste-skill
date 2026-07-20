@@ -1,19 +1,20 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to the copied source-local core modules.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { getShaderColorFromString } from '../../core/get-shader-color-from-string.js';
-import { type ImageShaderPreset } from '../../core/shader-mount.js';
-import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing.js';
+import { ShaderMount, type ShaderComponentProps } from '../shader-mount';
+import { getShaderColorFromString } from '../../core/get-shader-color-from-string';
+import { type ImageShaderPreset } from '../../core/shader-mount';
+import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing';
 import {
   flutedGlassFragmentShader,
   type FlutedGlassUniforms,
   type FlutedGlassParams,
   GlassDistortionShapes,
   GlassGridShapes,
-} from '../../core/shaders/fluted-glass.js';
+} from '../../core/shaders/fluted-glass';
 
 export interface FlutedGlassProps extends ShaderComponentProps, FlutedGlassParams {
   /** @deprecated use `size` instead */

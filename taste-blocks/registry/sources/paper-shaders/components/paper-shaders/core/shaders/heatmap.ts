@@ -1,6 +1,10 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { vec4 } from '../types';
+import type { ShaderMotionParams } from '../shader-mount';
+import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing';
 
 export const heatmapMeta = {
   maxColorCount: 10,

@@ -1,21 +1,22 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to the copied source-local core modules.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 import { memo, useLayoutEffect, useState } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { getShaderColorFromString } from '../../core/get-shader-color-from-string.js';
-import { type ImageShaderPreset } from '../../core/shader-mount.js';
-import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing.js';
+import { ShaderMount, type ShaderComponentProps } from '../shader-mount';
+import { getShaderColorFromString } from '../../core/get-shader-color-from-string';
+import { type ImageShaderPreset } from '../../core/shader-mount';
+import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing';
 import {
   liquidMetalFragmentShader,
   type LiquidMetalUniforms,
   type LiquidMetalParams,
   toProcessedLiquidMetal,
   LiquidMetalShapes,
-} from '../../core/shaders/liquid-metal.js';
-import { transparentPixel } from '../transparent-pixel.js';
-import { suspend } from '../suspend.js';
+} from '../../core/shaders/liquid-metal';
+import { transparentPixel } from '../transparent-pixel';
+import { suspend } from '../suspend';
 
 export interface LiquidMetalProps extends ShaderComponentProps, LiquidMetalParams {
   /**

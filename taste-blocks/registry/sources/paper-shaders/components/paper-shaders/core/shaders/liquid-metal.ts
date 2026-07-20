@@ -1,11 +1,12 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Removed upstream performance/debug console.log output while retaining warn/error paths.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, simplexNoise, colorBandingFix } from '../shader-utils.js';
+import type { ShaderMotionParams } from '../shader-mount';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing';
+import { declarePI, rotation2, simplexNoise, colorBandingFix } from '../shader-utils';
 
 /**
  * Futuristic liquid metal material applied to uploaded logo or abstract shape.

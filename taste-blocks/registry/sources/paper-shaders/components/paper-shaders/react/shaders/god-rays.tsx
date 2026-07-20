@@ -1,19 +1,20 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to the copied source-local core modules.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
-import { getShaderColorFromString } from '../../core/get-shader-color-from-string.js';
-import { getShaderNoiseTexture } from '../../core/get-shader-noise-texture.js';
-import { type ShaderPreset } from '../../core/shader-mount.js';
-import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing.js';
+import { ShaderMount, type ShaderComponentProps } from '../shader-mount';
+import { colorPropsAreEqual } from '../color-props-are-equal';
+import { getShaderColorFromString } from '../../core/get-shader-color-from-string';
+import { getShaderNoiseTexture } from '../../core/get-shader-noise-texture';
+import { type ShaderPreset } from '../../core/shader-mount';
+import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing';
 import {
   godRaysFragmentShader,
   type GodRaysParams,
   type GodRaysUniforms,
-} from '../../core/shaders/god-rays.js';
+} from '../../core/shaders/god-rays';
 
 export interface GodRaysProps extends ShaderComponentProps, GodRaysParams {}
 

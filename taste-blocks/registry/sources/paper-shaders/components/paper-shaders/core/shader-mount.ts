@@ -1,4 +1,8 @@
-import { vertexShaderSource } from './vertex-shader.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import { vertexShaderSource } from './vertex-shader';
 
 const DEFAULT_MAX_PIXEL_COUNT: number = 1920 * 1080 * 4;
 

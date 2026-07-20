@@ -1,19 +1,20 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to the copied source-local core modules.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { getShaderColorFromString } from '../../core/get-shader-color-from-string.js';
-import { type ShaderPreset } from '../../core/shader-mount.js';
-import { ShaderFitOptions, defaultPatternSizing, defaultObjectSizing } from '../../core/shader-sizing.js';
+import { ShaderMount, type ShaderComponentProps } from '../shader-mount';
+import { getShaderColorFromString } from '../../core/get-shader-color-from-string';
+import { type ShaderPreset } from '../../core/shader-mount';
+import { ShaderFitOptions, defaultPatternSizing, defaultObjectSizing } from '../../core/shader-sizing';
 import {
   ditheringFragmentShader,
   type DitheringUniforms,
   type DitheringParams,
   DitheringTypes,
   DitheringShapes,
-} from '../../core/shaders/dithering.js';
+} from '../../core/shaders/dithering';
 
 export interface DitheringProps extends ShaderComponentProps, DitheringParams {
   /** @deprecated use `size` instead */

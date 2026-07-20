@@ -1,6 +1,10 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { rotation2, declarePI, fiberNoise, textureRandomizerR } from '../shader-utils.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { ShaderMotionParams } from '../shader-mount';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing';
+import { rotation2, declarePI, fiberNoise, textureRandomizerR } from '../shader-utils';
 
 /**
  * A static texture built from multiple noise layers, usable for realistic paper and cardboard surfaces.

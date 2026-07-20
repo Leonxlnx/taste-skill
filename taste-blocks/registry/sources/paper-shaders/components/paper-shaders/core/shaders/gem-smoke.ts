@@ -1,12 +1,13 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Removed upstream performance/debug console.log output while retaining warn/error paths.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing.js';
-import { rotation2, declarePI } from '../shader-utils.js';
+import type { vec4 } from '../types';
+import type { ShaderMotionParams } from '../shader-mount';
+import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing';
+import { rotation2, declarePI } from '../shader-utils';
 
 export const gemSmokeMeta = {
   maxColorCount: 6,

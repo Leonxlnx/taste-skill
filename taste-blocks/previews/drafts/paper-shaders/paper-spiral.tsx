@@ -1,6 +1,6 @@
 'use client';
 
-import { Spiral } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/spiral';
+import { Spiral } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/spiral';
 
 export default function PaperSpiralPreview() {
   return (

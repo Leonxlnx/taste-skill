@@ -1,6 +1,10 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { simplexNoise, declarePI, colorBandingFix } from '../shader-utils.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { ShaderMotionParams } from '../shader-mount';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing';
+import { simplexNoise, declarePI, colorBandingFix } from '../shader-utils';
 
 /**
  * A single-colored animated spiral that morphs across a wide range of shapes -

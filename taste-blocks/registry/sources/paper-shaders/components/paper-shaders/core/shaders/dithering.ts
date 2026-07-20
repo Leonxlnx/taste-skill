@@ -1,9 +1,13 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
+/*
+ * Modified by Taste Blocks on 2026-07-20:
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
+ */
+import type { ShaderMotionParams } from '../shader-mount';
 import {
   type ShaderSizingParams,
   type ShaderSizingUniforms,
-} from '../shader-sizing.js';
-import { simplexNoise, declarePI, proceduralHash11, proceduralHash21 } from '../shader-utils.js';
+} from '../shader-sizing';
+import { simplexNoise, declarePI, proceduralHash11, proceduralHash21 } from '../shader-utils';
 
 /**
  * Animated 2-color dithering over multiple pattern sources (noise, warp, dots, waves, ripple, swirl, sphere).

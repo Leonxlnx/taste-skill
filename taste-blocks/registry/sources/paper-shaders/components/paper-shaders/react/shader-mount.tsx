@@ -2,6 +2,7 @@
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to copied source-local modules.
  * - Added a deterministic no-WebGL fallback and mapped reduced motion to the supplied static frame.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 'use client';
 
@@ -11,10 +12,10 @@ import {
   type PaperShaderElement,
   type ShaderMotionParams,
   type ShaderMountUniforms,
-} from '../core/shader-mount.js';
-import { emptyPixel } from '../core/empty-pixel.js';
-import { useMergeRefs } from './use-merge-refs.js';
-import { setMinImageSize } from './set-min-image-size.js';
+} from '../core/shader-mount';
+import { emptyPixel } from '../core/empty-pixel';
+import { useMergeRefs } from './use-merge-refs';
+import { setMinImageSize } from './set-min-image-size';
 
 const fallbackColor = '#737373';
 

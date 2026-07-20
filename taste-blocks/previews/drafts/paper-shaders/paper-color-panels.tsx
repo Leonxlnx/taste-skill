@@ -1,6 +1,6 @@
 'use client';
 
-import { ColorPanels } from '../../../registry/sources/paper-shaders/components/paper-shaders/react/shaders/color-panels';
+import { ColorPanels } from '@/registry/sources/paper-shaders/components/paper-shaders/react/shaders/color-panels';
 
 export default function PaperColorPanelsPreview() {
   return (

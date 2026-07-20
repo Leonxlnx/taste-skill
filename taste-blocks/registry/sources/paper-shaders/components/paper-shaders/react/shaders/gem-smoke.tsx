@@ -1,22 +1,23 @@
 /*
  * Modified by Taste Blocks on 2026-07-20:
  * - Repointed @paper-design/shaders imports to the copied source-local core modules.
+ * - Removed explicit .js suffixes from relative local TypeScript imports.
  */
 import { memo, useLayoutEffect, useState } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
-import { getShaderColorFromString } from '../../core/get-shader-color-from-string.js';
-import { type ImageShaderPreset } from '../../core/shader-mount.js';
-import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing.js';
+import { ShaderMount, type ShaderComponentProps } from '../shader-mount';
+import { colorPropsAreEqual } from '../color-props-are-equal';
+import { getShaderColorFromString } from '../../core/get-shader-color-from-string';
+import { type ImageShaderPreset } from '../../core/shader-mount';
+import { ShaderFitOptions, defaultObjectSizing } from '../../core/shader-sizing';
 import {
   gemSmokeFragmentShader,
   type GemSmokeUniforms,
   type GemSmokeParams,
   toProcessedGemSmoke,
   GemSmokeShapes,
-} from '../../core/shaders/gem-smoke.js';
-import { transparentPixel } from '../transparent-pixel.js';
-import { suspend } from '../suspend.js';
+} from '../../core/shaders/gem-smoke';
+import { transparentPixel } from '../transparent-pixel';
+import { suspend } from '../suspend';
 
 export interface GemSmokeProps extends ShaderComponentProps, GemSmokeParams {
   /**
