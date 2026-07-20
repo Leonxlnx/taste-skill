@@ -1,55 +1,35 @@
 # Catalog Site
 
-Taste Blocks should feel like a specimen catalog, not a generic SaaS landing page. Open directly into the product. Do not add a logo wall, testimonials, pricing teaser, FAQ, oversized sales claim, decorative pretitle, or vague copy.
+Taste Blocks is a clean component product, not a page-layout gallery. The site stays self-contained inside `taste-blocks/` so it can later move to a private repository.
 
 ## Direction
 
-- Neutral catalog shell; each demo may own its palette.
-- Off-white canvas, near-black ink, quiet rules, and one deep red interface accent.
-- Square or lightly rounded surfaces rather than rounded-card monoculture.
-- Thin structural lines, varied spacing, left-aligned text, and real hierarchy.
-- Demo frames fit the component instead of forcing everything into equal cards.
-- Catalog motion is restrained; expressive motion remains inside the previews.
+- Next.js App Router and Tailwind v4.
+- One restrained light theme using off-white, off-black, and one saturated accent.
+- Full-viewport hero with one short headline, one short sentence, and one primary action.
+- A small number of high-craft motion moments. No effect stack, logo wall, testimonials, decorative labels, or filler copy.
+- Component previews define their own bounded visual surface; the catalog shell remains quiet.
+- React Bits Pro is blocked from the site and registry unless its owner gives written permission for this competing component-library product. A paid license and private source alone do not satisfy the current terms.
 
 ## Routes
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Catalog-first home with 24 to 32 live demos. |
-| `/blocks` | Searchable and filterable complete registry. |
-| `/blocks/:slug` | Full demo, controls, install, API, accessibility, performance, and provenance. |
-| `/collections/:slug` | Curated compatible groups for a specific site direction. |
-| `/docs` | Installation, customization, composition, and contribution. |
-| `/sources` | Searchable provenance ledger. |
-| `/license` | Taste Blocks license and third-party boundaries. |
-| `/changelog` | Releases, additions, provenance changes, and breaking changes. |
-
-## Homepage
-
-1. Compact header with Blocks, Collections, Docs, Sources, GitHub, and search.
-2. Direct masthead with the real verified count and main search.
-3. Four composed systems that show compatible blocks working together.
-4. Six to eight text and editorial motion demos.
-5. Four to six controls and feedback demos.
-6. Six to eight CSS, Canvas, or shader-like fields.
-7. Eight substantial page blocks.
-8. Short source and license explanation.
-9. Useful footer.
-
-The first four specimens may initialize immediately. Other demos load near the viewport and pause offscreen. At most one WebGL demo runs at once.
+| `/` | Full-screen introduction, featured components, categories, and direct catalog entry. |
+| `/components` | Searchable and filterable complete component registry. |
+| `/components/[slug]` | Isolated live preview, source, install, API, dependencies, accessibility, and provenance. |
+| `/docs` | Registry, CLI, MCP, customization, and contribution documentation. |
+| `/sources` | Searchable source and license ledger. |
+| `/pricing` | Honest Free plan and an unpriced Pro placeholder for later. |
 
 ## Catalog behavior
 
-Search title, purpose, category, technology, source, and dependency. Keep filters in the URL.
+- Search title, purpose, category, runtime, source, dependency, and license.
+- Keep filter state in the URL.
+- Render every preview in an isolated route or iframe.
+- Lazy-load previews and pause continuous work offscreen.
+- Show source and license on every result.
+- Show install commands only for verified registry artifacts.
+- Keep the shell usable when an individual preview fails.
 
-Useful filters:
-
-- category;
-- compatible website section;
-- runtime: CSS, DOM, Canvas, or WebGL;
-- dependency;
-- license;
-- original, adapted, or dependency-backed;
-- reduced-motion support.
-
-Every result exposes its origin and license without requiring a detail-page visit. Detail pages include responsive preview sizes, editable controls, install action, dependencies, accessibility behavior, browser and performance notes, exact provenance, notices, and compatible blocks.
+No route, heading, filter, or description should call a component a block.

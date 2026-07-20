@@ -8,10 +8,12 @@ Public source is not automatically reusable. Taste Blocks only ingests code when
 
 Prefer, in order:
 
-1. original Taste Blocks implementations;
-2. maintained permissive dependencies;
-3. selective adaptation from a verified MIT, BSD, ISC, or Apache-2.0 path;
+1. exact source copies from a verified MIT, BSD, ISC, Apache-2.0, or CC0 path;
+2. minimal compatibility adaptations from the same verified source;
+3. maintained permissive dependencies when copying is inappropriate;
 4. written permission for any exception.
+
+Original catalog components are excluded from the current 500-component collection phase. Original code is limited to the site, preview isolation, validation, registry generation, and MCP integration.
 
 Do not recreate proprietary source from browser output, screenshots, documentation examples, or visual inspection. General ideas such as a masked reveal or pointer field can be implemented independently, but distinctive expression, copy, assets, timings, composition, and code must not be copied.
 
@@ -22,12 +24,12 @@ These projects have permissive open-source cores that can be studied or selectiv
 | Source | License | Preferred use | Boundary |
 | --- | --- | --- | --- |
 | [shadcn/ui](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md) | MIT | Registry model, accessible components, selective adaptation | Keep the MIT notice and licenses of underlying dependencies. |
-| [HyperUI](https://github.com/markmead/hyperui/blob/main/LICENSE) | MIT | Selective layout study or adaptation | Replace sample images, logos, and copy. |
-| [Mantine UI](https://github.com/mantinedev/mantine) | MIT | Layout research; dependency preferred | Do not mix its full visual system into Taste Blocks. |
-| [Meraki UI](https://github.com/merakiuilabs/merakiui/blob/main/LICENSE) | MIT | Selective layout adaptation | Replace external assets and brand examples. |
-| [Mamba UI](https://github.com/Microwawe/mamba-ui/blob/master/LICENSE.md) | MIT | Selective block adaptation | Verify icons and illustrations separately. |
-| [Sailboat UI](https://github.com/sailboatui/sailboatui/blob/main/LICENSE) | MIT | Selective block adaptation | Unsplash and other demo media are not covered by the code license. |
-| [Tailblocks](https://github.com/mertJF/tailblocks/blob/master/LICENSE) | MIT | Layout research or selective adaptation | Replace remote media and generic copy. |
+| [HyperUI](https://github.com/markmead/hyperui/blob/main/LICENSE) | MIT | Selective component adaptation | Exclude its page sections and replace sample assets. |
+| [Mantine UI](https://github.com/mantinedev/mantine) | MIT | Dependency preferred | Do not mix its full visual system into Taste Blocks. |
+| [Meraki UI](https://github.com/merakiuilabs/merakiui/blob/main/LICENSE) | MIT | Component candidates only | Exclude its page sections and external assets. |
+| [Mamba UI](https://github.com/Microwawe/mamba-ui/blob/master/LICENSE.md) | MIT | Component candidates only | Exclude blocks and verify icons separately. |
+| [Sailboat UI](https://github.com/sailboatui/sailboatui/blob/main/LICENSE) | MIT | Component candidates only | Exclude page sections; demo media is not covered by the code license. |
+| [Tailblocks](https://github.com/mertJF/tailblocks/blob/master/LICENSE) | MIT | Reject for this phase | It is primarily page-section source. |
 | [Flowbite Core](https://github.com/themesberg/flowbite/blob/main/LICENSE.md) | MIT | Dependency or carefully scoped adaptation | Exclude Flowbite Pro and separately licensed docs/assets. |
 | [TailGrids Core](https://github.com/TailGrids/tailgrids/blob/main/LICENSE.md) | MIT | Selective free-core adaptation | Exclude paid blocks, templates, and Figma files. |
 | [Tremor Raw](https://github.com/tremorlabs/tremor/blob/main/LICENSE) | Apache-2.0 plus notices | Selective source adaptation | Preserve the complete license, notices, and modification record. |
@@ -71,8 +73,8 @@ Code licenses do not automatically cover photos, videos, fonts, icons, illustrat
 - Replace all demo photos and copy unless their rights are separately recorded.
 - Do not ship upstream logos or imply endorsement.
 - Record icon and font licenses independently.
-- Prefer original abstract assets, licensed dependencies, or explicit placeholders.
-- A top-level Taste Blocks license applies only to original work and does not erase upstream rights.
+- Prefer separately licensed assets or explicit placeholders.
+- A top-level Taste Blocks license applies only to catalog infrastructure and does not erase upstream rights.
 
 ## Release gate
 

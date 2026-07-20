@@ -1,6 +1,6 @@
 # Motion Components
 
-Original component directions for Taste Blocks. These describe behavior and intent, not copied implementations.
+Evaluation vocabulary for selecting imported motion components. These descriptions are not implementations and do not count toward the catalog.
 
 Use CSS first, then IntersectionObserver, ResizeObserver, Web Animations, and View Transitions. Add Motion only for shared layout, gestures, or springs that are difficult to implement and maintain natively.
 

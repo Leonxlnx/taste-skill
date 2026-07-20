@@ -1,6 +1,6 @@
 # Visual Effects
 
-Original and native effect directions for Taste Blocks. Effects support a composition or interaction; they are not a quota and should not be stacked together without a reason.
+Evaluation vocabulary for selecting imported visual-effect components. These descriptions are not implementations and do not count toward the catalog.
 
 ## Runtime profiles
 

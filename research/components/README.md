@@ -1,32 +1,31 @@
 # Components
 
-Research for Taste Blocks, the public component and section-block library built alongside Taste Skill v2.
+Research for Taste Blocks, a public source-backed component library built alongside Taste Skill v2.
 
 ## Scope
 
-Taste Blocks covers landing pages, portfolios, and general marketing websites. Dashboards and application shells are not part of this phase.
+Taste Blocks contains reusable React components for landing pages, portfolios, and normal websites. It does not contain complete website sections, layout templates, page shells, dashboards, or application screens.
 
-The public library may contain:
+The current Free collection may contain:
 
-- original Taste Blocks code;
-- carefully adapted code whose license explicitly permits component-library redistribution;
-- integrations that keep an approved library as a dependency;
-- original implementations of general web ideas and interaction principles.
+- exact copies from verified permissive source;
+- minimal compatibility adaptations whose changes are recorded;
+- maintained dependencies when the upstream component is intended to stay a dependency.
 
-It may not contain code, assets, or close visual copies from paid products, restricted libraries, public demos without a compatible license, or sources whose terms are unclear.
+The current collection may not contain self-invented replacement components. Original code is limited to the catalog, preview isolation, registry tooling, validation, and MCP integration, and never counts toward the 500-component goal.
 
 ## Files
 
 - [sources.md](sources.md): source and license decisions.
-- [categories.md](categories.md): the catalog structure and honest count targets.
-- [blocks.md](blocks.md): substantial layout families for all 21 sections.
-- [motion.md](motion.md): text, state, navigation, and interaction motion candidates.
-- [effects.md](effects.md): CSS, Canvas, WebGL, image, pointer, and spatial effects.
-- [site.md](site.md): catalog information architecture and homepage plan.
-- [provenance.md](provenance.md): evidence required for every non-original entry.
+- [categories.md](categories.md): component-only catalog categories and count targets.
+- [motion.md](motion.md): evaluation vocabulary for motion components.
+- [effects.md](effects.md): evaluation vocabulary for visual-effect components.
+- [site.md](site.md): Next.js catalog and marketing-site direction.
+- [provenance.md](provenance.md): evidence required for every catalog entry.
+- `inventory/`: source-by-source candidate inventories pinned to exact revisions.
 
 ## Product split
 
-Taste Blocks Free is a public registry. Taste Blocks Pro will be a separate private product made from original work. Free code may be used by Pro, but the public registry must never contain or depend on private Pro source.
+Taste Blocks Free is a public registry of redistributable source-backed components. Taste Blocks Pro will be a separate private product made later from original work. Pro source never enters the public registry.
 
-The target of 500 to 1,000 entries is a roadmap, not a launch claim. A catalog item counts only when it has a distinct purpose or structure, working source, a live demo, responsive behavior, accessibility behavior, documentation, and provenance.
+The active goal is at least 500 distinct verified components. Counts come from the validated manifest only. Variants, ports, wrappers, layouts, and unverified candidates do not count.

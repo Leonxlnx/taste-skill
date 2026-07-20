@@ -1,6 +1,6 @@
 # Taste Blocks
 
-An open-source registry of expressive React components and section blocks for landing pages, portfolios, and general websites.
+An open-source registry of source-backed React components for landing pages, portfolios, and general websites. Complete sections and layout blocks are out of scope.
 
 ## Commands
 
@@ -14,6 +14,6 @@ The catalog is generated from `registry/**/meta.json`. Public registry files are
 
 ## Source policy
 
-Original work is the default. Any adapted component requires exact source, revision, path, license, notices, and modification records. Restricted libraries and paid component source are not accepted.
+Every catalog component requires exact upstream source, revision, path, license, notices, and modification records. Original replacement components, restricted libraries, and paid component source are not accepted in the current collection phase.
 
 See `../research/components/sources.md` and `../rules/components.md`.

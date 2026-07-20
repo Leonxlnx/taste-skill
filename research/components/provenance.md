@@ -1,35 +1,34 @@
 # Provenance
 
-Every adapted or dependency-backed Taste Blocks entry must be traceable to exact evidence. Original entries still record authorship and review.
+Every Taste Blocks component must be traceable to exact upstream evidence. There are no original catalog components in the current collection phase.
 
 ## Required fields
 
 ```text
 id
 name
-kind: original | adapted | dependency
-material: code | css | asset | font | icon | documentation
+category
+incorporation: copied | minimally-adapted | dependency
 upstream owner
-source repository URL
-registry or package URL
+repository URL
 version or tag
-commit
-upstream path
+commit SHA
+upstream file paths
 retrieval date
-source hash
+source file hashes
+normalized code hash
+behavior fingerprint
 license SPDX expression
 license file URL
 license hash
 license path scope
 copyright notices
-notice text
-incorporation mode
+NOTICE content
 shipped output paths
 dependencies
+assets and their licenses
 modification summary
 modified files
-modified by
-modified date
 asset and trademark exclusions
 decision
 reviewer
@@ -38,15 +37,18 @@ evidence links
 written permission, if any
 ```
 
-## Decisions
+## Decisions and states
 
-- `allow`: evidence is complete and the exact material may ship.
-- `dependency-only`: use the maintained package; do not copy its source.
-- `review`: do not ship until the named question is resolved.
-- `reject`: incompatible, missing, conflicting, or insufficient rights.
+- `allow`: exact material is legally eligible for import.
+- `dependency-only`: use the maintained package but do not vendor its source.
+- `review`: do not import until the named question is resolved.
+- `reject`: incompatible, missing, conflicting, duplicated, or insufficient evidence.
+- `discovered`: candidate only and not counted.
+- `imported`: source copied but not counted publicly.
+- `verified`: all release gates passed and counted.
 
 ## Storage
 
-The registry manifest is the source of truth. Generated component JSON, the catalog, and `THIRD_PARTY_NOTICES.md` must be derived from it so public claims cannot drift from the shipped source.
+The registry manifest is the source of truth. Public JSON, site counts, source pages, and third-party notices are generated from it.
 
-Use immutable commits for adapted code. A moving branch URL alone is insufficient evidence.
+Use immutable commits. A branch URL, website demo, package name, or license badge alone is insufficient evidence.
