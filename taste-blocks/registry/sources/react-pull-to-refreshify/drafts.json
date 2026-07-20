@@ -1,0 +1,248 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "react-pull-to-refreshify-drafts",
+  "homepage": "https://github.com/HuolalaTech/react-pull-to-refreshify",
+  "items": [
+    {
+      "name": "react-pull-to-refreshify",
+      "type": "registry:component",
+      "title": "Pull to Refreshify",
+      "description": "Refreshes caller-owned content through a scroll-boundary-aware pull gesture or an explicit accessible action.",
+      "author": "liaoliao666",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-pull-to-refreshify/PullToRefreshify.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/pull-to-refreshify/index.tsx"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/pull-to-refreshify/types.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/events.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/events.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/getScrollTop.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/getScrollTop.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useDrag.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useDrag.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useFirstMountState.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useFirstMountState.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useLatest.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useLatest.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useScrollParent.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useScrollParent.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useUnmountedRef.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useUnmountedRef.ts"
+        },
+        {
+          "path": "components/react-pull-to-refreshify/utils/useUpdateEffect.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/pull-to-refreshify/utils/useUpdateEffect.ts"
+        }
+      ],
+      "categories": [
+        "buttons-actions"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "buttons-actions",
+          "tags": [
+            "pull-to-refresh",
+            "touch",
+            "keyboard",
+            "controlled-state",
+            "accessibility"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-pull-to-refreshify/react-pull-to-refreshify.tsx",
+          "source": {
+            "project": "react-pull-to-refreshify@0.1.0",
+            "repository": "https://github.com/HuolalaTech/react-pull-to-refreshify",
+            "revision": "ed0bef5e2714a948450b78073cc1692706ecb705",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-pull-to-refreshify/PullToRefreshify.tsx",
+                "upstreamPath": "lib/PullToRefreshify.tsx",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/PullToRefreshify.tsx",
+                "upstreamSha256": "sha256:9f16ebf5017a4dc5c3b05234c84d2dae3a8ef05f871b052b8c17a1cf60a45311",
+                "contentSha256": "sha256:4628cee70713db3718076745d862a2eb3a2402361ce949f85b33c4920c3ca1b3",
+                "changes": [
+                  "Added the client boundary, a visible native Refresh fallback that uses the same refresh dispatcher, pending and disabled state, aria-busy, and one polite atomic caller-owned status.",
+                  "Retained the controlled refreshing and completion state machine while adding an immediate dispatch latch, cancellable completion timer, cancel reset, and synchronous callback error recovery.",
+                  "Ignored horizontal and off-boundary drags, used the current viewport height for bounded resistance, and preserved an immediate threshold when threshold is zero.",
+                  "Limited transitions to transform, removed them under reduced motion, marked the changing visual status presentation-only, and inherited its text color."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/types.ts",
+                "upstreamPath": "lib/types.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/types.ts",
+                "upstreamSha256": "sha256:36d1fd900bce22a57346b025b3173de34a02c1f8522fdec0f7e11b959212cee6",
+                "contentSha256": "sha256:7d5873175b78f94b5380c2388e8ff16071b7e880a8e799e337e2b8b9d0ce2019",
+                "changes": [
+                  "Added optional refreshButtonLabel and renderStatus props without changing the existing required API."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/events.ts",
+                "upstreamPath": "lib/utils/events.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/events.ts",
+                "upstreamSha256": "sha256:c09a9cdfdf9d796a42aa296678da57aa1de847769efc6eae6e16a36633cf7699",
+                "contentSha256": "sha256:2e1620af9909ebeb73d7123463c8441f76560462c51d307acebfc36a8d5e4f8a",
+                "changes": [
+                  "Deferred passive-listener detection until a browser event path calls it and removed the temporary detection listener."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/getScrollTop.ts",
+                "upstreamPath": "lib/utils/getScrollTop.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/getScrollTop.ts",
+                "upstreamSha256": "sha256:92107dec790ed4f9d153da1e508a74c2c0a7c0ab973e4d63f1564fe1a48c883f",
+                "contentSha256": "sha256:c7bd3a47a78803024e5782356d78a57c07b869cd23105439710abe33dbe91d8a",
+                "changes": [
+                  "Accepted a not-yet-resolved scroll parent, guarded DOM globals for server evaluation, normalized page roots, and clamped overscroll bounce below zero."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useDrag.ts",
+                "upstreamPath": "lib/utils/useDrag.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useDrag.ts",
+                "upstreamSha256": "sha256:ac8a44907301e07a9a4fcfa9b55b52e358fe786a65ab6767e01c6f1972184027",
+                "contentSha256": "sha256:4df69f9fc9952f62d7ae6f109c51845cf9b444f63131b5b94681a72a85d68744",
+                "changes": [
+                  "Typed native mouse events and the host ref, ignored secondary mouse and multi-touch starts, and added a distinct cancellation callback.",
+                  "Captured mouse move and release on window, cancelled on touchcancel, pointercancel, blur, or hidden document state, and removed every global listener on unmount."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useFirstMountState.ts",
+                "upstreamPath": "lib/utils/useFirstMountState.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useFirstMountState.ts",
+                "upstreamSha256": "sha256:260a17893da244a80b3c33b3a440364379f3abc1f0afd22acac306f865bf1d52",
+                "contentSha256": "sha256:260a17893da244a80b3c33b3a440364379f3abc1f0afd22acac306f865bf1d52",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useLatest.ts",
+                "upstreamPath": "lib/utils/useLatest.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useLatest.ts",
+                "upstreamSha256": "sha256:345b32f81e76d53a610dbe58c37bcf80893e258b601484abba9ce299ff5a4c33",
+                "contentSha256": "sha256:345b32f81e76d53a610dbe58c37bcf80893e258b601484abba9ce299ff5a4c33",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useScrollParent.ts",
+                "upstreamPath": "lib/utils/useScrollParent.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useScrollParent.ts",
+                "upstreamSha256": "sha256:1e52f7f08a7e06ad138ecc82eb0a4d7d2412c18f88946fd33d0c9c91fdefbe89",
+                "contentSha256": "sha256:7c25017f9a0a281add4952f382630e06764d4ae678cb9f1739fa2bf80d5a6373",
+                "changes": [
+                  "Removed server-time window initialization and resolved the nearest actually scrollable ancestor after mount.",
+                  "Prevented native overscroll only for downward vertical pulls inside the content, skipped interception while disabled, re-resolved on resize or orientation and observed size changes, and cleaned every observer and listener."
+                ]
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useUnmountedRef.ts",
+                "upstreamPath": "lib/utils/useUnmountedRef.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useUnmountedRef.ts",
+                "upstreamSha256": "sha256:34877d719a6f33e029e062af3349e3ce06ab224e8980fb4ad66b99e1209356ac",
+                "contentSha256": "sha256:34877d719a6f33e029e062af3349e3ce06ab224e8980fb4ad66b99e1209356ac",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-pull-to-refreshify/utils/useUpdateEffect.ts",
+                "upstreamPath": "lib/utils/useUpdateEffect.ts",
+                "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/lib/utils/useUpdateEffect.ts",
+                "upstreamSha256": "sha256:cc33909b86692d24bb35823c47e147622a2d37959eb1380358d87055420b79d9",
+                "contentSha256": "sha256:cc33909b86692d24bb35823c47e147622a2d37959eb1380358d87055420b79d9",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "lib/PullToRefreshify.tsx, lib/types.ts, and the complete lib/utils runtime closure",
+            "copyright": [
+              "Copyright (c) 2022 liaoliao666"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/HuolalaTech/react-pull-to-refreshify/blob/ed0bef5e2714a948450b78073cc1692706ecb705/LICENSE",
+              "sha256": "sha256:2e715229e1b2991263b1f47983df427a8225fae1609d47fb0c0fd1b3a3fb70bd",
+              "localPath": "registry/sources/react-pull-to-refreshify/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-pull-to-refreshify/PullToRefreshify.tsx",
+              "change": "Added the client boundary, explicit native refresh fallback, busy and live semantics, duplicate-dispatch and completion-timer guards, drag cancellation, scroll-axis gating, viewport-based bounded resistance, and reduced-motion-safe transform transitions while retaining the upstream state machine and renderText options.",
+              "reason": "Meet the documented SSR, keyboard, assistive-technology, threshold, controlled-refresh, cancellation, cleanup, and reduced-motion gates without replacing the source interaction engine."
+            },
+            {
+              "shippedPath": "components/react-pull-to-refreshify/types.ts",
+              "change": "Added optional refreshButtonLabel and renderStatus props.",
+              "reason": "Keep the required explicit action label and concise live status caller-owned while preserving every existing prop."
+            },
+            {
+              "shippedPath": "components/react-pull-to-refreshify/utils/events.ts",
+              "change": "Made passive-event detection lazy and server-safe and removed its temporary listener.",
+              "reason": "Allow Next server evaluation and avoid retaining a detection listener."
+            },
+            {
+              "shippedPath": "components/react-pull-to-refreshify/utils/getScrollTop.ts",
+              "change": "Guarded DOM access, accepted an unresolved parent, normalized page roots, and clamped negative overscroll.",
+              "reason": "Keep server evaluation safe and make the top-boundary check reliable for page and nested scrolling."
+            },
+            {
+              "shippedPath": "components/react-pull-to-refreshify/utils/useDrag.ts",
+              "change": "Added primary-input checks, a distinct cancel path, window mouse capture, pointer/touch/blur/hidden cancellation, and complete listener cleanup.",
+              "reason": "Complete drags released outside the element, never refresh after cancellation, and remove global work when hidden or unmounted."
+            },
+            {
+              "shippedPath": "components/react-pull-to-refreshify/utils/useScrollParent.ts",
+              "change": "Made scroll-parent discovery client-only and based on actual overflow, limited native-scroll interception to vertical downward pulls, added disabled handling and resize/orientation re-resolution, and cleaned listeners and observation.",
+              "reason": "Preserve nested and page scrolling until the real top boundary while remaining correct across mobile viewport changes and unmounts."
+            }
+          ],
+          "dedupe": {
+            "family": "pull-to-refresh-action",
+            "sourceHash": "sha256:efc3374371c768f714809b08cfa046dd3e1599785e0ca2cb8cf32498ab84efa2",
+            "contentHash": "sha256:aa8ecdf55c071112d909fe21043cca9d9b3efbb0b535a9a7575e5169517517e7",
+            "structureHash": "sha256:924c48d7ed0f10cc3cd2df1e1ceb21e525717446027f5c4866ba80d4e0d76eb5"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
