@@ -1,0 +1,789 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-trickle-drafts",
+  "homepage": "https://github.com/akaieuan/trickle-UI-kit",
+  "items": [
+    {
+      "name": "trickle-ink-bleed",
+      "type": "registry:component",
+      "title": "Ink Bleed",
+      "description": "Reveals caller-provided text through a radial ink-mask animation.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-ink-bleed/ink-bleed.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-ink-bleed.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-ink-bleed": "trickle-ink-bleed 1.2s cubic-bezier(0.4, 0, 0.2, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes trickle-ink-bleed": {
+          "from": {
+            "-webkit-mask-image": "radial-gradient(circle at 0% 50%, black 0%, transparent 0%)",
+            "mask-image": "radial-gradient(circle at 0% 50%, black 0%, transparent 0%)"
+          },
+          "to": {
+            "-webkit-mask-image": "radial-gradient(circle at 50% 50%, black 100%, transparent 130%)",
+            "mask-image": "radial-gradient(circle at 50% 50%, black 100%, transparent 130%)"
+          }
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-ink-bleed": {
+            "animation": "none",
+            "-webkit-mask-image": "none",
+            "mask-image": "none"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "mask",
+            "ink",
+            "reveal"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-ink-bleed.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
+                "upstreamPath": "registry/default/ink-bleed/ink-bleed.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/ink-bleed/ink-bleed.tsx",
+                "upstreamSha256": "sha256:3e10af09758e0fff6c8e9c5882cb17ce5d080ce7e4a52ce225ea56415ba525e0",
+                "contentSha256": "sha256:b507d941085bc5bf559be5053a32596a2a58ab9b940b85d0561a57f717c164bf",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/ink-bleed/ink-bleed.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "ink-mask-text-reveal",
+            "sourceHash": "sha256:be64041f0d80d53c1c19b19db993adee7832d1ce2d1c8c2c711258d3f0ae5d50",
+            "contentHash": "sha256:051a9a49d826713ac87f26296e5b5ae28b380047b3bbab5d656fb0340c6a1261",
+            "structureHash": "sha256:a783e20de8072b661161ef22496c43ffeaa1a341592a20dd48d028e9e91a1676"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "trickle-highlighter-sweep",
+      "type": "registry:component",
+      "title": "Highlighter Sweep",
+      "description": "Highlights selected text segments in sequence with an expanding background.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-highlighter-sweep.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-highlighter-sweep": "trickle-highlighter-sweep 0.35s ease-out both"
+        }
+      },
+      "css": {
+        "@keyframes trickle-highlighter-sweep": {
+          "0%": {
+            "background-size": "0% 100%"
+          },
+          "100%": {
+            "background-size": "100% 100%"
+          }
+        },
+        ".trickle-highlight-word": {
+          "--trickle-hl": "oklch(80% 0.18 80 / 0.45)",
+          "padding": "0 0.125rem",
+          "margin": "0 -0.125rem",
+          "border-radius": "0.125rem",
+          "box-decoration-break": "clone",
+          "-webkit-box-decoration-break": "clone",
+          "background-image": "linear-gradient(to right, var(--trickle-hl), var(--trickle-hl))",
+          "background-repeat": "no-repeat",
+          "background-position": "left center",
+          "background-size": "0% 100%"
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-highlighter-sweep": {
+            "animation": "none",
+            "background-size": "100% 100%"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "highlight",
+            "sequence",
+            "emphasis"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-highlighter-sweep.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+                "upstreamPath": "registry/default/highlighter-sweep/highlighter-sweep.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/highlighter-sweep/highlighter-sweep.tsx",
+                "upstreamSha256": "sha256:1bb0f1a0f6e6eb1cf303a299431d3a29d686ddf133070e89cd9128bf9d43dbd5",
+                "contentSha256": "sha256:4d01c870b6e185c3415d9e15d4ba40497a3fdc970d25ae86ffde565db865e7b8",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/highlighter-sweep/highlighter-sweep.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "sequential-text-highlighting",
+            "sourceHash": "sha256:a6edad7853b089f52ddae567c6fc35eee198e03f2e492c82b94f8bb92fad0935",
+            "contentHash": "sha256:e9582a497cd60b551ca55954bd13a7f479e70ce82ac0340fee2d3f819f169686",
+            "structureHash": "sha256:a90e155b7daa1f0fac4f9b0b1e85010bc0621b060eb7a6aeeccb0e0000e06e25"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "trickle-underline-draw",
+      "type": "registry:component",
+      "title": "Underline Draw",
+      "description": "Draws a configurable underline beneath caller-provided text.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-underline-draw/underline-draw.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-underline-draw.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-underline-draw": "trickle-underline-draw 0.6s cubic-bezier(0.16, 1, 0.3, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes trickle-underline-draw": {
+          "from": {
+            "background-size": "0% var(--trickle-underline-thickness, 2px)"
+          },
+          "to": {
+            "background-size": "100% var(--trickle-underline-thickness, 2px)"
+          }
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-underline-draw": {
+            "animation": "none",
+            "background-size": "100% var(--trickle-underline-thickness, 2px)"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "underline",
+            "emphasis",
+            "draw"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-underline-draw.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-underline-draw/underline-draw.tsx",
+                "upstreamPath": "registry/default/underline-draw/underline-draw.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/underline-draw/underline-draw.tsx",
+                "upstreamSha256": "sha256:abeb98f2a77f3c1812c4e11a483ba3675c57d82837c7c7ff07826857fb448aca",
+                "contentSha256": "sha256:b28bf39894d2af083cb9d878ce73d4ecdaa15b4692fc74d369c6ed72c22a7473",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/underline-draw/underline-draw.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-underline-draw/underline-draw.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "drawn-text-underline",
+            "sourceHash": "sha256:e7ea5b9909988d068bc7807fe0dbc58cc0d0f2133a62556cf69a3db009b2a6cd",
+            "contentHash": "sha256:828db4c07ca5e87ec4e10f91a79c01097ee836c992363d57649b01fbc9192d82",
+            "structureHash": "sha256:986eb58c33fc2a9e06b55183109f4e0baef85e222a788e877b795648c6313df9"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "trickle-pixelate",
+      "type": "registry:component",
+      "title": "Pixelate",
+      "description": "Resolves text characters from a blurred pixelated state in deterministic order.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-pixelate/pixelate.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-pixelate.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-pixelate": "trickle-pixelate 1.4s cubic-bezier(0.5, 0, 0.2, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes trickle-pixelate": {
+          "0%": {
+            "filter": "blur(10px) contrast(1.4) brightness(0.8)",
+            "letter-spacing": "0.15em",
+            "opacity": "0"
+          },
+          "30%": {
+            "filter": "blur(8px) contrast(1.3)",
+            "opacity": "0.6"
+          },
+          "60%": {
+            "filter": "blur(3px) contrast(1.1)",
+            "letter-spacing": "0.02em",
+            "opacity": "0.95"
+          },
+          "100%": {
+            "filter": "blur(0) contrast(1)",
+            "letter-spacing": "0",
+            "opacity": "1"
+          }
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-pixelate": {
+            "animation": "none",
+            "filter": "none",
+            "opacity": "1",
+            "letter-spacing": "0"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "pixelate",
+            "characters",
+            "reveal"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-pixelate.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-pixelate/pixelate.tsx",
+                "upstreamPath": "registry/default/pixelate/pixelate.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/pixelate/pixelate.tsx",
+                "upstreamSha256": "sha256:b4ecaff807b2c815749961d9e996eec0fb05df8e320e85285145ab91081fc96e",
+                "contentSha256": "sha256:fac24f263d0da24ad89a430ff024eaa012a0f6f85a738c937d603e6d48a155e4",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/pixelate/pixelate.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-pixelate/pixelate.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "shuffled-character-pixelate-reveal",
+            "sourceHash": "sha256:835fee192c5d2b3ad1941744611917f1efbd6251bfecf1c4c9744ec1efd0c4a0",
+            "contentHash": "sha256:56aec81b7e30f1fcfc6d7b2e75c4e196aaa7adcebeecbd0f15060f08c5422a6d",
+            "structureHash": "sha256:9661ef411df8e2fd0aa992b7cebe60e96d352f5fe154b7ad538f26cd23a8e447"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "trickle-wireframe",
+      "type": "registry:component",
+      "title": "Wireframe",
+      "description": "Transitions text characters from outlined strokes to a solid fill.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-wireframe/wireframe.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-wireframe.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-wireframe": "trickle-wireframe 1.6s cubic-bezier(0.65, 0, 0.35, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes trickle-wireframe": {
+          "0%": {
+            "-webkit-text-stroke": "var(--trickle-wireframe-stroke, 1px) currentColor",
+            "color": "transparent",
+            "letter-spacing": "0.08em",
+            "opacity": "0"
+          },
+          "20%": {
+            "opacity": "1"
+          },
+          "60%": {
+            "-webkit-text-stroke": "var(--trickle-wireframe-stroke, 1px) currentColor",
+            "color": "transparent",
+            "letter-spacing": "0"
+          },
+          "100%": {
+            "-webkit-text-stroke": "0 currentColor",
+            "color": "currentColor",
+            "letter-spacing": "0",
+            "opacity": "1"
+          }
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-wireframe": {
+            "animation": "none",
+            "color": "currentColor",
+            "-webkit-text-stroke": "0",
+            "opacity": "1"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "outline",
+            "characters",
+            "fill"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-wireframe.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-wireframe/wireframe.tsx",
+                "upstreamPath": "registry/default/wireframe/wireframe.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/wireframe/wireframe.tsx",
+                "upstreamSha256": "sha256:b18e08c12257d9c1e584ffe7e66c9bd48d6b5a745cebb96d9636526e18e94795",
+                "contentSha256": "sha256:067ad0d5e8c0c9af6ea2a55549cdbe6f4af7f3ee8e9d2c337e9994a8e718e0df",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/wireframe/wireframe.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-wireframe/wireframe.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "character-wireframe-fill",
+            "sourceHash": "sha256:f5480a85c2009b7aa5953ba8f95933dd1b6db03db0195fe4fdc655f74d662534",
+            "contentHash": "sha256:e3a54c0e306a3c03a13ed246ab55a5bc53861cc27da91818558aff563419e36d",
+            "structureHash": "sha256:4f96f2f452ae87f8493ef85ef454d8fb42bceee01ed07b51f96f41d132de3f69"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "trickle-shutter",
+      "type": "registry:component",
+      "title": "Shutter",
+      "description": "Reveals caller-provided text through a configurable vertical-bar mask.",
+      "author": "trickle contributors",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.5.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/trickle-shutter/shutter.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/trickle-shutter.tsx"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib",
+          "target": "@lib/cn.ts"
+        }
+      ],
+      "categories": [
+        "text-motion"
+      ],
+      "cssVars": {
+        "theme": {
+          "--animate-trickle-shutter": "trickle-shutter 1.1s cubic-bezier(0.7, 0, 0.3, 1) both"
+        }
+      },
+      "css": {
+        ".animate-trickle-shutter": {
+          "--trickle-shutter-bars": "8"
+        },
+        "@keyframes trickle-shutter": {
+          "0%": {
+            "-webkit-mask-image": "repeating-linear-gradient(to right, black 0, black calc(100% / var(--trickle-shutter-bars, 8) / 2), transparent calc(100% / var(--trickle-shutter-bars, 8) / 2), transparent calc(100% / var(--trickle-shutter-bars, 8)))",
+            "mask-image": "repeating-linear-gradient(to right, black 0, black calc(100% / var(--trickle-shutter-bars, 8) / 2), transparent calc(100% / var(--trickle-shutter-bars, 8) / 2), transparent calc(100% / var(--trickle-shutter-bars, 8)))",
+            "opacity": "0",
+            "transform": "scaleY(0.4)"
+          },
+          "40%": {
+            "opacity": "1",
+            "transform": "scaleY(1)"
+          },
+          "100%": {
+            "-webkit-mask-image": "linear-gradient(black, black)",
+            "mask-image": "linear-gradient(black, black)",
+            "opacity": "1",
+            "transform": "scaleY(1)"
+          }
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-trickle-shutter": {
+            "animation": "none",
+            "opacity": "1",
+            "transform": "none",
+            "-webkit-mask-image": "none",
+            "mask-image": "none"
+          }
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "text-motion",
+          "tags": [
+            "text",
+            "mask",
+            "shutter",
+            "reveal"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/trickle/trickle-shutter.tsx",
+          "source": {
+            "project": "trickle",
+            "repository": "https://github.com/akaieuan/trickle-UI-kit",
+            "revision": "b99c513b1806028137d9d907cebc829d46b62686",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/trickle-shutter/shutter.tsx",
+                "upstreamPath": "registry/default/shutter/shutter.tsx",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/shutter/shutter.tsx",
+                "upstreamSha256": "sha256:4d72175b928b3220516c6cd68c4d60812e6d788246373df746d5d0f1665346e4",
+                "contentSha256": "sha256:e642551095219cc79c1079a6ec75a7f07487143690d9de0e8954e4798c287b2a",
+                "changes": [
+                  "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+                ]
+              },
+              {
+                "shippedPath": "lib/cn.ts",
+                "upstreamPath": "lib/cn.ts",
+                "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/lib/cn.ts",
+                "upstreamSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "contentSha256": "sha256:d6cf1d2c25e92eba18c73f11c9676f0a7099020f1010396b94fa4c0356e7fc9a",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/shutter/shutter.tsx and lib/cn.ts",
+            "copyright": [
+              "Copyright (c) 2026 trickle contributors"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/LICENSE",
+              "sha256": "sha256:869578f8849f5cc6e318cc55175220afeef930f112d710406f46a1e919233137",
+              "localPath": "registry/sources/trickle/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/trickle-shutter/shutter.tsx",
+              "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
+              "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+            }
+          ],
+          "dedupe": {
+            "family": "shutter-mask-text-reveal",
+            "sourceHash": "sha256:8f01cbbfd55e25d32610747dda5cd5c71d452905b26828dabb9f66df3af8b76f",
+            "contentHash": "sha256:47e1049434a84c9eb1cdfec9dc00fbf8711b20420014bdc5c19802ef9cc5a984",
+            "structureHash": "sha256:005618e130bb0895adefea7dbbf3453246fc3f941f9a238ca0a0e1a33c3d5952"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
