@@ -1,0 +1,450 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ruixen-ui-drafts",
+  "homepage": "https://ruixen.com",
+  "items": [
+    {
+      "name": "ruixen-spark-chart",
+      "type": "registry:component",
+      "title": "Ruixen Spark Chart",
+      "description": "Scrubs a caller-provided sparkline with pointer, touch, or keyboard input and reports the active value.",
+      "author": "Ruixen UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/ruixen-spark-chart/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/spark-chart/index.tsx"
+        },
+        {
+          "path": "components/shared/ruixen-utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "sparkline",
+            "chart",
+            "scrubber",
+            "keyboard",
+            "touch"
+          ],
+          "renderer": "svg",
+          "preview": "previews/drafts/ruixen-ui/ruixen-spark-chart.tsx",
+          "source": {
+            "project": "Ruixen UI",
+            "repository": "https://github.com/ruixenui/ruixen.com",
+            "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/ruixen-spark-chart/index.tsx",
+                "upstreamPath": "registry/ruixenui/spark-chart.tsx",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/spark-chart.tsx",
+                "upstreamSha256": "sha256:3a52ed9598508deeb16b10a7d984dbc70a4168e45891976b3bb8d618eca02042",
+                "contentSha256": "sha256:58ab3e6f8111ee9aa10045363b125f135d8eca94b790b7e1e6b74ce614bc4e77",
+                "changes": [
+                  "Repointed the source utility import to the copied Ruixen utility subset.",
+                  "Added finite-data and geometry guards, slider semantics, keyboard navigation, touch-safe pointer capture, focus feedback, and caller-owned accessible labeling.",
+                  "Removed the automatic 800 millisecond draw-in animation and retained only direct scrub feedback."
+                ]
+              },
+              {
+                "shippedPath": "components/shared/ruixen-utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+                "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+                "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+                "changes": [
+                  "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/ruixenui/spark-chart.tsx and the cn subset of lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 Ruixen UI"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+              "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+              "localPath": "registry/sources/ruixen-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/ruixen-spark-chart/index.tsx",
+              "change": "Added bounded input handling and equivalent pointer, touch, focus, and keyboard scrubbing while removing the source load animation.",
+              "reason": "Keep the original path-following chart interaction without pointer-only access, invalid geometry, scroll blocking, or frequent decorative motion."
+            },
+            {
+              "shippedPath": "components/shared/ruixen-utils.ts",
+              "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+              "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+            }
+          ],
+          "dedupe": {
+            "family": "interactive-sparkline-scrubber",
+            "sourceHash": "sha256:0a2aa98b16aee17acd29df763f2945fdabd563dbfa68407aa1fa93b91c1559d3",
+            "contentHash": "sha256:3b138289ae6e443de97d1f09bbec1967912e0c090a3f60aa20ed7a3412c9f92d",
+            "structureHash": "sha256:953d8cc4cdde4c8272ada044d3bf28328dbee75640474e2e61f9074080696642"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ruixen-chapter-scrubber",
+      "type": "registry:component",
+      "title": "Ruixen Chapter Scrubber",
+      "description": "Navigates a caller-provided chapter list through a compact magnifying rail with a contextual preview.",
+      "author": "Ruixen UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "motion@12.23.25",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/ruixen-chapter-scrubber/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/chapter-scrubber/index.tsx"
+        },
+        {
+          "path": "components/shared/ruixen-utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "chapters",
+            "scrubber",
+            "listbox",
+            "roving-focus",
+            "reduced-motion"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ruixen-ui/ruixen-chapter-scrubber.tsx",
+          "source": {
+            "project": "Ruixen UI",
+            "repository": "https://github.com/ruixenui/ruixen.com",
+            "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/ruixen-chapter-scrubber/index.tsx",
+                "upstreamPath": "registry/ruixenui/chapter-scrubber.tsx",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/chapter-scrubber.tsx",
+                "upstreamSha256": "sha256:98cac777bc0b7536938c0ea0fcde1d6d1ffa67010ccd458a2e039ee989a9b5df",
+                "contentSha256": "sha256:ee876a69cbac1883daa59c05ff790044c7ee070fb65824ec5da36fe0ffbd2031",
+                "changes": [
+                  "Repointed the source utility import to the copied Ruixen utility subset.",
+                  "Bounded caller geometry and the roving focus index, and added pointer cancellation handling.",
+                  "Replaced animated width, top, and motion shorthand updates with origin-aware transform strings and made repeated keyboard navigation settle immediately."
+                ]
+              },
+              {
+                "shippedPath": "components/shared/ruixen-utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+                "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+                "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+                "changes": [
+                  "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/ruixenui/chapter-scrubber.tsx and the cn subset of lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 Ruixen UI"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+              "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+              "localPath": "registry/sources/ruixen-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/ruixen-chapter-scrubber/index.tsx",
+              "change": "Moved all continuous visual movement to origin-aware transform strings, bounded dynamic inputs, and made arrow-key traversal immediate.",
+              "reason": "Preserve the source magnifying-rail interaction while avoiding layout animation, keyboard lag, invalid geometry, and stale pointer state."
+            },
+            {
+              "shippedPath": "components/shared/ruixen-utils.ts",
+              "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+              "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+            }
+          ],
+          "dedupe": {
+            "family": "magnifying-chapter-rail",
+            "sourceHash": "sha256:e41b368548c266854d8fccd9820e53e52bd2340b22dfcec03435e9e33d72c006",
+            "contentHash": "sha256:642c24203f451dd09e87f53652a30c54a1ea075a3ecdd40fb46613a8b6f150e7",
+            "structureHash": "sha256:ee06f715217ac5294d5c4a1ed98102aa8672e46c983cb050031e50f81536e5f7"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ruixen-smart-paste-input",
+      "type": "registry:component",
+      "title": "Ruixen Smart Paste Input",
+      "description": "Captures long pasted text as editable caller-owned attachments inside an accessible message composer.",
+      "author": "Ruixen UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.545.0",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [
+        "button",
+        "dialog",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "components/ruixen-smart-paste-input/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/smart-paste-input/index.tsx"
+        },
+        {
+          "path": "components/shared/ruixen-utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "paste",
+            "composer",
+            "attachments",
+            "dialog",
+            "controlled-state"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/ruixen-ui/ruixen-smart-paste-input.tsx",
+          "source": {
+            "project": "Ruixen UI",
+            "repository": "https://github.com/ruixenui/ruixen.com",
+            "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/ruixen-smart-paste-input/index.tsx",
+                "upstreamPath": "registry/ruixenui/smart-paste-input.tsx",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/smart-paste-input.tsx",
+                "upstreamSha256": "sha256:eb0c9c4910bfe6807fbd5349021b207a47068a1fd8e4cac72582e37d8ef5e0e5",
+                "contentSha256": "sha256:8a7aa757c389dd8e02bd202a4fdc99bd54fe63aaf297de915c53e0701df0c184",
+                "changes": [
+                  "Repointed the source utility import to the copied Ruixen utility subset.",
+                  "Bounded the autosizing input, added explicit non-submit button types, replaced transition-all, and disabled positional hover motion under reduced motion.",
+                  "Kept the source shadcn button, dialog, and textarea dependencies explicit as registry dependencies."
+                ]
+              },
+              {
+                "shippedPath": "components/shared/ruixen-utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+                "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+                "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+                "changes": [
+                  "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/ruixenui/smart-paste-input.tsx and the cn subset of lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 Ruixen UI"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+              "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+              "localPath": "registry/sources/ruixen-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/ruixen-smart-paste-input/index.tsx",
+              "change": "Made the copied composer safe inside forms, bounded its autosizing input, and narrowed its transitions with reduced-motion fallbacks.",
+              "reason": "Preserve the source long-paste workflow while preventing accidental parent form submits and indiscriminate or unwanted movement."
+            },
+            {
+              "shippedPath": "components/shared/ruixen-utils.ts",
+              "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+              "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+            }
+          ],
+          "dedupe": {
+            "family": "long-paste-attachment-composer",
+            "sourceHash": "sha256:7fe47be1b3fad53e2ce3664fc9f8cda99ad93b0929694a8c2a00006cbbebbdf2",
+            "contentHash": "sha256:b551361e7845a525af04f307abc6c9512ee62c767152799524376547f2b68d69",
+            "structureHash": "sha256:f12b07e111fbc8db9076ad8587a89ea49bc93ca56a4c628de297bffc9deffdb4"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ruixen-live-waveform",
+      "type": "registry:component",
+      "title": "Ruixen Live Waveform",
+      "description": "Visualizes microphone frequency data or a bounded processing state on a responsive canvas.",
+      "author": "Ruixen UI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.545.0",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/ruixen-live-waveform/index.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/live-waveform/index.tsx"
+        },
+        {
+          "path": "components/shared/ruixen-utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shared/ruixen-utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "audio",
+            "waveform",
+            "microphone",
+            "canvas",
+            "processing"
+          ],
+          "renderer": "canvas",
+          "preview": "previews/drafts/ruixen-ui/ruixen-live-waveform.tsx",
+          "source": {
+            "project": "Ruixen UI",
+            "repository": "https://github.com/ruixenui/ruixen.com",
+            "revision": "3574611de5e9b914b959fc620cd5a9abace8a421",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/ruixen-live-waveform/index.tsx",
+                "upstreamPath": "registry/ruixenui/live-waveform.tsx",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/registry/ruixenui/live-waveform.tsx",
+                "upstreamSha256": "sha256:a16de8414dd64b99d17282e3ba83c06bc800224170337854c5160c16ac70146a",
+                "contentSha256": "sha256:de23be36e111cb60ddb59cfa277212b4a36c2c6b7117d687f2736c2f24d2a108",
+                "changes": [
+                  "Repointed the source utility import to the copied Ruixen utility subset.",
+                  "Bounded draw geometry and device pixel ratio, cached layout and color reads, paused offscreen and hidden work, and reduced active sampling under reduced motion.",
+                  "Added accessible canvas labeling, non-submit stop behavior, caller-owned microphone error reporting, and complete animation, observer, stream, and audio-context cleanup."
+                ]
+              },
+              {
+                "shippedPath": "components/shared/ruixen-utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/lib/utils.ts",
+                "upstreamSha256": "sha256:68b01fbd03f6a0750e72a9b644ea360646dc4ba6730b0d3720998a3c737c7491",
+                "contentSha256": "sha256:e852767cca91a44e607302855e3e1f7d0af0c1ca88e000e8274de673d8110022",
+                "changes": [
+                  "Copied only the source cn helper and its clsx and tailwind-merge imports, omitting unrelated application metadata, environment, fetch, date, and text helpers."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/ruixenui/live-waveform.tsx and the cn subset of lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 Ruixen UI"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/ruixenui/ruixen.com/blob/3574611de5e9b914b959fc620cd5a9abace8a421/LICENSE.md",
+              "sha256": "sha256:091f9e6fbe099673062bb51720462ac33524a394eadb60d2492979dd3faa57f6",
+              "localPath": "registry/sources/ruixen-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/ruixen-live-waveform/index.tsx",
+              "change": "Made the copied canvas loop bounded, visibility-aware, reduced-motion-aware, error-reporting, and fully disposable.",
+              "reason": "Keep the source waveform renderer without perpetual hidden work, unsafe geometry, console-only failures, or leaked browser resources."
+            },
+            {
+              "shippedPath": "components/shared/ruixen-utils.ts",
+              "change": "Reduced the source application utility file to the exact cn closure used by the component.",
+              "reason": "Avoid shipping unrelated Next-specific application code while preserving the source class-merging behavior."
+            }
+          ],
+          "dedupe": {
+            "family": "microphone-processing-waveform",
+            "sourceHash": "sha256:7aace0f80523b0c5750b9300cce8c93e2cf6c48d36e38ab6477c9e4afa04603e",
+            "contentHash": "sha256:815818e3868f784edbec9b5988a948bbf0c726249687f6c30069e4ea5206874a",
+            "structureHash": "sha256:16f7a4baf6dbf81e69ee4365a3aea302805d33d855d6d1a26a260042c48ea2f0"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
