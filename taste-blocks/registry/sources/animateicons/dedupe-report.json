@@ -1,0 +1,276 @@
+{
+  "source": {
+    "repository": "https://github.com/Avijit07x/animateicons",
+    "revision": "380adb3b8eda68ee9c26e846ab8f9799d77f8815",
+    "canonicalInventory": "data/lucide-icons.json",
+    "canonicalSourcePattern": "icons/lucide/*-icon.tsx"
+  },
+  "inventoryEntries": 248,
+  "mappedSourceFiles": 248,
+  "emittedDrafts": 230,
+  "distinctNormalizedSvgMotionDrafts": 230,
+  "aliasExclusions": [],
+  "sourceNameAliases": [
+    {
+      "inventoryName": "badge-dollar",
+      "canonicalGlyphName": "badge-dollar-sign",
+      "reason": "AnimateIcons shortens Lucide's canonical glyph name."
+    },
+    {
+      "inventoryName": "chrome",
+      "canonicalGlyphName": "chromium",
+      "reason": "Lucide records chrome as a deprecated alias of chromium."
+    },
+    {
+      "inventoryName": "dashboard",
+      "canonicalGlyphName": "layout-dashboard",
+      "reason": "The SVG geometry matches Lucide layout-dashboard."
+    },
+    {
+      "inventoryName": "gamepad",
+      "canonicalGlyphName": "gamepad-2",
+      "reason": "The SVG geometry matches Lucide gamepad-2."
+    },
+    {
+      "inventoryName": "headphones-off",
+      "canonicalGlyphName": "headphone-off",
+      "reason": "AnimateIcons uses a pluralized historical/source-equivalent glyph name."
+    },
+    {
+      "inventoryName": "login",
+      "canonicalGlyphName": "log-in",
+      "reason": "AnimateIcons joins Lucide's canonical hyphenated glyph name."
+    },
+    {
+      "inventoryName": "logout",
+      "canonicalGlyphName": "log-out",
+      "reason": "AnimateIcons joins Lucide's canonical hyphenated glyph name."
+    },
+    {
+      "inventoryName": "share",
+      "canonicalGlyphName": "share-2",
+      "reason": "The SVG geometry matches Lucide share-2."
+    },
+    {
+      "inventoryName": "snow-flake",
+      "canonicalGlyphName": "snowflake",
+      "reason": "AnimateIcons splits Lucide's canonical compound glyph name."
+    },
+    {
+      "inventoryName": "yen-yuan",
+      "canonicalGlyphName": "japanese-yen",
+      "reason": "The source identifies its SVG geometry as Lucide japanese-yen."
+    }
+  ],
+  "duplicateGroups": {
+    "rawUpstreamSource": [],
+    "shippedContent": [],
+    "normalizedSvgGeometry": [],
+    "normalizedSvgMotion": [],
+    "sharedPolicyStructure": [
+      {
+        "hash": "sha256:19abed00ff3e782dcefccc795e85e468df669a275891a2da7ff95cff05a0bac8",
+        "names": [
+          "animateicons-circle-chevron-down",
+          "animateicons-circle-chevron-right"
+        ]
+      },
+      {
+        "hash": "sha256:3c12f3d2edd7c8b4c8477b4ebff2b0de5cdf804245df0262a8dfe99f16a8c073",
+        "names": [
+          "animateicons-chart-bar",
+          "animateicons-chart-column"
+        ]
+      },
+      {
+        "hash": "sha256:4d2e381473e1ec4a535473d57486e62587aa53e23313f0a490d04d2badc2a0d8",
+        "names": [
+          "animateicons-euro",
+          "animateicons-philippine-peso",
+          "animateicons-swiss-franc",
+          "animateicons-turkish-lira",
+          "animateicons-yen-yuan"
+        ]
+      },
+      {
+        "hash": "sha256:6d0d7b81775cd816219212240a1f91ba57ce07a228c77602f069b2226279421d",
+        "names": [
+          "animateicons-chevrons-left-right",
+          "animateicons-chevrons-right-left"
+        ]
+      },
+      {
+        "hash": "sha256:71cac616897a904d7b3442df46e02eb94be0dbebb8501c7d9d2f3a7cbdd92d50",
+        "names": [
+          "animateicons-phone-call",
+          "animateicons-phone-missed"
+        ]
+      },
+      {
+        "hash": "sha256:82eade13568841981977c0cbe888038b633c33c32e9a07e9c34e31584c6e46fa",
+        "names": [
+          "animateicons-chart-area",
+          "animateicons-chart-line"
+        ]
+      },
+      {
+        "hash": "sha256:8a5facbe375a973ff2d14921ab7451b736f171755547c6b704d1581bef09152b",
+        "names": [
+          "animateicons-corner-down-left",
+          "animateicons-corner-left-up",
+          "animateicons-corner-right-up",
+          "animateicons-corner-up-left"
+        ]
+      },
+      {
+        "hash": "sha256:9c839832b1c8b50582e847069fc07a559d352c0a35b2a886d391b3729f3d75d0",
+        "names": [
+          "animateicons-corner-down-right",
+          "animateicons-corner-left-down",
+          "animateicons-corner-right-down",
+          "animateicons-corner-up-right"
+        ]
+      },
+      {
+        "hash": "sha256:cb7b54e615df4d9d850dc1a6f45083cc6e9197810ed4648a9f0f8a7862a84d7e",
+        "names": [
+          "animateicons-ellipsis",
+          "animateicons-ellipsis-vertical"
+        ]
+      },
+      {
+        "hash": "sha256:ce46096f3f23f7bfa23ebe4766b8cbd2c0b2e8e73ee18fdc5d20a728004103ae",
+        "names": [
+          "animateicons-georgian-lari",
+          "animateicons-pound-sterling",
+          "animateicons-saudi-riyal"
+        ]
+      },
+      {
+        "hash": "sha256:eafef5ec9269285ee9d1e9cdaad151f09a2c47e26a83b7cbdc1cad3838ffb693",
+        "names": [
+          "animateicons-circle-chevron-left",
+          "animateicons-circle-chevron-up"
+        ]
+      }
+    ]
+  },
+  "brandGlyphPromotionBlockers": [],
+  "additionalChecks": {
+    "rasterizedStaticSvgDuplicateGroups": [],
+    "method": "Rendered normalized SVG primitives at 240x240 with a common stroke and compared SHA-256 hashes of RGBA pixels."
+  },
+  "hugeInventoryEntriesExcluded": 33,
+  "hugeFilesCopied": 0,
+  "brandGlyphRightsExclusions": [
+    {
+      "inventoryName": "chrome",
+      "publicName": "animateicons-chrome",
+      "reason": "Historical Chromium/Google Chrome corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "facebook",
+      "publicName": "animateicons-facebook",
+      "reason": "Meta/Facebook corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "figma",
+      "publicName": "animateicons-figma",
+      "reason": "Figma corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "framer",
+      "publicName": "animateicons-framer",
+      "reason": "Framer corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "github",
+      "publicName": "animateicons-github",
+      "reason": "GitHub corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "gitlab",
+      "publicName": "animateicons-gitlab",
+      "reason": "GitLab corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "instagram",
+      "publicName": "animateicons-instagram",
+      "reason": "Meta/Instagram corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "linkedin",
+      "publicName": "animateicons-linkedin",
+      "reason": "LinkedIn corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    },
+    {
+      "inventoryName": "twitter",
+      "publicName": "animateicons-twitter",
+      "reason": "X/Twitter corporate mark; Lucide removed brand logos and the copied license chain grants no trademark rights."
+    }
+  ],
+  "retainedRightsDecisions": [
+    {
+      "inventoryName": "bitcoin",
+      "publicName": "animateicons-bitcoin",
+      "decision": "retain",
+      "reason": "Bitcoin is present in the pinned Lucide icon tree as a finance/currency glyph and is covered by the preserved Lucide ISC license; it is not one of Lucide's removed corporate brand logos."
+    }
+  ],
+  "semanticVariantExclusions": [
+    {
+      "inventoryName": "user-round",
+      "publicName": "animateicons-user-round",
+      "keptPublicName": "animateicons-user",
+      "reason": "Same user semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "contact-round",
+      "publicName": "animateicons-contact-round",
+      "keptPublicName": "animateicons-contact",
+      "reason": "Same contact-badge semantics with only a near-equivalent round-profile avatar geometry and motion treatment."
+    },
+    {
+      "inventoryName": "user-round-check",
+      "publicName": "animateicons-user-round-check",
+      "keptPublicName": "animateicons-user-check",
+      "reason": "Same user-confirmed semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "user-round-cog",
+      "publicName": "animateicons-user-round-cog",
+      "keptPublicName": "animateicons-user-cog",
+      "reason": "Same user-settings semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "user-round-minus",
+      "publicName": "animateicons-user-round-minus",
+      "keptPublicName": "animateicons-user-minus",
+      "reason": "Same remove-user semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "user-round-pen",
+      "publicName": "animateicons-user-round-pen",
+      "keptPublicName": "animateicons-user-pen",
+      "reason": "Same edit-user semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "user-round-search",
+      "publicName": "animateicons-user-round-search",
+      "keptPublicName": "animateicons-user-search",
+      "reason": "Same find-user semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "user-round-x",
+      "publicName": "animateicons-user-round-x",
+      "keptPublicName": "animateicons-user-x",
+      "reason": "Same reject-user semantics with only the round-profile Lucide style variant."
+    },
+    {
+      "inventoryName": "users-round",
+      "publicName": "animateicons-users-round",
+      "keptPublicName": "animateicons-users",
+      "reason": "Same users/group semantics with only the round-profile Lucide style variant."
+    }
+  ]
+}

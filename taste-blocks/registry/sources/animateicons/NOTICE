@@ -1,0 +1,9 @@
+AnimateIcons Lucide source batch
+
+React component implementations were copied from https://github.com/Avijit07x/animateicons at 380adb3b8eda68ee9c26e846ab8f9799d77f8815. Two narrowly scoped changes in each icon—the relative helper import and the controlled-animation safety guard—are documented in drafts.json. AnimateIcons' MIT terms are in LICENSE.
+
+The headphones, headphones-off, and message-circle component files additionally normalize nine trailing spaces present in the raw upstream Git blobs. This third, purely mechanical change is documented per file in drafts.json. Each shipped source can be reconstructed byte-for-byte after reversing its documented adaptations.
+
+SVG glyph geometry is derived from Lucide. Lucide's ISC terms and the Feather-derived MIT notice, as preserved at https://github.com/lucide-icons/lucide/tree/8fc6b70aa562d584159b1ccfffc1cb759712a1b9, are in LUCIDE_LICENSE.
+
+Lucide does not grant trademark rights for historical corporate brand glyphs. See BRAND_LOGOS_STATEMENT.md. Nine affected drafts were excluded and are recorded in dedupe-report.json. Bitcoin remains because the pinned Lucide tree classifies it as a finance/currency glyph covered by the preserved ISC license.
