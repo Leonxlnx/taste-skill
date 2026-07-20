@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { QRCode } from "@/registry/sources/kibo-ui/components/kibo-qr-code"
 
 export default function KiboQRCodePreview() {

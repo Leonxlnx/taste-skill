@@ -65,7 +65,7 @@ function Component<
     if (rendered) return rendered;
   }
 
-  const Element = as || "div";
+  const Element: any = as || "div";
   return <Element ref={ref} {...props} />;
 }
 

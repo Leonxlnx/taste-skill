@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { Outlines } from "@/registry/sources/drei/components/drei/core/Outlines"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { Sparkles } from "@/registry/sources/drei/components/drei/core/Sparkles"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

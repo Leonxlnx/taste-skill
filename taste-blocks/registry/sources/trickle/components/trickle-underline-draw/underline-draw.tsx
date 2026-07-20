@@ -22,8 +22,9 @@ export function UnderlineDraw({
   thickness = '2px',
   color = 'currentColor'
 }: UnderlineDrawProps) {
+  const RenderComponent: any = Component;
   return (
-    <Component
+    <RenderComponent
       className={cn(
         'inline animate-trickle-underline-draw bg-no-repeat bg-left-bottom',
         className
@@ -36,6 +37,6 @@ export function UnderlineDraw({
       } as CSSProperties}
     >
       {children}
-    </Component>
+    </RenderComponent>
   );
 }

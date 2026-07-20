@@ -1,3 +1,5 @@
+"use client"
+
 import {
   InlineCitation,
   InlineCitationCard,

@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useState } from "react"
 
 import { RichTextarea } from "@/registry/sources/rich-textarea/components/rich-textarea/textarea"

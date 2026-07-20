@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { Grid } from "@/registry/sources/drei/components/drei/core/Grid"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

@@ -1,3 +1,5 @@
+"use client"
+
 import { PptxViewerPreview } from "@/registry/sources/extend-ui/components/extend-ui/pptx-viewer"
 
 export default function ExtendPptxViewerPreview() {

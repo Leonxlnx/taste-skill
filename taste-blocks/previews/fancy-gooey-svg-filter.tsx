@@ -1,3 +1,5 @@
+"use client"
+
 import GooeySvgFilter from "@/registry/sources/fancy-components/components/fancy-gooey-svg-filter/gooey-svg-filter"
 
 const filterId = "taste-blocks-gooey-preview"

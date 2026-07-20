@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { Bloom } from '@/registry/sources/react-postprocessing/components/react-postprocessing/effects/Bloom'

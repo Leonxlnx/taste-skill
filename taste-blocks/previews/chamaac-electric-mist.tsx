@@ -1,3 +1,5 @@
+"use client"
+
 import ElectricMist from "@/registry/sources/chamaac-ui/components/chamaac-ui/electric-mist"
 
 export default function ChamaacElectricMistPreview() {

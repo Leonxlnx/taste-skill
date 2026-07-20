@@ -1,3 +1,5 @@
+"use client"
+
 import GridBloom from "@/registry/sources/chamaac-ui/components/chamaac-ui/grid-bloom"
 
 export default function ChamaacGridBloomPreview() {

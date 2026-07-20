@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { useEffect, useMemo } from 'react'

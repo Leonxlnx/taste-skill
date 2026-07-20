@@ -1,3 +1,5 @@
+"use client"
+
 import { RippleButton } from "@/registry/sources/magic-ui/components/magic-ripple-button/ripple-button"
 
 export default function MagicRippleButtonPreview() {

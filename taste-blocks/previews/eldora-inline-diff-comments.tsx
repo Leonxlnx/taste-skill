@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import InlineDiffComments from "@/registry/sources/eldora-ui/components/eldora-inline-diff-comments/inline-diff-comments"
 
 export default function EldoraInlineDiffCommentsPreview() {

@@ -22,8 +22,9 @@ export function InkBleed({
   as: Component = 'span',
   className
 }: InkBleedProps) {
+  const RenderComponent: any = Component;
   return (
-    <Component
+    <RenderComponent
       className={cn('inline-block animate-trickle-ink-bleed', className)}
       style={{
         animationDelay: `${delay}ms`,
@@ -32,6 +33,6 @@ export function InkBleed({
       } as CSSProperties}
     >
       {children}
-    </Component>
+    </RenderComponent>
   );
 }

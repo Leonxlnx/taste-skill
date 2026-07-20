@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { MarchingCube, MarchingCubes } from "@/registry/sources/drei/components/drei/core/MarchingCubes"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

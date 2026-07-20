@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { VoteTally } from "@/registry/sources/cult-ui/components/cult-vote-tally/vote-tally"
 
 const choices = [

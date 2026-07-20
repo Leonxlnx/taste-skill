@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import PhotonBeam from "@/registry/sources/eldora-ui/components/eldora-photon-beam/photon-beam"
 
 export default function EldoraPhotonBeamPreview() {

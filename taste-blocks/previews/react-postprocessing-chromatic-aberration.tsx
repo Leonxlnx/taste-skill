@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { Vector2 } from 'three'

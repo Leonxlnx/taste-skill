@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useState } from "react"
 
 import AvatarPicker from "@/registry/sources/kokonut-ui/components/kokonut-avatar-picker/avatar-picker"

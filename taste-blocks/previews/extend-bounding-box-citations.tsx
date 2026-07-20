@@ -1,3 +1,5 @@
+"use client"
+
 import { HumanReviewPanel } from "@/registry/sources/extend-ui/components/extend-ui/bounding-box-citations"
 
 export default function ExtendBoundingBoxCitationsPreview() {

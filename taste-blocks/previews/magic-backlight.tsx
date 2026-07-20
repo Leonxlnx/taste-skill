@@ -1,3 +1,5 @@
+"use client"
+
 import { Backlight } from "@/registry/sources/magic-ui/components/magic-backlight/backlight"
 
 export default function MagicBacklightPreview() {

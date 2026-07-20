@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import * as React from "react"
 
 import InputGroupCustom from "@/registry/sources/shadcn-ui/components/shadcn-input-group-custom/input-group-custom"

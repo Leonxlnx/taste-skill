@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { ContactShadows } from "@/registry/sources/drei/components/drei/core/ContactShadows"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

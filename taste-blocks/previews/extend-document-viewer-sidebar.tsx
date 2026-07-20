@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import * as React from "react"
 
 import { DocumentViewerThumbnailSidebar } from "@/registry/sources/extend-ui/components/extend-ui/document-viewer-sidebar"

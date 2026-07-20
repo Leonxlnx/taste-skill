@@ -1,3 +1,5 @@
+"use client"
+
 import { DottedMap } from "@/registry/sources/magic-ui/components/magic-dotted-map/dotted-map"
 
 const markers = [

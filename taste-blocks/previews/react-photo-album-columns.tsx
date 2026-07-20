@@ -1,7 +1,10 @@
 "use client"
 
+"use client"
+
 import ColumnsPhotoAlbum from "@/registry/sources/react-photo-album/src/client/columns"
-import "@/registry/sources/react-photo-album/src/styles/columns.css"
+import "@/registry/sources/react-photo-album/src/styles/modules/common.css"
+import "@/registry/sources/react-photo-album/src/styles/modules/columns.css"
 
 const colorPhotos = [
   ["#18212b", "#d7ff64", 1200, 800],

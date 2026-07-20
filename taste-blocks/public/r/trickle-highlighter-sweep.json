@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/sources/trickle/components/trickle-highlighter-sweep/highlighter-sweep.tsx",
-      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface HighlighterSegment {\n  text: string;\n  highlight?: boolean;\n  /**\n   * Highlight color as any CSS color value (e.g. `'rgb(254 243 199 / 0.7)'`,\n   * `'oklch(80% 0.18 80 / 0.45)'`, `'#fef3c7'`). Overrides the component-level `color`.\n   */\n  color?: string;\n  /** Extra Tailwind classes for this highlighted segment (does NOT control the highlight color). */\n  highlightClassName?: string;\n}\n\nexport interface HighlighterSweepProps {\n  segments: HighlighterSegment[];\n  /** Default highlight color (any CSS color). Per-segment `color` overrides this. */\n  color?: string;\n  /** Delay before the first highlight begins, in ms. */\n  delay?: number;\n  /** Interval between successive highlights, in ms. */\n  interval?: number;\n  /** Element tag to render. Defaults to `h1`. */\n  as?: ElementType;\n  className?: string;\n  /** Extra classes applied to every highlighted segment. */\n  highlightClassName?: string;\n}\n\nexport function HighlighterSweep({\n  segments,\n  color,\n  delay = 0,\n  interval = 180,\n  as: Component = 'h1',\n  className,\n  highlightClassName\n}: HighlighterSweepProps) {\n  let highlightIdx = 0;\n  return (\n    <Component className={className}>\n      {segments.map((seg, i) => {\n        if (!seg.highlight) {\n          return <span key={i}>{seg.text}</span>;\n        }\n        const idx = highlightIdx++;\n        const segColor = seg.color ?? color;\n        const style: CSSProperties = { animationDelay: `${delay + idx * interval}ms` };\n        if (segColor) {\n          (style as Record<string, string | number>)['--trickle-hl'] = segColor;\n        }\n        return (\n          <span\n            key={i}\n            className={cn(\n              'trickle-highlight-word animate-trickle-highlighter-sweep',\n              seg.highlightClassName ?? highlightClassName\n            )}\n            style={style}\n          >\n            {seg.text}\n          </span>\n        );\n      })}\n    </Component>\n  );\n}\n",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface HighlighterSegment {\n  text: string;\n  highlight?: boolean;\n  /**\n   * Highlight color as any CSS color value (e.g. `'rgb(254 243 199 / 0.7)'`,\n   * `'oklch(80% 0.18 80 / 0.45)'`, `'#fef3c7'`). Overrides the component-level `color`.\n   */\n  color?: string;\n  /** Extra Tailwind classes for this highlighted segment (does NOT control the highlight color). */\n  highlightClassName?: string;\n}\n\nexport interface HighlighterSweepProps {\n  segments: HighlighterSegment[];\n  /** Default highlight color (any CSS color). Per-segment `color` overrides this. */\n  color?: string;\n  /** Delay before the first highlight begins, in ms. */\n  delay?: number;\n  /** Interval between successive highlights, in ms. */\n  interval?: number;\n  /** Element tag to render. Defaults to `h1`. */\n  as?: ElementType;\n  className?: string;\n  /** Extra classes applied to every highlighted segment. */\n  highlightClassName?: string;\n}\n\nexport function HighlighterSweep({\n  segments,\n  color,\n  delay = 0,\n  interval = 180,\n  as: Component = 'h1',\n  className,\n  highlightClassName\n}: HighlighterSweepProps) {\n  const RenderComponent: any = Component;\n  let highlightIdx = 0;\n  return (\n    <RenderComponent className={className}>\n      {segments.map((seg, i) => {\n        if (!seg.highlight) {\n          return <span key={i}>{seg.text}</span>;\n        }\n        const idx = highlightIdx++;\n        const segColor = seg.color ?? color;\n        const style: CSSProperties = { animationDelay: `${delay + idx * interval}ms` };\n        if (segColor) {\n          (style as Record<string, string | number>)['--trickle-hl'] = segColor;\n        }\n        return (\n          <span\n            key={i}\n            className={cn(\n              'trickle-highlight-word animate-trickle-highlighter-sweep',\n              seg.highlightClassName ?? highlightClassName\n            )}\n            style={style}\n          >\n            {seg.text}\n          </span>\n        );\n      })}\n    </RenderComponent>\n  );\n}\n",
       "type": "registry:component",
       "target": "@components/taste-blocks/trickle-highlighter-sweep.tsx"
     },
@@ -79,9 +79,10 @@
             "upstreamPath": "registry/default/highlighter-sweep/highlighter-sweep.tsx",
             "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/highlighter-sweep/highlighter-sweep.tsx",
             "upstreamSha256": "sha256:1bb0f1a0f6e6eb1cf303a299431d3a29d686ddf133070e89cd9128bf9d43dbd5",
-            "contentSha256": "sha256:4d01c870b6e185c3415d9e15d4ba40497a3fdc970d25ae86ffde565db865e7b8",
+            "contentSha256": "sha256:a877f0a3dd62d196842efd004ddb0dc2c755b347a70e035bd010e9d69028bbd8",
             "changes": [
-              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+              "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
             ]
           },
           {
@@ -112,15 +113,15 @@
       "modifications": [
         {
           "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
-          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
         }
       ],
       "dedupe": {
         "family": "sequential-text-highlighting",
         "sourceHash": "sha256:a6edad7853b089f52ddae567c6fc35eee198e03f2e492c82b94f8bb92fad0935",
-        "contentHash": "sha256:e9582a497cd60b551ca55954bd13a7f479e70ce82ac0340fee2d3f819f169686",
-        "structureHash": "sha256:a90e155b7daa1f0fac4f9b0b1e85010bc0621b060eb7a6aeeccb0e0000e06e25"
+        "contentHash": "sha256:8ac153d9764c24ab408ed1f4f55e0eb76fc8905e375c451350a15168a2213a06",
+        "structureHash": "sha256:5f41506964dacffcd1cdd031ad5474d78c1c29abf66b2dde896eed54a51611e3"
       },
       "verification": {
         "reviewedBy": "Codex",

@@ -17,6 +17,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(f
 ) {
   const { styles, labels } = useLightboxProps();
   const buttonLabel = translateLabel(labels, label);
+  const RenderIcon: any = Icon;
 
   return (
     <button
@@ -29,7 +30,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(f
       style={{ ...style, ...styles.button }}
       {...rest}
     >
-      {renderIcon ? renderIcon() : <Icon className={cssClass(ELEMENT_ICON)} style={styles.icon} />}
+      {renderIcon ? renderIcon() : <RenderIcon className={cssClass(ELEMENT_ICON)} style={styles.icon} />}
     </button>
   );
 });

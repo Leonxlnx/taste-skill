@@ -1,3 +1,5 @@
+"use client"
+
 import Synthesis from "@/registry/sources/chamaac-ui/components/chamaac-ui/synthesis"
 
 export default function ChamaacSynthesisPreview() {

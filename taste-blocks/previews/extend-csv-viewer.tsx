@@ -1,3 +1,5 @@
+"use client"
+
 import { CsvViewer } from "@/registry/sources/extend-ui/components/extend-ui/csv-viewer"
 
 const data = `Name,Status,Amount,Updated

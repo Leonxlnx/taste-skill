@@ -1,3 +1,5 @@
+"use client"
+
 import { FileUpload } from "@/registry/sources/extend-ui/components/extend-ui/file-upload"
 
 export default function ExtendFileUploadPreview() {

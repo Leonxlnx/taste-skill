@@ -25374,10 +25374,11 @@
           "upstreamPath": "apps/v4/registry/new-york-v4/ui/schema-builder.tsx",
           "permalink": "https://github.com/extend-hq/ui/blob/6d6d33df18ec39455df00f6315f16d2cfd89563b/apps/v4/registry/new-york-v4/ui/schema-builder.tsx",
           "upstreamSha256": "sha256:fb0c91a0a6f905ac22dd271a87a7a8e2057ae0e3230b20194ba6937304cb65b2",
-          "contentSha256": "sha256:a6b37ad7172e1b16a1f85a83b72e1db07a7e781785648ef807077035e5e056c0",
+          "contentSha256": "sha256:4c07ceb94a5f03ea4e9ce5d3943b5ec232dce200d781ef81d630d272b5f32095",
           "changes": [
             "Converted directional table borders, text alignment, indentation, drag handles, and trailing controls to logical RTL-aware utilities.",
-            "Disabled dnd-kit inline sortable transitions under reduced motion and removed transitions from drag handles when requested."
+            "Disabled dnd-kit inline sortable transitions under reduced motion and removed transitions from drag handles when requested.",
+            "Narrowed the forwarded input event type for React 19 without changing runtime behavior."
           ]
         }
       ]
@@ -25401,15 +25402,15 @@
     "modifications": [
       {
         "shippedPath": "components/extend-ui/schema-builder.tsx",
-        "change": "Converted directional table borders, text alignment, indentation, drag handles, and trailing controls to logical RTL-aware utilities. Disabled dnd-kit inline sortable transitions under reduced motion and removed transitions from drag handles when requested.",
-        "reason": "Keep the source-backed editor usable in RTL and prevent drag-reorder animation from overriding reduced-motion preferences."
+        "change": "Converted directional table borders, text alignment, indentation, drag handles, and trailing controls to logical RTL-aware utilities. Disabled dnd-kit inline sortable transitions under reduced motion and removed transitions from drag handles when requested. Narrowed the forwarded input event type for React 19 without changing runtime behavior.",
+        "reason": "Keep the source-backed editor usable in RTL and prevent drag-reorder animation from overriding reduced-motion preferences. Preserve the existing callback behavior while satisfying React 19's more specific input-event type."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:661c68f79aa758116ec79b054782d945a0762a97c8ba64466e992b123ed14ec1",
-      "content": "sha256:a28640f0ef65bb7b38ee154f0602abd936d70d180456d3f60c6ca478296d7dce",
-      "structure": "sha256:e6f04ce1fb2dd39c496822071c285034f50145d6c33a570e567b99230f6cde64"
+      "content": "sha256:ffb8df22bfa847389c09d0250ba3390e6215df1d679ef604e1fffcc70d9df4ad",
+      "structure": "sha256:dd7dca0b221fdc90c0aad7371721d069eafdebe6dd2c84d97ebb197c1bfeca4a"
     },
     "preview": "/preview/extend-schema-builder",
     "registryAddress": "@taste/extend-schema-builder",
@@ -33577,11 +33578,12 @@
           "upstreamPath": "components/core/dock.tsx",
           "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/dock.tsx",
           "upstreamSha256": "sha256:5b624424f0fd8b66f174ecbd4e0d8c260f438d933963126bf34298eadcebf719",
-          "contentSha256": "sha256:a4331875113a63e9920e61670895025da9f291fe2d7d35f02d4e3dc75103b447",
+          "contentSha256": "sha256:612bc6b57a556404ca5009d00992ff2b620b34cac2dc21b0784b1dc7040c0fa1",
           "changes": [
             "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
             "Added useReducedMotion handling that keeps the dock and item widths static and makes tooltip feedback immediate.",
-            "Changed the focusable role=button wrapper to a native button and require an accessible aria-label."
+            "Changed the focusable role=button wrapper to a native button and require an accessible aria-label.",
+            "Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior."
           ]
         },
         {
@@ -33609,15 +33611,15 @@
     "modifications": [
       {
         "shippedPath": "components/motion-dock/dock.tsx",
-        "change": "Changed the local utility import, disabled magnification for reduced motion, and replaced the simulated button with a labelled native button.",
-        "reason": "Resolve the copied helper, keep the dock static when motion is reduced, and preserve native keyboard/touch activation and naming."
+        "change": "Changed the local utility import, disabled magnification for reduced motion, and replaced the simulated button with a labelled native button. Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior.",
+        "reason": "Resolve the copied helper, keep the dock static when motion is reduced, and preserve native keyboard/touch activation and naming. Compile several upstream Motion 11-era components safely in the shared catalog while preserving their rendered behavior and install API."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:0f3e34315683368409a2ec5a2757ab86c72e155577e39971826f41e676b6bce8",
-      "content": "sha256:6084a47516a76951e91e1fe4e713cd2c3a87abeb068c5a516f099d236daebb5e",
-      "structure": "sha256:ebb4bec0ce46ec99b4c7c87f024656f67bbc011fdfb47a036dcf93a312e1e436"
+      "content": "sha256:be5a667c709bb8ebfde7e7cc9b4453158eae6675c4fd660d1737497ddd3f4dd0",
+      "structure": "sha256:ce3607e79ce8e6fef4c20bc326e37dfab7ca76f7789554a447b45ea7941684cc"
     },
     "preview": "/preview/motion-dock",
     "registryAddress": "@taste/motion-dock",
@@ -33739,12 +33741,13 @@
           "upstreamPath": "components/core/morphing-popover.tsx",
           "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/morphing-popover.tsx",
           "upstreamSha256": "sha256:72811cafa2d38d548919e2742325a5360dbd698ca19baf5d1af4c3417e8c425c",
-          "contentSha256": "sha256:728a50badbf14f670f6436ebf543e86056198a3e92ee1195ba0c3312e485c329",
+          "contentSha256": "sha256:8912737bddc392fd1975c1b8a9ce89edc875c8a0fb2405302ab805adea76ec5b",
           "changes": [
             "Changed local utility and click-outside imports from root aliases to ../../lib/utils and ../../hooks/useClickOutside.",
             "Added an instant useReducedMotion MotionConfig path.",
             "Tracked the trigger, moved focus into the open popover, restored it on close, and made the dialog non-modal while retaining Escape and touch outside dismissal.",
-            "Memoized open and close callbacks so parent rerenders do not tear down and restart the focus effect."
+            "Memoized open and close callbacks so parent rerenders do not tear down and restart the focus effect.",
+            "Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior."
           ]
         },
         {
@@ -33779,15 +33782,15 @@
     "modifications": [
       {
         "shippedPath": "components/motion-morphing-popover/morphing-popover.tsx",
-        "change": "Changed local imports and added reduced-motion plus stable non-modal focus management.",
-        "reason": "Resolve copied helpers, snap the shared-layout transition when requested, and align focus behavior with a dismissible non-modal popover."
+        "change": "Changed local imports and added reduced-motion plus stable non-modal focus management. Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior.",
+        "reason": "Resolve copied helpers, snap the shared-layout transition when requested, and align focus behavior with a dismissible non-modal popover. Compile several upstream Motion 11-era components safely in the shared catalog while preserving their rendered behavior and install API."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:917584025bf928ea8a4c4c714f044381cef74e8deb110f16c7d2b2e14a1fcb4f",
-      "content": "sha256:69ec463508b167897df91773ed98f87c269a1221fa1b3c63ca51dc1b49a9c992",
-      "structure": "sha256:83917c3a613f3e9c2a7a3f43990d0955fa9086111f46c218bf3d8caedaba69c2"
+      "content": "sha256:820b1a1932bb25440aab74bed44a11f56a5f725f6fa589985d353bcb063f5857",
+      "structure": "sha256:9b9c8c4d4b5204f278dde61a45f6df3c77555d9ca16b9387685e8c95fe22dead"
     },
     "preview": "/preview/motion-morphing-popover",
     "registryAddress": "@taste/motion-morphing-popover",
@@ -33899,11 +33902,12 @@
           "upstreamPath": "components/core/scroll-progress.tsx",
           "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/scroll-progress.tsx",
           "upstreamSha256": "sha256:e5decf683e55b351e971ecb47483e12169daaaf1a0a7ba079a2270d8ca6270b3",
-          "contentSha256": "sha256:eeef52652e3c5de98a8cd40b06183021b76b0775fab625e04ff3645f7fa39992",
+          "contentSha256": "sha256:56a9aa086fb5ef7c52059f5ca889d0497ee4baa417b6d5281e35fe757a120db5",
           "changes": [
             "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
             "Used the direct scroll motion value instead of the spring when reduced motion is requested.",
-            "Allowed a nullable container ref for current React ref typing."
+            "Allowed a nullable container ref for current React ref typing.",
+            "Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior."
           ]
         },
         {
@@ -33931,15 +33935,15 @@
     "modifications": [
       {
         "shippedPath": "components/motion-scroll-progress/scroll-progress.tsx",
-        "change": "Changed the local utility import, bypassed spring lag for reduced motion, and widened the container ref type to include null.",
-        "reason": "Resolve the copied helper, keep progress directly tied to scroll position under reduced motion, and compile with current React ref types."
+        "change": "Changed the local utility import, bypassed spring lag for reduced motion, and widened the container ref type to include null. Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior.",
+        "reason": "Resolve the copied helper, keep progress directly tied to scroll position under reduced motion, and compile with current React ref types. Compile several upstream Motion 11-era components safely in the shared catalog while preserving their rendered behavior and install API."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:47bcdeb0c857630df2f1f457640d04050b144db9bce193de7a488371af759a40",
-      "content": "sha256:e3eec70e39fa5b4c3bcac20512b41a1c649945f7ac548aa0664e794eb5d31306",
-      "structure": "sha256:db88f589c11ae814d0bcf88371c87d67c7e594bbe9949cea5fdc0f2460b99e81"
+      "content": "sha256:9cfbd99de5d559cff45e81f1131399a2672b3def8ee04c5b9b56b5339cfbec98",
+      "structure": "sha256:a7890610fbac5e37010c35a3e09d3f33bcef7fa97f6df9c04d73b7fd95d10bbb"
     },
     "preview": "/preview/motion-scroll-progress",
     "registryAddress": "@taste/motion-scroll-progress",
@@ -34126,10 +34130,11 @@
           "upstreamPath": "components/core/text-morph.tsx",
           "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-morph.tsx",
           "upstreamSha256": "sha256:e3839272d22e1b041378263019d0716a29a8b99656b64eb385b66402698c9294",
-          "contentSha256": "sha256:77055804a05e3bcd5197d4b3b3416b5ff639672b8a07b51b79d52bbd6e1860e3",
+          "contentSha256": "sha256:406480b2016bb1c2381d2d331e74edf6b091ec8ff5f5c5821c310f6ec46da076",
           "changes": [
             "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
-            "Rendered the updated text as one static semantic node when reduced motion is requested."
+            "Rendered the updated text as one static semantic node when reduced motion is requested.",
+            "Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior."
           ]
         },
         {
@@ -34157,15 +34162,15 @@
     "modifications": [
       {
         "shippedPath": "components/motion-text-morph/text-morph.tsx",
-        "change": "Changed the local utility import and added an immediate-text reduced-motion branch.",
-        "reason": "Resolve the copied helper and keep updated text readable without character layout motion."
+        "change": "Changed the local utility import and added an immediate-text reduced-motion branch. Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior.",
+        "reason": "Resolve the copied helper and keep updated text readable without character layout motion. Compile several upstream Motion 11-era components safely in the shared catalog while preserving their rendered behavior and install API."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:fe0ed5412d07c2de7e0b37f4248da5b7293c4912bec945a96628e76a5de5af1b",
-      "content": "sha256:4c2b2db8ce02f2a8b42721e3872629badbcf0016464a837f262466abdf0cfc0c",
-      "structure": "sha256:1e597b945b9c8e82d9fec5d1102378c1cb2a84ff6bc66d72f1c6146f34390992"
+      "content": "sha256:013a7df55d2be6c899cde37bedbd99f7901fcb7c6877180ab380c2814f3479ec",
+      "structure": "sha256:ccad56e900d0620f90b3e56386e56349b81f22da061d1490593ba2f5c4d8acf8"
     },
     "preview": "/preview/motion-text-morph",
     "registryAddress": "@taste/motion-text-morph",
@@ -39332,7 +39337,7 @@
     "renderer": "dom",
     "dependencies": [
       "classnames@2.5.1",
-      "lodash@4.17.21",
+      "lodash@4.18.1",
       "prop-types@15.8.1"
     ],
     "registryDependencies": [],
@@ -39850,8 +39855,10 @@
           "upstreamPath": "src/static/Component.tsx",
           "permalink": "https://github.com/igordanchenko/react-photo-album/blob/1b889f47ec271144c16f32f2a7219ae6c53358c9/src/static/Component.tsx",
           "upstreamSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "contentSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "changes": []
+          "contentSha256": "sha256:b0b2dfe83b958fc7bead6e3141c404ecbd71bf8aef928f99efdc99b82489a981",
+          "changes": [
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+          ]
         },
         {
           "upstreamPath": "src/static/PhotoComponent.tsx",
@@ -39945,12 +39952,18 @@
       },
       "notices": []
     },
-    "modifications": [],
+    "modifications": [
+      {
+        "shippedPath": "src/static/Component.tsx",
+        "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
+      }
+    ],
     "assets": [],
     "hashes": {
       "source": "sha256:d378ab8801c99ad61f3eff9cb921b2626fdbd3bc0a24bb2444b7d1abb78f1051",
-      "content": "sha256:d378ab8801c99ad61f3eff9cb921b2626fdbd3bc0a24bb2444b7d1abb78f1051",
-      "structure": "sha256:59b65f0a2ca919f0cc494dae9499d7b5e7253d2e1000acf0fff533fd14417169"
+      "content": "sha256:8381549965c6de956fad893dc1ff8918fd0bd37e211464b4205637474be380a5",
+      "structure": "sha256:c542cf90663029757273563af8c12a3ecba471c201fdcc3260179ccd94c75da6"
     },
     "preview": "/preview/react-photo-album-columns",
     "registryAddress": "@taste/react-photo-album-columns",
@@ -40060,8 +40073,10 @@
           "upstreamPath": "src/static/Component.tsx",
           "permalink": "https://github.com/igordanchenko/react-photo-album/blob/1b889f47ec271144c16f32f2a7219ae6c53358c9/src/static/Component.tsx",
           "upstreamSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "contentSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "changes": []
+          "contentSha256": "sha256:b0b2dfe83b958fc7bead6e3141c404ecbd71bf8aef928f99efdc99b82489a981",
+          "changes": [
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+          ]
         },
         {
           "upstreamPath": "src/static/PhotoComponent.tsx",
@@ -40155,12 +40170,18 @@
       },
       "notices": []
     },
-    "modifications": [],
+    "modifications": [
+      {
+        "shippedPath": "src/static/Component.tsx",
+        "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
+      }
+    ],
     "assets": [],
     "hashes": {
       "source": "sha256:de7fdd25a7e7678c36b20be2594e11bc9de4511c7c07ed53522bfd790a281f47",
-      "content": "sha256:de7fdd25a7e7678c36b20be2594e11bc9de4511c7c07ed53522bfd790a281f47",
-      "structure": "sha256:5bdb5298289146522d3671d7155880d86ab3de6666dd7657f1ea775afce0fb2e"
+      "content": "sha256:50e24bbd8623ce977bdb4a2a5579fb8e8a184448d359b95f60b6583b2285d183",
+      "structure": "sha256:a0508bae5f98948696048e2a9dc8a7273b5bd8de0e68dea9bc581f2594c526de"
     },
     "preview": "/preview/react-photo-album-masonry",
     "registryAddress": "@taste/react-photo-album-masonry",
@@ -40271,8 +40292,10 @@
           "upstreamPath": "src/static/Component.tsx",
           "permalink": "https://github.com/igordanchenko/react-photo-album/blob/1b889f47ec271144c16f32f2a7219ae6c53358c9/src/static/Component.tsx",
           "upstreamSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "contentSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-          "changes": []
+          "contentSha256": "sha256:b0b2dfe83b958fc7bead6e3141c404ecbd71bf8aef928f99efdc99b82489a981",
+          "changes": [
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+          ]
         },
         {
           "upstreamPath": "src/static/PhotoComponent.tsx",
@@ -40366,12 +40389,18 @@
       },
       "notices": []
     },
-    "modifications": [],
+    "modifications": [
+      {
+        "shippedPath": "src/static/Component.tsx",
+        "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
+      }
+    ],
     "assets": [],
     "hashes": {
       "source": "sha256:525606c823926fc00dc75dbe7afb7da56832766fba4bb7b404afd1bdf9401b23",
-      "content": "sha256:525606c823926fc00dc75dbe7afb7da56832766fba4bb7b404afd1bdf9401b23",
-      "structure": "sha256:2cdb2d4974c18bf0757e96b200878fcf53511470c0338d6f4c54d106e4f5e5f2"
+      "content": "sha256:5dd765d6b3d9f8068e4f9098eceb36405538e0313053832e4805d43712b29cb4",
+      "structure": "sha256:57d1107593bac781114499eee9cf44f6e769f2d4c1438c658db4db5f94ebc1cd"
     },
     "preview": "/preview/react-photo-album-rows",
     "registryAddress": "@taste/react-photo-album-rows",
@@ -44430,9 +44459,10 @@
           "upstreamPath": "src/SwipeableList.js",
           "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeableList.js",
           "upstreamSha256": "sha256:215f3456d762e7f1389a4dd9262a99feb5a117f9d31dfc7e1a673a0658e82672",
-          "contentSha256": "sha256:3634c45fd8b97990826c7069ff4b11f0c490f92cf8587c3d673f1d6026c21b18",
+          "contentSha256": "sha256:4d9a1ff7964ad647f9ad5541d566bbc5b3ffb6a9ba3514188098b1e44ab185d0",
           "changes": [
-            "Ported PropTypes to strict TypeScript and replaced clsx with a local class join while retaining the upstream list defaults, Type values, child injection, and Tag API."
+            "Ported PropTypes to strict TypeScript and replaced clsx with a local class join while retaining the upstream list defaults, Type values, child injection, and Tag API.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44470,11 +44500,12 @@
           "upstreamPath": "src/SwipeAction.js",
           "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeAction.js",
           "upstreamSha256": "sha256:8c027850f940859ac73ca261614c1c2dd3c1cb3d9a22c55cd2e7cb85f33c4642",
-          "contentSha256": "sha256:92dd8720dbe1c11d6e939229fe2ce533ac256dbafc63e689c76dba049bb92e6d",
+          "contentSha256": "sha256:ee546a8f717adef92712a0e3ec5fa477a8d1bfaf45a43f5c46a376f0ca943290",
           "changes": [
             "Ported PropTypes to strict TypeScript and replaced clsx with a local class join while retaining the upstream action scheduling and full-swipe registration flow.",
             "Changed the default Tag from span to a type=button action, supplied Enter and Space semantics for custom non-button tags, and kept actions out of tab order until revealed.",
-            "Tracked and cleared actionDelay and destructiveCallbackDelay timers and unregistered stale full-swipe callbacks on cleanup."
+            "Tracked and cleared actionDelay and destructiveCallbackDelay timers and unregistered stale full-swipe callbacks on cleanup.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44551,8 +44582,8 @@
       },
       {
         "shippedPath": "components/react-swipeable-list/SwipeableList.tsx",
-        "change": "Mechanically ported the upstream list and Type contract from PropTypes and clsx to strict TypeScript and a local class join.",
-        "reason": "Use host React without adding the upstream project's undeclared prop-types or clsx development dependencies."
+        "change": "Mechanically ported the upstream list and Type contract from PropTypes and clsx to strict TypeScript and a local class join. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Use host React without adding the upstream project's undeclared prop-types or clsx development dependencies. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       },
       {
         "shippedPath": "components/react-swipeable-list/SwipeableListItem.tsx",
@@ -44566,8 +44597,8 @@
       },
       {
         "shippedPath": "components/react-swipeable-list/SwipeAction.tsx",
-        "change": "Ported the action to strict TypeScript, made button the semantic default, added a keyboard fallback for custom tags, gated tab focus by reveal state, and tracked every delayed callback.",
-        "reason": "Remove click-only generic actions, hidden focus targets, undeclared runtime dependencies, and callbacks that could fire after unmount."
+        "change": "Ported the action to strict TypeScript, made button the semantic default, added a keyboard fallback for custom tags, gated tab focus by reveal state, and tracked every delayed callback. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Remove click-only generic actions, hidden focus targets, undeclared runtime dependencies, and callbacks that could fire after unmount. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       },
       {
         "shippedPath": "components/react-swipeable-list/SwipeAction.css",
@@ -44593,8 +44624,8 @@
     "assets": [],
     "hashes": {
       "source": "sha256:f92a2b6de14cb4e7423ca44f7430411eea546741f40c8522f766704c7ddbd974",
-      "content": "sha256:46221f8239cab60aa6ddbdb5d2c63f9299b3e9f981ac98ebdd1b877a843548d3",
-      "structure": "sha256:22b1b2fb3d7c739cee998cc8454bd19b0f9d8a30ac1d7306490482b893f4d442"
+      "content": "sha256:3eb8465095efc56c24c2611c7e9b20db2fa02036ff0ffa29c4d3254ae8d7d88c",
+      "structure": "sha256:979003fa62ba855778f832425ce9f00e0615f00da3104bbc95644b910b7cbec8"
     },
     "preview": "/preview/swipeable-row-actions",
     "registryAddress": "@taste/swipeable-row-actions",
@@ -44709,9 +44740,10 @@
           "upstreamPath": "registry/default/highlighter-sweep/highlighter-sweep.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/highlighter-sweep/highlighter-sweep.tsx",
           "upstreamSha256": "sha256:1bb0f1a0f6e6eb1cf303a299431d3a29d686ddf133070e89cd9128bf9d43dbd5",
-          "contentSha256": "sha256:4d01c870b6e185c3415d9e15d4ba40497a3fdc970d25ae86ffde565db865e7b8",
+          "contentSha256": "sha256:a877f0a3dd62d196842efd004ddb0dc2c755b347a70e035bd010e9d69028bbd8",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44739,15 +44771,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-highlighter-sweep/highlighter-sweep.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:a6edad7853b089f52ddae567c6fc35eee198e03f2e492c82b94f8bb92fad0935",
-      "content": "sha256:e9582a497cd60b551ca55954bd13a7f479e70ce82ac0340fee2d3f819f169686",
-      "structure": "sha256:a90e155b7daa1f0fac4f9b0b1e85010bc0621b060eb7a6aeeccb0e0000e06e25"
+      "content": "sha256:8ac153d9764c24ab408ed1f4f55e0eb76fc8905e375c451350a15168a2213a06",
+      "structure": "sha256:5f41506964dacffcd1cdd031ad5474d78c1c29abf66b2dde896eed54a51611e3"
     },
     "preview": "/preview/trickle-highlighter-sweep",
     "registryAddress": "@taste/trickle-highlighter-sweep",
@@ -44783,9 +44815,10 @@
           "upstreamPath": "registry/default/ink-bleed/ink-bleed.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/ink-bleed/ink-bleed.tsx",
           "upstreamSha256": "sha256:3e10af09758e0fff6c8e9c5882cb17ce5d080ce7e4a52ce225ea56415ba525e0",
-          "contentSha256": "sha256:b507d941085bc5bf559be5053a32596a2a58ab9b940b85d0561a57f717c164bf",
+          "contentSha256": "sha256:9b2a8961d0f73116732389f087013320855d7267afe8011cf651140be12c9941",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44813,15 +44846,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:be64041f0d80d53c1c19b19db993adee7832d1ce2d1c8c2c711258d3f0ae5d50",
-      "content": "sha256:051a9a49d826713ac87f26296e5b5ae28b380047b3bbab5d656fb0340c6a1261",
-      "structure": "sha256:a783e20de8072b661161ef22496c43ffeaa1a341592a20dd48d028e9e91a1676"
+      "content": "sha256:256950110bc30d54971a6289b7b46f54ebf6ad0a6a0cba5c2575b881fb9c3a4c",
+      "structure": "sha256:c1041436372b1705a40b97b9afd144a4f0596eb7cba253eb7b0f2892ce772961"
     },
     "preview": "/preview/trickle-ink-bleed",
     "registryAddress": "@taste/trickle-ink-bleed",
@@ -44857,9 +44890,10 @@
           "upstreamPath": "registry/default/pixelate/pixelate.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/pixelate/pixelate.tsx",
           "upstreamSha256": "sha256:b4ecaff807b2c815749961d9e996eec0fb05df8e320e85285145ab91081fc96e",
-          "contentSha256": "sha256:fac24f263d0da24ad89a430ff024eaa012a0f6f85a738c937d603e6d48a155e4",
+          "contentSha256": "sha256:7f4faac459dda4cd5b3940fec100fb91fe32634e6abc23ac7764dff13a439f66",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44887,15 +44921,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-pixelate/pixelate.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:835fee192c5d2b3ad1941744611917f1efbd6251bfecf1c4c9744ec1efd0c4a0",
-      "content": "sha256:56aec81b7e30f1fcfc6d7b2e75c4e196aaa7adcebeecbd0f15060f08c5422a6d",
-      "structure": "sha256:9661ef411df8e2fd0aa992b7cebe60e96d352f5fe154b7ad538f26cd23a8e447"
+      "content": "sha256:d889f5a9ca3517b65da94914fad3b2adb6eafba7895ca2f036b7bf4fe9ef6e89",
+      "structure": "sha256:9e9f93ae7845e0e0691486fc9c3945d17fc932cd23bf41972b66f40bc6a4224f"
     },
     "preview": "/preview/trickle-pixelate",
     "registryAddress": "@taste/trickle-pixelate",
@@ -44931,9 +44965,10 @@
           "upstreamPath": "registry/default/shutter/shutter.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/shutter/shutter.tsx",
           "upstreamSha256": "sha256:4d72175b928b3220516c6cd68c4d60812e6d788246373df746d5d0f1665346e4",
-          "contentSha256": "sha256:e642551095219cc79c1079a6ec75a7f07487143690d9de0e8954e4798c287b2a",
+          "contentSha256": "sha256:371c67036651f5813b1b973172111b912972962dd265c7378738c3d1ea368a68",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -44961,15 +44996,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-shutter/shutter.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:8f01cbbfd55e25d32610747dda5cd5c71d452905b26828dabb9f66df3af8b76f",
-      "content": "sha256:47e1049434a84c9eb1cdfec9dc00fbf8711b20420014bdc5c19802ef9cc5a984",
-      "structure": "sha256:005618e130bb0895adefea7dbbf3453246fc3f941f9a238ca0a0e1a33c3d5952"
+      "content": "sha256:22811acfff72415efba7c9a2206be296675aace839d6489992d5350802933289",
+      "structure": "sha256:29871c7b7a771240e81e57c827c634427caa350797c9416b4476381be7091a29"
     },
     "preview": "/preview/trickle-shutter",
     "registryAddress": "@taste/trickle-shutter",
@@ -45005,9 +45040,10 @@
           "upstreamPath": "registry/default/underline-draw/underline-draw.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/underline-draw/underline-draw.tsx",
           "upstreamSha256": "sha256:abeb98f2a77f3c1812c4e11a483ba3675c57d82837c7c7ff07826857fb448aca",
-          "contentSha256": "sha256:b28bf39894d2af083cb9d878ce73d4ecdaa15b4692fc74d369c6ed72c22a7473",
+          "contentSha256": "sha256:f07a85a1586f8a76e705bce2bb54a57d087d5191c5d017c7b6f8d0c6e4de758f",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -45035,15 +45071,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-underline-draw/underline-draw.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:e7ea5b9909988d068bc7807fe0dbc58cc0d0f2133a62556cf69a3db009b2a6cd",
-      "content": "sha256:828db4c07ca5e87ec4e10f91a79c01097ee836c992363d57649b01fbc9192d82",
-      "structure": "sha256:986eb58c33fc2a9e06b55183109f4e0baef85e222a788e877b795648c6313df9"
+      "content": "sha256:3128e34a1868242d8442c5fc7f4744c55b21957a148707122b2b50c967919581",
+      "structure": "sha256:41e4fe8b891b109fc02491c0c22ffe0f00efee776291f14aedbc962a56100857"
     },
     "preview": "/preview/trickle-underline-draw",
     "registryAddress": "@taste/trickle-underline-draw",
@@ -45079,9 +45115,10 @@
           "upstreamPath": "registry/default/wireframe/wireframe.tsx",
           "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/wireframe/wireframe.tsx",
           "upstreamSha256": "sha256:b18e08c12257d9c1e584ffe7e66c9bd48d6b5a745cebb96d9636526e18e94795",
-          "contentSha256": "sha256:067ad0d5e8c0c9af6ea2a55549cdbe6f4af7f3ee8e9d2c337e9994a8e718e0df",
+          "contentSha256": "sha256:245e78f31be0185522ea0f68151316df97902fc096bcc55d7907b67bb6d6403b",
           "changes": [
-            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+            "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
           ]
         },
         {
@@ -45109,15 +45146,15 @@
     "modifications": [
       {
         "shippedPath": "components/trickle-wireframe/wireframe.tsx",
-        "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+        "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:f5480a85c2009b7aa5953ba8f95933dd1b6db03db0195fe4fdc655f74d662534",
-      "content": "sha256:e3a54c0e306a3c03a13ed246ab55a5bc53861cc27da91818558aff563419e36d",
-      "structure": "sha256:4f96f2f452ae87f8493ef85ef454d8fb42bceee01ed07b51f96f41d132de3f69"
+      "content": "sha256:cd00c9c5ee0893dfc4d289f2bfc5cccd43f33a57268c1fa8d2e9f68ea4be489a",
+      "structure": "sha256:4f4efc3119f55dd71a2d5e96a43f1499c3dc179109b074f9971a19771abcc050"
     },
     "preview": "/preview/trickle-wireframe",
     "registryAddress": "@taste/trickle-wireframe",
@@ -45973,80 +46010,6 @@
     "preview": "/preview/uilayouts-progressive-carousel",
     "registryAddress": "@taste/uilayouts-progressive-carousel",
     "installCommand": "npx shadcn@latest add @taste/uilayouts-progressive-carousel"
-  },
-  {
-    "name": "vercel-ai-ansi-terminal",
-    "title": "ANSI Terminal",
-    "description": "An ANSI console output viewer with stream state, copy, clear, and autoscroll.",
-    "author": "Vercel",
-    "type": "registry:component",
-    "status": "verified",
-    "category": "cards-containers",
-    "tags": [
-      "terminal",
-      "ansi",
-      "console",
-      "streaming"
-    ],
-    "renderer": "dom",
-    "dependencies": [
-      "ansi-to-react@6.2.6",
-      "lucide-react@0.577.0"
-    ],
-    "registryDependencies": [
-      "button",
-      "utils"
-    ],
-    "source": {
-      "project": "Vercel AI Elements",
-      "repository": "https://github.com/vercel/ai-elements",
-      "revision": "0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b",
-      "retrievedAt": "2026-07-20",
-      "files": [
-        {
-          "upstreamPath": "packages/elements/src/terminal.tsx",
-          "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/packages/elements/src/terminal.tsx",
-          "upstreamSha256": "sha256:04b9b534925054cfe67fdc3bc212eb7261b4912e6e970c4844a195907d3a9a93",
-          "contentSha256": "sha256:52d99a2eda57ff250ea598e33aae16e5411fa84e45ff59f62f904f8ea66732bc",
-          "changes": [
-            "Changed Vercel workspace-local shadcn imports to standard consumer aliases.",
-            "Disabled the cursor pulse under reduced motion and changed physical spacing to a logical utility."
-          ]
-        }
-      ]
-    },
-    "license": {
-      "spdx": "Apache-2.0",
-      "scope": "packages/elements/src/terminal.tsx",
-      "copyright": [
-        "Copyright 2023 Vercel, Inc."
-      ],
-      "evidence": {
-        "upstreamPath": "LICENSE",
-        "permalink": "https://github.com/vercel/ai-elements/blob/0c1f5e8c75273f0e95c8faa031544a8aa2bb1a5b/LICENSE",
-        "sha256": "sha256:b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529"
-      },
-      "notices": [
-        "registry/sources/vercel-ai-elements/NOTICE",
-        "registry/sources/vercel-ai-elements/LICENSE-APACHE-2.0.txt"
-      ]
-    },
-    "modifications": [
-      {
-        "shippedPath": "components/vercel-ai-elements/terminal.tsx",
-        "change": "Changed Vercel workspace-local shadcn imports to standard consumer aliases. Disabled the cursor pulse under reduced motion and changed physical spacing to a logical utility.",
-        "reason": "Keep the copied component portable and meet security, accessibility, reduced-motion, and RTL requirements without changing its product role."
-      }
-    ],
-    "assets": [],
-    "hashes": {
-      "source": "sha256:4276dcdfc180a478463d07f8e3541bfa018f10e7f8e973676e365c564f611b7e",
-      "content": "sha256:9050b184e19142e0f7c6268cafcb8afbcebc1d060d2e9e3c0065b6fc5607af6f",
-      "structure": "sha256:1a92941818a5c04455ded50b0dc678768bb6f73e866d096b016439eaf1d3f952"
-    },
-    "preview": "/preview/vercel-ai-ansi-terminal",
-    "registryAddress": "@taste/vercel-ai-ansi-terminal",
-    "installCommand": "npx shadcn@latest add @taste/vercel-ai-ansi-terminal"
   },
   {
     "name": "vercel-ai-audio-player",
@@ -47527,8 +47490,10 @@
           "upstreamPath": "src/components/IconButton.tsx",
           "permalink": "https://github.com/igordanchenko/yet-another-react-lightbox/blob/18dc3afe76de67c4f6ea576ab9289b98bf36c550/src/components/IconButton.tsx",
           "upstreamSha256": "sha256:63edf71084a6ff1262782b9536755484fdbe0d880526ae454beb3e8ed999f56e",
-          "contentSha256": "sha256:63edf71084a6ff1262782b9536755484fdbe0d880526ae454beb3e8ed999f56e",
-          "changes": []
+          "contentSha256": "sha256:681cd24138f906b0d4dfb3856eeac630929ebfb62d8520f326a8aba82354202a",
+          "changes": [
+            "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+          ]
         },
         {
           "upstreamPath": "src/components/Icons.tsx",
@@ -47893,13 +47858,18 @@
         "shippedPath": "components/yarl-lightbox/styles.css",
         "change": "Compiled the upstream Sass entry to the official 3.32.1 CSS output and normalized its trailing newline.",
         "reason": "Ship the exact visual skin without requiring every registry consumer to install and configure Sass."
+      },
+      {
+        "shippedPath": "components/yarl-lightbox/components/IconButton.tsx",
+        "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+        "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
       }
     ],
     "assets": [],
     "hashes": {
       "source": "sha256:a604f956101ce185625b85b25a60972b16bff4b601755bcc4d269ac971ff2876",
-      "content": "sha256:977606c4c50104d6cdb59a543955f6c123a5444a43af2242ed17a03c14041c0a",
-      "structure": "sha256:1b7b28713859418fd1afae6775a558bb33a4975ff81855753a7677a86c3e1011"
+      "content": "sha256:d660b368773aa9579e5d2b2981b82206010c7cbbe7ff37e088141f396f86b35e",
+      "structure": "sha256:5d6763c6e03f2cda03170c9ff2a9c3ca6d1cb0130d225e2c31c0b9d3e528ad87"
     },
     "preview": "/preview/yarl-lightbox",
     "registryAddress": "@taste/yarl-lightbox",

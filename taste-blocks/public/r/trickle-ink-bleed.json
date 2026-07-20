@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/sources/trickle/components/trickle-ink-bleed/ink-bleed.tsx",
-      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface InkBleedProps {\n  children: React.ReactNode;\n  /** Delay before the bleed begins, in ms. */\n  delay?: number;\n  /** Duration of the bleed, in ms. */\n  duration?: number;\n  /** Origin point as 'X% Y%' (e.g. '50% 50%' for center, '0% 50%' for left). */\n  origin?: string;\n  /** Element tag. Defaults to `span`. */\n  as?: ElementType;\n  className?: string;\n}\n\nexport function InkBleed({\n  children,\n  delay = 0,\n  duration = 1200,\n  origin = '50% 50%',\n  as: Component = 'span',\n  className\n}: InkBleedProps) {\n  return (\n    <Component\n      className={cn('inline-block animate-trickle-ink-bleed', className)}\n      style={{\n        animationDelay: `${delay}ms`,\n        animationDuration: `${duration}ms`,\n        ['--trickle-ink-origin' as string]: origin\n      } as CSSProperties}\n    >\n      {children}\n    </Component>\n  );\n}\n",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface InkBleedProps {\n  children: React.ReactNode;\n  /** Delay before the bleed begins, in ms. */\n  delay?: number;\n  /** Duration of the bleed, in ms. */\n  duration?: number;\n  /** Origin point as 'X% Y%' (e.g. '50% 50%' for center, '0% 50%' for left). */\n  origin?: string;\n  /** Element tag. Defaults to `span`. */\n  as?: ElementType;\n  className?: string;\n}\n\nexport function InkBleed({\n  children,\n  delay = 0,\n  duration = 1200,\n  origin = '50% 50%',\n  as: Component = 'span',\n  className\n}: InkBleedProps) {\n  const RenderComponent: any = Component;\n  return (\n    <RenderComponent\n      className={cn('inline-block animate-trickle-ink-bleed', className)}\n      style={{\n        animationDelay: `${delay}ms`,\n        animationDuration: `${duration}ms`,\n        ['--trickle-ink-origin' as string]: origin\n      } as CSSProperties}\n    >\n      {children}\n    </RenderComponent>\n  );\n}\n",
       "type": "registry:component",
       "target": "@components/taste-blocks/trickle-ink-bleed.tsx"
     },
@@ -70,9 +70,10 @@
             "upstreamPath": "registry/default/ink-bleed/ink-bleed.tsx",
             "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/ink-bleed/ink-bleed.tsx",
             "upstreamSha256": "sha256:3e10af09758e0fff6c8e9c5882cb17ce5d080ce7e4a52ce225ea56415ba525e0",
-            "contentSha256": "sha256:b507d941085bc5bf559be5053a32596a2a58ab9b940b85d0561a57f717c164bf",
+            "contentSha256": "sha256:9b2a8961d0f73116732389f087013320855d7267afe8011cf651140be12c9941",
             "changes": [
-              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+              "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
             ]
           },
           {
@@ -103,15 +104,15 @@
       "modifications": [
         {
           "shippedPath": "components/trickle-ink-bleed/ink-bleed.tsx",
-          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
         }
       ],
       "dedupe": {
         "family": "ink-mask-text-reveal",
         "sourceHash": "sha256:be64041f0d80d53c1c19b19db993adee7832d1ce2d1c8c2c711258d3f0ae5d50",
-        "contentHash": "sha256:051a9a49d826713ac87f26296e5b5ae28b380047b3bbab5d656fb0340c6a1261",
-        "structureHash": "sha256:a783e20de8072b661161ef22496c43ffeaa1a341592a20dd48d028e9e91a1676"
+        "contentHash": "sha256:256950110bc30d54971a6289b7b46f54ebf6ad0a6a0cba5c2575b881fb9c3a4c",
+        "structureHash": "sha256:c1041436372b1705a40b97b9afd144a4f0596eb7cba253eb7b0f2892ce772961"
       },
       "verification": {
         "reviewedBy": "Codex",

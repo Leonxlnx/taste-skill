@@ -15,7 +15,7 @@
     },
     {
       "path": "registry/sources/yarl/components/yarl-lightbox/components/IconButton.tsx",
-      "content": "import * as React from \"react\";\n\nimport { clsx, cssClass, translateLabel } from \"../utils.js\";\nimport { useLightboxProps } from \"../contexts/index.js\";\nimport { ELEMENT_BUTTON, ELEMENT_ICON } from \"../consts.js\";\nimport { Label } from \"../types.js\";\n\nexport type IconButtonProps = React.ComponentProps<\"button\"> & {\n  label: Label;\n  icon: React.ElementType;\n  renderIcon?: () => React.ReactNode;\n};\n\nexport const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(\n  { label, className, icon: Icon, renderIcon, onClick, style, ...rest },\n  ref,\n) {\n  const { styles, labels } = useLightboxProps();\n  const buttonLabel = translateLabel(labels, label);\n\n  return (\n    <button\n      ref={ref}\n      type=\"button\"\n      title={buttonLabel}\n      aria-label={buttonLabel}\n      className={clsx(cssClass(ELEMENT_BUTTON), className)}\n      onClick={onClick}\n      style={{ ...style, ...styles.button }}\n      {...rest}\n    >\n      {renderIcon ? renderIcon() : <Icon className={cssClass(ELEMENT_ICON)} style={styles.icon} />}\n    </button>\n  );\n});\n",
+      "content": "import * as React from \"react\";\n\nimport { clsx, cssClass, translateLabel } from \"../utils.js\";\nimport { useLightboxProps } from \"../contexts/index.js\";\nimport { ELEMENT_BUTTON, ELEMENT_ICON } from \"../consts.js\";\nimport { Label } from \"../types.js\";\n\nexport type IconButtonProps = React.ComponentProps<\"button\"> & {\n  label: Label;\n  icon: React.ElementType;\n  renderIcon?: () => React.ReactNode;\n};\n\nexport const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(\n  { label, className, icon: Icon, renderIcon, onClick, style, ...rest },\n  ref,\n) {\n  const { styles, labels } = useLightboxProps();\n  const buttonLabel = translateLabel(labels, label);\n  const RenderIcon: any = Icon;\n\n  return (\n    <button\n      ref={ref}\n      type=\"button\"\n      title={buttonLabel}\n      aria-label={buttonLabel}\n      className={clsx(cssClass(ELEMENT_BUTTON), className)}\n      onClick={onClick}\n      style={{ ...style, ...styles.button }}\n      {...rest}\n    >\n      {renderIcon ? renderIcon() : <RenderIcon className={cssClass(ELEMENT_ICON)} style={styles.icon} />}\n    </button>\n  );\n});\n",
       "type": "registry:lib",
       "target": "@components/taste-blocks/yarl-lightbox/components/IconButton.tsx"
     },
@@ -352,8 +352,10 @@
             "upstreamPath": "src/components/IconButton.tsx",
             "permalink": "https://github.com/igordanchenko/yet-another-react-lightbox/blob/18dc3afe76de67c4f6ea576ab9289b98bf36c550/src/components/IconButton.tsx",
             "upstreamSha256": "sha256:63edf71084a6ff1262782b9536755484fdbe0d880526ae454beb3e8ed999f56e",
-            "contentSha256": "sha256:63edf71084a6ff1262782b9536755484fdbe0d880526ae454beb3e8ed999f56e",
-            "changes": []
+            "contentSha256": "sha256:681cd24138f906b0d4dfb3856eeac630929ebfb62d8520f326a8aba82354202a",
+            "changes": [
+              "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+            ]
           },
           {
             "shippedPath": "components/yarl-lightbox/components/Icons.tsx",
@@ -768,13 +770,18 @@
           "shippedPath": "components/yarl-lightbox/styles.css",
           "change": "Compiled the upstream Sass entry to the official 3.32.1 CSS output and normalized its trailing newline.",
           "reason": "Ship the exact visual skin without requiring every registry consumer to install and configure Sass."
+        },
+        {
+          "shippedPath": "components/yarl-lightbox/components/IconButton.tsx",
+          "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+          "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
         }
       ],
       "dedupe": {
         "family": "modal-image-lightbox",
         "sourceHash": "sha256:a604f956101ce185625b85b25a60972b16bff4b601755bcc4d269ac971ff2876",
-        "contentHash": "sha256:977606c4c50104d6cdb59a543955f6c123a5444a43af2242ed17a03c14041c0a",
-        "structureHash": "sha256:1b7b28713859418fd1afae6775a558bb33a4975ff81855753a7677a86c3e1011"
+        "contentHash": "sha256:d660b368773aa9579e5d2b2981b82206010c7cbbe7ff37e088141f396f86b35e",
+        "structureHash": "sha256:5d6763c6e03f2cda03170c9ff2a9c3ca6d1cb0130d225e2c31c0b9d3e528ad87"
       },
       "verification": {
         "reviewedBy": "Codex",

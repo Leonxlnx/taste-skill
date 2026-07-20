@@ -115,7 +115,7 @@ const SwipeAction = ({
       onHandleClick();
     }
   };
-  const ActionTag = Tag;
+  const ActionTag: any = Tag;
 
   return (
     <ActionTag

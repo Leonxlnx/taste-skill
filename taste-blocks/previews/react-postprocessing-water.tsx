@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { WaterEffect } from '@/registry/sources/react-postprocessing/components/react-postprocessing/effects/Water'

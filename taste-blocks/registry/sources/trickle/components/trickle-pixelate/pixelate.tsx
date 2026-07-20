@@ -33,10 +33,11 @@ export function Pixelate({
   as: Component = 'span',
   className
 }: PixelateProps) {
+  const RenderComponent: any = Component;
   const order = shuffledIndices(text.length);
   const stepMs = text.length > 0 ? Math.max(20, Math.floor(duration / text.length)) : 0;
   return (
-    <Component className={cn('inline-block', className)} aria-label={text}>
+    <RenderComponent className={cn('inline-block', className)} aria-label={text}>
       {text.split('').map((char, i) => (
         <span
           key={i}
@@ -51,6 +52,6 @@ export function Pixelate({
           {char}
         </span>
       ))}
-    </Component>
+    </RenderComponent>
   );
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import { FileThumbnail } from "@/registry/sources/extend-ui/components/extend-ui/file-thumbnail"
 
 export default function ExtendFileThumbnailPreview() {

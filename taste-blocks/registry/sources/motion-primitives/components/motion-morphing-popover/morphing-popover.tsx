@@ -21,7 +21,7 @@ import {
 import useClickOutside from '../../hooks/useClickOutside';
 import { cn } from '../../lib/utils';
 
-const TRANSITION = {
+const TRANSITION: Transition = {
   type: 'spring',
   bounce: 0.1,
   duration: 0.4,
@@ -191,7 +191,7 @@ function MorphingPopoverContent({
     );
 
   const ref = useRef<HTMLDivElement>(null);
-  useClickOutside(ref, context.close);
+  useClickOutside(ref as React.RefObject<HTMLElement>, context.close);
 
   useEffect(() => {
     if (!context.isOpen) return;

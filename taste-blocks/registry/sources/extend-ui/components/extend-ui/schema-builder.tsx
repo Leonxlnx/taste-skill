@@ -1374,7 +1374,7 @@ function InlineTextInput({
 }: React.InputHTMLAttributes<HTMLInputElement>) {
   const handleInput = React.useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
-      onInput?.(event)
+      onInput?.(event as Parameters<NonNullable<typeof onInput>>[0])
       onChange?.(event as unknown as React.ChangeEvent<HTMLInputElement>)
     },
     [onChange, onInput]

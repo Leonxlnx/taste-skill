@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import * as React from "react"
 
 import { HijriCalendar } from "@/registry/sources/shadcn-ui/components/shadcn-calendar-hijri/calendar-hijri"

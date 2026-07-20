@@ -1,3 +1,5 @@
+"use client"
+
 import { SchemaBuilderPanel } from "@/registry/sources/extend-ui/components/extend-ui/schema-builder"
 
 export default function ExtendSchemaBuilderPreview() {

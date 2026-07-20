@@ -26,6 +26,7 @@ export function TextMorph({
   variants,
   transition,
 }: TextMorphProps) {
+  const RenderComponent: any = Component;
   const uniqueId = useId();
   const shouldReduceMotion = useReducedMotion();
 
@@ -45,9 +46,9 @@ export function TextMorph({
 
   if (shouldReduceMotion) {
     return (
-      <Component className={cn(className)} style={style}>
+      <RenderComponent className={cn(className)} style={style}>
         {children}
-      </Component>
+      </RenderComponent>
     );
   }
 
@@ -65,7 +66,7 @@ export function TextMorph({
   };
 
   return (
-    <Component className={cn(className)} aria-label={children} style={style}>
+    <RenderComponent className={cn(className)} aria-label={children} style={style}>
       <AnimatePresence mode='popLayout' initial={false}>
         {characters.map((character) => (
           <motion.span
@@ -83,6 +84,6 @@ export function TextMorph({
           </motion.span>
         ))}
       </AnimatePresence>
-    </Component>
+    </RenderComponent>
   );
 }

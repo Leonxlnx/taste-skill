@@ -1,3 +1,5 @@
+"use client"
+
 import { Pixelate } from "@/registry/sources/trickle/components/trickle-pixelate/pixelate"
 
 export default function TricklePixelatePreview() {

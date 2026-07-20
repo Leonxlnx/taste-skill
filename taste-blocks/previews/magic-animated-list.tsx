@@ -1,3 +1,5 @@
+"use client"
+
 import { AnimatedList } from "@/registry/sources/magic-ui/components/magic-animated-list/animated-list"
 
 const events = [

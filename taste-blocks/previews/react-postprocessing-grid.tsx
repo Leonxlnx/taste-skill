@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { Grid } from '@/registry/sources/react-postprocessing/components/react-postprocessing/effects/Grid'

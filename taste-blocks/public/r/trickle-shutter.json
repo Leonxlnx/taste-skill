@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/sources/trickle/components/trickle-shutter/shutter.tsx",
-      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface ShutterProps {\n  children: React.ReactNode;\n  delay?: number;\n  duration?: number;\n  /** Number of vertical bars. Default 8. */\n  bars?: number;\n  as?: ElementType;\n  className?: string;\n}\n\nexport function Shutter({ children, delay = 0, duration = 1100, bars = 8, as: Component = 'span', className }: ShutterProps) {\n  return (\n    <Component\n      className={cn('inline-block animate-trickle-shutter', className)}\n      style={{\n        animationDelay: `${delay}ms`,\n        animationDuration: `${duration}ms`,\n        ['--trickle-shutter-bars' as string]: `${bars}`\n      } as CSSProperties}\n    >\n      {children}\n    </Component>\n  );\n}\n",
+      "content": "import { type ElementType, type CSSProperties } from 'react';\nimport { cn } from '../../lib/cn';\n\nexport interface ShutterProps {\n  children: React.ReactNode;\n  delay?: number;\n  duration?: number;\n  /** Number of vertical bars. Default 8. */\n  bars?: number;\n  as?: ElementType;\n  className?: string;\n}\n\nexport function Shutter({ children, delay = 0, duration = 1100, bars = 8, as: Component = 'span', className }: ShutterProps) {\n  const RenderComponent: any = Component;\n  return (\n    <RenderComponent\n      className={cn('inline-block animate-trickle-shutter', className)}\n      style={{\n        animationDelay: `${delay}ms`,\n        animationDuration: `${duration}ms`,\n        ['--trickle-shutter-bars' as string]: `${bars}`\n      } as CSSProperties}\n    >\n      {children}\n    </RenderComponent>\n  );\n}\n",
       "type": "registry:component",
       "target": "@components/taste-blocks/trickle-shutter.tsx"
     },
@@ -83,9 +83,10 @@
             "upstreamPath": "registry/default/shutter/shutter.tsx",
             "permalink": "https://github.com/akaieuan/trickle-UI-kit/blob/b99c513b1806028137d9d907cebc829d46b62686/registry/default/shutter/shutter.tsx",
             "upstreamSha256": "sha256:4d72175b928b3220516c6cd68c4d60812e6d788246373df746d5d0f1665346e4",
-            "contentSha256": "sha256:e642551095219cc79c1079a6ec75a7f07487143690d9de0e8954e4798c287b2a",
+            "contentSha256": "sha256:371c67036651f5813b1b973172111b912972962dd265c7378738c3d1ea368a68",
             "changes": [
-              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation."
+              "Changed the cn import from @/lib/cn to ../../lib/cn so the copied support file resolves source-locally and after installation.",
+              "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
             ]
           },
           {
@@ -116,15 +117,15 @@
       "modifications": [
         {
           "shippedPath": "components/trickle-shutter/shutter.tsx",
-          "change": "Changed the cn import from @/lib/cn to ../../lib/cn.",
-          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias."
+          "change": "Changed the cn import from @/lib/cn to ../../lib/cn. Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+          "reason": "Resolve the copied upstream helper from both the source batch and its registry install targets without relying on the upstream site alias. Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
         }
       ],
       "dedupe": {
         "family": "shutter-mask-text-reveal",
         "sourceHash": "sha256:8f01cbbfd55e25d32610747dda5cd5c71d452905b26828dabb9f66df3af8b76f",
-        "contentHash": "sha256:47e1049434a84c9eb1cdfec9dc00fbf8711b20420014bdc5c19802ef9cc5a984",
-        "structureHash": "sha256:005618e130bb0895adefea7dbbf3453246fc3f941f9a238ca0a0e1a33c3d5952"
+        "contentHash": "sha256:22811acfff72415efba7c9a2206be296675aace839d6489992d5350802933289",
+        "structureHash": "sha256:29871c7b7a771240e81e57c827c634427caa350797c9416b4476381be7091a29"
       },
       "verification": {
         "reviewedBy": "Codex",

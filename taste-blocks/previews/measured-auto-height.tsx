@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useState } from "react"
 
 import { AutoHeight } from "@/registry/sources/animate-ui/components/measured-auto-height/auto-height"

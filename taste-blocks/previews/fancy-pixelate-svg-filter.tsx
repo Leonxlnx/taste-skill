@@ -1,3 +1,5 @@
+"use client"
+
 import PixelateSvgFilter from "@/registry/sources/fancy-components/components/fancy-pixelate-svg-filter/pixelate-svg-filter"
 
 const filterId = "taste-blocks-pixelate-preview"

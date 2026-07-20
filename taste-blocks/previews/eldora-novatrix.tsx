@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import Novatrix from "@/registry/sources/eldora-ui/components/eldora-novatrix/novatrix"
 
 export default function EldoraNovatrixPreview() {

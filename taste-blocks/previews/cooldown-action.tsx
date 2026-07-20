@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useState } from "react"
 
 import CooldownAction from "@/registry/sources/otp-timer/components/cooldown-action/cooldown-action"

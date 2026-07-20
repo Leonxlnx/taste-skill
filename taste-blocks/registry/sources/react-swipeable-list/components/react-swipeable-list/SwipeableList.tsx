@@ -73,7 +73,7 @@ class SwipeableList extends PureComponent<SwipeableListProps> {
       swipeStartThreshold,
       threshold = 0.5,
     } = this.props;
-    const ListTag = Tag;
+    const ListTag: any = Tag;
 
     return (
       <ListTag

@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/registry/sources/shadcn-ui/components/radix-nova/chart"
 

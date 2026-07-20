@@ -30,7 +30,6 @@ export function ScrollProgress({
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     container: containerRef,
-    layoutEffect: Boolean(containerRef?.current),
   });
 
   const smoothedScaleX = useSpring(scrollYProgress, {

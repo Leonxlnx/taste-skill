@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useRef } from "react"
 
 import { AnimatedBeam } from "@/registry/sources/magic-ui/components/magic-animated-beam/animated-beam"

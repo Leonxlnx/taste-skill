@@ -1,3 +1,5 @@
+"use client"
+
 import { HighlighterSweep } from "@/registry/sources/trickle/components/trickle-highlighter-sweep/highlighter-sweep"
 
 const segments = [

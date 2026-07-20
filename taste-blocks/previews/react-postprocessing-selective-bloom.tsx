@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { useRef } from 'react'

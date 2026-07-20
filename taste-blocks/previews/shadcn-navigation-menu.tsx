@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/registry/sources/shadcn-ui/components/radix-nova/navigation-menu"
 
 export default function Preview() {

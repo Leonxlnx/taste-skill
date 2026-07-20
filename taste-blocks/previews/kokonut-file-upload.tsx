@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import FileUpload, {
   type FileUploadContext,
 } from "@/registry/sources/kokonut-ui/components/kokonut-file-upload/file-upload"

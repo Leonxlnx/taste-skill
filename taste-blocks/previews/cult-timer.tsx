@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useState } from "react"
 
 import { Timer } from "@/registry/sources/cult-ui/components/cult-timer/timer"

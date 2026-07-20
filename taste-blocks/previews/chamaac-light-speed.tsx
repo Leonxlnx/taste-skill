@@ -1,3 +1,5 @@
+"use client"
+
 import LightSpeed from "@/registry/sources/chamaac-ui/components/chamaac-ui/light-speed"
 
 export default function ChamaacLightSpeedPreview() {

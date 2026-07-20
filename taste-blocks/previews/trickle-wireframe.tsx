@@ -1,3 +1,5 @@
+"use client"
+
 import { Wireframe } from "@/registry/sources/trickle/components/trickle-wireframe/wireframe"
 
 export default function TrickleWireframePreview() {

@@ -1,3 +1,5 @@
+"use client"
+
 import Waves from "@/registry/sources/chamaac-ui/components/chamaac-ui/waves"
 
 export default function ChamaacWavesPreview() {

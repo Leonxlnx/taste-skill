@@ -1,3 +1,5 @@
+"use client"
+
 import AstralFlow from "@/registry/sources/chamaac-ui/components/chamaac-ui/astral-flow"
 
 export default function ChamaacAstralFlowPreview() {

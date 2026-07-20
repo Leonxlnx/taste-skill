@@ -1,3 +1,5 @@
+"use client"
+
 'use client'
 
 import { TiltShift2 } from '@/registry/sources/react-postprocessing/components/react-postprocessing/effects/TiltShift2'

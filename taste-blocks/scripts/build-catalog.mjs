@@ -1,4 +1,4 @@
-import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { loadPublicRegistry } from "./check-policy.mjs";
 
@@ -15,6 +15,32 @@ for (const entry of previewEntries) {
   if (entry.isFile() && entry.name.endsWith(".tsx")) {
     const name = path.basename(entry.name, ".tsx");
     if (!publicNames.has(name)) throw new Error(`Orphaned public preview ${entry.name}`);
+  }
+}
+
+const publicRegistryRoot = path.join(root, "public", "r");
+const registryNames = [...publicNames].sort();
+let builtRegistry;
+try {
+  builtRegistry = JSON.parse(await readFile(path.join(publicRegistryRoot, "registry.json"), "utf8"));
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+if (builtRegistry) {
+  const builtNames = builtRegistry.items.map(({ name }) => name).sort();
+  const individualNames = (await readdir(publicRegistryRoot, { withFileTypes: true }))
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json") && entry.name !== "registry.json")
+    .map((entry) => path.basename(entry.name, ".json"))
+    .sort();
+  if (JSON.stringify(builtNames) !== JSON.stringify(registryNames)) {
+    throw new Error("public/r/registry.json does not match registry.json");
+  }
+  if (JSON.stringify(individualNames) !== JSON.stringify(registryNames)) {
+    throw new Error("Individual public registry files do not match registry.json");
+  }
+  for (const name of registryNames) {
+    const item = JSON.parse(await readFile(path.join(publicRegistryRoot, `${name}.json`), "utf8"));
+    if (item.name !== name) throw new Error(`Public registry item name mismatch: ${name}`);
   }
 }
 
@@ -92,17 +118,19 @@ const catalog = items.map((item) => {
   };
 });
 
-const loaders = items
-  .map(({ name }) => name)
-  .sort()
-  .map((name) => `  ${JSON.stringify(name)}: () => import(${JSON.stringify(`../previews/${name}`)}),`)
-  .join("\n");
-
 await mkdir(path.join(root, "generated"), { recursive: true });
 await writeFile(path.join(root, "generated", "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`);
-await writeFile(
-  path.join(root, "generated", "preview-loaders.ts"),
-  `import type { ComponentType } from "react";\n\ntype PreviewModule = { default: ComponentType };\n\nexport const previewLoaders: Record<string, () => Promise<PreviewModule>> = {\n${loaders}\n};\n`,
-);
+
+const previewRoutesRoot = path.join(root, "app", "preview", "(generated)");
+await rm(previewRoutesRoot, { recursive: true, force: true });
+for (const name of registryNames) {
+  if (!/^[a-z0-9-]+$/.test(name)) throw new Error(`Unsafe preview route name: ${name}`);
+  const routeDirectory = path.join(previewRoutesRoot, name);
+  await mkdir(routeDirectory, { recursive: true });
+  await writeFile(
+    path.join(routeDirectory, "page.tsx"),
+    `"use client";\n\nimport dynamic from "next/dynamic";\n\nconst Preview = dynamic(() => import("@/previews/${name}"), { ssr: false });\n\nexport default function PreviewPage() {\n  return (\n    <main className="grid min-h-[100dvh] place-items-center overflow-hidden bg-white p-6">\n      <Preview />\n    </main>\n  );\n}\n`,
+  );
+}
 
 console.log(`Generated catalog for ${catalog.length} verified components.`);

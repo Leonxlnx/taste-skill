@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "registry/sources/motion-primitives/components/motion-text-morph/text-morph.tsx",
-      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport {\n  AnimatePresence,\n  motion,\n  Transition,\n  useReducedMotion,\n  Variants,\n} from 'motion/react';\nimport { useMemo, useId } from 'react';\n\nexport type TextMorphProps = {\n  children: string;\n  as?: React.ElementType;\n  className?: string;\n  style?: React.CSSProperties;\n  variants?: Variants;\n  transition?: Transition;\n};\n\nexport function TextMorph({\n  children,\n  as: Component = 'p',\n  className,\n  style,\n  variants,\n  transition,\n}: TextMorphProps) {\n  const uniqueId = useId();\n  const shouldReduceMotion = useReducedMotion();\n\n  const characters = useMemo(() => {\n    const charCounts: Record<string, number> = {};\n\n    return children.split('').map((char) => {\n      const lowerChar = char.toLowerCase();\n      charCounts[lowerChar] = (charCounts[lowerChar] || 0) + 1;\n\n      return {\n        id: `${uniqueId}-${lowerChar}${charCounts[lowerChar]}`,\n        label: char === ' ' ? '\\u00A0' : char,\n      };\n    });\n  }, [children, uniqueId]);\n\n  if (shouldReduceMotion) {\n    return (\n      <Component className={cn(className)} style={style}>\n        {children}\n      </Component>\n    );\n  }\n\n  const defaultVariants: Variants = {\n    initial: { opacity: 0 },\n    animate: { opacity: 1 },\n    exit: { opacity: 0 },\n  };\n\n  const defaultTransition: Transition = {\n    type: 'spring',\n    stiffness: 280,\n    damping: 18,\n    mass: 0.3,\n  };\n\n  return (\n    <Component className={cn(className)} aria-label={children} style={style}>\n      <AnimatePresence mode='popLayout' initial={false}>\n        {characters.map((character) => (\n          <motion.span\n            key={character.id}\n            layoutId={character.id}\n            className='inline-block'\n            aria-hidden='true'\n            initial='initial'\n            animate='animate'\n            exit='exit'\n            variants={variants || defaultVariants}\n            transition={transition || defaultTransition}\n          >\n            {character.label}\n          </motion.span>\n        ))}\n      </AnimatePresence>\n    </Component>\n  );\n}\n",
+      "content": "'use client';\nimport { cn } from '../../lib/utils';\nimport {\n  AnimatePresence,\n  motion,\n  Transition,\n  useReducedMotion,\n  Variants,\n} from 'motion/react';\nimport { useMemo, useId } from 'react';\n\nexport type TextMorphProps = {\n  children: string;\n  as?: React.ElementType;\n  className?: string;\n  style?: React.CSSProperties;\n  variants?: Variants;\n  transition?: Transition;\n};\n\nexport function TextMorph({\n  children,\n  as: Component = 'p',\n  className,\n  style,\n  variants,\n  transition,\n}: TextMorphProps) {\n  const RenderComponent: any = Component;\n  const uniqueId = useId();\n  const shouldReduceMotion = useReducedMotion();\n\n  const characters = useMemo(() => {\n    const charCounts: Record<string, number> = {};\n\n    return children.split('').map((char) => {\n      const lowerChar = char.toLowerCase();\n      charCounts[lowerChar] = (charCounts[lowerChar] || 0) + 1;\n\n      return {\n        id: `${uniqueId}-${lowerChar}${charCounts[lowerChar]}`,\n        label: char === ' ' ? '\\u00A0' : char,\n      };\n    });\n  }, [children, uniqueId]);\n\n  if (shouldReduceMotion) {\n    return (\n      <RenderComponent className={cn(className)} style={style}>\n        {children}\n      </RenderComponent>\n    );\n  }\n\n  const defaultVariants: Variants = {\n    initial: { opacity: 0 },\n    animate: { opacity: 1 },\n    exit: { opacity: 0 },\n  };\n\n  const defaultTransition: Transition = {\n    type: 'spring',\n    stiffness: 280,\n    damping: 18,\n    mass: 0.3,\n  };\n\n  return (\n    <RenderComponent className={cn(className)} aria-label={children} style={style}>\n      <AnimatePresence mode='popLayout' initial={false}>\n        {characters.map((character) => (\n          <motion.span\n            key={character.id}\n            layoutId={character.id}\n            className='inline-block'\n            aria-hidden='true'\n            initial='initial'\n            animate='animate'\n            exit='exit'\n            variants={variants || defaultVariants}\n            transition={transition || defaultTransition}\n          >\n            {character.label}\n          </motion.span>\n        ))}\n      </AnimatePresence>\n    </RenderComponent>\n  );\n}\n",
       "type": "registry:component",
       "target": "@components/taste-blocks/text-morph.tsx"
     },
@@ -46,10 +46,11 @@
             "upstreamPath": "components/core/text-morph.tsx",
             "permalink": "https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/text-morph.tsx",
             "upstreamSha256": "sha256:e3839272d22e1b041378263019d0716a29a8b99656b64eb385b66402698c9294",
-            "contentSha256": "sha256:77055804a05e3bcd5197d4b3b3416b5ff639672b8a07b51b79d52bbd6e1860e3",
+            "contentSha256": "sha256:406480b2016bb1c2381d2d331e74edf6b091ec8ff5f5c5821c310f6ec46da076",
             "changes": [
               "Changed the cn import from @/lib/utils to ../../lib/utils for source-batch and install-target portability.",
-              "Rendered the updated text as one static semantic node when reduced motion is requested."
+              "Rendered the updated text as one static semantic node when reduced motion is requested.",
+              "Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior."
             ]
           },
           {
@@ -83,15 +84,15 @@
       "modifications": [
         {
           "shippedPath": "components/motion-text-morph/text-morph.tsx",
-          "change": "Changed the local utility import and added an immediate-text reduced-motion branch.",
-          "reason": "Resolve the copied helper and keep updated text readable without character layout motion."
+          "change": "Changed the local utility import and added an immediate-text reduced-motion branch. Adjusted TypeScript annotations for the unified React 19 and Motion 12 catalog host without changing runtime behavior.",
+          "reason": "Resolve the copied helper and keep updated text readable without character layout motion. Compile several upstream Motion 11-era components safely in the shared catalog while preserving their rendered behavior and install API."
         }
       ],
       "dedupe": {
         "family": "character-layout-text-morph",
         "sourceHash": "sha256:fe0ed5412d07c2de7e0b37f4248da5b7293c4912bec945a96628e76a5de5af1b",
-        "contentHash": "sha256:4c2b2db8ce02f2a8b42721e3872629badbcf0016464a837f262466abdf0cfc0c",
-        "structureHash": "sha256:1e597b945b9c8e82d9fec5d1102378c1cb2a84ff6bc66d72f1c6146f34390992"
+        "contentHash": "sha256:013a7df55d2be6c899cde37bedbd99f7901fcb7c6877180ab380c2814f3479ec",
+        "structureHash": "sha256:ccad56e900d0620f90b3e56386e56349b81f22da061d1490593ba2f5c4d8acf8"
       },
       "verification": {
         "reviewedBy": "Codex",

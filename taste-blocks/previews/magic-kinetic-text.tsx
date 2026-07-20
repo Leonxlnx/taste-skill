@@ -1,3 +1,5 @@
+"use client"
+
 import { KineticText } from "@/registry/sources/magic-ui/components/magic-kinetic-text/kinetic-text"
 
 export default function MagicKineticTextPreview() {

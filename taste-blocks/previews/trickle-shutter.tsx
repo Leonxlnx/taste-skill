@@ -1,3 +1,5 @@
+"use client"
+
 import { Shutter } from "@/registry/sources/trickle/components/trickle-shutter/shutter"
 
 export default function TrickleShutterPreview() {

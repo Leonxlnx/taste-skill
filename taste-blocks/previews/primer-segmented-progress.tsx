@@ -1,3 +1,5 @@
+"use client"
+
 import type {CSSProperties} from 'react'
 
 import {ProgressBar} from '@/registry/sources/primer-segmented-progress/components/primer-segmented-progress'

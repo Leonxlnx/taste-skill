@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { Float } from "@/registry/sources/drei/components/drei/core/Float"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

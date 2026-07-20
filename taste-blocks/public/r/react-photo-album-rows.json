@@ -75,7 +75,7 @@
     },
     {
       "path": "registry/sources/react-photo-album/src/static/Component.tsx",
-      "content": "import type React from \"react\";\nimport { forwardRef } from \"react\";\n\nimport { clsx, cssClass, cssVar, round } from \"../utils\";\nimport type { LayoutVariables, RenderFunction } from \"../types\";\n\ntype BaseProps<TComponent extends React.ElementType> = Pick<\n  React.ComponentProps<TComponent>,\n  \"children\" | \"style\" | \"className\"\n>;\n\ntype PolymorphicRef<Component extends React.ElementType> = React.ComponentPropsWithRef<Component>[\"ref\"];\n\ntype ElementProps<\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n> = Partial<TRenderProps> &\n  Omit<React.ComponentProps<TComponent>, keyof TRenderProps> & {\n    as?: TComponent;\n    render?: RenderFunction<TRenderProps, TContext>;\n    context?: TContext;\n    classes?: string | (string | undefined)[];\n    variables?: LayoutVariables;\n  };\n\nfunction Component<\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n>(\n  {\n    as,\n    render,\n    context,\n    classes = [],\n    variables = {},\n    style: styleProp,\n    className: classNameProp,\n    children,\n    ...rest\n  }: ElementProps<TComponent, TContext, TRenderProps>,\n  ref: PolymorphicRef<TComponent>,\n) {\n  const className = clsx(\n    ...(Array.isArray(classes) ? classes : [classes]).filter((el) => typeof el === \"string\").map(cssClass),\n    classNameProp,\n  );\n\n  const style = {\n    ...Object.fromEntries(\n      Object.entries(variables).map(([key, value]) => [\n        cssVar(key.replace(/([a-z])([A-Z])/g, \"$1-$2\").toLowerCase()),\n        typeof value === \"number\" ? round(value, 5) : value,\n      ]),\n    ),\n    ...styleProp,\n  };\n\n  const props = { style, className, children, ...rest };\n\n  if (render) {\n    // eslint-disable-next-line react-hooks/refs -- false-positive lint\n    const rendered = render({ ref, ...props } as unknown as TRenderProps, context as TContext);\n    if (rendered) return rendered;\n  }\n\n  const Element = as || \"div\";\n  return <Element ref={ref} {...props} />;\n}\n\nexport default forwardRef(Component) as <\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n>(\n  props: ElementProps<TComponent, TContext, TRenderProps> & { ref?: PolymorphicRef<TComponent> },\n) => React.ReactNode;\n",
+      "content": "import type React from \"react\";\nimport { forwardRef } from \"react\";\n\nimport { clsx, cssClass, cssVar, round } from \"../utils\";\nimport type { LayoutVariables, RenderFunction } from \"../types\";\n\ntype BaseProps<TComponent extends React.ElementType> = Pick<\n  React.ComponentProps<TComponent>,\n  \"children\" | \"style\" | \"className\"\n>;\n\ntype PolymorphicRef<Component extends React.ElementType> = React.ComponentPropsWithRef<Component>[\"ref\"];\n\ntype ElementProps<\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n> = Partial<TRenderProps> &\n  Omit<React.ComponentProps<TComponent>, keyof TRenderProps> & {\n    as?: TComponent;\n    render?: RenderFunction<TRenderProps, TContext>;\n    context?: TContext;\n    classes?: string | (string | undefined)[];\n    variables?: LayoutVariables;\n  };\n\nfunction Component<\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n>(\n  {\n    as,\n    render,\n    context,\n    classes = [],\n    variables = {},\n    style: styleProp,\n    className: classNameProp,\n    children,\n    ...rest\n  }: ElementProps<TComponent, TContext, TRenderProps>,\n  ref: PolymorphicRef<TComponent>,\n) {\n  const className = clsx(\n    ...(Array.isArray(classes) ? classes : [classes]).filter((el) => typeof el === \"string\").map(cssClass),\n    classNameProp,\n  );\n\n  const style = {\n    ...Object.fromEntries(\n      Object.entries(variables).map(([key, value]) => [\n        cssVar(key.replace(/([a-z])([A-Z])/g, \"$1-$2\").toLowerCase()),\n        typeof value === \"number\" ? round(value, 5) : value,\n      ]),\n    ),\n    ...styleProp,\n  };\n\n  const props = { style, className, children, ...rest };\n\n  if (render) {\n    // eslint-disable-next-line react-hooks/refs -- false-positive lint\n    const rendered = render({ ref, ...props } as unknown as TRenderProps, context as TContext);\n    if (rendered) return rendered;\n  }\n\n  const Element: any = as || \"div\";\n  return <Element ref={ref} {...props} />;\n}\n\nexport default forwardRef(Component) as <\n  TComponent extends React.ElementType,\n  TContext extends object | void,\n  TRenderProps extends BaseProps<TComponent>,\n>(\n  props: ElementProps<TComponent, TContext, TRenderProps> & { ref?: PolymorphicRef<TComponent> },\n) => React.ReactNode;\n",
       "type": "registry:lib",
       "target": "@components/taste-blocks/react-photo-album/src/static/Component.tsx"
     },
@@ -258,8 +258,10 @@
             "upstreamPath": "src/static/Component.tsx",
             "permalink": "https://github.com/igordanchenko/react-photo-album/blob/1b889f47ec271144c16f32f2a7219ae6c53358c9/src/static/Component.tsx",
             "upstreamSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-            "contentSha256": "sha256:5821692e35c52ded961640228e935c6df02c8e4ec32fe695a86804e11757bef8",
-            "changes": []
+            "contentSha256": "sha256:b0b2dfe83b958fc7bead6e3141c404ecbd71bf8aef928f99efdc99b82489a981",
+            "changes": [
+              "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior."
+            ]
           },
           {
             "shippedPath": "src/static/PhotoComponent.tsx",
@@ -366,12 +368,18 @@
         "notices": []
       },
       "assets": [],
-      "modifications": [],
+      "modifications": [
+        {
+          "shippedPath": "src/static/Component.tsx",
+          "change": "Added a local render-component type bridge for React 19 polymorphic JSX without changing runtime behavior.",
+          "reason": "Keep the original polymorphic API while compiling the upstream React 18-era generic JSX against React 19 types."
+        }
+      ],
       "dedupe": {
         "family": "responsive-justified-photo-rows",
         "sourceHash": "sha256:525606c823926fc00dc75dbe7afb7da56832766fba4bb7b404afd1bdf9401b23",
-        "contentHash": "sha256:525606c823926fc00dc75dbe7afb7da56832766fba4bb7b404afd1bdf9401b23",
-        "structureHash": "sha256:2cdb2d4974c18bf0757e96b200878fcf53511470c0338d6f4c54d106e4f5e5f2"
+        "contentHash": "sha256:5dd765d6b3d9f8068e4f9098eceb36405538e0313053832e4805d43712b29cb4",
+        "structureHash": "sha256:57d1107593bac781114499eee9cf44f6e769f2d4c1438c658db4db5f94ebc1cd"
       },
       "verification": {
         "reviewedBy": "Codex",

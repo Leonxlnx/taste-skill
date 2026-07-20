@@ -1,4 +1,6 @@
 "use client"
+
+"use client"
 import { MeshWobbleMaterial } from "@/registry/sources/drei/components/drei/core/MeshWobbleMaterial"
 import * as PreviewReact from "react"
 import { Canvas } from "@react-three/fiber"

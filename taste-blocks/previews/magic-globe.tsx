@@ -1,3 +1,5 @@
+"use client"
+
 import { Globe } from "@/registry/sources/magic-ui/components/magic-globe/globe"
 
 export default function MagicGlobePreview() {

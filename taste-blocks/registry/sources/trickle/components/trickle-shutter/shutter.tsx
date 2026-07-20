@@ -12,8 +12,9 @@ export interface ShutterProps {
 }
 
 export function Shutter({ children, delay = 0, duration = 1100, bars = 8, as: Component = 'span', className }: ShutterProps) {
+  const RenderComponent: any = Component;
   return (
-    <Component
+    <RenderComponent
       className={cn('inline-block animate-trickle-shutter', className)}
       style={{
         animationDelay: `${delay}ms`,
@@ -22,6 +23,6 @@ export function Shutter({ children, delay = 0, duration = 1100, bars = 8, as: Co
       } as CSSProperties}
     >
       {children}
-    </Component>
+    </RenderComponent>
   );
 }

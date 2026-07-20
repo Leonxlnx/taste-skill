@@ -1,7 +1,10 @@
 "use client"
 
+"use client"
+
 import MasonryPhotoAlbum from "@/registry/sources/react-photo-album/src/client/masonry"
-import "@/registry/sources/react-photo-album/src/styles/masonry.css"
+import "@/registry/sources/react-photo-album/src/styles/modules/common.css"
+import "@/registry/sources/react-photo-album/src/styles/modules/masonry.css"
 
 const colorPhotos = [
   ["#18212b", "#d7ff64", 1200, 800],

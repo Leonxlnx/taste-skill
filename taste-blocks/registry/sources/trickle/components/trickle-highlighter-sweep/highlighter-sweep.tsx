@@ -37,9 +37,10 @@ export function HighlighterSweep({
   className,
   highlightClassName
 }: HighlighterSweepProps) {
+  const RenderComponent: any = Component;
   let highlightIdx = 0;
   return (
-    <Component className={className}>
+    <RenderComponent className={className}>
       {segments.map((seg, i) => {
         if (!seg.highlight) {
           return <span key={i}>{seg.text}</span>;
@@ -63,6 +64,6 @@ export function HighlighterSweep({
           </span>
         );
       })}
-    </Component>
+    </RenderComponent>
   );
 }

@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import {
   ContributionGraph,
   ContributionGraphBlock,

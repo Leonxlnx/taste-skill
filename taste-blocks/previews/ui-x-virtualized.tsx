@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { VirtualizedList } from "@/registry/sources/ui-x/components/ui-x/virtualized"
 
 const items = Array.from({ length: 10_000 }, (_, index) => index + 1)

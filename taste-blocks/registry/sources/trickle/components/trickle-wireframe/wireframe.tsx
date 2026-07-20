@@ -23,8 +23,9 @@ export function Wireframe({
   as: Component = 'span',
   className
 }: WireframeProps) {
+  const RenderComponent: any = Component;
   return (
-    <Component className={cn('inline-block', className)} aria-label={text}>
+    <RenderComponent className={cn('inline-block', className)} aria-label={text}>
       {text.split('').map((char, i) => (
         <span
           key={i}
@@ -38,6 +39,6 @@ export function Wireframe({
           {char}
         </span>
       ))}
-    </Component>
+    </RenderComponent>
   );
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import { Safari } from "@/registry/sources/magic-ui/components/magic-safari/safari"
 
 const previewImage =
