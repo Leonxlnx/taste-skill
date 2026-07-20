@@ -1,0 +1,913 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "fluid-functionalism-drafts",
+  "homepage": "https://www.fluidfunctionalism.com",
+  "items": [
+    {
+      "name": "fluid-question-flow",
+      "type": "registry:component",
+      "title": "Question Flow",
+      "description": "Runs a controlled or uncontrolled sequence of single-choice, multi-choice, and validated free-text questions.",
+      "author": "Micka Touillaud",
+      "dependencies": [
+        "@base-ui/react@1.4.1",
+        "@radix-ui/react-slot@1.2.4",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "framer-motion@12.42.2",
+        "lucide-react@0.564.0",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/question-flow.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/question-flow.tsx"
+        },
+        {
+          "path": "components/button.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/button.tsx"
+        },
+        {
+          "path": "hooks/use-proximity-hover.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/fluid-functionalism/hooks/use-proximity-hover.ts"
+        },
+        {
+          "path": "hooks/use-merge-split.tsx",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/fluid-functionalism/hooks/use-merge-split.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/utils.ts"
+        },
+        {
+          "path": "lib/springs.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/springs.ts"
+        },
+        {
+          "path": "lib/font-weight.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/font-weight.ts"
+        },
+        {
+          "path": "lib/shape-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/shape-context.tsx"
+        },
+        {
+          "path": "lib/icon-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/icon-context.tsx"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "css": {
+        "@keyframes fluid-functionalism-spinner-move": {
+          "to": {
+            "stroke-dashoffset": "-100"
+          }
+        },
+        "@keyframes fluid-functionalism-spinner-dash": {
+          "0%, 100%": {
+            "stroke-dasharray": "15 85"
+          },
+          "50%": {
+            "stroke-dasharray": "40 60"
+          }
+        }
+      },
+      "cssVars": {
+        "theme": {
+          "color-hover": "var(--hover)",
+          "color-active": "var(--active)"
+        },
+        "light": {
+          "hover": "rgb(0 0 0 / 0.04)",
+          "active": "rgb(0 0 0 / 0.07)"
+        },
+        "dark": {
+          "hover": "rgb(255 255 255 / 0.06)",
+          "active": "rgb(255 255 255 / 0.1)"
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "questions",
+            "wizard",
+            "keyboard",
+            "proximity",
+            "validation"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/fluid-functionalism/fluid-question-flow.tsx",
+          "source": {
+            "project": "Fluid Functionalism",
+            "repository": "https://github.com/mickadesign/fluid-functionalism",
+            "revision": "a6c95ed6df721ef7bd8f18a556b95008c6f51c82",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/question-flow.tsx",
+                "upstreamPath": "registry/default/ask-user-questions.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/ask-user-questions.tsx",
+                "upstreamSha256": "sha256:5e9a9a7c93233f9377658b923764beaa5c26f98556ffcabd0aaca994600e04b9",
+                "contentSha256": "sha256:f50d823a5ce66b3b89c18224351ab87a90eac8e9ae975b5e4f7581f8692bfdae",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Wrapped the component in MotionConfig with the user's reduced-motion preference.",
+                  "Detected inherited direction, swapped previous and next arrow glyphs, and reversed horizontal navigation keys in right-to-left documents with observer cleanup."
+                ]
+              },
+              {
+                "shippedPath": "components/button.tsx",
+                "upstreamPath": "registry/radix/button.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/radix/button.tsx",
+                "upstreamSha256": "sha256:c463f72db5bafe84066236ba035415e8770dd77f0a20bb38169bf7c5dd6cd953",
+                "contentSha256": "sha256:17f4ef4efc4d709717d473ad74ca62c229dad852f3d0edd693f37a37adbedc5b",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Disabled scale, stroke, and spinner motion when the user requests reduced motion.",
+                  "Namespaced the two spinner animation names to avoid collisions in consumer stylesheets."
+                ]
+              },
+              {
+                "shippedPath": "hooks/use-proximity-hover.ts",
+                "upstreamPath": "registry/default/hooks/use-proximity-hover.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/hooks/use-proximity-hover.ts",
+                "upstreamSha256": "sha256:1347280bc17480a71cec066102c194d9fec6a226563f1a466f33f9b5b12912d0",
+                "contentSha256": "sha256:1347280bc17480a71cec066102c194d9fec6a226563f1a466f33f9b5b12912d0",
+                "changes": []
+              },
+              {
+                "shippedPath": "hooks/use-merge-split.tsx",
+                "upstreamPath": "registry/default/hooks/use-merge-split.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/hooks/use-merge-split.tsx",
+                "upstreamSha256": "sha256:20cd742095ba8b1d11f9fb224941dc06e4c258527694dacb07132a758a2d9114",
+                "contentSha256": "sha256:8fb2ca6eafa3dc1bc6cc9725e1ce642442d258d1a31e726805302e3c687791cc",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "registry/default/lib/utils.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/utils.ts",
+                "upstreamSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "contentSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/springs.ts",
+                "upstreamPath": "registry/default/lib/springs.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/springs.ts",
+                "upstreamSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "contentSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/font-weight.ts",
+                "upstreamPath": "registry/default/lib/font-weight.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/font-weight.ts",
+                "upstreamSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "contentSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/shape-context.tsx",
+                "upstreamPath": "registry/default/lib/shape-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/shape-context.tsx",
+                "upstreamSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "contentSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/icon-context.tsx",
+                "upstreamPath": "registry/default/lib/icon-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/icon-context.tsx",
+                "upstreamSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "contentSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/ask-user-questions.tsx, registry/radix/button.tsx, registry/default/hooks/use-proximity-hover.ts, registry/default/hooks/use-merge-split.tsx, registry/default/lib/utils.ts, registry/default/lib/springs.ts, registry/default/lib/font-weight.ts, registry/default/lib/shape-context.tsx, registry/default/lib/icon-context.tsx",
+            "copyright": [
+              "Copyright (c) 2026 Micka Touillaud"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/LICENSE",
+              "sha256": "sha256:750d76faab4c8f1d427ae3144625ce1ec1faa32807764836a0cc554833dbc61b",
+              "localPath": "registry/sources/fluid-functionalism/LICENSE"
+            },
+            "notices": [
+              "Registry styling metadata provenance is documented in registry/sources/fluid-functionalism/NOTICE.md."
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/question-flow.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Wrapped the component in MotionConfig with the user's reduced-motion preference. Detected inherited direction, swapped previous and next arrow glyphs, and reversed horizontal navigation keys in right-to-left documents with observer cleanup.",
+              "reason": "Keep the copied interaction self-contained, direction-aware, and deterministic for reduced-motion users."
+            },
+            {
+              "shippedPath": "components/button.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Disabled scale, stroke, and spinner motion when the user requests reduced motion. Namespaced the two spinner animation names to avoid collisions in consumer stylesheets.",
+              "reason": "Keep shared actions self-contained and prevent decorative motion when reduced motion is requested."
+            },
+            {
+              "shippedPath": "hooks/use-merge-split.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files.",
+              "reason": "Resolve the copied support closure without consumer-specific project aliases."
+            }
+          ],
+          "dedupe": {
+            "family": "stepped-question-flow",
+            "sourceHash": "sha256:76a263d85179b2dbb97407abc29547113d71878d5f1c7b48bb5935cd4adf3e58",
+            "contentHash": "sha256:bd80f367131765f87cb7c0ed59bb44d34bb3ba48232534451388abcce31c4207",
+            "structureHash": "sha256:e073c795a9ac771633afa881661af10fcb3e632e0bb516dae7deebd96e2bfe08"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "fluid-color-picker",
+      "type": "registry:component",
+      "title": "Multi-Format Color Picker",
+      "description": "Edits HEX, RGB, HSL, and OKLCH colors with alpha, swatches, keyboard controls, and an optional popover trigger.",
+      "author": "Micka Touillaud",
+      "dependencies": [
+        "@base-ui/react@1.4.1",
+        "@radix-ui/react-slider@1.3.6",
+        "@radix-ui/react-tooltip@1.2.8",
+        "clsx@2.1.1",
+        "framer-motion@12.42.2",
+        "lucide-react@0.564.0",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/color-picker.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/color-picker.tsx"
+        },
+        {
+          "path": "components/slider.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/slider.tsx"
+        },
+        {
+          "path": "components/tooltip.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/tooltip.tsx"
+        },
+        {
+          "path": "hooks/use-proximity-hover.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/fluid-functionalism/hooks/use-proximity-hover.ts"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/utils.ts"
+        },
+        {
+          "path": "lib/springs.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/springs.ts"
+        },
+        {
+          "path": "lib/font-weight.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/font-weight.ts"
+        },
+        {
+          "path": "lib/shape-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/shape-context.tsx"
+        },
+        {
+          "path": "lib/icon-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/icon-context.tsx"
+        },
+        {
+          "path": "lib/surface-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/surface-context.tsx"
+        },
+        {
+          "path": "lib/surface-classes.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/surface-classes.ts"
+        },
+        {
+          "path": "lib/elevated.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/elevated.tsx"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "cssVars": {
+        "theme": {
+          "color-hover": "var(--hover)",
+          "color-active": "var(--active)",
+          "color-surface-1": "var(--surface-1)",
+          "color-surface-2": "var(--surface-2)",
+          "color-surface-3": "var(--surface-3)",
+          "color-surface-4": "var(--surface-4)",
+          "color-surface-5": "var(--surface-5)",
+          "color-surface-6": "var(--surface-6)",
+          "color-surface-7": "var(--surface-7)",
+          "color-surface-8": "var(--surface-8)",
+          "shadow-surface-1": "var(--shadow-1)",
+          "shadow-surface-2": "var(--shadow-2)",
+          "shadow-surface-3": "var(--shadow-3)",
+          "shadow-surface-4": "var(--shadow-4)",
+          "shadow-surface-5": "var(--shadow-5)",
+          "shadow-surface-6": "var(--shadow-6)",
+          "shadow-surface-7": "var(--shadow-7)",
+          "shadow-surface-8": "var(--shadow-8)"
+        },
+        "light": {
+          "hover": "rgb(0 0 0 / 0.04)",
+          "active": "rgb(0 0 0 / 0.07)",
+          "surface-1": "#FAFAFA",
+          "surface-2": "#FCFCFC",
+          "surface-3": "#FFFFFF",
+          "surface-4": "#FFFFFF",
+          "surface-5": "#FFFFFF",
+          "surface-6": "#FFFFFF",
+          "surface-7": "#FFFFFF",
+          "surface-8": "#FFFFFF",
+          "shadow-color": "rgb(0 0 0 / 0.06)",
+          "shadow-1": "0 0 0 1px var(--shadow-color)",
+          "shadow-2": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color)",
+          "shadow-3": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color)",
+          "shadow-4": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color)",
+          "shadow-5": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color)",
+          "shadow-6": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color)",
+          "shadow-7": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color)",
+          "shadow-8": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color), 0 96px 96px -48px var(--shadow-color)",
+          "checker-a": "#bbbbbb",
+          "checker-b": "#ffffff"
+        },
+        "dark": {
+          "hover": "rgb(255 255 255 / 0.06)",
+          "active": "rgb(255 255 255 / 0.1)",
+          "surface-1": "#171717",
+          "surface-2": "#1E1E1E",
+          "surface-3": "#252525",
+          "surface-4": "#2C2C2C",
+          "surface-5": "#333333",
+          "surface-6": "#3A3A3A",
+          "surface-7": "#414141",
+          "surface-8": "#484848",
+          "shadow-color": "rgb(0 0 0 / 0.18)",
+          "shadow-1": "inset 0 0 0 1px rgb(255 255 255 / 0.02)",
+          "shadow-2": "inset 0 1px 0 rgb(255 255 255 / 0.01), inset 0 0 0 1px rgb(255 255 255 / 0.02), 0 1px 1px -0.5px var(--shadow-color)",
+          "shadow-3": "inset 0 1px 0 rgb(255 255 255 / 0.02), inset 0 0 0 1px rgb(255 255 255 / 0.02), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color)",
+          "shadow-4": "inset 0 1px 0 rgb(255 255 255 / 0.02), inset 0 0 0 1px rgb(255 255 255 / 0.04), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color)",
+          "shadow-5": "inset 0 1px 0 rgb(255 255 255 / 0.04), inset 0 0 0 1px rgb(255 255 255 / 0.04), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color)",
+          "shadow-6": "inset 0 1px 0 rgb(255 255 255 / 0.04), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color)",
+          "shadow-7": "inset 0 1px 0 rgb(255 255 255 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color)",
+          "shadow-8": "inset 0 1px 0 rgb(255 255 255 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 48px 48px -24px var(--shadow-color), 0 96px 96px -48px var(--shadow-color)",
+          "checker-a": "#1f1f1f",
+          "checker-b": "#2a2a2a"
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "color",
+            "oklch",
+            "alpha",
+            "swatches",
+            "keyboard"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/fluid-functionalism/fluid-color-picker.tsx",
+          "source": {
+            "project": "Fluid Functionalism",
+            "repository": "https://github.com/mickadesign/fluid-functionalism",
+            "revision": "a6c95ed6df721ef7bd8f18a556b95008c6f51c82",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/color-picker.tsx",
+                "upstreamPath": "registry/default/color-picker.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/color-picker.tsx",
+                "upstreamSha256": "sha256:e8a14b94899f73a0641b42c0e854529c14a9ca59d1d6a5dc7bbef1a8260bb9b0",
+                "contentSha256": "sha256:230d15b30dfbc1341e684e1735c87480b1b698748b8245d3d181303422af0dcf",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Wrapped both exported picker variants in MotionConfig with the user's reduced-motion preference.",
+                  "Replaced the nested remove role inside the popover trigger with a separate native button and logical edge styling.",
+                  "Changed the popover transform origin from a physical left edge to a direction-neutral top edge.",
+                  "Kept color codes, percentages, and channel order left-to-right inside right-to-left documents."
+                ]
+              },
+              {
+                "shippedPath": "components/slider.tsx",
+                "upstreamPath": "registry/radix/slider.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/radix/slider.tsx",
+                "upstreamSha256": "sha256:7209ff1e9ace730190aa8298fc3a70ff85552264ea48a4d8791457a7929e558f",
+                "contentSha256": "sha256:61e26f124f0a33af332b049afd73297dac98c6398c94f7baa2703c61111bfe89",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files."
+                ]
+              },
+              {
+                "shippedPath": "components/tooltip.tsx",
+                "upstreamPath": "registry/radix/tooltip.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/radix/tooltip.tsx",
+                "upstreamSha256": "sha256:7ef6dbf27e96734239a3b7b1cb2cf61e029bbade6f60c9f553974940743ed9e2",
+                "contentSha256": "sha256:cea71d350052aefc097501e15b190256b76d8ef35f3ffb91a966ef8362446da8",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files."
+                ]
+              },
+              {
+                "shippedPath": "hooks/use-proximity-hover.ts",
+                "upstreamPath": "registry/default/hooks/use-proximity-hover.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/hooks/use-proximity-hover.ts",
+                "upstreamSha256": "sha256:1347280bc17480a71cec066102c194d9fec6a226563f1a466f33f9b5b12912d0",
+                "contentSha256": "sha256:1347280bc17480a71cec066102c194d9fec6a226563f1a466f33f9b5b12912d0",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "registry/default/lib/utils.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/utils.ts",
+                "upstreamSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "contentSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/springs.ts",
+                "upstreamPath": "registry/default/lib/springs.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/springs.ts",
+                "upstreamSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "contentSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/font-weight.ts",
+                "upstreamPath": "registry/default/lib/font-weight.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/font-weight.ts",
+                "upstreamSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "contentSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/shape-context.tsx",
+                "upstreamPath": "registry/default/lib/shape-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/shape-context.tsx",
+                "upstreamSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "contentSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/icon-context.tsx",
+                "upstreamPath": "registry/default/lib/icon-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/icon-context.tsx",
+                "upstreamSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "contentSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/surface-context.tsx",
+                "upstreamPath": "registry/default/lib/surface-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/surface-context.tsx",
+                "upstreamSha256": "sha256:e6832b57d8544e27ab9288e935dfdf6387bd91a461f47590463c16660bc89269",
+                "contentSha256": "sha256:e6832b57d8544e27ab9288e935dfdf6387bd91a461f47590463c16660bc89269",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/surface-classes.ts",
+                "upstreamPath": "registry/default/lib/surface-classes.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/surface-classes.ts",
+                "upstreamSha256": "sha256:244185099df28a280f42dd0c9adfa23d671214c9556df68f8925adf5bfe70083",
+                "contentSha256": "sha256:244185099df28a280f42dd0c9adfa23d671214c9556df68f8925adf5bfe70083",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/elevated.tsx",
+                "upstreamPath": "registry/default/lib/elevated.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/elevated.tsx",
+                "upstreamSha256": "sha256:570464628770dbcb31ae75c8bf6dd165b35ee349ad65dd686891d8cae036d59a",
+                "contentSha256": "sha256:a59d9ab90f1f37b501666db3e1de31c8a2d3d7487aae751b95f511575e4de5f7",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/color-picker.tsx, registry/radix/slider.tsx, registry/radix/tooltip.tsx, registry/default/hooks/use-proximity-hover.ts, registry/default/lib/utils.ts, registry/default/lib/springs.ts, registry/default/lib/font-weight.ts, registry/default/lib/shape-context.tsx, registry/default/lib/icon-context.tsx, registry/default/lib/surface-context.tsx, registry/default/lib/surface-classes.ts, registry/default/lib/elevated.tsx",
+            "copyright": [
+              "Copyright (c) 2026 Micka Touillaud"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/LICENSE",
+              "sha256": "sha256:750d76faab4c8f1d427ae3144625ce1ec1faa32807764836a0cc554833dbc61b",
+              "localPath": "registry/sources/fluid-functionalism/LICENSE"
+            },
+            "notices": [
+              "Registry styling metadata provenance is documented in registry/sources/fluid-functionalism/NOTICE.md."
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/color-picker.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Wrapped both exported picker variants in MotionConfig with the user's reduced-motion preference. Replaced the nested remove role inside the popover trigger with a separate native button and logical edge styling. Changed the popover transform origin from a physical left edge to a direction-neutral top edge. Kept color codes, percentages, and channel order left-to-right inside right-to-left documents.",
+              "reason": "Keep the copied composite self-contained, avoid nested interactive controls, and remove physical-direction assumptions."
+            },
+            {
+              "shippedPath": "components/slider.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files.",
+              "reason": "Resolve the copied support closure without consumer-specific project aliases."
+            },
+            {
+              "shippedPath": "components/tooltip.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files.",
+              "reason": "Resolve the copied support closure without consumer-specific project aliases."
+            },
+            {
+              "shippedPath": "lib/elevated.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files.",
+              "reason": "Resolve the copied support closure without consumer-specific project aliases."
+            }
+          ],
+          "dedupe": {
+            "family": "multi-format-color-picker",
+            "sourceHash": "sha256:1dcfa51dcd26b3a2a3f28aee14d474f76fcd4f867982fecd24c217425c2a54b8",
+            "contentHash": "sha256:8744d35dd28cae3e6a9f81f2b0189136b79613e10c2a14fc629cdee79d2daee8",
+            "structureHash": "sha256:d40b522e41097fec784c6e71e11cfa1deb3d4b7d7b71da89efa60f7d44d080a3"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "fluid-message-composer",
+      "type": "registry:component",
+      "title": "Message Composer",
+      "description": "Composes, attaches, queues, reorders, recalls, stops, and sends messages through controlled application state.",
+      "author": "Micka Touillaud",
+      "dependencies": [
+        "@radix-ui/react-slot@1.2.4",
+        "@radix-ui/react-tooltip@1.2.8",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "framer-motion@12.42.2",
+        "lucide-react@0.564.0",
+        "pdfjs-dist@5.7.284",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/message-composer.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/message-composer.tsx"
+        },
+        {
+          "path": "components/file-thumbnail.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/file-thumbnail.tsx"
+        },
+        {
+          "path": "components/button.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/button.tsx"
+        },
+        {
+          "path": "components/tooltip.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/fluid-functionalism/components/tooltip.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/utils.ts"
+        },
+        {
+          "path": "lib/springs.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/springs.ts"
+        },
+        {
+          "path": "lib/font-weight.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/font-weight.ts"
+        },
+        {
+          "path": "lib/shape-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/shape-context.tsx"
+        },
+        {
+          "path": "lib/icon-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/icon-context.tsx"
+        },
+        {
+          "path": "lib/surface-context.tsx",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/surface-context.tsx"
+        },
+        {
+          "path": "lib/surface-classes.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/fluid-functionalism/lib/surface-classes.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "css": {
+        "@keyframes fluid-functionalism-spinner-move": {
+          "to": {
+            "stroke-dashoffset": "-100"
+          }
+        },
+        "@keyframes fluid-functionalism-spinner-dash": {
+          "0%, 100%": {
+            "stroke-dasharray": "15 85"
+          },
+          "50%": {
+            "stroke-dasharray": "40 60"
+          }
+        }
+      },
+      "cssVars": {
+        "theme": {
+          "color-hover": "var(--hover)",
+          "color-active": "var(--active)",
+          "color-surface-1": "var(--surface-1)",
+          "color-surface-2": "var(--surface-2)",
+          "color-surface-3": "var(--surface-3)",
+          "color-surface-4": "var(--surface-4)",
+          "color-surface-5": "var(--surface-5)",
+          "color-surface-6": "var(--surface-6)",
+          "color-surface-7": "var(--surface-7)",
+          "color-surface-8": "var(--surface-8)",
+          "shadow-surface-1": "var(--shadow-1)",
+          "shadow-surface-2": "var(--shadow-2)",
+          "shadow-surface-3": "var(--shadow-3)",
+          "shadow-surface-4": "var(--shadow-4)",
+          "shadow-surface-5": "var(--shadow-5)",
+          "shadow-surface-6": "var(--shadow-6)",
+          "shadow-surface-7": "var(--shadow-7)",
+          "shadow-surface-8": "var(--shadow-8)"
+        },
+        "light": {
+          "hover": "rgb(0 0 0 / 0.04)",
+          "active": "rgb(0 0 0 / 0.07)",
+          "surface-1": "#FAFAFA",
+          "surface-2": "#FCFCFC",
+          "surface-3": "#FFFFFF",
+          "surface-4": "#FFFFFF",
+          "surface-5": "#FFFFFF",
+          "surface-6": "#FFFFFF",
+          "surface-7": "#FFFFFF",
+          "surface-8": "#FFFFFF",
+          "shadow-color": "rgb(0 0 0 / 0.06)",
+          "shadow-1": "0 0 0 1px var(--shadow-color)",
+          "shadow-2": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color)",
+          "shadow-3": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color)",
+          "shadow-4": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color)",
+          "shadow-5": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color)",
+          "shadow-6": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color)",
+          "shadow-7": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color)",
+          "shadow-8": "0 0 0 1px var(--shadow-color), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color), 0 96px 96px -48px var(--shadow-color)"
+        },
+        "dark": {
+          "hover": "rgb(255 255 255 / 0.06)",
+          "active": "rgb(255 255 255 / 0.1)",
+          "surface-1": "#171717",
+          "surface-2": "#1E1E1E",
+          "surface-3": "#252525",
+          "surface-4": "#2C2C2C",
+          "surface-5": "#333333",
+          "surface-6": "#3A3A3A",
+          "surface-7": "#414141",
+          "surface-8": "#484848",
+          "shadow-color": "rgb(0 0 0 / 0.18)",
+          "shadow-1": "inset 0 0 0 1px rgb(255 255 255 / 0.02)",
+          "shadow-2": "inset 0 1px 0 rgb(255 255 255 / 0.01), inset 0 0 0 1px rgb(255 255 255 / 0.02), 0 1px 1px -0.5px var(--shadow-color)",
+          "shadow-3": "inset 0 1px 0 rgb(255 255 255 / 0.02), inset 0 0 0 1px rgb(255 255 255 / 0.02), 0 1px 1px -0.5px var(--shadow-color), 0 3px 3px -1.5px var(--shadow-color)",
+          "shadow-4": "inset 0 1px 0 rgb(255 255 255 / 0.02), inset 0 0 0 1px rgb(255 255 255 / 0.04), 0 3px 3px -1.5px var(--shadow-color), 0 6px 6px -3px var(--shadow-color)",
+          "shadow-5": "inset 0 1px 0 rgb(255 255 255 / 0.04), inset 0 0 0 1px rgb(255 255 255 / 0.04), 0 6px 6px -3px var(--shadow-color), 0 12px 12px -6px var(--shadow-color)",
+          "shadow-6": "inset 0 1px 0 rgb(255 255 255 / 0.04), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 12px 12px -6px var(--shadow-color), 0 24px 24px -12px var(--shadow-color)",
+          "shadow-7": "inset 0 1px 0 rgb(255 255 255 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 24px 24px -12px var(--shadow-color), 0 48px 48px -24px var(--shadow-color)",
+          "shadow-8": "inset 0 1px 0 rgb(255 255 255 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 48px 48px -24px var(--shadow-color), 0 96px 96px -48px var(--shadow-color)"
+        }
+      },
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "composer",
+            "attachments",
+            "queue",
+            "history",
+            "drag"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/fluid-functionalism/fluid-message-composer.tsx",
+          "source": {
+            "project": "Fluid Functionalism",
+            "repository": "https://github.com/mickadesign/fluid-functionalism",
+            "revision": "a6c95ed6df721ef7bd8f18a556b95008c6f51c82",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/message-composer.tsx",
+                "upstreamPath": "registry/default/input-message.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/input-message.tsx",
+                "upstreamSha256": "sha256:82743b01215ae1c518a43f5cc2db9bd0998867b4dcdf8ef113666faedaa6fdf3",
+                "contentSha256": "sha256:37c1cf854e2e7bb020fe3ffe4b5dd2ac94afb32a5919a646dd5520c443175bf3",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Wrapped the composer in MotionConfig with the user's reduced-motion preference.",
+                  "Changed the attachment remove control from a physical right offset to the logical inline end."
+                ]
+              },
+              {
+                "shippedPath": "components/file-thumbnail.tsx",
+                "upstreamPath": "registry/default/file-thumbnail.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/file-thumbnail.tsx",
+                "upstreamSha256": "sha256:7e5013a8935a7185e902d2a8f73801982f5c2d7277eb110773fed2d2637da9cd",
+                "contentSha256": "sha256:999f02458e24c3d816c012121a9c645a12e7c454739ee5bc7f77fce445d792a9",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Resolved the PDF worker from the installed pdfjs-dist package instead of a remote CDN URL.",
+                  "Updated the PDF fallback comment to describe local worker loading instead of CDN failure."
+                ]
+              },
+              {
+                "shippedPath": "components/button.tsx",
+                "upstreamPath": "registry/radix/button.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/radix/button.tsx",
+                "upstreamSha256": "sha256:c463f72db5bafe84066236ba035415e8770dd77f0a20bb38169bf7c5dd6cd953",
+                "contentSha256": "sha256:17f4ef4efc4d709717d473ad74ca62c229dad852f3d0edd693f37a37adbedc5b",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files.",
+                  "Disabled scale, stroke, and spinner motion when the user requests reduced motion.",
+                  "Namespaced the two spinner animation names to avoid collisions in consumer stylesheets."
+                ]
+              },
+              {
+                "shippedPath": "components/tooltip.tsx",
+                "upstreamPath": "registry/radix/tooltip.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/radix/tooltip.tsx",
+                "upstreamSha256": "sha256:7ef6dbf27e96734239a3b7b1cb2cf61e029bbade6f60c9f553974940743ed9e2",
+                "contentSha256": "sha256:cea71d350052aefc097501e15b190256b76d8ef35f3ffb91a966ef8362446da8",
+                "changes": [
+                  "Repointed upstream project aliases to the bundled source-local support files."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "registry/default/lib/utils.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/utils.ts",
+                "upstreamSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "contentSha256": "sha256:c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/springs.ts",
+                "upstreamPath": "registry/default/lib/springs.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/springs.ts",
+                "upstreamSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "contentSha256": "sha256:e5fc49d09dcd9b6908c53193f8b5f85f6d2e8383c7d4571e296ee3c7c0eae1d0",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/font-weight.ts",
+                "upstreamPath": "registry/default/lib/font-weight.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/font-weight.ts",
+                "upstreamSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "contentSha256": "sha256:ebf14da9058ada019f092aaeef36f4d2d4559020c07b8dbd59f5d394bf6be3d3",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/shape-context.tsx",
+                "upstreamPath": "registry/default/lib/shape-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/shape-context.tsx",
+                "upstreamSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "contentSha256": "sha256:a9ffe1869b9feb4d2b9f2f2eba985cd91dcb9d27beaf647e21d1c8edc329ad34",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/icon-context.tsx",
+                "upstreamPath": "registry/default/lib/icon-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/icon-context.tsx",
+                "upstreamSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "contentSha256": "sha256:8359799dc59017899a74d1f61e140b585cc49a2b1c652d29201742b8ef047e60",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/surface-context.tsx",
+                "upstreamPath": "registry/default/lib/surface-context.tsx",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/surface-context.tsx",
+                "upstreamSha256": "sha256:e6832b57d8544e27ab9288e935dfdf6387bd91a461f47590463c16660bc89269",
+                "contentSha256": "sha256:e6832b57d8544e27ab9288e935dfdf6387bd91a461f47590463c16660bc89269",
+                "changes": []
+              },
+              {
+                "shippedPath": "lib/surface-classes.ts",
+                "upstreamPath": "registry/default/lib/surface-classes.ts",
+                "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/registry/default/lib/surface-classes.ts",
+                "upstreamSha256": "sha256:244185099df28a280f42dd0c9adfa23d671214c9556df68f8925adf5bfe70083",
+                "contentSha256": "sha256:244185099df28a280f42dd0c9adfa23d671214c9556df68f8925adf5bfe70083",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "registry/default/input-message.tsx, registry/default/file-thumbnail.tsx, registry/radix/button.tsx, registry/radix/tooltip.tsx, registry/default/lib/utils.ts, registry/default/lib/springs.ts, registry/default/lib/font-weight.ts, registry/default/lib/shape-context.tsx, registry/default/lib/icon-context.tsx, registry/default/lib/surface-context.tsx, registry/default/lib/surface-classes.ts",
+            "copyright": [
+              "Copyright (c) 2026 Micka Touillaud"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/mickadesign/fluid-functionalism/blob/a6c95ed6df721ef7bd8f18a556b95008c6f51c82/LICENSE",
+              "sha256": "sha256:750d76faab4c8f1d427ae3144625ce1ec1faa32807764836a0cc554833dbc61b",
+              "localPath": "registry/sources/fluid-functionalism/LICENSE"
+            },
+            "notices": [
+              "Registry styling metadata provenance is documented in registry/sources/fluid-functionalism/NOTICE.md."
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/message-composer.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Wrapped the composer in MotionConfig with the user's reduced-motion preference. Changed the attachment remove control from a physical right offset to the logical inline end.",
+              "reason": "Keep the copied composer self-contained and preserve its controls in reduced-motion and RTL contexts."
+            },
+            {
+              "shippedPath": "components/file-thumbnail.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Resolved the PDF worker from the installed pdfjs-dist package instead of a remote CDN URL. Updated the PDF fallback comment to describe local worker loading instead of CDN failure.",
+              "reason": "Keep the copied attachment preview self-contained without a remote runtime asset."
+            },
+            {
+              "shippedPath": "components/button.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files. Disabled scale, stroke, and spinner motion when the user requests reduced motion. Namespaced the two spinner animation names to avoid collisions in consumer stylesheets.",
+              "reason": "Keep shared actions self-contained and prevent decorative motion when reduced motion is requested."
+            },
+            {
+              "shippedPath": "components/tooltip.tsx",
+              "change": "Repointed upstream project aliases to the bundled source-local support files.",
+              "reason": "Resolve the copied support closure without consumer-specific project aliases."
+            }
+          ],
+          "dedupe": {
+            "family": "queued-message-composer",
+            "sourceHash": "sha256:4ebcb5a55c515561eb8ba1c9078beebdee24170787b1d7f800ce09e0a8bf9ac6",
+            "contentHash": "sha256:12d5a36555c455dde84cdc876741bd91beee635fb95ee9e4ff1c655691a6a873",
+            "structureHash": "sha256:b94a8d72304b086c3e14eb4d88b58d1b7f0ea1ce689e9a074064a4286fb6fc6b"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
