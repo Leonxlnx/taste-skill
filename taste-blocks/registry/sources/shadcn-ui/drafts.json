@@ -1,0 +1,1139 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-shadcn-ui-drafts",
+  "homepage": "https://github.com/shadcn-ui/ui",
+  "items": [
+    {
+      "name": "shadcn-calendar-custom-days",
+      "type": "registry:component",
+      "title": "Calendar Custom Days",
+      "description": "Adds caller-rendered metadata to selectable calendar days.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "date-fns@4.1.0",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "react-day-picker@9.8.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/shadcn-calendar-custom-days/calendar-custom-days.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/shadcn-calendar-custom-days/calendar-custom-days.tsx"
+        },
+        {
+          "path": "components/radix-nova/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/calendar.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/radix-nova/card.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/card.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "calendar",
+            "date-range",
+            "day-metadata"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-calendar-custom-days.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/shadcn-calendar-custom-days/calendar-custom-days.tsx",
+                "upstreamPath": "apps/v4/examples/radix/calendar-custom-days.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/calendar-custom-days.tsx",
+                "upstreamSha256": "sha256:084ede01adf3e7f53bd51214648897875e4570b054065131449e49e44a96003e",
+                "contentSha256": "sha256:f88794652977904d8ddcbb5ea1107f72df5333a8c8e5d910076c85e0e78d66ba",
+                "changes": [
+                  "Changed generated style imports to bundled relative paths.",
+                  "Lifted the fixed range and price labels into defaultRange, onRangeChange, and renderDayMeta props."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/calendar.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "upstreamSha256": "sha256:5f4275762945548864d0fd73d9f13de587417e5aea3e2815a95a1392c80a026d",
+                "contentSha256": "sha256:f268516e9ff518dca21b2dff7d81a47f7fa166d86ccaf1f6540d168d83e43131",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/card.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/card.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/card.tsx",
+                "upstreamSha256": "sha256:c12b939823f0852f24830ad425247111f9f49e6e565d89cda0db742676d42bc2",
+                "contentSha256": "sha256:07303fefbc3fa04cb519e1db06abb2b18d3bb396dc01dd0154f6f8ee3bd301d7",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/examples/radix/calendar-custom-days.tsx, apps/v4/registry/bases/radix/ui/calendar.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/card.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/shadcn-calendar-custom-days/calendar-custom-days.tsx",
+              "change": "Changed generated style imports to bundled relative paths. Lifted the fixed range and price labels into defaultRange, onRangeChange, and renderDayMeta props.",
+              "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+            },
+            {
+              "shippedPath": "components/radix-nova/calendar.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/card.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+              "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+            }
+          ],
+          "dedupe": {
+            "family": "calendar-day-metadata",
+            "sourceHash": "sha256:a16387f5ea61ac582373e1d19711892be0d4d2fa4988db0f52068b5314ea1f28",
+            "contentHash": "sha256:ba3dcce9f8d22162c576b956df46f7ffb90b115403425c79313d05201bd4b519",
+            "structureHash": "sha256:0ea477a3a0b4352b5201ec3f07925451d8a7f9d77aa3d520843d0d07c865d6b3"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-calendar-time",
+      "type": "registry:component",
+      "title": "Calendar with Time",
+      "description": "Combines a single-date calendar with named native start and end time inputs.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "react-day-picker@9.8.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/shadcn-calendar-time/calendar-time.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/shadcn-calendar-time/calendar-time.tsx"
+        },
+        {
+          "path": "components/radix-nova/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/calendar.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/radix-nova/card.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/card.tsx"
+        },
+        {
+          "path": "components/radix-nova/field.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/field.tsx"
+        },
+        {
+          "path": "components/radix-nova/input-group.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input-group.tsx"
+        },
+        {
+          "path": "components/radix-nova/input.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input.tsx"
+        },
+        {
+          "path": "components/radix-nova/label.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/label.tsx"
+        },
+        {
+          "path": "components/radix-nova/separator.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/separator.tsx"
+        },
+        {
+          "path": "components/radix-nova/textarea.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/textarea.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "calendar",
+            "date",
+            "time-range"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-calendar-time.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/shadcn-calendar-time/calendar-time.tsx",
+                "upstreamPath": "apps/v4/examples/radix/calendar-time.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/calendar-time.tsx",
+                "upstreamSha256": "sha256:962d1181586e53d9bd50b6e9281afdf1ed59a317e6e61e8fb11c4be338378bc8",
+                "contentSha256": "sha256:229f056ed4f9a0fce416b1609d60d5f18517189c8eb0afae5c187e0182a40d2c",
+                "changes": [
+                  "Changed generated style imports to bundled relative paths.",
+                  "Lifted initial date and time values into props, added optional field names and a date callback, and replaced fixed IDs with useId-generated IDs."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/calendar.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "upstreamSha256": "sha256:5f4275762945548864d0fd73d9f13de587417e5aea3e2815a95a1392c80a026d",
+                "contentSha256": "sha256:f268516e9ff518dca21b2dff7d81a47f7fa166d86ccaf1f6540d168d83e43131",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/card.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/card.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/card.tsx",
+                "upstreamSha256": "sha256:c12b939823f0852f24830ad425247111f9f49e6e565d89cda0db742676d42bc2",
+                "contentSha256": "sha256:07303fefbc3fa04cb519e1db06abb2b18d3bb396dc01dd0154f6f8ee3bd301d7",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/field.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/field.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/field.tsx",
+                "upstreamSha256": "sha256:a11361f3ed68a231905f1dd5d5aac2fd578bce196ee6f161ac74d47b42169fd5",
+                "contentSha256": "sha256:03cad9373c9bf0053c91736a313705c2edbaab6740338702e1c463fdbaacf961",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input-group.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "upstreamSha256": "sha256:c6a2f723b6793d673028016507c0c6307f89c7553f552ea5770a755907cae9b0",
+                "contentSha256": "sha256:1c93ff2e4b68af37057d718eac5a53be27903b2f85341968891e0d1f17ae7919",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input.tsx",
+                "upstreamSha256": "sha256:cace577b40968ce734f3b5daf42748e2eab820e380822bfc4e1256b2318135d7",
+                "contentSha256": "sha256:dcf4d0c7e714734d91d70a26d3de2140958ea3751a79c13adbb873cb133352c9",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/label.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/label.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/label.tsx",
+                "upstreamSha256": "sha256:88e7b260887a73d6f311e57a94a9f080151222a360bb98eef547f833d5fe2903",
+                "contentSha256": "sha256:d44a926c7c1bbcd2c37c025ec265ab9825f68f970ebb00fe6f60518a012f6858",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/separator.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/separator.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/separator.tsx",
+                "upstreamSha256": "sha256:7ae98811c81382d00522d5d015d2b76d8f552bfec99446cfc50e80c251e6e3ff",
+                "contentSha256": "sha256:637a56a7819e389948eda592a965105bb147723be6048121d180dbb95c7c0992",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/textarea.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "upstreamSha256": "sha256:f58c44c6898edfc1c533284329efcd83428c5cb4bd2d666213c273852d089dd5",
+                "contentSha256": "sha256:568c2c73abe79ea003e0f16f4c4ed5b20f0c0a0540a4cb68de776e129756aa0c",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/examples/radix/calendar-time.tsx, apps/v4/registry/bases/radix/ui/calendar.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/card.tsx, apps/v4/registry/bases/radix/ui/field.tsx, apps/v4/registry/bases/radix/ui/input-group.tsx, apps/v4/registry/bases/radix/ui/input.tsx, apps/v4/registry/bases/radix/ui/label.tsx, apps/v4/registry/bases/radix/ui/separator.tsx, apps/v4/registry/bases/radix/ui/textarea.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/shadcn-calendar-time/calendar-time.tsx",
+              "change": "Changed generated style imports to bundled relative paths. Lifted initial date and time values into props, added optional field names and a date callback, and replaced fixed IDs with useId-generated IDs.",
+              "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+            },
+            {
+              "shippedPath": "components/radix-nova/calendar.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/card.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/field.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/input-group.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/input.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/label.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/separator.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/textarea.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+              "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+            }
+          ],
+          "dedupe": {
+            "family": "calendar-date-time-range",
+            "sourceHash": "sha256:6dfb6c902b5efebe365629e1b7b9ca57f9010a4757f655129fa4a02ce300c9ef",
+            "contentHash": "sha256:0485c40fa87d0f822a505afc5a8a53afd5ca6561d83f4ee67f2fc97466c6b313",
+            "structureHash": "sha256:089f3541cf33d2a93d42cd03812bb7c11fb949c35fa7cffd011155068011ca02"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-date-picker-natural-language",
+      "type": "registry:component",
+      "title": "Natural Language Date Picker",
+      "description": "Parses typed natural-language dates and synchronizes them with a calendar popover.",
+      "author": "shadcn",
+      "dependencies": [
+        "chrono-node@2.8.4",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "react-day-picker@9.8.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/shadcn-date-picker-natural-language/date-picker-natural-language.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/shadcn-date-picker-natural-language/date-picker-natural-language.tsx"
+        },
+        {
+          "path": "components/radix-nova/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/calendar.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/radix-nova/field.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/field.tsx"
+        },
+        {
+          "path": "components/radix-nova/input-group.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input-group.tsx"
+        },
+        {
+          "path": "components/radix-nova/input.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input.tsx"
+        },
+        {
+          "path": "components/radix-nova/label.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/label.tsx"
+        },
+        {
+          "path": "components/radix-nova/popover.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/popover.tsx"
+        },
+        {
+          "path": "components/radix-nova/separator.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/separator.tsx"
+        },
+        {
+          "path": "components/radix-nova/textarea.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/textarea.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "date-picker",
+            "natural-language",
+            "popover"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-date-picker-natural-language.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/shadcn-date-picker-natural-language/date-picker-natural-language.tsx",
+                "upstreamPath": "apps/v4/examples/radix/date-picker-natural-language.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/date-picker-natural-language.tsx",
+                "upstreamSha256": "sha256:601463118c9a09e4aac070b1b86e3c04bad0f9236e849a2342dab3a3e1fbf8f6",
+                "contentSha256": "sha256:0de83540ffdbdbf77512ec3a7da5d5867fdcfe57f0fedb5aa4f1ad358b2fd003",
+                "changes": [
+                  "Changed generated style imports to bundled relative paths.",
+                  "Lifted label, name, ID, initial text, and date callback into props; generated instance-safe IDs and clear stale parsed dates when text becomes invalid."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/calendar.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/calendar.tsx",
+                "upstreamSha256": "sha256:5f4275762945548864d0fd73d9f13de587417e5aea3e2815a95a1392c80a026d",
+                "contentSha256": "sha256:f268516e9ff518dca21b2dff7d81a47f7fa166d86ccaf1f6540d168d83e43131",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/field.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/field.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/field.tsx",
+                "upstreamSha256": "sha256:a11361f3ed68a231905f1dd5d5aac2fd578bce196ee6f161ac74d47b42169fd5",
+                "contentSha256": "sha256:03cad9373c9bf0053c91736a313705c2edbaab6740338702e1c463fdbaacf961",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input-group.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "upstreamSha256": "sha256:c6a2f723b6793d673028016507c0c6307f89c7553f552ea5770a755907cae9b0",
+                "contentSha256": "sha256:1c93ff2e4b68af37057d718eac5a53be27903b2f85341968891e0d1f17ae7919",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input.tsx",
+                "upstreamSha256": "sha256:cace577b40968ce734f3b5daf42748e2eab820e380822bfc4e1256b2318135d7",
+                "contentSha256": "sha256:dcf4d0c7e714734d91d70a26d3de2140958ea3751a79c13adbb873cb133352c9",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/label.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/label.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/label.tsx",
+                "upstreamSha256": "sha256:88e7b260887a73d6f311e57a94a9f080151222a360bb98eef547f833d5fe2903",
+                "contentSha256": "sha256:d44a926c7c1bbcd2c37c025ec265ab9825f68f970ebb00fe6f60518a012f6858",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/popover.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/popover.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/popover.tsx",
+                "upstreamSha256": "sha256:21a3edd2723746191496d301e91151c47791422cebd27035d0fd10ea74555d32",
+                "contentSha256": "sha256:9d314103dc7a70c83425b6715e657b230be4c704c3be98332e381f1409d399e9",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled open and close animation under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/separator.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/separator.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/separator.tsx",
+                "upstreamSha256": "sha256:7ae98811c81382d00522d5d015d2b76d8f552bfec99446cfc50e80c251e6e3ff",
+                "contentSha256": "sha256:637a56a7819e389948eda592a965105bb147723be6048121d180dbb95c7c0992",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/textarea.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "upstreamSha256": "sha256:f58c44c6898edfc1c533284329efcd83428c5cb4bd2d666213c273852d089dd5",
+                "contentSha256": "sha256:568c2c73abe79ea003e0f16f4c4ed5b20f0c0a0540a4cb68de776e129756aa0c",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/examples/radix/date-picker-natural-language.tsx, apps/v4/registry/bases/radix/ui/calendar.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/field.tsx, apps/v4/registry/bases/radix/ui/input-group.tsx, apps/v4/registry/bases/radix/ui/input.tsx, apps/v4/registry/bases/radix/ui/label.tsx, apps/v4/registry/bases/radix/ui/popover.tsx, apps/v4/registry/bases/radix/ui/separator.tsx, apps/v4/registry/bases/radix/ui/textarea.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/shadcn-date-picker-natural-language/date-picker-natural-language.tsx",
+              "change": "Changed generated style imports to bundled relative paths. Lifted label, name, ID, initial text, and date callback into props; generated instance-safe IDs and clear stale parsed dates when text becomes invalid.",
+              "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+            },
+            {
+              "shippedPath": "components/radix-nova/calendar.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/field.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/input-group.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/input.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/label.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/popover.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled open and close animation under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/separator.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/textarea.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+              "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+            }
+          ],
+          "dedupe": {
+            "family": "natural-language-date-picker",
+            "sourceHash": "sha256:9d983bb26b6ce08e6eb6f16bf67f6e470ba95fc7838dd9f6e35dfe4d595d1675",
+            "contentHash": "sha256:91bd32900e436236f3add904a0ee0926ee0fa5cd9e16f8e2682420852795da17",
+            "structureHash": "sha256:9e874677cc006f68dc731cb3bef99cc8f695ae00ff0b20ebd8801f28a7994675"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-input-group-custom",
+      "type": "registry:component",
+      "title": "Autosizing Input Group",
+      "description": "Combines an autosizing textarea with a submit action in one input group.",
+      "author": "shadcn",
+      "dependencies": [
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "radix-ui@1.4.3",
+        "react-textarea-autosize@8.5.9",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/shadcn-input-group-custom/input-group-custom.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/shadcn-input-group-custom/input-group-custom.tsx"
+        },
+        {
+          "path": "components/radix-nova/input-group.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input-group.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/radix-nova/input.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/input.tsx"
+        },
+        {
+          "path": "components/radix-nova/textarea.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/textarea.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "textarea",
+            "autosize",
+            "submit"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-input-group-custom.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/shadcn-input-group-custom/input-group-custom.tsx",
+                "upstreamPath": "apps/v4/examples/radix/input-group-custom.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/input-group-custom.tsx",
+                "upstreamSha256": "sha256:94495a68c5e3396488cf9abf7b5d6386f5896544a417ffe0a08b7c8b755592de",
+                "contentSha256": "sha256:6ea3a4c20911b81efb55a0537e410c87d7ac71fdf0754977e78fc452e91fb1df",
+                "changes": [
+                  "Changed the generated style import to a bundled relative path.",
+                  "Turned the fixed fixture into a real form with caller-provided submit handling and textarea props, logical alignment, and a reduced-motion transition override."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input-group.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input-group.tsx",
+                "upstreamSha256": "sha256:c6a2f723b6793d673028016507c0c6307f89c7553f552ea5770a755907cae9b0",
+                "contentSha256": "sha256:1c93ff2e4b68af37057d718eac5a53be27903b2f85341968891e0d1f17ae7919",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/input.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/input.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/input.tsx",
+                "upstreamSha256": "sha256:cace577b40968ce734f3b5daf42748e2eab820e380822bfc4e1256b2318135d7",
+                "contentSha256": "sha256:dcf4d0c7e714734d91d70a26d3de2140958ea3751a79c13adbb873cb133352c9",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/textarea.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/textarea.tsx",
+                "upstreamSha256": "sha256:f58c44c6898edfc1c533284329efcd83428c5cb4bd2d666213c273852d089dd5",
+                "contentSha256": "sha256:568c2c73abe79ea003e0f16f4c4ed5b20f0c0a0540a4cb68de776e129756aa0c",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/examples/radix/input-group-custom.tsx, apps/v4/registry/bases/radix/ui/input-group.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/registry/bases/radix/ui/input.tsx, apps/v4/registry/bases/radix/ui/textarea.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/shadcn-input-group-custom/input-group-custom.tsx",
+              "change": "Changed the generated style import to a bundled relative path. Turned the fixed fixture into a real form with caller-provided submit handling and textarea props, logical alignment, and a reduced-motion transition override.",
+              "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+            },
+            {
+              "shippedPath": "components/radix-nova/input-group.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/input.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/radix-nova/textarea.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+              "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+            }
+          ],
+          "dedupe": {
+            "family": "autosizing-textarea-submit",
+            "sourceHash": "sha256:457ad81c3736723fa9c3345d2094a5f869049f0219918afd3ad82be6699ccdfb",
+            "contentHash": "sha256:00ec4550db2080d654ef2a08b729bc25879f4927729c2b2565c43465ee5ae1d4",
+            "structureHash": "sha256:43ee888139fcf8edd89733c77f31f27470ceef3e9d2002b0effe6fe0b9e6ef4d"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "shadcn-calendar-hijri",
+      "type": "registry:component",
+      "title": "Hijri Calendar",
+      "description": "Renders a reusable RTL Hijri calendar with a self-hosted Arabic typeface.",
+      "author": "shadcn",
+      "dependencies": [
+        "@fontsource-variable/vazirmatn@5.3.0",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.474.0",
+        "radix-ui@1.4.3",
+        "react-day-picker@9.8.1",
+        "tailwind-merge@3.6.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/shadcn-calendar-hijri/calendar-hijri.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/shadcn-ui/shadcn-calendar-hijri/calendar-hijri.tsx"
+        },
+        {
+          "path": "components/radix-nova/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/shadcn-ui/radix-nova/button.tsx"
+        },
+        {
+          "path": "components/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/shadcn-ui/lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "calendar",
+            "hijri",
+            "rtl"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/shadcn-ui/shadcn-calendar-hijri.tsx",
+          "source": {
+            "project": "shadcn/ui",
+            "repository": "https://github.com/shadcn-ui/ui",
+            "revision": "d28738b183c5eaa69d8d540826e450f30d39ab6c",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/shadcn-calendar-hijri/calendar-hijri.tsx",
+                "upstreamPath": "apps/v4/examples/radix/calendar-hijri.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/examples/radix/calendar-hijri.tsx",
+                "upstreamSha256": "sha256:54bca767380ca93ca6892cdef52d5233a6a3b4c498b5410fbd1d172c536f9f17",
+                "contentSha256": "sha256:14c2a635abad3b45a249c662e12c91777514f751a0bdd857d2a560df5f9e3be0",
+                "changes": [
+                  "Changed utility and generated style imports to bundled relative paths.",
+                  "Removed the Next-only Google font loader, self-hosted Vazirmatn through @fontsource-variable/vazirmatn, exported the existing generic calendar instead of the parameterless fixture, and defaulted direction and physical utilities to RTL-safe logical equivalents."
+                ]
+              },
+              {
+                "shippedPath": "components/radix-nova/button.tsx",
+                "upstreamPath": "apps/v4/registry/bases/radix/ui/button.tsx",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/registry/bases/radix/ui/button.tsx",
+                "upstreamSha256": "sha256:f8f9ad17328a21e723d5bad69438c8464ba685aa4eb4db61abe44829ebe309aa",
+                "contentSha256": "sha256:c3eb5a813ce13395a57c29b058dd5335c6d36d317993de587712bbba2485dab1",
+                "changes": [
+                  "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file.",
+                  "Changed generated source aliases to bundled relative imports where present.",
+                  "Disabled transform transitions under reduced motion."
+                ]
+              },
+              {
+                "shippedPath": "components/lib/utils.ts",
+                "upstreamPath": "apps/v4/lib/utils.ts",
+                "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/apps/v4/lib/utils.ts",
+                "upstreamSha256": "sha256:408c8db9b3d0b07e8f574de5da0b38f599b3bb40f84ebeccc37803809b64f1b9",
+                "contentSha256": "sha256:9a4d47b247f985c5d482101c958f0a8c36e0fff2c2a634e35dc222da1a85f2fe",
+                "changes": [
+                  "Removed the unrelated Next-specific absoluteUrl helper and retained only the cn helper required by this item."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/v4/examples/radix/calendar-hijri.tsx, apps/v4/registry/bases/radix/ui/button.tsx, apps/v4/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2023 shadcn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/shadcn-ui/ui/blob/d28738b183c5eaa69d8d540826e450f30d39ab6c/LICENSE.md",
+              "sha256": "sha256:a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24",
+              "localPath": "registry/sources/shadcn-ui/LICENSE"
+            },
+            "notices": [
+              "registry/sources/shadcn-ui/NOTICE",
+              "registry/sources/shadcn-ui/Vazirmatn-OFL.txt"
+            ]
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/shadcn-calendar-hijri/calendar-hijri.tsx",
+              "change": "Changed utility and generated style imports to bundled relative paths. Removed the Next-only Google font loader, self-hosted Vazirmatn through @fontsource-variable/vazirmatn, exported the existing generic calendar instead of the parameterless fixture, and defaulted direction and physical utilities to RTL-safe logical equivalents.",
+              "reason": "Expose the copied composition as a reusable, portable component while preserving its interaction and rendering model."
+            },
+            {
+              "shippedPath": "components/radix-nova/button.tsx",
+              "change": "Applied shadcn/ui's pinned radix-nova style transform and RTL transform to the authored Radix base file. Changed generated source aliases to bundled relative imports where present. Disabled transform transitions under reduced motion.",
+              "reason": "Reproduce the example's pinned style closure with portable imports and required RTL, accessibility, or reduced-motion behavior."
+            },
+            {
+              "shippedPath": "components/lib/utils.ts",
+              "change": "Removed the unrelated Next-specific absoluteUrl helper.",
+              "reason": "Keep the copied support closure limited to the cn helper used by the installed component and avoid a Next environment dependency."
+            }
+          ],
+          "dedupe": {
+            "family": "hijri-calendar",
+            "sourceHash": "sha256:22f35460a5344e86fa1c3f073933269f0a330a40f9cc605157c5e389496619f6",
+            "contentHash": "sha256:4fb6a35e570baad0e790d350182136f6009b2e15305c7fb654b52f019b9865e2",
+            "structureHash": "sha256:0780c3a627c40af329652778bf677b5223a246944f390309d797c86fcfc9188e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          },
+          "dependencyNotices": [
+            {
+              "dependency": "@fontsource-variable/vazirmatn@5.3.0",
+              "spdx": "OFL-1.1",
+              "copyright": [
+                "Copyright 2015 The Vazirmatn Project Authors (https://github.com/rastikerdar/vazirmatn)"
+              ],
+              "evidence": {
+                "repository": "https://github.com/fontsource/font-files",
+                "revision": "02b28c06b126c852a5b966b44aef777ca923f6f6",
+                "tarball": "https://registry.npmjs.org/@fontsource-variable/vazirmatn/-/vazirmatn-5.3.0.tgz",
+                "integrity": "sha512-ZA68W8JHbMdNzzwjYHUWKB2PH22QpxNEnk0ukcXM+XiqYMV6ZWJZAKuNXcrMR2JjuIAwsfAU3KknCXPI6wXUvw==",
+                "localPath": "registry/sources/shadcn-ui/Vazirmatn-OFL.txt",
+                "sha256": "sha256:e6f4ce7b6c830d5a25a4f8ac777c267cd7d3c180bc2a7150ca57cbb9b280c4b7"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

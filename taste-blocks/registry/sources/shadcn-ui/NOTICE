@@ -1,0 +1,13 @@
+Taste Blocks shadcn/ui draft source notice
+
+Component and support source was copied from shadcn/ui at commit
+d28738b183c5eaa69d8d540826e450f30d39ab6c. The complete upstream MIT
+license is preserved in LICENSE.
+
+The radix-nova support files were deterministically rebuilt from that commit's
+authored Radix bases with its own style generator before the documented
+portability, RTL, accessibility, and reduced-motion edits.
+
+The Hijri calendar uses @fontsource-variable/vazirmatn@5.3.0 to self-host
+Vazirmatn. Vazirmatn remains licensed under SIL Open Font License 1.1; its
+copyright and full license text are preserved in Vazirmatn-OFL.txt.
