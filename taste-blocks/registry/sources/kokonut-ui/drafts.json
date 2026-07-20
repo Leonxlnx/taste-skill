@@ -1,0 +1,265 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-kokonut-ui-drafts",
+  "homepage": "https://github.com/kokonut-labs/kokonutui",
+  "items": [
+    {
+      "name": "kokonut-avatar-picker",
+      "type": "registry:component",
+      "title": "Avatar Picker",
+      "description": "Collects an avatar choice and validated username through a compact, animated profile setup form.",
+      "author": "kokonutUI",
+      "dependencies": [
+        "@radix-ui/react-slot@1.2.4",
+        "class-variance-authority@0.7.1",
+        "clsx@2.1.1",
+        "lucide-react@0.556.0",
+        "motion@12.23.25",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/kokonut-avatar-picker/avatar-picker.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/kokonut-avatar-picker.tsx"
+        },
+        {
+          "path": "components/ui/button.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui/button.tsx"
+        },
+        {
+          "path": "components/ui/card.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui/card.tsx"
+        },
+        {
+          "path": "components/ui/input.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui/input.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": ["forms-feedback"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": ["avatar", "profile", "validated-input", "selection"],
+          "renderer": "dom",
+          "preview": "previews/drafts/kokonut-ui/kokonut-avatar-picker.tsx",
+          "source": {
+            "project": "Kokonut UI",
+            "repository": "https://github.com/kokonut-labs/kokonutui",
+            "revision": "4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kokonut-avatar-picker/avatar-picker.tsx",
+                "upstreamPath": "components/kokonutui/avatar-picker.tsx",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/kokonutui/avatar-picker.tsx",
+                "upstreamSha256": "sha256:cd01dbf9b1fcfa4dc71f7a40c826ae4d6ba4dff9606bdec7309fc9d282a13363",
+                "contentSha256": "sha256:49497fef8bd80df87dd10b01a958d6891e310663f04eec9a90c9badb93d24958",
+                "changes": [
+                  "Renamed the exported component to AvatarPicker, made completion explicit, and added configurable labels and defaults while preserving the upstream avatar art and visual composition.",
+                  "Replaced duplicate fixed SVG mask IDs with viewport-clipped artwork and generated a unique username field ID so multiple instances remain valid.",
+                  "Changed the clickable container into a native form, added Enter submission, accessible error and counter associations, and meaningful selected-art semantics.",
+                  "Made the thumbnail strip fit narrow viewports, gated hover-only movement to hover-capable devices, and disabled movement and transitions for reduced motion.",
+                  "Changed application aliases to the bundled relative support closure and normalized formatting."
+                ]
+              },
+              {
+                "shippedPath": "components/ui/button.tsx",
+                "upstreamPath": "components/ui/button.tsx",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/button.tsx",
+                "upstreamSha256": "sha256:6ccf1b15a9db001a2e682ee288f4c77b6ced9988325cc070a61a8056eb6c02e2",
+                "contentSha256": "sha256:396f54f5ad8820aaf2b169d4e0e7edcc636dc6f18abf18a04bf3801acef7cf2b",
+                "changes": [
+                  "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the component API or variants."
+                ]
+              },
+              {
+                "shippedPath": "components/ui/card.tsx",
+                "upstreamPath": "components/ui/card.tsx",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/card.tsx",
+                "upstreamSha256": "sha256:cf27e9441dcf2882fc35483b84c4e231918186ec7e4b50c63984f48c3cb84aa0",
+                "contentSha256": "sha256:7adffde373558cdf7467c18482b24e633f671e536ef662f8d62b2ee6de8151f0",
+                "changes": [
+                  "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the card primitives."
+                ]
+              },
+              {
+                "shippedPath": "components/ui/input.tsx",
+                "upstreamPath": "components/ui/input.tsx",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/ui/input.tsx",
+                "upstreamSha256": "sha256:543afece30d075d11dc87dfd90295cfa196d4fc7ee56021fc6865f177723dea6",
+                "contentSha256": "sha256:d4add37f0033c049c25b186d04e443770968f3c6d634335a521aaff4bf0ac971",
+                "changes": [
+                  "Changed the application utility alias to ../../lib/utils and normalized formatting without changing the input API."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/lib/utils.ts",
+                "upstreamSha256": "sha256:9e45d6d21e0d57bf85930ba2bf6fdd9f5f0175d1129844356081a6050975deb1",
+                "contentSha256": "sha256:51bbf14cd1f84f49aab2e0dbee420137015d56b6677bb439e83a908cd292cce1",
+                "changes": ["Normalized formatting and line endings without changing behavior."]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/kokonutui/avatar-picker.tsx, components/ui/button.tsx, components/ui/card.tsx, components/ui/input.tsx, and lib/utils.ts",
+            "copyright": ["Copyright (c) 2025 kokonutUI"],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/LICENSE",
+              "sha256": "sha256:b2e018ad1fd564608cc1ee0c2ad675ce5202c8ed9f5f68e6d09e7b6bc881d5d2",
+              "localPath": "registry/sources/kokonut-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kokonut-avatar-picker/avatar-picker.tsx",
+              "change": "Kept the upstream art and composition while making IDs instance-safe, submission real, copy configurable, narrow layouts stable, and motion accessible.",
+              "reason": "The copied visual was strong, but fixed IDs, click-only submission, narrow overflow, and incomplete reduced-motion behavior prevented production use."
+            },
+            {
+              "shippedPath": "components/ui/button.tsx",
+              "change": "Repointed the utility import and normalized formatting.",
+              "reason": "Keep the copied dependency closure installable outside the upstream application."
+            },
+            {
+              "shippedPath": "components/ui/card.tsx",
+              "change": "Repointed the utility import and normalized formatting.",
+              "reason": "Keep the copied dependency closure installable outside the upstream application."
+            },
+            {
+              "shippedPath": "components/ui/input.tsx",
+              "change": "Repointed the utility import and normalized formatting.",
+              "reason": "Keep the copied dependency closure installable outside the upstream application."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Normalized formatting and line endings.",
+              "reason": "Match the source batch formatting without changing the copied helper."
+            }
+          ],
+          "dedupe": {
+            "family": "avatar-profile-setup",
+            "sourceHash": "sha256:cefc351bd468f9d754ded94eca388920db8dec0cfc4014ed0d930162c1f3a901",
+            "contentHash": "sha256:0fe706c30882f1076b6400722538b55bed02bb33b6c834f1f3e137cefecc4325",
+            "structureHash": "sha256:7258e4326ff774664ffcc69e90a4eb84c8797a5a0f37d9cd85990ec2a3059fae"
+          },
+          "verification": { "reviewedBy": null, "reviewedAt": null }
+        }
+      }
+    },
+    {
+      "name": "kokonut-file-upload",
+      "type": "registry:component",
+      "title": "File Upload",
+      "description": "Validates, uploads, cancels, and reports progress for a dropped or selected file through a caller-supplied async transport.",
+      "author": "kokonutUI",
+      "dependencies": [
+        "clsx@2.1.1",
+        "lucide-react@0.556.0",
+        "motion@12.23.25",
+        "tailwind-merge@3.4.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/kokonut-file-upload/file-upload.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/kokonut-file-upload.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": ["forms-feedback"],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": ["file-upload", "drag-drop", "progress", "cancellable"],
+          "renderer": "svg",
+          "preview": "previews/drafts/kokonut-ui/kokonut-file-upload.tsx",
+          "source": {
+            "project": "Kokonut UI",
+            "repository": "https://github.com/kokonut-labs/kokonutui",
+            "revision": "4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/kokonut-file-upload/file-upload.tsx",
+                "upstreamPath": "components/kokonutui/file-upload.tsx",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/components/kokonutui/file-upload.tsx",
+                "upstreamSha256": "sha256:a4e08685bba86205a625fced37fd1a4dcc034d2b8b707c35f36ae27019b34846",
+                "contentSha256": "sha256:6d2667e60bab4143355f5357fc57494fbf9e7013d63db214d56850f014a25e35",
+                "changes": [
+                  "Replaced the built-in fake upload timer with a required caller-supplied async upload function, AbortSignal cancellation, and bounded progress reporting.",
+                  "Replaced regular-expression MIME matching with literal MIME, wildcard MIME, and extension matching; bounded invalid size and progress inputs.",
+                  "Added a persistent completed state, visible errors, cancellable cleanup, unique SVG mask IDs, live progress, and semantic busy and group states.",
+                  "Stopped all SMIL, CSS, and Motion movement under reduced motion, increased touch targets, and gated decorative hover movement.",
+                  "Changed the application utility alias to the bundled relative helper and normalized formatting while preserving the upstream upload illustrations and ring geometry."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "lib/utils.ts",
+                "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/lib/utils.ts",
+                "upstreamSha256": "sha256:9e45d6d21e0d57bf85930ba2bf6fdd9f5f0175d1129844356081a6050975deb1",
+                "contentSha256": "sha256:51bbf14cd1f84f49aab2e0dbee420137015d56b6677bb439e83a908cd292cce1",
+                "changes": ["Normalized formatting and line endings without changing behavior."]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "components/kokonutui/file-upload.tsx and lib/utils.ts",
+            "copyright": ["Copyright (c) 2025 kokonutUI"],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/kokonut-labs/kokonutui/blob/4aba04e5e1c3e1c7de966554aacbe0cd6a31c77e/LICENSE",
+              "sha256": "sha256:b2e018ad1fd564608cc1ee0c2ad675ce5202c8ed9f5f68e6d09e7b6bc881d5d2",
+              "localPath": "registry/sources/kokonut-ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/kokonut-file-upload/file-upload.tsx",
+              "change": "Preserved the upstream visual treatment while replacing simulated behavior with a real async transport contract, cancellation, strict validation, completed and error states, unique SVG IDs, and complete motion and input accessibility.",
+              "reason": "A reusable upload component must never claim success from a timer; it needs caller-owned transport, progress, cancellation, validation, and deterministic cleanup."
+            },
+            {
+              "shippedPath": "lib/utils.ts",
+              "change": "Normalized formatting and line endings.",
+              "reason": "Match the source batch formatting without changing the copied helper."
+            }
+          ],
+          "dedupe": {
+            "family": "asynchronous-file-drop-uploader",
+            "sourceHash": "sha256:79219df5495222423276bc11302ea43663905a883e1988299eb4914a2effcac7",
+            "contentHash": "sha256:a4c21a15384834b2c2b3bf62a6865f5f1c12a314a84ab57a77130a7cdae2a2bb",
+            "structureHash": "sha256:837be6eff2111f60bbffa0040879eedfe95d29d7df14aed26cf4e3f7ef5985cb"
+          },
+          "verification": { "reviewedBy": null, "reviewedAt": null }
+        }
+      }
+    }
+  ]
+}
