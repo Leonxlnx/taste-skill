@@ -5,16 +5,21 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
+    "mcp": "tsx mcp/stdio.ts",
+    "test:policy": "node scripts/check-policy.test.mjs",
+    "test:mcp": "tsx --test mcp/smoke.test.ts",
     "validate": "shadcn registry validate && node scripts/check-policy.mjs",
     "generate": "shadcn build && node scripts/build-catalog.mjs",
     "typecheck": "tsc --noEmit --pretty false",
     "build": "npm run validate && npm run generate && next build",
-    "verify": "npm run typecheck && npm run build"
+    "verify": "npm run typecheck && npm run test:policy && npm run test:mcp && npm run build"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
     "next": "16.2.10",
     "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react-dom": "19.2.7",
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
@@ -23,6 +28,7 @@
     "@types/react-dom": "19.2.3",
     "shadcn": "4.13.1",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.1",
     "typescript": "5.9.3"
   },
   "overrides": {
