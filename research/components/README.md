@@ -22,6 +22,9 @@ The current collection may not contain self-invented replacement components. Ori
 - [effects.md](effects.md): evaluation vocabulary for visual-effect components.
 - [site.md](site.md): Next.js catalog and marketing-site direction.
 - [provenance.md](provenance.md): evidence required for every catalog entry.
+- [import-schema.md](import-schema.md): one canonical shadcn manifest contract, deduplication, and promotion gates.
+- [next-architecture.md](next-architecture.md): self-contained Next.js catalog and registry architecture.
+- [mcp.md](mcp.md): read-only component discovery and install-command MCP design.
 - `inventory/`: source-by-source candidate inventories pinned to exact revisions.
 
 ## Product split
