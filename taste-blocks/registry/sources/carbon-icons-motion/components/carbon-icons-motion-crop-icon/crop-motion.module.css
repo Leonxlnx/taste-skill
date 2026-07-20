@@ -1,0 +1,31 @@
+.CropTop,
+.CropBottom {
+  will-change: transform;
+}
+
+.isAnimating .CropTop {
+  animation: crop-top 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CropBottom {
+  animation: crop-bottom 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+@keyframes crop-top {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes crop-bottom {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .isAnimating .CropTop,
+  .isAnimating .CropBottom {
+    animation: none;
+  }
+}

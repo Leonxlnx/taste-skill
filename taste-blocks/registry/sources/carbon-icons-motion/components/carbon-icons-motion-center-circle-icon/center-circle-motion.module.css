@@ -1,0 +1,74 @@
+.CenterCircle {
+  stroke-miterlimit: 10;
+  stroke-width: 2px;
+  transform-origin: 1rem 1rem;
+  vector-effect: non-scaling-stroke;
+  will-change: transform;
+}
+
+.CenterCircleTop,
+.CenterCircleRight,
+.CenterCircleLeft,
+.CenterCircleBottom {
+  will-change: transform;
+}
+
+.isAnimating .CenterCircle {
+  animation: center-circle 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CenterCircleTop {
+  animation: center-circle-top 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CenterCircleRight {
+  animation: center-circle-right 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CenterCircleLeft {
+  animation: center-circle-left 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CenterCircleBottom {
+  animation: center-circle-bottom 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+@keyframes center-circle {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.8); }
+  100% { transform: scale(1); }
+}
+
+@keyframes center-circle-top {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes center-circle-bottom {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes center-circle-right {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes center-circle-left {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .isAnimating .CenterCircle,
+  .isAnimating .CenterCircleTop,
+  .isAnimating .CenterCircleRight,
+  .isAnimating .CenterCircleLeft,
+  .isAnimating .CenterCircleBottom {
+    animation: none;
+  }
+}

@@ -1,0 +1,9 @@
+Carbon Icons Motion selected components
+
+Source: https://github.com/carbon-design-system/icons-motion
+Revision: 7e0a7459eb7d8f96fae0649e1450b65af7f75a2b
+License: Apache-2.0; the exact upstream LICENSE is preserved. The upstream commit has no NOTICE file.
+
+The upstream README says this package mirrors Carbon Design System icons and also says its copied components are not tied to a specific Carbon version. Accordingly, the inline SVG geometry is attributed to the official Carbon Icons Motion component blobs above; no unsupported secondary Carbon release is claimed.
+
+Modified by Taste Blocks on 2026-07-20: six generic icons were converted from JavaScript/SCSS to strict TSX/CSS modules, made explicitly controlled through isAnimated, given reduced-motion behavior and accessible SVG props, and retimed to one non-looping 280 ms interaction. No examples, site files, telemetry code, remote assets, product logos, or brand glyphs are redistributed.

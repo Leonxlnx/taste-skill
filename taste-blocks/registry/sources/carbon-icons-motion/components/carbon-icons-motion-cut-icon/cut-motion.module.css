@@ -1,0 +1,36 @@
+.CutRotateUp,
+.CutRotateDown {
+  transform-origin: 56.9375% 50%;
+  will-change: transform;
+}
+
+.isAnimating .CutRotateUp {
+  animation: cut-rotate-up 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+.isAnimating .CutRotateDown {
+  animation: cut-rotate-down 280ms cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+
+@keyframes cut-rotate-up {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(27deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(27deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes cut-rotate-down {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-27deg); }
+  50% { transform: rotate(-15deg); }
+  75% { transform: rotate(-27deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .isAnimating .CutRotateUp,
+  .isAnimating .CutRotateDown {
+    animation: none;
+  }
+}

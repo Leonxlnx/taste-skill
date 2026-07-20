@@ -1,0 +1,93 @@
+.Wand {
+  transform-origin: 90% 90%;
+  will-change: transform;
+}
+
+.SparkleLeft,
+.SparkleCenter,
+.SparkleRight {
+  transform: rotate(45deg);
+  will-change: transform;
+}
+
+.SparkleLeft,
+.SparkleLeftContainer {
+  transform-origin: 12.5% 50%;
+}
+
+.SparkleCenter {
+  transform-origin: 12.5% 12.5%;
+}
+
+.SparkleRight,
+.SparkleRightContainer {
+  transform-origin: 50% 12.5%;
+}
+
+.SparkleLeftContainer,
+.SparkleRightContainer {
+  will-change: transform;
+}
+
+.isAnimating .Wand { animation: wand 280ms; }
+.isAnimating .SparkleLeft { animation: sparkle-left-translate 280ms; }
+.isAnimating .SparkleLeftContainer { animation: sparkle-left-scale 280ms; }
+.isAnimating .SparkleCenter { animation: sparkle-center-scale 280ms; }
+.isAnimating .SparkleRight { animation: sparkle-right-translate 280ms; }
+.isAnimating .SparkleRightContainer { animation: sparkle-right-scale 280ms; }
+
+@keyframes wand {
+  0% { transform: rotate(0); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }
+  38.3% { transform: rotate(4deg); animation-timing-function: cubic-bezier(0.66, 0, 0.34, 1); }
+  56.6% { transform: rotate(-4deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }
+  100% { transform: rotate(0); }
+}
+
+@keyframes sparkle-left-translate {
+  0% { transform: translateY(0) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }
+  38.3% { transform: translateY(2px) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }
+  100% { transform: translateY(0) rotate(45deg); }
+}
+
+@keyframes sparkle-left-scale {
+  0% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  16.6% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  43.3% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  60% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes sparkle-center-scale {
+  0% { transform: scale(1) rotate(45deg); }
+  23.3% { transform: scale(1) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  50% { transform: scale(1.5) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }
+  66.6% { transform: scale(1) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  83.3% { transform: scale(1.5) rotate(45deg); animation-timing-function: cubic-bezier(0, 0, 0.83, 1); }
+  100% { transform: scale(1) rotate(45deg); }
+}
+
+@keyframes sparkle-right-translate {
+  0% { transform: translateX(0) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }
+  38.3% { transform: translateX(2px) rotate(45deg); animation-timing-function: cubic-bezier(0.34, 0, 0.34, 1); }
+  100% { transform: translateX(0) rotate(45deg); }
+}
+
+@keyframes sparkle-right-scale {
+  0% { transform: scale(1); }
+  13.3% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  30% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  56.6% { transform: scale(1); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  73.3% { transform: scale(1.5); animation-timing-function: cubic-bezier(0, 0, 0.3, 1); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .isAnimating .Wand,
+  .isAnimating .SparkleLeft,
+  .isAnimating .SparkleLeftContainer,
+  .isAnimating .SparkleCenter,
+  .isAnimating .SparkleRight,
+  .isAnimating .SparkleRightContainer {
+    animation: none;
+  }
+}
