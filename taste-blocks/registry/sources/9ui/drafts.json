@@ -1,0 +1,231 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "taste-blocks-9ui-drafts",
+  "homepage": "https://9ui.dev",
+  "items": [
+    {
+      "name": "9ui-command",
+      "type": "registry:component",
+      "title": "Command",
+      "description": "Provides a searchable command list with grouped items, keyboard navigation, and an optional modal presentation.",
+      "author": "borabaloglu",
+      "dependencies": [
+        "@base-ui/react@1.0.0",
+        "clsx@2.1.1",
+        "cmdk-base@1.0.0",
+        "lucide-react@0.469.0",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/9ui-command/command.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/9ui-command.tsx"
+        },
+        {
+          "path": "components/9ui-command/9ui-command-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@components/taste-blocks/9ui-command-dialog.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "navigation-menus"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "navigation-menus",
+          "tags": [
+            "command",
+            "search",
+            "keyboard",
+            "listbox",
+            "dialog"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/9ui/9ui-command.tsx",
+          "source": {
+            "project": "9ui",
+            "repository": "https://github.com/borabaloglu/9ui",
+            "revision": "3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/9ui-command/command.tsx",
+                "upstreamPath": "apps/www/src/components/ui/command.tsx",
+                "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/command.tsx",
+                "upstreamSha256": "sha256:2118d62bdfb78f92a2af9e20dcd6062daa733d1f89fe1acc59e787aedd3f691a",
+                "contentSha256": "sha256:b1b9d3fedb39ef22525b95c539a56f88c7388d9faa7140d63c27acaacebf2769",
+                "changes": [
+                  "Changed the dialog and cn imports from upstream aliases to source-local relative paths and changed the shortcut margin to a logical RTL-aware utility."
+                ]
+              },
+              {
+                "shippedPath": "components/9ui-command/9ui-command-dialog.tsx",
+                "upstreamPath": "apps/www/src/components/ui/dialog.tsx",
+                "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/dialog.tsx",
+                "upstreamSha256": "sha256:fada575542fd784ae7f170ccc067f29f269bc9d78db58a01bee3326a6ff063a6",
+                "contentSha256": "sha256:f6e48d42233ee117c8fb78b50ffa76748e349a2ad9154d525559e05399608270",
+                "changes": [
+                  "Renamed the internal support file, changed Base UI and cn imports to portable source-local subpaths, and replaced physical right/text-left utilities with logical RTL-aware utilities."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/src/lib/utils.ts",
+                "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/lib/utils.ts",
+                "upstreamSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+                "contentSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/src/components/ui/command.tsx, apps/www/src/components/ui/dialog.tsx, and apps/www/src/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 borabaloglu"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/LICENSE.md",
+              "sha256": "sha256:49bb3c9e3771f566f1d689dc9ffc356bd18621b003f974ada322a171a91d341f",
+              "localPath": "registry/sources/9ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/9ui-command/command.tsx",
+              "change": "Repointed local aliases to copied support files and changed ml-auto to ms-auto.",
+              "reason": "Keep the item self-contained and preserve shortcut alignment in both LTR and RTL directions."
+            },
+            {
+              "shippedPath": "components/9ui-command/9ui-command-dialog.tsx",
+              "change": "Renamed the support target, used the Base UI dialog subpath and copied cn helper, and changed right/text-left utilities to end/text-start.",
+              "reason": "Avoid a generic public Dialog target while keeping the copied closure portable and RTL-aware."
+            }
+          ],
+          "dedupe": {
+            "family": "filterable-command-menu",
+            "sourceHash": "sha256:85064d6236d33e0d3a423e7ea84419c33eaf01567cb8004a0b44e625163d3552",
+            "contentHash": "sha256:e5d523ab4a5a94433dd7f6815ad409b44b28bf4563e213d3b642aedd5e65d682",
+            "structureHash": "sha256:7da5f8c20801a3d1c91b6952968947be64431d0e98ec5831f7ef900dbda5447b"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    },
+    {
+      "name": "9ui-meter",
+      "type": "registry:component",
+      "title": "Meter",
+      "description": "Displays a labeled scalar value within a known range using semantic meter markup.",
+      "author": "borabaloglu",
+      "dependencies": [
+        "@base-ui/react@1.0.0",
+        "clsx@2.1.1",
+        "tailwind-merge@3.3.1"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/9ui-meter/meter.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/9ui-meter.tsx"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ],
+      "categories": [
+        "status-progress"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "status-progress",
+          "tags": [
+            "meter",
+            "value",
+            "range",
+            "status",
+            "semantic"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/9ui/9ui-meter.tsx",
+          "source": {
+            "project": "9ui",
+            "repository": "https://github.com/borabaloglu/9ui",
+            "revision": "3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/9ui-meter/meter.tsx",
+                "upstreamPath": "apps/www/src/components/ui/meter.tsx",
+                "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/components/ui/meter.tsx",
+                "upstreamSha256": "sha256:a9539d436fdef8817ae8a58baea11d70b55c5d132697d221b188d76041ca5590",
+                "contentSha256": "sha256:dd546eb2823245f0d97a03179fd2ee6a042892fc7bab5d865de6ec0506991945",
+                "changes": [
+                  "Changed the cn import from the upstream alias to the copied source-local helper and stopped forwarding root-only props and className to the meter track."
+                ]
+              },
+              {
+                "shippedPath": "lib/utils.ts",
+                "upstreamPath": "apps/www/src/lib/utils.ts",
+                "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/apps/www/src/lib/utils.ts",
+                "upstreamSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+                "contentSha256": "sha256:b59c7c66fc6ffec6ff38aeb4b4c518553190be9c32680e46ba1fb3db46f227f0",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "apps/www/src/components/ui/meter.tsx and apps/www/src/lib/utils.ts",
+            "copyright": [
+              "Copyright (c) 2025 borabaloglu"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE.md",
+              "permalink": "https://github.com/borabaloglu/9ui/blob/3ec1af7cb6b7a3e402fb7955ea6c1142bb700abb/LICENSE.md",
+              "sha256": "sha256:49bb3c9e3771f566f1d689dc9ffc356bd18621b003f974ada322a171a91d341f",
+              "localPath": "registry/sources/9ui/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/9ui-meter/meter.tsx",
+              "change": "Repointed the cn alias to the copied helper and removed root props and className from Meter.Track.",
+              "reason": "Keep the item self-contained while preventing duplicate IDs, ARIA attributes, value props, and root styling on the visual track."
+            }
+          ],
+          "dedupe": {
+            "family": "semantic-scalar-meter",
+            "sourceHash": "sha256:87fb161f72049922fc873fde6ce11dbdf4a8d4947623ef4e9fa7ffa1fbcdca43",
+            "contentHash": "sha256:0f2af3eda1cfd9674051c8e31c1c7989f471bb38a287390a9f5affe131662b7e",
+            "structureHash": "sha256:417d1129f60a3bf529a72c54705fd995ea96a8928b44ba2a985781db3388ee3e"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
