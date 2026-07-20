@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from 'react';
 
-import { ReactCompareSlider } from '../../../registry/sources/react-compare-slider/components/react-compare-slider/react-compare-slider';
+import { ReactCompareSlider } from '@/registry/sources/react-compare-slider/components/react-compare-slider/react-compare-slider';
 
 const surfaceStyle: CSSProperties = {
   display: 'grid',

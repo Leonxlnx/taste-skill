@@ -15,10 +15,10 @@ export default function ComponentsPage() {
       {catalog.length === 0 ? (
         <EmptyState>The catalog opens when the first source and license review passes.</EmptyState>
       ) : (
-        <div className="grid gap-px bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid border-l border-t border-[var(--line)] sm:grid-cols-2 lg:grid-cols-3">
           {catalog.map((component) => (
             <Link
-              className="min-h-44 bg-[var(--background)] p-6 no-underline hover:bg-white/45"
+              className="min-h-44 border-b border-r border-[var(--line)] bg-[var(--background)] p-6 no-underline hover:bg-white/45"
               href={`/components/${component.name}`}
               key={component.name}
             >

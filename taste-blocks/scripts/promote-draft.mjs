@@ -76,6 +76,9 @@ async function main() {
     readFile(draftPreviewPath, "utf8"),
   ]);
   if (await exists(publicPreviewPath)) fail(`Public preview already exists: previews/${options.name}.tsx`);
+  if (/(?:\bfrom\s*|\bimport\s*\(\s*|^\s*import\s*)["']\./m.test(previewText)) {
+    fail(`${options.name} preview must use project aliases or package imports before promotion`);
+  }
 
   const sourceManifest = JSON.parse(sourceManifestText);
   const publicRegistry = JSON.parse(publicRegistryText);

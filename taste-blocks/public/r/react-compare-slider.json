@@ -1,0 +1,248 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "react-compare-slider",
+  "title": "React Compare Slider",
+  "author": "nerdyman",
+  "description": "Compares two caller-provided React nodes with an accessible draggable divider in landscape or portrait orientation.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/react-compare-slider.tsx",
+      "content": "'use client';\n\nimport type { FC } from 'react';\n\nimport { Handle } from './components/handle';\nimport { HandleRoot } from './components/handle-root';\nimport { Item } from './components/item';\nimport { Provider } from './components/provider';\nimport { Root } from './components/root';\nimport { useReactCompareSlider } from './hooks';\nimport type { ReactCompareSliderDetailedProps } from './types';\n\nexport const ReactCompareSlider: FC<ReactCompareSliderDetailedProps> = ({\n  boundsPadding,\n  browsingContext,\n  changePositionOnHover,\n  clip,\n  defaultPosition,\n  disabled,\n  handle,\n  itemOne,\n  itemTwo,\n  keyboardIncrement,\n  onPositionChange,\n  onlyHandleDraggable,\n  portrait,\n  transition,\n  ...props\n}) => {\n  const contextProps = useReactCompareSlider({\n    boundsPadding,\n    browsingContext,\n    changePositionOnHover,\n    clip,\n    defaultPosition,\n    disabled,\n    keyboardIncrement,\n    onPositionChange,\n    onlyHandleDraggable,\n    portrait,\n    transition,\n  });\n\n  return (\n    <Provider {...contextProps}>\n      <Root {...props}>\n        <Item item=\"itemOne\">{itemOne}</Item>\n        <Item item=\"itemTwo\">{itemTwo}</Item>\n        <HandleRoot>{handle || <Handle />}</HandleRoot>\n      </Root>\n    </Provider>\n  );\n};\n",
+      "type": "registry:component",
+      "target": "@components/taste-blocks/react-compare-slider/index.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/hooks.ts",
+      "content": "'use client';\n\nimport { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';\n\nimport { KeyboardEventKeys } from './components/internal-hooks';\nimport { ReactCompareSliderClip, ReactCompareSliderCssVars } from './consts';\nimport { register } from './register';\nimport type {\n  SetPositionFromBoundsProps,\n  UseReactCompareSliderProps,\n  UseReactCompareSliderReturn,\n} from './types';\n\nregister();\n\nconst DEFAULT_TRANSITION = '0.15s ease-out';\n\nconst getDefaultOnlyHandleDraggable = () => !!globalThis.matchMedia?.('(pointer: coarse)')?.matches;\n\n/**\n * Hook to completely control the slider including all event handlers and state.\n * This is automatically used by the `ReactCompareSlider` component.\n * Only use this if you are building your own slider using the `react-compare-slider/components` module.\n */\nexport const useReactCompareSlider = ({\n  boundsPadding = '0px',\n  browsingContext = globalThis,\n  changePositionOnHover = false,\n  clip = ReactCompareSliderClip.all,\n  defaultPosition = 50,\n  disabled = false,\n  keyboardIncrement = '5%',\n  onlyHandleDraggable = getDefaultOnlyHandleDraggable(),\n  onPositionChange,\n  portrait = false,\n  transition: transitionProp,\n}: UseReactCompareSliderProps = {}): UseReactCompareSliderReturn => {\n  /** DOM node of the root element. */\n  const rootRef = useRef<HTMLDivElement>(null);\n  /** DOM node of the handle container. */\n  const handleRootRef = useRef<HTMLDivElement>(null);\n  /** Current position as a percentage value. */\n  const position = useRef(defaultPosition);\n  /** Whether user is currently dragging. */\n  const [isDragging, setIsDragging] = useState(false);\n  /** Whether the `transition` property can be applied. */\n  const [canTransition, setCanTransition] = useState(true);\n  /** Target container for pointer events. */\n  const [interactiveTarget, setInteractiveTarget] = useState<HTMLElement | null>(null);\n  /** Motion-safe default that can update after server rendering and when user preference changes. */\n  const [defaultTransition, setDefaultTransition] = useState('none');\n  const transition = transitionProp ?? defaultTransition;\n\n  useEffect(() => {\n    const media = globalThis.matchMedia?.('(prefers-reduced-motion: no-preference)');\n    if (!media) return;\n\n    const syncTransition = () => setDefaultTransition(media.matches ? DEFAULT_TRANSITION : 'none');\n    syncTransition();\n    media.addEventListener('change', syncTransition);\n\n    return () => media.removeEventListener('change', syncTransition);\n  }, []);\n\n  const setPosition = useCallback(\n    (nextPosition: number) => {\n      const appliedPosition = Math.min(Math.max(nextPosition, 0), 100);\n\n      rootRef.current?.style.setProperty(ReactCompareSliderCssVars.rawPosition, `${appliedPosition}%`);\n      handleRootRef.current?.setAttribute('aria-valuenow', `${Math.round(appliedPosition)}`);\n      position.current = appliedPosition;\n\n      onPositionChange?.(appliedPosition);\n    },\n    [onPositionChange],\n  );\n\n  /** Set position using pointer coords. */\n  const setPositionFromBounds = useCallback(\n    function updateInternal({ x, y }: SetPositionFromBoundsProps) {\n      const rootElement = rootRef.current as HTMLDivElement;\n      const { width, height, top, left } = rootElement.getBoundingClientRect();\n\n      // Early out when component has zero bounds.\n      if (width === 0 || height === 0) return;\n\n      const pixelPosition = portrait ? y - top - browsingContext.scrollY : x - left - browsingContext.scrollX;\n      const nextPosition = (pixelPosition / (portrait ? height : width)) * 100;\n      setPosition(nextPosition);\n    },\n    [browsingContext, portrait, setPosition],\n  );\n\n  /** Handle mouse/touch down. */\n  const onPointerDown = useCallback(\n    (ev: PointerEvent) => {\n      ev.preventDefault();\n\n      // Only handle left mouse button (touch events also use 0).\n      if (disabled || ev.button !== 0) return;\n\n      setPositionFromBounds({ x: ev.pageX, y: ev.pageY });\n      setIsDragging(true);\n      setCanTransition(true);\n    },\n    [disabled, setPositionFromBounds],\n  );\n\n  /** Handle mouse/touch move. */\n  const onPointerMove = useCallback(\n    function moveCall(ev: PointerEvent) {\n      setCanTransition(false);\n      setPositionFromBounds({ x: ev.pageX, y: ev.pageY });\n    },\n    [setPositionFromBounds],\n  );\n\n  /** Handle mouse/touch up. */\n  const onPointerUp = useCallback((_ev: PointerEvent) => {\n    setIsDragging(false);\n    setCanTransition(true);\n  }, []);\n\n  const onTouchEnd = useCallback((_ev: TouchEvent) => {\n    setIsDragging(false);\n    setCanTransition(true);\n  }, []);\n\n  const onHandleRootClick = useCallback(\n    (ev: PointerEvent) => {\n      ev.preventDefault();\n      if (disabled) return;\n      (ev.currentTarget as HTMLDivElement)?.focus();\n    },\n    [disabled],\n  );\n\n  /** Handle keyboard movment. */\n  const onHandleRootKeyDown = useCallback(\n    (ev: KeyboardEvent) => {\n      if (disabled || !Object.values(KeyboardEventKeys).includes(ev.key as KeyboardEventKeys)) {\n        return;\n      }\n\n      ev.preventDefault();\n      setCanTransition(true);\n\n      const incrementPercentage =\n        typeof keyboardIncrement === 'string'\n          ? Number.parseFloat(keyboardIncrement)\n          : (keyboardIncrement / (rootRef.current?.getBoundingClientRect().width as number)) * 100;\n\n      const isIncrement = portrait\n        ? ev.key === KeyboardEventKeys.ARROW_LEFT || ev.key === KeyboardEventKeys.ARROW_DOWN\n        : ev.key === KeyboardEventKeys.ARROW_RIGHT || ev.key === KeyboardEventKeys.ARROW_UP;\n\n      const nextPosition = isIncrement\n        ? position.current + incrementPercentage\n        : position.current - incrementPercentage;\n\n      setPosition(nextPosition);\n    },\n    [disabled, keyboardIncrement, portrait, setPosition],\n  );\n\n  // Set target container for pointer events.\n  useLayoutEffect(() => {\n    setInteractiveTarget(onlyHandleDraggable ? handleRootRef.current : rootRef.current);\n  }, [onlyHandleDraggable]);\n\n  // Resync position when defaultPosition changes.\n  useEffect(() => {\n    setPosition(defaultPosition);\n  }, [defaultPosition, setPosition]);\n\n  return {\n    // Direct props\n    boundsPadding,\n    browsingContext,\n    changePositionOnHover,\n    clip,\n    defaultPosition,\n    disabled,\n    keyboardIncrement,\n    onlyHandleDraggable,\n    portrait,\n    transition,\n    // Events\n    onHandleRootKeyDown,\n    onPointerDown,\n    onPointerMove,\n    onPointerUp,\n    onTouchEnd,\n    onHandleRootClick,\n    // State\n    canTransition,\n    isDragging,\n    position,\n    // Setters\n    setPosition,\n    setPositionFromBounds,\n    // Elements\n    rootRef,\n    handleRootRef,\n    interactiveTarget,\n  };\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-compare-slider/hooks.ts"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/types.ts",
+      "content": "import type { ComponentProps, ReactNode, RefObject } from 'react';\n\nimport type { ReactCompareSliderClipValue } from './consts';\n\n/** Slider position property. */\nexport type ReactCompareSliderPosition = number;\n\n/** Common props shared between components. */\nexport type ReactCompareSliderCommonProps = {\n  /**\n   * Divider position.\n   * @default 50\n   */\n  defaultPosition?: ReactCompareSliderPosition;\n\n  /**\n   * Whether to disable slider movement (items are still interactable).\n   * @default false\n   */\n  disabled?: boolean;\n\n  /**\n   * Whether to use portrait (vertical) orientation.\n   * @default false\n   */\n  portrait?: boolean;\n\n  /**\n   * Shorthand CSS `transition` property to apply to handle movement. The specific CSS property\n   * to transition **must not** be provided.\n   * @example '.5s ease-in-out'\n   */\n  transition?: string;\n};\n\n/** Props for the pre-built `ReactCompareSlider` component. */\nexport type ReactCompareSliderProps = ReactCompareSliderCommonProps & {\n  /**\n   * CSS unit amount to limit the slideable bounds on the X-axis (landscape) or Y-axis (portrait).\n   * @example '20rem'\n   * @default '0px'\n   */\n  boundsPadding?: string;\n\n  /**\n   * Custom browsing context to use instead of the global `window` object.\n   * @default globalThis\n   */\n  browsingContext?: typeof globalThis | Window | WindowProxy;\n\n  /**\n   * Whether the slider should follow the pointer on hover.\n   * @default false\n   */\n  changePositionOnHover?: boolean;\n\n  /**\n   * Whether to clip `itemOne`, `itemTwo` or `all` items.\n   * @default all\n   */\n  clip?: ReactCompareSliderClipValue;\n\n  /** Custom handle component. */\n  handle?: ReactNode;\n\n  /** First item to show. */\n  itemOne: ReactNode;\n\n  /** Second item to show. */\n  itemTwo: ReactNode;\n\n  /**\n   * Percentage or pixel amount to move when the slider handle is focused and keyboard arrow is pressed.\n   * @default '5%'\n   */\n  keyboardIncrement?: number | `${number}%`;\n\n  /**\n   * Whether to only change position when handle is interacted with (useful for touch devices).\n   * @default false\n   */\n  onlyHandleDraggable?: boolean;\n\n  /** Callback on position change with position as percentage. */\n  onPositionChange?: (position: ReactCompareSliderPosition) => void;\n};\n\n/** `ReactCompareSliderProps` and all valid `div` element props. */\nexport type ReactCompareSliderDetailedProps = ReactCompareSliderProps &\n  Omit<ComponentProps<'div'>, 'children'>;\n\nexport type UseReactCompareSliderProps = Omit<ReactCompareSliderProps, 'handle' | 'itemOne' | 'itemTwo'>;\n\nexport type SetPositionFromBoundsProps = {\n  /** X coordinate to update to (landscape). */\n  x: number;\n  /** Y coordinate to update to (portrait). */\n  y: number;\n};\n\nexport type UseReactCompareSliderReturn = Required<\n  Pick<\n    ReactCompareSliderProps,\n    | 'boundsPadding'\n    | 'browsingContext'\n    | 'changePositionOnHover'\n    | 'clip'\n    | 'defaultPosition'\n    | 'disabled'\n    | 'keyboardIncrement'\n    | 'onlyHandleDraggable'\n    | 'portrait'\n  >\n> &\n  Pick<ReactCompareSliderProps, 'transition'> & {\n    // Events\n    /** Handler fired on the `interactiveTarget` `pointerdown` event. */\n    onPointerDown: (event: PointerEvent) => void;\n    /** Handler fired on the `rootRef` `pointermove` event when the user `isDragging`. */\n    onPointerMove: (event: PointerEvent) => void;\n    /** Handler fired on the `interactiveTarget` `pointerup` event. */\n    onPointerUp: (event: PointerEvent) => void;\n    /** Handler fired on the `interactiveTarget` `touchend` event. */\n    onTouchEnd: (event: TouchEvent) => void;\n    /** Handler fired on the `handleRootRef` `click` event. */\n    onHandleRootClick: (event: PointerEvent) => void;\n    /** Handler fired on the `handleRootRef` `keydown` event when the element is focused. */\n    onHandleRootKeyDown: (event: KeyboardEvent) => void;\n    // State\n    /** Whether the `transition` property should be applied. */\n    canTransition: boolean;\n    /** Whether the user is currently dragging the slider. */\n    isDragging: boolean;\n    /** Ref with the current position. */\n    position: RefObject<ReactCompareSliderPosition>;\n    // Setters\n    /** Set the position directly as a percentage. */\n    setPosition: (nextPosition: number) => void;\n    /** Set the position from the coords of an event. */\n    setPositionFromBounds: (props: SetPositionFromBoundsProps) => void;\n    // Elements\n    /** Root element. */\n    rootRef: RefObject<HTMLDivElement | null>;\n    /** The direct parent element of the `handle` component. */\n    handleRootRef: RefObject<HTMLDivElement | null>;\n    /**\n     * The target element for pointer events.\n     * This defaults to the `rootRef` element and switches to the `handleRootRef` element when `onlyHandleDraggable` is `true`.\n     */\n    interactiveTarget: HTMLElement | null;\n  };\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/types.ts"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/consts.ts",
+      "content": "export const ReactCompareSliderClip = {\n  all: 'all',\n  itemOne: 'itemOne',\n  itemTwo: 'itemTwo',\n} as const;\n\nexport type ReactCompareSliderClipValue =\n  (typeof ReactCompareSliderClip)[keyof typeof ReactCompareSliderClip];\n\nexport const ReactCompareSliderCssVars = {\n  /** The unclamped position of the slider as a percentage. */\n  rawPosition: '--rcs-raw-position',\n  /** The clamped position of the slider with bounds padding applied. */\n  currentPosition: '--rcs-current-position',\n  /** The `boundsPadding` prop value. */\n  boundsPadding: '--rcs-bounds-padding',\n  /** The color of the handle border and arrows. */\n  handleColor: '--rcs-handle-color',\n} as const;\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/consts.ts"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/register.ts",
+      "content": "'use client';\n\nimport { ReactCompareSliderCssVars } from './consts';\n\nexport const register = () => {\n  try {\n    if (typeof CSS !== 'undefined') {\n      /**\n       * We use a custom property to optimise the transition performance of the slider. It ensures the\n       * transitions fire smoothly at the exact same time on different elements. Otherwise, the handle\n       * and item transitions may not move in sync. This is especially noticeable in Safari.\n       */\n      CSS.registerProperty({\n        name: ReactCompareSliderCssVars.rawPosition,\n        syntax: '<percentage>',\n        inherits: true,\n        initialValue: '50%',\n      });\n    }\n  } catch {}\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/register.ts"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/handle.tsx",
+      "content": "'use client';\n\nimport type { ComponentProps, CSSProperties, FC } from 'react';\n\nimport { useReactCompareSliderContext } from './provider';\nimport { ReactCompareSliderCssVars } from '../consts';\n\ntype ThisArrowProps = {\n  /** Whether to flip the arrow direction. */\n  flip?: boolean;\n};\n\nconst ThisArrow: FC<ThisArrowProps> = ({ flip }) => {\n  const style: CSSProperties = {\n    width: '0.85rem',\n    height: '0.85rem',\n    clipPath: 'polygon(100% 0%, 100% 100%, 30% 50%)',\n    rotate: flip ? '180deg' : '0deg',\n    // We use `outline` instead of `border` to ensure that all line colours match in high contrast mode.\n    outline: `0.5rem solid var(${ReactCompareSliderCssVars.handleColor})`,\n    outlineOffset: '-0.5rem',\n  };\n\n  return <div aria-hidden=\"true\" className=\"__rcs-handle-arrow\" style={style} />;\n};\n\n/** Props for `ReactCompareSliderHandle`. */\nexport type HandleProps = {\n  /** Optional styles for the circular element in the middle of the handle. */\n  buttonStyle?: CSSProperties;\n  /** Optional styles for lines either side of the handle button. */\n  linesStyle?: CSSProperties;\n};\n\nexport type HandleDetailedProps = ComponentProps<'div'> & HandleProps;\n\n/**\n * Default `handle` of the `ReactCompareSlider` component. This should be placed within the `HandleRoot`\n * component when building your own slider.\n */\nexport const Handle: FC<HandleDetailedProps> = ({\n  className = '__rcs-handle-root',\n  buttonStyle,\n  linesStyle,\n  style,\n  ...props\n}) => {\n  const { disabled, portrait } = useReactCompareSliderContext();\n\n  const appliedStyle = {\n    boxSizing: 'border-box',\n    position: 'relative',\n    display: 'inline-flex',\n    flexDirection: portrait ? 'row' : 'column',\n    placeItems: 'center',\n    width: portrait ? '100%' : undefined,\n    height: portrait ? undefined : '100%',\n    cursor: disabled ? 'not-allowed' : portrait ? 'ns-resize' : 'ew-resize',\n    pointerEvents: 'none',\n    [ReactCompareSliderCssVars.handleColor]: 'rgba(255, 255, 255, 1)',\n    ...style,\n  } as CSSProperties;\n\n  const appliedLinesStyle: CSSProperties = {\n    flexGrow: 1,\n    height: portrait ? 2 : '100%',\n    width: portrait ? '100%' : 2,\n    // We use `outline` instead of `border` to ensure that all line colours match in high contrast mode.\n    outline: `1px solid var(${ReactCompareSliderCssVars.handleColor})`,\n    outlineOffset: -1,\n    pointerEvents: 'auto',\n    boxShadow: '0 0 4px rgba(0,0,0,.5)',\n    ...linesStyle,\n  };\n\n  const appliedButtonStyle: CSSProperties = {\n    // Prevents the arrows from pointing at each other in RTL.\n    direction: 'ltr',\n    display: 'grid',\n    gridAutoFlow: 'column',\n    gap: '0.5rem',\n    placeContent: 'center',\n    flexShrink: 0,\n    width: '3.5rem',\n    height: '3.5rem',\n    borderRadius: '50%',\n    border: `2px solid var(${ReactCompareSliderCssVars.handleColor})`,\n    color: 'inherit',\n    pointerEvents: 'auto',\n    backdropFilter: 'blur(0.5rem)',\n    WebkitBackdropFilter: 'blur(0.5rem)', // For Safari.\n    backgroundColor: 'rgba(0, 0, 0, 0.125)',\n    boxShadow: '0 0 4px rgba(0,0,0,.35)',\n    transform: portrait ? 'rotate(90deg)' : undefined,\n    ...buttonStyle,\n  };\n\n  return (\n    <div data-rcs=\"handle\" {...props} className={className} style={appliedStyle}>\n      <div className=\"__rcs-handle-line\" style={appliedLinesStyle} />\n      <div className=\"__rcs-handle-button\" style={appliedButtonStyle}>\n        <ThisArrow />\n        <ThisArrow flip />\n      </div>\n      <div className=\"__rcs-handle-line\" style={appliedLinesStyle} />\n    </div>\n  );\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/components/handle.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/handle-root.tsx",
+      "content": "'use client';\n\nimport type { ComponentProps, CSSProperties, FC } from 'react';\n\nimport { EVENT_CAPTURE_PARAMS, useEventListener } from './internal-hooks';\nimport { useReactCompareSliderContext } from './provider';\nimport { ReactCompareSliderCssVars } from '../consts';\n\nexport type HandleRootProps = ComponentProps<'div'>;\n\n/** Container to control the handle's position. */\nexport const HandleRoot: FC<HandleRootProps> = ({ style, ...props }) => {\n  const { disabled, portrait, position, handleRootRef, onHandleRootClick, onHandleRootKeyDown } =\n    useReactCompareSliderContext();\n\n  const appliedStyle: CSSProperties = {\n    WebkitAppearance: 'none',\n    MozAppearance: 'none',\n    WebkitTapHighlightColor: 'transparent',\n    boxSizing: 'border-box',\n    position: 'absolute',\n    display: 'flex',\n    flexDirection: portrait ? 'row' : 'column',\n    placeItems: 'center',\n    contain: 'layout',\n    top: portrait ? '-50%' : undefined,\n    left: portrait ? undefined : `-50%`,\n    width: '100%',\n    height: '100%',\n    background: 'none',\n    border: 0,\n    padding: 0,\n    pointerEvents: 'none',\n    appearance: 'none',\n    zIndex: 1,\n    translate: portrait\n      ? `0 var(${ReactCompareSliderCssVars.currentPosition}) 0`\n      : `var(${ReactCompareSliderCssVars.currentPosition}) 0 0`,\n    backfaceVisibility: 'hidden',\n    willChange: 'translate',\n    ...style,\n  };\n\n  useEventListener('keydown', onHandleRootKeyDown, handleRootRef.current, EVENT_CAPTURE_PARAMS);\n  useEventListener('click', onHandleRootClick, handleRootRef.current, EVENT_CAPTURE_PARAMS);\n\n  return (\n    <div\n      ref={handleRootRef}\n      tabIndex={disabled ? -1 : 0}\n      aria-label=\"Click and drag or focus and use arrow keys to change the position of the slider\"\n      aria-orientation={portrait ? 'vertical' : 'horizontal'}\n      aria-valuemin={0}\n      aria-valuemax={100}\n      aria-valuenow={position.current}\n      aria-disabled={disabled}\n      data-rcs=\"handle-root\"\n      role=\"slider\"\n      style={appliedStyle}\n      {...props}\n    />\n  );\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/components/handle-root.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/item.tsx",
+      "content": "'use client';\n\nimport type { ComponentProps, CSSProperties, FC } from 'react';\n\nimport { useReactCompareSliderContext } from './provider';\nimport {\n  ReactCompareSliderClip,\n  type ReactCompareSliderClipValue,\n  ReactCompareSliderCssVars,\n} from '../consts';\nimport type { ReactCompareSliderProps } from '../types';\n\ntype GetClipPathProps = Pick<ReactCompareSliderProps, 'portrait'> & {\n  itemClip?: Extract<ReactCompareSliderClipValue, 'itemOne' | 'itemTwo'>;\n};\n\nconst getClipPath = ({ itemClip, portrait }: GetClipPathProps): CSSProperties['clipPath'] => {\n  if (itemClip === ReactCompareSliderClip.itemOne) {\n    return portrait\n      ? `inset(0px 0px calc(100% - var(${ReactCompareSliderCssVars.currentPosition})) 0px)`\n      : `inset(0px calc(100% - var(${ReactCompareSliderCssVars.currentPosition})) 0px 0px)`;\n  }\n\n  if (itemClip === ReactCompareSliderClip.itemTwo) {\n    return portrait\n      ? `inset(var(${ReactCompareSliderCssVars.currentPosition}) 0px 0px 0px)`\n      : `inset(0px 0px 0px var(${ReactCompareSliderCssVars.currentPosition}))`;\n  }\n\n  return 'none';\n};\n\nexport type ItemsProps = ComponentProps<'div'> & {\n  item?: Extract<ReactCompareSliderClipValue, 'itemOne' | 'itemTwo'>;\n};\n\n/**\n * Container for `itemOne` and `itemTwo`.\n */\nexport const Item: FC<ItemsProps> = ({ item, style, ...props }) => {\n  const { clip, portrait } = useReactCompareSliderContext();\n\n  const shouldClip = clip === ReactCompareSliderClip.all || clip === item;\n  const itemClip = shouldClip ? item : undefined;\n\n  const appliedStyle: CSSProperties = {\n    KhtmlUserSelect: 'none',\n    MozUserSelect: 'none',\n    WebkitUserSelect: 'none',\n    backfaceVisibility: 'hidden',\n    WebkitBackfaceVisibility: 'hidden',\n    gridArea: '1 / 1',\n    maxWidth: '100%',\n    overflow: 'hidden',\n    clipPath: getClipPath({ itemClip, portrait }),\n    boxSizing: 'border-box',\n    transform: 'translateZ(0)',\n    userSelect: 'none',\n    zIndex: item === ReactCompareSliderClip.itemOne ? 1 : undefined,\n    willChange: 'clip-path',\n    ...style,\n  };\n\n  return <div data-rcs=\"item\" data-rcs-item={item} {...props} style={appliedStyle} />;\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/components/item.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/provider.tsx",
+      "content": "'use client';\n\nimport { createContext, type PropsWithChildren, useContext } from 'react';\n\nimport type { UseReactCompareSliderReturn } from '../types';\n\nexport type ContextProps = UseReactCompareSliderReturn;\n\nconst Context = createContext<ContextProps | null>(null);\n\nexport type ProviderProps = PropsWithChildren<ContextProps>;\n\n/**\n * The root component of the slider - provides the state and event handlers for the slider components.\n */\nexport const Provider: React.FC<ProviderProps> = ({ children, ...value }) => {\n  return <Context.Provider value={value}>{children}</Context.Provider>;\n};\n\n/**\n * Access the state and event handlers of the slider - must be used within the `Provider` or `ReactCompareSlider` component.\n * @example\n * ```tsx\n * const { position, setPosition } = useReactCompareSliderContext();\n * ```\n */\nexport const useReactCompareSliderContext = (): ContextProps => {\n  const context = useContext(Context);\n\n  if (!context) {\n    throw new Error('useReactCompareSliderContext must be used within the Provider component');\n  }\n\n  return context;\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/components/provider.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/root.tsx",
+      "content": "'use client';\n\nimport type { ComponentProps, CSSProperties, FC } from 'react';\nimport { useEffect } from 'react';\n\nimport { EVENT_CAPTURE_PARAMS, EVENT_PASSIVE_PARAMS, useEventListener } from './internal-hooks';\nimport { useReactCompareSliderContext } from './provider';\nimport { ReactCompareSliderCssVars } from '../consts';\n\nexport type RootProps = ComponentProps<'div'>;\n\nconst currentPositionCssValue = `clamp(var(${ReactCompareSliderCssVars.boundsPadding}), var(${ReactCompareSliderCssVars.rawPosition}) - var(${ReactCompareSliderCssVars.boundsPadding}) + var(${ReactCompareSliderCssVars.boundsPadding}), calc(100% - var(${ReactCompareSliderCssVars.boundsPadding})))`;\n\n/**\n * The root container of the slider.\n */\nexport const Root: FC<RootProps> = ({ style, ...props }) => {\n  const {\n    browsingContext,\n    boundsPadding,\n    changePositionOnHover,\n    clip,\n    isDragging,\n    portrait,\n    position,\n    onTouchEnd,\n    onPointerDown,\n    onPointerMove,\n    onPointerUp,\n    interactiveTarget,\n    rootRef,\n    transition,\n    canTransition,\n  } = useReactCompareSliderContext();\n\n  const appliedStyle = {\n    position: 'relative',\n    boxSizing: 'border-box',\n    display: 'grid',\n    maxWidth: '100%',\n    maxHeight: '100%',\n    overflow: 'hidden',\n    cursor: isDragging ? (portrait ? 'ns-resize' : 'ew-resize') : undefined,\n    touchAction: portrait ? 'pan-x' : 'pan-y',\n    userSelect: 'none',\n    KhtmlUserSelect: 'none',\n    msUserSelect: 'none',\n    MozUserSelect: 'none',\n    WebkitUserSelect: 'none',\n    /**\n     * The transition is on the root because this is where `--rcs-raw-position` is set.\n     * With the `@property` registration in the hook, the browser interpolates the variable itself, so children\n     * that reference it via `var()` see smooth intermediate values without needing their own transitions.\n     * This improves performance and prevents Safari from desyncing independent transitions on separate elements.\n     */\n    transition:\n      canTransition && transition ? `${ReactCompareSliderCssVars.rawPosition} ${transition}` : 'none',\n    [ReactCompareSliderCssVars.rawPosition]: `${position.current}%`,\n    [ReactCompareSliderCssVars.boundsPadding]: boundsPadding,\n    [ReactCompareSliderCssVars.currentPosition]: currentPositionCssValue,\n    ...style,\n  } as CSSProperties;\n\n  useEventListener('touchend', onTouchEnd, interactiveTarget, EVENT_CAPTURE_PARAMS);\n  useEventListener('pointerdown', onPointerDown, interactiveTarget, EVENT_CAPTURE_PARAMS);\n\n  // Handle hover events on the container.\n  useEffect(() => {\n    const containerRef = rootRef.current as HTMLDivElement;\n\n    const handlePointerLeave = (ev: PointerEvent): void => {\n      if (isDragging) return;\n      onPointerUp(ev);\n    };\n\n    if (changePositionOnHover) {\n      containerRef.addEventListener('pointermove', onPointerMove, EVENT_PASSIVE_PARAMS);\n      containerRef.addEventListener('pointerleave', handlePointerLeave, EVENT_PASSIVE_PARAMS);\n    }\n\n    return () => {\n      containerRef.removeEventListener('pointermove', onPointerMove);\n      containerRef.removeEventListener('pointerleave', handlePointerLeave);\n    };\n  }, [changePositionOnHover, onPointerMove, onPointerUp, isDragging, rootRef]);\n\n  // Allow drag outside of container while pointer is still down.\n  useEffect(() => {\n    if (!isDragging) return;\n\n    browsingContext.addEventListener('pointermove', onPointerMove, EVENT_PASSIVE_PARAMS);\n    browsingContext.addEventListener('pointerup', onPointerUp, EVENT_PASSIVE_PARAMS);\n\n    return () => {\n      browsingContext?.removeEventListener('pointermove', onPointerMove);\n      browsingContext?.removeEventListener('pointerup', onPointerUp);\n    };\n  }, [onPointerMove, onPointerUp, isDragging, browsingContext]);\n\n  return <div ref={rootRef} style={appliedStyle} data-rcs=\"root\" data-rcs-clip={clip} {...props} />;\n};\n",
+      "type": "registry:lib",
+      "target": "@components/taste-blocks/react-compare-slider/components/root.tsx"
+    },
+    {
+      "path": "registry/sources/react-compare-slider/components/react-compare-slider/components/internal-hooks.ts",
+      "content": "'use client';\n\nimport { useEffect, useRef } from 'react';\n\nexport const EVENT_PASSIVE_PARAMS = { capture: false, passive: true };\nexport const EVENT_CAPTURE_PARAMS = { capture: true, passive: false };\n\n/** Keyboard `key` events to trigger slider movement. */\nexport enum KeyboardEventKeys {\n  ARROW_LEFT = 'ArrowLeft',\n  ARROW_RIGHT = 'ArrowRight',\n  ARROW_UP = 'ArrowUp',\n  ARROW_DOWN = 'ArrowDown',\n}\n\n/**\n * Event listener binding hook.\n * @param eventName        Event to bind to.\n * @param handler          Callback handler.\n * @param element          Element to bind to.\n * @param handlerOptions  Event handler options.\n */\nexport const useEventListener = (\n  eventName: EventListener['name'],\n  handler: EventListener['caller'],\n  element: EventTarget | undefined | null,\n  handlerOptions: AddEventListenerOptions,\n): void => {\n  const savedHandler = useRef<EventListener['caller']>(undefined);\n\n  useEffect(() => {\n    savedHandler.current = handler;\n  }, [handler]);\n\n  useEffect(() => {\n    // Make sure element supports addEventListener.\n    if (!element?.addEventListener) return;\n\n    // Create event listener that calls handler function stored in ref.\n    const eventListener: EventListener = (event) => savedHandler.current?.(event);\n\n    element.addEventListener(eventName, eventListener, handlerOptions);\n\n    return (): void => {\n      element.removeEventListener(eventName, eventListener, handlerOptions);\n    };\n  }, [eventName, element, handlerOptions]);\n};\n",
+      "type": "registry:hook",
+      "target": "@components/taste-blocks/react-compare-slider/components/internal-hooks.ts"
+    }
+  ],
+  "meta": {
+    "tasteblocks": {
+      "status": "verified",
+      "category": "media-galleries",
+      "tags": [
+        "before-after",
+        "comparison",
+        "pointer",
+        "keyboard",
+        "responsive"
+      ],
+      "renderer": "dom",
+      "preview": "previews/react-compare-slider.tsx",
+      "source": {
+        "project": "React Compare Slider",
+        "repository": "https://github.com/nerdyman/react-compare-slider",
+        "revision": "3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7",
+        "retrievedAt": "2026-07-20",
+        "files": [
+          {
+            "shippedPath": "components/react-compare-slider/react-compare-slider.tsx",
+            "upstreamPath": "lib/src/react-compare-slider.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/react-compare-slider.tsx",
+            "upstreamSha256": "sha256:e2d35b55097339195d0f663fc5e1e72e809bb9e6947b37b0c351663de4810937",
+            "contentSha256": "sha256:e2d35b55097339195d0f663fc5e1e72e809bb9e6947b37b0c351663de4810937",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/hooks.ts",
+            "upstreamPath": "lib/src/hooks.ts",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/hooks.ts",
+            "upstreamSha256": "sha256:1bc09038c594df3c66caddfe6e2499acfe1180ef3d3c5deb29acc33266b4aa34",
+            "contentSha256": "sha256:79b449a65dc4fcc431056e2d1fd09cb762872a979846935a879cdfd2392709e3",
+            "changes": [
+              "Prevented disabled handles from receiving programmatic click focus or responding to arrow keys.",
+              "Synchronized the default transition with reduced-motion preference after hydration and on preference changes."
+            ]
+          },
+          {
+            "shippedPath": "components/react-compare-slider/types.ts",
+            "upstreamPath": "lib/src/types.ts",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/types.ts",
+            "upstreamSha256": "sha256:a0b9d2edaaa46df034788eb2f65148515a38f96513da07c65d2ca3bf1ec27450",
+            "contentSha256": "sha256:a0b9d2edaaa46df034788eb2f65148515a38f96513da07c65d2ca3bf1ec27450",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/consts.ts",
+            "upstreamPath": "lib/src/consts.ts",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/consts.ts",
+            "upstreamSha256": "sha256:a6eb93db83bf1ed5e908610bef8f78dd8e1691fb7905ac7d0f7d823618b80c9d",
+            "contentSha256": "sha256:a6eb93db83bf1ed5e908610bef8f78dd8e1691fb7905ac7d0f7d823618b80c9d",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/register.ts",
+            "upstreamPath": "lib/src/register.ts",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/register.ts",
+            "upstreamSha256": "sha256:bf629e72afca103393b8dd298a6ab9ba3f3d365f54a0dba1e92ee296fb9cc8fb",
+            "contentSha256": "sha256:2924caa9183eaeb68bc413096155dd450ec8e1c79f89988eb602eab05836b86c",
+            "changes": [
+              "Removed console output from the graceful CSS.registerProperty failure path."
+            ]
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/handle.tsx",
+            "upstreamPath": "lib/src/components/handle.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/handle.tsx",
+            "upstreamSha256": "sha256:94b3c78579c5f818057ebc817fec93aa742f90e9aa78d7b34bb4fa98c9e96d42",
+            "contentSha256": "sha256:94b3c78579c5f818057ebc817fec93aa742f90e9aa78d7b34bb4fa98c9e96d42",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/handle-root.tsx",
+            "upstreamPath": "lib/src/components/handle-root.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/handle-root.tsx",
+            "upstreamSha256": "sha256:a808656542f3664289e7ff791c024a20516cd4659d550a60348fbbcfc398c35e",
+            "contentSha256": "sha256:c0ff133f6c6d396b67bc4bd4bccbf49ee4e3d9ea7b05e0cd53f1e904f38a5609",
+            "changes": [
+              "Preserved the browser focus indicator and removed disabled handles from sequential keyboard focus."
+            ]
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/item.tsx",
+            "upstreamPath": "lib/src/components/item.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/item.tsx",
+            "upstreamSha256": "sha256:6295abb64acd7a5efbfb53b774736b79580020303f87c8fa69a6cc115b90d739",
+            "contentSha256": "sha256:6295abb64acd7a5efbfb53b774736b79580020303f87c8fa69a6cc115b90d739",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/provider.tsx",
+            "upstreamPath": "lib/src/components/provider.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/provider.tsx",
+            "upstreamSha256": "sha256:6c3b79f85ce30e504818504026ca27d04797497aea042e1f3fabd7d03fdf807c",
+            "contentSha256": "sha256:6c3b79f85ce30e504818504026ca27d04797497aea042e1f3fabd7d03fdf807c",
+            "changes": []
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/root.tsx",
+            "upstreamPath": "lib/src/components/root.tsx",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/root.tsx",
+            "upstreamSha256": "sha256:acfc68785e27ca29ef8280c7f55a4ec13125fef500f1a2b90d4bb724fb4c5d6e",
+            "contentSha256": "sha256:321983bf23f0ed4bbca5bd9f2741329adc723a4f2ae6b374ff093efc579baecb",
+            "changes": [
+              "Made the allowed browser pan axis orientation-aware so portrait sliders remain draggable on coarse pointers."
+            ]
+          },
+          {
+            "shippedPath": "components/react-compare-slider/components/internal-hooks.ts",
+            "upstreamPath": "lib/src/components/internal-hooks.ts",
+            "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/lib/src/components/internal-hooks.ts",
+            "upstreamSha256": "sha256:fcb5082ff450273e7f385925be6ed55c88da2d0aa1eaa4f29ac2ac6dd978ef3d",
+            "contentSha256": "sha256:fcb5082ff450273e7f385925be6ed55c88da2d0aa1eaa4f29ac2ac6dd978ef3d",
+            "changes": []
+          }
+        ]
+      },
+      "license": {
+        "spdx": "MIT",
+        "scope": "lib/src/react-compare-slider.tsx, lib/src/hooks.ts, lib/src/types.ts, lib/src/consts.ts, lib/src/register.ts, and the required lib/src/components runtime closure",
+        "copyright": [
+          "Copyright 2019 nerdyman"
+        ],
+        "evidence": {
+          "upstreamPath": "LICENSE",
+          "permalink": "https://github.com/nerdyman/react-compare-slider/blob/3f5cdfeca9e53dec5a77b14b2ec56aaf272717c7/LICENSE",
+          "sha256": "sha256:e52e38ee861424688ab39956c3212f2e092307669837049f6a170a06abb76b98",
+          "localPath": "registry/sources/react-compare-slider/LICENSE"
+        },
+        "notices": []
+      },
+      "assets": [],
+      "modifications": [
+        {
+          "shippedPath": "components/react-compare-slider/hooks.ts",
+          "change": "Guarded click-focus and keyboard movement when disabled, and synchronized the default transition with reduced-motion preference after hydration.",
+          "reason": "Make the upstream aria-disabled state match actual focus and keyboard behavior while preserving its motion-safe default in server-rendered React hosts."
+        },
+        {
+          "shippedPath": "components/react-compare-slider/register.ts",
+          "change": "Removed the catch binding, noConsole suppression, and console.debug call while retaining graceful failure.",
+          "reason": "Keep expected duplicate or unsupported custom-property registration failures silent during development and hot reload."
+        },
+        {
+          "shippedPath": "components/react-compare-slider/components/handle-root.tsx",
+          "change": "Removed the blanket outline reset and set disabled handles to tabIndex -1.",
+          "reason": "Retain a visible native focus indicator and keep disabled sliders out of sequential focus order."
+        },
+        {
+          "shippedPath": "components/react-compare-slider/components/root.tsx",
+          "change": "Changed touch-action from pan-y to pan-x for portrait orientation while retaining pan-y for landscape.",
+          "reason": "Allow the gesture axis to reach the slider while preserving page scrolling on the perpendicular axis."
+        }
+      ],
+      "dedupe": {
+        "family": "interactive-before-after-comparison",
+        "sourceHash": "sha256:b7436b2d2c8f8e5ba84bdd7722e5306b6e0d1f045b285f8317bec748f017ac1d",
+        "contentHash": "sha256:4f5f98b2665862542c7d6b1f83a89b6d9c40f5285496cdc26a53c4ebf286e224",
+        "structureHash": "sha256:c3d75bcc9d0c7959416c67f154781bc9e1851d0d5f4e6f70cae55f9f146e26fc"
+      },
+      "verification": {
+        "reviewedBy": "Codex live QA",
+        "reviewedAt": "2026-07-20"
+      }
+    }
+  },
+  "categories": [
+    "media-galleries"
+  ],
+  "type": "registry:component"
+}
