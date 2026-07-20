@@ -1,0 +1,195 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "react-error-boundary-drafts",
+  "homepage": "https://react-error-boundary-lib.vercel.app/",
+  "items": [
+    {
+      "name": "react-error-boundary",
+      "type": "registry:component",
+      "title": "React Error Boundary",
+      "description": "Catches descendant React render failures and exposes fallback and reset APIs for recovery.",
+      "author": "Brian Vaughn",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-error-boundary/index.ts",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-error-boundary/index.ts"
+        },
+        {
+          "path": "components/react-error-boundary/components/ErrorBoundary.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-error-boundary/components/ErrorBoundary.tsx"
+        },
+        {
+          "path": "components/react-error-boundary/context/ErrorBoundaryContext.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/context/ErrorBoundaryContext.ts"
+        },
+        {
+          "path": "components/react-error-boundary/hooks/useErrorBoundary.ts",
+          "type": "registry:hook",
+          "target": "@components/taste-blocks/react-error-boundary/hooks/useErrorBoundary.ts"
+        },
+        {
+          "path": "components/react-error-boundary/types.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/types.ts"
+        },
+        {
+          "path": "components/react-error-boundary/utils/assertErrorBoundaryContext.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/utils/assertErrorBoundaryContext.ts"
+        },
+        {
+          "path": "components/react-error-boundary/utils/getErrorMessage.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/utils/getErrorMessage.ts"
+        },
+        {
+          "path": "components/react-error-boundary/utils/isErrorBoundaryContext.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/utils/isErrorBoundaryContext.ts"
+        },
+        {
+          "path": "components/react-error-boundary/utils/withErrorBoundary.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-error-boundary/utils/withErrorBoundary.ts"
+        }
+      ],
+      "categories": [
+        "forms-feedback"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "forms-feedback",
+          "tags": [
+            "error-boundary",
+            "render-errors",
+            "fallback",
+            "recovery",
+            "reset"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-error-boundary/react-error-boundary.tsx",
+          "source": {
+            "project": "React Error Boundary",
+            "repository": "https://github.com/bvaughn/react-error-boundary",
+            "revision": "1ba91f439ecd500f72464ab35feb29545195c999",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-error-boundary/index.ts",
+                "upstreamPath": "lib/index.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/index.ts",
+                "upstreamSha256": "sha256:1c59e1b6149ae840e22cca2eb0bbb1dcca748f1b7845ae326f514e4e65bb445f",
+                "contentSha256": "sha256:1c59e1b6149ae840e22cca2eb0bbb1dcca748f1b7845ae326f514e4e65bb445f",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/components/ErrorBoundary.tsx",
+                "upstreamPath": "lib/components/ErrorBoundary.tsx",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/components/ErrorBoundary.tsx",
+                "upstreamSha256": "sha256:34056bbafe47862ba8d8c74e04dacbb2f3f02c399cfc4ae7db9630b17d659409",
+                "contentSha256": "sha256:70ed1236d3e8fa5e3c3ed1d226dd0f464db9ebefc743ad36713a9a921a717ef6",
+                "changes": [
+                  "Replaced import.meta.env.DEV with process.env.NODE_ENV !== \"production\" so the copied client source compiles in the Next host."
+                ]
+              },
+              {
+                "shippedPath": "components/react-error-boundary/context/ErrorBoundaryContext.ts",
+                "upstreamPath": "lib/context/ErrorBoundaryContext.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/context/ErrorBoundaryContext.ts",
+                "upstreamSha256": "sha256:3c006729046390b20a22884a383da53e7b1a9b71cffe31cdf0bb13704f07a462",
+                "contentSha256": "sha256:3c006729046390b20a22884a383da53e7b1a9b71cffe31cdf0bb13704f07a462",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/hooks/useErrorBoundary.ts",
+                "upstreamPath": "lib/hooks/useErrorBoundary.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/hooks/useErrorBoundary.ts",
+                "upstreamSha256": "sha256:41e80b47bac2f1ba736539e93dfcd24233b62d99733d1b10699bccdbfa43aa34",
+                "contentSha256": "sha256:41e80b47bac2f1ba736539e93dfcd24233b62d99733d1b10699bccdbfa43aa34",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/types.ts",
+                "upstreamPath": "lib/types.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/types.ts",
+                "upstreamSha256": "sha256:7d32c9c5d18354c4be70806f116ea5787f089bae8c0ecd8ff9fd2ed33a0dd35d",
+                "contentSha256": "sha256:7d32c9c5d18354c4be70806f116ea5787f089bae8c0ecd8ff9fd2ed33a0dd35d",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/utils/assertErrorBoundaryContext.ts",
+                "upstreamPath": "lib/utils/assertErrorBoundaryContext.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/assertErrorBoundaryContext.ts",
+                "upstreamSha256": "sha256:c336eca50417419661288c0e99c7937596c649022195c134dc95e3986a3d8b32",
+                "contentSha256": "sha256:c336eca50417419661288c0e99c7937596c649022195c134dc95e3986a3d8b32",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/utils/getErrorMessage.ts",
+                "upstreamPath": "lib/utils/getErrorMessage.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/getErrorMessage.ts",
+                "upstreamSha256": "sha256:29822a3d17b159a41e021c08826a5f13a71724d74ccb2b36951b7859b11815e6",
+                "contentSha256": "sha256:29822a3d17b159a41e021c08826a5f13a71724d74ccb2b36951b7859b11815e6",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/utils/isErrorBoundaryContext.ts",
+                "upstreamPath": "lib/utils/isErrorBoundaryContext.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/isErrorBoundaryContext.ts",
+                "upstreamSha256": "sha256:17311e0994e8f382711ef78aa6cb09355862af2adc5f4768dfc5ad0e1ea1ca0d",
+                "contentSha256": "sha256:17311e0994e8f382711ef78aa6cb09355862af2adc5f4768dfc5ad0e1ea1ca0d",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-error-boundary/utils/withErrorBoundary.ts",
+                "upstreamPath": "lib/utils/withErrorBoundary.ts",
+                "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/lib/utils/withErrorBoundary.ts",
+                "upstreamSha256": "sha256:13e93f03267b064bf4bdad9106011cd5e87b66daf9be3128bdff8d681968e872",
+                "contentSha256": "sha256:13e93f03267b064bf4bdad9106011cd5e87b66daf9be3128bdff8d681968e872",
+                "changes": []
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "lib/index.ts, lib/components/ErrorBoundary.tsx, lib/context/ErrorBoundaryContext.ts, lib/hooks/useErrorBoundary.ts, lib/types.ts, lib/utils/assertErrorBoundaryContext.ts, lib/utils/getErrorMessage.ts, lib/utils/isErrorBoundaryContext.ts, and lib/utils/withErrorBoundary.ts",
+            "copyright": [
+              "Copyright (c) 2020 Brian Vaughn"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/bvaughn/react-error-boundary/blob/1ba91f439ecd500f72464ab35feb29545195c999/LICENSE",
+              "sha256": "sha256:2cdb493db15b320c5787535f9dadd37b13cae6fe0a1cdd7849ccfbce70c389fd",
+              "localPath": "registry/sources/react-error-boundary/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-error-boundary/components/ErrorBoundary.tsx",
+              "change": "Replaced import.meta.env.DEV with process.env.NODE_ENV !== \"production\".",
+              "reason": "Use the development-mode convention supported by the Next host instead of Vite-specific import metadata."
+            }
+          ],
+          "dedupe": {
+            "family": "react-render-error-boundary",
+            "sourceHash": "sha256:8033760eef9af26b14da2b277b9845379d1fb4187cb4d59be83c4acd1200f942",
+            "contentHash": "sha256:c13297095871007408a89a8ecee2f19f7443438b319e99ea8d6eaf6e97b73d43",
+            "structureHash": "sha256:34da5bf44ae2a976716f207aff425577c10aa999b5af1369380c09f32507499b"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}
