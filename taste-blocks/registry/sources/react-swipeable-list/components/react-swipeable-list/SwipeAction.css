@@ -1,0 +1,60 @@
+.swipe-action {
+  display: flex;
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  align-items: stretch;
+  color: inherit;
+  font: inherit;
+  background: none;
+  cursor: pointer;
+}
+
+.swipe-action:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+
+.swipe-action > * {
+  flex: 1;
+}
+
+.swipe-action__grayed,
+.swipe-action__grayed > * {
+  background-color: gray !important;
+}
+
+.swipe-action__leading,
+.swipe-action__leading > * {
+  justify-content: flex-start;
+}
+
+.swipe-action__trailing,
+.swipe-action__trailing > * {
+  justify-content: flex-end;
+}
+
+.swipe-action__leading--full-swipe-rest,
+.swipe-action__trailing--full-swipe-rest {
+  width: 0;
+  transition: width 0.2s;
+}
+
+.swipe-action__leading--full-swipe-main,
+.swipe-action__leading--full-swipe-main > * {
+  justify-content: flex-end;
+}
+
+.swipe-action__trailing--full-swipe-main,
+.swipe-action__trailing--full-swipe-main > * {
+  justify-content: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swipe-action__leading--full-swipe-rest,
+  .swipe-action__trailing--full-swipe-rest {
+    transition: none;
+  }
+}

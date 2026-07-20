@@ -1,0 +1,301 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "react-swipeable-list-drafts",
+  "homepage": "https://github.com/marekrozmus/react-swipeable-list",
+  "items": [
+    {
+      "name": "swipeable-row-actions",
+      "type": "registry:component",
+      "title": "Swipeable Row Actions",
+      "description": "Reveals caller-supplied leading and trailing actions from a measured, touch-friendly row.",
+      "author": "Marek Rozmus",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/react-swipeable-list/index.ts",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/index.ts"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeableList.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeableList.tsx"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeableList.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeableList.css"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeableListItem.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeableListItem.tsx"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeableListItem.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeableListItem.css"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeAction.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeAction.tsx"
+        },
+        {
+          "path": "components/react-swipeable-list/SwipeAction.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-swipeable-list/SwipeAction.css"
+        },
+        {
+          "path": "components/react-swipeable-list/LeadingActions.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/LeadingActions.tsx"
+        },
+        {
+          "path": "components/react-swipeable-list/LeadingActions.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-swipeable-list/LeadingActions.css"
+        },
+        {
+          "path": "components/react-swipeable-list/TrailingActions.tsx",
+          "type": "registry:component",
+          "target": "@components/taste-blocks/react-swipeable-list/TrailingActions.tsx"
+        },
+        {
+          "path": "components/react-swipeable-list/TrailingActions.css",
+          "type": "registry:file",
+          "target": "@components/taste-blocks/react-swipeable-list/TrailingActions.css"
+        },
+        {
+          "path": "components/react-swipeable-list/module.d.ts",
+          "type": "registry:lib",
+          "target": "@components/taste-blocks/react-swipeable-list/module.d.ts"
+        }
+      ],
+      "categories": [
+        "buttons-actions"
+      ],
+      "meta": {
+        "tasteblocks": {
+          "status": "draft",
+          "category": "buttons-actions",
+          "tags": [
+            "swipe",
+            "row-actions",
+            "touch",
+            "keyboard",
+            "rtl",
+            "responsive"
+          ],
+          "renderer": "dom",
+          "preview": "previews/drafts/react-swipeable-list/swipeable-row-actions.tsx",
+          "source": {
+            "project": "react-swipeable-list",
+            "repository": "https://github.com/marekrozmus/react-swipeable-list",
+            "revision": "10ca0c66f7ec4aa4904a02e8dd197180dc56b125",
+            "retrievedAt": "2026-07-20",
+            "files": [
+              {
+                "shippedPath": "components/react-swipeable-list/index.ts",
+                "upstreamPath": "src/index.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/index.js",
+                "upstreamSha256": "sha256:937db6aa0cd961a2cb07d5311205d3bfd5c8442f078757f30f76efc0e394a9cb",
+                "contentSha256": "sha256:4cda5a13a34db5b4b6988da6768cb66c7b3894a66f28139d66aab7da74e6787c",
+                "changes": [
+                  "Ported the runtime export entry mechanically from JavaScript to TypeScript and added a client boundary.",
+                  "Re-exported the prop types supplied by the TypeScript component ports."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeableList.tsx",
+                "upstreamPath": "src/SwipeableList.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeableList.js",
+                "upstreamSha256": "sha256:215f3456d762e7f1389a4dd9262a99feb5a117f9d31dfc7e1a673a0658e82672",
+                "contentSha256": "sha256:3634c45fd8b97990826c7069ff4b11f0c490f92cf8587c3d673f1d6026c21b18",
+                "changes": [
+                  "Ported PropTypes to strict TypeScript and replaced clsx with a local class join while retaining the upstream list defaults, Type values, child injection, and Tag API."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeableList.css",
+                "upstreamPath": "src/SwipeableList.css",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeableList.css",
+                "upstreamSha256": "sha256:bff3fbeb1ad84ede7c6b972204aef9284dccbf099502d40f87ba39e699da7204",
+                "contentSha256": "sha256:bff3fbeb1ad84ede7c6b972204aef9284dccbf099502d40f87ba39e699da7204",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeableListItem.tsx",
+                "upstreamPath": "src/SwipeableListItem.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeableListItem.js",
+                "upstreamSha256": "sha256:854df2cf45eec5dce2818c234835bf9ad5f136ae9c4637199432b2020da81350",
+                "contentSha256": "sha256:76440c1fdc805e691c5d86204059b97f74aa56f442d1890616c00ff3a802131b",
+                "changes": [
+                  "Ported PropTypes and the class state to strict TypeScript and replaced clsx with a local class join without replacing the upstream drag, threshold, action, return, or removal state machine.",
+                  "Handled touchcancel, pointercancel, window blur, and release outside the row; centralized global listener, animation listener, ResizeObserver, and animation-frame cleanup.",
+                  "Added visible semantic reveal buttons, Escape and direction-aware arrow handling, deterministic action focus and return, inert hidden actions, and a polite destructive-result status.",
+                  "Mapped leading and trailing sides, offsets, thresholds, return transforms, and destructive travel from computed RTL direction while retaining physical swipe callback values.",
+                  "Re-measured the host and action content through ResizeObserver using the same single scheduled animation frame as position work, and bypassed MS animation listeners when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeableListItem.css",
+                "upstreamPath": "src/SwipeableListItem.css",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeableListItem.css",
+                "upstreamSha256": "sha256:5d8cac45b997015dc4e130cfedbb4394a60138811f2e01e99e02b29a60ea2602",
+                "contentSha256": "sha256:31b7a10ff928c43574d99eb1fb540136c3cd4ff5f76f809cbba7b9b152c117ee",
+                "changes": [
+                  "Replaced physical action positioning with logical insets and added RTL-aware MS keyframes and transform origins.",
+                  "Added pan-y touch behavior, visible 44-pixel reveal controls with focus indicators, and visually hidden live-status styling.",
+                  "Added a reduced-motion branch that removes return, removal, width, and scale transitions or animations while retaining their final states."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeAction.tsx",
+                "upstreamPath": "src/SwipeAction.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeAction.js",
+                "upstreamSha256": "sha256:8c027850f940859ac73ca261614c1c2dd3c1cb3d9a22c55cd2e7cb85f33c4642",
+                "contentSha256": "sha256:92dd8720dbe1c11d6e939229fe2ce533ac256dbafc63e689c76dba049bb92e6d",
+                "changes": [
+                  "Ported PropTypes to strict TypeScript and replaced clsx with a local class join while retaining the upstream action scheduling and full-swipe registration flow.",
+                  "Changed the default Tag from span to a type=button action, supplied Enter and Space semantics for custom non-button tags, and kept actions out of tab order until revealed.",
+                  "Tracked and cleared actionDelay and destructiveCallbackDelay timers and unregistered stale full-swipe callbacks on cleanup."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/SwipeAction.css",
+                "upstreamPath": "src/SwipeAction.css",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/SwipeAction.css",
+                "upstreamSha256": "sha256:b40de1cee0aeb6dcf46cbfb427eeced7294dc28b30347dbefff0beb3e2bcf7c0",
+                "contentSha256": "sha256:22fd58db0ea5d01e36ecf4eab63fdd37abd63ca460972e3d0ca1743f38d4c1c3",
+                "changes": [
+                  "Reset the new native button surface, preserved inherited caller styling, added a visible focus indicator and 44-pixel minimum target, and applied alignment to both direct and nested action content.",
+                  "Disabled the full-swipe width transition when reduced motion is requested."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/LeadingActions.tsx",
+                "upstreamPath": "src/LeadingActions.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/LeadingActions.js",
+                "upstreamSha256": "sha256:4d6260813485c6c8d5097b2a4cccb1faf3f0e6323d7d88fa8e4a5ba5ee2edf5b",
+                "contentSha256": "sha256:660bdae13b198489dd668972626c2351b3a4a77d21242ad784c9c38bc59b5313",
+                "changes": [
+                  "Ported the upstream child cloning helper mechanically to strict TypeScript."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/LeadingActions.css",
+                "upstreamPath": "src/LeadingActions.css",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/LeadingActions.css",
+                "upstreamSha256": "sha256:75feb9bb485578083873f49fe5acef18c781c9d6940645bbe9d83dcb9cbbf776",
+                "contentSha256": "sha256:75feb9bb485578083873f49fe5acef18c781c9d6940645bbe9d83dcb9cbbf776",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/TrailingActions.tsx",
+                "upstreamPath": "src/TrailingActions.js",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/TrailingActions.js",
+                "upstreamSha256": "sha256:d2c7a9f30f5ed72903a9dbd99838e9a6827a57b070ffba4fb02a502af47c7d84",
+                "contentSha256": "sha256:6581160b0aca5aa1c1923e11bb82864e7c84ce5a9db24f91b0dca685d97a7b4e",
+                "changes": [
+                  "Ported the upstream child cloning helper mechanically to strict TypeScript."
+                ]
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/TrailingActions.css",
+                "upstreamPath": "src/TrailingActions.css",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/TrailingActions.css",
+                "upstreamSha256": "sha256:e4b0d71fd49fc549d0fc83e72c07fd5601781b2c457ff720e55c050d0c4c12b7",
+                "contentSha256": "sha256:e4b0d71fd49fc549d0fc83e72c07fd5601781b2c457ff720e55c050d0c4c12b7",
+                "changes": []
+              },
+              {
+                "shippedPath": "components/react-swipeable-list/module.d.ts",
+                "upstreamPath": "src/module.d.ts",
+                "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/src/module.d.ts",
+                "upstreamSha256": "sha256:38271d0dc6cfe17d93258ea9e6e9790645b90e8fd65f0a85113261c7b7b2c2eb",
+                "contentSha256": "sha256:a3895fee60577c8d57d6f265da1b43ee8a4784bd525855732376facf0c4971da",
+                "changes": [
+                  "Aligned the upstream declarations with the strict TypeScript ports, symbol-valued Type API, native button default, ElementType tags, action delay, class names, and new reveal-label props."
+                ]
+              }
+            ]
+          },
+          "license": {
+            "spdx": "MIT",
+            "scope": "src/index.js, src/SwipeableList.js, src/SwipeableList.css, src/SwipeableListItem.js, src/SwipeableListItem.css, src/SwipeAction.js, src/SwipeAction.css, src/LeadingActions.js, src/LeadingActions.css, src/TrailingActions.js, src/TrailingActions.css, and src/module.d.ts",
+            "copyright": [
+              "Copyright (c) 2021 Marek Rozmus"
+            ],
+            "evidence": {
+              "upstreamPath": "LICENSE",
+              "permalink": "https://github.com/marekrozmus/react-swipeable-list/blob/10ca0c66f7ec4aa4904a02e8dd197180dc56b125/LICENSE",
+              "sha256": "sha256:88676b8b30a3fa0764504966ac9fc66704094535123d6613ebc50e3c1022b8fb",
+              "localPath": "registry/sources/react-swipeable-list/LICENSE"
+            },
+            "notices": []
+          },
+          "assets": [],
+          "modifications": [
+            {
+              "shippedPath": "components/react-swipeable-list/index.ts",
+              "change": "Ported the runtime entry to TypeScript, added the client boundary, and exposed the ported prop types.",
+              "reason": "Install the hook and lifecycle based source safely in React Server Component hosts without shipping a parallel PropTypes runtime."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/SwipeableList.tsx",
+              "change": "Mechanically ported the upstream list and Type contract from PropTypes and clsx to strict TypeScript and a local class join.",
+              "reason": "Use host React without adding the upstream project's undeclared prop-types or clsx development dependencies."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/SwipeableListItem.tsx",
+              "change": "Ported the upstream row state machine to strict TypeScript and added cancellation cleanup, semantic keyboard reveal and focus handling, logical RTL sides, resize remeasurement, a single frame scheduler, and a destructive-result announcement.",
+              "reason": "Clear the pinned source's touch, keyboard, focus, RTL, responsive measurement, lifecycle, and perceivable-result conditional gates without replacing its drag or action state machine."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/SwipeableListItem.css",
+              "change": "Added logical RTL geometry, the semantic reveal route and focus styles, pan-y mobile behavior, and static reduced-motion outcomes to the upstream row CSS.",
+              "reason": "Keep leading and trailing behavior correct across direction, coarse pointers, keyboard use, and reduced-motion preferences."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/SwipeAction.tsx",
+              "change": "Ported the action to strict TypeScript, made button the semantic default, added a keyboard fallback for custom tags, gated tab focus by reveal state, and tracked every delayed callback.",
+              "reason": "Remove click-only generic actions, hidden focus targets, undeclared runtime dependencies, and callbacks that could fire after unmount."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/SwipeAction.css",
+              "change": "Adapted the upstream action skin for a native button with accessible target and focus sizing and a reduced-motion width branch.",
+              "reason": "Preserve caller-owned styling while keeping the semantic action usable on keyboard, touch, and reduced-motion setups."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/LeadingActions.tsx",
+              "change": "Mechanically ported the upstream leading-action child helper to strict TypeScript.",
+              "reason": "Retain the complete upstream helper closure without PropTypes."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/TrailingActions.tsx",
+              "change": "Mechanically ported the upstream trailing-action child helper to strict TypeScript.",
+              "reason": "Retain the complete upstream helper closure without PropTypes."
+            },
+            {
+              "shippedPath": "components/react-swipeable-list/module.d.ts",
+              "change": "Updated the upstream declarations for the strict ports, semantic action default, and reveal-label extension.",
+              "reason": "Keep the copied declaration closure consistent with the preserved runtime exports and narrow accessibility additions."
+            }
+          ],
+          "dedupe": {
+            "family": "swipeable-row-actions",
+            "sourceHash": "sha256:f92a2b6de14cb4e7423ca44f7430411eea546741f40c8522f766704c7ddbd974",
+            "contentHash": "sha256:46221f8239cab60aa6ddbdb5d2c63f9299b3e9f981ac98ebdd1b877a843548d3",
+            "structureHash": "sha256:22b1b2fb3d7c739cee998cc8454bd19b0f9d8a30ac1d7306490482b893f4d442"
+          },
+          "verification": {
+            "reviewedBy": null,
+            "reviewedAt": null
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.trailing-actions {
+  display: flex;
+}
+
+.trailing-actions > * {
+  width: 0;
+  overflow-x: hidden;
+}

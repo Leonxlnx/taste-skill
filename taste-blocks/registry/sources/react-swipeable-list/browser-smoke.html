@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Swipeable row actions smoke test</title>
+    <link rel="stylesheet" href="browser-smoke.css" />
+    <style>
+      body {
+        margin: 0;
+        font: 16px system-ui, sans-serif;
+      }
+
+      .test-content {
+        flex: 1;
+        padding: 1rem;
+      }
+
+      .test-action {
+        min-width: 88px;
+        padding: 0.75rem;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: #334155;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <pre id="result" data-status="running">RUNNING</pre>
+    <script src="browser-smoke.js"></script>
+  </body>
+</html>
