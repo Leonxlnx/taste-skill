@@ -1,8 +1,0 @@
-node_modules/
-.next/
-out/
-dist/
-.vercel/
-*.tsbuildinfo
-.env*
-!.env.example

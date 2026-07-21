@@ -2,6 +2,8 @@
 
 Research for Taste Blocks, a public source-backed component library built alongside Taste Skill v2.
 
+The implementation and catalog now live in the separate `taste-blocks` repository. Paths beginning with `taste-blocks/` in the historical research notes are relative to that repository after the split.
+
 ## Scope
 
 Taste Blocks contains reusable React components for landing pages, portfolios, and normal websites. It does not contain complete website sections, layout templates, page shells, dashboards, or application screens.

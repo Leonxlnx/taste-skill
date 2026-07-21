@@ -1,8 +1,0 @@
-.leading-actions {
-  display: flex;
-}
-
-.leading-actions > * {
-  width: 0;
-  overflow-x: hidden;
-}

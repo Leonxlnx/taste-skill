@@ -1,6 +1,0 @@
-Powered by Paper Shaders:
-https://shaders.paper.design
-
-Taste Blocks modifications (2026-07-20):
-- Removed explicit .js suffixes from relative imports in copied TypeScript source so installed files resolve in TypeScript and Next.js consumers.
-- Original upstream files remain pinned by commit and SHA-256 provenance in drafts.json.

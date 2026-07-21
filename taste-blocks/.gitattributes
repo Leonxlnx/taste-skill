@@ -1,9 +1,0 @@
-*.css text eol=lf
-*.js text eol=lf
-*.json text eol=lf
-*.mjs text eol=lf
-*.txt text eol=lf
-*.ts text eol=lf
-*.tsx text eol=lf
-LICENSE text eol=lf
-NOTICE text eol=lf
