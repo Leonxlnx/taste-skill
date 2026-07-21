@@ -19,12 +19,12 @@ The public free registry is configured in a consumer project's `components.json`
 ```json
 {
   "registries": {
-    "@taste": "https://tasteblocks.dev/r/{name}.json"
+    "@taste": "https://leonxlnx.github.io/taste-blocks/r/{name}.json"
   }
 }
 ```
 
-The registry must also serve `https://tasteblocks.dev/r/registry.json`, as required for shadcn MCP discovery. A component address is always `@taste/<name>`. The canonical npm command is:
+The registry also serves `https://leonxlnx.github.io/taste-blocks/r/registry.json`, as required for shadcn MCP discovery. A component address is always `@taste/<name>`. The canonical npm command is:
 
 ```text
 npx shadcn@latest add @taste/<name>
@@ -78,7 +78,7 @@ The Next.js catalog, source ledger, preview routes, registry JSON, and MCP there
 Use the same server contract with two thin transport entry points:
 
 - **Local and CI:** stdio. The client launches the process, stdout contains MCP messages only, and diagnostics go to stderr. This is the default for development and offline verification.
-- **Hosted:** stateless Streamable HTTP at `https://tasteblocks.dev/mcp`, with JSON response mode and no SSE session state. This is the public connection for remote clients. A Next.js route may host the adapter, but it must call the same catalog reader and handlers as stdio.
+- **Hosted:** not part of the DevDay release. A future stateless Streamable HTTP adapter must call the same catalog reader and handlers as stdio. Until then, remote clients use the public shadcn registry and Codex uses the tested local stdio server.
 
 Do not implement legacy HTTP+SSE, subscriptions, resumability, session storage, or server-to-client notifications. The current MCP specification defines stdio and Streamable HTTP as the standard transports; a read-only catalog does not need a stateful session.
 
@@ -103,7 +103,7 @@ All gates are blocking:
 6. **Metadata:** one sample from every imported source returns the exact repository, commit, upstream path, license evidence, modification summary, preview path, and registry address found in the generated catalog.
 7. **Command and install:** command generation rejects unknown or malformed names. A returned command installs one sample from every source batch into a clean fixture; the fixture then type-checks and builds, and contains no site or preview files.
 8. **Web routes:** each smoke sample returns 200 from `/preview/<name>` and `/r/<name>.json`; the registry payload has type `registry:component` and only declared distributable files.
-9. **Hosted security:** Streamable HTTP initialization and calls work over HTTPS; an invalid Origin is rejected, unsupported protocol versions fail cleanly, oversized input is rejected, and responses contain no secret or paid-material markers.
+9. **Public delivery:** the deployed catalog, `/r/registry.json`, and representative `/r/<name>.json` payloads return 200 over HTTPS. A future hosted MCP transport must add Origin and Host validation, request limits, timeouts, rate limiting, and protocol-version checks before release.
 
 ## Intentionally omitted
 

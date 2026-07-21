@@ -48,12 +48,12 @@ Use the returned shadcn install command only when the consumer's `components.jso
 ```json
 {
   "registries": {
-    "@taste": "https://tasteblocks.dev/r/{name}.json"
+    "@taste": "https://leonxlnx.github.io/taste-blocks/r/{name}.json"
   }
 }
 ```
 
-Verify the registry URL before executing the command. If the hosted registry is unavailable, do not pretend the command succeeded; use the local registry payload resource or omit the component and report the limitation.
+The DevDay registry URL above is publicly deployed and release-tested. Still verify the selected item before executing an install command. If the public registry is unavailable, use the local registry payload resource or omit the component and report the limitation.
 
 ## Failure handling
 
