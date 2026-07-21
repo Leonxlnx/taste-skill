@@ -1,0 +1,14 @@
+interface:
+  display_name: "Taste Skill V2"
+  short_description: "Taste-driven websites with verified components"
+  default_prompt: "Use $design-taste-frontend to design and build a distinctive responsive website."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "taste-blocks"
+      description: "Verified Taste Blocks component discovery and registry payloads"
+      transport: "stdio"
+
+policy:
+  allow_implicit_invocation: true

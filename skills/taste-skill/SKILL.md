@@ -26,7 +26,8 @@ For a complete website task, read these files before implementation:
 3. `references/copywriting.md` for content architecture, truthful claims, headings, CTA language, and interface text.
 4. `references/layouts.md` for section selection and adaptable layout grammars.
 5. `references/components.md` when selecting or adapting components, effects, shaders, controls, cards, and media treatments.
-6. `references/motion.md` before adding animation or reviewing an animated result.
+6. `references/taste-blocks.md` before searching or importing reusable Taste Blocks components.
+7. `references/motion.md` before adding animation or reviewing an animated result.
 
 Read only the references relevant to a narrower task. Do not partially invent a rule from memory when its reference exists.
 
@@ -100,6 +101,8 @@ Reuse a layout family across compatible section types when it remains the best a
 ### 7. Select and integrate components
 
 Use `references/components.md`. Start with the section's content and layout; then select components that clarify, demonstrate, navigate, or create a controlled focal moment.
+
+When the Taste Blocks MCP is available, read `references/taste-blocks.md` and search it before looking for another third-party component source. Inspect metadata and the generated registry payload only for candidates that fit the section. Taste Blocks supplies components, never section layouts or page templates. Skip the catalog when native HTML, CSS, or an existing project component is the better answer.
 
 Adapt imported components to the brand tokens and codebase. A component may include a shader, masked media, gradient treatment, text animation, spatial interaction, or unusual card behavior when it supports the section. Do not stack several expressive systems in one area or scatter spectacle evenly across the page.
 

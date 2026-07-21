@@ -2,7 +2,7 @@
 
 ## Decision
 
-Build one small, read-only Taste Blocks MCP server around the generated component catalog. Keep shadcn as the installation system. The MCP server discovers components, exposes reviewed provenance and preview metadata, and returns a valid shadcn command. It never executes that command.
+Build one small, read-only Taste Blocks MCP server around the generated component catalog. Keep shadcn as the installation system. The MCP server discovers components, exposes reviewed provenance and preview metadata, returns the generated public registry payload for a verified component, and formats a valid shadcn command. It never executes that command.
 
 This avoids a second catalog, database, custom package format, or fork of the shadcn MCP server. Because Taste Blocks publishes a normal shadcn registry, consumers may also use the official shadcn MCP server against the `@taste` namespace without any Taste Blocks-specific adapter.
 
@@ -53,6 +53,7 @@ The install step remains explicit: the MCP client shows the returned command, th
 | --- | --- |
 | `tasteblocks://catalog` | `application/json` summary containing schema version, verified count, categories, sources, and the public registry URL. It does not inline 500 component records or code. |
 | `tasteblocks://components/{name}` | Resource template returning one complete, verified metadata record. |
+| `tasteblocks://registry/{name}` | Resource template returning the exact generated public shadcn registry item for one verified component. This keeps local integration functional before the hosted registry is available. |
 
 The component resource contains only:
 
@@ -62,7 +63,7 @@ The component resource contains only:
 - preview path `/preview/<name>` and renderer metadata;
 - registry address and canonical install command.
 
-It never returns distributable file contents, preview wrapper source, local absolute paths, environment values, or unreleased records. Unknown names return the MCP resource-not-found error. `resources/list` exposes only the fixed catalog resource; `resources/templates/list` exposes the component template instead of materializing 500 list entries.
+The metadata resource never returns distributable file contents, preview wrapper source, local absolute paths, environment values, or unreleased records. The registry resource returns only the already generated public `registry:component` payload for a name present in the verified catalog and enforces a response-size limit. Unknown names return the MCP resource-not-found error. `resources/list` exposes only the fixed catalog resource; `resources/templates/list` exposes the component and registry templates instead of materializing 500 list entries.
 
 ## Catalog read path
 
@@ -70,7 +71,7 @@ It never returns distributable file contents, preview wrapper source, local abso
 
 The server loads and validates that file once at process start, rejects any non-component or non-verified record, and builds an in-memory map plus a small searchable array. It does not scan `registry/sources/`, read preview source, fetch upstream repositories, call the Next.js pages, or maintain a second cache. A missing or invalid generated catalog is a startup failure, not an empty successful server.
 
-The Next.js catalog, source ledger, preview routes, registry JSON, and MCP therefore report the same names and count. `/r/<name>.json` remains the only endpoint that distributes reviewed free component code.
+The Next.js catalog, source ledger, preview routes, registry JSON, and MCP therefore report the same names and count. `/r/<name>.json` and its read-only `tasteblocks://registry/<name>` representation distribute the same reviewed free component payload.
 
 ## Transport
 
@@ -83,7 +84,7 @@ Do not implement legacy HTTP+SSE, subscriptions, resumability, session storage, 
 
 ## Security boundary
 
-- Only records already present in the verified generated catalog may be returned. Never expose drafts, rejected sources, paid components, React Bits Pro material, license keys, registry tokens, or private source URLs.
+- Only records already present in the verified generated catalog may be returned. A registry resource may read only `public/r/<verified-name>.json`, must validate its identity and type, and must enforce a bounded response size. Never expose drafts, rejected sources, paid components, React Bits Pro material, license keys, registry tokens, or private source URLs.
 - The server accepts component names and bounded filters only. It accepts no filesystem path, arbitrary URL, registry URL, shell fragment, or upstream fetch target.
 - `get_install_command` validates every name against the catalog and only formats a command. It never spawns a process or writes files.
 - The free hosted endpoint is read-only and may be public. It still requires HTTPS, Origin and Host validation, request size limits, timeouts, rate limiting, and sanitized errors. A localhost HTTP adapter binds to `127.0.0.1`, not `0.0.0.0`.
@@ -106,7 +107,7 @@ All gates are blocking:
 
 ## Intentionally omitted
 
-No MCP prompt library, source-code viewing tool, install executor, component editor, layout generator, page assembler, write tool, database, vector search, embeddings, analytics pipeline, custom auth for the public free catalog, or separate MCP application. At roughly 500 metadata records, a validated JSON file and in-memory filtering are sufficient.
+No MCP prompt library, arbitrary source browser, install executor, component editor, layout generator, page assembler, write tool, database, vector search, embeddings, analytics pipeline, custom auth for the public free catalog, or separate MCP application. At roughly 500 metadata records, a validated JSON file and in-memory filtering are sufficient.
 
 ## Official references
 
