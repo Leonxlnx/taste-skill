@@ -16,6 +16,7 @@ Build the website as one coherent argument. Let the brief, content, audience, an
 - Keep implementation compatible with the existing stack unless a change is necessary and approved.
 - Design desktop and mobile as related compositions, not a desktop screenshot and its compressed copy.
 - Use real content and real proof. When facts are missing, omit them or mark honest placeholders.
+- For complete website builds, do not silently skip available asset-generation or component-library tools. Use them when they can materially improve the result, or state the concrete reason they were not used.
 
 ## Load the references
 
@@ -64,6 +65,8 @@ Use `references/branding.md` to define a compact direction before composing sect
 
 Translate this into reusable tokens. Do not choose a palette, font, or trend because it appears fashionable or because a category stereotypically uses it.
 
+Before layout implementation, create a short asset plan. For every major visual slot, choose one of: supplied asset, real product evidence, generated image, licensed stock fallback, component-rendered visual, or intentional type-only treatment. When image-generation tools are available and suitable subject-specific imagery is missing, generate and use the required final assets; do not replace them with generic CSS circles, empty rectangles, fake dashboards, or decorative gradients. Copy project-bound outputs into the project and record their paths and prompts.
+
 ### 4. Build the copy and content model
 
 Use `references/copywriting.md`. Write or organize the content before polishing layouts.
@@ -102,7 +105,9 @@ Reuse a layout family across compatible section types when it remains the best a
 
 Use `references/components.md`. Start with the section's content and layout; then select components that clarify, demonstrate, navigate, or create a controlled focal moment.
 
-When the Taste Blocks MCP is available, read `references/taste-blocks.md` and search it before looking for another third-party component source. Inspect metadata and the generated registry payload only for candidates that fit the section. Taste Blocks supplies components, never section layouts or page templates. Skip the catalog when native HTML, CSS, or an existing project component is the better answer.
+When the Taste Blocks MCP or local catalog is available, read `references/taste-blocks.md` and search it before looking for another third-party component source. Inspect metadata and the generated registry payload only for candidates that fit the section. Taste Blocks supplies components, never section layouts or page templates.
+
+For a complete website build, integrate at least one verified reusable component whenever the reachable catalog contains a component with a real role in the page. Do not satisfy this with an unused import, hidden demo, copied markup, or a component that could be removed without changing behavior or presentation. If no candidate earns a place, record the searched roles and rejection reason instead of silently skipping the library. In the handoff, list every integrated component by verified catalog name, source path, section role, and adaptation.
 
 Adapt imported components to the brand tokens and codebase. A component may include a shader, masked media, gradient treatment, text animation, spatial interaction, or unusual card behavior when it supports the section. Do not stack several expressive systems in one area or scatter spectacle evenly across the page.
 
@@ -113,6 +118,7 @@ Keep plain components plain when clarity is the stronger design choice. Verify l
 Build semantic structure and real interaction states. Preserve hierarchy across widths while allowing the composition to change.
 
 - Recompose before shrinking.
+- At desktop widths, let short headlines use the available measure. A headline of six words or fewer should normally occupy one or two lines, never one word per line; four-line desktop headings fail unless the user explicitly requested a tested poster composition.
 - Keep primary navigation and desktop CTA labels from wrapping unnecessarily.
 - Provide keyboard, touch, focus, escape, loading, empty, error, pending, and reduced-motion behavior where relevant.
 - Use responsive assets, stable font delivery, and measured performance budgets.
@@ -131,6 +137,8 @@ Provide behavior-specific reduced-motion alternatives. Test actual feel and perf
 Inspect the rendered result rather than trusting source code alone.
 
 - Compare every section with its stated job.
+- Confirm that planned generated or supplied assets are actually referenced by rendered media and that selected catalog components are actually imported and visible.
+- Reject decorative preheading text anywhere, including prototype, category, studio, archive, or status badges positioned like eyebrows. Put required prototype disclosure in body copy, a dedicated notice, or the footer instead.
 - Check the whole-page rhythm, repeated structures, accent consistency, typography, real content, and visual hierarchy.
 - Verify navigation, links, forms, menus, overlays, responsive states, focus, contrast, zoom, text spacing, and media behavior.
 - Remove effects, components, sections, and copy that do not earn their space.

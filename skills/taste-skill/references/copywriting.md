@@ -90,7 +90,7 @@ Apply the rules in this order:
 
 ### COPY-015 - Do not generate decorative preheadings
 - **Level:** HARD BAN under Taste Skill authoring policy
-- **Rule:** Do not add eyebrows, kickers, overlines, pretitles, or studio-style filler above headings. Functional metadata and real interface labels remain valid.
+- **Rule:** Do not add eyebrows, kickers, overlines, pretitles, or studio-style filler above headings. A truthful `Prototype`, category, status, archive, or project-type badge still counts as an eyebrow when positioned near a brand or heading. Keep functional metadata only where its function is performed; move prototype disclosure into ordinary body copy, a dedicated notice, or the footer.
 
 ### COPY-016 - Make supporting copy additive
 - **Level:** AVOID BY DEFAULT
@@ -278,7 +278,7 @@ Apply the rules in this order:
 
 ### COPY-060 - Do not force headline wrapping
 - **Level:** HARD BAN under Taste Skill authoring policy when the line is needlessly bloated or manually broken
-- **Rule:** Compress the meaning before adding forced line breaks. Let wrapping follow the available measure unless a deliberate editorial composition requires and survives responsive testing.
+- **Rule:** Compress the meaning before adding forced line breaks. Let wrapping follow the available measure unless a deliberate editorial composition requires and survives responsive testing. At desktop widths, headings of six words or fewer should normally use one or two lines; reject four-line headings and one-word-per-line arrangements unless the user explicitly requested a poster treatment.
 
 ### COPY-061 - Recompose before shrinking
 - **Level:** AVOID BY DEFAULT

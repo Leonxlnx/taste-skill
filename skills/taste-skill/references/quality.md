@@ -532,7 +532,7 @@ Evidence references below point to report sections or pattern IDs. The source re
 - **Rule:** Never generate eyebrow, kicker, overline, pretitle, or tiny label copy above a heading.
 - **Failure signature:** A section begins with a small uppercase word, pill, category, or phrase such as `OUR APPROACH`, `SELECTED WORK`, `CREATIVE STUDIO`, or `BUILT FOR TEAMS` before the actual heading.
 - **Detection:** Inspect every heading for a preceding text fragment whose only job is styling, atmosphere, or filling vertical space.
-- **Exception:** Semantic interface text such as form labels, navigation labels, status labels, table headers, and real metadata is not an eyebrow.
+- **Exception:** Semantic interface text such as form labels, navigation labels, table headers, and real metadata is not an eyebrow when it appears where that interface function is performed. A `Prototype`, category, status, archive, or project-type badge placed near a brand or heading is still an eyebrow even if its text is technically true.
 - **Preferred response:** Put necessary context directly into the shortest useful heading or body copy; otherwise omit it.
 - **Evidence:** Taste Skill v2 authoring policy, informed by R1 and R3 hero and section-template findings.
 
@@ -547,7 +547,7 @@ Evidence references below point to report sections or pattern IDs. The source re
 
 ### CNT-011 - Bloated headline or prematurely forced wrap
 - **Level:** HARD BAN - Taste Skill authoring policy
-- **Rule:** Use the shortest precise headline that preserves the intended meaning. Do not turn body-copy sentences into headings, and do not force an earlier line break while usable horizontal space remains.
+- **Rule:** Use the shortest precise headline that preserves the intended meaning. Do not turn body-copy sentences into headings, and do not force an earlier line break while usable horizontal space remains. At desktop widths, six words or fewer should normally fit in one or two lines; four lines fail unless an explicitly requested and verified poster composition requires them.
 - **Failure signature:** A desktop headline runs for three to five lines unnecessarily, ends as a full marketing sentence, leaves large unused width beside it, isolates one or two words per line, or wraps early because of `<br>`, narrow `max-width`, nested spans, or nonbreaking spaces.
 - **Detection:** Remove manual breaks and decorative width constraints, allow natural wrapping, then shorten the copy; compare at desktop, laptop, tablet, and mobile widths.
 - **Exception:** User-supplied wording that must remain exact, or an explicitly requested editorial/poster composition. Even then, do not create accidental orphans or unused width.
@@ -1076,6 +1076,7 @@ Automate only what can be checked reliably. A linter cannot decide whether a pur
 - Console and network error capture.
 - Horizontal-overflow probe at representative and in-between widths.
 - CTA and primary desktop-navigation wrapping checks.
+- Rendered headline line-count checks: flag desktop headings of six words or fewer that exceed two lines, any ordinary desktop heading that reaches four lines, manual `<br>` elements, and narrow measures that leave usable width empty.
 - Hero first-viewport and content-stack inspection.
 - Image intrinsic-size, crop, LCP, INP, and layout-shift checks.
 - Keyboard activation and focus-order tests.
@@ -1148,8 +1149,10 @@ The synthesis rejected these as universal bans:
 6. Keep the hero focused; move feature lists, pricing, logo walls, trust strips, and secondary metadata into later sections.
 7. Keep CTA labels and primary desktop navigation readable on one line and use one label per CTA intent.
 8. Never generate an eyebrow, kicker, overline, or pretitle above a heading.
+   Treat decorative prototype, category, status, studio, archive, and project-type badges near brands or headings as eyebrows; move necessary disclosure into ordinary copy or the footer.
 9. Remove decorative text that provides no necessary meaning or function.
 10. Compress headlines before styling them and never force premature wrapping.
+    At desktop widths, short headlines normally occupy one or two lines; reject one-word-per-line compositions and four-line headings unless an explicit poster brief survives responsive testing.
 11. Give every section one necessary job; remove filler sections.
 12. Use split headers, long lists, dense tables, progress visuals, overlays, and absolute positioning only when their information or composition requires them.
 13. Include subject-specific evidence that a generic template could not substitute.
