@@ -17,7 +17,7 @@ export default function Page() {
 
     <section className="statement"><p>Common Field is an independent furniture practice. Each object begins with proportion, touch, and the honest limits of a material.</p></section>
 
-    <section className="work" id="work"><h2>Selected objects</h2><div className="workList">{pieces.map(([n,name,material]) => <article key={n}><span>{n}</span><h3>{name}</h3><p>{material}</p><b>View object →</b></article>)}</div></section>
+    <section className="work" id="work"><h2>Selected objects</h2><div className="workList">{pieces.map(([,name,material]) => <article key={name}><h3>{name}</h3><p>{material}</p><b>View object →</b></article>)}</div></section>
 
     <section className="feature"><div><h2>The Low Chair</h2><p>A broad back carries the shoulders while the carved seat keeps the posture easy. Exposed joints show how the loads travel through the frame.</p></div><figure><img src="/assets/sculptural-oak-chair.png" alt="Low Chair showing its broad oak back and exposed joinery"/><figcaption>Study in oak. Dimensions and availability supplied on request.</figcaption></figure></section>
 

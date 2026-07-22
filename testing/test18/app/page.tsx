@@ -13,7 +13,7 @@ export default function Home() {
   return <main>
     <nav><a className="wordmark" href="#top">Lumen</a><div><a href="#works">Works</a><a href="#visit">Visit</a></div></nav>
 
-    <header id="top" className="hero"><h1>Light becomes<br />the material.</h1><p>A spatial study in glow, reflection, duration, and the bodies that move between them.</p><a className="arrow" href="#image" aria-label="Continue to exhibition image">↓</a></header>
+    <header id="top" className="hero"><h1>Light becomes <br />the material.</h1><p>A spatial study in glow, reflection, duration, and the bodies that move between them.</p><a className="arrow" href="#image" aria-label="Continue to exhibition image">↓</a></header>
 
     <section id="image" className="image-stage"><Image src="/assets/light-installation.png" alt="Conceptual amber light installation crossing a dark concrete gallery" fill priority sizes="100vw" /><p>Light is not used to reveal the work. Light is the work.</p></section>
 

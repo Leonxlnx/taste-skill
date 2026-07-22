@@ -16,7 +16,7 @@ export default function Home() {
 
     <section className="hero" id="top">
       <div className="heroCopy"><h1>Trace requests across services.</h1><p>See the complete path behind a slow endpoint—from edge to database—without stitching together isolated logs.</p><a className="button" href="#trace">Follow a request <span>↘</span></a></div>
-      <figure className="heroArt"><Image src="/assets/request-path.png" alt="Material visualization of request paths branching between service nodes" width={1536} height={1024} priority /><figcaption>One request, rendered as a connected system—not a stack of disconnected screens.</figcaption></figure>
+      <figure className="heroArt"><Image src="/assets/request-path.png" alt="Material visualization of request paths branching between service nodes" width={1536} height={1024} priority unoptimized /><figcaption>One request, rendered as a connected system—not a stack of disconnected screens.</figcaption></figure>
     </section>
 
     <section className="trace" id="trace"><div><h2>The whole path, in causal order.</h2><p>A trace should answer what happened before you start querying. Parent-child spans keep queues, calls, retries, and database work in one readable chain.</p></div><div className="waterfall" aria-label="Example request span waterfall">{spans.map(([name,time,width],i)=><div className="span" key={name}><b>{name}</b><span style={{width:`${width}%`,marginLeft:`${i*4}%`}} /><em>{time}</em></div>)}</div></section>

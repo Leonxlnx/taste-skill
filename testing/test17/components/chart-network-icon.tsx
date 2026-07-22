@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "../../lib/utils";
+import { cn } from "../lib/utils";
 import type { Variants } from "motion/react";
 import {
  LazyMotion,
