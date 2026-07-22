@@ -1,6 +1,6 @@
 ---
 name: design-taste-frontend
-description: Design and build distinctive, production-ready landing pages, portfolios, and content-led websites without generic AI patterns. Use for new sites, redesigns, page composition, brand direction, website copy, section layout, component selection, responsive implementation, visual QA, and restrained web motion. This skill turns references into adaptable design principles rather than copied templates.
+description: Design and build distinctive, studio-grade landing pages, portfolios, and content-led websites without generic AI patterns. Use for new sites, redesigns, page composition, brand direction, website copy, section layout, substantial component selection, project-bound imagery, responsive implementation, visual QA, and polished web motion. This skill turns references into adaptable design principles rather than copied templates.
 ---
 
 # Taste Skill V2
@@ -17,6 +17,22 @@ Build the website as one coherent argument. Let the brief, content, audience, an
 - Design desktop and mobile as related compositions, not a desktop screenshot and its compressed copy.
 - Use real content and real proof. When facts are missing, omit them or mark honest placeholders.
 - For complete website builds, do not silently skip available asset-generation or component-library tools. Use them when they can materially improve the result, or state the concrete reason they were not used.
+- For complete builds, the default quality target is a high-end independent studio, not a technically valid starter theme. Clean does not mean empty, flat, static, or generic.
+- Treat anti-slop rules as guardrails, not the design concept. Passing a checklist is not the same as producing strong art direction.
+- A successful build pass is not a successful design pass. Render, inspect, revise, and score the result before delivery.
+
+## Route available specialist tools
+
+For a complete website build, use available specialist skills and tools as part of this workflow instead of waiting for the user to name each one:
+
+- Use the built-in `imagegen` skill when subject-specific imagery, product scenes, editorial art, cutouts, textures, or compositing layers would materially strengthen the direction. Generate project-bound assets, copy them into the project, and record the final prompts and paths.
+- Search Taste Blocks by the role required in each section. Prefer substantial expressive systems over trivial primitives when the brief calls for a studio-grade result.
+- After the static composition works, run `find-animation-opportunities` against the rendered interface, implement the highest-leverage findings, then continue the motion pass.
+- Use `gsap` only for coordinated timelines, scroll-linked storytelling, spatial sequences, or other motion that CSS, WAAPI, or the existing framework cannot express cleanly.
+- Run `review-animations` after implementation. Resolve every blocking finding before delivery.
+- Apply `emil-design-eng` during the final interaction and polish pass for causality, interruption, physicality, and invisible-detail quality.
+
+When parallel agents are available, use them for independent component discovery, asset exploration, or motion review. Keep one lead responsible for the page's art direction so parallel work does not fragment the result.
 
 ## Load the references
 
@@ -67,6 +83,8 @@ Translate this into reusable tokens. Do not choose a palette, font, or trend bec
 
 Before layout implementation, create a short asset plan. For every major visual slot, choose one of: supplied asset, real product evidence, generated image, licensed stock fallback, component-rendered visual, or intentional type-only treatment. When image-generation tools are available and suitable subject-specific imagery is missing, generate and use the required final assets; do not replace them with generic CSS circles, empty rectangles, fake dashboards, or decorative gradients. Copy project-bound outputs into the project and record their paths and prompts.
 
+For a substantial eight-section studio-grade site, a useful asset plan commonly contains three to eight purposeful assets rather than one repeated hero image. Consider a hero world, supporting editorial scenes, product states, transparent cutouts, material textures, foreground/background layers, and alternate crops. Use masks, overlap, depth, parallax, background removal, and compositing only when they reinforce the concept and remain legible across widths.
+
 ### 4. Build the copy and content model
 
 Use `references/copywriting.md`. Write or organize the content before polishing layouts.
@@ -107,7 +125,11 @@ Use `references/components.md`. Start with the section's content and layout; the
 
 When the Taste Blocks MCP or local catalog is available, read `references/taste-blocks.md` and search it before looking for another third-party component source. Inspect metadata and the generated registry payload only for candidates that fit the section. Taste Blocks supplies components, never section layouts or page templates.
 
-For a complete website build, integrate at least one verified reusable component whenever the reachable catalog contains a component with a real role in the page. Do not satisfy this with an unused import, hidden demo, copied markup, or a component that could be removed without changing behavior or presentation. If no candidate earns a place, record the searched roles and rejection reason instead of silently skipping the library. In the handoff, list every integrated component by verified catalog name, source path, section role, and adaptation.
+For a complete studio-grade website, give every major section a deliberate visual carrier. Across a substantial eight-section page, expect roughly six to twelve substantial component or media systems when the content supports them. A plain button, checkbox, input, static text element, ordinary accordion, unmodified card, or load-only reveal does not count as a substantial component.
+
+A substantial component materially changes the experience: a shader or generative field, meaningful text-motion system, spatial or gesture interaction, advanced media treatment, interactive navigation, responsive gallery, product demonstrator, live diagram, cinematic transition, or another authored system with a real section role. Search enough catalog candidates to compare options across at least four relevant categories. Do not reuse the same easy component across unrelated projects merely because integration is convenient.
+
+Do not satisfy component use with an unused import, hidden demo, copied markup, or a component that could be removed without changing behavior or presentation. If no candidate earns a place, record the searched roles and rejection reason instead of silently skipping the library. In the handoff, list every integrated component by verified catalog name, source path, section role, and adaptation.
 
 Adapt imported components to the brand tokens and codebase. A component may include a shader, masked media, gradient treatment, text animation, spatial interaction, or unusual card behavior when it supports the section. Do not stack several expressive systems in one area or scatter spectacle evenly across the page.
 
@@ -124,11 +146,15 @@ Build semantic structure and real interaction states. Preserve hierarchy across 
 - Use responsive assets, stable font delivery, and measured performance budgets.
 - Preserve or improve the project's architecture rather than replacing it with a generated monolith.
 
-### 9. Add motion last
+### 9. Build and audit the motion system
 
 Read `references/motion.md` after static composition, copy, components, and interaction states work.
 
-Add motion only where it improves causality, orientation, continuity, feedback, demonstration, or brand expression. Establish one motion language, reserve high-attention animation for focal moments, and keep reading content immediately available.
+Add motion where it improves causality, orientation, continuity, feedback, demonstration, spatial depth, or brand expression. Establish one motion language, reserve high-attention animation for focal moments, and keep reading content immediately available.
+
+Map motion across the whole page: hero arrival, section-to-section continuity, media behavior, interactive components, and the ending. Every major section in a studio-grade experience should feel deliberately alive through motion, interaction, spatial media, or a composed visual state, while quiet reading areas remain stable. Zero expressive motion is not a valid result for a premium, cinematic, Awwwards-level, interactive, or animation-led brief. One generic reveal, one hover icon, or one magnetic button is also insufficient.
+
+After the first motion implementation, run the available animation-opportunity audit and implement its highest-leverage findings. Inspect the real result at normal speed and under reduced motion. Then run the animation review, fix every blocking issue, and re-test.
 
 Provide behavior-specific reduced-motion alternatives. Test actual feel and performance on desktop, keyboard, touch, and a constrained viewport.
 
@@ -140,11 +166,17 @@ Inspect the rendered result rather than trusting source code alone.
 - Confirm that planned generated or supplied assets are actually referenced by rendered media and that selected catalog components are actually imported and visible.
 - Reject decorative preheading text anywhere, including prototype, category, studio, archive, or status badges positioned like eyebrows. Put required prototype disclosure in body copy, a dedicated notice, or the footer instead.
 - Check the whole-page rhythm, repeated structures, accent consistency, typography, real content, and visual hierarchy.
+- Render full-page desktop and mobile screenshots. Reject the result when three consecutive sections are flat, interchangeable, or use the same split/grid grammar.
+- Reject default system fonts chosen for convenience when the brand direction calls for a distinctive type system.
+- Check depth through intentional layering, crop, overlap, perspective, light, texture, masks, and spatial relationships; gradients alone do not establish depth.
+- Confirm that substantial component coverage changes the page's experience rather than merely increasing import count.
+- Exercise the actual motion in-browser. Source-code animation counts are not evidence of quality.
 - Verify navigation, links, forms, menus, overlays, responsive states, focus, contrast, zoom, text spacing, and media behavior.
 - Remove effects, components, sections, and copy that do not earn their space.
 - Run the project's build, lint, tests, and relevant browser checks.
+- Score art direction, composition, typography, depth, motion, component integration, and polish. Do not call the result complete below 8/10 overall or with any material category below 7/10; revise instead.
 - Report what was verified, what remains a placeholder, and what still requires user content or external setup.
 
 ## Output expectations
 
-Deliver a coherent working website, not isolated mock sections. Keep the handoff concise and factual. Include changed files, verification performed, honest limitations, and the next material decision only when one remains.
+Deliver a coherent working website, not isolated mock sections. Keep the handoff concise and factual. Include changed files, integrated component names, generated asset paths and prompts, animation systems, rendered visual QA, score, honest limitations, and the next material decision only when one remains.

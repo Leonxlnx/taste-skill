@@ -45,10 +45,10 @@ Apply in this order:
 - **Level:** AVOID BY DEFAULT
 - **Rule:** The more often people encounter an animation, the faster, smaller, and quieter it should be. High-frequency navigation, focus, keyboard, and control actions must feel immediate.
 
-### ANI-004 - Never use a motion quota
+### ANI-004 - Match motion coverage to the requested quality target
 
-- **Level:** HARD under Taste Skill authoring policy
-- **Rule:** Do not require a hero entrance, hover effect, scroll animation, or any minimum count of animations. Zero expressive animations is a valid result.
+- **Level:** HARD for brief fidelity; CONTEXT CHECK for quantity
+- **Rule:** Do not impose a blind animation quota. A utility or reading-first page may remain mostly static, but a studio-grade marketing site, portfolio, campaign, or interactive experience needs a deliberate motion map across focal moments, section continuity, media, and interaction. Zero expressive motion is not valid when the brief asks for premium, cinematic, Awwwards-level, interactive, or animation-led work.
 
 ### ANI-005 - Never create decorative latency
 

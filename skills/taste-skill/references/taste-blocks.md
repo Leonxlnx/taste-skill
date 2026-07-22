@@ -13,7 +13,7 @@ Taste Blocks supplies verified reusable components to the component-selection ph
 7. Adapt the component using `components.md`; do not preserve an upstream house style by default.
 8. Run the target project's type, build, interaction, responsive, accessibility, and reduced-motion checks.
 
-Do not browse the full catalog as a substitute for design judgment. Stop searching once a suitable component is found.
+Do not browse the full catalog as a substitute for design judgment. For a narrow task, stop once a genuinely strong fit is found. For a complete site, build a page-level shortlist across relevant categories and compare candidates before selecting; the first technically suitable primitive is not enough.
 
 ## MCP contract
 
@@ -48,12 +48,12 @@ Use the returned shadcn install command only when the consumer's `components.jso
 ```json
 {
   "registries": {
-    "@taste": "https://leonxlnx.github.io/taste-blocks/r/{name}.json"
+    "@taste": "https://tasteblocks.dev/r/{name}.json"
   }
 }
 ```
 
-The DevDay registry URL above is publicly deployed and release-tested. Still verify the selected item before executing an install command. If the public registry is unavailable, use the local registry payload resource or omit the component and report the limitation.
+Verify the registry URL before executing the command. If the hosted registry is unavailable, do not pretend the command succeeded; use the local registry payload resource or omit the component and report the limitation.
 
 ## Failure handling
 

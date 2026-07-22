@@ -1,7 +1,7 @@
 interface:
   display_name: "Taste Skill V2"
-  short_description: "Taste-driven websites with verified components"
-  default_prompt: "Use $design-taste-frontend to design and build a distinctive responsive website."
+  short_description: "Studio-grade websites with imagery, components, and motion"
+  default_prompt: "Use $design-taste-frontend to build a distinctive responsive website with substantial components, project-bound imagery, a polished motion system, and rendered visual QA."
 
 dependencies:
   tools:

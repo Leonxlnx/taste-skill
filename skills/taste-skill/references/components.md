@@ -54,7 +54,9 @@ Assign each component one of three attention levels:
 - **Support:** designed cards, galleries, tabs, accordions, diagrams, or contextual interactions.
 - **Focal:** shaders, spatial scenes, expressive text, cinematic media, or a signature interaction.
 
-Let foundation components dominate the count. Use focal components sparingly and place them where the page argument benefits. Do not make every card, heading, cursor, and background compete.
+Let foundation components support usability, but do not count them as substantial component integration. Use focal components selectively and place them where the page argument benefits. Do not make every card, heading, cursor, and background compete.
+
+For a complete studio-grade site, every major section needs a deliberate visual carrier and the page should contain several substantial systems. Plain buttons, checkboxes, inputs, static text, ordinary accordions, unmodified cards, and generic load reveals do not qualify. Substantial systems include shaders, generative fields, meaningful text motion, spatial media, advanced galleries, interactive navigation, product demonstrators, gesture systems, cinematic transitions, and live diagrams when they serve the content.
 
 One expressive cluster may contain several coordinated pieces when they behave as one idea. Several unrelated effects in the same viewport are not one cluster.
 
