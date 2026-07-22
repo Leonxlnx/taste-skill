@@ -1,0 +1,6 @@
+**/node_modules/
+**/.next/
+**/.turbo/
+**/out/
+**/.vercel/
+*.log
