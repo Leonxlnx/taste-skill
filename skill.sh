@@ -18,31 +18,35 @@ declare -A SKILLS=(
 )
 
 print_help() {
-  echo "Usage: ./skill.sh <skill-name>"
-  echo "       ./skill.sh --list"
+  echo "Usage: source ./skill.sh <skill-name>"
+  echo "       source ./skill.sh --list"
   echo
   echo "Available skills:"
   printf '%s\n' "${!SKILLS[@]}" | sort
 }
 
-if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
-  print_help
-  exit 0
-fi
+skill_main() {
+  if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+    print_help
+    return 0
+  fi
 
-if [[ "$1" == "--list" ]]; then
-  printf '%s\n' "${!SKILLS[@]}" | sort
-  exit 0
-fi
+  if [[ "$1" == "--list" ]]; then
+    printf '%s\n' "${!SKILLS[@]}" | sort
+    return 0
+  fi
 
-skill_name="$1"
-skill_path="${SKILLS[$skill_name]}"
+  local skill_name="$1"
+  local skill_path="${SKILLS[$skill_name]-}"
 
-if [[ -z "$skill_path" ]]; then
-  echo "Unknown skill: $skill_name" >&2
-  echo >&2
-  print_help >&2
-  exit 2
-fi
+  if [[ -z "$skill_path" ]]; then
+    echo "Unknown skill: $skill_name" >&2
+    echo >&2
+    print_help >&2
+    return 2
+  fi
 
-echo "$skill_path"
+  echo "$skill_path"
+}
+
+skill_main "$@"
