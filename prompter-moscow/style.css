@@ -146,12 +146,13 @@ a{color:inherit}
 .hdr__in{display:flex;align-items:center;gap:20px;height:72px}
 
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+/* Логотип-знак. Файл лежит в assets/logo.svg — чтобы заменить логотип
+   на всём сайте, достаточно подменить этот один файл. */
 .logo__mark{
-  width:32px;height:32px;border-radius:9px;
-  background-image:var(--grad);
-  display:grid;place-items:center;
-  font-family:var(--f-display);font-weight:700;font-size:16px;color:#fff;
+  width:34px;height:34px;flex:none;
+  transition:transform .2s var(--ease);
 }
+.logo:hover .logo__mark{transform:scale(1.06)}
 .logo__txt{font-family:var(--f-display);font-weight:500;font-size:15px;letter-spacing:-.01em}
 .logo__txt b{font-weight:700}
 
@@ -424,7 +425,8 @@ a{color:inherit}
 .ftr__site:hover{color:var(--text)}
 .ftr__pp{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .ftr__pp:hover{color:var(--text)}
-.ftr__c{margin:0}
+.ftr__c{margin:0;display:flex;align-items:center;gap:10px}
+.ftr__mark{width:24px;height:24px;flex:none;opacity:.9}
 
 /* Кнопка «наверх» */
 .totop{
@@ -444,7 +446,7 @@ a{color:inherit}
 .reveal.is-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .btn,.bento__cell,.niche,.totop{transition:none}
+  .btn,.bento__cell,.niche,.totop,.logo__mark{transition:none}
 }
 
 /* ---------- Модальное окно ---------- */
