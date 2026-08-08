@@ -1,0 +1,167 @@
+/* =========================================================
+   /api/lead — приём заявки и отправка её в Telegram.
+
+   Токен бота и chat_id читаются ТОЛЬКО из переменных окружения:
+   process.env.TG_TOKEN и process.env.TG_CHAT_ID.
+   В браузер они не попадают: этот файл выполняется на сервере Vercel.
+   ========================================================= */
+
+/* Домены, с которых разрешено отправлять форму. */
+var ALLOWED_HOSTS = [
+  'prompter-ai.moscow',
+  'www.prompter-ai.moscow'
+];
+
+/* Ограничение частоты: не больше 3 заявок в минуту с одного IP.
+   Счётчик живёт в памяти работающего экземпляра функции. Vercel может
+   поднять несколько экземпляров, поэтому это защита от простого спама,
+   а не строгая квота. */
+var RATE_MAX = 3;
+var RATE_WINDOW_MS = 60 * 1000;
+var hits = new Map();
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+
+  var url;
+  try {
+    url = new URL(origin);
+  } catch (e) {
+    return false;
+  }
+
+  var host = url.hostname;
+
+  if (ALLOWED_HOSTS.indexOf(host) !== -1) return true;
+
+  // Локальная разработка.
+  if (host === 'localhost' || host === '127.0.0.1') return true;
+
+  // Превью-домены Vercel, чтобы можно было проверить форму до привязки домена.
+  if (/\.vercel\.app$/.test(host)) return true;
+
+  return false;
+}
+
+function clientIp(req) {
+  var fwd = req.headers['x-forwarded-for'];
+  if (typeof fwd === 'string' && fwd.length) return fwd.split(',')[0].trim();
+  if (Array.isArray(fwd) && fwd.length) return String(fwd[0]).trim();
+  return req.headers['x-real-ip'] || 'unknown';
+}
+
+function rateLimited(ip) {
+  var now = Date.now();
+  var list = (hits.get(ip) || []).filter(function (t) { return now - t < RATE_WINDOW_MS; });
+
+  if (list.length >= RATE_MAX) {
+    hits.set(ip, list);
+    return true;
+  }
+
+  list.push(now);
+  hits.set(ip, list);
+
+  // Периодическая чистка, чтобы Map не рос бесконечно.
+  if (hits.size > 500) {
+    hits.forEach(function (times, key) {
+      var alive = times.filter(function (t) { return now - t < RATE_WINDOW_MS; });
+      if (alive.length) hits.set(key, alive); else hits.delete(key);
+    });
+  }
+
+  return false;
+}
+
+/* Убираем управляющие символы и переносы строк, схлопываем пробелы,
+   режем по длине. Так в сообщение бота не попадёт мусор или разметка. */
+function clean(value, maxLen) {
+  if (typeof value !== 'string') return '';
+  return value
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLen);
+}
+
+function moscowTime() {
+  try {
+    return new Intl.DateTimeFormat('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }).format(new Date()) + ' МСК';
+  } catch (e) {
+    return new Date().toISOString();
+  }
+}
+
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ ok: false, error: 'method_not_allowed' });
+  }
+
+  if (!isAllowedOrigin(req.headers.origin)) {
+    return res.status(403).json({ ok: false, error: 'forbidden_origin' });
+  }
+
+  if (rateLimited(clientIp(req))) {
+    return res.status(429).json({ ok: false, error: 'too_many_requests' });
+  }
+
+  var token = process.env.TG_TOKEN;
+  var chatId = process.env.TG_CHAT_ID;
+
+  if (!token || !chatId) {
+    console.error('TG_TOKEN или TG_CHAT_ID не заданы в переменных окружения');
+    return res.status(500).json({ ok: false, error: 'not_configured' });
+  }
+
+  // Vercel сам разбирает JSON, но подстрахуемся на случай строки.
+  var body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch (e) { body = {}; }
+  }
+  if (!body || typeof body !== 'object') body = {};
+
+  var name = clean(body.name, 60);
+  var phone = clean(body.phone, 25);
+  var email = clean(body.email, 80);
+
+  var digits = phone.replace(/\D/g, '');
+
+  if (name.length < 2) return res.status(400).json({ ok: false, error: 'bad_name' });
+  if (digits.length < 10 || digits.length > 12) return res.status(400).json({ ok: false, error: 'bad_phone' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return res.status(400).json({ ok: false, error: 'bad_email' });
+
+  var text =
+    '🆕 Новая заявка\n' +
+    '👤 Имя: ' + name + '\n' +
+    '📞 Телефон: ' + phone + '\n' +
+    '📧 Почта: ' + email + '\n' +
+    '🕒 ' + moscowTime();
+
+  try {
+    var tg = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        disable_web_page_preview: true
+      })
+    });
+
+    if (!tg.ok) {
+      var detail = await tg.text();
+      console.error('Telegram ответил ошибкой:', tg.status, detail);
+      return res.status(502).json({ ok: false, error: 'telegram_failed' });
+    }
+
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('Не удалось обратиться к Telegram:', err);
+    return res.status(502).json({ ok: false, error: 'telegram_unreachable' });
+  }
+};

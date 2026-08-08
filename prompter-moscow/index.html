@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompter Moscow — GEO- и SEO-продвижение бизнеса в нейровыдаче</title>
+<meta name="description" content="Комплексное GEO- и SEO-продвижение бизнеса в Москве и МО. Автономная AI-платформа: 217 модулей, публикации 5 дней в неделю на 4 площадках. От 29 500 ₽/мес.">
+<link rel="canonical" href="https://prompter-ai.moscow/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Prompter Moscow">
+<meta property="og:url" content="https://prompter-ai.moscow/">
+<meta property="og:title" content="Prompter Moscow — GEO- и SEO-продвижение бизнеса в нейровыдаче">
+<meta property="og:description" content="Делаем ваш бизнес заметным в нейровыдаче и поисковых системах. От 29 500 ₽/мес вместо 100 000 ₽/мес в SEO-агентстве.">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://prompter-ai.moscow/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D17">
+
+<!-- favicon-заглушка: буква P на фирменном градиенте, инлайном, без внешнего файла -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233B2FE0'/%3E%3Cstop offset='1' stop-color='%23E4232E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Arial,Helvetica,sans-serif' font-size='38' font-weight='700' fill='%23fff' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<!-- Если JavaScript выключен, показываем весь контент сразу:
+     без этого блоки с анимацией появления остались бы прозрачными. -->
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</head>
+<body>
+
+<!--
+  Спрайт иконок. Контуры взяты из Tabler Icons (MIT), единая сетка 24x24,
+  единая толщина обводки 1.5. Инлайном, чтобы сайт работал без интернета.
+-->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 0 16c1.1 0 1.7-.9 1.4-1.8-.3-.9.3-1.7 1.3-1.7H17a3 3 0 0 0 3-3c0-5-3.6-9.5-8-9.5z"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="15.5" cy="11" r="1"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9 4l1.4 3.6L14 9l-3.6 1.4L9 14l-1.4-3.6L4 9l3.6-1.4L9 4z"/><path d="M17 13l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-7-6 16-2.5-6.5L4 12z"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M4 17l5-5 3 3 7-7"/><path d="M14 8h5v5"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v5a5.5 5.5 0 0 1-11 0V8z"/><path d="M16 9h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M4 21h13"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="6.5" cy="6.5" r="2.5"/><path d="M8.5 8.5L20 19"/><path d="M8.5 15.5L20 5"/></symbol>
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 6c-1.6-1.3-4.2-2-5.6-.7C4.7 6.9 5 10 5.6 12.4c.5 2 .8 4 1.1 5.6.2 1.3 1.9 1.6 2.4.3l1.4-3.6c.4-1 1.6-1 2 0l1.4 3.6c.5 1.3 2.2 1 2.4-.3.3-1.6.6-3.6 1.1-5.6.6-2.4.9-5.5-.8-7.1C15.2 4 12.6 4.7 12 6z"/></symbol>
+  <symbol id="i-flower" viewBox="0 0 24 24"><circle cx="12" cy="9" r="2.5"/><path d="M12 6.5C12 4.6 13.3 3 15 3s2.5 1.4 2.5 3c0 1.4-1.4 2.4-3 2.6"/><path d="M12 6.5C12 4.6 10.7 3 9 3S6.5 4.4 6.5 6c0 1.4 1.4 2.4 3 2.6"/><path d="M9.6 10.4c-1.6-.9-3.6-.5-4.4 1s0 3.3 1.5 4.2c1.2.7 2.8.2 3.7-1.1"/><path d="M14.4 10.4c1.6-.9 3.6-.5 4.4 1s0 3.3-1.5 4.2c-1.2.7-2.8.2-3.7-1.1"/><path d="M12 12v9"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v10h12V10"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8z"/><path d="M19 11h-3a1.5 1.5 0 0 0 0 3h3"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M4 20v-1a5 5 0 0 1 10 0v1"/><path d="M16 5.5a3 3 0 0 1 0 5.8"/><path d="M17 20v-1a5 5 0 0 0-1.5-3.5"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6h5"/></symbol>
+  <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h3v5H5.5A1.5 1.5 0 0 1 4 17.5V14z"/><path d="M20 14h-3v5h1.5a1.5 1.5 0 0 0 1.5-1.5V14z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4.5L4 9"/><path d="M4 5v4h4"/><path d="M4 13a8 8 0 0 0 14 4.5L20 15"/><path d="M20 19v-4h-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 8l9 6 9-6"/></symbol>
+  <symbol id="i-tg" viewBox="0 0 24 24"><path d="M21 5L3 11.5l5 1.8L19 7.5l-8.5 8v4l3-3.2 4 3.2L21 5z"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Перейти к содержимому</a>
+
+<!-- Сенсор для кнопки «наверх»: IntersectionObserver вместо слушателя скролла -->
+<div id="top-sentinel" aria-hidden="true"></div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="logo" href="#top" aria-label="Prompter Moscow, на главную">
+      <span class="logo__mark" aria-hidden="true">P</span>
+      <span class="logo__txt">Prompter <b>Moscow</b></span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="#market">Рынок</a>
+      <a href="#solution">Решение</a>
+      <a href="#product">Продукт</a>
+      <a href="#how">Как работает</a>
+      <a href="#price">Цена</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <button class="btn btn--grad hdr__cta" data-open-form>Получить план</button>
+
+    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+      <svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 2. ПЕРВЫЙ ЭКРАН -->
+<section class="hero" id="top">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="wrap hero__in">
+    <div class="hero__copy">
+      <p class="plate"><span class="plate__dot" aria-hidden="true"></span>Москва и МО</p>
+      <h1 class="h1">Комплексное GEO- и SEO-продвижение бизнеса</h1>
+      <p class="hero__sub">Делаем ваш бизнес заметным в нейровыдаче и поисковых системах — от 29 500 ₽/мес.</p>
+      <div class="hero__actions">
+        <button class="btn btn--grad btn--lg" data-open-form>Начать продвижение</button>
+        <a class="btn btn--ghost btn--lg" href="#how">Как это работает</a>
+      </div>
+    </div>
+
+    <aside class="hero__panel" aria-label="Что входит в подписку, коротко">
+      <p class="hero__panel-label">Подписка включает</p>
+      <ul class="facts">
+        <li class="facts__row"><span class="facts__v">5</span><span class="facts__k">дней в неделю выходят публикации</span></li>
+        <li class="facts__row"><span class="facts__v">2</span><span class="facts__k">экспертные статьи каждую неделю</span></li>
+        <li class="facts__row"><span class="facts__v">4</span><span class="facts__k">площадки: VK, Дзен, ОК, Max</span></li>
+      </ul>
+      <p class="hero__panel-foot">Договор и закрывающие документы по законодательству РФ</p>
+    </aside>
+  </div>
+</section>
+
+<!-- 3. РЫНОК ИЗМЕНИЛСЯ -->
+<section class="sec" id="market">
+  <div class="wrap">
+    <h2 class="h2 reveal">Рынок изменился: клиентов ищут нейросети</h2>
+    <p class="lead reveal">Пользователь больше не листает десять синих ссылок. Он спрашивает нейросеть и получает готовый ответ с двумя-тремя названиями компаний.</p>
+
+    <div class="vs reveal">
+      <article class="vs__card vs__card--past">
+        <p class="vs__tag">Раньше</p>
+        <p class="vs__lead">Человек открывал поиск, просматривал первую страницу и сам выбирал из десятка вариантов.</p>
+        <p class="vs__note">Задача бизнеса: попасть в топ-10 и ждать клика.</p>
+      </article>
+      <article class="vs__card vs__card--now">
+        <p class="vs__tag">Сейчас</p>
+        <p class="vs__lead">Человек спрашивает нейросеть и получает короткий ответ, где названы всего несколько компаний.</p>
+        <p class="vs__note">Задача бизнеса: оказаться внутри этого ответа.</p>
+      </article>
+    </div>
+
+    <p class="verdict reveal">Уже недостаточно быть на первой странице. Нужно быть тем, кого <b>называет нейросеть</b>.</p>
+  </div>
+</section>
+
+<!-- 4. ПОЧЕМУ ЭТО ВАЖНО -->
+<section class="sec sec--tint" id="why">
+  <div class="wrap why">
+    <h2 class="h2 reveal">Почему присутствие в нейровыдаче так важно</h2>
+    <div class="why__grid">
+      <p class="why__big reveal">Если нейросеть не называет вашу компанию, для клиента вас в этой категории просто нет.</p>
+      <ul class="why__list reveal">
+        <li>Клиент видит два-три названия и выбирает из них. Остальные компании до сравнения не доходят.</li>
+        <li>Ответ нейросети воспринимается как рекомендация, а не как реклама. Доверие к нему выше.</li>
+        <li>Ваши конкуренты попадают в выдачу и забирают заявки, которые могли быть вашими.</li>
+        <li>Чем дольше вас нет в ответах, тем прочнее закрепляются те, кто там уже есть.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5. НАШЕ РЕШЕНИЕ -->
+<section class="sec" id="solution">
+  <div class="wrap solution">
+    <div class="solution__copy reveal">
+      <h2 class="h2">Наше решение — автономная платформа Prompter Moscow</h2>
+      <p class="lead">Платформа ведёт полный цикл продвижения: от идеи и сбора данных до проверки текста и публикации на площадках. Вам не нужно ставить задачи, согласовывать черновики и следить за сроками.</p>
+      <button class="btn btn--grad" data-open-form>Получить план</button>
+    </div>
+    <div class="solution__facts">
+      <article class="fact reveal">
+        <p class="fact__num">217</p>
+        <p class="fact__t">ИИ-модулей внутри платформы</p>
+        <p class="fact__d">Каждый отвечает за свой участок работы: темы, тексты, проверка фактов, оформление, публикация, отчётность.</p>
+      </article>
+      <article class="fact reveal">
+        <p class="fact__num">GEO</p>
+        <p class="fact__t">Фокус на нейровыдаче</p>
+        <p class="fact__d">Мы работаем на то, чтобы вашу компанию называли нейросети, и параллельно усиливаем классические позиции в поиске.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 6. ПРОДУКТ: 6 МОДУЛЕЙ -->
+<section class="sec sec--tint" id="product">
+  <div class="wrap">
+    <h2 class="h2 reveal">Продукт: 6 модулей вместо digital-агентства</h2>
+    <p class="lead reveal">Каждый модуль закрывает роль, которую в агентстве занимает отдельный человек с отдельной зарплатой.</p>
+
+    <div class="bento">
+      <article class="bento__cell bento__cell--wide reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-pencil"/></svg>
+        <h3 class="h3">AI-копирайтер</h3>
+        <p>Пишет экспертные статьи и посты на языке вашей ниши: с терминами, ценами, реальными возражениями клиентов. Не общие слова, а тексты, по которым видно, что вы разбираетесь в деле.</p>
+      </article>
+      <article class="bento__cell reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-shield"/></svg>
+        <h3 class="h3">AI-модератор</h3>
+        <p>Проверяет каждый материал до публикации: факты, цифры, тон, соответствие требованиям площадок.</p>
+      </article>
+      <article class="bento__cell reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-target"/></svg>
+        <h3 class="h3">AI-стратег</h3>
+        <p>Составляет план тем на месяц вперёд и решает, что и когда публиковать, чтобы закрывать нужные запросы.</p>
+      </article>
+      <article class="bento__cell reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-chart"/></svg>
+        <h3 class="h3">Модуль аналитики</h3>
+        <p>Показывает, по каким запросам вас начали упоминать, что дало результат и куда двигаться дальше.</p>
+      </article>
+      <article class="bento__cell reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-search"/></svg>
+        <h3 class="h3">AI-исследователь</h3>
+        <p>Изучает вашу нишу и конкурентов: какие вопросы задают клиенты и кого нейросети называют сейчас.</p>
+      </article>
+      <article class="bento__cell bento__cell--accent reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-palette"/></svg>
+        <h3 class="h3">AI-дизайнер</h3>
+        <p>Готовит обложки и изображения к материалам, чтобы публикации выглядели аккуратно на всех площадках.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 7. КЛЮЧЕВАЯ ТЕХНОЛОГИЯ -->
+<section class="sec" id="tech">
+  <div class="wrap">
+    <h2 class="h2 reveal">Ключевая технология: не просто генерирует — сама публикует</h2>
+    <p class="lead reveal">Большинство AI-сервисов отдают вам текст и на этом заканчивают. Дальше кто-то в компании должен всё разместить руками. У нас этот шаг закрыт платформой.</p>
+
+    <ol class="rail">
+      <li class="rail__item reveal">
+        <span class="rail__ic"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg></span>
+        <h3 class="h3">Генерация</h3>
+        <p>Платформа собирает данные по нише и готовит материал под конкретный запрос клиента.</p>
+      </li>
+      <li class="rail__item reveal">
+        <span class="rail__ic"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span>
+        <h3 class="h3">Модерация ИИ</h3>
+        <p>Отдельный модуль проверяет факты, цифры и формулировки. Слабый материал не проходит дальше.</p>
+      </li>
+      <li class="rail__item reveal">
+        <span class="rail__ic"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></span>
+        <h3 class="h3">Автопубликация</h3>
+        <p>Готовый материал сам уходит на площадки по расписанию. Ваше участие не требуется.</p>
+      </li>
+      <li class="rail__item reveal">
+        <span class="rail__ic"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg></span>
+        <h3 class="h3">Рост в нейровыдаче</h3>
+        <p>Материалы индексируются, и нейросети начинают опираться на них, отвечая на запросы клиентов.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 8. КАК ЭТО РАБОТАЕТ -->
+<section class="sec sec--tint" id="how">
+  <div class="wrap how">
+    <div class="how__head reveal">
+      <h2 class="h2">Как это работает</h2>
+      <p class="lead">Пять шагов от первой публикации до входящих заявок. Первый результат в нейровыдаче обычно виден на втором-третьем месяце работы.</p>
+      <button class="btn btn--grad" data-open-form>Начать продвижение</button>
+    </div>
+
+    <ol class="steps">
+      <li class="steps__item reveal"><span class="steps__n">01</span><div><h3 class="h3">Контент</h3><p>Платформа готовит материалы под реальные вопросы ваших клиентов, а не под абстрактные ключевые слова.</p></div></li>
+      <li class="steps__item reveal"><span class="steps__n">02</span><div><h3 class="h3">Автопубликация</h3><p>Публикации выходят 5 дней в неделю на четырёх площадках без вашего участия.</p></div></li>
+      <li class="steps__item reveal"><span class="steps__n">03</span><div><h3 class="h3">Индексация</h3><p>Поисковые системы и нейросети находят материалы и связывают их с вашей компанией.</p></div></li>
+      <li class="steps__item reveal"><span class="steps__n">04</span><div><h3 class="h3">Присутствие</h3><p>Ваше название начинает появляться в ответах нейросетей по запросам вашей ниши.</p></div></li>
+      <li class="steps__item reveal"><span class="steps__n">05</span><div><h3 class="h3">Доверие и продажи</h3><p>Клиент приходит уже подогретым: вас порекомендовала нейросеть, а не баннер.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 9. ДЛЯ КОГО -->
+<section class="sec" id="niches">
+  <div class="wrap">
+    <h2 class="h2 reveal">Для кого</h2>
+    <p class="lead reveal">Мы работаем с бизнесом, который клиенты ищут прямо сейчас и выбирают за один вечер.</p>
+
+    <div class="niches">
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-cup"/></svg><h3 class="h3">HoReCa</h3><p>Рестораны, кафе, бары и доставка.</p></article>
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-scissors"/></svg><h3 class="h3">Салоны красоты</h3><p>Парикмахерские, барбершопы, студии ногтевого сервиса.</p></article>
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-tooth"/></svg><h3 class="h3">Стоматология</h3><p>Клиники и частные кабинеты.</p></article>
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-flower"/></svg><h3 class="h3">Цветочные салоны</h3><p>Магазины, мастерские и доставка букетов.</p></article>
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-bag"/></svg><h3 class="h3">Розница и услуги</h3><p>Локальные магазины и сервисные компании.</p></article>
+      <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-home"/></svg><h3 class="h3">Товары для дома</h3><p>Мебель, текстиль, интерьерные решения.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 10. ВЫГОДЫ -->
+<section class="sec sec--tint" id="benefits">
+  <div class="wrap">
+    <h2 class="h2 reveal">Ключевые выгоды для вашего бизнеса</h2>
+    <div class="ben">
+      <article class="ben__main reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-clock"/></svg>
+        <h3 class="h3">Экономия времени и денег</h3>
+        <p>Не нужно писать техзадания, проверять черновики и согласовывать публикации. Платформа ведёт весь цикл сама, а вы возвращаетесь к своей основной работе. Бюджет уходит на результат, а не на переписку с подрядчиками.</p>
+      </article>
+      <article class="ben__side reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-wallet"/></svg>
+        <h3 class="h3">Фиксированная цена</h3>
+        <p>Стоимость известна заранее и не растёт от количества правок и задач.</p>
+      </article>
+      <article class="ben__side reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-users"/></svg>
+        <h3 class="h3">Без найма штата</h3>
+        <p>Не нужно искать копирайтера, SEO-специалиста и дизайнера и платить им каждый месяц.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 11. ЦЕНА -->
+<section class="sec" id="price">
+  <div class="wrap price">
+    <div class="price__card reveal">
+      <p class="price__label">Комплексное решение по фиксированной цене</p>
+      <p class="price__val">от 29 500 ₽<span>/мес</span></p>
+      <p class="price__cmp">вместо 100 000 ₽/мес в SEO-агентстве</p>
+      <p class="price__save">Экономия не менее 70 000 ₽/мес</p>
+      <button class="btn btn--grad btn--lg btn--full" data-open-form>Получить план</button>
+    </div>
+
+    <div class="price__inc reveal">
+      <h2 class="h2 h2--sm">Что входит в подписку</h2>
+      <ul class="inc">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Полный AI-цикл: от идеи и текста до модерации и публикации</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Публикации 5 дней в неделю</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>2 экспертные статьи в неделю</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>4 площадки: VK, Яндекс Дзен, Одноклассники, Max</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Для зарубежных площадок — готовый контент для самостоятельной публикации</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Работа по законодательству РФ, договор и закрывающие документы</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12. ПОДДЕРЖКА И КОМАНДА -->
+<section class="sec sec--tint" id="contacts">
+  <div class="wrap sup">
+    <div class="sup__left">
+      <h2 class="h2 reveal">Поддержка и сопровождение</h2>
+      <ul class="sup__list">
+        <li class="reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-pulse"/></svg><div><h3 class="h3">Постоянный мониторинг</h3><p>Следим за тем, как меняются упоминания вашей компании, и корректируем план тем.</p></div></li>
+        <li class="reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-headset"/></svg><div><h3 class="h3">Живая команда на связи</h3><p>Московский офис отвечает на вопросы и помогает разобраться с отчётами.</p></div></li>
+        <li class="reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-refresh"/></svg><div><h3 class="h3">Развитие вместе с рынком</h3><p>Нейросети меняются, и мы обновляем подход, чтобы ваше присутствие сохранялось.</p></div></li>
+      </ul>
+    </div>
+
+    <aside class="team reveal">
+      <p class="team__label">Офис в Москве</p>
+      <p class="team__name">Руслан</p>
+      <p class="team__role">Директор офиса</p>
+      <ul class="team__contacts">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+79067587777">+7 906 758-77-77</a></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:Methodmos@mail.ru">Methodmos@mail.ru</a></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-tg"/></svg><a href="https://t.me/METHODmos" target="_blank" rel="noopener">@METHODmos</a></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 13. ЦИФРЫ -->
+<section class="sec" id="numbers">
+  <div class="wrap">
+    <h2 class="h2 reveal">Prompter Moscow в цифрах</h2>
+    <div class="nums" id="nums">
+      <article class="num reveal"><p class="num__v" data-count="1000">0</p><p class="num__k">руководителей довольны</p></article>
+      <article class="num reveal"><p class="num__v" data-count="1100">0</p><p class="num__k">предприятий продвинулись в GEO и SEO благодаря нам</p></article>
+      <article class="num reveal"><p class="num__v" data-count="400">0</p><p class="num__k">предприятий оптимизировали свои расходы</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 14. ФИНАЛЬНЫЙ CTA -->
+<section class="cta">
+  <div class="wrap cta__in reveal">
+    <h2 class="h2 cta__h">Выведите ваш бизнес в нейровыдачу уже сегодня!</h2>
+    <p class="cta__p">Оставьте заявку, и мы пришлём план продвижения для вашей ниши.</p>
+    <button class="btn btn--grad btn--lg" data-open-form>Получить план</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <p class="ftr__c">© <span id="year">2026</span> Prompter Moscow</p>
+    <a class="ftr__site" href="https://prompter-ai.moscow">prompter-ai.moscow</a>
+    <a class="ftr__pp" href="privacy.html">Политика обработки персональных данных</a>
+  </div>
+</footer>
+
+<button class="totop" id="totop" aria-label="Наверх" hidden>
+  <svg class="ic" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+</button>
+
+<!-- МОДАЛЬНАЯ ФОРМА -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__bd" data-close-form></div>
+
+  <div class="modal__win" role="dialog" aria-modal="true" aria-labelledby="modal-t">
+    <button class="modal__x" data-close-form aria-label="Закрыть">
+      <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+
+    <div class="modal__body" id="modal-body">
+      <h2 class="modal__t" id="modal-t">Получить план продвижения</h2>
+      <p class="modal__sub">Заполните форму, и мы свяжемся с вами в рабочее время.</p>
+
+      <form class="frm" id="frm" novalidate>
+        <div class="frm__f">
+          <label class="frm__l" for="f-name">Ваше имя</label>
+          <input class="frm__i" id="f-name" name="name" type="text" autocomplete="name" maxlength="60" required>
+          <p class="frm__e" data-err="name" hidden>Укажите имя, минимум 2 символа</p>
+        </div>
+
+        <div class="frm__f">
+          <label class="frm__l" for="f-phone">Телефон</label>
+          <input class="frm__i" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+          <p class="frm__e" data-err="phone" hidden>Укажите телефон полностью</p>
+        </div>
+
+        <div class="frm__f">
+          <label class="frm__l" for="f-email">Ваша почта</label>
+          <input class="frm__i" id="f-email" name="email" type="email" autocomplete="email" maxlength="80" required>
+          <p class="frm__e" data-err="email" hidden>Проверьте адрес почты</p>
+        </div>
+
+        <!-- honeypot: скрыт от людей, боты его заполняют -->
+        <div class="hp" aria-hidden="true">
+          <label for="f-company">Компания</label>
+          <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="frm__f">
+          <label class="chk">
+            <input type="checkbox" id="f-agree1" required>
+            <span class="chk__b" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
+            <span class="chk__t">Согласен на обработку персональных данных в соответствии с <a href="privacy.html" target="_blank" rel="noopener">Политикой</a></span>
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="f-agree2" required>
+            <span class="chk__b" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
+            <span class="chk__t">Согласен на передачу персональных данных третьим лицам на условиях <a href="privacy.html" target="_blank" rel="noopener">Политики</a></span>
+          </label>
+          <p class="frm__e" data-err="agree" hidden>Нужно отметить оба согласия</p>
+        </div>
+
+        <button class="btn btn--grad btn--lg btn--full" type="submit" id="frm-submit">ПОЛУЧИТЬ ПЛАН</button>
+        <p class="frm__fail" id="frm-fail" hidden>Не получилось, попробуйте ещё раз</p>
+      </form>
+    </div>
+
+    <div class="modal__done" id="modal-done" hidden>
+      <span class="modal__ok" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
+      <h2 class="modal__t">Заявка отправлена</h2>
+      <p class="modal__sub">Мы свяжемся с вами в ближайшее рабочее время.</p>
+      <button class="btn btn--ghost-dark" data-close-form>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
