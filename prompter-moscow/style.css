@@ -488,28 +488,45 @@ a{color:inherit}
 .inc li{display:flex;gap:13px;align-items:flex-start;color:var(--muted);font-size:17.5px;line-height:1.5}
 .inc .ic{width:22px;height:22px;color:#5FD08A;margin-top:3px;stroke-width:2.5}
 
-/* 12. Поддержка + команда.
-   Сверху фото команды, текстовые блоки уходят под него. */
+/* 12. Поддержка и команда.
+   Слева фото команды и три пункта под ним, справа карточка партнёра. */
 .sup{display:block}
+.sup__grid{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(28px,4vw,52px);align-items:start}
+
 .sup__photo{
-  position:relative;margin-bottom:clamp(28px,4vw,44px);
+  position:relative;margin:0 0 20px;
   border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
 }
 .sup__photo img{
-  width:100%;height:clamp(200px,26vw,340px);
-  object-fit:cover;object-position:center;display:block;
+  width:100%;height:clamp(240px,30vw,400px);
+  object-fit:cover;object-position:center 38%;display:block;
 }
 .sup__photo figcaption{
   position:absolute;left:0;right:0;bottom:0;
-  padding:26px 24px 20px;
-  background:linear-gradient(180deg,transparent,rgba(10,10,14,.88));
-  font-size:17px;font-weight:600;color:var(--text);
+  padding:32px 22px 18px;
+  background:linear-gradient(180deg,transparent,rgba(10,10,14,.90));
+  font-size:16.5px;font-weight:600;color:var(--text);
 }
-.sup__grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,4vw,56px);align-items:start}
-.sup__list{list-style:none;margin:0;padding:0;display:grid;gap:26px}
-.sup__list li{display:flex;gap:18px}
-.sup__list .ic{color:var(--accent-text);margin-top:3px}
-.sup__list p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
+
+/* Три пункта поддержки идут в ряд под фотографией. */
+.sup__list{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+}
+.sup__list li{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:20px 18px;
+  transition:border-color .2s var(--ease),background-color .2s var(--ease);
+}
+.sup__list li:hover{border-color:rgba(61,107,255,.4);background:var(--surface-2)}
+.sup__ic{
+  display:grid;place-items:center;width:40px;height:40px;margin-bottom:14px;
+  border-radius:12px;background:var(--accent-soft);
+  border:1px solid rgba(61,107,255,.32);color:var(--accent-text);
+}
+.sup__ic .ic{width:22px;height:22px;stroke-width:1.8}
+.sup__list .h3{font-size:18px;margin-bottom:7px;line-height:1.3}
+.sup__list p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.5}
 
 .team{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px}
 .team__label{margin:0 0 16px;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
@@ -758,6 +775,7 @@ a{color:inherit}
   .ben__main{grid-row:auto}
   .price{grid-template-columns:1fr}
   .sup__grid{grid-template-columns:1fr}
+  .sup__list{grid-template-columns:1fr}
   .nums{grid-template-columns:1fr}
   .ftr__in{flex-direction:column;align-items:flex-start;gap:8px}
   .ftr__site{margin-right:0}
