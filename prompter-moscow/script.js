@@ -131,9 +131,16 @@
   var fName = document.getElementById('f-name');
   var fPhone = document.getElementById('f-phone');
   var fEmail = document.getElementById('f-email');
-  var fHoney = document.getElementById('f-company');
+  var fCompany = document.getElementById('f-company');
+  var fField = document.getElementById('f-field');
+  var fHoney = document.getElementById('f-website');
   var fAgree1 = document.getElementById('f-agree1');
   var fAgree2 = document.getElementById('f-agree2');
+
+  function dmValue() {
+    var picked = form ? form.querySelector('input[name="dm"]:checked') : null;
+    return picked ? picked.value : '';
+  }
 
   function openModal() {
     if (!modal) return;
@@ -257,6 +264,27 @@
     return ok;
   }
 
+  function validCompany() {
+    var ok = fCompany.value.trim().length >= 2;
+    setError(fCompany, 'company', !ok);
+    return ok;
+  }
+
+  function validField() {
+    var ok = fField.value.trim().length >= 2;
+    setError(fField, 'field', !ok);
+    return ok;
+  }
+
+  function validDm() {
+    var ok = dmValue() !== '';
+    var msg = form.querySelector('[data-err="dm"]');
+    if (msg) msg.hidden = ok;
+    var group = form.querySelector('.radios');
+    if (group) group.classList.toggle('is-bad', !ok);
+    return ok;
+  }
+
   function validAgree() {
     var ok = fAgree1.checked && fAgree2.checked;
     var msg = form.querySelector('[data-err="agree"]');
@@ -270,8 +298,14 @@
     fName.addEventListener('blur', validName);
     fPhone.addEventListener('blur', validPhone);
     fEmail.addEventListener('blur', validEmail);
+    fCompany.addEventListener('blur', validCompany);
+    fField.addEventListener('blur', validField);
     fAgree1.addEventListener('change', validAgree);
     fAgree2.addEventListener('change', validAgree);
+
+    Array.prototype.forEach.call(form.querySelectorAll('input[name="dm"]'), function (r) {
+      r.addEventListener('change', validDm);
+    });
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -290,12 +324,20 @@
         return;
       }
 
+      // С этого момента место под сообщения об ошибках зарезервировано,
+      // и форма перестаёт прыгать при их появлении и исчезновении.
+      form.classList.add('is-validated');
+
+      // Проверяем все поля разом, чтобы подсветить сразу каждое незаполненное.
       var okName = validName();
       var okPhone = validPhone();
       var okEmail = validEmail();
+      var okCompany = validCompany();
+      var okField = validField();
+      var okDm = validDm();
       var okAgree = validAgree();
 
-      if (!(okName && okPhone && okEmail && okAgree)) {
+      if (!(okName && okPhone && okEmail && okCompany && okField && okDm && okAgree)) {
         var firstBad = form.querySelector('.is-bad');
         if (firstBad && firstBad.focus) firstBad.focus();
         return;
@@ -312,7 +354,10 @@
         body: JSON.stringify({
           name: fName.value.trim(),
           phone: fPhone.value.trim(),
-          email: fEmail.value.trim()
+          email: fEmail.value.trim(),
+          company: fCompany.value.trim(),
+          field: fField.value.trim(),
+          dm: dmValue()
         })
       })
         .then(function (res) {
@@ -328,7 +373,7 @@
         .then(function () {
           sending = false;
           submitBtn.disabled = false;
-          submitBtn.textContent = 'ПОЛУЧИТЬ ПЛАН';
+          submitBtn.textContent = 'ОСТАВИТЬ ЗАЯВКУ';
         });
     });
   }
@@ -357,6 +402,13 @@
         modalBody.hidden = false;
         modalDone.hidden = true;
         failMsg.hidden = true;
+        // Снимаем подсветку ошибок, чтобы форма открылась чистой.
+        Array.prototype.forEach.call(form.querySelectorAll('.is-bad'), function (el) {
+          el.classList.remove('is-bad');
+        });
+        Array.prototype.forEach.call(form.querySelectorAll('.frm__e'), function (el) {
+          el.hidden = true;
+        });
       }
     });
     resetObserver.observe(modal, { attributes: true, attributeFilter: ['hidden'] });

@@ -128,18 +128,27 @@ module.exports = async function handler(req, res) {
   var name = clean(body.name, 60);
   var phone = clean(body.phone, 25);
   var email = clean(body.email, 80);
+  var company = clean(body.company, 80);
+  var field = clean(body.field, 90);
+  var dm = clean(body.dm, 10).toLowerCase();
 
   var digits = phone.replace(/\D/g, '');
 
   if (name.length < 2) return res.status(400).json({ ok: false, error: 'bad_name' });
   if (digits.length < 10 || digits.length > 12) return res.status(400).json({ ok: false, error: 'bad_phone' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return res.status(400).json({ ok: false, error: 'bad_email' });
+  if (company.length < 2) return res.status(400).json({ ok: false, error: 'bad_company' });
+  if (field.length < 2) return res.status(400).json({ ok: false, error: 'bad_field' });
+  if (dm !== 'да' && dm !== 'нет') return res.status(400).json({ ok: false, error: 'bad_dm' });
 
   var text =
     '🆕 Новая заявка\n' +
     '👤 Имя: ' + name + '\n' +
     '📞 Телефон: ' + phone + '\n' +
     '📧 Почта: ' + email + '\n' +
+    '🏢 Компания: ' + company + '\n' +
+    '📦 Род деятельности: ' + field + '\n' +
+    '👔 ЛПР: ' + dm + '\n' +
     '🕒 ' + moscowTime();
 
   try {

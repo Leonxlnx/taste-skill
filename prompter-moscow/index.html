@@ -17,7 +17,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0B0D17">
+<meta name="theme-color" content="#0A0A0E">
 
 <link rel="icon" type="image/png" href="assets/favicon-64.png">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -64,8 +64,13 @@
   <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 8l9 6 9-6"/></symbol>
   <symbol id="i-tg" viewBox="0 0 24 24"><path d="M21 5L3 11.5l5 1.8L19 7.5l-8.5 8v4l3-3.2 4 3.2L21 5z"/></symbol>
   <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h13"/><path d="M12 6l6 6-6 6"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+  <symbol id="i-certificate" viewBox="0 0 24 24"><path d="M12 2.5l7.5 3v5.2c0 4.6-3.1 8.2-7.5 10.3-4.4-2.1-7.5-5.7-7.5-10.3V5.5z"/><path d="M8.8 11.8l2.2 2.2 4.2-4.4"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 16v-3.2L5.8 8A2 2 0 0 1 7.7 6.7h8.6A2 2 0 0 1 18.2 8L20 12.8V16"/><path d="M4 16h16v2.6h-2.8V16"/><path d="M6.8 18.6V16"/><circle cx="7.6" cy="13.2" r="1"/><circle cx="16.4" cy="13.2" r="1"/></symbol>
+  <symbol id="i-toy" viewBox="0 0 24 24"><circle cx="12" cy="6.6" r="2.6"/><path d="M6.6 20.2v-4.4a5.4 5.4 0 0 1 10.8 0v4.4"/><path d="M6.6 17h10.8"/><path d="M4.4 13.4l2.4 1.4"/><path d="M19.6 13.4l-2.4 1.4"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></symbol>
 </svg>
 
 <a class="skip" href="#main">Перейти к содержимому</a>
@@ -89,7 +94,7 @@
       <a href="#contacts">Контакты</a>
     </nav>
 
-    <button class="btn btn--grad hdr__cta" data-open-form>Получить план</button>
+    <button class="btn btn--grad hdr__cta" data-open-form>Оставить заявку</button>
 
     <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
       <svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -104,12 +109,21 @@
   <div class="hero__glow" aria-hidden="true"></div>
   <div class="wrap hero__in">
     <div class="hero__copy">
-      <p class="plate"><span class="plate__dot" aria-hidden="true"></span>Москва и МО</p>
+      <div class="pbadge">
+        <span class="pbadge__ic" aria-hidden="true"><svg class="ic"><use href="#i-certificate"/></svg></span>
+        <p class="pbadge__t">
+          Официальный партнёр разработчика платформы — IT-компании «Промптер» — по Москве и МО.
+          <span class="pbadge__lic">ЛД № 54-ПРТ</span>
+        </p>
+      </div>
+
       <h1 class="h1">Комплексное GEO- и SEO-продвижение бизнеса</h1>
       <p class="hero__sub">Делаем ваш бизнес заметным в нейровыдаче и поисковых системах — от 29 500 ₽/мес.</p>
       <div class="hero__actions">
-        <button class="btn btn--grad btn--lg" data-open-form>Начать продвижение</button>
-        <a class="btn btn--ghost btn--lg" href="#how">Как это работает</a>
+        <button class="btn btn--grad btn--hero" data-open-form>
+          <span class="btn__label">Начать продвижение</span>
+          <svg class="ic btn__arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+        </button>
       </div>
     </div>
 
@@ -170,8 +184,14 @@
     <div class="solution__copy reveal">
       <h2 class="h2">Наше решение — автономная платформа Prompter Moscow</h2>
       <p class="lead">Платформа ведёт полный цикл продвижения: от идеи и сбора данных до проверки текста и публикации на площадках. Вам не нужно ставить задачи, согласовывать черновики и следить за сроками.</p>
-      <button class="btn btn--grad" data-open-form>Получить план</button>
+      <button class="btn btn--grad" data-open-form>Оставить заявку</button>
     </div>
+    <figure class="solution__img reveal">
+      <img src="img/neurons.jpg" alt="Схема нейронной сети: узлы и связи" width="1400" height="856" loading="lazy" decoding="async">
+    </figure>
+  </div>
+
+  <div class="wrap">
     <div class="solution__facts">
       <article class="fact reveal">
         <p class="fact__num">217</p>
@@ -190,36 +210,36 @@
 <!-- 6. ПРОДУКТ: 6 МОДУЛЕЙ -->
 <section class="sec sec--tint" id="product">
   <div class="wrap">
-    <h2 class="h2 reveal">Продукт: 6 модулей вместо digital-агентства</h2>
-    <p class="lead reveal">Каждый модуль закрывает роль, которую в агентстве занимает отдельный человек с отдельной зарплатой.</p>
+    <h2 class="h2 reveal">6 ИИ-агентов вместо digital-агентства</h2>
+    <p class="lead reveal">Каждый агент закрывает роль, которую в агентстве занимает отдельный человек с отдельной зарплатой.</p>
 
     <div class="bento">
-      <article class="bento__cell bento__cell--wide reveal">
+      <article class="bento__cell bento__cell--a reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-pencil"/></svg>
         <h3 class="h3">AI-копирайтер</h3>
         <p>Пишет экспертные статьи и посты на языке вашей ниши: с терминами, ценами, реальными возражениями клиентов. Не общие слова, а тексты, по которым видно, что вы разбираетесь в деле.</p>
       </article>
-      <article class="bento__cell reveal">
+      <article class="bento__cell bento__cell--b reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-shield"/></svg>
         <h3 class="h3">AI-модератор</h3>
         <p>Проверяет каждый материал до публикации: факты, цифры, тон, соответствие требованиям площадок.</p>
       </article>
-      <article class="bento__cell reveal">
+      <article class="bento__cell bento__cell--c reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-target"/></svg>
         <h3 class="h3">AI-стратег</h3>
         <p>Составляет план тем на месяц вперёд и решает, что и когда публиковать, чтобы закрывать нужные запросы.</p>
       </article>
-      <article class="bento__cell reveal">
+      <article class="bento__cell bento__cell--d reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-chart"/></svg>
         <h3 class="h3">Модуль аналитики</h3>
-        <p>Показывает, по каким запросам вас начали упоминать, что дало результат и куда двигаться дальше.</p>
+        <p>Показывает, по каким запросам вас начали упоминать, что дало результат и куда двигаться дальше. Отчёт приходит в понятном виде, без выгрузок, которые надо расшифровывать.</p>
       </article>
-      <article class="bento__cell reveal">
+      <article class="bento__cell bento__cell--e reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-search"/></svg>
         <h3 class="h3">AI-исследователь</h3>
         <p>Изучает вашу нишу и конкурентов: какие вопросы задают клиенты и кого нейросети называют сейчас.</p>
       </article>
-      <article class="bento__cell bento__cell--accent reveal">
+      <article class="bento__cell bento__cell--f reveal">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#i-palette"/></svg>
         <h3 class="h3">AI-дизайнер</h3>
         <p>Готовит обложки и изображения к материалам, чтобы публикации выглядели аккуратно на всех площадках.</p>
@@ -291,6 +311,27 @@
       <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-flower"/></svg><h3 class="h3">Цветочные салоны</h3><p>Магазины, мастерские и доставка букетов.</p></article>
       <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-bag"/></svg><h3 class="h3">Розница и услуги</h3><p>Локальные магазины и сервисные компании.</p></article>
       <article class="niche reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-home"/></svg><h3 class="h3">Товары для дома</h3><p>Мебель, текстиль, интерьерные решения.</p></article>
+
+      <article class="niche reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-toy"/></svg>
+        <h3 class="h3">Детские товары</h3>
+        <p>Магазины и бренды детских товаров. Родители всё чаще спрашивают совета у нейросетей: что безопаснее, что выбрать по возрасту, какому производителю можно верить. Кого назовёт нейросеть, к тому и пойдут.</p>
+      </article>
+      <article class="niche niche--span2 reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-car"/></svg>
+        <h3 class="h3">Авто и мотоиндустрия</h3>
+        <p>Дилеры, автосервисы, детейлинг, шиномонтаж, мотосалоны и всё, что связано с авто и мото. Клиент выбирает сервис по отзывам и рекомендациям, и первым делом спрашивает нейросеть.</p>
+      </article>
+
+      <article class="niche niche--wide reveal">
+        <svg class="ic ic--lg" aria-hidden="true"><use href="#i-grid"/></svg>
+        <h3 class="h3">Без ограничений по отраслям</h3>
+        <p>Списком выше мы себя не ограничиваем. Наши модули изучают любую нишу с нуля: собирают вопросы ваших клиентов, разбирают конкурентов и на этих данных строят стратегию продвижения. Отрасль может быть узкой или редкой — принцип работы не меняется.</p>
+        <p class="niche__kicker">
+          <svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>
+          Подойдёт любому бизнесу — модули создадут стратегию под вашу нишу
+        </p>
+      </article>
     </div>
   </div>
 </section>
@@ -326,17 +367,17 @@
       <p class="price__label">Комплексное решение по фиксированной цене</p>
       <p class="price__val">от 29 500 ₽<span>/мес</span></p>
       <p class="price__cmp">вместо 100 000 ₽/мес в SEO-агентстве</p>
-      <p class="price__save">Экономия не менее 70 000 ₽/мес</p>
-      <button class="btn btn--grad btn--lg btn--full" data-open-form>Получить план</button>
+      <p class="price__save">Экономия не менее <span class="hl--save">70 000 ₽</span> каждый месяц</p>
+      <button class="btn btn--grad btn--lg btn--full" data-open-form>Оставить заявку</button>
     </div>
 
     <div class="price__inc reveal">
       <h2 class="h2 h2--sm">Что входит в подписку</h2>
       <ul class="inc">
-        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Полный AI-цикл: от идеи и текста до модерации и публикации</span></li>
-        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Публикации 5 дней в неделю</span></li>
-        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>2 экспертные статьи в неделю</span></li>
-        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>4 площадки: VK, Яндекс Дзен, Одноклассники, Max</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><b class="hl--accent">Полный AI-цикл</b>: от идеи и текста до модерации и публикации</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Публикации <b class="hl">5</b> дней в неделю</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><b class="hl">2</b> экспертные статьи в неделю</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><b class="hl">4</b> площадки: VK, Яндекс Дзен, Одноклассники, Max</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Для зарубежных площадок — готовый контент для самостоятельной публикации</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Работа по законодательству РФ, договор и закрывающие документы</span></li>
       </ul>
@@ -347,8 +388,17 @@
 <!-- 12. ПОДДЕРЖКА И КОМАНДА -->
 <section class="sec sec--tint" id="contacts">
   <div class="wrap sup">
+    <h2 class="h2 reveal">Поддержка и сопровождение</h2>
+
+    <!-- Фото команды. Чтобы поставить настоящее, замените файл img/team.jpg,
+         правки в коде не нужны. Сейчас там фирменная заставка из презентации. -->
+    <figure class="sup__photo reveal">
+      <img src="img/team.jpg" alt="Команда проекта Prompter Moscow" width="1600" height="810" loading="lazy" decoding="async">
+      <figcaption>Команда проекта Prompter Moscow</figcaption>
+    </figure>
+
+    <div class="sup__grid">
     <div class="sup__left">
-      <h2 class="h2 reveal">Поддержка и сопровождение</h2>
       <ul class="sup__list">
         <li class="reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-pulse"/></svg><div><h3 class="h3">Постоянный мониторинг</h3><p>Следим за тем, как меняются упоминания вашей компании, и корректируем план тем.</p></div></li>
         <li class="reveal"><svg class="ic ic--lg" aria-hidden="true"><use href="#i-headset"/></svg><div><h3 class="h3">Живая команда на связи</h3><p>Московский офис отвечает на вопросы и помогает разобраться с отчётами.</p></div></li>
@@ -358,14 +408,21 @@
 
     <aside class="team reveal">
       <p class="team__label">Офис в Москве</p>
-      <p class="team__name">Руслан</p>
-      <p class="team__role">Директор офиса</p>
+      <figure class="team__person">
+        <img class="team__photo" src="img/director.jpg" alt="Руслан Демин, управляющий партнёр Prompter Moscow"
+             width="760" height="394" loading="lazy" decoding="async">
+        <figcaption class="team__person-txt">
+          <span class="team__name">Руслан Демин</span>
+          <span class="team__role">Управляющий партнёр</span>
+        </figcaption>
+      </figure>
       <ul class="team__contacts">
         <li><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+79067587777">+7 906 758-77-77</a></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:Methodmos@mail.ru">Methodmos@mail.ru</a></li>
         <li><svg class="ic" aria-hidden="true"><use href="#i-tg"/></svg><a href="https://t.me/METHODmos" target="_blank" rel="noopener">@METHODmos</a></li>
       </ul>
     </aside>
+    </div>
   </div>
 </section>
 
@@ -385,8 +442,8 @@
 <section class="cta">
   <div class="wrap cta__in reveal">
     <h2 class="h2 cta__h">Выведите ваш бизнес в нейровыдачу уже сегодня!</h2>
-    <p class="cta__p">Оставьте заявку, и мы пришлём план продвижения для вашей ниши.</p>
-    <button class="btn btn--grad btn--lg" data-open-form>Получить план</button>
+    <p class="cta__p">Оставьте заявку, и специалист свяжется с вами в ближайшее время.</p>
+    <button class="btn btn--grad btn--lg" data-open-form>Оставить заявку</button>
   </div>
 </section>
 
@@ -417,8 +474,8 @@
     </button>
 
     <div class="modal__body" id="modal-body">
-      <h2 class="modal__t" id="modal-t">Получить план продвижения</h2>
-      <p class="modal__sub">Заполните форму, и мы свяжемся с вами в рабочее время.</p>
+      <h2 class="modal__t" id="modal-t">Оставить заявку</h2>
+      <p class="modal__sub">Заполните форму, и специалист свяжется с вами в ближайшее время.</p>
 
       <form class="frm" id="frm" novalidate>
         <div class="frm__f">
@@ -439,10 +496,40 @@
           <p class="frm__e" data-err="email" hidden>Проверьте адрес почты</p>
         </div>
 
-        <!-- honeypot: скрыт от людей, боты его заполняют -->
+        <div class="frm__f">
+          <label class="frm__l" for="f-company">Название компании</label>
+          <input class="frm__i" id="f-company" name="company" type="text" autocomplete="organization" maxlength="80" required>
+          <p class="frm__e" data-err="company" hidden>Укажите название компании</p>
+        </div>
+
+        <div class="frm__f">
+          <label class="frm__l" for="f-field">Род деятельности</label>
+          <input class="frm__i" id="f-field" name="field" type="text" maxlength="90" placeholder="Например: стоматология, доставка цветов" required>
+          <p class="frm__e" data-err="field" hidden>Укажите род деятельности</p>
+        </div>
+
+        <fieldset class="frm__f frm__fs">
+          <legend class="frm__l">Являетесь ли вы лицом, принимающим решения?</legend>
+          <div class="radios">
+            <label class="radio">
+              <input type="radio" name="dm" value="да" required>
+              <span class="radio__b" aria-hidden="true"></span>
+              <span class="radio__t">Да</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="dm" value="нет">
+              <span class="radio__b" aria-hidden="true"></span>
+              <span class="radio__t">Нет</span>
+            </label>
+          </div>
+          <p class="frm__e" data-err="dm" hidden>Выберите один из вариантов</p>
+        </fieldset>
+
+        <!-- honeypot: скрыт от людей, боты его заполняют.
+             Имя намеренно отличается от настоящих полей формы. -->
         <div class="hp" aria-hidden="true">
-          <label for="f-company">Компания</label>
-          <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+          <label for="f-website">Сайт</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
         </div>
 
         <div class="frm__f">
@@ -459,7 +546,7 @@
           <p class="frm__e" data-err="agree" hidden>Нужно отметить оба согласия</p>
         </div>
 
-        <button class="btn btn--grad btn--lg btn--full" type="submit" id="frm-submit">ПОЛУЧИТЬ ПЛАН</button>
+        <button class="btn btn--grad btn--lg btn--full" type="submit" id="frm-submit">ОСТАВИТЬ ЗАЯВКУ</button>
         <p class="frm__fail" id="frm-fail" hidden>Не получилось, попробуйте ещё раз</p>
       </form>
     </div>
@@ -467,7 +554,7 @@
     <div class="modal__done" id="modal-done" hidden>
       <span class="modal__ok" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
       <h2 class="modal__t">Заявка отправлена</h2>
-      <p class="modal__sub">Мы свяжемся с вами в ближайшее рабочее время.</p>
+      <p class="modal__sub">Специалист свяжется с вами в ближайшее время.</p>
       <button class="btn btn--ghost-dark" data-close-form>Закрыть</button>
     </div>
   </div>
