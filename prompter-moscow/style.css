@@ -7,29 +7,29 @@
    ========================================================= */
 
 :root{
-  /* Палитра взята из презентации компании: фон, поверхности, текст и акценты. */
+  /* Фон и поверхности. Карточки — сине-голубые, текст на них белый. */
   --bg:#0A0A0E;
-  --surface:#13131B;
-  --surface-2:#262635;
-  --line:rgba(255,255,255,.10);
-  --line-2:rgba(255,255,255,.16);
+  --surface:#152343;             /* синяя ячейка */
+  --surface-2:#1B2D55;           /* ячейка светлее, для наведения */
+  --line:rgba(120,170,255,.20);
+  --line-2:rgba(120,170,255,.34);
 
-  --accent:#3D6BFF;                 /* синий акцент презентации */
-  --accent-2:#E8453C;               /* красный акцент презентации */
-  --accent-text:#8AA6FF;            /* осветлённый синий для текста на тёмном (AA) */
-  --accent-soft:rgba(61,107,255,.16);
-  /* Красный — акцент важных мест: цена, выгода, ключевой вывод, финальный CTA. */
-  --red-text:#FF7A72;               /* осветлённый красный, проходит AA на тёмном */
-  --red-soft:rgba(232,69,60,.16);
-  --grad-red:linear-gradient(135deg,#F0564C 0%,#C6231B 100%);
-  /* Смешение синего с красным даёт пурпур, поэтому градиенты держим
-     внутри одного тона: кнопки синие, красный работает отдельным акцентом. */
-  --grad:linear-gradient(135deg,#4A78FF 0%,#2445C8 100%);
-  --grad-text:linear-gradient(100deg,#FFFFFF 0%,#C9C9D4 100%);
+  --accent:#3D6BFF;              /* синий из презентации */
+  --accent-2:#E8453C;            /* красный: только логотип и редкие метки */
+  --accent-text:#7FC4FF;         /* светло-синий: выделения в тексте и цифры */
+  --accent-soft:rgba(61,107,255,.18);
 
-  --text:#F5F5F7;
-  --muted:#C9C9D4;
-  --muted-2:#9A9AA8;
+  /* Кнопки: розово-синий перелив. Градиент шире кнопки и ездит при наведении. */
+  --grad-btn:linear-gradient(100deg,#3F63F5 0%,#7A5CF0 26%,#E85C9E 52%,#7A5CF0 78%,#3F63F5 100%);
+  --grad-text:linear-gradient(100deg,#9FD4FF 0%,#7FC4FF 100%);
+
+  --red-text:#7FC4FF;            /* прежний красный текст переведён в светло-синий */
+  --red-soft:rgba(127,196,255,.16);
+  --grad-red:var(--grad-btn);
+
+  --text:#FFFFFF;
+  --muted:#D6E4FF;               /* светлый холодный для описаний на синих ячейках */
+  --muted-2:#9FB6DC;
 
   --r-lg:24px;
   --r-md:20px;
@@ -115,7 +115,14 @@ section[id]{scroll-margin-top:84px}
   margin:0 0 40px;
 }
 
-/* ---------- Кнопки ---------- */
+/* ---------- Кнопки ----------
+   Розово-синий перелив: градиент вчетверо шире кнопки и медленно
+   едет сам по себе, при наведении ускоряется. */
+@keyframes btnFlow{
+  0%{background-position:0% 50%}
+  100%{background-position:200% 50%}
+}
+
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   gap:8px;white-space:nowrap;
@@ -129,22 +136,25 @@ section[id]{scroll-margin-top:84px}
 .btn--lg{padding:17px 32px;font-size:17px}
 .btn--full{width:100%}
 
-/* Основная кнопка сайта — красная: это действие, ради которого сделан сайт. */
-.btn--grad{
+.btn--grad,.btn--red{
   color:#fff;
-  background-image:var(--grad-red);
-  box-shadow:0 8px 26px rgba(232,69,60,.32);
+  background-image:var(--grad-btn);
+  background-size:200% 100%;
+  animation:btnFlow 7s linear infinite;
+  box-shadow:0 8px 26px rgba(96,92,240,.36);
 }
-.btn--grad:hover{box-shadow:0 14px 38px rgba(232,69,60,.46);transform:translateY(-1px)}
+.btn--grad:hover,.btn--red:hover{
+  animation-duration:2.4s;
+  box-shadow:0 14px 40px rgba(210,92,180,.48);
+  transform:translateY(-1px);
+}
 
-/* Главная кнопка первого экрана. Одна на весь экран, поэтому крупнее
-   остальных. При наведении: подъём, усиление свечения, сдвиг стрелки
-   и блик, пробегающий слева направо. */
+/* Главная кнопка первого экрана: крупнее, со стрелкой и бегущим бликом. */
 .btn--hero{
   position:relative;overflow:hidden;
   padding:22px 44px;font-size:19px;letter-spacing:.01em;
   border-radius:18px;
-  box-shadow:0 10px 34px rgba(232,69,60,.36);
+  box-shadow:0 10px 34px rgba(96,92,240,.40);
 }
 .btn--hero .btn__label{position:relative;z-index:1}
 .btn--hero .btn__arrow{
@@ -153,39 +163,32 @@ section[id]{scroll-margin-top:84px}
 }
 .btn--hero::before{
   content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);
   transform:skewX(-18deg);
   transition:left .55s var(--ease);
-  pointer-events:none;
+  pointer-events:none;z-index:1;
 }
 .btn--hero:hover{
   transform:translateY(-3px);
-  box-shadow:0 18px 48px rgba(232,69,60,.55),0 0 0 1px rgba(255,255,255,.14) inset;
+  box-shadow:0 18px 50px rgba(210,92,180,.55),0 0 0 1px rgba(255,255,255,.16) inset;
 }
 .btn--hero:hover .btn__arrow{transform:translateX(6px)}
 .btn--hero:hover::before{left:115%}
 .btn--hero:active{transform:translateY(-1px) scale(.99)}
 
 @media (prefers-reduced-motion:reduce){
+  .btn--grad,.btn--red,.btn--hero{animation:none;background-position:25% 50%}
   .btn--hero,.btn--hero .btn__arrow,.btn--hero::before{transition:none}
   .btn--hero:hover{transform:none}
   .btn--hero:hover::before{left:-60%}
 }
 
-/* Красная кнопка — для важнейших действий: цена и финальный призыв. */
-.btn--red{
-  color:#fff;
-  background-image:var(--grad-red);
-  box-shadow:0 8px 26px rgba(232,69,60,.32);
-}
-.btn--red:hover{box-shadow:0 14px 38px rgba(232,69,60,.46);transform:translateY(-1px)}
-
 .btn--ghost{
   color:var(--text);
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.05);
   border-color:var(--line-2);
 }
-.btn--ghost:hover{background:rgba(255,255,255,.09)}
+.btn--ghost:hover{background:rgba(255,255,255,.10)}
 
 .btn--ghost-dark{
   color:#13131B;background:#EFEFF5;border-color:#DDDDE8;
@@ -263,9 +266,9 @@ section[id]{scroll-margin-top:84px}
   display:flex;align-items:center;gap:16px;
   margin:0 0 24px;padding:16px 20px;
   max-width:min(100%,660px);
-  border:1px solid rgba(232,69,60,.48);
+  border:1px solid var(--line-2);
   border-radius:var(--r-md);
-  background:linear-gradient(100deg,rgba(232,69,60,.20),rgba(232,69,60,.05));
+  background:linear-gradient(100deg,rgba(61,107,255,.24),rgba(120,90,240,.10));
 }
 .pbadge__ic{
   flex:none;width:48px;height:48px;border-radius:13px;
@@ -283,28 +286,20 @@ section[id]{scroll-margin-top:84px}
 .hero__actions{display:flex;flex-wrap:wrap;gap:12px}
 
 .hero__panel{
-  background:var(--surface);
-  border:1px solid var(--line);
+  background:linear-gradient(160deg,rgba(61,107,255,.26),rgba(21,35,67,.92));
+  border:1px solid var(--line-2);
   border-radius:var(--r-lg);
-  padding:24px;
+  padding:30px 28px;
   min-width:0;
 }
-.hero__panel-label{
-  margin:0 0 16px;font-size:13.5px;font-weight:700;color:var(--muted-2);
-  text-transform:uppercase;letter-spacing:.1em;
+.gains{list-style:none;margin:0;padding:0;display:grid;gap:24px}
+.gains__row{display:flex;flex-direction:column;gap:6px}
+.gains__v{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(34px,4.2vw,48px);line-height:1;letter-spacing:-.02em;
+  color:var(--accent-text);
 }
-.facts{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:16px}
-.facts__row{display:flex;align-items:baseline;gap:14px}
-.facts__v{
-  font-family:var(--f-display);font-weight:700;font-size:36px;line-height:1;
-  background-image:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;
-  min-width:38px;
-}
-.facts__k{color:var(--muted);font-size:17px;line-height:1.45}
-.hero__panel-foot{
-  margin:0;padding-top:18px;border-top:1px solid var(--line);
-  color:var(--muted-2);font-size:14.5px;line-height:1.5;
-}
+.gains__k{color:#fff;font-size:17.5px;line-height:1.4;font-weight:500}
 
 /* ---------- Секции ---------- */
 .sec{padding:clamp(56px,7.5vw,104px) 0}
@@ -316,7 +311,7 @@ section[id]{scroll-margin-top:84px}
   background:var(--surface);border:1px solid var(--line);
   border-radius:var(--r-md);padding:26px;
 }
-.vs__card--now{background:linear-gradient(180deg,rgba(232,69,60,.15),rgba(232,69,60,.03)),var(--surface);border-color:rgba(232,69,60,.38)}
+.vs__card--now{background:linear-gradient(180deg,rgba(61,107,255,.20),rgba(61,107,255,.04)),var(--surface);border-color:var(--line-2)}
 .vs__tag{
   margin:0 0 14px;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted-2);
@@ -330,7 +325,7 @@ section[id]{scroll-margin-top:84px}
   background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-md);
   font-family:var(--f-display);font-weight:500;
   font-size:clamp(17px,2.2vw,22px);line-height:1.4;
-  border-left:3px solid var(--accent-2);
+  border-left:3px solid var(--accent);
 }
 .verdict b{font-weight:700;color:var(--red-text)}
 
@@ -377,29 +372,40 @@ section[id]{scroll-margin-top:84px}
 .fact__t{margin:0 0 10px;font-family:var(--f-display);font-weight:600;font-size:19px}
 .fact__d{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
 
-/* 6. Шесть ИИ-агентов.
-   Сетка асимметричная: ширина рядов чередуется 4+2 / 2+4 / 3+3,
-   поэтому секция не читается как шаблонная сетка 3x2.
-   Ячеек ровно шесть, пустых мест в сетке нет. */
-.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
-.bento__cell{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r-md);padding:24px;
-  transition:border-color .2s var(--ease),transform .2s var(--ease);
+/* 6. Шесть ИИ-агентов. Ровная сетка плиток, у каждого агента свой
+   цвет значка, чтобы блок читался как набор инструментов. */
+.agents{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.agent{
+  position:relative;padding:26px 24px 24px;
+  background:linear-gradient(165deg,rgba(61,107,255,.16),rgba(21,35,67,.94));
+  border:1px solid var(--line);border-radius:var(--r-md);
+  transition:transform .2s var(--ease),border-color .2s var(--ease);
 }
-.bento__cell:hover{border-color:var(--line-2);transform:translateY(-2px)}
-.bento__cell .ic{color:var(--muted);margin-bottom:14px}
-.bento__cell p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
+.agent:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.agent__ic{
+  display:grid;place-items:center;width:52px;height:52px;margin-bottom:18px;
+  border-radius:15px;color:#fff;
+  box-shadow:0 8px 22px rgba(0,0,0,.34);
+}
+.agent__ic .ic{width:27px;height:27px;stroke-width:1.9}
+.agent__t{
+  margin:0 0 10px;font-family:var(--f-display);font-weight:600;
+  font-size:clamp(19px,1.5vw,21px);line-height:1.3;
+}
+.agent p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
 
-.bento__cell--a{grid-column:span 4;background:linear-gradient(140deg,rgba(255,255,255,.06),transparent 70%),var(--surface)}
-.bento__cell--b{grid-column:span 2}
-.bento__cell--c{grid-column:span 2}
-.bento__cell--d{grid-column:span 4;background:linear-gradient(140deg,rgba(232,69,60,.14),transparent 68%),var(--surface)}
-.bento__cell--e{grid-column:span 3}
-.bento__cell--f{grid-column:span 3;background:linear-gradient(140deg,rgba(255,255,255,.05),transparent 70%),var(--surface)}
-
-/* Крупные ячейки получают текст чуть больше, чтобы вес соответствовал размеру. */
-.bento__cell--a p,.bento__cell--d p{font-size:17.5px}
+.agent--c1 .agent__ic{background:linear-gradient(150deg,#5B8CFF,#2D4FD6)}
+.agent--c1 .agent__t{color:#9CC0FF}
+.agent--c2 .agent__ic{background:linear-gradient(150deg,#54C7E8,#2A83B8)}
+.agent--c2 .agent__t{color:#8FD9F0}
+.agent--c3 .agent__ic{background:linear-gradient(150deg,#7E7BF5,#4A44CE)}
+.agent--c3 .agent__t{color:#B3B0FF}
+.agent--c4 .agent__ic{background:linear-gradient(150deg,#4FC3A1,#22876C)}
+.agent--c4 .agent__t{color:#8FE0C6}
+.agent--c5 .agent__ic{background:linear-gradient(150deg,#6FA8FF,#3468CC)}
+.agent--c5 .agent__t{color:#A8C8FF}
+.agent--c6 .agent__ic{background:linear-gradient(150deg,#C583EE,#7B44B8)}
+.agent--c6 .agent__t{color:#DDAEF5}
 
 /* 7. КЛЮЧЕВАЯ ТЕХНОЛОГИЯ — главный акцент страницы.
    Секция вынесена на собственную подложку с красным свечением,
@@ -408,13 +414,13 @@ section[id]{scroll-margin-top:84px}
 .tech__glow{
   position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(80% 90% at 8% 0%,rgba(232,69,60,.30) 0%,transparent 60%),
+    radial-gradient(80% 90% at 8% 0%,rgba(61,107,255,.34) 0%,transparent 60%),
     radial-gradient(70% 90% at 96% 100%,rgba(61,107,255,.20) 0%,transparent 62%);
 }
 .tech__in{position:relative}
 .tech::before,.tech::after{
   content:"";position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(232,69,60,.55),transparent);
+  background:linear-gradient(90deg,transparent,rgba(120,170,255,.55),transparent);
 }
 .tech::before{top:0}
 .tech::after{bottom:0}
@@ -456,9 +462,9 @@ section[id]{scroll-margin-top:84px}
 .rail__item p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
 
 .rail__item--key{
-  background:linear-gradient(165deg,rgba(232,69,60,.24),rgba(232,69,60,.06)),rgba(19,19,27,.9);
-  border-color:rgba(232,69,60,.55);
-  box-shadow:0 16px 44px rgba(232,69,60,.22);
+  background:linear-gradient(165deg,rgba(120,90,240,.30),rgba(61,107,255,.10)),rgba(15,26,54,.94);
+  border-color:rgba(150,140,250,.60);
+  box-shadow:0 16px 44px rgba(120,90,240,.28);
 }
 .rail__item--key .rail__n{color:var(--red-text)}
 .rail__item--key .rail__ic{
@@ -475,7 +481,7 @@ section[id]{scroll-margin-top:84px}
   display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
   gap:22px;margin-top:44px;padding:26px 30px;
   border-radius:var(--r-md);
-  background:rgba(10,10,14,.55);border:1px solid rgba(232,69,60,.34);
+  background:rgba(10,14,26,.60);border:1px solid var(--line-2);
 }
 .tech__claim{
   margin:0;font-family:var(--f-display);font-weight:500;
@@ -518,13 +524,24 @@ section[id]{scroll-margin-top:84px}
 .niche--span2{grid-column:span 2}
 .niche--span2 p{max-width:62ch}
 
+/* Цвет заголовка по отрасли: спокойная холодная гамма, без красного и жёлтого. */
+.niche--n1 .h3{color:#F2A9C4}   /* HoReCa — приглушённый розовый */
+.niche--n2 .h3{color:#C9A8F0}   /* салоны красоты — лавандовый */
+.niche--n3 .h3{color:#7FD4F5}   /* стоматология — голубой */
+.niche--n4 .h3{color:#F5A8D8}   /* цветочные салоны — розовый */
+.niche--n5 .h3{color:#8FD9C4}   /* розница и услуги — мятный */
+.niche--n6 .h3{color:#A8C4F0}   /* товары для дома — пыльно-синий */
+.niche--n7 .h3{color:#9FD8B8}   /* детские товары — мягкий зелёный */
+.niche--n8 .h3{color:#8FB8E8}   /* авто и мото — стальной синий */
+.niche--wide .h3{color:var(--accent-text)}
+
 /* Карточка «Без ограничений по отраслям»: занимает всю строку и выделена
    акцентной рамкой, чтобы читаться как вывод из перечисленных ниш. */
 .niche--wide{
   grid-column:1/-1;
   padding:28px;
-  background:linear-gradient(110deg,rgba(232,69,60,.22),rgba(232,69,60,.05)),var(--surface);
-  border-color:rgba(232,69,60,.50);
+  background:linear-gradient(110deg,rgba(61,107,255,.26),rgba(120,90,240,.10)),var(--surface);
+  border-color:var(--line-2);
 }
 .niche--wide .h3{font-size:clamp(22px,2vw,26px)}
 .niche--wide p{font-size:18px;max-width:70ch}
@@ -532,42 +549,76 @@ section[id]{scroll-margin-top:84px}
   display:inline-flex;align-items:center;gap:10px;
   margin-top:16px;padding:10px 16px;
   border-radius:var(--r-sm);
-  background:rgba(10,10,14,.44);border:1px solid rgba(232,69,60,.46);
+  background:rgba(10,10,14,.44);border:1px solid var(--line-2);
   font-size:16.5px;font-weight:700;color:var(--text);line-height:1.4;
 }
 .niche__kicker .ic{margin:0;width:20px;height:20px;color:#5FD08A;stroke-width:2.5;flex:none}
 
-/* 10. Выгоды: 1 крупная + 2 узкие */
-.ben{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;gap:18px}
-.ben__main{
-  grid-row:span 2;
-  background:linear-gradient(150deg,rgba(255,255,255,.07),transparent 72%),var(--surface);
-  border:1px solid var(--line-2);border-radius:var(--r-md);
-  padding:30px;display:flex;flex-direction:column;justify-content:center;
+/* 10. КЛЮЧЕВЫЕ ВЫГОДЫ — главный коммерческий блок.
+   Собственная подложка, крупная кратность выгоды над заголовком. */
+.gains-sec{position:relative;overflow:hidden;background:#0B1226}
+.gains-sec__glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(70% 90% at 10% 0%,rgba(61,107,255,.34) 0%,transparent 62%),
+    radial-gradient(70% 90% at 92% 100%,rgba(120,90,240,.26) 0%,transparent 62%);
 }
-.ben__side{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:24px}
-.ben .ic{color:var(--muted);margin-bottom:16px}
-.ben p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.6}
-.ben__main p{font-size:18px}
+.gains-sec .wrap{position:relative}
 
-/* 11. Цена */
-.price{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(24px,4vw,48px);align-items:center}
+.bens{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ben{
+  position:relative;padding:34px 30px 30px;
+  background:linear-gradient(170deg,rgba(61,107,255,.22),rgba(15,26,54,.94));
+  border:1px solid var(--line-2);border-radius:var(--r-lg);
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.ben:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(61,107,255,.26)}
+.ben__num{
+  position:absolute;top:22px;right:26px;
+  font-family:var(--f-display);font-weight:700;font-size:15px;
+  letter-spacing:.1em;color:rgba(214,228,255,.42);
+}
+.ben__ic{
+  display:grid;place-items:center;width:54px;height:54px;margin-bottom:20px;
+  border-radius:16px;color:#fff;
+  background:linear-gradient(150deg,#5B8CFF,#2D4FD6);
+  box-shadow:0 10px 26px rgba(45,79,214,.44);
+}
+.ben__ic .ic{width:28px;height:28px;stroke-width:1.9}
+.ben__v{
+  margin:0 0 6px;font-family:var(--f-display);font-weight:700;
+  font-size:clamp(32px,3.4vw,44px);line-height:1;letter-spacing:-.02em;
+  color:var(--accent-text);
+}
+.ben .h3{margin-bottom:12px;font-size:clamp(20px,1.6vw,23px)}
+.ben__d{margin:0;color:var(--muted);font-size:16.5px;line-height:1.6}
+
+/* 11. Цена. Экономия — крупным планом, сама стоимость намеренно скромнее. */
+.price{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,48px);align-items:center}
 .price__card{
-  background:linear-gradient(160deg,rgba(232,69,60,.20),rgba(232,69,60,.05)),var(--surface);
-  border:1px solid rgba(232,69,60,.42);border-radius:var(--r-lg);padding:34px;
+  background:linear-gradient(160deg,rgba(61,107,255,.28),rgba(15,26,54,.95));
+  border:1px solid var(--line-2);border-radius:var(--r-lg);padding:34px;
 }
-.price__label{margin:0 0 16px;font-size:16.5px;color:var(--muted);line-height:1.45}
-.price__val{
-  margin:0 0 10px;font-family:var(--f-display);font-weight:700;
-  font-size:clamp(30px,4.4vw,42px);line-height:1.05;letter-spacing:-.02em;
+.price__label{margin:0 0 18px;font-size:16.5px;color:var(--muted);line-height:1.45}
+.price__save{margin:0 0 24px;display:flex;flex-direction:column;gap:6px}
+.price__save-v{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(42px,5.6vw,68px);line-height:1;letter-spacing:-.03em;
+  color:var(--accent-text);
 }
-.price__val span{font-size:.45em;font-weight:500;color:var(--muted)}
-.price__cmp{margin:0 0 8px;color:var(--muted);font-size:17px;text-decoration:line-through;text-decoration-color:rgba(232,69,60,.7)}
-.price__save{margin:0 0 24px;font-weight:700;font-size:20px;line-height:1.35;color:#5FD08A}
+.price__save-k{font-size:19px;font-weight:600;color:#fff}
+.price__cmp{
+  display:grid;gap:8px;padding-top:20px;
+  border-top:1px solid var(--line-2);
+}
+.price__ours{margin:0;font-size:17px;color:#fff}
+.price__ours b{font-weight:700;color:var(--accent-text)}
+.price__theirs{margin:0;font-size:16px;color:var(--muted-2);text-decoration:line-through}
+
 .price__inc .h2{margin-bottom:22px}
 .inc{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .inc li{display:flex;gap:13px;align-items:flex-start;color:var(--muted);font-size:17.5px;line-height:1.5}
-.inc .ic{width:22px;height:22px;color:#5FD08A;margin-top:3px;stroke-width:2.5}
+.inc .ic{width:22px;height:22px;color:var(--accent-text);margin-top:3px;stroke-width:2.5}
 
 /* 12. Поддержка и команда.
    Слева фото команды и три пункта под ним, справа карточка партнёра. */
@@ -647,10 +698,10 @@ section[id]{scroll-margin-top:84px}
 .cta{padding:clamp(56px,7vw,96px) 0}
 .cta__in{
   background:
-    radial-gradient(120% 140% at 12% 0%,rgba(232,69,60,.34) 0%,transparent 58%),
+    radial-gradient(120% 140% at 12% 0%,rgba(120,90,240,.36) 0%,transparent 58%),
     radial-gradient(120% 140% at 92% 100%,rgba(61,107,255,.30) 0%,transparent 60%),
     var(--surface);
-  border:1px solid rgba(232,69,60,.34);border-radius:var(--r-lg);
+  border:1px solid var(--line-2);border-radius:var(--r-lg);
   padding:clamp(34px,5vw,60px);text-align:center;
 }
 .cta__in{
@@ -712,7 +763,7 @@ section[id]{scroll-margin-top:84px}
 .reveal.is-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .btn,.bento__cell,.niche,.totop,.logo__mark{transition:none}
+  .btn,.agent,.niche,.ben,.totop,.logo__mark{transition:none}
 }
 
 /* ---------- Модальное окно ---------- */
@@ -839,9 +890,8 @@ section[id]{scroll-margin-top:84px}
   .hero__in{grid-template-columns:1fr .9fr}
   .rail{grid-template-columns:repeat(2,1fr)}
   .rail__item::after{display:none}
-  .bento{grid-template-columns:repeat(2,1fr)}
-  .bento__cell--a,.bento__cell--d{grid-column:span 2}
-  .bento__cell--b,.bento__cell--c,.bento__cell--e,.bento__cell--f{grid-column:span 1}
+  .agents{grid-template-columns:repeat(2,1fr)}
+  .bens{grid-template-columns:1fr}
   .sup__grid{grid-template-columns:1fr}
 }
 
@@ -869,17 +919,14 @@ section[id]{scroll-margin-top:84px}
   .why__grid{grid-template-columns:1fr}
   .solution{grid-template-columns:1fr}
   .solution__facts{grid-template-columns:1fr}
-  .bento{grid-template-columns:1fr}
-  .bento__cell--a,.bento__cell--b,.bento__cell--c,
-  .bento__cell--d,.bento__cell--e,.bento__cell--f{grid-column:span 1}
+  .agents{grid-template-columns:1fr}
   .pbadge{flex-direction:column;align-items:flex-start;gap:12px;padding:16px}
   .rail{grid-template-columns:1fr}
   .tech__foot{flex-direction:column;align-items:flex-start}
   .how{grid-template-columns:1fr}
   .niches{grid-template-columns:repeat(2,1fr)}
   .niche--span2{grid-column:span 2}
-  .ben{grid-template-columns:1fr}
-  .ben__main{grid-row:auto}
+  .bens{grid-template-columns:1fr}
   .price{grid-template-columns:1fr}
   .cta__in{grid-template-columns:1fr;gap:28px}
   .sup__grid{grid-template-columns:1fr}
@@ -894,7 +941,7 @@ section[id]{scroll-margin-top:84px}
   .niches{grid-template-columns:1fr}
   .niche--span2{grid-column:span 1}
   .hero__panel,.team,.price__card{padding:22px}
-  .vs__card,.bento__cell,.niche,.fact,.ben__side{padding:22px}
+  .vs__card,.agent,.niche,.fact,.ben{padding:22px}
   .verdict{padding:22px}
   .modal__win{padding:28px 20px}
   .hero__actions{flex-direction:column}
