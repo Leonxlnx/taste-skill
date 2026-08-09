@@ -345,21 +345,44 @@ section[id]{scroll-margin-top:84px}
 }
 .verdict b{font-weight:700;color:var(--red-text)}
 
-/* 4. Почему важно */
-.why__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,52px);align-items:start}
-.why__big{
-  margin:0;font-family:var(--f-display);font-weight:500;
-  font-size:clamp(19px,2.6vw,27px);line-height:1.35;letter-spacing:-.01em;
+/* 4. Почему это важно.
+   Главный тезис вынесен в отдельную панель во всю ширину, а доводы
+   разложены на карточки: у каждой свой вывод крупно и пояснение мельче. */
+.why__claim{
+  margin:0 0 clamp(28px,3.4vw,44px);
+  padding:clamp(24px,3vw,34px) clamp(26px,3.4vw,40px);
+  border-radius:var(--r-lg);
+  border:1px solid var(--line-2);
+  border-left:4px solid var(--accent-text);
+  background:linear-gradient(110deg,rgba(61,107,255,.24),rgba(15,26,54,.92));
+  font-family:var(--f-display);font-weight:500;
+  font-size:clamp(21px,2.7vw,32px);line-height:1.32;letter-spacing:-.015em;
+  color:#fff;max-width:34ch;
 }
-.why__list{list-style:none;margin:0;padding:0;display:grid;gap:18px}
-.why__list li{
-  color:var(--muted);font-size:17.5px;line-height:1.6;
-  padding-left:24px;position:relative;
+.why__claim b{font-weight:700;color:var(--accent-text)}
+
+.why__cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.why__card{
+  padding:26px 24px;
+  background:linear-gradient(170deg,rgba(61,107,255,.14),rgba(15,26,54,.92));
+  border:1px solid var(--line);border-radius:var(--r-md);
+  transition:transform .2s var(--ease),border-color .2s var(--ease);
 }
-.why__list li::before{
-  content:"";position:absolute;left:0;top:10px;
-  width:8px;height:8px;border-radius:2px;background-image:var(--grad);
+.why__card:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.why__ic{
+  display:grid;place-items:center;width:46px;height:46px;margin-bottom:18px;
+  border-radius:14px;color:#fff;
+  background:linear-gradient(150deg,#5B8CFF,#2445C8);
+  box-shadow:0 8px 22px rgba(45,79,214,.38);
 }
+.why__ic .ic{width:24px;height:24px;stroke-width:1.9}
+.why__v{
+  margin:0 0 8px;font-family:var(--f-display);font-weight:700;
+  font-size:clamp(22px,1.9vw,26px);line-height:1.15;letter-spacing:-.02em;
+  color:var(--accent-text);
+}
+.why__card .h3{font-size:18px;margin-bottom:10px;line-height:1.35}
+.why__d{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
 
 /* 5. Решение */
 .solution{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,56px);align-items:center}
@@ -925,6 +948,7 @@ section[id]{scroll-margin-top:84px}
   .rail{grid-template-columns:repeat(2,1fr)}
   .rail__item::after{display:none}
   .agents{grid-template-columns:repeat(2,1fr)}
+  .why__cards{grid-template-columns:repeat(2,1fr)}
   .bens{grid-template-columns:1fr}
   .sup__grid{grid-template-columns:1fr}
 }
@@ -950,7 +974,7 @@ section[id]{scroll-margin-top:84px}
   .hero__actions .btn{flex:1 1 auto}
 
   .vs{grid-template-columns:1fr}
-  .why__grid{grid-template-columns:1fr}
+  .why__cards{grid-template-columns:1fr}
   .solution{grid-template-columns:1fr}
   .solution__facts{grid-template-columns:1fr}
   .agents{grid-template-columns:1fr}
