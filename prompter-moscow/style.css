@@ -330,12 +330,9 @@ section[id]{scroll-margin-top:84px}
   background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-md);
   font-family:var(--f-display);font-weight:500;
   font-size:clamp(17px,2.2vw,22px);line-height:1.4;
+  border-left:3px solid var(--accent-2);
 }
-.verdict{border-left:3px solid var(--accent-2)}
-.verdict b{
-  font-weight:700;
-  background-image:none;color:var(--red-text);-webkit-background-clip:text;background-clip:text;color:transparent;
-}
+.verdict b{font-weight:700;color:var(--red-text)}
 
 /* 4. Почему важно */
 .why__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,52px);align-items:start}
