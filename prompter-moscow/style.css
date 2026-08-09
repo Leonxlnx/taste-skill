@@ -564,8 +564,13 @@ section[id]{scroll-margin-top:84px}
   background:linear-gradient(110deg,rgba(61,107,255,.26),rgba(120,90,240,.10)),var(--surface);
   border-color:var(--line-2);
 }
+/* Карточка идёт во всю строку. Строка в 1300px нечитаема, поэтому
+   содержимое центрируем: поля становятся симметричными, а не зияют справа. */
+.niche--wide{text-align:center}
+.niche--wide .ic{margin-left:auto;margin-right:auto}
 .niche--wide .h3{font-size:clamp(22px,2vw,26px)}
-.niche--wide p{font-size:18px;max-width:70ch}
+.niche--wide p{font-size:18px;max-width:74ch;margin-left:auto;margin-right:auto}
+.niche--wide .niche__kicker{margin-left:auto;margin-right:auto}
 .niche__kicker{
   display:inline-flex;align-items:center;gap:10px;
   margin-top:16px;padding:10px 16px;
