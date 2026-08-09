@@ -4,6 +4,10 @@
    Токен бота и chat_id читаются ТОЛЬКО из переменных окружения:
    process.env.TG_TOKEN и process.env.TG_CHAT_ID.
    В браузер они не попадают: этот файл выполняется на сервере Vercel.
+
+   Дублирование на почту — необязательное. Если заданы RESEND_API_KEY,
+   MAIL_TO и MAIL_FROM, та же заявка уходит письмом. Если не заданы,
+   сайт работает ровно как раньше, только через Telegram.
    ========================================================= */
 
 /* Домены, с которых разрешено отправлять форму. */
@@ -96,6 +100,78 @@ function moscowTime() {
   }
 }
 
+/* Письмо с заявкой. Отправляется через HTTP API Resend, поэтому
+   в проекте не появляется ни одной npm-зависимости.
+   Возвращает true/false и никогда не бросает исключение: почта —
+   дополнительный канал, её сбой не должен влиять на ответ клиенту. */
+async function sendMail(fields, when) {
+  var key = process.env.RESEND_API_KEY;
+  var to = process.env.MAIL_TO;
+  var from = process.env.MAIL_FROM;
+
+  if (!key || !to || !from) return null;   // почта не настроена — это не ошибка
+
+  var rows = [
+    ['Имя', fields.name],
+    ['Телефон', fields.phone],
+    ['Почта', fields.email],
+    ['Компания', fields.company],
+    ['Род деятельности', fields.field],
+    ['ЛПР', fields.dm],
+    ['Время', when]
+  ];
+
+  var html =
+    '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#111">' +
+    '<h2 style="margin:0 0 16px">Новая заявка с сайта</h2>' +
+    '<table cellpadding="6" style="border-collapse:collapse">' +
+    rows.map(function (r) {
+      return '<tr>' +
+        '<td style="border:1px solid #ddd;background:#f6f6f6"><b>' + escapeHtml(r[0]) + '</b></td>' +
+        '<td style="border:1px solid #ddd">' + escapeHtml(r[1]) + '</td>' +
+        '</tr>';
+    }).join('') +
+    '</table></div>';
+
+  var text = rows.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n');
+
+  try {
+    var resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + key,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: from,
+        to: to.split(',').map(function (a) { return a.trim(); }).filter(Boolean),
+        reply_to: fields.email,
+        subject: 'Заявка с сайта: ' + fields.name + ', ' + fields.company,
+        text: text,
+        html: html
+      })
+    });
+
+    if (!resp.ok) {
+      console.error('Письмо не отправлено:', resp.status, await resp.text());
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Не удалось обратиться к почтовому сервису:', err);
+    return false;
+  }
+}
+
+/* Значения пользователя попадают в HTML письма, поэтому экранируем. */
+function escapeHtml(v) {
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -141,6 +217,8 @@ module.exports = async function handler(req, res) {
   if (field.length < 2) return res.status(400).json({ ok: false, error: 'bad_field' });
   if (dm !== 'да' && dm !== 'нет') return res.status(400).json({ ok: false, error: 'bad_dm' });
 
+  var stamp = moscowTime();
+
   var text =
     '🆕 Новая заявка\n' +
     '👤 Имя: ' + name + '\n' +
@@ -149,7 +227,7 @@ module.exports = async function handler(req, res) {
     '🏢 Компания: ' + company + '\n' +
     '📦 Род деятельности: ' + field + '\n' +
     '👔 ЛПР: ' + dm + '\n' +
-    '🕒 ' + moscowTime();
+    '🕒 ' + stamp;
 
   try {
     var tg = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
@@ -168,7 +246,14 @@ module.exports = async function handler(req, res) {
       return res.status(502).json({ ok: false, error: 'telegram_failed' });
     }
 
-    return res.status(200).json({ ok: true });
+    // Телеграм принял заявку. Дублируем письмом, если почта настроена;
+    // её сбой не должен превращать принятую заявку в ошибку для клиента.
+    var mailed = await sendMail(
+      { name: name, phone: phone, email: email, company: company, field: field, dm: dm },
+      stamp
+    );
+
+    return res.status(200).json({ ok: true, mailed: mailed });
   } catch (err) {
     console.error('Не удалось обратиться к Telegram:', err);
     return res.status(502).json({ ok: false, error: 'telegram_unreachable' });

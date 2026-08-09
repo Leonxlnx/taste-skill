@@ -24,6 +24,7 @@
   --grad-text:linear-gradient(100deg,#9FD4FF 0%,#7FC4FF 100%);
 
   --red-text:#7FC4FF;            /* прежний красный текст переведён в светло-синий */
+  --green:#4ADE80;               /* выгода и экономия */
   --red-soft:rgba(127,196,255,.16);
   --grad-red:var(--grad-btn);
 
@@ -273,7 +274,7 @@ section[id]{scroll-margin-top:84px}
 .pbadge__ic{
   flex:none;width:48px;height:48px;border-radius:13px;
   display:grid;place-items:center;
-  background-image:var(--grad-red);color:#fff;
+  background-image:linear-gradient(150deg,#5B8CFF,#2445C8);color:#fff;
 }
 .pbadge__ic .ic{width:28px;height:28px;stroke-width:2}
 .pbadge__t{margin:0;font-size:17px;line-height:1.42;font-weight:600;color:var(--text)}
@@ -286,11 +287,15 @@ section[id]{scroll-margin-top:84px}
 .hero__actions{display:flex;flex-wrap:wrap;gap:12px}
 
 .hero__panel{
-  background:linear-gradient(160deg,rgba(61,107,255,.26),rgba(21,35,67,.92));
-  border:1px solid var(--line-2);
+  /* Фон первого экрана сам синий, поэтому панель делаем графитовой:
+     тёмное стекло с холодной каймой, чтобы она читалась поверх волн. */
+  background:linear-gradient(160deg,rgba(28,30,42,.86),rgba(16,17,26,.92));
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(180,205,255,.28);
   border-radius:var(--r-lg);
   padding:30px 28px;
   min-width:0;
+  box-shadow:0 18px 50px rgba(0,0,0,.45);
 }
 .gains{list-style:none;margin:0;padding:0;display:grid;gap:24px}
 .gains__row{display:flex;flex-direction:column;gap:6px}
@@ -311,12 +316,23 @@ section[id]{scroll-margin-top:84px}
   background:var(--surface);border:1px solid var(--line);
   border-radius:var(--r-md);padding:26px;
 }
-.vs__card--now{background:linear-gradient(180deg,rgba(61,107,255,.20),rgba(61,107,255,.04)),var(--surface);border-color:var(--line-2)}
+.vs__card--past{
+  background:linear-gradient(180deg,rgba(120,130,150,.10),rgba(18,20,28,.96));
+  border-color:rgba(150,160,180,.22);
+}
+.vs__card--past .vs__lead,.vs__card--past .vs__note{color:#9AA3B5}
+.vs__card--now{
+  background:linear-gradient(180deg,rgba(45,212,191,.24),rgba(14,60,72,.92));
+  border-color:rgba(45,212,191,.55);
+  box-shadow:0 16px 44px rgba(45,212,191,.18);
+}
+.vs__card--now .vs__lead{color:#fff}
+.vs__card--now .vs__note{color:#BFF3EA}
 .vs__tag{
   margin:0 0 14px;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted-2);
 }
-.vs__card--now .vs__tag{color:var(--red-text)}
+.vs__card--now .vs__tag{color:#5EEAD4}
 .vs__lead{margin:0 0 14px;font-size:19px;line-height:1.5}
 .vs__note{margin:0;color:var(--muted);font-size:17px}
 
@@ -521,8 +537,13 @@ section[id]{scroll-margin-top:84px}
 
 /* Карточка авто/мото занимает две колонки, чтобы в ряду не оставалось
    пустой ячейки: обычных ниш восемь, а сетка трёхколоночная. */
-.niche--span2{grid-column:span 2}
-.niche--span2 p{max-width:62ch}
+.niche--span2{
+  grid-column:span 2;
+  /* Карточка тянется по высоте соседней, поэтому содержимое
+     центрируем по вертикали, иначе снизу висит пустое поле. */
+  display:flex;flex-direction:column;justify-content:center;
+}
+.niche--span2 p{max-width:none}
 
 /* Цвет заголовка по отрасли: спокойная холодная гамма, без красного и жёлтого. */
 .niche--n1 .h3{color:#F2A9C4}   /* HoReCa — приглушённый розовый */
@@ -603,17 +624,25 @@ section[id]{scroll-margin-top:84px}
 .price__save{margin:0 0 24px;display:flex;flex-direction:column;gap:6px}
 .price__save-v{
   font-family:var(--f-display);font-weight:700;
-  font-size:clamp(42px,5.6vw,68px);line-height:1;letter-spacing:-.03em;
-  color:var(--accent-text);
+  font-size:clamp(40px,5.2vw,62px);line-height:1;letter-spacing:-.03em;
+  color:var(--green);
 }
-.price__save-k{font-size:19px;font-weight:600;color:#fff}
+.price__save-k{font-size:19px;font-weight:500;color:#fff}
+.price__save-k b{
+  font-weight:800;color:var(--green);
+  letter-spacing:.06em;font-size:1.06em;
+}
 .price__cmp{
   display:grid;gap:8px;padding-top:20px;
   border-top:1px solid var(--line-2);
 }
-.price__ours{margin:0;font-size:17px;color:#fff}
-.price__ours b{font-weight:700;color:var(--accent-text)}
-.price__theirs{margin:0;font-size:16px;color:var(--muted-2);text-decoration:line-through}
+.price__ours{margin:0;font-size:19px;color:#fff}
+.price__ours b{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(24px,2.2vw,30px);color:var(--accent-text);
+  display:inline-block;vertical-align:-2px;
+}
+.price__theirs{margin:0;font-size:16.5px;color:var(--muted-2);text-decoration:line-through}
 
 .price__inc .h2{margin-bottom:22px}
 .inc{list-style:none;margin:0;padding:0;display:grid;gap:14px}
