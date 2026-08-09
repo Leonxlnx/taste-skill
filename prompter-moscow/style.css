@@ -25,7 +25,7 @@
   /* Смешение синего с красным даёт пурпур, поэтому градиенты держим
      внутри одного тона: кнопки синие, красный работает отдельным акцентом. */
   --grad:linear-gradient(135deg,#4A78FF 0%,#2445C8 100%);
-  --grad-text:linear-gradient(100deg,#A9C0FF 0%,#6E92FF 100%);
+  --grad-text:linear-gradient(100deg,#FFFFFF 0%,#C9C9D4 100%);
 
   --text:#F5F5F7;
   --muted:#C9C9D4;
@@ -77,6 +77,9 @@ a{color:inherit}
 
 #top-sentinel{position:absolute;top:0;left:0;width:1px;height:1px}
 
+/* Липкая шапка перекрывает заголовок секции при переходе по якорю. */
+section[id]{scroll-margin-top:84px}
+
 .wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,3.2vw,48px)}
 
 /* ---------- Типографика ---------- */
@@ -126,12 +129,13 @@ a{color:inherit}
 .btn--lg{padding:17px 32px;font-size:17px}
 .btn--full{width:100%}
 
+/* Основная кнопка сайта — красная: это действие, ради которого сделан сайт. */
 .btn--grad{
   color:#fff;
-  background-image:var(--grad);
-  box-shadow:0 8px 26px rgba(61,107,255,.30);
+  background-image:var(--grad-red);
+  box-shadow:0 8px 26px rgba(232,69,60,.32);
 }
-.btn--grad:hover{box-shadow:0 12px 34px rgba(61,107,255,.42);transform:translateY(-1px)}
+.btn--grad:hover{box-shadow:0 14px 38px rgba(232,69,60,.46);transform:translateY(-1px)}
 
 /* Главная кнопка первого экрана. Одна на весь экран, поэтому крупнее
    остальных. При наведении: подъём, усиление свечения, сдвиг стрелки
@@ -140,7 +144,7 @@ a{color:inherit}
   position:relative;overflow:hidden;
   padding:22px 44px;font-size:19px;letter-spacing:.01em;
   border-radius:18px;
-  box-shadow:0 10px 34px rgba(61,107,255,.34);
+  box-shadow:0 10px 34px rgba(232,69,60,.36);
 }
 .btn--hero .btn__label{position:relative;z-index:1}
 .btn--hero .btn__arrow{
@@ -156,7 +160,7 @@ a{color:inherit}
 }
 .btn--hero:hover{
   transform:translateY(-3px);
-  box-shadow:0 18px 46px rgba(61,107,255,.52),0 0 0 1px rgba(255,255,255,.12) inset;
+  box-shadow:0 18px 48px rgba(232,69,60,.55),0 0 0 1px rgba(255,255,255,.14) inset;
 }
 .btn--hero:hover .btn__arrow{transform:translateX(6px)}
 .btn--hero:hover::before{left:115%}
@@ -259,14 +263,14 @@ a{color:inherit}
   display:flex;align-items:center;gap:16px;
   margin:0 0 24px;padding:16px 20px;
   max-width:min(100%,660px);
-  border:1px solid rgba(61,107,255,.45);
+  border:1px solid rgba(232,69,60,.48);
   border-radius:var(--r-md);
-  background:linear-gradient(100deg,rgba(61,107,255,.20),rgba(61,107,255,.06));
+  background:linear-gradient(100deg,rgba(232,69,60,.20),rgba(232,69,60,.05));
 }
 .pbadge__ic{
   flex:none;width:48px;height:48px;border-radius:13px;
   display:grid;place-items:center;
-  background-image:var(--grad);color:#fff;
+  background-image:var(--grad-red);color:#fff;
 }
 .pbadge__ic .ic{width:28px;height:28px;stroke-width:2}
 .pbadge__t{margin:0;font-size:17px;line-height:1.42;font-weight:600;color:var(--text)}
@@ -387,40 +391,100 @@ a{color:inherit}
   transition:border-color .2s var(--ease),transform .2s var(--ease);
 }
 .bento__cell:hover{border-color:var(--line-2);transform:translateY(-2px)}
-.bento__cell .ic{color:var(--accent-text);margin-bottom:14px}
+.bento__cell .ic{color:var(--muted);margin-bottom:14px}
 .bento__cell p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
 
-.bento__cell--a{grid-column:span 4;background:linear-gradient(140deg,rgba(61,107,255,.20),rgba(61,107,255,.05)),var(--surface)}
+.bento__cell--a{grid-column:span 4;background:linear-gradient(140deg,rgba(255,255,255,.06),transparent 70%),var(--surface)}
 .bento__cell--b{grid-column:span 2}
 .bento__cell--c{grid-column:span 2}
 .bento__cell--d{grid-column:span 4;background:linear-gradient(140deg,rgba(232,69,60,.14),transparent 68%),var(--surface)}
 .bento__cell--e{grid-column:span 3}
-.bento__cell--f{grid-column:span 3;background:linear-gradient(140deg,rgba(61,107,255,.14),transparent 70%),var(--surface)}
+.bento__cell--f{grid-column:span 3;background:linear-gradient(140deg,rgba(255,255,255,.05),transparent 70%),var(--surface)}
 
 /* Крупные ячейки получают текст чуть больше, чтобы вес соответствовал размеру. */
 .bento__cell--a p,.bento__cell--d p{font-size:17.5px}
 
-/* 7. Технология: горизонтальная лента шагов */
+/* 7. КЛЮЧЕВАЯ ТЕХНОЛОГИЯ — главный акцент страницы.
+   Секция вынесена на собственную подложку с красным свечением,
+   чтобы читатель не пролистал именно то, чем продукт отличается. */
+.tech{position:relative;overflow:hidden;background:#0D0D13}
+.tech__glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(80% 90% at 8% 0%,rgba(232,69,60,.30) 0%,transparent 60%),
+    radial-gradient(70% 90% at 96% 100%,rgba(61,107,255,.20) 0%,transparent 62%);
+}
+.tech__in{position:relative}
+.tech::before,.tech::after{
+  content:"";position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,69,60,.55),transparent);
+}
+.tech::before{top:0}
+.tech::after{bottom:0}
+
+.tech__eyebrow{
+  margin:0 0 12px;font-size:14px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--red-text);
+}
+.tech__h{font-size:clamp(28px,4vw,50px);margin-bottom:18px;max-width:22ch}
+.tech__h b{font-weight:700;color:var(--red-text)}
+.tech__lead{max-width:72ch;margin-bottom:44px}
+
+/* Четыре шага. Средний выделен: автопубликация и есть отличие продукта. */
 .rail{
   list-style:none;margin:0;padding:0;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
-  counter-reset:rail;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
 }
 .rail__item{
-  position:relative;padding:24px 22px;
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  position:relative;padding:26px 22px;
+  background:rgba(19,19,27,.72);border:1px solid var(--line);
+  border-radius:var(--r-md);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
 .rail__item::after{
-  content:"";position:absolute;top:44px;right:-18px;width:18px;height:1px;
-  background:var(--line-2);
+  content:"";position:absolute;top:50px;right:-16px;width:16px;height:1px;
+  background:rgba(255,255,255,.22);
 }
 .rail__item:last-child::after{display:none}
+.rail__n{
+  display:block;margin-bottom:14px;
+  font-family:var(--f-display);font-weight:700;font-size:15px;
+  letter-spacing:.08em;color:var(--muted-2);
+}
 .rail__ic{
-  display:grid;place-items:center;width:44px;height:44px;margin-bottom:16px;
-  border-radius:var(--r-sm);background:var(--accent-soft);color:var(--accent-text);
-  border:1px solid rgba(61,107,255,.3);
+  display:grid;place-items:center;width:46px;height:46px;margin-bottom:16px;
+  border-radius:var(--r-sm);
+  background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--text);
 }
 .rail__item p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
+
+.rail__item--key{
+  background:linear-gradient(165deg,rgba(232,69,60,.24),rgba(232,69,60,.06)),rgba(19,19,27,.9);
+  border-color:rgba(232,69,60,.55);
+  box-shadow:0 16px 44px rgba(232,69,60,.22);
+}
+.rail__item--key .rail__n{color:var(--red-text)}
+.rail__item--key .rail__ic{
+  background-image:var(--grad-red);border-color:transparent;color:#fff;
+}
+.rail__flag{
+  display:inline-block;margin-top:16px;padding:7px 13px;
+  border-radius:10px;background:var(--grad-red);
+  font-size:13.5px;font-weight:700;letter-spacing:.03em;color:#fff;
+}
+
+/* Вывод под шагами: одна фраза, ради которой секция и существует. */
+.tech__foot{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:22px;margin-top:44px;padding:26px 30px;
+  border-radius:var(--r-md);
+  background:rgba(10,10,14,.55);border:1px solid rgba(232,69,60,.34);
+}
+.tech__claim{
+  margin:0;font-family:var(--f-display);font-weight:500;
+  font-size:clamp(18px,2vw,24px);line-height:1.35;max-width:46ch;
+}
+.tech__claim b{font-weight:700;color:var(--red-text)}
 
 /* 8. Как это работает: вертикальный таймлайн */
 .how{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,4vw,60px);align-items:start}
@@ -428,7 +492,7 @@ a{color:inherit}
 .steps{list-style:none;margin:0;padding:0;position:relative}
 .steps::before{
   content:"";position:absolute;left:23px;top:12px;bottom:12px;width:1px;
-  background:linear-gradient(180deg,rgba(61,107,255,.55),rgba(61,107,255,.14));
+  background:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,.06));
 }
 .steps__item{display:flex;gap:22px;padding:0 0 26px;position:relative}
 .steps__item:last-child{padding-bottom:0}
@@ -436,7 +500,7 @@ a{color:inherit}
   flex:none;width:46px;height:46px;border-radius:var(--r-sm);
   display:grid;place-items:center;
   background:var(--surface-2);border:1px solid var(--line-2);
-  font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--accent-text);
+  font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--text);
   position:relative;z-index:1;
 }
 .steps__item p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.55}
@@ -448,8 +512,8 @@ a{color:inherit}
   border-radius:var(--r-md);padding:22px;
   transition:border-color .2s var(--ease),background-color .2s var(--ease);
 }
-.niche:hover{border-color:rgba(61,107,255,.4);background:var(--surface-2)}
-.niche .ic{color:var(--accent-text);margin-bottom:14px}
+.niche:hover{border-color:var(--line-2);background:var(--surface-2)}
+.niche .ic{color:var(--muted);margin-bottom:14px}
 .niche p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.5}
 
 /* Карточка авто/мото занимает две колонки, чтобы в ряду не оставалось
@@ -462,8 +526,8 @@ a{color:inherit}
 .niche--wide{
   grid-column:1/-1;
   padding:28px;
-  background:linear-gradient(110deg,rgba(61,107,255,.22),rgba(61,107,255,.06)),var(--surface);
-  border-color:rgba(61,107,255,.48);
+  background:linear-gradient(110deg,rgba(232,69,60,.22),rgba(232,69,60,.05)),var(--surface);
+  border-color:rgba(232,69,60,.50);
 }
 .niche--wide .h3{font-size:clamp(22px,2vw,26px)}
 .niche--wide p{font-size:18px;max-width:70ch}
@@ -471,7 +535,7 @@ a{color:inherit}
   display:inline-flex;align-items:center;gap:10px;
   margin-top:16px;padding:10px 16px;
   border-radius:var(--r-sm);
-  background:rgba(10,10,14,.44);border:1px solid rgba(61,107,255,.42);
+  background:rgba(10,10,14,.44);border:1px solid rgba(232,69,60,.46);
   font-size:16.5px;font-weight:700;color:var(--text);line-height:1.4;
 }
 .niche__kicker .ic{margin:0;width:20px;height:20px;color:#5FD08A;stroke-width:2.5;flex:none}
@@ -480,12 +544,12 @@ a{color:inherit}
 .ben{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;gap:18px}
 .ben__main{
   grid-row:span 2;
-  background:linear-gradient(150deg,rgba(61,107,255,.20),rgba(61,107,255,.05)),var(--surface);
-  border:1px solid rgba(61,107,255,.3);border-radius:var(--r-md);
+  background:linear-gradient(150deg,rgba(255,255,255,.07),transparent 72%),var(--surface);
+  border:1px solid var(--line-2);border-radius:var(--r-md);
   padding:30px;display:flex;flex-direction:column;justify-content:center;
 }
 .ben__side{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:24px}
-.ben .ic{color:var(--accent-text);margin-bottom:16px}
+.ben .ic{color:var(--muted);margin-bottom:16px}
 .ben p{margin:0;color:var(--muted);font-size:16.5px;line-height:1.6}
 .ben__main p{font-size:18px}
 
@@ -538,11 +602,11 @@ a{color:inherit}
   border-radius:var(--r-md);padding:20px 18px;
   transition:border-color .2s var(--ease),background-color .2s var(--ease);
 }
-.sup__list li:hover{border-color:rgba(61,107,255,.4);background:var(--surface-2)}
+.sup__list li:hover{border-color:var(--line-2);background:var(--surface-2)}
 .sup__ic{
   display:grid;place-items:center;width:40px;height:40px;margin-bottom:14px;
-  border-radius:12px;background:var(--accent-soft);
-  border:1px solid rgba(61,107,255,.32);color:var(--accent-text);
+  border-radius:12px;background:rgba(255,255,255,.05);
+  border:1px solid var(--line-2);color:var(--muted);
 }
 .sup__ic .ic{width:22px;height:22px;stroke-width:1.8}
 .sup__list .h3{font-size:18px;margin-bottom:7px;line-height:1.3}
@@ -563,7 +627,7 @@ a{color:inherit}
 .team__role{color:var(--muted);font-size:16px;line-height:1.35}
 .team__contacts{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .team__contacts li{display:flex;align-items:center;gap:12px}
-.team__contacts .ic{color:var(--accent-text);width:20px;height:20px}
+.team__contacts .ic{color:var(--muted-2);width:20px;height:20px}
 .team__contacts a{color:var(--text);text-decoration:none;font-size:17.5px;font-weight:600;transition:color .18s var(--ease)}
 .team__contacts a:hover{color:var(--accent-text)}
 
@@ -577,7 +641,7 @@ a{color:inherit}
 .num__v{
   margin:0 0 10px;font-family:var(--f-display);font-weight:700;
   font-size:clamp(38px,5.2vw,54px);line-height:1;letter-spacing:-.03em;
-  background-image:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background-image:var(--grad-red);-webkit-background-clip:text;background-clip:text;color:transparent;
   font-variant-numeric:tabular-nums;
 }
 .num__k{margin:0;color:#3F4356;font-size:17px;line-height:1.45}
@@ -643,7 +707,7 @@ a{color:inherit}
 /* Подсветка цифр и выгод внутри текста: цифра крупная и белая,
    единица измерения остаётся обычным текстом. */
 .hl{color:var(--text);font-weight:700;font-size:1.14em}
-.hl--accent{color:var(--accent-text);font-weight:700}
+.hl--accent{color:var(--red-text);font-weight:700}
 .hl--save{color:#5FD08A;font-weight:700}
 
 /* ---------- Появление секций при скролле ---------- */
@@ -813,6 +877,7 @@ a{color:inherit}
   .bento__cell--d,.bento__cell--e,.bento__cell--f{grid-column:span 1}
   .pbadge{flex-direction:column;align-items:flex-start;gap:12px;padding:16px}
   .rail{grid-template-columns:1fr}
+  .tech__foot{flex-direction:column;align-items:flex-start}
   .how{grid-template-columns:1fr}
   .niches{grid-template-columns:repeat(2,1fr)}
   .niche--span2{grid-column:span 2}

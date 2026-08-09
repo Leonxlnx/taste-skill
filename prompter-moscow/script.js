@@ -64,7 +64,7 @@
         return;
       }
 
-      var duration = 1800;
+      var duration = 2700;   // в полтора раза медленнее прежних 1800 мс
       var started = null;
 
       function tick(now) {
