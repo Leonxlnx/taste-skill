@@ -46,6 +46,17 @@
     <td><sub><a href="https://reactbits.dev"><strong>React Bits</strong></a> · animated React components for creative interfaces</sub></td>
   </tr>
   <tr>
+    <td align="center" width="120">
+      <a href="https://interfaces.dev">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/interfaces-dev-logo-dark.svg" />
+          <img src="assets/sponsors/interfaces-dev-logo-light.svg" alt="Interfaces" width="112" />
+        </picture>
+      </a>
+    </td>
+    <td><sub><a href="https://interfaces.dev"><strong>interfaces.dev</strong></a> · the design engineering magazine</sub></td>
+  </tr>
+  <tr>
     <td align="center" width="76"><a href="https://www.sent.dm"><img src="assets/sponsors/sentdm.png" alt="Sent.dm" width="62" height="62" /></a></td>
     <td><sub><a href="https://www.sent.dm"><strong>Sent.dm</strong></a> · messaging APIs for SMS, WhatsApp, and RCS</sub></td>
   </tr>
