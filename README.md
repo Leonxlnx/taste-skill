@@ -19,7 +19,7 @@
     <td colspan="2"><strong>Gold Sponsors</strong></td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://novamira.ai/"><img src="https://github.com/use-novamira.png" alt="Novamira" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://novamira.ai/"><img src="https://github.com/use-novamira.png" alt="Novamira" width="62" height="62" /></a></td>
     <td><sub><a href="https://novamira.ai/"><strong>Novamira</strong></a> · Full WordPress access for AI agents</sub></td>
   </tr>
   <tr>
@@ -31,47 +31,47 @@
   <tr>
     <td align="center" width="120">
       <a href="https://interfaces.dev">
-        <img src="assets/sponsors/interfaces-dev-icon.webp" alt="Interfaces" width="82" height="82" />
+        <img src="assets/sponsors/interfaces-dev-icon.webp" alt="Interfaces" width="62" height="62" />
       </a>
     </td>
-    <td><sub><a href="https://interfaces.dev"><strong>interfaces.dev</strong></a> · the design engineering magazine</sub></td>
+    <td><sub><a href="https://interfaces.dev"><strong>interfaces.dev</strong></a> · A design engineering magazine by <a href="https://github.com/jakubkrehel"><strong>Jakub Krehel</strong></a></sub></td>
   </tr>
   <tr>
     <td align="center" width="120">
       <a href="https://reactbits.dev">
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/reactbits-icon-dark.svg" />
-          <img src="assets/sponsors/reactbits-icon-light.svg" alt="React Bits" width="82" height="82" />
+          <img src="assets/sponsors/reactbits-icon-light.svg" alt="React Bits" width="62" height="62" />
         </picture>
       </a>
     </td>
     <td><sub><a href="https://reactbits.dev"><strong>React Bits</strong></a> · animated React components for creative interfaces</sub></td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://animations.dev"><img src="assets/sponsors/animations-dev.webp" alt="animations.dev" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://animations.dev"><img src="assets/sponsors/animations-dev.webp" alt="animations.dev" width="62" height="62" /></a></td>
     <td><sub><a href="https://github.com/emilkowalski"><strong>Emil Kowalski</strong></a> · <a href="https://animations.dev">animations.dev</a></sub></td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://img.ly/"><img src="assets/sponsors/imgly-logo.svg" alt="IMG.LY" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://img.ly/"><img src="assets/sponsors/imgly-logo.svg" alt="IMG.LY" width="62" height="62" /></a></td>
     <td><sub><a href="https://img.ly/"><strong>IMG.LY</strong></a> · CreativeEditor SDK</sub></td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://www.sent.dm"><img src="assets/sponsors/sentdm.png" alt="Sent.dm" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://www.sent.dm"><img src="assets/sponsors/sentdm.png" alt="Sent.dm" width="62" height="62" /></a></td>
     <td><sub><a href="https://www.sent.dm"><strong>Sent.dm</strong></a> · messaging APIs for SMS, WhatsApp, and RCS</sub></td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://www.kimi.com"><img src="assets/sponsors/kimi-icon.png" alt="Kimi" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://www.kimi.com"><img src="assets/sponsors/kimi-icon.png" alt="Kimi" width="62" height="62" /></a></td>
     <td>
       <a href="https://www.kimi.com">
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69mt3v89kkekg24gg" />
-          <img alt="Kimi Open Source Friends" src="https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69fudcmosb3pipls0" height="40" />
+          <img alt="Kimi Open Source Friends" src="https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69fudcmosb3pipls0" height="48" />
         </picture>
       </a>
     </td>
   </tr>
   <tr>
-    <td align="center" width="120"><a href="https://vercel.com/open-source-program"><img src="assets/sponsors/vercel-logo.svg" alt="Vercel" width="82" height="82" /></a></td>
+    <td align="center" width="120"><a href="https://vercel.com/open-source-program"><img src="assets/sponsors/vercel-logo.svg" alt="Vercel" width="62" height="62" /></a></td>
     <td><a href="https://vercel.com/open-source-program"><img src="assets/vercel-oss-program-badge.svg" alt="Vercel Open Source Program" height="32" /></a></td>
   </tr>
 </table>
