@@ -48,10 +48,7 @@
   <tr>
     <td align="center" width="120">
       <a href="https://interfaces.dev">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/interfaces-dev-logo-dark.svg" />
-          <img src="assets/sponsors/interfaces-dev-logo-light.svg" alt="Interfaces" width="112" />
-        </picture>
+        <img src="https://ho1jr3x2dcwdu3t5.public.blob.vercel-storage.com/interfaces-og-image.png" alt="Interfaces" width="112" />
       </a>
     </td>
     <td><sub><a href="https://interfaces.dev"><strong>interfaces.dev</strong></a> · the design engineering magazine</sub></td>
