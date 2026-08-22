@@ -30,11 +30,11 @@
   </tr>
   <tr>
     <td align="center" width="120">
-      <a href="https://interfaces.dev">
+      <a href="https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship">
         <img src="assets/sponsors/interfaces-dev-icon.webp" alt="Interfaces" width="62" height="62" />
       </a>
     </td>
-    <td><sub><a href="https://interfaces.dev"><strong>interfaces.dev</strong></a> · A design engineering magazine by <a href="https://github.com/jakubkrehel"><strong>Jakub Krehel</strong></a></sub></td>
+    <td><sub><a href="https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship"><strong>interfaces.dev</strong></a> · A design engineering magazine by <a href="https://github.com/jakubkrehel"><strong>Jakub Krehel</strong></a></sub></td>
   </tr>
   <tr>
     <td align="center" width="120">
