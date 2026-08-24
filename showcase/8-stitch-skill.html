@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stitch-skill — Semantic Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Geist','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    body { background: #0c0c0e; color: #fafafa; }
+    @keyframes dial-fill { from { stroke-dashoffset: 100 } to { stroke-dashoffset: var(--target) } }
+    .dial-ring { animation: dial-fill 1.5s cubic-bezier(0.32,0.72,0,1) forwards }
+  </style>
+</head>
+<body class="bg-[#0c0c0e] text-[#fafafa] font-sans antialiased">
+
+  <!-- HEADER -->
+  <div class="border-b border-white/5 px-6 py-4">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-violet-400"></div>
+        <span class="text-sm font-bold">STITCH_SKILL</span>
+        <span class="text-xs text-white/30">DESIGN.md GENERATOR</span>
+      </div>
+      <div class="text-xs text-white/30">Google Stitch Compatible</div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="px-6 py-20">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-8">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 text-violet-400 text-xs font-medium">
+          Semantic Design System Skill for Google Stitch
+        </span>
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+        Design.md:<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">A semantic design language</span>
+      </h1>
+      <p class="text-lg text-white/50 leading-relaxed max-w-[55ch]">
+        Generates Stitch-friendly DESIGN.md files that encode visual atmosphere, color calibration, typography rules, component behaviors, layout principles, and anti-patterns.
+      </p>
+    </div>
+  </section>
+
+  <!-- DESIGN SYSTEM: MERIDIAN -->
+  <section class="px-6 py-16 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-12">
+        <div class="text-xs font-mono text-violet-400 uppercase tracking-[0.15em] mb-3">Generated DESIGN.md</div>
+        <h2 class="text-3xl font-bold">Meridian — Premium SaaS Interface</h2>
+      </div>
+
+      <!-- ATMOSPHERE DIALS -->
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-[0.1em] text-white/40 mb-8">1. Visual Atmosphere</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white/3 border border-white/10 rounded-2xl p-6">
+            <div class="text-xs text-white/40 mb-4">DENSITY</div>
+            <div class="flex items-center gap-6">
+              <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="white/10" stroke-width="3"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"
+                  stroke-dasharray="100" stroke-dashoffset="35"
+                  class="dial-ring" style="--target: 35"/>
+              </svg>
+              <div>
+                <div class="text-2xl font-bold">65%</div>
+                <div class="text-xs text-white/40">Balanced</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-2xl p-6">
+            <div class="text-xs text-white/40 mb-4">VARIANCE</div>
+            <div class="flex items-center gap-6">
+              <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="white/10" stroke-width="3"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"
+                  stroke-dasharray="100" stroke-dashoffset="55"
+                  class="dial-ring" style="--target: 55"/>
+              </svg>
+              <div>
+                <div class="text-2xl font-bold">45%</div>
+                <div class="text-xs text-white/40">Offset Asymmetric</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-2xl p-6">
+            <div class="text-xs text-white/40 mb-4">MOTION</div>
+            <div class="flex items-center gap-6">
+              <svg class="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="white/10" stroke-width="3"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"
+                  stroke-dasharray="100" stroke-dashoffset="30"
+                  class="dial-ring" style="--target: 30"/>
+              </svg>
+              <div>
+                <div class="text-2xl font-bold">70%</div>
+                <div class="text-xs text-white/40">Cinematic</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLOR PALETTE -->
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-[0.1em] text-white/40 mb-8">2. Color Palette &amp; Roles</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#18181b] mb-3 border border-white/10"></div>
+            <div class="text-xs font-medium">Charcoal Ink</div>
+            <div class="text-xs text-white/30 font-mono">#18181b</div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#f9fafb] mb-3 border border-white/10"></div>
+            <div class="text-xs font-medium">Canvas White</div>
+            <div class="text-xs text-white/30 font-mono">#f9fafb</div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#8b5cf6] mb-3"></div>
+            <div class="text-xs font-medium">Indigo Accent</div>
+            <div class="text-xs text-white/30 font-mono">#8b5cf6</div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#71717a] mb-3"></div>
+            <div class="text-xs font-medium">Muted Steel</div>
+            <div class="text-xs text-white/30 font-mono">#71717a</div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#e4e4e7] mb-3 border border-white/10"></div>
+            <div class="text-xs font-medium">Whisper Border</div>
+            <div class="text-xs text-white/30 font-mono">#e4e4e7</div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div class="w-full h-12 rounded-lg bg-[#22d3ee] mb-3"></div>
+            <div class="text-xs font-medium">Cyan Highlight</div>
+            <div class="text-xs text-white/30 font-mono">#22d3ee</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TYPOGRAPHY -->
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-[0.1em] text-white/40 mb-8">3. Typography Rules</h3>
+        <div class="space-y-4">
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-violet-400 mb-2">Display / Headlines</div>
+            <div class="text-4xl font-bold tracking-tight">Geist — Bold 700</div>
+            <div class="text-xs text-white/40 mt-2">Track-tight, controlled scale. Hierarchy through weight and color, not just size.</div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-cyan-400 mb-2">Body / UI</div>
+            <div class="text-base text-white/80">Geist Regular — Relaxed leading, 65ch max-width, neutral secondary color.</div>
+            <div class="text-xs text-white/40 mt-2">BANNED: Inter, Roboto, Arial. Serif banned in dashboards.</div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-amber-400 mb-2">Monospace</div>
+            <div class="text-base font-mono">JetBrains Mono — Code, metadata, timestamps, high-density numbers.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPONENTS -->
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-[0.1em] text-white/40 mb-8">4. Component Stylings</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-white/40 mb-4">Buttons</div>
+            <div class="space-y-3">
+              <button class="w-full py-2.5 bg-violet-500 text-white text-sm font-semibold rounded-full hover:bg-violet-400 active:scale-[0.98] transition-all">Primary CTA</button>
+              <button class="w-full py-2.5 bg-white/5 text-white/80 text-sm font-medium rounded-full border border-white/10 hover:bg-white/10 active:scale-[0.98] transition-all">Secondary</button>
+            </div>
+            <div class="text-xs text-white/30 mt-3">No neon outer glow. Tactile -1px translate on active.</div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-white/40 mb-4">Cards</div>
+            <div class="bg-[#18181b] rounded-2xl p-4 border border-white/10">
+              <div class="text-sm font-semibold mb-1">Card Title</div>
+              <div class="text-xs text-white/50">Supporting description text.</div>
+            </div>
+            <div class="text-xs text-white/30 mt-3">Generously rounded (2.5rem). Diffused shadow. Used only when elevation serves hierarchy.</div>
+          </div>
+          <div class="bg-white/3 border border-white/10 rounded-xl p-6">
+            <div class="text-xs text-white/40 mb-4">Inputs</div>
+            <input type="text" placeholder="Input label" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-violet-500 transition-colors">
+            <div class="text-xs text-white/30 mt-3">Label above, error below. Focus ring in accent color.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANTI-PATTERNS (BANNED) -->
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-[0.1em] text-white/40 mb-8">7. Anti-Patterns (BANNED)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No Emojis</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No Inter Font</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No Pure #000</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No Neon Glows</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No 3-Col Equal</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No "John Doe"</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No AI Clichés</div>
+          </div>
+          <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+            <span class="text-red-400 text-lg">✗</span>
+            <div class="text-xs font-medium">No Centered Hero</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/5 px-6 py-8">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between text-xs text-white/30">
+      <span>STITCH_SKILL // GENERATES DESIGN.MD FOR GOOGLE STITCH</span>
+      <span>TASTE-SKILL ECOSYSTEM</span>
+    </div>
+  </footer>
+</body>
+</html>
