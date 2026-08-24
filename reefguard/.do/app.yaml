@@ -1,0 +1,46 @@
+name: reefguard
+region: nyc
+services:
+  - name: web
+    source_dir: /reefguard
+    github:
+      repo: chelstein/taste-skill
+      branch: main
+      deploy_on_push: true
+    build_command: npm install && npx prisma generate && npm run build
+    run_command: npm start
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: SLACK_WEBHOOK_URL
+        scope: RUN_TIME
+        type: SECRET
+      - key: NEXT_PUBLIC_APP_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${APP_URL}
+jobs:
+  - name: scanner
+    source_dir: /reefguard
+    github:
+      repo: chelstein/taste-skill
+      branch: main
+    build_command: npm install && npx prisma generate
+    run_command: npm run scan:all
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    kind: SCHEDULED
+    schedule: "0 * * * *"
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+databases:
+  - name: reefguard-db
+    engine: PG
+    version: "15"
+    size: basic
+    num_nodes: 1
