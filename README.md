@@ -2,7 +2,7 @@
   <img src="assets/readme-banner.webp" alt="Taste Skill - Anti-slop Agent Skills for premium frontends" width="100%" />
 </p>
 
-# Taste Skill
+<h1 align="center">Taste Skill</h1>
 
 <p align="center">
   <em>The Anti-Slop Frontend Framework for AI Agents</em>
@@ -12,17 +12,17 @@
   <a href="https://tasteskill.dev" title="Visit tasteskill.dev"><img src="assets/readme-buttons/btn-site.webp" alt="Visit tasteskill.dev" height="56" /></a>
 </p>
 
-<h3 align="center">Sponsors</h3>
-
 <p align="center">
   <a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill">
-    <img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi K3" width="680" />
+    <img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi K3" width="100%" />
   </a>
 </p>
 
 <p>Thanks to <strong>Kimi (Moonshot AI)</strong>, our Open Source Friend, for supporting taste-skill! With 2.8T parameters, native vision, and a 1-million-token context window, <strong>Kimi K3</strong> delivers frontier performance across long-horizon coding, knowledge work, and reasoning.</p>
 
 <p><a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill"><strong>Get a Kimi API key</strong></a>. Taste-skill users get <strong>10% bonus API credits</strong> on their first purchase.</p>
+
+<h3 align="center">Sponsors</h3>
 
 <table align="center">
   <tr>
