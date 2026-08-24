@@ -14,27 +14,17 @@
 
 <h3 align="center">Sponsors</h3>
 
+<p align="center">
+  <a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill">
+    <img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi K3" width="680" />
+  </a>
+</p>
+
+<p>Thanks to <strong>Kimi (Moonshot AI)</strong>, our Open Source Friend, for supporting taste-skill! With 2.8T parameters, native vision, and a 1-million-token context window, <strong>Kimi K3</strong> delivers frontier performance across long-horizon coding, knowledge work, and reasoning.</p>
+
+<p><a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill"><strong>Get a Kimi API key</strong></a>. Taste-skill users get <strong>10% bonus API credits</strong> on their first purchase.</p>
+
 <table align="center">
-  <tr>
-    <td colspan="2"><strong>Gold Sponsors</strong></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <p align="center">
-        <a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill">
-          <img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi K3" width="680" />
-        </a>
-      </p>
-      <p>Thanks to <strong>Kimi (Moonshot AI)</strong>, our Open Source Friend, for supporting taste-skill! With 2.8T parameters, native vision, and a 1-million-token context window, <strong>Kimi K3</strong> delivers frontier performance across long-horizon coding, knowledge work, and reasoning.</p>
-      <p><a href="https://platform.kimi.ai?track_id=track-20f0d64bcaba419bb425a3e8c306f65d&aff=taste-skill"><strong>Get a Kimi API key</strong></a>. Taste-skill users get <strong>10% bonus API credits</strong> on their first purchase.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2"><strong>Silver Sponsors</strong></td>
-  </tr>
-  <tr>
-    <td colspan="2"><strong>Bronze Sponsors</strong></td>
-  </tr>
   <tr>
     <td align="center" width="104">
       <a href="https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship">
