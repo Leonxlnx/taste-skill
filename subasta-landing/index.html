@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Oportunidad de Inversión | SubastaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Prefers reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #5FA55D 0%, #2D5016 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Button styles */
+        .btn-primary {
+            @apply px-8 py-4 bg-[#D4E157] text-gray-900 font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 active:scale-95;
+        }
+
+        .btn-secondary {
+            @apply px-6 py-2 bg-[#D4E157] text-gray-900 font-semibold rounded-lg hover:bg-[#C5D845] transition-all duration-200;
+        }
+
+        /* Navbar scrolled state */
+        nav.scrolled {
+            @apply shadow-md bg-white/98;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-200/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#2D5016] to-[#5FA55D] rounded-lg"></div>
+                <span class="font-bold text-lg text-gray-900">SubastaFácil</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <button onclick="document.getElementById('process').scrollIntoView()" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Cómo funciona</button>
+                <button onclick="document.getElementById('faq').scrollIntoView()" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Preguntas</button>
+                <button onclick="document.getElementById('testimonials').scrollIntoView()" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Testimonios</button>
+            </div>
+            <button class="btn-secondary">Contacta</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="animate-fade-in-up" style="animation-delay: 0s">
+                    <!-- Eyebrow -->
+                    <div class="inline-flex items-center gap-2 mb-6 bg-[#D4E157]/10 px-4 py-2 rounded-full border border-[#D4E157]/30">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-[#5FA55D]">
+                            15 min • Videollamada gratuita
+                        </span>
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+                        La propiedad que encontraste
+                        <span class="block text-[#5FA55D]">es más que un precio</span>
+                    </h1>
+
+                    <!-- Subtext -->
+                    <p class="text-lg text-gray-600 mb-8 max-w-[520px] leading-relaxed">
+                        Descubre por qué es una oportunidad real. Nuestros expertos analizarán tu propiedad específica en una llamada personalizada. Sin costos ocultos. Sin sorpresas.
+                    </p>
+
+                    <!-- CTA -->
+                    <button onclick="document.getElementById('form').scrollIntoView()" class="btn-primary mb-8">
+                        Reservar videollamada
+                    </button>
+
+                    <!-- Meta Stats -->
+                    <div class="flex gap-8 pt-8 border-t border-gray-200">
+                        <div>
+                            <div class="text-3xl font-bold text-gray-900">98%</div>
+                            <div class="text-sm text-gray-600">Satisfacción</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-gray-900">21K+</div>
+                            <div class="text-sm text-gray-600">Propiedades</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-gray-900">15+</div>
+                            <div class="text-sm text-gray-600">Años</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Asset -->
+                <div class="relative h-[500px] hidden lg:block animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#2D5016] via-[#5FA55D] to-[#7FC97D] rounded-2xl overflow-hidden animate-float">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        <svg class="w-full h-full opacity-10" viewBox="0 0 400 500" preserveAspectRatio="none">
+                            <path d="M0,250 Q100,200 200,250 T400,250" stroke="white" stroke-width="2" fill="none" />
+                            <path d="M0,300 Q100,250 200,300 T400,300" stroke="white" stroke-width="2" fill="none" />
+                            <path d="M0,350 Q100,300 200,350 T400,350" stroke="white" stroke-width="2" fill="none" />
+                        </svg>
+                        <div class="absolute bottom-0 right-0 text-white/80 text-center pb-8">
+                            <div class="text-4xl">🏠</div>
+                            <p class="text-sm mt-2">Tu oportunidad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative gradient blur -->
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-[#D4E157]/5 rounded-full blur-3xl pointer-events-none"></div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-20 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                ¿Por qué la mayoría pierde oportunidades?
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl">
+                No es porque no sean buenas decisiones. Es por actuar sin información correcta.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl border border-gray-200 hover:border-[#5FA55D]/30 transition-colors animate-fade-in-up" style="animation-delay: 0s">
+                    <div class="text-3xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Dudas legales</h3>
+                    <p class="text-gray-600">¿Costos ocultos? ¿Procesos? ¿Regulaciones?</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 hover:border-[#5FA55D]/30 transition-colors animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="text-3xl mb-4">📋</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Falta de asesoramiento</h3>
+                    <p class="text-gray-600">Actúan solos sin saber los riesgos fiscales o legales.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 hover:border-[#5FA55D]/30 transition-colors animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="text-3xl mb-4">⚠️</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Miedo a perder dinero</h3>
+                    <p class="text-gray-600">No saben si es ganga real o si hay problemas ocultos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                Nosotros hacemos diferente
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl">
+                Te guiamos en cada paso para que tomes decisiones con confianza.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-6 animate-fade-in-up">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-[#D4E157]">
+                                <span class="text-gray-900 font-bold">✓</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-1">Análisis de tu propiedad</h3>
+                            <p class="text-gray-600 text-sm">Sabrás si es oportunidad real o hay factores ocultos</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-[#D4E157]">
+                                <span class="text-gray-900 font-bold">✓</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-1">Proyección de rentabilidad</h3>
+                            <p class="text-gray-600 text-sm">Cálculos reales de cuánto podrías ganar</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-[#D4E157]">
+                                <span class="text-gray-900 font-bold">✓</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-1">Plan paso a paso</h3>
+                            <p class="text-gray-600 text-sm">Exactamente qué hacer desde ahora hasta tener la propiedad</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-[#D4E157]">
+                                <span class="text-gray-900 font-bold">✓</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-1">Protección legal</h3>
+                            <p class="text-gray-600 text-sm">Equipo de abogados protegiendo tu inversión</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-[#2D5016]/5 to-[#5FA55D]/10 rounded-2xl p-12 flex items-center justify-center min-h-[400px] animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">👥</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Tu equipo dedicado</h3>
+                        <p class="text-gray-600">Abogado • Asesor fiscal • Gestor especializado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-20 px-6 bg-gradient-to-b from-[#2D5016]/5 to-[#5FA55D]/5">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                Qué ganas en 15 minutos
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl">
+                Una videollamada que puede cambiar tu situación financiera.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0s">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Análisis profundo</h3>
+                    <p class="text-sm text-gray-600">Tu propiedad específica evaluada por expertos</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Proyección real</h3>
+                    <p class="text-sm text-gray-600">Cuánto puedes ganar y cuál es el mejor plan</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="text-4xl mb-4">📋</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Hoja de ruta</h3>
+                    <p class="text-sm text-gray-600">Pasos claros desde hoy hasta tener la propiedad</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Protección total</h3>
+                    <p class="text-sm text-gray-600">Cómo estás protegido legalmente en cada paso</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0.4s">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Tu equipo</h3>
+                    <p class="text-sm text-gray-600">Conocerás quién será tu abogado y asesor</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-gray-200 animate-fade-in-up" style="animation-delay: 0.5s">
+                    <div class="text-4xl mb-4">✨</div>
+                    <h3 class="font-bold text-gray-900 mb-2">Sin compromiso</h3>
+                    <p class="text-sm text-gray-600">Es una consulta. Tú decides después</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="py-20 px-6" id="testimonials">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                Números que hablan
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl">
+                Más de 15 años ganando la confianza de inversores.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center animate-fade-in-up" style="animation-delay: 0s">
+                    <div class="text-5xl font-bold text-[#5FA55D] mb-2">21,000+</div>
+                    <p class="text-gray-600">Propiedades exitosas</p>
+                </div>
+
+                <div class="text-center animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="text-5xl font-bold text-[#5FA55D] mb-2">15+</div>
+                    <p class="text-gray-600">Años en el mercado</p>
+                </div>
+
+                <div class="text-center animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="text-5xl font-bold text-[#5FA55D] mb-2">98%</div>
+                    <p class="text-gray-600">Satisfacción de clientes</p>
+                </div>
+
+                <div class="text-center animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="text-5xl font-bold text-[#5FA55D] mb-2">4.8★</div>
+                    <p class="text-gray-600">Calificación promedio</p>
+                </div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl border-l-4 border-[#D4E157] animate-fade-in-up" style="animation-delay: 0s">
+                    <div class="text-[#D4E157] mb-4">★★★★★</div>
+                    <p class="text-gray-700 mb-6 italic">"Encontré una propiedad barata pero no sabía cómo empezar. El equipo me explicó todo en una llamada. Hoy tengo una propiedad rentando."</p>
+                    <div>
+                        <p class="font-bold text-gray-900">Carlos M.</p>
+                        <p class="text-sm text-gray-600">Inversor, Madrid</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border-l-4 border-[#D4E157] animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="text-[#D4E157] mb-4">★★★★★</div>
+                    <p class="text-gray-700 mb-6 italic">"Tenía miedo de todas las complejidades legales. Su abogado disipó cada duda. El proceso fue transparente y rápido."</p>
+                    <div>
+                        <p class="font-bold text-gray-900">María L.</p>
+                        <p class="text-sm text-gray-600">Primera inversión, Barcelona</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border-l-4 border-[#D4E157] animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="text-[#D4E157] mb-4">★★★★★</div>
+                    <p class="text-gray-700 mb-6 italic">"Sus asesoradores me salvaron de cometer un error. Parecía increíble pero había problemas ocultos. Con ellos encontré mejor oportunidad."</p>
+                    <div>
+                        <p class="font-bold text-gray-900">Juan P.</p>
+                        <p class="text-sm text-gray-600">Inversor experimentado, Valencia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="py-20 px-6 bg-gray-50" id="process">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                El proceso es simple
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl">
+                Desde ahora hasta tener tu propiedad: 4 pasos claros.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="relative animate-fade-in-up" style="animation-delay: 0s">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-full bg-[#D4E157] text-gray-900 font-bold text-xl flex items-center justify-center mb-4">
+                            1
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2">Videollamada</h3>
+                        <p class="text-sm text-gray-600">15 minutos con experto analizando TU propiedad</p>
+                    </div>
+                </div>
+
+                <div class="relative animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-full bg-[#D4E157] text-gray-900 font-bold text-xl flex items-center justify-center mb-4">
+                            2
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2">Plan personalizado</h3>
+                        <p class="text-sm text-gray-600">Análisis escrito con costos, fiscalidad y estrategia</p>
+                    </div>
+                    <div class="hidden md:block absolute top-7 left-[60%] w-[40%] h-0.5 bg-gradient-to-r from-[#D4E157] to-transparent"></div>
+                </div>
+
+                <div class="relative animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-full bg-[#D4E157] text-gray-900 font-bold text-xl flex items-center justify-center mb-4">
+                            3
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2">Acompañamiento</h3>
+                        <p class="text-sm text-gray-600">Equipo se encarga de toda la documentación legal</p>
+                    </div>
+                    <div class="hidden md:block absolute top-7 left-[60%] w-[40%] h-0.5 bg-gradient-to-r from-[#D4E157] to-transparent"></div>
+                </div>
+
+                <div class="relative animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-full bg-[#D4E157] text-gray-900 font-bold text-xl flex items-center justify-center mb-4">
+                            4
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-2">Propiedad tuya</h3>
+                        <p class="text-sm text-gray-600">Transferencia completa. Eres dueño sin dudas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 px-6" id="faq">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                Preguntas frecuentes
+            </h2>
+            <p class="text-lg text-gray-600 mb-12">
+                Resolvemos tus dudas antes de la llamada.
+            </p>
+
+            <div class="space-y-4">
+                <div class="border border-gray-200 rounded-lg overflow-hidden" onclick="toggleFaq(0)">
+                    <button class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+                        <span class="font-semibold text-gray-900 text-left">¿Cuánto cuesta la videollamada?</span>
+                        <span class="text-[#5FA55D] font-bold text-xl ml-4">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4 bg-gray-50 text-gray-600">
+                        Es totalmente gratuita. Sin costos, sin compromisos, sin obligación.
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-lg overflow-hidden" onclick="toggleFaq(1)">
+                    <button class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+                        <span class="font-semibold text-gray-900 text-left">¿Cuánto tiempo tarda desde la llamada hasta tener la propiedad?</span>
+                        <span class="text-[#5FA55D] font-bold text-xl ml-4">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4 bg-gray-50 text-gray-600">
+                        Típicamente 2-4 meses. En la llamada te explicamos la timeline exacta para tu propiedad.
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-lg overflow-hidden" onclick="toggleFaq(2)">
+                    <button class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+                        <span class="font-semibold text-gray-900 text-left">¿Qué pasa si decido no continuar después?</span>
+                        <span class="text-[#5FA55D] font-bold text-xl ml-4">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4 bg-gray-50 text-gray-600">
+                        Absolutamente nada. Es una consulta. Tendrás la información que necesitas con nosotros o sin nosotros.
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-lg overflow-hidden" onclick="toggleFaq(3)">
+                    <button class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+                        <span class="font-semibold text-gray-900 text-left">¿Cuáles son los costos reales?</span>
+                        <span class="text-[#5FA55D] font-bold text-xl ml-4">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4 bg-gray-50 text-gray-600">
+                        Varían según la propiedad, pero incluyen aranceles judiciales, gastos legales y fiscales. Te damos el desglose completo.
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-lg overflow-hidden" onclick="toggleFaq(4)">
+                    <button class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+                        <span class="font-semibold text-gray-900 text-left">¿Qué pasa si no gano la subasta?</span>
+                        <span class="text-[#5FA55D] font-bold text-xl ml-4">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4 bg-gray-50 text-gray-600">
+                        Te ayudamos a identificar la SIGUIENTE oportunidad. Acceso a catálogo exclusivo de propiedades.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section id="form" class="py-20 px-6 bg-gray-50">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-center">
+                Reserva tu videollamada gratuita
+            </h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-xl text-center mx-auto">
+                Completa los datos y te confirmaremos la cita en 24 horas.
+            </p>
+
+            <div class="bg-white p-8 md:p-12 rounded-xl border border-gray-200 shadow-sm">
+                <!-- Bitrix form will be inserted here -->
+                <p class="text-center text-gray-600 py-8">
+                    El formulario de Bitrix se integrará aquí cuando lo proporciones.
+                </p>
+            </div>
+
+            <div class="text-center mt-8">
+                <p class="text-sm text-gray-600">
+                    ✓ Llamada de 15 minutos con experto<br>
+                    ✓ Análisis personalizado de tu propiedad<br>
+                    ✓ Sin costos ni compromisos
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-24 px-6 bg-gradient-to-b from-[#2D5016] to-[#1a3a0d] text-white">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-5xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
+                No esperes a que se la compre otro
+            </h2>
+
+            <p class="text-xl text-green-100 mb-8 max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 0.1s">
+                Las oportunidades reales en subastas tienen tiempo limitado. Asegúrate ahora con una consulta gratuita.
+            </p>
+
+            <button onclick="document.getElementById('form').scrollIntoView()" class="px-10 py-5 bg-[#D4E157] text-gray-900 font-bold text-lg rounded-lg shadow-2xl hover:shadow-3xl transition-all duration-200 hover:scale-105 mb-6 animate-fade-in-up" style="animation-delay: 0.2s">
+                Reservar mi videollamada
+            </button>
+
+            <p class="text-sm text-green-200 animate-fade-in-up" style="animation-delay: 0.3s">
+                ✓ Gratuita • ✓ Sin compromiso • ✓ Respuesta en 24 horas
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8 pb-8 border-t border-gray-800">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-[#D4E157] rounded-lg"></div>
+                        <span class="font-bold text-white">SubastaFácil</span>
+                    </div>
+                    <p class="text-sm">Acompañamiento en subastas judiciales desde 2009.</p>
+                </div>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="hover:text-white transition">Términos y condiciones</a>
+                    <a href="#" class="hover:text-white transition">Política de privacidad</a>
+                    <a href="#" class="hover:text-white transition">Contacto</a>
+                </div>
+            </div>
+            <p class="text-center text-xs text-gray-500">
+                © 2024 SubastaFácil. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // FAQ toggle
+        function toggleFaq(index) {
+            const faqContents = document.querySelectorAll('.faq-content');
+            const faqContent = faqContents[index];
+
+            // Close all other faqs
+            faqContents.forEach((content, i) => {
+                if (i !== index) {
+                    content.classList.add('hidden');
+                    content.parentElement.querySelector('button span:last-child').textContent = '+';
+                }
+            });
+
+            // Toggle current faq
+            faqContent.classList.toggle('hidden');
+            const button = faqContent.parentElement.querySelector('button span:last-child');
+            button.textContent = faqContent.classList.contains('hidden') ? '+' : '−';
+        }
+
+        // Observe elements for fade-in animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
