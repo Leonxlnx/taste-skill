@@ -117,6 +117,17 @@ npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-fro
 
 You can also copy any `SKILL.md` into your project or paste it into ChatGPT / Codex conversations.
 
+### Claude Code plugin marketplace
+
+Claude Code can install Taste Skill as a marketplace-backed plugin:
+
+```text
+/plugin marketplace add Leonxlnx/taste-skill
+/plugin install taste-skill@taste-skill
+```
+
+This keeps the existing `skills/` layout unchanged while making the skills discoverable through Claude Code's `/plugin` UI.
+
 ### Updating from the previous version
 
 The default `taste-skill` (install name `design-taste-frontend`) is now **v2 (experimental)**, a substantial rewrite of the original v1. If you already have v1 installed, just re-run the install command and you will be upgraded:
@@ -148,6 +159,7 @@ The `Install name` column is the exact value you pass to `--skill`.
 | **gpt-tasteskill** | `gpt-taste` | Stricter variant for GPT/Codex: higher layout variance, stronger GSAP direction, aggressive anti-slop. |
 | **image-to-code-skill** | `image-to-code` | Image-first pipeline: generate site references, analyze them, then implement the frontend to match. |
 | **redesign-skill** | `redesign-existing-projects` | Existing projects: audit the UI first, then fix layout, spacing, hierarchy, styling. |
+| **redesign-imagegen-codex** | `redesign-imagegen-codex` | Screenshot-first redesign workflow for Codex: capture the current UI, generate redesigned references, then implement targeted upgrades. |
 | **soft-skill** | `high-end-visual-design` | Polished, calm, expensive UI with softer contrast, whitespace, premium fonts, spring motion. |
 | **output-skill** | `full-output-enforcement` | When the model ships half-finished work: full output, no placeholder comments. |
 | **minimalist-skill** | `minimalist-ui` | Editorial product UI (Notion/Linear vibes), restrained palette, crisp structure. |
@@ -162,7 +174,7 @@ These produce design images only (no code). Use with ChatGPT Images, Codex image
 | --- | --- | --- |
 | **imagegen-frontend-web** | `imagegen-frontend-web` | Website comps: hero, landing, multi-section with strong typography, spacing, anti-slop art direction. |
 | **imagegen-frontend-mobile** | `imagegen-frontend-mobile` | Mobile screens and flows: iOS/Android/cross-platform, mockups, readable type, coherent sets. |
-| **brandkit** | `brandkit` | Brand-kit boards: logo directions, palettes, type, identity applications across categories. |
+| **brandkit** | `brandkit` | Brand-kit boards for new or existing brands: logo directions, palettes, type, identity applications across categories. |
 
 ### Which one should I use?
 
@@ -171,6 +183,7 @@ These produce design images only (no code). Use with ChatGPT Images, Codex image
 - Use **gpt-taste** when you want the stricter GPT/Codex-oriented rules and motion/layout enforcement. 
 - Use **image-to-code-skill** for image → analyze → code website workflows. 
 - Use **redesign-skill** to improve an existing codebase instead of greenfield styling. 
+- Use **redesign-imagegen-codex** when Codex can open the current UI and should redesign from screenshots before touching code.
 - Add **soft-skill**, **minimalist-skill**, or **brutalist-skill** when the visual direction is already chosen. 
 - Add **output-skill** if the agent keeps truncating output. 
 - Use **imagegen-frontend-web**, **imagegen-frontend-mobile**, or **brandkit** when the deliverable is **images** (comps, flows, identity boards), then pass results to your coding agent.
