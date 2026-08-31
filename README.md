@@ -148,6 +148,7 @@ The `Install name` column is the exact value you pass to `--skill`.
 | **gpt-tasteskill** | `gpt-taste` | Stricter variant for GPT/Codex: higher layout variance, stronger GSAP direction, aggressive anti-slop. |
 | **image-to-code-skill** | `image-to-code` | Image-first pipeline: generate site references, analyze them, then implement the frontend to match. |
 | **redesign-skill** | `redesign-existing-projects` | Existing projects: audit the UI first, then fix layout, spacing, hierarchy, styling. |
+| **mobile-product-taste** | `mobile-product-taste` | Native mobile workflow: audit an Android/iOS product, generate coherent screen references, stop for approval, then implement in the existing native stack with a validated design handoff. |
 | **soft-skill** | `high-end-visual-design` | Polished, calm, expensive UI with softer contrast, whitespace, premium fonts, spring motion. |
 | **output-skill** | `full-output-enforcement` | When the model ships half-finished work: full output, no placeholder comments. |
 | **minimalist-skill** | `minimalist-ui` | Editorial product UI (Notion/Linear vibes), restrained palette, crisp structure. |
@@ -171,6 +172,7 @@ These produce design images only (no code). Use with ChatGPT Images, Codex image
 - Use **gpt-taste** when you want the stricter GPT/Codex-oriented rules and motion/layout enforcement. 
 - Use **image-to-code-skill** for image → analyze → code website workflows. 
 - Use **redesign-skill** to improve an existing codebase instead of greenfield styling. 
+- Use **mobile-product-taste** when a native Android or iOS product needs one workflow from audit and prototype approval through implementation and device verification.
 - Add **soft-skill**, **minimalist-skill**, or **brutalist-skill** when the visual direction is already chosen. 
 - Add **output-skill** if the agent keeps truncating output. 
 - Use **imagegen-frontend-web**, **imagegen-frontend-mobile**, or **brandkit** when the deliverable is **images** (comps, flows, identity boards), then pass results to your coding agent.
