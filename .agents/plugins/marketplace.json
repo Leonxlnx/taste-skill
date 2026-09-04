@@ -1,0 +1,20 @@
+{
+  "name": "taste-skill",
+  "interface": {
+    "displayName": "Taste Skill"
+  },
+  "plugins": [
+    {
+      "name": "taste-skill",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

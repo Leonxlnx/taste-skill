@@ -117,6 +117,26 @@ npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-fro
 
 You can also copy any `SKILL.md` into your project or paste it into ChatGPT / Codex conversations.
 
+### Installing in Codex as a plugin
+
+This repo also includes a Codex plugin manifest and marketplace entry, so you can install all bundled skills as one plugin without copying individual `SKILL.md` files.
+
+1. Add this GitHub repository as a Codex marketplace:
+
+```bash
+codex plugin marketplace add Leonxlnx/taste-skill
+```
+
+2. Install the plugin from that marketplace:
+
+```bash
+codex plugin add taste-skill@taste-skill
+```
+
+3. Start a new Codex task after installing so the newly added skills are picked up cleanly.
+
+For local development, run `codex plugin marketplace add .` from the repository root instead. The marketplace definition lives at `.agents/plugins/marketplace.json`, and the Codex plugin manifest lives at `.codex-plugin/plugin.json`.
+
 ### Updating from the previous version
 
 The default `taste-skill` (install name `design-taste-frontend`) is now **v2 (experimental)**, a substantial rewrite of the original v1. If you already have v1 installed, just re-run the install command and you will be upgraded:
