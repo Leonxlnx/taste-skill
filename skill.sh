@@ -1,25 +1,32 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
+# Resolve a taste-skill install name to its SKILL.md path.
+#
+#   ./skill.sh                     list every install name
+#   ./skill.sh design-taste-frontend   print skills/design-taste-frontend/SKILL.md
+#
+# The folder name IS the install name, so the registry is read from disk and
+# cannot drift out of sync with the repo.
 
-# Local skill registry
-declare -A SKILLS=(
-  [taste-skill]="skills/taste-skill/SKILL.md"
-  [taste-skill-v1]="skills/taste-skill-v1/SKILL.md"
-  [gpt-taste]="skills/gpt-tasteskill/SKILL.md"
-  [image-to-code-skill]="skills/image-to-code-skill/SKILL.md"
-  [imagegen-frontend-web]="skills/imagegen-frontend-web/SKILL.md"
-  [imagegen-frontend-mobile]="skills/imagegen-frontend-mobile/SKILL.md"
-  [brandkit]="skills/brandkit/SKILL.md"
-  [redesign-skill]="skills/redesign-skill/SKILL.md"
-  [soft-skill]="skills/soft-skill/SKILL.md"
-  [output-skill]="skills/output-skill/SKILL.md"
-  [minimalist-skill]="skills/minimalist-skill/SKILL.md"
-  [brutalist-skill]="skills/brutalist-skill/SKILL.md"
-  [stitch-skill]="skills/stitch-skill/SKILL.md"
-)
+set -eu
 
-if [[ $# -eq 0 ]]; then
-  echo "Usage: source ./skill.sh <skill-name>"
-  echo "Available skills: ${!SKILLS[@]}"
-else
-  echo "${SKILLS[$1]}"
+root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if [ "$#" -eq 0 ]; then
+  echo "Usage: ./skill.sh <install-name>"
+  echo "Available skills:"
+  for dir in "$root"/skills/*/; do
+    [ -f "$dir/SKILL.md" ] || continue
+    echo "  $(basename "$dir")"
+  done
+  exit 0
 fi
+
+rel="skills/$1/SKILL.md"
+
+if [ ! -f "$root/$rel" ]; then
+  echo "skill.sh: unknown skill '$1'" >&2
+  echo "Run './skill.sh' with no arguments to list available skills." >&2
+  exit 1
+fi
+
+echo "$rel"

@@ -9,12 +9,16 @@ A skill is a folder containing a `SKILL.md` file with:
 - **YAML front-matter:** Contains `name` and a precise `description`. This metadata acts as the discovery hook — the agent reads only this during initialization (~100 tokens per skill).
 - **Markdown body:** Full workflows, rules, and instructions. Loaded on-demand only when the agent determines the skill is relevant.
 
-This architecture yields a documented 35% reduction in average context usage and prevents context dilution. However, discovery reliability depends on the specificity of the YAML description:
+The saving is structural rather than measured: only the front-matter is resident, so a 20k-token skill body costs ~100 tokens until the agent actually needs it. We have no benchmark for the size of that saving in practice and the "35% reduction" previously quoted here had no source.
 
-| Description Quality | Discovery Success Rate |
-|:---|:---:|
-| Vague ("Helps with designing APIs") | ~68% |
-| Specific ("Design RESTful HTTP APIs with OpenAPI specs, focusing on versioning, error codes, and backward compatibility") | ~90% |
+Discovery reliability does depend on how specific the `description` is. Stated qualitatively, because we have not measured it:
+
+| Description quality | Effect on discovery |
+|:---|:---|
+| Vague ("Helps with designing APIs") | The agent has nothing to match a request against; the skill is loaded inconsistently or not at all. |
+| Specific ("Design RESTful HTTP APIs with OpenAPI specs, focusing on versioning, error codes, and backward compatibility") | Names the nouns a user would actually type, so the match is reliable. |
+
+Write the description as *what it does plus when to use it*, and put the trigger words a user would say into it. See Anthropic's authoring guidance: https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview
 
 ## Model Context Protocol (MCP)
 

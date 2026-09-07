@@ -563,7 +563,7 @@ Good text:
 - one tagline
 - one URL
 - one command
-- 2–5 section labels
+- 2-5 section labels
 - short UI chips
 
 Bad text:

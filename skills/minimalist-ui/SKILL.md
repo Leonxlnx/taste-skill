@@ -1,6 +1,6 @@
 ---
 name: minimalist-ui
-description: Clean editorial-style interfaces. Warm monochrome palette, typographic contrast, flat bento grids, muted pastels. No gradients, no heavy shadows.
+description: Clean editorial product interfaces in the Notion/Linear register - warm monochrome palette, typographic contrast, flat bento grids, muted pastels, no gradients, no heavy shadows. Use when the brief asks for minimal, editorial, restrained, or documentation-like UI. Pick `high-end-visual-design` when the brief wants depth and softness, or `industrial-brutalist-ui` when it wants raw contrast.
 ---
 
 # Protocol: Premium Utilitarian Minimalism UI Architect
@@ -67,7 +67,7 @@ Color is a scarce resource, utilized only for semantic meaning or subtle accents
 - Hero & Section Backgrounds: Sections should not feel empty and flat. Use subtle full-width background imagery at very low opacity, soft radial light spots (`radial-gradient` with warm tones at `opacity: 0.03`), or minimal geometric line patterns to add depth without breaking the clean aesthetic.
 
 ## 7. Subtle Motion & Micro-Animations
-Motion should feel invisible — present but never distracting. The goal is quiet sophistication, not spectacle.
+Motion should feel invisible - present but never distracting. The goal is quiet sophistication, not spectacle.
 - Scroll Entry: Elements fade in gently as they enter the viewport. Use `translateY(12px)` + `opacity: 0` resolving over `600ms` with `cubic-bezier(0.16, 1, 0.3, 1)`. Use `IntersectionObserver`, never `window.addEventListener('scroll')`.
 - Hover States: Cards lift with an ultra-subtle shadow shift (`box-shadow` transitioning from `0 0 0` to `0 2px 8px rgba(0,0,0,0.04)` over `200ms`). Buttons respond with `scale(0.98)` on `:active`.
 - Staggered Reveals: Lists and grid items enter with a cascade delay (`animation-delay: calc(var(--index) * 80ms)`). Never mount everything at once.
@@ -81,5 +81,5 @@ When tasked with writing frontend code (HTML, React, Tailwind, Vue) or designing
 3. Apply the custom typographic hierarchy and monochromatic color variables immediately.
 4. Ensure every card, divider, and border adheres strictly to the `1px solid #EAEAEA` rule.
 5. Add scroll-entry animations to all major content blocks.
-6. Ensure sections have visual depth through imagery, ambient gradients, or subtle textures — no empty flat backgrounds.
+6. Ensure sections have visual depth through imagery, ambient gradients, or subtle textures - no empty flat backgrounds.
 7. Provide code that reflects this high-end, uncluttered, editorial aesthetic natively without requiring manual adjustments.

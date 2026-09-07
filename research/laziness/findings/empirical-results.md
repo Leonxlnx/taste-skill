@@ -1,58 +1,69 @@
 # Empirical Results
 
-## 2025 Controlled Experiments
+**Scope note.** This file holds only results that trace to a citable source in
+[`references.md`](references.md). Earlier revisions of this page reported an
+unsourced "December 2025 three-part controlled study" and a table of prompt
+stimuli miscredited to Microsoft Research; both have been removed rather than
+re-dressed. Where the honest answer is "observed but not established", it says
+so.
 
-A controlled study published in December 2025 measured output truncation across several frontier models, including GPT-4 variants and DeepSeek. Three experiments were conducted:
+---
 
-### Experiment A: Multi-Part Instruction Compliance
+## Prompt stimuli that measurably change output
 
-Models were given complex prompts with multiple explicit requirements (formatting constraints, length requirements, mandatory sections). Results:
+### Emotional stimuli (EmotionPrompt, arXiv:2307.11760)
 
-- No model fully satisfied both length requirements and all sub-part instructions natively
-- Models frequently omitted mandatory output sections
-- Required formatting constraints were routinely skipped
-- Explicit length requirements were consistently undershot
+Appending an emotional clause to a prompt ("This is very important to my
+career", "You'd better be sure") measurably improved output across three
+evaluations:
 
-### Experiment B: Decoding Suboptimality
-
-Tested whether truncated outputs resulted from suboptimal token selection (the model "knowing" the right answer but selecting a worse token). Results:
-
-- Limited evidence of decoding suboptimality on simple reasoning tasks
-- The model's greedy, truncated output generally aligned with its highest-confidence solution
-- Truncation is a deliberate behavioral choice, not a decoding failure
-
-### Experiment C: Context Degradation
-
-Tested whether models lose track of instructions during long, multi-turn conversations. Results:
-
-- Surprising resilience against context degradation during 200-turn conversational tests
-- Models maintained key facts and instructions significantly better than hypothesized
-- Context loss is not the primary cause of truncation
-
-### Key Conclusion
-
-Laziness is not a failure of memory, context processing, or core model capabilities. It is a behavioral artifact triggered by:
-1. Instruction complexity exceeding internal effort thresholds
-2. Aggressively calibrated stopping pressure
-3. Economic constraints embedded in the alignment layer
-
-## Prompt Stimulus Effectiveness (Microsoft Research)
-
-Controlled testing of psychological prompt stimuli documented in a Microsoft Research study:
-
-| Stimulus | Measured Effect |
+| Evaluation | Reported improvement |
 |:---|:---|
-| Financial incentive framing ("$200 tip") | +45% output quality and length |
-| Step-by-step instruction ("take a deep breath") | Accuracy: 34% to 80% on logic tasks |
-| Stakes framing ("critical to my career") | +10% average performance |
-| Combined (multiple stimuli) | Up to +115% overall performance |
+| Instruction Induction | +8.00% relative |
+| BIG-Bench | +115% |
+| Human study (performance, truthfulness, responsibility) | +10.9% average |
 
-These effects are reproducible and stem from statistical correlations in the training data between stakes language and high-effort human outputs.
+The +115% figure is the paper's BIG-Bench result for emotional stimuli. It is
+not a "combined stimuli" number and it does not generalize to every benchmark -
+the same paper's Instruction Induction gain is 8%. Quote the benchmark with the
+number or the number means nothing.
 
-## Seasonal Output Variation
+**What this does not show:** that financial framing works. EmotionPrompt tested
+emotional stimuli only. The widely repeated "$200 tip" result is not from this
+paper and has no study behind it - see `references.md`.
 
-Statistical analysis of ChatGPT outputs during November-December 2023 versus January-March 2024 confirmed:
+### Optimized instructions (OPRO, arXiv:2309.03409)
 
-- Measurable decrease in average output length during December
-- Correlation with reduced work output in the training data during holiday periods
-- Output length increased when the system prompt explicitly stated a non-winter month
+Google DeepMind's OPRO used an LLM to search prompt space and surfaced "take a
+deep breath and work on this problem step-by-step", which outperformed
+human-written instructions by **up to 8% on GSM8K** and **up to 50% on
+Big-Bench Hard**.
+
+The transferable lesson is not the phrase. It is that instruction wording is
+worth optimizing empirically, and that phrasings which sound equivalent to a
+human are not equivalent to a model.
+
+## Where truncation actually comes from
+
+Honest status: **not settled**. The mechanisms below are plausible and partly
+supported; none is established well enough to state as fact in a skill file.
+
+- **Long-context retrieval degrades in the middle.** *Lost in the Middle*
+  (arXiv:2307.03172) shows accuracy drops when the needed content sits in the
+  middle of a long context. This is the best-supported claim in this folder and
+  it has a direct design consequence: put hard rules near the top or the bottom
+  of a SKILL.md, never buried mid-file.
+- **Instruction count degrades compliance.** Widely observed in practice, and
+  the reason this repo enforces a deliverable count before generating (see the
+  `full-output-enforcement` skill). We have no controlled measurement of our own.
+- **Seasonal output variation.** An unreplicated December 2023 community
+  experiment. Interesting; not evidence. Treated here as an open hypothesis.
+
+## Why this folder is small
+
+These skills were written from observed failure modes in production output -
+placeholder comments, skipped sections, three-equal-cards layouts - not derived
+from the literature. The research folder exists to keep that honest, not to
+lend borrowed authority. If a rule in `skills/` cannot be justified by what the
+model actually produced, it should not survive because a citation was attached
+to it afterwards.

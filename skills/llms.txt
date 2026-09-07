@@ -1,13 +1,15 @@
-taste-skill: The default design skill (v2 experimental). Read the brief, infer the design language, tune three dials (VARIANCE / MOTION / DENSITY), and ship landing pages, portfolios, and redesigns that do not look templated. Brief inference, design-system map, em-dash ban, GSAP code skeletons, hard-rules pre-flight check. Actively iterating toward v2.0.0 stable.
-taste-skill-v1: The original v1 of taste-skill, preserved for projects depending on its exact behavior. The current default is `design-taste-frontend` (v2 experimental).
-gpt-taste: Elite Awwwards-level frontend design and GSAP motion skill for premium, deterministic, anti-slop UI generation.
-image-to-code-skill: Image-first frontend skill for generating premium website references, deeply analyzing them, and implementing code to match.
+Every folder name under skills/ IS the install name. There is no second naming scheme.
+
+design-taste-frontend: The default design skill (v2 experimental). Read the brief, infer the design language, tune three dials (VARIANCE / MOTION / DENSITY), and ship landing pages, portfolios, and redesigns that do not look templated. Brief inference, design-system map, em-dash ban, hard-rules pre-flight check. Heavy reference material (motion skeletons, design-system install commands, redesign protocol, Liquid Glass) lives in references/ and is loaded on demand. Actively iterating toward v2.0.0 stable.
+design-taste-frontend-v1: The original v1, frozen for backward compatibility. Use only if you are pinned to it. The current default is design-taste-frontend.
+gpt-taste: Elite Awwwards-level frontend design and GSAP motion skill for premium, deterministic, anti-slop UI generation. Forces layout variance through a binding design plan that names the default it is rejecting.
+image-to-code: Image-first frontend skill for generating premium website references, deeply analyzing them, and implementing code to match.
 imagegen-frontend-web: Image-generation-only skill for creating premium website design reference images. Does not write code.
 imagegen-frontend-mobile: Image-generation-only skill for creating premium mobile app screen concepts and flows. Does not write code.
 brandkit: Image-generation-only skill for creating premium brand-kit overview images with logo concepts, identity systems, color palettes, typography, and mockups. Does not write code.
-redesign-skill: For upgrading existing projects by auditing and fixing design problems.
-soft-skill: Focuses on an expensive, soft UI look with premium fonts, whitespace, depth, and smooth animations.
-output-skill: Prevents AI from being lazy, skipping code blocks, or using placeholder comments.
-minimalist-skill: Enforces clean, editorial-style interfaces (Notion/Linear style) with strict monochrome palettes.
-brutalist-skill: Raw mechanical interfaces, Swiss typography, extreme scale contrast. (Beta)
-stitch-skill: Google Stitch-compatible semantic design rules for premium AI UI generation.
+redesign-existing-projects: For upgrading existing projects by auditing and fixing design problems.
+high-end-visual-design: Focuses on an expensive, soft UI look with premium fonts, whitespace, depth, and smooth animations.
+full-output-enforcement: Prevents AI from being lazy, skipping code blocks, or using placeholder comments.
+minimalist-ui: Enforces clean, editorial-style interfaces (Notion/Linear style) with strict monochrome palettes.
+industrial-brutalist-ui: Raw mechanical interfaces, Swiss typography, extreme scale contrast. (Beta)
+stitch-design-taste: Google Stitch-compatible semantic design rules for premium AI UI generation.

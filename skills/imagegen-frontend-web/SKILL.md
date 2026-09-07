@@ -1,9 +1,9 @@
 ---
 name: imagegen-frontend-web
-description: Elite frontend image-direction skill for generating premium, conversion-aware website design references. CRITICAL OUTPUT RULE — generate ONE separate horizontal image FOR EVERY section. A landing page with 8 sections produces 8 images. Never compress multiple sections into one image. Enforces composition variety (not always left-text / right-image), background-image freedom, varied CTAs, varied hero scales (giant / mid / mini minimalist), narrative concept spine, second-read moments, and a single consistent palette across all images. Optimized for landing pages, marketing sites, and product comps that developers or coding models can accurately recreate.
+description: Elite frontend image-direction skill for generating premium, conversion-aware website design references. CRITICAL OUTPUT RULE - generate ONE separate horizontal image FOR EVERY section. A landing page with 8 sections produces 8 images. Never compress multiple sections into one image. Enforces composition variety (not always left-text / right-image), background-image freedom, varied CTAs, varied hero scales (giant / mid / mini minimalist), narrative concept spine, second-read moments, and a single consistent palette across all images. Optimized for landing pages, marketing sites, and product comps that developers or coding models can accurately recreate.
 ---
 
-# HARD OUTPUT RULE — READ FIRST
+# HARD OUTPUT RULE - READ FIRST
 
 **Generate one separate horizontal image PER section. Always. No exceptions.**
 
@@ -22,7 +22,7 @@ This rule overrides any model default that wants to collapse output into a singl
 
 ---
 
-# HERO COMPOSITION BIAS — READ FIRST
+# HERO COMPOSITION BIAS - READ FIRST
 
 The default **left-text / right-image hero is the most overused AI pattern**. It is allowed, but it should not be your first instinct.
 
@@ -37,7 +37,7 @@ Before reaching for it, consider these alternatives and pick whichever fits the 
 - mini minimalist
 - right-text / left-image (inverted classic)
 
-Use left-text / right-image only when it is genuinely the strongest choice — not by default.
+Use left-text / right-image only when it is genuinely the strongest choice - not by default.
 
 ---
 
@@ -100,13 +100,13 @@ Do not ask the user to edit this file.
 Adapt these values dynamically from the prompt.
 
 Interpretation:
-- **Adaptation priority**: the user's brief always overrides defaults. Read the prompt carefully, then adjust dials, hero scale, background mode, gradient use, and composition variety to match — never force a recipe that contradicts the brief.
+- **Adaptation priority**: the user's brief always overrides defaults. Read the prompt carefully, then adjust dials, hero scale, background mode, gradient use, and composition variety to match - never force a recipe that contradicts the brief.
 - If the user says "clean", reduce density and increase clarity.
 - If the user says "crazy creative", increase variance and art direction.
 - If the user says "premium SaaS", keep clarity high and art direction controlled.
 - If the user says "editorial", allow stronger type and more asymmetry.
-- Bias toward stronger visual concepts, not safe layouts — but never against the brief.
-- Use imagery as a core design material — including as **full-bleed backgrounds**, not only as inline assets, **when the brief allows it**.
+- Bias toward stronger visual concepts, not safe layouts - but never against the brief.
+- Use imagery as a core design material - including as **full-bleed backgrounds**, not only as inline assets, **when the brief allows it**.
 - Vary composition: do not default to "text left, image right". Move text to bottom-left, center, top-right, etc. across sections.
 - Keep sections breathable. Do not over-pack the page.
 - Prefer slightly more whitespace between sections than default.
@@ -240,14 +240,14 @@ Choose exactly 2:
 - cinematic fade-through energy
 
 ### Composition Anchor (per-section)
-The **left-text / right-image** layout is allowed, but it is the most overused AI pattern — do not use it as the default. Reach for it only when it is the genuinely best fit.
+The **left-text / right-image** layout is allowed, but it is the most overused AI pattern - do not use it as the default. Reach for it only when it is the genuinely best fit.
 
 Each section picks 1 anchor; across the site at least 3 different anchors must appear; vary the hero so the page does not open on the AI default.
 - Centered statement
 - Top-left lead, support bottom-right
 - Bottom-left text over background image
 - Bottom-right CTA cluster
-- Left-third caption + right-two-thirds visual (classic — use sparingly, never twice in a row)
+- Left-third caption + right-two-thirds visual (classic - use sparingly, never twice in a row)
 - Right-third caption + left-two-thirds visual (inverted classic)
 - Centered low (text in lower 40% over hero image)
 - Off-grid editorial offset (asymmetric pull)
@@ -255,11 +255,11 @@ Each section picks 1 anchor; across the site at least 3 different anchors must a
 - Image-as-canvas with text overlaid in a clean safe area
 
 ### Background Mode (per-section)
-Pick 1 per section; vary across the page so it is never all the same mode. Be **confident** with backgrounds — they are a primary tool, not a risk.
+Pick 1 per section; vary across the page so it is never all the same mode. Be **confident** with backgrounds - they are a primary tool, not a risk.
 - Solid surface with inline asset
 - Subtle texture / paper / grid as background
 - Full-bleed image background with tonal overlay (text remains highly readable)
-- Editorial side-image (50/50, 60/40, 40/60 — invertible)
+- Editorial side-image (50/50, 60/40, 40/60 - invertible)
 - Image as the entire visual + text overlaid in a clean safe area
 - Flat color block + small product / detail crop as accent
 - Cinematic tonal gradient (palette-matched, low chroma, professional)
@@ -281,21 +281,21 @@ Pick the CTA style that fits each section, not a default pill every time:
 Across the site, vary CTA style at least once. The page's primary action stays unmistakable.
 
 ### Hero Scale (per-page)
-Pick 1 — must match brand mood:
+Pick 1 - must match brand mood:
 - Giant Statement Hero (massive type, large image, dominant first viewport)
 - Mid Editorial Hero (balanced type/image, cinematic but not screen-filling)
 - Mini Minimalist Hero (tiny logo + short statement + thin CTA, almost no image, lots of negative space)
 
-Mini does not mean weak — it means confident restraint.
+Mini does not mean weak - it means confident restraint.
 
 ### Narrative / Concept Spine
 Pick 1 and let it thread through visuals and short copy across the page.
-- Artifact / collectible — proof, specimen, treasured object framing
-- Journey / pilgrimage — directional flow, waypoint sections, roadmap feeling
-- Tool / precision instrument — machined detail, calibrated UI, tactile controls
-- Living system / garden — organic growth metaphor, branching layout, nurtured tone
-- Stage / spotlight — theatrical contrast, performer + audience framing
-- Archive / dossier — indexed rows, captions, understated authority
+- Artifact / collectible - proof, specimen, treasured object framing
+- Journey / pilgrimage - directional flow, waypoint sections, roadmap feeling
+- Tool / precision instrument - machined detail, calibrated UI, tactile controls
+- Living system / garden - organic growth metaphor, branching layout, nurtured tone
+- Stage / spotlight - theatrical contrast, performer + audience framing
+- Archive / dossier - indexed rows, captions, understated authority
 
 ### Second-Read Moment
 Pick exactly 1 unobvious but legible motif and place it deliberately, once across the page:
@@ -712,7 +712,7 @@ Use one controlled palette across the entire site:
 - 1 accent (used sparingly for CTA / highlight)
 - a neutral scale (background, surface, text, hairline)
 
-Section-level mood shifts must reuse the same palette — no full theme swap per section.
+Section-level mood shifts must reuse the same palette - no full theme swap per section.
 
 ### Background-image harmony
 When using full-bleed image backgrounds:
@@ -744,7 +744,7 @@ Do not retreat to plain white surfaces by default. When the brief, brand mood, o
 - a duotone or graded photo,
 - a tonal gradient,
 - a tactile material,
-or a confident flat color field — picked deliberately, not as decoration.
+or a confident flat color field - picked deliberately, not as decoration.
 
 ### Strong guidance
 - avoid rainbow randomness
@@ -880,13 +880,13 @@ Across the slice, deliberately vary foreground/background intensity at least twi
 Prefer one unmistakable primary action per major viewport tier; secondary actions must look secondary (scale, outline, ghost), not clones of primary.
 
 ### Image variety inside one comp
-Mix at least **two distinct image crops** where multiple sections exist — e.g. macro product + contextual environment, or portrait editorial + widescreen artifact — avoiding one repeated stock silhouette.
+Mix at least **two distinct image crops** where multiple sections exist - e.g. macro product + contextual environment, or portrait editorial + widescreen artifact - avoiding one repeated stock silhouette.
 
 ### Data-viz restraint
 Charts, sparklines, and graphs appear only when the site type logically needs them (analytics, pricing, infra, observability brands). Else keep proof human (quotes, receipts, timelines, screenshots of real workflows).
 
 ### Cultural / tonal alignment
-When the brief names an industry or region, steer palette and typographic temperament to match — don’t ship default “neutral SF startup” unless the brief is intentionally generic SaaS.
+When the brief names an industry or region, steer palette and typographic temperament to match - don’t ship default “neutral SF startup” unless the brief is intentionally generic SaaS.
 
 ### Mobile-implied fidelity (even for desktop mocks)
 Maintain tap-friendly hit sizes and readable caption sizes visually; stacking order should imply a sane single-column narrative.
@@ -916,10 +916,10 @@ When the user asks for a frontend design:
 1. infer site type and primary conversion goal
 2. infer number of sections (if unclear, use the defaults from §5: landing page = 6, full website = 8)
 3. **commit out loud** to the section count and announce it ("Generating N horizontal images, one per section")
-4. plan ONE horizontal image PER SECTION — always separate generations, never collapse
+4. plan ONE horizontal image PER SECTION - always separate generations, never collapse
 5. choose Hero Scale for the whole site (giant / mid / mini)
 5. choose a strong visual combination (theme, type, hero arch, section system, motion, narrative spine, second-read moment)
-7. for each section: pick a Composition Anchor, Background Mode, and CTA Variation — vary across sections
+7. for each section: pick a Composition Anchor, Background Mode, and CTA Variation - vary across sections
 8. choose 4 signature components used appropriately across sections
 9. enforce hero minimalism + section size variety (some giant, some mini)
 10. enforce strong image usage including full-bleed backgrounds where it fits

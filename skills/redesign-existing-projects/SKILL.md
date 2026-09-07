@@ -1,6 +1,6 @@
 ---
 name: redesign-existing-projects
-description: Upgrades existing websites and apps to premium quality. Audits current design, identifies generic AI patterns, and applies high-end design standards without breaking functionality. Works with any CSS framework or vanilla CSS.
+description: Upgrades an interface that already exists and already has users. Use when asked to redesign, modernise, clean up, or "make this look better" against a real codebase - it audits the current design first, names the generic AI patterns in it, then applies high-end standards without breaking functionality, URLs, or brand. Works with any CSS framework or vanilla CSS. Not for greenfield pages.
 ---
 
 # Redesign Skill
@@ -9,9 +9,9 @@ description: Upgrades existing websites and apps to premium quality. Audits curr
 
 When applied to an existing project, follow this sequence:
 
-1. **Scan** — Read the codebase. Identify the framework, styling method (Tailwind, vanilla CSS, styled-components, etc.), and current design patterns.
-2. **Diagnose** — Run through the audit below. List every generic pattern, weak point, and missing state you find.
-3. **Fix** — Apply targeted upgrades working with the existing stack. Do not rewrite from scratch. Improve what's there.
+1. **Scan** - Read the codebase. Identify the framework, styling method (Tailwind, vanilla CSS, styled-components, etc.), and current design patterns.
+2. **Diagnose** - Run through the audit below. List every generic pattern, weak point, and missing state you find.
+3. **Fix** - Apply targeted upgrades working with the existing stack. Do not rewrite from scratch. Improve what's there.
 
 ## Design Audit
 
@@ -39,8 +39,8 @@ Check for these problems and fix them:
 - **Flat design with zero texture.** Add subtle noise, grain, or micro-patterns to backgrounds. Pure flat vectors feel sterile.
 - **Perfectly even gradients.** Break the uniformity with radial gradients, noise overlays, or mesh gradients instead of standard linear 45-degree fades.
 - **Inconsistent lighting direction.** Audit all shadows to ensure they suggest a single, consistent light source.
-- **Random dark sections in a light mode page (or vice versa).** A single dark-background section breaking an otherwise light page looks like a copy-paste accident. Either commit to a full dark mode or keep a consistent background tone throughout. If contrast is needed, use a slightly darker shade of the same palette — not a sudden jump to `#111` in the middle of a cream page.
-- **Empty, flat sections with no visual depth.** Sections that are just text on a plain background feel unfinished. Add high-quality background imagery (blurred, overlaid, or masked), subtle patterns, or ambient gradients. Use reliable placeholder sources like `https://picsum.photos/seed/{name}/1920/1080` when real assets are not available. Experiment with background images behind hero sections, feature blocks, or CTAs — even a subtle full-width photo at low opacity adds presence.
+- **Random dark sections in a light mode page (or vice versa).** A single dark-background section breaking an otherwise light page looks like a copy-paste accident. Either commit to a full dark mode or keep a consistent background tone throughout. If contrast is needed, use a slightly darker shade of the same palette - not a sudden jump to `#111` in the middle of a cream page.
+- **Empty, flat sections with no visual depth.** Sections that are just text on a plain background feel unfinished. Add high-quality background imagery (blurred, overlaid, or masked), subtle patterns, or ambient gradients. Use reliable placeholder sources like `https://picsum.photos/seed/{name}/1920/1080` when real assets are not available. Experiment with background images behind hero sections, feature blocks, or CTAs - even a subtle full-width photo at low opacity adds presence.
 
 ### Layout
 
@@ -52,7 +52,7 @@ Check for these problems and fix them:
 - **Cards of equal height forced by flexbox.** Allow variable heights or use masonry when content varies in length.
 - **Uniform border-radius on everything.** Vary the radius: tighter on inner elements, softer on containers.
 - **No overlap or depth.** Elements sit flat next to each other. Use negative margins to create layering and visual depth.
-- **Symmetrical vertical padding.** Top and bottom padding are always identical. Adjust optically — bottom padding often needs to be slightly larger.
+- **Symmetrical vertical padding.** Top and bottom padding are always identical. Adjust optically - bottom padding often needs to be slightly larger.
 - **Dashboard always has a left sidebar.** Try top navigation, a floating command menu, or a collapsible panel instead.
 - **Missing whitespace.** Double the spacing. Let the design breathe. Dense layouts work for data dashboards, not for marketing pages.
 - **Buttons not bottom-aligned in card groups.** When cards have different content lengths, CTAs end up at random heights. Pin buttons to the bottom of each card so they form a clean horizontal line regardless of content above.
@@ -139,7 +139,7 @@ When upgrading a project, pull from these high-impact techniques to replace gene
 - **Text mask reveals.** Large typography acting as a window to video or animated imagery behind it.
 
 ### Layout Upgrades
-- **Broken grid / asymmetry.** Elements that deliberately ignore column structure — overlapping, bleeding off-screen, or offset with calculated randomness.
+- **Broken grid / asymmetry.** Elements that deliberately ignore column structure - overlapping, bleeding off-screen, or offset with calculated randomness.
 - **Whitespace maximization.** Aggressive use of negative space to force focus on a single element.
 - **Parallax card stacks.** Sections that stick and physically stack over each other during scroll.
 - **Split-screen scroll.** Two halves of the screen sliding in opposite directions.
@@ -160,13 +160,13 @@ When upgrading a project, pull from these high-impact techniques to replace gene
 
 Apply changes in this order for maximum visual impact with minimum risk:
 
-1. **Font swap** — biggest instant improvement, lowest risk
-2. **Color palette cleanup** — remove clashing or oversaturated colors
-3. **Hover and active states** — makes the interface feel alive
-4. **Layout and spacing** — proper grid, max-width, consistent padding
-5. **Replace generic components** — swap cliche patterns for modern alternatives
-6. **Add loading, empty, and error states** — makes it feel finished
-7. **Polish typography scale and spacing** — the premium final touch
+1. **Font swap** - biggest instant improvement, lowest risk
+2. **Color palette cleanup** - remove clashing or oversaturated colors
+3. **Hover and active states** - makes the interface feel alive
+4. **Layout and spacing** - proper grid, max-width, consistent padding
+5. **Replace generic components** - swap cliche patterns for modern alternatives
+6. **Add loading, empty, and error states** - makes it feel finished
+7. **Polish typography scale and spacing** - the premium final touch
 
 ## Rules
 

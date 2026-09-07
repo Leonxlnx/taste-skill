@@ -1,6 +1,6 @@
 ---
 name: high-end-visual-design
-description: Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic.
+description: Polished, expensive-feeling UI - premium fonts, generous whitespace, layered depth, soft shadows, spring motion. Use when the brief asks for something calm, refined, luxurious, or "expensive", or when AI-built UI looks cheap and generic and the direction wanted is softness rather than edge. Pick `industrial-brutalist-ui` for raw and mechanical instead, `minimalist-ui` for flat editorial restraint, or `design-taste-frontend` when the visual direction is not chosen yet.
 ---
 
 # Agent Skill: Principal UI/UX Architect & Motion Choreographer (Awwwards-Tier)
@@ -34,7 +34,7 @@ Before writing code, silently "roll the dice" and select ONE combination from th
 3. **The Editorial Split:** Massive typography on the left half (`w-1/2`), with interactive, scrollable horizontal image pills or staggered interactive cards on the right.
    - **Mobile Collapse:** Converts to a full-width vertical stack (`w-full`). Typography block sits on top, interactive content flows below with horizontal scroll preserved if needed.
 
-**Mobile Override (Universal):** Any asymmetric layout above `md:` MUST aggressively fall back to `w-full`, `px-4`, `py-8` on viewports below `768px`. Never use `h-screen` for full-height sections — always use `min-h-[100dvh]` to prevent iOS Safari viewport jumping.
+**Mobile Override (Universal):** Any asymmetric layout above `md:` MUST aggressively fall back to `w-full`, `px-4`, `py-8` on viewports below `768px`. Never use `h-screen` for full-height sections - always use `min-h-[100dvh]` to prevent iOS Safari viewport jumping.
 
 ## 4. HAPTIC MICRO-AESTHETICS (COMPONENT MASTERY)
 
@@ -67,11 +67,11 @@ Never use default transitions. All motion must simulate real-world mass and spri
 
 ### C. Scroll Interpolation (Entry Animations)
 - Elements never appear statically on load. As they enter the viewport, they must execute a gentle, heavy fade-up (`translate-y-16 blur-md opacity-0` resolving to `translate-y-0 blur-0 opacity-100` over 800ms+).
-- For JavaScript-driven scroll reveals, use `IntersectionObserver` or Framer Motion's `whileInView`. Never use `window.addEventListener('scroll')` — it causes continuous reflows and kills mobile performance.
+- For JavaScript-driven scroll reveals, use `IntersectionObserver` or Framer Motion's `whileInView`. Never use `window.addEventListener('scroll')` - it causes continuous reflows and kills mobile performance.
 
 ## 6. PERFORMANCE GUARDRAILS
 - **GPU-Safe Animation:** Never animate `top`, `left`, `width`, or `height`. Animate exclusively via `transform` and `opacity`. Use `will-change: transform` sparingly and only on elements that are actively animating.
-- **Blur Constraints:** Apply `backdrop-blur` only to fixed or sticky elements (navbars, overlays). Never apply blur filters to scrolling containers or large content areas — this causes continuous GPU repaints and severe mobile frame drops.
+- **Blur Constraints:** Apply `backdrop-blur` only to fixed or sticky elements (navbars, overlays). Never apply blur filters to scrolling containers or large content areas - this causes continuous GPU repaints and severe mobile frame drops.
 - **Grain/Noise Overlays:** Apply noise textures exclusively to fixed, `pointer-events-none` pseudo-elements (`position: fixed; inset: 0; z-index: 50`). Never attach them to scrolling containers.
 - **Z-Index Discipline:** Do not use arbitrary `z-50` or `z-[9999]`. Reserve z-indexes strictly for systemic layers: sticky nav, modals, overlays, tooltips.
 
@@ -89,10 +89,10 @@ Evaluate your code against this matrix before delivering. This is the last filte
 - [ ] A Vibe Archetype and Layout Archetype from Section 3 were consciously selected and applied
 - [ ] All major cards and containers use the Double-Bezel nested architecture (outer shell + inner core)
 - [ ] CTA buttons use the Button-in-Button trailing icon pattern where applicable
-- [ ] Section padding is at minimum `py-24` — the layout breathes heavily
-- [ ] All transitions use custom cubic-bezier curves — no `linear` or `ease-in-out`
-- [ ] Scroll entry animations are present — no element appears statically
+- [ ] Section padding is at minimum `py-24` - the layout breathes heavily
+- [ ] All transitions use custom cubic-bezier curves - no `linear` or `ease-in-out`
+- [ ] Scroll entry animations are present - no element appears statically
 - [ ] Layout collapses gracefully below `768px` to single-column with `w-full` and `px-4`
-- [ ] All animations use only `transform` and `opacity` — no layout-triggering properties
+- [ ] All animations use only `transform` and `opacity` - no layout-triggering properties
 - [ ] `backdrop-blur` is only applied to fixed/sticky elements, never to scrolling content
 - [ ] The overall impression reads as "$150k agency build", not "template with nice fonts"

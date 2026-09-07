@@ -6,9 +6,95 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ## [Unreleased]
 
+## 2.0.0-experimental.1 - audit pass
+
+An external audit of the repo turned up a handful of things that were quietly
+broken. This release fixes them. **One change is breaking for Claude Code
+plugin users** (skill folders were renamed); `npx skills add --skill` names are
+unchanged.
+
+### Breaking
+
+- **Skill folders now match their install names.** For 10 of 13 skills the
+  folder and the frontmatter `name:` disagreed - `brutalist-skill/` declared
+  `industrial-brutalist-ui`, `taste-skill/` declared `design-taste-frontend`,
+  and so on. Claude Code registers a skill by its **folder** name, so every
+  install name this README advertised was unresolvable there. The folders were
+  renamed to the documented install names, so `npx skills add --skill` keeps
+  working exactly as before and Claude Code now agrees with it.
+  Claude Code users invoking `/taste-skill:brutalist-skill` should switch to
+  `/taste-skill:industrial-brutalist-ui`.
+- `scripts/check-skills.mjs` + a CI job now enforce folder-equals-name, so this
+  cannot drift again.
+
+### Fixed
+
+- **`skill.sh` returned the wrong path on macOS, silently.** It used
+  `declare -A`, which does not exist in bash 3.2 (the macOS system bash); every
+  lookup collapsed to index 0 and returned `stitch-skill`'s path for *any*
+  argument, with exit status 0. Rewritten in POSIX sh, reading the registry
+  from disk, exiting non-zero on an unknown name.
+- **Sticky-Stack skeleton (`design-taste-frontend` §5.A)** put CSS
+  `sticky top-0` and GSAP `pin: true` on the same element and then transformed
+  the pinned element. ScrollTrigger pins by wrapping in a pin-spacer and
+  reverting to the element's original `position` on deactivate, so the two
+  mechanisms fought at the hand-off, and animating a pinned element invalidates
+  the measurements ScrollTrigger pre-computes. Now pins the card and animates an
+  inner wrapper; the selector is scoped so two instances on one page do not
+  cross-select.
+- **Horizontal-Pan skeleton (§5.B)** set `invalidateOnRefresh: true` over a
+  distance captured once in a `const`, so a refresh re-measured nothing. `x` and
+  `end` are now functions. The track also gained `w-max` and `shrink-0` panels -
+  without them the wrapper's `overflow-hidden` compresses the panels,
+  `scrollWidth === clientWidth`, and the section pins without panning.
+- Broken README anchor `#settings-taste-skill-only`.
+
+### Changed
+
+- **`design-taste-frontend` split into progressive-disclosure references.** The
+  SKILL.md was 87KB (~21.8k tokens) loaded in full on every invocation. The
+  appendices, the GSAP skeletons, the redesign protocol and the block-library
+  contract moved to `references/`, loaded only when the brief calls for them.
+  SKILL.md is now ~73KB with pointers, and the reference files carry the detail.
+- **`gpt-taste` §1 no longer asks the model to fake a dice roll.** It required
+  "simulating" `random.choice()` from a seed derived from the prompt - which is
+  deterministic, so the same brief produced the same page forever, directly
+  contradicting the "never default to the same UI twice" rule in the next
+  sentence. Now: actually run a randomizer if you can execute code, otherwise
+  declare the default you are rejecting and why. "Cinematic Center (Highly
+  Preferred)" also stopped being labelled preferred, since biasing option 1 was
+  the exact failure the section exists to prevent.
+- **`full-output-enforcement` no longer tells agents with file tools to stop and
+  wait for "continue".** In a harness with a filesystem, the fix for a long
+  deliverable is to write files and keep going. The `[PAUSED]` handshake is now
+  scoped to plain chat, where the reply is the deliverable.
+- **Research citations corrected.** `research/` quoted a "+45% from a $200 tip"
+  figure credited to Microsoft Research (it is an informal 2023 Twitter
+  experiment, and EmotionPrompt contains no financial framing), credited
+  DeepMind's "take a deep breath" result to Microsoft, cited a "LazyBench"
+  benchmark and a "December 2025 controlled study" that do not appear to exist,
+  and stated the winter-break hypothesis as confirmed when it was never
+  replicated. Real papers are now linked with their actual numbers and
+  benchmarks; every removed claim is listed as removed, with the reason.
+- Skill descriptions rewritten to say *when to use this* and which sibling skill
+  to prefer instead, so 13 overlapping design skills route more predictably.
+- Em-dashes normalised to hyphens across all skill files. The flagship skill
+  bans them outright in generated copy while its siblings used 155 of them,
+  including in `stitch-design-taste/DESIGN.md`, the template it tells other
+  agents to emit.
+- Plugin manifests moved from `1.0.0` (while shipping v2) to
+  `2.0.0-experimental.1`, with author and homepage filled in.
+
+### Added
+
+- `package.json` declaring `sharp`, which `scripts/*.mjs` imported without any
+  manifest to install it from.
+- `.github/workflows/validate.yml` running the skills check and `skill.sh`.
+
 ### Repo
 
-- `taste-skill` (install name `design-taste-frontend`) is now **v2 (experimental)**. The previous v1 is preserved as `taste-skill-v1` (install name `design-taste-frontend-v1`).
+- `design-taste-frontend` is **v2 (experimental)**. The previous v1 is preserved
+  as `design-taste-frontend-v1`.
 - New `CHANGELOG.md` (this file).
 
 ---
@@ -108,4 +194,4 @@ v2 (experimental) is the new default AND it is actively iterating. Refinements m
 
 ## v1 - the original taste-skill
 
-The original release. Dial-driven philosophy, anti-slop rules, reference vocabulary of pattern names. Preserved at `skills/taste-skill-v1/` and installable as `design-taste-frontend-v1`.
+The original release. Dial-driven philosophy, anti-slop rules, reference vocabulary of pattern names. Preserved at `skills/design-taste-frontend-v1/` and installable as `design-taste-frontend-v1`.

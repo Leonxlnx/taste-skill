@@ -1,0 +1,20 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # Folder name must equal the frontmatter name: Claude Code registers by
+      # folder, `npx skills add --skill` uses the frontmatter name. If they
+      # drift, one of the two install paths silently breaks.
+      - run: node scripts/check-skills.mjs
+      - run: sh skill.sh design-taste-frontend

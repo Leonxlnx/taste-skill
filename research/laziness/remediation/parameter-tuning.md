@@ -40,5 +40,5 @@ Google Gemini 3 models replaced the legacy `thinking_budget` (a hard token count
 Important constraints:
 - `thinking_level` and `thinking_budget` are mutually exclusive. Using both in one API call triggers an HTTP 400 error.
 - Even at `low`, Gemini Pro models perform mandatory minimum internal deliberation for safety and alignment.
-- For code generation and complex analysis, set to `medium` or `high` for quality scores consistently exceeding 92-95% compared to baseline.
+- For code generation and complex analysis, prefer `medium` or `high`. (An earlier revision quoted a "92-95% quality score" here; it had no source and has been removed.)
 - Avoid combining extremely low temperature with `high` thinking level, as this can occasionally induce internal reasoning loops.

@@ -2,15 +2,17 @@
 
 ## Psychological Pattern Matching
 
-LLMs do not have emotions or understand monetary incentives. However, specific linguistic patterns in the prompt activate different quality distributions in the model's latent space. Research has documented measurable effects:
+LLMs do not have emotions or understand monetary incentives. However, specific linguistic patterns in the prompt shift which quality distribution the model samples from. Two effects have real sources behind them; a third does not:
 
-| Technique | Documented Effect |
-|:---|:---|
-| "I will tip you $200 for a perfect solution" | Up to 45% increase in output quality and length |
-| "Take a deep breath and solve step by step" | Accuracy improvement from 34% to 80% on logic tasks |
-| "This task is critical to my career" | Average 10% performance increase |
+| Technique | Documented effect | Source |
+|:---|:---|:---|
+| "This is very important to my career" (emotional stimulus) | +8.00% Instruction Induction, +115% BIG-Bench, +10.9% human study | EmotionPrompt, [arXiv:2307.11760](https://arxiv.org/abs/2307.11760) |
+| "Take a deep breath and work on this problem step-by-step" | Up to +8% GSM8K, up to +50% Big-Bench Hard over human-written prompts | OPRO (Google DeepMind), [arXiv:2309.03409](https://arxiv.org/abs/2309.03409) |
+| "I will tip you $200 for a perfect solution" | **No study. Do not cite.** An informal December 2023 Twitter experiment, repeatedly miscredited to Microsoft Research. | see `findings/references.md` |
 
-These phrases work because they are statistically correlated with high-effort, rigorously reviewed content in the training data (academic papers, enterprise codebases, legal documents). The attention mechanism prioritizes the high-quality data distributions associated with these patterns.
+Read the benchmark alongside the number. EmotionPrompt's +115% is its BIG-Bench result; the same paper's Instruction Induction gain is 8%. A percentage quoted without its benchmark is decoration.
+
+The plausible mechanism is that these phrasings correlate, in training data, with high-effort and carefully reviewed content (academic papers, reviewed codebases, legal documents), so they shift sampling toward that distribution. That is an explanation, not a measured finding.
 
 ## Explicit Syntax Binding
 

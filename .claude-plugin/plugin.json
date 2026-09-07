@@ -1,13 +1,13 @@
 {
   "name": "taste-skill",
-  "description": "Frontend design taste skills including brutalist, minimalist, soft, redesign, stitch, and more",
-  "version": "1.0.0",
+  "description": "Anti-slop frontend design skills: taste, brutalist, minimalist, soft, redesign, stitch, image-to-code, and image-generation boards",
+  "version": "2.0.0-experimental.1",
   "author": {
-    "name": "leonxlnx",
-    "email": ""
+    "name": "Leonxlnx",
+    "url": "https://github.com/Leonxlnx"
   },
-  "homepage": "https://github.com/leonxlnx/taste-skill",
-  "repository": "https://github.com/leonxlnx/taste-skill",
+  "homepage": "https://tasteskill.dev",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
   "license": "MIT",
   "keywords": [
     "skills",

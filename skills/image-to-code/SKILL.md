@@ -516,7 +516,7 @@ The hero must feel cinematic, clear, and intentional.
 - keep the hero composition very clean
 - do not overcrowd the first viewport
 - the main headline must feel short and powerful
-- the hero headline should ideally stay within 1–3 lines
+- the hero headline should ideally stay within 1-3 lines
 - do not allow long wrapped hero headlines
 - if the headline starts becoming too long, reduce words instead of forcing more lines
 - keep supporting text concise
