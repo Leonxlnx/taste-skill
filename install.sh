@@ -11,6 +11,8 @@
 #   ./install.sh design-taste-frontend    # link only these (by install name)
 #   ./install.sh --list                   # show install name -> folder
 #   ./install.sh --uninstall              # remove links pointing at this repo
+#
+# Requires bash (arrays, [[ ]]). No other dependencies.
 
 set -euo pipefail
 
@@ -37,6 +39,24 @@ done
 
 [[ ${#targets[@]} -eq 0 ]] && targets=("$HOME/.claude/skills")
 
+# resolve_link <symlink> -- absolute target, relative targets resolved against
+# the link's own directory so they can be compared against $SKILLS_DIR
+resolve_link() {
+  local t d b
+  t="$(readlink "$1")" || return 1
+  [[ $t == /* ]] || t="$(dirname "$1")/$t"
+  d="$(cd "$(dirname "$t")" 2>/dev/null && pwd)" || return 1
+  b="$(basename "$t")"
+  printf '%s/%s\n' "${d%/}" "$b"
+}
+
+# owned_by_repo <symlink> -- true if it resolves into this repo's skills/
+owned_by_repo() {
+  local r
+  r="$(resolve_link "$1")" || return 1
+  [[ $r == "$SKILLS_DIR"/* ]]
+}
+
 # install_name <SKILL.md> -- frontmatter `name:`, falling back to folder name
 install_name() {
   awk '
@@ -57,15 +77,17 @@ if [[ $mode == uninstall ]]; then
     [[ -d $target ]] || continue
     for link in "$target"/*; do
       [[ -L $link ]] || continue
-      case "$(readlink "$link")" in
-        "$SKILLS_DIR"/*) rm "$link"; echo "removed  $link" ;;
-      esac
+      if owned_by_repo "$link"; then
+        rm "$link"; echo "removed  $link"
+      fi
     done
   done
   exit 0
 fi
 
 found=0
+all_names=()
+matched=()
 for dir in "$SKILLS_DIR"/*/; do
   dir="${dir%/}"
   md="$dir/SKILL.md"
@@ -73,7 +95,9 @@ for dir in "$SKILLS_DIR"/*/; do
 
   name="$(install_name "$md")"
   [[ -n $name ]] || name="$(basename "$dir")"
+  all_names+=("$name")
   wants "$name" || continue
+  matched+=("$name")
   found=$((found + 1))
 
   if [[ $mode == list ]]; then
@@ -85,7 +109,12 @@ for dir in "$SKILLS_DIR"/*/; do
     mkdir -p "$target"
     link="$target/$name"
     if [[ -L $link ]]; then
-      rm "$link"
+      if owned_by_repo "$link"; then
+        rm "$link"
+      else
+        echo "skip     $link (symlink to another install -- remove it first)" >&2
+        continue
+      fi
     elif [[ -e $link ]]; then
       echo "skip     $link (real file/dir, not a symlink -- move it aside first)" >&2
       continue
@@ -96,6 +125,11 @@ for dir in "$SKILLS_DIR"/*/; do
 done
 
 if [[ ${#wanted[@]} -gt 0 && $found -ne ${#wanted[@]} ]]; then
-  echo "warning: matched $found of ${#wanted[@]} requested skills (see --list)" >&2
+  for w in "${wanted[@]}"; do
+    for m in "${matched[@]:-}"; do [[ $w == "$m" ]] && continue 2; done
+    echo "error: no skill named '$w'" >&2
+  done
+  echo "valid install names:" >&2
+  printf '  %s\n' "${all_names[@]}" >&2
   exit 1
 fi
