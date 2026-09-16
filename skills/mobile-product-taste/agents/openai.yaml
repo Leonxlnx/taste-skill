@@ -1,0 +1,8 @@
+interface:
+  display_name: "Mobile Product Taste"
+  short_description: "Audit, prototype, and implement native mobile UI"
+  brand_color: "#1F6B57"
+  default_prompt: "Use $mobile-product-taste to review this mobile product flow, prototype a coherent direction, and prepare an implementation-ready handoff."
+policy:
+  allow_implicit_invocation: true
+

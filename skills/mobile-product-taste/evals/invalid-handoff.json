@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "revision": "draft-1",
+  "platform": "web",
+  "uiStack": "unknown",
+  "designRead": "Invalid fixture",
+  "approval": {
+    "status": "pending"
+  },
+  "tokens": {},
+  "screens": [],
+  "verification": {}
+}
+

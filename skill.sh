@@ -8,6 +8,7 @@ declare -A SKILLS=(
   [image-to-code-skill]="skills/image-to-code-skill/SKILL.md"
   [imagegen-frontend-web]="skills/imagegen-frontend-web/SKILL.md"
   [imagegen-frontend-mobile]="skills/imagegen-frontend-mobile/SKILL.md"
+  [mobile-product-taste]="skills/mobile-product-taste/SKILL.md"
   [brandkit]="skills/brandkit/SKILL.md"
   [redesign-skill]="skills/redesign-skill/SKILL.md"
   [soft-skill]="skills/soft-skill/SKILL.md"

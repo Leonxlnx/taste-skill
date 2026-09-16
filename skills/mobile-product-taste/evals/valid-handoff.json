@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "revision": "approved-1",
+  "platform": "android",
+  "uiStack": "jetpack-compose",
+  "designRead": "A quiet native utility with one deliberate action per screen.",
+  "approval": {
+    "status": "approved",
+    "source": "user",
+    "approvedAt": "2026-08-31"
+  },
+  "tokens": {
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "shapes": {},
+    "motion": {}
+  },
+  "screens": [
+    {
+      "id": "entry-purpose",
+      "purpose": "Ask for intent before entering a managed app.",
+      "states": ["default", "large-text"],
+      "reviewImage": "prototypes/entry-purpose-frame.png",
+      "rawImage": "prototypes/entry-purpose-raw.png",
+      "components": ["purpose-option"],
+      "behaviors": ["system-back-dismisses"],
+      "openQuestions": []
+    }
+  ],
+  "verification": {
+    "viewports": ["small", "representative"],
+    "accessibility": ["large-text", "screen-reader"],
+    "requiredDeviceChecks": []
+  }
+}
+

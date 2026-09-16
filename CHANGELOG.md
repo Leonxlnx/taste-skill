@@ -9,6 +9,7 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 ### Repo
 
 - `taste-skill` (install name `design-taste-frontend`) is now **v2 (experimental)**. The previous v1 is preserved as `taste-skill-v1` (install name `design-taste-frontend-v1`).
+- Added `mobile-product-taste`, a progressive audit-to-native workflow for Android and iOS with an approval gate, portable design handoff, deterministic validators, and behavioral evaluation cases.
 - New `CHANGELOG.md` (this file).
 
 ---
