@@ -1,0 +1,10 @@
+.env
+*.pyc
+__pycache__/
+.venv/
+node_modules/
+.next/
+*.egg-info/
+dist/
+build/
+package-lock.json
