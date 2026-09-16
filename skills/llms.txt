@@ -6,6 +6,7 @@ imagegen-frontend-web: Image-generation-only skill for creating premium website 
 imagegen-frontend-mobile: Image-generation-only skill for creating premium mobile app screen concepts and flows. Does not write code.
 brandkit: Image-generation-only skill for creating premium brand-kit overview images with logo concepts, identity systems, color palettes, typography, and mockups. Does not write code.
 redesign-skill: For upgrading existing projects by auditing and fixing design problems.
+redesign-imagegen-codex: Screenshot-first redesign workflow for Codex. Capture the live UI with Chrome DevTools MCP or another browser tool, audit screenshots, generate redesigned references, then implement targeted changes.
 soft-skill: Focuses on an expensive, soft UI look with premium fonts, whitespace, depth, and smooth animations.
 output-skill: Prevents AI from being lazy, skipping code blocks, or using placeholder comments.
 minimalist-skill: Enforces clean, editorial-style interfaces (Notion/Linear style) with strict monochrome palettes.
