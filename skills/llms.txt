@@ -10,4 +10,5 @@ soft-skill: Focuses on an expensive, soft UI look with premium fonts, whitespace
 output-skill: Prevents AI from being lazy, skipping code blocks, or using placeholder comments.
 minimalist-skill: Enforces clean, editorial-style interfaces (Notion/Linear style) with strict monochrome palettes.
 brutalist-skill: Raw mechanical interfaces, Swiss typography, extreme scale contrast. (Beta)
+destijl-skill: De Stijl / Mondrian neoplasticism — white canvas, thick black grid lines, primary-color planes, absolute right angles, asymmetric balance. Fine-art geometric rigor for portfolios, editorial layouts, and landing pages.
 stitch-skill: Google Stitch-compatible semantic design rules for premium AI UI generation.

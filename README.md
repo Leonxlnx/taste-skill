@@ -152,6 +152,7 @@ The `Install name` column is the exact value you pass to `--skill`.
 | **output-skill** | `full-output-enforcement` | When the model ships half-finished work: full output, no placeholder comments. |
 | **minimalist-skill** | `minimalist-ui` | Editorial product UI (Notion/Linear vibes), restrained palette, crisp structure. |
 | **brutalist-skill** | `industrial-brutalist-ui` | Hard mechanical language: Swiss type, sharp contrast, experimental layout. |
+| **destijl-skill** | `destijl-neoplastic-ui` | Mondrian / De Stijl neoplasticism: white canvas, thick black grid lines, primary-color planes, strict right angles. |
 | **stitch-skill** | `stitch-design-taste` | Google Stitch-compatible rules, including optional `DESIGN.md` export format. |
 
 ### Image generation skills
