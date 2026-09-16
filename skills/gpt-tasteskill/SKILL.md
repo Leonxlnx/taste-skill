@@ -50,6 +50,7 @@ Static interfaces are strictly forbidden. You must write real GSAP (`@gsap/react
 - **Image Scale & Fade Scroll:** Images must start small (`scale: 0.8`). As they scroll into view, they grow to `scale: 1.0`. As they scroll out of view, they smoothly darken and fade out (`opacity: 0.2`).
 - **Scrubbing Text Reveals:** Opacity of central paragraph words starts at 0.1 and scrubs to 1.0 sequentially as the user scrolls.
 - **Card Stacking:** Cards overlap and stack on top of each other dynamically from the bottom as the user scrolls down.
+- **Reduced Motion (mandatory):** Every animation above MUST honor `prefers-reduced-motion: reduce`. Gate ScrollTrigger/GSAP setup behind a reduced-motion check (`gsap.matchMedia()` or `useReducedMotion()`), and under `(prefers-reduced-motion: reduce)` collapse scroll-pinning, scrubbing, image scale/fade, card stacking, and marquees to their static end-state (full opacity, `scale: 1`, no auto-scroll). "Static interfaces are forbidden" governs the default experience, not users who have explicitly requested reduced motion.
 
 ## 6. COMPONENT ARSENAL & CREATIVITY
 Select components from this arsenal based on your randomization:

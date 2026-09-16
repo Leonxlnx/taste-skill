@@ -73,6 +73,7 @@ Motion should feel invisible — present but never distracting. The goal is quie
 - Staggered Reveals: Lists and grid items enter with a cascade delay (`animation-delay: calc(var(--index) * 80ms)`). Never mount everything at once.
 - Background Ambient Motion: Optional. A single, very slow-moving radial gradient blob (`animation-duration: 20s+`, `opacity: 0.02-0.04`) drifting behind hero sections. Must be applied to a `position: fixed; pointer-events: none` layer. Never on scrolling containers.
 - Performance: Animate exclusively via `transform` and `opacity`. No layout-triggering properties (`top`, `left`, `width`, `height`). Use `will-change: transform` sparingly and only on actively animating elements.
+- Reduced Motion (mandatory): Gate scroll-entry, staggered reveals, and ambient background motion behind `@media (prefers-reduced-motion: no-preference)`, and add a `@media (prefers-reduced-motion: reduce)` block that disables them so content appears instantly at rest. Hover and `:active` feedback may remain.
 
 ## 8. Execution Protocol
 When tasked with writing frontend code (HTML, React, Tailwind, Vue) or designing a layout:
