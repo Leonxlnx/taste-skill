@@ -563,9 +563,10 @@ NEVER spam arbitrary `z-50` or `z-10`. Use z-index strictly for systemic layer c
 * **8-10 (Advanced Choreography):** Complex scroll-triggered reveals, parallax, scroll-driven animation (CSS `animation-timeline` or GSAP ScrollTrigger). Use Motion hooks. **NEVER use `window.addEventListener('scroll')`** - it is a hard ban, not a "prefer-not." See Section 5.D for the allowed alternatives.
 
 ### VISUAL_DENSITY (Level 1-10)
-* **1-3 (Art Gallery):** Lots of white space. Huge section gaps (`py-32` to `py-48`). Expensive, clean.
-* **4-7 (Daily App):** Standard web app spacing (`py-16` to `py-24`).
-* **8-10 (Cockpit):** Tight paddings. No card boxes; 1px lines separate data. Mandatory: `font-mono` for all numbers.
+Section spacing is **fluid by default**: use `clamp()` (Tailwind arbitrary value `py-[clamp(...)]`) so vertical rhythm scales smoothly with the viewport instead of jumping at breakpoints. Fixed steps are the fallback for component-internal spacing, not for section gaps.
+* **1-3 (Art Gallery):** Lots of white space. Huge section gaps (`py-[clamp(6rem,10vw,12rem)]`, ≈ `py-32` to `py-48` at desktop). Expensive, clean.
+* **4-7 (Daily App):** Standard web app spacing (`py-[clamp(3rem,6vw,6rem)]`, ≈ `py-16` to `py-24` at desktop).
+* **8-10 (Cockpit):** Tight paddings, fixed steps are fine at this density. No card boxes; 1px lines separate data. Mandatory: `font-mono` for all numbers.
 
 ---
 
@@ -811,7 +812,7 @@ Document the current state before proposing changes:
 ### 11.D Modernisation Levers (priority order)
 Apply in order - stop when the brief is satisfied:
 1. **Typography refresh** - biggest visual lift per unit of risk.
-2. **Spacing & rhythm** - increase section padding, fix vertical rhythm.
+2. **Spacing & rhythm** - increase section padding, fix vertical rhythm, convert fixed breakpoint-stepped section gaps to fluid `clamp()` values (Section 7, VISUAL_DENSITY).
 3. **Color recalibration** - desaturate, unify neutrals, keep brand accent.
 4. **Motion layer** - add `MOTION_INTENSITY`-appropriate micro-interactions to existing components.
 5. **Hero & key-section recomposition** - restructure top-of-funnel using Section 10 vocabulary.
@@ -970,6 +971,7 @@ Run this matrix before outputting code. This is the last filter.
 - [ ] **`useEffect` animations** have strict cleanup functions?
 - [ ] **Empty / loading / error** states provided?
 - [ ] **Cards omitted** in favor of spacing where possible?
+- [ ] **Fluid section spacing**: section gaps use `clamp()` per the VISUAL_DENSITY dial (Section 7), not fixed `py-*` steps that jump at breakpoints? (Cockpit density 8-10 exempt.)
 - [ ] **Icons** from an allowed library only (Phosphor / HugeIcons / Radix / Tabler), no hand-rolled SVG paths?
 - [ ] **Motion** isolated in client-leaf components with `'use client'` at the top, memoized?
 - [ ] **No AI Tells** from Section 9 (Inter as default, AI-purple, three-equal cards, Jane Doe, Acme, "Quietly in use at")?
