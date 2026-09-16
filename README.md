@@ -117,6 +117,19 @@ npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-fro
 
 You can also copy any `SKILL.md` into your project or paste it into ChatGPT / Codex conversations.
 
+### Install as a Claude Code plugin
+
+If you only use Claude Code, you can install the whole repo as a plugin from the included `.claude-plugin/` manifests. Every skill is namespaced under `taste-skill:` (for example, `/taste-skill:imagegen-frontend-web`), so they won't collide with your other skills — no `npx skills` step required.
+
+Run these inside Claude Code:
+
+```
+/plugin marketplace add Leonxlnx/taste-skill
+/plugin install taste-skill@taste-skill
+```
+
+Run `/plugin update` later to upgrade installed plugins to new versions. Claude Code also checks for updates automatically at startup.
+
 ### Updating from the previous version
 
 The default `taste-skill` (install name `design-taste-frontend`) is now **v2 (experimental)**, a substantial rewrite of the original v1. If you already have v1 installed, just re-run the install command and you will be upgraded:
