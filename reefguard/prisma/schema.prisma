@@ -1,0 +1,77 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  domains   Domain[]
+}
+
+model Domain {
+  id          String   @id @default(cuid())
+  fqdn        String   @unique
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  scanRuns    ScanRun[]
+  findings    Finding[]
+  reputationChecks ReputationCheck[]
+  dnsSnapshots DnsRecordSnapshot[]
+}
+
+model ScanRun {
+  id          String   @id @default(cuid())
+  domainId    String
+  domain      Domain   @relation(fields: [domainId], references: [id])
+  score       Int
+  posture     String
+  spfStatus   String
+  dkimStatus  String
+  dmarcStatus String
+  repStatus   String
+  rawResult   Json
+  scannedAt   DateTime @default(now())
+}
+
+model Finding {
+  id           String   @id @default(cuid())
+  domainId     String
+  domain       Domain   @relation(fields: [domainId], references: [id])
+  category     String
+  severity     String
+  title        String
+  description  String
+  remediation  String
+  status       String   @default("open")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ReputationCheck {
+  id        String   @id @default(cuid())
+  domainId  String
+  domain    Domain   @relation(fields: [domainId], references: [id])
+  source    String
+  listed    Boolean
+  detail    String?
+  checkedAt DateTime @default(now())
+}
+
+model DnsRecordSnapshot {
+  id        String   @id @default(cuid())
+  domainId  String
+  domain    Domain   @relation(fields: [domainId], references: [id])
+  recordType String
+  value     String
+  ttl       Int?
+  capturedAt DateTime @default(now())
+}
