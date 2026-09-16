@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gpt-taste — Awwwwards-Level GSAP Motion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Satoshi','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+    @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(34,211,238,0.4) } 50% { box-shadow: 0 0 20px 4px rgba(34,211,238,0.2) } }
+    .marquee { animation: marquee 30s linear infinite; }
+    .glow-dot { animation: pulse-glow 2s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-[#050508] text-white font-sans antialiased overflow-x-hidden">
+
+  <!-- NAV: floating glass pill -->
+  <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+    <div class="flex items-center gap-1 px-3 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10">
+      <a href="#" class="px-4 py-1.5 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full">Work</a>
+      <a href="#" class="px-4 py-1.5 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full">About</a>
+      <a href="#" class="px-4 py-1.5 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full">Lab</a>
+      <a href="#" class="ml-1 px-5 py-1.5 text-sm font-semibold bg-white text-black rounded-full hover:bg-white/90 active:scale-[0.98] transition-all">Inquire</a>
+    </div>
+  </nav>
+
+  <!-- HERO: Cinematic Centered — ultra-wide max-w, H1 in 2-3 lines -->
+  <section class="min-h-[100dvh] flex items-center justify-center relative overflow-hidden">
+    <!-- Radial background -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(34,211,238,0.06) 0%, transparent 70%)"></div>
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 60% 80% at 20% 80%, rgba(139,92,246,0.05) 0%, transparent 60%)"></div>
+    
+    <div class="relative z-10 text-center px-6 max-w-[900px] mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-cyan-400 mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 glow-dot"></span>
+        Elite GSAP Motion Engineering
+      </div>
+      <!-- H1: ultra-wide container, max 2-3 lines via max-w -->
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.0] mb-8" style="letter-spacing: -0.03em">
+        Design without<br>the <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(135deg, #22d3ee, #8b5cf6)">generic tax.</span>
+      </h1>
+      <p class="text-lg text-white/50 leading-relaxed max-w-[50ch] mx-auto mb-12">
+        Python-driven randomization. GSAP ScrollTrigger pinning. Zero empty grid cells. Inline image typography. Awwwwards-grade layouts that don't repeat.
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <a href="#" class="group flex items-center gap-3 px-8 py-4 bg-white text-black text-sm font-semibold rounded-full hover:bg-white/90 active:scale-[0.98] transition-all">
+          See the work
+          <span class="w-8 h-8 rounded-full bg-black flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <section class="py-8 border-y border-white/5 overflow-hidden">
+    <div class="flex whitespace-nowrap marquee">
+      <div class="flex items-center gap-12 pr-12">
+        <span class="text-sm font-medium text-white/30">SCROLLTRIGGER PIN</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">GRID-FLOW-DENSE</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">SPRING PHYSICS</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">INLINE IMAGE TYPE</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">STAGGERED REVEALS</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">GSAP MOTION</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+      </div>
+      <div class="flex items-center gap-12 pr-12">
+        <span class="text-sm font-medium text-white/30">SCROLLTRIGGER PIN</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">GRID-FLOW-DENSE</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">SPRING PHYSICS</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">INLINE IMAGE TYPE</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">STAGGERED REVEALS</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+        <span class="text-sm font-medium text-white/30">GSAP MOTION</span>
+        <span class="text-sm text-cyan-400/60">///</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO GRID: grid-flow-dense, NO empty spaces -->
+  <section class="py-32 px-6">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-20">
+        <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Gapless bento grid</h2>
+        <p class="text-white/40 text-lg">grid-flow-dense. Mathematically verified. Zero voids.</p>
+      </div>
+      <!-- Asymmetric bento — no 3 equal columns -->
+      <div class="grid grid-cols-12 gap-4" style="grid-auto-flow: dense">
+        <!-- Large feature: spans 7 cols, 2 rows -->
+        <div class="col-span-12 md:col-span-7 row-span-2 bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 md:p-10">
+          <div class="text-xs font-mono text-cyan-400/60 mb-6">01 / FEATURE</div>
+          <h3 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Scroll-pinned narrative sections</h3>
+          <p class="text-white/50 leading-relaxed mb-8 max-w-[40ch]">Title sticks left while a gallery scrolls on the right. GSAP ScrollTrigger handles the pin, scrub, and release with cinematic precision.</p>
+          <div class="inline-flex items-center gap-2 text-sm text-cyan-400 font-medium">
+            GSAP ScrollTrigger
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <!-- Stat card -->
+        <div class="col-span-6 md:col-span-5 bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8">
+          <div class="text-xs font-mono text-white/30 mb-4">02 / METRIC</div>
+          <div class="text-5xl font-bold mb-2">8</div>
+          <div class="text-sm text-white/50">DESIGN_VARIANCE<br>out of 10</div>
+        </div>
+        <!-- Stat card -->
+        <div class="col-span-6 md:col-span-5 bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8">
+          <div class="text-xs font-mono text-white/30 mb-4">03 / METRIC</div>
+          <div class="text-5xl font-bold mb-2">6</div>
+          <div class="text-sm text-white/50">MOTION_INTENSITY<br>out of 10</div>
+        </div>
+        <!-- Wide image card -->
+        <div class="col-span-12 md:col-span-8 bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <img src="https://picsum.photos/seed/bento-architecture/800/400" alt="Architecture" class="w-full h-48 md:h-64 object-cover opacity-80 hover:opacity-100 transition-opacity" loading="lazy">
+        </div>
+        <!-- Small card -->
+        <div class="col-span-12 md:col-span-4 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 rounded-2xl p-8">
+          <div class="text-xs font-mono text-cyan-400/60 mb-4">04 / COMPONENT</div>
+          <div class="text-xl font-bold mb-2">Button-in-Button</div>
+          <p class="text-white/50 text-sm">Arrow nested in its own circular wrapper. Flush with inner padding.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INLINE IMAGE TYPOGRAPHY SECTION -->
+  <section class="py-32 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 100% 50% at 50% 50%, rgba(139,92,246,0.04) 0%, transparent 70%)"></div>
+    <div class="max-w-[1400px] mx-auto relative z-10">
+      <div class="text-xs font-mono text-white/30 mb-8">05 / TYPOGRAPHY</div>
+      <!-- Inline image typography: image embedded inside heading -->
+      <h2 class="text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-16">
+        We shape <span class="inline-block w-20 h-14 mx-1 align-middle rounded-xl overflow-hidden align-middle"><img src="https://picsum.photos/seed/type-inline/80/56" alt="" class="w-full h-full object-cover"></span> digital<br>spaces with intent.
+      </h2>
+      <p class="text-xl text-white/40 max-w-[55ch] leading-relaxed">
+        Every layout choice is deliberate. Every spacing value is a decision, not a default. GSAP powers the scroll choreography — pinning, scrubbing, and revealing with mechanical precision.
+      </p>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS: overlapping portrait circles -->
+  <section class="py-32 px-6 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-16">
+        <h2 class="text-4xl font-bold tracking-tight">Client voices</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="relative">
+          <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 z-10">
+            <img src="https://picsum.photos/seed/portrait-mk/64/64" alt="Mira K" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-8 pt-16">
+            <p class="text-white/70 leading-relaxed mb-6">"The GSAP scroll pinning is unlike anything we'd built before. Denser information, zero clutter. The grid-flow-dense rule changed how we think about layouts."</p>
+            <div class="text-sm font-semibold">Mira Koscinski</div>
+            <div class="text-xs text-white/40">Design Director, Figma</div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 z-10">
+            <img src="https://picsum.photos/seed/portrait-tn/64/64" alt="Tobias N" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-8 pt-16">
+            <p class="text-white/70 leading-relaxed mb-6">"We stopped shipping the same three-column card layout every sprint. The Python randomization forced genuine variation — our clients noticed."</p>
+            <div class="text-sm font-semibold">Tobias Ndhlovu</div>
+            <div class="text-xs text-white/40">CTO, Raycast</div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 z-10">
+            <img src="https://picsum.photos/seed/portrait-sy/64/64" alt="Seo-Yeon R" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-8 pt-16">
+            <p class="text-white/70 leading-relaxed mb-6">"The AIDA structure alone — cinematic hero, dense bento, scroll desire, bold action — produced our best landing page in three years."</p>
+            <div class="text-sm font-semibold">Seo-Yeon Ryu</div>
+            <div class="text-xs text-white/40">Head of Growth, Vercel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+      <div><div class="font-bold text-lg mb-1">gpt-taste</div><p class="text-sm text-white/30">Awwwwards-level GSAP motion engineering</p></div>
+      <div class="flex gap-8 text-sm text-white/30">
+        <a href="#" class="hover:text-white transition-colors">GitHub</a>
+        <a href="#" class="hover:text-white transition-colors">Documentation</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

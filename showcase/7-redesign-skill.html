@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>redesign-skill — Design Audit &amp; Upgrade System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Geist','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    body { background: #09090b; color: #fafafa; }
+  </style>
+</head>
+<body class="bg-[#09090b] text-[#fafafa] font-sans antialiased">
+
+  <!-- HEADER -->
+  <div class="border-b border-white/5 px-6 py-4">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-indigo-400"></div>
+        <span class="text-sm font-bold">REDESIGN_SKILL</span>
+        <span class="text-xs text-white/30">Audit → Fix → Ship</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-white/40">
+        <span>7 STEPS</span>
+        <span>//</span>
+        <span>DESIGN AUDIT</span>
+        <span>//</span>
+        <span>UPGRADE PRIORITY</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="px-6 py-24">
+    <div class="max-w-[800px] mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 text-indigo-400 text-xs font-medium mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+        Existing projects only
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+        Your AI-built UI<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">needs an audit.</span>
+      </h1>
+      <p class="text-lg text-white/50 leading-relaxed mb-10">
+        redesign-skill doesn't rewrite from scratch. It diagnoses what's generic, fixes what's broken, and upgrades what's missing — working with your existing stack.
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <a href="#" class="px-6 py-3 bg-indigo-500 text-white text-sm font-semibold rounded-lg hover:bg-indigo-400 active:scale-[0.98] transition-all">Start audit</a>
+        <a href="#" class="px-6 py-3 text-sm font-medium text-white/50 hover:text-white transition-colors">View checklist</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER COMPARISON -->
+  <section class="px-6 py-16 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto">
+      <h2 class="text-2xl font-bold mb-12 text-center">Before vs After</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- BEFORE: generic -->
+        <div class="border border-red-500/20 rounded-xl overflow-hidden">
+          <div class="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
+            <span class="text-xs font-bold text-red-400 uppercase tracking-[0.1em]">Before — Generic AI Output</span>
+          </div>
+          <div class="p-6 bg-[#111]">
+            <!-- Generic card spam -->
+            <div class="space-y-4">
+              <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+                <div class="text-sm text-white/30 mb-1">Inter / 14px</div>
+                <div class="text-base font-normal">John Doe</div>
+              </div>
+              <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+                <div class="text-sm text-white/30 mb-1">Roboto / 12px</div>
+                <div class="text-base font-normal text-white/70">Acme Corp</div>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1 bg-blue-500 rounded h-10"></div>
+                <div class="flex-1 bg-white/10 rounded h-10 border border-white/20"></div>
+              </div>
+            </div>
+            <div class="mt-6 space-y-2">
+              <div class="text-xs text-red-400">✗ Inter font everywhere</div>
+              <div class="text-xs text-red-400">✗ Generic names (John Doe, Acme)</div>
+              <div class="text-xs text-red-400">✗ Fake round numbers (99%)</div>
+              <div class="text-xs text-red-400">✗ No hover states</div>
+              <div class="text-xs text-red-400">✗ 3-column equal card layout</div>
+            </div>
+          </div>
+        </div>
+        <!-- AFTER: premium -->
+        <div class="border border-emerald-500/20 rounded-xl overflow-hidden">
+          <div class="px-4 py-2 border-b border-emerald-500/20 bg-emerald-500/5">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-[0.1em]">After — redesign-skill</span>
+          </div>
+          <div class="p-6 bg-[#111]">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 border-b border-white/5">
+                <div>
+                  <div class="text-xs text-white/30 mb-1">Geist / 15px semibold</div>
+                  <div class="text-base font-semibold">Mira Koscinski</div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-rose-400"></div>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-white/5">
+                <div>
+                  <div class="text-xs text-white/30 mb-1">Satoshi / 14px medium</div>
+                  <div class="text-base font-medium text-white/80">Cascade Labs</div>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <button class="flex-1 py-3 bg-indigo-500 text-white text-sm font-semibold rounded-lg hover:bg-indigo-400 active:scale-[0.98] transition-all">Deploy</button>
+                <button class="flex-1 py-3 bg-white/5 text-white/80 text-sm font-medium rounded-lg border border-white/10 hover:bg-white/10 active:scale-[0.98] transition-all">Review</button>
+              </div>
+            </div>
+            <div class="mt-6 space-y-2">
+              <div class="text-xs text-emerald-400">✓ Geist + Satoshi font pairing</div>
+              <div class="text-xs text-emerald-400">✓ Realistic names (Mira Koscinski)</div>
+              <div class="text-xs text-emerald-400">✓ Organic data (47.2%)</div>
+              <div class="text-xs text-emerald-400">✓ Spring physics hover states</div>
+              <div class="text-xs text-emerald-400">✓ 2-column zig-zag layout</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPGRADE PRIORITY FLOW -->
+  <section class="px-6 py-16 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto">
+      <h2 class="text-2xl font-bold mb-12">Upgrade priority</h2>
+      <div class="flex flex-col md:flex-row items-stretch gap-4">
+        <div class="flex-1 border border-white/10 rounded-xl p-6">
+          <div class="text-3xl font-bold text-indigo-400 mb-2">01</div>
+          <div class="font-semibold mb-2">Font swap</div>
+          <div class="text-sm text-white/40">Biggest instant improvement. Lowest risk.</div>
+          <div class="mt-4 text-xs text-indigo-400/60 font-mono">Inter → Geist / Satoshi</div>
+        </div>
+        <div class="flex items-center justify-center text-white/20">→</div>
+        <div class="flex-1 border border-white/10 rounded-xl p-6">
+          <div class="text-3xl font-bold text-indigo-400 mb-2">02</div>
+          <div class="font-semibold mb-2">Color cleanup</div>
+          <div class="text-sm text-white/40">Remove clashing or oversaturated colors.</div>
+          <div class="mt-4 text-xs text-indigo-400/60 font-mono">Desaturate, harmonize</div>
+        </div>
+        <div class="flex items-center justify-center text-white/20">→</div>
+        <div class="flex-1 border border-white/10 rounded-xl p-6">
+          <div class="text-3xl font-bold text-indigo-400 mb-2">03</div>
+          <div class="font-semibold mb-2">Hover states</div>
+          <div class="text-sm text-white/40">Makes the interface feel alive.</div>
+          <div class="mt-4 text-xs text-indigo-400/60 font-mono">Spring physics throughout</div>
+        </div>
+        <div class="flex items-center justify-center text-white/20">→</div>
+        <div class="flex-1 border border-white/10 rounded-xl p-6">
+          <div class="text-3xl font-bold text-indigo-400 mb-2">04</div>
+          <div class="font-semibold mb-2">Layout & spacing</div>
+          <div class="text-sm text-white/40">Proper grid, max-width, consistent padding.</div>
+          <div class="mt-4 text-xs text-indigo-400/60 font-mono">Grid over flexbox math</div>
+        </div>
+        <div class="flex items-center justify-center text-white/20">→</div>
+        <div class="flex-1 border border-white/10 rounded-xl p-6">
+          <div class="text-3xl font-bold text-indigo-400 mb-2">05</div>
+          <div class="font-semibold mb-2">Polish</div>
+          <div class="text-sm text-white/40">Typography scale, hierarchy, final touches.</div>
+          <div class="mt-4 text-xs text-indigo-400/60 font-mono">Typography → hierarchy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIT CHECKLIST -->
+  <section class="px-6 py-16 border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto">
+      <h2 class="text-2xl font-bold mb-12">Design audit checklist</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Typography</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Replace browser defaults</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Tighten headline tracking</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Body width ~65ch max</li>
+            <li class="flex items-start gap-2"><span class="text-white/30">—</span> <span class="text-white/30">Weight variety</span></li>
+          </ul>
+        </div>
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Color</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> No pure #000000</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Max 1 accent</li>
+            <li class="flex items-start gap-2"><span class="text-amber-400 shrink-0">!</span> Warm/cool gray mix</li>
+            <li class="flex items-start gap-2"><span class="text-red-400 shrink-0">✗</span> Purple/blue AI gradient</li>
+          </ul>
+        </div>
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Layout</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> min-h-[100dvh]</li>
+            <li class="flex items-start gap-2"><span class="text-red-400 shrink-0">✗</span> h-screen (iOS bug)</li>
+            <li class="flex items-start gap-2"><span class="text-amber-400 shrink-0">!</span> No max-width container</li>
+            <li class="flex items-start gap-2"><span class="text-white/30">—</span> <span class="text-white/30">Asymmetric layouts</span></li>
+          </ul>
+        </div>
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Interactivity</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Hover scale active</li>
+            <li class="flex items-start gap-2"><span class="text-red-400 shrink-0">✗</span> No loading states</li>
+            <li class="flex items-start gap-2"><span class="text-amber-400 shrink-0">!</span> Missing empty states</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Transition durations</li>
+          </ul>
+        </div>
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Content</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-red-400 shrink-0">✗</span> "John Doe" placeholder</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Realistic names</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Organic data (47.2%)</li>
+            <li class="flex items-start gap-2"><span class="text-amber-400 shrink-0">!</span> No Lorem Ipsum</li>
+          </ul>
+        </div>
+        <div class="border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors">
+          <div class="text-xs font-bold text-indigo-400 uppercase tracking-[0.1em] mb-3">Components</div>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li class="flex items-start gap-2"><span class="text-amber-400 shrink-0">!</span> 3-column card layout</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Phosphor icons</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 shrink-0">✓</span> Skeleton loaders</li>
+            <li class="flex items-start gap-2"><span class="text-white/30">—</span> <span class="text-white/30">Accordion style</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/5 px-6 py-8">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between text-xs text-white/30">
+      <span>REDESIGN_SKILL // AUDIT → FIX → SHIP</span>
+      <span>TASTE-SKILL ECOSYSTEM</span>
+    </div>
+  </footer>
+</body>
+</html>

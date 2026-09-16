@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>soft-skill — Principal UI/UX &amp; Motion Choreographer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { serif: ['Instrument Serif','Georgia','serif'], sans: ['Geist','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    body { background: #FAF8F5; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
+    @keyframes breathe { 0%,100% { opacity: 0.6 } 50% { opacity: 1 } }
+    .fade-up { animation: fadeUp 0.8s cubic-bezier(0.32,0.72,0,1) forwards; }
+    .breathe-soft { animation: breathe 4s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-[#FAF8F5] text-zinc-950 font-sans antialiased">
+
+  <!-- DOUBLE-BEZEL NAV: outer shell + inner core -->
+  <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+    <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.06),0_2px_8px_-4px_rgba(0,0,0,0.04)] bg-white/80 backdrop-blur-xl px-2 py-1.5">
+      <div class="rounded-[calc(2rem-0.375rem)] bg-white/60 flex items-center gap-1 px-3 py-1.5">
+        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors rounded-full">Work</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors rounded-full">Studio</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors rounded-full">Services</a>
+        <a href="#" class="ml-1 px-5 py-2 text-sm font-semibold bg-zinc-950 text-white rounded-full hover:bg-zinc-800 active:scale-[0.98] transition-all">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO: warm cream, editorial serif, double-bezel -->
+  <section class="min-h-[100dvh] pt-40 pb-32 px-6 flex items-center">
+    <div class="max-w-[1400px] mx-auto w-full">
+      <!-- Eyebrow tag -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-medium text-zinc-400 mb-10 fade-up" style="animation-delay:0.1s">
+        Principal UI/UX Architecture
+      </div>
+      <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif italic leading-[0.95] tracking-tight mb-10 max-w-[15ch] fade-up" style="animation-delay:0.2s">
+        Soft structuralism.
+      </h1>
+      <p class="text-xl text-zinc-500 leading-relaxed max-w-[45ch] mb-14 fade-up" style="animation-delay:0.3s">
+        Silver-grey surfaces, bold Grotesk typography, and float components with impossibly soft ambient shadows. Spring physics on every interaction.
+      </p>
+      <div class="flex items-center gap-6 fade-up" style="animation-delay:0.4s">
+        <!-- Button-in-Button CTA -->
+        <a href="#" class="group flex items-center gap-3 px-8 py-4 bg-zinc-950 text-white text-sm font-semibold rounded-full hover:bg-zinc-800 active:scale-[0.98] active:-translate-y-[1px] transition-all">
+          View our work
+          <!-- Nested icon in its own circular wrapper -->
+          <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+        <a href="#" class="text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors">Our process</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOUBLE-BEZEL FEATURE CARDS -->
+  <section class="py-24 px-6">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-20">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Crafted for calm</h2>
+        <p class="text-zinc-500 text-lg">Double-bezel architecture. Nested shells. Spring physics throughout.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Double-bezel card 1 -->
+        <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] bg-white p-1.5">
+          <div class="rounded-[calc(2rem-0.375rem)] bg-[#FAF8F5] p-8">
+            <div class="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Haptic depth</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Interfaces that feel physical. Double-bezel nesting creates machined hardware aesthetics — glass in an aluminum tray.</p>
+          </div>
+        </div>
+        <!-- Double-bezel card 2 -->
+        <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] bg-white p-1.5">
+          <div class="rounded-[calc(2rem-0.375rem)] bg-[#FAF8F5] p-8">
+            <div class="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Fluid dynamics</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Spring physics (stiffness:100, damping:20) on every interactive element. No linear easing. No instant state changes.</p>
+          </div>
+        </div>
+        <!-- Double-bezel card 3 -->
+        <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] bg-white p-1.5">
+          <div class="rounded-[calc(2rem-0.375rem)] bg-[#FAF8F5] p-8">
+            <div class="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Macro-whitespace</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Double your standard padding. Use py-24 to py-40 for sections. Let the design breathe heavily.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LARGE EDITORIAL SECTION -->
+  <section class="py-40 px-6 bg-zinc-950 rounded-[3rem] mx-6">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 mb-6">01 / Studio</div>
+          <h2 class="text-5xl md:text-6xl font-serif italic leading-[0.95] mb-8 text-white">
+            $150k+ agency builds.
+          </h2>
+          <p class="text-lg text-zinc-400 leading-relaxed mb-10">
+            We engineer digital experiences that feel expensive. Not templates with nice fonts — genuine haptic depth and cinematic spatial rhythm.
+          </p>
+          <a href="#" class="inline-flex items-center gap-3 text-sm font-semibold text-white hover:text-zinc-300 transition-colors">
+            Explore the studio
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="relative">
+          <div class="rounded-[2rem] overflow-hidden ring-1 ring-white/10">
+            <img src="https://picsum.photos/seed/studio-creative/800/600" alt="Studio" class="w-full object-cover breathe-soft" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS: double-bezel frames -->
+  <section class="py-32 px-6">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-16 text-center">
+        <h2 class="text-4xl font-bold tracking-tight">Client voices</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.04)] bg-white p-1.5">
+          <div class="rounded-[calc(2rem-0.375rem)] bg-[#FAF8F5] p-10">
+            <p class="text-lg text-zinc-700 leading-relaxed mb-8 italic font-serif">"The double-bezel card architecture sounds like overengineering until you see it live. Then everything else looks cheap by comparison."</p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full overflow-hidden ring-1 ring-black/5">
+                <img src="https://picsum.photos/seed/client-hana/48/48" alt="Hana" class="w-full h-full object-cover">
+              </div>
+              <div>
+                <div class="font-semibold text-sm">Hana Christiansen</div>
+                <div class="text-xs text-zinc-400">Creative Director, Apple Arcade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-[2rem] ring-1 ring-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.04)] bg-white p-1.5">
+          <div class="rounded-[calc(2rem-0.375rem)] bg-[#FAF8F5] p-10">
+            <p class="text-lg text-zinc-700 leading-relaxed mb-8 italic font-serif">"Spring physics on every hover. Staggered reveals on every list entry. The motion quality alone separates this from every other design system we've tried."</p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full overflow-hidden ring-1 ring-black/5">
+                <img src="https://picsum.photos/seed/client-enzo/48/48" alt="Enzo" class="w-full h-full object-cover">
+              </div>
+              <div>
+                <div class="font-semibold text-sm">Enzo Marchetti</div>
+                <div class="text-xs text-zinc-400">Head of Design, Linear</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-16 px-6 border-t border-zinc-200/50">
+    <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+      <div><div class="font-bold text-lg mb-1">soft-skill</div><p class="text-sm text-zinc-400">Awwwards-tier UI/UX architecture</p></div>
+      <div class="flex gap-8 text-sm text-zinc-400">
+        <a href="#" class="hover:text-zinc-950 transition-colors">Studio</a>
+        <a href="#" class="hover:text-zinc-950 transition-colors">Work</a>
+        <a href="#" class="hover:text-zinc-950 transition-colors">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
