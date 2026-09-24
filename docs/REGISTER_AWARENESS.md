@@ -50,7 +50,7 @@ Priority order:
 2. The surface in focus (the page, file, or route being worked on)
 3. Explicit `register:` field if the project carries one (see prior art below)
 
-When in doubt, both register reference files in [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (`reference/brand.md` + `reference/product.md`) are useful adjacent reading. impeccable is Apache 2.0, derived from Anthropic's `frontend-design` skill, and codifies the register split as its own primary structuring decision.
+When in doubt, [pbakaus/impeccable](https://github.com/pbakaus/impeccable) is useful adjacent reading. impeccable is Apache 2.0, derived from Anthropic's `frontend-design` skill, and started from the same brand vs product register split before folding it into per-task modes (`skill/reference/new-work.md` + `skill/reference/operate.md`).
 
 ## Per-skill register fit (current bundle)
 
@@ -96,6 +96,6 @@ Either works. Open to other shapes.
 
 ## Adjacent reading
 
-- [pbakaus/impeccable](https://github.com/pbakaus/impeccable) — Apache 2.0, register split is the primary structuring decision; `reference/brand.md` + `reference/product.md` are the depth pieces
+- [pbakaus/impeccable](https://github.com/pbakaus/impeccable): Apache 2.0; began with the brand vs product register split and now carries it as per-task modes (`skill/reference/new-work.md`, `skill/reference/operate.md`)
 - [Anthropic frontend-design](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md) — impeccable's upstream basis
 - [kylezantos/design-motion-principles](https://github.com/kylezantos/design-motion-principles) — the Frequency Gate (the "should this animate at all" decision) reads cleanly across both registers
