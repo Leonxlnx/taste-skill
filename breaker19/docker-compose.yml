@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: breaker19
+      POSTGRES_USER: breaker19
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-breaker19secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U breaker19"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://breaker19:${POSTGRES_PASSWORD:-breaker19secret}@db:5432/breaker19
+      REDIS_URL: redis://redis:6379
+      AUDIO_UPLOAD_DIR: /data/audio
+      SECRET_KEY: ${SECRET_KEY:-changeme-in-production}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    volumes:
+      - audio_data:/data/audio
+    ports:
+      - "8000:8000"
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://breaker19:${POSTGRES_PASSWORD:-breaker19secret}@db:5432/breaker19
+      REDIS_URL: redis://redis:6379
+      AUDIO_UPLOAD_DIR: /data/audio
+      WHISPERX_MODEL: base
+      WHISPERX_DEVICE: cpu
+      HF_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - audio_data:/data/audio
+      - whisper_models:/root/.cache
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  audio_data:
+  whisper_models:
