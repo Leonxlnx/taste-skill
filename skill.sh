@@ -10,6 +10,7 @@ declare -A SKILLS=(
   [imagegen-frontend-mobile]="skills/imagegen-frontend-mobile/SKILL.md"
   [brandkit]="skills/brandkit/SKILL.md"
   [redesign-skill]="skills/redesign-skill/SKILL.md"
+  [redesign-imagegen-codex]="skills/redesign-imagegen-codex/SKILL.md"
   [soft-skill]="skills/soft-skill/SKILL.md"
   [output-skill]="skills/output-skill/SKILL.md"
   [minimalist-skill]="skills/minimalist-skill/SKILL.md"
