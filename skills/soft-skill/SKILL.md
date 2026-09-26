@@ -1,6 +1,6 @@
 ---
 name: high-end-visual-design
-description: Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic.
+description: Use when the user requests a calm, polished, premium, soft-contrast, high-end-agency visual direction with refined typography, spacing, surfaces, and motion.
 ---
 
 # Agent Skill: Principal UI/UX Architect & Motion Choreographer (Awwwards-Tier)

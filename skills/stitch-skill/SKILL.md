@@ -1,6 +1,6 @@
 ---
 name: stitch-design-taste
-description: Semantic Design System Skill for Google Stitch. Generates agent-friendly DESIGN.md files that enforce premium, anti-generic UI standards — strict typography, calibrated color, asymmetric layouts, perpetual micro-motion, and hardware-accelerated performance.
+description: Use when Codex must create or revise a DESIGN.md specification for Google Stitch screen generation, including visual language, tokens, typography, layout, components, and motion guidance.
 ---
 
 # Stitch Design Taste — Semantic Design System Skill
@@ -12,7 +12,7 @@ The generated `DESIGN.md` serves as the **single source of truth** for prompting
 
 ## Prerequisites
 - Access to Google Stitch via [labs.google/stitch](https://labs.google/stitch)
-- Optionally: Stitch MCP Server for programmatic integration with Cursor, Antigravity, or Gemini CLI
+- Optionally: a configured Stitch MCP server for programmatic integration with Codex or another supported agent
 
 ## The Goal
 Generate a `DESIGN.md` file that encodes:

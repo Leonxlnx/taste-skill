@@ -1,6 +1,6 @@
 ---
 name: industrial-brutalist-ui
-description: Raw mechanical interfaces fusing Swiss typographic print with military terminal aesthetics. Rigid grids, extreme type scale contrast, utilitarian color, analog degradation effects. For data-heavy dashboards, portfolios, or editorial sites that need to feel like declassified blueprints.
+description: Use when the user requests an industrial, brutalist, Swiss-print, military-terminal, mechanical, or declassified-blueprint visual direction for a dashboard, portfolio, or editorial interface.
 ---
 
 # SKILL: Industrial Brutalism & Tactical Telemetry UI
