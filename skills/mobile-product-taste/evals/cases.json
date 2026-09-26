@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "android-existing-discussion",
+      "request": "先审查这个 Android 应用的现有页面，我们讨论清楚再改代码。",
+      "shouldTrigger": true,
+      "expectedMode": "audit",
+      "requiredBehavior": ["inspect-existing-project", "write-brief", "no-code-edit"]
+    },
+    {
+      "id": "android-prototype-gate",
+      "request": "为这个 Android 注意力应用生成完整原型，确认后再实现。",
+      "shouldTrigger": true,
+      "expectedMode": "prototype",
+      "requiredBehavior": ["review-renders", "raw-screens", "stop-for-approval"]
+    },
+    {
+      "id": "approved-image-to-compose",
+      "request": "这些页面已经确认，按照原型在现有 Jetpack Compose 项目中实现并真机验证。",
+      "shouldTrigger": true,
+      "expectedMode": "implement",
+      "requiredBehavior": ["write-handoff", "validate-handoff", "preserve-stack", "device-evidence"]
+    },
+    {
+      "id": "explicit-full-workflow",
+      "request": "完成移动端审美审查、出原型、等我确认，再落地到原生应用。",
+      "shouldTrigger": true,
+      "expectedMode": "full-workflow",
+      "requiredBehavior": ["audit", "prototype", "approval-gate", "implementation"]
+    },
+    {
+      "id": "website-exclusion",
+      "request": "重新设计我的 SaaS 落地页并用 Next.js 实现。",
+      "shouldTrigger": false,
+      "expectedMode": null,
+      "requiredBehavior": ["route-to-web-design-skill"]
+    },
+    {
+      "id": "non-visual-bug-exclusion",
+      "request": "修复 Android 数据库迁移导致的启动崩溃。",
+      "shouldTrigger": false,
+      "expectedMode": null,
+      "requiredBehavior": ["route-to-debugging"]
+    }
+  ]
+}
+
