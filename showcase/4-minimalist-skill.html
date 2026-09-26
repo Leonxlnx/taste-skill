@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>minimalist-skill — Editorial Product UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { serif: ['Newsreader','Georgia','serif'], sans: ['Geist','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    body { background: #F7F6F3; color: #111111; }
+  </style>
+</head>
+<body class="bg-[#F7F6F3] text-[#111111] font-sans antialiased">
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-[#F7F6F3]/90 backdrop-blur-md border-b border-[#EAEAEA]">
+    <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="font-semibold text-sm">Meridian</div>
+      <div class="flex items-center gap-8">
+        <a href="#" class="text-sm text-[#787774] hover:text-[#111111] transition-colors">Features</a>
+        <a href="#" class="text-sm text-[#787774] hover:text-[#111111] transition-colors">Pricing</a>
+        <a href="#" class="text-sm text-[#787774] hover:text-[#111111] transition-colors">Docs</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium bg-[#111111] text-white rounded hover:bg-[#333333] active:scale-[0.98] transition-all">Get started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO: editorial serif headline -->
+  <section class="py-32 px-6">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-8">
+        <span class="inline-block px-3 py-1 rounded-full bg-[#EDF3EC] text-[#346538] text-xs font-medium uppercase tracking-[0.05em]">New release</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-serif italic leading-[1.05] tracking-tight mb-8 max-w-[18ch]">
+        Workspace tools that get out of the way.
+      </h1>
+      <p class="text-lg text-[#787774] leading-relaxed max-w-[50ch] mb-10">
+        Meridian is the project management tool for teams who value focus over features. Clean structure, typographic hierarchy, nothing else.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="px-6 py-3 bg-[#111111] text-white text-sm font-medium rounded hover:bg-[#333333] active:scale-[0.98] transition-all">Start free trial</a>
+        <a href="#" class="px-6 py-3 text-sm font-medium text-[#787774] hover:text-[#111111] transition-colors">View demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO GRID: 1px borders, 12px radius, muted pastels -->
+  <section class="py-24 px-6">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-16">
+        <h2 class="text-3xl md:text-4xl font-serif italic tracking-tight mb-3">Structured for clarity</h2>
+        <p class="text-[#787774]">Everything in its place. Nothing extra.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Feature: pale blue -->
+        <div class="md:col-span-2 bg-white border border-[#EAEAEA] rounded-xl p-8">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-10 h-10 rounded-lg bg-[#E1F3FE] flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#1F6C9F]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <kbd class="px-2 py-1 text-xs font-mono bg-[#F7F6F3] border border-[#EAEAEA] rounded text-[#787774]">P</kbd>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Task priorities</h3>
+          <p class="text-sm text-[#787774] leading-relaxed">Drag-and-drop priority ordering. Keyboard shortcuts for power users.</p>
+        </div>
+        <!-- Feature: pale red -->
+        <div class="bg-white border border-[#EAEAEA] rounded-xl p-8">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-10 h-10 rounded-lg bg-[#FDEBEC] flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#9F2F2D]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Time tracking</h3>
+          <p class="text-sm text-[#787774] leading-relaxed">Automatic time logs. Weekly summaries. No setup required.</p>
+        </div>
+        <!-- Feature: pale yellow -->
+        <div class="bg-white border border-[#EAEAEA] rounded-xl p-8">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-10 h-10 rounded-lg bg-[#FBF3DB] flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#956400]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Team views</h3>
+          <p class="text-sm text-[#787774] leading-relaxed">List, board, and calendar views. Everyone picks their own.</p>
+        </div>
+        <!-- Feature: pale green -->
+        <div class="md:col-span-2 bg-white border border-[#EAEAEA] rounded-xl p-8">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-10 h-10 rounded-lg bg-[#EDF3EC] flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#346538]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <kbd class="px-2 py-1 text-xs font-mono bg-[#F7F6F3] border border-[#EAEAEA] rounded text-[#787774]">G</kbd>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Analytics dashboard</h3>
+          <p class="text-sm text-[#787774] leading-relaxed">Weekly velocity charts, individual throughput, and sprint burndown. All exportable to CSV.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCORDION FAQ: border-bottom only -->
+  <section class="py-24 px-6 border-t border-[#EAEAEA]">
+    <div class="max-w-[800px] mx-auto">
+      <h2 class="text-3xl font-serif italic tracking-tight mb-12">Frequently asked</h2>
+      <div class="divide-y divide-[#EAEAEA]">
+        <details class="py-5 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="text-base font-medium">How does the 14-day trial work?</span>
+            <span class="ml-4 text-[#787774] group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <p class="mt-4 text-sm text-[#787774] leading-relaxed">Start with full access to all features. No credit card required. At day 14, choose a plan or downgrade to free forever.</p>
+        </details>
+        <details class="py-5 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="text-base font-medium">Can I import from Notion or Linear?</span>
+            <span class="ml-4 text-[#787774] group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <p class="mt-4 text-sm text-[#787774] leading-relaxed">Yes. We support one-click imports from Notion, Linear, Asana, and Todoist. Your structure and data transfer automatically.</p>
+        </details>
+        <details class="py-5 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="text-base font-medium">Is there an offline mode?</span>
+            <span class="ml-4 text-[#787774] group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <p class="mt-4 text-sm text-[#787774] leading-relaxed">Meridian works offline with our desktop apps for macOS and Windows. Changes sync automatically when you reconnect.</p>
+        </details>
+        <details class="py-5 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <span class="text-base font-medium">What's included in the Team plan?</span>
+            <span class="ml-4 text-[#787774] group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <p class="mt-4 text-sm text-[#787774] leading-relaxed">Unlimited projects, up to 20 team members, priority support, custom fields, and advanced analytics. Per-seat pricing.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TABLE: clean comparison -->
+  <section class="py-24 px-6 border-t border-[#EAEAEA]">
+    <div class="max-w-[1000px] mx-auto">
+      <h2 class="text-3xl font-serif italic tracking-tight mb-12">Simple pricing</h2>
+      <div class="border border-[#EAEAEA] rounded-xl overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-[#EAEAEA]">
+              <th class="text-left p-5 text-sm font-medium text-[#787774]"></th>
+              <th class="text-center p-5 text-sm font-semibold">Free</th>
+              <th class="text-center p-5 text-sm font-semibold bg-[#111111] text-white rounded-t-xl">Team<br><span class="text-xs font-normal text-white/60">$12 / seat</span></th>
+              <th class="text-center p-5 text-sm font-semibold">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#EAEAEA] text-sm">
+            <tr>
+              <td class="p-5 text-[#787774]">Projects</td>
+              <td class="p-5 text-center">5</td>
+              <td class="p-5 text-center bg-[#F7F6F3]">Unlimited</td>
+              <td class="p-5 text-center">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="p-5 text-[#787774]">Team members</td>
+              <td class="p-5 text-center">3</td>
+              <td class="p-5 text-center bg-[#F7F6F3]">Up to 20</td>
+              <td class="p-5 text-center">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="p-5 text-[#787774]">Storage</td>
+              <td class="p-5 text-center">2 GB</td>
+              <td class="p-5 text-center bg-[#F7F6F3]">100 GB</td>
+              <td class="p-5 text-center">1 TB</td>
+            </tr>
+            <tr>
+              <td class="p-5 text-[#787774]">Time tracking</td>
+              <td class="p-5 text-center">—</td>
+              <td class="p-5 text-center bg-[#F7F6F3]">
+                <svg class="w-4 h-4 mx-auto text-[#111111]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </td>
+              <td class="p-5 text-center">
+                <svg class="w-4 h-4 mx-auto text-[#111111]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </td>
+            </tr>
+            <tr class="border-t border-[#EAEAEA]">
+              <td class="p-5"></td>
+              <td class="p-5 text-center"><a href="#" class="text-sm font-medium px-4 py-2 border border-[#EAEAEA] rounded hover:bg-[#F7F6F3] transition-colors">Start free</a></td>
+              <td class="p-5 text-center bg-[#F7F6F3]"><a href="#" class="text-sm font-medium px-4 py-2 bg-[#111111] text-white rounded hover:bg-[#333333] transition-all">Get started</a></td>
+              <td class="p-5 text-center"><a href="#" class="text-sm font-medium px-4 py-2 border border-[#EAEAEA] rounded hover:bg-[#F7F6F3] transition-colors">Contact us</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-12 px-6 border-t border-[#EAEAEA]">
+    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div><div class="font-semibold text-sm mb-1">Meridian</div><p class="text-xs text-[#787774]">Focused project management</p></div>
+      <div class="flex gap-6 text-xs text-[#787774]">
+        <a href="#" class="hover:text-[#111111] transition-colors">Privacy</a>
+        <a href="#" class="hover:text-[#111111] transition-colors">Terms</a>
+        <a href="#" class="hover:text-[#111111] transition-colors">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
