@@ -366,21 +366,24 @@ These are tools, not defaults. Use them when the design read calls for them. **N
 
 ```tsx
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useId, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "motion/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function StickyStack({ cards }: { cards: React.ReactNode[] }) {
+export function StickyStack({ cards }: { cards: ReactNode[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const instanceId = useId().replace(/:/g, "");
+  const cardClass = `stack-card-${instanceId}`;
+  const innerClass = `stack-card-inner-${instanceId}`;
 
   useEffect(() => {
-    if (reduce || !ref.current) return;
+    if (reduce || !ref.current || cards.length <= 1) return;
     const ctx = gsap.context(() => {
-      const cardEls = gsap.utils.toArray<HTMLElement>(".stack-card");
+      const cardEls = gsap.utils.toArray<HTMLElement>(`.${cardClass}`);
       cardEls.forEach((card, i) => {
         if (i === cardEls.length - 1) return;
         ScrollTrigger.create({
@@ -390,8 +393,12 @@ export function StickyStack({ cards }: { cards: React.ReactNode[] }) {
           end: "top top",
           pin: true,
           pinSpacing: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
         });
-        gsap.to(card, {
+        const inner = card.querySelector(`.${innerClass}`);
+        if (!inner) return;
+        gsap.to(inner, {
           scale: 0.92,
           opacity: 0.55,
           ease: "none",
@@ -400,21 +407,25 @@ export function StickyStack({ cards }: { cards: React.ReactNode[] }) {
             start: "top bottom",
             end: "top top",
             scrub: true,
+            invalidateOnRefresh: true,
           },
         });
       });
     }, ref);
     return () => ctx.revert();
-  }, [reduce]);
+  }, [reduce, cards.length, cardClass, innerClass]);
 
   return (
     <div ref={ref} className="relative">
       {cards.map((card, i) => (
         <div
           key={i}
-          className="stack-card sticky top-0 min-h-[100dvh] flex items-center justify-center"
+          style={{ zIndex: i + 1 }}
+          className={`${cardClass} relative min-h-[100dvh] flex items-center justify-center`}
         >
-          {card}
+          <div className={`${innerClass} w-full flex items-center justify-center will-change-transform`}>
+            {card}
+          </div>
         </div>
       ))}
     </div>
@@ -422,37 +433,39 @@ export function StickyStack({ cards }: { cards: React.ReactNode[] }) {
 }
 ```
 
-Critical points: `start: "top top"`, `pin: true`, every card except the last is pinned, the scale/opacity transform is driven by the NEXT card's scroll trigger (so previous card shrinks as next one arrives).
+Critical points: `start: "top top"`, `pin: true`, every card except the last is pinned, the scale/opacity transform is driven by the NEXT card's scroll trigger (so previous card shrinks as next one arrives). Never combine CSS `position: sticky` with `pin: true` on the same element: the native sticky engine and ScrollTrigger's `position: fixed` fight at the hand-off (judder, snapping, coordinate drift). The pinned element must also not be the element being transformed - pin the outer card and animate an inner wrapper, or the scale tween throws off the pin measurements. Scope the card class per instance (`useId`) so two stacks on one page do not cross-select; stack with ascending `zIndex`. Under `prefers-reduced-motion` the component renders a plain list: no pin, no transforms, all content reachable.
 
 ### 5.B Horizontal-Pan - Canonical Skeleton
 
 ```tsx
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "motion/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function HorizontalPan({ children }: { children: React.ReactNode }) {
-  const wrap = useRef<HTMLDivElement>(null);
+export function HorizontalPan({ children }: { children: ReactNode }) {
+  const wrap = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
 
   useEffect(() => {
     if (reduce || !wrap.current || !track.current) return;
     const ctx = gsap.context(() => {
-      const distance = track.current!.scrollWidth - window.innerWidth;
+      const getDistance = () =>
+        Math.max(0, track.current!.scrollWidth - wrap.current!.clientWidth);
       gsap.to(track.current, {
-        x: -distance,
+        x: () => -getDistance(),
         ease: "none",
         scrollTrigger: {
           trigger: wrap.current,
           start: "top top",                              // pin starts when section top hits viewport top
-          end: () => `+=${distance}`,                    // scroll distance = track width minus viewport
+          end: () => `+=${getDistance()}`,               // scroll distance = track width minus viewport, recomputed on refresh
           pin: true,
           scrub: 1,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
@@ -461,8 +474,17 @@ export function HorizontalPan({ children }: { children: React.ReactNode }) {
   }, [reduce]);
 
   return (
-    <section ref={wrap} className="relative overflow-hidden">
-      <div ref={track} className="flex h-[100dvh] items-center">
+    <section
+      ref={wrap}
+      role="region"
+      aria-label="Horizontal content track"
+      tabIndex={reduce ? 0 : undefined}
+      className={`relative w-full ${reduce ? "overflow-x-auto scroll-smooth" : "overflow-hidden"}`}
+    >
+      <div
+        ref={track}
+        className={`flex h-[100dvh] w-max items-center ${reduce ? "snap-x snap-mandatory" : ""}`}
+      >
         {children}
       </div>
     </section>
@@ -470,7 +492,7 @@ export function HorizontalPan({ children }: { children: React.ReactNode }) {
 }
 ```
 
-Critical points: `start: "top top"`, `pin: true`, `end: "+=${distance}"` (scroll length = horizontal travel needed), `scrub: 1`. The wrapper is pinned, the inner track slides horizontally as the user scrolls vertically.
+Critical points: `start: "top top"`, `pin: true`, `end: "+=${getDistance()}"` (scroll length = horizontal travel needed), `scrub: 1`. The wrapper is pinned, the inner track slides horizontally as the user scrolls vertically. `x` and `end` must be function-based and paired with `invalidateOnRefresh: true`; a `distance` captured once never recomputes - after a resize it overshoots into blank space (or pans to nothing when the track fits). Keep `w-max` on the track and make each panel non-shrinking (`shrink-0` or an explicit width): without it, overflow compression collapses `scrollWidth` and the section pins without panning. Under `prefers-reduced-motion` keep every panel reachable: swap the wrapper to `overflow-x-auto` with snap points instead of leaving `overflow-hidden`.
 
 ### 5.C Scroll-Reveal Stagger - Canonical Skeleton (lighter alternative)
 
