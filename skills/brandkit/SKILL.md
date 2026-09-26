@@ -82,6 +82,22 @@ Unless the user specifies otherwise:
 - Use minimal text
 - Make every panel feel connected
 
+## OUTPUT SIZE AND ASPECT RATIO
+
+Treat an explicit output size as a hard canvas requirement, separate from the
+panel layout. Before generating, identify the requested width and height (for
+example, `2048 x 1536` or `1080 x 1350`) and preserve those exact dimensions
+when the image tool supports them. Do not replace a requested size with the
+default `4:3` or `16:10` canvas.
+
+- If the user gives only an aspect ratio, preserve that ratio and choose a
+  sensible supported resolution.
+- If the user gives neither size nor ratio, use the defaults above.
+- If the image tool cannot produce the requested dimensions, say so briefly,
+  keep the closest supported aspect ratio, and never silently ignore the
+  constraint.
+- A custom panel layout does not override an explicitly requested canvas size.
+
 Allowed layouts:
 - `3 × 3` full identity system
 - `2 × 3` cinematic brand deck overview
@@ -748,6 +764,9 @@ Brand strategy:
 
 Layout:
 [3×3 / 2×3 / custom] grid on a dark or light presentation canvas with strong gutters, clean alignment, and refined negative space.
+
+Output canvas:
+[exact width x height when requested; otherwise the requested aspect ratio or the default canvas]
 
 Panels:
 - logo cover
