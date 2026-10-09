@@ -1,0 +1,96 @@
+# Appendix C - Apple Liquid Glass: Honest Web Approximation
+
+> Referenced from `SKILL.md` Section 2. Read this file only when the brief calls for an Apple-style "liquid glass" aesthetic.
+
+Do **not** treat random CSS snippets as official Apple Liquid Glass.
+
+### What is official
+Apple documents Liquid Glass inside Apple's Human Interface Guidelines and Developer Documentation for **Apple platforms**. It is a dynamic material used across Apple platform UI. Apple's native implementation belongs to Apple platform APIs and system components, **not a public web CSS package**.
+
+Relevant official docs:
+- Apple Human Interface Guidelines → Materials
+- Apple Developer Documentation → Liquid Glass
+- Apple Developer Documentation → Adopting Liquid Glass
+- SwiftUI → Material
+
+### What is NOT official
+There is no `liquid-glass.css` from Apple for normal websites.
+
+A web approximation can use:
+- `backdrop-filter`
+- transparent backgrounds
+- layered borders
+- highlight overlays
+- gradients
+- motion
+- strong contrast fallbacks
+
+But that is **web glassmorphism / frosted-glass approximation**, not official Apple Liquid Glass. Label it as such in comments.
+
+### Safer web approximation skeleton
+
+```css
+.liquid-glass-web-approx {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / .32);
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / .30), rgb(255 255 255 / .08)),
+    rgb(255 255 255 / .12);
+  backdrop-filter: blur(24px) saturate(180%) contrast(1.05);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) contrast(1.05);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .48),
+    inset 0 -1px 0 rgb(255 255 255 / .12),
+    0 18px 60px rgb(0 0 0 / .18);
+}
+
+.liquid-glass-web-approx::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 20% 0%, rgb(255 255 255 / .55), transparent 34%),
+    linear-gradient(90deg, rgb(255 255 255 / .18), transparent 42%, rgb(255 255 255 / .14));
+  pointer-events: none;
+}
+
+.liquid-glass-web-approx::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  border: 1px solid rgb(255 255 255 / .14);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .liquid-glass-web-approx {
+    border-color: rgb(255 255 255 / .18);
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / .16), rgb(255 255 255 / .04)),
+      rgb(15 23 42 / .42);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / .22),
+      0 18px 60px rgb(0 0 0 / .42);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass-web-approx {
+    background: rgb(255 255 255 / .96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+```
+
+**Important:** `prefers-reduced-transparency` has uneven browser support; test it. Always provide enough contrast even without blur.
+
+---
+
+**End of appendix.** The Apple Liquid Glass skeleton is a labeled approximation, not an Apple-issued package. For canonical docs per design system, consult the system's official docs (links in Section 2 plus `reference/canonical-sources.md`).
