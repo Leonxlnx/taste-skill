@@ -53,7 +53,8 @@ Check for these problems and fix them:
 - **Uniform border-radius on everything.** Vary the radius: tighter on inner elements, softer on containers.
 - **No overlap or depth.** Elements sit flat next to each other. Use negative margins to create layering and visual depth.
 - **Symmetrical vertical padding.** Top and bottom padding are always identical. Adjust optically — bottom padding often needs to be slightly larger.
-- **Dashboard always has a left sidebar.** Try top navigation, a floating command menu, or a collapsible panel instead.
+- **Dashboard always has a left sidebar.** Consider top navigation, a floating command menu, or a collapsible panel when it fits the project's navigation.
+- **Desktop sidebar collapses to nothing.** For collapsible sidebars, keep expanded labels as the default and offer an opt-in icon rail around 56-72px wide, with one icon per destination. Keep the active item highlighted and replace group headings with thin dividers. Below the project's tablet breakpoint, use an off-canvas drawer instead of a rail.
 - **Missing whitespace.** Double the spacing. Let the design breathe. Dense layouts work for data dashboards, not for marketing pages.
 - **Buttons not bottom-aligned in card groups.** When cards have different content lengths, CTAs end up at random heights. Pin buttons to the bottom of each card so they form a clean horizontal line regardless of content above.
 - **Feature lists starting at different vertical positions.** In pricing tables or comparison cards, the list of features should start at the same Y position across all columns. Use consistent spacing above the list or fixed-height title/price blocks.
@@ -71,6 +72,7 @@ Check for these problems and fix them:
 - **No error states.** Add clear, inline error messages for forms. Do not use `window.alert()`.
 - **Dead links.** Buttons that link to `#`. Either link to real destinations or visually disable them.
 - **No indication of current page in navigation.** Style the active nav link differently so users know where they are.
+- **Icon-only navigation without names or usable targets.** Keep label text in the DOM, visually hidden in the rail, and show tooltips on hover and keyboard focus. Give rail items and the collapse/expand control targets of at least 44×44px. Use a button with an accessible name and `aria-expanded` for the control.
 - **Scroll jumping.** Anchor clicks jump instantly. Add `scroll-behavior: smooth`.
 - **Animations using `top`, `left`, `width`, `height`.** Switch to `transform` and `opacity` for GPU-accelerated, smooth animation.
 
@@ -112,6 +114,7 @@ Check for these problems and fix them:
 ### Code Quality
 
 - **Div soup.** Use semantic HTML: `<nav>`, `<main>`, `<article>`, `<aside>`, `<section>`.
+- **Collapsed navigation is inert or hidden.** Keep the rail and collapse/expand control outside hidden or `inert` ancestors, exposed to assistive technology and operable by pointer and keyboard, with visible focus indicators. Suppress focus and interaction in inactive expanded sidebar content with `inert`, `hidden`, or `display: none`; use explicit tab-stop and interaction management if a visual transition keeps it rendered. `aria-hidden="true"` alone does not remove descendants from the tab order.
 - **Inline styles mixed with CSS classes.** Move all styling to the project's styling system.
 - **Hardcoded pixel widths.** Use relative units (`%`, `rem`, `em`, `max-width`) for flexible layouts.
 - **Missing alt text on images.** Describe image content for screen readers. Never leave `alt=""` or `alt="image"` on meaningful images.
