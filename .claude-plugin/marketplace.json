@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "taste-skill",
-      "description": "Frontend design taste skills including brutalist, minimalist, soft, redesign, stitch, and more",
+      "description": "Frontend design taste skills including brutalist, minimalist, destijl, soft, redesign, stitch, and more",
       "version": "1.0.0",
       "source": "./",
       "author": {
