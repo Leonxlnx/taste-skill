@@ -1,0 +1,7 @@
+whisperx==3.1.5
+torch==2.2.2
+torchaudio==2.2.2
+psycopg2-binary==2.9.9
+redis==5.0.4
+sqlalchemy==2.0.30
+python-dotenv==1.0.1
