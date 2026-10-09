@@ -183,6 +183,8 @@ Created with taste-skill:
   <img src="examples/floria-bottom.webp" width="400" />
 </p>
 
+Before/after built with `redesign-skill` and hosted on Vibe Rooster: a plain ops dashboard ([before](https://skill-fixture-before.theroost.dev?vr_gallery=1)) redesigned with redesign-skill only ([after](https://redesign-skill-after.theroost.dev?vr_gallery=1)).
+
 ## Support the project
 
 If Taste Skill helps you, consider sponsoring:
