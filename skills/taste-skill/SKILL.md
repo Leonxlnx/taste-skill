@@ -1,6 +1,6 @@
 ---
 name: design-taste-frontend
-description: Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesigns, strict pre-flight check.
+description: Use when Codex designs or implements a landing page, portfolio, marketing page, or visual redesign and must avoid generic AI-style layout, typography, spacing, motion, and component choices. Do not use for dashboards, data tables, or multi-step product UI.
 ---
 
 # tasteskill: Anti-Slop Frontend Skill

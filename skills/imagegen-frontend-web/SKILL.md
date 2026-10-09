@@ -1,6 +1,6 @@
 ---
 name: imagegen-frontend-web
-description: Elite frontend image-direction skill for generating premium, conversion-aware website design references. CRITICAL OUTPUT RULE — generate ONE separate horizontal image FOR EVERY section. A landing page with 8 sections produces 8 images. Never compress multiple sections into one image. Enforces composition variety (not always left-text / right-image), background-image freedom, varied CTAs, varied hero scales (giant / mid / mini minimalist), narrative concept spine, second-read moments, and a single consistent palette across all images. Optimized for landing pages, marketing sites, and product comps that developers or coding models can accurately recreate.
+description: Use when Codex must generate premium website section images, landing-page comps, marketing references, or product-page visuals as separate implementation-ready horizontal images.
 ---
 
 # HARD OUTPUT RULE — READ FIRST
@@ -16,7 +16,7 @@ description: Elite frontend image-direction skill for generating premium, conver
 
 Each image is one section, generated as its own image call. Never combine multiple sections into one frame. Never return a single tall image that contains the whole page.
 
-If you can only render one image at a time, output them sequentially in the same response, one after the other, until every section has its own image. Announce each one ("Section 1 of 8: Hero", "Section 2 of 8: Trust bar", etc.).
+In Codex, invoke the available image-generation tool once per section and generate the images sequentially. Follow the tool's response protocol; do not add labels, announcements, summaries, or download instructions after an image call when the tool forbids post-generation text.
 
 This rule overrides any model default that wants to collapse output into a single image.
 
@@ -412,7 +412,7 @@ If the request is ambiguous about section count, **default high**:
 - "product page" -> default to 6 sections -> 6 images
 - "portfolio" -> default to 6 sections -> 6 images
 
-If the model can only render one image per call, generate them **sequentially in the same response**, one after the other, labeled "Section X of N: <name>" until the full set is delivered.
+If the model can only render one image per call, generate them **sequentially**, one after the other, until the full set is delivered. In Codex, keep section identity inside each generation prompt instead of emitting text labels around tool results.
 
 ### Format
 - Always horizontal (16:9, 16:10, or 21:9 depending on density)
@@ -915,7 +915,7 @@ For minimalist briefs: this rule is suspended. Restraint is the design.
 When the user asks for a frontend design:
 1. infer site type and primary conversion goal
 2. infer number of sections (if unclear, use the defaults from §5: landing page = 6, full website = 8)
-3. **commit out loud** to the section count and announce it ("Generating N horizontal images, one per section")
+3. commit internally to the section count; do not announce it when Codex's image tool requires no surrounding text
 4. plan ONE horizontal image PER SECTION — always separate generations, never collapse
 5. choose Hero Scale for the whole site (giant / mid / mini)
 5. choose a strong visual combination (theme, type, hero arch, section system, motion, narrative spine, second-read moment)
@@ -928,7 +928,7 @@ When the user asks for a frontend design:
 13. keep spacing generous, even, and clean
 14. remove AI slop (including marquee / fake KPI clichés unless requested)
 15. run §17 CLARITY CHECK
-16. **generate every per-section horizontal image, labeled "Section X of N: <name>"**, until the full set is delivered. Do not stop early. Do not summarize. Do not return only one image.
+16. **generate every per-section horizontal image**, with section identity included in its prompt, until the full set is delivered. Do not stop early, summarize, or return only one image.
 
 Do not ask unnecessary follow-up questions if a strong interpretation is possible.
 
