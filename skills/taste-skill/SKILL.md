@@ -559,7 +559,7 @@ NEVER spam arbitrary `z-50` or `z-10`. Use z-index strictly for systemic layer c
 
 ### MOTION_INTENSITY (Level 1-10)
 * **1-3 (Static):** No automatic animations. CSS `:hover` and `:active` states only. `prefers-reduced-motion` is the default mode anyway.
-* **4-7 (Fluid CSS):** `transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1)`. `animation-delay` cascades for load-ins. Focus on `transform` and `opacity`.
+* **4-7 (Fluid CSS):** `transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)` (name the properties; never `transition: all`, which also animates layout properties off the GPU, see 6.A). `animation-delay` cascades for load-ins.
 * **8-10 (Advanced Choreography):** Complex scroll-triggered reveals, parallax, scroll-driven animation (CSS `animation-timeline` or GSAP ScrollTrigger). Use Motion hooks. **NEVER use `window.addEventListener('scroll')`** - it is a hard ban, not a "prefer-not." See Section 5.D for the allowed alternatives.
 
 ### VISUAL_DENSITY (Level 1-10)
