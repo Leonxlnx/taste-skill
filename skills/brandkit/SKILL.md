@@ -82,6 +82,13 @@ Unless the user specifies otherwise:
 - Use minimal text
 - Make every panel feel connected
 
+Canvas size and aspect ratio describe the whole output image, not the panel grid.
+Honor requested dimensions (width × height), aspect ratio, or orientation over the defaults. Include them in the internal prompt and use the generator's supported size or aspect-ratio controls accordingly.
+
+If the generator cannot produce the exact requested dimensions or ratio, explain the limit and available alternatives. Use a supported size that preserves the requested ratio where possible. Ask the user to choose only when cropping, resizing, or changing the composition would materially affect the result. Report the actual output size; do not promise unsupported pixel dimensions.
+
+Adapt the grid and spacing to square, portrait, or wide canvases without stretching panels. Keep the defaults when no custom size or layout is requested.
+
 Allowed layouts:
 - `3 × 3` full identity system
 - `2 × 3` cinematic brand deck overview
@@ -271,7 +278,7 @@ The board should have rhythm:
 
 # DEFAULT 3 × 3 PANEL SYSTEM
 
-Use this if no layout is specified:
+Use this if no layout is specified and it fits the canvas; otherwise arrange these panels to suit the requested size or aspect ratio:
 
 ## 1. Logo Cover
 Large logo and wordmark.  
@@ -745,6 +752,9 @@ Brand strategy:
 - personality: [traits]
 - core metaphor: [metaphor]
 - logo idea: [how the mark combines symbol + name + category meaning]
+
+Canvas:
+[requested width × height, aspect ratio, or orientation; otherwise 4:3 or 16:10]
 
 Layout:
 [3×3 / 2×3 / custom] grid on a dark or light presentation canvas with strong gutters, clean alignment, and refined negative space.
