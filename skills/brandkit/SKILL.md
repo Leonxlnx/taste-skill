@@ -94,6 +94,52 @@ If the user gives references, match their quality and rhythm, not their exact co
 
 ---
 
+# BRAND ASSET INTAKE
+
+Before generating, determine whether this is a net-new brand or an existing brand system. Do not assume the user wants a full invention from zero.
+
+If the prompt does not clearly say whether brand assets already exist, ask one short intake question before generating:
+
+> Before I create the brand kit, do you already have existing brand assets such as a logo, color palette, typography, product UI, photography, or visual references? If yes, I will build around them. If not, I will create the brand kit from scratch.
+
+Do not ask a long questionnaire unless the user requests brand strategy help. One question is enough to choose the workflow.
+
+## Brand Kit Modes
+
+Use one of these modes:
+
+1. **Create from scratch**
+   - Use when the user has no logo, colors, typography, or brand direction.
+   - Generate the complete identity system: logo concept, palette, type direction, applications, imagery, and system details.
+   - You may invent the logo mark, symbolic metaphor, palette, and visual world.
+
+2. **Build on existing brand**
+   - Use when the user provides a logo, colors, typography, product screenshots, brand deck, website, or clear visual references.
+   - Preserve recognizable brand equity. Do not replace the logo, rename the brand, or discard existing colors without explicit permission.
+   - Turn the existing assets into a more complete brand system: usage rules, applications, palette refinement, typography hierarchy, mockups, image direction, and detail language.
+   - If an existing asset is weak, improve its presentation and surrounding system first. Only propose a redesigned alternative if the user explicitly asks for a refresh.
+
+3. **Extend partial inputs**
+   - Use when the user provides only some ingredients, such as a name and palette, a logo without type, or a mood reference without assets.
+   - Lock the provided inputs, then fill only the missing parts.
+   - Make clear internally which elements are inherited and which elements are newly generated.
+
+## Intake Signals To Preserve
+
+When assets exist, identify and preserve:
+
+- brand name spelling and casing
+- existing logo or wordmark structure
+- primary colors and any forbidden colors
+- typography or font references
+- product category and audience
+- visual references, mood, or competitive set
+- required applications, such as app icon, website, packaging, deck, social, or stationery
+
+Existing assets are source material, not decoration. The generated board should make them feel more systematic, premium, and usable.
+
+---
+
 # BRAND STRATEGY FIRST
 
 Before generating, infer the brand strategy.
@@ -740,11 +786,14 @@ Use this structure internally:
 Create a premium brand-kit overview image for "[BRAND NAME]".
 
 Brand strategy:
+- mode: [create from scratch / build on existing brand / extend partial inputs]
 - category: [category]
 - audience: [audience]
 - personality: [traits]
 - core metaphor: [metaphor]
 - logo idea: [how the mark combines symbol + name + category meaning]
+- provided assets to preserve: [logo / colors / typography / references / none]
+- missing system pieces to create: [palette / type / applications / image direction / details]
 
 Layout:
 [3×3 / 2×3 / custom] grid on a dark or light presentation canvas with strong gutters, clean alignment, and refined negative space.
@@ -774,6 +823,8 @@ readable, minimal, high hierarchy, no tiny fake text.
 
 Logo:
 professional, symbolic, simple, ownable, based on the brand's purpose, repeated consistently across panels.
+
+If mode is "build on existing brand", preserve the supplied logo and recognizable brand assets. Do not invent a replacement identity unless the user explicitly asks for a refresh.
 
 ---
 
