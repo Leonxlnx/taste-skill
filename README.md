@@ -8,6 +8,10 @@
   <em>The Anti-Slop Frontend Framework for AI Agents</em>
 </p>
 
+<p align="center">
+  <sub>🌐 <strong>English</strong> | <a href="README-ID.md">Bahasa Indonesia</a></sub>
+</p>
+
 <p align="center" style="margin-bottom: 8px;">
   <a href="https://tasteskill.dev" title="Visit tasteskill.dev"><img src="https://img.shields.io/badge/website-tasteskill.dev-24292f?style=flat" alt="Visit tasteskill.dev" /></a>
   &nbsp;
