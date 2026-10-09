@@ -90,7 +90,35 @@ Allowed layouts:
 - `4 × 2` wide contact-sheet layout
 - custom layout when requested
 
-If the user gives references, match their quality and rhythm, not their exact content.
+For inspiration references, match their quality and rhythm, not their exact content.
+
+---
+
+# BRAND INTAKE
+
+Before image generation, determine whether this is a new identity or an extension of an existing brand. Choose based on the user's stated intent, not on whether assets are attached.
+
+Use the request, earlier context, and supplied assets first. Do not ask again for information already provided.
+
+If unclear, ask one short intake question covering only the missing details:
+- create from scratch, extend, or refresh / rebrand
+- existing logo / wordmark
+- brand colors / palette
+- typography / fonts
+- visual direction / mood references
+
+Inspiration or mood references alone do not establish an existing identity; treat them as brand constraints only when the user identifies them that way.
+
+Choose the flow:
+
+- **Create from scratch:** If the user requests a new identity or confirms that no existing brand identity applies, follow the full generation flow below.
+- **Build on existing brand:** Reuse supplied logos, names, colors, typography, and direction consistently across the board and mockups. Do not invent replacements or reinterpret the logo.
+
+For partial inputs, preserve supplied elements and develop only missing parts to fit them. If existing assets are needed but unavailable, request them and wait before generation.
+
+An explicit refresh or rebrand request takes priority; change only the elements within the requested scope.
+
+Existing identity constraints take priority over the style, palette, and new-logo defaults below.
 
 ---
 
@@ -131,6 +159,8 @@ Do not pick symbols randomly.
 ---
 
 # LOGO GENERATION STANDARD
+
+Apply this section and the logo concept methods only when a new logo is needed or requested.
 
 The logo must be professional.
 
@@ -281,6 +311,7 @@ Strong negative space.
 ## 2. Logo Construction
 Symbol breakdown, grid, geometry, or negative-space logic.  
 Show why the mark exists.
+For an existing logo without documented construction, show supplied variants or usage instead.
 
 ## 3. Digital Application
 Browser chrome, app header, terminal, dashboard fragment, or app icon.
@@ -708,7 +739,9 @@ Make the design quieter, sharper, and more intentional.
 
 # REFERENCE USAGE
 
-When the user provides references:
+Treat assets supplied as the user's existing identity as source material to reuse, not as inspiration to avoid copying.
+
+When the user provides inspiration references:
 
 Extract:
 - layout rhythm
@@ -740,11 +773,13 @@ Use this structure internally:
 Create a premium brand-kit overview image for "[BRAND NAME]".
 
 Brand strategy:
+- identity mode: [create from scratch / build on existing brand / requested refresh]
+- existing assets: [supplied elements to preserve, or none]
 - category: [category]
 - audience: [audience]
 - personality: [traits]
 - core metaphor: [metaphor]
-- logo idea: [how the mark combines symbol + name + category meaning]
+- logo: [supplied logo to reuse, or new logo idea when needed or requested]
 
 Layout:
 [3×3 / 2×3 / custom] grid on a dark or light presentation canvas with strong gutters, clean alignment, and refined negative space.
@@ -767,13 +802,13 @@ Palette:
 [disciplined palette]
 
 Style:
-premium, sparse, cinematic, intentional, polished, brand-guidelines deck, no clutter, no copied real-world logos.
+premium, sparse, cinematic, intentional, polished, brand-guidelines deck, no clutter, no copied inspiration logos; reuse supplied brand assets.
 
 Typography:
 readable, minimal, high hierarchy, no tiny fake text.
 
 Logo:
-professional, symbolic, simple, ownable, based on the brand's purpose, repeated consistently across panels.
+[reuse the supplied logo without redesign, or create a professional, symbolic, simple, ownable mark based on the brand's purpose when needed or requested]; repeat consistently across panels.
 
 ---
 
