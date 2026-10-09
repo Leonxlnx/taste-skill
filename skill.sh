@@ -19,7 +19,7 @@ declare -A SKILLS=(
 
 if [[ $# -eq 0 ]]; then
   echo "Usage: source ./skill.sh <skill-name>"
-  echo "Available skills: ${!SKILLS[@]}"
+  echo "Available skills: ${!SKILLS[*]}"
 else
   echo "${SKILLS[$1]}"
 fi

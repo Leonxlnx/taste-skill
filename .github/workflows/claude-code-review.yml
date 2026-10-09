@@ -1,0 +1,38 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request. This repo is a library of Claude Code skills
+            (skills/*/SKILL.md) for frontend design. Focus on:
+            - Clarity and internal consistency of skill instructions
+            - Contradictions with other skills or with the README / CHANGELOG
+            - Frontmatter correctness (name, description) and registry sync
+              (skill.sh, skills/llms.txt, .claude-plugin/*.json)
+            - Broken links or missing assets
+
+            Use `gh pr comment` to leave a single concise review, referencing
+            file paths and line numbers for specific issues.
+          claude_args: '--allowed-tools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
