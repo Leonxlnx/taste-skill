@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>taste-skill — High-Agency Frontend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Geist','system-ui','sans-serif'] } } } }
+  </script>
+  <style>
+    @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+    @keyframes float { 0%,100% { transform: translateY(0px) } 50% { transform: translateY(-6px) } }
+    @keyframes breathe { 0%,100% { opacity: 0.4; transform: scale(1) } 50% { opacity: 1; transform: scale(1.15) } }
+    @keyframes typewriter { from { width: 0 } to { width: 100% } }
+    @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: 0 } }
+    @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+    .skeleton { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .float { animation: float 3s ease-in-out infinite; }
+    .breathe { animation: breathe 2.5s ease-in-out infinite; }
+    .typewriter { overflow: hidden; white-space: nowrap; animation: typewriter 2s steps(40) forwards; }
+    .cursor::after { content:'|'; animation: blink 1s step-end infinite; }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-950 font-sans antialiased">
+
+  <!-- NAV: floating glass pill -->
+  <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+    <div class="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/70 backdrop-blur-xl border border-zinc-200/50 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.08)]">
+      <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors rounded-full">Features</a>
+      <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors rounded-full">Pricing</a>
+      <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors rounded-full">Docs</a>
+      <a href="#" class="ml-1 px-5 py-2 text-sm font-semibold bg-zinc-950 text-white rounded-full hover:bg-zinc-800 active:scale-[0.98] transition-all">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO: Split Screen (NOT centered — variance > 4) -->
+  <section class="min-h-[100dvh] pt-32 pb-24 px-6 flex items-center">
+    <div class="max-w-[1400px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Anti-Slop Frontend Framework
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+          Give your AI<br><span class="text-emerald-600">good taste.</span>
+        </h1>
+        <p class="text-lg text-zinc-500 leading-relaxed max-w-[45ch] mb-10">
+          Taste-Skill stops the AI from generating boring, generic slop. Stronger layout, typography, motion, and spacing — without locking you into one visual style.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="px-6 py-3 bg-zinc-950 text-white text-sm font-semibold rounded-full hover:bg-zinc-800 active:scale-[0.98] active:-translate-y-[1px] transition-all">Start Building</a>
+          <a href="#" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">View Docs <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="relative z-10 rounded-[2rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] float">
+          <img src="https://picsum.photos/seed/designstudio/800/600" alt="Design studio" class="w-full object-cover" loading="lazy">
+        </div>
+        <div class="absolute -bottom-6 -left-6 w-32 h-32 rounded-2xl overflow-hidden shadow-lg border-2 border-white z-20">
+          <img src="https://picsum.photos/seed/uicolors/128/128" alt="UI preview" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO GRID: 2-col zig-zag, NOT 3 equal columns -->
+  <section class="py-24 px-6">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Crafted sections that breathe</h2>
+        <p class="text-zinc-500 text-lg max-w-[55ch]">CSS Grid over flexbox math. Skeleton loaders over spinners. Spring physics over linear easing.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:row-span-2 bg-white rounded-[1.5rem] border border-zinc-200/60 p-8 flex flex-col justify-between min-h-[320px]">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Motion Engine</h3>
+            <p class="text-zinc-500 leading-relaxed">Perpetual micro-interactions with spring physics. Stiffness 100, damping 20. No linear easing ever.</p>
+          </div>
+          <div class="flex gap-2 mt-6">
+            <span class="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">stiffness: 100</span>
+            <span class="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">damping: 20</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-[1.5rem] border border-zinc-200/60 p-8">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">CSS Grid First</h3>
+          <p class="text-zinc-500 text-sm">Never use flexbox percentage math. Grid col-span/row-span for reliable structures.</p>
+        </div>
+        <div class="bg-white rounded-[1.5rem] border border-zinc-200/60 p-8">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Anti-Card Overuse</h3>
+          <p class="text-zinc-500 text-sm">Cards only when elevation communicates hierarchy. Spacing and borders over generic containers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DASHBOARD: 5 Card Archetypes -->
+  <section class="py-24 px-6 bg-zinc-950">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">Motion Engine Bento</h2>
+        <p class="text-zinc-400 text-lg">5 perpetual micro-interaction archetypes. Spring physics. Infinite loops. Memoized.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-[1.5rem] p-6">
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Intelligent List</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-emerald-400 breathe"></div>
+              <span class="text-sm font-medium">Sync design tokens</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-amber-400 breathe" style="animation-delay:0.3s"></div>
+              <span class="text-sm font-medium">Deploy to staging</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-blue-400 breathe" style="animation-delay:0.6s"></div>
+              <span class="text-sm font-medium">Run accessibility audit</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-[1.5rem] p-6">
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Command Input</h3>
+          <div class="bg-zinc-950 rounded-xl p-4">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-400 text-sm font-mono">&gt;</span>
+              <span class="text-white text-sm font-mono typewriter cursor inline-block overflow-hidden">generate login form</span>
+            </div>
+            <div class="mt-2 flex gap-1.5">
+              <div class="h-1 w-2 bg-zinc-600 rounded-full skeleton"></div>
+              <div class="h-1 w-6 bg-zinc-600 rounded-full skeleton" style="animation-delay:0.2s"></div>
+              <div class="h-1 w-4 bg-zinc-600 rounded-full skeleton" style="animation-delay:0.4s"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-[1.5rem] p-6">
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Live Status</h3>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Build Pipeline</span>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-emerald-400 breathe"></div>
+              <span class="text-xs font-medium text-emerald-600">Live</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm"><span class="text-zinc-500">Deploy</span><span class="font-medium">#4471</span></div>
+            <div class="flex justify-between text-sm"><span class="text-zinc-500">Tests</span><span class="font-medium text-emerald-600">98.2%</span></div>
+            <div class="flex justify-between text-sm"><span class="text-zinc-500">Coverage</span><span class="font-medium text-blue-600">84.7%</span></div>
+          </div>
+        </div>
+        <div class="md:col-span-2 bg-white rounded-[1.5rem] p-6 overflow-hidden">
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Data Stream</h3>
+          <div class="overflow-hidden">
+            <div class="flex gap-4" style="animation: marquee 20s linear infinite">
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">4.2k</div><div class="text-xs text-zinc-500">Requests/min</div></div>
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">47ms</div><div class="text-xs text-zinc-500">Avg latency</div></div>
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">99.9%</div><div class="text-xs text-zinc-500">Uptime</div></div>
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">1.8M</div><div class="text-xs text-zinc-500">Events today</div></div>
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">4.2k</div><div class="text-xs text-zinc-500">Requests/min</div></div>
+              <div class="flex-shrink-0 w-40 p-4 bg-zinc-50 rounded-xl"><div class="text-2xl font-bold">47ms</div><div class="text-xs text-zinc-500">Avg latency</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-[1.5rem] p-6">
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Context Config</h3>
+          <div class="space-y-3">
+            <div class="p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+              <div class="text-xs text-zinc-400 mb-1">MOTION_INTENSITY</div>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-zinc-200 rounded-full overflow-hidden"><div class="h-full bg-zinc-950 rounded-full" style="width:60%"></div></div>
+                <span class="text-xs font-mono font-medium">6</span>
+              </div>
+            </div>
+            <div class="p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+              <div class="text-xs text-zinc-400 mb-1">DESIGN_VARIANCE</div>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-zinc-200 rounded-full overflow-hidden"><div class="h-full bg-zinc-950 rounded-full" style="width:80%"></div></div>
+                <span class="text-xs font-mono font-medium">8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6">
+    <div class="max-w-[1400px] mx-auto">
+      <h2 class="text-4xl font-bold tracking-tight mb-16">What builders say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl border border-zinc-200 p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-rose-400 flex items-center justify-center text-white font-bold text-sm">MK</div>
+            <div><div class="font-semibold text-sm">Mira Koscinski</div><div class="text-xs text-zinc-400">Head of Design, Veriff</div></div>
+          </div>
+          <p class="text-zinc-600 leading-relaxed">"Stopped shipping generic AI slop overnight. The bento grid rules alone saved us three sprint cycles of redesign."</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-zinc-200 p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">TN</div>
+            <div><div class="font-semibold text-sm">Tobias Ndhlovu</div><div class="text-xs text-zinc-400">CTO, Cascade Labs</div></div>
+          </div>
+          <p class="text-zinc-600 leading-relaxed">"The anti-card-overuse rule sounds pedantic until you see the difference it makes. Whitespace does the work."</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-zinc-200 p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">SR</div>
+            <div><div class="font-semibold text-sm">Seo-Yeon Ryu</div><div class="text-xs text-zinc-400">Product Lead, Lemon Squeezy</div></div>
+          </div>
+          <p class="text-zinc-600 leading-relaxed">"Spring physics on every button. Staggered reveals on every list. It sounds excessive but the difference is visceral."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-16 px-6 border-t border-zinc-200">
+    <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+      <div><div class="font-bold text-lg mb-1">Taste-Skill</div><p class="text-sm text-zinc-400">Anti-slop frontend framework for AI agents</p></div>
+      <div class="flex gap-8 text-sm text-zinc-500">
+        <a href="#" class="hover:text-zinc-950 transition-colors">Documentation</a>
+        <a href="#" class="hover:text-zinc-950 transition-colors">GitHub</a>
+        <a href="#" class="hover:text-zinc-950 transition-colors">Changelog</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

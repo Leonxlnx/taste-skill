@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>brutalist-skill — Industrial Swiss Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { black: ['Archivo Black','Arial Black','sans-serif'], mono: ['JetBrains Mono','Courier New','monospace'] } } } }
+  </script>
+  <style>
+    body { background: #F4F4F0; color: #111111; }
+  </style>
+</head>
+<body class="bg-[#F4F4F0] text-[#111111] font-black antialiased">
+
+  <!-- TOP BAR: classification markings + ASCII decoration -->
+  <div class="border-b-2 border-[#111111] px-6 py-2">
+    <div class="flex items-center justify-between max-w-[1400px] mx-auto">
+      <div class="flex items-center gap-6 font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/60">
+        <span>[ CLASSIFIED ]</span>
+        <span>///</span>
+        <span>REV.2026.05.02</span>
+        <span>///</span>
+        <span>UNIT-7749</span>
+      </div>
+      <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/60">
+        47.3769° N, 8.5417° E >>> ZURICH
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO: massive display type, Archivo Black, uppercase, negative tracking -->
+  <section class="min-h-[100dvh] flex items-center border-b-2 border-[#111111]">
+    <div class="w-full px-6 py-24">
+      <div class="max-w-[1400px] mx-auto">
+        <div class="mb-8 font-mono text-xs uppercase tracking-[0.15em] text-[#E61919]">
+          00 / IDENTITY SYSTEM >>> SWISS INDUSTRIAL PRINT
+        </div>
+        <!-- Massive headline: clamp, negative tracking, uppercase -->
+        <h1 class="font-black uppercase leading-[0.88] tracking-[-0.04em] mb-12" style="font-size: clamp(3.5rem, 12vw, 14rem)">
+          SWISS<br>
+          <span class="text-[#E61919]">INDUSTRIAL</span><br>
+          PRINT
+        </h1>
+        <div class="flex items-center gap-8">
+          <div class="h-[2px] w-24 bg-[#E61919]"></div>
+          <p class="font-mono text-sm uppercase tracking-[0.1em] text-[#111111]/60 max-w-[40ch]">
+            Blueprint discipline meets mid-century corporate identity. Rigid grid. Heavy type. Mechanical precision.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLUEPRINT GRID: display:grid gap:1px with contrasting backgrounds -->
+  <section class="border-b-2 border-[#111111]">
+    <div class="max-w-[1400px] mx-auto px-6 py-16">
+      <div class="grid grid-cols-12 gap-px bg-[#111111]">
+        <!-- Feature block 1 -->
+        <div class="col-span-4 bg-[#F4F4F0] p-8 relative">
+          <!-- Crosshair at intersection -->
+          <div class="absolute top-2 left-2 text-[#E61919] font-mono text-xs">+</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40 mb-4">01 / TYPE SYSTEM</div>
+          <h3 class="text-2xl font-black uppercase tracking-[-0.02em] leading-[1.0] mb-4">ARCHIVO BLACK</h3>
+          <p class="font-mono text-xs text-[#111111]/60 leading-relaxed">Neo-grotesque at massive scale. Tight negative tracking. Uppercase for structural impact.</p>
+        </div>
+        <!-- Feature block 2 -->
+        <div class="col-span-4 bg-white p-8 relative">
+          <div class="absolute top-2 left-2 text-[#E61919] font-mono text-xs">+</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40 mb-4">02 / GRID DISCIPLINE</div>
+          <h3 class="text-2xl font-black uppercase tracking-[-0.02em] leading-[1.0] mb-4">BLUEPRINT</h3>
+          <p class="font-mono text-xs text-[#111111]/60 leading-relaxed">display:grid gap:1px. Mathematical precision. No floating elements — anchored to track intersections.</p>
+        </div>
+        <!-- Feature block 3 -->
+        <div class="col-span-4 bg-[#F4F4F0] p-8 relative">
+          <div class="absolute top-2 left-2 text-[#E61919] font-mono text-xs">+</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40 mb-4">03 / COLOR</div>
+          <h3 class="text-2xl font-black uppercase tracking-[-0.02em] leading-[1.0] mb-4">AVIAL / RED</h3>
+          <p class="font-mono text-xs text-[#111111]/60 leading-relaxed">#E61919 aviation red. The only accent. Strike-throughs, thick dividers, vital data highlights.</p>
+        </div>
+        <!-- Wide feature -->
+        <div class="col-span-12 bg-white p-8 border-t-2 border-[#111111] relative">
+          <div class="absolute top-2 left-2 text-[#E61919] font-mono text-xs">+</div>
+          <div class="grid grid-cols-12 gap-8">
+            <div class="col-span-4">
+              <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40 mb-4">04 / MONOSPACE DATA</div>
+              <h3 class="text-xl font-black uppercase tracking-[-0.02em]">TELEMETRY</h3>
+            </div>
+            <div class="col-span-8 grid grid-cols-4 gap-4">
+              <div class="border border-[#111111] p-3">
+                <div class="font-mono text-[10px] uppercase text-[#111111]/40 mb-1">UNIT_ID</div>
+                <div class="font-mono text-sm font-bold">7749-ALPHA</div>
+              </div>
+              <div class="border border-[#111111] p-3">
+                <div class="font-mono text-[10px] uppercase text-[#111111]/40 mb-1">REVISION</div>
+                <div class="font-mono text-sm font-bold">2026.05</div>
+              </div>
+              <div class="border border-[#111111] p-3">
+                <div class="font-mono text-[10px] uppercase text-[#111111]/40 mb-1">CLEARANCE</div>
+                <div class="font-mono text-sm font-bold text-[#E61919]">LEVEL-5</div>
+              </div>
+              <div class="border border-[#111111] p-3">
+                <div class="font-mono text-[10px] uppercase text-[#111111]/40 mb-1">STATUS</div>
+                <div class="font-mono text-sm font-bold text-[#111111]">ACTIVE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS: large numbers -->
+  <section class="border-b-2 border-[#111111]">
+    <div class="max-w-[1400px] mx-auto px-6 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4">
+        <div class="p-8 border-r border-[#111111] last:border-0">
+          <div class="font-black leading-none mb-2" style="font-size: 5rem">94</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/50">Projects shipped</div>
+        </div>
+        <div class="p-8 border-r border-[#111111] last:border-0">
+          <div class="font-black leading-none mb-2" style="font-size: 5rem">7749</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/50">Design tokens</div>
+        </div>
+        <div class="p-8 border-r border-[#111111] last:border-0">
+          <div class="font-black leading-none mb-2" style="font-size: 5rem">429</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/50">Component variants</div>
+        </div>
+        <div class="p-8 last:border-0">
+          <div class="font-black leading-none mb-2" style="font-size: 5rem">05</div>
+          <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/50">Design systems</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA: hard corners, ASCII brackets -->
+  <section class="border-b-2 border-[#111111] bg-[#111111] text-white">
+    <div class="max-w-[1400px] mx-auto px-6 py-16 flex items-center justify-between">
+      <div>
+        <div class="font-mono text-xs uppercase tracking-[0.1em] text-white/40 mb-4">[ INITIATE CONTACT ]</div>
+        <h2 class="font-black uppercase leading-[0.9] tracking-[-0.03em] mb-4" style="font-size: clamp(2rem, 6vw, 5rem)">
+          READY TO<br>BEGIN?
+        </h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="#" class="font-mono text-sm uppercase tracking-[0.1em] px-8 py-4 border-2 border-white hover:bg-white hover:text-[#111111] transition-all">
+          [ CONTACT ]
+        </a>
+        <a href="#" class="font-mono text-sm uppercase tracking-[0.1em] px-8 py-4 border-2 border-white/30 text-white/60 hover:border-white/60 transition-all">
+          [ WORK ]
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER: trademark symbols as decoration -->
+  <footer class="px-6 py-8">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+      <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40">
+        [ MERIDIAN INDUSTRIAL ]™ >>> ALL RIGHTS RESERVED ©2026
+      </div>
+      <div class="font-mono text-xs uppercase tracking-[0.1em] text-[#111111]/40">
+        47.3769° N / 8.5417° E
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
