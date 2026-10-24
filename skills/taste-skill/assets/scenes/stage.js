@@ -103,7 +103,8 @@
     // fallback: words in inline-block spans, the full text kept for screen readers
     if (!el.dataset.split) {
       el.setAttribute('aria-label', el.textContent.trim());
-      el.innerHTML = el.textContent.trim().split(/\s+/).map((w) => `<span aria-hidden="true" style="display:inline-block">${w}</span>`).join(' ');
+      const words = el.textContent.trim().split(/\s+/).map((w) => { const span = document.createElement('span'); span.setAttribute('aria-hidden', 'true'); span.style.display = 'inline-block'; span.textContent = w; return span; });
+      el.replaceChildren(...words.flatMap((span, i) => (i ? [' ', span] : [span])));
       el.dataset.split = 'words';
     }
     return [...el.children];
