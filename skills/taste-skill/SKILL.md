@@ -328,7 +328,10 @@ also open straight from the file system, open `index.html` that way once before 
 Inspect what the visitor receives. With a build step, run the last gate on the production build
 (`vite build && vite preview`, `next build && next start`, or the built `index.html`), not only on the
 dev server: minifiers and bundlers change what ships (one dropped a `backdrop-filter` that the dev
-server showed). The inspector warns when it is looking at a dev server.
+server showed). The inspector warns when it is looking at a dev server. Pointed at a built page
+(`inspect.mjs dist/index.html`), it serves the build folder as the site root, so root-relative assets
+(`/_astro/page.css`, `/assets/app.js`) resolve as they will when hosted; `--root DIR` names that
+folder explicitly when the guess is wrong (`scenes.mjs` takes the same flag).
 
 ### 8. Look
 

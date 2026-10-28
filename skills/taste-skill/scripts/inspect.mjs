@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 // tasteskill / inspect — render the page in a real browser, measure it, and photograph it.
 //
-//   node inspect.mjs <url | path/to/file.html> [--out DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]
+//   node inspect.mjs <url | path/to/file.html> [--out DIR] [--root DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]
+//
+// A local file is served as it will be hosted: a built page (dist/index.html) is served from its
+// build folder, so root-relative assets resolve. --root DIR names that folder explicitly.
 //
 // --film also photographs the scroll as a visitor sees it (a frame every third of a screen, real wheel
 // input) into desktop-film-NN.jpg, so a scroll scene is judged by its in-between states. A direction
@@ -13,9 +16,9 @@
 // Exit code 0 = no FAIL findings. Exit code 1 = at least one FAIL (the page is not done).
 // Zero dependencies: drives an installed Chrome/Edge/Chromium. Node 22+.
 // Widths sharing a viewport class receive width-qualified screenshot filenames.
-import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync } from 'node:fs';
-import { resolve, join, relative, dirname, extname, sep } from 'node:path';
-import { createServer } from 'node:http';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, unlinkSync } from 'node:fs';
+import { resolve, join, relative } from 'node:path';
+import { serveLocalFile } from './lib/serve.mjs';
 import { Browser, sleep } from './lib/cdp.mjs';
 import { probe, frame, layout, app, colourShare } from './lib/probe.mjs';
 import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
@@ -25,6 +28,7 @@ const args = process.argv.slice(2);
 const flag = (name, def) => { const i = args.indexOf('--' + name); if (i === -1) return def; const v = args[i + 1]; args.splice(i, 2); return v; };
 const has = (name) => { const i = args.indexOf('--' + name); if (i === -1) return false; args.splice(i, 1); return true; };
 const outDir = resolve(flag('out', '.taste-skill/inspect'));
+const rootFlag = flag('root', null);
 const widths = flag('widths', '1440,768,390').split(',').map(Number).filter(Boolean);
 let allow = flag('allow', '').split(',').filter(Boolean);
 const asJson = has('json');
@@ -33,7 +37,7 @@ let film = has('film');
 let dealtFonts = []; // the faces the saved sheet dealt, to catch a build that quietly fell back to a default
 const target = args[0];
 if (!target || target === '-h' || target.startsWith('--')) {
-  console.error('usage: node inspect.mjs <url | file.html> [--out DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]');
+  console.error('usage: node inspect.mjs <url | file.html> [--out DIR] [--root DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]');
   process.exit(2);
 }
 // Allowances granted by the drawn direction (written by draw.mjs) apply automatically.
@@ -42,25 +46,15 @@ for (const p of ['.taste-skill/direction.json', join(outDir, '..', 'direction.js
 }
 // A local file is served over http from a throwaway server on 127.0.0.1, so the browser never has to
 // open a file path (some sandboxes show Node and the browser different views of the disk) and relative
-// assets, fetch() and module scripts behave as they will when the page is hosted.
-let url = target; let server = null;
+// assets, fetch() and module scripts behave as they will when the page is hosted. The server root is
+// the folder the page is hosted from (lib/serve.mjs): a built page is served from its build folder,
+// so root-relative assets (/_astro/page.css) resolve instead of 404ing against the repository.
+let url = target; let server = null; let serveRoot = null;
 if (!/^https?:\/\//.test(target)) {
   const file = resolve(target);
   if (!existsSync(file)) { console.error('No such file: ' + file); process.exit(2); }
-  const cwd = resolve('.');
-  const root = file.startsWith(cwd + sep) ? cwd : dirname(file);
-  const MIME = { '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.otf': 'font/otf', '.mp4': 'video/mp4', '.webm': 'video/webm', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json' };
-  server = createServer((req, res) => {
-    try {
-      let f = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-      if (f !== root && !f.startsWith(root + sep)) { res.writeHead(403); return res.end(); }
-      if (statSync(f).isDirectory()) f = join(f, 'index.html');
-      res.writeHead(200, { 'content-type': MIME[extname(f).toLowerCase()] || 'application/octet-stream', 'content-length': statSync(f).size, 'cache-control': 'no-store' });
-      createReadStream(f).pipe(res);
-    } catch { res.writeHead(404); res.end('not found'); }
-  });
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
-  url = `http://127.0.0.1:${server.address().port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;
+  try { ({ server, url, root: serveRoot } = await serveLocalFile(file, { rootFlag })); }
+  catch (err) { console.error(err.message); process.exit(2); }
 }
 const HEIGHT = { 1440: 900, 1280: 800, 1024: 768, 768: 1024, 390: 844, 375: 812 };
 
@@ -69,7 +63,7 @@ mkdirSync(outDir, { recursive: true });
 for (const f of readdirSync(outDir)) if (isInspectionScreenshot(f)) unlinkSync(join(outDir, f));
 const browser = await Browser.launch();
 const helper = await browser.newPage({ width: 1600, height: 1000 });
-const report = { url: server ? target : url, at: new Date().toISOString(), allow, viewports: [], findings: [], images: [] };
+const report = { url: server ? target : url, serveRoot, at: new Date().toISOString(), allow, viewports: [], findings: [], images: [] };
 
 const MOTION_MIN = 8, MOTION_GOOD = 16; // distinct moving elements over load + one scroll through the page
 // Runs in the page before any of its own scripts: counts the distinct elements that actually move while

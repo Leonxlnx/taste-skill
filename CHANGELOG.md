@@ -4,6 +4,10 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
+## Unreleased
+
+- **A built page is inspected with its own assets** ([#179](https://github.com/Leonxlnx/taste-skill/issues/179), thanks @chri5bot): `inspect.mjs dist/index.html` (and `scenes.mjs`) served the repository root, so root-relative assets (`/_astro/page.css`) 404ed and the page was judged unstyled. The throwaway server now serves the folder the page is hosted from — the build folder for a production build, found from the page's own asset references — and `--root DIR` names it explicitly. The served folder is recorded as `serveRoot` in `report.json`.
+
 ## 2.1.5 - 2026-10-25
 
 Fixes from the community. Thanks to everyone who reported and sent them.

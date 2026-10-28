@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // tasteskill / scenes — photograph every scroll scene on a page at exact points of its progress.
 //
-//   node scenes.mjs <url | path/to/file.html> [--out DIR] [--steps 10] [--scene "#id"] [--wait 900]
+//   node scenes.mjs <url | path/to/file.html> [--out DIR] [--root DIR] [--steps 10] [--scene "#id"] [--wait 900]
 //
 // For each <section class="scene"> (references/scenes.md): the screen before it, 0, 10, … 100% of its
 // hold, and the screen after it, on desktop (1440x900) and on a phone (390x844), as labelled contact
@@ -10,39 +10,29 @@
 //
 // Exit code 0 = every scene ran; 1 = a scene never started, fell back to rest on desktop, or the page
 // logged errors. Zero dependencies: drives an installed Chrome/Edge/Chromium. Node 22+.
-import { existsSync, mkdirSync, statSync, createReadStream } from 'node:fs';
-import { resolve, join, dirname, extname, sep, relative } from 'node:path';
-import { createServer } from 'node:http';
+import { existsSync, mkdirSync } from 'node:fs';
+import { resolve, join, relative } from 'node:path';
+import { serveLocalFile } from './lib/serve.mjs';
 import { Browser, sleep } from './lib/cdp.mjs';
 
 const args = process.argv.slice(2);
 const flag = (k, d) => { const i = args.indexOf('--' + k); if (i === -1) return d; const v = args[i + 1]; args.splice(i, 2); return v; };
 const outDir = resolve(flag('out', '.taste-skill/scenes'));
+const rootFlag = flag('root', null);
 const STEPS = Math.max(2, +flag('steps', 10)), WAIT = +flag('wait', 900);
 const only = flag('scene', '');
 const target = args[0];
-if (!target || target.startsWith('--')) { console.error('usage: node scenes.mjs <url | file.html> [--out DIR] [--steps 10] [--scene "#id"] [--wait 900]'); process.exit(2); }
+if (!target || target.startsWith('--')) { console.error('usage: node scenes.mjs <url | file.html> [--out DIR] [--root DIR] [--steps 10] [--scene "#id"] [--wait 900]'); process.exit(2); }
 
-// A local file is served from 127.0.0.1 (the working directory when the file is inside it, else the
-// file's folder), so relative assets and CDN scripts behave as they will when the page is hosted.
+// A local file is served from 127.0.0.1 as it will be hosted (lib/serve.mjs): a built page is served
+// from its build folder, so root-relative assets resolve instead of 404ing against the repository.
+// --root DIR names that folder explicitly.
 let url = target, server = null;
 if (!/^https?:\/\//.test(target)) {
   const file = resolve(target);
   if (!existsSync(file)) { console.error('No such file: ' + file); process.exit(2); }
-  const cwd = resolve('.');
-  const root = file.startsWith(cwd + sep) ? cwd : dirname(file);
-  const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.mp4': 'video/mp4', '.webm': 'video/webm', '.woff': 'font/woff', '.woff2': 'font/woff2' };
-  server = createServer((req, res) => {
-    try {
-      let f = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-      if (f !== root && !f.startsWith(root + sep)) { res.writeHead(403); return res.end(); }
-      if (statSync(f).isDirectory()) f = join(f, 'index.html');
-      res.writeHead(200, { 'content-type': MIME[extname(f).toLowerCase()] || 'application/octet-stream', 'cache-control': 'no-store' });
-      createReadStream(f).pipe(res);
-    } catch { res.writeHead(404); res.end('not found'); }
-  });
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
-  url = `http://127.0.0.1:${server.address().port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;
+  try { ({ server, url } = await serveLocalFile(file, { rootFlag })); }
+  catch (err) { console.error(err.message); process.exit(2); }
 }
 mkdirSync(outDir, { recursive: true });
 const browser = await Browser.launch();

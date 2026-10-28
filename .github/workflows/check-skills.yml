@@ -21,5 +21,5 @@ jobs:
         run: node tests/text-encoding.mjs
       - name: Scripts parse
         run: for f in skills/taste-skill/scripts/*.mjs skills/taste-skill/scripts/lib/*.mjs skills/taste-skill/assets/*.js skills/taste-skill/assets/scenes/*.js; do node --check "$f" || exit 1; done
-      - name: Browser profile cleanup and inspector file names
-        run: node --test tests/profile-cleanup.mjs tests/inspection-files.mjs
+      - name: Browser profile cleanup, inspector file names and serve roots
+        run: node --test tests/profile-cleanup.mjs tests/inspection-files.mjs tests/serve-root.mjs
