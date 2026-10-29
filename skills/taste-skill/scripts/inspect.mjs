@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // tasteskill / inspect — render the page in a real browser, measure it, and photograph it.
 //
-//   node inspect.mjs <url | path/to/file.html> [--out DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]
+//   node inspect.mjs <url | path/to/file.html> [--out DIR] [--root DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]
 //
 // --film also photographs the scroll as a visitor sees it (a frame every third of a screen, real wheel
 // input) into desktop-film-NN.jpg, so a scroll scene is judged by its in-between states. A direction
@@ -14,17 +14,19 @@
 // Zero dependencies: drives an installed Chrome/Edge/Chromium. Node 22+.
 // Widths sharing a viewport class receive width-qualified screenshot filenames.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync } from 'node:fs';
-import { resolve, join, relative, dirname, extname, sep } from 'node:path';
+import { resolve, join, relative, extname, sep } from 'node:path';
 import { createServer } from 'node:http';
 import { Browser, sleep } from './lib/cdp.mjs';
 import { probe, frame, layout, app, colourShare } from './lib/probe.mjs';
 import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
 import { viewportClass as name, screenshotLabel, isInspectionScreenshot } from './lib/inspection-files.mjs';
+import { previewRoot, fileForRequest } from './lib/preview-root.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, def) => { const i = args.indexOf('--' + name); if (i === -1) return def; const v = args[i + 1]; args.splice(i, 2); return v; };
 const has = (name) => { const i = args.indexOf('--' + name); if (i === -1) return false; args.splice(i, 1); return true; };
 const outDir = resolve(flag('out', '.taste-skill/inspect'));
+const rootFlag = flag('root', '');
 const widths = flag('widths', '1440,768,390').split(',').map(Number).filter(Boolean);
 let allow = flag('allow', '').split(',').filter(Boolean);
 const asJson = has('json');
@@ -33,7 +35,7 @@ let film = has('film');
 let dealtFonts = []; // the faces the saved sheet dealt, to catch a build that quietly fell back to a default
 const target = args[0];
 if (!target || target === '-h' || target.startsWith('--')) {
-  console.error('usage: node inspect.mjs <url | file.html> [--out DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]');
+  console.error('usage: node inspect.mjs <url | file.html> [--out DIR] [--root DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]');
   process.exit(2);
 }
 // Allowances granted by the drawn direction (written by draw.mjs) apply automatically.
@@ -47,13 +49,15 @@ let url = target; let server = null;
 if (!/^https?:\/\//.test(target)) {
   const file = resolve(target);
   if (!existsSync(file)) { console.error('No such file: ' + file); process.exit(2); }
-  const cwd = resolve('.');
-  const root = file.startsWith(cwd + sep) ? cwd : dirname(file);
+  const chosen = previewRoot({ file, cwd: resolve('.'), rootFlag });
+  if (chosen.error) { console.error(chosen.error); process.exit(2); }
+  const root = chosen.root;
   const MIME = { '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.otf': 'font/otf', '.mp4': 'video/mp4', '.webm': 'video/webm', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json' };
   server = createServer((req, res) => {
     try {
-      let f = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-      if (f !== root && !f.startsWith(root + sep)) { res.writeHead(403); return res.end(); }
+      const mapped = fileForRequest(root, req.url);
+      if (mapped.status) { res.writeHead(mapped.status); return res.end(); }
+      let f = mapped.file;
       if (statSync(f).isDirectory()) f = join(f, 'index.html');
       res.writeHead(200, { 'content-type': MIME[extname(f).toLowerCase()] || 'application/octet-stream', 'content-length': statSync(f).size, 'cache-control': 'no-store' });
       createReadStream(f).pipe(res);
