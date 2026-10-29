@@ -328,7 +328,8 @@ also open straight from the file system, open `index.html` that way once before 
 Inspect what the visitor receives. With a build step, run the last gate on the production build
 (`vite build && vite preview`, `next build && next start`, or the built `index.html`), not only on the
 dev server: minifiers and bundlers change what ships (one dropped a `backdrop-filter` that the dev
-server showed). The inspector warns when it is looking at a dev server.
+server showed). The inspector warns when it is looking at a dev server. When you inspect a built
+file, pass `--root` as that build's directory so root-relative assets such as `/style.css` load from the build.
 
 ### 8. Look
 
