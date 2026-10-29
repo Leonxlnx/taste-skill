@@ -13,18 +13,20 @@
 // Exit code 0 = no FAIL findings. Exit code 1 = at least one FAIL (the page is not done).
 // Zero dependencies: drives an installed Chrome/Edge/Chromium. Node 22+.
 // Widths sharing a viewport class receive width-qualified screenshot filenames.
+// The screenshots land in `.taste-skill/inspect-<page>/`, one folder per page, so two runs over
+// different pages never overwrite each other; `--out DIR` picks the folder instead.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync } from 'node:fs';
 import { resolve, join, relative, dirname, extname, sep } from 'node:path';
 import { createServer } from 'node:http';
 import { Browser, sleep } from './lib/cdp.mjs';
 import { probe, frame, layout, app, colourShare } from './lib/probe.mjs';
 import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
-import { viewportClass as name, screenshotLabel, isInspectionScreenshot } from './lib/inspection-files.mjs';
+import { viewportClass as name, screenshotLabel, isInspectionScreenshot, defaultOutDir } from './lib/inspection-files.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, def) => { const i = args.indexOf('--' + name); if (i === -1) return def; const v = args[i + 1]; args.splice(i, 2); return v; };
 const has = (name) => { const i = args.indexOf('--' + name); if (i === -1) return false; args.splice(i, 1); return true; };
-const outDir = resolve(flag('out', '.taste-skill/inspect'));
+const outFlag = flag('out', '');
 const widths = flag('widths', '1440,768,390').split(',').map(Number).filter(Boolean);
 let allow = flag('allow', '').split(',').filter(Boolean);
 const asJson = has('json');
@@ -36,6 +38,9 @@ if (!target || target === '-h' || target.startsWith('--')) {
   console.error('usage: node inspect.mjs <url | file.html> [--out DIR] [--widths 1440,768,390] [--allow rule,rule] [--app] [--film] [--json]');
   process.exit(2);
 }
+// One folder per page by default, so a second run over another page cannot clear and replace the
+// screenshots (and the report that points at them) of the first. --out still overrides it.
+const outDir = resolve(outFlag || defaultOutDir(target, resolve('.')));
 // Allowances granted by the drawn direction (written by draw.mjs) apply automatically.
 for (const p of ['.taste-skill/direction.json', join(outDir, '..', 'direction.json')]) {
   if (existsSync(p)) { try { const d = JSON.parse(readFileSync(p, 'utf8')); allow = [...new Set([...allow, ...(d.allow || [])])]; if (d.kind === 'app') appMode = true; if (Array.isArray(d.scenes) && d.scenes.length) film = true; dealtFonts = (d.input?.keep || []).includes('type') ? [] : d.kind === 'app' ? [d.style?.tokens?.font?.family].filter(Boolean) : [d.type?.display?.family, d.type?.text?.family].filter(Boolean); } catch {} break; }
