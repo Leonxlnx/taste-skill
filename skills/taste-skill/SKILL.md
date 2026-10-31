@@ -24,7 +24,7 @@ This skill replaces those defaults with decisions, in four ways:
 
 1. **A script deals the direction; you build it.** `scripts/draw.mjs` deals, at random and away from
    recent builds, the direction, a type pairing from 169 faces with its own scale, a restrained
-   palette, the navigation, the footer, the cards and the buttons (each one of about twelve tested
+   palette, the navigation, the footer, the cards and the buttons (each one of about fifteen tested
    designs or of the patterns a design-anatomy study read off great sites), the hero and the sections
    (from blueprints and those patterns), one to three small moves, corners, spacing, how pictures are
    treated, whether the page has an interactive piece or a video, and its scroll scenes, none of them
@@ -96,13 +96,16 @@ to answer); for a practice's work, choose a direction that does not promise them
 thing is never shown by another's:** no other maker's product however cropped, no named hotel's or
 other house's room, no other artist's work, no other house captioned as the client's, whatever the
 credit says (three test pages could not be published for this alone, all three credited). Without the
-client's pictures, the product is a designed frame (`data-slot="product-photo"`: its name and two or
-three facts, no drawing) and its photographs show its use, its load and its place with no product of
-its kind in them; each room is a detail that belongs to no one (bed linen, window light, a chair) in a
-`data-slot="room-photo"` frame and the house is shown as its place; each piece of work is the
+client's pictures, the product is shown by its product statement (its name with its true figures, its
+colourways and its size against things people know, `data-slot="product-photo"` on it, no drawing)
+and its photographs show its use, its load and its place with no product of its kind in them; each
+room is a detail that belongs to no one (bed linen, window light, a chair), never a whole furnished
+room, in a `data-slot="room-photo"` frame and the house is shown as its place; a menu item stands in
+type, never by a stock picture of another's dish or drink; each piece of work is the
 project's own still made for the page (`data-slot="work"`). The sheet prints the rule under its
 photograph total, and the inspector fails a picture shown as the client's whose credit names a business
-(`credit-names-business`). **Rooms, dishes and products are shown, not boxed:** as many pictures as
+(`credit-names-business`) and warns on a room slot whose picture names a room or a home
+(`room-not-theirs`) and on a menu item shown by another's photograph (`menu-not-theirs`). **Rooms, dishes and products are shown, not boxed:** as many pictures as
 items listed, each room or product in two columns, its picture at 55% of the width or more beside one
 grouped block of its name, facts and price; never a grey spec panel or a filled box in its place (a
 guesthouse whose rooms were grey panels read as tabs in a blind test). Never a drawing, and never the
@@ -175,7 +178,7 @@ and say why in the report.
   are not quotes), `3d` (a 3D model of the subject). A pattern that needs one of these is never dealt
   without it. Leave it out if you have none: the draw then avoids compositions that depend on them and
   the sheet says how to fill picture slots honestly (software shows its own interface built in HTML; a
-  product with no photographs of its own is shown by its designed frame and photographs of its use,
+  product with no photographs of its own is shown by its product statement and photographs of its use,
   its load and its place, never another maker's product, never a drawing). Pictures you will find in the
   open collections are not the project's own; leave them out of `--have`.
 - `--keep palette,type`: when the brand already fixes colours or typefaces. The draw then deals only
@@ -255,7 +258,10 @@ visitor works the controls, at every width, and every heading beside it is true 
 reach. It comes after the content it works on (the menu before the brew calculator, the price list
 before the estimate), its controls before its result at every width, the result on the section's
 ground. Lengths, sizes and counts are stepped buttons of real values, never a range slider. Build it in step 6, then drive every control to its extremes and look at the widest result at
-1440, 768 and 390, since the inspector only sees the default state.
+1440, 768 and 390, since the inspector only sees the default state. A product page shown by its
+statement has one moment built on its figures (a load or range planner, a configurator of its
+colourways, the same trip timed two ways where the product makes one faster): its result a large
+figure in a sentence, never a gauge or a figure counting up on its own.
 
 **The scenes carry the idea too.** The scroll scenes on the sheet are devices waiting for a subject.
 Decide what each one shows from your inventory before building: the row that bends with the scroll is
@@ -314,8 +320,9 @@ Write the whole page as a copy deck (plain text) before markup, following `refer
 - Sample details are expected where the brief leaves gaps (dish names, room names and rates, project
   titles) so the design is seen at full density; list them in the report for the client to confirm.
   Proof is never invented: no customers, quotes, reviews, press, logos or business statistics. A
-  name you coin (the client's, the product's) is searched with the trade's word before use and
-  replaced if a product of that trade has it (references/copy.md §5).
+  name you coin (the client's, the product's) is searched with the trade's word and as its domain
+  before use and replaced if a product of that trade or a live site has it; its email and links use
+  `.example` until the client gives its own (references/copy.md §5).
 - **Name the real, checkable things; leave out only what cannot be checked.** A page about a real place
   names what a visitor needs to get there and picture it: on the first screen the specific place the
   brief gives (the fjord, the village, the district); when it names only a region, a real place in it
@@ -372,7 +379,8 @@ not finished. Order of work:
    pictures above and below it, the `h1` is about 5vw or more at 1440 (72px; the sheet raises the
    display step for a split hero), on two lines; words that cannot be that large go over the picture,
    full-bleed. A 48px headline in a 50/50 split read as a shop template in a blind test, and the
-   inspector fails one under 64px.
+   inspector fails one under 64px. A name or headline on two lines keeps them tight (line-height
+   0.9-1.0, no gap) at the dealt weight, never a lighter cut: a thin two-line name read as a bug.
 3. **Each section in the shape of its blueprint,** with this project's content. A blueprint is one
    example of a shape (what is large, what sits beside what), not a drawing to trace: let the real
    content decide the details, and leave its props behind (a café blueprint's opening-hours bar stays
@@ -399,10 +407,12 @@ not finished. Order of work:
    1. the project's own;
    2. generated, if you have an image tool: the best way to show this exact subject;
    3. the photographs dealt on the sheet and the rest of the library (`draw.mjs --photos <words>`):
-      sharp, modern, no credit needed; atmosphere, never a stand-in for a person, and never the
+      sharp and modern, credited by author and licence where their line says Wikimedia Commons
+      (`assets.mjs --get library:<id>` records it); atmosphere, never a stand-in for a person, and never the
       client's own product, room, house or work (step 1); where the sheet says **Search first** (a
       trade the library holds fewer than six photographs of), source 4 comes before these;
-   4. only for what the library lacks (a detail of a room, a dish, the product's use and its load),
+   4. only for what the library lacks (a detail of a room, the product's use and its load; never a
+      dish or a drink a menu names),
       sharp modern photographs from the open collections (`node <skill>/scripts/assets.mjs "<query>"`:
       Openverse, then Wikimedia Commons when it fails, with retries; 1800px or wider by default; never
       the museum sources; never a search for the client's own thing). Look at each one, and
@@ -434,7 +444,8 @@ not finished. Order of work:
    the page's ground. The first picture a visitor sees shows the product or the place itself (the cup
    and the bar, the room, the product working), never a street, a facade or a blurred mood shot; if no
    such picture exists, the hero is set in type (a product with no photographs of its own shows its
-   designed frame, or a picture of its use or its place with the frame in the section after: step 1). Each photograph appears once on the page, never again as a crop (a
+   product statement, or a picture of its use or its place with the statement in the section after:
+   step 1). Each photograph appears once on the page, never again as a crop (a
    scene's stamp of the picture it has just shown is the one exception): a cargo-bike page showed its
    one family photograph three times. Never a blurred or pixelated face: take shots with faces turned
    away, out of frame or naturally out of focus, or frame the load and the place (that photograph's
@@ -483,11 +494,13 @@ not finished. Order of work:
 
    `references/imagery.md` covers searching, licences, video, drawing, crops and treatments.
 5. **The navigation, the footer, the cards and the buttons** as section 0 deals them, each one of
-   about twelve tested designs or one of the study's patterns, built at the sizes and with the
+   about fifteen tested designs or one of the study's patterns, built at the sizes and with the
    behaviour written there: the owner found every page with the same plain bar, the same three button
    shapes and a one-line footer. Each part, and the hero, ends on a **Must show** line: the built part
    is checked against it, and it names what a still at rest shows (a hover may follow, never be all of
-   it). One button family on the page: the dealt button for every action (in the
+   it). A design that needs facts (the brief's opening hours, its figures, the product's window
+   beside the headline, eight real destinations) is dealt only where they are real, and a page has
+   one tilted thing at most. One button family on the page: the dealt button for every action (in the
    bar, on a card and in a form at that part's height) and at most one quieter sibling
    (`button-family` fails a third shape; folder tabs and a round monogram count). One action once a
    screen: the bar's action and the hero's button never go to one place (`duplicate-action`). The
@@ -572,7 +585,9 @@ not finished. Order of work:
    empty space", "everything is pushed to one side"), and the inspector measures each of them. On a
    page longer than about ten screens at 1440 (a page with scenes always is), the navigation or at
    least the one action stays in reach on every screen, the way the dealt navigation says. A hero that
-   animates its bar away hands it on to that navigation (`references/layout.md` §7).
+   animates its bar away hands it on to that navigation (`references/layout.md` §7). A figure is
+   never cut by its box (`cut-figure` fails sun-hour figures cut in half), and a button stands on a
+   calm part of a photograph or off it (`button-on-photo` warns on a busy one).
 9. **States and semantics.** Real links and buttons, visible focus, alt text, a phone layout that is
    its own composition. Every navigation and skip link lands on the section that holds what it names,
    never on a scene that only introduces it. Every control, any tool included, works from the
@@ -675,7 +690,8 @@ Tell the user, briefly: the direction dealt (name and seed) and any redraws with
 sentence and the interactive piece, if one was dealt; the final scores from your last critique round
 and what still falls short; every picture and clip with its source (and, where a licence asks, its
 credit in the Image credits dialog); which bundled photographs stand in for photography, and every
-marked slot (`data-slot`) with what holds it, so the client's own pictures can replace them; and any sample content that must be swapped before launch. Do
+marked slot (`data-slot`) with what holds it, so the client's own pictures can replace them (on a
+product page with none, that a product shoot is the first thing to add); and any sample content that must be swapped before launch. Do
 not claim a check you did not run.
 
 ## House rules
@@ -706,7 +722,7 @@ These hold on every build, whatever the direction. `inspect.mjs` measures them.
 | **One button family:** the dealt button and one quieter sibling, no third shape (`button-family`). | The dealt button in the bar, the hero, the cards, the forms and the footer, at that part's height. |
 | **The footer is a designed section,** never a single line. | The footer section 0 deals, built as dealt (`footer-not-as-dealt`), on its own ground: links, contact, legal, Image credits. |
 | **No documentary or archive photographs.** No old Commons or museum pictures, history photographs, postcards, old maps, engravings, news-like shots. | Modern, well-lit, professional photographs (the library's first), or none: the product, the type, the colour. |
-| **The client's own thing is never shown by another's.** No other maker's product however cropped, no named hotel's room, no other artist's work, whatever the credit says (`credit-names-business`). | The marked slot as the sheet says: the product's designed frame, a detail that belongs to no one, the project's own still; around it the use, the load and the place. |
+| **The client's own thing is never shown by another's.** No other maker's product however cropped, no named hotel's room, no other artist's work, whatever the credit says (`credit-names-business`). | The marked slot as the sheet says: the product statement, a detail that belongs to no one, the project's own still; around it the use, the load and the place. |
 | **No emoji, no gradient blobs, no decorative shapes, no drawn diagrams, charts or illustrations, no fake dashboards of grey bars.** | A real picture, a real interface fragment, the process said in words, or nothing. |
 | **No styled accent word** in a headline (italic, serif, coloured, underlined). | One face, one colour. The words carry the emphasis. |
 | **The dealt type system:** its faces, its weights, its six steps. Two families at most. | Map every other size onto the nearest step. |

@@ -760,7 +760,9 @@ export function workShown() {
 //              bytes. Each says whether the credit names the client as its author, or another's (a record of its fetch, a
 //              licence or a source in its entry, or an author who is not the client), or no credit at all where the
 //              client gave no pictures; with the credits no picture shown matches (credit-names-business,
-//              portfolio-without-work)
+//              portfolio-without-work). Round 11f: one shown as an item the page sells by name (its alt, caption or
+//              title names a drink or a dish its section prices: r14-p66's flat white beside "Flat white 3.80 €") is
+//              shown as the menu's (room-not-theirs, menu-not-theirs)
 export async function pictureCredits({ client = null, product = false, place = false, own: hasOwn = false, work = [] } = {}) {
   const B = document.body;
   const norm = (t) => (t || '').replace(/\s+/g, ' ').trim();
@@ -795,6 +797,20 @@ export async function pictureCredits({ client = null, product = false, place = f
     const same = bytes ? recs.filter((r) => +r.l.width === w && +r.l.height === h && +r.l.bytes === bytes) : [];
     return same.length === 1 ? same[0].l : null;
   };
+  // the items the page sells by name: a price (with its currency) and the words set apart before it in its row of twelve
+  // words or fewer, an amount ("250 g") aside, in their section
+  const PRICE = /[€$£]\s?\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s?(?:€|(?:EUR|USD|GBP|CHF|kr|NOK|DKK|SEK)\b)/;
+  const secOf = (e) => e.closest('section, [data-scene]') || B;
+  const items = [];
+  { const tw = document.createTreeWalker(B, NodeFilter.SHOW_TEXT); let j = 0;
+    for (let n = tw.nextNode(); n && j < 400; n = tw.nextNode()) {
+      const m = n.nodeValue.match(PRICE); if (!m || !n.parentElement || n.parentElement.closest('script, style, dialog, nav, footer')) continue; j++;
+      let row = n.parentElement; while (row && row !== B && !/\p{L}{3}/u.test(norm(row.innerText).replace(PRICE, ''))) row = row.parentElement;
+      if (!row || row === B || norm(row.innerText).split(' ').length > 12) continue;
+      const before = []; const rw = document.createTreeWalker(row, NodeFilter.SHOW_TEXT); for (let t = rw.nextNode(); t && t !== n; t = rw.nextNode()) before.push(t.nodeValue);
+      const name = norm([...before, n.nodeValue.slice(0, m.index)].join(' ')).replace(/[\d.,:–-]+\s*(?:g|kg|ml|cl|l|oz|pcs?)?\s*$/i, '').trim();
+      if (before.some((t) => /\p{L}{3}/u.test(t)) && /\p{L}{3}/u.test(name) && name.split(' ').length <= 4) items.push({ name, f: fold(name), price: norm(n.nodeValue.slice(m.index)).slice(0, 12), sec: secOf(row) });
+    } }
   const out = [], seen = new Set(), usedRec = new Set(), usedEntry = new Set(); let k = 0;
   for (const el of B.querySelectorAll('img, video, [style*="background-image"], figure, div, section, span')) {
     if (el.closest('dialog, [role=dialog], [data-ui], nav, header[role=banner]')) continue;
@@ -803,11 +819,16 @@ export async function pictureCredits({ client = null, product = false, place = f
     if (el.tagName === 'IMG') { srcs.push(el.currentSrc, el.getAttribute('src')); for (const s of [el, ...(el.parentElement?.tagName === 'PICTURE' ? el.parentElement.querySelectorAll('source') : [])]) for (const c of String(s.getAttribute('srcset') || '').split(',')) srcs.push(c.trim().split(/\s+/)[0]); }
     else if (el.tagName === 'VIDEO') srcs.push(el.currentSrc, el.getAttribute('src'), ...[...el.querySelectorAll('source')].map((s) => s.getAttribute('src')), el.getAttribute('poster'));
     else { const cs = getComputedStyle(el), m = cs.backgroundImage.match(/url\(["']?([^"')]+)/); if (m && /cover|contain/.test(cs.backgroundSize)) srcs.push(m[1]); }
-    const files = [...new Set(srcs.filter((u) => u && !/^data:|\.svg(\?|#|$)/i.test(u)).map(base).filter(Boolean))];
+    const urls = srcs.filter((u) => u && !/^data:|\.svg(\?|#|$)/i.test(u)), files = [...new Set(urls.map(base).filter(Boolean))];
     if (!files.length || !el.getClientRects().length || getComputedStyle(el).display === 'none') continue;
     const r = el.getBoundingClientRect(); if (r.width < 64 || r.height < 48) continue;
-    const file = files[0]; if (seen.has(file) || ++k > 120) continue;
-    seen.add(file);
+    // (one picture by its host and path: two library pictures at one size, /id/691/1600/1000 and /id/1060/1600/1000,
+    // share their last part and are two pictures, each named from its id on as restLook names it; round 11f)
+    const at = (() => { try { const u = new URL(urls[0], location.href); return u.host + dec(u.pathname); } catch { return files[0]; } })();
+    const p = at.split('/'); let i = p.length - 1; while (i > 0 && p.length - i <= 3 && /^\d+$/.test(p[i])) i--; if (i < p.length - 1 && /^(id|seed)$/i.test(p[i])) i++;
+    const file = i < p.length - 1 ? p.slice(i).join('/') : files[0];
+    if (seen.has(at) || ++k > 120) continue;
+    seen.add(at);
     const rec = recOf(files, el);
     const t = rec ? fold(rec.title).slice(0, 40) : '', pg = rec ? fold(base(rec.page || '').replace(/^File:/, '').replace(/_/g, ' ')).slice(-40) : '';
     const entry = entries.find((e) => (t.length >= 8 && e.f.includes(t)) || (pg.length >= 8 && e.f.includes(pg)) || files.some((f) => { const n = fold(f); return n.length >= 4 && e.f.includes(' ' + n + ' '); })) || null;
@@ -818,15 +839,16 @@ export async function pictureCredits({ client = null, product = false, place = f
     const fig = el.closest('figure'), caption = norm(fig?.querySelector('figcaption')?.textContent), alt = norm(el.getAttribute('alt') || el.getAttribute('aria-label'));
     const mark = el.closest('[data-slot]')?.getAttribute('data-slot') || '';
     const sec = el.closest('section, article, [data-scene]');
+    const said = ' ' + fold([alt, caption, rec ? rec.title : ''].join(' ')) + ' ', dish = items.find((x) => x.sec === secOf(el) && x.f.length >= 3 && said.includes(' ' + x.f + ' '));
     const slot = mark ? (/product/i.test(mark) ? 'product' : /work|piece|project/i.test(mark) ? 'work' : /house|home/i.test(mark) ? 'house' : /room|stay/i.test(mark) ? 'room' : mark)
-      : own && own.test(caption + ' ' + alt) ? 'caption' : files.some((f) => work.includes(f)) ? 'work' : within(el, ROOMS) || ROOM.test(caption + ' ' + alt) ? 'room' : within(el, HOUSE) ? 'house' : place && within(el, PLACE) ? 'place' : product ? 'product page' : null;
+      : own && own.test(caption + ' ' + alt) ? 'caption' : files.some((f) => work.includes(f)) ? 'work' : within(el, ROOMS) || ROOM.test(caption + ' ' + alt) ? 'room' : within(el, HOUSE) ? 'house' : dish ? 'menu' : place && within(el, PLACE) ? 'place' : product ? 'product page' : null;
     if (!slot || out.length >= 24) continue;
     // (whose it is: the client's by its record's author, else by the entry's; another's by a record of its fetch, a
     // licence or a source in its entry, or an author who is not the client)
     const author = rec ? String(rec.creator || '') : norm(entry?.text.match(/\bby\s+([^,;.·]+)/)?.[1]);
     const theirs = !!own && own.test(author);
     const third = !theirs && (!!rec || !!author || /\bcc[ -]?(?:by|0)\b|\bcc0\b|\blicen[cs]ed?\b|public domain|unsplash|pexels|pixabay|wikimedia|commons|openverse|flickr|\bvia\b/i.test(entry?.text || ''));
-    out.push({ file, files, slot, theirs, third, uncredited: !rec && !entry && !hasOwn, head: sec ? named(sec).slice(0, 40) : '', alt: alt.slice(0, 80), caption: caption.slice(0, 80), record: rec ? { title: String(rec.title || '').slice(0, 120), creator: String(rec.creator || '').slice(0, 80), file: base(rec.page || '').replace(/^File:/, '').replace(/_/g, ' ').slice(0, 120), notes: (rec.notes || []).join(' ').slice(0, 300) } : null, entry: entry ? entry.text.slice(0, 400) : null });
+    out.push({ file, files, slot, ...(slot === 'menu' && dish ? { item: `${dish.name}, ${dish.price}` } : {}), theirs, third, uncredited: !rec && !entry && !hasOwn, head: sec ? named(sec).slice(0, 40) : '', alt: alt.slice(0, 80), caption: caption.slice(0, 80), record: rec ? { title: String(rec.title || '').slice(0, 120), creator: String(rec.creator || '').slice(0, 80), file: base(rec.page || '').replace(/^File:/, '').replace(/_/g, ' ').slice(0, 120), notes: (rec.notes || []).join(' ').slice(0, 300) } : null, entry: entry ? entry.text.slice(0, 400) : null });
   }
   // (the credits no picture shown matches: a picture cropped or renamed from one of them is shown without its credit)
   const credits = [...recs.filter((r) => !usedRec.has(r.l)).map((r) => ({ title: String(r.l.title || '').slice(0, 120), creator: String(r.l.creator || '').slice(0, 80), file: base(r.l.page || '').replace(/^File:/, '').replace(/_/g, ' ').slice(0, 120), notes: '' })), ...entries.filter((e) => !usedEntry.has(e)).map((e) => ({ entry: e.text.slice(0, 300) }))].slice(0, 40);
@@ -839,9 +861,11 @@ export async function pictureCredits({ client = null, product = false, place = f
 //              links and buttons of the site's bar (a header or nav outside the sections, at load) and of every layer fixed
 //              to the screen or sticky outside the sections, on top where they lie, read as one form: a dock at the
 //              bottom, a side index (three links or more to the page's own sections stacked at one side), a masthead (the
-//              wordmark alone on its row and centred over the links; at load), a centred wordmark, corners (a group in each
-//              top corner, nothing between them and no band behind them), a top bar, or none; whether a band lies behind
-//              the top groups; and whether a scene or a sticky stage holds the screen (nav-not-as-dealt)
+//              wordmark alone on its row and centred over the links; at load), a centred wordmark, corners (a group in
+//              each top corner, nothing between them and no band behind them), a top bar, or none; whether a band lies
+//              behind the top groups; whether the top group is the toolbar of the hero's product window (at load; round
+//              11f), and whether it was read from that window's own header, the page having no bar of its own (fromWin);
+//              and whether a scene or a sticky stage holds the screen (nav-not-as-dealt)
 export function navForm(phase = 'load') {
   const W = innerWidth, H = innerHeight, B = document.body, D = document.documentElement;
   const css = (e) => getComputedStyle(e);
@@ -855,15 +879,22 @@ export function navForm(phase = 'load') {
   const home = (a) => { const h = (a.getAttribute('href') || '').trim(); if (['#', '#top', '/', './', 'index.html', './index.html'].includes(h) || a.matches('[data-wordmark], [rel=home]')) return true; try { const u = new URL(h, location.href); return u.origin === location.origin && u.pathname.replace(/index\.html?$/, '') === location.pathname.replace(/index\.html?$/, '') && (!u.hash || u.hash === '#top'); } catch { return false; } };
   const inBar = (el) => { const b = el.closest('header, [role=banner]'); return !!el.closest('nav') || (!!b && !inSections(b)); };
   const clear = (e) => { const c = css(e).backgroundColor, a = c.match(/^rgba\(.*,\s*([\d.]+)\)$/); return c === 'transparent' || (!!a && +a[1] < 0.5); };
-  const items = [], side = [];
+  const items = [], side = [], wins = [];
   for (const a of document.querySelectorAll('a[href], button, [role=button]')) {
-    if (a.closest('[data-ui], dialog, [role=dialog], [aria-hidden=true], footer') || !norm(a.innerText || a.getAttribute('aria-label')) || !onTop(a)) continue;
+    // (a product window's own controls are not the site's, unless a header or a nav in it is pinned to the screen: the
+    // window's toolbar as the site's bar, round 11f; at load, one that scrolls with the window stands as the bar where the
+    // page has no bar of its own (fromWin), so a toolbar that leaves with the hero is read as hiding)
+    const win = !!a.closest('[data-ui]') && !!a.closest('header, nav, [role=banner], [role=navigation]');
+    if (a.closest('dialog, [role=dialog], [aria-hidden=true], footer') || (a.closest('[data-ui]') && !win) || !norm(a.innerText || a.getAttribute('aria-label')) || !onTop(a)) continue;
     const q = a.getBoundingClientRect(), it = { a, l: q.left, r: q.right, t: q.top, b: q.bottom, mark: a.matches('a') && home(a), pin: pinOf(a) };
+    if (win && !it.pin) { if (phase === 'load') wins.push(it); continue; }
     if (it.pin || (phase === 'load' && inBar(a))) items.push(it);
     if (/^#[^#\s]+$/.test(a.getAttribute('href') || '') && !it.mark && pinOf(a, true)) side.push(it);
   }
+  const fromWin = !items.some((x) => x.t < 140) && wins.some((x) => x.t < 140);
+  if (fromWin) items.push(...wins);
   const mid = (x) => (x.l + x.r) / 2;
-  let form = 'none', band = false;
+  let form = 'none', band = false, toolbar = false;
   // a dock: two items or more fixed in the lowest band of the screen, in one group (an action and a Top tab in the two
   // bottom corners are corners)
   const dock = items.filter((x) => x.pin && css(x.pin).position === 'fixed' && x.t > H * 0.6 && x.b > H - 160);
@@ -886,6 +917,15 @@ export function navForm(phase = 'load') {
     const span = links.length ? [Math.min(...links.map((x) => x.l)), Math.max(...links.map((x) => x.r))] : null;
     // (a band behind the groups: a fill across half the screen or more round all of them)
     if (top.length >= 2) { let c = top[0].a.parentElement; while (c && !top.every((x) => c.contains(x.a))) c = c.parentElement; for (let e = c; e && e !== B && e !== D; e = e.parentElement) { const q = e.getBoundingClientRect(); if (q.width >= W * 0.5 && q.top < 140 && !clear(e)) { band = true; break; } if (q.height > H * 0.3) break; } }
+    // round 11f: a toolbar on the hero's product window (window-toolbar), at load: the top group, over three quarters of
+    // the width at most, sits on the top edge of the window, its body starting within 24px under the group and as wide
+    // as the group or wider (to 80% of the screen), a third of the screen tall or more, drawn as a box or marked as the
+    // product's; or the window holds the group, its top within 24px over the group's (a toolbar laid over the window's
+    // own top 64px, panes under it). Read beside the form, so a bar dealt as a bar that stands over a window is still a bar
+    const tl = Math.min(...top.map((x) => x.l)), tr = Math.max(...top.map((x) => x.r)), tt = Math.min(...top.map((x) => x.t)), tb = Math.max(...top.map((x) => x.b));
+    const body = (e) => { const q = e.getBoundingClientRect(); return q.left <= tl + 8 && q.right >= tr - 8 && q.width <= W * 0.8 && q.top >= tb - 8 && q.top <= tb + 24 && q.height >= H * 0.33 && (!!e.closest('[data-ui]') || !clear(e) || /^(IMG|VIDEO|CANVAS)$/.test(e.tagName)); };
+    const holds = (e) => { const q = e.getBoundingClientRect(); return q.left <= tl + 8 && q.right >= tr - 8 && q.width <= W * 0.8 && q.top >= tt - 24 && q.top <= tt + 2 && q.height >= H * 0.33 && (!!e.closest('[data-ui]') || !clear(e)); };
+    toolbar = phase === 'load' && top.length >= 2 && tr - tl <= W * 0.75 && [...document.elementsFromPoint((tl + tr) / 2, Math.min(H - 1, tb + 32))].some((e) => { for (let x = e; x && x !== B && x !== D; x = x.parentElement) if (body(x) || holds(x)) return true; return false; });
     if (phase === 'load' && mark && !markRow.length && links.length >= 2 && Math.abs(mid(mark) - (span[0] + span[1]) / 2) <= Math.max(48, (span[1] - span[0]) * 0.15) && mid(mark) > W * 0.15) form = 'masthead';
     else if ((marks.length ? marks : [mark]).some((m) => m && Math.abs(mid(m) - W / 2) <= W * 0.04)) form = 'centred wordmark';
     else if (top.some((x) => x.r <= W * 0.4) && top.some((x) => x.l >= W * 0.6) && top.every((x) => x.r <= W * 0.4 || x.l >= W * 0.6) && !band) form = 'corners';
@@ -894,7 +934,7 @@ export function navForm(phase = 'load') {
   // the screen held by a scene or a sticky stage (a side index or a dock may step aside while one holds it)
   let held = false;
   for (let e = document.elementFromPoint(W / 2, H / 2); e && e !== B && e !== D; e = e.parentElement) { const q = e.getBoundingClientRect(); if ((css(e).position === 'sticky' || e.matches('.pin-spacer, [data-scene], .scene')) && q.height >= H * 0.8 && q.top <= 2) { held = true; break; } }
-  return { phase, form, band, held, n: items.length, top: top.length, mark: mark ? norm(mark.a.innerText || mark.a.getAttribute('aria-label')).slice(0, 30) : null, items: top.slice(0, 6).map((x) => norm(x.a.innerText || x.a.getAttribute('aria-label')).slice(0, 20)) };
+  return { phase, form, band, held, ...(toolbar ? { toolbar } : {}), ...(fromWin ? { fromWin } : {}), n: items.length, top: top.length, mark: mark ? norm(mark.a.innerText || mark.a.getAttribute('aria-label')).slice(0, 30) : null, items: top.slice(0, 6).map((x) => norm(x.a.innerText || x.a.getAttribute('aria-label')).slice(0, 20)) };
 }
 
 //   buttonShapes  the page's buttons by shape: every link or button drawn as one (a fill unlike its ground, or an outline
@@ -910,7 +950,8 @@ export function navForm(phase = 'load') {
 //              bar): a tab or a toggle (a disclosure's row too, the bar's menu button aside) drawn as a folder tab (its top
 //              corners round, its foot square) and a link home drawn round (a monogram in a circle, a name in a pill) count;
 //              a mark in a square or soft tile, as many dealt bars carry, does not. A link to a bare "#" is the mark only
-//              where it carries the client's name or initials; { bar: true } reads the bar alone, as it stands past the hero
+//              where it carries the client's name or initials; { bar: true } reads the bar alone, as it stands past the
+//              hero. Round 11f: a square block with one corner cut off by a clip-path (the dog-ear) is a folded corner
 export function buttonShapes({ bar: barOnly = false, client = null } = {}) {
   const W = innerWidth, SY = scrollY || 0, B = document.body;
   const memo = new Map(); const css = (e) => { let c = memo.get(e); if (!c) { c = getComputedStyle(e); memo.set(e, c); } return c; };
@@ -922,7 +963,21 @@ export function buttonShapes({ bar: barOnly = false, client = null } = {}) {
   // (shown on the page: laid out, at a third of its opacity or more, and not parked off the screen like a skip link)
   const shown = (el) => { for (let e = el, i = 0; e && e !== B && i < 30; e = e.parentElement, i++) { const cs = css(e); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.3) return false; } const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2 && r.right > 0 && r.left < W && r.bottom + SY > 0; };
   const drawn = (e) => { const c = rgba(css(e).backgroundColor); if (c && c[3] >= 0.5 && differs(c, groundOf(e.parentElement || B))) return 'filled'; return sides(e) >= 3 ? 'outlined' : null; };
-  const corner = (e, q) => { const cs = css(e), px = (v) => (/%/.test(v) ? (parseFloat(v) / 100) * Math.min(q.width, q.height) : parseFloat(v) || 0); const r = px(cs.borderTopLeftRadius); if (r > 3 && px(cs.borderTopRightRadius) > 3 && px(cs.borderBottomLeftRadius) <= 3 && px(cs.borderBottomRightRadius) <= 3) return 'folder tab'; if (r >= q.height / 2 - 1) return Math.abs(q.width - q.height) <= 4 ? 'circle' : 'pill'; return r <= 3 ? 'square' : r <= 12 ? 'soft' : 'round'; };
+  // (round 11f: a block whose clip-path polygon cuts off one corner, on itself or a wrapper of its size, is a folded
+  // corner, the dog-ear, at any depth of its fold: 20px at 56px and 14px at 44px are one shape, its sibling with it)
+  const len = (s, size) => { let v = 0, sign = 1; for (const t of s.replace(/^calc\((.*)\)$/, '$1').split(/\s+/)) { if (t === '+' || t === '-') { sign = t === '-' ? -1 : 1; continue; } const n = parseFloat(t); if (!Number.isFinite(n)) return NaN; v += sign * (t.endsWith('%') ? (n / 100) * size : n); } return v; };
+  const folded = (e, q) => {
+    for (let x = e, i = 0; x && i < 2; x = x.parentElement, i++) {
+      const p = x.getBoundingClientRect(); if (i && (Math.abs(p.width - q.width) > 2 || Math.abs(p.height - q.height) > 2)) break;
+      const m = css(x).clipPath.match(/^polygon\((.*)\)$/); if (!m) continue;
+      const pts = m[1].split(',').map((pt) => (pt.match(/calc\([^)]*\)|[-\d.]+(?:px|%)?/g) || []).map((s, k) => len(s, k ? p.height : p.width)));
+      if (pts.some((pt) => pt.length !== 2 || !pt.every(Number.isFinite))) continue;
+      const kept = [[0, 0], [p.width, 0], [p.width, p.height], [0, p.height]].filter(([cx, cy]) => pts.some(([px, py]) => Math.abs(px - cx) <= 1.5 && Math.abs(py - cy) <= 1.5)).length;
+      return kept === 3;
+    }
+    return false;
+  };
+  const corner = (e, q) => { const cs = css(e), px = (v) => (/%/.test(v) ? (parseFloat(v) / 100) * Math.min(q.width, q.height) : parseFloat(v) || 0); const r = px(cs.borderTopLeftRadius); if (r <= 3 && folded(e, q)) return 'folded corner'; if (r > 3 && px(cs.borderTopRightRadius) > 3 && px(cs.borderBottomLeftRadius) <= 3 && px(cs.borderBottomRightRadius) <= 3) return 'folder tab'; if (r >= q.height / 2 - 1) return Math.abs(q.width - q.height) <= 4 ? 'circle' : 'pill'; return r <= 3 ? 'square' : r <= 12 ? 'soft' : 'round'; };
   const inBar = (el) => { const b = el.closest('header, [role=banner]'); return !!el.closest('nav') || (!!b && !b.parentElement?.closest('main, section, article, [data-scene]')); };
   // (a link home, read as navForm reads the wordmark)
   const home = (a) => { const h = (a.getAttribute('href') || '').trim(); if (['#', '#top', '/', './', 'index.html', './index.html'].includes(h)) return true; try { const u = new URL(h, location.href); return u.origin === location.origin && u.pathname.replace(/index\.html?$/, '') === location.pathname.replace(/index\.html?$/, '') && (!u.hash || u.hash === '#top'); } catch { return false; } };
@@ -959,13 +1014,13 @@ export function buttonShapes({ bar: barOnly = false, client = null } = {}) {
   return [...shapes].map(([key, s]) => ({ key, n: s.n, labels: s.labels, ...(s.h.length ? { h: [Math.min(...s.h), Math.max(...s.h)] } : {}) }));
 }
 
-//   structures each section's structure after the hero (the hero too, marked): where its heading stands against the rest
-//              (over it, beside it), how many columns it makes at its widest row, and the largest group it holds (a list,
-//              a list in a product window, cards, one panel, a product window, a picture or pictures, a form, a table, or
-//              text), read as one word (split for a heading beside the rest, columns for two or more under it, grid,
-//              gallery, list, table, single-picture, panel, tool, statement), and whether that group stands in a box
-//              (cards, a panel, or a window drawn on a fill unlike its section's). A scene that shows nothing yet but its
-//              heading is left out (same-structure, boxed-page)
+//   structures each section's structure after the hero (the hero and the footer too, marked): where its heading stands
+//              against the rest (over it, beside it), how many columns it makes at its widest row, and the largest group
+//              it holds (a list, a list in a product window, cards, one panel, a product window, a picture or pictures, a
+//              form, a table, or text), read as one word (split for a heading beside the rest, columns for two or more
+//              under it, grid, gallery, list, table, single-picture, panel, tool, statement), and whether that group
+//              stands in a box (cards, a panel, or a window drawn on a fill unlike its section's). A scene that shows
+//              nothing yet but its heading is left out (same-structure, boxed-page)
 export function structures() {
   const W = innerWidth, H = innerHeight, SY = scrollY || 0, B = document.body;
   const memo = new Map(); const css = (e) => { let c = memo.get(e); if (!c) { c = getComputedStyle(e); memo.set(e, c); } return c; };
@@ -981,10 +1036,16 @@ export function structures() {
   // the sections as the splits take them (the innermost of section, scene, hero, a child of main), the footer aside
   const qual = (s) => { if (!visible(s) || s.closest('nav, footer, dialog, header[role=banner]')) return false; const r = s.getBoundingClientRect(); return r.height >= 160 && r.width >= W * 0.3; };
   const secs = [...document.querySelectorAll('section, [data-scene], [data-hero], main > div, main > article')].filter(qual).filter((s, i, a) => !a.some((o) => o !== s && s.contains(o))).sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top).slice(0, 30);
+  // round 11f (r14-p64: a row of three grey cards in two sections and again in its footer): the site's footer, a designed
+  // section now, is read like one (foot), as footing() finds it
+  const outside = (f) => !f.parentElement?.closest('main, section, article, footer, [data-scene], dialog, [role=dialog]');
+  const foot = [...document.querySelectorAll('footer, [role=contentinfo]')].filter((f) => outside(f) && visible(f)).pop();
+  if (foot && foot.getBoundingClientRect().height >= 160 && foot.getBoundingClientRect().width >= W * 0.3 && !secs.some((s) => foot.contains(s) || s.contains(foot))) secs.push(foot);
   const out = [];
   for (const s of secs) {
-    const sr = s.getBoundingClientRect(), hero = !!s.querySelector('h1') || sr.top + SY < H * 0.5;
-    const h = [...s.querySelectorAll(hero ? 'h1, h2' : 'h2, h3, [role=heading]')].find((x) => visible(x) && !x.closest('[data-ui]'));
+    const sr = s.getBoundingClientRect(), hero = s !== foot && (!!s.querySelector('h1') || sr.top + SY < H * 0.5);
+    // (the footer is read by what it holds: a card's own heading is no heading over the footer)
+    const h = s === foot ? null : [...s.querySelectorAll(hero ? 'h1, h2' : 'h2, h3, [role=heading]')].find((x) => visible(x) && !x.closest('[data-ui]'));
     // the head block: the heading and the short text with it, up to the box that also holds a list, a picture or a form
     let hb = h;
     if (h) for (let e = h.parentElement; e && e !== s && s.contains(e); e = e.parentElement) { if (e.matches('ul, ol, dl, table, [role=list], form') || e.querySelector('img, video, canvas, [data-ui], ul, ol, dl, table, form, input, [role=list]') || words(e.innerText) > words(h.innerText) + 60) break; hb = e; }
@@ -998,7 +1059,7 @@ export function structures() {
     for (const m of s.querySelectorAll('img, video, canvas, [data-ui], input, textarea, select')) if (apart(m) && visible(m) && area(m.getBoundingClientRect()) > 400) part(m.getBoundingClientRect());
     const boxes = [...s.querySelectorAll('div, article, li, figure, aside, a, ul, ol')].filter((e) => { if (!apart(e) || !visible(e) || !filled(e)) return false; const q = e.getBoundingClientRect(); return q.width >= 80 && q.height >= 40 && q.width < W * 0.94 && !above(q) && !(e.matches('a') && q.height <= 64 && words(e.innerText) <= 5); });
     for (const e of boxes) part(e.getBoundingClientRect());
-    const rec = { head: norm(h ? h.innerText : s.id).slice(0, 40), y: Math.round(sr.top + SY), hero };
+    const rec = { head: s === foot ? 'the footer' : norm(h ? h.innerText : s.id).slice(0, 40), y: Math.round(sr.top + SY), hero, ...(s === foot ? { foot: true } : {}) };
     if (!parts.length) { if (s.closest('.scene, [data-scene], .pin-spacer')) continue; out.push({ ...rec, word: 'statement', lead: 'none', boxed: false }); continue; }
     const body = { l: Math.min(...parts.map((p) => p.l)), r: Math.max(...parts.map((p) => p.r)), t: Math.min(...parts.map((p) => p.t)) };
     rec.pos = !hr ? 'none' : hr.right <= body.l + 8 || hr.left >= body.r - 8 ? 'beside' : hr.bottom <= body.t + 8 ? 'over' : 'mixed';
@@ -1016,7 +1077,10 @@ export function structures() {
     for (const l of lists) { if (lists.some((o) => o !== l && o.contains(l))) continue; const kids = itemsOf(l), boxed = kids.filter(itemFilled).length >= kids.length * 0.6; groups.push({ kind: boxed ? 'cards' : l.matches('table') ? 'table' : 'list', el: l, q: l.getBoundingClientRect(), boxed }); }
     for (const u of s.querySelectorAll('[data-ui]')) { if (u.parentElement?.closest('[data-ui]') || !apart(u) || !visible(u)) continue; groups.push({ kind: [...u.querySelectorAll('ul, ol, table, [role=list]')].some((l) => [...l.children].filter(visible).length >= 3) ? 'list' : 'window', el: u, q: u.getBoundingClientRect(), boxed: [...u.querySelectorAll('div, article, li, figure, aside')].filter((e) => filled(e) && visible(e) && e.getBoundingClientRect().width >= 80 && e.getBoundingClientRect().height >= 40).length >= 2 }); }
     const outer = boxes.filter((e) => !boxes.some((o) => o !== e && o.contains(e)) && !e.closest('[data-ui]') && !e.querySelector('[data-ui]') && !lists.some((l) => l.contains(e) || e.contains(l)) && norm(e.innerText));
-    if (outer.length) groups.push({ kind: outer.length >= 2 ? 'cards' : 'panel', el: outer[0], q: union(outer), boxed: true });
+    // (the footer holds cards only as a row of three or more alike, each 120px tall or more: two halves across the width,
+    // keys or a fill behind its links are the dealt footer's own build)
+    const row = s !== foot ? outer : outer.filter((e) => { const q = e.getBoundingClientRect(); return q.height >= 120 && outer.filter((o) => { const p = o.getBoundingClientRect(); return p.height >= 120 && Math.abs(p.top - q.top) <= 24 && p.width <= q.width * 1.3 && q.width <= p.width * 1.3; }).length >= 3; });
+    if (s === foot ? row.length >= 3 : outer.length) groups.push({ kind: row.length >= 2 ? 'cards' : 'panel', el: row[0], q: union(row), boxed: true });
     const pics = [...s.querySelectorAll('img, video, canvas')].filter((m) => apart(m) && visible(m) && !m.closest('[data-ui]') && area(m.getBoundingClientRect()) >= W * H * 0.04);
     if (pics.length) groups.push({ kind: pics.length >= 3 ? 'pictures' : 'picture', el: pics[0], q: union(pics) });
     const fields = [...s.querySelectorAll('form, input:not([type=hidden]), select, textarea')].filter((f) => apart(f) && visible(f) && !f.closest('[data-ui]'));

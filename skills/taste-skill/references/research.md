@@ -23,6 +23,7 @@ others.
 16. Round 11c: the patterns built as written, designed chrome, varied pages
 17. Round 11d: honest pictures, checks that catch their faults, a bolder hero
 18. Round 11e: less of the usual chrome, surfaces that read, the product beside the headline
+19. Round 11f: chrome that scored, a product shown without a photograph, vetted photographs
 
 ## 1. Method and its limits
 
@@ -483,3 +484,33 @@ middle was dealt, every software hero set the product beside the headline (3 of 
 surface stepped 6.4 points or more (all thirty 5 or less before), split heroes stayed at 3 to 5, and
 the café's sheets shared no photograph from one to the next. The inspector now fails all four pages review-006 named for two ways
 to one place.
+
+## 19. Round 11f: chrome that scored, a product shown without a photograph, vetted photographs
+
+A blind test built 85 navigation, footer, card and button designs on five briefs, and two jurors
+scored the stills. Five new designs scored 7 or more from both (the product window's toolbar as the
+navigation, the week's hours drawn as bars, a closing stair of two colours, cards fused into one
+capsule, buttons with a folded corner); none of the 48 dealt before did, and 30 of those scored under
+5. Four test pages showed what the pictures still got wrong: a cargo bike never shown, its marked
+frame read as an empty green box (lost); a private person's furnished room shown as a guesthouse's
+(held); expanding cards hollow at rest; stock drinks standing as a café's menu, and a thin two-line
+name read as a bug.
+
+So the five are dealt at full weight, each only where its facts are real (the brief's own hours or
+figures, the window beside the headline), four near misses at half, the 30 under 5 at 0.3, and a page
+has one tilted thing. A product with no photographs is shown by its product statement: its name, its
+true figures at two or three sizes, its colourways as named swatches and its size against things
+people know as measured bars, in a hero or a section built on it, with one moment on those figures (a
+planner, a configurator, a trip timed two ways), and no part that needs a photograph of the product
+is dealt. 87 vetted photographs joined the library, 78 from Wikimedia Commons credited by author and
+licence; a room is never a whole furnished room, a menu item stands in type, a photograph that names
+a place goes only to a brief in that place, a fresh history leads with any good photograph, and
+cut-outs come only from the client's own. The inspector warns on a room slot showing a room or a
+home, a menu item shown by another's photograph, a button on a busy photograph and a bare product
+frame, fails a figure cut by its box, and counts the footer in `same-structure`.
+
+In thirty draws over seven briefs (two runs) 34 and 35 of 120 frame parts were one of the 30 under 5
+(47 at the round-11e commit), library and new designs filled 1.9 parts a frame (1.4), no design was
+dealt without its facts (5 before), every cargo-bike sheet placed its product statement (none
+before), the café led with four different photographs in four sheets (two, in turn), and all 39
+Commons photographs dealt carried their credit by author and licence.

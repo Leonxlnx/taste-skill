@@ -338,6 +338,32 @@ points this way, including several above 7.5.
   only as titles on cards). Without the client's own pictures, each piece gets a marked slot (sheet
   section 7) that the report lists.
 
+### The chrome: what the best designs share
+
+A blind test built 85 navigation, footer, card and button designs on five briefs, each as written,
+and two jurors scored the stills. Five scored 7 of 10 or more from both: the navigation as the
+product window's own toolbar, the week's opening hours drawn as bars, a closing footer that steps
+like a stair, a set of cards fused into one capsule, buttons with a folded corner. None of the 48
+designs dealt before reached 7, and 30 of them scored under 5 ("the plain template bar"). What the
+five share, and what to build into any dealt design:
+
+- **They carry the client's trade.** A writing tool's window and its marked page, a café's hours, a
+  set of figures. The plain designs carry nothing of the client.
+- **The idea shows at rest.** Each is a shape or a material a still shows: a capsule, a fold, a step,
+  bars, views in a window. Ideas that live only in a hover scored 3 to 5.
+- **They need no photograph.** They are made of type and fill. Designs that need what the brief
+  lacks (its goods, hours, dates, portraits) were built on stand-ins and scored 2 to 5, so the deal
+  gives them only to a brief that has those facts: the hours only from the brief's own (in any
+  footer that prints them), the capsule's figures only from a brief that gives two or more, the
+  toolbar only over a hero whose window starts at the top, the keyboard of links only with eight
+  real destinations.
+- **One clear shape a part, kept on the phone.** Designs that fell apart at 390 lost points, and
+  trend shapes stopped short of the keepers: the floating pill at 4, the dock at the bottom and the
+  tilted cards at 6. The deal keeps the ones at 6, and a page has one tilted thing at most.
+
+The deal follows the scores: the five at full weight where their facts are real, four near misses
+rewritten on the jurors' sentences at half, the old designs that scored under 5 at 0.3.
+
 ### Cards
 
 The owner's reading of the round-10 pages: text floating with no card or container has no
@@ -347,12 +373,13 @@ of loose text. Cards are wanted, varied, and kept to their job.
 - **Where:** in two or three sections, on the groups a visitor compares or reads as one: the plans,
   the rooms, the dishes of a course, the visit details, the three things the product does, the
   people. The other sections stand on the ground, separated by space and size.
-- **One style a page, dealt.** Section 0 of the sheet deals one of about twelve: filled surface
+- **One style a page, dealt.** Section 0 of the sheet deals one of about fifteen: filled surface
   cards, picture-led cards, rows with a surface, horizontal cards, cards in the ink, one large panel,
   overlapping, staggered, cards that stack as you scroll, cards that open, poster cards, tall cards of
-  words; or one of the card patterns of the design-anatomy study that holds words on a fill or under
-  a picture (a round panel of title, text and button, a landscape photograph over a large title, a
-  tall text panel …), never a media tile with no words, an icon card, an outlined one, a generative
+  words, one capsule cut into pieces, cards whose face is the product's own work, a dealt hand; or one
+  of the card patterns of the design-anatomy study that holds words on a fill or under a picture (a
+  round panel of title, text and button, a landscape photograph over a large title, a tall text
+  panel …), never a media tile with no words, an icon card, an outlined one, a generative
   canvas in place of a picture, or a row whose next card peeks in at the screen edge. Build the one
   dealt, at its sizes; another page gets another. Cards that overlap or stack
   take the surface tone and the ink in turn, so each edge reads with no border, no shadow and no third
@@ -390,16 +417,17 @@ of loose text. Cards are wanted, varied, and kept to their job.
 
 ## 7. Navigation
 
-- **The dealt design.** Section 0 of the sheet deals one of twelve navigation designs: a band that
+- **The dealt design.** Section 0 of the sheet deals one of thirteen navigation designs: a band that
   names the section in view, links split round a centred wordmark, an opaque floating capsule, a
   minimal wordmark with a Menu button, a bar that shrinks on scroll, a side index, a dock fixed at the
-  bottom, four fixed corners, a masthead, a band in the ink, a contained bar, large links over the hero.
+  bottom, four fixed corners, a masthead, a band in the ink, a contained bar, large links over the hero,
+  the product window's own toolbar (only over a hero that shows the window beside the headline).
   Or, as often, one of the navigation patterns a design-anatomy study read off great sites (a split bar
   round a centred mark, a floating strip, a rail of tiles in the left margin, a compact panel at the
   top right, link clusters on the grid columns …), marked as a pattern and printed with its full
   description. A pattern scored 5 of 10 or more is three times as likely as a tested design, a 4 half
   as likely, up to three of the four parts (navigation, footer, cards, buttons), and the tested designs
-  that built as the usual (the band in the ink, the four corners) weigh less. Build the one dealt with its sizes and its
+  a blind test scored under 5 of 10 weigh less (§6, the chrome). Build the one dealt with its sizes and its
   behaviour, and check it against its **Must show** line, which names what a still at rest shows (a
   hover may follow it, never be all of it); no design or pattern is dealt on more than about one page
   in ten. The wordmark, three to five links, one
@@ -442,13 +470,14 @@ of loose text. Cards are wanted, varied, and kept to their job.
   needs at text size: the email at the h3 step at most, with a Copy button and a mailto link, the
   address, the hours. Never the email or the name set across the width: none of the 65 professional
   sites does it, and it lost a round-4 page points.
-- **The footer is a designed section, never a single line.** Section 0 deals one of about twelve
+- **The footer is a designed section, never a single line.** Section 0 deals one of about fifteen
   designs (a closing line over columns, a big contact block, a sitemap grid, a picture footer, a
   newsletter card, large links, three cards, two halves, the hours and the place, a closing statement
-  over one row, link columns for a site with more pages, a picture beside the facts), or one of the
+  over one row, link columns for a site with more pages, a picture beside the facts, the week's hours
+  drawn as bars, a closing stair of two colours, a keyboard of links), or one of the
   study's footer patterns (a closing headline beside a link grid, a mark beside link columns, link
   columns with a sign-up …), never one of the study's one-line, no-footer or nearly empty endings,
-  nor a bento grid or a band over a shader. It stands on its own ground (the surface tone or the ink), at least 40% of a screen tall at 1440, with the links,
+  nor a bento grid or a band over a shader. It stands on its own ground (the surface tone or the ink; the closing stair on the palette's band in the accent where it has one), at least 40% of a screen tall at 1440, with the links,
   the contact, the legal links and the Image credits link at text sizes. The owner found the footers
   of the recent pages ignored, one line each. Build the dealt one as dealt, every part and size of
   it: a dealt three-card footer built as one credit line fails (`footer-not-as-dealt`). Link columns only for real pages beyond this one; never

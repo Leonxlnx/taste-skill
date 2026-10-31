@@ -56,7 +56,10 @@ export function judgeExtra(x, { width, allow = [], screens = 1, app = false } = 
   if (x.formInSentence?.length) add('FAIL', 'form-in-sentence', `A form field sits inside a headline or sentence: ${list(x.formInSentence, (f) => `"${f.text}"`)}.`, 'Put the field and its button on their own row under the heading, with a visible label: the sentence-form field broke on 8 of 9 reviewed pages.');
   if (x.repeatedPictures?.length) add('WARN', 'repeated-picture', `The same large picture appears more than once: ${list(x.repeatedPictures, (p) => `${p.src} (${p.n}x)`)}.`, 'Use each photograph once per page; a scene that needs several pictures needs several different pictures of the subject.');
   if (x.repeatedHeadings?.length) add('WARN', 'repeated-heading', `A heading appears twice: ${list(x.repeatedHeadings, (h) => `"${h}"`)}.`, 'Each heading appears once. A scene that introduces a section and the section itself share one heading.');
-  if (desktop && x.hollow?.length >= 2) add('WARN', 'hollow-box', `${x.hollow.length} boxes are mostly empty inside (content at their top and foot, nothing between): ${list(x.hollow, (b) => `"${b.text}" ${b.h}px`)}.`, 'Size boxes to their content. A price card, a tile or a slab with nothing in its middle reads as broken; shrink it or give it what it is missing.');
+  // (round 11f, r14-p65: the frame marked for the product's photograph, a green box holding its name and three facts,
+  // which the judge read as an empty box; it counts alone)
+  const pf = x.productFrame || [], hollow = x.hollow?.length >= 2 ? x.hollow : [];
+  if (desktop && (pf.length || hollow.length)) add('WARN', 'hollow-box', [pf.length ? `The frame for the product is a box with little in it: ${list(pf, (b) => `"${b.text}" on ${b.w}x${b.h}px, its words on ${b.share}% of it`)}.` : '', hollow.length ? `${hollow.length} boxes are mostly empty inside (content at their top and foot, nothing between): ${list(hollow, (b) => `"${b.text}" ${b.h}px`)}.` : ''].filter(Boolean).join(' '), `Size boxes to their content. A price card, a tile or a slab with nothing in its middle reads as broken; shrink it or give it what it is missing.${pf.length ? ' A product with no photograph of its own is shown by what is true of it (the product statement: its name at the display step and four to six of its true figures, large, its colourways, its size against things people know), never as a box holding its name and a few facts.' : ''}`);
   if (x.switchList >= 3) add('WARN', 'switch-list', `${x.switchList} switches, checkboxes or radio buttons outside a form or a product fragment.`, 'Do not present features as toggles: half of them look switched off. A feature is a line of text (or a picture with a line), at full contrast.');
   // (round 9: a drawing past icon size fails at 1.2% of the screen or more, labels or not: diagrams and charts too)
   const big = (x.drawings || []).filter((d) => d.share >= 0.012), small = (x.drawings || []).filter((d) => d.share < 0.012);
@@ -74,7 +77,7 @@ export function judgeExtra(x, { width, allow = [], screens = 1, app = false } = 
   // (round 9: a template street or a zeroed phone fails, r7-p36; an example domain or a run of one digit warns)
   for (const level of ['FAIL', 'WARN']) {
     const ph = (x.placeholders || []).map((p) => (typeof p === 'string' ? { text: p, level: 'WARN' } : p)).filter((p) => p.level === level);
-    if (ph.length) add(level, 'placeholder-contact', `Placeholder contact details: ${list(ph, (p) => `"${p.text}"${p.why ? ` (${p.why})` : ''}`, 4)}.`, 'Never Musterstraße, Main Street, a number of zeros or a 555 number. With no address in the brief, a place people go to prints a real street in the right district with no house number, the district, the nearest stop, the opening hours and a "Directions" link to a map; a page with no door prints no street at all. With no phone in the brief, print none. The email stays on the brand\'s own domain. List what the client must confirm in your report, never on the page (references/copy.md §5).');
+    if (ph.length) add(level, 'placeholder-contact', `Placeholder contact details: ${list(ph, (p) => `"${p.text}"${p.why ? ` (${p.why})` : ''}`, 4)}.`, 'Never Musterstraße, Main Street, a number of zeros or a 555 number. With no address in the brief, a place people go to prints a real street in the right district with no house number, the district, the nearest stop, the opening hours and a "Directions" link to a map; a page with no door prints no street at all. With no phone in the brief, print none. The email stays on the brand\'s own domain; a name you coined takes `.example` until the client gives its own, and the report says so (this warning then stands). List what the client must confirm in your report, never on the page (references/copy.md §5).');
   }
   if (x.builderNotes?.length) add('FAIL', 'builder-note', `A note meant for the client is on the page: ${list(x.builderNotes, (p) => `"${p}"`)}.`, 'Never tell visitors about missing pictures, sample content or what will be replaced. Design the section without the missing asset and say it in the report.');
   // (round 11: a bar fixed to the foot of a phone's screen counts as the navigation)
@@ -244,13 +247,17 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
   const band = (g) => (g.role === 'accent' ? g.screens <= 1.5 && g.sections <= 1 : g.screens <= 2.5 && g.sections <= 2);
   // (a second group near one role's tone, a grey band beside the dealt surface, is a tone of its own)
   const firsts = new Set(), first = (g) => !!g.role && !firsts.has(g.role) && !!firsts.add(g.role);
-  const gs = (b.grounds || []).filter((g) => (!first(g) ? g.screens >= 0.25 || (g.sections > 0 && g.screens >= 0.05) : ['ink', 'field', 'accent'].includes(g.role) ? !band(g) : g.screens >= 0.25));
+  // round 11f (r14-p66 passed on its near-black ground, a cream footer in the ink and a band sampled from its closing
+  // photograph): a band across the width in a tone no role names and no dealt piece asks for has taken the page's one
+  // band, so the ink, a field or the accent grounding a band beside it counts as well
+  const spent = (b.grounds || []).some((g) => !g.role && !g.asked && g.sections > 0 && g.screens >= 0.05);
+  const gs = (b.grounds || []).filter((g) => (!first(g) ? g.screens >= 0.25 || (g.sections > 0 && g.screens >= 0.05) : ['ink', 'field', 'accent'].includes(g.role) ? !band(g) || (spent && g.sections > 0) : g.screens >= 0.25));
   const step = gs.find((g) => g.role === 'page' && g.step && g.step[1] >= 0.25)?.step, tint = step && gs.some((g) => g.role === 'surface');
   const count = gs.length + (step ? 1 : 0), asked = gs.filter((g) => g.asked).length;
   const sc = (n) => `${n} screen${n === 1 ? '' : 's'}`;
   // (a second ground of one role is named by its element)
   const told = new Set(); const label = (g) => { if (!ROLES[g.role] || told.has(g.role)) return g.where; told.add(g.role); return ROLES[g.role]; };
-  if (desktop && count >= 3) add(count - asked >= 4 ? 'FAIL' : 'WARN', 'surface-count', `${count} grounds on the page, by the screens they cover: ${list(gs, (g) => `${g.hex} (${label(g)}, ${sc(g.screens)}${g.role === 'page' && step ? `, with ${tint ? 'a tint a step from it' : 'its surface'} ${step[0]} on ${sc(step[1])}` : g.n > 1 && g.role !== 'page' ? `, with ${g.n - 1} tone(s) a step from it` : ''}${['ink', 'field', 'accent'].includes(g.role) ? `, over ${g.sections} section${g.sections === 1 ? '' : 's'}` : ''}${g.asked ? `, as ${g.asked} asks` : ''})`, 7)}.`, 'One ground and one surface tone a step from it, and no tint between them. The ink grounds a band at most (the footer and one section), and so do a dealt field and the accent (one section each); a scene\'s veil or band takes one of these, never a tone sampled from its photograph, unless its own sheet asks for one (then that is the page\'s band). Every other section, panel and card takes one of these, a sheet in another colour (a white receipt on grey) is set on the section ground, and a piece of work keeps its own colours inside its picture.');
+  if (desktop && count >= 3) add(count - asked >= 4 ? 'FAIL' : 'WARN', 'surface-count', `${count} grounds on the page, by the screens they cover: ${list(gs, (g) => `${g.hex} (${label(g)}, ${sc(g.screens)}${g.role === 'page' && step ? `, with ${tint ? 'a tint a step from it' : 'its surface'} ${step[0]} on ${sc(step[1])}` : g.n > 1 && g.role !== 'page' ? `, with ${g.n - 1} tone(s) a step from it` : ''}${['ink', 'field', 'accent'].includes(g.role) ? `, over ${g.sections} section${g.sections === 1 ? '' : 's'}${spent && band(g) ? ', a second band' : ''}` : ''}${g.asked ? `, as ${g.asked} asks` : ''})`, 7)}.`, 'One ground and one surface tone a step from it, and no tint between them. The ink grounds a band at most (the footer and one section), and so do a dealt field and the accent (one section each); a scene\'s veil or band takes one of these, never a tone sampled from its photograph, unless its own sheet asks for one (then that is the page\'s band). Every other section, panel and card takes one of these, a sheet in another colour (a white receipt on grey) is set on the section ground, and a piece of work keeps its own colours inside its picture.');
   // the footer section 0 dealt, against the one built: one row of words, or under 160px on desktop, is the one-line footer
   const ft = b.foot;
   if (desktop && ft && ft.dealt && (!ft.found || ft.rows <= 1 || ft.h < 160)) add('FAIL', 'footer-not-as-dealt', `Section 0 dealt the "${ft.dealt.id}" footer (${String(ft.dealt.text || '').split(/[:.,;]/)[0].slice(0, 60)}), but the page ${ft.found ? `ends on ${ft.sel}, ${ft.rows === 1 ? 'one row of words' : `${ft.rows} rows of words`} ${ft.h}px tall ("${ft.text}")` : 'has no footer'}.`, 'Build the footer as section 0 describes it: a designed section about 40% of a screen tall at 1440, its links at body size, the © line and Image credits under it. A closing scene ends on that footer, never on a one-line foot.');
@@ -277,14 +284,17 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
   if (desktop && bs.length > 2) add('FAIL', 'button-family', `${bs.length} button shapes on one page: ${list(bs, (s) => `${s.key === 'type' ? 'set in type' : s.key}${px(s)} (${s.labels.map((l) => `"${l}"`).join(', ')}${s.n > s.labels.length ? ` and ${s.n - s.labels.length} more` : ''}${s.past ? ', in the bar past the hero' : ''})`, 5)}.`, 'One button family, as section 0 dealt it: the dealt button for every action, in the bar, the hero, the cards, the form and the footer, at one corner (in the bar, on a card and in a form at that part\'s height), and at most one quieter sibling (the label alone with the dealt arrow, or the same shape in the surface tone). An outline, a pill or a block of its own is a second family, and so are folder tabs and a monogram in a circle: set tabs as words with the dealt underline or in the sibling\'s shape, and the monogram as type or in the tile the navigation deals.');
   // the navigation's form, as built (at load, past the hero and back up), against the one section 0 dealt (navKind); a
   // bar that hides on the way down warns whatever was dealt, and fails where the dealt one stays
-  const nf = b.navs;
+  // (round 11f: a reading at load taken from the header of the hero's product window, where the page has no bar of its
+  // own, stands as the bar only where the window toolbar was dealt; elsewhere the page had no bar at load, as before)
+  const nf = b.navs?.load?.fromWin && navKind(b.navs.dealt)?.form !== 'window toolbar' ? { ...b.navs, load: { ...b.navs.load, form: 'none', toolbar: false, n: 0, top: 0, mark: null, items: [] } } : b.navs;
   if (desktop && nf && nf.load) {
     const ph = [nf.load, nf.down, nf.up].filter(Boolean), at = (f) => ph.some((s) => s.form === f);
     // (past the hero: the reading on the way down, else back up, else at load, so a navigation that hides keeps its form)
     const past = [nf.down, nf.up, nf.load].find((s) => s && s.form !== 'none');
-    const built = at('bottom dock') ? 'bottom dock' : [nf.down, nf.up].some((s) => s?.form === 'side index') ? 'side index' : nf.load.form === 'masthead' ? 'masthead' : [nf.load, nf.down].some((s) => s?.form === 'centred wordmark') ? 'centred wordmark' : past ? (past.form === 'corners' ? 'corners' : 'top bar') : null;
-    const hides = !!nf.down && nf.down.form === 'none' && !nf.down.held && nf.load.form !== 'none';
+    // (a toolbar on the hero's window is read as one only where it was dealt: a bar dealt as a bar may stand over one)
     const dealt = navKind(nf.dealt);
+    const built = at('bottom dock') ? 'bottom dock' : [nf.down, nf.up].some((s) => s?.form === 'side index') ? 'side index' : nf.load.toolbar && dealt?.form === 'window toolbar' ? 'window toolbar' : nf.load.form === 'masthead' ? 'masthead' : [nf.load, nf.down].some((s) => s?.form === 'centred wordmark') ? 'centred wordmark' : past ? (past.form === 'corners' ? 'corners' : 'top bar') : null;
+    const hides = !!nf.down && nf.down.form === 'none' && !nf.down.held && nf.load.form !== 'none';
     // (corners and a top bar differ by the band behind the groups and the room between them, which a pattern's words do
     // not fix: a pattern read as a top bar for want of a named form may stand as corners, and one read as corners as a row
     // with no band behind it)
@@ -296,13 +306,17 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
   }
   // the same structure three times on one page: what the section holds (its largest group), wherever its heading stands
   // (r12-p54's judge read its lists beside a heading and under one as six sections built alike): three warn, four fail.
-  // The hero is not counted
-  const st = (b.structures || []).filter((s) => !s.hero);
-  if (desktop && st.length) {
-    const by = new Map(); for (const s of st) by.set(s.lead, [...(by.get(s.lead) || []), s]);
+  // The hero is not counted. Round 11f (r14-p64: a row of three grey cards under "What I make", again under "How I work"
+  // and a third time in the footer, and only two counted): the footer counts when it is a row of three cards or more alike
+  // (structures()); its lists of links are the site's index, and its halves, keys or picture are the dealt footer's build.
+  // The footer is the one that stays: the sections change
+  const st = (b.structures || []).filter((s) => !s.hero && !s.foot);
+  const sf = [...st, ...(b.structures || []).filter((s) => s.foot && s.lead === 'cards')];
+  if (desktop && sf.length) {
+    const by = new Map(); for (const s of sf) by.set(s.lead, [...(by.get(s.lead) || []), s]);
     const [lead, same] = [...by].sort((x, y) => y[1].length - x[1].length)[0];
     const place = (s) => (s.lead === 'none' ? '' : ` (${s.pos === 'none' ? 'no heading' : PLACES[s.word] || 'under its heading'}${s.boxed ? ', in a box' : ''})`);
-    if (same.length >= 3) add(same.length >= 4 ? 'FAIL' : 'WARN', 'same-structure', `${same.length} sections are built round ${HOLDS[lead] || lead}: ${list(same, (s) => `"${s.head}"${place(s)}`, 6)}.`, 'Give each section the structure its content asks for, and never one structure three times: a list as a list across the width, a split with a picture, cards in a row, a statement alone, a table, a gallery, a working tool. Change what the section holds, the heading\'s place and the columns from one to the next (critique.md, pass 9).');
+    if (same.length >= 3) add(same.length >= 4 ? 'FAIL' : 'WARN', 'same-structure', `${same.length} sections are built round ${HOLDS[lead] || lead}: ${list(same, (s) => `${s.foot ? 'the footer' : `"${s.head}"`}${place(s)}`, 6)}.`, `Give each section the structure its content asks for, and never one structure three times: a list as a list across the width, a split with a picture, cards in a row, a statement alone, a table, a gallery, a working tool. Change what the section holds, the heading's place and the columns from one to the next (critique.md, pass 9).${same.some((s) => s.foot) ? ' The footer stays as section 0 dealt it: change the sections above it.' : ''}`);
   }
   // a page of boxes, the product's windows counted: four sections or more after the hero, all of them but one, stand in
   // a box (the sheet puts cards in two or three); not again where the running text in boxes has reported it (judgeExtra)
@@ -321,9 +335,20 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
   const loose = (b.pictures?.credits || []).map((c) => businessIn({ record: c.entry ? null : c, entry: c.entry || null })).find(Boolean);
   const biz = shown.filter((p) => !p.theirs).map((p) => {
     const name = businessIn(p), k = kind && kindIn(p, kind);
-    return { p, why: name ? `its credit names ${name}` : p.slot === 'product' && (p.third || p.uncredited) ? `a photograph ${p.third ? 'credited to someone else' : 'with no credit'} in the frame for the product` : k ? `its title names a ${k.toLowerCase()}, a product of its kind` : loose && !p.record && !p.entry && ['product', 'room', 'caption', 'place'].includes(p.slot) ? `no credit of its own, while the page's credits name ${loose}` : null };
+    return { p, why: name ? `its credit names ${name}` : p.slot === 'product' && (p.third || p.uncredited) ? `a photograph ${p.third ? 'credited to someone else' : 'with no credit'} in the frame for the product` : k ? `its title names a ${k.toLowerCase()}, a product of its kind` : loose && !p.record && !p.entry && ['product', 'room', 'caption', 'place', 'menu'].includes(p.slot) ? `no credit of its own, while the page's credits name ${loose}` : null };
   }).filter((x) => x.why);
   if (desktop && biz.length) add('FAIL', 'credit-names-business', `${biz.length} picture(s) shown as the client's are another's: ${list(biz, (x) => `${x.p.file} (${SHOWN[x.p.slot] || `the "${x.p.slot}" slot`}: ${x.why})`, 4)}.`, 'A picture shown as the client\'s (their product, a room, the house, their own place, a piece of their work, or captioned with their name) never shows another business\'s product, room or work, whatever its credit says: no other maker\'s product however cropped or retouched, no named hotel\'s or café\'s room, no other artist\'s work, and a picture cropped from another keeps that picture\'s credit. Where the client gives none, the slot holds what the sheet describes for it (the product\'s name and facts in its frame with no photograph, details that belong to no one, the project\'s own still), and the pictures round it show the use, the place and the light with no product of its kind in them.');
+  // round 11f (r14-p63: a Commons photograph of a private person's furnished corner, its table, two chairs and a yucca at
+  // the window, as Hvit's family room; its credit names a person, so the check above could not see it): a picture by
+  // another in a room, house, product or work slot whose credit, title or alt names a room, an apartment, an interior,
+  // furniture or a person's home warns (roomIn)
+  const rooms = shown.filter((p) => !p.theirs && (p.third || p.uncredited) && ['room', 'house', 'product', 'work'].includes(p.slot) && !biz.some((x) => x.p === p)).map((p) => ({ p, why: roomIn(p) })).filter((x) => x.why);
+  if (desktop && rooms.length) add('WARN', 'room-not-theirs', `${rooms.length} picture(s) by another in a slot for the client's own show a room or a home: ${list(rooms, (x) => `${x.p.file} (${SHOWN[x.p.slot] || `the "${x.p.slot}" slot`}: ${x.why}${x.p.record?.creator ? `, by ${x.p.record.creator.slice(0, 30)}` : ''})`, 4)}.`, 'Open it at full size: a furnished room, a corner with its table and chairs, an apartment or someone\'s home is another person\'s room, whoever took it, never the client\'s room or house. Until the client\'s own photographs arrive, a room slot shows a detail that belongs to no one (linen in window light, a chair, a lamp, the view from a window), and the sheet\'s line says so.');
+  // round 11f (r14-p66: its bar's espresso, cortado, flat white and filter, each named with its price, shown by four
+  // other people's photographs of the drink): a picture by another whose alt, caption or title names an item its section
+  // prices warns
+  const dishes = shown.filter((p) => p.slot === 'menu' && p.item && !p.theirs && (p.third || p.uncredited) && !biz.some((x) => x.p === p));
+  if (desktop && dishes.length) add('WARN', 'menu-not-theirs', `${dishes.length} picture(s) by another show an item the page sells by name: ${list(dishes, (p) => `${p.file} ("${p.item}"${p.record?.creator ? `, by ${p.record.creator.slice(0, 30)}` : ''})`, 4)}.`, 'A drink or a dish the menu names with its price is the client\'s own: set the menu in type, or show the item in the client\'s own photographs once they arrive. Another\'s photograph of the trade only sets the mood, away from the menu and never as one of its items.');
 
   // ---------- round 11e (review-006: "Get started" twice on a screen, the same map three times on one screen, on four
   // pages of six; r13-p59's footer: three word processors and three style guides as two of its four columns) ----------
@@ -367,11 +392,26 @@ function kindIn(p, re) {
   for (const t of [r.title, r.file, ...entryTitles(p.entry), String(p.file || '').replace(/[-_]+/g, ' ')]) { const m = t && String(t).match(re); if (m) return m[0]; }
   return null;
 }
-const SHOWN = { product: 'the frame for the product', work: 'the work', room: 'a room', house: 'the house', place: 'the client\'s own place', caption: 'captioned with the client\'s name', 'product page': 'on the product\'s page' };
-// the navigation section 0 dealt, as a form: the twelve tested designs by their id, a pattern by its text and its Must
-// show line before the phone's, the form it takes once the hero has gone first (named: read from the words, not a top
-// bar for want of any; first: the first screen's form beside it); and whether it hides on scroll, by the deal's own test
-const NAV_KINDS = { 'hide-on-scroll': 'top bar', 'centred-logo': 'centred wordmark', 'floating-pill': 'top bar', 'menu-button': 'corners', shrinks: 'top bar', 'side-index': 'side index', 'bottom-dock': 'bottom dock', corners: 'corners', masthead: 'masthead', 'ink-band': 'top bar', 'contained-bar': 'top bar', 'big-links': 'corners', 'chapter-band': 'top bar' };
+// a room or a home a picture's own words name (room-not-theirs): the record's title, its file and its notes, or the
+// entry's quoted title and linked files, naming a room, an apartment, an interior, furniture or a person's home; its alt,
+// its caption and the entry's own words before "by" ("The Fjord room: photograph by …"), which name the client's own rooms
+// on purpose, count only for an apartment, an interior, furniture or a person's home
+const HOME = /\b(?:bedrooms?|(?:living|sitting|dining) ?rooms?|apartments?|interiors?|furnished|furniture|sofas?|couch(?:es)?|armchairs?|tables? (?:and|with) (?:\w+ )?chairs|(?:cosy|cozy|inviting|reading|quiet) corner|(?:my|our|his|her|their|someone['’]s|[A-Z]\w+['’]s) (?:home|house|flat|apartment|room|bedroom|kitchen)|at home|home of)\b/i;
+const ROOMED = /\b(?:rooms?|home)\b/i;
+function roomIn(p) {
+  const r = p.record || {}, quoted = /“[^”]{3,}”|"[^"]{3,}"|‘[^’]{3,}’/.test(String(p.entry || '').split(' · ')[0]);
+  for (const [what, t, re] of [['title', r.title, ROOMED], ['file', r.file, ROOMED], ['notes', r.notes, HOME], ...entryTitles(p.entry).map((t, i) => ['credit', t, i || quoted ? ROOMED : HOME]), ['alt', p.alt, HOME], ['caption', p.caption, HOME]]) {
+    const m = t && (String(t).match(HOME) || (re === ROOMED && String(t).match(ROOMED)));
+    if (m) return `its ${what} says "${m[0]}"`;
+  }
+  return null;
+}
+const SHOWN = { product: 'the frame for the product', work: 'the work', room: 'a room', house: 'the house', place: 'the client\'s own place', caption: 'captioned with the client\'s name', 'product page': 'on the product\'s page', menu: 'an item of the menu' };
+// the navigation section 0 dealt, as a form: the twelve tested designs and the window toolbar (round 11f) by their id, a
+// pattern by its text and its Must show line before the phone's, the form it takes once the hero has gone first (named:
+// read from the words, not a top bar for want of any; first: the first screen's form beside it); and whether it hides on
+// scroll, by the deal's own test
+const NAV_KINDS = { 'hide-on-scroll': 'top bar', 'centred-logo': 'centred wordmark', 'floating-pill': 'top bar', 'menu-button': 'corners', shrinks: 'top bar', 'side-index': 'side index', 'bottom-dock': 'bottom dock', corners: 'corners', masthead: 'masthead', 'ink-band': 'top bar', 'contained-bar': 'top bar', 'big-links': 'corners', 'chapter-band': 'top bar', 'window-toolbar': 'window toolbar' };
 const NAV_FORMS = [
   ['side index', /\bside index\b|\bvertical list\b|\brail\b/i],
   ['bottom dock', /\bdock(?:ed)?\b|\bdial fixed at the bottom\b/i],
@@ -389,7 +429,7 @@ export function navKind(nav) {
   const pattern = !NAV_KINDS[nav.id], form = NAV_KINDS[nav.id] || after || whole;
   return { form: form || 'top bar', pattern, named: !!form, first: pattern && after && whole !== after ? whole : null, hides: nav.id === 'hide-on-scroll' || hidesOnScroll({ description: String(nav.text || ''), signature: nav.signature }) };
 }
-const NAV_NAMES = { 'top bar': 'a top bar', 'bottom dock': 'a bottom dock', 'side index': 'a side index', corners: 'a navigation in the corners', 'centred wordmark': 'a bar round a centred wordmark', masthead: 'a masthead' };
+const NAV_NAMES = { 'top bar': 'a top bar', 'bottom dock': 'a bottom dock', 'side index': 'a side index', corners: 'a navigation in the corners', 'centred wordmark': 'a bar round a centred wordmark', masthead: 'a masthead', 'window toolbar': 'the toolbar of the hero\'s product window' };
 // what a section holds, and where it stands against its heading (structures())
 const HOLDS = { list: 'a list', cards: 'cards', panel: 'one panel', window: 'a product window', picture: 'one picture', pictures: 'pictures', tool: 'a form', table: 'a table', text: 'text alone', none: 'a heading alone' };
 const PLACES = { split: 'beside its heading', columns: 'in columns under its heading', grid: 'in a row under its heading', gallery: 'in a row under its heading' };

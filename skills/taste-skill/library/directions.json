@@ -544,7 +544,7 @@
    "pastel-fields",
    "dark-neutral"
   ],
-  "imagery": "Use the product's own photographs if they exist. Otherwise the product is its designed frame (the sheet's hard rule), never another maker's, and the dealt set gives the still-lifes round it. Prefer images with a plain background; use `mix-blend-mode: multiply` on light fields so a white studio background disappears into the page colour.",
+  "imagery": "Use the product's own photographs if they exist. Otherwise the product is shown by its product statement (the sheet's hard rule), never another maker's, and the dealt set gives the still-lifes round it. Prefer images with a plain background; use `mix-blend-mode: multiply` on light fields so a white studio background disappears into the page colour.",
   "photoTreatment": "Scale the main image well past its container (`width: 120–160%`) and let `overflow: hidden` on the section do the cropping.",
   "sectionTags": [
    "object-led",
@@ -1149,7 +1149,7 @@
    "dark-neutral",
    "mono-accent"
   ],
-  "imagery": "The product is the picture: real interface fragments (data-ui), the object photographed or generated as it is (without its own photographs, its designed frame, never another maker's), or the output it makes. Few people photographs; none of people at laptops.",
+  "imagery": "The product is the picture: real interface fragments (data-ui), the object photographed or generated as it is (without its own photographs, its product statement, never another maker's), or the output it makes. Few people photographs; none of people at laptops.",
   "sectionTags": [
    "ui-led",
    "quiet",
@@ -1310,7 +1310,7 @@
    "dark-neutral",
    "mono-accent"
   ],
-  "imagery": "The subject photographed or generated cleanly, from the front, the side, close up; its construction shown by a close photograph of the joint or part, never a drawing. Without the client's own photographs, the subject is its designed frame and the close-ups show its materials, never another maker's product (the sheet's hard rule).",
+  "imagery": "The subject photographed or generated cleanly, from the front, the side, close up; its construction shown by a close photograph of the joint or part, never a drawing. Without the client's own photographs, the subject is shown by its product statement and the close-ups show its materials, never another maker's product (the sheet's hard rule).",
   "sectionTags": [
    "object-led",
    "dense",

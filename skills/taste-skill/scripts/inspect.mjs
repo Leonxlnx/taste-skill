@@ -99,6 +99,16 @@
 // links to other companies' products or sites warn, and fail at three (footer-other-sites); and button-family counts a
 // tab or a toggle drawn as a folder tab and a monogram drawn round, the bar read again past the hero.
 //
+// Round 11f (r14-p63: a private person's room as Hvit's, sun hours cut in half, Send request stranded on a moor; r14-p64's
+// row of three grey cards three times; r14-p66's cream footer beside a band sampled from a photograph): at rest, a figure
+// cut by its box fails at any size, never a crop (cut-figure), and a button on a busy photograph warns (button-on-photo);
+// on desktop, a picture by another in a room, house, product or work slot whose credit, title or alt names a room or a
+// home warns (room-not-theirs), and so does one by another whose words name a drink or a dish its section prices
+// (menu-not-theirs); same-structure counts a footer of three cards or more; surface-count counts the ink's, a field's
+// or the accent's band once a band no role names has taken the page's one; nav-not-as-dealt knows the toolbar of the
+// hero's product window, held or scrolling with it; button-family reads a dog-ear's folded corner as one shape; and
+// hollow-box reads the product's frame alone, a box holding its name and a few facts.
+//
 // --app judges an app screen (dashboard, admin, settings) by the rules in references/app-screens.md; a
 // direction dealt with draw.mjs --app switches it on by itself.
 //
@@ -114,7 +124,7 @@ import { probe, frame, reach, layout, app, colourShare, groundShare, cellDiff } 
 import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
 import { extra, controls, replayState, photoText, photoTextDone, photoContrast, splitLetters, tileFills } from './lib/probe-extra.mjs';
 import { judgeExtra, judgeBuild, navKind } from './lib/rules-extra.mjs';
-import { restLook, restStops, restGo, heroStack, visitBlocks } from './lib/probe-rest.mjs';
+import { restLook, restStops, restGo, heroStack, visitBlocks, photoBusy } from './lib/probe-rest.mjs';
 import { pageBuild, deadControls, space, navBar, crops, groundPoints, grounds, footing, workShown, pictureCredits, navForm, buttonShapes, structures, samePlace, footerLinks } from './lib/probe-page.mjs';
 import { viewportClass as name, screenshotLabel, isInspectionScreenshot } from './lib/inspection-files.mjs';
 import { PRODUCT_WORD } from './lib/business.mjs';
@@ -646,6 +656,12 @@ try {
           if (!a) continue;
           await page.eval(restGo, y0 + nudge <= maxY ? y0 + nudge : Math.max(0, y0 - nudge)).catch(() => null);
           const r = await page.eval(restLook, { phase: 1 }).catch((e) => { if (frameErrors.length < 8) frameErrors.push('rest look: ' + String(e.message).slice(0, 160)); return null; });
+          // round 11f: a button on a photograph, the picture round it measured on this screen as it rests
+          if (r && r.strands?.length) {
+            const png = await page.screenshot({ format: 'png' }).catch(() => null);
+            const busy = png ? await helper.eval(photoBusy, ['data:image/png;base64,' + png, r.strands]).catch(() => null) : null;
+            r.strands.forEach((x, i) => { x.busy = busy ? busy[i] : null; });
+          }
           if (r) restRuns.push({ ...r, end: s.end || null });
         }
       }
@@ -746,8 +762,11 @@ try {
     if (hero && hero.stack && !allow.includes('template-hero')) findings.push({ level: 'FAIL', id: 'template-hero', width: w, message: `The first screen is the generic stack: a centred headline ("${hero.h1}"), a line under it${hero.actions ? `, two actions side by side (${hero.actions.join(', ')})` : ''} and ${hero.card ? `a rounded picture card ${hero.card.where} (${hero.card.src}, ${hero.card.radius}px corners, ${Math.round(hero.card.w * 100)}% of the width)` : `a row of ${hero.cards.n} cards under them (${hero.cards.src}, each ${Math.round(hero.cards.w * 100)}% of the width)`}.`, fix: 'Build the first screen round the page\'s one idea, not the default stack. The name or the subject is the dominant type at real scale, set in the dealt display face; the picture is cropped hard or runs to the edges, set beside or behind the words rather than parked as a card or a row of cards under them; one action. Change at least two of the parts: the centring, the line under the headline, the actions, the card or the row of cards.' });
     // text cut off by a box that clips it once the page rests (r9-p44 on a phone: the coffee panel cut its list after
     // Huila and Guji, so Cerrado and Decaf were never shown)
-    const restClip = new Map();
-    for (const r of restRuns) for (const c of r.clipped || []) { const o = restClip.get(c.text); if (!o || c.past > o.past) restClip.set(c.text, { ...c, screen: Math.round(r.y / h) + 1, end: r.end }); }
+    const restClip = new Map(), restFig = new Map();
+    for (const r of restRuns) for (const c of r.clipped || []) { const m = c.figure ? restFig : restClip, o = m.get(c.text); if (!o || c.past > o.past) m.set(c.text, { ...c, screen: Math.round(r.y / h) + 1, end: r.end }); }
+    // round 11f: a figure cut by its box once the page rests (r14-p63's sun hours, 23 and 3 cut at 56% of their height on
+    // every width: the judge read the digit roll as a bug)
+    if (restFig.size && !allow.includes('cut-figure')) findings.push({ level: 'FAIL', id: 'cut-figure', width: w, message: `${restFig.size} figure(s) are cut by the box that holds them once the page rests: ` + [...restFig.values()].slice(0, 4).map((c) => `"${c.text}" at ${c.size}px loses ${c.past}px past the ${c.side} of ${c.by}${c.end ? ` (the end of ${c.end})` : ` (screen ${c.screen})`}`).join('; ') + '.', fix: 'A figure is read whole: a 3 cut at its middle reads as another digit, or as a bug. Give the box the figure\'s full height (line-height 1 and no fixed height under 1em), let a rolling digit land with its whole glyph inside its window, or set the figure a step smaller. A figure is never cropped at the screen\'s side or the foot of its box, as a word may be.' });
     if (restClip.size && !allow.includes('clipped-text')) findings.push({ level: 'FAIL', id: 'clipped-text', width: w, message: `${restClip.size} block(s) of text are cut off by a box that clips them once the page rests: ` + [...restClip.values()].slice(0, 4).map((c) => `"${c.text.slice(0, 40)}" ${c.short ? `is shrunk to a screen-reader-only ${c.by} while the items beside it show` : `${c.whole ? 'lies wholly' : `runs ${c.past}px`} past the ${c.side} of ${c.by}`}${c.end ? ` (the end of ${c.end})` : ` (screen ${c.screen})`}`).join('; ') + '.', fix: 'Nothing a visitor should read is cut off once the page rests. Let the box grow with its words (no fixed height with overflow: hidden round text), set a list that lies over a picture into the flow under the picture on a phone or tablet, or cut what does not fit; never shrink the items that do not fit into screen-reader-only boxes while the rest of the list shows. A mask may hide words on their way in, never once they have arrived; look at the end of each scene at 390 and 768.' });
     // one picture shown three times or more: copies of one file (the query and size suffixes taken off), or one held while
     // the steps change (r9-p44's roastery: one photograph under all four steps, three or four times down the tablet
@@ -837,6 +856,14 @@ try {
         if (es.length) findings.push({ level, id: 'edge-run', width: w, message: `${es.length} element(s) run into the ${[...new Set(es.map((e) => e.side))].join(' and ')} side of the screen at rest while the page keeps a ${margin}px margin: ` + es.slice(0, 3).map((e) => `${e.what} ("${e.text}", ${e.w}px wide${e.round ? ', rounded' : ''}) ${e.past ? `runs ${e.past}px past` : 'touches'} the ${e.side} edge, screen ${e.screen}`).join('; ') + '.', fix: level === 'FAIL' ? 'Nothing runs into one side of the screen. Keep the window, the card or the picture inside the page\'s margins (max-width and the same gutter on both sides), or let it span the whole width from edge to edge on purpose. A product window cut by the screen\'s side reads as a layout that broke.' : 'A picture or a field flush with one side of the screen reads as running out of the page. Keep it inside the margins, or run it from edge to edge; a split whose picture fills its half to the edge is a choice to defend in one sentence.' });
       }
     }
+    // ---------- round 11f ----------
+    // a button whose ground is a busy photograph at rest (r14-p63's Send request on the moor's scrub, 24, its form in the
+    // band beside the picture): the picture round it changes by 12 or more of 255 from one pixel to the next on average
+    // (a clear sky or fog under 4, a meadow or a hillside 6 to 11, stones on a shore 17)
+    const strands = new Map();
+    for (const r of restRuns) for (const x of r.strands || []) { const o = strands.get(x.id); if (x.busy != null && (!o || x.busy > o.busy)) strands.set(x.id, { ...x, screen: Math.round(r.y / h) + 1, end: r.end }); }
+    const busyOnes = [...strands.values()].filter((x) => x.busy >= 12);
+    if (busyOnes.length && !appMode && !allow.includes('button-on-photo')) findings.push({ level: 'WARN', id: 'button-on-photo', width: w, message: `${busyOnes.length} button(s) stand on a busy photograph: ` + busyOnes.slice(0, 3).map((x) => `"${x.text}" on ${x.media || 'a picture'} (it changes by ${x.busy} of 255 from one pixel to the next round the button${x.away ? '; its form stands elsewhere' : ''}${x.end ? `, the end of ${x.end}` : `, screen ${x.screen}`})`).join('; ') + '.', fix: 'An action stands where its words and its form stand: on the ground or a card beside the picture, under the sentence it completes. On a picture only the hero\'s one action, on a calm part of it (sky, wall, shadow of one tone); never a form\'s submit button parted from its fields and left on grass, scrub or a crowd.' });
     if (appMode) {
       findings = findings.filter((f) => !APP_SKIP.has(f.id) && f.id !== 'no-title' && f.id !== 'small-title');
       if (appM) findings.push(...judgeApp(appM, m, { width: w, allow }));
@@ -1022,7 +1049,7 @@ try {
     // the product replay the sheet dealt (draw.mjs section 8)
     if (dealtReplay && w >= 1100 && ex && !(ex.replays || []).length && !allow.includes('replay-missing')) findings.push({ level: 'FAIL', id: 'replay-missing', width: w, message: `The sheet dealt the product replay "${dealtReplay.name || dealtReplay.id}" in the ${dealtReplay.carries || ''} section, but the page has no [data-replay].`, fix: 'Build the product replay the sheet deals (section 8): the product\'s window in its final state with data-replay and its marked beats, assets/replay.js, and a Replay button under it.' });
     if (w >= 1100 && empty.length >= 2 && !allow.includes('empty-screens')) findings.push({ level: 'FAIL', id: 'empty-screens', width: w, message: `${empty.length} of ${frameChecks.length} desktop screens are almost empty ground (under 20% of the screen holds text, a picture or a colour field): screens ${empty.map(({ f, i }) => screenOf(f, i)).join(', ')}.`, fix: 'An empty screen is a rest only once per page. Elsewhere it means the section is underbuilt: set its content larger, give it the full information, put it on a colour field, or cut it.' });
-    report.viewports.push({ width: w, height: h, load: how, screens: frames.length, pageScreens, stride, extra: ex, reached: reached.map((r) => (r ? r.found : null)), upReach: upReach ? upReach.found : null, unread, overText, frameErrors, filled: frameChecks.map((f) => f?.filled ?? null), content: frameChecks.map((f) => f?.content ?? null), filmContent: filmChecks.map((f) => (f ? [Math.round(f.y / h * 10) / 10, f.content] : null)), motion, metrics: m, layout: lay, app: appM, consoleErrors: page.consoleErrors.slice(0, 5), missingImages: [...missingPics.keys()].slice(0, 12), photoText: [...onPhoto.values()].slice(0, 24), letters: [...letterSeen.values()].map((v) => ({ text: v.text, size: v.size, shows: v.at.map((s) => s.shows) })), tileWalls: wallRuns, hero, visits, build, dead, rest: restRuns.map((r) => ({ y: r.y, dy: r.dy, end: r.end, clipped: r.clipped, pics: (r.pics || []).map((p) => `${p.file} ${p.area} @${p.t}`), heads: (r.heads || []).map((x) => `${x.kind} ${x.text.slice(0, 40)} @${x.t}`), veils: r.veils, cutHeads: r.cutHeads, edges: r.edges })) });
+    report.viewports.push({ width: w, height: h, load: how, screens: frames.length, pageScreens, stride, extra: ex, reached: reached.map((r) => (r ? r.found : null)), upReach: upReach ? upReach.found : null, unread, overText, frameErrors, filled: frameChecks.map((f) => f?.filled ?? null), content: frameChecks.map((f) => f?.content ?? null), filmContent: filmChecks.map((f) => (f ? [Math.round(f.y / h * 10) / 10, f.content] : null)), motion, metrics: m, layout: lay, app: appM, consoleErrors: page.consoleErrors.slice(0, 5), missingImages: [...missingPics.keys()].slice(0, 12), photoText: [...onPhoto.values()].slice(0, 24), letters: [...letterSeen.values()].map((v) => ({ text: v.text, size: v.size, shows: v.at.map((s) => s.shows) })), tileWalls: wallRuns, hero, visits, build, dead, rest: restRuns.map((r) => ({ y: r.y, dy: r.dy, end: r.end, clipped: r.clipped, pics: (r.pics || []).map((p) => `${p.file} ${p.area} @${p.t}`), heads: (r.heads || []).map((x) => `${x.kind} ${x.text.slice(0, 40)} @${x.t}`), veils: r.veils, cutHeads: r.cutHeads, edges: r.edges, strands: (r.strands || []).map(({ mask, ...x }) => x) })) });
     report.findings.push(...(appMode ? findings.filter((f) => !APP_SKIP.has(f.id)) : findings));
     report.images.push({ viewport: label, width: w, fold, pages: sheets, film: filmSheets, replay: replaySheets, walked: frames.length, stride, pageScreens, atFoot });
     if (replayRuns.length) report.viewports[report.viewports.length - 1].replayBeats = replayRuns.map((rb) => (rb ? { clock: rb.clock, beats: rb.diffs, states: rb.states.map((s) => ({ k: s.k, win: s.win, top: s.top, foot: s.foot, bar: s.bar, bare: s.bare, stuck: s.stuck })) } : null));

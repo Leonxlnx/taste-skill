@@ -50,11 +50,13 @@ In order of preference:
    brief: subject, angle, light, background, crop ratio, and "no text". Generate the hero first and
    make the rest match its light.
 3. **The photographs dealt on the direction sheet** and the rest of the library (section 4): sharp,
-   modern photographs of places, light, texture and materials, free of credits. Use them where an
+   modern photographs of places, light, texture and materials, free of credits or, from Wikimedia
+   Commons, credited by author and licence (section 4). Use them where an
    honestly generic picture fits (the open sea for a house on the sea, stone for a mason). They never
    stand in for a person or a screen, and for a room, a dish or a product only as below.
 4. **Sharp modern photographs from the open collections** (section 3), 1800px or wider, only for what
-   the library lacks (a detail of a room, a dish, the product's use and its load): modern, well lit,
+   the library lacks (a detail of a room, the product's use and its load; never a dish or a drink a
+   menu names, which is the client's own photograph or type): modern, well lit,
    professional-looking. Honest means nobody could take one for the client's own building, premises,
    person, team or customers, or for its own product, rooms or work (below).
    **Never documentary or archive photographs:** no old Commons or museum pictures, no history
@@ -76,26 +78,39 @@ as the hero, two named hotels' rooms as a guesthouse's, another artist's comic o
 motion designer's work. All three were credited; the credit did not make them honest. When the client
 gives none:
 
-- **A product.** Its large picture (the hero, or the section about it) is a designed frame at the
-  product's real ratio with `data-slot="product-photo"`: the product's name in the page's display type
-  and its two or three facts (what it carries, its range, its price), on `--surface` or the ink, in
-  the dealt corners. Where the hero lays its picture behind the words (full-bleed, filling the first
-  screen, or the headline or the name set on or across it), that picture is the use or the place and
-  the frame comes in the section the sheet names after it, never a frame under the headline. No
-  silhouette, no outline, no drawing, no photograph of another make. With an image tool, the frame
-  may hold this product generated as the brief describes it, listed in the Image credits as made for
-  the page and in the report (`credit-names-business` fails any other photograph in that frame). The
+- **A product.** It is shown by what is true of it, never by an empty frame: the product statement,
+  in the hero or the section about it. Its name at the display step with four to six of its true
+  figures as large tabular figures with units and labels, at two or three sizes; its colourways as
+  named swatches; its size against things people know (a parking space, a door) as plain measured
+  bars. The figures are the brief's, or sample ones the report marks; `data-slot="product-photo"`
+  sits on the figures or the bars, where the client's shot will stand, never on a visible empty box
+  (a marked frame of a name and three facts read as an empty green box, and the page lost). Where
+  the hero lays its picture behind the words, that picture is the use or the place and the statement
+  comes in the section the sheet names after it. No silhouette, no outline, no drawing, no photograph
+  of another make. With an image tool, the slot holds a render of this product as the brief describes
+  it, marked as a render in the Image credits and the report (`credit-names-business` fails any other
+  photograph there), beside the statement, which stays. The
   photographs show only its use, its load and its place, with no product of its kind in
-  them: the shopping in a crate, a child's helmet on a hook, the school street in the rain. At least
-  one shows who it is for, the people from behind or far off and without the product. Never a page
-  without pictures: a cargo-bike page that shipped none lost its blind test as undesigned.
+  them: the shopping in a crate, a child's helmet on a hook, the school street in the rain. Each
+  stands beside the line of copy that names what it shows, and the copy names those uses and loads; a
+  photograph the copy does not name is left out, however good (a child's boots in a puddle beside a
+  cargo bike's copy read as unrelated stock). At least one shows who it is for, the people from behind
+  or far off and without the product. Never a page without pictures: a cargo-bike page that shipped
+  none lost its blind test as undesigned.
 - **Rooms and the house.** Each room is shown by a detail that belongs to no one (bed linen in window
-  light, a chair by the window, a cup on the bedside table, the view from a window) in a frame with
-  `data-slot="room-photo"`, beside that room's facts; never a whole room from another house. The
+  light, a chair by the window, a lamp in low sun, a cup on the bedside table, the view from a window)
+  in a frame with `data-slot="room-photo"`, beside that room's facts; never a whole furnished room,
+  whoever took it. A private person's room on Commons is another person's room and passes for the
+  client's as a hotel's does: a guesthouse page was held for one in its family-room slot. The
   house is shown as its place (the fjord, the village), captioned with what and where it is.
   `data-slot="house-photo"`, the frame its own photograph of the house replaces, goes on a picture of
-  the named place itself from the open collections, its source naming that place; never on a library
-  photograph, which names no place.
+  the named place itself, its source naming that place (a library photograph whose line names it, or
+  one from the open collections); never on one that names no place or another place.
+- **A menu.** A dish or drink the page names (a flat white at 3.80) is the client's own photograph of
+  it or type: its name, a short line and its price, never beside a stock picture of someone else's
+  cup or plate. The trade's photographs (the cup, the pour, the beans, the street) only set the mood,
+  away from the menu and never captioned with an item's name or price: a café page showed stock
+  drinks as its own menu.
 - **Work.** Each piece is the project's own still made for the page, in its frame with
   `data-slot="work"` at the piece's ratio and size: a frame from your own motion of it first (a CSS or
   canvas loop built for the piece, resting on its best frame), otherwise its title frame, the whole
@@ -116,17 +131,17 @@ this rule under the photograph total.
 
 **Rooms, dishes and products are shown, not boxed.** On a page for a place to stay, each room the
 page lists has its own picture beside its facts (the client's own, or the detail above); on a
-restaurant's page each dish it features has a photograph of that dish as served (the menu itself stays
-a list of names and prices); on a shop each product has its own photograph or its designed frame. A
-stand-in sits beside the room or dish it stands for, with that one's facts, never as the first picture
-of the house or the restaurant. Never grey spec panels, tabs or filled boxes in their place: in a blind
+restaurant's page each dish it features has the client's own photograph of that dish as served, and
+without them the menu stands in type (above); on a shop each product has its own photograph or its
+own smaller product statement. A stand-in sits beside the room it stands for, with that one's facts, never as the
+first picture of the house. Never grey spec panels, tabs or filled boxes in their place: in a blind
 test five rooms set as grey panels read as folder tabs.
 
 **As many pictures as items listed.** A section that lists four rooms shows four pictures, one beside
-each room; three featured dishes, three photographs. Never one picture for the lot, and never a detail
-in place of a dish. With fewer good pictures than items, list fewer: the kinds of room the house has,
-each with its picture, or the dishes you can show with the rest of the menu as a plain list of names
-and prices.
+each room; three featured dishes, three of the client's photographs. Never one picture for the lot,
+and never a detail in place of a dish. With fewer good pictures than items, list fewer: the kinds of
+room the house has, each with its picture, or the dishes the client's photographs show with the rest
+of the menu as a plain list of names and prices.
 
 **The brief decides what the product is, never the photographs found.** No word, specification or
 picture slot changes to match what a search returned: one builder turned a two-wheeled cargo bike into
@@ -257,17 +272,17 @@ as a crop. Treatments stay within section 6 and the treatment the sheet deals.
   materials, the details that belong to no one, the use and the load of its product; it may never
   stand in for the client's building, premises, people, team or customers (a bakery counter, the
   house from outside, a smiling barista, a chef at the pass), nor for its product, rooms or work (§2:
-  the client's own thing is never shown by another's). A detail or a dish sits beside the room or the
-  dish it stands for, never as the first picture of the house or restaurant; the report lists each as
-  not the client's. A find whose
+  the client's own thing is never shown by another's). A detail sits beside the room it stands for,
+  never as the first picture of the house; a dish or a drink is never stood in for at all (§2, a
+  menu); the report lists each stand-in as not the client's. A find whose
   title or credit names another business (a real hotel's room, another maker's product) is never shown
   as the client's own, marked as a placeholder or not (a guesthouse's rooms were real hotels' rooms from
   the open collections, and one of them had no credit at all).
 - **Say what and where it is.** A photograph of a place that is not the client's own is captioned
   with what and where it is, as its source names it ("Suðureyri in June", "The Korenmarkt, Ghent"),
   never with a place the source does not name and never in words that tie it to the client; a
-  detail beside a room or a photograph of a dish has that one's facts beside it (bed, view, rate;
-  name, price), never a line saying it is the client's photograph.
+  detail beside a room has that room's facts beside it (bed, view, rate), never a line saying it is
+  the client's photograph, and only the client's own photograph of a dish has its name and price.
   A picture under or beside a line shows what the line names: a guesthouse set "A white house on the
   fjord" over a village of coloured houses, and its booking section over a lighthouse nobody books.
 - **A caption names only what the picture shows.** Read every caption, label and number beside a
@@ -300,7 +315,7 @@ If two or three honest queries per idea find nothing sharp, modern and fitting, 
 and let type, colour or the product carry it (section 9); never a drawing (section 8). A picture that
 is merely nearby is worse than none. **When the search fails** (the script retries, then searches
 Commons when Openverse fails; with no source reached it says so), take the dealt photographs and the
-library (`draw.mjs --photos <words>`), then type or the slot's marked frame (§2); never a museum or
+library (`draw.mjs --photos <words>`), then type, or what §2 puts in the client's slot; never a museum or
 archive source in their place, and say in the report which searches failed. For moving pictures, the
 same script searches real footage with `--video` (section 11).
 
@@ -312,12 +327,14 @@ same script searches real footage with `--video` (section 11).
   the next project's sheet leads with others (one café was dealt the same first picture ten times in
   ten; later six café sheets led with the same two).
 - For a trade the library knows (coffee, bread, wine, beer, a place to stay, a bike, furniture, film,
-  ceramics) the list comes from every set: at most half of its things, then at most half of its
+  ceramics, writing, notes) the list comes from every set: at most half of its things, then at most half of its
   places (two at most), the ones other pages were dealt least leading and the ones the trade's last
   sheet listed behind the others, so two sheets of one brief share no photograph while the library
   holds others. Never its stock shot, a neighbouring trade, a landmark the brief does not name, a
-  logo, a house number or the inside of a café. A place leads only where the library has none of its
-  things. Each trade draws only on the sets that fit it (`sets`: a café never on night streets or a
+  logo, a house number, the inside of a café or another's whole room (`wholeRoom` on the photograph),
+  and never one whose source names a place the brief does not (`where`: Senja or the Faroes for a
+  guesthouse in the Westfjords). A place leads only where the library has none of its things, and
+  another bar's machine or counter, or a mood-only photograph, never leads. Each trade draws only on the sets that fit it (`sets`: a café never on night streets or a
   bar, a place to stay never on offices, a bike never on cars). A café, a bakery and a bike are dealt
   no night, nightlife or neon. Where the brief names the town of a café, a bakery, a brewery or a
   place to stay (`town`), no library street or coast stands for it (a place to stay on a fjord still
@@ -325,9 +342,15 @@ same script searches real footage with `--video` (section 11).
   north or named for a light is dealt no warm coast (turquoise water, white sand, palms, chalk
   cliffs). A portfolio is dealt none of the things, since its work is its own, and one picture of its
   place at most. A place to stay's things are the details that belong to no one (bed linen, a chair,
-  a cup, a window), never houses. On a product page with no photographs of its own, none that shows a
-  product of its kind is dealt (`product` in library/photos.json): its pictures are the use, the load
-  and the place.
+  a lamp, a cup, a window), never houses and never a whole furnished room. On a product page with no
+  photographs of its own, none that shows a product of its kind is dealt (`product` in
+  library/photos.json): its pictures are the use, the load and the place, and a line says which line
+  of the copy it stands beside only for a use the brief names (`uses`); a picture is never captioned to
+  fit. A cargo bike is dealt none of rain, umbrellas or puddles as its use, and its only place is a city
+  street: with none in the library the sheet sends the builder to search for the load first. A
+  restaurant without its own photographs is dealt no list or scene that gives each menu item a
+  picture: its menu is type. A software page is dealt two of its trade's things at
+  most (an editor's desk, blank cards), and none where its brief names no trade the library knows.
 - With fewer than six of the trade's things in the library, the sheet says how many there are and
   **Search first**: search the open collections with the trade's queries (Openverse, then Commons)
   before taking any dealt one; the dealt ones are the fallback.
@@ -339,9 +362,16 @@ same script searches real footage with `--video` (section 11).
   section 0 deals the black-and-white treatment.
 - A line marked black-and-white is a black-and-white file. Unless the brief asks for black and white
   (section 6) the draw leaves those out; leave them out of `--photos` searches too.
-- These are photographs from Unsplash served by Lorem Picsum under the Unsplash licence. List the ids
+- Most are photographs from Unsplash served by Lorem Picsum under the Unsplash licence. List the ids
   you used in your report and in the Image credits dialog; they are meant to be replaced by the
   project's own pictures.
+- Some are Wikimedia Commons files, each looked at full size before it entered the library. Their line
+  gives the file 1920px wide (Commons serves 1280px, 1920px and 3840px only), the id and the credit:
+  the author and the licence, linked to the file page, never the file's title, which may name a
+  business. `assets.mjs --get library:<id>` downloads one and records that credit for the dialog. A
+  line whose source names a place says it after the description; caption the picture with that place
+  and no other. A line marked mood only has a file title that names a business: it never goes in a slot for the
+  client's product, room or work, and the draw never deals it to a page that has such slots.
 
 ## 5. Cropping and placing
 
@@ -435,7 +465,9 @@ test.
   section: a blind judge called it generic dark SaaS.
 - **One picture that is not interface** and carries the product's idea is worth more than another
   panel: a modern photograph of what the product works on, or the object that carries its idea, shot
-  today (never an archive photograph).
+  today (never an archive photograph). Where the brief names a trade the library knows (an editor's
+  writing, a notes app's notes), the sheet deals two at most: a pencil on an open notebook, blank cards
+  scattered and gathered.
 - **No form controls as decoration.** Switches, checkboxes and sliders appear only where they do what
   the product does; a row of greyed toggles beside nothing reads as a template.
 - Inside a fragment the product's own interface conventions apply (its small radii, its 1px control
@@ -455,7 +487,7 @@ Do not illustrate. Drawn objects, products, people, rooms, buildings, food, anim
 mascots and decorative motifs in SVG or CSS were the commonest reason reviewers called a page amateur:
 next to award sites they read as clip art, however carefully they are drawn. When there is no picture
 of something, the section is set in type, or it shows the product's own interface, or a real photograph
-of the subject's world, or the marked frame of §2 (the product's name and facts, a work's title
+of the subject's world, or what §2 puts in the client's slot (the product statement, a work's title
 frame); it never gets a drawing in place of a photograph.
 
 SVG is right for these, and only these:
@@ -534,6 +566,9 @@ opens a dialog. Nothing about the pictures' sources appears anywhere else on the
   or the reveal opens on an empty box.
 - `alt` describes the picture in plain words. Decorative repeats get `alt=""`. The script's suggested
   alt is the source's title; rewrite it to say what the picture shows.
+- A Commons photograph of the library is credited "Photo by <author>, <licence>, via Wikimedia
+  Commons", the word Photo linked to its file page, as `--get library:<id>` records it: never the
+  file's title.
 - A coloured `background-color` on the image container (the ground or surface tone) so the layout is
   whole before the image arrives.
 - The "Image credits" link sits with the legal links at their size; the dialog is plain (the page's

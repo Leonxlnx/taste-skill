@@ -122,7 +122,7 @@ On 29 October 2026 the owner looked at the test pages himself. What he named, an
 
 | Tell | Status | Do instead |
 | --- | --- | --- |
-| Everything alike: three button shapes at one size, one plain bar that hides on scroll, a one-line footer | not dealt; each is one of about twelve designs or one of the study's patterns in section 0, none on more than about one page in ten | The navigation, footer, cards and buttons the sheet deals |
+| Everything alike: three button shapes at one size, one plain bar that hides on scroll, a one-line footer | not dealt; each is one of about fifteen designs or one of the study's patterns in section 0, none on more than about one page in ten | The navigation, footer, cards and buttons the sheet deals |
 | The next section already in view on the first screen | failed (`hero-not-alone`) | The hero alone, `min-height: 100svh` |
 | Sections crowding each other, no air between them | warned under 12% of the screen, failed under 6% (`section-air`) | 16vh or more between sections at 1440, as dealt |
 | A product window or picture run into one screen edge while the other keeps its margin | failed (`edge-run`; a picture or colour field as tall as its section, flush with one side, is warned) | Inside both margins, or full-bleed across both edges |
@@ -139,16 +139,16 @@ The round-11 test pages (30 October 2026) showed two more:
 
 | Tell | Status | Do instead |
 | --- | --- | --- |
-| A new ground or panel colour for each section or card | warned at three grounds by the screens a visitor sees them on, failed at four (`surface-count`; a surface a step from the ground counts as its one surface, and a tint a step off the ground beside it is one more; the ink and a dealt field count once they ground more than the footer and one section or two and a half screens, the accent more than one section or a screen and a half; any other tone counts from a quarter of a screen, or from any band across the width, a band sampled from a photograph included; a ground the dealt scene, technique or section asks for is named and only warns) | The ground and one surface tone; the ink, the accent or the field as one band |
+| A new ground or panel colour for each section or card | warned at three grounds by the screens a visitor sees them on, failed at four (`surface-count`; a surface a step from the ground counts as its one surface, and a tint a step off the ground beside it is one more; the ink and a dealt field count once they ground more than the footer and one section or two and a half screens, the accent more than one section or a screen and a half; any other tone counts from a quarter of a screen, or from any band across the width, a band sampled from a photograph included, and such a band takes the page's one band, so the ink, a field or the accent grounding a band beside it counts as well; a ground the dealt scene, technique or section asks for is named and only warns) | The ground and one surface tone; the ink, the accent or the field as one band |
 | A portfolio whose work is type cards, no picture of the work | warned under three pictures or marked slots in the work; a photograph credited to another among the work, in a `data-slot="work"` frame or not, fails (`portfolio-without-work`) | Frames, stills or films of the work; `data-slot="work"` frames holding the project's own still where the client's own are missing |
 
 The round-12 test pages (30 October 2026) showed four more:
 
 | Tell | Status | Do instead |
 | --- | --- | --- |
-| A third button shape: an outline, a pill or a block of its own beside the dealt button and its sibling | failed over two shapes on the page, by corner and kind at any height; tabs and toggles (a disclosure's rows too) do not count unless drawn as folder tabs, and a mark linking home counts only drawn round, a monogram in a circle, in the bar past the hero too; the square tile a dealt bar carries does not (`button-family`) | The dealt button for every action, and one quieter sibling |
-| The dealt navigation built as a plain bar, or a bar that hides on scroll | failed where the built form is not the dealt one (top bar, dock, side index, corners, centred wordmark, masthead); a bar that hides on the way down fails too, and is warned where no navigation was dealt (`nav-not-as-dealt`) | The navigation section 0 deals, on the screen after the hero |
-| Section after section built one way: a small heading, a line and a list panel | warned at three sections round the same thing (a list, cards, a window, one picture), failed at four (`same-structure`) | Each section the structure its content asks for, none three times |
+| A third button shape: an outline, a pill or a block of its own beside the dealt button and its sibling | failed over two shapes on the page, by corner and kind at any height; tabs and toggles (a disclosure's rows too) do not count unless drawn as folder tabs, and a mark linking home counts only drawn round, a monogram in a circle, in the bar past the hero too; the square tile a dealt bar carries does not; a square block with one corner cut off by its clip-path (the dog-ear) is a folded corner, one shape at any depth of fold and with its sibling (`button-family`) | The dealt button for every action, and one quieter sibling |
+| The dealt navigation built as a plain bar, or a bar that hides on scroll | failed where the built form is not the dealt one (top bar, dock, side index, corners, centred wordmark, masthead, the toolbar of the hero's product window); a bar that hides on the way down fails too, and is warned where no navigation was dealt (`nav-not-as-dealt`) | The navigation section 0 deals, on the screen after the hero |
+| Section after section built one way: a small heading, a line and a list panel | warned at three sections round the same thing (a list, cards, a window, one picture), failed at four; the footer counts with them as a row of three cards or more alike, never as halves or keys (`same-structure`) | Each section the structure its content asks for, none three times; the footer stays as dealt and the sections change |
 | Every section a box: product windows, panels and cards on one fill | warned when four sections or more after the hero, all but one, stand in a box (`boxed-page`) | Cards and windows in two or three sections, the rest on the ground |
 
 The four pages on the round-11b commit (30 October 2026) showed two more: three could not be published for the first, and the fourth was marked down for the second:
@@ -163,6 +163,16 @@ The round-13 test pages (30 October 2026) showed one more:
 | Tell | Status | Do instead |
 | --- | --- | --- |
 | A footer of links to other companies: the word processors the product opens, the style guides it follows | warned at one or two, failed at three or more, a column of them (`footer-other-sites`; a map, the client's own site, profiles on social networks, picture libraries and credits aside) | The client's own sections, pages and contact; another product named in a line where it matters |
+
+The round-14 test pages (31 October 2026) showed five more:
+
+| Tell | Status | Do instead |
+| --- | --- | --- |
+| A private person's room shown as the client's: a furnished corner from a picture library as the guesthouse's family room | warned when a picture by another in a room, house, product or work slot has a credit, title or alt that names a room, a bedroom, an apartment, an interior, furniture or a person's home (`room-not-theirs`) | Details that belong to no one (linen in window light, a chair, a lamp, the view) until the client's own photographs arrive |
+| A figure cut by its box: a rolling number resting half-masked | failed once the page rests, at any width; a figure is never a crop at the screen's side or the foot of its box, as a display word may be (`cut-figure`) | The whole figure inside its box, a step smaller where it does not fit |
+| A button stranded on a busy photograph, away from its form | warned when a drawn button stands on a photograph that changes by 12 or more of 255 from one pixel to the next round it (scrub, stones; a sky or a meadow stays under it) (`button-on-photo`) | The action on the ground or a card beside the picture, with its form |
+| The product's frame a filled box holding its name and three facts | warned when the `data-slot="product-photo"` frame is filled or outlined, holds no picture and its words cover under a sixth of it, a row of three marked cards aside (`hollow-box`) | The product statement: its name and four to six true figures set large, on the ground |
+| A named item of the menu shown by another's photograph: a stock flat white beside "Flat white 3.80 €" | warned when a picture by another has an alt, caption or title that names an item its section prices (`menu-not-theirs`) | The menu in type, or the client's own photographs; stock of the trade only for the mood, away from the menu |
 
 ## 6. Copy tells
 

@@ -46,7 +46,8 @@ sheets. Make each pass on its own; do not blend them.
    75 characters or centred over more than three lines?
 7. **Colour.** Name the proportions: which colour holds most of the surface, which supports, where is
    the accent? An accent that appears in ten places means nothing. One that appears on the single
-   action and one detail means "here".
+   action and one detail means "here". Count the grounds: a band sampled from a photograph beside a
+   footer in the ink is two bands where the page has one (`surface-count`).
 8. **Images.** Count the real pictures: no more than the sheet's photograph total, each doing a job
    (showing the thing, setting the place, proving the claim)? Does any look documentary, archival, old
    or news-like? Out with it: modern, well-lit photographs or none (a product page never none: its
@@ -54,13 +55,18 @@ sheets. Make each pass on its own; do not blend them.
    pictures show" line says? A neighbouring trade's things (a mixing desk for a motion designer) or a
    landmark the brief does not name goes, however good it is. Whose is it? Open each picture shown as
    the client's at full size and read its credit: another maker's product, a named hotel's room or
-   someone else's work is never the client's, whatever the crop. A page of drawings looks unfinished; a
-   page of type and colour can be finished. Do the crops share ratios, and does any crop cut a
-   picture's own lettering? Is anything a grey box, a stretched photo, a fake screen made of bars?
+   someone else's work is never the client's, whatever the crop. A whole furnished room, a corner with
+   its table and chairs or someone's home is another person's room, whoever took it (`room-not-theirs`
+   warns): a room slot holds a detail that belongs to no one. A drink or a dish the menu names with
+   its price is never someone else's photograph of one (`menu-not-theirs` warns). A page of drawings
+   looks unfinished; a page of type and colour can be finished. Do the crops share ratios, and does
+   any crop cut a picture's own lettering? Is anything a grey box, a stretched photo, a fake screen
+   made of bars, or the product's frame a box holding its name and a few facts (`hollow-box`)?
    Does the photography share one light and one grade, or is it a stock mix?
 9. **Sameness.** Write one word for each section's layout (split, list, full-bleed, grid, statement,
    index …). The same word twice in a row, or three times on the page, is the template showing
-   (`same-structure` counts it: three sections built one way warn, four fail).
+   (`same-structure` counts it: three sections built one way warn, four fail; a footer of cards counts
+   with them).
 10. **Phone.** Is the mobile screen a composition of its own, with its own crop and its own line
     breaks, or the desktop page squeezed? Is the first screen still one clear thing?
 11. **Fullness.** Go through the desktop sheets screen by screen. Is each screen a composed poster, or
@@ -75,7 +81,9 @@ sheets. Make each pass on its own; do not blend them.
     visitor leave knowing what they came to find out? Is the primary action a real button on the first
     screen?
 13. **Collisions.** Is anything lying on top of a headline, a statement or a button at any scroll
-    position? Does any element run off the edge of the phone screen? A row that scrolls sideways on
+    position? Is any figure cut by its box once it rests, a rolling number half-masked (`cut-figure`
+    fails)? Does any button stand on a busy photograph (`button-on-photo` warns)? Does any
+    element run off the edge of the phone screen? A row that scrolls sideways on
     the phone reads as cut off in a screenshot and to most visitors; wrap it unless the cut is
     plainly deliberate (a partial card showing at the edge).
 14. **The competitor test.** Put the nearest competitor's name on the page: does the idea still work?
@@ -92,8 +100,10 @@ sheets. Make each pass on its own; do not blend them.
     else. Are the navigation, the buttons, the cards and the footer built as section 0 dealt them, or
     did they slide back to a plain bar, a small square button and a one-line footer? Count the button
     shapes: one family, the dealt button and one quieter sibling (folder tabs and a monogram in a
-    circle count). Does the navigation stay on the screen after the hero, or hide on the way down? Does
-    any screen send a visitor to one place twice, the bar's action and the hero's button included?
+    circle count; a dog-ear's folded corner is one shape at any size). Is the navigation the form
+    section 0 dealt (a window toolbar sits on the hero's product window), and does it stay on the
+    screen after the hero, or hide on the way down? Does any screen send a visitor to one place
+    twice, the bar's action and the hero's button included?
     Does the footer link only to the client's own, never to other companies' products?
 
 A note from testing: in blind comparisons a richer page full of template devices beat a cleaner page

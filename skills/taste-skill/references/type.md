@@ -90,6 +90,11 @@ Large type exposes spacing that is invisible at text size. Apply all of these to
   120px will choke 32px. Set tracking per step, not once for all headings.
 - **Leading below 1.0 needs checking.** Look for collisions between descenders and the ascenders or
   accents of the next line. Two-line headlines make this easy to verify by eye.
+- **Two lines are one block.** A name or headline set on two lines keeps them tight: line-height
+  0.9–1.0, no margin, padding or gap between the lines, and the weight the sheet deals for the display
+  step, stepped up to the face's 400 or next weight where that is 300 or lighter. Never a lighter cut to
+  make a large size look elegant: a café's thin two-line name with a gap between its lines read as two
+  stray words, and as a bug, in a blind test.
 - **All capitals** want slightly open tracking (0 to +0.03em) even at display size, and leading around
   0.9.
 - **Optical alignment.** Big letters with round or diagonal left edges (O, C, A, T, W) look indented.
@@ -167,6 +172,11 @@ steps stand: map its sizes onto the steps, nothing under 13px, running text 16px
 - Curly quotes and apostrophes, real dashes, a real ellipsis (see `copy.md` §7).
 - `font-variant-numeric: tabular-nums` for prices, tables, dates in columns; `oldstyle-nums` suits
   serif body text.
+- A figure set large (a product's load, its range, its price: the product statement a page without
+  product photographs is shown by) is a tabular figure with its unit at about half its size after it,
+  on one baseline, and under it a label at the body step that says what it counts ("in the box", "on
+  one charge"). The figures of one composition take two or three sizes, the one that matters most the
+  largest, never one row of equal figures over one-word labels (`stats-band`).
 - `text-underline-offset: 0.18em; text-decoration-thickness: 0.07em` on links, so underlines clear the
   descenders.
 - `hyphens: none` on headings. `overflow-wrap: anywhere` only on long URLs or emails.

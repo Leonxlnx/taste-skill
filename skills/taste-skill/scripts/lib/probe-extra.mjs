@@ -251,6 +251,20 @@ export function extra(opts = {}) {
       // the content's own height against the box: a tall card with a price at the top and two lines at the foot
       if (Math.min(covered, bottom - top) / r.height < 0.3 && (bottom - top) / r.height > 0.6) out.hollow.push({ text: textOf(el).slice(0, 40), h: Math.round(r.height) });
     }
+    // round 11f (r14-p65: the product's frame a green box with its name at the top and three facts at the foot): the
+    // frame marked for the product's photograph, filled or outlined, 240 by 200px or more, with no picture in it, whose
+    // words cover under a sixth of it (the product statement sets its name and figures large on the ground). A row of
+    // three marked cards or more is a shop's or a roaster's goods, each card holding its own name and facts
+    out.productFrame = [];
+    for (const el of document.querySelectorAll('[data-slot="product-photo"]')) {
+      if (out.productFrame.length >= 3 || !visible(el) || (el.parentElement?.parentElement || B).querySelectorAll('[data-slot="product-photo"]').length >= 3) continue;
+      const r = el.getBoundingClientRect(), a = r.width * r.height; if (r.width < 240 || r.height < 200) continue;
+      const cs = getComputedStyle(el); const filled = rgb(cs.backgroundColor) && String(rgb(cs.backgroundColor)) !== String(groundOf(el.parentElement || B)); const outlined = parseFloat(cs.borderTopWidth) >= 1 && cs.borderTopStyle !== 'none';
+      if ((!filled && !outlined) || /url\(/.test(cs.backgroundImage) || [...el.querySelectorAll('img, video, canvas, picture')].some((m) => { const q = m.getBoundingClientRect(); return visible(m) && q.width * q.height >= a * 0.1; })) continue;
+      const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), rg = document.createRange(); let ink = 0;
+      for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (!n.nodeValue.trim() || !n.parentElement || !visible(n.parentElement)) continue; rg.selectNodeContents(n); for (const q of rg.getClientRects()) ink += q.width * q.height; }
+      if (ink / a < 1 / 6) out.productFrame.push({ text: textOf(el).slice(0, 40), w: Math.round(r.width), h: Math.round(r.height), share: Math.round((ink / a) * 100) });
+    }
     out.switchList = [...document.querySelectorAll('input[type=checkbox], [role=switch], input[type=radio]')].filter((i) => visible(i) && !i.closest('form, [data-ui], dialog, [role=dialog]')).length;
   }
 

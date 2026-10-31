@@ -178,17 +178,26 @@ full set of plausible details: each room with a name, a bed, a view and its own 
 its price; each speaker with a talk title; or, when there are fewer good pictures than rooms, each
 kind of room (references/imagery.md §2), with its picture and its rate. A design can only be judged at
 its real density, and a page that shows one rate where six rooms exist looks unfinished. The details
-sit beside the room's picture or the dish's photograph (references/imagery.md §2), never in a spec
-panel or a filled box standing in for it. List every sample detail in the report so the client
-confirms or replaces it.
+sit beside the room's picture, or beside the dish's own photograph where the client has one
+(references/imagery.md §2), never in a spec panel or a filled box standing in for it. List every
+sample detail in the report so the client confirms or replaces it.
 
 **Words beside a stand-in never claim it.** A picture that is not the client's own (a detail of a
 room, the load of a product, the place) carries the facts of the room or the product, never a line
-that says it is the client's photograph, and never another business's name from its credit. A
-`data-slot="product-photo"` frame holds the product's name and two or three facts, and a `work` frame
-the project's own still or its title, set in the page's type; a `room-photo` or `house-photo` frame
+that says it is the client's photograph, and never another business's name from its credit. The
+`data-slot="product-photo"` slot sits on the product statement (its name, its true figures, its
+colourways and its measured size, never an empty box), a `work` frame holds the project's own still
+or its title, set in the page's type; a `room-photo` or `house-photo` frame
 holds its photograph (a detail, the place) with the facts beside it. None says "photo coming soon" or
 "placeholder", or notes that a picture is missing.
+
+**A menu item's name is never set beside a stock picture.** "Flat white, 3.80" beside someone else's
+cup claims that cup as this café's: without the client's own photographs the menu stands in type, and
+the trade's pictures (the pour, the beans, the street) carry no item's name or price (a café page
+showed stock drinks as its menu). On a product page the opposite holds: the copy names the uses and the
+loads (the weekly shop, two children and their bags, the school run in the rain), and each photograph
+stands beside the line that names what it shows. A picture no line names is cut, not captioned to fit
+(a child's boots in a puddle stood beside a cargo bike's range).
 
 **Facts about the real world are not sample details, and they are not to be left out either.** A page
 about a real place names the real, checkable things a visitor needs to get there and to picture it:
@@ -219,7 +228,8 @@ copy, and the report marks them for the client to confirm. Never a placeholder s
 hours and an email under "Open in Berlin" left the visitor nowhere to go, and the judge marked it
 high. With no phone number in the brief, the page prints none: never a zeroed or patterned number
 (030 000 000 00, 555-0123) and never a real area code with random digits, which can ring a real
-line; the contact is then the email at the brand's own domain, never `.example`. A page with no door
+line; the contact is then the email at the brand's own domain, never `.example`, unless the name is
+coined (below). A page with no door
 in its brief (a product sold online, an app, a portfolio) prints no street, hours or phone at all:
 the email and the city the brief names. When the brief gives no email address, the sample one is
 sample content, and no form that sends a visitor's details (an order, a booking, a delivery address,
@@ -232,11 +242,15 @@ rules ask.
 often already a real product's name, sometimes in the same trade, and the page then reads as theirs.
 Coin one that reads as invented: two short roots joined, or a word bent out of shape, never a dictionary
 word alone or a known product's name. **Check it before use:** search the name with the trade's word
-("<name> notes app", "<name> invoicing", "<name> café Leipzig") and drop it when a product or company
-of that trade already has it. Two names coined in tests, for a notes app and for a tool, were real
-products of the same kind, and one page had to be renamed before it could be shown. The same goes for
-a product, plan or feature name the page coins. Say in the report that the name is a placeholder,
-searched but not checked against trademarks, and is to be replaced by the client's own.
+("<name> notes app", "<name> invoicing", "<name> café Leipzig") and the domain it would use
+("<name>.com", "<name>.app"), and drop it when a product or company of that trade already has it or
+the domain is a live site. Two names coined in tests, for a notes app and for a tool, were real
+products of the same kind, and one page had to be renamed before it could be shown; another linked the
+live address of a product with its coined name. The same goes for a product, plan or feature name the
+page coins. A coined name's email and links use the `.example` domain (hello@<name>.example) until the
+client gives its own: any other address may be a stranger's. The inspector warns on it
+(`placeholder-contact`); the report names it with the name. Say in the report that the name is a
+placeholder, searched but not checked against trademarks, and is to be replaced by the client's own.
 
 ## 6. Things that read as generated
 

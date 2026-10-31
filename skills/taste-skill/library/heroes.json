@@ -1348,5 +1348,55 @@
   "headline": "What it does and for whom, three to seven words on two lines of up to about 16 characters.",
   "motion": "masked-headline",
   "seenIn": []
+ },
+ {
+  "id": "name-and-its-numbers",
+  "name": "The name and its numbers",
+  "archetype": "statement",
+  "directions": [
+   "spec-sheet",
+   "clear-product",
+   "hero-object",
+   "specimen-catalogue",
+   "borrowed-category",
+   "one-motif"
+  ],
+  "needs": [],
+  "picture": false,
+  "statement": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "The product statement (section 5) is the first screen: no photograph. On the page ground inside the margins, a 12-column grid filling 100svh under the navigation. Columns 1–7, from the top third: the product's name as the h1 at the display step on one or two lines, line-height 0.92, at the dealt display weight; under it one line of four to six words at the lead step and the action as the dealt button. Columns 9–12, top-aligned with the name: three of its true figures in one column with 40px between them, the first (what it carries, or how far it goes) at the display step and the other two at the head step, each a tabular figure with its unit at half its size after it and a label of two to four words under it at the body step ('in the box', 'on one charge'). Along the foot, 48px above the bottom edge, on columns 1–7: its colourways as named swatches, three or four filled squares 64px wide with 12px gaps, each colour's name under it at the small step. `data-slot=\"product-photo\"` on the column of figures, where the client's own shot will stand. No drawing or silhouette of the product. The figures and their labels are one group: they may stand in one card of the dealt card style (section 0), never an empty or tinted box, nor a box inside a box. Its size against things people know (the statement's measured bars) stands in the section after the hero that section 7 names, beside that section's words. At most 30 words on the screen.",
+  "leaves": "its size against things people know at its scale (the measured bars)",
+  "mobile": "The name at the display step on two lines at most, the line and the action under it; then the three figures in one column, the first at the head step; the swatches in one row of four at 48px along the foot. All of it within 100svh.",
+  "headline": "The name of the product as the h1, on one or two tight lines; the line under it says what it is in four to six words.",
+  "motion": "stillness",
+  "seenIn": []
+ },
+ {
+  "id": "name-on-its-scale",
+  "name": "The name on its scale",
+  "archetype": "statement",
+  "directions": [
+   "name-as-monument",
+   "loud-flat-poster",
+   "hero-object",
+   "sentence-as-layout",
+   "clear-product",
+   "one-motif"
+  ],
+  "needs": [],
+  "picture": false,
+  "statement": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "The product statement (section 5) is the first screen, set on its size: no photograph. On the page ground, 100svh, everything inside the margins. In the upper half, from the left margin: the product's name as the h1 at the display step on one line (two at most, line-height 0.92, at the dealt display weight); under it on columns 1–5 one line of four to six words at the lead step and the action as the dealt button. On columns 9–12 of the upper half, top-aligned with the name: two of its true figures one above the other at the head step, each a tabular figure with its unit at half its size after it and a label of two to four words under it at the body step. Across the lower third, the full content width: its size against things people know at its scale (a parking space or a lift for a bike, a sheet of A4 or a hand for a lamp) as three plain measured bars at one scale, filled blocks 16px tall and 40px apart, the longest the full width, the product's own in the ink and the others in --muted, each with its name and measure at the body step above its left end ('the product, 2.4 m', 'a parking space, 5 m'). `data-slot=\"product-photo\"` on the block of bars, where the client's own shot will stand. No drawing or silhouette of the product, no axis, ticks or grid, no progress element. Its other figures and its colourways (the statement's named swatches) stand in the section after the hero that section 7 names, beside that section's words. At most 30 words on the screen.",
+  "leaves": "two to four more of its true figures and its colourways (the named swatches)",
+  "mobile": "The name at the display step on two lines at most, the line and the action under it; the two figures side by side at the sub step; the three bars at the full width less the margins, their names above them, along the foot. All of it within 100svh.",
+  "headline": "The name of the product as the h1, on one line where it fits and two tight lines at most; the line under it says what it is in four to six words.",
+  "motion": "pushed-line",
+  "seenIn": []
  }
 ]

@@ -4693,5 +4693,344 @@
    "aww-tengile-malamala-collection",
    "aww-moto-finance"
   ]
+ },
+ {
+  "id": "showcase-product-statement",
+  "role": "showcase",
+  "name": "The product statement",
+  "shape": "statement",
+  "structure": "object",
+  "tags": [
+   "type-led",
+   "object-led"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "statement": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "The product shown by what is true of it (section 5): one composition on the page ground inside the margins, about one screen tall, no photograph. Columns 1–7: the product's name as the heading at the display step on one or two lines, line-height 0.92, at the dealt display weight; 48px under it four to six of its true figures in a two-column grid with 40px gaps, the one that matters most (what it carries, how far it goes) across both columns at the display step and the others at the head step, each a tabular figure with its unit at half its size after it and under it a label of two to four words at the body step that says what it counts ('in the box', 'on one charge'). Columns 9–12, top-aligned with the name: its colourways as named swatches, three to five filled squares 72px wide in a row with 12px gaps, each colour's name under it at the small step; 64px lower, its size against things people know at its scale as three plain measured bars at one scale, filled blocks 14px tall, the longest the width of the column, the product's own in the ink and the others in --muted, each with its name and measure at the body step above it. `data-slot=\"product-photo\"` on the block of figures, where the client's own shot will stand. No drawing, outline or silhouette of the product, never one row of equal figures. The figures and their labels are one group: they may stand in one card of the dealt card style (section 0), never an empty or tinted box, nor a box inside a box.",
+  "mobile": "The name at the display step on two lines; the figures in two columns, the first across both at the head step; the swatches in one row at 56px; the bars at the full width less the margins with their names above them.",
+  "seenIn": []
+ },
+ {
+  "id": "showcase-statement-beside-its-use",
+  "role": "showcase",
+  "name": "The product statement beside its use",
+  "shape": "split",
+  "structure": "split",
+  "tags": [
+   "type-led",
+   "photo-led"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "statement": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "The product shown by what is true of it (section 5) beside one photograph of what it is for: two parts on one top line, on the page ground inside the margins, about one screen tall. Columns 1–5: one photograph of its use or its load (what it carries, where it goes; never a product of its kind) at 4:5, the full height of the section, and under it a caption at the small step that says what and where it is. Columns 7–12, top-aligned with the photograph: the product's name as the heading at the display step on one or two lines, line-height 0.92, at the dealt display weight; 40px under it four of its true figures in two columns with 40px gaps, the one that matters most at the display step and the others at the head step, each a tabular figure with its unit at half its size after it and under it a label of two to four words at the body step that says what it counts; 48px lower its colourways as named swatches, three to five filled squares 56px wide with 12px gaps, each colour's name under it at the small step; and at the foot, level with the photograph's foot, its size against things people know at its scale as three plain measured bars at one scale, filled blocks 12px tall, the longest the width of the column, the product's own in the ink and the others in --muted, each with its name and measure at the body step above it. `data-slot=\"product-photo\"` on the block of figures, where the client's own shot will stand. No drawing, outline or silhouette of the product, no box round the photograph, never one row of equal figures. The figures and their labels are one group: they may stand in one card of the dealt card style (section 0), never an empty or tinted box, nor a box inside a box.",
+  "mobile": "The photograph first at 4:5 across the content width with its caption; then the name on two lines, the figures in two columns, the first across both at the head step, the swatches in one row at 48px and the bars at the full width less the margins with their names above them.",
+  "seenIn": []
+ },
+ {
+  "id": "features-load-planner",
+  "role": "features",
+  "roles": [
+   "how-it-works",
+   "showcase"
+  ],
+  "name": "What it takes, added up",
+  "shape": "split",
+  "structure": "tool",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "moment": true,
+  "sectors": [
+   "physical-product",
+   "ecommerce"
+  ],
+  "blueprint": "A working planner on the product's own limit: the visitor sets what they would carry or use (the loads of a day, the trips or the evenings of a week) and the page adds it up against what the product takes (its load, its range or its hours on one charge). Two parts on one top line, on the page ground. Columns 1–6: the heading, two to four words at the head step, and 48px under it four to six things of its real use as rows 72px apart (two children, a week's shopping, a crate of tools; or the school run, the shop, the weekend ride; or an evening of reading), each its name at the lead step with its true weight, distance or hours at the body step under it, and at the right end of the row a stepper: a minus and a plus button 48px square in the dealt button family's quieter style, the count between them as a tabular figure at the sub step. Columns 8–12, sticky at 20vh while the rows pass: the total as one large tabular figure at the display step with its unit after it ('118 kg', '46 km'), and under it one sentence at the lead step that says it against the true limit ('32 kg to spare of 150: room for one more crate'; 'one charge lasts the week'); past the limit the sentence says so plainly. The figure changes the moment a button is pressed. No gauge, dial, meter or bar that fills, no range slider and no step counter: the figure and the sentence are the result. Without JavaScript, the rows stand with their figures and the limit as a sentence.",
+  "mobile": "The total and its sentence first, held under the navigation as a band of the surface tone about 120px tall; the rows under it at the full width, each stepper 48px square.",
+  "seenIn": []
+ },
+ {
+  "id": "how-it-works-trip-race",
+  "role": "how-it-works",
+  "roles": [
+   "features",
+   "showcase"
+  ],
+  "name": "The same trip, timed two ways",
+  "shape": "split",
+  "structure": "tool",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "moment": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "products": [
+   "bike",
+   "bicycle",
+   "e-bike",
+   "scooter",
+   "trailer",
+   "boat",
+   "mower",
+   "kettle",
+   "vacuum",
+   "robot",
+   "dishwasher",
+   "oven",
+   "cooker",
+   "grill",
+   "drill"
+  ],
+  "blueprint": "The same job two ways on one clock: the product against the way people do it now (the car and its parking, the bus and its wait, the pan on the hob), on figures a visitor can check. On the page ground. Columns 1–6: the heading, two to four words at the head step; on its line in columns 7–12, three real jobs as a choice of three filled buttons in the dealt button family's quieter style (the school run 2.5 km, the weekly shop 4 km, the market 6 km), the first chosen. 64px below, two equal columns on one top line with 64px between them: each names its way at the sub step, then its steps as rows 56px apart (drive 2.5 km, find a space, walk the last 200 m), each with its minutes as a tabular figure at the lead step at the right end, and at the foot its total as one large tabular figure at the display step ('15 min'). When the section reaches the middle of the screen both run on one clock, about 2.4 seconds for the longer: each row turns from --muted to the ink as its minute comes, and each total appears whole at its column's foot when its last row turns, never counting up; the product's column finishes first, and one sentence under both says by how much ('7 minutes sooner, parked at the door'). Choosing another job runs it again. No track, no progress bar, no step counter, no drawn route or map: the rows and the two totals are the race. Under reduced motion and without JavaScript both columns stand finished.",
+  "mobile": "The three jobs as full-width buttons 48px tall, stacked; the two ways stacked under them, the product first, each total at the head step; the sentence under both.",
+  "seenIn": []
+ },
+ {
+  "id": "pricing-configurator",
+  "role": "pricing",
+  "roles": [
+   "showcase",
+   "cta"
+  ],
+  "name": "Choose yours, priced as you go",
+  "shape": "split",
+  "structure": "tool",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "hero-object",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "moment": true,
+  "sectors": [
+   "physical-product",
+   "ecommerce"
+  ],
+  "blueprint": "The order is a configurator on the product's own figures. On the page ground, two parts on one top line. Columns 1–7: the heading, two to four words at the head step, then three groups 56px apart, each a name at the lead step and its options as filled buttons in the dealt button family's quieter style: its colourways (each a 56px swatch beside its name, the chosen one filled in the ink), its size or its battery (two or three options, each with the figure it changes: '500 Wh, 70 km'), and its extras (two child seats, a rain cover), each with its price. Columns 9–12, sticky at 20vh: the price as one large tabular figure at the display step, under it at the head step the two figures the choices change (its range, its weight), each with its label, then the delivery as one sentence at the body step, and the dealt button that orders this choice (a mail to the client's address carrying the choice, or the shop's checkout). Every choice changes the figures the moment it is made. All choices stand open on one screen: no steps, no step counter, no progress bar, no gauge.",
+  "mobile": "The price, its two figures and the button as a band of the surface tone held under the navigation, about 132px tall; the groups under it at the full width, two options to a row, each 48px tall or more.",
+  "seenIn": []
+ },
+ {
+  "id": "showcase-statement-in-cards",
+  "role": "showcase",
+  "name": "The product statement in three cards",
+  "shape": "statement",
+  "structure": "grid",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "statement": true,
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "The product shown by what is true of it (section 5), its three parts grouped in cards of the dealt card style (section 0): on the page ground inside the margins, about one screen tall, no photograph. The product's name as the heading at the display step on columns 1–8, on one or two lines, line-height 0.92, at the dealt display weight. 56px under it, three cards on one top line in the 12-column grid with 24px gaps, each as tall as what it holds. Columns 1–6, the figures: four of its true figures in two columns with 40px gaps inside 40px of padding, the one that matters most (what it carries, how far it goes) across both columns at the display step and the others at the head step, each a tabular figure with its unit at half its size after it and under it a label of two to four words at the body step ('in the box', 'on one charge'). Columns 7–9, its colourways as named swatches: three to five filled squares 48px wide stacked with 16px between them, each colour's name beside it at the body step. Columns 10–12, its size against things people know at its scale as three plain measured bars at one scale, filled blocks 12px tall, the longest the card's inner width, the product's own in the ink and the others in --muted, each with its name and measure at the body step above it. One card style for the three, nothing boxed inside a card. `data-slot=\"product-photo\"` on the card of figures, where the client's own shot will stand. No drawing, outline or silhouette of the product, never one row of equal figures.",
+  "mobile": "The name at the display step on two lines; the three cards stacked at the content width with 16px between them, the figures first, two to a row with the first across both at the head step; the swatches in one row at 40px with their names under them; the bars at the card's inner width with their names above them.",
+  "seenIn": []
+ },
+ {
+  "id": "features-fit-finder",
+  "role": "features",
+  "roles": [
+   "how-it-works",
+   "showcase"
+  ],
+  "name": "Which size is yours",
+  "shape": "split",
+  "structure": "tool",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "hero-object",
+   "spec-sheet",
+   "clear-product",
+   "specimen-catalogue",
+   "one-motif",
+   "split-stage",
+   "borrowed-category",
+   "name-as-monument",
+   "sentence-as-layout",
+   "loud-flat-poster"
+  ],
+  "needs": [],
+  "moment": true,
+  "sectors": [
+   "physical-product",
+   "ecommerce"
+  ],
+  "products": [
+   "bike",
+   "bicycle",
+   "e-bike",
+   "backpack",
+   "rucksack",
+   "pack",
+   "helmet",
+   "shoe",
+   "boot",
+   "jacket",
+   "mattress",
+   "chair",
+   "desk",
+   "stroller",
+   "pram",
+   "saddle"
+  ],
+  "blueprint": "A working fit finder on the product's own sizes: the visitor gives one or two of their own measures and the page answers which size fits, and why, in a sentence. Two parts on one top line, on the page ground. Columns 1–6: the heading, two to four words at the head step, and 48px under it the measures as two rows 96px apart (your height, the length of your back; or the room it stands in), each its name at the lead step and under it three to five filled buttons in the dealt button family's quieter style, each a true range ('155–170 cm', '170–185 cm', '185–200 cm'), the chosen one filled in the ink. Columns 8–12, sticky at 20vh while the rows pass: the answer as the size's name or figure at the display step ('M', '52 cm'), under it one sentence at the lead step that says why from the product's own figures ('the 38 l pack sits on a back of 46 to 52 cm'), and the dealt button that orders that size. The answer changes the moment a choice is made. No slider, gauge, dial, chart or step counter, and no drawing of a body or of the product: the figure and the sentence are the result. The sizes are the brief's; where it gives none, the usual ones of a product of its kind, marked in the report as sample copy. Without JavaScript, the sizes stand as a plain table of measures.",
+  "mobile": "The answer and its sentence first, held under the navigation as a band of the surface tone about 120px tall; the measures under it at the full width, their buttons two to a row, each 48px tall or more.",
+  "seenIn": []
+ },
+ {
+  "id": "showcase-use-facts-in-the-margin",
+  "role": "showcase",
+  "name": "Its use large, its facts in the margin",
+  "shape": "split",
+  "structure": "split",
+  "tags": [
+   "photo-led",
+   "type-led"
+  ],
+  "directions": [
+   "hero-object",
+   "split-stage",
+   "one-motif",
+   "specimen-catalogue"
+  ],
+  "needs": [],
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "One photograph of what the product is for, large, beside what is true of it: two parts on one top line, on the page ground inside the margins, about one screen tall. Columns 1–8: one photograph of its use, its load or its place (what it carries, where it goes; never a product of its kind) at 3:2, and under it a caption at the small step that says what and where it is. Columns 10–12, top-aligned with the photograph: the heading, two to four words at the head step, one or two sentences at the body step, and 40px under them one card of the dealt card style holding what the page has not yet said of the product: two to four of its true figures, each a tabular figure at the head step with its unit at half its size after it and a label of two to four words under it at the body step; or its colourways as named swatches, filled squares 40px wide with each colour's name beside it; or its size against things people know as three plain measured bars at one scale, each with its name and measure above it. No drawing or silhouette of the product, no second photograph, never one row of equal figures.",
+  "mobile": "The photograph first at 4:3 across the content width with its caption; then the heading, the sentences and the card at the full width.",
+  "seenIn": []
+ },
+ {
+  "id": "showcase-reading-column-facts-beside",
+  "role": "showcase",
+  "name": "A reading column, its facts beside it",
+  "shape": "stack",
+  "structure": "column",
+  "tags": [
+   "type-led"
+  ],
+  "directions": [
+   "spec-sheet",
+   "sentence-as-layout",
+   "name-as-monument",
+   "clear-product"
+  ],
+  "needs": [],
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "What the product is for, read in one column, with what is true of it beside it: on the page ground inside the margins, no photograph. Columns 2–7: the heading at the sub step, two to five words, and 32px under it two short paragraphs at the lead step, 60 words at most together, saying what it carries or does on an ordinary day in the brief's words. Columns 9–12, top-aligned with the heading: one card of the dealt card style holding what the page has not yet said of the product: two to four of its true figures, each a tabular figure at the head step with its unit at half its size after it and a label of two to four words under it at the body step; or its colourways as named swatches, filled squares 40px wide with each colour's name beside it; or its size against things people know as three plain measured bars at one scale, each with its name and measure above it. The section is as tall as the column, with the dealt section gap above and below. No drawing or silhouette of the product, never one row of equal figures.",
+  "mobile": "The heading and the paragraphs at the full width, then the card under them at the full width.",
+  "seenIn": []
+ },
+ {
+  "id": "showcase-a-day-in-rows",
+  "role": "showcase",
+  "name": "A day with it, in rows",
+  "shape": "list",
+  "structure": "list",
+  "tags": [
+   "type-led",
+   "dense"
+  ],
+  "directions": [
+   "borrowed-category",
+   "loud-flat-poster",
+   "one-motif",
+   "hero-object"
+  ],
+  "needs": [],
+  "sectors": [
+   "physical-product"
+  ],
+  "blueprint": "An ordinary day with the product as rows of what it does, beside what is true of it: on the page ground inside the margins, no photograph. Columns 1–7: the heading, two to four words at the head step; 48px under it four rows 88px apart, each a time of day at the lead step as a tabular figure ('07:40'), what the product does then at the lead step ('the school run, two children') and at the right end the figure that goes with it at the sub step with its unit ('2.5 km', '18 kg'), the rows divided by the dealt card style's own edge or spacing, never a hairline. Columns 9–12, top-aligned with the heading: one card of the dealt card style holding what the page has not yet said of the product: two to four of its true figures, each a tabular figure at the head step with its unit at half its size after it and a label under it at the body step; or its colourways as named swatches, filled squares 40px wide with each colour's name beside it; or its size against things people know as three plain measured bars at one scale, each with its name and measure above it. The uses and figures are the brief's, or sample ones the report marks. No drawing or silhouette of the product, no clock or timeline drawn, never one row of equal figures.",
+  "mobile": "The heading, then the rows at the full width, each its time and use on one line and its figure under them; the card under the rows at the full width.",
+  "seenIn": []
  }
 ]

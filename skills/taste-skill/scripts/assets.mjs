@@ -28,6 +28,7 @@
 //        [--max-mb 25]                             clips over this are flagged, and --get refuses them
 //   node assets.mjs --get <ref>[,<ref>...] [--to assets] [--name <file name>] [--width 1920] [--res 720] [--max-mb 25]
 //                                                  download into the project and record the credit
+//                                                  (library:<id>: a Commons photograph the sheet deals)
 //   node assets.mjs --credits [--to assets]        print the credits dialog and the report list
 //   node assets.mjs --logo gmail,figma [--to assets]  download the real logos of known products
 //
@@ -87,6 +88,7 @@ const USAGE = `Find real, openly licensed pictures of the subject's world, downl
       --max-mb <n>           clips over this are flagged and --get refuses them, default 25
       --min-width <px>       default 640 for video
   ${CMD} --get <ref>[,<ref>...] [--to assets] [--name <file name>] [--width 1920] [--res 720] [--max-mb 25]
+      a ref as a search prints it, or library:<id> for a Wikimedia Commons photograph the sheet deals
   ${CMD} --credits [--to assets]
   ${CMD} --logo <brand>[,<brand>...] [--to assets]   the real logos of known products (Simple Icons), saved to <to>/logos
 
@@ -335,10 +337,27 @@ function licenceNotes(it) {
   if (it.license === 'other') n.push('A licence outside the usual set: read the source page before using it.');
   return n;
 }
+// (a picture of the skill's library has no title in its credit: its file's title may name a business)
 function credit(it) {
   const by = it.creator && !/^(unknown|anonymous)\b/i.test(it.creator) ? ` by ${short(it.creator, 60)}` : '';
   const date = (it.source === 'aic' || it.source === 'met') && it.date ? `, ${short(it.date, 30)}` : '';
-  return `"${short(it.title, 90)}"${by}${date}, ${licenceLabel(it)}, via ${it.via}`;
+  return `${it.title ? `"${short(it.title, 90)}"` : 'Photo'}${by}${date}, ${licenceLabel(it)}, via ${it.via}`;
+}
+// A Wikimedia Commons photograph of the skill's library (library/photos.json) by the id the sheet gives it: the file at
+// the width Commons serves next (1280, 1920 or 3840), its author, licence and file page, and no title.
+function fromLibrary(id, width) {
+  const lib = JSON.parse(readFileSync(SELF.replace(/scripts\/assets\.mjs$/, 'library/photos.json'), 'utf8'));
+  const ph = Object.values(lib.sets).flatMap((s) => s.photos).find((x) => String(x.id) === id);
+  if (!ph) throw new Error(`no photograph ${id} in the library (\`${DRAW_CMD} --photos <words>\` lists them).`);
+  if (ph.source !== 'commons') throw new Error(`${id} is a Lorem Picsum photograph: link it as the sheet gives it (https://picsum.photos/id/${id}/<width>/<height>), no download or credit needed.`);
+  const step = [1280, 1920, 3840].find((x) => x >= width);
+  const image = !step || step >= ph.width ? ph.url : ph.url.replace(/\/commons\/(\w\/\w\w)\/([^/]+)$/, `/commons/thumb/$1/$2/${step}px-$2`);
+  // (CC0, CC BY or CC BY-SA with its version, nothing guessed: any other licence would be recorded as needing no credit)
+  const lic = String(ph.licence).match(/^CC (BY(?:-SA)?) (\d\.\d)$/);
+  if (!lic && ph.licence !== 'CC0') throw new Error(`${id} names a licence this script does not record (${ph.licence}): read its file page (${ph.page}) and credit it by hand.`);
+  const it = { ...base('commons', id), ref: `library:${id}`, creator: ph.by, license: lic ? lic[1].toLowerCase() : 'cc0', licenseVersion: lic ? lic[2] : '1.0', page: ph.page, image, original: ph.url, width: ph.width, height: ph.height, alt: [ph.alt, ...(ph.where || []).filter((w) => !ph.alt.includes(w))].join(', ') };
+  if (ph.titleNamesBrand) it.notes.push('Its file title names a business: a mood picture only, never in a slot marked for the client\'s product, room or work (data-slot); its credit names the author and licence alone.');
+  return it;
 }
 function base(source, id) {
   return { ref: `${source}:${id}`, source, media: 'image', via: SOURCES[source].name, title: '', creator: '', creatorUrl: null, date: null, kind: null, about: null, license: 'other', licenseVersion: null, licenseName: null, licenseUrl: null, page: null, image: null, original: null, smaller: null, width: null, height: null, imageWidth: null, imageHeight: null, bytes: null, estimated: false, duration: null, poster: null, alt: null, notes: [], hint: null };
@@ -741,7 +760,7 @@ async function search(query, opts) {
   console.log('');
   if (results.every((r) => r.error)) {
     console.log('No source could be reached, after retries. Next, in this order: the photographs dealt on the direction sheet and the rest');
-    console.log(`of the library (${DRAW_CMD} --photos <words>); then type, or the slot's marked frame (references/imagery.md §3).`);
+    console.log(`of the library (${DRAW_CMD} --photos <words>); then type, or what the sheet puts in the client's slot (references/imagery.md §2).`);
     console.log('Never a museum or archive source in their place. Say in your report which searches failed.');
     return 1;
   }
@@ -755,7 +774,7 @@ async function search(query, opts) {
     console.log('--min-width. For a physical product with no photographs of its own, search its use, its load and its place, never');
     console.log('the product ("groceries in a crate", "school street"): another maker\'s product never stands in for it. Then the');
     console.log(`library (${DRAW_CMD} --photos <words>); if two or three honest queries find nothing sharp and fitting, leave the`);
-    console.log('slot to type or its marked frame (references/imagery.md §3).');
+    console.log('slot to type, or to what the sheet puts in the client\'s slot (references/imagery.md §2).');
     return 1;
   }
   if (opts.video) console.log('Next. Watch before you choose: --get downloads the clip and a poster frame into the project and records the credit.');
@@ -777,11 +796,12 @@ function targetFile(opts, stem, ext, ref, credits) {
 }
 function recordCredit(opts, credits, entry) { writeFileSync(creditsPath(opts), JSON.stringify([...credits.filter((c) => c.file !== entry.file), entry], null, 1)); }
 async function getOne(ref, opts) {
-  const m = String(ref).match(/^(openverse|commons|aic|met|archive|nasa):(.+)$/);
-  if (!m) throw new Error('a ref looks like openverse:<id>, commons:<id>, aic:<id>, met:<id>, archive:<id> or nasa:<id>, as a search prints it.');
+  const m = String(ref).match(/^(openverse|commons|aic|met|archive|nasa|library):(.+)$/);
+  if (!m) throw new Error('a ref looks like openverse:<id>, commons:<id>, aic:<id>, met:<id>, archive:<id> or nasa:<id>, as a search prints it, or library:<id>, as the sheet gives a Commons photograph of the library.');
   const [, src, id] = m;
   let it;
-  if (src === 'openverse') { it = fromOpenverse(await getJson(`https://api.openverse.org/v1/images/${encodeURIComponent(id)}/`, 30000)); await wikimediaSizes([it], opts.width); }
+  if (src === 'library') it = fromLibrary(id, opts.width);
+  else if (src === 'openverse') { it = fromOpenverse(await getJson(`https://api.openverse.org/v1/images/${encodeURIComponent(id)}/`, 30000)); await wikimediaSizes([it], opts.width); }
   else if (src === 'commons') {
     // the same ref form serves pictures and videos; the record says which
     const j = await getJson(commonsApi({ pageids: id, ...commonsInfo(opts.width), iiprop: 'url|size|mime|mediatype|extmetadata', prop: 'imageinfo|videoinfo', viprop: 'derivatives' }));
@@ -814,7 +834,7 @@ async function getOne(ref, opts) {
   const d = dims(buf);
   mkdirSync(opts.to, { recursive: true });
   const credits = readCredits(opts);
-  const stem = slug(args.name || it.title) || `${src}-${slug(id).slice(0, 12)}`;
+  const stem = slug(args.name || it.title || it.alt) || `${src}-${slug(id).slice(0, 12)}`;
   const file = targetFile(opts, stem, ext, it.ref, credits);
   writeFileSync(file, buf);
   const entry = {
@@ -908,7 +928,7 @@ function printCredits(opts) {
     const by = c.creator && !/^(unknown|anonymous)\b/i.test(c.creator) ? ` by ${esc(short(c.creator, 60))}` : '';
     const date = /^(aic|met):/.test(c.ref) && c.date ? `, ${esc(short(c.date, 30))}` : '';
     const lic = c.licenseUrl ? `<a href="${esc(c.licenseUrl)}">${esc(c.license)}</a>` : esc(c.license);
-    return `<a href="${esc(c.page)}">“${esc(short(c.title, 90))}”</a>${by}${date}, ${lic}, via ${esc(c.via)}`;
+    return `<a href="${esc(c.page)}">${c.title ? `“${esc(short(c.title, 90))}”` : 'Photo'}</a>${by}${date}, ${lic}, via ${esc(c.via)}`;
   };
   const media = new Set(uniq.map((c) => c.media || 'image'));
   const label = media.size > 1 ? 'Image and video credits' : media.has('video') ? 'Video credits' : 'Image credits';

@@ -100,6 +100,10 @@ export function restLook(opts = {}) {
     // cap height (the middle of the line box, 0.35em up and down), so a tight mask round a display line that only
     // trims the glyph box is not a cut. Words wholly outside their box count only when the box shows other words
     // (a list cut off under a picture); a line that has left through its own mask has left.
+    // Round 11f (r14-p63's sun hours, 23 and 3 at 490px in a box 0.56em tall): a figure is read whole. Its digits count
+    // one by one, a rolling figure's visible copy too (its spoken copy is the screen reader's), and a figure is never a
+    // crop at the screen's side or at the foot of its box, as a word may be (figure: true)
+    const FIG = /^[\p{N}\s.,:%+\-−–\u200b]+$/u;
     const clipped = () => {
       const units = new Map(), showing = new Set();
       const UNIT = 'h1, h2, h3, h4, h5, h6, p, li, dt, dd, figcaption, td, th, blockquote, a, button, label, summary';
@@ -117,11 +121,14 @@ export function restLook(opts = {}) {
       const tw = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT); const rg = document.createRange(); let k = 0;
       for (let n = tw.nextNode(); n && k < 5000; n = tw.nextNode()) {
         const t = norm(n.nodeValue); const el = n.parentElement;
-        if (t.length < 2 || !el || el.closest('script, style, noscript, template, svg, select, textarea, [data-ui], [aria-hidden="true"], [inert]')) continue;
+        if (!el || el.closest('script, style, noscript, template, svg, select, textarea, [data-ui], [inert]')) continue;
+        const cs = css(el); const size = parseFloat(cs.fontSize) || 16;
+        // (a figure at display size, 24px and up: its digits one by one, the copy a visitor sees as well)
+        const fig = size >= 24 && /\p{N}/u.test(t) && FIG.test(t);
+        if ((t.length < 2 && !fig) || (!fig && el.closest('[aria-hidden="true"]'))) continue;
         k++;
         if (!opts.inScene && unfinished(sceneOf(el))) continue;
         const op = opacityOf(el); if (op <= 0.1) continue;
-        const cs = css(el); const size = parseFloat(cs.fontSize) || 16;
         rg.selectNodeContents(n); const rects = [...rg.getClientRects()].filter((r) => r.width >= 2 && r.height >= 2);
         if (!rects.length) continue;
         const cl = clipsOf(el); if (!cl.length) continue;
@@ -135,7 +142,7 @@ export function restLook(opts = {}) {
           let past = 0, by = null, side = '';
           for (const c of cl) for (const [s, v] of [['top', c.t - ink.t], ['bottom', ink.b - c.b], ['left', c.l - ink.l], ['right', ink.r - c.r]]) if (Number.isFinite(v) && v > past) { past = v; by = c; side = s; }
           if (inside) for (const c of cl) showing.add(c.e);
-          if (!by || past <= 4) { if (!u) units.set(unit, (u = { unit, lines: 0, cut: 0, past: 0, inside: 0 })); u.lines++; if (inside) u.inside++; continue; }
+          if (!by || past <= 4) { if (!u) units.set(unit, (u = { unit, lines: 0, cut: 0, past: 0, inside: 0, fig: '' })); u.lines++; if (inside) u.inside++; continue; }
           // the cutting box: on screen, not collapsed shut (a closed panel), not a deliberate shortening (an ellipsis, a
           // line clamp, a faded edge). A box shrunk to screen-reader-only size hides its words on purpose (a skip link,
           // a label for a button), unless it is one of a set whose others show: then a list has been cut short
@@ -147,15 +154,17 @@ export function restLook(opts = {}) {
           const meant = ccs.textOverflow === 'ellipsis' || cs.textOverflow === 'ellipsis' || (ccs.webkitLineClamp && ccs.webkitLineClamp !== 'none') || (ccs.maskImage && ccs.maskImage !== 'none') || (ccs.webkitMaskImage && ccs.webkitMaskImage !== 'none');
           // (a set: its siblings of the same tag and class show; a box named for screen readers is one on purpose)
           const cutShort = srOnly && !/sr-only|visually-?hidden|screen-?reader|a11y|offscreen|assistive/i.test(String(by.e.className)) && [...(by.e.parentElement ? by.e.parentElement.children : [])].some((s) => { if (s === by.e || s.tagName !== by.e.tagName || String(s.className) !== String(by.e.className) || opacityOf(s) <= 0.1) return false; const q = s.getBoundingClientRect(); return q.width >= 8 && q.height >= 8 && norm(s.textContent || '').length > 1; });
-          // a line a transform carried wholly out of its box has left it (the caption before, a statement gone by)
-          if (!inside && !cutShort && carried(el, by.e)) continue;
-          if (!u) units.set(unit, (u = { unit, lines: 0, cut: 0, past: 0, inside: 0 }));
+          // a line a transform carried wholly out of its box has left it (the caption before, a statement gone by), and a
+          // digit wholly outside its box is a rolling figure's spare
+          if (!inside && !cutShort && (fig || carried(el, by.e))) continue;
+          if (!u) units.set(unit, (u = { unit, lines: 0, cut: 0, past: 0, inside: 0, fig: '' }));
           u.lines++; if (inside) u.inside++;
           // (a crop: display type on one line that its box cuts at the screen's side or at its foot, as the library deals
-          // it in heroes.json one-word-cropped and sections.json showcase-object-in-front-of-type)
-          const bleed = size >= Math.max(56, bodyPx * 3) && rects.length === 1 && ((side === 'right' && cr.right >= W - 2) || (side === 'left' && cr.left <= 2) || side === 'bottom');
+          // it in heroes.json one-word-cropped and sections.json showcase-object-in-front-of-type; never a figure)
+          const bleed = !fig && size >= Math.max(56, bodyPx * 3) && rects.length === 1 && ((side === 'right' && cr.right >= W - 2) || (side === 'left' && cr.left <= 2) || side === 'bottom');
           if (!onScreen || shut || meant || bleed || (srOnly && !cutShort)) continue;
-          u.cut++; if (past > u.past) { u.past = past; u.by = by; u.side = side; u.size = size; u.op = op; u.short = cutShort; }
+          u.cut++; if (fig) u.fig += t.replace(/\u200b/g, ''); else u.words = true;
+          if (past > u.past) { u.past = past; u.by = by; u.side = side; u.size = size; u.op = op; u.short = cutShort; }
         }
       }
       const out = [], items = new Set();
@@ -167,7 +176,9 @@ export function restLook(opts = {}) {
         // or when it is an item of a set cut short
         if (!u.inside && !u.short && !showing.has(u.by.e)) continue;
         const r = u.unit.getBoundingClientRect();
-        out.push({ id: idOf(u.unit), text: norm(u.unit.innerText || u.unit.textContent || '').slice(0, 60), past: Math.round(u.past), side: u.side, by: desc(u.by.e), size: Math.round(u.size), lines: u.lines, cut: u.cut, whole: !u.inside, short: !!u.short, top: Math.round(r.top), op: +u.op.toFixed(2) });
+        // (a figure cut through its digits, and no words cut with it, is named by the digits it shows)
+        const figure = !!u.fig && !u.words;
+        out.push({ id: idOf(u.unit), text: figure ? u.fig : norm(u.unit.innerText || u.unit.textContent || '').slice(0, 60), past: Math.round(u.past), side: u.side, by: desc(u.by.e), size: Math.round(u.size), lines: u.lines, cut: u.cut, whole: !u.inside, short: !!u.short, figure, top: Math.round(r.top), op: +u.op.toFixed(2) });
         if (out.length >= 24) break;
       }
       return out;
@@ -433,6 +444,46 @@ export function restLook(opts = {}) {
         if (edges.length >= 12) break;
       }
     }
+    // --- round 11f: a button whose ground is a photograph (button-on-photo; r14-p63's Send request on a moor, away from
+    // its form): a link or a button drawn as one (an opaque fill or an outline on three sides), 28 to 96px tall and of
+    // six words or fewer, wholly on the screen, with a photograph or a film under three quarters of 16 points on a ring
+    // 16px round it. The inspector photographs the screen and measures how busy the picture is round it (photoBusy), the
+    // words, the controls and the drawings that stand round the button left out (its mask): a line over a calm sky and the
+    // button beside it are not the photograph
+    const strands = [];
+    {
+      let marks = null;
+      const marksOf = () => {
+        if (marks) return marks; marks = [];
+        const tw = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT), rg = document.createRange(); let k = 0;
+        for (let n = tw.nextNode(); n && k < 4000; n = tw.nextNode()) { const e = n.parentElement; if (!e || !n.nodeValue.trim() || e.closest('script, style, noscript, template') || opacityOf(e) <= 0.1) continue; k++; rg.selectNodeContents(n); for (const q of rg.getClientRects()) if (q.width >= 1 && q.bottom > 0 && q.top < H) marks.push(q); }
+        // (a control or a drawing the size of a button or an icon, never a link round a picture)
+        for (const e of scope.querySelectorAll('a[href], button, [role=button], input, select, textarea, svg')) { const q = e.getBoundingClientRect(); if (q.width >= 4 && q.height >= 4 && q.height <= 160 && q.width <= W * 0.6 && q.bottom > 0 && q.top < H && opacityOf(e) > 0.1 && !e.querySelector('img, video, picture')) marks.push(q); }
+        return marks;
+      };
+      const fill = (e) => { const m = css(e).backgroundColor.match(/rgba?\(([^)]+)\)/); const p = m ? m[1].split(/[,\s/]+/).filter(Boolean).map(Number) : []; return p.length >= 3 && (p.length < 4 || p[3] >= 0.5); };
+      const outlined = (e) => { const c = css(e); return ['Top', 'Right', 'Bottom', 'Left'].filter((s) => parseFloat(c[`border${s}Width`]) >= 1 && c[`border${s}Style`] !== 'none').length >= 3; };
+      const photo = (e) => /^(IMG|VIDEO)$/.test(e.tagName) ? !/\.svg(\?|#|$)/i.test(e.currentSrc || e.src || '') : /url\(/.test(css(e).backgroundImage) && !/\.svg/i.test(css(e).backgroundImage) && /cover|contain|%/.test(css(e).backgroundSize);
+      for (const el of scope.querySelectorAll('a[href], button, [role=button], input[type=submit]')) {
+        if (strands.length >= 8) break;
+        if (el.closest('nav, dialog, [role=dialog], [data-ui], [aria-hidden=true], [role=banner]') || bar(el) || opacityOf(el) < 0.5) continue;
+        const r = el.getBoundingClientRect(); if (r.height < 28 || r.height > 96 || r.width < 40 || r.width > W * 0.6 || r.top < 0 || r.bottom > H || r.left < 0 || r.right > W) continue;
+        const text = norm(el.innerText || el.value || ''); if (!/\p{L}/u.test(text) || words(text) > 6 || el.querySelector('img, video, picture, h1, h2, h3, h4')) continue;
+        if (!fill(el) && !outlined(el) && ![...el.children].some((c) => { const q = c.getBoundingClientRect(); return q.height >= r.height * 0.8 && (fill(c) || outlined(c)); })) continue;
+        let n = 0, on = 0, media = null;
+        for (let i = 0; i < 16; i++) {
+          const a = (i / 16) * Math.PI * 2, x = (r.left + r.right) / 2 + Math.cos(a) * (r.width / 2 + 16), y = (r.top + r.bottom) / 2 + Math.sin(a) * (r.height / 2 + 16);
+          if (x < 0 || x >= W || y < 0 || y >= H) continue;
+          n++;
+          for (const e of document.elementsFromPoint(x, y)) { if (e === el || el.contains(e)) continue; if (opacityOf(e) >= 0.5 && photo(e)) { on++; media = media || (e.currentSrc || e.src || (css(e).backgroundImage.match(/url\(["']?([^"')]+)/) || [])[1] || '').split('/').pop().split('?')[0].slice(0, 48); break; } if (paints(e)) break; }
+        }
+        if (n < 10 || on / n < 0.75) continue;
+        // (a submit button that stands outside the form it sends)
+        const away = !!el.form && !el.form.contains(el);
+        const mask = marksOf().filter((q) => q.right > r.left - 44 && q.left < r.right + 44 && q.bottom > r.top - 44 && q.top < r.bottom + 44).slice(0, 80).map((q) => [Math.round(q.left), Math.round(q.top), Math.round(q.right), Math.round(q.bottom)]);
+        strands.push({ id: idOf(el), text: text.slice(0, 40), media, away, l: Math.round(r.left), t: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height), mask, scene: sceneKey(el) });
+      }
+    }
     const clip = clipped();
     // each running scene or pinned stage in view: where its words and pictures are (a picture by its frame), so phase 1
     // can tell a stage resting on a step from one in the middle of a change (cards in flight, words coming in)
@@ -440,6 +491,7 @@ export function restLook(opts = {}) {
     for (const p of pics) p.stage = stageOf(S.els.get(p.id)?.deref() || document.body);
     for (const x of headList) x.stage = stageOf(S.els.get(x.id)?.deref() || document.body);
     for (const x of edges) x.stage = stageOf(S.els.get(x.id)?.deref() || document.body);
+    for (const x of strands) x.stage = stageOf(S.els.get(x.id)?.deref() || document.body);
     const stages = [...document.querySelectorAll('.scene.is-live, .pin-spacer')].filter((s) => { const r = s.getBoundingClientRect(); return r.bottom > 0 && r.top < H; });
     const snap = (list) => list.map(([e, s]) => {
       const media = /^(IMG|VIDEO|CANVAS)$/.test(e.tagName); let r = e.getBoundingClientRect();
@@ -449,7 +501,7 @@ export function restLook(opts = {}) {
     if (opts.phase !== 1) {
       const parts = [];
       for (const s of stages) { let n = 0; for (const e of s.querySelectorAll('*')) { if (++n > 600) break; if (/^(IMG|VIDEO|CANVAS)$/.test(e.tagName) || [...e.childNodes].some((c) => c.nodeType === 3 && c.nodeValue.trim())) parts.push([e, idOf(s)]); } }
-      window.__tsRestA = { sy, clip, pics, heads: headList, parts: snap(parts), seen: [...headList.map((x) => x.text), ...pics.map((p) => 'pic:' + p.id)], veils, cutHeads, edges };
+      window.__tsRestA = { sy, clip, pics, heads: headList, parts: snap(parts), seen: [...headList.map((x) => x.text), ...pics.map((p) => 'pic:' + p.id)], veils, cutHeads, edges, strands };
       return { y: sy, n: clip.length + pics.length + headList.length };
     }
     // --- phase 1: keep what held still since phase 0 (it moved with the page, by the scroll between the two looks, or
@@ -476,8 +528,32 @@ export function restLook(opts = {}) {
       cutHeads: (A.cutHeads || []).filter((a) => { const b = cutHeads.find((x) => x.id === a.id); return b && dy !== 0 && Math.abs(b.st - a.st) <= 2; }),
       // (an object at one side of the screen in both looks, its frame where it was: it moved with the page or held)
       edges: (A.edges || []).filter((a) => { const b = edges.find((x) => x.id === a.id); return b && !moving.has(a.stage) && still(a.t, b.t) && Math.abs(a.fl - b.fl) <= 2 && Math.abs(a.fr - b.fr) <= 2; }),
+      // (a button on a photograph in both looks, where it stands now: the inspector photographs this screen)
+      strands: (A.strands || []).map((a) => { const b = strands.find((x) => x.id === a.id); return b && !moving.has(a.stage) && still(a.t, b.t) && Math.abs(a.l - b.l) <= 2 ? b : null; }).filter(Boolean),
     };
   } finally { hitStyle.remove(); }
+}
+
+// How busy a photograph is round each button restLook() found on one (button-on-photo), from a screenshot: the band 8 to
+// 40px outside the button, sampled every 2px, as the mean change of luma between a pixel and the ones 2px right of it
+// and under it (0 to 255: a clear sky or fog under 4, a meadow or a hillside 6 to 11, scrub or stones 12 and over).
+// The photograph alone: a pixel within 4px of the words, controls or drawings in its mask is left out (round 11f).
+// Runs inside any page; takes [dataUrl, rects].
+export async function photoBusy([src, rects]) {
+  const img = new Image(); img.src = src; await img.decode();
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+  const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0);
+  const d = x.getImageData(0, 0, c.width, c.height).data, W = c.width, H = c.height;
+  const luma = (i, j) => { const k = (j * W + i) * 4; return 0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]; };
+  return rects.map((r) => {
+    let sum = 0, n = 0;
+    const masked = (i, j) => (r.mask || []).some(([l, t, rr, b]) => i >= l - 4 && i <= rr + 4 && j >= t - 4 && j <= b + 4);
+    for (let j = Math.max(0, r.t - 40); j < Math.min(H - 2, r.t + r.h + 40); j += 2) for (let i = Math.max(0, r.l - 40); i < Math.min(W - 2, r.l + r.w + 40); i += 2) {
+      if ((i > r.l - 8 && i < r.l + r.w + 8 && j > r.t - 8 && j < r.t + r.h + 8) || masked(i, j)) continue;
+      const v = luma(i, j); sum += (Math.abs(v - luma(i + 2, j)) + Math.abs(v - luma(i, j + 2))) / 2; n++;
+    }
+    return n >= 200 ? Math.round((sum / n) * 10) / 10 : null;
+  });
 }
 
 // Where to stop for a look at rest: the walk's screens, and the end of each running scene or pinned stage (its foot
