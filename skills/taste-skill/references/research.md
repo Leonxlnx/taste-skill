@@ -22,6 +22,7 @@ others.
 15. The round-11 test pages (round 11b)
 16. Round 11c: the patterns built as written, designed chrome, varied pages
 17. Round 11d: honest pictures, checks that catch their faults, a bolder hero
+18. Round 11e: less of the usual chrome, surfaces that read, the product beside the headline
 
 ## 1. Method and its limits
 
@@ -453,3 +454,32 @@ by the screens it covers (`surface-count`).
 In thirty draws over seven briefs every sheet printed the rule, no product page was dealt or sent to
 search a product of its kind, split heroes fell from six to three, and no page closed twice. The
 three failed pages now fail for what their reviews found.
+
+## 18. Round 11e: less of the usual chrome, surfaces that read, the product beside the headline
+
+Six frames built exactly from their round-11c sheets scored 4.9 of 10. The Must show lines fixed
+fidelity, not quality: seven tested designs were the usual written down (the plain bar painted black,
+a header without its ground, the stock grey box twice, the slightly rounded rectangle twice, the SaaS
+mega-footer); two lines were a hover no still can show; two asked for a photograph the sheet then
+swapped for the product's window; every card, panel and footer was a faint grey-on-grey box one tone
+off its ground; tiles with their middle left empty built hollow boxes; every café sheet led with the
+same two coffee photographs; and four pages of six sent two buttons to one place on one screen.
+
+So the seven weigh 0.3 (the rolling label is out), a pattern scored 5 or more weighs three times as
+much, and the library may take three of the four frame parts. Every Must show line names what a still
+shows, and none is printed where the sheet takes it away; no card, tile, panel or section blueprint
+with an empty middle is dealt. The surface is a real step from the ground, 6.5-8.5 lightness points
+(8-10.5 on dark), and a studied palette's surface is taken to the same floor. A software page sets its
+product beside the headline, never under it, from eight heroes of which four are not halves. A trade
+the library holds fewer than six photographs of sends the builder to the open collections first, and
+two sheets of one brief share no photograph. The inspector fails one place reached twice on one
+screen, the bar's action included (`duplicate-action`), counts folder tabs and a round monogram as
+button shapes, and fails a footer column of links to other companies' sites (`footer-other-sites`). A
+coined name is searched with the trade's word before use.
+
+In thirty draws over seven briefs (three runs) 4 to 6 of 120 frame parts were one of the seven (9 at
+the round-11d commit), no Must show line was hover-only or taken away elsewhere (6 before), no empty
+middle was dealt, every software hero set the product beside the headline (3 of 10 before), every
+surface stepped 6.4 points or more (all thirty 5 or less before), split heroes stayed at 3 to 5, and
+the café's sheets shared no photograph from one to the next. The inspector now fails all four pages review-006 named for two ways
+to one place.

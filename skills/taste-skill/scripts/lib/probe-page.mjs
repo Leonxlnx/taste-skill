@@ -906,8 +906,12 @@ export function navForm(phase = 'load') {
 //              labels over six words, tabs, switches and toggles (an accordion's rows), the skip link, the wordmark or a
 //              monogram linking home, a card or a band set as a link (a heading or a 48px picture in it, or over 96px
 //              tall), and the bar's own cells (of three drawn items or more in the bar, only the last is its action)
-//              (button-family)
-export function buttonShapes() {
+//              (button-family). Round 11e (r13-p60 passed with folder tabs over its questions and a round monogram in its
+//              bar): a tab or a toggle (a disclosure's row too, the bar's menu button aside) drawn as a folder tab (its top
+//              corners round, its foot square) and a link home drawn round (a monogram in a circle, a name in a pill) count;
+//              a mark in a square or soft tile, as many dealt bars carry, does not. A link to a bare "#" is the mark only
+//              where it carries the client's name or initials; { bar: true } reads the bar alone, as it stands past the hero
+export function buttonShapes({ bar: barOnly = false, client = null } = {}) {
   const W = innerWidth, SY = scrollY || 0, B = document.body;
   const memo = new Map(); const css = (e) => { let c = memo.get(e); if (!c) { c = getComputedStyle(e); memo.set(e, c); } return c; };
   const norm = (t) => (t || '').replace(/\s+/g, ' ').trim();
@@ -918,24 +922,31 @@ export function buttonShapes() {
   // (shown on the page: laid out, at a third of its opacity or more, and not parked off the screen like a skip link)
   const shown = (el) => { for (let e = el, i = 0; e && e !== B && i < 30; e = e.parentElement, i++) { const cs = css(e); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.3) return false; } const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2 && r.right > 0 && r.left < W && r.bottom + SY > 0; };
   const drawn = (e) => { const c = rgba(css(e).backgroundColor); if (c && c[3] >= 0.5 && differs(c, groundOf(e.parentElement || B))) return 'filled'; return sides(e) >= 3 ? 'outlined' : null; };
-  const corner = (e, q) => { const v = css(e).borderTopLeftRadius; const r = /%/.test(v) ? (parseFloat(v) / 100) * Math.min(q.width, q.height) : parseFloat(v) || 0; if (r >= q.height / 2 - 1) return Math.abs(q.width - q.height) <= 4 ? 'circle' : 'pill'; return r <= 3 ? 'square' : r <= 12 ? 'soft' : 'round'; };
+  const corner = (e, q) => { const cs = css(e), px = (v) => (/%/.test(v) ? (parseFloat(v) / 100) * Math.min(q.width, q.height) : parseFloat(v) || 0); const r = px(cs.borderTopLeftRadius); if (r > 3 && px(cs.borderTopRightRadius) > 3 && px(cs.borderBottomLeftRadius) <= 3 && px(cs.borderBottomRightRadius) <= 3) return 'folder tab'; if (r >= q.height / 2 - 1) return Math.abs(q.width - q.height) <= 4 ? 'circle' : 'pill'; return r <= 3 ? 'square' : r <= 12 ? 'soft' : 'round'; };
   const inBar = (el) => { const b = el.closest('header, [role=banner]'); return !!el.closest('nav') || (!!b && !b.parentElement?.closest('main, section, article, [data-scene]')); };
   // (a link home, read as navForm reads the wordmark)
   const home = (a) => { const h = (a.getAttribute('href') || '').trim(); if (['#', '#top', '/', './', 'index.html', './index.html'].includes(h)) return true; try { const u = new URL(h, location.href); return u.origin === location.origin && u.pathname.replace(/index\.html?$/, '') === location.pathname.replace(/index\.html?$/, '') && (!u.hash || u.hash === '#top'); } catch { return false; } };
+  // (the client's name or initials in a label: a placeholder "#" in the bar is no mark without them)
+  const fold = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/[^\p{L}\p{N}]+/gu, '');
+  const name = fold(client), initials = fold(String(client || '').split(/\s+/).map((w) => w[0]).join(''));
+  const brand = (el, text) => { const t = fold(`${text} ${el.getAttribute('aria-label') || ''}`), w = fold(text); return !!name && (t.includes(name) || (!!w && w.length <= 3 && (name.startsWith(w) || w === initials))); };
   const shapes = new Map(), bar = [];
   const add = (key, label, h = 0) => { const s = shapes.get(key) || { n: 0, labels: [], h: [] }; s.n++; if (s.labels.length < 2 && !s.labels.includes(label)) s.labels.push(label); if (h) s.h.push(Math.round(h)); shapes.set(key, s); };
-  for (const el of document.querySelectorAll('a[href], button, [role=button], input[type=submit], input[type=button]')) {
-    if (el.closest('[data-ui], dialog, [role=dialog], [aria-hidden=true], [role=tablist], summary') || el.matches('[role=tab], [role=switch], [aria-pressed], [aria-expanded], [data-wordmark], [rel=home]') || !shown(el)) continue;
-    if (el.matches('a') && inBar(el) && home(el)) continue;
+  for (const el of document.querySelectorAll('a[href], button, [role=button], input[type=submit], input[type=button], summary')) {
+    if (el.closest('[data-ui], dialog, [role=dialog], [aria-hidden=true]') || el.parentElement?.closest('summary') || el.matches('[role=switch]') || (el.matches('[aria-expanded], summary') && inBar(el)) || !shown(el) || (barOnly && !inBar(el))) continue;
     // (the words counted on the whole label, before it is cut for the report)
     const text = norm(el.innerText || el.value || ''), label = text.slice(0, 30);
+    // (a tab or a toggle only where drawn as a folder tab; the wordmark or a monogram linking home only where drawn round)
+    const tab = !!el.closest('[role=tablist]') || el.matches('[role=tab], [aria-pressed], [aria-expanded], summary'), mark = el.matches('[data-wordmark], [rel=home]') || (el.matches('a') && inBar(el) && home(el) && ((el.getAttribute('href') || '').trim() !== '#' || brand(el, text)));
     if (!/\p{L}/u.test(text) || text.split(' ').length > 6 || /^skip\b/i.test(text)) continue;
     const q = el.getBoundingClientRect(); if (q.height > 96 || q.width > W * 0.6 || el.querySelector('h1, h2, h3, h4, h5, h6, [role=heading]') || [...el.querySelectorAll('img, picture, video, canvas')].some((m) => m.getBoundingClientRect().height >= 48)) continue;
     let how = drawn(el), box = el;
     if (!how) for (const c of el.querySelectorAll('*')) { const k = drawn(c), p = c.getBoundingClientRect(); if (k && p.height >= q.height * 0.5 && p.width >= 16) { how = k; box = c; break; } }
+    const shape = how && corner(box, box.getBoundingClientRect());
+    if ((tab && shape !== 'folder tab') || (mark && !['circle', 'pill'].includes(shape))) continue;
     if (how) {
-      const p = box.getBoundingClientRect(), key = `${corner(box, p)} ${how}${box !== el ? ', beside its label' : ''}`;
-      if (inBar(el)) bar.push({ key, label, x: q.left, h: p.height }); else add(key, label, p.height);
+      const p = box.getBoundingClientRect(), key = `${shape} ${how}${box !== el ? ', beside its label' : ''}`;
+      if (inBar(el) && !mark) bar.push({ key, label, x: q.left, h: p.height }); else add(key, label, p.height);
       continue;
     }
     // set in type: an action standing alone (a sentence's link and a list's are not)
@@ -1018,6 +1029,147 @@ export function structures() {
     out.push(rec);
   }
   return out;
+}
+
+// Round 11e (review-006: two buttons to one place on four pages of six, where the sheet forbade it; r13-p59's footer
+// linked to three word processors and three style guides). On desktop.
+//   samePlace  two ways to one place on one screen, in one block or two: a button (drawn, as buttonShapes() reads one) and
+//              another button or a link standing alone (not in a sentence, nor an address shown as itself) to the same
+//              place (the same address once normalised: a page, an anchor, a mail address and its subject, a phone number;
+//              or the same label), or two such links to one address under one label. An action tile counts at any height,
+//              a card set as a link (a heading or a 48px picture in it) does not. The bar's links and the footer's lists
+//              are the site's index: the bar counts only its buttons (its action and the hero's button to one place fail),
+//              a footer list only within the footer. Cards of one group under one label, each with its own address or none
+//              (a plan's own sign-up, an Add on each), are each card's own action. At the top of the page after the walk
+//              it reads what stands in the page within one screen's height; { screen: true }, at each screen of the walk,
+//              what is on the screen then, the bar, a chip and a sticky stage where they stand. Each action keeps one
+//              number across the calls, so one finding read twice is one (duplicate-action)
+export function samePlace({ screen = false } = {}) {
+  const W = innerWidth, H = innerHeight, SY = scrollY || 0, B = document.body;
+  const memo = new Map(); const css = (e) => { let c = memo.get(e); if (!c) { c = getComputedStyle(e); memo.set(e, c); } return c; };
+  const norm = (t) => (t || '').replace(/\s+/g, ' ').trim();
+  const rgba = (c) => { const s = String(c || ''); const k = s.match(/color\(srgb\s+([-\d.e]+)\s+([-\d.e]+)\s+([-\d.e]+)(?:\s*\/\s*([-\d.e]+))?\s*\)/); if (k) return [k[1] * 255, k[2] * 255, k[3] * 255, k[4] != null ? +k[4] : 1]; const m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1]; };
+  const groundOf = (el) => { for (let e = el; e && e.nodeType === 1; e = e.parentElement) { const c = rgba(css(e).backgroundColor); if (c && c[3] >= 0.9) return c; } return [255, 255, 255, 1]; };
+  const differs = (a, b, d = 6) => !!a && !!b && [0, 1, 2].some((i) => Math.abs(a[i] - b[i]) >= d);
+  const sides = (el) => { const cs = css(el); return ['Top', 'Right', 'Bottom', 'Left'].filter((s) => parseFloat(cs[`border${s}Width`]) >= 1 && cs[`border${s}Style`] !== 'none' && (rgba(cs[`border${s}Color`]) || [0, 0, 0, 0])[3] > 0.2).length; };
+  const shown = (el) => { for (let e = el, i = 0; e && e !== B && i < 30; e = e.parentElement, i++) { const cs = css(e); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.3) return false; } const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2 && r.right > 0 && r.left < W && r.bottom + SY > 0; };
+  const drawn = (e) => { const c = rgba(css(e).backgroundColor); if (c && c[3] >= 0.5 && differs(c, groundOf(e.parentElement || B))) return true; return sides(e) >= 3; };
+  const home = (a) => { const h = (a.getAttribute('href') || '').trim(); if (['#', '#top', '/', './', 'index.html', './index.html'].includes(h)) return true; try { const u = new URL(h, location.href); return u.origin === location.origin && u.pathname.replace(/index\.html?$/, '') === location.pathname.replace(/index\.html?$/, '') && (!u.hash || u.hash === '#top'); } catch { return false; } };
+  // (pinned to the screen: fixed or sticky, itself or a box round it)
+  const pinned = (el) => { for (let e = el; e && e !== B; e = e.parentElement) if (['fixed', 'sticky'].includes(css(e).position)) return true; return false; };
+  // (on the screen now: half its height or more inside it)
+  const inView = (q) => Math.min(q.bottom, H) - Math.max(q.top, 0) >= q.height / 2 && q.right > 0 && q.left < W;
+  // (the label as read aloud: words hidden from it, a rolling copy, left out)
+  const said = (el) => { let t = ''; const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = tw.nextNode())) if (!n.parentElement?.closest('[aria-hidden=true]')) t += ' ' + n.nodeValue; return norm(t) || norm(el.getAttribute('aria-label') || el.value || ''); };
+  const key = (t) => t.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  const ids = window.__tastePlaces || (window.__tastePlaces = { map: new WeakMap(), n: 0 });
+  const idOf = (el) => { let i = ids.map.get(el); if (!i) ids.map.set(el, (i = ++ids.n)); return i; };
+  // (where it goes: a mail address with its subject, a phone's digits, a page and its anchor without tracking)
+  const placeOf = (el) => {
+    const h = el.getAttribute('href'); if (h == null) return null;
+    try {
+      const u = new URL(h, location.href);
+      if (u.protocol === 'mailto:') { const s = norm(u.searchParams.get('subject')).toLowerCase(); return 'mailto:' + decodeURIComponent(u.pathname).toLowerCase() + (s ? '?' + s : ''); }
+      if (u.protocol === 'tel:') return 'tel:' + u.pathname.replace(/\D/g, '');
+      for (const k of [...u.searchParams.keys()]) if (/^utm_/.test(k)) u.searchParams.delete(k);
+      return u.origin + u.pathname.replace(/\/index\.html?$/, '/').replace(/\/$/, '') + u.search + u.hash;
+    } catch { return h; }
+  };
+  const short = (p) => { let s = p.replace(/^https?:\/\/(www\.)?/, '').replace(location.host + location.pathname.replace(/\/index\.html?$/, '/').replace(/\/$/, ''), ''); try { s = decodeURIComponent(s); } catch {} return s.replace(/\+/g, ' ').slice(0, 50).replace(/[\s,;:&=?/-]+$/, ''); };
+  // (the block: the site's footer, the bar, else the outermost section, scene or hero round it. The bar is a header under a
+  // third of the screen tall outside the sections or holding the links or the wordmark (a hero built as a header is the
+  // hero), else a layer fixed to the screen as low that holds them (a bar built of a div), else a nav)
+  const barOf = (el) => {
+    const h = el.closest('header, [role=banner]'), low = !!h && h.getBoundingClientRect().height < H / 3, n = el.closest('nav'), holds = (e) => !!e.querySelector('nav, [data-wordmark]') || [...e.querySelectorAll('a[href]')].some(home);
+    if (low && (n ? h.contains(n) : !h.parentElement?.closest('main, section, article, [data-scene]') || holds(h))) return h;
+    let p = null; for (let e = el; e && e !== B; e = e.parentElement) if (css(e).position === 'fixed') p = e;
+    return p && p.getBoundingClientRect().height < H / 3 && holds(p) ? p : n;
+  };
+  const blockOf = (el) => {
+    const f = el.closest('footer, [role=contentinfo]');
+    if (f && !f.closest('article, blockquote')) { let o = f; for (let e = f.parentElement; e; e = e.parentElement) if (e.matches('footer, [role=contentinfo]')) o = e; return o; }
+    const b = barOf(el); if (b) return b;
+    let o = null, top = null;
+    for (let e = el; e && e !== B; e = e.parentElement) { if (e.matches('section, [data-scene], [data-hero]')) o = e; if (e.parentElement === B || e.parentElement?.matches('main')) top = e; }
+    return o || top || el.parentElement;
+  };
+  // (two cards of one group: in one block, the children of the box that holds both, round each action, of one tag and
+  // sharing a class or built alike, as a picked plan or a staggered card is)
+  const cards = (x, y) => {
+    if (x.block !== y.block) return false;
+    let p = x.el.parentElement; while (p && !p.contains(y.el)) p = p.parentElement; if (!p) return false;
+    const kid = (e) => { while (e.parentElement !== p) e = e.parentElement; return e; }, cx = kid(x.el), cy = kid(y.el);
+    if (cx === cy || cx === x.el || cy === y.el || cx.tagName !== cy.tagName) return false;
+    const built = (e) => [...e.children].map((c) => c.tagName).join();
+    return [...cx.classList].some((c) => cy.classList.contains(c)) || (cx.children.length > 1 && built(cx) === built(cy));
+  };
+  const acts = [];
+  for (const el of document.querySelectorAll('a[href], button, [role=button], input[type=submit], input[type=button]')) {
+    const q = el.getBoundingClientRect();
+    if ((screen && !inView(q)) || el.closest('[data-ui], dialog, [role=dialog], [aria-hidden=true], [role=tablist], summary') || el.matches('[role=tab], [role=switch], [aria-pressed], [aria-expanded], [data-wordmark], [rel=home]') || !shown(el)) continue;
+    if ((!screen && pinned(el)) || (el.matches('a') && home(el))) continue;
+    const text = said(el);
+    if (!/\p{L}/u.test(text) || text.split(' ').length > 6 || /^skip\b/i.test(text) || /@|^\+?[\d\s().\/-]{6,}$|^(https?:\/\/|www\.)/i.test(text)) continue;
+    if (q.width > W * 0.6 || el.querySelector('h1, h2, h3, h4, h5, h6, [role=heading]') || [...el.querySelectorAll('img, picture, video, canvas')].some((m) => m.getBoundingClientRect().height >= 48)) continue;
+    let button = drawn(el);
+    if (!button) for (const c of el.querySelectorAll('*')) { const p = c.getBoundingClientRect(); if (drawn(c) && p.height >= q.height * 0.5 && p.width >= 16) { button = true; break; } }
+    // (a sentence's link is no action of its own)
+    const host = el.parentElement?.closest('p, dd, dt, td, th, h1, h2, h3, h4, h5, h6, figcaption, blockquote, label');
+    if (!button && host && norm(host.innerText).length > text.length + 2) continue;
+    const block = blockOf(el), bar = block === barOf(el);
+    acts.push({ el, id: idOf(el), button, bar, index: !button && (bar || (block.matches('footer, [role=contentinfo]') && !!el.closest('nav, ul, ol'))), label: text.slice(0, 30), k: key(text), place: placeOf(el), block, t: q.top + SY, b: q.bottom + SY });
+    if (acts.length >= 200) break;
+  }
+  const found = [];
+  for (let i = 0; i < acts.length; i++) for (let j = i + 1; j < acts.length; j++) {
+    const a = acts[i], b = acts[j];
+    if ((!screen && Math.max(a.b, b.b) - Math.min(a.t, b.t) > H) || a.el.contains(b.el) || b.el.contains(a.el)) continue;
+    const href = !!a.place && a.place === b.place, named = !!a.k && a.k === b.k;
+    // (the index: the bar counts only its buttons, a footer's list only within the footer)
+    if (!(a.button || b.button ? href || named : href && named) || ((a.bar || b.bar) && !(a.button && b.button)) || (a.block !== b.block && (a.index || b.index))) continue;
+    if (!href && cards(a, b)) continue;
+    // (three ways to one place are one finding)
+    const g = found.find((x) => x.items.includes(a) || x.items.includes(b));
+    if (g) { for (const x of [a, b]) if (!g.items.includes(x)) g.items.push(x); g.place = g.place || (href ? a.place : null); } else found.push({ items: [a, b], place: href ? a.place : null });
+  }
+  const where = (x) => { const blk = x.block, pin = pinned(x.el); if (blk.matches('footer, [role=contentinfo]')) return 'the footer'; if (x.bar) return 'the bar'; const r = blk.getBoundingClientRect(); if (blk.querySelector('h1') || (!pin && r.top + SY < H * 0.5)) return 'the hero'; if (pin && blk === x.el) return 'a button fixed to the screen'; const h = blk.querySelector('h2, h3, [role=heading]'); return `"${norm(h ? h.innerText : blk.id || blk.className).slice(0, 36)}"`; };
+  return found.slice(0, 8).map((g) => ({ items: g.items.map((x) => ({ id: x.id, label: x.label, button: x.button, where: where(x) })), place: g.place ? short(g.place) : null, screen: (screen ? Math.round(SY / H) : Math.floor(Math.min(...g.items.map((x) => x.t)) / H)) + 1 }));
+}
+
+//   footerLinks the footer's links to other sites (the footer as footing() finds it): every link to another address on the
+//              web that is not the client's own (their name in its address, or the domain of the page's own mail), a map, a
+//              profile on a social network, nor a picture's credit (in a credits list or a line naming an author or a
+//              licence, or to a picture library or a licence) (footer-other-sites)
+export function footerLinks({ client = null } = {}) {
+  const norm = (t) => (t || '').replace(/\s+/g, ' ').trim();
+  const shows = (el) => { for (let e = el; e && e !== document.documentElement; e = e.parentElement) { const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.1) return false; } return el.getClientRects().length > 0; };
+  const outside = (f) => !f.parentElement?.closest('main, section, article, footer, [data-scene], dialog, [role=dialog]');
+  const foot = [...document.querySelectorAll('footer, [role=contentinfo]')].filter((f) => outside(f) && shows(f)).pop()
+    || [...document.querySelectorAll('[class*=footer i], [id*=footer i]')].filter((f) => outside(f) && shows(f) && f.getBoundingClientRect().height >= 16).pop()
+    || [...document.querySelectorAll('footer, [role=contentinfo]')].filter((f) => !f.parentElement?.closest('article, blockquote, dialog, [role=dialog]') && shows(f)).pop();
+  if (!foot) return [];
+  const fold = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, '');
+  const name = fold(client);
+  // (the client's own domains: those of the page's mail addresses)
+  const own = new Set([...document.querySelectorAll('a[href^="mailto:" i]')].map((a) => (a.getAttribute('href').slice(7).split('?')[0].split('@')[1] || '').toLowerCase().replace(/^www\./, '')).filter(Boolean));
+  const MAPS = /(google\.[a-z.]+\/maps|maps\.google\.|goo\.gl\/maps|maps\.app\.goo\.gl|maps\.apple\.com|openstreetmap\.org|\bosm\.org|bing\.com\/maps|wego\.here\.com|\bhere\.com|citymapper\.com|waze\.com)/i;
+  const SOCIAL = /(^|\.)(instagram|facebook|twitter|x|linkedin|youtube|tiktok|threads|pinterest|vimeo|github|dribbble|behance|bsky|spotify|soundcloud|bandcamp|tumblr)\.[a-z.]+$/i;
+  const SOURCE = /unsplash|pexels|pixabay|wikimedia|wikipedia|openverse|flickr|rawpixel|creativecommons|publicdomain/i;
+  const CRED = /credit|bildnachweis|fotonachweis|image sources|picture sources|photo sources|photographs? by/i;
+  const out = [];
+  for (const a of foot.querySelectorAll('a[href]')) {
+    if (a.closest('dialog, [role=dialog], [aria-hidden=true]') || !shows(a)) continue;
+    let u; try { u = new URL(a.getAttribute('href'), location.href); } catch { continue; }
+    if (!/^https?:$/.test(u.protocol) || u.origin === location.origin) continue;
+    const host = u.hostname.toLowerCase().replace(/^www\./, '');
+    if ((name.length >= 3 && fold(host + u.pathname).includes(name)) || [...own].some((d) => host === d || host.endsWith('.' + d))) continue;
+    if (MAPS.test(host + u.pathname) || SOCIAL.test(host) || SOURCE.test(host)) continue;
+    // (a credit's link: in a box named for the credits, or in a line naming an author or a licence)
+    let credit = false;
+    for (let e = a.parentElement; e && e !== foot && !credit; e = e.parentElement) credit = CRED.test([e.id, typeof e.className === 'string' ? e.className : '', e.getAttribute('aria-label') || ''].join(' ')) || (e.matches('p, li, small, figcaption') && /\bby\b|\bcc[ -]?(?:by|0)\b|public domain|licen[cs]/i.test(norm(e.textContent).slice(0, 300)));
+    if (!credit) out.push({ text: norm(a.innerText || a.getAttribute('aria-label')).slice(0, 40), host });
+  }
+  return out.slice(0, 12);
 }
 
 // deadControls: the controls of the first screen that change nothing when used (dead-control). A button, a field or a

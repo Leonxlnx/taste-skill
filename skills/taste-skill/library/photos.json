@@ -1,7 +1,7 @@
 {
  "source": "Lorem Picsum (https://picsum.photos): photographs from Unsplash, used under the Unsplash licence",
  "url": "https://picsum.photos/id/{id}/{width}/{height}",
- "tradesNote": "What a trade's pictures show and must not show, matched against each photograph's alt. The trade the brief names first applies; the other trades it names are its own too (a bakery and cafe shows its coffee), and so are the dishes of a restaurant or of a brief with a kitchen (dishes): their things are never banned. The deal leaves out a neighbouring trade's things (off), a landmark the brief does not name, a photograph that shows a logo, a house number or a plate (unusable), and the trade's stock shot. It deals the trade's things first, the ones least dealt lately leading, then at most two of its place; a place leads only where none of its things is left. A portfolio is dealt none of the things (its work is its own) and one of its place at most. Where a trade lists places ([brief pattern, place pattern]), the first the brief names is its place (a guesthouse on a fjord is shown by the sea, never a whitewashed village). A brief with no listed trade is matched by its own words. A set marked matchOnly (each photograph one trade's hands or one object) gives only the photographs that name the brief's own things; the people set (marked people) never stands for a listed trade's things or place, since a person there would pass for a guest or a customer. A trade may list its product: on a product page with no photographs of its own, a photograph whose alt names it, or the brief's own word for the product, is never dealt (another maker's product passes for the client's, however cropped), so there the pictures are its use, its load and its place, and a place may lead. A trade may list its first searches of the open collections (queries, with its place searched with placeWord), which never name the client's own thing; on a product page one that names its product is left out.",
+ "tradesNote": "What a trade's pictures show and must not show, matched against each photograph's alt. The trade the brief names first applies; the other trades it names are its own too (a bakery and cafe shows its coffee), and so are the dishes of a restaurant or of a brief with a kitchen (dishes): their things are never banned. The deal leaves out a neighbouring trade's things (off), a landmark the brief does not name, a photograph that shows a logo, a house number, a plate or the inside of a café (unusable: another café's room passes for the client's), and the trade's stock shot. It deals at most half of the trade's things, then at most half of its places (two at most), the ones least dealt lately leading and the ones the trade's last deal listed behind the others, so two deals of one brief share no photograph while the library holds others; a place leads only where none of its things is left. A portfolio is dealt none of the things (its work is its own) and one of its place at most. Where a trade lists places ([brief pattern, place pattern]), the first the brief names is its place (a guesthouse on a fjord is shown by the sea, never a whitewashed village). A brief with no listed trade is matched by its own words. A set marked matchOnly (each photograph one trade's hands or one object) gives only the photographs that name the brief's own things; the people set (marked people) never stands for a listed trade's things or place, since a person there would pass for a guest or a customer. A trade may list its product: on a product page with no photographs of its own, a photograph whose alt names it, or the brief's own word for the product, is never dealt (another maker's product passes for the client's, however cropped), so there the pictures are its use, its load and its place, and a place may lead. A trade may list its first searches of the open collections (queries, with its place searched with placeWord), which never name the client's own thing; on a product page one that names its product is left out. A trade lists the sets its photographs are dealt from (sets), by fit: a cafe never from the night streets or a bar, a place to stay never from offices, a bike never from cars. A day trade (day: a cafe, a bakery, a bike) is dealt no photograph of night, nightlife or neon (night). A trade marked town (a cafe, a bakery, a brewery, a place to stay) is dealt no library place where the brief names its town and none of its listed places: another city's street or coast would pass for its own, so the sheet sends the builder to search it. A trade with fewer than six of its things in the library (counted before the direction's tone) tells the builder to search the open collections first with its queries, the dealt ones only the fallback. A place to stay whose name names a light, or whose brief names a northern place (north), is dealt no warm coast (warm: turquoise water, white sand, palms, chalk or limestone cliffs): a sunnier coast would stand in for its own.",
  "trades": [
   {
    "id": "coffee",
@@ -10,15 +10,24 @@
    "show": "the coffee in the cup and the beans close, a cup by a window, the street at its door; its own bar, counter and roaster only in its own pictures",
    "not": "wine, beer, cocktails or tea; a restaurant's plated food; a bakery's bread",
    "things": "\\b(?:coffee|espresso|flat white|cappuccino|latte|barista|roast\\w*|kettle|dripper|counter)\\b|\\bcaf[eé]s?(?!\\p{L})",
-   "place": "\\b(?:city streets?|(?:wet|rainy|night) streets?|street lamps?|tram|canal|brick|alley lit)\\b",
-   "off": "\\b(?:wine|grapes?|beer|cocktails?|tea|teapot|salad|vegetables|berries|strawberries|raspberries|honey|pasta|bed|bedside|bedding|towels?|inside a (?:\\w+ )?caf[eé]|caf[eé] tables?)\\b",
+   "place": "\\b(?:city streets?|(?:wet|rainy) streets?)\\b",
+   "off": "\\b(?:wine|grapes?|beer|cocktails?|tea|teapot|salad|vegetables|berries|strawberries|raspberries|honey|pasta|bicycles?|bed|bedside|bedding|towels?)\\b",
    "queries": [
     "coffee cup window",
     "pour over coffee",
     "coffee beans in a hand"
    ],
    "placeWord": "street",
-   "product": "\\b(?:espresso machines?|coffee (?:machines?|makers?|grinders?|bags?|packs?)|grinders?|kettles?|drippers?|pour[- ]over|moka pots?|french press(?:es)?|bags? of (?:coffee|beans))\\b"
+   "product": "\\b(?:espresso machines?|coffee (?:machines?|makers?|grinders?|bags?|packs?)|grinders?|kettles?|drippers?|pour[- ]over|moka pots?|french press(?:es)?|bags? of (?:coffee|beans))\\b",
+   "day": true,
+   "town": true,
+   "sets": [
+    "interior-and-table",
+    "hands-and-making",
+    "object-still",
+    "texture",
+    "city-day"
+   ]
   },
   {
    "id": "bakery",
@@ -27,15 +36,25 @@
    "show": "the bread close (the crust, the crumb, dough rising in a bowl), the street at its door; its own counter and oven only in its own pictures",
    "not": "coffee as the subject; a restaurant's plated food; wine or beer",
    "things": "\\b(?:bread|loaf|loaves|dough|flour|pastry|pastries|oven|bak\\w*|croissants?)\\b",
-   "place": "\\b(?:city streets?|(?:wet|rainy) streets?|tram|canal|brick)\\b",
-   "off": "\\b(?:wine|grapes?|beer|cocktails?|salad|vegetables|bed|bedside|bedding)\\b",
+   "place": "\\b(?:city streets?|(?:wet|rainy) streets?)\\b",
+   "off": "\\b(?:wine|grapes?|beer|cocktails?|salad|vegetables|bicycles?|bed|bedside|bedding)\\b",
    "queries": [
     "sourdough loaf",
     "dough on a floured bench",
     "bread crust close"
    ],
    "placeWord": "street",
-   "product": "\\b(?:bread|loaf|loaves|baguettes?|croissants?|pastr(?:y|ies)|buns?|cakes?)\\b"
+   "product": "\\b(?:bread|loaf|loaves|baguettes?|croissants?|pastr(?:y|ies)|buns?|cakes?)\\b",
+   "day": true,
+   "town": true,
+   "sets": [
+    "interior-and-table",
+    "hands-and-making",
+    "object-still",
+    "texture",
+    "city-day",
+    "field-and-farm"
+   ]
   },
   {
    "id": "wine",
@@ -52,7 +71,15 @@
     "grape harvest crate",
     "vine leaves autumn light"
    ],
-   "placeWord": "vineyard"
+   "placeWord": "vineyard",
+   "sets": [
+    "field-and-farm",
+    "hands-and-making",
+    "interior-and-table",
+    "object-still",
+    "texture",
+    "desert-and-road"
+   ]
   },
   {
    "id": "beer",
@@ -69,7 +96,16 @@
     "barley field",
     "malt in a hand"
    ],
-   "placeWord": "street"
+   "placeWord": "street",
+   "town": true,
+   "sets": [
+    "field-and-farm",
+    "hands-and-making",
+    "interior-and-table",
+    "texture",
+    "city-day",
+    "city-night"
+   ]
   },
   {
    "id": "stay",
@@ -81,7 +117,7 @@
    "place": "\\b(?:fjords?|coast\\w*|shores?|sea|bay|harbou?r|mountains?|valley|village|snow\\w*|lake|meadow)\\b",
    "places": [
     [
-     "\\b(?:fjords?|coast\\w*|sea|shores?|bay|harbou?r|island)",
+     "\\b(?:\\w*fjord\\w*|coast\\w*|sea(?:side)?|shores?|bay|harbou?r|islands?)\\b",
      "\\b(?:fjords?|coast\\w*|sea|bay|harbou?r)\\b"
     ],
     [
@@ -97,13 +133,26 @@
      "\\b(?:forest|woods?|pines?|trees)\\b"
     ]
    ],
+   "north": "\\b(?:\\w*fjord\\w*|iceland\\w*|norw\\w*|faroe\\w*|lofoten|svalbard|greenland\\w*|lapland|arctic|nordic|scandinavia\\w*|finland|sweden|shetland|orkney|hebrides)\\b",
    "off": "\\b(?:pool|office|desk|laptop|city|street|apartment|lifeguard|cafe|balloons?|desert|dunes?|sunsets?|traffic|bars?|receipts?|pugs?|dogs?|cats?)\\b",
    "queries": [
     "bed linen window light",
     "window view sea",
     "wool blanket chair"
    ],
-   "placeWord": "village"
+   "placeWord": "village",
+   "town": true,
+   "sets": [
+    "interior-and-table",
+    "coast",
+    "mountain",
+    "forest",
+    "water",
+    "fog-and-quiet",
+    "field-and-farm",
+    "sky-and-space",
+    "city-day"
+   ]
   },
   {
    "id": "bike",
@@ -112,7 +161,7 @@
    "show": "the ride and the load without another maker's bike: the shopping in a crate, a child's helmet on a hook, the school run on foot, the city street in the rain",
    "not": "cars, vans, motorbikes or scooters; a road or racing bike; a trike when the bike has two wheels; another maker's bike, its name or its logo",
    "things": "\\b(?:bicycles?|bikes?|cycl\\w*|cargo|baskets?|crates?|shopping)\\b",
-   "place": "\\b(?:city streets?|(?:wet|rainy) streets?|canal|brick|park|school|cycle (?:lanes?|paths?))\\b",
+   "place": "\\b(?:city streets?|(?:wet|rainy) streets?|canal|park|school|cycle (?:lanes?|paths?))\\b",
    "off": "\\b(?:cars?|vans?|trucks?|camper|motor\\w*|scooters?|aircraft|fuselage|balloons?|cable cars?|gondolas?|skateboard\\w*|skatepark)\\b",
    "product": "\\b(?:bicycles?|bikes?|e-?bikes?|cargo ?bikes?|tricycles?|trikes?|cyclists?|cycling)\\b",
    "queries": [
@@ -120,7 +169,17 @@
     "school street morning",
     "rain boots puddle"
    ],
-   "placeWord": "street"
+   "placeWord": "street",
+   "day": true,
+   "sets": [
+    "city-day",
+    "architecture",
+    "coast",
+    "forest",
+    "field-and-farm",
+    "water",
+    "interior-and-table"
+   ]
   },
   {
    "id": "furniture",
@@ -137,7 +196,13 @@
     "wood shavings close up",
     "morning light on a white wall"
    ],
-   "placeWord": "street"
+   "placeWord": "street",
+   "sets": [
+    "interior-and-table",
+    "architecture",
+    "texture",
+    "object-still"
+   ]
   },
   {
    "id": "motion",
@@ -161,7 +226,14 @@
     "raw clay texture",
     "morning light on a white wall"
    ],
-   "placeWord": "street"
+   "placeWord": "street",
+   "sets": [
+    "hands-and-making",
+    "texture",
+    "object-still",
+    "interior-and-table",
+    "architecture"
+   ]
   }
  ],
  "landmarks": [
@@ -178,7 +250,9 @@
   "brief": "\\b(?:kitchen|lunch|dinner|brunch|breakfast|bistro|restaurants?|dish(?:es)?|menus?)\\b",
   "things": "\\b(?:food|plated|dish(?:es)?|salad|vegetables|berries|strawberries|raspberries|honey|pasta|soup)\\b"
  },
- "unusable": "\\b(?:logos?|house numbers?|licence plates?|number plates?|shop signs?)\\b",
+ "unusable": "\\b(?:logos?|house numbers?|licence plates?|number plates?|shop signs?)\\b|\\binside a (?:\\w+ )?caf[eé](?!\\p{L})|\\bcaf[eé] tables?\\b",
+ "night": "\\b(?:night\\w*|nightlife|neon|after dark|at dusk|evening)\\b",
+ "warm": "\\b(?:turquoise (?:sea|surf|bay|water)|tropical|palm trees?|white sand|pavilion|limestone|chalk)\\b",
  "sets": {
   "fog-and-quiet": {
    "title": "Fog and quiet",
@@ -4778,7 +4852,7 @@
     },
     {
      "id": 57,
-     "alt": "Narrow city street lined with brick buildings in shadow",
+     "alt": "Narrow cobbled city street of brick and cast-iron buildings in shadow, small shop signs on both sides",
      "tone": "mid",
      "colours": [
       "brick red",
@@ -4874,7 +4948,7 @@
     },
     {
      "id": 299,
-     "alt": "City street between tall brick buildings with a glass tower beyond",
+     "alt": "City street between tall stone buildings with a glass tower beyond and shop signs at street level",
      "tone": "mid",
      "colours": [
       "warm brown",
@@ -5047,6 +5121,22 @@
      "ratio": 1.5,
      "by": "Kevin Young",
      "page": "https://unsplash.com/photos/-icmOdYWXuQ"
+    },
+    {
+     "id": 820,
+     "alt": "Row of empty swings in a green park in soft morning light",
+     "tone": "mid",
+     "colours": [
+      "slate blue",
+      "soft green",
+      "earth brown"
+     ],
+     "mono": false,
+     "calm": "top",
+     "quality": 4,
+     "ratio": 1.33,
+     "by": "Aaron Burden",
+     "page": "https://unsplash.com/photos/ob6O_xd67O0"
     }
    ]
   },
@@ -5445,7 +5535,7 @@
     },
     {
      "id": 305,
-     "alt": "Small table with a vase of branches on a railed balcony",
+     "alt": "Vase of white blossom on a white table at a balcony rail, spring trees and an apartment block beyond",
      "tone": "light",
      "colours": [
       "white",

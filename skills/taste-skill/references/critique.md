@@ -91,8 +91,10 @@ sheets. Make each pass on its own; do not blend them.
     the words on the first screen (30 at most) and in each section (60 at most): cut before anything
     else. Are the navigation, the buttons, the cards and the footer built as section 0 dealt them, or
     did they slide back to a plain bar, a small square button and a one-line footer? Count the button
-    shapes: one family, the dealt button and one quieter sibling. Does the navigation stay on the
-    screen after the hero, or hide on the way down?
+    shapes: one family, the dealt button and one quieter sibling (folder tabs and a monogram in a
+    circle count). Does the navigation stay on the screen after the hero, or hide on the way down? Does
+    any screen send a visitor to one place twice, the bar's action and the hero's button included?
+    Does the footer link only to the client's own, never to other companies' products?
 
 A note from testing: in blind comparisons a richer page full of template devices beat a cleaner page
 that was thin, every time. The house rules remove the devices; passes 11–13 are where you make sure the
@@ -154,6 +156,8 @@ These override the arithmetic.
   no card where they belong together: design cannot exceed **7**.
 - Three button shapes or more, a navigation that hides on scroll or is not the one dealt, three
   sections built the same way, or a box in every section: design cannot exceed **7**.
+- Two buttons to one place on one screen, or a footer of links to other companies'
+  products or sites: usability cannot exceed **7**.
 - A documentary or archive photograph anywhere: design cannot exceed **6.5**.
 - Labels, captions, chips or timestamps that carry nothing, paragraphs over about 40 words, or a
   first screen over 30 words: content cannot exceed **6.5**.

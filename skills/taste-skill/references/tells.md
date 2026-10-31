@@ -132,7 +132,8 @@ On 29 October 2026 the owner looked at the test pages himself. What he named, an
 | A one-line footer | not dealt; where section 0 dealt a footer, one row of words or under 160px at 1440 fails (`footer-not-as-dealt`) | The footer section 0 deals, built as described |
 | Documentary or archive photographs: old Commons or museum pictures, postcards, old maps, news-like shots | banned | Modern, well-lit photographs (the library's), or none |
 | Too much text: long supporting lines, paragraphs, a heading and two sentences over every list | warned over the budget, failed past 1.5 times (`wordy-hero`, `hero-words`, `wordy-section`, `wordy-page`) | The first screen 30 words, a section 60, the page about 500 |
-| A headline that repeats the logo beside it; two buttons to the same place on one screen | critique.md | The name once on the first screen; one action once a block |
+| A headline that repeats the logo beside it | critique.md | The name once on the first screen |
+| Two buttons to the same place on one screen | failed where one screen shows two ways to one place, in one block or two: a button and another button or link by the same address or label, or one link twice under one label (`duplicate-action`). In the bar only its buttons count: its action beside the hero's button to the same place fails, and so does a bar that stays on the screen beside a section's button to its place. A footer's lists of links count within the footer only. Cards of one group, each with its own address or none, are each card's own action | One action once a screen |
 
 The round-11 test pages (30 October 2026) showed two more:
 
@@ -145,7 +146,7 @@ The round-12 test pages (30 October 2026) showed four more:
 
 | Tell | Status | Do instead |
 | --- | --- | --- |
-| A third button shape: an outline, a pill or a block of its own beside the dealt button and its sibling | failed over two shapes on the page, by corner and kind at any height; tabs and toggles do not count (`button-family`) | The dealt button for every action, and one quieter sibling |
+| A third button shape: an outline, a pill or a block of its own beside the dealt button and its sibling | failed over two shapes on the page, by corner and kind at any height; tabs and toggles (a disclosure's rows too) do not count unless drawn as folder tabs, and a mark linking home counts only drawn round, a monogram in a circle, in the bar past the hero too; the square tile a dealt bar carries does not (`button-family`) | The dealt button for every action, and one quieter sibling |
 | The dealt navigation built as a plain bar, or a bar that hides on scroll | failed where the built form is not the dealt one (top bar, dock, side index, corners, centred wordmark, masthead); a bar that hides on the way down fails too, and is warned where no navigation was dealt (`nav-not-as-dealt`) | The navigation section 0 deals, on the screen after the hero |
 | Section after section built one way: a small heading, a line and a list panel | warned at three sections round the same thing (a list, cards, a window, one picture), failed at four (`same-structure`) | Each section the structure its content asks for, none three times |
 | Every section a box: product windows, panels and cards on one fill | warned when four sections or more after the hero, all but one, stand in a box (`boxed-page`) | Cards and windows in two or three sections, the rest on the ground |
@@ -156,6 +157,12 @@ The four pages on the round-11b commit (30 October 2026) showed two more: three 
 | --- | --- | --- |
 | Another business's product, room or work shown as the client's: a maker's bike with its name on the frame, a named hotel's room, another roastery's roaster, another artist's work | failed when a picture shown as the client's (a marked slot, their name in its caption, the work, a room, the house, their own place, any picture on a page that sells one product) has a credit that names a business: a hotel or a shop by its name, a maker and its model, or the record's own words that it carries another maker's name; so does any photograph in the product's frame that is not the client's, a picture titled with a product of its kind on a page dealt no product photograph, and a picture shown as theirs with no credit while the page's credits name a business (`credit-names-business`) | The slot as the sheet describes it: the product's name and facts in its frame, details that belong to no one, the project's own still |
 | The hero's title running on under the fold, set to cross it on purpose | failed at 1440 and 390, at any size, once its letters end more than 6px under the fold (`hero-cut`) | The title whole on the first screen, with air under it |
+
+The round-13 test pages (30 October 2026) showed one more:
+
+| Tell | Status | Do instead |
+| --- | --- | --- |
+| A footer of links to other companies: the word processors the product opens, the style guides it follows | warned at one or two, failed at three or more, a column of them (`footer-other-sites`; a map, the client's own site, profiles on social networks, picture libraries and credits aside) | The client's own sections, pages and contact; another product named in a line where it matters |
 
 ## 6. Copy tells
 

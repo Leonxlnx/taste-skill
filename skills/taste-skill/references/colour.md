@@ -36,9 +36,9 @@ decided rather than tinted.
 ```css
 :root {
   --bg: …;          /* the ground: most of the surface */
-  --surface: …;     /* one tone step from the ground: filled panels, form fields, tiles */
+  --surface: …;     /* a clear step from the ground: cards, panels, the bar's panel, form fields */
   --ink: …;         /* main text and the strongest marks */
-  --muted: …;       /* secondary text; still passes contrast on --bg */
+  --muted: …;       /* secondary text; passes contrast on --bg and on --surface */
   --accent: …;      /* the one accent */
   --accent-ink: …;  /* text on the accent */
   /* --field-1 … --field-n and their inks, when the palette has section fields */
@@ -63,30 +63,37 @@ most, the ink and the accent: each of those sections is one field at full streng
 rule applies inside it (field, its ink, nothing else).
 
 The accent is not for headings, icons, bullets, borders or underlines unless the direction sheet says
-so. A headline is ink.
+so. A headline is ink. A yellow accent on a light ground is a fill under dark text only (the button,
+one block); links and small marks on that page take the ink, since a yellow line does not read there.
+The same holds for any accent under 3:1 on its ground (brass on paper grey, lime on pink): the sheet
+says so under the palette's note.
 
 ## 4. Surfaces without lines or shadows
 
 With rules and shadows banned, a surface is told apart from the ground by tone alone:
 
 ```css
-.panel { background: var(--surface); }          /* 2–6 lightness points from --bg */
+.panel { background: var(--surface); }          /* 6–9 lightness points from --bg, 7.5–10.5 on dark */
 .field { background: var(--surface); border: 0; } /* inputs: filled, with a clear focus state */
 .field:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 ```
 
-- One step is enough. If a panel does not read, increase padding or separate with space before
-  reaching for a second tone.
-- Two grounds: the page ground and the surface one step from it. A dealt field is a band in the ink
-  or the accent for one section at most. Nothing else grounds a section, a card or a panel: no tint
-  between the two, no colour per section, no new tone for cards that overlap or stack (they take the
-  surface and the ink in turn). A portfolio page that used seven grounds and panels read as sprawl;
-  a sheet or card in any other colour, a white receipt on grey, is one more. The inspector counts
-  every ground by the screens a visitor sees it on: the page ground and its surface, the ink and a
-  dealt field once they ground more than the footer and one section (or two and a half screens), the
-  accent past one section, and any other tone, a band sampled from a photograph included. Three warn,
-  four fail; a ground the dealt scene or technique asks for is named and only warns (`surface-count`).
-  Where a palette's note names more grounds, the sheet's tokens win.
+- The surface is a real step, so cards, panels, the bar's panel and the footer read as groups in a
+  screenshot. A step under 4 points (#ebebeb on #f7f7f7, mint on a paler mint, sand a notch off sand)
+  reads as a faint grey-on-grey box. Past about 9 points (11 on dark) the surface turns into a grey
+  slab or a second colour. Use `--surface` as dealt: never soften it with opacity or a mix toward the
+  ground, and never put it back near the ground for a "subtle" card.
+- Two grounds: the page ground and its one surface. A dealt field is a band in the ink or the
+  accent for one section at most. Nothing else grounds a section, a card or a panel: no tint between
+  the two, no colour per section, no new tone for cards that overlap or stack (they take the surface
+  and the ink in turn). A portfolio page that used seven grounds and panels read as sprawl; a sheet
+  or card in a colour the sheet did not deal, a white receipt on a grey page, is one more. The
+  inspector counts every ground by the screens a visitor sees it on: the page ground and its
+  surface, the ink and a dealt field once they ground more than the footer and one section (or two
+  and a half screens), the accent past one section, and any other tone, a band sampled from a
+  photograph included. Three warn, four fail; a ground the dealt scene or technique asks for is named
+  and only warns (`surface-count`). Where a palette's note names more grounds, the sheet's tokens
+  win.
 - Do not nest a panel inside a panel.
 - Images do not need a frame. If a light photograph melts into a light ground, change the crop or set
   it on `--surface`, do not outline it.
@@ -112,7 +119,8 @@ or the accent, one section at most each (§4), never a colour of its own.
 - Put `color-scheme: dark` on the root so form controls and scrollbars follow.
 - The ground is a deep tone with a slight tint from the palette, and the ink is a soft light, not
   `#fff` on `#000`, unless the palette deals exactly that for a stark two-tone direction.
-- Secondary text is where dark pages fail: check `--muted` against the ground (4.5:1).
+- Secondary text is where dark pages fail: check `--muted` against the ground and the surface
+  (4.5:1).
 - Depth on dark comes from a lighter surface step, never from glows or coloured light.
 - Use lighter font weights than you would on a light page.
 

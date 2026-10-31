@@ -317,9 +317,9 @@
    "colour-chapters"
   ],
   "needs": [],
-  "blueprint": "A neutral ground. The headline occupies the upper-left third: two lines at clamp(52px, 5.2vw, 80px), medium weight, flush left on columns 1–6 at a 40px margin, starting 150px down. One supporting sentence at 18px, max 40ch, follows, then the single action as a small rectangular button. The rest of the screen belongs to one flat stage in a saturated colour: it spans columns 5–12 and ends on the right margin, begins 42% down, and runs to the foot of the first screen. It is a plain rectangle in the dealt corner, nothing cut out of it (a box cut to a shape by `clip-path` fails `framed-elements`). On the stage, 56px in from its left and top edges, sits the main fragment of the interface at true size with labels at 13–15px, built in HTML and working: one panel or control about 620px wide, cropped by the stage's foot, never a whole window and never inside a browser or laptop frame. It is drawn straight on the stage: its rows, figures and controls in the stage's own ink, with no white panel or card of its own (a window on a filled stage is a box in a box). Mark its root with data-ui. Navigation is a plain row at 28px from the top: wordmark left and four text links right at 15px. Nothing overlaps the headline.",
+  "blueprint": "A neutral ground. The headline stands at the left: two lines at clamp(52px, 5.2vw, 80px), medium weight, flush left on columns 1–5 at a 40px margin, starting 150px down. One supporting sentence at 18px, max 34ch, follows, then the single action as a small rectangular button. Beside the words, one flat stage in a saturated colour holds the product: it spans columns 6–12 and ends on the right margin, its top level with the headline's first line (150px down), and runs to the foot of the first screen. It is a plain rectangle in the dealt corner, nothing cut out of it (a box cut to a shape by `clip-path` fails `framed-elements`). On the stage, 56px in from its left and top edges, sits the main fragment of the product's interface at true size with labels at 13–15px, built in HTML and working: one panel or control about 620px wide, cropped by the stage's foot, never a whole window and never inside a browser or laptop frame. It is drawn straight on the stage: its rows, figures and controls in the stage's own ink, with no white panel or card of its own (a window on a filled stage is a box in a box). Mark its root with data-ui. Navigation is a plain row at 28px from the top: wordmark left and four text links right at 15px. Nothing overlaps the headline.",
   "mobile": "The headline sits under the wordmark at 10vw on two lines, followed by the sentence at 16px and the button. The stage comes next at full width, bleeding off both sides. The fragment sits 16px inside it at true size; if it is wider than that, show the one panel that fits rather than scaling it down, never cut by the screen's right edge.",
-  "headline": "A plain statement of what the product does in three to six words, two lines of up to about 16 characters each at 5.2vw.",
+  "headline": "A plain statement of what the product does in three to six words, two lines of up to about 13 characters each at 5.2vw.",
   "motion": "shutter-image",
   "seenIn": [
    "opl-typewave",
@@ -1244,6 +1244,108 @@
   "blueprint": "The headline says what the service is and for whom; one sentence; the action. Beside or under it one real picture of the place or the people at work. Beside it, the headline is 5vw or more (72px at 1440); a headline that cannot be that large goes above the picture, or over it full-bleed. Under both, three or four facts a visitor would otherwise search for (price from, where, when, how long a stay or a session lasts, never a travel time the brief does not give), each a short line at the lead step that says the whole fact (\"From 39 € a night, breakfast included\"), never a band of big figures over one-word labels. The facts are true and complete.",
   "mobile": "Headline, sentence, action, picture, then the facts as a short list.",
   "headline": "What it is and for whom, three to eight words; at most about 28 characters when it stands beside the picture.",
+  "motion": "masked-headline",
+  "seenIn": []
+ },
+ {
+  "id": "screen-at-phone-width",
+  "name": "The product at phone width beside the words",
+  "archetype": "narrow-screen",
+  "directions": [
+   "clear-product",
+   "borrowed-category",
+   "page-is-the-object",
+   "one-motif"
+  ],
+  "tags": [
+   "ui-led"
+  ],
+  "needs": [],
+  "blueprint": "The words take the wide part of the screen and the product the narrow one. Columns 1–7, from about 20% down: the headline at clamp(64px, 6vw, 104px) on two lines, flush left, one sentence at the lead step under it (max 40ch), then the action. Columns 9–11: the product's window as it runs on a phone, built in HTML (data-ui) at its true width, about 390px at 1440, in the page's palette, its top corners at the dealt corner, with no bezel, no notch and no device frame. Its top is level with the headline's first line and it runs on past the hero's foot, so the hero's bottom edge cuts it. It holds one view full of real content (a list, a note, a conversation, a total) with one item selected, its text 14px or more. Columns 8 and 12 stay plain ground, so the screen stands clear of the words and of the margin. Nothing else on the first screen.",
+  "mobile": "Words first: the headline at 10vw on two lines, the sentence at 16px and the action. Then the screen at 78vw, centred, cut by the hero's foot.",
+  "headline": "What it does and for whom, three to seven words on two lines of up to about 16 characters.",
+  "motion": "masked-headline",
+  "seenIn": []
+ },
+ {
+  "id": "words-window-facts",
+  "name": "Words, window and facts in three columns",
+  "archetype": "three-column",
+  "directions": [
+   "product-performs",
+   "spec-sheet",
+   "clear-service",
+   "quiet-instrument",
+   "editorial-report"
+  ],
+  "tags": [
+   "ui-led"
+  ],
+  "needs": [],
+  "blueprint": "Three columns hung from one top line about 20% down, and nothing spanning the width. Columns 1–6: the headline at clamp(56px, 5.4vw, 88px) on two lines, one sentence at the lead step under it (max 36ch) and the action. Columns 7–10: the product's window in portrait, built in HTML (data-ui) at true size with labels 13px or more, in the page's palette with the dealt corner and no browser bar or device frame; its top on the top line, its foot cut by the hero's bottom edge, one view of real content with one item selected. Columns 11–12: two or three facts a buyer checks first, from the brief (who it is for, what it works with, what it costs where the brief says), each a figure or a short phrase at the h4 step over one line at body size, stacked 40px apart from the top line down, on the ground with no box, no rule and no icon. Every column starts on the top line.",
+  "mobile": "Words first: the headline at 10vw, the sentence and the action. Then the facts as one row of two or three, then the window at the content width, cut by the hero's foot.",
+  "headline": "What it does and for whom, three to seven words on two lines of up to about 15 characters.",
+  "motion": "shutter-image",
+  "seenIn": []
+ },
+ {
+  "id": "window-on-the-seam",
+  "name": "The window across a change of tone",
+  "archetype": "seam",
+  "directions": [
+   "quiet-instrument",
+   "hero-object",
+   "split-stage",
+   "product-performs"
+  ],
+  "tags": [
+   "ui-led"
+  ],
+  "needs": [],
+  "blueprint": "One change of tone organises the screen. A square-cornered panel of the surface tone fills the top 60% of the first screen inside 12px margins, and the ground runs below it. Columns 1–5, on the panel: the headline at clamp(56px, 5.4vw, 88px) on two lines, flush left on the page margin, its first line about 22% down; one sentence at the lead step (max 34ch) and the action under it, ending above the seam. Columns 6–12: the product's window, built in HTML (data-ui) at true size with labels 13px or more, its top level with the headline's first line and its foot cut by the hero's bottom edge, so it crosses the seam: its upper part on the panel, its lower part on the ground. It is one plain window with the dealt corner and the ground as its fill, no browser bar and no device frame, showing one view of real content with one item selected. The seam is the only line on the screen: no rule, no shadow, nothing else crossing it.",
+  "mobile": "The panel takes the top 56svh: the headline at 10vw on two lines on it at a 20px margin, the sentence at 16px and the action. The window spans the content width from the panel's lower part across the seam and is cut by the hero's foot.",
+  "headline": "What the product does, three to six words on two lines of up to about 13 characters.",
+  "motion": "shutter-image",
+  "seenIn": []
+ },
+ {
+  "id": "window-left-words-right",
+  "name": "The window first, the words beside it",
+  "archetype": "split",
+  "split": true,
+  "directions": [
+   "clear-product",
+   "editorial-report",
+   "split-stage",
+   "dark-room"
+  ],
+  "tags": [
+   "ui-led"
+  ],
+  "needs": [],
+  "blueprint": "The content width split about 7 to 5, the product first. Columns 1–7: the product's window at true size, built in HTML (data-ui) with labels 13px or more, from the top margin under the navigation to the hero's foot, which cuts it, in the page's palette with the dealt corner and no browser bar or device frame; one view of real content with one item selected. Columns 8–12: the words, flush left, their top level with the window's top: the headline at clamp(56px, 5.4vw, 88px) on two lines, one sentence at the lead step (max 34ch) and the action. The eye goes from the product to the words. Nothing else on the first screen.",
+  "mobile": "Words first, then the window at the content width, cut by the hero's foot.",
+  "headline": "What it does, two to five words on two lines of up to about 13 characters.",
+  "motion": "shutter-image",
+  "seenIn": []
+ },
+ {
+  "id": "screen-first-words-beside",
+  "name": "The phone screen first, the words beside it",
+  "archetype": "narrow-screen",
+  "directions": [
+   "sentence-as-layout",
+   "name-as-monument",
+   "clear-service",
+   "spec-sheet"
+  ],
+  "tags": [
+   "ui-led"
+  ],
+  "needs": [],
+  "blueprint": "The product first and narrow, the words wide beside it. Columns 2–4: the product's window as it runs on a phone, built in HTML (data-ui) at its true width, about 390px at 1440, in the page's palette, its top corners at the dealt corner, with no bezel, no notch and no device frame. Its top is about 20% down and it runs on past the hero's foot, so the hero's bottom edge cuts it; it holds one view full of real content (a list, a note, a conversation, a total) with one item selected, its text 14px or more. Columns 6–12: the headline at clamp(64px, 6vw, 104px) on two lines, flush left, its first line level with the screen's top; one sentence at the lead step under it (max 40ch), then the action. Columns 1 and 5 stay plain ground. Nothing else on the first screen.",
+  "mobile": "Words first: the headline at 10vw on two lines, the sentence at 16px and the action. Then the screen at 78vw, centred, cut by the hero's foot.",
+  "headline": "What it does and for whom, three to seven words on two lines of up to about 16 characters.",
   "motion": "masked-headline",
   "seenIn": []
  }

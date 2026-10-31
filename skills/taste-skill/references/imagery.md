@@ -308,19 +308,29 @@ same script searches real footage with `--video` (section 11).
 
 - The sheet lists up to eight from one set, so they share a subject and a light. Use no more than its
   photograph total.
-- Every photograph dealt and every first one is kept in the history, so the next project's sheet
-  leads with others (one café was dealt the same set and the same first picture ten times in ten).
+- Every photograph dealt and the first two of each sheet are kept in the history, with the trade, so
+  the next project's sheet leads with others (one café was dealt the same first picture ten times in
+  ten; later six café sheets led with the same two).
 - For a trade the library knows (coffee, bread, wine, beer, a place to stay, a bike, furniture, film,
-  ceramics) the list comes from every set: its things first, the ones other pages were dealt least
-  leading, then at most two of its place; never its stock shot, a neighbouring trade, a landmark the
-  brief does not name, or a logo or a house number. A place leads only where the library has none of
-  its things. A portfolio is dealt none of the things, since its work is its own, and one picture of
-  its place at most. A place to stay's things are the details that belong to no one (bed linen, a
-  chair, a cup, a window), never houses. On a product page with no photographs of its own, none that
-  shows a product of its kind is dealt (`product` in library/photos.json): its pictures are the use,
-  the load and the place.
-- With fewer than six of the trade's things the sheet says how many there are and sends you to the
-  open collections for the rest; with none it says so, or deals none at all.
+  ceramics) the list comes from every set: at most half of its things, then at most half of its
+  places (two at most), the ones other pages were dealt least leading and the ones the trade's last
+  sheet listed behind the others, so two sheets of one brief share no photograph while the library
+  holds others. Never its stock shot, a neighbouring trade, a landmark the brief does not name, a
+  logo, a house number or the inside of a café. A place leads only where the library has none of its
+  things. Each trade draws only on the sets that fit it (`sets`: a café never on night streets or a
+  bar, a place to stay never on offices, a bike never on cars). A café, a bakery and a bike are dealt
+  no night, nightlife or neon. Where the brief names the town of a café, a bakery, a brewery or a
+  place to stay (`town`), no library street or coast stands for it (a place to stay on a fjord still
+  gets the sea): another city's would pass for its own, so search its place. A place to stay in the
+  north or named for a light is dealt no warm coast (turquoise water, white sand, palms, chalk
+  cliffs). A portfolio is dealt none of the things, since its work is its own, and one picture of its
+  place at most. A place to stay's things are the details that belong to no one (bed linen, a chair,
+  a cup, a window), never houses. On a product page with no photographs of its own, none that shows a
+  product of its kind is dealt (`product` in library/photos.json): its pictures are the use, the load
+  and the place.
+- With fewer than six of the trade's things in the library, the sheet says how many there are and
+  **Search first**: search the open collections with the trade's queries (Openverse, then Commons)
+  before taking any dealt one; the dealt ones are the fallback.
 - Each line says where the calm area is. Put text there or keep text off the image.
 - More from the same or another set: `node scripts/draw.mjs --photos list`, `--photos <set>`, or
   `--photos "fog coast"` to search descriptions.

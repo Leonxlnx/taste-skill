@@ -157,6 +157,8 @@ export function judgeExtra(x, { width, allow = [], screens = 1, app = false } = 
 // b.structures (structures()); boxedText: extra()'s running text in boxes, which judgeExtra reports as boxed-page.
 // Round 11d, on desktop: b.grounds is the walk's (groundPoints() at every screen, then grounds()), b.pictures
 // (pictureCredits()); b.space.hero.title at 1440 and 390.
+// Round 11e, on desktop: b.places (samePlace() at the top of the page, then at every screen of the walk) and b.footLinks
+// (footerLinks()); b.buttons holds the bar's shapes past the hero too (marked past).
 export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, dead = null, boxedText = null } = {}) {
   const out = [];
   const add = (level, id, message, fix) => { if (!allow.includes(id)) out.push({ level, id, width, message, fix }); };
@@ -271,7 +273,8 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
   // and its kind; the sheet sizes the one button to the bar, a card and a form, so a height is no shape of its own)
   const bs = b.buttons || [];
   const px = (s) => (s.h ? `, ${s.h[0] === s.h[1] ? s.h[0] : `${s.h[0]}-${s.h[1]}`}px` : '');
-  if (desktop && bs.length > 2) add('FAIL', 'button-family', `${bs.length} button shapes on one page: ${list(bs, (s) => `${s.key === 'type' ? 'set in type' : s.key}${px(s)} (${s.labels.map((l) => `"${l}"`).join(', ')}${s.n > s.labels.length ? ` and ${s.n - s.labels.length} more` : ''})`, 5)}.`, 'One button family, as section 0 dealt it: the dealt button for every action, in the bar, the hero, the cards, the form and the footer, at one corner (in the bar, on a card and in a form at that part\'s height), and at most one quieter sibling (the label alone with the dealt arrow, or the same shape in the surface tone). An outline, a pill or a block of its own is a second family.');
+  // (round 11e: a folder tab and a monogram drawn round count, the bar read again past the hero)
+  if (desktop && bs.length > 2) add('FAIL', 'button-family', `${bs.length} button shapes on one page: ${list(bs, (s) => `${s.key === 'type' ? 'set in type' : s.key}${px(s)} (${s.labels.map((l) => `"${l}"`).join(', ')}${s.n > s.labels.length ? ` and ${s.n - s.labels.length} more` : ''}${s.past ? ', in the bar past the hero' : ''})`, 5)}.`, 'One button family, as section 0 dealt it: the dealt button for every action, in the bar, the hero, the cards, the form and the footer, at one corner (in the bar, on a card and in a form at that part\'s height), and at most one quieter sibling (the label alone with the dealt arrow, or the same shape in the surface tone). An outline, a pill or a block of its own is a second family, and so are folder tabs and a monogram in a circle: set tabs as words with the dealt underline or in the sibling\'s shape, and the monogram as type or in the tile the navigation deals.');
   // the navigation's form, as built (at load, past the hero and back up), against the one section 0 dealt (navKind); a
   // bar that hides on the way down warns whatever was dealt, and fails where the dealt one stays
   const nf = b.navs;
@@ -321,6 +324,27 @@ export function judgeBuild(b, { width, allow = [], boxed = [], scenes = null, de
     return { p, why: name ? `its credit names ${name}` : p.slot === 'product' && (p.third || p.uncredited) ? `a photograph ${p.third ? 'credited to someone else' : 'with no credit'} in the frame for the product` : k ? `its title names a ${k.toLowerCase()}, a product of its kind` : loose && !p.record && !p.entry && ['product', 'room', 'caption', 'place'].includes(p.slot) ? `no credit of its own, while the page's credits name ${loose}` : null };
   }).filter((x) => x.why);
   if (desktop && biz.length) add('FAIL', 'credit-names-business', `${biz.length} picture(s) shown as the client's are another's: ${list(biz, (x) => `${x.p.file} (${SHOWN[x.p.slot] || `the "${x.p.slot}" slot`}: ${x.why})`, 4)}.`, 'A picture shown as the client\'s (their product, a room, the house, their own place, a piece of their work, or captioned with their name) never shows another business\'s product, room or work, whatever its credit says: no other maker\'s product however cropped or retouched, no named hotel\'s or café\'s room, no other artist\'s work, and a picture cropped from another keeps that picture\'s credit. Where the client gives none, the slot holds what the sheet describes for it (the product\'s name and facts in its frame with no photograph, details that belong to no one, the project\'s own still), and the pictures round it show the use, the place and the light with no product of its kind in them.');
+
+  // ---------- round 11e (review-006: "Get started" twice on a screen, the same map three times on one screen, on four
+  // pages of six; r13-p59's footer: three word processors and three style guides as two of its four columns) ----------
+  // one place twice on one screen: a button and another action to the same address or under the same label, or two links
+  // to one address under one label, in one block or two (in the bar only its buttons count, so its action and the hero's
+  // button to one place fail). The top of the page and the walk's screens may read one finding twice: groups that share
+  // two actions are one
+  const dp = [];
+  for (const d of b.places || []) {
+    const ids = d.items.map((x) => x.id), hit = dp.filter((x) => ids.filter((i) => x.ids.has(i)).length >= 2);
+    const g = hit[0] || dp[dp.push({ ids: new Set(), items: [], place: null, screen: d.screen }) - 1];
+    for (const x of [d, ...hit.slice(1)]) { for (const i of x.items) if (!g.ids.has(i.id)) { g.ids.add(i.id); g.items.push(i); } g.place = g.place || x.place; g.screen = Math.min(g.screen, x.screen); }
+    for (const x of hit.slice(1)) dp.splice(dp.indexOf(x), 1);
+  }
+  const ways = (d) => { const l = d.items.map((x) => x.label), u = [...new Set(l)]; return u.length === 1 ? `"${u[0]}" ${l.length === 2 ? 'twice' : `${l.length} times`}` : u.map((x) => `"${x}"`).join(' and '); };
+  const blocks = (d) => { const w = [...new Set(d.items.map((x) => x.where))]; return w.length === 1 ? w[0] : `${w.slice(0, -1).join(', ')} and ${w[w.length - 1]}`; };
+  if (desktop && dp.length) add('FAIL', 'duplicate-action', `One place reached twice on one screen${dp.length > 1 ? `, ${dp.length} times` : ''}: ${list(dp, (d) => `${blocks(d)}, ${ways(d)} (${d.place || 'under one label'}, screen ${d.screen})`, 4)}.`, 'One action once a screen, the bar\'s and the hero\'s included: never two ways to one place on one screen, in one block or two. Keep one and send the other somewhere else (the quieter sibling to the next section, a mail with its own subject), or bring the bar\'s action in only once the hero\'s own has scrolled away and let it step aside while the closing action is on the screen. Cards of one group each keep their own action.');
+  // the footer's links to other companies' products and sites (a map, a social profile, a picture library and a credit
+  // aside): one or two warn, a column of three or more fails
+  const fl = b.footLinks || [];
+  if (desktop && fl.length) add(fl.length >= 3 ? 'FAIL' : 'WARN', 'footer-other-sites', `The footer links to ${fl.length} other ${fl.length === 1 ? 'site' : 'sites'}, not the client's own: ${list(fl, (l) => `"${l.text}" (${l.host})`, 4)}.`, 'The footer links to the client\'s own: its sections and pages, the contact, the map, its own profiles, the legal pages and the Image credits. A product it works with or a reference it follows is named in a line of type where the page needs it, never a link column to another company\'s site.');
   return out;
 }
 // a credit that names a business (namesBusiness, lib/business.mjs): the record's title, its file and its author, or the

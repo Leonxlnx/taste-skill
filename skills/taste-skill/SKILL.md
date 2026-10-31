@@ -313,7 +313,9 @@ Write the whole page as a copy deck (plain text) before markup, following `refer
   template streets and zeroed or 555 phones, and warns on other placeholder contacts).
 - Sample details are expected where the brief leaves gaps (dish names, room names and rates, project
   titles) so the design is seen at full density; list them in the report for the client to confirm.
-  Proof is never invented: no customers, quotes, reviews, press, logos or business statistics.
+  Proof is never invented: no customers, quotes, reviews, press, logos or business statistics. A
+  name you coin (the client's, the product's) is searched with the trade's word before use and
+  replaced if a product of that trade has it (references/copy.md §5).
 - **Name the real, checkable things; leave out only what cannot be checked.** A page about a real place
   names what a visitor needs to get there and picture it: on the first screen the specific place the
   brief gives (the fjord, the village, the district); when it names only a region, a real place in it
@@ -387,7 +389,9 @@ not finished. Order of work:
    floating loose where it belongs to a group loses the hierarchy. Never a card inside a card (a
    product window on a card is one), never a card laid half or more over a photograph, never more
    than one product window on the first screen, never a page of nothing but cards
-   (`framed-elements`, `boxed-page`); the other sections stand on the ground. **Carry the idea into every
+   (`framed-elements`, `boxed-page`); the other sections stand on the ground. A card or tile is filled
+   top to foot, as tall as what it holds: never a name at the top and a line at the foot with the
+   middle empty. **Carry the idea into every
    section,** pricing and FAQ included: the commonest failure in the study is a distinctive first
    screen followed by stock blocks.
 4. **Pictures: fewer, better, larger.** Professional sites give about 30% of every screen to pictures;
@@ -396,7 +400,8 @@ not finished. Order of work:
    2. generated, if you have an image tool: the best way to show this exact subject;
    3. the photographs dealt on the sheet and the rest of the library (`draw.mjs --photos <words>`):
       sharp, modern, no credit needed; atmosphere, never a stand-in for a person, and never the
-      client's own product, room, house or work (step 1);
+      client's own product, room, house or work (step 1); where the sheet says **Search first** (a
+      trade the library holds fewer than six photographs of), source 4 comes before these;
    4. only for what the library lacks (a detail of a room, a dish, the product's use and its load),
       sharp modern photographs from the open collections (`node <skill>/scripts/assets.mjs "<query>"`:
       Openverse, then Wikimedia Commons when it fails, with retries; 1800px or wider by default; never
@@ -443,7 +448,8 @@ not finished. Order of work:
    cropped so the lettering stays whole or leaves the frame, at every width: a portfolio cut its own
    work titles to "Pelik" and "ZUIDKAI" (`cropped-lettering` warns). Never a picture inside a headline
    or a thumbnail inside a sentence. Software shows itself large on the first screen, at a size a
-   visitor can read, and at least one other large picture that is not an interface card; never more
+   visitor can read, beside the headline and never under it (the sheet deals only heroes that set it
+   so), and at least one other large picture that is not an interface card; never more
    than two sections in a row made of interface cards. Its interface sits in the page's own ground,
    cropped inside the page margins (never run into one screen edge), with at most one framed window on
    the page; never the black ground
@@ -480,9 +486,12 @@ not finished. Order of work:
    about twelve tested designs or one of the study's patterns, built at the sizes and with the
    behaviour written there: the owner found every page with the same plain bar, the same three button
    shapes and a one-line footer. Each part, and the hero, ends on a **Must show** line: the built part
-   is checked against it. One button family on the page: the dealt button for every action (in the
+   is checked against it, and it names what a still at rest shows (a hover may follow, never be all of
+   it). One button family on the page: the dealt button for every action (in the
    bar, on a card and in a form at that part's height) and at most one quieter sibling
-   (`button-family` fails a third shape). The navigation never hides on scroll and is built in the
+   (`button-family` fails a third shape; folder tabs and a round monogram count). One action once a
+   screen: the bar's action and the hero's button never go to one place (`duplicate-action`). The
+   navigation never hides on scroll and is built in the
    form dealt (`nav-not-as-dealt`). The
    navigation carries the page's sections as one- or two-word links and the one action; nothing
    stands above it (no announcement or information strip, `announcement-bar`) and nothing in it is a
@@ -490,7 +499,8 @@ not finished. Order of work:
    fails it, and any link or button there over three words). The footer is a designed
    section on its own ground, built as dealt, never a single line or a credit row
    (`footer-not-as-dealt`): links, contact, legal and the Image credits link at
-   text sizes, never a giant name or email, never a list the page already shows as content; a closing
+   text sizes, never a giant name or email, never a list the page already shows as content, never a
+   link to another company's product (`footer-other-sites`); a closing
    line in it is 6vw at most, on one screen with its button and links. A page ends once: a footer that opens on its own closing line carries the call to action (the sheet then
    builds no cta section), and the visit details of a place stand in one place only. **The
    interactive piece,** only if dealt, in the section where it proves the claim, with real content, a
@@ -690,7 +700,7 @@ These hold on every build, whatever the direction. `inspect.mjs` measures them.
 | **No assistant palette.** No yellow-cream ground with terracotta or rust; no violet, indigo, lavender or periwinkle (a blue lightened for a dark ground drifts there; `palette-purple`). | The dealt palette; a blue lightened toward its cyan side. |
 | **No tiny uppercase letter-spaced labels.** | Sentence case at a readable size. |
 | **No icon-topped cards, no outlined cards.** | Filled cards in the style section 0 deals, where things belong together. |
-| **No glass.** No backdrop blur, no translucent panels or bars. | Opaque surfaces one tone step from the ground; the navigation section 0 deals (a floating pill too is opaque). |
+| **No glass.** No backdrop blur, no translucent panels or bars. | Opaque surfaces a clear tone step from the ground; the navigation section 0 deals (a floating pill too is opaque). |
 | **No bar above the navigation, no sentence in it.** No announcement or information strip over the bar. | The dealt navigation: the wordmark, one- or two-word links, one action. |
 | **The navigation never hides on scroll** and is the one dealt, not a plain bar (`nav-not-as-dealt`). | The navigation section 0 deals, on every screen after the hero, as its Must show line says. |
 | **One button family:** the dealt button and one quieter sibling, no third shape (`button-family`). | The dealt button in the bar, the hero, the cards, the forms and the footer, at that part's height. |
@@ -753,7 +763,8 @@ Short form. Numbers are from the study unless marked as house style.
 - One ground, one ink, one accent. The accent appears on the action and perhaps one other thing.
   Professional sites put almost no page area on coloured grounds; colour comes from their pictures.
 - Running text in the full ink. A page set in soft grey reads unfinished.
-- Surfaces are separated by a small step in tone, never by a line or a shadow.
+- Surfaces are separated by a clear step in tone (the dealt `--surface`, 6-9 lightness points from
+  the ground), never by a line or a shadow, and never softened back to a faint grey-on-grey.
 - Two grounds: the page ground and one surface tone. At most one section changes to a field in the
   ink or the accent (the sheet deals it). Nothing fades into anything.
 

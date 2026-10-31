@@ -92,6 +92,13 @@
 // (credit-names-business); a photograph credited to another among the work fails too (portfolio-without-work). At 1440
 // and 390 the hero's title whose letters run on under the foot of the first screen fails at any size (hero-cut).
 //
+// Round 11e (review-006: two buttons to one place on four pages of six; r13-p59's footer of word processors and style
+// guides; r13-p60's folder tabs and round monogram): on desktop, one place twice on one screen fails, a button and another
+// action by the same address or label, in one block or two (in the bar only its buttons count), read at every screen of
+// the walk and, for what stands in the page, within one screen's height at the top after it (duplicate-action); footer
+// links to other companies' products or sites warn, and fail at three (footer-other-sites); and button-family counts a
+// tab or a toggle drawn as a folder tab and a monogram drawn round, the bar read again past the hero.
+//
 // --app judges an app screen (dashboard, admin, settings) by the rules in references/app-screens.md; a
 // direction dealt with draw.mjs --app switches it on by itself.
 //
@@ -108,7 +115,7 @@ import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
 import { extra, controls, replayState, photoText, photoTextDone, photoContrast, splitLetters, tileFills } from './lib/probe-extra.mjs';
 import { judgeExtra, judgeBuild, navKind } from './lib/rules-extra.mjs';
 import { restLook, restStops, restGo, heroStack, visitBlocks } from './lib/probe-rest.mjs';
-import { pageBuild, deadControls, space, navBar, crops, groundPoints, grounds, footing, workShown, pictureCredits, navForm, buttonShapes, structures } from './lib/probe-page.mjs';
+import { pageBuild, deadControls, space, navBar, crops, groundPoints, grounds, footing, workShown, pictureCredits, navForm, buttonShapes, structures, samePlace, footerLinks } from './lib/probe-page.mjs';
 import { viewportClass as name, screenshotLabel, isInspectionScreenshot } from './lib/inspection-files.mjs';
 import { PRODUCT_WORD } from './lib/business.mjs';
 
@@ -439,8 +446,16 @@ try {
       const g = await page.eval(groundPoints).catch((e) => { if (frameErrors.length < 5) frameErrors.push('grounds: ' + String(e.message).slice(0, 160)); return null; });
       if (g) addGrounds(seenGrounds, g, k);
     };
+    // round 11e, on desktop at every screen once it rests: two ways to one place on the screen, the bar, a chip and a
+    // sticky stage read where they stand (duplicate-action)
+    const seenPlaces = w >= 1100 && !appMode ? [] : null;
+    const placeCheck = async () => {
+      if (!seenPlaces) return;
+      const p = await page.eval(samePlace, { screen: true }).catch((e) => { if (frameErrors.length < 5) frameErrors.push('places: ' + String(e.message).slice(0, 160)); return null; });
+      if (p) seenPlaces.push(...p);
+    };
     const frameChecks = [await check()];
-    await photoCheck(); await letterCheck(); await groundCheck(1);
+    await photoCheck(); await letterCheck(); await groundCheck(1); await placeCheck();
     const reached = [await page.eval(reach, metrics.reach).catch(() => null)];
     let upReach = null, atFoot = total <= 1;
     const where = () => page.eval('({ y: Math.round(scrollY || document.scrollingElement.scrollTop || 0), max: Math.round(document.scrollingElement.scrollHeight - innerHeight) })').catch(() => null);
@@ -457,7 +472,7 @@ try {
       lastY = pos.y;
       frames.push(await page.screenshot({ quality: 78 }));
       frameChecks.push(await check());
-      await photoCheck(); await letterCheck(); await groundCheck(moved);
+      await photoCheck(); await letterCheck(); await groundCheck(moved); await placeCheck();
       reached.push(await page.eval(reach, metrics.reach).catch(() => null));
       await page.eval('window.__motionSample && window.__motionSample()').catch(() => {});
       // once, past the hero on the way down (a screen held by a scene or a sticky stage, where a dock or an index may step
@@ -467,6 +482,8 @@ try {
         const s = await page.eval(navForm, 'down').catch(() => null);
         if (s && (s.form !== 'none' || !(s.held || navSeen.aside) || ++navSeen.held > 3)) {
           navSeen.down = s;
+          // round 11e: the bar's buttons as it stands past the hero (a monogram that comes in once the hero has gone)
+          navSeen.buttons = await page.eval(buttonShapes, { bar: true, client }).catch(() => null);
           await page.wheel(-240, { step: 120, pauseMs: 30 });
           await sleep(900);
           navSeen.up = await page.eval(navForm, 'up').catch(() => null);
@@ -511,8 +528,13 @@ try {
         if (dealtFooter) build.foot = await page.eval(footing).then((f) => ({ ...f, dealt: dealtFooter })).catch((e) => { frameErrors.push('footer: ' + String(e.message).slice(0, 160)); return null; });
         if (PORTFOLIO.includes(sector)) build.work = await page.eval(workShown).catch((e) => { frameErrors.push('work: ' + String(e.message).slice(0, 160)); return null; });
         // round 11c: the button shapes, the navigation against the one section 0 dealt, and the sections' structures
-        build.buttons = await page.eval(buttonShapes).catch((e) => { frameErrors.push('buttons: ' + String(e.message).slice(0, 160)); return null; });
+        build.buttons = await page.eval(buttonShapes, { client }).catch((e) => { frameErrors.push('buttons: ' + String(e.message).slice(0, 160)); return null; });
+        if (build.buttons && navSeen?.buttons) for (const s of navSeen.buttons) if (!build.buttons.some((x) => x.key === s.key)) build.buttons.push({ ...s, past: true });
         if (navSeen) build.navs = { ...navSeen, dealt: dealtNav };
+        // round 11e: one place twice on one screen (with what the walk saw at each screen), and the footer's links to other
+        // companies' sites
+        build.places = await page.eval(samePlace).then((p) => [...p, ...(seenPlaces || [])]).catch((e) => { frameErrors.push('places: ' + String(e.message).slice(0, 160)); return seenPlaces; });
+        build.footLinks = await page.eval(footerLinks, { client }).catch((e) => { frameErrors.push('footer links: ' + String(e.message).slice(0, 160)); return null; });
         build.structures = await page.eval(structures).catch((e) => { frameErrors.push('structures: ' + String(e.message).slice(0, 160)); return null; });
         // round 11d: the pictures shown as the client's, with their credits, a portfolio's work among them, marked or not
         // (the grounds above are the walk's, and the film's take their place where it runs)

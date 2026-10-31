@@ -150,7 +150,9 @@ One to three words. The primary action keeps one name everywhere on the page. On
 screen; the second action takes the treatment the dealt button design names (a text link, a quieter
 fill). An arrow only where that design has one, never on every link. One action appears once in a
 block: never two buttons or links to the same place in one screen or section (a roastery's first
-screen had two Directions buttons).
+screen had two Directions buttons). The bar's action counts: where it and the hero's button would go
+to one place, give the hero's button another or bring the bar's action in once the hero has scrolled
+away (`duplicate-action`).
 
 **Navigation.** The wordmark, up to five plain links, one action. Link labels are single nouns, one
 or two words; never a sentence or a tagline in the bar, and no announcement or information strip
@@ -229,8 +231,12 @@ rules ask.
 **A brand the brief does not name gets a coined name.** A plausible word (Engram, Inkwell, Kasten) is
 often already a real product's name, sometimes in the same trade, and the page then reads as theirs.
 Coin one that reads as invented: two short roots joined, or a word bent out of shape, never a dictionary
-word alone or a known product's name. Say in the report that it is a placeholder, not checked against
-trademarks, and is to be replaced by the client's own.
+word alone or a known product's name. **Check it before use:** search the name with the trade's word
+("<name> notes app", "<name> invoicing", "<name> café Leipzig") and drop it when a product or company
+of that trade already has it. Two names coined in tests, for a notes app and for a tool, were real
+products of the same kind, and one page had to be renamed before it could be shown. The same goes for
+a product, plan or feature name the page coins. Say in the report that the name is a placeholder,
+searched but not checked against trademarks, and is to be replaced by the client's own.
 
 ## 6. Things that read as generated
 

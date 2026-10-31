@@ -225,6 +225,13 @@ are from the study of 97 Sites of the Day (October 2026).
   on two lines of about 13-15 characters each; words that cannot be that large go over the picture,
   full-bleed, on its calm side. A 48px headline beside a half-screen photograph read as a shop
   template in a blind test ("an undersized headline and no focal point", §10).
+- **On a software page the product stands beside the headline, never under it.** The `h1` at the
+  size the sheet gives it on one side, the product's window on the other, level with the words and
+  never starting below the headline's last line. A notes app with its product under the headline
+  left the right half of the first screen empty and its judge called it generic. The sheet deals
+  software only heroes that set it so, and not all of them halves: the window beside the words or
+  before them, a screen at phone width beside wide words, three columns of words, window and facts,
+  a window across a change of tone; and a software page seldom gets halves after one that had them.
 - It is there on the first paint. About a third of the studied pages still showed a loader or nothing readable 4.5
   seconds.
 
@@ -360,6 +367,11 @@ of loose text. Cards are wanted, varied, and kept to their job.
   (`boxed-page`, `bento`).
 - **Content first.** A card holds a name, one or two facts and a price or a link; no paragraph over
   about 25 words, no label that says nothing. Cards of one row share a height and a structure.
+- **Filled top to foot.** A card, tile or panel is as tall as what it holds: never a name at the top
+  and a line at the foot with the space between left empty, never a large tile holding one label.
+  Built, those were hollow boxes, and a row of them a bento wall (a review of six frames). Cut a tall
+  card shorter or set what it holds larger, never with more words; the deal no longer deals a card,
+  tile or panel that leaves its middle empty, the section blueprints included.
 - **On a phone** cards stack one to a row (or two narrow ones for a long list), full width inside
   the margins, never a sideways scroller.
 
@@ -385,9 +397,12 @@ of loose text. Cards are wanted, varied, and kept to their job.
   Or, as often, one of the navigation patterns a design-anatomy study read off great sites (a split bar
   round a centred mark, a floating strip, a rail of tiles in the left margin, a compact panel at the
   top right, link clusters on the grid columns …), marked as a pattern and printed with its full
-  description, a pattern scored 5 of 10 as likely as a tested design and a 4 half as likely. Build the
-  one dealt with its sizes and its behaviour, and check it against its **Must show** line; no design
-  or pattern is dealt on more than about one page in ten. The wordmark, three to five links, one
+  description. A pattern scored 5 of 10 or more is three times as likely as a tested design, a 4 half
+  as likely, up to three of the four parts (navigation, footer, cards, buttons), and the tested designs
+  that built as the usual (the band in the ink, the four corners) weigh less. Build the one dealt with its sizes and its
+  behaviour, and check it against its **Must show** line, which names what a still at rest shows (a
+  hover may follow it, never be all of it); no design or pattern is dealt on more than about one page
+  in ten. The wordmark, three to five links, one
   action. Median link count in the study is 3.
 - **It never hides on scroll.** No bar that slides away on the way down and comes back on the way
   up, and no navigation that scrolls away with the hero leaving nothing in its place: the owner found
@@ -437,7 +452,9 @@ of loose text. Cards are wanted, varied, and kept to their job.
   the contact, the legal links and the Image credits link at text sizes. The owner found the footers
   of the recent pages ignored, one line each. Build the dealt one as dealt, every part and size of
   it: a dealt three-card footer built as one credit line fails (`footer-not-as-dealt`). Link columns only for real pages beyond this one; never
-  a list the page already shows as content. Style every list: no browser bullets in a footer or a
+  a list the page already shows as content. Every link goes to this page, the client's own pages or
+  the client's own accounts, never to another company's product: a product page whose footer sent six
+  of ten links to other companies' apps read as their advert. Style every list: no browser bullets in a footer or a
   nav.
 - The last section carries a closing line at display size (the action as a statement, or the name),
   never a label-sized heading: its title is at least the size of the other section headings. No card
