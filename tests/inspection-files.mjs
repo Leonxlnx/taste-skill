@@ -34,7 +34,7 @@ test('cleanup recognizes legacy and width-qualified inspection images only', () 
 });
 
 // The readable part of the folder name, without the identity digest that keeps two pages apart.
-const readable = (target, cwd = '/project') => defaultOutDir(target, cwd).replace(/^\.taste-skill\/inspect-(.*)-[0-9a-f]{8}$/, '$1');
+const readable = (target, cwd = '/project') => defaultOutDir(target, cwd).replace(/^\.taste-skill\/inspect-(.*)-[0-9a-f]{32}$/, '$1');
 
 test('each page inspects into its own folder, so a second run cannot overwrite the first one', () => {
   assert.equal(readable('pages/about.html'), 'pages-about');
@@ -72,8 +72,17 @@ test('the folder name stays within the length a file name can hold', () => {
   const long = `https://example.com/${'segment/'.repeat(80)}`;
   for (const target of [deep, long]) {
     const folder = defaultOutDir(target, '/project').split('/').pop();
-    assert.ok(folder.length <= 100, `${folder.length}: ${folder}`);
+    assert.ok(folder.length <= 128, `${folder.length}: ${folder}`);
   }
+});
+
+test('pages whose identity shares a digest prefix still get folders of their own', () => {
+  // These two URLs differ only in the case of their letters, and their SHA-256 digests share the
+  // first four bytes, so a shorter digest would put them in one folder.
+  assert.notEqual(
+    defaultOutDir('http://localhost:3000/?variant=ABCDefGHIjklmNOpqr', '/project'),
+    defaultOutDir('http://localhost:3000/?variant=ABcdefghIJkLMnOPqr', '/project'),
+  );
 });
 
 test('the inspection folder stays under .taste-skill, so the direction.json beside it is still found', () => {

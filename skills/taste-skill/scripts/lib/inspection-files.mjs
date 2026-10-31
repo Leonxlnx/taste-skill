@@ -40,10 +40,12 @@ const identityOf = (target, cwd) => {
   return resolve(cwd, target);
 };
 
-// A short digest of the identity. The readable name alone is lossy (`a/b.html` and `a-b.html` both
-// read as `a-b`, and case or non-ASCII names collapse to nothing), so the digest keeps the folders
-// apart however the name is spelled.
-const digestOf = (identity) => createHash('sha256').update(identity).digest('hex').slice(0, 8);
+// A digest of the identity. The readable name alone is lossy (`a/b.html` and `a-b.html` both read as
+// `a-b`, and case or non-ASCII names collapse to nothing), so the digest keeps the folders apart
+// however the name is spelled. 128 bits, not 32: two different URLs whose queries differ only in the
+// case of their letters can share the first four bytes of a SHA-256 digest, and 32 bits would let such
+// a pair land in one folder.
+const digestOf = (identity) => createHash('sha256').update(identity).digest('hex').slice(0, 32);
 
 // How much of the readable name is kept: the folder component stays far below the 255-byte limit
 // even for a deeply nested path or a long URL.
