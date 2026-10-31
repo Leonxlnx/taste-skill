@@ -320,7 +320,8 @@ and the reduced-motion page; with scenes on the sheet, `inspect.mjs` also films 
 browser at 1440, 768 and 390 pixels, measures it (headline line counts, type sizes, fonts actually
 loaded, colours, rules, shadows, gradients, contrast, overflow, and the frame: equal margins, sections
 huddled on one side, blank stretches, the title, untitled sections, text against the screen edge) and
-saves screenshots to `.taste-skill/inspect/`. Fix every `FAIL`. Treat each `WARN` as wrong unless you can defend it to a
+saves screenshots to `.taste-skill/inspect-<page>-<id>/` (one folder per page — the id keeps two
+pages whose names read alike apart, so a second page never replaces the first one's screenshots). Fix every `FAIL`. Treat each `WARN` as wrong unless you can defend it to a
 designer in one sentence. Re-run until there are no `FAIL`s. Do not argue with the meter and do not
 hide things from it. The inspector serves local files over a throwaway local server; if the page must
 also open straight from the file system, open `index.html` that way once before you finish.
