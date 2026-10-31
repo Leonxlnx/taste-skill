@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { relative, resolve } from 'node:path';
 
 export const viewportClass = (width) => (width >= 1100 ? 'desktop' : width >= 600 ? 'tablet' : 'mobile');
@@ -21,7 +22,32 @@ const pageParts = (segments) => {
   return parts;
 };
 
+// A query or a fragment names a page of its own (`?theme=dark` and `#/settings` are not the bare path),
+// so it reads as part of the name.
+const queryParts = (value) => {
+  const token = value.replace(/^[?#]+/, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+  return token ? [token] : [];
+};
+
 const slugify = (parts) => parts.join('-').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+// What makes a target its own page: for a URL the whole URL (query and fragment included), for a file
+// its absolute path. Two different targets never share an identity, so they never share a folder.
+const identityOf = (target, cwd) => {
+  if (/^https?:\/\//i.test(target)) {
+    try { return new URL(target).href; } catch {}
+  }
+  return resolve(cwd, target);
+};
+
+// A short digest of the identity. The readable name alone is lossy (`a/b.html` and `a-b.html` both
+// read as `a-b`, and case or non-ASCII names collapse to nothing), so the digest keeps the folders
+// apart however the name is spelled.
+const digestOf = (identity) => createHash('sha256').update(identity).digest('hex').slice(0, 8);
+
+// How much of the readable name is kept: the folder component stays far below the 255-byte limit
+// even for a deeply nested path or a long URL.
+const MAX_SLUG_LENGTH = 80;
 
 // Where an inspection of this target writes its screenshots. One folder per page, so two runs over
 // different pages never share a folder and cannot replace each other's images. The folder stays under
@@ -31,10 +57,11 @@ export function defaultOutDir(target, cwd = process.cwd()) {
   if (/^https?:\/\//i.test(target)) {
     let url = null;
     try { url = new URL(target); } catch {}
-    if (url) parts.push(url.host.replace(/^www\./i, ''), ...pageParts(url.pathname.split('/')));
+    if (url) parts.push(url.host.replace(/^www\./i, ''), ...pageParts(url.pathname.split('/')), ...queryParts(url.search), ...queryParts(url.hash));
   } else {
     const rel = relative(cwd, resolve(cwd, target));
     parts.push(...pageParts(rel.split(/[\\/]+/)));
   }
-  return `.taste-skill/inspect-${slugify(parts) || 'page'}`;
+  const slug = slugify(parts).slice(0, MAX_SLUG_LENGTH).replace(/-+$/, '') || 'page';
+  return `.taste-skill/inspect-${slug}-${digestOf(identityOf(target, cwd))}`;
 }

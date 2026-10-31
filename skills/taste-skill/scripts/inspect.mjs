@@ -13,7 +13,7 @@
 // Exit code 0 = no FAIL findings. Exit code 1 = at least one FAIL (the page is not done).
 // Zero dependencies: drives an installed Chrome/Edge/Chromium. Node 22+.
 // Widths sharing a viewport class receive width-qualified screenshot filenames.
-// The screenshots land in `.taste-skill/inspect-<page>/`, one folder per page, so two runs over
+// The screenshots land in `.taste-skill/inspect-<page>-<id>/`, one folder per page, so two runs over
 // different pages never overwrite each other; `--out DIR` picks the folder instead.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync } from 'node:fs';
 import { resolve, join, relative, dirname, extname, sep } from 'node:path';
