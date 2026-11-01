@@ -180,13 +180,27 @@ export function probe() {
   // --- eyebrows: a small short label sitting directly above a heading block
   // Sticky and fixed layers overlap other content by design; their geometry says nothing about what labels what.
   const pinned = (el) => { for (let p = el; p && p !== document.body; p = p.parentElement) { const pos = getComputedStyle(p).position; if (pos === 'fixed' || pos === 'sticky') return true; } return false; };
+  // A caption, or text inside a box that scrolls or clips it, belongs to that box and not to the heading below it.
+  const heldByBox = (el) => {
+    if (el.closest('figcaption')) return true;
+    const er = el.getBoundingClientRect();
+    for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+      const cs = getComputedStyle(p);
+      if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
+      const pr = p.getBoundingClientRect();
+      const scrolls = (/auto|scroll/.test(cs.overflowY) && p.scrollHeight > p.clientHeight + 1) || (/auto|scroll/.test(cs.overflowX) && p.scrollWidth > p.clientWidth + 1);
+      const cutOff = er.top < pr.top - 1 || er.bottom > pr.bottom + 1 || er.left < pr.left - 1 || er.right > pr.right + 1;
+      if (scrolls || cutOff) return true;
+    }
+    return false;
+  };
   const eyebrows = [];
   for (const h of headings) {
     const hr = h._el.getBoundingClientRect(); const htop = hr.top + SY;
     if (h._el.closest('[data-ui]')) continue;
     const cand = texts.filter((t) => !t.inUI && !h._el.contains(t.el) && t.size <= Math.min(18, h.size * 0.5) && t.chars <= 44 && t.chars >= 2 &&
       t.bottom <= htop + 4 && htop - t.bottom <= Math.min(140, Math.max(72, h.size * 1.1)) && t.right > hr.left - 8 && t.left < hr.right + 8 &&
-      !t.el.closest('button') &&
+      !t.el.closest('button') && !heldByBox(t.el) &&
       !t.el.closest('nav, [role="navigation"], footer') && !(t.top < 120 && t.el.closest('header')) && !pinned(t.el) && pinned(h._el) === false)
       .sort((a, b) => b.bottom - a.bottom)[0];
     if (!cand) continue;
