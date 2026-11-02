@@ -12,8 +12,14 @@ const args = process.argv.slice(2);
 const asJson = args.includes('--json');
 // App screens (references/app-screens.md) keep quiet table and panel lines, faint shadows, data labels
 // and their own typefaces; a sheet dealt with draw.mjs --app switches this on by itself.
+// A page sheet with --keep type also keeps its own typefaces.
 let appMode = args.includes('--app');
-try { if (JSON.parse(readFileSync('.taste-skill/direction.json', 'utf8')).kind === 'app') appMode = true; } catch {}
+let keepType = false;
+try {
+  const dir = JSON.parse(readFileSync('.taste-skill/direction.json', 'utf8'));
+  if (dir.kind === 'app') appMode = true;
+  if (dir.input?.keep?.includes('type')) keepType = true;
+} catch {}
 const APP_LEVEL = { hairline: null, 'outlined-box': null, 'default-font': null, numbering: 'WARN', mono: 'WARN', shadow: 'WARN', eyebrow: 'WARN', 'cta-copy': null, 'h-screen': null };
 const roots = args.filter((a) => !a.startsWith('--'));
 if (!roots.length) roots.push('.');
@@ -63,6 +69,9 @@ if (appMode) {
   for (const r of R) if (r[1] in APP_LEVEL) r[0] = APP_LEVEL[r[1]];
   R.push(['FAIL', 'placeholder-data', /\b(John|Jane) Doe\b|\bAcme( Inc| Corp)?\b|\bexample\.com\b|\bFirstname Lastname\b|\b123 Main St\b/, 'Placeholder data. Use believable names, amounts that add up and real units for this product.']);
   R.push(['WARN', 'framework-colour', /#(3b82f6|2563eb|1d4ed8|60a5fa|10b981|22c55e|ef4444|f59e0b)\b/i, 'A framework default colour (Tailwind blue, green, red, amber). Take the accent and status colours from the dealt style.']);
+}
+if (keepType) {
+  for (const r of R) if (r[1] === 'default-font') r[0] = null;
 }
 
 const findings = [];

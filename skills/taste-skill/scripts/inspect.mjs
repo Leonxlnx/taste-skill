@@ -20,6 +20,7 @@ import { Browser, sleep } from './lib/cdp.mjs';
 import { probe, frame, layout, app, colourShare } from './lib/probe.mjs';
 import { judge, judgeLayout, judgeApp, APP_SKIP } from './lib/rules.mjs';
 import { viewportClass as name, screenshotLabel, isInspectionScreenshot } from './lib/inspection-files.mjs';
+import { checkFonts } from './lib/font-check.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, def) => { const i = args.indexOf('--' + name); if (i === -1) return def; const v = args[i + 1]; args.splice(i, 2); return v; };
@@ -202,10 +203,8 @@ try {
     let findings = [...judge(m, { width: w, allow }), ...sceneFindings];
     if (devServer && !allow.includes('dev-server')) findings.push({ level: 'WARN', id: 'dev-server', width: w, message: 'This page is served by a development server (Vite, webpack or Next in dev mode).', fix: 'Run the last gate on the production build too (vite build && vite preview, next build && next start, or the built index.html): minifiers and bundlers change the CSS a visitor receives.' });
     if (dealtFonts.length && w >= 1100 && !allow.includes('font-not-dealt')) {
-      const norm = (f) => String(f).toLowerCase().replace(/["']/g, '').replace(/\s+variable$/, '').trim();
-      const used = m.type.families.filter((f) => f.share >= 0.1).map((f) => norm(f.family));
-      const missing = dealtFonts.filter((f) => !used.some((u) => u === norm(f) || u.startsWith(norm(f))));
-      if (missing.length === dealtFonts.length) findings.push({ level: appMode ? 'FAIL' : 'WARN', id: 'font-not-dealt', width: w, message: `The sheet dealt ${dealtFonts.join(' and ')}, but the page renders ${m.type.families.slice(0, 2).map((f) => f.family).join(', ')}.`, fix: 'Load the dealt face (the link on the sheet) and put it first in font-family. A build that falls back to a default face lands on the default look.' });
+      const missing = checkFonts(dealtFonts, m.type.families);
+      if (missing.length > 0) findings.push({ level: appMode ? 'FAIL' : 'WARN', id: 'font-not-dealt', width: w, message: `The sheet dealt ${dealtFonts.join(' and ')}, but the page is missing: ${missing.join(', ')}.`, fix: 'Load the dealt face(s) (the link(s) on the sheet) and put them first in font-family. A build that falls back to a default face lands on the default look.' });
     }
     // a third of the studied award pages were still unreadable 4.5s after load; the house sequence is over by 1.2s
     if (!appMode && early && early.found && !early.visible && !allow.includes('late-title')) findings.push({ level: 'FAIL', id: 'late-title', width: w, message: `The title is not readable 1.2s after the page loaded (${early.why}).`, fix: 'Put the headline in the HTML, painted on the first frame; the load sequence only adds arrival and is settled by 1.2s (references/motion.md, "Load sequence in 1.2 seconds"). No preloader, no gate, no waiting for the load event.' });
