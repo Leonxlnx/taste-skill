@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.__tpGlMax = 4;</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product posters</title>
+<style>
+  body { margin: 0; padding: 24px; font: 14px/1.5 system-ui, sans-serif; background: #eee; color: #111; }
+  .host { position: relative; background: #fff; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .row a { display: block; font-size: 12px; color: #111; }
+  .row img { height: 160px; background: #000; display: block; }
+</style>
+</head>
+<body>
+<!--
+  Makes a product spec's posters (the picture that shows at once and stays when WebGL fails):
+  open ?spec=specs/city-bike.json (relative to this page). make-posters.mjs opens this page in a
+  headless browser and writes the files beside the spec; window.__plates holds the data URLs and
+  data-ready is set to 1 (or error) when done.
+    <poster>.fallback-render.png, <poster>.fallback-render-dark.png  the render (plates left, colour right)
+    <poster>.fallback.png, <poster>.fallback-dark.png                a print (halftone plates)
+-->
+<p>The spec's posters: the prints, then the render (plates left, colour right).</p>
+<div class="host" id="host"></div>
+<div class="row" id="out"></div>
+<script type="module">
+  import { FB, RENDER_REF } from '../_print-core/print3d.js';
+  import { loadProduct } from './build.js';
+  const q = new URLSearchParams(location.search);
+  const host = document.getElementById('host'), out = document.getElementById('out');
+  host.style.width = FB.w + 'px'; host.style.height = FB.h + 'px';
+  window.__plates = {};
+  const PAPER = { light: { bg: '#ffffff', surface: '#f4f4f4', ink: '#111111', accent: '#e5531c' }, dark: { bg: '#0b0b0c', surface: '#161618', ink: '#f2f2f2', accent: '#ff7a3c' } };
+  const BASE = { size: FB.size, x: 0, y: 0, transparent: 1, turn: 0, interactive: 0 };
+  async function shoot(obj, palette, params, plate) {
+    host.innerHTML = '';
+    const ctrl = obj.mount(host, { palette, params: { ...BASE, ...params } });
+    await ctrl.ready();
+    if (ctrl.info.fallback) throw new Error(`${obj.id}: no live picture (${ctrl.info.fallback})`);
+    ctrl.pose({ t: 0 });
+    const url = ctrl.snapshot(plate);
+    ctrl.destroy();
+    return url;
+  }
+  const load = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  function show(name, url) {
+    window.__plates[name] = url;
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    a.innerHTML = `<img src="${url}" alt=""> ${name}`;
+    out.appendChild(a);
+  }
+  try {
+    const obj = await loadProduct(q.get('spec'));
+    const name = obj.spec.poster || obj.spec.id;
+    const only = q.get('only') || '';
+    if (only !== 'render') {
+      show(`${name}.fallback.png`, await shoot(obj, PAPER.light, { effect: obj.posterPrint }, true));
+      show(`${name}.fallback-dark.png`, await shoot(obj, PAPER.dark, { effect: obj.posterPrint }, true));
+    }
+    for (const [file, paper] of [[`${name}.fallback-render.png`, 'light'], [`${name}.fallback-render-dark.png`, 'dark']]) {
+      const pal = { ...PAPER[paper], accent: RENDER_REF };
+      const plates = await load(await shoot(obj, pal, { effect: 'render' }, true));
+      const colour = await load(await shoot(obj, pal, { effect: 'render', shadow: 0 }, false));
+      const c = document.createElement('canvas');
+      c.width = plates.width * 2; c.height = plates.height;
+      const x = c.getContext('2d');
+      x.drawImage(plates, 0, 0);
+      x.drawImage(colour, plates.width, 0, plates.width, plates.height);
+      show(file, c.toDataURL('image/png'));
+    }
+    document.documentElement.dataset.ready = '1';
+  } catch (e) {
+    console.error(e);
+    window.__posterError = String(e && e.message || e);
+    document.documentElement.dataset.ready = 'error';
+  }
+</script>
+</body>
+</html>

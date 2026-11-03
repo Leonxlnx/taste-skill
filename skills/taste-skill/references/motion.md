@@ -2,8 +2,14 @@
 
 Every page loads the micro-interaction layer: `<html data-motion>`, `assets/motion/motion.css`
 after `ui/cards.css`, `assets/motion/motion.js` (module) after `system.js` (`starter.html` has all
-three). Never remove or override it; if a check complains about it, fix the markup, not the layer.
-A missing hover layer is a fault on every kind; a still page is not. `assets/motion/demo.html` shows every interaction. This file
+three). **It is not optional:** never remove, skip or override it; if a check complains about it,
+fix the markup, not the layer. A missing or invisible hover layer is a fault on every kind (round
+C: a fintech, a cafe and a guesthouse page lost motion points because a hovered card or button
+showed no change); a still page is not. Give it markup to act on: a linked card is a `.card`
+holding its link (never `.m-nolift`), a photograph that leads somewhere is `<a class="m-zoom">`
+round its `<img>` (or `img.frame__img` inside a linked frame), buttons are `.btn`, links in
+running text `.link`. Shoot a hovered card and a hovered photograph at 1440 and see
+them change: the card 2px up, the photograph at 1.03. `assets/motion/demo.html` shows every interaction. This file
 holds every hover, press, loop and reduced-motion number; other files point here.
 
 What may move, by kind (Leon's rules 5 and 8):
@@ -14,7 +20,10 @@ What may move, by kind (Leon's rules 5 and 8):
   deals.
 - **Other (product, service, place):** the hover layer alone. Nothing moves by itself, on load, by
   time or on scroll: no entrance, ticker, marquee, slideshow, looping picture, pulsing dot, count or
-  moment. An open-now line may be filled once at load; the panel reads right without it.
+  moment. An open-now line may be filled once at load; the panel reads right without it. One
+  exception: a product page without photographs may let its product render turn slowly in the
+  hero (`effects-objects.md`, its pause button in the corner, a still on a phone and under
+  reduced motion); every other render on that page holds still until the pointer reaches it.
 
 ## Tokens
 

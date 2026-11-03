@@ -1,4 +1,4 @@
-/* scenes.css - the held stage every big scene runs on (tasteskill, references/scenes.md). The loader links
+/* scenes.css - the held stage every big scene runs on (taste-skill, references/scenes.md). The loader links
    it; a page never writes its own. A scene section holds one stage as its first child. While the scene is
    live the section is (--sc-hold + 1) screens tall and the stage sticks for --sc-hold screens; at rest
    (reduced motion, a small screen, no script, a failed module) the stage is an ordinary block showing the

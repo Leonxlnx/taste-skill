@@ -3,10 +3,9 @@
    shutter (five pieces of the page's ground, moved by transform only), the title above the windows
    and the action under them, then a flat band of the ground across the foot with the word, the lede
    and the action. */
-[data-big-scene="shaped-window-over-fixed-world"] { background: var(--bg); color: var(--ink); --sw-scrim: .22; }
+[data-big-scene="shaped-window-over-fixed-world"] { background: var(--bg); color: var(--ink); }
 [data-big-scene="shaped-window-over-fixed-world"] .sw__world { position: relative; overflow: clip; background: var(--surface); }
 [data-big-scene="shaped-window-over-fixed-world"] .sw__media { display: block; width: 100%; height: 100%; object-fit: cover; }
-[data-big-scene="shaped-window-over-fixed-world"] .sw__scrim { position: absolute; inset: 0; background: #000; opacity: var(--sw-scrim); pointer-events: none; }
 [data-big-scene="shaped-window-over-fixed-world"] .sw__title { margin: 0; font-size: var(--t-h1); line-height: 1.04; letter-spacing: var(--display-tracking); font-weight: var(--display-weight); max-width: 18ch; text-wrap: balance; }
 [data-big-scene="shaped-window-over-fixed-world"] .sw__cta { margin: 0; }
 [data-big-scene="shaped-window-over-fixed-world"] .sw__word { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1; font-size: var(--t-h1); }

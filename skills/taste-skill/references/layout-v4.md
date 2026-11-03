@@ -13,7 +13,7 @@ section box, the grid and the hero frame; `assets/layout/` holds the heroes (`la
   section shows at load; sections hold 0.45 to 1.25 screens of content with about a quarter screen
   between them. Both still show a neighbour in a shot of one section: the look Leon asked us to go
   past.
-- Across 327 sites measured at 1440x900 and 390x844: the hero is alone on the first screen on 78% of
+- research-059 (327 sites at 1440x900 and 390x844): the hero is alone on the first screen on 78% of
   company sites; a section shows alone more often the taller it is (0.29 under 0.6 screens, 0.80
   at 0.95 to 1.1) and the wider the gap (0.42 under 60px, 0.82 at 220px and more). Its place sample
   holds no local shops, so the place numbers below are Leon's ask and taste, not measurements.
@@ -86,7 +86,7 @@ shrink it.
   --bar` (64, 24 + bar on a phone). Content ends by y 836 at 1440x900. Nothing of the next section
   shows at 1440, 1280, 1024, 820, 768 and 390.
 - **Content:** `.wrap > .hero-text` holds the composition: an optional notice line, the h1, the
-  sub-line, at most two buttons (a place one), and the picture. One plain claim, never a slogan;
+  sub-line (`p.hero__lead`, layout.css), at most two buttons (a place one), and the picture. One plain claim, never a slogan;
   no caption under the picture, no second float card, no three button styles. The buttons sit above
   the fold at every width.
 - **The h1** first, top at y 120 (96 on a phone), at most three lines at every width, never
@@ -115,14 +115,16 @@ Dealt by kind and by the material the brief really has, never by taste, never th
 pages; a place never deals (the place hero below):
 
 ```bash
-node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming] --has photo,ui,film,object --history .taste-skill/layout-history.json
+node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming|tech] --has photo,ui,film,object --history .taste-skill/layout-history.json
 ```
 
 `--type` is the page type (`SKILL.md` section 1: a game is `software`, hardware `product`). A game
 adds `--kind gaming` (its own weights, never `ui`): `--has film,photo` when the brief supplies its
-trailer or key art. Printed, never dealt: `--hero statement` for a game with no art files
-(`--kind gaming`) and a product's short page, `--hero split` for hardware with no photographs or
-render (its order form in the frame).
+trailer or key art, `--has object` without art files (its key art rendered with the product-render
+helper on the `product` stage; a game never deals `statement` or `word`, and always passes `--has`);
+hardware adds `--kind tech`. A product or hardware with no photographs passes `--has object` and its
+product render takes the stage or the `split` frame (`sections.md`, Product), never an order form
+alone. Printed, never dealt: the place hero.
 
 It prints the hero (its demo, numbers, and the moment, ground and effect ids that fit the kind; on
 other only the hero itself counts). Copy only its `<section class="hero …">` from
@@ -135,7 +137,7 @@ dealt only without a strong photograph.
 |---|---|---|---|
 | `split` | text span-5; the picture span-6 start-7, top-aligned with the h1, ending on the right line; one opaque float card on its lower left | text, then the picture (at least 240 tall) | the float card's dot (tech) |
 | `photo` | a full-bleed photograph layer, the words on its calm, dark side on six columns (h1 80, two lines), four facts at the foot | the photograph cut to the top, the words under it on the ground | none |
-| `product` | a head row (h1 cols 1-7, buttons 9-12), then the object whole on a lit stage with one to three hotspots | the stage 342 wide; a tap opens a hotspot | hotspots on click |
+| `product` | a head row (h1 cols 1-7, buttons 9-12), then the object whole on a lit stage with one to three hotspots (no photographs: its product render; a game without art: its hero object or world scene, the game named in the h1) | the stage 342 wide; a tap opens a hotspot | hotspots on click; a render turns slowly |
 | `editorial` | the headline is the picture: 156px on three lines across the wrap, one or two photographs set in the line as pills | 56px on four lines | the pills open once on load (tech); still elsewhere |
 | `collage` | text span-5; a lit frame span-6 start-7 with the product window cut by its bottom, one result card that loops | the window alone | one card loop (tech) |
 | `word` | an oversized h1 (144px, two lines) with one live word last, underlined; lead and buttons span-6, four facts span-5 start-8 | 54px on three lines | the live word, two rounds then rest (tech only) |

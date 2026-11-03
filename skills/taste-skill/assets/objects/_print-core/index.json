@@ -1,5 +1,5 @@
 {
-  "about": "Everyday things modelled in 3D in code, shown as a studio render (the default) or a print of it (halftone, engraving, dither, type). A technical product (hardware) without photographs may show the object of its own kind as its hero and statement picture, as a render, when a kit holds that kind; a product of site-kind other (a chair, a bike, a lamp) shows none (MO-08), and a software, tech or games page may use one as its moment, in a print. Never an object of another kind, never on a place page, never captioned. Contract: _print-core/README.md.",
+  "about": "Everyday things modelled in 3D in code, shown as a studio render (the default) or a print of it (halftone, engraving, dither, type). A technical product (hardware) without photographs may show the object of its own kind as its hero and statement picture, as a render, when a kit holds that kind; any other physical product without photographs is composed from a spec of its own parts by product-render (product-render/README.md), and a software, tech or games page may use one as its moment, in a print. Never an object of another kind, never on a place page, never captioned. Contract: _print-core/README.md.",
   "load": "assets/objects/_print-core/auto.js (mounts every [data-print]); or import <id>/object.js and call mount(el, opts).",
   "objects": [
     {
@@ -9,7 +9,7 @@
       "effect": "render",
       "print": "halftone",
       "product": "A cup, a mug or a tableware set: the product of a ceramics or tableware maker.",
-      "for": "Ceramics and tableware, kitchen and home goods; on a software page, a card about a break, a routine or a morning. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+      "for": "Ceramics and tableware, kitchen and home goods; on a software page, a card about a break, a routine or a morning. A product without photographs is rendered from its own spec (product-render); this object stands in only for a product of this very kind.",
       "suits": [
         "product",
         "software"
@@ -22,7 +22,7 @@
       "effect": "render",
       "print": "halftone",
       "product": "A wheel, a wheelset or a hub: the product of a maker of wheels or wheel parts. Never a whole bicycle: a wheel does not show a bike.",
-      "for": "Wheels and wheel parts, cycling parts and service; on a software page, a card about motion, speed or a mechanism. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+      "for": "Wheels and wheel parts, cycling parts and service; on a software page, a card about motion, speed or a mechanism. A product without photographs is rendered from its own spec (product-render); this object stands in only for a product of this very kind.",
       "suits": [
         "product",
         "software"
@@ -35,7 +35,7 @@
       "effect": "render",
       "print": "halftone",
       "product": "A desk or task lamp: the product of a lighting maker.",
-      "for": "Lighting and furniture; on a software page, a card about focus, reading or working late. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+      "for": "Lighting and furniture; on a software page, a card about focus, reading or working late. A product without photographs is rendered from its own spec (product-render); this object stands in only for a product of this very kind.",
       "suits": [
         "product",
         "software"
@@ -48,7 +48,7 @@
       "effect": "render",
       "print": "engrave",
       "product": "A globe: the product of a maker of globes, maps or school supplies.",
-      "for": "Maps and globes; on a software page, a card about regions, countries, languages or shipping. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+      "for": "Maps and globes; on a software page, a card about regions, countries, languages or shipping. A product without photographs is rendered from its own spec (product-render); this object stands in only for a product of this very kind.",
       "suits": [
         "software",
         "product"
@@ -61,11 +61,16 @@
       "effect": "render",
       "print": "halftone",
       "product": "A deck of playing cards or a card game: the product of a games or print maker.",
-      "for": "Card and board games; on a games or software page, a card about play, a hand, a draw or a deal. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+      "for": "Card and board games; on a games or software page, a card about play, a hand, a draw or a deal. A product without photographs is rendered from its own spec (product-render); this object stands in only for a product of this very kind.",
       "suits": [
         "software",
         "product"
       ]
     }
-  ]
+  ],
+  "builder": {
+    "id": "product-render",
+    "load": "assets/objects/product-render/auto.js ([data-product] = a spec URL)",
+    "about": "Any physical product composed from a JSON spec of its parts (tubes, beams, wheels, boxes, joints, shades, seats, baskets...) and rendered in real materials. Contract: product-render/README.md."
+  }
 }

@@ -1,4 +1,4 @@
-// search: one query per cycle (about 3.3 s): the old results dim, the query is cleared and typed letter by
+// search: one query per cycle (about 2.7 s): the old results dim, the query is cleared and typed letter by
 // letter, results appear one by one, the selection steps down; hold. The queries are the page's own:
 // the query and results as written in the markup come first, then opts.queries [{q, rows: [[icon,
 // title, meta]]}] if any; with none, it types its own query again.
@@ -41,11 +41,11 @@ export default function init(root, opts = {}) {
     if (!rows) rows = reveal(item.html);
     if (!rows.length) { await api.wait(1600); return; }
     rows[0].classList.add('is-sel');
-    await api.wait(420);
+    await api.wait(520);
     for (let j = 1; j < rows.length; j++) {
       rows[j - 1].classList.remove('is-sel');
       rows[j].classList.add('is-sel');
-      await api.wait(300);
+      await api.wait(340);
     }
     await api.wait(400);
   }, { still });

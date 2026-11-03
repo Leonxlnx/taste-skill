@@ -56,7 +56,7 @@ async function overpass() {
   for (let attempt = 0; attempt < 3; attempt++) {
     const r = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json', 'User-Agent': 'tasteskill fx-map bake (one static map per site)' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json', 'User-Agent': 'taste-skill fx-map bake (one static map per site)' },
       body: 'data=' + encodeURIComponent(QUERY),
     });
     if (r.ok) {

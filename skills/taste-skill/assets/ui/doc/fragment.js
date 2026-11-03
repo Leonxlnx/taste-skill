@@ -39,7 +39,7 @@ export default function init(root, opts = {}) {
   const current = i => marks.forEach((m, k) => { m.classList.toggle('is-on', k === i); m.classList.toggle('is-seen', k !== i); });
   let k = 0;
   const still = () => { k = 0; current(live[0]); place(live[0]); note.classList.add('is-on'); };
-  // one cycle (2.54 s): two marks in turn. The note fades out, takes the next mark's words and place
+  // one cycle (2.74 s): two marks in turn. The note fades out, takes the next mark's words and place
   // while hidden, and fades in as the mark's sweep ends; the second is held 0.38 s
   return loop(root, async api => {
     for (let n = 0; n < 2; n++) {
@@ -51,7 +51,7 @@ export default function init(root, opts = {}) {
       place(i);
       await api.wait(220);
       note.classList.add('is-on');
-      await api.wait(n < 1 ? 1240 : 380);
+      await api.wait(n < 1 ? 1440 : 380);
     }
   }, { still });
 }

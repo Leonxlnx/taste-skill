@@ -12,7 +12,7 @@
 
   <section class="sc" data-big-scene="shaped-window-over-fixed-world" data-big-scene-opts='{"hold":1}' style="--h: 2" aria-labelledby="sw-h">
     <div class="sc__stage">
-      <div class="sw__world"><img class="sw__media" src="…" alt="…" width height><div class="sw__scrim" aria-hidden="true"></div></div>
+      <div class="sw__world"><img class="sw__media" src="…" alt="…" width height></div>
       <h2 class="sw__title" id="sw-h">The title, 3-7 words</h2>                         on the shutter, above the windows
       <div class="sw__cta btn-row">…one or two buttons…</div>                       on the shutter, under the windows: the scene's action from the first frame
       <div class="sw__lede">                                                            the band at the foot

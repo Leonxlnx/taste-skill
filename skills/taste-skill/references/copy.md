@@ -10,7 +10,8 @@ never their words, code, pictures or signature effect.
 1. **The h1 names the category, and for a brand nobody knows, the buyer or the place,** in 2 to 8
    words: payroll app, dental clinic, standing desk, plus who it is for or where. A place: what and
    where in 40 characters at most ("Bakery on Mill Street, Leith"; "Six-room guesthouse on a fjord").
-   Never a riddle, a command, a mood, or a brand line over a plain sub-line.
+   A game: its name and genre ("Kelpmoor, a co-op sailing game"), or its wordmark over an h1 naming
+   the genre; the launch date or status the brief gives is the hard fact. Never a riddle, a command, a mood, or a brand line over a plain sub-line.
 2. **The first screen holds one hard fact:** a number, a place, a price or a date.
 3. **Every heading has a noun that names a thing:** the product, a part of it, the place, a section
    noun (prices, rooms, menu, opening hours, questions, getting here, visit) or a digit. One brand
@@ -51,8 +52,13 @@ figure of speech.
   words at most, in the buyer's words with one concrete detail; no paragraph over five lines at
   1440. A price does the selling, not a mood heading ("Rooms from 140 € a night, breakfast
   included").
-- **Words per screen** stay low: software about 69 (40 to 95), product 47, place 44, service 34; a
-  page about 900 words at most, the footer aside. Long copy goes to sub-pages.
+- **Words per screen** stay low: product 47, place 44, service 34; a page about 900 words at most,
+  the footer aside. Long copy goes to sub-pages.
+- **The tech word budget** (software, gaming, hardware): 60 to 80 words a screen at 1440, counted
+  outside UI mocks, diagrams and code (headings, lines, card titles and bodies, buttons, labels);
+  over 80 the checker WARNs (round C: a fintech page at 117 words a screen read as wordy). Cut in
+  this order: a second sentence under a heading, card bodies to one sentence of 12 to 18 words, a
+  fourth card, a list a fragment already shows. The UI says the rest.
 - **Numbers** sit in sentences with their unit ("4.5 hours a week"), uneven where real (212, 38%).
   A real claim from the brief that needs a source gets a numbered footnote near the footer (13px
   and up).
@@ -84,8 +90,10 @@ figure of speech.
   supply.
 - **Credits:** one short line at the end of the footer naming only the sources used, never the
   photographers: "Photographs via Unsplash and Wikimedia Commons" (as `photos.mjs credits` prints
-  it; 110 characters at most, one line from 1024). It is the summary of one `details.credits`,
-  closed on load, that opens the full list. Map data credits join it. A page that shows real logos
+  it; 110 characters at most, one line from 1024) that links or opens the credits list. Paste the
+  line and the list exactly as `photos.mjs credits` prints them; never write a credit link per
+  photograph into the footer (round C: 18 and 20 credit links in a footer read as a credit wall).
+  Map data credits join it. A page that shows real logos
   adds "Product names and logos are trademarks of their owners".
 - **Each fact once:** an opening time, a price or an address has one value and one wording,
   repeated word for word only where it belongs (the hero, the visit panel, the phone sheet, the

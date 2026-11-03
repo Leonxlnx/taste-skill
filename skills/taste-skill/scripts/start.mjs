@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill start.mjs - deals colours and type, then prints the Google Fonts link, the six stylesheet links
+  taste-skill start.mjs - deals colours and type, then prints the Google Fonts link, the six stylesheet links
   and the :root block. library/type.json is the one source of every face, weight, tracking and size.
 
   node scripts/start.mjs deal --page <kind> [--history .taste-skill/history.json] [--dark|--light] [--axis]

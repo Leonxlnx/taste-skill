@@ -11,8 +11,8 @@ takes one small step on a click (the lamp switches on, the cards fan out).
   picture: the hero (`hero` preset, or `tile` in a hero split) and the statement's picture, as a
   render. A desk lamp for a lamp maker, a cup for a tableware maker, a wheel for a maker of wheels.
   Never an object of another kind: a wheel does not show a whole bicycle, a cup does not show a
-  coffee machine. No object of its kind: `hero-product` with its real ordering UI
-  (`references/sections.md`, Product).
+  coffee machine. No object of its kind: compose the product itself from a spec of its parts
+  with `../product-render` (its README), never `hero-product` without the product's picture.
 - **A software, tech or games page**: the one moment on a feature card or a wide frame, about the
   thing the card says (a globe for regions, cards for a games feature). Here a print fits.
 - **Not on a place page** (a cafe, a shop, a hotel, a studio people visit) and not beside the

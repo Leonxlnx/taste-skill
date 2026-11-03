@@ -1,5 +1,5 @@
 /*
-  moments/lib.js - the few helpers every moment shares (tasteskill). One ES module, no dependencies.
+  moments/lib.js - the few helpers every moment shares (taste-skill). One ES module, no dependencies.
 
   reduced()            true under prefers-reduced-motion: a moment then shows its finished state only
   phone()              true on a phone: under 640px wide, or a touch screen in landscape under 500px tall

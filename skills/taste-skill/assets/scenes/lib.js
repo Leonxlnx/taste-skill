@@ -1,5 +1,5 @@
 /*
-  scenes/lib.js - the helpers every big scene shares (tasteskill, references/scenes.md). One ES module, no
+  scenes/lib.js - the helpers every big scene shares (taste-skill, references/scenes.md). One ES module, no
   dependencies, no GSAP: a scene is a function of the scroll position, drawn with transforms, opacity
   and clip-paths only. The page always scrolls natively: nothing captures the wheel, the scrollbar
   tells the truth, keyboard and trackpad work as everywhere else.
@@ -271,7 +271,7 @@ export function glslCheck(src) {
   if (/__/.test(stripped)) return 'a name with a double underscore';
   return null;
 }
-/* the page's shared budget of live WebGL contexts: at most 4 on a page (safe on integrated GPUs). One
+/* the page's shared budget of live WebGL contexts: at most 4 on a page (an integrated GPU). One
    counter on window, so the scenes, the moments and the objects of a page can share it. */
 const GL_MAX = 4;
 export const glBudget = {

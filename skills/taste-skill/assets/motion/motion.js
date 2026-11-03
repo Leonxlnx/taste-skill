@@ -1,6 +1,6 @@
 /*
-  tasteskill motion.js - the moving half of the micro-interaction layer (motion.css is the rest).
-  Load it once, after system.js, on a page whose <html> carries data-motion:
+  taste-skill motion.js - the moving half of the micro-interaction layer (motion.css is the rest).
+  Load it once, after system.js (motion.css needs no attribute; <html data-motion="off"> turns the layer off, JS too):
     <script type="module" src="assets/motion/motion.js"></script>
   It starts by itself. references/motion.md says what moves and how fast.
 
@@ -254,6 +254,7 @@ document.addEventListener('click', e => {
 
 /* ---------------------------------------------------------------- start */
 export function init() {
+  if (html.dataset.motion === 'off') return;
   if (!html.hasAttribute('data-motion')) html.setAttribute('data-motion', '');
   try { nav(); } catch (e) { console.warn('motion.js: nav', e); }
   try { tabs(); } catch (e) { console.warn('motion.js: tabs', e); }

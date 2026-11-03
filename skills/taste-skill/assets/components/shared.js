@@ -1,5 +1,5 @@
 /*
-  tasteskill components - shared helpers. Every component imports this file and fx.js from
+  taste-skill components - shared helpers. Every component imports this file and fx.js from
   ../effects/. A component folder holds component.html (the markup), component.css, component.js
   (export default init(root) -> { destroy }) and meta.json.
 
@@ -203,8 +203,10 @@ export function still(el, id, { palette: pal, params, seed, fade = true } = {}) 
       }
       await nextFrame();
     }
+    // not a context of its own: cv is the canvas fx.mount made above, so this returns the context fx.js already counts in
+    // window.__tpGl (its liveGL set: enforceBudget before the mount, released by ctrl.destroy() below); one still at a time
     const gl = cv.getContext('webgl2') || cv.getContext('webgl');
-    if (!gl) return keep(ctrl);                                // drawn on a 2D canvas: paused, it costs nothing
+    if (!gl) return keep(ctrl);                               // drawn on a 2D canvas: paused, it costs nothing
     const shot = await grab(ctrl, gl, cv, el);
     if (destroyed) { shot?.remove(); ctrl.destroy(); return; }
     // no frame came (hidden tab, scrolled away, a renderer that never calls drawArrays): on screen the

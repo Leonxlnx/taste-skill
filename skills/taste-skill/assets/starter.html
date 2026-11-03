@@ -162,7 +162,7 @@
   </section>
 
   <!-- SECTIONS: the type's plan (references/sections.md), each built to its recipe and planned to its
-       screens. One example: Leon's 2x2 of feature tiles, two boxes deep (.card--open: the words on the
+       screens. One example: a 2x2 of feature tiles, two boxes deep (.card--open: the words on the
        page ground, the panel under them), as two screens (.g2): row 1 the h2 and the first two tiles,
        row 2 the next two, starting --padt under the second screen's top. On a phone a section keeps
        its desktop count unless it says otherwise: style="--hm: 2" or class="g2m" when its stacked
@@ -256,6 +256,35 @@
     </section>
   </template>
 
+  <!-- VISIT (a place, screen 2, directly after the hero; sections.md): system.css's .visit, on the container's lines.
+       Open type by default (no box). The full page puts it in a split column beside the client's photograph
+       (.visit.visit--card on span-6, the photograph on span-6 start-7: the panel on --g-alt, 1024px and up only).
+       The short page adds .visit--cols (address, hours and access as three columns, no rows) and puts the menu
+       as .rows under it in the same section. Street and district only; a phone only when the brief gives one;
+       at most two rows under the columns. -->
+  <template data-part="visit">
+    <section class="section" id="visit" data-place="visit" aria-label="Visit">
+      <div class="wrap">
+        <div class="visit">
+          <div class="visit__head"><p class="t-label muted">Visit</p><p class="t-small" data-open-now></p></div>
+          <div class="visit__cols">
+            <div class="visit__col stack-4">
+              <address class="visit__address">[Street]<br>[District]</address>
+              <a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a>
+            </div>
+            <div class="visit__col">
+              <!-- data-tz: the venue's time zone; system.js marks today's row there -->
+              <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
+            </div>
+          </div>
+          <ul class="visit__rows">
+            <li><span>[Access]</span><span>[Step-free at the front door]</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </template>
+
   <!-- DRAWING: only a dimension figure beside a product's specs (sections-library.md): the real side
        view with its measured spans, one SVG unit a millimetre, the viewBox the product plus 6% all
        round, --ar its width over height; every real part a g.part (lines .ln, a filled part .fill,
@@ -312,7 +341,7 @@
         <div class="socials"><!-- empty unless the brief gives the client's accounts: node <skill>/scripts/icons.mjs
              get si:x si:instagram --mono --out assets/icons prints one <span class="icon-mono"> per mark;
              put each in <a href=".." aria-label="..">..</a> --></div>
-        <details class="credits"><summary>Photographs via [sources used]</summary><p>[one line a photograph, as photos.mjs credits prints them]</p></details>
+        <a class="credits" href="credits.html">Photographs via [sources used]</a>
       </div>
     </div>
   </div>
@@ -357,7 +386,7 @@
     </div>
     <div class="footer__legal">
       <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a></span>
-      <details class="credits"><summary>Photographs via [sources used]</summary><p>[one line a photograph, as photos.mjs credits prints them]</p></details>
+      <a class="credits" href="credits.html">Photographs via [sources used]</a>
     </div>
   </div>
 </template>

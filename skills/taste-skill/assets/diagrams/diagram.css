@@ -1,5 +1,5 @@
 /*
-  tasteskill diagram.css - the look of diagram.js (references/diagrams.md). Every colour comes from the
+  taste-skill diagram.css - the look of diagram.js (references/diagrams.md). Every colour comes from the
   palette around it: --ink, --muted, --accent, --accent-ink and --card (or --bg); --frag sets the node
   fill when a page has one. On a dark ground the nodes are one step lighter than the card, on a light
   one white, as the UI fragments are. The core (the product) is an ink tile; the light is the accent.
@@ -210,6 +210,11 @@
 .dg-node--core { justify-content: center; width: 56px; height: 56px; padding: 0; gap: 0; border-radius: calc(var(--dg-r) + 8px); }
 .dg-node--core .dg-ic { width: 26px; height: 26px; }
 .dg-node--core > .dg-cap { color: var(--dg-ink); font-weight: 500; top: calc(100% + 10px); }
+/* the core's name sits inside its tile, under the icon: the tile grows to hold it (a long name wraps in two
+   balanced lines at 148px), so the name is never wider than its node, never cut at the diagram's edge */
+.dg[data-tier] .dg-node--core:has(> .dg-cap--in) { flex-direction: column; width: auto; min-width: 56px; height: auto; padding: 11px 14px 9px; gap: 6px; }
+.dg .dg-node--core > .dg-cap--in { position: static; translate: none; max-width: 148px; flex-direction: row; font-size: 12px; line-height: 16px; font-weight: 560;
+  color: inherit; white-space: normal; text-wrap: balance; text-align: center; overflow-wrap: anywhere; }   /* the tile's own colour: light on ink, dark on the accent's ink */
 .dg-node--core-pill { height: 42px; padding: 0 16px 0 12px; gap: 10px; border-radius: calc(var(--dg-r) + 6px); font-size: 14px; font-weight: 560; }
 .dg-node--core-pill .dg-ic { width: 20px; height: 20px; }
 .dg-node.is-ink {

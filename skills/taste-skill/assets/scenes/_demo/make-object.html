@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Object render</title>
+<style>body{margin:0;background:#888}canvas{display:block}</style></head>
+<body>
+<canvas id="c" width="300" height="340"></canvas>
+<script>
+/* A stoneware mug modelled and lit in code (signed distance fields, one fragment shader), rendered once with
+   alpha and handed to shoot.mjs make as a PNG: the demo cut-out for the object scenes. Colours: ?body=e8e1d4&glaze=6f7f7a */
+window.addEventListener('error', e => { window.__err = e.message; });
+try {
+const q = new URLSearchParams(location.search);
+const hexv = (s, d) => { const h = (s || d).replace('#', ''); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16) / 255); };
+const body = hexv(q.get('body'), 'e8e1d4'), glaze = hexv(q.get('glaze'), '5f6e6a');
+const cv = document.getElementById('c');
+const g = cv.getContext('webgl', { alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: true, antialias: false });
+const V = 'attribute vec2 a_p;varying vec2 v_uv;void main(){v_uv=a_p*0.5+0.5;gl_Position=vec4(a_p,0.0,1.0);}';
+const F = `
+precision highp float;
+varying vec2 v_uv;
+uniform vec2 u_res; uniform vec3 u_body; uniform vec3 u_glaze;
+float sdCyl(vec3 p, float h, float r){ vec2 d = abs(vec2(length(p.xz), p.y)) - vec2(r, h); return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)); }
+float sdTor(vec3 p, vec2 t){ vec2 d = vec2(length(p.xy) - t.x, p.z); return length(d) - t.y; }
+vec2 map(vec3 p){
+  // body: a slightly tapered cup, hollow, with a lip
+  float taper = 1.0 + 0.06 * (p.y + 0.55) ;
+  vec3 pb = vec3(p.x / taper, p.y, p.z / taper);
+  float outer = sdCyl(pb, 0.62, 0.42) - 0.03;
+  float inner = sdCyl(pb - vec3(0.0, 0.14, 0.0), 0.62, 0.36);
+  float cup = max(outer, -inner);
+  // handle: a torus segment on +x, slightly squashed
+  vec3 ph = p - vec3(0.46, 0.0, 0.0);
+  float handle = sdTor(vec3(ph.x * 1.1, ph.y * 0.78, ph.z), vec2(0.30, 0.058));
+  float cutH = -(ph.x + 0.02);  // keep only the outer half of the ring
+  handle = max(handle, cutH);
+  float d = min(cup, handle);
+  // material id: 1 outer glaze band near the foot, 0 body
+  float id = (p.y < -0.30 && cup < handle) ? 1.0 : 0.0;
+  // inside of the cup is glazed too
+  if (cup < handle && inner < 0.02 && p.y > -0.44) id = 1.0;
+  return vec2(d, id);
+}
+vec3 nrm(vec3 p){ vec2 e = vec2(0.0015, 0.0); return normalize(vec3(map(p + e.xyy).x - map(p - e.xyy).x, map(p + e.yxy).x - map(p - e.yxy).x, map(p + e.yyx).x - map(p - e.yyx).x)); }
+float ao(vec3 p, vec3 n){ float o = 0.0, s = 1.0; for (int i = 1; i <= 5; i++){ float h = 0.03 * float(i); float d = map(p + n * h).x; o += (h - d) * s; s *= 0.6; } return clamp(1.0 - 2.2 * o, 0.0, 1.0); }
+float shadow(vec3 ro, vec3 rd){ float r = 1.0, t = 0.02; for (int i = 0; i < 48; i++){ float h = map(ro + rd * t).x; r = min(r, 12.0 * h / t); t += clamp(h, 0.01, 0.08); if (h < 0.0005 || t > 3.0) break; } return clamp(r, 0.0, 1.0); }
+void main(){
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  vec3 ro = vec3(0.0, 0.35, 3.1);
+  vec3 ta = vec3(0.0, -0.02, 0.0);
+  vec3 fw = normalize(ta - ro), rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0))), up = cross(rt, fw);
+  vec3 rd = normalize(uv.x * rt + uv.y * up + 1.9 * fw);
+  // turn the mug a little so the handle shows
+  float a = 0.62; mat3 R = mat3(cos(a), 0.0, sin(a), 0.0, 1.0, 0.0, -sin(a), 0.0, cos(a));
+  float t = 0.0; vec2 h = vec2(0.0); bool hit = false;
+  for (int i = 0; i < 140; i++){ vec3 p = R * (ro + rd * t); h = map(p); if (h.x < 0.0008){ hit = true; break; } t += h.x * 0.9; if (t > 7.0) break; }
+  if (!hit){ gl_FragColor = vec4(0.0); return; }
+  vec3 p = R * (ro + rd * t); vec3 n = nrm(p);
+  vec3 L1 = normalize(vec3(-0.55, 0.9, 0.5)), L2 = normalize(vec3(0.7, 0.25, -0.3));
+  float d1 = max(dot(n, L1), 0.0), d2 = max(dot(n, L2), 0.0);
+  float sh = shadow(p + n * 0.004, L1);
+  float occ = ao(p, n);
+  vec3 base = mix(u_body, u_glaze, h.y);
+  vec3 col = base * (0.30 * occ + 0.72 * d1 * sh + 0.22 * d2) ;
+  // soft sheen for the glaze
+  vec3 vdir = normalize(-rd * R);
+  vec3 hv = normalize(L1 + (R * vdir));
+  float spec = pow(max(dot(n, hv), 0.0), mix(18.0, 60.0, h.y)) * mix(0.08, 0.35, h.y) * sh;
+  col += spec;
+  col = pow(col, vec3(0.95));
+  gl_FragColor = vec4(col, 1.0);
+}`;
+const sh = (t, s) => { const o = g.createShader(t); g.shaderSource(o, s); g.compileShader(o); if (!g.getShaderParameter(o, g.COMPILE_STATUS)) throw new Error(g.getShaderInfoLog(o)); return o; };
+const prog = g.createProgram(); g.attachShader(prog, sh(g.VERTEX_SHADER, V)); g.attachShader(prog, sh(g.FRAGMENT_SHADER, F)); g.linkProgram(prog);
+if (!g.getProgramParameter(prog, g.LINK_STATUS)) throw new Error(g.getProgramInfoLog(prog));
+g.useProgram(prog);
+const b = g.createBuffer(); g.bindBuffer(g.ARRAY_BUFFER, b); g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), g.STATIC_DRAW);
+const l = g.getAttribLocation(prog, 'a_p'); g.enableVertexAttribArray(l); g.vertexAttribPointer(l, 2, g.FLOAT, false, 0, 0);
+g.viewport(0, 0, cv.width, cv.height);
+g.uniform2f(g.getUniformLocation(prog, 'u_res'), cv.width, cv.height);
+g.uniform3f(g.getUniformLocation(prog, 'u_body'), ...body);
+g.uniform3f(g.getUniformLocation(prog, 'u_glaze'), ...glaze);
+g.clearColor(0, 0, 0, 0); g.clear(g.COLOR_BUFFER_BIT);
+g.drawArrays(g.TRIANGLES, 0, 3);
+g.finish();
+// trim: find the opaque bounds and crop to them with a small margin, so the PNG's bottom row is the foot
+const px = new Uint8Array(cv.width * cv.height * 4); g.readPixels(0, 0, cv.width, cv.height, g.RGBA, g.UNSIGNED_BYTE, px);
+let x0 = cv.width, x1 = 0, y0 = cv.height, y1 = 0;
+for (let y = 0; y < cv.height; y++) for (let x = 0; x < cv.width; x++) if (px[(y * cv.width + x) * 4 + 3] > 8) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+const out = document.createElement('canvas'); const m = 6;
+out.width = x1 - x0 + 1 + 2 * m; out.height = y1 - y0 + 1 + 2 * m;
+const ctx = out.getContext('2d');
+const img = ctx.createImageData(out.width, out.height);
+for (let y = 0; y < out.height; y++) for (let x = 0; x < out.width; x++) {
+  const sx = x0 - m + x, sy = (cv.height - 1) - (y0 - m + y); // flip: GL rows start at the bottom
+  const o = (y * out.width + x) * 4;
+  if (sx < 0 || sy < 0 || sx >= cv.width || sy >= cv.height) continue;
+  const s = (sy * cv.width + sx) * 4;
+  img.data[o] = px[s]; img.data[o + 1] = px[s + 1]; img.data[o + 2] = px[s + 2]; img.data[o + 3] = px[s + 3];
+}
+ctx.putImageData(img, 0, 0);
+window.__out = out.toDataURL('image/png');
+document.body.appendChild(out);
+} catch (e) { window.__err = String(e && e.message || e); }
+</script>
+</body></html>

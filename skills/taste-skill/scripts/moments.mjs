@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  moments.mjs - the creative moments command line (tasteskill, references/moments.md).
+  moments.mjs - the creative moments command line (taste-skill, references/moments.md).
 
     node scripts/moments.mjs index                      scan assets/moments/<id>/meta.json into index.json
     node scripts/moments.mjs list [--kind text] [--fits hero] [--page tech] [--json]
@@ -10,11 +10,12 @@
     node scripts/moments.mjs check <page.html> [--page tech] [--scene <id>] [--effects a,b] [--contexts n]
                                   audit a built page: its moments, the still rule, cards, the WebGL budget
     node scripts/moments.mjs gallery                    write assets/moments/gallery.html (every demo, one page)
-    node scripts/moments.mjs serve --port 5720          static server for the skill folder (5720-5729)
-    node scripts/moments.mjs shoot --out shots/moments --profile .taste-skill/chrome-moments
+    node scripts/moments.mjs serve --port 5720          static server for the taste-skill folder (5720-5729)
+    node scripts/moments.mjs shoot --out <dir> --profile <own chrome dir>
                                   [--only a,b] [--widths 1440,390] [--states start,middle,end] [--port 5720] [--reduced]
                                   [--probe "<js expression>"]   (its value is printed after every state)
-    node scripts/moments.mjs sheet --out shots/moments        rebuild index.html from the shots in that folder
+    node scripts/moments.mjs sheet --out <dir>        rebuild index.html from the shots in that folder
+    (shoot --url assets/moments/_demo/in-card.html shoots one other page of the skill, e.g. a test page)
 
   pick deals by the page's kind (Leon's overrides, 2 Nov). --page is required: tech, gaming or software
   (ai and saas are tech and software; "technical product" is software). A place, shop, cafe, service or
@@ -300,8 +301,7 @@ function cmdGallery() {
 
 /* ------------------------------------------------------------------ shoot */
 function findChrome() {
-  const pf = process.env.PROGRAMFILES || '', pf86 = process.env['PROGRAMFILES(X86)'] || '', local = process.env.LOCALAPPDATA || '';
-  const c = [process.env.CHROME_PATH, pf && path.join(pf, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Google/Chrome/Application/chrome.exe'), local && path.join(local, 'Google/Chrome/Application/chrome.exe'), '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
+  const c = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/usr/bin/chromium'];
   const f = c.find(p => p && fs.existsSync(p));
   if (!f) throw new Error('no Chrome found (set CHROME_PATH)');
   return f;

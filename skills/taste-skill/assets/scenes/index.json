@@ -188,7 +188,7 @@
    "weight": 0.9,
    "needs": {
     "mark": "the client's own solid mark as one closed SVG path in a 100 x 100 box (a monogram, an emblem, a symbol), never a plain circle",
-    "photo": "one photograph of the chapter's world, dark enough for light type on its face under a 50% scrim",
+    "photo": "one photograph of the chapter's world with a calm, dark middle for light type on its face (nothing is laid over it: no scrim, gradient or veil)",
     "words": "a title of 2-6 words on two lines and one sentence of 10-18 words"
    },
    "never": "an extruded, bevelled or shaded mark; a generic circle or square as the mark; a bright photograph; words on the photograph outside the band",
@@ -379,8 +379,7 @@
     "product"
    ],
    "types": [
-    "software",
-    "tech"
+    "software"
    ],
    "trigger": "scroll",
    "hold": 1,
@@ -395,7 +394,7 @@
     "ui": "the product's real screen as HTML cut along its own panels (a toolbar, a sidebar, a main pane, an inspector), 2 to 4 detail layers marked data-layer",
     "words": "one word that sits in the screen's title, a heading and 3-4 spec rows"
    },
-   "never": "an illustration drawn for the page or a screenshot cut into tiles; a screen that cannot be cut into meaningful parts; a caption under the screen",
+   "never": "an illustration drawn for the page or a screenshot cut into tiles; a screen that cannot be cut into meaningful parts; a caption under the screen; a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
    "avoidWith": [
     "powers-of-ten-pullback",
     "product-assembles-into-its-action"
@@ -440,7 +439,7 @@
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
-    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is for the demo only: never copy it to a page",
+    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is drawn by _demo/demo.css, which is for the demo pages only: never copy it to a page",
     "words": "a label, a heading, one line and one action"
    },
    "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",
@@ -476,8 +475,7 @@
     "product"
    ],
    "types": [
-    "software",
-    "tech"
+    "software"
    ],
    "trigger": "scroll",
    "hold": 1,
@@ -492,7 +490,7 @@
     "ui": "the product's real screen as HTML in its finished state, each part marked with the step it arrives at (data-at)",
     "words": "4 to 6 steps a user would really take, one list item a step in the same order, 4-10 words each; the action labelled with the figure the screen built; a closing line of 4-8 words"
    },
-   "never": "a screenshot cut into parts; a counter or progress bar; a heading that counts the steps wrongly; beside the hero's product window (it carries another view)",
+   "never": "a screenshot cut into parts; a counter or progress bar; a heading that counts the steps wrongly; beside the hero's product window (it carries another view); a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
    "avoidWith": [
     "powers-of-ten-pullback",
     "parts-lock-into-the-whole"

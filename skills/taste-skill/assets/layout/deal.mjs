@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill layout deal - deals the hero (heroes.json) for a page at random, weighted by the business
+  taste-skill layout deal - deals the hero (heroes.json) for a page at random, weighted by the business
   type, away from the last pages' deals (references/layout-v4.md). It deals the hero only: the type
   pairing comes from start.mjs (VI-02), and its :root lines stay as start.mjs prints them. A place's
   hero is never dealt: --type place always prints hero-place (local-business Recipe 3; ST-53, ST-55).

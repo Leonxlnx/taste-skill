@@ -16,7 +16,7 @@
   "weight": 0.9,
   "needs": {
     "mark": "the client's own solid mark as one closed SVG path in a 100 x 100 box (a monogram, an emblem, a symbol), never a plain circle",
-    "photo": "one photograph of the chapter's world, dark enough for light type on its face under a 50% scrim",
+    "photo": "one photograph of the chapter's world with a calm, dark middle for light type on its face (nothing is laid over it: no scrim, gradient or veil)",
     "words": "a title of 2-6 words on two lines and one sentence of 10-18 words"
   },
   "never": "an extruded, bevelled or shaded mark; a generic circle or square as the mark; a bright photograph; words on the photograph outside the band",

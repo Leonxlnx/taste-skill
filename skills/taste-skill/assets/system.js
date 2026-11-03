@@ -1,5 +1,5 @@
 /*
-  tasteskill system.js - the page behaviour every build shares. Load it once, at the end of <body>:
+  taste-skill system.js - the page behaviour every build shares. Load it once, at the end of <body>:
     <script type="module" src="assets/system.js"></script>
   Write no second script for any of this.
 

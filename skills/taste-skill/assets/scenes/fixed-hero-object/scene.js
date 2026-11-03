@@ -9,7 +9,7 @@
   <section class="sc" data-big-scene="fixed-hero-object" data-big-scene-opts='{"object":"print-cards","effect":"render","turns":1}' style="--h: 2" aria-label="…">
     <div class="sc__stage">
       <div class="fho__object" data-move>
-        <img class="fho__still" src="cards.png" alt="…" width height>     the object's still: the finished composition, reduced motion, a phone
+        <img class="fho__still" src="cards.png" alt="…" width height>     the object's still (assets/scenes/_demo/shoot.mjs make --html <path> --save <png> --profile <dir>): the finished composition, reduced motion, a phone
         <div class="fho__host"></div>                                      the render draws here while the scene is live and near
       </div>                                     or <div class="fho__object" data-move><img class="fho__img" src="cutout.png" alt="…"></div>
       <div class="fho__track">

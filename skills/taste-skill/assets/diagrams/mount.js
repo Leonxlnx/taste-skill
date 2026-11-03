@@ -1,5 +1,5 @@
 /*
-  tasteskill diagrams/mount.js - draws every [data-diagram] on the page. One line in the page:
+  taste-skill diagrams/mount.js - draws every [data-diagram] on the page. One line in the page:
     <link rel="stylesheet" href="assets/diagrams/diagram.css">
     <script type="module" src="assets/diagrams/mount.js"></script>
   The icons a diagram names are the files scripts/icons.mjs wrote (icons.mjs scan index.html --out assets/icons),

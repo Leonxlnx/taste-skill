@@ -1,4 +1,4 @@
-// voice: one line per cycle (about 3 s): the assistant speaks it (its words step back to about 72% ink
+// voice: one line per cycle (about 2.75 s): the assistant speaks it (its words step back to about 72% ink
 // and come up in order in under 0.8 s while the waveform moves), the finished line holds while it
 // listens; the timer counts on. No word ever drops below 72% ink (4.5:1 on white). The lines are the page's own: the caption as written, or
 // opts.lines in turn; the timer starts from the time as written. The orb follows the fragment's surface (see fragment.css):
@@ -76,9 +76,9 @@ export default function init(root, opts = {}) {
     const per = Math.max(40, Math.min(110, 720 / Math.max(1, n)));
     say(line, 0);
     root.classList.add('is-talking');
-    await api.wait(300);
+    await api.wait(400);
     for (let j = 1; j <= n; j++) { say(line, j); await api.wait(per); }
-    await api.wait(Math.max(900, 1870 - per * n));
+    await api.wait(Math.max(1000, 1970 - per * n));
     root.classList.remove('is-talking');
     if (secs != null) { secs += 3; clock(); }
     await api.wait(380);

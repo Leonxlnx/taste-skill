@@ -15,7 +15,7 @@
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
-    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is for the demo only: never copy it to a page",
+    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is drawn by _demo/demo.css, which is for the demo pages only: never copy it to a page",
     "words": "a label, a heading, one line and one action"
   },
   "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",

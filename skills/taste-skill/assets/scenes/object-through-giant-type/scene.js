@@ -13,7 +13,7 @@
         …                                                                                           the gap near the middle
       </blockquote>
       <div class="ott__object" data-move>
-        <img class="ott__still" src="globe.png" alt="" width height>     the object's still: the finished composition, reduced motion, a phone
+        <img class="ott__still" src="globe.png" alt="" width height>     the object's still (assets/scenes/_demo/shoot.mjs make --html <path> --save <png> --profile <dir>): the finished composition, reduced motion, a phone
         <div class="ott__host"></div>                                     the render draws here while the scene is live and near
       </div>                                                              or only <img class="ott__img" src="cutout.png" alt="…"> for a cut-out
       <p class="ott__credit">Noor Haddad, head of network</p>            optional, 5 words at most

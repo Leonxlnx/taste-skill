@@ -1,5 +1,5 @@
 /*
-  scenes.js - the loader for the page's one big scene (tasteskill, references/scenes.md).
+  scenes.js - the loader for the page's one big scene (taste-skill, references/scenes.md).
 
     <link rel="stylesheet" href="assets/scenes/scenes.css"><link rel="stylesheet" href="assets/scenes/<id>/scene.css">   in <head>
     <section class="sc" data-big-scene="<id>" data-big-scene-opts='{"hold": 1}' style="--h: 1"><div class="sc__stage">…</div></section>

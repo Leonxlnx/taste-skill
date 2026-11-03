@@ -1,5 +1,5 @@
 /*
-  moments.js - the loader for the page's one or two creative moments (tasteskill, references/moments.md).
+  moments.js - the loader for the page's one or two creative moments (taste-skill, references/moments.md).
 
     <section data-moment="pinned-chapters" data-moment-opts='{"hold": 2.4}'>…</section>
 

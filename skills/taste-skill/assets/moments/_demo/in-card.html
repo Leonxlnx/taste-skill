@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A moment in a card stays still · test page</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../../ui/cards.css">
+<link rel="stylesheet" href="../word-highlight/moment.css">
+<link rel="stylesheet" href="../counter-rolls/moment.css">
+<style>
+  :root { --p-bg: #0f1411; --p-surface: #182019; --p-ink: #ece9df; --p-muted: #9aa394; --p-accent: #d7e26b; --p-accent-ink: #0f1411; --p-action: #ece9df; --p-action-ink: #0f1411;
+          --p-inv-bg: #ece9df; --p-inv-surface: #ffffff; --p-inv-ink: #0f1411; --p-inv-muted: #555c52; --p-inv-accent: #4f6238; --p-inv-accent-ink: #ffffff; --p-inv-action: #0f1411; --p-inv-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+</style>
+</head>
+<body>
+<main>
+  <section class="section">
+    <div class="container">
+      <h2>Two moments placed in a card</h2>
+      <div class="card" style="padding: var(--s-6); display: grid; gap: var(--s-6)">
+        <p data-moment="word-highlight" class="mo-wh__text">This statement sits in a card, so it stays in ink and nothing is scrubbed.</p>
+        <div data-moment="counter-rolls"><p class="t-stat">64%</p><p class="t-small muted">of the figures stand</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /*
-  tasteskill system.css - the one system for the page. Link it first, then assets/ui/cards.css (the
+  taste-skill system.css - the one system for the page. Link it first, then assets/ui/cards.css (the
   feature card, its panel and the fragment placements), then set the palette (--p-*), the fonts and
   the radius set on :root in the page (node scripts/start.mjs prints that block).
   Do not add a second grid, spacing scale, type scale, radius scale, button or card style.
@@ -394,6 +394,8 @@ main > :is(.hero, .section--hero) {
 }
 .btn--primary { background: var(--action); color: var(--action-ink); }
 .btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--ink)); }
+/* an inverted primary (the action is the ground's ink: a brand band, a lit ground): its hover steps toward the ground, as the filled one steps toward the ink */
+.ground-brand .btn--primary:hover { background: color-mix(in oklab, var(--action) 88%, var(--bg)); }
 /* the ground's own colour with a clear border: never grey on grey, readable on an effect too */
 .btn--secondary { background: var(--bg); color: var(--ink); border-color: var(--line-strong); }
 .btn--secondary:hover { background: color-mix(in oklab, var(--bg) 94%, var(--ink)); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
@@ -676,7 +678,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   /* the menu button takes the secondary button's look on a 44px tap area */
   .nav__toggle {
     display: inline-grid; place-items: center; margin-left: auto; width: 44px; height: 44px; border-radius: var(--r-btn);
-    border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; flex: none;
   }
   .nav.is-open .nav__links {
     display: flex; flex-direction: column; position: fixed; top: var(--nav); left: 0; right: 0; bottom: 0;
@@ -720,7 +722,13 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   .nav:not(.is-open) .nav__actions + .nav__toggle { margin-left: 0; }
 }
 @media (max-width: 639px) {
-  .nav:not(.is-open) .nav__actions .btn { padding-inline: var(--s-4); }
+  /* a long name (15 characters, "Verdigris Works"), the main button and the menu button fit 342px (390 wide) on
+     one line each, with no page CSS: the name steps down with the screen (18px at 390), the button is the small
+     size, and the three sit 8px apart. A name of 17 characters or more is the client's to shorten to its mark. */
+  .nav__bar { gap: var(--s-2); }
+  .nav__logo { font-size: clamp(16px, 4.6vw, 20px); gap: 6px; white-space: nowrap; }
+  .nav__logo .mark:not(.mark--initial) { width: 20px; height: 20px; }
+  .nav:not(.is-open) .nav__actions .btn { height: 44px; padding-inline: var(--s-3); font-size: var(--t-small); }
 }
 /* no script: the sheet cannot open, so the words stay in the bar (it scrolls sideways) and the dead menu button goes */
 @media (scripting: none) and (max-width: 1023px) {
@@ -888,6 +896,45 @@ html[data-tone="dark"] .footer--dark {
 .hours dt { color: var(--ink); } .hours dd { margin: 0; }
 .hours .is-today { font-weight: 500; }
 .hours dt.is-today::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: var(--s-2); border-radius: 999px; background: var(--accent); vertical-align: 0.2em; }
+/* the visit block (a place, sections.md), on the container's lines. Open by default: the words on the page ground,
+   no box (a box as wide as the section on a ground of its own reads as a band to the rhythm check, and a phone's
+   padding moves its words off the left line). .visit--card is the panel on --g-alt for the full page, where it
+   stands in a split column beside the client's photograph: from 1024px up only, at most half the container,
+   48px inside; under 1024 it is open type again. .visit--cols is the short page's: address, hours and access as
+   three columns, then the menu as .rows under it in the same section.
+   Its head is the label "Visit" left and the open-now line right; under it the address column and the hours column 24
+   apart; under both at most two 44px rows (access, a guesthouse's check-in, "By appointment").
+   <section class="section" data-place="visit" aria-label="Visit"><div class="wrap"><div class="visit">
+     <div class="visit__head"><p class="t-label muted">Visit</p><p class="t-small" data-open-now></p></div>
+     <div class="visit__cols">
+       <div class="visit__col stack-4"><address class="visit__address">Street<br>District</address>
+         <a class="link" href="https://www.openstreetmap.org/search?query=..">Get directions</a></div>
+       <div class="visit__col"><dl class="hours" data-tz="Europe/Berlin"><dt>Mon to Fri</dt><dd>8 to 18</dd></dl></div>
+     </div>
+     <ul class="visit__rows"><li><span>Access</span><span>Step-free at the front door</span></li></ul>
+   </div></div></section> */
+.visit { display: grid; gap: var(--s-5); color: var(--ink); }
+.visit__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
+.visit__head > * { margin: 0; }
+.visit__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); row-gap: var(--s-5); }   /* the columns stretch to one height (row-lines) */
+.visit--cols .visit__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.visit__col { min-width: 0; }
+.visit__col > .t-label { margin-bottom: var(--s-3); color: var(--muted); }
+.visit__address { font: 400 20px/30px var(--font-text); font-style: normal; }
+.visit__rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.visit__rows > li { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); min-height: 44px; border-top: 1px solid var(--line); }
+.visit__rows > li > :first-child { color: var(--muted); }
+.visit__rows > li > :last-child { text-align: right; }
+@media (min-width: 1024px) {
+  .visit--card { --bg: var(--p-surface); --surface: var(--p-bg); --card: var(--p-bg); background: var(--bg); border-radius: var(--r-lg); padding: var(--s-7); }
+}
+@media (max-width: 1023px) { .visit--cols .visit__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 639px) {
+  .visit__cols, .visit--cols .visit__cols { grid-template-columns: minmax(0, 1fr); }
+  .visit__address { font-size: 18px; line-height: 28px; }
+  .visit__rows > li { align-items: flex-start; flex-direction: column; justify-content: center; gap: 0; padding-block: var(--s-2); }
+  .visit__rows > li > :last-child { text-align: left; }
+}
 /* photo credits: one short line that opens the full list (copy.md), at the end of the legal row:
    <details class="credits"><summary>Photographs via Unsplash and Wikimedia Commons</summary>
    <p>one line a photograph, as photos.mjs credits prints them</p></details> */

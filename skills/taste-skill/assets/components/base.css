@@ -1,5 +1,5 @@
 /*
-  tasteskill components - shared base. Link after system.css. Every component reads the page tokens
+  taste-skill components - shared base. Link after system.css. Every component reads the page tokens
   (--bg --surface --ink --muted --accent --accent-ink --action --line, the radius, type and space
   scales) and adds only the few steps below. Classes start with cx-.
 */

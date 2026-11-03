@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /*
-  tasteskill backgrounds check.mjs - measures the contrast of the page ink (7:1) and the muted ink (4.5:1)
+  taste-skill backgrounds check.mjs - measures the contrast of the page ink (7:1) and the muted ink (4.5:1)
   on every ground, on every palette, from real pixels.
 
-    node assets/backgrounds/check.mjs --profile .taste-skill/chrome-bg [--palettes id,id] [--grounds mist,halo]
+    node assets/backgrounds/check.mjs --profile <own chrome profile dir> [--palettes id,id] [--grounds mist,halo]
                                       [--lit sand,painting] [--json out.json] [--save dir] [--min-ink 7] [--min-muted 4.5] [--port 5967]
 
   It serves the skill folder over http on 127.0.0.1 (5965-5969) and opens check.html in ONE headless Chrome (WebGL on the CPU flags, no window; closed by its own PID),
@@ -71,7 +71,7 @@ const lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
 /* ---------------------------------------------------------------- Chrome */
-const findChrome = () => [process.env.CHROME_PATH, ...(process.env.PROGRAMFILES ? [path.join(process.env.PROGRAMFILES, 'Google/Chrome/Application/chrome.exe')] : []), ...(process.env['PROGRAMFILES(X86)'] ? [path.join(process.env['PROGRAMFILES(X86)'], 'Google/Chrome/Application/chrome.exe')] : []), '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => p && fs.existsSync(p));
+const findChrome = () => ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', process.env.CHROME_PATH, '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => p && fs.existsSync(p));
 const prof = path.resolve(profile); fs.mkdirSync(prof, { recursive: true });
 const portFile = path.join(prof, 'DevToolsActivePort'); try { fs.rmSync(portFile); } catch { /* none */ }
 const child = spawn(findChrome(), ['--headless=new', `--user-data-dir=${prof}`, '--remote-debugging-port=0', '--no-first-run', '--no-default-browser-check',

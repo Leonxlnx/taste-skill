@@ -1,0 +1,53 @@
+/* scenes/_demo/demo.css - the chrome of the scene demo pages only (a plain nav, stand-in sections, a drawn
+   product window, a footer line). Never shipped on a page: a page uses system.css and its own parts. */
+.demo-nav { position: fixed; left: 0; right: 0; top: 0; z-index: 40; height: var(--nav-h); border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 92%, transparent); backdrop-filter: blur(8px); }
+.demo-nav .container { height: 100%; display: flex; align-items: center; gap: var(--s-6); }
+.demo-nav__logo { font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.02em; flex: none; display: inline-flex; align-items: center; gap: 10px; }
+.demo-nav__logo i { width: 22px; height: 22px; border-radius: 6px; background: var(--ink); display: inline-block; }
+.demo-nav__links { display: flex; gap: var(--s-1); flex: 1; }
+.demo-nav__links a { font-size: var(--t-small); font-weight: 500; padding: 0 var(--s-3); height: 36px; display: inline-flex; align-items: center; border-radius: var(--r-sm); transition: background-color var(--dur) var(--ease); }
+.demo-nav__links a:hover { background: color-mix(in oklab, var(--ink) 6%, transparent); }
+.demo-nav__actions { display: flex; gap: var(--s-2); margin-left: auto; }
+@media (max-width: 1023px) { .demo-nav__links { display: none; } }
+@media (max-width: 639px) { .demo-nav__actions .btn--secondary { display: none; } }
+
+.demo-split { display: grid; gap: var(--s-7); align-items: center; }
+@media (min-width: 1024px) { .demo-split { grid-template-columns: 5fr 6fr; gap: var(--s-8); } .demo-split--flip > :first-child { order: 2; } }
+.demo-photo { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-lg); }
+.demo-footer { padding: var(--s-7) 0; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--t-small); display: grid; gap: var(--s-2); }
+.demo-footer a { text-decoration: underline; text-underline-offset: 3px; }
+.demo-logos { display: flex; flex-wrap: wrap; gap: var(--s-5) var(--s-8); align-items: center; color: var(--muted); font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.01em; }
+.demo-cards { display: grid; gap: var(--card-gap); }
+@media (min-width: 640px) { .demo-cards { grid-template-columns: repeat(3, 1fr); } }
+.demo-card { padding: var(--card-pad); border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card); display: grid; gap: var(--s-2); align-content: start; }
+.demo-card h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); letter-spacing: -0.01em; }
+.demo-card p { color: var(--muted); font-size: var(--t-small); }
+
+/* a drawn product window: title bar, side list, header row, stat tiles and rows. Real words, flat fills. */
+.ux { width: 100%; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+  font-size: var(--t-small); text-align: left; box-shadow: 0 30px 60px -30px rgb(0 0 0 / .35); }
+.ux__bar { height: 42px; display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-4); border-bottom: 1px solid var(--line); color: var(--muted); }
+.ux__bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); display: inline-block; }
+.ux__bar i + i { margin-left: -6px; }
+.ux__bar b { font-weight: 500; color: var(--ink); margin-left: var(--s-2); }
+.ux__body { display: grid; grid-template-columns: 180px 1fr; }
+.ux__side { border-right: 1px solid var(--line); padding: var(--s-4); display: grid; gap: 2px; align-content: start; }
+.ux__side span { height: 32px; border-radius: var(--r-sm); padding: 0 var(--s-3); display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
+.ux__side span em { font-style: normal; font-size: 12px; }
+.ux__side span.on { background: color-mix(in oklab, var(--ink) 7%, transparent); color: var(--ink); }
+.ux__main { padding: var(--s-5); display: grid; gap: var(--s-4); align-content: start; }
+.ux__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.ux__head h4 { font-size: var(--t-body); }
+.ux__btn { height: 32px; padding: 0 12px; border-radius: var(--r-sm); background: var(--action); color: var(--action-ink); display: inline-flex; align-items: center; font-weight: 500; font-size: 13px; }
+.ux__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); }
+.ux__tile { padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--bg); display: grid; gap: 2px; }
+.ux__tile span { color: var(--muted); font-size: 12px; }
+.ux__tile b { font-weight: 500; font-size: 20px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.ux__rows { display: grid; }
+.ux__row { display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4); padding: 10px 0; border-bottom: 1px solid var(--line); align-items: center; }
+.ux__row:last-child { border-bottom: 0; }
+.ux__row b { font-weight: 500; display: block; } .ux__row span { color: var(--muted); }
+.ux__tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: color-mix(in oklab, var(--accent) 16%, transparent); color: var(--ink); font-size: 12px; }
+.ux__tag.ok { background: color-mix(in oklab, #2f9e6b 18%, transparent); }
+@media (max-width: 639px) { .ux__body { grid-template-columns: 1fr; } .ux__side { display: none; } .ux__main { padding: var(--s-4); } .ux__tiles { grid-template-columns: 1fr 1fr; } .ux__tile:nth-child(3) { display: none; } }

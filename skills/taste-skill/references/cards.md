@@ -1,11 +1,11 @@
 # Cards
 
 How a feature card is built so it looks like x.ai's and Figma's, not a template. Measured from
-x.ai, Figma and 41 company sites.
+Leon's recording (x.ai Grok Bot 2x2, Figma's tile wall) and research-054 (41 company sites).
 Showcase: `assets/ui/cards.html` (nine layouts: 2x2, bento, split, stat, integrations,
 testimonial, pricing, tall cards, developer tools; light and dark). Every fragment on its own: `assets/ui/index.html`.
 Styles: `assets/ui/cards.css` (card, panel, placements) and `assets/ui/base.css` (fragments).
-Motion: `assets/ui/ui.js`.
+Motion: `assets/ui/ui.js`. Objects instead of photographs: `assets/ui/_lab/object-card.html`.
 
 ## Why theirs look expensive
 
@@ -76,7 +76,7 @@ A card holds a picture, and the picture holds the product. That is all:
   Accept or Apply action (`diff-review`); an invoicing app an invoice; a booking app its calendar; a
   CI product its pipeline (`pipeline-board`, `terminal-run`). Never a generic dashboard, chat or stat
   card standing in for it; when no fragment shows the subject, build it from the client's screens.
-  A gaming page takes no fragment at all: it shows the game (`sections.md`, Gaming).
+  A gaming page takes no fragment at all: it shows the game (`sections.md`, Gaming). Its feature cards are open cards for what you do in it, one verb each (sail, salvage, rebuild), each holding an in-engine shot, else the still render of the object that verb uses (`data-product-place="card"`).
 - The product's real UI as live HTML at true size, complete and legible, never a flat picture:
   13px text, 12px meta, never under 11px; weights 400 and 500. Real data (names, amounts, order
   numbers, times) and real app marks (`icons.md`). Each fragment keeps its minimum width (chat
@@ -94,9 +94,8 @@ A card holds a picture, and the picture holds the product. That is all:
   tile (`.ui-logo`, `.ui-file__icon`, `.ui-field__tile`) sits on a light tile on every surface, in
   its brand colours: a colour file from `assets/icons` (`icons.mjs fetch` or `scan`,
   `references/icons.md`) as `<img>`. The kit's sample marks are local files in `assets/ui/icons`
-  (`<img src="icons/x.svg">`), which resolve only inside the kit: after pasting, write each as the
-  client's tool, `<img data-icon="<id>" src="assets/icons/<id>.svg" alt="">`, and `icons.mjs scan`
-  fetches it; no page calls a CDN for an icon. One treatment per set: never colour marks beside ink marks. A small mark inline beside text (a breadcrumb, a source chip) stays in the ink.
+  (`<img src="assets/ui/icons/x.svg">`): after pasting, write each as the client's tool,
+  `<img data-icon="<id>" src="assets/icons/<id>.svg" alt="">`, and `icons.mjs scan --colour` fetches it; no page calls a CDN for an icon. One treatment per set: never colour marks beside ink marks. A small mark inline beside text (a breadcrumb, a source chip) stays in the ink.
   Glyph marks only; a wordmark (Zoom's) is illegible at tile size.
 - Placement (`.stage` holds them, absolute in the panel; each `meta.json` has its own `place`):
   - `.at-corner`: 28-40px from the top-left, cut by the right and bottom (19 of 41 sites).
@@ -214,7 +213,7 @@ Every page must run on an integrated laptop GPU (2 GB shared), so:
   (`perf.md`) counts everything live at once, the effect, a scene and a moment's canvas included.
   It leaves `fx.config.maxDpr` alone.
 - An object or any raymarched canvas mounts when its panel nears the screen and is destroyed when
-  it leaves; one per card group; never two objects and a moving ground in
+  it leaves (`_lab/object-card.html`); one per card group; never two objects and a moving ground in
   one view. It renders at most 1 CSS px per pixel (0.75 when large), about 1.5 megapixels, and
   stops off screen and in a hidden tab.
 

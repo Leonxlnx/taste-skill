@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill layout check - runs assets/layout/layout-check.js on a page in one headless Chrome (WebGL on
+  taste-skill layout check - runs assets/layout/layout-check.js on a page in one headless Chrome (WebGL on
   the CPU), at each width, and prints every finding. Closes Chrome by its own PID.
 
     node <skill>/assets/layout/check.mjs --url <url> --profile <own chrome dir>
@@ -25,7 +25,7 @@ const url = opt('url'), profileArg = opt('profile'), shots = opt('shots');
 const sizes = String(opt('sizes', '1440x900,1024x768,820x1180,768x1024,390x844')).split(',').map(s => s.split('x').map(Number));
 if (!url || !profileArg || profileArg === true) { console.error('usage: check.mjs --url <url> --profile <dir> [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const chrome = [process.env.CHROME_PATH, ...(process.env.PROGRAMFILES ? [path.join(process.env.PROGRAMFILES, 'Google/Chrome/Application/chrome.exe')] : []), ...(process.env['PROGRAMFILES(X86)'] ? [path.join(process.env['PROGRAMFILES(X86)'], 'Google/Chrome/Application/chrome.exe')] : []),
+const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
 if (!chrome) { console.error('no Chrome found (set CHROME_PATH)'); process.exit(2); }
 const src = fs.readFileSync(path.join(here, 'layout-check.js'), 'utf8');

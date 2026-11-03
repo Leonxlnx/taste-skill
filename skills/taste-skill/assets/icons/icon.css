@@ -1,5 +1,5 @@
 /*
-  tasteskill icons/icon.css - how a real icon sits on the page: bare, in a tile, in a list row, in a chip,
+  taste-skill icons/icon.css - how a real icon sits on the page: bare, in a tile, in a list row, in a chip,
   in an avatar stack, in an integration grid, on a file card. Link it after system.css. It reads the
   ground tokens (--bg --surface --card --ink --muted --accent --line) and the radius set, so the same
   markup is right on a light page, on .ground-surface and on .ground-inverse. Nothing here animates.

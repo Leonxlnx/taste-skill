@@ -1,5 +1,5 @@
 /*
-  tasteskill layout.js - the small moments of the layout v4 heroes (references/layout-v4.md, section 3).
+  taste-skill layout.js - the small moments of the layout v4 heroes (references/layout-v4.md, section 3).
   Load it once, after system.js:  <script type="module" src="assets/layout/layout.js"></script>
   Every loop runs through ui.loop (it rests off screen, carries the kit's pause button and restarts
   when the pointer enters its box); on a phone (under 640px), on kind other and on a place, and under

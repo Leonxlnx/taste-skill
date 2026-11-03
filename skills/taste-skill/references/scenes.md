@@ -13,9 +13,9 @@ object render for the two object scenes.
   `software`, `tech` and `gaming`.
 - **At most one a page,** and only when the brief has what the scene `needs` (its own photographs,
   its own screen, its own words; a game's key art and in-engine shots are its photographs). No need
-  met, no scene: never a stand-in for the client's pictures. A game whose art the brief names but
-  does not supply takes the effect as key art in a `statement` hero instead (`sections.md`,
-  Gaming).
+  met, no scene: never a stand-in for the client's pictures. A game without art files renders its
+  key art with the product-render helper (its hero object or a scene of its own objects) on the
+  `product` stage and in its world section, never an effect in its place (`sections.md`, Gaming).
 - **Deal at random** among the scenes whose `fits` has the section, whose `types` has the page's
   type and whose `needs` the brief meets, weighted by `weight`, away from the last three in
   `.taste-skill/scenes-history.json` (the command is in `effects-usage.md`). Name the scene and its
@@ -115,9 +115,9 @@ reads empty (rule 2).
 ## Check it
 
 ```bash
-node <skill>/scripts/consistency.mjs <url> --widths 1440,1024,768,390 --profile .taste-skill/chrome --page <kind> --category "<category>" --primary "<action>"
-node <skill>/scripts/shoot.mjs <url> --out .taste-skill/shots --widths 1440,390 --profile .taste-skill/chrome
-node <skill>/scripts/shoot.mjs <url> --out .taste-skill/shots-reduced --widths 1440,390 --reduced --profile .taste-skill/chrome
+node <skill>/assets/scenes/_demo/shoot.mjs shoot --out <dir> --profile <own chrome dir> [--only <id>] [--page <url>] [--reduced] [--port 5836]
+node <skill>/assets/scenes/_demo/shoot.mjs index        # meta.json files into index.json
 ```
 
-One headless Chrome with WebGL on the CPU, closed by its own PID: inspect the scene across its scroll hold at 1440 and its still composition at 390, and shoot `--reduced` once.
+One headless Chrome with WebGL on the CPU, closed by its own PID: start, middle and end at 1440 and
+390, a contact sheet a scene. Read every sheet; shoot `--reduced` once.

@@ -18,13 +18,15 @@ video, any CSS gradient (grounds, panels, glows, scrims), SVG pattern or texture
 dither, duotone, print, `[data-fx]`, `[data-print]`, `[data-scene]`, `[data-big-scene]`,
 `[data-moment]`, `[data-ui-loop]`, `[data-m-loop]`, `[data-m-count]`, SVG animation, GIFs, Lottie, a
 custom cursor and any scroll or animation library. Allowed: `fx-map` baked still, `fx-photo` as a
-plain photograph, real icons, a still diagram (not on a place).
+plain photograph, real icons, a still diagram (not on a place), and on a physical product with no
+photographs its own product render (`[data-product]`, `effects-objects.md`): the product's
+picture, not an effect, one live context, on the flat ground, its poster beneath.
 
 ## What each kind gets
 
 | | tech | product, service (other) | place |
 |---|---|---|---|
-| Lead picture | the client's UI (hardware: its photographs or render, else its order form in a `split` hero; a game: its art, else the effect as key art in a `statement` hero) | its photographs | its photographs |
+| Lead picture | the client's UI (hardware: its photographs or render, else its product render, never an effect or an order form alone; a game: its name and its art, else its key art rendered with the product-render helper, an effect at most behind it) | its photographs; a product without them: its product render | its photographs (a remote place: its region's landscape) |
 | The one effect | a live ground, a WebGL part, an object or a big scene | none | none |
 | Card panel grounds | one card group, still, from the effect's family; with a big scene the lit ground (`data-ground`), no `data-fx` | the client's photograph | none |
 | Moments | up to 2 in sections, at most 1 in the hero | none | none |
@@ -33,8 +35,18 @@ plain photograph, real icons, a still diagram (not on a place).
 | Loops | one timed loop, one per card group | none | none |
 | CSS grounds | 0 to 2 (`backgrounds.md`) | flat tokens | flat tokens |
 
-Every visual that is not the effect, a card ground, a moment or the scene is a real UI capture or a
-real photograph. A photograph is never filtered, printed, dithered or graded on any page.
+**The subject before the effect** (round C: a robot arm shown as a silk shader and an order form,
+and an unnamed game shown as an abstract effect, both lost to pages that showed the thing). An
+effect never stands where the product, the device or the game's world should be. Hardware with no
+photographs or client renders, and a game with no art files, take a product render
+(`effects-objects.md`, Product renders) as their picture: the hardware itself, the game's hero
+object or a scene of its own objects, whole on the stage and full bleed in the world section. The
+render is the picture, not the effect: the page's one effect may sit behind it as the stage's
+ground (every render placement is transparent over its frame), counts as the beat and shares the
+four contexts with it; it never replaces it and never sits beside it as a second focal visual.
+
+Every visual that is not the effect, a card ground, a moment, the scene or a product render is a
+real UI capture or a real photograph. A photograph is never filtered, printed, dithered or graded on any page.
 
 ## Tech budget
 

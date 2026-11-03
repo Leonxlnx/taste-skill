@@ -1,5 +1,5 @@
 /*
-  ui.js - the tasteskill UI fragment kit. One ES module, no dependencies.
+  ui.js - the taste-skill UI fragment kit. One ES module, no dependencies.
 
   A fragment is a folder next to this file: <name>/fragment.html, fragment.css, meta.json and,
   when it moves, fragment.js (export default function (root, opts) -> { destroy() }).
@@ -245,6 +245,32 @@ export function pausable(box, ctl) {
 }
 const addPause = (root, ctl) => pausable(boxOf(root), ctl);
 
+/* ---------------------------------------------------------------- the finished picture, tidied */
+/* A finished picture keeps some text hidden on purpose (the other state of a button, a tag shown on hover, a label cut where it
+   would meet the edge). That text is hidden from assistive technology too (aria-hidden), so nothing in a fragment reads as
+   present but invisible; it is taken off again when the fragment starts to move. */
+const tidying = new WeakMap();
+function sweep(root) {
+  const walk = (el, up) => {
+    if (typeof SVGElement === 'function' && el instanceof SVGElement) return;
+    const cs = getComputedStyle(el);
+    const self = cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05;
+    if (self && !up && cs.display !== 'none' && el.textContent.trim()) {
+      if (!el.hasAttribute('aria-hidden')) { el.setAttribute('aria-hidden', 'true'); el.dataset.uiAh = ''; }
+    } else if (el.dataset.uiAh != null && !(self && !up)) { el.removeAttribute('aria-hidden'); delete el.dataset.uiAh; }
+    for (const c of el.children) walk(c, up || self);
+  };
+  for (const c of root.children) walk(c, false);
+}
+function tidy(root) {
+  if (tidying.has(root)) return;
+  tidying.set(root, requestAnimationFrame(() => requestAnimationFrame(() => { tidying.delete(root); if (root.isConnected) sweep(root); })));
+}
+function untidy(root) {
+  if (tidying.has(root)) { cancelAnimationFrame(tidying.get(root)); tidying.delete(root); }
+  for (const el of root.querySelectorAll('[data-ui-ah]')) { el.removeAttribute('aria-hidden'); delete el.dataset.uiAh; }
+}
+
 /* ---------------------------------------------------------------- the loop */
 const STOP = Symbol('stop'), AGAIN = Symbol('again');
 // the card (or tile, or link) a fragment sits in: the pointer entering it restarts the fragment's cycle
@@ -282,6 +308,11 @@ function hostListen(host, rec) {
   Run cycle(api) again and again while the fragment is on screen. One cycle is 2.5 to 4 s and ends on
   the finished picture (references/motion.md). api.wait(ms) waits that long of on-screen time;
   api.tween(ms, fn, ease) calls fn(0..1) on frames; api.alive is false after destroy.
+  The waits and tweens of a cycle add up on the cycle's own timeline (api.time is its clock): each one
+  ends at its place on it, so a busy page (six loops at once, a CPU renderer, a scroll) cannot stretch
+  the cycle past its plan, a late step just catches up. The dev warning reads the plan (the sum) and the
+  time it took (4.4 s at most); ui-cycle-end on the root says both ({ ms, planned, stalled }).
+  A held or reduced-motion fragment hides its intentionally hidden text from assistive technology too.
   Returns { destroy, pause, resume, restart, hold }.
   - still() (the finished picture) is shown at once and held `rest` ms (600) before the first cycle,
     so a visitor or a screenshot never meets an empty window.
@@ -296,7 +327,7 @@ function hostListen(host, rec) {
     ui.loop(el, async api => { ... }, { still: () => showFinished(el) })
 */
 export function loop(root, cycle, { still, rest = 600, rootMargin = '0px', cycles, pause = true } = {}) {
-  const show = () => { if (still) still(); };
+  const show = () => { if (still) still(); tidy(root); };
   const setHeld = on => root.classList.toggle('is-ui-held', on);
   if (reduced()) {
     setHeld(true);
@@ -317,26 +348,54 @@ export function loop(root, cycle, { still, rest = 600, rootMargin = '0px', cycle
   const flush = () => { if (!active()) return; while (queue.length) queue.shift()(); };
   const abort = why => { gen++; const fs = [...aborts]; aborts.clear(); queue.length = 0; fs.forEach(f => f(why)); };
   const kick = () => { while (wake.length) wake.shift()(); };
+  // the cycle's own clock: the waits of a cycle add up on a timeline that starts when the cycle starts,
+  // and each wait ends at its place on that timeline, not a delay after the last one. So a busy main
+  // thread (a CPU renderer, six loops on one page, a scroll) cannot stretch the cycle: a wait that
+  // comes late is shortened and the cycle catches up. Time spent off screen or paused is not counted.
+  let t0 = 0, planned = 0, lost = 0;
+  const LAG = 1200;       // behind by more than this (a stalled tab): give up catching up and go on from here
   const gate = () => new Promise((res, rej) => {
     if (stopped) return rej(STOP);
     if (cur !== gen) return rej(AGAIN);
     if (active()) return res();
     stalled = true;
+    const from = performance.now();
     const ab = why => rej(why);
     aborts.add(ab);
-    queue.push(() => { aborts.delete(ab); res(); });
+    queue.push(() => { aborts.delete(ab); lost += performance.now() - from; res(); });
   });
   const sleep = ms => new Promise((res, rej) => {
     const ab = why => { clearTimeout(t); rej(why); };
     const t = setTimeout(() => { aborts.delete(ab); res(); }, ms);
     aborts.add(ab);
   });
+  // behind the timeline: give the page one frame (at most 50 ms) to paint what the last step changed
+  const frame = () => new Promise((res, rej) => {
+    let done = false, t = 0;
+    const go = () => { if (done) return; done = true; clearTimeout(t); aborts.delete(ab); res(); };
+    const ab = why => { done = true; clearTimeout(t); rej(why); };
+    aborts.add(ab);
+    t = setTimeout(go, 50);
+    requestAnimationFrame(go);
+  });
   const api = {
     get alive() { return !stopped; },
-    async wait(ms) { await gate(); await sleep(ms); await gate(); },
+    /** the cycle's own clock: ms of cycle time since it started (on screen and not paused) */
+    get time() { return began ? performance.now() - t0 - lost : 0; },
+    async wait(ms) {
+      await gate();
+      if (!began) { await sleep(ms); await gate(); return; }       // before the cycle starts (the rest): a plain wait
+      planned += ms;
+      const due = t0 + planned + lost - performance.now();
+      if (due < -LAG) { lost -= due; await frame(); }               // far behind (a stalled tab): go on from here
+      else if (due > 1) await sleep(due);
+      else await frame();
+      await gate();
+    },
     // frames count only while the loop is active, so a pause or a scroll away holds the tween where it is
     async tween(ms, fn, ease = t => 1 - Math.pow(1 - t, 3)) {
       await gate();
+      if (began) planned += ms;
       await new Promise((res, rej) => {
         let done = 0, last = null, dead = false;
         const ab = why => { dead = true; rej(why); };
@@ -430,6 +489,8 @@ export function loop(root, cycle, { still, rest = 600, rootMargin = '0px', cycle
         // the button appears when the picture starts to move; a loop with a cycle count stops by itself
         if (mode === 'run' && pause && !maxCycles && !unpause) unpause = addPause(root, ctl);
         began = performance.now();
+        t0 = began; planned = 0; lost = 0;
+        untidy(root);
         stalled = false;
         // a page that wants to follow the cycle (a caption, a second piece in step) listens for this
         root.dispatchEvent(new CustomEvent('ui-cycle', { bubbles: true, detail: { held: mode === 'held' } }));
@@ -437,9 +498,12 @@ export function loop(root, cycle, { still, rest = 600, rootMargin = '0px', cycle
         // a dev warning (references/motion.md): one cycle is 2.5 to 4 s, the finished picture held at most
         // 15% of it; a cycle that waited off screen, paused or was restarted is not measured
         const len = performance.now() - began;
-        if (!warned && !stalled && (len < 2400 || len > 4150)) {
+        root.dispatchEvent(new CustomEvent('ui-cycle-end', { bubbles: true, detail: { ms: Math.round(len), planned: Math.round(planned), stalled } }));
+        // the plan (the sum of the cycle's waits and tweens) is what the author controls, so it is the
+        // measure; the time the cycle took is checked too, for one that ran long on a busy page
+        if (!warned && !stalled && (planned < 2400 || planned > 4000 || len > 4400)) {
           warned = true;
-          console.warn(`ui.js: a cycle of ${(len / 1000).toFixed(2)} s (keep one cycle 2.5 to 4 s)`, root);
+          console.warn(`ui.js: a cycle planned at ${(planned / 1000).toFixed(2)} s and run in ${(len / 1000).toFixed(2)} s (keep one cycle 2.5 to 4 s)`, root);
         }
         began = 0;
         want--;

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill backgrounds pick.mjs - deals a page's grounds at random, in a calm rhythm.
+  taste-skill backgrounds pick.mjs - deals a page's grounds at random, in a calm rhythm.
 
     node <skill>/assets/backgrounds/pick.mjs --type software --sections hero-split,logo-row,features-2x2,bento,quote-stat,pricing-three,faq,closing-band
                                              [--roles hero,body,body,proof,close] [--effect] [--seed S] [--mode light|dark] [--history .taste-skill/bg-history.json] [--json]

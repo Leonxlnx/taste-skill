@@ -2,7 +2,7 @@
 
 A place (café, bakery, guesthouse, shop, studio) is its photographs: two or three on every screen, the
 client's own. Software leads with its real interface; a photograph there is a real person or the real
-product. A game leads with its own art (key art, in-engine shots, the trailer's poster), never library frames. A photograph never stands where an effect, a drawing or an empty box would.
+product. A game leads with its own art (key art, in-engine shots, the trailer's poster), never library frames; with no art files its key art is a product render of its hero object or world (`sections.md`, Gaming), never a photograph or an effect in its place. A photograph never stands where an effect, a drawing or an empty box would.
 
 ## Where pictures come from (PH-01, PH-02, PH-05)
 
@@ -20,42 +20,50 @@ product. A game leads with its own art (key art, in-engine shots, the trailer's 
    `weak` (kept with its credit and its why, no file on disk) and is never dealt; a rating below 7 is never dealt either (`quality`): a whole meeting room, lounge or breakfast room is the same fault. The thin trades get at most as many
    frames as they hold: wine 0, bar 0, office 3 (a notebook, stacked books, sheets of card), florist 3, farm 3, shop 3, wellness 3, bakery 4, and a
    workshop by its craft (smith 4, instrument 1, weaving 0, letterpress 0). The rest of the page is the client's own photographs, the object, the real UI or type.
-3. **Nothing**: a technical product's own object render, the real UI, or type. Never a near fit, never mood in place
-   of the subject.
+3. **Nothing**: a product's own render (`effects-objects.md`, Product renders), the real UI, or type. Never a near
+   fit, never mood in place of the subject.
 
 With no client photographs, say so plainly in the report: strong pages run on a half-day shoot with a local
 photographer, then a one-morning phone shoot, then products on one backdrop; the library covers details only. The
 shot list: shopfront straight on, the room from the door, the counter or bench, three products on one surface, hands
 at work, one detail, each room of a guesthouse; 1x lens, window light, no flash, no filter, landscape and portrait.
-**The draft path (a place with no client photographs):** `pick --trade <trade> --sections <the plan's sections>
---draft-lead --pictures 8` deals a lead and a detail for every section that is not text; the 1-in-3 cap lifts for a
-draft. The page stays a whole place page that leads with photographs (Leon's rule 6), the compact page at 8 to 12
-frames, never the 3-screen short page. Every frame is listed in the report as a stand-in to replace; nothing on the
-page says so (no caption, no note). Only when the trade's frames give fewer than eight pictures (a thin trade, below)
-is it the short page (PH-07: 2,700 px at most; `sections.md` section 4, The short page). No drawn box, grid or effect
-takes the place of a photograph.
+**The draft path (a place with no client photographs):** `pick --trade <trade> --sections <words> --draft-lead
+--pictures 12` lifts the 1-in-3 cap. `pick` deals one frame per word, so repeat a word for each row or detail
+(`bar,bar,coffee,coffee,beans,beans`, `rooms,rooms,rooms,breakfast,breakfast`) until it returns 8 or more: a cafe
+reaches 8 to 12, a guesthouse 9 detail frames. The page stays a whole place page that leads with photographs (Leon's
+rule 6), the compact page at 8 to 12 frames, never the 3-screen short page. The hero is the lead `pick` returns (a
+cafe's bar). A place whose trade leads with land (a guesthouse, a lodge, a remote inn) passes the region its brief
+names as `--place "<region>"` (or the brief itself, `--brief BRIEF.md`, which reads the region from it) and leads with that region's landscape: a place hero always carries a photograph when
+any frame fits, and the `statement` hero is left for a place the library holds no frame of (`sections.md` section 4). Every frame is listed in the report as a stand-in to replace; nothing on the page says so
+(no caption, no note). Only a trade whose frames total under eight (florist, wellness, office) or none (pottery, a
+restaurant) is the short page (PH-07: 2,700 px at most; `sections.md` section 4, The short page). No drawn box, grid
+or effect takes the place of a photograph.
 
 Two exceptions, both for a draft or the short page and both named in the report as stand-ins to replace:
 
 - **A hero** (`--draft-lead`): the client has no hero photograph yet. A place hero is still Recipe 3: the frame is the
   full-bleed top photograph with nothing on it.
-- **The client's own land** (`--own-land --place "..."`): only when the brief says the business is that landscape (a
-  tour, a lodge on its own land). Scenery is otherwise never dealt (PH-03, PH-50): a guesthouse's area, a cafe's
-  street and the sky are the client's own photographs.
+- **The land around a place** (`--place "<region>"`): a place whose brief names its region (Westfjords, Lofoten, the
+  Lake District, a town) is dealt that region's landscape as its lead, because a remote place is sold by where it
+  stands. `--own-land` adds the land sections (area, road) when the brief says the business is that landscape (a
+  tour, a lodge on its own land). Another region's land, a cafe's street and the sky are never dealt (PH-03, PH-50).
 
 ## A product without photographs (PH-04)
 
-A maker of a physical thing (a bike, a chair, a lamp, a device) with no photographs of its own gets **no stock
-photographs**: no forest for "the ride", no groceries for "what it carries", no other trade dealt to fill the page.
+A maker of a physical thing (a bike, a chair, a lamp, a stroller, a device) with no photographs of its own gets **no
+stock photographs**: no forest for "the ride", no groceries for "what it carries", no other trade dealt to fill the page.
 `pick --product-without-photos` (or a maker's, brand's or company's word: "backpack brand", "electric scooter")
-deals nothing and says so. Then, as `sections.md` (Product) says: a product of site-kind other works down the shot
-ladder (the client's shoot, a phone shoot, the products on one plain backdrop), else the short page, and never takes
-an object render or a drawing (MO-08, PH-07); a technical product (hardware) shows the client's render, or its object
-only when `assets/objects` or `fx-dither-object` holds its own kind (never another kind: a wheel is not a bicycle),
-else the `split` hero (`deal.mjs --type product --hero split`) with the client's order form as live HTML in the frame
-on the effect's lit ground; never `hero-product` without the object, never a drawn SVG of the hardware. Renders the
-brief names but does not supply count as missing. Parts, sizes and figures as `rows--spec` and cards. The report lists the shots to take. A shop, workshop or rental for every make is a place (`--trade "bike shop"`): it is dealt parts and a basket
-load for those sections only.
+deals nothing and says so. **The product is still shown, never hidden:** it is rendered with the objects kit's
+product-render helper (`assets/objects/product-render`, `effects-objects.md` Product renders), one crafted studio
+render composed from a JSON spec of its own parts, sizes and materials, and the page is the full product page
+(`sections.md`, Product: hero, the product, what it carries, how it is used, specs as rows, a live order card), never
+the short page (round C: a cargo bike's page that never showed the bike scored 3 of 10). The render is the product's
+picture on a flat ground, not an effect, on a product of site-kind other as on hardware. Never a drawn SVG, mood
+stock, another maker's product or an object of another kind (a wheel is not a bicycle). A render or CAD view the
+brief supplies comes first; renders it names but does not supply count as missing. The report lists the shots to
+take: the product on one plain backdrop, three angles, a detail of each part the page names, the product in use. A
+shop, workshop or rental for every make is a place (`--trade "bike shop"`): it is dealt parts and a basket load for
+those sections only.
 
 ## Pick and fetch
 
@@ -64,12 +72,12 @@ node <skill>/scripts/photos.mjs list                       # trades: detail fram
 node <skill>/scripts/photos.mjs list --places              # the place names the library knows, for --place
 node <skill>/scripts/photos.mjs pick --trade bakery --sections oven,dough,bread --pictures 14 \
      --history .taste-skill/history.json
-node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,coffee,beans,place --draft-lead --pictures 8 \
+node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,bar,coffee,coffee,beans,beans,hands --draft-lead --pictures 12 \
      --history .taste-skill/history.json                                                     # no client photographs
 node <skill>/scripts/photos.mjs pick --trade guesthouse --sections hero,rooms,rooms --pictures 12 \
      --draft-lead --own-land --place "Lofoten, Norway" --history .taste-skill/history.json   # a draft only
 node <skill>/scripts/photos.mjs fetch <ids> [--hero <lead id>] --out . [--big id] [--lqip]
-node <skill>/scripts/photos.mjs credits --out .             # the footer block; --text for a report
+node <skill>/scripts/photos.mjs credits --out . --write     # the footer line and credits.html; --text for a report
 ```
 
 - `--trade`: cafe, bakery, hotel, bike (--shop only), food, florist, workshop, studio, office, shop, books,
@@ -86,8 +94,9 @@ node <skill>/scripts/photos.mjs credits --out .             # the footer block; 
   library frames are dealt, earlier sections first; the later ones come back empty and say so. With `--draft-lead`
   the cap lifts: every section that is not text gets a frame when the library has one.
 - Only photographs rated 7 or more, with no whole figure, no animal, no vehicle, no landmark and no mood frame (a
-  curtain or plant shadows, a sky, fog, an aurora, a waterfall, a viewpoint), are dealt. A frame held back (`weak`, with its reason in `photos.json`) is never dealt.
-- **The land is only ever the client's own.** Library land is a draft stand-in and needs `--own-land` and a `--place`.
+  curtain or plant shadows, a sky, fog, an aurora, a waterfall, a viewpoint), are dealt. A frame the curators or this
+  review held back (`weak`, with its reason in `photos.json`) is never dealt.
+- **The land is only ever the client's own.** Library land is a draft stand-in, dealt only for the region a `--place` or the `--brief` names (as the lead; `--own-land` adds the land sections).
   A photograph's source names its places, the most exact first (Westfjords, Iceland), and a frame is dealt when its
   most exact name is the client's place, or the client's place is a broader one it lies in. `--place "Lofoten, Norway"`
   deals Lofoten; `--place Iceland` every photograph of Iceland; `--place "Reykjavik, Iceland"` neither the Westfjords nor
@@ -127,8 +136,10 @@ node <skill>/scripts/photos.mjs credits --out .             # the footer block; 
 - **Hero**: plain full colour, as the client's own (Recipe 3 on a place: a full-bleed top photograph, 480 px tall, with
   nothing on it and the words below it); a software or product hero ends inside the screen. **Rooms**: one detail per
   room beside its facts, a place's rooms are the client's own photographs first. **Menu or goods**: the list in plain
-  text beside one photograph of the kind, never one per line, never a tab. **Photo bands**: product one or two, a place
-  none beside the hero; a place closes on a 1:1 shopfront with no words (PH-72).
+  text beside the offer's composition, never one photograph per line, never a tab. **Photo bands**: product one or
+  two; a place one, its `bleed` composition, never next to the hero, and a place closes on a 1:1 shopfront with no
+  words (PH-72). **Compositions** on a place (`bleed`, `pair`, `trio`, `strip`, `tall-small`): `sections.md`
+  section 4, Designed variety; never two sections built round one picture.
 - Text on a photograph: never on a place; elsewhere the hero and one closing band only, on a calm part that is empty and
   dark (or light) at the desktop and the phone crop, or in a solid box, or off the photograph. No scrim, gradient, fade
   or blur. For product, service and software `pick` prints `words:` from the photograph's calm side; for a place it
@@ -166,7 +177,8 @@ node <skill>/scripts/photos.mjs credits --out .             # the footer block; 
   tech page's one effect, on a non-photo ground.
 - **Hover** (PH-25, one wording with `motion.md`): a photograph in a card that links zooms to 1.03 (1.02 to 1.03 is the
   range) over 600 ms inside its own mask (the frame is `overflow: hidden`, never grows or moves); a photograph outside a
-  linked card does nothing. No tilt, no rotation, no Ken Burns at rest; on a place the photograph never changes
+  linked card does nothing, so on a place every photograph that leads somewhere is a link (a room to its booking,
+  goods to their card, the place to its story) and the hover shows in every section. No tilt, no rotation, no Ken Burns at rest; on a place the photograph never changes
   opacity. The linked card also lifts 2px (`motion.md`).
 - Place photographs are square-cornered, with no border, shadow, overlay or frame; product and service use one radius
   for every photograph; software windows one radius of 12 to 20px.
@@ -175,10 +187,11 @@ node <skill>/scripts/photos.mjs credits --out .             # the footer block; 
 
 No caption, label or description sits under or on any picture (Leon), and no credit, "sample" or example note: a sold
 item's name and price sit inside its card's padding (`copy.md`), never as a line under a bare picture. The place's name
-goes in the alt text. **Credits are one footer line** that opens the list, once, in the legal row:
-`photos.mjs credits --out .` prints `<details class="credits">` whose summary is "Photographs via Unsplash and
-Wikimedia Commons" (the sources used, never the photographers; at most 110 characters) and whose list gives each
-photographer, licence and source page, `adapted` after any frame cropped beyond its frame (`--adapted id`). A
+goes in the alt text. **Credits are ONE footer line** in the legal row that links or opens the credits list, never a
+link per photograph in the footer (round C: 18 and 20 credit links read as a credit wall). `photos.mjs credits --out .`
+prints the line, "Photographs via Unsplash and Wikimedia Commons" (the sources used, never the photographers; at
+most 110 characters), and the list; paste the line in the footer and the list on its own page: `--write` makes `credits.html` in the site's legal-page shell, `--href <page>` points the line elsewhere. The list gives each photographer, licence and
+source page, `adapted` after any frame cropped beyond its frame (`--adapted id`). A
 public-domain frame (the Public Domain Mark) is listed with the Mark's page and its photographer still named. `--text`
 prints the same line and list as plain text for a report. Every word on a page is live text, never baked into an image.
 

@@ -82,7 +82,7 @@ Before the first frame, while the canvas is released off screen, and whenever We
 shader fails to compile or link, or the photograph's host sends no CORS headers, the photograph
 itself shows, greyed into the palette: a still picture, never an empty frame. The runtime also refuses
 a shader that uses a GLSL ES reserved word (`flat`, `smooth`, `sample`, `filter`, `input`...) and shows
-the still, because a laptop's GPU rejects what SwiftShader CPU WebGL compiles. `glslLint(src)` and
+the still, because a laptop's GPU rejects what the lab's CPU WebGL compiles. `glslLint(src)` and
 `photoShader(object)` in `photo.js` check a shader from Node.
 
 ## Cost

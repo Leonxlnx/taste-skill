@@ -1,5 +1,5 @@
 /*
-  fx.js - the tasteskill effects runtime. One ES module, no dependencies.
+  fx.js - the taste-skill effects runtime. One ES module, no dependencies.
 
   An effect is a folder next to this file: <id>/effect.js + <id>/meta.json.
   effect.js:  export default { id, name, family, params, mount(el, { palette, params, seed }) }
@@ -538,8 +538,8 @@ function HAS_WEBGL() {
   return webglProbe;
 }
 
-// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: safe on integrated
-// GPUs). scenes/lib.js glBudget, fx.js (every effect, and fx.glBudget for the ones that make their own),
+// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: one rule, the integrated GPU's
+// integrated GPU). scenes/lib.js glBudget, fx.js (every effect, and fx.glBudget for the ones that make their own),
 // print3d.js's pool and liquid-hover all count in it, so a scene, an object, a ground and a moment never add up to
 // more than the cap. A gallery or lab that shows many at once sets window.__tpGlMax before the scripts load.
 const tpHeld = () => (typeof window !== 'undefined' && window.__tpGl) || 0;

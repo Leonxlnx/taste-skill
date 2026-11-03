@@ -1,0 +1,85 @@
+{
+ "note": "Credits for the photographs in this folder (the demo pages' placeholders; a shipped scene uses the client's own pictures). Print them in the page's one footer credits line, and write \"adapted\" after any photograph shown through an effect or a grade.",
+ "photos": [
+  {
+   "file": "photo-809.jpg",
+   "id": "809",
+   "alt": "Rocky mountain peak breaking through thick white clouds",
+   "by": "Namphuong Van",
+   "licence": "Unsplash License",
+   "licenceUrl": "https://unsplash.com/license",
+   "page": "https://unsplash.com/photos/sP4UZnpSiN4",
+   "source": "Unsplash",
+   "usedBy": [
+    "descend-through-weather"
+   ]
+  },
+  {
+   "file": "photo-c393.jpg",
+   "id": "c393",
+   "alt": "White farmhouse with red roofs on a green fjord shore, dark mountains and golden evening cloud behind",
+   "where": "Lyngen, Norway",
+   "by": "Ximonic (Simo Räsänen)",
+   "licence": "CC BY-SA 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "page": "https://commons.wikimedia.org/wiki/File:Sp%C3%A5kenes_at_Lyngen_fjord_in_Nordreisa,_Troms_og_Finnmark,_Norway,_2022_August.jpg",
+   "source": "Wikimedia Commons",
+   "usedBy": [
+    "descend-through-weather"
+   ]
+  },
+  {
+   "file": "photo-c391.jpg",
+   "id": "c391",
+   "alt": "Lofoten harbour bay with red fishing cabins on stilts below snowy peaks under brooding storm cloud",
+   "where": "Lofoten, Norway",
+   "by": "Ximonic (Simo Räsänen)",
+   "licence": "CC BY-SA 3.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "page": "https://commons.wikimedia.org/wiki/File:View_over_Reinev%C3%A5gen_towards_north,_Moskenes,_Nordland,_Norway,_2017_April.jpg",
+   "source": "Wikimedia Commons",
+   "usedBy": [
+    "fly-into-the-shape"
+   ]
+  },
+  {
+   "file": "photo-507.jpg",
+   "id": "507",
+   "alt": "Long fjord between steep green-grey walls seen from a high rocky edge under big white cumulus cloud",
+   "where": "Lysefjord, Norway",
+   "by": "Jeff Sheldon",
+   "licence": "Unsplash License",
+   "licenceUrl": "https://unsplash.com/license",
+   "page": "https://unsplash.com/photos/oOFrXiz8-0A",
+   "source": "Unsplash",
+   "usedBy": [
+    "shaped-window-over-fixed-world"
+   ]
+  },
+  {
+   "file": "concrete.jpg",
+   "id": "942",
+   "alt": "White angular concrete building against a black sky",
+   "by": "Carl Nenzen Loven",
+   "licence": "Unsplash License",
+   "licenceUrl": "https://unsplash.com/license",
+   "page": "https://unsplash.com/photos/busqfOj6i80",
+   "source": "Unsplash, via Lorem Picsum (copied from assets/objects/photo-kit)",
+   "usedBy": [
+    "letter-physics"
+   ]
+  }
+ ],
+ "stills": [
+  {
+   "file": "globe.png",
+   "what": "assets/objects/print-globe rendered once (shoot.mjs still): the object-through-giant-type demo's still",
+   "by": "the skill's own object"
+  },
+  {
+   "file": "cards.png",
+   "what": "assets/objects/print-cards rendered once (shoot.mjs still): the fixed-hero-object demo's still",
+   "by": "the skill's own object"
+  }
+ ]
+}

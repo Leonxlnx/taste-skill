@@ -35,7 +35,7 @@ checker or a reviewer catches. A place page follows `sections.md` section 4 wher
   frame carries `data-ui-loop` and its pause button; below the hero two loops are never on one
   screen; nothing moves because the page scrolled. Every timing: `motion.md`. Other kinds: no loops.
 - **Classes.** Only the system's, cards.css's and the kit's. Where a recipe needs one more rule it
-  says "page CSS"; that only ever sits inside a visual.
+  says "page CSS"; that only ever sits inside a visual, plus a place's visit panel (`sections.md` section 4).
 - **Photographs** lead every main section of a product, place or service page: the client's own,
   else picked with `photos.mjs` (`photos.md`), one look, shown plain, credited in the one footer
   line. No caption, name, price or link line under a bare picture: a sold item's name and price sit
@@ -175,8 +175,9 @@ pictures. What the recipes add:
   inline SVG in true proportions (one unit a millimetre; `viewBox` the product plus 6%; `--ar` its
   width over height), two or three dimension lines (`.dim`) with their figures as
   `span.drawing__dim`. Never the hero, never the product's only picture, never on hardware (a
-  technical product shows its photographs or the client's render), never on the short page
-  (PH-07, MO-08; round C: a drawn SVG arm as a robot maker's hero).
+  technical product shows its photographs or the client's render), never on a page without
+  photographs: that page shows its product render (`sections.md`, Product; round C: a drawn SVG
+  arm as a robot maker's hero).
 
 # Proof
 
@@ -260,8 +261,8 @@ the rest in `<span class="muted">`. 48px below, `.frame.frame--hero` on `span-12
 below, three facts on `span-4`: a 1px hairline, the value at 28px with its unit, a grey line. A
 technical product may show the client's render or its object of its own kind instead (`.frame--lit`
 with `<div data-print="print-…">`, its `hero` preset large and right of centre, the facts in
-`div.frame__text` at the lower left). An other product with no photograph is on the short page,
-the facts as type (`sections.md`, Product).
+`div.frame__text` at the lower left). A product or hardware with no photograph shows its product render
+(`data-product`, place `stage`) the same way, on the page's flat ground (the lit ground on hardware) (`sections.md`, Product; `effects-objects.md`, Product renders).
 
 **At 390.** The h2 at 30px; the frame square, facts under it as a list.
 
@@ -889,11 +890,14 @@ oak top: a photograph of the grain), photo-band ("Built to order in Porto"), spl
 specs (`rows--spec` beside a photograph of the frame), proof (a review the brief gives, merged),
 faq (four questions), footer.closing. Flat grounds, no effect, no moment.
 
-**With no photographs yet** (*Pellum, a desk lamp*): the shot ladder first; until the shoot, the
-short page: a statement hero (`deal.mjs --type product --hero statement`) on `.ground-brand` (the h1,
-the sub-line, the inverted button), one section with the specs as `rows--spec` beside the real
-colour icons of the component brands the brief names (or the one still diagram), footer.closing. No drawing, no object
-render, no line about missing photographs; the report lists the shots.
+**With no photographs yet** (*Pellum, a desk lamp*): the lamp is rendered, never hidden. The hero
+(`deal.mjs --type product --has object`: `product` or `split`) holds its product render whole on
+the stage, switched on; product-statement shows the render closer on the dial with three facts;
+what it does as a split (the render at warm light beside the uses as rows); how it is used as
+three steps; specs as `rows--spec` with the real icons of the component brands the brief names;
+ordering as a live order card (finish swatches that recolour the render, delivery, the price);
+faq; footer.closing. Flat grounds, no effect, no drawing, no line about missing photographs; the
+report lists the shots to take.
 
 ## Gaming
 
@@ -902,32 +906,47 @@ trailer the brief supplies), `nav-centre`, `footer-dark`, close `close-word`, rh
 buttons `solid`, mark `wordmark`; effect none (the trailer is the hero's motion); one moment,
 `letters-assemble` (a statement of its own).
 
-Order: hero (the trailer's poster in the cinema frame, plays on a click; "Co-op sailing game for 1
-to 4 players"; "Add to Steam wishlist"), the world (two in-engine shots as a photo-pair, one grade),
-the statement with `letters-assemble`, how it plays (split-text-left with a shot of the deck in
-play), the world again as the media band (key art full bleed, the h2 on its calm sky), platforms
-and editions (the real Steam, PlayStation and Epic Games marks, `icons.mjs apps --tag gaming`;
-Xbox and Nintendo are in no permitted set: name the console in type, never a drawn mark; prices
-from), faq, footer.closing. No UI fragment, dashboard or widget anywhere. **With the art named but
-not supplied:** the `statement` hero (`deal.mjs --type software --kind gaming --hero statement`); the effect is
-its full-bleed layer, composed as key art of the coast in the page's palette (dealt for the hero
-slot until it reads as water, terrain or light, never a pattern), the words on its calm part. Then
-a section holding the dealt moment, how it plays as a `lanes-matchmaking` or `sync-saves` diagram
-card, platforms with the real store icons, faq, footer.closing: no world section that promises
-pictures it cannot show. The report names the art to replace.
+Order: hero (the trailer's poster in the cinema frame, plays on a click; h1 "Kelpmoor, a co-op
+sailing game"; "For 1 to 4 players. Coming to Steam in spring."; "Add to Steam wishlist"), the
+world (two in-engine shots as a photo-pair, one grade), the statement with `letters-assemble`, what
+you do (three open cards, one verb each with its in-engine shot: sail the drowned coast, salvage
+the sunken towns, rebuild the harbour), the world again as the media band (key art full bleed, the
+h2 on its calm sky), platforms and editions (the real Steam, PlayStation and Epic Games marks,
+`icons.mjs apps --tag gaming`; Xbox and Nintendo are in no permitted set: name the console in
+type, never a drawn mark; prices from), faq, footer.closing. No UI fragment, dashboard or widget
+anywhere.
+
+**With no art files** (named but not supplied, or none): the key art is rendered, never an effect
+in its place. Two product-render specs in the game's palette (`effects-objects.md`, Product
+renders): the salvage sloop (hull and deck as rounded boxes and panels, mast and boom as tubes,
+rigging as paths, a furled sail as a tube, two `light` lanterns; about 40 parts) and the world
+scene (the sloop moored at a drowned pier: posts as cylinders, planks as beams, crates as boxes, a
+crane's rope as a path, under 90 parts). Dealt `deal.mjs --type software --kind gaming --has
+object`: hero `product`, the effect `aurora-curtains` dealt for the hero slot (dark, read as a
+dusk sky over water) as the stage's ground behind the turning sloop, h1 "Kelpmoor, a co-op sailing
+game", "Coming to Steam in spring." and "Add to Steam wishlist" in the head row. Then the world:
+the pier scene, `stage`, full bleed on the dark band, the h2 above it; what you do: three open
+cards, each the still render of the thing its verb uses (the sloop, a salvage crate, the harbour
+crane; `card`, `{"turn":0}`); a section holding the dealt moment; platforms with the real store
+icons; faq; footer.closing. One render turns, the rest are stills; nothing says "render". The
+report names the art to replace.
 
 ## Place
 
 *Fenn: a pottery studio and shop on Karl-Heine-Straße, Leipzig-Plagwitz.* Dealt: `nav-split`,
-`footer-visit`, rhythm `surface-pairs`, buttons `block`, mark `arc`, the place `story`, rooms none.
+`footer-visit`, rhythm `surface-pairs`, buttons `block`, mark `arc`, the offer `tall-small`, the place
+`trio`, the type moment `address`, rooms none.
 
 Order: the place hero (the workshop in morning light; "Pottery classes in Leipzig-Plagwitz";
 "Wheel classes on Saturdays, open studio Tuesday to Sunday from 10."; "Book a class"), visit
-(screen 2: Karl-Heine-Straße, Plagwitz; the week's hours; step-free entrance; the shopfront 4:3),
-the offer on the surface band (classes and prices as two open groups beside a 1:1 photograph of a
-class at the wheel), the place (`story`: who runs it and since when, a photograph of hands at the
-wheel), booking (a photograph of the class room beside the form), footer.closing (`footer-visit`,
-`data-tz="Europe/Berlin"`). Fourteen photographs, all the studio's own; no effect, no moment.
+(screen 2: "Karl-Heine-Straße, Plagwitz" set large across the `.wrap`, linked to the map; the week's
+hours; step-free entrance; the shopfront 4:3), the offer on the surface band (classes and prices as
+two open groups beside `tall-small`: a class at the wheel tall, a glazed bowl small, each linking to
+its class), the place (`trio`: the workshop, a shelf of drying pots, a hand trimming a foot ring,
+tops on one line), booking (a photograph of the class room beside the form), footer.closing
+(`footer-visit`, the name capped at 12vw, the one credits line, `data-tz="Europe/Berlin"`).
+Fourteen photographs, all the studio's own; no effect, no moment; every linked photograph zooms
+1.03 under the pointer.
 
 ## Service
 

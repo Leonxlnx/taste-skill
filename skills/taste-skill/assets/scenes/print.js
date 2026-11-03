@@ -5,7 +5,7 @@
   when the scene is far, at rest or gone (sleep()): one WebGL context, counted in the page's shared
   budget (window.__tpGl, at most 4 on a page) by print3d's pool, which refuses it when the page is full (the still stays). Under prefers-reduced-motion, on a phone
   plan that rests, without WebGL or when the shader fails nothing is mounted: the still picture the
-  markup carries under the host is the finished composition.
+  markup carries under the host (an <img> made with assets/scenes/_demo/shoot.mjs make) is the finished composition.
     import { attachPrint } from '../print.js';
     const obj = attachPrint(host, { object: 'print-globe', effect: 'render', params: {...} });
     obj.wake(); obj.turnTo(90); obj.sleep(); obj.destroy();

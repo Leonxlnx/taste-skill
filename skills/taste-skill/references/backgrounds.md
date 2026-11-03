@@ -24,7 +24,7 @@ same order at 390. Photograph layers and the tech grounds below do not count amo
 - **The brand band** (`.ground-brand`, product and place): one section in the brand's own colour
   (from the product or the shopfront) may replace the dark band, once, in the second half. On a
   place its lightness is 0.03 to 0.60 and its saturation 0.25 or more, never a neutral near-black;
-  the words take the colour that passes 7:1 on it for text people read (4.5:1 for headings and labels, `system.md`) and the primary button is inverted. Otherwise
+  every word on it (heading, text, label, link) takes the colour that passes 7:1, the one number: darken the brand colour until it does (`check.mjs` and `consistency.mjs` ask 7:1 for text people read and 4.5:1 for labels, so 7:1 clears both); the primary button is inverted. Otherwise
   saturated colour lives in the accent and the pictures; one mid-tone section at most, never as the
   main ground.
 - Grounds change in big blocks at the section edge: never on `.wrap` or a wrapper, no border-top or

@@ -1,5 +1,5 @@
 /*
-  tasteskill diagram.js - node-and-line visuals for a card panel or a section (references/diagrams.md).
+  taste-skill diagram.js - node-and-line visuals for a card panel or a section (references/diagrams.md).
   One ES module, no dependencies. diagram.css draws it from the palette tokens around it
   (--ink, --muted, --accent, --accent-ink, --card or --bg; --frag for the node fill if set).
 
@@ -381,7 +381,9 @@ function makeNode(n, kind, ctx, layer, reg) {
       : kind === 'disc' ? n.cap === true || (n.cap !== false && ctx.ringLabels)
       : n.cap === true || (n.cap !== false && kind === 'tile' && ((tier === 'c' && ctx.caps) || n.role === 'step'));
     if (wantsCap && label) {
-      const cap = h('span', 'dg-cap', el);
+      // the core names itself INSIDE its own tile (under its icon): the name can never run past the node,
+      // be cut by the diagram's edge or lie on the ground and its rays; every other tile names itself below
+      const cap = h('span', kind === 'core' ? 'dg-cap dg-cap--in' : 'dg-cap', el);
       h('span', 'dg-cap__l', cap, label);
       if (n.role === 'step' && n.sub) h('span', 'dg-cap__s', cap, n.sub);
     }
@@ -420,7 +422,7 @@ function makeNode(n, kind, ctx, layer, reg) {
 /* ================================================================ geometry */
 const CAPGAP = 6;
 function geo(n, el) {
-  const cap = el.querySelector(':scope > .dg-cap');
+  const cap = el.querySelector(':scope > .dg-cap:not(.dg-cap--in)');   // a caption inside its tile is part of the tile's own size
   const side = el.classList.contains('dg-node--side');
   const g = { id: n.id, el, w: el.offsetWidth, h: el.offsetHeight, capW: 0, capH: 0, capB: 0, side, round: el.matches('.dg-node--step, .dg-node--dot, .dg-node--disc') };
   if (cap) {

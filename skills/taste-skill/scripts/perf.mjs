@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill perf.mjs - a performance check for a built page. Node 22 or later (global WebSocket and fetch), no packages.
+  taste-skill perf.mjs - a performance check for a built page. Node 22 or later (global WebSocket and fetch), no packages.
 
     node <skill>/scripts/perf.mjs <page.html | folder | http(s) url> [--profile <own chrome dir>] [--json <file to write>] [--w 1440 --w 390] [--runs 3]
 
@@ -71,9 +71,8 @@ async function hostLoad(ms = 1200) {
 
 /* ---------------------------------------------------------------- chrome + server */
 function findChrome() {
-  const pf = process.env.PROGRAMFILES || '', pf86 = process.env['PROGRAMFILES(X86)'] || '', local = process.env.LOCALAPPDATA || '';
-  const c = [process.env.CHROME_PATH, pf && path.join(pf, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Google/Chrome/Application/chrome.exe'),
-    local && path.join(local, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Microsoft/Edge/Application/msedge.exe'), pf && path.join(pf, 'Microsoft/Edge/Application/msedge.exe'), '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
+  const c = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
   const f = c.find(p => p && fs.existsSync(p));
   if (!f) throw new Error('no Chrome found (set CHROME_PATH)');
   return f;
@@ -351,7 +350,7 @@ if (!/^https?:/.test(target)) {
   url = `http://127.0.0.1:${srvObj.port}/` + (isDir ? '' : path.basename(abs));
 }
 // a fresh profile folder per run (a reused one can still be locked by the Chrome just closed); removed once Chrome has exited
-const profileBase = path.resolve(profileArg || path.join(os.tmpdir(), 'taste-skill-perf'));
+const profileBase = path.resolve(profileArg || path.join(os.tmpdir(), 'taste-skill-perf-chrome'));
 fs.mkdirSync(profileBase, { recursive: true });
 for (const d of fs.readdirSync(profileBase)) if (/^run-\d+$/.test(d)) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* another run, or locked */ } }
 const profile = path.join(profileBase, 'run-' + process.pid);

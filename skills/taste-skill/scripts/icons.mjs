@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill icons.mjs - the one resolver for real brand, file-type and interface icons, as local SVG files.
+  taste-skill icons.mjs - the one resolver for real brand, file-type and interface icons, as local SVG files.
   Every icon comes from a pinned source on cdn.jsdelivr.net, is cached outside the site (the system temp folder) and is
   written into the site as a file (no runtime CDN, full colour kept) with an icons-credits.json beside it. diagram.js
   and every page read those files; nothing else resolves an icon, tints one or fetches one at runtime.
@@ -31,11 +31,11 @@
   download is not a path this skill takes. Brand marks belong to their owners: use them only to name tools the product
   really works with, never to imply endorsement.
   The violet rule (a judgement, stated): "never violet or lavender" is about the page's own design. A third-party logo is
-  its owner's mark and is never recoloured, but a block of violet on a page breaks the palette. So a mark whose coloured
-  fills are mostly violet (half or more: Stripe, Twitch, Sentry, Google Forms) is flagged [violet] and fetch prints it in the
-  text colour (as --mono, paper parts cut out) unless you pass --colour; or leave it out. A multi-colour mark with a violet part
-  below half (Figma 20%, Instagram 27%) is printed as drawn, because the real logo is what makes the page look
-  official; it is listed as "partly violet" and fetch says so on stderr. Pass --mono for a row of customer logos.
+  its owner's mark and is never recoloured: fetch and scan keep every mark's own colours by default, violet ones too (Stripe,
+  Twitch, Sentry, Google Forms: half or more of their coloured fills are violet), because the real logo is what makes the
+  page look official. Such a mark is flagged [violet] and fetch says so on stderr: keep it small (an icon tile, a diagram
+  node, never a block of violet), or pass --mono to print it in the text colour (paper parts cut out), or leave it out.
+  --colour is accepted and is the default. Pass --mono for a row of customer logos.
   The cache of downloaded sets lives outside the site (the system temp folder, or TASTE_SKILL_ICON_CACHE); fetch refuses
   a cache that sits under --out, so it can never be published with the site.
 
@@ -330,7 +330,7 @@ async function fetchCmd(idsOverride, quiet) {
     if (tag && (!opt('set') || ALIAS[opt('set')] === 'ui' || opt('set') === 'ui')) ids.push(...idx.ui.filter(u => u.tags.includes(tag)).map(u => 'ui:' + u.id));
   }
   if (!ids.length) { console.error('icons: nothing to fetch (give ids, or --tag <tag>; icons.mjs list --tags shows the tags)'); process.exit(1); }
-  { const o = path.resolve(out), c = path.resolve(CACHE), rl = path.relative(o, c); if (!rl || (!rl.startsWith('..') && !path.isAbsolute(rl))) { console.error(`icons: the cache (${c}) is inside --out (${o}) and would be published with the site: set TASTE_PRO_ICON_CACHE to a folder outside it`); process.exit(1); } }
+  { const o = path.resolve(out), c = path.resolve(CACHE), rl = path.relative(o, c); if (!rl || (!rl.startsWith('..') && !path.isAbsolute(rl))) { console.error(`icons: the cache (${c}) is inside --out (${o}) and would be published with the site: set TASTE_SKILL_ICON_CACHE to a folder outside it`); process.exit(1); } }
   fs.mkdirSync(out, { recursive: true });
   const credFile = path.join(out, 'icons-credits.json');
   let credits = [];
@@ -344,14 +344,14 @@ async function fetchCmd(idsOverride, quiet) {
       used[file.replace(/\.svg$/, '')] = `${r.set}:${r.name}`;
       /* the decision is baked into the file, so diagram.js and any page read it and never guess again: data-ic is violet
          (print in the text colour), ink (a black mark: take the ink) or paper (a white mark) */
-      const dataIc = r.set === 'ui' ? '' : r.violet ? 'violet' : r.tone || '';
+      const dataIc = r.set === 'ui' ? '' : r.violet && flag('mono') ? 'violet' : r.tone || '';   // violet (text colour in diagram.js) only when --mono asks for it
       fs.writeFileSync(path.join(out, file), dataIc ? r.svg.replace(/^<svg /, '<svg data-ic="' + dataIc + '" ') : r.svg);
       const m = SETS[r.set];
       credits = credits.filter(c => c.file !== file);
       credits.push({ file, icon: `${r.set}:${r.name}`, name: r.title, kind: r.kind, source: `${m.pkg}@${m.ver}`, author: m.author, licence: m.licence, url: m.url, trademark: r.set !== 'ui' && r.set !== 'file', ...(r.brand && r.brand.url ? { markUrl: r.brand.url } : {}), ...(r.set === 'si' ? { colour: 'one-colour fallback in the brand hex' } : {}) });
       if (r.set === 'si' && !brandsNote) { brandsNote = true; console.error('icons: a one-colour Simple Icons mark is the fallback where no colour mark exists. The marks are trademarks of their owners: name tools the product really works with, never imply endorsement. See references/icons.md.'); }
       const src = path.posix.join(base, file);
-      const toMono = flag('mono') || (r.violet && !flag('colour'));   // a violet mark is shown in the text colour unless --colour
+      const toMono = flag('mono');   // a third-party mark keeps its own colours, violet too (its owner's mark); --mono prints it in the text colour
       const glyph = toMono || r.set === 'ui';
       const size = +opt('size', (r.set === 'ui' || flag('mono')) && !tile ? 24 : 40);
       if (!SIZES.includes(size) && !(tile && TILES.includes(size))) console.error(`icons: size ${size} has no ic-${size} class in icon.css (${SIZES.join(' ')}), add one`);
@@ -364,7 +364,7 @@ async function fetchCmd(idsOverride, quiet) {
       if (wide && !tile) console.error(`icons: ${r.title} is a wordmark (${k.toFixed(1)}:1), print it with --tile so it gets a wide tile`);
       if (!r.violet && r.violetShare >= 0.1 && !flag('mono')) console.error(`icons: ${r.title} has a violet part (${Math.round(r.violetShare * 100)}% of its fills), printed as drawn: the real logo stays. --mono prints it in the text colour`);
       if (r.knock && glyph && flag('mask')) console.error(`icons: ${r.title} is multi-tone: --mask loses its cut-out parts, print it without --mask (inline svg keeps them)`);
-      if (r.violet && !flag('mono')) console.error(`icons: ${r.title} is violet and this skill's palette has none, so it is printed in the text colour (--mono). --colour keeps the brand colour; or leave it out`);
+      if (r.violet && !flag('mono')) console.error(`icons: ${r.title} is violet, printed in its own colours (its owner's mark): keep it small (a tile, a node), never a block of violet; --mono prints it in the text colour, or leave it out`);
       const mono = glyph && !flag('mask') ? (r.set === 'ui' ? r.svg : monoSvg(r.svg, r.name)) : null;
       if (mono) {
         /* only the root tag loses its width and height (a rect inside keeps its own) */
@@ -432,7 +432,7 @@ function listCmd() {
     return;
   }
   const rows = [...idx.apps, ...idx.files].filter(a => (!set || a.icon.startsWith(set + ':')) && (!tag || a.tags.includes(tag)));
-  for (const a of rows) console.log(`${a.id.padEnd(18)} ${a.name.padEnd(22)} ${a.icon.padEnd(36)} ${(a.tags || []).join(' ')}${a.wide ? '  [wordmark: --tile]' : ''}${a.tone ? `  [${a.tone}]` : ''}${a.violet ? '  [violet: --mono]' : ''}${a.icon.startsWith('si:') ? '  [one colour: no colour mark exists]' : ''}`);
+  for (const a of rows) console.log(`${a.id.padEnd(18)} ${a.name.padEnd(22)} ${a.icon.padEnd(36)} ${(a.tags || []).join(' ')}${a.wide ? '  [wordmark: --tile]' : ''}${a.tone ? `  [${a.tone}]` : ''}${a.violet ? '  [violet: kept in its colours; --mono for the text colour]' : ''}${a.icon.startsWith('si:') ? '  [one colour: no colour mark exists]' : ''}`);
   console.log(`${rows.length} icons`);
 }
 
@@ -493,8 +493,7 @@ async function measureCmd() {
   const { spawn, execFileSync } = await import('node:child_process');
   const idx = loadIndex();
   const profile = path.resolve(opt('profile', path.join(os.tmpdir(), 'taste-skill-icons-measure')));
-  const pf = process.env.PROGRAMFILES || '', pf86 = process.env['PROGRAMFILES(X86)'] || '', local = process.env.LOCALAPPDATA || '';
-  const chromePath = [process.env.CHROME_PATH, pf && path.join(pf, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Google/Chrome/Application/chrome.exe'), local && path.join(local, 'Google/Chrome/Application/chrome.exe'), '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => p && fs.existsSync(p));
+  const chromePath = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => p && fs.existsSync(p));
   if (!chromePath) { console.error('icons: no Chrome found (set CHROME_PATH)'); process.exit(1); }
   const seen = new Set(), items = [];
   for (const a of [...idx.apps, ...idx.files]) {
@@ -563,9 +562,11 @@ async function scanCmd() {
     const t = fs.readFileSync(file, 'utf8');
     for (const m of t.matchAll(/"icon"\s*:\s*"([^"]+)"/g)) take(m[1]);
     for (const m of t.matchAll(/&quot;icon&quot;\s*:\s*&quot;([^&]+)&quot;/g)) take(m[1]);
-    for (const m of t.matchAll(/\sdata-icon="([^"]+)"/g)) take(m[1]);
+    // <img data-icon="stripe" ...>, <span data-icon='logos:aws'>
+    for (const m of t.matchAll(/\sdata-icon=(["'])([^"']+)\1/g)) take(m[2]);
     // a UI fragment pasted into the page keeps its <img src="icons/<name>.svg">: the name is the icon to fetch (si-<name> is the Simple Icons copy)
-    for (const m of t.matchAll(/<img\b[^>]*?\ssrc="(?:[^"]*\/)?icons\/([a-z0-9-]+)\.svg"/gi)) take(m[1].replace(/^si-/, 'si:'));
+    // (src="icons/x.svg", "assets/ui/icons/x.svg", "./assets/icons/x.svg", "/assets/icons/x.svg?v=2", in either quote)
+    for (const m of t.matchAll(/<img\b[^>]*?\ssrc=(["'])(?:[^"']*\/)?icons\/([a-z0-9_-]+)\.svg(?:[?#][^"']*)?\1/gi)) take(m[2].replace(/^si-/, 'si:'));
     for (const m of t.matchAll(/\sdata-diagram="([a-z0-9-]+)"/gi)) if (presets[m[1]]) walk(presets[m[1]]);
     if (/\.json$/i.test(file)) { try { walk(JSON.parse(t)); } catch {} }
   }

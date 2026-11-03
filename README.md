@@ -58,7 +58,7 @@
 
 <p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">Become a sponsor</a></sub></p>
 
-**Taste Skill** (`tasteskill 2.5.0`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs, real brand icons and real product UI, with shader effects, creative moments and scroll scenes kept strictly for tech and gaming pages, all verified in a real browser.
+**Taste Skill** (`tasteskill 2.5.0`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs, real brand icons and real product UI, with product renders when a product has no photographs, quiet micro-interactions, and shader effects, creative moments and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker that enforces the rules.
 
 Pages built from a single brief in earlier v2 runs:
 
@@ -122,7 +122,7 @@ Already have the skill? Run the install command again; the install name did not 
 
 ## How 2.5 works
 
-Every build starts by classifying the client's business (`software`, `gaming`, `tech`, `product`, `service` or `place`) and planning the page screen by screen before writing markup:
+Use it by asking your agent to build or redesign a company site; the agent loads the skill, copies `assets/` into the project, starts from `assets/starter.html` and runs the checker before it hands the page over. Every build starts by classifying the client's business (`software`, `gaming`, `tech`, `product`, `service` or `place`) and planning the page screen by screen before writing markup:
 
 1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette and Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `film`, `statement` or `triptych`).
 2. **Start from one system.** `assets/starter.html`, `assets/system.css` and `assets/layout/layout.css` enforce one section per screen at desktop (`1440x900`), equal left and right content edges, a fixed navigation bar and a single-screen closing footer (`footer.closing`).
@@ -131,6 +131,20 @@ Every build starts by classifying the client's business (`software`, `gaming`, `
 5. **Check in a real browser over HTTP.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs` and `scripts/shoot.mjs` render the built page in headless Chrome across `1440`, `1024`, `768` and `390`, catching empty visuals, broken shaders, contrast drops, misaligned columns, section-height drift, placeholder text, invented street numbers and slow-network image gaps before the build ships.
 
 Details of what changed from `2.1.x` are in the [changelog](CHANGELOG.md).
+
+## The tools
+
+Everything is a plain Node 22+ script in the skill folder; none installs anything.
+
+| Tool | What it does |
+| --- | --- |
+| `scripts/start.mjs` | Deals a palette and a Google Fonts pairing for the page kind and prints the `<head>` links and `:root` tokens. |
+| `assets/layout/deal.mjs` | Deals one of ten tested hero layouts; `assets/layout/check.mjs` checks it with long-headline stress tests. |
+| `scripts/photos.mjs` | Deals vetted photographs by trade, enforces image weight and writes the one footer credit line. |
+| `scripts/icons.mjs` | Resolves real brand and interface icons into local SVG files. |
+| `scripts/effects.mjs`, `scripts/moments.mjs` | Deal shader grounds and creative moments for tech, gaming and software pages. |
+| `scripts/consistency.mjs` | The checker: renders the page in headless Chrome over HTTP at `1440`, `1024`, `768` and `390` and prints PASS, WARN or FAIL per rule. |
+| `scripts/perf.mjs`, `scripts/shoot.mjs` | Page weight and speed, and full-page and per-section screenshots. |
 
 ## Moved skills
 

@@ -1,5 +1,5 @@
 /*
-  tasteskill backgrounds.js - optional, about 2 KB of work. Load it plain (not deferred) at the end of <head>,
+  taste-skill backgrounds.js - optional, about 2 KB of work. Load it plain (not deferred) at the end of <head>,
   right after the :root palette block, so a dark page never paints one frame with the light page's grain.
   It reads the page palette (--p-*) and sets, on <html>, what backgrounds.css cannot know in CSS:
     data-mode  light | dark    is the page ink lighter than the page bg?

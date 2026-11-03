@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  effects.mjs - the effects kit command line (tasteskill).
+  effects.mjs - the effects kit command line (taste-skill).
 
     node scripts/effects.mjs index                 scan assets/effects/<id>/meta.json into index.json
     node scripts/effects.mjs list [--json] [--on hero] [--palette dark] [--family light] [--quiet]
@@ -11,7 +11,7 @@
     node scripts/effects.mjs publish [--out publish]       the gallery as one folder: index.html, system.css,
                                                            effects/, ui/, components/, objects/ and files.json
                                                            (relative paths only; rerun after the assets change)
-    node scripts/effects.mjs serve --port 5230             static server for the skill folder
+    node scripts/effects.mjs serve --port 5230             static server for the taste-skill folder
     node scripts/effects.mjs shot --url URL --out file.png --profile DIR [--w 1440 --h 900 --dpr 1
                                   --wait 1500 --full --reduced --gpu]
     node scripts/effects.mjs perf --url URL --profile DIR [--seconds 5 --w 1440 --h 900 --gpu]
@@ -380,11 +380,7 @@ function serve(a) {
 /* ------------------------------------------------------------------ chrome (shot, perf) */
 
 function findChrome() {
-  const pf = process.env.PROGRAMFILES || '', pf86 = process.env['PROGRAMFILES(X86)'] || '', local = process.env.LOCALAPPDATA || '';
-  const c = [process.env.CHROME, process.env.CHROME_PATH,
-    pf && path.join(pf, 'Google/Chrome/Application/chrome.exe'),
-    pf86 && path.join(pf86, 'Google/Chrome/Application/chrome.exe'),
-    local && path.join(local, 'Google/Chrome/Application/chrome.exe'),
+  const c = [process.env.CHROME, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].filter(Boolean);
   const f = c.find(p => fs.existsSync(p));
   if (!f) die('no Chrome found (set CHROME=path)');
@@ -412,7 +408,7 @@ class CDP {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function launch(a) {
-  if (!a.profile || a.profile === true) die('pass --profile <dir> (your own Chrome profile folder, e.g. .taste-skill/chrome-fx)');
+  if (!a.profile || a.profile === true) die('pass --profile <dir> (your own Chrome profile folder, e.g. a folder in your temp directory)');
   const profile = path.resolve(a.profile);
   fs.mkdirSync(profile, { recursive: true });
   const portFile = path.join(profile, 'DevToolsActivePort');
@@ -424,7 +420,7 @@ async function launch(a) {
     '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', `--window-size=${w},${h}`,
   ];
   if (a.gpu) args.push('--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=d3d11', '--enable-unsafe-webgpu');
-  else args.push('--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'); // WebGL on the CPU: several GPU Chromes at once can crash an integrated GPU (0x119)
+  else args.push('--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'); // WebGL on the CPU: several GPU Chromes at once crashed an integrated GPU
   args.push('about:blank');
   const child = spawn(findChrome(), args, { stdio: 'ignore', windowsHide: true });
   let port = null;

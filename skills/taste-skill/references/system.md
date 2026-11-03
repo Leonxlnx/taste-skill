@@ -46,7 +46,7 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
   1.8, in `--ink` at 7:1 or more. `--muted` (4.5:1 or more) only for labels, dates, meta and a
   heading's grey run-on: `<h2>Send invoices in minutes. <span class="muted">Clients pay by
   card.</span></h2>`. Large text (24px+) in a muted half or an inactive row 3:1 at least. On a place
-  every text is 4.5:1 or more. Never 14px paragraphs or 15px grey card text.
+  every text is 4.5:1 or more, and every word on the brand band 7:1. Never 14px paragraphs or 15px grey card text.
 - The hero has one quieter level of small text at most (a grey fact line, or a pill above the h1).
 - Highlight by contrast, never by colour: no marker highlights or coloured bars behind words; colour
   inside a word once a page at most, never on a place.

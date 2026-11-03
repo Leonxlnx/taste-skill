@@ -1,5 +1,5 @@
 /*
-  tasteskill layout.css - layout v4 (references/layout-v4.md): one section per screen, equal left and
+  taste-skill layout.css - layout v4 (references/layout-v4.md): one section per screen, equal left and
   right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
   Link it after system.css, ui/cards.css and backgrounds/backgrounds.css; load layout.js after system.js.
 
@@ -384,7 +384,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 @media (max-width: 639px) { .ly-play__disc { width: 52px; height: 52px; } }
 
 /* 8. hero--statement: a quiet statement over a ground (assets/backgrounds), facts docked at the foot */
-.hero--statement .hero__in { justify-content: center; }
+.hero--statement .hero__in { justify-content: space-between; }   /* the h1 top-aligned at y 120 (layout-v4.md section 3), the facts docked at the foot */
 .hero--statement h1 { font-size: var(--ly-h1-quiet); line-height: 1.1; max-width: 21ch; }
 .hero--statement .hero__lead { margin-top: var(--s-5); }
 .hero--statement .btn-row { margin-top: var(--s-6); }

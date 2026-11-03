@@ -14,7 +14,6 @@
       <div class="fis__outside"><p class="fis__aside">3-6 words</p></div>          the outgoing ground (the page's), optional aside
       <div class="fis__world">
         <img class="fis__media" src="…" alt="…" width height>                     one photograph of the chapter's world, dark
-        <div class="fis__scrim" aria-hidden="true"></div>
       </div>
       <div class="fis__band">                                                      a flat band of the page's ground: the title and the sentence
         <h2 class="fis__title" id="fis-h"><span>Line one</span><span>line two</span></h2>   2-6 words on two lines, 12 characters a line

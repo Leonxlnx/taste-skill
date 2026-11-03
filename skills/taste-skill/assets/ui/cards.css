@@ -1,5 +1,5 @@
 /*
-  tasteskill feature cards - the card, its inset panel and where a fragment sits on it.
+  taste-skill feature cards - the card, its inset panel and where a fragment sits on it.
   The rules and their reasons are in references/cards.md. Link after system.css (it refines .card
   and .panel there) or on its own with these tokens on a ground:
     --bg (page), --card (one step off the page), --ink, --muted, --accent, --accent-ink,

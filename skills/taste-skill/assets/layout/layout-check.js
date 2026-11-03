@@ -1,5 +1,5 @@
 /*
-  tasteskill layout-check.js - the layout v4 checks, run in the page (references/layout-v4.md, sections 1c and 2).
+  taste-skill layout-check.js - the layout v4 checks, run in the page (references/layout-v4.md, sections 1c and 2).
   A plain script with no imports, so a checker can evaluate its source in any page:
       const src = fs.readFileSync('<skill>/assets/layout/layout-check.js', 'utf8');
       await page.evaluate(src + '; window.lyCheck()')      // -> { vw, vh, L, R, nav, sections, findings }

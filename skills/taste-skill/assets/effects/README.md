@@ -115,7 +115,7 @@ prints this table, and you can filter it with `--family`, `--on`, `--palette`, `
 Retired on 31 Oct because they looked bad or cheap: `riso-print`, `ink-bloom`, `liquid-chrome`,
 `metaballs`, `brushed-metal` and `paper-texture`, then `terrazzo-speckle` (a kitchen floor),
 `marble-warp` (zebra stripes), `pixel-mosaic` (broken JPEG blocks), `truchet-arcs` (thick grey
-worms) and `soft-particles` (stock bokeh). Their folders are in `pro/retired-effects`, outside the
+worms) and `soft-particles` (stock bokeh). They are not in the
 index. `ridgeline` reads as a record cover when dealt on its own, so it is named only.
 
 ## Commands

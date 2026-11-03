@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  tasteskill shoot.mjs - a full-page screenshot of a page with live effects, and one tile per section.
+  taste-skill shoot.mjs - a full-page screenshot of a page with live effects, and one tile per section.
 
     node <skill>/scripts/shoot.mjs --url <url or file> --w 1440 --out shots/1440.png --profile <own chrome dir>
       [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--tiles <dir>] [--no-tiles]
@@ -11,7 +11,7 @@
 
   Section tiles: at 1440 and at a phone width (under 600) it first shoots one screen
   per top-level section (the children of main, a body > section, a closing footer, the footer), starting at the
-  section's top with the fixed header over it as a visitor sees it (rulebook CK-16: a judge tile at k x 900 at 1440x900, k x 844 at 390x844: one screen is exactly that tall, as consistency.mjs section-height measures it), every
+  section's top with the fixed header over it as a visitor sees it (check CK-16: a judge tile at k x 900 at 1440x900, k x 844 at 390x844: one screen is exactly that tall, as consistency.mjs section-height measures it), every
   whole screen after it, and a last screen with its bottom on the section's bottom when the section is taller than one
   screen. A section whose top the page cannot scroll to (the last short one) is cut out of the last screen, so its tile
   shows it alone. That is the judge's tile: one section per tile, never the next one peeking in. They go to --tiles,
@@ -70,7 +70,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MIME = { '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.otf': 'font/otf', '.mp4': 'video/mp4', '.webm': 'video/webm', '.txt': 'text/plain; charset=utf-8', '.glsl': 'text/plain; charset=utf-8', '.frag': 'text/plain; charset=utf-8', '.vert': 'text/plain; charset=utf-8' };
 let url = String(target), server = null;
 if (!/^https?:\/\//i.test(url)) {
-  // a file URL keeps its leading slash on Linux and macOS
+  // a file: URL keeps its leading slash on Linux and macOS (file:///home/x is /home/x)
   let file = path.resolve(/^file:/i.test(url) ? fileURLToPath(url) : url);
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
   if (!fs.existsSync(file)) { console.error('shoot: no such file: ' + file); process.exit(1); }
@@ -96,10 +96,9 @@ if (!/^https?:\/\//i.test(url)) {
 }
 
 function findChrome() {
-  const pf = process.env.PROGRAMFILES || '', pf86 = process.env['PROGRAMFILES(X86)'] || '', local = process.env.LOCALAPPDATA || '';
-  const c = [process.env.CHROME_PATH, pf && path.join(pf, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Google/Chrome/Application/chrome.exe'),
-    local && path.join(local, 'Google/Chrome/Application/chrome.exe'), pf86 && path.join(pf86, 'Microsoft/Edge/Application/msedge.exe'), pf && path.join(pf, 'Microsoft/Edge/Application/msedge.exe'),
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
+  const local = process.env.LOCALAPPDATA ? path.join(process.env.LOCALAPPDATA, 'Google/Chrome/Application/chrome.exe') : null;
+  const c = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', local,
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'];
   const f = c.find(p => p && fs.existsSync(p));
   if (!f) throw new Error('no Chrome found (set CHROME_PATH)');
   return f;
@@ -256,7 +255,7 @@ async function tilesOf(page, outDir, o) {
   const sections = [];
   for (const [i, s] of info.sections.entries()) {
     const nn = String(i + 1).padStart(2, '0');
-    // the judge's tile (rulebook CK-16, 1H/2H sections on the screen grid): the screen starting at the section's top, the
+    // the judge's tile (check CK-16, 1H/2H sections on the screen grid): the screen starting at the section's top, the
     // fixed header over its top padding as a visitor sees it; a section taller than one screen also gets the screen
     // ending at its bottom, and every whole screen between (a three-screen section gets three tiles). A section the page
     // cannot scroll to the top of (the last short one: its top is past the max scroll) is cut out of the last screen, so

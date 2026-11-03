@@ -97,10 +97,13 @@ export default function init(root, opts = {}) {
     screen.style.height = `${screen.offsetHeight}px`;
     await api.wait(160);
     root.classList.add('is-typing');
-    for (let i = 1; i <= text.length; i++) {
-      typed.textContent = text.slice(0, i);
-      await api.wait(Math.round(per * (0.85 + (i % 3) * 0.15)));
-    }
+    // typed by the cycle's clock, a tween of the length the characters take: a slow frame skips a character
+    // instead of stretching the cycle
+    let shown = 0;
+    await api.tween(Math.round(per * text.length), k => {
+      const n = Math.min(text.length, Math.ceil(k * text.length));
+      if (n !== shown) { shown = n; typed.textContent = text.slice(0, n); }
+    }, k => k);
     root.classList.remove('is-typing');
     await api.wait(100);
     next.classList.add('is-ran');

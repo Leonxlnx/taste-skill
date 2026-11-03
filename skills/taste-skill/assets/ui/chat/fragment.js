@@ -1,4 +1,4 @@
-// chat: one cycle (about 3 s): the question stays; the answer's sources fade, the answer's last sentence
+// chat: one cycle (about 2.8 s): the question stays; the answer's sources fade, the answer's last sentence
 // is written again word by word (its words step back to about 72% ink, then come up in order in under
 // 0.8 s, like the end of a streamed reply), its sources come back, and the finished answer holds for the
 // rest of the cycle. The rest of the answer never leaves full ink; no word ever drops below 72% (4.5:1 on white).
@@ -51,13 +51,13 @@ export default function init(root) {
     await api.wait(200);
     w.forEach(s => s.classList.add('is-off'));
     root.classList.add('is-typing');
-    await api.wait(600);
+    await api.wait(780);
     root.classList.remove('is-typing');
     for (const s of w) { s.classList.remove('is-off'); await api.wait(per); }
     await api.wait(160);
     each.forEach(e => e.classList.add('is-wait'));
     if (srcs) srcs.classList.remove('is-hidden');
-    for (const e of each) { e.classList.remove('is-wait'); await api.wait(220); }
-    await api.wait(380);
+    for (const e of each) { e.classList.remove('is-wait'); await api.wait(240); }
+    await api.wait(400);
   }, { still: () => { root.classList.remove('is-typing'); each.forEach(e => e.classList.remove('is-wait')); full(); } });
 }
