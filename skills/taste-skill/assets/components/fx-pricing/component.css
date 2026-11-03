@@ -1,0 +1,55 @@
+/* fx-pricing: three plans; the recommended one has a border of the effect and a faint wash of it at the top */
+.cx-pricing { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); align-items: stretch; }
+.cx-plan {
+  position: relative; isolation: isolate; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-6);
+  border-radius: var(--r-lg); background: var(--cx-card); border: 1px solid var(--cx-line); box-shadow: inset 0 1px 0 var(--cx-hi);
+}
+.cx-plan > :not(.cx-plan__fx) { position: relative; z-index: 1; }
+.cx-plan.is-featured { border-color: var(--action); box-shadow: 0 24px 64px -32px color-mix(in oklab, var(--accent) 45%, transparent); }
+.cx-plan.is-featured.is-live { border-color: transparent; }
+.cx-plan__fx {
+  position: absolute; inset: -1px; z-index: 0; padding: 1.5px; border-radius: calc(var(--r-lg) + 1px); pointer-events: none;
+  /* the ring (content box cut out of the border box) plus a soft wash down from the top */
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / .2), transparent 150px), linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-clip: border-box, content-box, border-box;
+  -webkit-mask-origin: border-box, content-box, border-box;
+  -webkit-mask-composite: source-over, xor;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / .2), transparent 150px), linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-clip: border-box, content-box, border-box;
+  mask-origin: border-box, content-box, border-box;
+  mask-composite: add, exclude;
+}
+/* the badge drops under the name when the column is narrow, never squeezed onto two lines over it */
+.cx-plan__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-3); }
+.cx-plan__name { font: 500 var(--t-card)/1.3 var(--font-text); letter-spacing: -0.01em; margin: 0; }
+.cx-plan__badge {
+  display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px;
+  background: var(--action); color: var(--action-ink); font-size: 12px; font-weight: 500; white-space: nowrap;
+}
+.cx-plan__for { font-size: var(--t-small); line-height: 1.5; color: var(--muted); margin: 0; min-height: 3em; }
+.cx-plan__price { display: flex; align-items: baseline; gap: 8px; margin: var(--s-4) 0 var(--s-2); flex-wrap: wrap; }
+.cx-plan__amount { font: 560 44px/1 var(--font-display); letter-spacing: -0.035em; }
+.cx-plan__per { font-size: var(--t-label); color: var(--muted); }
+.cx-plan__cta { width: 100%; margin: var(--s-3) 0 var(--s-4); }
+.cx-plan__list { display: grid; gap: 10px; align-content: start; margin: 0; padding: var(--s-5) 0 0; list-style: none; border-top: 1px solid var(--cx-line); }
+.cx-plan__list li { position: relative; padding-left: 26px; font-size: var(--t-small); line-height: 1.45; }
+.cx-plan__list li::before {
+  content: ""; position: absolute; left: 0; top: 2px; width: 16px; height: 16px; border-radius: 99px;
+  background: color-mix(in oklab, var(--accent) 20%, var(--cx-card));
+}
+.cx-plan__list li::after {
+  content: ""; position: absolute; left: 5px; top: 6px; width: 6px; height: 4px; border-left: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
+  transform: rotate(-45deg);
+}
+@media (max-width: 899px) {
+  .cx-pricing { grid-template-columns: minmax(0, 1fr); max-width: 480px; margin-inline: auto; }
+  .cx-plan__for { min-height: 0; }
+}
+/* side by side, the plans share their rows (subgrid): a badge that drops under the name makes that row
+   taller in every plan, so the three prices, buttons and lists stay on one line */
+@media (min-width: 900px) {
+  @supports (grid-template-rows: subgrid) {
+    .cx-plan { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: var(--s-2); align-content: start; }
+    .cx-plan__top, .cx-plan > .cx-plan__name { align-self: center; }
+  }
+}

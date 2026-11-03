@@ -58,9 +58,9 @@
 
 <p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">Become a sponsor</a></sub></p>
 
-**Taste Skill** is an Agent Skill that makes coding agents design websites and app screens instead of assembling the average landing page. It gives the agent an art direction, real pictures and a way to check its own work in a real browser.
+**Taste Skill** (`tasteskill 2.5.0`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs, real brand icons and real product UI, with shader effects, creative moments and scroll scenes kept strictly for tech and gaming pages, all verified in a real browser.
 
-Pages it has built, each from one brief:
+Pages built from a single brief in earlier v2 runs:
 
 <table>
   <tr>
@@ -83,7 +83,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-fro
 
 That installs the skill with the [`npx skills`](https://github.com/vercel-labs/agent-skills) CLI.
 
-The skill runs its scripts with **Node 22+** and an installed **Chrome, Edge or Chromium**. It installs nothing and needs no API keys. Finding pictures needs network access.
+The skill runs its scripts with **Node 22+** and an installed **Chrome, Edge or Chromium**. It installs nothing and needs no API keys. Bundled Wikimedia Commons photographs work offline; fetching additional photographs or icons uses network access.
 
 <details>
 <summary>Claude Code plugin</summary>
@@ -120,22 +120,17 @@ Start a new Codex session afterwards so the skill is loaded.
 
 Already have the skill? Run the install command again; the install name did not change. Looking for one of the older skills? See [Moved skills](#moved-skills).
 
-## How v2 works
+## How 2.5 works
 
-The skill is built from a study of 247 curated sites. A build runs in six steps:
+Every build starts by classifying the client's business (`software`, `gaming`, `tech`, `product`, `service` or `place`) and planning the page screen by screen before writing markup:
 
-1. Reads the brief and lists what only this client has.
-2. A script deals three of 20 researched directions and the agent picks one.
-3. Finds the idea: one sentence tying the client's own material to that direction.
-4. Builds with real pictures and footage from open collections, credited.
-5. Checks the page in a real browser at three widths and fails it on slop.
-6. Looks at its own screenshots and fixes the top three problems, up to three rounds.
+1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette and Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `film`, `statement` or `triptych`).
+2. **Start from one system.** `assets/starter.html`, `assets/system.css` and `assets/layout/layout.css` enforce one section per screen at desktop (`1440x900`), equal left and right content edges, a fixed navigation bar and a single-screen closing footer (`footer.closing`).
+3. **Show real product UI and real photographs.** Software and tech pages populate lit feature cards (`assets/ui/cards.css`) with rewritten HTML UI fragments (`assets/ui/`) and node-and-line diagrams (`assets/diagrams/`), with real brand and interface SVGs resolved locally by `scripts/icons.mjs`. Place, shop, hospitality and non-technical product pages lead with curated photographs (`scripts/photos.mjs`, `assets/photos/`), typography and flat colour, crediting sources in one expandable footer line with no captions under images.
+4. **Keep effects for tech and gaming pages.** Shader grounds (`scripts/effects.mjs`), creative scroll or pointer moments (`scripts/moments.mjs`), scroll scenes (`assets/scenes/`) and procedural 3D prints (`assets/objects/`) are dealt only on `software`, `tech` and `gaming` pages within a four-context WebGL cap, with static fallbacks for phones and reduced motion. Cafes, hotels, shops, studios and services get zero WebGL or scroll effects.
+5. **Check in a real browser over HTTP.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs` and `scripts/shoot.mjs` render the built page in headless Chrome across `1440`, `1024`, `768` and `390`, catching empty visuals, broken shaders, contrast drops, misaligned columns, section-height drift, placeholder text, invented street numbers and slow-network image gaps before the build ships.
 
-A build takes roughly 30 to 45 minutes and a few hundred thousand tokens. Details are in the [changelog](CHANGELOG.md) and the [study](skills/taste-skill/references/research.md).
-
-Dashboards and app screens (v2.1) take their own route: the skill deals one of the app styles distilled from real product screens, builds the shell, the data, the charts and the tables to those numbers, and checks the result with app rules: quiet panels, aligned figures, colour spent on data, a phone layout where the navigation folds away. A product's landing page builds the app it shows the same way, so its screenshots look like a working product.
-
-v2.1 also checks the frame of every page (a clear title on the first screen, equal margins, no section shoved to one side, no random blank stretches) and moves the way strong award sites do, measured on the latest 100 Awwwards Sites of the Day.
+Details of what changed from `2.1.x` are in the [changelog](CHANGELOG.md).
 
 ## Moved skills
 
@@ -157,16 +152,16 @@ npx skills add https://github.com/Leonxlnx/taste-skill-classics --skill "high-en
 ## Common Questions
 
 **What does the skill need?**  
-Node 22 or newer and Chrome, Edge or Chromium. It installs nothing and uses no API keys. It needs the internet only to find pictures.
+Node 22 or newer and Chrome, Edge or Chromium. It installs nothing and uses no API keys. Bundled Commons photographs are stored locally; network access is used only when downloading additional photographs, Google Fonts or brand icons.
 
 **Where do the pictures come from, and can I use them?**  
-From the skill's own library of modern photographs, and from open collections (Openverse for pictures, Wikimedia Commons and NASA for footage). Only public domain, CC0, CC BY and CC BY-SA files are offered, and the skill credits them in an Image credits dialog on the page. Replace them with your own when you have them.
+From the skill's vetted photograph library (`assets/photos/photos.json`, including bundled Wikimedia Commons WebP sets and Unsplash photographs) dealt by `scripts/photos.mjs`. Library frames are used for trade and material details (or marked explicitly as draft stand-ins when the client has no photographs yet), never passed off as the client's own room, staff or product, and credited in one expandable footer line (`photos.mjs credits`).
 
 **Does it work with React, Vue, Svelte, plain HTML?**  
-Yes. The rules are about design, not a framework.
+Yes. You can ship directly from `assets/starter.html` and the modular CSS/JS kits, or port the same tokens, section geometry, UI fragments and browser checks into React, Next.js, Vue, Svelte, Astro or Tailwind.
 
-**Is it for dashboards and app screens?**  
-Yes, since v2.1. The skill tells a page from an app screen and builds a dashboard, an admin view or a settings screen with its own run: a style dealt from a study of real product screens, quiet panels, honest data and charts, and its own checks (`inspect.mjs --app`).
+**When does a page get shaders or scroll effects?**  
+Only on `software`, `tech` (technical hardware) and `gaming` pages, and always within a four-context WebGL budget with static phone and reduced-motion fallbacks. Places, shops, cafes, hotels, studios, services and everyday physical products stay calm: photographs, sharp typography and flat colour.
 
 ## Support the project
 

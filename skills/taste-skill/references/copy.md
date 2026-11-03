@@ -1,284 +1,133 @@
-# Words
+# Copy
 
-Copy is the first design decision. A headline that needs four lines cannot be rescued by typography,
-and a page of slogans cannot be rescued by layout. Write the page as plain text before any markup.
+Say what it is and what it does, in words a stranger understands in five seconds. Every sentence is
+one you would say out loud to a customer. No metaphors, poetry, invented terms or ad wording. Every
+studied site is a description only: copy how the examples are written (plain, category first),
+never their words, code, pictures or signature effect.
 
-## Contents
+## Five rules
 
-1. Write the argument first
-2. The two-line headline (with the character budget)
-3. Headline shapes that work
-4. Supporting line, body, buttons
-5. Proof without inventing it
-6. Things that read as generated
-7. Micro-typography
+1. **The h1 names the category, and for a brand nobody knows, the buyer or the place,** in 2 to 8
+   words: payroll app, dental clinic, standing desk, plus who it is for or where. A place: what and
+   where in 40 characters at most ("Bakery on Mill Street, Leith"; "Six-room guesthouse on a fjord").
+   Never a riddle, a command, a mood, or a brand line over a plain sub-line.
+2. **The first screen holds one hard fact:** a number, a place, a price or a date.
+3. **Every heading has a noun that names a thing:** the product, a part of it, the place, a section
+   noun (prices, rooms, menu, opening hours, questions, getting here, visit) or a digit. One brand
+   line a page at most, never the h1.
+4. **Buttons are a verb plus what the visitor gets,** 1 to 5 words, starting with book, buy, order,
+   pre-order, reserve, try, start, get, download, compare, see, watch, read, find, join, subscribe,
+   sign up, contact, configure, add, send, email or request; a bare noun only where the link opens
+   that thing. Never "Learn more", "Read more", "Discover", "Explore", "More" or "Click here".
+5. **Few actions, each with one wording:** at most 2 in the hero (one on a place), 10 different
+   labels a page at most. The main action names the transaction (Book a room, Order a cake, Start a
+   free trial; on a place the brief's order or booking, else Get directions, never a side event) and
+   reads the same in the nav, the hero, the close and the phone bar, and nowhere else.
 
-## 1. Write the argument first
+## Plain versions
 
-Answer in one line each, in a scratch note:
+When a line is vague: the category noun first, then one count, place or price from the brief, no
+figure of speech.
 
-- Who is reading, and what do they already know?
-- What is this, said the way its maker would say it to a friend?
-- What single thing should the reader believe after one screen?
-- What would make them believe it (a picture of the thing, a number, a name, a demonstration)?
-- What do they do next?
-
-Then list the page as claims, one per section, each with its proof:
-
-```
-1. It is a three-legged oak stool, made to order.             → the stool, large
-2. Each seat is cut from one board, so the grain is yours.    → three close-ups
-3. It takes six weeks, and you can follow it.                 → the stages, photographed
-4. It costs 240 and is delivered by the maker.                → price, button
-```
-
-A section with no claim is filler; delete it. This is also how you escape the stock order of
-hero, logos, features, testimonial, pricing, call to action: the order of the argument is the order of
-the page. Five or six claims after the hero are plenty; two that say one thing are one section.
-
-**Budgets.** The owner's verdict on the recent pages was "too much text: cut almost everything", and
-the inspector now counts:
-
-| Where | At most |
+| Vague | Plain |
 | --- | --- |
-| The first screen, everything in it | 30 words |
-| Its headline | 12 words (about 32 characters is safer) |
-| A section, outside a list or a table | 60 words |
-| A card or an item | one sentence, about 25 words |
-| The whole page | about 500 words |
+| "Every shift, sorted" | Shift planning for restaurant teams |
+| "Where the city climbs" | Climbing gym with 180 routes in Leipzig-Plagwitz |
+| "Come climb" | Day pass 14 €, shoes included |
+| "A second read of every word" | AI proofreader for book publishers |
 
-Past one and a half times a budget the inspector fails the page. Write the deck, count it, then cut
-every sentence that repeats the heading, explains the design or could stand on a competitor's page.
+## Headlines and text
 
-## 2. The two-line headline
+- **Hero sub-line:** software, product and service: how it works and the main benefit, 15 to 30
+  words, one line to two sentences. A place: the fact, 80 characters at most, with today's hours
+  ("Sourdough, rye and cardamom buns from 7:30, Tuesday to Sunday."); a hotel the rooms and the town.
+- **Section headings** name the thing ("Rooms and prices", "Works with your tools") or make a short
+  plain claim ("Pays staff on the same day"), 1 to 6 words, at most two lines. A noun phrase or "we
+  do X for Y", never a command, a question (FAQ entries may be questions), a colon heading or a line
+  that only makes sense after the page ("Continuity slips", "It reads everything you decide").
+  **Card titles:** a verb and an object ("Warns about double shifts"), one line, real words, never a
+  coy label ("The market run").
+- **Under a heading** one line to two sentences (10 to 40 words); a card body 1 or 2 sentences, 25
+  words at most, in the buyer's words with one concrete detail; no paragraph over five lines at
+  1440. A price does the selling, not a mood heading ("Rooms from 140 € a night, breakfast
+  included").
+- **Words per screen** stay low: software about 69 (40 to 95), product 47, place 44, service 34; a
+  page about 900 words at most, the footer aside. Long copy goes to sub-pages.
+- **Numbers** sit in sentences with their unit ("4.5 hours a week"), uneven where real (212, 38%).
+  A real claim from the brief that needs a source gets a numbered footnote near the footer (13px
+  and up).
+- **Pictures** stand beside short copy, never in place of it, and words never stand where a
+  photograph fits. Every word is live text.
+- **Self-check:** read each line aloud to a customer. Is it clear what the product does? If not,
+  rewrite it.
 
-A headline is a title. It is held in one glance. On the studied gallery sites the hero headline has a
-median of 5 words and 70% sit on one or two lines at desktop width. Every headline on your page, at
-every viewport, fits in **two lines or fewer**. `inspect.mjs` measures this at 1440, 768 and 390 pixels
-and fails the page otherwise.
+## What may be assumed
 
-The constraint is arithmetic, so do it before you fall in love with a sentence:
+- **Prices, address, hours and dates come from the brief;** the report lists any you assumed. Only
+  two things may be assumed when the brief lacks them: a coined brand name (below), and on a place
+  plausible hours and prices for the trade, uneven and in the local currency (3.60, not 4.00).
+  Nothing else is invented.
+- **No invented proof:** no invented reviews, ratings, review counts, quotes, testimonials,
+  statistics, customer counts, customer names, portraits, clients, awards, press lines or products.
+  Customer logos only for real customers the brief names and that may be shown; a real tool the
+  product works with keeps its real icon in its own colours (`icons.md`), never a drawn imitation.
+  Without proof, a strip of plain facts from the brief, or nothing.
+- **No sample notes:** no "sample", "(sample)", "examples", "illustrative" tag, note or asterisk
+  footnote anywhere. A target value the brief itself gives is worded inside it ("target 2 days").
+- **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
+  kit sample text, and no link to `#` or an empty href. Write the real words, or leave the element
+  out. "Coming soon" only for what the brief says is coming.
+- **No caption, label or description under or on any visual** (Leon): not "A drawing made in code",
+  "Photographs follow", "Representative image", not a name, price or link line under a bare picture,
+  no hashtags. A heading names the set; a sold item's name and price sit inside its card's padding.
+  The picture shows the thing or is left out; the report lists the photographs the client must
+  supply.
+- **Credits:** one short line at the end of the footer naming only the sources used, never the
+  photographers: "Photographs via Unsplash and Wikimedia Commons" (as `photos.mjs credits` prints
+  it; 110 characters at most, one line from 1024). It is the summary of one `details.credits`,
+  closed on load, that opens the full list. Map data credits join it. A page that shows real logos
+  adds "Product names and logos are trademarks of their owners".
+- **Each fact once:** an opening time, a price or an address has one value and one wording,
+  repeated word for word only where it belongs (the hero, the visit panel, the phone sheet, the
+  close, the footer); never two hours for one day.
 
-```
-characters per line ≈ line width in px ÷ (font size in px × k)
+## Contacts the brief does not give
 
-k ≈ 0.40  condensed faces
-k ≈ 0.50  most grotesks and serifs at display size, tight tracking
-k ≈ 0.58  wide / extended faces, all-caps settings
-```
+What the brief gives is printed exactly as given. Each kind is separate: a brief that gives only a
+phone number still gets the address, email and imprint rules.
 
-| Where | Line width | Size | Per line | Two-line budget |
-| --- | --- | --- | --- | --- |
-| Phone 390, 20px gutters | 350px | 44px | ~16 | **~32 characters** |
-| Phone 390, 20px gutters | 350px | 34px | ~21 | ~42 characters |
-| Tablet 768 | 690px | 64px | ~22 | ~44 characters |
-| Desktop, 12-col measure | 1100px | 104px | ~21 | ~42 characters |
-| Desktop, half width | 620px | 72px | ~17 | ~34 characters |
+- **Address: a street and a district only** ("Elmgatan, Malmö-Möllevången"). Never a house number,
+  a postcode or map coordinates. One street address a page (the visit block and the footer, at 390
+  too), never readable only on a sign in a photograph. Several shops: each name, then its street. A
+  studio by appointment says so.
+- **Maps:** no map loads with the page. Get directions opens
+  `https://www.openstreetmap.org/search?query=<street>+<district>` (an invented street:
+  `?query=<district>+<town>`), with no coordinates and no route; on the phone the address opens the
+  same search. A map is drawn only for a street the brief gives (`fx-map` baked still, the pin on the
+  street line, never a building); a builder's real street never gets a real map, since it pins a
+  stranger's door. Never an iframe.
+- **Phone: none, unless the brief gives one.** No number, no `tel:` link, no Call button. A
+  "Request a call" form may stand in.
+- **No imprint page and no company details:** no register number (HRB), VAT or tax id, company
+  number, managing director or court. The legal row holds the brand, the current year, Privacy,
+  Terms and the credits line; an Imprint link only when the brief gives the company's own details.
+- **Email and web:** a form, or a button ("Email us") whose `mailto:` is on `.example`
+  (`hello@brand.example`). Never print an email address, a domain or a social handle, not even a
+  `.example` one. `.socials` stays empty unless the brief gives the accounts.
+- **Names are coined,** not dictionary words and not a business that exists, unless the brief gives
+  the name; person names come only from the brief. Search a coined name with its trade ("name
+  coffee") and as a domain; if a business of that trade or a famous person has that exact name in
+  the first 10 results, coin another. Write each query and result in `names.json` beside the page
+  (`"searched": false` with no search tool).
+- **Links** go where their label says: a part of the page (`#rooms`) or a page that exists; never
+  "here", never two different labels to one target, never a link to a closed answer.
+- **Newsletter:** asked once, in or just above the footer, "Subscribe" or "Sign up", an email field
+  only; never in a modal, never twice.
 
-So a hero headline of **about 32 characters or fewer** (four to six words) survives everywhere at a
-confident size. Up to about 42 works if the phone size comes down to the mid-30s. Past that you are
-writing a sentence; move the rest into the supporting line.
+## Banned
 
-Controlling the break:
-
-- Give the headline a `max-width` in `ch` so it breaks where you intend, and add
-  `text-wrap: balance` so two lines come out even.
-- Where the break matters (it usually does), author it: `Stools for<br> small kitchens`. Check the
-  phone screenshot; if an authored line wraps there, hide the `<br>` under a breakpoint or shorten.
-- Never fix a long headline only by shrinking it. A timid 28px headline of nine words is worse than
-  five words at 64px.
-- Avoid a single orphan word on line two. Rebalance by cutting a word, not by nudging the width.
-
-Section headings follow the same rule and are shorter: two to five words.
-
-**A statement is not a headline.** An intro sentence or a quotation set large (the manifesto line
-after the hero, a testimonial) is a paragraph: mark it up as `<p>` or `<blockquote>`, keep it to about
-25 words, and set it at statement size, which the inspector takes as 36px or less on desktop, 32px on
-a tablet and 24px on a phone. It may then run to about three lines (four on a phone). Set larger than
-that, or marked up as a heading, or placed as the main line of the first screen, it is a headline and
-gets two lines. In blind judging, a sentence set big over three or more lines was read as a long
-headline every time, whatever its markup; if the words matter that much, cut them to a two-line
-headline instead.
-
-## 3. Headline shapes that work
-
-All seen repeatedly on the gallery sites. Pick the plainest one that is true.
-
-- **The name.** The brand or the person, set very large, with a one-line description elsewhere.
-  Strongest when the name is short and the subject is visual (studios, restaurants, hotels, people),
-  and when the page is built on what the name means (Klee is clover; Hvit is white). The name then
-  appears once on the first screen: the bar shows the mark alone, or its wordmark arrives once the
-  hero has scrolled away. A headline that repeats the logo beside it reads as a template (a roastery's
-  first screen, round 10).
-- **What it is.** "A vinyl shelf in your pocket." "Furniture for small rooms." Category, stated with
-  one specific word.
-- **The claim.** "Your bank won't do this." One sentence a competitor could not sign.
-- **The instruction.** "Understand your money." Verb first, short.
-- **The place or the moment.** "Antarctica." "Lisbon, since 1984." For hospitality, events, travel.
-
-Shapes to avoid, because they are the average of every landing page:
-
-- The mad-lib: "The AI-powered platform for modern teams".
-- The tricolon: "Fast. Simple. Secure." or "Plan. Build. Ship."
-- The correction: "It's not just a tool, it's a workflow". Also "More than a …".
-- "X, reimagined / redefined / made simple". "Welcome to …". "Meet …" for a product nobody has met.
-- A question the reader did not ask.
-- A headline that needs its colon: "Ledgerly: invoicing for freelancers". Drop the name, it is in the
-  navigation.
-- One word of the headline styled differently (italic, serif, coloured, underlined, in a pill).
-- Not the name plus its category ("Kaffee Klee, roastery and bar"), and not a bare category line
-  with nothing of this client in it ("Roasted and poured in Berlin"). For a name whose meaning the
-  page is built on (Klee is clover), the name itself is the headline, the largest type on the screen,
-  and the sentence under it says what the place is and what the name means; otherwise the line says
-  what only this place could say, from the inventory ("Roasted in the courtyard on Tuesdays and
-  Fridays"), and the name stays in the bar and the title.
-
-Sentence case. No full stop unless the direction's voice uses them everywhere.
-
-## 4. Supporting line, body, buttons
-
-**Supporting line.** One sentence, at most about 18 words, that says concretely what the thing is and
-who it is for. It is where the detail cut from the headline goes. It never repeats the headline in
-other words. The offer is one sentence, never a stacked list of labels (city / service / service).
-
-**Body.** Short paragraphs of plain statements. Prefer the specific noun and the real number: "ships
-in a week" over "fast delivery"; "38 seats" over "intimate". Read every sentence and ask whether a
-different company could print it unchanged; if so, sharpen it or cut it.
-
-**Buttons.** Name the action or the thing: "Book a table", "See the plans", "Download for Mac".
-One to three words. The primary action keeps one name everywhere on the page. One primary button per
-screen; the second action takes the treatment the dealt button design names (a text link, a quieter
-fill). An arrow only where that design has one, never on every link. One action appears once in a
-block: never two buttons or links to the same place in one screen or section (a roastery's first
-screen had two Directions buttons). The bar's action counts: where it and the hero's button would go
-to one place, give the hero's button another or bring the bar's action in once the hero has scrolled
-away (`duplicate-action`).
-
-**Navigation.** The wordmark, up to five plain links, one action. Link labels are single nouns, one
-or two words; never a sentence or a tagline in the bar, and no announcement or information strip
-above it.
-
-## 5. Proof without inventing it
-
-Never invent customers, quotes from named people, press logos, user counts, ratings or benchmarks.
-Invented proof is both dishonest and a recognised tell.
-
-When the brief supplies no proof, use what is true by construction:
-
-- Show the thing itself, large. A real demonstration outranks any quote.
-- State how it works, specifically.
-- Use facts from the brief (price, place, year, materials, what is included).
-- If a testimonial or logo section is explicitly requested and no real ones exist, build the section
-  with plainly fictional sample content and say so in your final report so it is replaced before
-  launch. Do not put real company names or real people in it.
-
-**Sample details are different from proof, and they are expected.** Where the brief gives the shape of
-the content but not every detail (six rooms "from €140", "a short menu", twelve speakers), write the
-full set of plausible details: each room with a name, a bed, a view and its own rate; each dish with
-its price; each speaker with a talk title; or, when there are fewer good pictures than rooms, each
-kind of room (references/imagery.md §2), with its picture and its rate. A design can only be judged at
-its real density, and a page that shows one rate where six rooms exist looks unfinished. The details
-sit beside the room's picture, or beside the dish's own photograph where the client has one
-(references/imagery.md §2), never in a spec panel or a filled box standing in for it. List every
-sample detail in the report so the client confirms or replaces it.
-
-**Words beside a stand-in never claim it.** A picture that is not the client's own (a detail of a
-room, the load of a product, the place) carries the facts of the room or the product, never a line
-that says it is the client's photograph, and never another business's name from its credit. The
-`data-slot="product-photo"` slot sits on the product statement (its name, its true figures, its
-colourways and its measured size, never an empty box), a `work` frame holds the project's own still
-or its title, set in the page's type; a `room-photo` or `house-photo` frame
-holds its photograph (a detail, the place) with the facts beside it. None says "photo coming soon" or
-"placeholder", or notes that a picture is missing.
-
-**A menu item's name is never set beside a stock picture.** "Flat white, 3.80" beside someone else's
-cup claims that cup as this café's: without the client's own photographs the menu stands in type, and
-the trade's pictures (the pour, the beans, the street) carry no item's name or price (a café page
-showed stock drinks as its menu). On a product page the opposite holds: the copy names the uses and the
-loads (the weekly shop, two children and their bags, the school run in the rain), and each photograph
-stands beside the line that names what it shows. A picture no line names is cut, not captioned to fit
-(a child's boots in a puddle stood beside a cargo bike's range).
-
-**Facts about the real world are not sample details, and they are not to be left out either.** A page
-about a real place names the real, checkable things a visitor needs to get there and to picture it:
-the village it stands in, the region and its towns, the road that reaches it, the ferry, the train
-or the airport that serves it, and the drive from the nearest town with its time ("70 km by road,
-about an hour and a quarter"): from the road distance on a map when one can be read in this session,
-otherwise at about 60 km an hour on country roads, rounded up and marked in the report to confirm.
-A visitor plans by the time, and a page that names no village and no drive time leaves them guessing
-(a Westfjords guesthouse, round 10). No time ever makes a place nearer than it is: "forty minutes
-from Reykjavik" for a house in the Westfjords, hours away, is wrong to every reader who knows. What
-cannot be checked from a map or the brief stays off the page: populations, history, awards, records
-and "the oldest" or "the only". List every real-world fact the page states in the report,
-with where it came from, for the client to confirm.
-
-**A place people go to says how to get there.** A café, a bar, a restaurant, a shop, a guesthouse or
-a studio with a door gets a visit block with six things: the street, a real street in the right
-district of the town the brief names (one such a place would stand in, with no house number unless
-the brief gives one), or for a remote place, or a brief that names only a region, the village it
-stands in and the nearest town with the road from it, and no street; the district or area; the
-nearest stop and its line, read from a map in this session or one you are sure of, otherwise the
-district's main station (for a remote place, the drive from that town with its time, as the
-paragraph above says); the opening hours
-(a house or a hotel may print its season and its check-in times instead); a "Directions" link to a
-maps service (OpenStreetMap, Google or Apple Maps) searching that street and town, or that road and
-town; and one contact. The street, district, way there and hours the brief does not give are sample
-copy, and the report marks them for the client to confirm. Never a placeholder street (Musterstrasse
-12, 1 Main Street, Example Road), and never the city's name alone: a roastery page that printed
-hours and an email under "Open in Berlin" left the visitor nowhere to go, and the judge marked it
-high. With no phone number in the brief, the page prints none: never a zeroed or patterned number
-(030 000 000 00, 555-0123) and never a real area code with random digits, which can ring a real
-line; the contact is then the email at the brand's own domain, never `.example`, unless the name is
-coined (below). A page with no door
-in its brief (a product sold online, an app, a portfolio) prints no street, hours or phone at all:
-the email and the city the brief names. When the brief gives no email address, the sample one is
-sample content, and no form that sends a visitor's details (an order, a booking, a delivery address,
-a sign-up) is wired to it: for a made-up brand that
-domain belongs to a stranger. Such a form posts to an endpoint the client gives, or stays unwired with
-its handler named in the report; the visible contact line and a mailto link on it stay as the house
-rules ask.
-
-**A brand the brief does not name gets a coined name.** A plausible word (Engram, Inkwell, Kasten) is
-often already a real product's name, sometimes in the same trade, and the page then reads as theirs.
-Coin one that reads as invented: two short roots joined, or a word bent out of shape, never a dictionary
-word alone or a known product's name. **Check it before use:** search the name with the trade's word
-("<name> notes app", "<name> invoicing", "<name> café Leipzig") and the domain it would use
-("<name>.com", "<name>.app"), and drop it when a product or company of that trade already has it or
-the domain is a live site. Two names coined in tests, for a notes app and for a tool, were real
-products of the same kind, and one page had to be renamed before it could be shown; another linked the
-live address of a product with its coined name. The same goes for a product, plan or feature name the
-page coins. A coined name's email and links use the `.example` domain (hello@<name>.example) until the
-client gives its own: any other address may be a stranger's. The inspector warns on it
-(`placeholder-contact`); the report names it with the name. Say in the report that the name is a
-placeholder, searched but not checked against trademarks, and is to be replaced by the client's own.
-
-## 6. Things that read as generated
-
-`lint.mjs` flags most of these.
-
-- Verbs and adjectives of the genre: unlock, unleash, supercharge, elevate, empower, streamline,
-  seamless, effortless, robust, cutting-edge, next-generation, world-class, all-in-one, blazing fast.
-- Labels pretending to be editorial: "Field notes", "The details", "Our philosophy", "Quietly trusted
-  by". A section heading can simply be "Pricing".
-- Furniture text: locale or time strips, "Est. 2024", coordinates, version stamps, "Scroll", "(Scroll
-  to explore)", fake photo credits, status lines such as "Available for work" with a dot, strings of
-  words separated by middle dots or slashes.
-- The em dash as a habit. One or two on a page read as writing; ten read as a model. Use a full stop.
-- Explainer captions that narrate the design: "A clean, minimal layout for…".
-- Step labels that duplicate numbers: "Step 1", "Phase 02".
-- Three parallel items everywhere: three features, three stats, three steps. Use the number the
-  content has. And the stats band itself, big figures each over a one- or two-word label: a figure
-  stands in the line that says what it counts ("Notes from 2019 still come back: 1,284 of them").
-- Two sign-up forms on one page (the closing section and the footer). One email form a page.
-
-## 7. Micro-typography
-
-- Curly quotes and apostrophes (“ ” ’), a real ellipsis (…), an en dash for ranges (9–5).
-- Non-breaking space between a number and its unit, and before the last short word of a headline
-  when it would otherwise orphan (`&nbsp;`).
-- `font-variant-numeric: tabular-nums` where numbers line up in columns (prices, tables).
-- Every price carries its unit, the same way on every line ("60 €", not "60"); emails, URLs and phone
-  numbers never break (`white-space: nowrap` on their link).
-- `text-wrap: balance` on headings, `text-wrap: pretty` on paragraphs.
-- No all-caps for anything longer than three words; if you set caps, add 0.02–0.06em tracking.
-- No text under 13px. No centred paragraphs longer than three lines. No justified text.
+Metaphors and "where X meets Y"; slogans, greetings and boasts in the hero; questions as headlines;
+exclamation marks; all-caps labels; invented capitalised concepts ("the Proof Layer"); unexplained
+programme names; jokes or slang in labels; mood paragraphs; a literary quote as a full-screen band;
+filler (seamless, effortless, cutting-edge, unlock, elevate, supercharge, reimagine,
+next-generation, game-changing, powerful, robust).

@@ -1,0 +1,20 @@
+{
+  "id": "fx-map",
+  "name": "Street map of the place",
+  "for": "A contact or visit section: the real streets, water, parks and rails around the place from OpenStreetMap, drawn in the page's colours, with the pin, a scale bar and an address card with working actions. No map service at run time, no key, no tracking.",
+  "effects": [
+    "contour-lines",
+    "ruled-grounds",
+    "dot-terrain"
+  ],
+  "default": "none",
+  "how": "Bake the place once: node assets/components/fx-map/bake.mjs --lat <lat> --lon <lon> --out map.json (one request to an Overpass server; no walk by default: --from auto or --from lat,lon --from-name \"Name\" draws a walk only when the brief names a station). Paste the JSON inline as <script type=\"application/json\" class=\"cx-map__data\">...</script> inside the section, or name the file with data-cx-map. With a walk, the bake prints it in minutes and the station: write the same in the card and in the svg's aria-label. The card gives the street and district only, never a house number, postcode or coordinates. The part fits the pin, the walk and both names into the free part of the frame (right of the card from 900px of width, the whole map below it), sets street names only where they fit, and keeps every mark inside the frame. Light pages get white streets on a land a step darker than the page, dark pages lighter streets on a land a step lighter; water and parks keep a natural blue and green mixed into the land. The effects listed are only the fallback when there is no baked data (the bake could not reach the network): report it.",
+  "rules": [
+    "The pin is the real place: the bake's lat and lon are the address, and the address is a real street near it.",
+    "Get directions opens a search for the street and district in a real map service (openstreetmap.org/search?query=Street%20District), in a new tab: never coordinates and never a route.",
+    "The OpenStreetMap credit (ODbL) goes in the page's one footer credit line, never on the map and never as a caption.",
+    "Nothing moves at rest. Pointed at (or its directions link focused), the walk is drawn from the station to the door and the halo answers once; nothing on scroll, so no pause button.",
+    "An address the client has not given yet is a placeholder listed in the report, never a 'sample' tag on the card."
+  ],
+  "a11y": "A labelled region with a real address element and buttons; the svg has role img and an aria-label that names the place, the street and the walk. The pin, names and walk chip are decorative. Copy address announces by its own label change. Reduced motion: no drawn walk, no halo."
+}

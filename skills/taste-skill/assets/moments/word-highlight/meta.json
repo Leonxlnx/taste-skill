@@ -1,0 +1,41 @@
+{
+  "id": "word-highlight",
+  "name": "Statement lights up",
+  "kind": "scroll",
+  "fits": [
+    "statement"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "One large statement rests at half ink (readable, about 4 to 1) and turns to ink word by word as it crosses the middle of the screen, a strong word to the accent; it runs back on the way up.",
+  "reduced": "The statement in ink.",
+  "phone": "The whole statement in ink, the accent word in the accent.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "words": "one statement of 12 to 40 words"
+  },
+  "avoidWith": [
+    "giant-type-pass"
+  ],
+  "states": {
+    "start": {
+      "view": 0.22,
+      "wait": 350
+    },
+    "middle": {
+      "view": 0.5,
+      "wait": 350
+    },
+    "end": {
+      "view": 0.72,
+      "wait": 350
+    }
+  }
+}

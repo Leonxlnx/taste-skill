@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- layout v4 demo: hero-triptych (references/layout-v4.md, heroes.json "triptych"). type: software. fonts: host. -->
+<html lang="en" data-type="software" data-radius="soft" data-ground="sand" data-buttons="solid">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="software">
+<title>Carte: menus, posters and table cards for restaurants</title>
+<meta name="description" content="Edit a price once and every menu, poster, table card and screen updates. Print at home or send to your screens. From €19 a month.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #ffffff; --p-surface: #f3f3f1; --p-ink: #111111; --p-muted: #5f5f5c;
+  --p-accent: #e2472b; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
+  --p-inv-bg: #111111; --p-inv-surface: #1c1c1c; --p-inv-ink: #f4f4f2; --p-inv-muted: #a3a3a0;
+  --p-inv-accent: #ff7a5c; --p-inv-accent-ink: #111111; --p-inv-action: #f4f4f2; --p-inv-action-ink: #111111;
+  --font-display: "Host Grotesk", system-ui, sans-serif; --font-text: "Host Grotesk", system-ui, sans-serif;
+  --display-weight: 500; --display-tracking: -0.035em; --display-tracking-xl: -0.045em; --ly-scale: 1;
+}
+/* the collage's pieces: sized in % of the collage, their text in container units, so the phone shows the same picture smaller */
+.ly-collage { container-type: inline-size; }
+.ly-collage .ly-piece { box-shadow: 0 1px 2px rgb(0 0 0 / .1), 0 22px 48px -22px rgb(0 0 0 / .4); }
+.ly-collage .pc-menu { background: #f6efe2; color: #2a2119; padding: 6cqw 5.5cqw; display: grid; align-content: start; gap: 2.2cqw; font: 400 max(13px, 2.1cqw)/1.35 "Host Grotesk", sans-serif; }
+.pc-menu h4 { font: 400 6.4cqw/1 "Young Serif", Georgia, serif; letter-spacing: -0.02em; margin: 0 0 1.5cqw; color: #2a2119; }
+.pc-menu .it { display: grid; grid-template-columns: 1fr auto; gap: .4cqw 2cqw; padding-top: 2cqw; border-top: 1px solid rgb(42 33 25 / .16); }
+.pc-menu .it b { font-weight: 600; } .pc-menu .it small { grid-column: 1; color: #7a6c5d; font-size: max(13px, 1.8cqw); }
+.pc-menu .it.is-new span { background: #ffe1d6; color: #b8341c; padding: 0 .8cqw; border-radius: .6cqw; transition: background-color .4s; }
+.ly-collage .pc-edit { background: #fff; color: #161616; padding: 3cqw 3.4cqw; display: grid; gap: 1.6cqw; font: 400 max(13px, 2cqw)/1.3 "Host Grotesk", sans-serif; }
+.pc-edit .lbl { color: #7b7b78; font-size: max(13px, 1.7cqw); }
+.pc-edit .field { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e1e1de; border-radius: 1.4cqw; padding: 1.6cqw 2cqw; font-size: max(13px, 2.4cqw); font-weight: 500; }
+.pc-edit .field i { font-style: normal; color: #e2472b; }
+.pc-edit .row { display: flex; align-items: center; justify-content: space-between; }
+.pc-edit .tg { width: 6.4cqw; height: 3.6cqw; border-radius: 99px; background: #111; position: relative; } .pc-edit .tg::after { content: ""; position: absolute; right: .5cqw; top: .5cqw; width: 2.6cqw; height: 2.6cqw; border-radius: 50%; background: #fff; }
+.ly-collage .pc-poster { background: #1d2b23; color: #f3ecdc; display: grid; grid-template-rows: 58% 1fr; }
+.pc-poster img { width: 100%; height: 100%; object-fit: cover; }
+.pc-poster div { padding: 3.6cqw 4cqw; display: grid; align-content: space-between; }
+.pc-poster strong { font: 400 6.8cqw/.95 "Young Serif", Georgia, serif; letter-spacing: -0.02em; }
+.pc-poster small { font: 500 max(13px, 1.9cqw)/1.3 "Host Grotesk", sans-serif; opacity: .85; }
+.ly-collage .pc-phone { background: #111; border-radius: 4.6cqw; padding: 1.4cqw; }
+.pc-phone > div { width: 100%; height: 100%; border-radius: 3.4cqw; overflow: hidden; background: #1d2b23; display: grid; grid-template-rows: 1fr auto; }
+.pc-phone img { width: 100%; height: 100%; object-fit: cover; }
+.pc-phone p { margin: 0; padding: 2.4cqw 9cqw 2.4cqw 2.4cqw; font: 400 3.6cqw/1.05 "Young Serif", Georgia, serif; color: #f3ecdc; }   /* its right end kept clear: the pause disc sits on this corner */
+.ly-collage .pc-swatch { background: #fff; padding: 2.6cqw; display: grid; gap: 1.6cqw; font: 500 max(13px, 1.8cqw)/1.2 "Host Grotesk", sans-serif; color: #161616; }
+.pc-swatch .dots { display: flex; gap: 1.4cqw; } .pc-swatch .dots i { width: 4.4cqw; height: 4.4cqw; border-radius: 50%; }
+.pc-swatch .dots i.on { box-shadow: 0 0 0 .5cqw #fff, 0 0 0 .9cqw #111; }
+.ly-collage .pc-tent { background: #fff; color: #1b1b1b; padding: 6cqw 4cqw; display: grid; gap: 1.2cqw; align-content: center; text-align: center; }
+.pc-tent small { font: 500 max(13px, 1.8cqw)/1.2 "Host Grotesk", sans-serif; color: #8a8a86; letter-spacing: .02em; }
+.pc-tent strong { font: 400 5cqw/1 "Young Serif", Georgia, serif; letter-spacing: -0.02em; }
+.pc-tent span { font: 400 max(13px, 2.2cqw)/1.3 "Host Grotesk", sans-serif; }
+.ly-collage .pc-sched { background: #fff; color: #161616; padding: 3cqw; display: grid; gap: 1.4cqw; font: 400 max(13px, 1.9cqw)/1.3 "Host Grotesk", sans-serif; }
+.pc-sched b { font-weight: 600; font-size: max(13px, 2.2cqw); }
+.pc-sched .ln { display: flex; justify-content: space-between; gap: 2cqw; padding-top: 1.4cqw; border-top: 1px solid #ececea; }
+.pc-sched .ln em { font-style: normal; color: #1f7a4d; font-weight: 500; }
+.made-row { display: flex; flex-wrap: wrap; gap: var(--s-5) var(--s-7); align-items: baseline; }
+.made-row .t-stat { font: var(--display-weight) var(--t-stat)/1 var(--font-display); letter-spacing: var(--display-tracking); }
+.tiles3 .tile__media img { object-position: 50% 55%; }
+@media (max-width: 639px) { .tiles3 .tile__media { aspect-ratio: 3 / 2; } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="petal" aria-hidden="true"></span>Carte</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#made">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Print</p><a href="#made">Menus<span>A4, A5 and long menus</span></a><a href="#made">Posters and table cards<span>From the same prices</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Screens</p><a href="#made">Menu boards<span>Lunch at 11:30, dinner at 17:00</span></a><a href="#made">QR menus<span>Allergens on every dish</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#made">Templates</a></div>
+      <div class="nav__item"><a class="nav__link" href="#made">Pricing</a></div>
+      <div class="nav__item"><a class="nav__link" href="#made">Resources</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#made">Log in</a>
+      <a class="btn btn--primary" href="#made">Start designing</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--triptych" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="span-3">
+        <h1 id="hero-h">Menus and posters for restaurants</h1>
+        <p class="hero__lead">Change a price once and every menu, poster, table card and screen follows.</p>
+      </div>
+      <div class="ly-collage span-6 start-4" role="img" aria-label="A lunch menu, a poster for a coffee week and a table card, each made in Carte from the same price list">
+        <div class="ly-collage__set is-on">
+          <div class="ly-piece" style="left: 40%; top: 38%; width: 56%; height: 58%"><img src="img/photo-c166.jpg" alt="" style="object-position: 50% 55%"></div>
+          <div class="ly-piece pc-menu" style="left: 4%; top: 6%; width: 50%">
+            <h4>Lunch</h4>
+            <div class="it"><b>Tomato and basil soup</b><span>£6.50</span><small>Sourdough, olive oil</small></div>
+            <div class="it"><b>Leek and Gruyère tart</b><span>£9.80</span><small>Green salad</small></div>
+            <div class="it is-new"><b>Flat white</b><span>£3.60</span><small>Oat milk at no extra cost</small></div>
+            <div class="it"><b>Cardamom bun</b><span>£3.10</span><small>Until they run out</small></div>
+            <div class="it"><b>Elderflower soda</b><span>£3.20</span><small>Made here</small></div>
+          </div>
+          <div class="ly-piece pc-edit" style="left: 51%; top: 10%; width: 45%">
+            <span class="lbl">Price list · Drinks</span>
+            <div class="field"><span>Flat white</span><span><i>£3.60</i></span></div>
+            <div class="row"><span>Update 6 menus and 2 screens</span><span class="tg"></span></div>
+          </div>
+        </div>
+        <div class="ly-collage__set" aria-hidden="true">
+          <div class="ly-piece pc-poster" style="left: 4%; top: 6%; width: 54%; height: 78%"><img src="img/photo-c7.jpg" alt="" style="object-position: 50% 45%"><div><strong>Coffee week, 12 to 18 May</strong><small>Every filter £2 · Leith Walk</small></div></div>
+          <div class="ly-piece pc-phone" style="left: 64%; top: 34%; width: 32%; height: 62%"><div><img src="img/photo-c7.jpg" alt="" style="object-position: 50% 45%"><p>Coffee week</p></div></div>
+          <div class="ly-piece pc-swatch" style="left: 40%; top: 12%; width: 34%"><span>Poster colour</span><div class="dots"><i class="on" style="background:#1d2b23"></i><i style="background:#e2472b"></i><i style="background:#f6efe2; box-shadow: inset 0 0 0 1px #ddd"></i><i style="background:#2f5d86"></i></div></div>
+        </div>
+        <div class="ly-collage__set" aria-hidden="true">
+          <div class="ly-piece" style="left: 4%; top: 6%; width: 62%; height: 44%"><img src="img/photo-m61660576.jpg" alt="" style="object-position: 50% 55%"></div>
+          <div class="ly-piece" style="left: 46%; top: 56%; width: 50%; height: 40%"><img src="img/photo-c96.jpg" alt="" style="object-position: 50% 50%"></div>
+          <div class="ly-piece pc-tent" style="left: 6%; top: 54%; width: 46%"><small>Today's soup</small><strong>Tomato and basil</strong><span>With sourdough · £6.50</span></div>
+          <div class="ly-piece pc-sched" style="left: 58%; top: 18%; width: 38%"><b>Screens</b><div class="ln"><span>Lunch menu</span><em>11:30</em></div><div class="ln"><span>Dinner menu</span><em>17:00</em></div></div>
+        </div>
+      </div>
+      <div class="span-3 start-10 hero__cta"><a class="btn btn--primary" href="#made">Start designing</a></div>
+    </div></div>
+  </section>
+
+  <section class="section" id="made" aria-labelledby="made-h">
+    <div class="wrap">
+      <div class="section-head section-head--row">
+        <div><h2 id="made-h">Made in Carte this week. <span class="muted">By 1,900 restaurants, cafes and bakeries.</span></h2></div>
+        <a class="link" href="#made">Browse 240 templates</a>
+      </div>
+      <div class="grid tiles3">
+        <a class="tile span-4" href="#made"><div class="tile__media"><img src="img/photo-c96.jpg" alt="Pour-over coffee being made on a pale table" loading="lazy"></div><div class="tile__head"><h3>Filter menu, Dalston</h3><span class="tile__price">A5</span></div></a>
+        <a class="tile span-4" href="#made"><div class="tile__media"><img src="img/photo-m61757972.jpg" alt="A woven basket of asparagus, avocados and peppers" loading="lazy"></div><div class="tile__head"><h3>Market board, Utrecht</h3><span class="tile__price">Screen</span></div></a>
+        <a class="tile span-4" href="#made"><div class="tile__media"><img src="img/photo-c70.jpg" alt="Three bowls of coffee beans, dark to light" loading="lazy"></div><div class="tile__head"><h3>Beans to take home, Porto</h3><span class="tile__price">Table card</span></div></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Start designing</h2></div>
+      <a class="btn btn--primary btn--xl btn--wide" href="#made">Start designing<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#"><span class="mark" data-mark="petal" aria-hidden="true"></span>Carte</a>
+          <p class="footer__lede">Menus, posters and table cards for restaurants.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Product</h4><ul><li><a href="#made">Menus</a></li><li><a href="#made">Screens</a></li><li><a href="#made">Pricing</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Company</h4><ul><li><a href="#made">About</a></li><li><a href="#made">Help</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Carte</span>
+        <details class="credits"><summary>Photographs: Katerina Pavlickova, Drew Coffman, Brooke Cagle, Kim Sanso, Leonie Wise and Alorin, via Wikimedia Commons</summary><p>Cappuccino and croissant by Katerina Pavlickova (CC0); latte art by Drew Coffman (CC0); vegetables by Brooke Cagle (CC0); pour-over by Kim Sanso (CC0); groceries by Leonie Wise (CC0); coffee beans by Alorin (CC BY 4.0); all via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

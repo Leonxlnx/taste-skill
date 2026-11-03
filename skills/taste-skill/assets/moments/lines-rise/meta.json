@@ -1,0 +1,42 @@
+{
+  "id": "lines-rise",
+  "name": "Lines rise",
+  "kind": "text",
+  "fits": [
+    "section",
+    "statement"
+  ],
+  "trigger": "enter",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "One section's heading rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once.",
+  "reduced": "The section stands as written.",
+  "phone": "The heading and the lines after it stand as written.",
+  "maxPerPage": 1,
+  "weight": 0.9,
+  "needs": {
+    "words": "a heading of 2 to 3 lines"
+  },
+  "avoidWith": [
+    "headline-arrives"
+  ],
+  "states": {
+    "start": {
+      "see": true,
+      "wait": 80
+    },
+    "middle": {
+      "see": true,
+      "wait": 380
+    },
+    "end": {
+      "see": true,
+      "wait": 2200
+    }
+  }
+}

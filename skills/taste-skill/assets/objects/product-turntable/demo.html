@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product turntable</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_scenes/demo.css">
+</head>
+<body>
+<script type="module">
+  import demo from '../_scenes/demo.js';
+  import turntable from './object.js';
+  demo(turntable, {
+    kind: 'Scene object · 3D form, dithered',
+    eyebrow: 'Rental platform',
+    title: 'Every camera in stock, from every side.',
+    lede: 'A camera on a studio turntable, printed in the page colours. It turns one step at a time; move across it to turn it yourself.',
+    cta: 'See the card panels',
+    hero: { params: { form: 'camera' } },
+    section: { title: 'In a card panel', text: 'The same stage at card size. Only one turntable in a group turns by itself; the other waits for the pointer.' },
+    cards: [
+      { title: 'A side chair', text: 'Oak frame, a curved back rail and a linen seat.', params: { form: 'chair', start: -40 }, surface: true },
+      { title: 'A speaker', text: 'A fabric sleeve, a control ring on top and a status light at the front.', params: { form: 'speaker', autoplay: 0 }, surface: true },
+    ],
+  });
+</script>
+</body>
+</html>

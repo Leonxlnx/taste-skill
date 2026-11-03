@@ -1,0 +1,38 @@
+/* fx-search: a search field that gathers a soft ambient glow of the effect around it while focused */
+.cx-search { position: relative; isolation: isolate; width: min(100%, 520px); margin-inline: auto; }
+.cx-search__glow {
+  position: absolute; inset: -22px -30px; z-index: -1; border-radius: 40px; pointer-events: none;
+  filter: blur(22px); opacity: 0; transform: scale(.96);
+  -webkit-mask: radial-gradient(closest-side, #000 55%, transparent); mask: radial-gradient(closest-side, #000 55%, transparent);
+  transition: opacity .6s var(--cx-ease), transform .6s var(--cx-ease);
+}
+.cx-search.is-focus .cx-search__glow { opacity: .6; transform: none; }
+.cx-search__field {
+  position: relative; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 12px 0 16px;
+  border-radius: var(--r-md); background: var(--bg); border: 1px solid var(--cx-line-2);
+  box-shadow: 0 1px 2px rgb(0 0 0 / .06);
+  transition: border-color .3s var(--cx-ease), box-shadow .3s var(--cx-ease);
+}
+.cx-search.is-focus .cx-search__field { border-color: color-mix(in oklab, var(--accent) 55%, var(--cx-line-2)); box-shadow: 0 8px 28px -10px rgb(0 0 0 / .4); }
+.cx-search__icon { color: var(--muted); flex: none; }
+.cx-search__input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; padding: 0;
+  font: 400 var(--t-body)/1 var(--font-text); color: var(--ink);
+}
+.cx-search__input::placeholder { color: var(--muted); }
+.cx-search__input::-webkit-search-cancel-button { display: none; }
+.cx-search__list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 5; margin: 0; padding: 4px; list-style: none;
+  border-radius: var(--r-md); background: var(--bg); box-shadow: var(--cx-shadow);
+}
+.cx-search__list li {
+  display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: var(--r-sm);
+  font-size: var(--t-small); color: var(--ink); cursor: pointer;
+}
+.cx-search__list li[aria-selected="true"], .cx-search__list li:hover { background: var(--cx-panel); }
+/* the rule above sets display, so the hidden attribute needs its own rule or filtered rows stay on screen */
+.cx-search__list[hidden], .cx-search__list li[hidden], .cx-search__empty[hidden] { display: none; }
+.cx-search__kind { width: 56px; font: 400 11px/1 var(--cx-mono); color: var(--muted); }
+.cx-search__empty { position: absolute; top: calc(100% + 8px); left: 0; right: 0; margin: 0; padding: 14px 16px; border-radius: var(--r-md); background: var(--bg); box-shadow: var(--cx-shadow); font-size: var(--t-small); color: var(--muted); }
+/* the stage leaves room for the open list */
+.cx-search { margin-bottom: 0; }

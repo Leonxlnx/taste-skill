@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Closing lift · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f2f4f6; --p-ink: #14181c; --p-muted: #5f6770; --p-accent: #1f6f8b; --p-accent-ink: #ffffff; --p-action: #14181c; --p-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .faq { display: grid; gap: 0; max-width: 760px; }
+  .faq details { border-top: 1px solid var(--line); padding: var(--s-4) 0; }
+  .faq details:last-child { border-bottom: 1px solid var(--line); }
+  .faq summary { cursor: pointer; font-weight: 500; font-size: var(--t-lead); list-style: none; display: flex; justify-content: space-between; gap: var(--s-4); }
+  .faq summary::after { content: "+"; color: var(--muted); }
+  .faq details[open] summary::after { content: "–"; }
+  .faq details p { margin-top: var(--s-3); color: var(--ink); max-width: 60ch; }
+  .demo-footer--dark { background: #14181c; color: #9aa3ad; border: 0; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Northbound</a>
+  <nav class="demo-nav__links"><a href="#">Rides</a><a href="#">Dates</a><a href="#">Bikes</a><a href="#">About</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a ride</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Guided rides on the north coast road</h1><p>Three days, two guesthouses, a van for your bags. Small groups of eight, from May to September.</p><div class="btn-row"><a class="btn btn--primary" href="#">See the dates</a><a class="btn btn--secondary" href="#">Hire a bike</a></div></div>
+      <img class="demo-photo" style="aspect-ratio: 4 / 5" src="../_demo/photo-702-tall.jpg" alt="The pass road above the tree line" width="1000" height="1400">
+    </div>
+  </section>
+  <div data-moment="closing-lift" data-moment-opts='{"settle": 1.18, "focus": "50% 60%"}'>
+    <section class="section mo-cl__sheet">
+      <div class="container">
+        <div class="section-head"><h2>Questions before you book</h2></div>
+        <div class="faq">
+          <details open><summary>How fit do I need to be?</summary><p>You ride 30 to 62 km a day at a conversational pace, with one climb on day one. Anyone who rides a few hours a week will be fine.</p></details>
+          <details><summary>Can I bring my own bike?</summary><p>Yes. The van carries bags only, so the bike rides every day. We also hire road and gravel bikes for €45 a day.</p></details>
+          <details><summary>What if the weather turns?</summary><p>We ride in rain. In a storm the day's stage goes by van and the guesthouse keeps the room.</p></details>
+          <details><summary>How do I get to the start?</summary><p>The ride starts at the station in Bergen at 10:00 on the first day and ends at a station on the same line.</p></details>
+        </div>
+      </div>
+    </section>
+    <section class="mo-cl__under">
+      <img class="mo-cl__img" src="../_demo/photo-640.jpg" alt="The beach at the end of the coast road" width="1800" height="1200">
+      <div class="mo-cl__band"><div class="container">
+        <h2>Ride the north coast with us this summer</h2>
+        <p>Eight dates from May to September. Groups of eight, from €640 a person.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">See the dates</a><a class="btn btn--secondary" href="#">Call us</a></div>
+      </div></div>
+    </section>
+  </div>
+</main>
+<footer class="demo-footer demo-footer--dark"><div class="container" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap"><span>Northbound · demo page for the moment “Closing lift”</span><span>Photographs by Dominik Schröder and Sarah Bürvenich on Unsplash</span></div></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/* checklist: items tick one after another and the progress bar fills */
+.ui-checks { width: 340px; padding-bottom: 8px; }
+.ui-checks__head { display: flex; align-items: center; height: 48px; padding: 0 16px; }
+.ui-checks__bar { position: relative; height: 4px; margin: 0 16px 8px; border-radius: 2px; background: var(--u-line); overflow: hidden; }
+.ui-checks__bar i { position: absolute; inset: 0; border-radius: 2px; background: var(--u-accent); transform-origin: left; transform: scaleX(var(--k, 0)); transition: transform 500ms var(--u-ease); }
+.ui-check { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px; font-size: 13px; line-height: 20px; }
+.ui-check__box {
+  display: grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--u-line-2); color: var(--u-bg);
+  transition: background-color 240ms var(--u-ease), box-shadow 240ms var(--u-ease), transform 300ms var(--u-spring);
+}
+.ui-check__box svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ui-check__box path { stroke-dasharray: 12; stroke-dashoffset: 12; transition: stroke-dashoffset 300ms var(--u-ease) 80ms; }
+.ui-check__label { position: relative; transition: color 300ms var(--u-ease); }
+.ui-check__label::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: left; transition: transform 360ms var(--u-ease) 120ms;
+}
+.ui-check.is-done .ui-check__box { background: var(--u-ink); box-shadow: none; }
+/* the bar is the one accent; the step that ticks is the ink, a little larger for a moment */
+.ui-check.is-now .ui-check__box { background: var(--u-ink); color: var(--u-bg); }
+.ui-check.is-done .ui-check__box path { stroke-dashoffset: 0; }
+.ui-check.is-done .ui-check__label { color: var(--u-muted); }
+.ui-check.is-done .ui-check__label::after { transform: scaleX(1); }
+.ui-check.is-now .ui-check__box { transform: scale(1.12); }
+.ui-checks.is-reset * { transition-duration: 200ms !important; transition-delay: 0ms !important; }
+@media (max-width: 360px) { .ui-checks { width: 100%; } }

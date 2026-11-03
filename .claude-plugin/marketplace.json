@@ -1,6 +1,6 @@
 {
   "name": "taste-skill",
-  "description": "tasteskill: art direction for coding agents, for websites, product pages, dashboards and app screens, checked in a real browser.",
+  "description": "tasteskill 2.5.0: professional company websites at the figma.com and x.ai level, checked in a real browser.",
   "owner": {
     "name": "leonxlnx",
     "email": "hello@tasteskill.dev"
@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "taste-skill",
-      "description": "tasteskill v2: art direction for websites, product pages, dashboards and app screens, with a library of researched directions, real pictures from open collections and a real-browser inspector.",
-      "version": "2.1.5",
+      "description": "tasteskill 2.5.0: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser consistency checker.",
+      "version": "2.5.0",
       "source": "./",
       "skills": ["./skills/taste-skill"],
       "author": {
@@ -19,7 +19,7 @@
       "homepage": "https://github.com/Leonxlnx/taste-skill",
       "repository": "https://github.com/Leonxlnx/taste-skill",
       "license": "MIT",
-      "keywords": ["skills", "frontend", "design", "taste", "ui", "dashboard"]
+      "keywords": ["skills", "frontend", "design", "taste", "ui", "websites"]
     }
   ]
 }

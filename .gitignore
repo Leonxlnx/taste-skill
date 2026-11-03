@@ -1,9 +1,5 @@
 .taste-skill/
+.taste-pro/
 node_modules/
 .DS_Store
 Thumbs.db
-
-# Scene demo media lives on the scene-media branch (served by jsDelivr), never in the skill folder
-skills/taste-skill/assets/scenes/demo/media/
-skills/taste-skill/assets/scenes/demo/*/
-

@@ -1,0 +1,50 @@
+{
+  "id": "exploded-layers",
+  "name": "Exploded layers",
+  "kind": "scene",
+  "source": "photo",
+  "shows": "A real photograph taken apart into four sheets standing in perspective: the photograph on top, a halftone screen in the accent, an ordered dither in the ink and a plate of tone contours at the bottom; the halftone and the dither are printed on clear sheets. Up to four photographs can go in, one per sheet.",
+  "suits": [
+    "software"
+  ],
+  "for": "The one moment of a software page that works in layers or passes: imaging, design and print software, a map or a document tool, named in the client's words (its layers, its passes).",
+  "never": "Never on a place, service, product or local-business page. Never named after the techniques (halftone, dither) on a company page: without the client's names it opens without labels. No caption that explains the effect; the photograph's credit goes in the footer's one credit line.",
+  "effect": "halftone, dither, contours",
+  "motion": "None at rest: a neat stack a card's thickness apart, the photograph on top and the three sheets below as plain card, drawn once.",
+  "hover": "The sheets open apart, their prints come up, and the stack leans toward the pointer; with names, each sheet gets a label on a leader line from a dot on its right-hand edge (where the panel is 560 px wide or more). Touch: tap opens, tap closes.",
+  "reducedMotion": "One still frame; hover opens it at once, without easing.",
+  "params": {
+    "names": "four labels in the client's words, top sheet first; no labels without them (never the technique names on a company page)",
+    "labels": "0 hides the labels even with names",
+    "aspect": "sheet width / height; default the photograph's ratio, clamped to 1.2..1.6",
+    "focusX": "cover crop centre 0..1",
+    "focusY": "cover crop centre 0..1",
+    "alt": "what the picture shows"
+  },
+  "palette": "surface for the contour plate and the faint tint of the clear sheets, ink and muted for the contours and the dither, accent for the halftone, bg for the ground; labels in ink.",
+  "fallback": "the (first) photograph as an <img>, cover-cropped.",
+  "cost": "low: four textured quads, no MSAA (a soft outer pixel instead), 0.75 canvas px per CSS px in a large frame, drawn only while it opens, closes or leans",
+  "photos": [
+    {
+      "id": 304,
+      "by": "Drew Patrick Miller",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/_o6AAx9dl_Y",
+      "use": "default"
+    },
+    {
+      "id": 618,
+      "by": "Mika Ruusunen",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/ypVM8PnygUo",
+      "use": "demo card"
+    },
+    {
+      "id": 400,
+      "by": "John French",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/SNW4DWZEy8I",
+      "use": "demo card"
+    }
+  ]
+}

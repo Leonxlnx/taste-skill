@@ -1,0 +1,21 @@
+{
+  "name": "checklist",
+  "title": "Check list",
+  "shows": "A titled list of five steps with a progress bar; the next step ticks (the check draws, the label is struck) until all are done.",
+  "useFor": [
+    "onboarding",
+    "setup",
+    "tasks",
+    "launch",
+    "compliance",
+    "progress"
+  ],
+  "size": [
+    340,
+    268
+  ],
+  "js": true,
+  "place": "at-rise fit with --fit-max: 340px, 40px down: whole with 24px or more of ground under it, or cut by 24px or more through its last step only (the steps that tick, the count and the bar never sit in the fade)",
+  "edit": "Items are HTML (is-done on those already done). The count keeps its words; only its first figure follows the ticks.",
+  "loop": "about 2.7 s a cycle: back to the page's state, the open items tick in turn to all done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

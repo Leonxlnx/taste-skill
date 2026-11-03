@@ -1,0 +1,10 @@
+{
+  "id": "contour-lines",
+  "name": "Topographic contours",
+  "family": "pattern",
+  "look": "A topographic map: thin contour lines with accent index lines over stepped elevation tints and a faint hillshade, slowly breathing.",
+  "bestOn": ["hero", "card", "band", "footer"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

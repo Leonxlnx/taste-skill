@@ -1,0 +1,10 @@
+{
+  "id": "grain-gradient",
+  "name": "Grain gradient",
+  "family": "grain",
+  "look": "Soft shapes in the page colours drift slowly under fine film grain, like a printed texture.",
+  "bestOn": ["hero", "card", "band", "footer"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

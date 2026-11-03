@@ -1,0 +1,2279 @@
+{
+ "version": 1,
+ "generated": "2026-10-31T23:04:46.185Z",
+ "count": 25,
+ "families": {
+  "dither": 4,
+  "mesh": 3,
+  "light": 7,
+  "pattern": 6,
+  "photo": 1,
+  "grain": 2,
+  "material": 2
+ },
+ "effects": [
+  {
+   "id": "ascii-shade",
+   "name": "ASCII shade",
+   "family": "dither",
+   "look": "A slowly turning sphere (or a cloud, or a wave across the frame) made only of monospace characters, sparse dots to dense signs, so it reads as code.",
+   "bestOn": [
+    "hero",
+    "card",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "cell": {
+     "default": 12,
+     "min": 9,
+     "max": 20,
+     "step": 1
+    },
+    "source": {
+     "default": 1,
+     "min": 0,
+     "max": 2,
+     "step": 1
+    },
+    "ramp": {
+     "default": 0,
+     "min": 0,
+     "max": 2,
+     "step": 1
+    },
+    "speed": {
+     "default": 0.08,
+     "min": 0,
+     "max": 0.5,
+     "step": 0.01
+    },
+    "scale": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "fill": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "accent": {
+     "default": 0.05,
+     "min": 0,
+     "max": 0.2,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "aurora-curtains",
+   "name": "Aurora curtains",
+   "family": "mesh",
+   "look": "Curtains of light fold in S-curves across a night sky, bright at the hem with a soft glow below, fading upward in long rays, swaying slowly.",
+   "bestOn": [
+    "hero",
+    "band",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "speed": {
+     "default": 0.05,
+     "min": 0,
+     "max": 0.3,
+     "step": 0.01
+    },
+    "bands": {
+     "default": 3,
+     "min": 1,
+     "max": 4,
+     "step": 1
+    },
+    "height": {
+     "default": 0.66,
+     "min": 0.3,
+     "max": 0.85,
+     "step": 0.01
+    },
+    "rayDetail": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "waviness": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "intensity": {
+     "default": 1.3,
+     "min": 0,
+     "max": 2,
+     "step": 0.01
+    },
+    "stars": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.3,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.78,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "bayer-dither",
+   "name": "Bayer dither",
+   "family": "dither",
+   "look": "A soft glow drawn in crisp square pixels with an ordered dither, in two or three page colours.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "speed": {
+     "default": 0.4,
+     "min": 0,
+     "max": 2,
+     "step": 0.01
+    },
+    "pixel": {
+     "default": 2,
+     "min": 1,
+     "max": 8,
+     "step": 1
+    },
+    "tones": {
+     "default": 3,
+     "min": 2,
+     "max": 3,
+     "step": 1
+    },
+    "intensity": {
+     "default": 0.9,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "spread": {
+     "default": 0.6,
+     "min": 0.1,
+     "max": 1,
+     "step": 0.01
+    },
+    "ramp": {
+     "default": 0.15,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "detail": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "scale": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "ink": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "calm": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "caustics",
+   "name": "Water caustics",
+   "family": "light",
+   "look": "Curved lines of light, bright where they gather and faint where they spread, drift over the ground like sunlight on the floor of a pool.",
+   "bestOn": [
+    "card",
+    "hero",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "scale": {
+     "default": 5,
+     "min": 1.5,
+     "max": 8,
+     "step": 0.1
+    },
+    "sharpness": {
+     "default": 3,
+     "min": 1,
+     "max": 8,
+     "step": 0.1
+    },
+    "speed": {
+     "default": 0.15,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "intensity": {
+     "default": 0.75,
+     "min": 0,
+     "max": 1.2,
+     "step": 0.01
+    },
+    "distortion": {
+     "default": 0.62,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "depth": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "contour-lines",
+   "name": "Topographic contours",
+   "family": "pattern",
+   "look": "A topographic map: thin contour lines with accent index lines over stepped elevation tints and a faint hillshade, slowly breathing.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "levels": {
+     "default": 24,
+     "min": 6,
+     "max": 60,
+     "step": 1
+    },
+    "scale": {
+     "default": 1.6,
+     "min": 0.4,
+     "max": 5,
+     "step": 0.05
+    },
+    "lineWidth": {
+     "default": 1,
+     "min": 0.5,
+     "max": 3,
+     "step": 0.1
+    },
+    "indexEvery": {
+     "default": 5,
+     "min": 0,
+     "max": 10,
+     "step": 1
+    },
+    "opacity": {
+     "default": 0.35,
+     "min": 0.05,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.02,
+     "min": 0,
+     "max": 0.2,
+     "step": 0.005
+    },
+    "octaves": {
+     "default": 3,
+     "min": 1,
+     "max": 4,
+     "step": 1
+    },
+    "tint": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "shade": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "edge": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.75,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "dot-terrain",
+   "name": "Dot terrain",
+   "family": "pattern",
+   "look": "Rolling land drawn as a cloud of points, like a laser scan, lit from one side and heaving in slow waves toward a soft horizon.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "spacing": {
+     "default": 14,
+     "min": 8,
+     "max": 40,
+     "step": 1
+    },
+    "dot": {
+     "default": 3,
+     "min": 1,
+     "max": 6,
+     "step": 0.1
+    },
+    "amplitude": {
+     "default": 0.17,
+     "min": 0,
+     "max": 0.25,
+     "step": 0.01
+    },
+    "waveScale": {
+     "default": 0.8,
+     "min": 0.2,
+     "max": 3,
+     "step": 0.05
+    },
+    "speed": {
+     "default": 0.08,
+     "min": 0,
+     "max": 0.5,
+     "step": 0.005
+    },
+    "opacity": {
+     "default": 0.85,
+     "min": 0.1,
+     "max": 1,
+     "step": 0.01
+    },
+    "shade": {
+     "default": 0.75,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "crest": {
+     "default": 0.85,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "horizon": {
+     "default": 0.24,
+     "min": 0.12,
+     "max": 0.6,
+     "step": 0.01
+    },
+    "fog": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "haze": {
+     "default": 0.35,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.9,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "dotted-globe",
+   "name": "Dotted globe",
+   "family": "pattern",
+   "look": "A globe of fine dots with the real continents turns slowly, bright at the front and fading at the rim, while one thin arc at a time lifts between two cities.",
+   "bestOn": [
+    "hero",
+    "band",
+    "card"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "random": false,
+   "literal": true,
+   "subjects": [
+    "global",
+    "network",
+    "infrastructure",
+    "payments",
+    "logistics"
+   ],
+   "avoidWith": [
+    "orb-sphere",
+    "dot-terrain"
+   ],
+   "params": {
+    "speed": {
+     "default": 3.5,
+     "min": 0,
+     "max": 12,
+     "step": 0.1
+    },
+    "size": {
+     "default": 0.72,
+     "min": 0.4,
+     "max": 1.1,
+     "step": 0.01
+    },
+    "spacing": {
+     "default": 7,
+     "min": 4,
+     "max": 16,
+     "step": 0.5
+    },
+    "dot": {
+     "default": 1.05,
+     "min": 0.5,
+     "max": 2.5,
+     "step": 0.05
+    },
+    "map": {
+     "default": 1,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "land": {
+     "default": 0.38,
+     "min": 0,
+     "max": 0.7,
+     "step": 0.01
+    },
+    "sea": {
+     "default": 0.16,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "back": {
+     "default": 0.12,
+     "min": 0,
+     "max": 0.4,
+     "step": 0.01
+    },
+    "arcs": {
+     "default": 6,
+     "min": 0,
+     "max": 12,
+     "step": 0.1
+    },
+    "glow": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "tilt": {
+     "default": 16,
+     "min": -40,
+     "max": 40,
+     "step": 1
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "duotone-grade",
+   "name": "Duotone grade",
+   "family": "photo",
+   "look": "The section's own photograph graded into two or three page tones with still grain; without one, a calm study of window light kept clear of the text.",
+   "bestOn": [
+    "hero",
+    "band",
+    "card"
+   ],
+   "motion": "still",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "random": false,
+   "usesImg": true,
+   "params": {
+    "tones": {
+     "default": 3,
+     "min": 2,
+     "max": 3,
+     "step": 1
+    },
+    "contrast": {
+     "default": 0.45,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "exposure": {
+     "default": 0,
+     "min": -1,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "drift": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "ink": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "scrim": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.5
+    },
+    "calm": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.2,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.75,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "edge-glow",
+   "name": "Edge glow",
+   "family": "light",
+   "look": "Light runs around the edge of a card or prompt box, a bright head with a long fading tail that washes the box with its colour as it passes.",
+   "bestOn": [
+    "card"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "random": false,
+   "subjects": [
+    "the one key object of a page: the prompt box or the featured plan"
+   ],
+   "params": {
+    "radius": {
+     "default": 14,
+     "min": 0,
+     "max": 48,
+     "step": 1
+    },
+    "width": {
+     "default": 1.4,
+     "min": 0.5,
+     "max": 3,
+     "step": 0.1
+    },
+    "glow": {
+     "default": 26,
+     "min": 0,
+     "max": 48,
+     "step": 1
+    },
+    "bloom": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "segment": {
+     "default": 0.4,
+     "min": 0.1,
+     "max": 0.7,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 140,
+     "min": 20,
+     "max": 400,
+     "step": 5
+    },
+    "count": {
+     "default": 1,
+     "min": 1,
+     "max": 2,
+     "step": 1
+    },
+    "idle": {
+     "default": 0.35,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "wash": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "inset": {
+     "default": 0,
+     "min": 0,
+     "max": 80,
+     "step": 1
+    },
+    "fill": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    }
+   }
+  },
+  {
+   "id": "film-light-leak",
+   "name": "Film light leak",
+   "family": "grain",
+   "look": "Light bleeds in from one edge of a dark or coloured frame, with a blown-out core, a soft fringe and fine moving film grain.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "edge": {
+     "default": -1,
+     "min": -1,
+     "max": 4,
+     "step": 1
+    },
+    "intensity": {
+     "default": 0.8,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "spread": {
+     "default": 0.45,
+     "min": 0.1,
+     "max": 1,
+     "step": 0.01
+    },
+    "halation": {
+     "default": 0.3,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "burn": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.04,
+     "min": 0,
+     "max": 0.1,
+     "step": 0.005
+    },
+    "vignette": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "breathe": {
+     "default": 12,
+     "min": 6,
+     "max": 20,
+     "step": 0.5
+    },
+    "warp": {
+     "default": 0.65,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "fluted-glass",
+   "name": "Fluted glass",
+   "family": "material",
+   "look": "A pane of ribbed glass over soft page colours; each rib bends a thin slice of what is behind it.",
+   "bestOn": [
+    "card",
+    "hero",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "ribWidth": {
+     "default": 28,
+     "min": 10,
+     "max": 80,
+     "step": 1
+    },
+    "angle": {
+     "default": 0,
+     "min": -45,
+     "max": 45,
+     "step": 1
+    },
+    "distortion": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "highlight": {
+     "default": 0.15,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "shadow": {
+     "default": 0.16,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "background": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "blur": {
+     "default": 0.1,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.03,
+     "min": 0,
+     "max": 0.3,
+     "step": 0.005
+    },
+    "clear": {
+     "default": 0,
+     "min": 0,
+     "max": 0.6,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "god-rays",
+   "name": "God rays",
+   "family": "light",
+   "look": "Bundles of light shafts fall from above the frame through haze, uneven in width, with a few soft motes drifting in them.",
+   "bestOn": [
+    "hero",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "originX": {
+     "default": 0.3,
+     "min": -0.2,
+     "max": 1.2,
+     "step": 0.01
+    },
+    "originY": {
+     "default": -0.2,
+     "min": -0.8,
+     "max": 0.2,
+     "step": 0.01
+    },
+    "tilt": {
+     "default": 22,
+     "min": -60,
+     "max": 60,
+     "step": 1
+    },
+    "spread": {
+     "default": 60,
+     "min": 10,
+     "max": 140,
+     "step": 1
+    },
+    "density": {
+     "default": 0.35,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "intensity": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "falloff": {
+     "default": 1.2,
+     "min": 0,
+     "max": 4,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.04,
+     "min": 0,
+     "max": 0.4,
+     "step": 0.005
+    },
+    "dust": {
+     "default": 0.3,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "tint": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.22,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.72,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "gradient-mesh",
+   "name": "Gradient mesh",
+   "family": "mesh",
+   "look": "Soft islands of the page colours blend over a slowly folding surface, lit where it folds; a thin mesh grid can be drawn on top.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "speed": {
+     "default": 0.06,
+     "min": 0,
+     "max": 0.4,
+     "step": 0.01
+    },
+    "lines": {
+     "default": 0,
+     "min": 0,
+     "max": 16,
+     "step": 1
+    },
+    "warp": {
+     "default": 0.65,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "relief": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "softness": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "joins": {
+     "default": 1,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "angle": {
+     "default": -12,
+     "min": -90,
+     "max": 90,
+     "step": 1
+    },
+    "tint": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "grain-gradient",
+   "name": "Grain gradient",
+   "family": "grain",
+   "look": "Soft shapes in the page colours drift slowly under fine film grain, like a printed texture.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "speed": {
+     "default": 0.5,
+     "min": 0,
+     "max": 2,
+     "step": 0.01
+    },
+    "softness": {
+     "default": 0.45,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "warp": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "scatter": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "tint": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "contrast": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grainMotion": {
+     "default": 1,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    }
+   }
+  },
+  {
+   "id": "grid-pulse",
+   "name": "Grid pulse",
+   "family": "pattern",
+   "look": "A fine hairline grid with signals running along the lines; the nodes and cells they pass light up and fade, like a circuit keeping a trace.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "cell": {
+     "default": 48,
+     "min": 16,
+     "max": 128,
+     "step": 1
+    },
+    "lineOpacity": {
+     "default": 0.1,
+     "min": 0.02,
+     "max": 0.3,
+     "step": 0.005
+    },
+    "pulses": {
+     "default": 6,
+     "min": 0,
+     "max": 12,
+     "step": 1
+    },
+    "tail": {
+     "default": 2.5,
+     "min": 0.5,
+     "max": 6,
+     "step": 0.1
+    },
+    "speed": {
+     "default": 150,
+     "min": 20,
+     "max": 400,
+     "step": 1
+    },
+    "turnChance": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "mask": {
+     "default": 0,
+     "min": 0,
+     "max": 2,
+     "step": 1
+    },
+    "glow": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "trace": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "halftone-screen",
+   "name": "Halftone screen",
+   "family": "dither",
+   "look": "A gradient field or a big lit sphere printed as a rotated screen of round dots that grow in the shadows, like a zoomed-in magazine print.",
+   "bestOn": [
+    "hero",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "cell": {
+     "default": 10,
+     "min": 5,
+     "max": 24,
+     "step": 0.5
+    },
+    "angle": {
+     "default": 30,
+     "min": 0,
+     "max": 90,
+     "step": 1
+    },
+    "source": {
+     "default": -1,
+     "min": -1,
+     "max": 2,
+     "step": 1
+    },
+    "secondInk": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "contrast": {
+     "default": 1.4,
+     "min": 0.6,
+     "max": 3,
+     "step": 0.01
+    },
+    "gooey": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "size": {
+     "default": 1,
+     "min": 0.5,
+     "max": 1.6,
+     "step": 0.01
+    },
+    "drift": {
+     "default": 0.02,
+     "min": 0,
+     "max": 0.2,
+     "step": 0.005
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "line-engraving",
+   "name": "Line engraving",
+   "family": "dither",
+   "look": "Fine parallel lines that swell in the shadows and bend over rolling hills or around a big sphere, like the engraving on a banknote.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "still",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "pitch": {
+     "default": 6,
+     "min": 4,
+     "max": 14,
+     "step": 0.5
+    },
+    "minWidth": {
+     "default": 0.1,
+     "min": 0,
+     "max": 0.5,
+     "step": 0.01
+    },
+    "maxWidth": {
+     "default": 0.9,
+     "min": 0.3,
+     "max": 1,
+     "step": 0.01
+    },
+    "angle": {
+     "default": 20,
+     "min": 0,
+     "max": 180,
+     "step": 1
+    },
+    "bend": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "source": {
+     "default": 1,
+     "min": -1,
+     "max": 1,
+     "step": 1
+    },
+    "cross": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "guilloche": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "size": {
+     "default": 1,
+     "min": 0.5,
+     "max": 1.6,
+     "step": 0.01
+    },
+    "accent": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 1
+    },
+    "drift": {
+     "default": 0,
+     "min": 0,
+     "max": 0.2,
+     "step": 0.005
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "orb-sphere",
+   "name": "Light orb",
+   "family": "light",
+   "look": "One sphere with a slowly turning nebula, a bright rim and specks of light: glowing in a dark field on light-text pages, a dark glass ball on others.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "size": {
+     "default": 0.36,
+     "min": 0.12,
+     "max": 0.6,
+     "step": 0.01
+    },
+    "rim": {
+     "default": 0.8,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "innerContrast": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "stars": {
+     "default": 60,
+     "min": 0,
+     "max": 200,
+     "step": 1
+    },
+    "glow": {
+     "default": 0.35,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.05,
+     "min": 0,
+     "max": 0.4,
+     "step": 0.005
+    },
+    "pulse": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "orbX": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "orbY": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "painterly-landscape",
+   "name": "Painterly landscape",
+   "family": "mesh",
+   "look": "A soft, out-of-focus landscape painted in broad dabs: sky, hazy far hills and a near hill with a lit crest in the page colours, to sit under a UI window.",
+   "bestOn": [
+    "card",
+    "hero"
+   ],
+   "motion": "slow",
+   "cost": "mid",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "horizon": {
+     "default": 0.45,
+     "min": 0.3,
+     "max": 0.7,
+     "step": 0.01
+    },
+    "slope": {
+     "default": 14,
+     "min": 0,
+     "max": 30,
+     "step": 1
+    },
+    "side": {
+     "default": 0,
+     "min": -1,
+     "max": 1,
+     "step": 1
+    },
+    "hillY": {
+     "default": 0.12,
+     "min": -0.1,
+     "max": 0.35,
+     "step": 0.01
+    },
+    "blur": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "brush": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.03,
+     "min": 0,
+     "max": 0.1,
+     "step": 0.005
+    },
+    "drift": {
+     "default": 0.02,
+     "min": 0,
+     "max": 0.2,
+     "step": 0.005
+    },
+    "calm": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "prism-dispersion",
+   "name": "Prism light",
+   "family": "light",
+   "look": "A soft white beam crosses a dark room, breaks into a widening fan of colour and lands as a glowing spectrum on the far wall.",
+   "bestOn": [
+    "hero",
+    "band",
+    "card"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "dark"
+   ],
+   "focal": true,
+   "params": {
+    "splitX": {
+     "default": 0.28,
+     "min": 0.05,
+     "max": 0.95,
+     "step": 0.01
+    },
+    "splitY": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "bend": {
+     "default": 30,
+     "min": 0,
+     "max": 60,
+     "step": 1
+    },
+    "fanSpread": {
+     "default": 0.42,
+     "min": 0.2,
+     "max": 0.7,
+     "step": 0.01
+    },
+    "hueSpread": {
+     "default": 55,
+     "min": 20,
+     "max": 70,
+     "step": 1
+    },
+    "beamWidth": {
+     "default": 0.006,
+     "min": 0.002,
+     "max": 0.03,
+     "step": 0.001
+    },
+    "haze": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "intensity": {
+     "default": 1,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "sway": {
+     "default": 0.02,
+     "min": 0,
+     "max": 0.08,
+     "step": 0.005
+    },
+    "calm": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.78,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "ridgeline",
+   "name": "Ridgeline",
+   "family": "pattern",
+   "look": "Stacked thin lines rising into a few clean peaks, the front lines hiding the ones behind, with one line picked out in the accent.",
+   "bestOn": [
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "random": false,
+   "subjects": [
+    "the divider band (assets/components/fx-band), lines rising on the side away from the copy"
+   ],
+   "params": {
+    "lines": {
+     "default": 36,
+     "min": 12,
+     "max": 90,
+     "step": 1
+    },
+    "peak": {
+     "default": 0.38,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "envelope": {
+     "default": 0.35,
+     "min": 0.1,
+     "max": 1,
+     "step": 0.01
+    },
+    "noiseScale": {
+     "default": 2.6,
+     "min": 0.5,
+     "max": 8,
+     "step": 0.1
+    },
+    "lineWidth": {
+     "default": 1.2,
+     "min": 0.5,
+     "max": 3,
+     "step": 0.1
+    },
+    "speed": {
+     "default": 0.03,
+     "min": 0,
+     "max": 0.3,
+     "step": 0.005
+    },
+    "span": {
+     "default": 0.84,
+     "min": 0.3,
+     "max": 1,
+     "step": 0.01
+    },
+    "focus": {
+     "default": 0.5,
+     "min": 0.2,
+     "max": 0.8,
+     "step": 0.01
+    },
+    "highlight": {
+     "default": 1,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.8,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "ruled-grounds",
+   "name": "Ruled dot ground",
+   "family": "pattern",
+   "look": "A fine dot ruling with a small cross on every fourth node over a grainy ground; a wide soft light drifts across it. A quiet ground for a UI card on top.",
+   "bestOn": [
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "cell": {
+     "default": 16,
+     "min": 12,
+     "max": 28,
+     "step": 1
+    },
+    "major": {
+     "default": 4,
+     "min": 0,
+     "max": 8,
+     "step": 1
+    },
+    "ink": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "focus": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.8,
+     "min": 0,
+     "max": 2,
+     "step": 0.01
+    },
+    "reach": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "silk-folds",
+   "name": "Silk folds",
+   "family": "material",
+   "look": "Large, unevenly spaced folds of satin in one page colour (a muted tint on light pages), with a broad soft sheen along them as they move slowly.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "params": {
+    "tone": {
+     "default": 0,
+     "min": 0,
+     "max": 2,
+     "step": 1
+    },
+    "scale": {
+     "default": 1,
+     "min": 0.4,
+     "max": 2.5,
+     "step": 0.01
+    },
+    "folds": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "sheen": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.05,
+     "min": 0,
+     "max": 0.4,
+     "step": 0.005
+    },
+    "grain": {
+     "default": 0.02,
+     "min": 0,
+     "max": 0.1,
+     "step": 0.005
+    },
+    "angle": {
+     "default": 25,
+     "min": -90,
+     "max": 90,
+     "step": 1
+    },
+    "calm": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "soft-light-bars",
+   "name": "Soft light bars",
+   "family": "light",
+   "look": "Four to seven soft, nearly upright bars of light grouped to one side, like light through slats on a wall, breathing slowly beside an empty gap for text.",
+   "bestOn": [
+    "hero",
+    "card",
+    "band",
+    "footer"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "light",
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "speed": {
+     "default": 0.5,
+     "min": 0,
+     "max": 2,
+     "step": 0.01
+    },
+    "bars": {
+     "default": 0,
+     "min": 0,
+     "max": 7,
+     "step": 1
+    },
+    "tilt": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "softness": {
+     "default": 0.6,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "glow": {
+     "default": 0.8,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "breathe": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "haze": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "stipple": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "grain": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.55,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.25,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.7,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  },
+  {
+   "id": "spotlight-cone",
+   "name": "Stage spotlight",
+   "family": "light",
+   "look": "One slanted stage light from out of frame falls through drifting haze and lands as a soft pool on the floor, for a product or UI on stage.",
+   "bestOn": [
+    "card",
+    "hero"
+   ],
+   "motion": "slow",
+   "cost": "low",
+   "palettes": [
+    "dark",
+    "colour"
+   ],
+   "focal": true,
+   "params": {
+    "x": {
+     "default": 0.5,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "lean": {
+     "default": 0.3,
+     "min": 0,
+     "max": 0.8,
+     "step": 0.01
+    },
+    "width": {
+     "default": 0.22,
+     "min": 0.08,
+     "max": 0.5,
+     "step": 0.01
+    },
+    "poolY": {
+     "default": 0.8,
+     "min": 0.5,
+     "max": 0.95,
+     "step": 0.01
+    },
+    "haze": {
+     "default": 0.45,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "edge": {
+     "default": 0.5,
+     "min": 0.1,
+     "max": 1,
+     "step": 0.01
+    },
+    "intensity": {
+     "default": 1,
+     "min": 0,
+     "max": 1.5,
+     "step": 0.01
+    },
+    "breathe": {
+     "default": 0,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "speed": {
+     "default": 0.12,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calm": {
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmX": {
+     "default": 0.2,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    },
+    "calmY": {
+     "default": 0.3,
+     "min": 0,
+     "max": 1,
+     "step": 0.01
+    }
+   }
+  }
+ ]
+}

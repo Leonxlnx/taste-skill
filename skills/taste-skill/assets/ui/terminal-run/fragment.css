@@ -1,0 +1,97 @@
+/* terminal-run: a terminal pane. A command is typed at the prompt and run; a meter, one line per test
+   file (a spinner while it runs, then its tick), a summary and a status line stream in below while the
+   older run scrolls up. Monospace at the code fragment's size (13/20) in ink tints: the command and the
+   status word the ink, output 80% ink, paths and timings muted. The accent is used once, on the
+   meter's thin bar. The status line's check is the one green and the strongest mark: an oklch hue
+   mixed with the ink (as .ui-avatar mixes its tones), so it follows any palette, light or dark; the
+   per-file ticks stay ink (never a row of green checks). */
+.ui-term {
+  --t-ok: color-mix(in oklab, oklch(0.63 0.15 150) 84%, var(--u-ink));
+  width: 440px; overflow: hidden;
+  container: ui-term / inline-size;
+}
+.ui-term__head { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px 0 14px; border-bottom: 1px solid var(--u-line); background: var(--u-fill); min-width: 0; }
+.ui-term__title { min-width: 0; margin-left: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 500; line-height: 16px; }
+.ui-term__branch { font-family: var(--ui-mono, ui-monospace, monospace); font-weight: 400; }
+
+/* the screen: its height is the finished picture's; while a run streams in it is held at that height
+   and the track scrolls up under it, a whole 20px row at a time (every line, the blank one too, is one
+   row, so the track never leaves the row grid). A line leaving the top fades out whole (is-gone) as
+   it scrolls; the 12px mask only softens its passage through the track's own top padding, so no line
+   ever rests half-cut under the header's rule */
+.ui-term__screen {
+  position: relative; overflow: hidden;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 12px); mask: linear-gradient(to bottom, transparent, #000 12px);
+}
+.ui-term__track {
+  position: relative; padding: 12px 0;
+  font: 13px/20px var(--ui-mono, ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace);
+  color: var(--u-text-2); letter-spacing: 0; font-feature-settings: normal;
+  transition: transform 120ms var(--u-ease);
+}
+/* every line is one row: it ellipsizes on a narrow pane, never wraps */
+.ui-term__ln { display: flex; align-items: center; gap: 10px; height: 20px; padding: 0 16px; min-width: 0; white-space: pre; transition: opacity 120ms var(--u-ease); }
+.ui-term__ln > * { flex: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ui-term__ln.is-gone { opacity: 0; }
+
+/* the prompt: the repo's parent folder goes first on a narrow pane, so the prompt still names it */
+.ui-term__cmd { gap: 0; }
+.ui-term__cwd { margin-right: 8px; color: var(--u-muted); }
+.ui-term__sig { margin-right: 8px; color: var(--u-muted); }
+.ui-term__typed { flex: 0 1 auto; color: var(--u-ink); font-weight: 500; }
+.ui-term__caret { display: block; width: 7px; height: 15px; margin-left: 1px; border-radius: 1px; background: var(--u-ink); animation: ui-term-caret 1s steps(1) infinite; }
+/* typing, paused or off screen: a solid caret (a paused blink could stop in its hidden half) */
+.ui-term.is-typing .ui-term__caret, .is-ui-paused .ui-term__caret { animation: none; }
+.ui-term__cmd.is-ran .ui-term__caret { display: none; }
+@keyframes ui-term-caret { 50% { opacity: 0; } }
+
+/* the meter: its thin bar is the accent touch, quieter than the status check; the count's first
+   figure follows the files */
+.ui-term__bar { display: block; width: 96px; height: 3px; border-radius: 2px; background: var(--u-fill-3); overflow: hidden; }
+.ui-term__bar i { display: block; height: 100%; background: var(--u-accent); transform-origin: left center; transform: scaleX(var(--p, 1)); transition: transform 180ms var(--u-ease); }
+.ui-term__count { color: var(--u-text-2); }
+
+/* a file's line: tick (the kit's .ui-spin while the file runs), path, count, time */
+.ui-term__tick { width: 14px; height: 14px; fill: none; stroke: var(--u-muted); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.ui-term__wait { display: grid; place-items: center; width: 14px; height: 14px; color: var(--u-text-2); }
+.ui-term__wait .ui-spin { width: 12px; height: 12px; border-width: 1.75px; animation-duration: 1s; }
+/* the path takes up to 28 characters, so on a card-size pane the count and time stay beside it */
+.ui-term__path { flex: 0 1 28ch; color: var(--u-text-2); }
+.ui-term__n { color: var(--u-muted); }
+.ui-term__t { width: 48px; text-align: right; color: var(--u-muted); }
+
+/* the summary, a blank row above it (one row, so the track stays on the 20px grid) */
+.ui-term__key { width: 88px; color: var(--u-muted); }
+.ui-term__val { color: var(--u-ink); }
+.ui-term__dim { flex: 0 1 auto; color: var(--u-muted); }
+
+/* the status: a green check, the word in ink, the duration */
+.ui-term__done { gap: 8px; }
+.ui-term__done b { font-weight: 500; color: var(--u-ink); }
+.ui-term__ok { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--t-ok); color: var(--u-bg); overflow: visible; }
+.ui-term__ok svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* a line arriving in a run (the script marks it is-new): a short rise; a file's tick and the status
+   check settle in. Nothing here runs in the finished picture, held, or under reduced motion (base.css) */
+.ui-term__ln.is-new { animation: ui-term-in 140ms var(--u-ease) 110ms backwards; }
+.ui-term__ln.is-new .ui-term__ok { animation: ui-term-pop 240ms var(--u-ease) 110ms both; }
+.ui-term__tick.is-new { animation: ui-term-pop 200ms var(--u-ease) both; }
+@keyframes ui-term-in { from { opacity: 0; transform: translateY(4px); } }
+@keyframes ui-term-pop { from { opacity: 0; transform: scale(0.6); } }
+
+/* narrow: the pane's own width decides (a container query), so a .fit wrapper or a phone panel never
+   slices a column: the test counts go first, then the branch and the repo's parent folder
+   (the prompt reads ~/api) */
+@container ui-term (max-width: 379px) {
+  .ui-term .ui-term__n { display: none; }
+  .ui-term .ui-term__bar { width: 80px; }
+}
+@container ui-term (max-width: 299px) {
+  .ui-term .ui-term__branch, .ui-term .ui-term__up { display: none; }
+  .ui-term .ui-term__t { width: 44px; }
+  .ui-term .ui-term__path { flex: 1 1 0; }
+  .ui-term .ui-term__ln { padding: 0 12px; }
+  .ui-term .ui-term__key { width: 80px; }
+}
+/* phone: the pane takes the panel's width (cards.css); the queries above lay it out */
+@media (max-width: 639px) { .ui-term { width: 100%; } }

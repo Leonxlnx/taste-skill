@@ -1,0 +1,38 @@
+{
+  "id": "headline-arrives",
+  "name": "Headline arrives",
+  "kind": "text",
+  "fits": [
+    "hero"
+  ],
+  "trigger": "load",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [],
+  "retired": "MO-62: the headline never hides on load, and this moment holds it back until the script runs.",
+  "look": "The hero headline's words rise once out of their masks, 38 ms apart, and settle; the sub-line and the buttons fade up behind them.",
+  "reduced": "The headline stands as written; nothing moves.",
+  "phone": "The headline or button stands as written.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "needs": {
+    "words": "a headline of 3 to 9 words"
+  },
+  "avoidWith": [
+    "lines-rise"
+  ],
+  "states": {
+    "start": {
+      "see": true,
+      "wait": 60
+    },
+    "middle": {
+      "see": true,
+      "wait": 420
+    },
+    "end": {
+      "see": true,
+      "wait": 2200
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "fx-progress",
+  "name": "Import progress with a light fill",
+  "for": "An import, upload or setup step shown in a product card: the file being processed fills with a soft light of the effect from left to right, a 2px line under it gives the exact share.",
+  "effects": [
+    "grain-gradient",
+    "soft-light-bars",
+    "aurora-curtains",
+    "gradient-mesh"
+  ],
+  "default": "grain-gradient",
+  "how": "One effect host over the card, clipped (clip-path inset with a radius) to the busy row up to its progress; the row's text sits above it. A loop inside a still card: files finish one by one, then reset.",
+  "rules": [
+    "The exact progress is the 2px line and a real progress element; the light is only the feel.",
+    "The card never moves; only the fill, the spinner and the count change.",
+    "The light stays under 75% so the row text reads."
+  ],
+  "a11y": "Each row holds a real progress element (visually hidden) with its value. Reduced motion shows one still state: one done, one at 64%, one waiting.",
+  "never": "Not a loader and not a page or scroll progress bar (the house rules have no drag rails or scroll-progress bars; consistency.mjs WARNs progress-bar on any progress element). Use it only when the card's own subject is a file or step the product really processes (an import, an upload, a setup), and never in a hero, a nav or a strip."
+}

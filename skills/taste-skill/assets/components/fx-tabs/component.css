@@ -1,0 +1,64 @@
+/* fx-tabs: a tab bar whose active indicator is a small window of a still grain, gliding to the chosen tab */
+.cx-tabs { display: grid; gap: var(--s-5); max-width: 760px; margin-inline: auto; min-width: 0; }
+.cx-tabs__scroll { overflow-x: auto; scrollbar-width: none; justify-self: center; max-width: 100%; padding: 2px; }
+.cx-tabs__scroll::-webkit-scrollbar { display: none; }
+.cx-tabs__bar {
+  position: relative; isolation: isolate; display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px;
+  background: var(--cx-card); border: 1px solid var(--cx-line); box-shadow: inset 0 1px 0 var(--cx-hi);
+}
+/* the effect spans the whole bar and stays put; the pill is a window that slides over it (no canvas resize) */
+.cx-tabs__ind {
+  position: absolute; left: 0; right: 0; top: 4px; bottom: 4px; z-index: 0; background: var(--accent);
+  clip-path: inset(0 calc(100% - var(--x, 4px) - var(--w, 0px)) 0 var(--x, 4px) round 999px);
+  transition: clip-path .42s cubic-bezier(.3, .9, .3, 1);
+}
+.cx-tabs__tab {
+  position: relative; z-index: 1; height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent;
+  font: 500 var(--t-small)/1 var(--font-text); color: var(--muted); cursor: pointer; white-space: nowrap;
+  transition: color .3s var(--cx-ease);
+}
+.cx-tabs__tab:hover { color: var(--ink); }
+.cx-tabs__tab[aria-selected="true"] { color: var(--ink); }
+/* white-on-accent only once the script has placed the pill (it writes --w inline) */
+.cx-tabs__bar:has(.cx-tabs__ind[style*="--w"]) .cx-tabs__tab[aria-selected="true"] { color: var(--accent-ink); }
+.cx-tabs__tab:focus-visible { outline-offset: -2px; }
+.cx-tabs__panel {
+  border-radius: var(--r-lg); background: var(--cx-card); border: 1px solid var(--cx-line); padding: var(--s-6);
+  box-shadow: inset 0 1px 0 var(--cx-hi); animation: cx-tabs-in .35s var(--cx-ease);
+}
+@keyframes cx-tabs-in { from { opacity: 0; transform: translateY(4px); } }
+.cx-tabs__metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
+.cx-tabs__metrics div, .cx-tabs__payout > div { display: grid; gap: 6px; align-content: start; }
+.cx-tabs__metrics span, .cx-tabs__payout span { font-size: var(--t-label); color: var(--muted); }
+.cx-tabs__metrics b, .cx-tabs__payout b { font: 560 28px/1.1 var(--font-display); letter-spacing: -0.025em; }
+.cx-tabs__metrics em { font-style: normal; font-size: var(--t-label); color: color-mix(in oklab, var(--accent) 75%, var(--ink)); }
+.cx-tabs__table { width: 100%; border-collapse: collapse; font-size: var(--t-small); }
+.cx-tabs__table th { text-align: left; font-weight: 400; font-size: var(--t-label); color: var(--muted); padding: 0 0 10px; }
+.cx-tabs__table td { padding: 12px 0; border-top: 1px solid var(--cx-line); }
+.cx-tabs__table td:last-child, .cx-tabs__table th:last-child { text-align: right; color: var(--muted); }
+.cx-tabs__chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--r-sm); font-size: 12px; background: var(--cx-panel); color: var(--muted); }
+.cx-tabs__chip.is-ok { color: var(--ink); background: color-mix(in oklab, var(--accent) 18%, var(--cx-card)); }
+.cx-tabs__payout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6); }
+.cx-tabs__payout p { margin: 4px 0 0; font-size: var(--t-small); color: var(--muted); }
+.cx-tabs__payout ol { margin: 0; padding: 0; list-style: none; display: grid; }
+.cx-tabs__payout li { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--cx-line); font-size: var(--t-small); }
+.cx-tabs__payout li b { font: 500 var(--t-small)/1.4 var(--font-text); letter-spacing: 0; }
+.cx-tabs__reports { margin: 0; padding: 0; list-style: none; }
+.cx-tabs__reports li { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); padding: 12px 0; border-top: 1px solid var(--cx-line); font-size: var(--t-small); }
+.cx-tabs__reports li:first-child { border-top: 0; padding-top: 0; }
+.cx-tabs__reports a { font: 500 12px/1 var(--cx-mono); height: 26px; display: inline-flex; align-items: center; padding: 0 10px; border-radius: var(--r-sm); border: 1px solid var(--cx-line-2); }
+@media (prefers-reduced-motion: reduce) { .cx-tabs__ind { transition: none; } .cx-tabs__panel { animation: none; } }
+@media (max-width: 639px) {
+  .cx-tabs__panel { padding: var(--s-5); }
+  /* a narrow screen scrolls the bar sideways; the tabs keep 14px padding and the far edge fades */
+  .cx-tabs__scroll {
+    justify-self: stretch;
+    -webkit-mask: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+  }
+  .cx-tabs__scroll { text-align: center; }
+  .cx-tabs__scroll.is-end { -webkit-mask: none; mask: none; }
+  .cx-tabs__tab { padding: 0 14px; font-size: 13px; }
+  .cx-tabs__metrics, .cx-tabs__payout { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .cx-tabs__table th:nth-child(4), .cx-tabs__table td:nth-child(4) { display: none; }
+  .cx-tabs__table td:nth-child(3), .cx-tabs__table th:nth-child(3) { text-align: right; }
+}

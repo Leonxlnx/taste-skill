@@ -1,0 +1,21 @@
+{
+  "name": "slider",
+  "title": "Property panel",
+  "shows": "A design tool's property card: an icon, a name, two sliders with values and a three-way switch. The first thumb glides between values; with opts.drive it also changes the effect ground it sits on (Figma's Texture tile).",
+  "useFor": [
+    "design tools",
+    "customisation",
+    "branding",
+    "settings",
+    "editors",
+    "controls"
+  ],
+  "size": [
+    288,
+    268
+  ],
+  "js": true,
+  "place": "Two ways. Full (288 x 268): at-rise fit with --fit-max: 288px, --ax: max(24px, 50% - 144px), 40px down, cut by the bottom (.stage--fade-b) below its second slider. Compact (opts.compact, 248 x 128): .at-center on a focal tile, the one fragment allowed in the calm middle. Its ground is a soft field it drives (grain-gradient with data-ui-opts={\"drive\":{\"param\":\"grain\",\"min\":0.15,\"max\":0.95}}), so the control visibly changes the picture under it",
+  "edit": "Labels and values are HTML: the finished picture is the markup (the thumb at style=\"--v:0.42\", the <output> as written; only its figure changes while the thumb moves, its words and unit stay). opts.stops (0..1) sets where the thumb goes, one per cycle; opts.scale the figure at 1.0 (else read from the output and --v); opts.compact keeps only the name and the first slider.",
+  "loop": "about 3.3 s a cycle: the thumb glides out and back to the page's value; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

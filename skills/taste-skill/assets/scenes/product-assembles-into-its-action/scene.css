@@ -1,0 +1,64 @@
+/* product-assembles-into-its-action - at rest: the copy with its step list beside the finished
+   screen. Live: the same split on the held stage; the rows arrive and fold by transform; the box
+   behind the screen is clipped to the rows it holds and closes round the action at the end. */
+[data-big-scene="product-assembles-into-its-action"] { background: var(--bg); color: var(--ink); --pa-screen-w: 560px; }
+[data-big-scene="product-assembles-into-its-action"] > .sc__stage {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center;
+  width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad);
+}
+[data-big-scene="product-assembles-into-its-action"] .pa__copy { grid-column: 1 / 6; }
+[data-big-scene="product-assembles-into-its-action"] .pa__copy h2 { max-width: 16ch; }
+[data-big-scene="product-assembles-into-its-action"] .pa__steps { margin: var(--s-6) 0 0; padding: 0; list-style: none; display: grid; gap: var(--s-3); max-width: 40ch; }
+[data-big-scene="product-assembles-into-its-action"] .pa__steps li { font-size: var(--t-lead); line-height: 1.4; color: var(--muted); transition: color 240ms var(--ease); }
+[data-big-scene="product-assembles-into-its-action"] .pa__steps li.is-on { color: var(--ink); }
+[data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__steps li { color: var(--ink); }
+[data-big-scene="product-assembles-into-its-action"] .pa__close { margin-top: var(--s-5); font-size: var(--t-body); color: var(--muted); }
+[data-big-scene="product-assembles-into-its-action"] .pa__screen {
+  grid-column: 7 / 13; position: relative; width: 100%; max-width: var(--pa-screen-w); justify-self: center;
+  font-family: var(--font-text); font-size: 14px; line-height: 1.4; color: var(--ink);
+}
+[data-big-scene="product-assembles-into-its-action"] .pa__box {
+  position: absolute; inset: 0; z-index: 0; border-radius: var(--r-md); background: var(--card, var(--surface));
+  border: 1px solid var(--line); box-shadow: 0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent), 0 12px 32px -16px color-mix(in oklab, var(--ink) 25%, transparent);
+}
+[data-big-scene="product-assembles-into-its-action"] .pa__screen > .pa__row { position: relative; z-index: 1; }
+[data-big-scene="product-assembles-into-its-action"] .pa__row--action { display: flex; align-items: center; gap: 14px; }
+[data-big-scene="product-assembles-into-its-action"] [data-at]:not([data-action]).is-new { color: var(--accent); }
+[data-big-scene="product-assembles-into-its-action"] [data-at] { transition: color 300ms var(--ease); }
+[data-big-scene="product-assembles-into-its-action"] [data-action] {
+  display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 18px; border-radius: var(--r-btn); border: 0; width: max-content;
+  background: var(--action); color: var(--action-ink); font: 500 14px/1 var(--font-text); cursor: pointer; transform-origin: 50% 50%;
+}
+@media (max-width: 1023px) {
+  [data-big-scene="product-assembles-into-its-action"] > .sc__stage { grid-template-columns: 1fr; row-gap: var(--s-7); align-content: center; }
+  [data-big-scene="product-assembles-into-its-action"] .pa__copy, [data-big-scene="product-assembles-into-its-action"] .pa__screen { grid-column: 1; }
+  [data-big-scene="product-assembles-into-its-action"] .pa__screen { justify-self: start; }
+}
+
+/* ---------- the held stage */
+[data-big-scene="product-assembles-into-its-action"].is-live > .sc__stage { padding-top: calc(var(--nav-h, 0px) + var(--s-5)); }
+[data-big-scene="product-assembles-into-its-action"].is-live .pa__screen { will-change: transform; }
+[data-big-scene="product-assembles-into-its-action"].is-live .pa__box { will-change: clip-path; }
+[data-big-scene="product-assembles-into-its-action"].is-live .pa__row, [data-big-scene="product-assembles-into-its-action"].is-live [data-at] { will-change: transform, opacity; }
+/* the action grows at the end: drawn again at its size, never a scaled bitmap; its row's own rule and fill go with the box */
+[data-big-scene="product-assembles-into-its-action"].is-live [data-action] { will-change: auto; }
+[data-big-scene="product-assembles-into-its-action"].is-live .pa__screen > .pa__row--action { border-color: transparent; }
+[data-big-scene="product-assembles-into-its-action"].is-live.is-folded .pa__screen > .pa__row--action { background: transparent; box-shadow: none; }
+/* the closing line rides the screen (the script moves it there while live): centred under the grown action */
+[data-big-scene="product-assembles-into-its-action"].is-live .pa__close {
+  position: absolute; z-index: 2; left: 50%; top: 60%; margin: 0; width: max-content; max-width: 100%; text-align: center;
+  font-size: var(--t-lead); color: var(--ink); opacity: 0; transform: translateX(-50%); will-change: transform, opacity;
+}
+
+/* ---------- finished composition in the page rhythm: a roomier step list on a wide screen, closer on a phone */
+@media (min-width: 1024px) {
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__steps { gap: var(--s-4); margin-top: var(--s-7); }
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__steps li { font-size: var(--t-h3); line-height: 1.25; }
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__close { margin-top: var(--s-7); }
+}
+@media (max-width: 767px) {
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) > .sc__stage { row-gap: var(--s-5); }
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__steps { margin-top: var(--s-4); gap: var(--s-2); }
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__steps li { font-size: var(--t-body); }
+  [data-big-scene="product-assembles-into-its-action"]:not(.is-live) .pa__close { margin-top: var(--s-4); }
+}

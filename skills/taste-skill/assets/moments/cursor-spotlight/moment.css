@@ -1,0 +1,10 @@
+/* cursor-spotlight: a layer under the frame's content with a soft light (the frame's own surface
+   colour) at --mo-x/--mo-y and a dot grid that shows only inside the light. */
+.mo-cs { --mo-x: 72%; --mo-y: 28%; --mo-r: 420px; position: relative; isolation: isolate; }
+.mo-cs > .mo-cs__light { position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit; overflow: hidden;
+  background: radial-gradient(var(--mo-r) circle at var(--mo-x) var(--mo-y), var(--mo-light, color-mix(in oklab, var(--surface) 92%, transparent)), transparent 72%); }
+.mo-cs > .mo-cs__light::after { content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, color-mix(in oklab, var(--ink) 34%, transparent) 1px, transparent 1.6px); background-size: 24px 24px; background-position: 12px 12px;
+  -webkit-mask-image: radial-gradient(calc(var(--mo-r) * 0.9) circle at var(--mo-x) var(--mo-y), #000, transparent 72%); mask-image: radial-gradient(calc(var(--mo-r) * 0.9) circle at var(--mo-x) var(--mo-y), #000, transparent 72%); }
+.mo-cs.mo-cs--plain > .mo-cs__light::after { display: none; }
+.mo-cs > :not(.mo-cs__light) { position: relative; z-index: 1; }

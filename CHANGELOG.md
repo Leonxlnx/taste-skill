@@ -4,6 +4,19 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
+## 2.5.0 - 2026-11-03
+
+A complete rebuild of `design-taste-frontend` (`tasteskill 2.5.0`) around professional company websites at the `figma.com` and `x.ai` bar, replacing the `2.1.x` direction-sheet and app-screen pipeline (`draw.mjs`, `assets.mjs`, `lint.mjs`, `inspect.mjs`, `scenes.mjs`).
+
+### What's new compared with 2.1.x
+
+- **One page system (`starter.html`, `system.css`, `system.js`, `assets/layout/`):** Every build starts from a shared HTML/CSS foundation instead of open-ended layout generation. The hero fills the first screen alone, every body section and `footer.closing` is planned to one or two full screens at `1440x900` with no neighbour peeking into a section tile, and left and right content edges match across the page. `assets/layout/deal.mjs` deals ten tested hero layouts (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `film`, `statement`, `triptych`), verified by `assets/layout/check.mjs` including max-headline stress tests.
+- **Strict business-kind routing (effects only on tech and gaming pages):** Every page declares its kind up front (`software`, `gaming`, `tech` for technical hardware, `product`, `service` or `place`). Shader grounds (`scripts/effects.mjs`, `assets/effects/`), creative scroll and pointer moments (`scripts/moments.mjs`, `assets/moments/`), scroll-held big scenes (`assets/scenes/`) and WebGL object prints (`assets/objects/`) are dealt only on `software`, `tech` and `gaming` pages within a shared cap of 4 live WebGL contexts, and every effect has a static phone and reduced-motion state. Cafes, hotels, shops, studios, services and non-technical products get zero WebGL or scroll effects and lead with photographs, typography and flat colour.
+- **Real product UI fragments, components and diagrams:** `assets/ui/` ships 19 HTML product UI fragments (`chat`, `diff-review`, `kanban`, `metrics`, `notify`, `pricing`, `terminal`, `voice` and others) staged inside lit feature-card panels (`assets/ui/cards.css`, `assets/ui/ui.js`, `references/cards.md`), joined by interactive feature components in `assets/components/` and preset-driven node-and-line diagrams in `assets/diagrams/`.
+- **Curated photographs, no captions, real brand icons:** `scripts/photos.mjs` deals vetted Unsplash and bundled offline Wikimedia Commons WebP photographs (`assets/photos/`) by trade as detail slots (capped at 1 in 3 page images unless `--draft-lead` is passed for a client without photographs), enforces image weight budgets, and writes a single expandable footer credit line (`photos.mjs credits`). Captions under images, renders and UI visuals are banned across all page kinds. `scripts/icons.mjs` resolves real Simple Icons brand marks and Lucide interface icons into local SVGs (`assets/icons/`).
+- **Palettes, typography, CSS grounds and calm motion:** `scripts/start.mjs` deals palettes and Google Fonts pairings by page kind (`library/palettes.json`, `library/type.json`) and emits the exact `<head>` links and `:root` tokens. `assets/backgrounds/` provides 16 contrast-verified CSS grounds for tech sections, and `assets/motion/` supplies restrained hover, press, tab, focus, count and single-loop card interactions.
+- **Real-browser consistency, performance and screenshot checks over HTTP:** `scripts/consistency.mjs` replaces `inspect.mjs` and `lint.mjs` with over 100 browser checks across `1440`, `1024`, `768` and `390` (rendered visual emptiness, GLSL ES reserved-word linting, forced shader-failure fallbacks, WCAG text and button contrast, grid and split alignment, section rhythm, placeholder and invented-address detection, slow-mobile image loading and reduced-motion compliance), paired with `scripts/perf.mjs` and `scripts/shoot.mjs`.
+
 ## 2.1.5 - 2026-10-25
 
 Fixes from the community. Thanks to everyone who reported and sent them.

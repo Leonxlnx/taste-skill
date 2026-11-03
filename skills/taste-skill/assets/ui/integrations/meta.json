@@ -1,0 +1,20 @@
+{
+  "name": "integrations",
+  "title": "Connected apps",
+  "shows": "A list of apps with their real marks (in their own colours on light tiles), what each does and its state; the pointer connects one. The default for any card about integrations.",
+  "useFor": [
+    "integrations",
+    "apps",
+    "connections",
+    "setup",
+    "platform"
+  ],
+  "size": [
+    380,
+    282
+  ],
+  "js": true,
+  "place": "at-corner or at-right 32 to 40px in, cut by the bottom edge through a row below the one that connects (.stage--fade-b); on a soft ground, never a pattern; or at-over on a window",
+  "edit": "Each row is HTML: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. Use only apps the product really works with.",
+  "loop": "about 2.8 s a cycle: the pointer clicks Connect on the target app, it spins, then Connected; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

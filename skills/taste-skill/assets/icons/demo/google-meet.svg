@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 201" width="256" height="201"><defs>
+      <linearGradient id="a" x1="128.8" x2="227.2" y1="104.44" y2="104.44" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#f6a100"></stop>
+        <stop offset="1" stop-color="#ffbe00"></stop>
+      </linearGradient>
+      <linearGradient id="f" x1="136.22" x2="78.5" y1="91.32" y2="91.19" gradientUnits="userSpaceOnUse">
+        <stop offset="0.15" stop-color="#ffb5e8"></stop>
+        <stop offset="1" stop-color="#ffdbf5" stop-opacity="0"></stop>
+      </linearGradient>
+      <radialGradient id="b" cx="0" cy="0" r="1" gradientTransform="matrix(-159.725 0 0 -135.852 160.325 96)" gradientUnits="userSpaceOnUse">
+        <stop offset="0.15" stop-color="#ffe921"></stop>
+        <stop offset="1" stop-color="#fec700"></stop>
+      </radialGradient>
+      <filter id="c" width="166" height="180" x="45.91" y="8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+        <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+        <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+        <feGaussianBlur result="effect1_foregroundBlur_37584_9338" stdDeviation="14"></feGaussianBlur>
+      </filter>
+  </defs>
+    <g>
+        <g transform="matrix(1.454545, 0, 0, 1.454545, -11.63636, -39.272717)">
+          <path fill="url(#a)" d="M110.015 108.88c-6.829-4.718-6.921-14.778-.179-19.62L165 49.643c7.94-5.701 19-.038 19 9.737v77.755c0 9.675-10.861 15.359-18.821 9.859z"></path>
+          <path fill="url(#b)" d="M8 71c0-24.3 19.7-44 44-44h64c11.046 0 20 8.954 20 20v98c0 11.046-8.954 20-20 20H28c-11.046 0-20-8.954-20-20z"></path>
+          <g filter="url(#c)" mask="url(#e)">
+            <path fill="url(#f)" d="m73.906 99.198 110-63.198v124z"></path>
+          </g>
+          <circle cx="38" cy="135" r="14" fill="#fff"></circle>
+        </g>
+        <mask id="e" width="129" height="138" x="8" y="27" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+          <path fill="#fff" d="M8 71c0-24.3 19.7-44 44-44h64c11.046 0 20 8.954 20 20v98c0 11.046-8.954 20-20 20H28c-11.046 0-20-8.954-20-20z"></path>
+        </mask>
+    </g></svg>

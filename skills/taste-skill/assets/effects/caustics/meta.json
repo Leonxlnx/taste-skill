@@ -1,0 +1,11 @@
+{
+  "id": "caustics",
+  "name": "Water caustics",
+  "family": "light",
+  "look": "Curved lines of light, bright where they gather and faint where they spread, drift over the ground like sunlight on the floor of a pool.",
+  "bestOn": ["card", "hero", "band"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true
+}

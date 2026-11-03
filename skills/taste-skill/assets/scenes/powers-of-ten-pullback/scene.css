@@ -1,0 +1,67 @@
+/* powers-of-ten-pullback - at rest: the hero composition (copy left, the device on its lit ground
+   at the right). Live: the same composition on the held stage, the device scaled up so its screen
+   fills the stage, pulled back by the scroll. */
+[data-big-scene="powers-of-ten-pullback"] { background: var(--bg); color: var(--ink); --pb-screen-w: 640px; }
+[data-big-scene="powers-of-ten-pullback"] > .sc__stage {
+  position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center;
+  width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad);
+}
+[data-big-scene="powers-of-ten-pullback"] .pb__ground {
+  position: absolute; inset: 0; z-index: 0; background: var(--ground-bg); pointer-events: none;
+}
+[data-big-scene="powers-of-ten-pullback"] .pb__copy { position: relative; z-index: 2; grid-column: 1 / 6; display: grid; gap: var(--s-4); }
+/* the copy stands on the lit ground, so it takes the ground's own ink, buttons and lines (a dark page keeps its white ink elsewhere) */
+[data-big-scene="powers-of-ten-pullback"] .pb__ground ~ .pb__copy {
+  color: var(--ground-ink);
+  --bg: var(--ground-surface); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
+  --action: var(--ground-ink); --action-ink: var(--ground-surface);
+  --line: color-mix(in oklab, var(--ground-ink) 14%, transparent); --line-strong: color-mix(in oklab, var(--ground-ink) 28%, transparent);
+}
+[data-big-scene="powers-of-ten-pullback"] .pb__copy .t-label { color: var(--muted); }
+[data-big-scene="powers-of-ten-pullback"] .pb__copy h2 { max-width: 14ch; }
+[data-big-scene="powers-of-ten-pullback"] .pb__copy > p:not(.t-label) { font-size: var(--t-lead); line-height: 1.5; max-width: 42ch; }
+[data-big-scene="powers-of-ten-pullback"] .pb__copy .btn-row { margin-top: var(--s-3); }
+[data-big-scene="powers-of-ten-pullback"] .pb__device {
+  position: relative; z-index: 1; grid-column: 7 / 13; width: 100%; max-width: calc(var(--pb-screen-w) + 24px); justify-self: end;
+  padding: 12px; border-radius: 18px; background: color-mix(in oklab, var(--p-ink) 88%, var(--p-bg)); transform-origin: 50% 50%;
+  box-shadow: 0 2px 4px rgb(0 0 0 / .18), 0 30px 60px -30px rgb(0 0 0 / .45);
+}
+[data-big-scene="powers-of-ten-pullback"] .pb__screen { position: relative; aspect-ratio: 16 / 10; border-radius: 8px; overflow: clip; background: var(--p-bg); }
+[data-big-scene="powers-of-ten-pullback"] .pb__screen > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; }
+[data-big-scene="powers-of-ten-pullback"] .pb__screen > [data-ui], [data-big-scene="powers-of-ten-pullback"] .pb__screen > [data-ui-load] { position: absolute; inset: 0; }
+@media (max-width: 1023px) {
+  [data-big-scene="powers-of-ten-pullback"] > .sc__stage { grid-template-columns: 1fr; row-gap: var(--s-7); align-content: center; }
+  [data-big-scene="powers-of-ten-pullback"] .pb__copy, [data-big-scene="powers-of-ten-pullback"] .pb__device { grid-column: 1; justify-self: start; }
+}
+@media (max-width: 767px) {
+  [data-big-scene="powers-of-ten-pullback"] .pb__device { padding: 8px; border-radius: 14px; }
+  /* a phone shows the finished composition with a 4:5 crop of the screen's left part (the sidebar and the main pane's head) */
+  [data-big-scene="powers-of-ten-pullback"] .pb__screen { aspect-ratio: 4 / 5; }
+  [data-big-scene="powers-of-ten-pullback"] .pb__copy h1, [data-big-scene="powers-of-ten-pullback"] .pb__copy h2 { font-size: 30px; }
+  [data-big-scene="powers-of-ten-pullback"] .pb__copy > p:not(.t-label) { font-size: var(--t-body); }
+  [data-big-scene="powers-of-ten-pullback"] .pb__copy .btn-row .btn { width: 100%; }
+}
+
+/* ---------- finished composition */
+[data-big-scene="powers-of-ten-pullback"]:not(.is-live) > .sc__stage { min-height: 70svh; }
+/* the lit ground reaches --s-6 past the composition (the section's padding holds it), so the device and the copy stand inside it */
+[data-big-scene="powers-of-ten-pullback"]:not(.is-live) .pb__ground { inset: calc(-1 * var(--s-6)) 0; border-radius: var(--r-lg); }
+
+/* ---------- the held stage */
+[data-big-scene="powers-of-ten-pullback"].is-live > .sc__stage { padding-top: calc(var(--nav-h, 0px) + var(--s-5)); align-content: center; }
+@media (max-width: 767px) { [data-big-scene="powers-of-ten-pullback"].is-live > .sc__stage { row-gap: var(--s-5); padding-bottom: var(--s-5); } }
+[data-big-scene="powers-of-ten-pullback"].is-live .pb__device { will-change: transform; }
+[data-big-scene="powers-of-ten-pullback"].is-live .pb__copy { opacity: 0; will-change: transform, opacity; }
+[data-big-scene="powers-of-ten-pullback"].is-live .pb__ground { opacity: 0; }
+
+/* ---------- finished composition in the page rhythm: the device larger on a wide screen, squarer on a phone */
+@media (min-width: 1024px) {
+  [data-big-scene="powers-of-ten-pullback"]:not(.is-live) { --pb-screen-w: 760px; }
+  [data-big-scene="powers-of-ten-pullback"]:not(.is-live) .pb__copy { grid-column: 1 / 5; }
+  [data-big-scene="powers-of-ten-pullback"]:not(.is-live) .pb__device { grid-column: 6 / 13; }
+  [data-big-scene="powers-of-ten-pullback"]:not(.is-live) .pb__screen { aspect-ratio: 16 / 11; }
+}
+@media (max-width: 767px) {
+  [data-big-scene="powers-of-ten-pullback"]:not(.is-live) > .sc__stage { row-gap: var(--s-5); }
+  [data-big-scene="powers-of-ten-pullback"] .pb__screen { aspect-ratio: 1 / 1; }
+}

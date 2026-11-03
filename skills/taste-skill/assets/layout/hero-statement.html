@@ -1,0 +1,131 @@
+<!doctype html>
+<!-- layout v4 demo: hero-statement (references/layout-v4.md, heroes.json "statement"). type: software. fonts: newsreader. ground: bg-horizon, dark page (a dealt CSS ground and a dark page are tech only: on a service, product or place page drop the bg- class and use a flat colour). -->
+<html lang="en" data-type="software" data-radius="soft" data-ground="sky" data-buttons="solid">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="software">
+<title>Fundbook: accounting for charities and foundations</title>
+<meta name="description" content="Fundbook keeps each restricted fund apart, matches bank lines to grants and prints the accounts your trustees sign. From £39 a month.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..700&family=Hanken+Grotesk:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../backgrounds/backgrounds.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root {
+  --p-bg: #0d141b; --p-surface: #16202a; --p-ink: #eef1ee; --p-muted: #9aa6b0;
+  --p-accent: #7cc3db; --p-accent-ink: #0d141b; --p-action: #eef1ee; --p-action-ink: #0d141b;
+  --p-inv-bg: #f6f5f1; --p-inv-surface: #ebeae4; --p-inv-ink: #15202b; --p-inv-muted: #535e68;
+  --p-inv-accent: #1f6f8b; --p-inv-accent-ink: #ffffff; --p-inv-action: #15202b; --p-inv-action-ink: #f6f5f1;
+  --font-display: "Newsreader", Georgia, serif; --font-text: "Hanken Grotesk", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.018em; --display-tracking-xl: -0.026em; --ly-scale: 1.06;
+}
+.hero--statement .pill { margin-bottom: var(--s-6); }
+.funds { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(520px, var(--ly-fit)); display: grid; place-items: center;
+  background: radial-gradient(70% 70% at 30% 20%, color-mix(in oklab, var(--ground-surface) 80%, white), transparent 70%), var(--ground-bg); }
+.funds .d-card { width: min(420px, calc(100% - 48px)); padding: 20px 22px; }
+.fund { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 0; border-top: 1px solid rgb(0 0 0 / .07); font-size: 13.5px; }
+.fund:first-of-type { border-top: 0; }
+.fund b { font-weight: 500; } .fund span { text-align: right; font-variant-numeric: tabular-nums; color: #3d4247; }
+.fund .d-bar { grid-column: 1 / -1; margin-top: 6px; }
+@media (max-width: 1023px) { .funds { height: 440px; margin-top: var(--s-7); } }
+</style>
+<script src="../backgrounds/backgrounds.js"></script>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="dots" aria-hidden="true"></span>Fundbook</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#funds">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Accounts</p><a href="#funds">Restricted funds<span>Each grant kept apart</span></a><a href="#funds">Year-end accounts<span>SORP and FRS 102</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Income</p><a href="#funds">Gift Aid<span>Claims in two clicks</span></a><a href="#funds">Grants<span>Reports for each funder</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#funds">Pricing</a></div>
+      <div class="nav__item"><a class="nav__link" href="#funds">For accountants</a></div>
+      <div class="nav__item"><a class="nav__link" href="#funds">Help</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#funds">Sign in</a>
+      <a class="btn btn--primary" href="#funds">Try it free</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--statement bg-horizon" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text hero__in">
+      <div>
+        <a class="pill" href="#funds"><span>New</span><span class="muted">Gift Aid claims in two clicks</span></a>
+        <h1 id="hero-h">Accounting for charities that keeps every grant apart</h1>
+        <p class="hero__lead">Fundbook tracks each restricted fund on its own, matches bank lines to grants and prints the year-end accounts your trustees sign. From £39 a month.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#funds">Try it free for 60 days</a><a class="btn btn--secondary" href="#funds">See a sample report</a></div>
+      </div>
+      <dl class="hero__facts">
+        <div><dt>Charities using it</dt><dd>2,300 in the UK</dd></div>
+        <div><dt>Funds tracked</dt><dd>41,000</dd></div>
+        <div><dt>Accounts</dt><dd>SORP and FRS 102</dd></div>
+        <div><dt>Support</dt><dd>By phone, 9:00 to 17:00</dd></div>
+      </dl>
+    </div></div>
+  </section>
+
+  <section class="section" id="funds" aria-labelledby="funds-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-5">
+        <div class="section-head">
+          <h2 id="funds-h">Every fund on one page. <span class="muted">What came in, what was spent and what is left, by grant.</span></h2>
+        </div>
+        <ul class="checks">
+          <li>Bank lines matched to the right grant as they arrive</li>
+          <li>A report for each funder in their own format</li>
+          <li>Your examiner signs off in the same place</li>
+        </ul>
+      </div>
+      <div class="span-6 start-7">
+        <div class="funds" role="img" aria-label="A Fundbook card listing three restricted funds with what is left of each">
+          <div class="d-card" aria-hidden="true">
+            <div class="d-card__row"><h5>Restricted funds</h5><span class="d-chip">Reconciled</span></div>
+            <p>Year to 31 March 2027</p>
+            <div class="fund"><b>Lottery Community Fund</b><span>£18,400 of £42,000 left</span><div class="d-bar" style="--v: 56%; --d-accent: #1f6f8b"><i></i></div></div>
+            <div class="fund"><b>City Council, youth work</b><span>£6,150 of £12,500 left</span><div class="d-bar" style="--v: 51%; --d-accent: #1f6f8b"><i></i></div></div>
+            <div class="fund"><b>Henley Trust, minibus</b><span>£0 of £24,000 left</span><div class="d-bar" style="--v: 100%; --d-accent: #1f6f8b"><i></i></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Try it free for 60 days</h2></div>
+      <a class="btn btn--primary btn--xl btn--wide" href="#funds">Try it free for 60 days<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#"><span class="mark" data-mark="dots" aria-hidden="true"></span>Fundbook</a>
+          <p class="footer__lede">Accounting for charities and foundations.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Product</h4><ul><li><a href="#funds">Funds</a></li><li><a href="#funds">Gift Aid</a></li><li><a href="#funds">Pricing</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Company</h4><ul><li><a href="#funds">About</a></li><li><a href="#funds">Contact</a></li></ul></div>
+      </div>
+      <div class="footer__legal"><span>&copy; 2026 Fundbook Ltd</span><span><a href="#funds">Privacy</a> &nbsp; <a href="#funds">Terms</a></span></div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

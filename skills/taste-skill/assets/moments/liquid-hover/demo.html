@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid hover · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #0b1016; --p-surface: #141b24; --p-ink: #eef2f6; --p-muted: #8e99a6; --p-accent: #6cc3ff; --p-accent-ink: #0b1016; --p-action: #eef2f6; --p-action-ink: #0b1016;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .hero-photo { aspect-ratio: 16 / 8; border-radius: var(--r-lg); margin: var(--s-8) 0 0; }
+  @media (max-width: 639px) { .hero-photo { aspect-ratio: 4 / 5; } }
+  .hero-head { max-width: 760px; display: grid; gap: var(--s-5); }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Northbound</a>
+  <nav class="demo-nav__links"><a href="#">Rides</a><a href="#">Dates</a><a href="#">Bikes</a><a href="#">About</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a ride</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="hero-head"><h1>Three days of sea air on the north coast road</h1><p class="t-lead">Guided rides for groups of eight, with two guesthouses, every meal and a van for the bags. From €640 a person, May to September.</p><div class="btn-row"><a class="btn btn--primary" href="#">See the dates</a><a class="btn btn--secondary" href="#">Hire a bike</a></div></div>
+      <figure class="hero-photo" data-moment="liquid-hover" data-moment-opts='{"strength": 0.8}'>
+        <img src="../_demo/photo-702.jpg" alt="The cliffs and the beach at the end of the pass" width="1800" height="1200">
+      </figure>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split">
+      <div class="section-head"><h2>Guesthouses, not hotels. <span class="muted">Dinner is included.</span></h2><p>You sleep in two family-run houses by the water and eat what they cook that evening. Rooms are for two; a single room is €90 more.</p><a class="link" href="#">See the houses</a></div>
+      <img class="demo-photo" src="../_demo/photo-1049.jpg" alt="An island off the coast" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Northbound · demo page for the moment “Liquid hover”</span><span>Photographs by Dominik Schröder and Rosan Harmens on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- layout v4 demo: hero-editorial (references/layout-v4.md, heroes.json "editorial"). type: service. fonts: mona (letters: wdth). -->
+<html lang="en" data-type="service" data-radius="sharp" data-ground="sky" data-buttons="tonal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="other">
+<title>Halvorsen Arkitekter: architects for schools and libraries in Oslo</title>
+<meta name="description" content="A practice of 24 architects in Oslo. 31 schools and 9 libraries in timber and brick since 2004.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #f2f1ee; --p-surface: #e6e5e1; --p-ink: #121212; --p-muted: #5b5a56;
+  --p-accent: #c4441f; --p-accent-ink: #ffffff; --p-action: #121212; --p-action-ink: #f2f1ee;
+  --p-inv-bg: #121212; --p-inv-surface: #1d1d1c; --p-inv-ink: #f2f1ee; --p-inv-muted: #a9a8a3;
+  --p-inv-accent: #ee7a52; --p-inv-accent-ink: #121212; --p-inv-action: #f2f1ee; --p-inv-action-ink: #121212;
+  --font-display: "Mona Sans", system-ui, sans-serif; --font-text: "Mona Sans", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.03em; --display-tracking-xl: -0.04em; --display-stretch: 108%; --ly-scale: .94;
+}
+.model__photo { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(600px, var(--ly-fit)); }
+.model__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.steps-n > li { grid-template-columns: 56px minmax(0, 1fr) auto; }
+.steps-n .rows__n { grid-row: 1 / span 2; font: 600 var(--t-small)/1.6 var(--font-text); color: var(--muted); font-variant-numeric: tabular-nums; }
+.steps-n .rows__value { grid-column: 3; color: var(--muted); }
+.steps-n > li > p { grid-column: 2; }
+@media (max-width: 1023px) { .model__photo { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#model">Projects <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Building</p><a href="#model">Schools<span>31 since 2004</span></a><a href="#model">Libraries<span>9, three under way</span></a><a href="#model">Housing<span>Timber blocks for co-ops</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Practice</p><a href="#model">How we work<span>Four stages, one team</span></a><a href="#model">People<span>24 architects, 3 engineers</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#model">Practice</a></div>
+      <div class="nav__item"><a class="nav__link" href="#model">Writing</a></div>
+      <div class="nav__item"><a class="nav__link" href="#talk">Jobs</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#talk">Norsk</a>
+      <a class="btn btn--primary" href="#talk">Talk to us</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--editorial" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text hero__in">
+      <h1 id="hero-h" data-ly-letters="wdth" aria-label="We design schools and libraries">We design <span class="ly-pic" style="--w: 2.1em; --ly-pos: 50% 70%" aria-hidden="true"><img src="img/photo-1081.jpg" alt="" fetchpriority="high"></span> schools and <span class="ly-pic" style="--w: 1.7em; --d: .55s; --ly-pos: 50% 78%" aria-hidden="true"><img src="img/photo-949.jpg" alt=""></span> libraries</h1>
+      <div class="grid hero__foot">
+        <p class="hero__lead span-6">Halvorsen is a practice of 24 architects in Oslo. Since 2004 we have built 31 schools and 9 libraries in timber and brick, most of them for the city.</p>
+        <div class="btn-row span-4 start-9"><a class="btn btn--primary" href="#model">See the projects</a><a class="btn btn--secondary" href="#talk">Talk to us</a></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="model" aria-labelledby="model-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-6">
+        <div class="section-head">
+          <h2 id="model-h">Every building starts as a card model. <span class="muted">The school sees it before we draw a line.</span></h2>
+        </div>
+        <ol class="rows steps-n">
+          <li><span class="rows__n">01</span><span class="rows__name">Brief with the people who will use it</span><span class="rows__value">4 weeks</span><p>Teachers, librarians, caretakers and pupils, in their building.</p></li>
+          <li><span class="rows__n">02</span><span class="rows__name">Card models, three of them</span><span class="rows__value">6 weeks</span><p>One picked, two kept for the parts people liked.</p></li>
+          <li><span class="rows__n">03</span><span class="rows__name">Drawings and the planning application</span><span class="rows__value">5 months</span></li>
+          <li><span class="rows__n">04</span><span class="rows__name">On site every week until the keys</span><span class="rows__value">14 to 22 months</span></li>
+        </ol>
+      </div>
+      <div class="span-5 start-8">
+        <div class="model__photo"><img src="img/photo-c823.jpg" alt="Overlapping sheets of pale grey-green card scattered at angles, seen from above" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" id="talk" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">See the projects</h2></div>
+      <a class="btn btn--primary btn--xl" href="#model">See the projects<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
+          <p class="footer__lede">On Tøyengata in Oslo. Write to us; we reply the same week.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Contact</h4><ul><li><a href="mailto:post@halvorsen.example">Write to us</a></li><li><a href="#work">New projects</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Practice</h4><ul><li><a href="#model">Projects</a></li><li><a href="#model">How we work</a></li><li><a href="#talk">Jobs</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Halvorsen Arkitekter AS</span>
+        <details class="credits"><summary>Photographs: Julien Moreau and Drew Patrick Miller via Unsplash, Brandi Redd via Wikimedia Commons</summary><p>Building corner by Julien Moreau and a white atrium under a skylight by Drew Patrick Miller (Unsplash License); card sheets by Brandi Redd (CC0), via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

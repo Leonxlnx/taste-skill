@@ -1,0 +1,120 @@
+<!doctype html>
+<!-- layout v4 demo: hero-film (references/layout-v4.md, heroes.json "film"). type: service. fonts: schibsted. dark page. -->
+<html lang="en" data-type="service" data-radius="soft" data-ground="sage" data-buttons="pill">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="other">
+<title>Waldweg Touren: guided gravel rides in the Black Forest</title>
+<meta name="description" content="Two- to five-day guided gravel tours in the Black Forest, with a van for your bags and a guesthouse every night. From €690.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #111310; --p-surface: #1b1e1a; --p-ink: #f1f0ea; --p-muted: #a9aca3;
+  --p-accent: #e4692f; --p-accent-ink: #111310; --p-action: #f1f0ea; --p-action-ink: #111310;
+  --p-inv-bg: #f1f0ea; --p-inv-surface: #e5e3da; --p-inv-ink: #111310; --p-inv-muted: #5a5d55;
+  --p-inv-accent: #b9471a; --p-inv-accent-ink: #ffffff; --p-inv-action: #111310; --p-inv-action-ink: #f1f0ea;
+  --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.035em; --display-tracking-xl: -0.045em; --ly-scale: .98;
+}
+.tours__photo { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(580px, var(--ly-fit)); }
+.tours__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+.tour-rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+@media (max-width: 1023px) { .tours__photo { height: auto; aspect-ratio: 4 / 5; margin-bottom: var(--s-7); } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="arc" aria-hidden="true"></span>Waldweg</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#tours">Tours <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Guided</p><a href="#tours">Westweg, five days<span>380 km, from €1,390</span></a><a href="#tours">Southern loop, three days<span>210 km, from €690</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">On your own</p><a href="#tours">Self-guided routes<span>GPX, rooms and bag transfer</span></a><a href="#tours">Bike hire<span>Gravel bikes, sizes S to XL</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#tours">Dates</a></div>
+      <div class="nav__item"><a class="nav__link" href="#tours">Bikes</a></div>
+      <div class="nav__item"><a class="nav__link" href="#tours">Guides</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#tours">Deutsch</a>
+      <a class="btn btn--primary" href="#tours">Book a tour</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--film" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text hero__in">
+      <div class="hero__media hero__fill">
+        <img src="img/photo-d540.jpg" alt="An orange gravel road bending through autumn forest under a stormy grey sky" style="--ly-pos: 50% 58%; --ly-pos-phone: 58% 50%" fetchpriority="high">
+        <div class="hero__over">
+          <div>
+            <h1 id="hero-h">Guided gravel rides in the Black Forest</h1>
+            <p class="hero__lead">Two to five days on forest roads, 60 to 90 km a day, with a van for your bags and a guesthouse every night. April to October, from €690.</p>
+            <div class="btn-row"><a class="btn btn--primary" href="#tours">See the tours</a><a class="btn btn--secondary" href="#tours">Rent a bike</a></div>
+          </div>
+          <a class="ly-play" href="#tours">
+            <span class="ly-play__disc"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4.5 2.6v12.8c0 .8.9 1.3 1.6.9l10.3-6.4c.6-.4.6-1.3 0-1.7L6.1 1.7c-.7-.4-1.6.1-1.6.9Z" fill="currentColor"/></svg></span>
+            <span class="ly-play__label">Play the film<small>Five days on the Westweg, 2:48</small></span>
+          </a>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="tours" aria-labelledby="tours-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-5">
+        <div class="tours__photo"><img src="img/photo-d534.jpg" alt="A forest lane under an arch of golden autumn beeches, with soft mist and leaves on the road" loading="lazy"></div>
+      </div>
+      <div class="span-6 start-7">
+        <div class="section-head">
+          <h2 id="tours-h">Four tours this season. <span class="muted">Eight riders at most, one guide and one driver.</span></h2>
+        </div>
+        <ul class="rows tour-rows">
+          <li><span class="rows__name">Southern loop<small>3 days, 210 km, Freiburg to Freiburg</small></span><span class="rows__value">€690</span></li>
+          <li><span class="rows__name">Feldberg and the lakes<small>4 days, 290 km, Titisee to Basel</small></span><span class="rows__value">€990</span></li>
+          <li><span class="rows__name">Westweg<small>5 days, 380 km, Pforzheim to Basel</small></span><span class="rows__value">€1,390</span></li>
+          <li><span class="rows__name">Autumn weekend<small>2 days, 140 km, October only</small></span><span class="rows__value">€450</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">See the tours</h2></div>
+      <a class="btn btn--primary btn--xl" href="#tours">See the tours<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="footer__mark" href="#"><span class="mark" data-mark="arc" aria-hidden="true"></span>Waldweg</a>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Tours</h4><ul><li><a href="#tours">Guided</a></li><li><a href="#tours">Self-guided</a></li><li><a href="#tours">Bike hire</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Contact</h4><ul><li><a href="mailto:ride@waldweg.example">Write to us</a></li><li><a href="#top">Group rides</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Waldweg Touren</span>
+        <details class="credits"><summary>Photographs: Tony Webster and Dietmar Rabich, via Wikimedia Commons</summary><p>Gravel road in autumn by Tony Webster (CC BY 2.0); beech lane by Dietmar Rabich (CC BY-SA 4.0); both via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

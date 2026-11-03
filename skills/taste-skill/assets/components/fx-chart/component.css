@@ -1,0 +1,47 @@
+/* fx-chart: an area chart with a soft accent fade (or a still dot ruling) under the line; the chart keeps one grid, its own */
+.cx-chart { display: grid; gap: var(--s-5); padding: var(--s-6); min-width: 0; }
+.cx-chart__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-5); flex-wrap: wrap; }
+.cx-chart__title { font: 500 var(--t-body)/1.3 var(--font-text); margin: 0; }
+.cx-chart__sub { font-size: var(--t-label); color: var(--muted); margin: 4px 0 0; }
+.cx-chart__total { display: grid; justify-items: end; gap: 4px; }
+.cx-chart__label { font-size: var(--t-label); color: var(--muted); }
+.cx-chart__value { font: 560 32px/1 var(--font-display); letter-spacing: -0.03em; }
+.cx-chart__delta { font-size: var(--t-label); color: color-mix(in oklab, var(--accent) 75%, var(--ink)); }
+.cx-chart__plot { position: relative; height: 220px; outline-offset: 6px; cursor: crosshair; }
+.cx-chart__grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.cx-chart__grid span { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed var(--cx-line-2); }
+.cx-chart__grid span:last-child { border-top-style: solid; }
+.cx-chart__grid span::after {
+  content: attr(data-v); position: absolute; left: 0; bottom: 6px; font: 400 11px/1 var(--cx-mono); color: var(--muted);
+}
+.cx-chart__grid span:last-child::after { display: none; }
+.cx-chart__area { position: absolute; inset: 0; z-index: 0; }
+/* the plain choice (and the picture before the script): an accent area fading to the card */
+.cx-chart__area:not([data-fx-mounted]) { background: linear-gradient(to bottom, color-mix(in oklab, var(--accent) 26%, transparent), transparent); }
+.cx-chart__line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 2; }
+.cx-chart__line path { fill: none; stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.cx-chart__cursor {
+  position: absolute; top: 0; bottom: 0; width: 1px; z-index: 3; background: var(--cx-line-2);
+  opacity: 0; transition: opacity .15s var(--cx-ease); pointer-events: none;
+}
+.cx-chart__dot {
+  position: absolute; left: -5px; width: 11px; height: 11px; border-radius: 99px; background: var(--accent);
+  border: 2px solid var(--cx-card); box-shadow: 0 0 0 1px var(--accent);
+}
+/* pinned inside the plot, 14px to the side of the point (left of it on the right half) */
+.cx-chart__tip {
+  position: absolute; top: 0; z-index: 4; transform: translateX(14px); white-space: nowrap;
+  height: 30px; display: inline-flex; align-items: center; padding: 0 10px;
+  border-radius: var(--r-sm); background: var(--bg); box-shadow: var(--cx-shadow);
+  font-size: 12px; color: var(--ink); opacity: 0; transition: opacity .15s var(--cx-ease); pointer-events: none;
+}
+.cx-chart__tip.is-left { transform: translateX(calc(-100% - 14px)); }
+.cx-chart__tip b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.cx-chart__tip span { color: var(--muted); margin-right: 8px; }
+.cx-chart.is-reading .cx-chart__cursor, .cx-chart.is-reading .cx-chart__tip { opacity: 1; }
+.cx-chart__axis { display: flex; justify-content: space-between; font: 400 11px/1 var(--cx-mono); color: var(--muted); margin-top: calc(-1 * var(--s-3)); }
+@media (max-width: 639px) {
+  .cx-chart { padding: var(--s-5); }
+  .cx-chart__total { justify-items: start; }
+  .cx-chart__plot { height: 180px; }
+}

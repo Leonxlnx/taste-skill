@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-radius="sharp" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letter physics · big scene demo</title>
+<meta name="description" content="Demo of the letter physics scene as the statement section of a software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f3f4f6; --p-ink: #111113; --p-muted: #64666c; --p-accent: #1a4be0; --p-accent-ink: #ffffff; --p-action: #1a4be0; --p-action-ink: #ffffff;
+          --p-inv-bg: #0d0e11; --p-inv-surface: #17191e; --p-inv-ink: #f4f4f2; --p-inv-muted: #9b9ea6; --p-inv-accent: #ffffff; --p-inv-accent-ink: #111113; --p-inv-action: #ffffff; --p-inv-action-ink: #111113;
+          --font-display: "Geist", system-ui, sans-serif; --font-text: "Geist", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Ledgerline</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Accountants</a><a href="#">Pricing</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <h1>Bookkeeping that closes the month in a day</h1>
+        <p>Ledgerline reads your bank feeds, matches receipts and files VAT. For firms of 2 to 50 people, from £29 a month.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Book a demo</a></div>
+      </div>
+      <div class="frame frame--photo" style="--ratio: 48%">
+        <div class="ux" role="img" aria-label="The Ledgerline ledger for October">
+          <div class="ux__bar"><i></i><i></i><i></i><b>Ledgerline</b><span>October 2026</span></div>
+          <div class="ux__body">
+            <div class="ux__side"><span class="on">Ledger<em>412</em></span><span>Receipts<em>38</em></span><span>VAT<em>Due 7 Nov</em></span><span>Bank feeds</span><span>Reports</span></div>
+            <div class="ux__main">
+              <div class="ux__head"><h4>October ledger</h4><span class="ux__btn">Close the month</span></div>
+              <div class="ux__tiles"><div class="ux__tile"><span>Matched</span><b>398 of 412</b></div><div class="ux__tile"><span>Unmatched</span><b>14</b></div><div class="ux__tile"><span>VAT to pay</span><b>£4,120</b></div></div>
+              <div class="ux__rows">
+                <div class="ux__row"><div><b>Stripe payout</b><span>Sales, 28 invoices</span></div><span>£12,480.00</span><span class="ux__tag ok">Matched</span></div>
+                <div class="ux__row"><div><b>Rent, Unit 4</b><span>Standing order</span></div><span>£2,200.00</span><span class="ux__tag ok">Matched</span></div>
+                <div class="ux__row"><div><b>Amazon Business</b><span>Receipt by email</span></div><span>£184.20</span><span class="ux__tag">Needs a receipt</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc ground-inverse" data-big-scene="letter-physics" style="--h: 1" aria-labelledby="lp-h">
+    <div class="sc__stage">
+      <div class="lp__bg" aria-hidden="true"><img src="../_demo/concrete.jpg" alt="" width="1920" height="1280"></div>
+      <p class="lp__label">Why we built it</p>
+      <h2 class="lp__a" id="lp-h">Month-end takes a week.</h2>
+      <p class="lp__b">With Ledgerline it takes an afternoon.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What it does on day one</h2><p class="t-lead" style="margin-top:16px">Connect the bank, forward receipts, and the ledger fills itself.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Bank feeds</span><span class="rows__value">2,400 banks</span></li>
+          <li><span class="rows__name">Receipts</span><span class="rows__value">By email or photo</span></li>
+          <li><span class="rows__name">VAT</span><span class="rows__value">Filed from the app</span></li>
+          <li><span class="rows__name">Month-end pack</span><span class="rows__value">One click</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Ledgerline · demo page for the big scene “Letter physics”</span><span>Photograph by Carl Nenzen Loven on Unsplash, adapted.</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

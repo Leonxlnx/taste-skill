@@ -1,0 +1,117 @@
+<!doctype html>
+<!-- layout v4: every pairing of library/type.json set as a hero would set it. Reads ../../library/type.json (the one type source; serve the skill folder over http, then open assets/layout/fonts.html, optionally ?page=software|tech|gaming|product|service|place). -->
+<html lang="en" data-radius="soft" data-ground="sand" data-buttons="solid">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type pairings: layout v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #f5f4f0; --p-surface: #ebe9e3; --p-ink: #151515; --p-muted: #5d5b56; --p-accent: #b4532a; --p-accent-ink: #fff;
+  --p-action: #151515; --p-action-ink: #f5f4f0;
+  --font-display: "Host Grotesk", system-ui, sans-serif; --font-text: "Host Grotesk", system-ui, sans-serif; --display-weight: 500; --display-tracking: -0.03em;
+}
+.specimens { display: grid; gap: var(--s-5); }
+.spec { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5); padding: var(--s-7) 0; border-top: 1px solid var(--line); }
+.spec__meta { grid-column: 1 / span 3; display: grid; gap: var(--s-2); align-content: start; font: 400 var(--t-small)/1.5 "Host Grotesk", system-ui, sans-serif; color: var(--muted); }
+.spec__meta b { font: 500 var(--t-body)/1.3 "Host Grotesk", system-ui, sans-serif; color: var(--ink); }
+.spec__meta .tags { display: flex; flex-wrap: wrap; gap: 6px; } .spec__meta .tags span { padding: 2px 8px; border-radius: 99px; background: var(--surface); color: var(--ink); font-size: var(--t-label); }
+.spec__show { grid-column: 4 / -1; display: grid; gap: var(--s-4); }
+.spec__show h2 { font-family: var(--sd); font-weight: var(--sw); letter-spacing: var(--st-xl); font-stretch: var(--ss, 100%); font-variation-settings: var(--sa, normal);
+                 font-size: calc(var(--sc) * clamp(40px, 3.048vw + 28.11px, 72px)); line-height: 1.02; max-width: 18ch; text-wrap: balance; }
+.spec__show h3 { font-family: var(--sd); font-weight: var(--sw); letter-spacing: var(--st); font-stretch: var(--ss, 100%); font-variation-settings: var(--sa, normal);
+                 font-size: calc(var(--sc) * var(--t-h2)); line-height: 1.08; max-width: 28ch; }
+.spec__show p { font-family: var(--sx); font-size: var(--sb, 16px); line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.spec__show p.lead { font-size: var(--ly-lead); line-height: 1.5; max-width: 46ch; }
+.kinds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s-5); } .kinds a { padding: 4px 12px; border-radius: 99px; background: var(--surface); color: var(--ink); text-decoration: none; font: 400 var(--t-small)/1.4 "Host Grotesk", system-ui, sans-serif; } .kinds a[aria-current] { background: var(--ink); color: var(--bg); }
+@media (max-width: 1023px) { .spec__meta, .spec__show { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="section screen--top" data-screen="free" style="padding-top: var(--s-9)">
+    <div class="container">
+      <div class="section-head">
+        <h1 style="font-size: var(--t-h1); line-height: 1.02">Type pairings. <span class="muted" id="count"></span></h1>
+      </div>
+      <nav class="kinds" id="kinds" aria-label="Page kind"></nav>
+      <div class="specimens" id="list"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  const SAMPLE = {
+    software: ["Stock and orders for independent grocers", "Every fund on one page.", "What came in, what was spent and what is left.", "Pickwell counts what sold at the till, tells you what runs low before Friday and sends the order to your wholesalers."],
+    tech: ["A 24-bit audio interface for the desk", "Eight inputs, no noise.", "Measured at 0.0004% distortion on every channel.", "Aluminium chassis, two hardware monitor mixes and a USB-C connection that powers it from the laptop."],
+    gaming: ["A co-op survival game on a drowned coast", "Build the lighthouse.", "Four players, one tide table and a long night.", "Salvage the wrecks, keep the lamp lit and trade with the other harbours before the water rises."],
+    product: ["Three roasts, sent every two weeks", "Roasted on Monday.", "In your letterbox by Thursday.", "Whole beans or ground for your brewer, roasted on Monday and posted on Tuesday. 250 g from €9.50."],
+    place: ["Sourdough, buns and coffee in Leith", "At the counter today.", "Baked overnight, sold from 7:30.", "We bake through the night on Henderson Street. Bread from 7:30 until it runs out, cakes to order with two days’ notice."],
+    service: ["Architects for schools and libraries", "Four tours this season.", "Eight riders at most, one guide and one driver.", "A fixed price after a 15-minute video call. Two to six movers, a truck, blankets and boxes included."],
+  };
+  const KINDS = ["tech", "software", "gaming", "product", "service", "place"];
+  const TECH = new Set(["tech", "software", "gaming"]);
+  const all = await (await fetch("../../library/type.json")).json();
+  const want = new URLSearchParams(location.search).get("page");
+  const kindsOf = t => Object.entries(t.kinds || {}).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).map(([k]) => k);
+  const topKind = t => want && (want === "place" ? !!t.place : (t.kinds || {})[want] > 0) ? want : (kindsOf(t)[0] || "place");
+
+  // the Google Fonts link, built the way start.mjs builds it
+  const axisVal = r => r[0] === r[1] ? String(r[0]) : r[0] + ".." + r[1];
+  const isLower = x => x[0] === x[0].toLowerCase();
+  const axisOrder = (a, b) => isLower(a) !== isLower(b) ? (isLower(a) ? -1 : 1) : (a < b ? -1 : a > b ? 1 : 0);
+  function fontLink(t, kind) {
+    const place = kind === "place", tech = TECH.has(kind);
+    const fam = new Map();
+    const add = (f, isDisplay) => {
+      if (!f) return;
+      const e = fam.get(f.family) || { axes: {}, statics: new Set(), variable: false };
+      fam.set(f.family, e);
+      if (f.w) {
+        e.variable = true;
+        const w = isDisplay && !place && t.display.letters === "wght" ? [f.w[0], 700] : f.w;
+        const put = (k, r) => { const c = e.axes[k]; e.axes[k] = c ? [Math.min(c[0], r[0]), Math.max(c[1], r[1])] : r; };
+        put("wght", w);
+        for (const k of ["wdth", "opsz", "SOFT", "WONK"]) if (f[k]) put(k, f[k]);
+      } else if (f.s && f.s.length) f.s.forEach(x => e.statics.add(x));
+    };
+    add(t.display, true); add(t.text, false); if (tech) add(t.mono, false);
+    const parts = [];
+    for (const [name, e] of fam) {
+      const nm = name.replace(/ /g, "+");
+      if (e.variable) { const keys = Object.keys(e.axes).sort(axisOrder); parts.push(nm + ":" + keys.join(",") + "@" + keys.map(k => axisVal(e.axes[k])).join(",")); }
+      else if (e.statics.size) parts.push(nm + ":wght@" + [...e.statics].sort().join(";"));
+      else parts.push(nm);
+    }
+    return "https://fonts.googleapis.com/css2?" + parts.map(p => "family=" + p).join("&") + "&display=swap";
+  }
+
+  const nav = document.getElementById("kinds");
+  nav.innerHTML = [["", "all"], ...KINDS.map(k => [k, k])].map(([k, l]) => "<a href='?" + (k ? "page=" + k : "") + "'" + ((want || "") === k ? " aria-current='page'" : "") + ">" + l + "</a>").join("");
+  const pool = all.filter(t => !want || (want === "place" ? !!t.place : (t.kinds || {})[want] > 0));
+  document.getElementById("count").textContent = pool.length + (want ? " for " + want + ", " : ", ") + "all on Google Fonts, dealt by the kind of page.";
+  const list = document.getElementById("list");
+  const pc = n => (Math.round(n * 1000) / 10) + "%";
+  for (const p of pool) {
+    const kind = topKind(p), place = kind === "place", tech = TECH.has(kind);
+    const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontLink(p, kind); document.head.append(link);
+    const serif = p.class === "serif" || p.class === "slab";
+    const w = Math.max(400, Math.min(tech ? 500 : 400, (tech ? p.display.tech : 400) || 400));
+    const tr = Math.max(-0.045, Math.min(0, p.display.tracking)), trXl = Math.max(-0.045, Math.min(0, p.display.trackingXl ?? p.display.tracking));
+    const stretch = place ? "100%" : (p.display.stretch || "100%"), scale = place ? 1 : (p.display.scale || 1);
+    const [h, h2, run, line] = SAMPLE[kind];
+    const el = document.createElement("article");
+    el.className = "spec";
+    el.style.cssText = "--sd: \"" + p.display.family + "\", " + (serif ? "Georgia, serif" : "system-ui, sans-serif") + "; --sx: \"" + p.text.family + "\", system-ui, sans-serif; --sw: " + w + "; --st: " + tr + "em; --st-xl: " + trXl + "em; --ss: " + stretch + "; " + (p.display.axes && !place ? "--sa: " + p.display.axes + ";" : "") + " --sc: " + scale;
+    const tags = [...kindsOf(p), ...(p.place ? ["place: " + p.place] : []), ...p.moods].map(t => "<span>" + t + "</span>").join("");
+    el.innerHTML = "<div class='spec__meta'><b>" + p.display.family + (p.text.family !== p.display.family ? " + " + p.text.family : "") + "</b><span>" + p.id + ", " + p.class + ", shown as " + kind + ": display " + w + (stretch !== "100%" ? ", width " + stretch : "") + (place ? "" : ", " + pc(trXl) + " at hero size, scale " + scale) + (p.display.letters && !place ? ", axis " + p.display.letters : ", static") + "</span><div class='tags'>" + tags + "</div><span>" + p.suits + "</span></div>" +
+      "<div class='spec__show'><h2>" + h + "</h2><p class='lead'>" + line + "</p><h3>" + h2 + " <span class='muted'>" + run + "</span></h3><p>" + line + "</p></div>";
+    list.append(el);
+  }
+  await document.fonts.ready;
+  document.documentElement.dataset.ready = "1";
+</script>
+</body>
+</html>
