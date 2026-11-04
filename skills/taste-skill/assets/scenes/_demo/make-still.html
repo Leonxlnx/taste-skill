@@ -14,7 +14,7 @@
   An object render (assets/objects/print-*) drawn once at 800 x 800 and handed to shoot.mjs make as a PNG:
   the still a scene's markup carries under the object's host (the finished composition, reduced motion, a
   phone, a failed shader). Query: ?object=print-globe&effect=render&angle=-30&bg=f4f0e8&ink=1d1a16&accent=b5542b&surface=eae4d8&muted=6b6559
-    node assets/scenes/_demo/shoot.mjs make --html "/assets/scenes/_demo/make-still.html?object=print-globe&effect=render&angle=-30&accent=1f5f8b" --save assets/scenes/_demo/globe.png --profile <own chrome dir>
+    node assets/scenes/_demo/shoot.mjs make --html "/assets/scenes/_demo/make-still.html?object=print-globe&effect=render&angle=-30&accent=1f5f8b" --save assets/scenes/_demo/globe.png --profile <profile-dir>
 */
 window.addEventListener('error', e => { window.__err = e.message; });
 const q = new URLSearchParams(location.search);

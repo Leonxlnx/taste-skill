@@ -224,7 +224,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 }
 
 /* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
-      one object on a lit stage that fills the rest of the screen: 1280 x about 470 at 1440x900 */
+      one object on a stage that fills the rest of the screen. The lit, rounded stage below is for a print
+      or a scene (tech, games); the product itself (a render, a cut-out, a photograph) takes 3b: no box */
 .hero--product .hero__stage { margin-top: var(--s-7); }
 .hero__stage {
   position: relative; overflow: hidden; border-radius: var(--r-lg); min-height: clamp(260px, 40svh, 400px); flex: 1 1 auto;
@@ -235,6 +236,50 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 .hero__stage > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%); }
 .hero__stage > img.is-cutout { object-fit: contain; padding: 5% 0 4%; }
 .hero__stage > [data-print], .hero__stage > [data-scene] { position: absolute; inset: 0; }
+/* 3b. the product itself on the stage, never boxed (in testing: a render at 44% of a rounded lit box
+      read as "small and boxed"). The lit box above stays for a print or a world scene (tech, games).
+      - a render (a [data-product] frame) or a cut-out (img.is-cutout): no box, no gradient, no radius;
+        the page's own ground. The stage runs across the wrap and down to --s-5 above the fold, the
+        head row's gap is --s-6, and a render's frame reaches 7% past the stage's top and bottom, so
+        the product's long side fills the stage's height (the place's 0.86-0.88 margin taken back):
+        a wide product's widest view (a bike's side) spans 80% or more of the wrap at 1440.
+      - a product photograph (any other img): edge to edge across the screen, square corners, no ground;
+        crop it (--ly-pos) so the product spans 80% or more of the wrap.
+      <div class="hero__stage"><div class="frame" data-product="…/specs/<id>.json" data-product-place="stage"
+        data-product-view="side"></div> one to three .ly-spot </div> */
+.hero--product .hero__stage:is(:has(> [data-product]), :has(> img.is-cutout)) {
+  margin-top: var(--s-6); margin-bottom: calc(var(--s-5) - var(--hpadb, 64px));
+  border-radius: 0; background: none; overflow: visible;
+}
+.hero--product .hero__stage > [data-product] {
+  position: absolute; inset: -7% 0; width: auto; height: auto; min-height: 0;
+  padding: 0; border: 0; border-radius: 0; background: none; overflow: visible;
+}
+.hero--product .hero__stage > [data-product]::before { content: none; }
+/* the head row gives the product its height: the h1 on cols 1-7 (two lines), the lead and the buttons
+   stacked on cols 9-12, their foot on the h1's foot (the head ends at y 278 at 1440x900, against y 373
+   with the lead under the h1); the stage takes the rest: 1280x566 at y 310 */
+@media (min-width: 1024px) {
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head { grid-template-rows: auto auto; row-gap: var(--s-5); }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > :first-child { display: contents; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 7; grid-row: 1 / span 2; align-self: end; margin: 0; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead { grid-column: 9 / -1; grid-row: 1; align-self: end; margin: 0; max-width: none; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 9 / -1; grid-row: 2; justify-content: flex-start; }
+}
+/* a small laptop (1024-1279): h1 on cols 1-6, the lead and the buttons on cols 7-12, so the two
+   buttons stay on one line and the lead on three */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 6; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead,
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 7 / -1; }
+}
+.hero--product .hero__stage:has(> img:not(.is-cutout), > picture) {
+  border-radius: 0; background: none; margin-inline: calc(50% - 50vw); margin-bottom: calc(0px - var(--hpadb, 64px));
+}
+@media (max-width: 639px) { .hero--product .hero__stage:has(> img:not(.is-cutout), > picture) { margin-bottom: 0; } }
+/* every product render frame is the product on its section's ground: never a grey panel (sections.md
+   Product, rule 1); the frame keeps its size and clips a close-up at its edges */
+.frame[data-product] { background: none; border: 0; padding: 0; }
 /* a hotspot on the product: a disc that opens one short spec card on hover, focus or tap */
 .ly-spot { position: absolute; z-index: 2; left: var(--x); top: var(--y); transform: translate(-50%, -50%); }
 .ly-spot > button {
@@ -258,6 +303,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
    16px inside the stage; never beside the disc, where the stage would cut it */
 @media (max-width: 639px) {
   .hero--product .hero__stage { margin-top: var(--s-6); flex: none; min-height: 0; aspect-ratio: 4 / 5; }
+  /* a render or a cut-out takes what the head leaves, at least 240 tall: the product's width is the bound */
+  .hero--product .hero__stage:is(:has(> [data-product]), :has(> img.is-cutout)) { flex: 1 1 auto; aspect-ratio: auto; min-height: 240px; margin-bottom: 0; }
   .ly-spot__card, .ly-spot--left .ly-spot__card { left: 50%; right: auto; top: calc(100% + 10px); width: 230px;
     transform: translate(calc(-50% + var(--dx, 0px)), -4px); }
   .ly-spot.is-open .ly-spot__card, .ly-spot:hover .ly-spot__card, .ly-spot:focus-within .ly-spot__card { transform: translate(calc(-50% + var(--dx, 0px)), 0); }

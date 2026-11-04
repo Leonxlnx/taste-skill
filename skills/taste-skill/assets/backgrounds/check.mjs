@@ -3,7 +3,7 @@
   taste-skill backgrounds check.mjs - measures the contrast of the page ink (7:1) and the muted ink (4.5:1)
   on every ground, on every palette, from real pixels.
 
-    node assets/backgrounds/check.mjs --profile <own chrome profile dir> [--palettes id,id] [--grounds mist,halo]
+    node assets/backgrounds/check.mjs --profile <profile-dir> [--palettes id,id] [--grounds mist,halo]
                                       [--lit sand,painting] [--json out.json] [--save dir] [--min-ink 7] [--min-muted 4.5] [--port 5967]
 
   It serves the skill folder over http on 127.0.0.1 (5965-5969) and opens check.html in ONE headless Chrome (WebGL on the CPU flags, no window; closed by its own PID),
@@ -13,6 +13,7 @@
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import zlib from 'node:zlib';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
@@ -22,8 +23,9 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SKILL = path.resolve(HERE, '..', '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
-const profile = opt('profile');
-if (!profile || profile === true) { console.error('usage: check.mjs --profile <own chrome dir> [--palettes a,b] [--grounds a,b] [--lit sand,sky,sage,painting] [--json out.json]'); process.exit(1); }
+// default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'bg-check-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-bg-check-' + process.pid);
+const profile = (p => (p && p !== true ? p : defaultProfile()))(opt('profile'));
 const MIN_INK = +opt('min-ink', 7), MIN_MUTED = +opt('min-muted', 4.5), SCALE = 0.5, BLOCK = 4;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 

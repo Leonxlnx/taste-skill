@@ -538,7 +538,7 @@ function HAS_WEBGL() {
   return webglProbe;
 }
 
-// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: one rule, the integrated GPU's
+// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: the house rule, a laptop's
 // integrated GPU). scenes/lib.js glBudget, fx.js (every effect, and fx.glBudget for the ones that make their own),
 // print3d.js's pool and liquid-hover all count in it, so a scene, an object, a ground and a moment never add up to
 // more than the cap. A gallery or lab that shows many at once sets window.__tpGlMax before the scripts load.

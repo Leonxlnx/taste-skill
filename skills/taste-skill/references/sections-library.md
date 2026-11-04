@@ -176,7 +176,7 @@ pictures. What the recipes add:
   width over height), two or three dimension lines (`.dim`) with their figures as
   `span.drawing__dim`. Never the hero, never the product's only picture, never on hardware (a
   technical product shows its photographs or the client's render), never on a page without
-  photographs: that page shows its product render (`sections.md`, Product; round C: a drawn SVG
+  photographs: that page shows its product render (`sections.md`, Product; in testing: a drawn SVG
   arm as a robot maker's hero).
 
 # Proof
@@ -279,7 +279,7 @@ edge; an object that is not the client's kind of product; facts that are claims.
 ## features-2x2
 
 **Job and use.** What it does, in one screen: four features of equal weight, each with its own
-small working visual (Leon's 2x2: a headline, two lines, an inset panel with a smaller card on it).
+small working visual (the 2x2: a headline, two lines, an inset panel with a smaller card on it).
 When one feature matters more, use the bento.
 
 **At 1440.** `.section-head` with an h2 that runs on in grey. 48px below, `.grid` with four
@@ -429,6 +429,87 @@ scrubbed by scroll.
 **Mistakes.** Fragments half-transparent or tilted; the action covering the main screen's only
 readable rows; repeats that change the template.
 
+## app-frame
+
+**Job and use.** The product itself, big, the way Linear, Cursor and Vercel show it: one real app
+window across the `.wrap`, the list beside the open item, the app's own chrome. Every software page
+has one, in the hero or within the first three sections (in testing: a code-review page whose review
+was one small diff card centred on a sage panel scored about 3.5 points under Linear, whose review
+band puts the pull-request list beside a full-width diff in one app frame). Never on gaming,
+product, service or place.
+
+**The two panes** (kit fragments, rewritten to the client's names; the list is always `window`):
+
+| Product | List pane | Open pane |
+|---|---|---|
+| Code review | `window`: pull requests | `diff-review` (the comment and Apply in its top 250px) |
+| Support, inbox, CRM, agents | `window`: conversations | `chat` (the open thread) |
+| Docs, contracts, knowledge | `window`: documents | `doc` (the page with its marked phrase) |
+| CI, deploys | `window`: runs | `pipeline-board` (wide: nodes and log) or `terminal-run` |
+| Booking, scheduling | `window`: bookings | `calendar` |
+
+The `window`'s rows: `.ui-win__who` the person (author, customer, owner), `.ui-win__sub` the item
+and its detail ("Retry settle jobs · +4 −3"), the status chip the product's own states (`data-open`,
+`data-work`, `data-done`), sidebar labels one word each. Write 9 or more rows and enough lines in
+the open item (24 or more for a diff) that both panes run past the frame's bottom: the frame cuts
+them under its fade, never an empty strip of pane under the last row.
+
+**At 1440.** One screen. `.grid`, top-aligned: the h2 on `span-5`, a grey paragraph (about 25
+words) with one `.link` on `span-6 start-7`. 48px below, the frame takes the rest of the screen as
+`.fill` (about 1280 x 550):
+
+```html
+<div class="ui app fill" role="img" aria-label="[what the window shows]" data-ui-pause-host>
+  <div class="app__pane app__pane--list"> [window fragment] </div>
+  <div class="app__pane app__pane--open" data-ui-loop> [the open item's fragment] </div>
+</div>
+```
+
+`class="ui"` gives the frame the kit's tokens, and tells the checks it is one drawn window. Page
+CSS (the whole recipe):
+
+```css
+.app.ui { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); }
+.app > .app__pane { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.app > .app__pane + .app__pane { border-left: 1px solid var(--u-line); }
+.app > .app__pane > .ui-panel { width: 100%; border: 0; border-radius: 0; box-shadow: none; }
+.app > .app__pane::after { content: ""; position: absolute; inset: auto 0 0 0; height: 64px; background: linear-gradient(transparent, var(--u-bg)); pointer-events: none; }
+@media (min-width: 1024px) and (max-width: 1279px) { .app.ui { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
+@media (max-width: 1023px) {
+  .app.ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .app > .app__pane--list { max-height: 252px; }
+  .app > .app__pane--list::after { display: none; }
+  .app .ui-win__side { display: none; }
+  .app .ui-win__body { grid-template-columns: minmax(0, 1fr); }
+  .app > .app__pane + .app__pane { border-left: 0; border-top: 1px solid var(--u-line); }
+}
+@media (max-width: 639px) {
+  .app.ui { grid-template-rows: minmax(0, 1fr); }
+  .app > .app__pane--list { display: none; }
+  .app > .app__pane + .app__pane { border-top: 0; }
+}
+```
+
+The `window` lays itself out for its pane (rows stacked name over item at 1440, columns on a
+tablet). The fragments keep their natural height: the pane cuts them, never their own box. One box:
+the frame is the window, the panes are its columns, no panel, card or ground behind it (it sits on
+the section's ground; on a `dark-band` the kit's dark surface). A second piece over it (`cursor`,
+`notify`) only `.at-over` the open pane's lower-right, never over the list.
+
+**At 1024 to 1279.** The list narrows to 4 columns (its sidebar goes); the open item takes 8.
+**At 768 to 1023.** The list on top (its bar, column heads and four whole rows, 252px), the open
+item under it to the section's foot. **At 390.** The open item alone, its own header as the chrome.
+
+**Copy.** The h2 names what the window shows ("Every pull request, reviewed in one place"); the
+paragraph says the steps in the order the window shows them.
+
+**Motion.** One loop: the open item (`data-ui-loop` on its pane: the Apply pressed, the answer
+written); the list holds still. Nothing scrolls inside the window.
+
+**Mistakes.** The open item alone on a lit panel (that is a card, not the product); the list and
+the item as two boxes side by side with ground between; a pane that ends in empty white; the kit's
+sample rows; a fragment stretched to the pane's height (its own overflow then cuts its text).
+
 ## steps
 
 **Job and use.** How the product is used, in order, each step's result shown. Only with three real
@@ -561,7 +642,7 @@ on what they do.
 ## integrations-grid
 
 **Job and use.** Which tools and file types the product works with, by their real full-colour icons
-(Leon). When the point is what feeds the product, a `fanin-warehouse` or `hub-tools` diagram card
+(house rule). When the point is what feeds the product, a `fanin-warehouse` or `hub-tools` diagram card
 with the real icons on its spokes, inside a feature section. Up to eight tools: four cards. The big
 grid only for 9 or more tools the brief lists.
 
@@ -870,7 +951,8 @@ two visual ones, a card layout shows at most twice.
 `painterly-landscape` in the hero frame, card ground `grain-gradient`; one moment,
 `word-highlight` (one statement section of its own).
 
-Order: hero (`window` as the invoice list, `notify` "Invoice 2041 paid" over its edge),
+Order: hero (the open invoice as a `doc`, `notify` "Invoice 2041 paid" over its edge),
+app-frame (the invoice list in `window` beside the open invoice's thread with its client as `chat`),
 features-2x2 (the card ground; `notify` payments matched, `toggles` reminder rules, a lanes
 diagram for one invoice split to three ledgers, `chat` a client's question), the statement with
 `word-highlight` (its own one-screen section), split-text-left (`files` with real receipts, the lit
@@ -923,7 +1005,7 @@ rigging as paths, a furled sail as a tube, two `light` lanterns; about 40 parts)
 scene (the sloop moored at a drowned pier: posts as cylinders, planks as beams, crates as boxes, a
 crane's rope as a path, under 90 parts). Dealt `deal.mjs --type software --kind gaming --has
 object`: hero `product`, the effect `aurora-curtains` dealt for the hero slot (dark, read as a
-dusk sky over water) as the stage's ground behind the turning sloop, h1 "Kelpmoor, a co-op sailing
+dusk sky over water) as the stage's ground behind the turning sloop (`data-product-mode="live"`), h1 "Kelpmoor, a co-op sailing
 game", "Coming to Steam in spring." and "Add to Steam wishlist" in the head row. Then the world:
 the pier scene, `stage`, full bleed on the dark band, the h2 above it; what you do: three open
 cards, each the still render of the thing its verb uses (the sloop, a salvage crate, the harbour

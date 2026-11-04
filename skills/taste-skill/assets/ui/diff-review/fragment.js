@@ -1,4 +1,4 @@
-// diff-review: one cycle (about 2.7 s) of a reviewer's suggestion being applied. The finished picture is
+// diff-review: one cycle (about 3.0 s) of a reviewer's suggestion being applied. The finished picture is
 // the suggestion applied (.is-applied on the root): the reviewed line ([data-diff-target]) is a removed
 // line, the suggestion ([data-diff-sug], an added line written under it) has unfolded, the header's
 // counts take their applied values and the Applied status stands where the button was. A cycle reads
@@ -16,10 +16,10 @@ export default function init(root) {
   if (!act || !btn || !root.querySelector('[data-diff-target]') || !root.querySelector('[data-diff-sug]')) return null;
   const clear = () => btn.classList.remove('is-step', 'is-pressed', 'is-wait');
   const still = () => { clear(); act.classList.remove('is-gone'); root.classList.add('is-applied'); act.classList.add('is-done'); };
-  // one cycle (2.7 s): the status leaves (0.15 s), the diff goes back (0.26 s), the button returns and the
-  // comment waits (0.85 s), the button steps (0.36 s), is pressed (0.14 s) and waits (0.24 s), the
+  // one cycle (3.0 s): the status leaves (0.15 s), the diff goes back (0.26 s), the button returns and the
+  // comment waits (0.85 s), the button steps (0.36 s), is pressed (0.14 s) and waits (0.52 s, two turns of the spinner), the
   // suggestion is applied (0.3 s), the status replaces the button, and the finished picture holds
-  // 0.3 s more (about 15%)
+  // 0.3 s more (about 10%)
   return loop(root, async api => {
     clear();
     act.classList.add('is-gone');
@@ -35,7 +35,7 @@ export default function init(root) {
     await api.wait(140);
     btn.classList.remove('is-pressed');
     btn.classList.add('is-wait');
-    await api.wait(240);
+    await api.wait(520);
     root.classList.add('is-applied');
     await api.wait(300);
     act.classList.add('is-done');

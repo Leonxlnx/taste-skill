@@ -7,7 +7,7 @@
          [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--json]
 
   --shots writes, per size, the first screen (first-<w>.png) and every section framed as the check
-  frames it (screen-<w>-<n>.png): the shot Leon takes of one section, to look at.
+  frames it (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
   h1.maxChars, with words from the lead) and checks again: the hero must still be one screen
   (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). --no-stress skips it.
@@ -15,15 +15,18 @@
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
-const url = opt('url'), profileArg = opt('profile'), shots = opt('shots');
+// default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'layout-check-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-layout-check-' + process.pid);
+const url = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots');
 const sizes = String(opt('sizes', '1440x900,1024x768,820x1180,768x1024,390x844')).split(',').map(s => s.split('x').map(Number));
-if (!url || !profileArg || profileArg === true) { console.error('usage: check.mjs --url <url> --profile <dir> [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
+if (!url || url === true) { console.error('usage: check.mjs --url <url> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));

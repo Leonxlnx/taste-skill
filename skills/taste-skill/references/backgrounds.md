@@ -1,6 +1,6 @@
 # Backgrounds
 
-Better grounds come from fewer, better colours (Leon, rule 6: "nicer backgrounds"), and on tech
+Better grounds come from fewer, better colours (house rule 6: "nicer backgrounds"), and on tech
 from a small catalogue of grounds drawn in CSS. Every kind uses the three ground tokens; only tech
 adds CSS grounds.
 

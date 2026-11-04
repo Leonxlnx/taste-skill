@@ -1,6 +1,6 @@
 # Moments
 
-A moment is the award-site part of a page (Leon, rule 8; his overrides of 2 Nov): the one place, or
+A moment is the award-site part of a page (house rule 8; with the house overrides): the one place, or
 two, where a page does something a visitor remembers; the rest stays still. Each is a folder in
 `assets/moments/<id>/` (`moment.js`, `moment.css`, `meta.json`, a full `demo.html`); `index.json`
 lists them, `gallery.html` links the demos and `moments.js` runs them. Seventeen folders: two
@@ -12,7 +12,7 @@ light, a liquid photograph.
 **Which pages.** Kind software, gaming or tech (hardware: a product page with a technical subject)
 only: one moment on a short page, two on a long one (eight sections or more, in two different
 sections), never three. **A plain product, a service, a place, shop, cafe or guesthouse gets none**:
-they lead with photographs, type and flat colour (Leon's overrides, 2 Nov, point 3). `pick` makes this
+they lead with photographs, type and flat colour (the house overrides, point 3). `pick` makes this
 the rule: it needs `--page`, and any other kind returns an empty deal. A moment counts against the
 page's big scene (`effects-usage.md`) as one of its beats.
 
@@ -70,8 +70,8 @@ node <skill>/scripts/moments.mjs pick --page <kind> --count 1|2 --fits section,s
 | pinned-chapters | scroll · one feature section of 2-4 steps, two screens live | static rows (or each step with its visual under it) |
 | window-parallax | scroll · one wide photograph | the photograph stands in its frame |
 | marquee-row | scroll · a row of real words (trades, cities, formats; never logos: a logo never moves), with a pause button | the words in a wrapped row |
-| line-carries-colour | transition · a section on a new ground: a line climbs and takes the old ground with it | the section as it is |
-| iris-opens | transition · a section on a new ground: a circle opens through the old ground | the section as it is |
+| line-carries-colour | transition · a section on a new ground keeps it edge to edge; inside, an inset panel in the old ground (even gutter, card corners) is cleared by a line climbing from its foot; each block shows whole once the line has passed it | the section on its own ground, no panel, no line |
+| iris-opens | transition · a section on a new ground keeps it edge to edge; inside, an inset panel in the old ground (even gutter, card corners) opens a disc with a hairline accent ring; each block shows whole once the disc holds it | the section on its own ground, no panel, no ring |
 | picture-develops | transition · one photograph with a clear subject, once | the photograph stands |
 | closing-lift | transition · the close, with a photograph | a plain closing section |
 | cursor-spotlight | hover · the hero frame | the light rests |
@@ -89,7 +89,7 @@ therefore shows its finished state there, and the host carries `data-moment-stil
 applies it on the next load; `pinned-chapters` asks again on resize). Each `meta.json` says what the
 still shows (`reduced`, `phone`). Hover moments do nothing on touch screens either.
 
-**Nothing on a card moves on scroll** (Leon, 31 Oct). A moment sits on a hero, a statement, one
+**Nothing on a card moves on scroll** (house rule). A moment sits on a hero, a statement, one
 section, a transition or the close, never in a card, a plan, a result or a bento cell: the loader
 leaves one that does still (`data-moment-still="card"`, `data-moments-card` on `<html>`) and
 `moments.mjs check` calls it a fault.
@@ -135,8 +135,10 @@ takes the page's tokens (`--bg`, `--ink`, `--muted`, `--accent`, `--line`, the d
 - **Nothing blinks, bounces or overshoots.** Ease-outs, 600-1,000 ms for a reveal; a loop runs its
   rounds and rests, or carries a pause button.
 - **The page's edges.** A moment's text sits in a `.container` or `.wrap` like every other section: its
-  words end on the page's left and right edges. A transition's cover and line run edge to edge inside
-  the host section, so nothing sticks out of it.
+  words end on the page's left and right edges. A transition's cover is an inset panel inside the host
+  section with an even gutter on every side (card corners, never touching the section's edges), its
+  line or ring inside the panel; every heading, paragraph, button and picture appears whole, never cut
+  by the line or the disc (each moment's `meta.json`, `look`, says how).
 - **Cost:** no WebGL but `liquid-hover` (one context, only near the screen; a plain photograph without
   WebGL or when the shader fails). `liquid-type` is one SVG filter on one headline, on only while a
   ripple is alive. Every other moment costs CSS variables, a transform or a clip and a passive

@@ -36,7 +36,7 @@ colours and never move (rule 7, MO-57; `sections-library.md` logo-row).
 
 A laptop's graphics chip shares about 2 GB with everything else; too many live canvases crash it.
 
-- **At most 4 live WebGL contexts per page** (Leon; `perf.md`), and only for things that move: the
+- **At most 4 live WebGL contexts per page** (house rule; `perf.md`), and only for things that move: the
   one effect and a dealt moment's own canvas. Everything still holds none at rest.
 - **Stills render once.** An effect that does not move (speed and drift 0) goes through `still()` in
   `shared.js` (or `fill(el, id, { still: true })` for type): drawn once as it nears the screen,
@@ -62,7 +62,7 @@ A laptop's graphics chip shares about 2 GB with everything else; too many live c
 
 ## Feature cards with inset panels (`fx-feature-card`)
 
-The card Leon pointed at, as x.ai and Figma build it: a 2x2 of cards, each a title and two grey lines,
+The card reviewers point at, as x.ai and Figma build it: a 2x2 of cards, each a title and two grey lines,
 then an inset panel with its own 8px margin (radius = card radius - margin). The panel holds a bright
 ground and one UI window that runs out through the panel's bottom edge.
 
@@ -118,7 +118,7 @@ picture or the visual of one split section.
 - Under reduced motion it is one still picture with no context and no pause button; without WebGL a
   line drawing of the same object, its accent part filled.
 - It is a drawing of the product, never a filter: no photograph is ever dithered, halftoned or
-  printed (round B: a halftone over the hero photograph read as broken and low-res at every width).
+  printed (in testing: a halftone over the hero photograph read as broken and low-res at every width).
 
 ## Street map of the place (`fx-map`)
 

@@ -30,7 +30,7 @@ at work, one detail, each room of a guesthouse; 1x lens, window light, no flash,
 **The draft path (a place with no client photographs):** `pick --trade <trade> --sections <words> --draft-lead
 --pictures 12` lifts the 1-in-3 cap. `pick` deals one frame per word, so repeat a word for each row or detail
 (`bar,bar,coffee,coffee,beans,beans`, `rooms,rooms,rooms,breakfast,breakfast`) until it returns 8 or more: a cafe
-reaches 8 to 12, a guesthouse 9 detail frames. The page stays a whole place page that leads with photographs (Leon's
+reaches 8 to 12, a guesthouse 9 detail frames. The page stays a whole place page that leads with photographs (house
 rule 6), the compact page at 8 to 12 frames, never the 3-screen short page. The hero is the lead `pick` returns (a
 cafe's bar). A place whose trade leads with land (a guesthouse, a lodge, a remote inn) passes the region its brief
 names as `--place "<region>"` (or the brief itself, `--brief BRIEF.md`, which reads the region from it) and leads with that region's landscape: a place hero always carries a photograph when
@@ -57,7 +57,7 @@ deals nothing and says so. **The product is still shown, never hidden:** it is r
 product-render helper (`assets/objects/product-render`, `effects-objects.md` Product renders), one crafted studio
 render composed from a JSON spec of its own parts, sizes and materials, and the page is the full product page
 (`sections.md`, Product: hero, the product, what it carries, how it is used, specs as rows, a live order card), never
-the short page (round C: a cargo bike's page that never showed the bike scored 3 of 10). The render is the product's
+the short page (in testing: a cargo bike's page that never showed the bike scored 3 of 10). The render is the product's
 picture on a flat ground, not an effect, on a product of site-kind other as on hardware. Never a drawn SVG, mood
 stock, another maker's product or an object of another kind (a wheel is not a bicycle). A render or CAD view the
 brief supplies comes first; renders it names but does not supply count as missing. The report lists the shots to
@@ -115,7 +115,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 - A place page's `pick` prints its hints for a place: words **under** the photograph on the ground, no band, no tab, no
   closing text. Product and service pages get the band and calm-side hints.
 - When `pick` says the library is short, search the open collections with the queries it prints (CC0, CC BY, CC BY-SA,
-  looked at full size) before leaving the slot to the client's own or type. Detail frames held by default (`list` prints them live, after the 2 Nov full-size review that dropped 27 frames and merged 4; the 3 office rooms of the second merge were then set `weak`, as whole rooms; the third merge, 2 Nov, looked at 8 more at full size and kept none: a shopfront with its sign, two bars' counters and back bars, a breakfast room, a made-bed room, two breakfast tables rated below 7 and a half-eaten breakfast with a diner in the frame are all `weak`): cafe 19,
+  looked at full size) before leaving the slot to the client's own or type. Detail frames held by default (`list` prints them live, after the full-size review that dropped 27 frames and merged 4; the 3 office rooms of the second merge were then set `weak`, as whole rooms; the third merge looked at 8 more at full size and kept none: a shopfront with its sign, two bars' counters and back bars, a breakfast room, a made-bed room, two breakfast tables rated below 7 and a half-eaten breakfast with a diner in the frame are all `weak`): cafe 19,
   bakery 4 (oven 3, dough 1), hotel 9 (7 details and 2 breakfast frames; its land only with `--own-land`), bike 6 (parts and a load, --shop only), workshop 5
   (smith 4, instrument 1, weaving 0, letterpress 0: a craft is dealt only its own), studio 5, books 5 (desk only: a pencil on a notebook, a binding, stacked books, pencils; the hands frames beside a laptop are not dealt, and the bookbinder's gilding is dealt only to a bindery, `craft: bookbinding`), food 5, shop 3, florist 3, farm 3, wellness 3, office 3 (2 desk, 1 card),
   bar 0, outdoors 0 (land only), wine 0. A trade that
@@ -131,8 +131,9 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
   elsewhere; 342 wide at 390): full-bleed only as a hero or section layer. Left and right edges stay the same down the page.
 - One visual world: one light, one grade, one register across the set. Hard sun on one product, a low-key set on
   dark timber or steel only when the whole set matches. Never studio black with daylight, HDR beside a snapshot,
-  two photographers' grades. Black and white is one deliberate frame. Never the same frame twice on a page and never
-  three near-identical ones.
+  two photographers' grades. Black and white is one deliberate frame. Never the same frame twice on a page (a smaller
+  file, a crop or a mirror of a frame is the same frame) and never three near-identical ones. On a product page
+  every section shows the product from another view or a detail (`sections.md`, Product, rule 2).
 - **Hero**: plain full colour, as the client's own (Recipe 3 on a place: a full-bleed top photograph, 480 px tall, with
   nothing on it and the words below it); a software or product hero ends inside the screen. **Rooms**: one detail per
   room beside its facts, a place's rooms are the client's own photographs first. **Menu or goods**: the list in plain
@@ -185,10 +186,10 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 
 ## Credits and words (PH-38, CO-22)
 
-No caption, label or description sits under or on any picture (Leon), and no credit, "sample" or example note: a sold
+No caption, label or description sits under or on any picture (house rule), and no credit, "sample" or example note: a sold
 item's name and price sit inside its card's padding (`copy.md`), never as a line under a bare picture. The place's name
 goes in the alt text. **Credits are ONE footer line** in the legal row that links or opens the credits list, never a
-link per photograph in the footer (round C: 18 and 20 credit links read as a credit wall). `photos.mjs credits --out .`
+link per photograph in the footer (in testing: 18 and 20 credit links read as a credit wall). `photos.mjs credits --out .`
 prints the line, "Photographs via Unsplash and Wikimedia Commons" (the sources used, never the photographers; at
 most 110 characters), and the list; paste the line in the footer and the list on its own page: `--write` makes `credits.html` in the site's legal-page shell, `--href <page>` points the line elsewhere. The list gives each photographer, licence and
 source page, `adapted` after any frame cropped beyond its frame (`--adapted id`). A

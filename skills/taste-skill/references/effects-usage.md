@@ -6,7 +6,7 @@ the WebGL creative parts (`effects-creative.md`), objects and prints (`effects-o
 scenes (`scenes.md`), moments (`moments.md`), a film or 3D hero and timed loops. `cards.md` wins on
 any card detail; `motion.md` holds every timing.
 
-## The gate (Leon, rule 8)
+## The gate (house rule 8)
 
 Effects are for site-kind tech, software and gaming (AI and developer tools count as software) and
 for a product page with a technical subject (hardware, devices). Never on a place, an ordinary
@@ -20,7 +20,8 @@ dither, duotone, print, `[data-fx]`, `[data-print]`, `[data-scene]`, `[data-big-
 custom cursor and any scroll or animation library. Allowed: `fx-map` baked still, `fx-photo` as a
 plain photograph, real icons, a still diagram (not on a place), and on a physical product with no
 photographs its own product render (`[data-product]`, `effects-objects.md`): the product's
-picture, not an effect, one live context, on the flat ground, its poster beneath.
+picture, not an effect: stills by default, live only when asked (`data-product-mode="live"`), at
+most one live context, on the flat ground, its poster beneath.
 
 ## What each kind gets
 
@@ -35,7 +36,7 @@ picture, not an effect, one live context, on the flat ground, its poster beneath
 | Loops | one timed loop, one per card group | none | none |
 | CSS grounds | 0 to 2 (`backgrounds.md`) | flat tokens | flat tokens |
 
-**The subject before the effect** (round C: a robot arm shown as a silk shader and an order form,
+**The subject before the effect** (in testing: a robot arm shown as a silk shader and an order form,
 and an unnamed game shown as an abstract effect, both lost to pages that showed the thing). An
 effect never stands where the product, the device or the game's world should be. Hardware with no
 photographs or client renders, and a game with no art files, take a product render
@@ -56,12 +57,12 @@ real UI capture or a real photograph. A photograph is never filtered, printed, d
   dither object, filled headline or stat), or one object, or one big scene. A grain, dither or
   texture CSS ground counts as it. Never in a fixed layer, never behind body copy, never a
   page-long canvas; a 3D world lives in the hero only.
-- **Card grounds** (Leon, 31 Oct: "gradients and effects ... as a card's background with a smaller
+- **Card grounds** (house rule: "gradients and effects ... as a card's background with a smaller
   card of text or UI on top"): one card group may hold quiet grounds from the effect's family,
   drawn once and held as pictures (system.js frees their contexts); not a second live effect. With
   a big scene there is no `data-fx` outside a moment (the checker FAILs it, MO-16, MO-23): the card
   panels take the lit ground (`data-ground`).
-- **Moments** (Leon, 1 Nov): up to two section moments that may follow the scroll (letters, liquid,
+- **Moments** (house rule): up to two section moments that may follow the scroll (letters, liquid,
   a section transition, a counter, a marquee row), each in its own section, and at most one
   non-scroll moment (load, hover or click) in the hero or `[data-visual]`, never in or beside the
   scene's section; two moments in all at most. A moment built as an `fx` part carries its own `data-fx` id on its
@@ -72,7 +73,7 @@ real UI capture or a real photograph. A photograph is never filtered, printed, d
   grounds, diagrams, card loops and hovers are not beats.
 - **One pointer effect** a page: a hover or liquid moment, `fx-button`, `fx-spotlight` or an object
   that turns to the pointer, never two. Never a replaced cursor, never a magnetic button.
-- **At most four live WebGL contexts** at once (Leon): the effect plus the moments' own canvases;
+- **At most four live WebGL contexts** at once (house rule): the effect plus the moments' own canvases;
   `perf.mjs` fails above four.
 
 ## Deal the effect, never by taste

@@ -56,7 +56,7 @@ figure of speech.
   the footer aside. Long copy goes to sub-pages.
 - **The tech word budget** (software, gaming, hardware): 60 to 80 words a screen at 1440, counted
   outside UI mocks, diagrams and code (headings, lines, card titles and bodies, buttons, labels);
-  over 80 the checker WARNs (round C: a fintech page at 117 words a screen read as wordy). Cut in
+  over 80 the checker WARNs (in testing: a fintech page at 117 words a screen read as wordy). Cut in
   this order: a second sentence under a heading, card bodies to one sentence of 12 to 18 words, a
   fourth card, a list a fragment already shows. The UI says the rest.
 - **Numbers** sit in sentences with their unit ("4.5 hours a week"), uneven where real (212, 38%).
@@ -83,7 +83,7 @@ figure of speech.
 - **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
   kit sample text, and no link to `#` or an empty href. Write the real words, or leave the element
   out. "Coming soon" only for what the brief says is coming.
-- **No caption, label or description under or on any visual** (Leon): not "A drawing made in code",
+- **No caption, label or description under or on any visual** (house rule): not "A drawing made in code",
   "Photographs follow", "Representative image", not a name, price or link line under a bare picture,
   no hashtags. A heading names the set; a sold item's name and price sit inside its card's padding.
   The picture shows the thing or is left out; the report lists the photographs the client must
@@ -92,7 +92,7 @@ figure of speech.
   photographers: "Photographs via Unsplash and Wikimedia Commons" (as `photos.mjs credits` prints
   it; 110 characters at most, one line from 1024) that links or opens the credits list. Paste the
   line and the list exactly as `photos.mjs credits` prints them; never write a credit link per
-  photograph into the footer (round C: 18 and 20 credit links in a footer read as a credit wall).
+  photograph into the footer (in testing: 18 and 20 credit links in a footer read as a credit wall).
   Map data credits join it. A page that shows real logos
   adds "Product names and logos are trademarks of their owners".
 - **Each fact once:** an opening time, a price or an address has one value and one wording,

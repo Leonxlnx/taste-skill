@@ -48,6 +48,7 @@
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import zlib from 'node:zlib';
 import { spawn, execFileSync } from 'node:child_process';
 import http from 'node:http';
@@ -55,13 +56,15 @@ import { fileURLToPath } from 'node:url';
 
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
-const target = opt('url'), out = opt('out'), profileArg = opt('profile');
+// default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'shoot-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-shoot-' + process.pid);
+const target = opt('url'), out = opt('out'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile'));
 // the screen's height, as consistency.mjs has it: a tablet is held upright (820x1180, 768x1024), so a hero sized
 // to the screen (100svh) is shot at the height a tablet shows it
 const HEIGHTS = { 1440: 900, 1366: 768, 1280: 800, 1152: 864, 1024: 768, 896: 800, 834: 1194, 820: 1180, 810: 1080, 800: 1280, 768: 1024, 430: 932, 414: 896, 390: 844, 375: 812, 360: 780 };
 const W = +opt('w', 1440), VH = +opt('h', HEIGHTS[+opt('w', 1440)] || (W < 600 ? 844 : 900)), settle = +opt('wait', 450);
-if (!target || target === true || !out || !profileArg || profileArg === true) {
-  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png --profile <dir> [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--tiles <dir>] [--no-tiles]');
+if (!target || target === true || !out || out === true) {
+  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png [--profile <dir>] [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--tiles <dir>] [--no-tiles]');
   process.exit(1);
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));

@@ -1,6 +1,6 @@
 {
  "version": 2,
- "note": "Curated short names for scripts/icons.mjs. icon = <set>:<name>; the sets are pinned in scripts/icons.mjs: logos (Gil Barbara, CC0, full colour, read from cdn.jsdelivr.net/gh/gilbarbara/logos at a pinned commit) is the source of every colour brand mark; si (Simple Icons, one colour in the brand hex) only where no colour mark exists (Google Docs, Sheets, Slides, Forms, Chat, Tasks, Calendly ...); file (vscode-icons) for file types, ui (Lucide) for glyphs. theSVG was dropped on 2 Nov 2026 (no verified licence per mark). boxes = the measured drawing box of each colour mark (icons.mjs measure).",
+ "note": "Curated short names for scripts/icons.mjs. icon = <set>:<name>; the sets are pinned in scripts/icons.mjs: logos (Gil Barbara, CC0, full colour, read from cdn.jsdelivr.net/gh/gilbarbara/logos at a pinned commit) is the source of every colour brand mark; si (Simple Icons, one colour in the brand hex) only where no colour mark exists (Google Docs, Sheets, Slides, Forms, Chat, Tasks, Calendly ...); file (vscode-icons) for file types, ui (Lucide) for glyphs. theSVG was dropped (no verified licence per mark). boxes = the measured drawing box of each colour mark (icons.mjs measure).",
  "sets": {
   "logos": {
    "pkg": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",

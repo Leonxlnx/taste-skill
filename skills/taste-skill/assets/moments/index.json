@@ -1,6 +1,6 @@
 {
  "version": 2,
- "generated": "2026-11-02T21:20:19.402Z",
+ "generated": "2026-11-03T17:12:06.364Z",
  "count": 17,
  "dealt": 15,
  "kinds": {
@@ -257,9 +257,9 @@
     "gaming",
     "software"
    ],
-   "look": "A section that sits on a new ground rises into the screen covered by the old ground; a disc opens in the middle of what is visible, widening with a hairline accent ring at its edge, until the section's own ground and words have appeared through it.",
-   "reduced": "The section stands on its own ground, no cover, no ring.",
-   "phone": "The section stands on its own ground, no cover, no ring.",
+   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut.",
+   "reduced": "The section stands on its own ground, no panel, no ring.",
+   "phone": "The section stands on its own ground, no panel, no ring.",
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -345,9 +345,9 @@
     "gaming",
     "software"
    ],
-   "look": "A section that sits on a new ground rises into the screen covered by the old ground; a one-pixel accent line climbs through it from its foot to its top and takes the cover with it: below the line the section's own ground and words, above it the old ground.",
-   "reduced": "The section stands on its own ground, no cover, no line.",
-   "phone": "The section stands on its own ground, no cover, no line.",
+   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) is cleared by a one-pixel accent line that climbs through it from its foot to its top: below the line the section's own ground and words, above it the old ground. Each heading, paragraph, button and picture stays hidden until the line has passed above all of it, then fades in whole, so no word is ever cut.",
+   "reduced": "The section stands on its own ground, no panel, no line.",
+   "phone": "The section stands on its own ground, no panel, no line.",
    "maxPerPage": 1,
    "weight": 1,
    "needs": {

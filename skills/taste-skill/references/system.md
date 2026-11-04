@@ -63,7 +63,7 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
 - **The interface stays 90 to 95% neutral;** colour comes from the photographs, the product, the
   work and real logos. One near-black ink, often warm, never #000, for text, hairlines (12 to 15% of
   it), button borders, interface glyphs and a designed mark.
-- **Real logos keep their own full colours** (Leon): a client's logo or a known product's icon (the
+- **Real logos keep their own full colours** (house rule): a client's logo or a known product's icon (the
   Google Docs icon) from `icons.mjs` or the brand's press kit, never redrawn or tinted
   (`icons.md`). A fictional client's own mark is designed, not borrowed.
 - **One accent at most,** from the client (its product, shopfront paint, tiles, a bag label): the

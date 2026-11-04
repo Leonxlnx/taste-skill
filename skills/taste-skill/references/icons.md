@@ -22,7 +22,7 @@ CurseForge, Modrinth, GOG). Xbox and Nintendo are in no permitted set: name the 
 mark; a game's store row is Steam, PlayStation and Epic Games (`apps --tag gaming`). The Google editors are in their brand blue, green and yellow; the Microsoft Office
 marks exist in no permitted source, so a Word, Excel or PowerPoint file card uses the file-type icon (`docx`, `xlsx`, `pptx`).
 
-**theSVG (the `brands` set) was dropped on 2 Nov 2026.** Its package is MIT, which covers the compilation only; the licence it
+**theSVG (the `brands` set) was dropped.** Its package is MIT, which covers the compilation only; the licence it
 records per mark is its own label, not a grant by the owner, and 37 of its Microsoft marks say "no express redistribution
 licence supplied". A press-kit download is not a path this skill takes. `brands:` ids now fail with a message that says so.
 

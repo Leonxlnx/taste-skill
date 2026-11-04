@@ -887,7 +887,7 @@ const ease = s => (s < 0.5 ? 4 * s * s * s : 1 - Math.pow(-2 * s + 2, 3) / 2);
   for screenshot tests in a CPU-rendered browser, where every frame is slow).
 */
 export const config = { maxLive: 2, maxCanvasPx: 1.5e6, fineTexels: 1.2e6, idleMs: 1500, adapt: true };
-// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: Leon's rule, the lab's
+// The page's one count of live WebGL contexts, window.__tpGl, at most window.__tpGlMax (default 4: the house rule, a laptop's
 // integrated GPU). scenes/lib.js glBudget, fx.js (every effect, and fx.glBudget for the ones that make their own),
 // print3d.js's pool and liquid-hover all count in it, so a scene, an object, a ground and a moment never add up to
 // more than the cap. A gallery or lab that shows many at once sets window.__tpGlMax before the scripts load.

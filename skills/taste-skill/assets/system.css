@@ -326,10 +326,18 @@ main > :is(.hero, .section--hero) {
    between a panel's foot and the next card's title, so a title never reads as the panel's caption */
 @media (max-width: 639px) { .grid:has(> .card--open) { row-gap: var(--s-6); } }
 /* spans: desktop >= 1024. Tablet 640-1023: text cards on span-3 and span-6 go two-up; cards with a
-   panel (a visual needs the width) and everything else (split text and visuals, span-4 cards, span-5/7/8
-   blocks) take the full row, so a split stacks and no row is left half empty. Phone < 640: one column. */
+   panel (a visual needs the width; the one exception is a span-6 pair, below)
+   and everything else (split text and visuals, span-4 cards, span-5/7/8 blocks) take the full row, so a split stacks and no row is left half empty. Phone < 640: one column. */
 @media (min-width: 640px) and (max-width: 1023px) {
   .grid > .card.span-3:not(:has(> .panel)), .grid > .card.span-6:not(:has(> .panel)) { grid-column: auto / span 6; }
+  /* the one exception with a panel: a 2x2 (or a pair) of span-6 cards stays two-up from 720px (a panel
+     of about 310px and more, wide enough for a kit fragment), so four cards take one or two screens
+     at 768-820 instead of a card per row (four stacked panels run past two screens). Split cards and
+     every other span keep the full row. Under 720 a card per row. */
+  @media (min-width: 720px) {
+    .grid > .card.span-6:has(> .panel):not(.card--split) { grid-column: auto / span 6; }
+    .grid > .card.span-6:has(> .panel):not(.card--split):nth-child(odd of .card.span-6):nth-last-child(1 of .card.span-6) { grid-column: 1 / -1; }
+  }
   /* open tiles (rooms, models, people, a photo pair) go two-up; an odd last one takes the row */
   .grid > .tile:is(.span-3, .span-4, .span-6) { grid-column: auto / span 6; }
   .grid > .tile:is(.span-3, .span-4, .span-6):nth-child(odd of .tile):nth-last-child(1 of .tile) { grid-column: 1 / -1; }

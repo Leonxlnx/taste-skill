@@ -10,7 +10,7 @@
                              logo and actions, the footer) starts or ends off the page's lines: L, R
                              and the 12 column lines between them. A centred block is centred on the page
                              axis; a full-bleed one runs edge to edge.
-    bleed-one-side           a block runs out to one viewport edge only (Leon, 1 Nov: left and right edges
+    bleed-one-side           a block runs out to one viewport edge only (house rule: left and right edges
                              always the same): it stands on the lines or runs edge to edge.
     lines                    section-level text starts on more than two left lines (L and one split line).
     spill                    a block runs past L or R without reaching the viewport edge.
@@ -209,7 +209,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     const hero = info[0];
     if (hero.r.top > navH + tol + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0)) add('hero-fold', name(hero.el), `starts at y ${Math.round(hero.r.top)}, not under the nav`);
     if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, above the fold (${vh})`);
-    // taller than one screen: a long h1 or lead pushed it past the fold (the round-A heroes were 1.2 to 1.38 screens)
+    // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
     if (hero.r.bottom > vh + tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, past the fold (${vh}): ${((hero.r.bottom - hero.r.top) / screen).toFixed(2)} screens tall`);
     const next = info[1];
     if (next) {

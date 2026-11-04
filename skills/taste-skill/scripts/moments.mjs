@@ -11,13 +11,13 @@
                                   audit a built page: its moments, the still rule, cards, the WebGL budget
     node scripts/moments.mjs gallery                    write assets/moments/gallery.html (every demo, one page)
     node scripts/moments.mjs serve --port 5720          static server for the taste-skill folder (5720-5729)
-    node scripts/moments.mjs shoot --out <dir> --profile <own chrome dir>
+    node scripts/moments.mjs shoot --out <out-dir> --profile <profile-dir>
                                   [--only a,b] [--widths 1440,390] [--states start,middle,end] [--port 5720] [--reduced]
                                   [--probe "<js expression>"]   (its value is printed after every state)
-    node scripts/moments.mjs sheet --out <dir>        rebuild index.html from the shots in that folder
+    node scripts/moments.mjs sheet --out <out-dir>        rebuild index.html from the shots in that folder
     (shoot --url assets/moments/_demo/in-card.html shoots one other page of the skill, e.g. a test page)
 
-  pick deals by the page's kind (Leon's overrides, 2 Nov). --page is required: tech, gaming or software
+  pick deals by the page's kind (the house overrides). --page is required: tech, gaming or software
   (ai and saas are tech and software; "technical product" is software). A place, shop, cafe, service or
   any other kind gets none: pick prints an empty deal and says why, exit 0, so the caller simply places
   no moment. A moment lists the kinds it fits in meta.pages; a retired moment (meta.retired, weight 0)
@@ -47,6 +47,7 @@
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
@@ -308,7 +309,9 @@ function findChrome() {
 }
 async function cmdShoot(a) {
   const out = a.out && a.out !== true ? path.resolve(a.out) : die('shoot: pass --out <dir>');
-  const profile = a.profile && a.profile !== true ? path.resolve(a.profile) : die('shoot: pass --profile <own chrome dir>');
+  // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+  const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'moments-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-moments-' + process.pid);
+  const profile = a.profile && a.profile !== true ? path.resolve(a.profile) : defaultProfile();
   const port = +(a.port || 5720);
   const widths = (list(a.widths) || ['1440', '390']).map(Number);
   const states = list(a.states) || ['start', 'middle', 'end'];

@@ -1,7 +1,7 @@
 # Cards
 
 How a feature card is built so it looks like x.ai's and Figma's, not a template. Measured from
-Leon's recording (x.ai Grok Bot 2x2, Figma's tile wall) and research-054 (41 company sites).
+the reference recording (x.ai Grok Bot 2x2, Figma's tile wall) and a study of 41 company sites.
 Showcase: `assets/ui/cards.html` (nine layouts: 2x2, bento, split, stat, integrations,
 testimonial, pricing, tall cards, developer tools; light and dark). Every fragment on its own: `assets/ui/index.html`.
 Styles: `assets/ui/cards.css` (card, panel, placements) and `assets/ui/base.css` (fragments).
@@ -48,7 +48,7 @@ A card holds a picture, and the picture holds the product. That is all:
 - **card > panel (a lit picture) > fragment.** The panel must read as a picture, not as a box: a
   soft field with no border lines, grid, ruling or dots of its own, so the fragment sits *on a
   picture*, not in a frame in a frame.
-- Never card > patterned panel > white UI card (round A: "card, grid-paper panel, white UI card"
+- Never card > patterned panel > white UI card (in testing, "card, grid-paper panel, white UI card"
   read as three nested boxes). Never a fragment that is itself a card holding cards of text.
 - Never a card inside a card for text, never glass.
 
@@ -71,11 +71,15 @@ A card holds a picture, and the picture holds the product. That is all:
 
 ## The fragment on it
 
-- **The product's own subject** (round C): the fragment shows what this product works on, as its
+- **The product's own subject**: the fragment shows what this product works on, as its
   users see it. A code-review tool shows a real diff, red and green, with the comment and its
   Accept or Apply action (`diff-review`); an invoicing app an invoice; a booking app its calendar; a
   CI product its pipeline (`pipeline-board`, `terminal-run`). Never a generic dashboard, chat or stat
   card standing in for it; when no fragment shows the subject, build it from the client's screens.
+  Cards show parts; the product is shown whole once, big, in an `app-frame` (`sections-library.md`:
+  `window` as the list beside the open item, one window across the `.wrap`). A software page whose
+  product appears only as small fragments centred on coloured panels reads as fragments, not as
+  the product (in testing: about 3.5 points under Linear).
   A gaming page takes no fragment at all: it shows the game (`sections.md`, Gaming). Its feature cards are open cards for what you do in it, one verb each (sail, salvage, rebuild), each holding an in-engine shot, else the still render of the object that verb uses (`data-product-place="card"`).
 - The product's real UI as live HTML at true size, complete and legible, never a flat picture:
   13px text, 12px meta, never under 11px; weights 400 and 500. Real data (names, amounts, order
@@ -90,7 +94,7 @@ A card holds a picture, and the picture holds the product. That is all:
   (`.ui-agent`) is ink. **The accent appears once per fragment**: the row being worked on, the
   marked date, the marked line's bar, the last bar, the slider being dragged. A range, keywords,
   numbers, today's dot and status chips are ink tints. Never a row of green dots.
-- **Real icons in their own colours** (Leon, 1 Nov: "more colour, more official"): a mark on a
+- **Real icons in their own colours** (house rule: "more colour, more official"): a mark on a
   tile (`.ui-logo`, `.ui-file__icon`, `.ui-field__tile`) sits on a light tile on every surface, in
   its brand colours: a colour file from `assets/icons` (`icons.mjs fetch` or `scan`,
   `references/icons.md`) as `<img>`. The kit's sample marks are local files in `assets/ui/icons`
@@ -249,7 +253,7 @@ every other fragment holds its finished picture.**
   in the page's language; without it only the line's number counts). A tile the panel cuts
   hides its name, never half a word. They stop off screen and hold still under
   reduced motion (no buttons then). Nothing moves because the page scrolled.
-- **Cadence and hover** (Leon, rule 5): one cycle of 2.5 to 4 s that repeats and restarts when the
+- **Cadence and hover** (house rule 5): one cycle of 2.5 to 4 s that repeats and restarts when the
   pointer or focus enters the card; every number is in `motion.md`, Loops inside a card's visual. A
   card whose fragments are all held plays its top fragment while the pointer stays. The card itself
   never moves by itself.
@@ -296,7 +300,7 @@ every other fragment holds its finished picture.**
 - A loop over 5 s with no pause button; a spinner, caret or pulse running on in a still picture.
 - A card or panel that moves with scroll or lights up when it scrolls into view.
 - One WebGL context per panel, or a still ground left running its frame loop.
-- A "sample", "example" or "to follow" note anywhere, even one line in the footer (round B:
+- A "sample", "example" or "to follow" note anywhere, even one line in the footer (in testing:
   "Names and figures on this page are examples" read as an apology), a caption under a visual
   that explains or apologises, and a placeholder (`[Name]`, `Example Street 1`, a `.example`
   address, lorem ipsum). Licence credits go in one footer line.

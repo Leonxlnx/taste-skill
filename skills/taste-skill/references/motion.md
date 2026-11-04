@@ -12,7 +12,7 @@ running text `.link`. Shoot a hovered card and a hovered photograph at 1440 and 
 them change: the card 2px up, the photograph at 1.03. `assets/motion/demo.html` shows every interaction. This file
 holds every hover, press, loop and reduced-motion number; other files point here.
 
-What may move, by kind (Leon's rules 5 and 8):
+What may move, by kind (house rules 5 and 8):
 - **Every kind:** the hover and focus layer below, and swaps a click or a tap makes (a tab on
   software, a peek-list's photograph). Every change is the visitor's.
 - **Tech:** also loops inside a card's visual (diagram pulses included), one timed loop in the hero
@@ -20,10 +20,10 @@ What may move, by kind (Leon's rules 5 and 8):
   deals.
 - **Other (product, service, place):** the hover layer alone. Nothing moves by itself, on load, by
   time or on scroll: no entrance, ticker, marquee, slideshow, looping picture, pulsing dot, count or
-  moment. An open-now line may be filled once at load; the panel reads right without it. One
-  exception: a product page without photographs may let its product render turn slowly in the
-  hero (`effects-objects.md`, its pause button in the corner, a still on a phone and under
-  reduced motion); every other render on that page holds still until the pointer reaches it.
+  moment. An open-now line may be filled once at load; the panel reads right without it. A
+  product render is a still by default; live only when asked (`data-product-mode="live"`), at
+  most one live context, with its pause button in the corner, a still on a phone and under reduced
+  motion (`effects-objects.md`).
 
 ## Tokens
 
@@ -32,8 +32,9 @@ What may move, by kind (Leon's rules 5 and 8):
 `--m-roll` 700ms, `--m-count` 1000ms, `--m-level` .6s, `--m-bob` 3.2s. Ease `--m-ease`
 cubic-bezier(.2,.8,.2,1) for every UI step; `--m-ease-io` cubic-bezier(.65,0,.35,1) only for
 travel; cubic-bezier(.22,1,.36,1) only for digit rolls; linear for loops and drifts. No bounce or
-overshoot. Distances: card lift 2px, photo zoom 1.02 to 1.03, arrow 3px, menu drop 6px, press 1px
-and scale .985; no others.
+overshoot. Distances: card lift 2px, photo zoom 1.02 to 1.03, arrow 3px, menu drop 6px, button step 1px
+up (2px on `.btn--xl`; none on the text-link secondary of the `arrow` and `block` looks), press 1px
+down and scale .985 (that secondary: scale only); no others (`assets/motion/motion.css`, buttons).
 
 ## The hover layer
 
@@ -42,7 +43,7 @@ state; nothing resizes or pushes a neighbour; no rotate, skew, glow, shine sweep
 
 | Part | Motion | Time |
 |---|---|---|
-| Button | the fill steps 14% toward the ink (an outline gains a faint fill and a stronger border); the box never moves on hover; press sinks 1px and scales .985 | 140ms in, 200ms out, 90ms press |
+| Button | on hover the fill steps 14% toward the ink (an outline gains a faint fill and a stronger border) and the box steps up 1px (2px on `.btn--xl`); press sinks it to 1px below rest and scales .985, so a hover shot and a press shot each show a move; the text-link secondary of the `arrow` and `block` button looks keeps its underline and does not step (its press scales .985 only); fine pointer only; page CSS never sets a `.btn`'s `transform` or `transition` | 140ms in, 200ms out, 90ms press |
 | Arrow | `svg.m-arrow` moves 3px right and settles back; one arrow style a page | 140 / 200ms |
 | Link | one underline style at regular weight: running text and `.link` rest on a faint 1px hairline and an ink line draws left to right, leaving to the right; nav and footer words rest bare, darken and draw a 1px line 4px under the word | 140 / 200ms |
 | Nav | the words take the drawn underline (no gliding pill on any kind); the panel opens after 150ms of intent, fades in with a 6px drop, its columns together, closes in 120ms; with one open the next word swaps it at once; the chevron turns 180 degrees on tech, flips at once on other | 200ms, 120ms |
@@ -62,7 +63,7 @@ group's one fragment loop, tech), `data-m-count` (tech hero only), `.m-link`, `.
 
 ## Loops inside a card's visual (tech)
 
-Leon: "a bit faster, and repeating".
+House rule: a bit faster, and repeating.
 
 - One cycle is 2.5 to 4 s (`--m-cycle`, 3.2 s default), then it starts again. It is seeded on its
   finished picture and never shows an empty window: a ui.js fragment rests 600ms on it before the
@@ -76,7 +77,7 @@ Leon: "a bit faster, and repeating".
   changing label never shows two words at once.
 - One fragment loop per card group (`data-ui-loop`); the other fragments hold their finished
   picture and play while the pointer rests on their card. A small diagram card's pulse is that
-  card's own loop, on the same cycle, restart and pause rules (Leon: pulses running along the
+  card's own loop, on the same cycle, restart and pause rules (house rule: pulses running along the
   lines); system.js never holds it (`data-ui-still` does not reach a diagram). Below the hero, two
   loops are never on one screen: in a group with a pulsing diagram, give the fragments
   `data-ui-still` too, or hold the diagram with `data-dg-still` (it then plays under the pointer).

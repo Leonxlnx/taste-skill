@@ -762,7 +762,7 @@ async function fetchCmd() {
   if (failed.length) { console.log('\nnot saved:\n' + failed.join('\n')); process.exitCode = 1; }
 }
 // the footer holds ONE line that links the credits page; the list of photographers, licences and source pages is a block of its own
-// (credits.html), never one link per photograph in the footer (a credit wall: Leon's judges marked 18 and 20 links)
+// (credits.html), never one link per photograph in the footer (a credit wall: the judges marked 18 and 20 links)
 const escH = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const creditSources = (list) => [...new Set(list.map((c) => c.source))].sort().join(' and ');
 function creditLine(list, href) {

@@ -18,6 +18,7 @@
   --d-del-gut: color-mix(in oklab, var(--d-del) 17%, var(--u-bg));
   --d-del-w: color-mix(in oklab, var(--d-del) 26%, var(--u-bg));
   --d-del-ink: color-mix(in oklab, var(--d-del) 62%, var(--u-ink));
+  --d-ctx-gut: color-mix(in oklab, var(--u-ink) 4.5%, var(--u-bg));   /* the gutter of an unchanged line: every row starts with a filled gutter, so every row starts on one left edge */
   --d-mono: var(--ui-mono, ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace);
   --d-gut: 36px;
   width: 480px; overflow: hidden;
@@ -33,6 +34,7 @@
 .ui-diff__repo { flex: none; font-size: 12px; line-height: 16px; color: var(--u-muted); white-space: nowrap; }
 .ui-diff__slash { flex: none; font-style: normal; font-size: 12px; color: var(--u-soft); }
 .ui-diff__path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 12px/16px var(--d-mono); color: var(--u-muted); }
+.ui-diff__path .ui-diff__dir { font-weight: 400; }
 .ui-diff__path b { font-weight: 500; color: var(--u-ink); }
 .ui-diff__stat { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 500 12px/16px var(--d-mono); }
 .ui-diff__stat .is-add { font-weight: 500; color: var(--d-add-ink); }
@@ -62,7 +64,7 @@
   transition: background-color 240ms var(--u-ease);
 }
 .ui-diff__ln > i {
-  font-style: normal; font-size: 11px; text-align: right; padding-right: 10px; color: var(--u-soft);
+  font-style: normal; font-size: 11px; text-align: right; padding-right: 10px; color: var(--u-muted); background: var(--d-ctx-gut);
   user-select: none; transition: background-color 240ms var(--u-ease), color 240ms var(--u-ease);
 }
 .ui-diff__code { position: relative; padding: 0 14px 0 20px; white-space: pre; overflow: hidden; }
@@ -124,7 +126,7 @@
 .ui-diff__spin {
   width: 12px; height: 12px; border-radius: 50%; opacity: 0; box-sizing: border-box;
   border: 1.5px solid color-mix(in oklab, var(--u-bg) 30%, transparent); border-top-color: var(--u-bg);
-  animation: ui-diff-spin 1s linear infinite paused; transition: opacity 120ms var(--u-ease);
+  animation: ui-diff-spin 800ms linear 2 paused; transition: opacity 120ms var(--u-ease);
 }
 @keyframes ui-diff-spin { to { transform: rotate(1turn); } }
 .ui-diff__apply.is-step {
@@ -140,7 +142,7 @@
   box-shadow: inset 0 1px 0 color-mix(in oklab, var(--u-bg) 14%, transparent), 0 0 0 3px color-mix(in oklab, var(--u-ink) 14%, transparent);
 }
 .ui-diff__apply.is-wait .ui-diff__lbl { opacity: 0; }
-.ui-diff__apply.is-wait .ui-diff__spin { opacity: 1; animation-play-state: running; }
+.ui-diff__apply.is-wait .ui-diff__spin { opacity: 1; animation-play-state: running; }   /* two turns, not a loop: the fragment's one loop is its cycle */
 .ui-diff__done {
   color: var(--d-add-ink); background: var(--d-add-bg); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--d-add) 30%, transparent);
   opacity: 0; visibility: hidden; transition: opacity 140ms var(--u-ease), visibility 0s 140ms;
@@ -151,6 +153,14 @@
 /* a cycle's reset: the status and the button are both away while the diff goes back */
 .ui-diff__act.is-gone .ui-diff__apply, .ui-diff__act.is-gone .ui-diff__done { opacity: 0; visibility: hidden; transition: opacity 120ms var(--u-ease), visibility 0s 120ms; }
 
+/* the file header never cuts its path (its whole row needs about 430px with a wide mono face): under 470px the
+   repo goes first, and under 340px the folders, so the file's own name always shows whole beside the counts */
+@container ui-diff (max-width: 469px) {
+  .ui-diff .ui-diff__repo, .ui-diff .ui-diff__slash { display: none; }
+}
+@container ui-diff (max-width: 339px) {
+  .ui-diff .ui-diff__dir { display: none; }
+}
 /* at card width (440-499px) the hunk header starts after one gutter, so the whole signature fits */
 @container ui-diff (max-width: 499px) {
   .ui-diff .ui-diff__hunk { padding-left: calc(var(--d-gut) + 12px); }

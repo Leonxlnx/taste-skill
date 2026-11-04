@@ -5,6 +5,29 @@
   "units": "m",
   "angle": -34,
   "turn": { "mode": "sway", "amp": 22, "period": 24 },
+  "colors": [
+    { "id": "green", "name": "Moss green", "accent": "#1f6f5c" },
+    { "id": "blue", "name": "Deep blue", "accent": "#2c4f7c" },
+    { "id": "cream", "name": "Cream", "accent": "#e2d8c3" },
+    { "id": "red", "name": "Signal red", "accent": "#b3332a" }
+  ],
+  "views": {
+    "detail-saddle": { "part": ["saddle*", "seat post", "spring bridge"], "angle": -42, "elev": 16, "margin": 1.3 },
+    "detail-drive": { "part": ["chainring", "spider*", "crank*", "crank cap", "pedal R", "sprocket", "chain*"], "angle": -18, "elev": 10, "margin": 1.15 }
+  },
+  "scenes": {
+    "loaded": {
+      "label": "A city bicycle carrying a child seat with its belts on the rear rack, a crate of fruit up front and a pannier bag",
+      "hide": ["basket"],
+      "props": [
+        { "prop": "child-seat", "at": [-0.578, 0.796, 0], "name": "child seat" },
+        { "prop": "crate", "at": [0.6, 0.76, 0], "size": [0.3, 0.2, 0.32], "contents": "fruit", "name": "crate" },
+        { "prop": "bag", "at": [-0.62, 0.42, 0.152], "hooks": true, "name": "pannier" }
+      ]
+    }
+  },
+  "supports": ["three-quarter", "side", "front", "detail-saddle", "detail-drive"],
+  "make": { "variants": ["three-quarter", "side", "front", "detail-saddle", "detail-drive", "three-quarter+loaded"], "grounds": ["light"] },
   "materials": {
     "frame": { "kind": "paint", "color": "accent", "finish": "gloss" },
     "rack": { "kind": "paint", "color": "#1d1e20", "finish": "satin" },

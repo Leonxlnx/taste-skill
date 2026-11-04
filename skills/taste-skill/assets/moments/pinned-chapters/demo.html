@@ -14,12 +14,12 @@
 <style>
   :root { --p-bg: #f6f1e7; --p-surface: #ece5d6; --p-ink: #1d1b18; --p-muted: #625c52; --p-accent: #b4532a; --p-accent-ink: #ffffff; --p-action: #1d1b18; --p-action-ink: #f6f1e7;
           --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
-  .hero-photo { position: relative; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 16 / 7; }
+  .hero-photo { position: relative; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 16 / 7; min-height: 440px; }
   .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .hero-photo .photo-band { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: clamp(24px, 5vw, 64px); background: linear-gradient(to top, rgb(0 0 0 / .55), rgb(0 0 0 / 0) 60%); color: #fff; }
   .hero-photo .photo-band h1 { max-width: 14ch; }
   .hero-photo .photo-band .btn-row { margin-top: var(--s-5); }
-  @media (max-width: 639px) { .hero-photo { aspect-ratio: 4 / 5; } }
+  @media (max-width: 639px) { .hero-photo { aspect-ratio: 4 / 5; min-height: 0; } }
   .facts { display: grid; align-content: center; }
   .facts div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--line); }
   .facts div:last-child { border-bottom: 1px solid var(--line); }

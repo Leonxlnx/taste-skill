@@ -28,7 +28,7 @@ object render for the two object scenes.
   of an object of the client's own trade (a deck of cards for a card-game engine, a globe for an
   edge network); never an object of another trade, never a cup on a cafe.
 - **The rest of the page stays calm:** no card, row or tile moves because the page scrolled. Beside
-  a scene the page may still take one or two section moments (Leon's overrides: one big scene and
+  a scene the page may still take one or two section moments (the house overrides: one big scene and
   one or two scroll moments), dealt as `moments.md` says (one on a short page, two on eight
   sections or more), never in the scene's section or the one beside it, never one in the scene's
   `avoidMoments` or its twin (`effects-usage.md`, Big scene).
@@ -115,7 +115,7 @@ reads empty (rule 2).
 ## Check it
 
 ```bash
-node <skill>/assets/scenes/_demo/shoot.mjs shoot --out <dir> --profile <own chrome dir> [--only <id>] [--page <url>] [--reduced] [--port 5836]
+node <skill>/assets/scenes/_demo/shoot.mjs shoot --out <dir> --profile <your own Chrome profile dir> [--only <id>] [--page <url>] [--reduced] [--port 5836]
 node <skill>/assets/scenes/_demo/shoot.mjs index        # meta.json files into index.json
 ```
 

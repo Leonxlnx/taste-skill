@@ -2,9 +2,9 @@
 /*
   taste-skill perf.mjs - a performance check for a built page. Node 22 or later (global WebSocket and fetch), no packages.
 
-    node <skill>/scripts/perf.mjs <page.html | folder | http(s) url> [--profile <own chrome dir>] [--json <file to write>] [--w 1440 --w 390] [--runs 3]
+    node <skill>/scripts/perf.mjs <page.html | folder | http(s) url> [--profile <own chrome dir>] [--json <file to write>] [--w 1440 --w 390] [--runs 3] [--port 5740]
 
-  A file or folder is served by a small local http server (ports 5740-5749, text gzipped like a static host),
+  A file or folder is served by a small local http server (ports 5740-5749, or the --port named and the 9 after it, text gzipped like a static host),
   because module scripts do not load from file://. Then ONE headless Chrome on the CPU (--headless=new
   --disable-gpu --use-angle=swiftshader --enable-unsafe-swiftshader) loads the page at 1440x900 and at 390x844 over the
   Chrome DevTools Protocol, waits until the effects near the viewport are mounted, scrolls to the bottom one screen at a
@@ -32,18 +32,19 @@ import { spawn, execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
 const pos = [], widths = [];
-let profileArg = null, jsonOut = null, RUNS = 3;
+let profileArg = null, jsonOut = null, RUNS = 3, PORT0 = 5740;
 const die = m => { console.error('perf: ' + m); process.exit(1); };
 const val = i => { const v = args[i + 1]; if (v == null || v.startsWith('--')) die(args[i] + ' needs a value'); return v; };
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--profile') profileArg = val(i++);
   else if (args[i] === '--json') jsonOut = val(i++);
   else if (args[i] === '--w') { const w = +val(i++); if (!(w >= 200 && w <= 4000)) die('--w needs a width in px'); widths.push(w); }
+  else if (args[i] === '--port') { PORT0 = parseInt(val(i++), 10); if (!(PORT0 >= 1024 && PORT0 <= 65500)) die('--port needs a port from 1024 to 65500'); }
   else if (args[i] === '--runs') RUNS = Math.max(1, Math.min(9, parseInt(val(i++), 10) || 3));
   else if (args[i].startsWith('--')) die('unknown option ' + args[i]);
   else pos.push(args[i]);
 }
-if (!pos.length) die('usage: perf.mjs <page.html | folder | url> [--profile <dir>] [--json file] [--w 1440 --w 390] [--runs 3]');
+if (!pos.length) die('usage: perf.mjs <page.html | folder | url> [--profile <dir>] [--json file] [--w 1440 --w 390] [--runs 3] [--port 5740]');
 if (typeof WebSocket === 'undefined' || typeof fetch === 'undefined') die('Node 22 or later is needed (global WebSocket and fetch)');
 if (!widths.length) widths.push(1440, 390);
 const target = pos[0];
@@ -98,11 +99,11 @@ async function serve(root) {
     }
     res.writeHead(200, h); res.end(body);
   });
-  for (let port = 5740; port <= 5749; port++) {
+  for (let port = PORT0; port <= PORT0 + 9; port++) {
     const ok = await new Promise(r => { srv.once('error', () => r(false)); srv.listen(port, '127.0.0.1', () => r(true)); });
     if (ok) return { srv, port };
   }
-  throw new Error('no free port in 5740-5749');
+  throw new Error(`no free port in ${PORT0}-${PORT0 + 9}`);
 }
 
 /* ---------------------------------------------------------------- in-page probes (run before any page script) */
@@ -143,10 +144,21 @@ const SETTLE = (min, max) => `new Promise(r => { const t0 = performance.now(); (
 const AUDIT = `(async () => {
   const sy = scrollY, out = { imgs: [], fonts: [], mountedFx: [], declaredFx: [], dom: document.getElementsByTagName('*').length };
   const size = u => new Promise(res => { const i = new Image(); const t = setTimeout(() => res(null), 4000); i.onload = () => { clearTimeout(t); res([i.naturalWidth, i.naturalHeight]); }; i.onerror = () => { clearTimeout(t); res(null); }; i.src = u; });
-  document.querySelectorAll('img').forEach(im => {
+  // loading=lazy as the page's source wrote it: the skill's system.js switches every lazy image to eager once the page has loaded
+  // (so no frame shows empty), and the check reads the page after that: the attribute it finds is then eager. An image the source
+  // marks lazy counts as lazy, however it reads now
+  const liveImgs = [...document.querySelectorAll('img')], srcLazy = new Map();
+  try {
+    const html = await (await fetch(location.href)).text();
+    const srcImgs = [...new DOMParser().parseFromString(html, 'text/html').querySelectorAll('img')];
+    const same = srcImgs.length === liveImgs.length && srcImgs.every((x, i) => x.getAttribute('src') === liveImgs[i].getAttribute('src'));
+    if (same) srcImgs.forEach((x, i) => srcLazy.set(liveImgs[i], x.getAttribute('loading') === 'lazy'));
+    else liveImgs.forEach(im => { const k = im.getAttribute('src'); if (k != null && srcImgs.some(x => x.getAttribute('src') === k && x.getAttribute('loading') === 'lazy')) srcLazy.set(im, true); });
+  } catch (e) { /* no source to read: the live attribute counts */ }
+  liveImgs.forEach(im => {
     const r = im.getBoundingClientRect();
     out.imgs.push({ kind: 'img', src: (im.currentSrc || im.src || '').slice(-80), top: Math.round(r.top + sy), w: Math.round(r.width), h: Math.round(r.height), nw: im.naturalWidth, nh: im.naturalHeight,
-      hasWH: im.hasAttribute('width') && im.hasAttribute('height'), lazy: im.loading === 'lazy', visible: r.width > 0 && r.height > 0,
+      hasWH: im.hasAttribute('width') && im.hasAttribute('height'), lazy: im.loading === 'lazy' || srcLazy.get(im) === true, lazySwapped: im.loading !== 'lazy' && srcLazy.get(im) === true, visible: r.width > 0 && r.height > 0,
       sized: getComputedStyle(im).aspectRatio !== 'auto' });
   });
   // CSS background photos and SVG <image>: counted in the bytes already, checked here for slot size and place on the page
@@ -271,7 +283,8 @@ function analyse(m, W, timed, glRun, load) {
   const noWH = tags.filter(i => !i.hasWH && !i.sized);
   add('images without width+height', noWH.length, count(noWH.length), nm(noWH));
   const notLazy = tags.filter(i => i.top > m.vh * 1.1 && !i.lazy);
-  add('below-fold images not lazy', notLazy.length, count(notLazy.length), nm(notLazy));
+  const swapped = tags.filter(i => i.lazySwapped);
+  add('below-fold images not lazy', notLazy.length, count(notLazy.length), nm(notLazy) || (swapped.length ? `${swapped.length} marked lazy in the page source, set eager by system.js once the page has loaded` : ''));
   const heroLazy = tags.filter(i => i.top < m.vh * 0.8 && i.lazy && i.w > 200);
   if (heroLazy.length) add('above-fold image set lazy', heroLazy.length, 'WARN', nm(heroLazy));
   const bgFar = imgs.filter(i => i.kind !== 'img' && i.top > m.vh * 1.1 && reqBytes(i.src) > 40 * 1024);
@@ -350,7 +363,8 @@ if (!/^https?:/.test(target)) {
   url = `http://127.0.0.1:${srvObj.port}/` + (isDir ? '' : path.basename(abs));
 }
 // a fresh profile folder per run (a reused one can still be locked by the Chrome just closed); removed once Chrome has exited
-const profileBase = path.resolve(profileArg || path.join(os.tmpdir(), 'taste-skill-perf-chrome'));
+// default profile folder: --profile, else $TASTE_SKILL_TMP/chrome/perf, else a folder under the system temp dir
+const profileBase = path.resolve(profileArg || (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
 fs.mkdirSync(profileBase, { recursive: true });
 for (const d of fs.readdirSync(profileBase)) if (/^run-\d+$/.test(d)) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* another run, or locked */ } }
 const profile = path.join(profileBase, 'run-' + process.pid);

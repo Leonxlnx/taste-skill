@@ -3,7 +3,7 @@
   scenes/_demo/shoot.mjs - the big scenes' own tools (taste-skill, references/scenes.md). Node 22+, no packages.
 
     node assets/scenes/_demo/shoot.mjs index                        scan assets/scenes/<id>/meta.json into index.json
-    node assets/scenes/_demo/shoot.mjs shoot --out <dir> --profile <own chrome dir>
+    node assets/scenes/_demo/shoot.mjs shoot --out <out-dir> --profile <profile-dir>
          [--only a,b] [--widths 1440,390] [--states start,middle,end | 0,0.25,0.5,0.75,1] [--port 5833]
          [--reduced] [--page <url>]      (--page shoots that page's own big scene instead of the demos)
     node assets/scenes/_demo/shoot.mjs probe --only <id> --p 0.5 --expr "<js>" --profile <dir>   (one scene at one progress: prints the expression)
@@ -15,10 +15,11 @@
   the fractions given) and captures the viewport: <out>/<id>-<w>-<state>.png, a contact sheet per scene
   <out>/<id>-sheet.png (the 1440 row over the 390 row) and <out>/index.html. Chrome is launched with
   --headless=new --disable-gpu --use-angle=swiftshader --enable-unsafe-swiftshader, uses its own profile
-  folder (--profile) and is closed by its own PID.
+  under --profile (default: $TASTE_SKILL_TMP/chrome or the system temp dir) and is closed by its own PID.
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import http from 'node:http';
 import zlib from 'node:zlib';
 import { spawn, execFileSync } from 'node:child_process';
@@ -193,10 +194,12 @@ async function chrome(profile, W, H) {
 }
 
 /* ------------------------------------------------------------------ shoot */
+// default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'scenes-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-scenes-' + process.pid);
+const profileOf = () => { const p = opt('profile'); return p && p !== true ? p : defaultProfile(); };
 async function cmdShoot() {
-  const out = opt('out'); const profile = opt('profile');
+  const out = opt('out'); const profile = profileOf();
   if (!out || out === true) die('shoot: pass --out <dir>');
-  if (!profile || profile === true) die('shoot: pass --profile <own chrome dir>');
   const port = +(opt('port', 5833));
   if (!((port >= 5830 && port <= 5839) || (port >= 5965 && port <= 5969))) die('shoot: use a port from 5830 to 5839 (or 5965 to 5969)');
   const widths = (list(opt('widths')) || ['1440', '390']).map(Number);
@@ -263,8 +266,8 @@ async function cmdShoot() {
 
 /* ------------------------------------------------------------------ make (an object render) */
 async function cmdMake() {
-  const html = opt('html'), save = opt('save'), profile = opt('profile');
-  if (!html || html === true || !save || save === true || !profile || profile === true) die('make: --html <path> --save <file.png> --profile <dir>');
+  const html = opt('html'), save = opt('save'), profile = profileOf();
+  if (!html || html === true || !save || save === true) die('make: --html <path> --save <file.png> [--profile <dir>]');
   const port = +(opt('port', 5833));
   const srv = await server(port);
   const c = await chrome(path.resolve(profile), 1200, 1200);
@@ -284,8 +287,8 @@ async function cmdMake() {
 
 /* ------------------------------------------------------------------ probe (one scene, one progress, one expression) */
 async function cmdProbe() {
-  const only = opt('only'), expr = opt('expr'), profile = opt('profile');
-  if (!only || only === true || !expr || expr === true || !profile || profile === true) die('probe: --only <id> --p 0.5 --expr "<js>" --profile <dir> [--w 1440]');
+  const only = opt('only'), expr = opt('expr'), profile = profileOf();
+  if (!only || only === true || !expr || expr === true) die('probe: --only <id> --p 0.5 --expr "<js>" [--profile <dir>] [--w 1440]');
   const port = +(opt('port', 5833)), w = +(opt('w', 1440)), H = w < 600 ? 844 : 900, p = +(opt('p', 0.5));
   const srv = await server(port);
   const c = await chrome(path.resolve(profile), w, H);
@@ -305,4 +308,4 @@ if (cmd === 'index') buildIndex();
 else if (cmd === 'shoot') cmdShoot();
 else if (cmd === 'make') cmdMake();
 else if (cmd === 'probe') cmdProbe();
-else die('usage: shoot.mjs index | shoot --out <dir> --profile <dir> [--only ids] | probe --only <id> --p 0.5 --expr "<js>" --profile <dir> | make --html <path> --save <png> --profile <dir>');
+else die('usage: shoot.mjs index | shoot --out <dir> [--profile <dir>] [--only ids] | probe --only <id> --p 0.5 --expr "<js>" --profile <dir> | make --html <path> --save <png> --profile <dir>');

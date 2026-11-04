@@ -40,6 +40,16 @@ html:not([data-motion="off"]) .btn--secondary:hover {
 }
 html:not([data-motion="off"]) .btn:hover { transition-duration: var(--m-in), var(--m-in), var(--m-in), var(--m-in), var(--m-press); }
 html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
+/* the step: a button rises 1px on hover (2px on the large size) and presses 1px down with a 1.5% shrink on
+   click; pointer only. The text-link secondary (arrow and block looks) keeps its underline and does not step.
+   Reduced motion keeps the colour change only (see the end of this file). */
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) .btn:hover { transform: translateY(-1px); }
+  html:not([data-motion="off"]) .btn--xl:hover { transform: translateY(-2px); }
+  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:hover { transform: none; }
+  html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
+  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:active { transform: scale(.985); }
+}
 
 /* the arrow: the text arrow (.btn--arrow, .link) nudges 3px; the drawn arrow (.m-arrow) grows its
    stem and moves its head 3px, the way a good product site's "Learn more" does */
@@ -246,7 +256,7 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion="off"]) .card:hover, html:not([data-motion="off"]) .card--open:hover > .panel,
   html:not([data-motion="off"]) :is(a, .card:has(a), .m-zoom):hover :is(.frame__img, .tile__media > img, img, video),
-  html:not([data-motion="off"]) .btn:active, html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after,
+  html:not([data-motion="off"]) .btn:is(:hover, :active), html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after,
   :is(a, button):hover > .m-arrow :is(.m-arrow__head, .m-arrow__stem) { transform: none !important; }
   .m-arrow__stem { opacity: 1; transform: none; }
   html:not([data-motion="off"]) .nav__menu, html:not([data-motion="off"]) .nav__menu .grid > * { transform: none !important; }

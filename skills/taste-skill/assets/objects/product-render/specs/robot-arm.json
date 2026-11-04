@@ -5,6 +5,25 @@
   "units": "m",
   "angle": -26,
   "turn": { "mode": "sway", "amp": 14, "period": 28 },
+  "colors": [
+    { "id": "blue", "name": "Signal blue", "accent": "#2b5fd9" },
+    { "id": "orange", "name": "Safety orange", "accent": "#e0702b" },
+    { "id": "graphite", "name": "Graphite", "accent": "#3a3d42" }
+  ],
+  "views": {
+    "detail-gripper": { "part": ["gripper", "finger*", "pad*", "tool flange", "wrist link"], "angle": -40, "elev": 14, "margin": 1.35 }
+  },
+  "scenes": {
+    "work": {
+      "label": "A robot arm lifting a small parcel from a tray of parcels",
+      "props": [
+        { "prop": "tray", "at": [0.63, 0, 0], "size": [0.3, 0.06, 0.24], "parcels": 3, "name": "tray" },
+        { "prop": "parcel", "at": [0.652, 0.3075, 0], "size": [0.045, 0.045, 0.047], "in": "wrist", "name": "held parcel" }
+      ]
+    }
+  },
+  "supports": ["three-quarter", "side", "front", "top", "detail-gripper"],
+  "make": { "variants": ["three-quarter", "side", "front", "top", "detail-gripper", "three-quarter+work"], "grounds": ["light"] },
   "materials": {
     "shell": { "kind": "paint", "color": "#e7e6e2", "finish": "satin" },
     "dark": { "kind": "paint", "color": "#2a2c30", "finish": "satin" },

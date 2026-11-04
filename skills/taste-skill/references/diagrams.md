@@ -39,7 +39,7 @@ and gaming presets with pulses; a product or service page takes at most one, hel
 ```
 
 Copy a preset into `data-diagram='{...}'`, then rename every label, icon and number to the client's own. A label with an apostrophe
-or a quote (`Leon's`) ends a single-quoted attribute, so then put the spec in a script inside the element:
+or a quote (`it's`) ends a single-quoted attribute, so then put the spec in a script inside the element:
 
 ```html
 <div class="panel"><div class="dg" data-diagram><script type="application/json">{"layout": "hub", ...}</script></div></div>
@@ -47,7 +47,7 @@ or a quote (`Leon's`) ends a single-quoted attribute, so then put the spec in a 
 
 A spec that does not parse logs a `console.error` and leaves only the names it could read.
 
-## The lab (the tool for building one fast)
+## The builder page (the tool for building one fast)
 
 Open `assets/diagrams/lab.html` over http. Pick a page kind and a preset, edit the JSON (it redraws while you type) or use the controls
 (ground, light, line shape, cycle 2.5 to 4 s), switch card, section, phone and light, dark, restart the loop, then copy the

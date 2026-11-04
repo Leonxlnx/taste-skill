@@ -18,7 +18,7 @@ hero frame: still or nearly still at rest, and it moves under the pointer, never
 ## Where they go: software pages only
 
 **A scene is a print (halftone, dither, dots) and prints belong to software, tech, AI, developer
-tool and games pages**, as their one moment: a hero frame or one feature card. Leon (1 Nov): effects
+tool and games pages**, as their one moment: a hero frame or one feature card. House rule: effects
 fit tech or gaming sites, a local coffee shop never.
 
 - **Place, service and local-business pages** (a cafe, a bar, a shop, a hotel, a clinic, a studio

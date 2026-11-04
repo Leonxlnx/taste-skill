@@ -1,7 +1,7 @@
 {
   "name": "motion",
   "title": "Micro-interactions",
-  "shows": "Buttons, arrows, links, the nav underline and menu, the current page, tabs, focus, cards, photographs, fields, switches, checks, numbers that tick once, and the cadence of the loops inside a card's panel.",
+  "shows": "Buttons (they step 1px up on hover, 2px on the large size, and press 1px down on click), arrows, links, the nav underline and menu, the current page, tabs, focus, cards, photographs, fields, switches, checks, numbers that tick once, and the cadence of the loops inside a card's panel.",
   "files": {
     "motion.css": "link after system.css and ui/cards.css; rules apply under <html data-motion>",
     "motion.js": "type=module, after system.js; starts by itself; export { init, refresh }",
@@ -21,7 +21,7 @@
     "aria-current=\"page\"": "on the nav word of the page you are on"
   },
   "automatic": [".btn", ".btn--arrow", ".link", "a.pill", "p a without a class", ".footer ul a", ".nav__links (drawn underline)", ".nav__menu", ".tabs[role=tablist]", ":focus-visible", ".card", ".card--open > .panel", ".frame__img and .tile__media img in a link or a card with a link", ".field input/select/textarea"],
-  "reducedMotion": "colours change; nothing moves or scales; loops hold the --m-still frame; numbers show their final text; no pause buttons",
+  "reducedMotion": "colours change; nothing moves or scales (a button keeps its colour change only); loops hold the --m-still frame; numbers show their final text; no pause buttons",
   "phone": "no hover states; the sheet fades in 8px; loops hold their finished frame like ui.js fragments",
   "screenshot": "a HeadlessChrome page shows final numbers unless <html data-motion=\"live\">",
   "cost": "motion.css 17 KB, motion.js 12 KB unminified (about 4 KB and 4 KB gzipped); one IntersectionObserver per feature; transforms and opacity only (the tab indicator also animates width)"

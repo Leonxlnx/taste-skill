@@ -482,7 +482,7 @@ function header(gl2, ext, paramKeys, custom, texNames, stats, trail) {
 /* ------------------------------------------------------------------ GLSL lint */
 
 // GLSL ES 3.00 words reserved for future use (section 3.7) and later keywords some drivers reject as
-// names. CPU WebGL (SwiftShader, the lab's headless Chrome) compiles a shader that uses some of them; a
+// names. CPU WebGL (SwiftShader, a headless Chrome) compiles a shader that uses some of them; a
 // laptop's GPU rejects the whole shader, and the picture stays empty (a struct field named flat left
 // a hero blank). So the runtime refuses such a shader itself, and the still fallback shows everywhere.
 const GLSL_RESERVED = new Set(('attribute varying coherent volatile restrict readonly writeonly resource atomic_uint ' +

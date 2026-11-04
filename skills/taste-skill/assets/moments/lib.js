@@ -142,3 +142,41 @@ export function lines(words) {
 }
 
 export const fontsReady = (ms = 900) => Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, ms))]);
+
+/*
+  blocks(root, skip)   the section's words and pictures as whole blocks, for a moment that uncovers a section with a
+                       clip (a disc, a line): a block is a heading, paragraph, list item, button, link, picture, UI
+                       window or any element that carries text of its own, outermost first (a frame with its own
+                       text is one block). A clip that slices through a block cuts its words mid-move, so such a
+                       moment keeps each block invisible until the clip has passed the whole of it, then fades it
+                       in whole. Returns { list, measure, set, release }:
+    list      [{ el, l, t, r, b }] with the box of each block in root's own coordinates (set by measure)
+    measure() reads the boxes again (call when the root's size changes or the fonts arrive)
+    set(fn)   fn(block) -> opacity 0-1 for every block; 1 puts the element's own inline opacity back
+    release() every block as it was
+  skip: elements (the moment's own layers) that are never a block.
+*/
+const BLOCK = 'h1,h2,h3,h4,h5,h6,p,li,dt,dd,blockquote,figcaption,label,a,button,img,picture,video,canvas,svg,table,figure,.frame,.dw,[data-moment-block]';
+export function blocks(root, skip = []) {
+  const list = [];
+  const walk = el => {
+    for (const c of el.children) {
+      if (skip.includes(c) || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(c.tagName)) continue;
+      const own = [...c.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+      if (c.matches(BLOCK) || own) list.push({ el: c, was: c.style.opacity, l: 0, t: 0, r: 0, b: 0 });
+      else walk(c);
+    }
+  };
+  walk(root);
+  const measure = () => {
+    const rr = root.getBoundingClientRect();
+    for (const b of list) {
+      const r = b.el.getBoundingClientRect();
+      b.l = r.left - rr.left; b.t = r.top - rr.top; b.r = r.right - rr.left; b.b = r.bottom - rr.top;
+    }
+  };
+  measure();
+  const set = fn => { for (const b of list) { const o = fn(b); b.el.style.opacity = o >= 0.999 ? b.was : (o <= 0 ? '0' : o.toFixed(3)); } };
+  const release = () => { for (const b of list) b.el.style.opacity = b.was; };
+  return { list, measure, set, release };
+}

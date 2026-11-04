@@ -271,7 +271,7 @@ export function glslCheck(src) {
   if (/__/.test(stripped)) return 'a name with a double underscore';
   return null;
 }
-/* the page's shared budget of live WebGL contexts: at most 4 on a page (an integrated GPU). One
+/* the page's shared budget of live WebGL contexts: at most 4 on a page (an integrated GPU's limit). One
    counter on window, so the scenes, the moments and the objects of a page can share it. */
 const GL_MAX = 4;
 export const glBudget = {

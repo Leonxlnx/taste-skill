@@ -18,6 +18,7 @@
                                                software ui; product object,photo; service photo; a game
                                                ground, so a game with art passes --has film,photo).
                                                word and statement are dealt only without photo or film (heroes.json avoid)
+                                               object with no photo or film always prints product (the full-width stage)
          [--hero <id>]                         print that one instead of dealing it
          [--history .taste-skill/layout-history.json] [--json] [--stats 1000]
 
@@ -71,6 +72,9 @@ const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x
 function dealOnce(recentHeroes) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
   if (!hero && type === 'place') hero = heroes.find(h => h.id === 'place');   // never dealt: Recipe 3
+  // the product shown by its render or a cut-out (object, no photograph or film): always the full-width
+  // product stage, never the split's six columns (in testing: a render at 44% of the stage read as small)
+  if (!hero && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
   if (!hero) {
     const ok = heroes.filter(h => h.id !== 'place' && (h.types[weightKey] || 0) > 0 && needsMet(h));
     if (!ok.length) { console.error(`deal: no hero for ${gaming ? 'a game' : type} with ${[...has].join(', ')}`); process.exit(1); }

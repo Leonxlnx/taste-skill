@@ -11,7 +11,7 @@
   "moments": "assets/moments/index.json ids that may be dealt onto this hero (one at most; moments.mjs pick --fits hero decides), as { id, only? }: only \"tech\" means software, AI and gaming briefs only",
   "grounds": "assets/backgrounds/index.json ids the hero may stand on, as { id, only?, dark? }: only \"tech\" for software, AI and gaming briefs only; dark true for a dark page only",
   "effects": "assets/effects ids the hero's visual may carry, as { id, as? }: every effect is for tech, software, AI and gaming briefs only, never a place or a local business; 'as' says where it goes when that is not the visual itself",
-  "mistakes": "what makes it fail Leon's look",
+  "mistakes": "what makes it fail the house's look",
   "avoid": "the material that rules it out: with it in --has the hero is never dealt (word and statement are for briefs without a strong photograph or a film; with one, it leads)"
  },
  "heroes": [
@@ -220,7 +220,7 @@
    "name": "Product stage with one object",
    "from": "Figma's hero row, Apple product pages, Cowboy, Teenage Engineering",
    "demo": "hero-product.html",
-   "job": "The product whole on a wide stage, the headline left and the buttons right in one row above it. One object or one product line on a plain ground; hotspots name its parts. A product, hardware or a game without photographs or art: its product render (assets/objects/product-render) whole on the stage; a game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its hero object or a scene of its world composed from its own objects, an effect allowed only behind it.",
+   "job": "The product itself, big, under one head row: the headline left, the lead and the buttons right. A render or a cut-out stands on the page's own ground across the wrap (no box, no gradient, no radius), its widest view (a bike's side) spanning 80% or more of the wrap at 1440; a product photograph runs edge to edge down to the fold, cropped so the product spans 80% or more of the wrap. Hotspots name its parts. A product, hardware or a game without photographs or art: its product render (assets/objects/product-render), a still; a game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its hero object or a scene of its world composed from its own objects (a print or scene keeps the lit stage), an effect allowed only behind it.",
    "types": {
     "product": 3,
     "software": 1,
@@ -243,23 +243,23 @@
     "maxChars": 40
    },
    "grid": {
-    "head": "the h1 and lead on cols 1-7 (max 760), the buttons on cols 9-12 right-aligned, their foot on the lead's last baseline",
-    "stage": "span-12 (1280), 48 under the head, down to the hero's bottom padding"
+    "head": "at 1280 and up the h1 on cols 1-7 (two lines), the lead and the buttons stacked on cols 9-12, their foot on the h1's foot; 1024-1279 the h1 on cols 1-6, lead and buttons on 7-12; under 1024 stacked",
+    "stage": "a render or cut-out: span-12 (1280), 32 under the head, down to 24 above the fold, no box; its frame reaches 7% past the stage's top and bottom so the product fills the stage's height. A photograph: the full screen width, down to the fold, square corners"
    },
    "at1440": {
     "hero": "1440x900",
-    "head": "h1 72 (80.6) on 2 lines from y 120; lead 20/30 on 3 lines",
-    "stage": "1280x398 at y 439 (at least 260), the object whole, never cut by the stage",
+    "head": "h1 72 on 2 lines from y 131; lead 20/30 on 3 lines, 411 wide; buttons 44; the head ends at y 278",
+    "stage": "1280x566 at y 310, the product whole on the page ground: the city bike's side still 1046x554 (81.7% of the wrap), its three-quarter 818x554 (63.9%, under 8 columns: the hero takes the widest view)",
     "spots": "one to three 32px discs on the object, each opening a 230px spec card on hover, focus or tap",
-    "measured": "hero 900/900, h1 81px (weight 400) on 2 lines, its box from y 120, the visual 1280x398 at x 80, y 439"
+    "measured": "the city bike's side still: hero 900/900, stage 1280x566 at y 310, product 1046x554 at x 197 (81.7%); 1024x768 744x394 of 864 (86.1%); 768x1024 578 of 672 (86.0%); 390x844 294 of 342 (86.0%)"
    },
    "at390": {
     "hero": "844: one screen",
-    "stage": "342x257 for a row of things (the photograph's own ratio), up to 342x428 (4:5) for a standing object",
+    "stage": "a render: 342 wide and what the head leaves (394 at 390x844), the product 86% of the wrap (294 wide), centred in it; a photograph: the screen width at its own ratio (390x293)",
     "spots": "a tap opens the card under its disc, centred on it and kept 16px inside the stage",
-    "measured": "hero 844/844, h1 45px on 2 lines from y 96, the visual 342x257 at y 461"
+    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the stage 342x394 at y 426, the bike 294x156"
    },
-   "moment": "the hotspots (layout.js .ly-spot); an object from assets/objects turns slowly with its pause button instead",
+   "moment": "the hotspots (layout.js .ly-spot); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
    "moments": [
     {
      "id": "cursor-spotlight",
@@ -292,6 +292,8 @@
    ],
    "mistakes": [
     "the object small in an empty stage",
+    "the object in a rounded box or on a gradient panel",
+    "the three-quarter view of a long product in the hero (the widest view fills the stage)",
     "the object cut by the stage",
     "words on the stage",
     "UI cards over the product",

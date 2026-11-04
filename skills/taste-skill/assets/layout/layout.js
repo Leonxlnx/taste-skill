@@ -203,7 +203,7 @@ function steps(box) {
     .map((el, i) => ({ el, at: el.dataset.stepAt != null ? parseFloat(el.dataset.stepAt) : i }))
     .sort((a, b) => a.at - b.at).map(o => o.el);
   if (!items.length) return;
-  // Leon, 1 Nov: the loops inside cards a little faster, and repeating. The first picture is the
+  // house rule: the loops inside cards a little faster, and repeating. The first picture is the
   // finished one (a shot or a first look never meets an empty card); then it plays and holds again.
   const every = parseInt(box.dataset.lySteps, 10) || 700;
   const hold = parseInt(box.dataset.lyHold, 10) || 1800;

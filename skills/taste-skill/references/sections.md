@@ -44,6 +44,10 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
   or are left out. Never `/contact`, `/[page]` or a bare `#`.
 - **At 390** the page keeps the desktop's grounds, photographs and order, each photograph after
   its text.
+- **At 768 and 820** (the judges' tablet, held upright) plan the screens again: each section's
+  stacked content within its screens (832px a screen at 768x1024), else two screens there or less
+  that stacks; the first screen ends on a whole picture or a clear bleed (`layout-v4.md` sections 2
+  and 3). Write the tablet count on the plan line when it differs ("2 at 768").
 
 ## 2. The deal
 
@@ -86,7 +90,8 @@ Optional parts in brackets; each list is the order on the page. Tell it as a sto
 does, show it, prove it, let people explore. Tabs only on software, click only.
 
 **Software** (and AI, developer tools, fintech). nav, hero, [logo-row docked in the hero],
-two or three feature sections in different layouts (features-2x2, bento, split-text-left,
+**app-frame** (the product big: its list beside the open item in one app window across the
+`.wrap`, as section 2 or 3; `sections-library.md`), two or three feature sections in different layouts (features-2x2, bento, split-text-left,
 tabs-tour, chapter, steps), [integrations as a `fanin-warehouse` or `hub-tools` diagram card;
 integrations-grid only for 9 or more tools the brief lists],
 [quote-stat (a quote the brief gives) or customer-proof-row (customers the brief names); with
@@ -98,17 +103,18 @@ and green diff with its Accept action); diagram cards for how things connect; re
 tools it works with. The effect, moments and scene as `effects-usage.md` deals them.
 Nav `nav-mega|nav-cards|nav-centre` · footer `footer-dark|footer-statement|footer-columns` · close
 `close-type|close-word` · rhythm `dark-band|surface-pairs|space` · buttons `solid|pill|tonal|arrow`.
-Never: stock people at screens; an object render in place of the product.
+Never: stock people at screens; an object render in place of the product; a page whose product
+shows only as small fragments centred on coloured panels (in testing: about 3.5 points under Linear).
 
 **Gaming** (a game, a studio launching its game; page type software, site-kind gaming). nav, hero
 (the game, named), the world (one or two sections, full bleed), what you do (feature cards: three
 or four open cards, one verb each, sail, salvage, rebuild, each with its picture), [a system of
 the game as a diagram card: matchmaking, saves, stores], platforms and editions (the real store and
 platform icons, prices from), [press lines or a quote the brief gives], [faq], footer.closing with
-the main action (Add to Steam wishlist, Pre-order). Round C: a game page that never named the game
+the main action (Add to Steam wishlist, Pre-order). In testing, a game page that never named the game
 and showed an abstract effect for key art lost 3.5 to 5.5 to one with a launch date, a scene of the
 game's world, feature cards and real platform icons. So:
-- **The hero names the game:** the h1 is its name and genre ("Driftmoor, a co-op salvage game",
+- **The hero names the game:** the h1 is its name and genre ("Northline, a co-op survival game",
   40 characters at most on the `product` stage), or its wordmark (the client's logo file) over an
   h1 naming the genre. The lead or a line under it carries the launch date or status the brief
   gives ("Out 12 March on Steam", "Early access now"); with no date, the status ("Coming to PC"),
@@ -122,7 +128,8 @@ game's world, feature cards and real platform icons. So:
   its own objects on one floor (the barge at the quay with its crates, lanterns and cables; under 90
   parts), in the game's palette, `light` material for its fires, lamps and screens; make its
   posters. Deal `deal.mjs --type software --kind gaming --has object` (the `product` stage): the
-  render whole on the stage, turning slowly. The one effect (`effects.mjs pick --page gaming
+  render whole on the stage, turning slowly (`data-product-mode="live"`: the page's one live render;
+  every other frame a still). The one effect (`effects.mjs pick --page gaming
   --palette dark --slots hero --exclude ruled-grounds,grid-pulse,contour-lines,dot-terrain,dotted-globe,ridgeline,bayer-dither,halftone-screen,ascii-shade,line-engraving,duotone-grade`,
   again until it reads as water, fog, embers or light, or the product hero's `spotlight-cone`,
   `edge-glow`) may sit behind it as the stage's ground, the
@@ -143,45 +150,115 @@ panels; a toy object of another kind, a drawn SVG or an empty panel in place of 
 players at screens.
 
 **Product.** nav, hero, the range or line-up within the first three sections, two or three feature
-sections (one benefit each, text beside one big photograph on the page's split; photo-pair; bento),
-[media-band], specs (`rows--spec` or comparison-table), proof (a review or press line the brief
-gives), [visit-map for a showroom], [faq, five questions at most], footer.closing with the
-newsletter. Every main section shows the product, two or three photographs a screen (one per
-feature section of the part it names; a grid of 4 to 8 cut-outs on one backdrop). Prices are "from"
-prices on cards or in a table, never a plan table or a monthly switch. A technical product (site-kind
-tech) may take its render or the effect; any other product takes no effect, and its render only
-when it has no photographs (below).
-- **No photographs: the product is shown, never hidden** (round C: a cargo bike's page that never
+sections (one benefit each, each its own composition, below), specs (`rows--spec` or
+comparison-table), proof (a review or press line the brief gives), [visit-map for a showroom],
+[faq, five questions at most], footer.closing with the newsletter. Every main section shows the
+product, two or three photographs a screen (one per feature section of the part it names; a grid
+of 4 to 8 cut-outs on one backdrop). Prices are "from" prices on cards or in a table, never a plan
+table or a monthly switch. A technical product (site-kind tech) may take its render or the effect;
+any other product takes no effect, and its render only when it has no photographs (below).
+- **The product is the hero of every frame.** The bar is Figure and 1X: in every section the
+  product fills the frame at large scale. In testing, a rendered product page scored 5.5,
+  creativity 4.5 ("a safe grey template"), because every visual was a mid-size product in a grey
+  rounded panel on a grey ground, five pictures in three poses, one structure three times. With
+  photographs or with the render alike:
+  1. **Big.** In the hero and at least one more section the product fills most of its frame (its
+     long side 80 to 100% of the frame's width, or cropped so it runs off an edge) or stands on the
+     section's own ground at anchor scale (8 or more of the 12 columns at 1440, the full column at
+     390). The `product` hero does it by itself (`layout.css` 3b): a render or a cut-out stands
+     on the page's ground across the wrap, no box, no gradient, no radius, the stage down to 24px
+     above the fold and the product as tall as the stage, so its widest view spans 80% or more of
+     the wrap at 1440 (the kit's city bike: its `side` 1046 of 1280; its `three-quarter` only
+     818, under 8 columns); a product photograph runs edge to edge down to the fold, cropped
+     (`--ly-pos`) so the product spans 80% of the wrap. Never a mid-size product inside a grey
+     rounded `.panel` on a grey ground: a render is transparent and stands on the ground itself
+     (`layout.css` takes the fill, border and padding off every `.frame[data-product]`), a
+     cut-out the same; a photograph is the frame.
+  2. **A different view in every section.** Three-quarter, side, front, a close-up of the part the
+     section is about (the box, the motor, the battery, the shade), the product in use or loaded,
+     the colourways side by side. Never one view twice: a smaller file (`-700`), a recolour or a
+     mirror of a view is the same view; a scene (loaded, in use) and a close-up are views of their own;
+     the colourway row is one view in every colour. Each plan line names its section's view; no two
+     alike.
+  3. **Every promise in a headline is shown in a picture.** A family bike shows the child bench
+     with its belts; a lamp shows the light it throws on the table; "takes four crates" shows four
+     crates, readable at the section's size. A promise with no picture: add the picture or cut
+     the promise.
+  4. **Dealt compositions, one contrasting ground.** Each picture section deals its composition
+     from section 4's five (`bleed`, `pair`, `trio`, `strip`, `tall-small`), plus `split` (text
+     beside one big picture, once a page: on the full product page below, section 2) and the order
+     section (the order card beside the product, last, a form, never counted as the split);
+     neighbours never the same, no structure (heading,
+     panel, picture) twice. For the product: `bleed` the product at anchor scale across the
+     viewport; `pair` two views at one ratio; `trio` the whole, a part, a detail; `strip` four
+     close-ups of the parts the rows name; `tall-small` the product in use tall, a detail small.
+     One section stands on a contrasting ground (the rhythm below, `dark-band` or `brand-band`)
+     and holds the strongest view; the rest share one flat ground. Frames take the page radius,
+     never a panel inside a panel.
+  5. **The colour choice changes the picture.** The order card's swatches swap the product's
+     picture beside it (a render: each swatch, a button or radio, carries `data-product-swatch="#<frame
+     id>"` and `value="<colour id>"` (an id of the spec's `colors`), and `auto.js` swaps the frame's
+     still with no page script, `effects-objects.md`, Views; photographs: one per colour, the swatch
+     swaps the `src` and `alt`), and every colour offered is shown at least once on the
+     page (the colourways side by side in the range, or one colour per section). A colour offered
+     and never shown is a fault.
+  6. **No fact twice.** A stat strip never repeats the spec rows below it: the strip takes the
+     three figures that sell (load, range, price), the rows the rest (sizes, weight, motor,
+     battery, warranty). One fact, one place, one wording.
+  7. **Buttons step on hover and press on click.** The motion layer does it (`motion.md`,
+     Button); no page CSS sets a `.btn`'s `transform` or `transition`. A feature card that leads
+     somewhere is a linked card (it lifts 2px, its picture zooms 1.03).
+- **No photographs: the product is shown, never hidden** (in testing: a cargo bike's page that never
   showed the bike scored 3 of 10). A picture the brief gives (a render, a CAD view, a cut-out) goes
   on the hero's stage. Else the product is **rendered**: one crafted studio render of this product,
   composed from its parts with the objects kit's product-render helper (`assets/objects/
   product-render`; `effects-objects.md`, Product renders): write a short JSON spec of its frame,
   wheels, box, arm or shade, sized from the brief's figures, in its own materials and colours (the
   kit's `specs/` show the format; never ship a kit spec as the client's product), make its posters
-  with `make-posters.mjs`, and mount it as `<div class="frame" data-product="assets/objects/product-render/specs/<name>.json"
-  data-product-place="stage">` with `product-render/auto.js` (`stage` on the `product` hero's
-  stage, `tile` in a `split` frame, `hero` in a full-bleed frame with the words over its left). The render is the product's picture, not an effect:
-  a still or a quiet turntable on the page's flat ground, one live context, its poster under it,
-  no print, shader ground, moment or scene beside it; the same on a product of site-kind other and
-  on hardware. Deal the hero with `deal.mjs --type product --has object` (hardware adds `--kind
-  tech`; the `product` stage or a `split` with the render in its frame), the render whole on it. Then the **full product page**, never the short page:
-  1. hero: the render on the stage, the h1 naming the product and its buyer, the order action;
-  2. the product: the render again from a second angle or closer on the part that sells it (the
-     box, the motor, the shade), with three facts as `rows--spec` beside it;
-  3. what it does or carries (a split: the render loaded or switched on, beside the uses in plain
-     rows), or the parts as a 2x2 of open cards each showing that part's render close up;
-  4. how it is used: three steps or a lanes diagram card held still (charge, ride, park);
-  5. specs as `rows--spec` (sizes, weight, load, range, materials, warranty), with the real colour
-     icons of the component brands the brief names;
-  6. ordering: a live order card (model or size, colour as swatches, delivery slot or town, the
-     price that updates, the main action), beside the render in the chosen colour when the spec
-     allows it; [faq, five questions at most]; footer.closing.
-  At most three renders of the product a page, each a different angle, crop or state; the other
-  sections carry the order card, rows and real icons. The heading and the text say what the thing
-  is; no line calls it a render, model or illustration (Leon's rule 1). The report lists the
+  with `make-posters.mjs`, and mount it as `<div class="frame" id="<name>-<view>" data-product="assets/objects/product-render/specs/<name>.json"
+  data-product-place="stage" data-product-view="<view>">` with `product-render/auto.js`. A place
+  is only the share of its frame the product's bounds fill, centred in it (`build.js`): `stage`
+  0.86, `hero` 0.88, `tile` 0.84, `card` 0.9; the page's CSS gives the frame its size and the
+  words always stand outside the frame. In the hero the frame goes straight inside the `product`
+  hero's `.hero__stage` (`layout.css` 3b sizes it); `stage` in a `split` frame or a full-width
+  one, `tile` in a square or portrait tile. The render is the product's picture, not an effect:
+  **stills by default, live only when asked (`data-product-mode="live"`), at most one live
+  context**, on the page's flat ground, no print, shader ground, moment or scene beside it; the same
+  on a product of site-kind other and on hardware. The views of rule 2 come from the one spec
+  (`effects-objects.md`, Views): the views its `supports` lists of `three-quarter`, `side`,
+  `front`, `rear`, `top`, `low`, views of its own (`views`) and `detail:<part>` (a close-up), the
+  spec's `scenes` (loaded or in use, from the props `crate`, `bag`, `child-seat`, `bench`,
+  `parcel`, `desk`, `book`, `mug`, `sheet`, `tray`) and its `colors`; `make-posters.mjs` prints
+  every `make.variants` entry as a still per colour. `deal.mjs --type product --has object`
+  (hardware adds `--kind tech`) always prints the `product` hero: its full-width stage, never a
+  `split` column. Then the **full product page**, never the short page, one view a section (put
+  all six in `make.variants`):
+  1. hero, view **`side`** (the widest view; a tall product, a lamp or an arm: `three-quarter`)
+     whole on the `product` stage, the h1 naming the product and its buyer, the order action;
+  2. the product, view **`three-quarter`** (a tall product: `side`), the page's one `split`:
+     the frame on 8 columns, the three selling figures on the other 4 (rule 6; `bleed` is never
+     right after the hero);
+  3. what it does or carries, view **the scene** (`three-quarter+loaded`, or in use), the
+     headline's promise readable (rule 3): `bleed` across the wrap with the uses in a row of
+     three under it, or `tall-small` with a close-up;
+  4. the parts, views **`detail:<part>`**: a `strip` or `trio` of close-ups, one per part the
+     section names (the box, the motor, the battery, the stand), none in section 3; or how it is
+     used: three steps or a lanes diagram card held still (charge, ride, park);
+  5. specs as `rows--spec` (only the facts the strip does not hold) with the colourway row, view
+     **`front`**: one small frame per colour offered, side by side, each with its name; and the
+     real colour icons of the component brands the brief names; this or section 2 is the
+     contrasting ground;
+  6. ordering, view **`rear-quarter`**, a view of the spec's own (`"views": { "rear-quarter":
+     { "from": "three-quarter", "angle": <the spec's angle + 180> } }`, listed in `supports`): a
+     live order card (model or size, colour as swatches, delivery slot or town, the price that
+     updates, the main action) beside the product whole in the chosen colour, which the swatch
+     changes (rule 5); the order composition, not the split; [faq, five questions at most];
+     footer.closing.
+  Every view is a still. The heading and the text
+  say what the thing is; no line calls it a render, model or illustration (house rule 1). The report lists the
   photographs to shoot (`photos.md`). Never a drawn SVG, a model of loose primitives the helper did
   not compose, mood stock, a photograph of another maker's product or an object of another kind (a
-  wheel is not a bicycle). **Hardware without photographs or renders goes here too** (round C: a
+  wheel is not a bicycle). **Hardware without photographs or renders goes here too** (in testing: a
   robot arm's page with a silk shader and an order form lost; CAD renders or a film the brief names
   but does not supply count as missing): a robot arm follows the kit's worked
   `robot-arm` spec, rebuilt to the client's own sizes, joints and colours; a drone is a rounded box body, beam arms, cylinder motors and disc rotors; a camera a
@@ -189,10 +266,11 @@ when it has no photographs (below).
   `seams`) at its real measurements. Never a `split` hero holding only an order form or the
   effect in place of the product; the order card is its own section (6).
 Nav `nav-cards|nav-split|nav-mega` · footer `footer-columns|footer-dark` · close
-`close-photo|close-type|close-word` · rhythm `media-band|dark-band|surface-pairs|brand-band` ·
-buttons `arrow|solid|block|pill`.
+`close-photo|close-type|close-word` · rhythm `dark-band|brand-band` (one contrasting ground,
+rule 4) · buttons `arrow|solid|block|pill`.
 Never: a photograph of something else; screens of an app the product does not have; logo rows;
-tabs; anything that apologises for what is missing.
+tabs; anything that apologises for what is missing; the product mid-size in a grey panel; one
+view twice; a promise not shown; a colour offered and never shown; a fact twice.
 
 **Service** (clinics, firms, agencies, studios, trades). nav, hero, services-list (each with one line
 and a price from; a peek-list when each service has its own photograph), work (a grid of 3 to 6
@@ -244,7 +322,7 @@ The nav is not a screen; `footer.closing` is one; a 2-screen section counts two.
   when any frame fits:** the lead `pick` returns (a cafe's bar); a place whose trade leads with land
   (a guesthouse, a lodge, a remote inn) and whose brief names its region (Westfjords, Lofoten, the
   Lake District, a town) passes that region as `--place "<region as written>"`, and the landscape
-  of that region leads, because a remote place is sold by where it stands (round C: a remote
+  of that region leads, because a remote place is sold by where it stands (in testing: a remote
   guesthouse shown as a type band scored 3.5). The `statement` hero on `.ground-brand` only when
   the library holds no frame of the region and no lead. Every frame is listed in the report as a
   stand-in to replace; nothing on the page says so. Only a trade whose frames total under 8
@@ -274,7 +352,7 @@ it).
 ### Designed variety without effects
 
 A place earns its creativity from photographs, their arrangement and one moment of type, never
-from an effect (round C: correct cafe and guesthouse pages scored creativity 2.5 to 4 and motion 3
+from an effect (in testing: correct cafe and guesthouse pages scored creativity 2.5 to 4 and motion 3
 to 4.5 because every section was text beside one picture and nothing answered the pointer).
 
 - **Never two sections built round one picture.** The visit keeps its 6/6 split with one
@@ -313,7 +391,7 @@ to 4.5 because every section was text beside one picture and nothing answered th
   the hero's, as on any page, and nowhere else but the booking or close and the phone bar. Get
   directions is never repeated: the hero's one button and the phone bar's; the nav says "Visit"
   as a word to `#visit`, the visit block adds no second button for it, and the footer gives the
-  address linked to the map, never a button (round C: Get directions in the bar, the hero and the
+  address linked to the map, never a button (in testing: Get directions in the bar, the hero and the
   footer read as clutter).
 - **List text at 16px:** menu rows, descriptions, room facts and hours at 16/24 at least (the muted
   colour, never a smaller size, marks a description); 13px only for a group label.

@@ -26,7 +26,7 @@
                  mark exists (the Google Docs, Sheets and Slides editors, Calendly, Evernote ...)
         file     Iconify "vscode-icons" 1.2.30, file types and folders in colour (MIT): a document type, never a brand
         ui       Iconify "lucide" 1.2.100, interface glyphs, one clean line set (ISC)
-  There is no other source: theSVG ("brands") was dropped on 2 Nov 2026, because the licence it records per mark is its own
+  There is no other source: theSVG ("brands") was dropped, because the licence it records per mark is its own
   label and not a grant by the owner (some of its Microsoft marks say outright that no licence was supplied), and a press-kit
   download is not a path this skill takes. Brand marks belong to their owners: use them only to name tools the product
   really works with, never to imply endorsement.
@@ -492,7 +492,9 @@ async function measureCmd() {
   noCrop = true;
   const { spawn, execFileSync } = await import('node:child_process');
   const idx = loadIndex();
-  const profile = path.resolve(opt('profile', path.join(os.tmpdir(), 'taste-skill-icons-measure')));
+  // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+  const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'icons-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-icons-' + process.pid);
+  const profile = path.resolve(opt('profile', defaultProfile()));
   const chromePath = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/usr/bin/chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => p && fs.existsSync(p));
   if (!chromePath) { console.error('icons: no Chrome found (set CHROME_PATH)'); process.exit(1); }
   const seen = new Set(), items = [];

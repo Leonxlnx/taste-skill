@@ -51,3 +51,7 @@ main > .section--hero > .container.demo-split { align-content: center; }
 .demo-split > .demo-photo { aspect-ratio: auto !important; width: 100%; height: 100%; max-height: min(100%, 62svh); min-height: 0; }
 .demo-split > .frame { max-height: 100%; min-height: 0; }
 .demo-statement { align-content: start; }
+
+/* a drawn window in a hero frame beside the text (1024-1279): the side list goes, so the rows keep one line
+   each and the window stays shorter than its frame (it was cut at the frame's top and foot at 1024x768) */
+@media (max-width: 1279px) { .frame .dw__body { grid-template-columns: 1fr; min-height: 0; } .frame .dw__side { display: none; } .frame .dw__row:nth-of-type(n+3) { display: none; } }

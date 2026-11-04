@@ -16,6 +16,8 @@
   .s-lamp { --bg: #121314; --ink: #f1f0ec; --muted: #9c9b96; --accent: #d9542b; --surface: #1b1c1e; background: var(--bg); color: var(--ink); }
   .s-arm  { --bg: #e6e8ea; --ink: #121417; --muted: #5a5f66; --accent: #2b5fd9; --surface: #dcdfe2; background: var(--bg); color: var(--ink); }
   .frame { position: absolute; inset: 0; }
+  .s-lamp, .s-arm { align-content: start; }
+  .s-lamp .frame, .s-arm .frame { position: relative; inset: auto; height: calc(100svh - 260px); min-height: 360px; margin: 24px clamp(16px, 5vw, 72px) 0; }
   .copy { position: relative; z-index: 2; align-self: start; padding: clamp(28px, 7vw, 96px) clamp(16px, 5vw, 72px) 0; max-width: 620px; pointer-events: none; }
   .copy h2 { margin: 0; font-weight: 500; font-size: clamp(36px, 5.2vw, 76px); line-height: 0.98; letter-spacing: -0.035em; }
   .copy p { margin: 18px 0 0; color: var(--muted); font-size: clamp(16px, 1.3vw, 18px); max-width: 34ch; }
@@ -28,7 +30,7 @@
 <main>
   <section class="s-bike" data-id="city-bike">
     <div class="copy"><h2>Built for the ride to work.</h2><p>A steel city frame, a basket up front and a rack behind.</p></div>
-    <div class="frame" data-product="specs/city-bike.json" data-product-place="hero"></div>
+    <div class="frame" data-product="specs/city-bike.json" data-product-place="legacy"></div>
   </section>
   <section class="s-lamp" data-id="desk-lamp">
     <div class="copy"><h2>Light where you work.</h2><p>Two springs hold the arm wherever you leave it.</p></div>
@@ -40,6 +42,7 @@
   </section>
 </main>
 <script type="module">
+  // the bike: the legacy turntable right of the words; the lamp and the arm: a view framed under the words (views.html shows the views, scenes and colours)
   // ?only=city-bike shows one section; ?turn=0 a still; ?fallback=1 the no-WebGL path (the poster)
   const q = new URLSearchParams(location.search);
   if (q.get('fallback') === '1') window.__printForceFallback = true;

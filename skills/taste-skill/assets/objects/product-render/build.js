@@ -23,7 +23,7 @@
   A phone (narrow screen or coarse pointer) and prefers-reduced-motion get one still frame; the
   context is freed once it has drawn. One product render a page holds a live context at a time.
 */
-import { definePrint, glslProblems } from '../_print-core/print3d.js';
+import { definePrint, glslProblems, readPalette, normalizePalette } from '../_print-core/print3d.js';
 
 const DEG = Math.PI / 180;
 const HAS_DOM = typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -100,7 +100,7 @@ const BUILTIN = {
 };
 const FINISH = { gloss: [0.85, 80], satin: [0.5, 32], matte: [0.16, 9] };
 
-function materialGlsl(m, onExpr) {
+function materialGlsl(m, onExpr, P, S) {
   const k = m.kind || 'paint';
   const acc = m.color === 'accent';
   const col = acc ? null : lin(m.color || ({ metal: '#b8bbc0', chrome: '#d9dadc', steel: '#8d9095', rubber: '#141414', plastic: '#26272a', wood: '#b98a5c', fabric: '#5d5f63', leather: '#6b3f22', light: '#fff4dc', paint: '#888888' }[k] || '#888888'));
@@ -136,6 +136,13 @@ function materialGlsl(m, onExpr) {
     default: r = `${C}${A}s.gloss = ${f(g)}; s.shine = ${f(sh)};`; p = `s.albedo = ${f(acc ? 0.62 : pAlb)}; s.gloss = ${f(g * 0.9)}; s.shine = ${f(sh)};${A}`;
   }
   if (m.glow && k !== 'light') { r += ` s.emit = ${f(m.glow)} * ${onExpr};`; p += ` s.emit = ${f(m.glow * 0.6)} * ${onExpr};`; }
+  // lit: the pool of a lamp's light on this surface (a desk under the lamp): { at: [x, z] or [x, y, z], r, k }
+  if (m.lit && P) {
+    const a = m.lit.at || [0, 0], c = P(a.length === 2 ? [a[0], 0, a[1]] : a), rr = (m.lit.r || 0.18) * S, kk = m.lit.k ?? 0.9;
+    const g = `exp(-dot(p.xz - vec2(${f(c[0])}, ${f(c[2])}), p.xz - vec2(${f(c[0])}, ${f(c[2])})) / ${f(rr * rr)}) * ${onExpr} * smoothstep(0.3, 0.8, n.y)`;
+    r += ` { float lg = ${g}; if (s.col.x >= 0.0) s.col *= 1.0 + ${f(kk)} * lg * vec3(1.0, 0.88, 0.7); s.emit += ${f(kk * 0.12)} * lg; }`;   // a warm pool
+    p += ` { float lg = ${g}; s.emit += ${f(kk * 0.3)} * lg; }`;
+  }
   return { render: r, print: p };
 }
 
@@ -225,7 +232,9 @@ const LIB_BASKET = /* glsl */ `
 // pitch, wr the slat's half height), 2 solid walls; rims round the top and the foot
 vec2 pBasket(vec3 q, vec3 h, float t, float pt, float wr, float rr, float style, float idW, float idR) {
   float box = sdRoundBox(q, h, rr);
-  float shell = max(abs(box) - t, q.y - h.y);
+  // open on top: the walls stop below the box's top face and its rounding (else a lid of thickness t stays)
+  float top = h.y - max(2.0 * t, rr);
+  float shell = max(abs(box) - t, q.y - top);
   vec3 a = abs(q) / h;
   vec2 uv = a.x > a.z && a.x > a.y ? q.zy : (a.z > a.y ? q.xy : q.xz);
   vec2 g = abs(mod(uv + 0.5 * pt, pt) - 0.5 * pt);
@@ -233,10 +242,10 @@ vec2 pBasket(vec3 q, vec3 h, float t, float pt, float wr, float rr, float style,
   float mesh = style < 0.5 ? min(g.x, g.y) - wire : (style < 1.5 ? (a.y > a.x && a.y > a.z ? -1.0 : g.y - wr) : -1.0);
   float body = max(shell, mesh);
   float ring = sdRect(q.xz, h.xz, rr);
-  float rim = min(length(vec2(ring, q.y - h.y)) - 1.9 * wire, length(vec2(ring, q.y + h.y)) - 1.5 * wire);
+  float rim = min(length(vec2(ring, q.y - top)) - 1.9 * wire, length(vec2(ring, q.y + h.y)) - 1.5 * wire);
   // corner posts
   vec2 pc = h.xz - rr + 0.7071 * rr;
-  rim = min(rim, max(length(abs(q.xz) - pc) - 1.3 * wire, abs(q.y) - h.y));
+  rim = min(rim, max(length(abs(q.xz) - pc) - 1.3 * wire, max(q.y - top, -q.y - h.y)));
   return body < rim ? vec2(body, idW) : vec2(rim, idR);
 }
 `;
@@ -289,6 +298,7 @@ function partFrame(p, natural = 'y') {
   const ax = axisOf(p.axis);
   let R = ax ? frameAlong(ax, natural, p.up) : I3;
   if (p.rot) R = matMul(euler(p.rot), R);
+  if (p._pre) R = matMul(p._pre, R);   // a prop's own turn, after the part's
   return { R, c: p.at || [0, 0, 0], L: null };
 }
 
@@ -401,11 +411,356 @@ function catmull(P, n) {
   return out;
 }
 
+/* ------------------------------------------------------------------ points on a part's surface */
+/*
+  The framing of a view measures the product as the camera sees it: points round each part's real
+  outline (rings round a tube, a wheel's tyre, a shade's profile; a box's corners), not its bounding
+  box, so a wheel or a round base is framed by its edge and not by the square round it.
+*/
+const RING = 20;
+function localSamples(pt) {
+  const sp = pt.spec, h = pt.half, out = [];
+  const ringY = (r, y) => { for (let i = 0; i < RING; i++) { const a = (i / RING) * 2 * Math.PI; out.push([r * Math.cos(a), y, r * Math.sin(a)]); } };
+  const ringZ = (r, z) => { for (let i = 0; i < RING; i++) { const a = (i / RING) * 2 * Math.PI; out.push([r * Math.cos(a), r * Math.sin(a), z]); } };
+  switch (sp.type) {
+    case 'tube': {
+      const r = sp.r ?? 0.01, r2 = sp.r2 ?? r, rc = sp.cap === 'round' ? r : 0, hl = h[1] - rc;
+      ringY(r, -hl); ringY(r2, hl); if (rc) out.push([0, -hl - r, 0], [0, hl + r, 0]);
+      break;
+    }
+    case 'cylinder': case 'disc': case 'joint': case 'spring': ringY(h[0], -h[1]); ringY(h[0], h[1]); break;
+    case 'torus': ringY(h[0], 0); ringY(h[0] - h[1], h[1]); ringY(h[0] - h[1], -h[1]); break;
+    case 'shade': {
+      const r1 = sp.r1 ?? 0.03, r2 = sp.r2 ?? 0.08, bu = Math.max(0, Math.min(1, sp.bulge ?? 0)), t = sp.t ?? 0.0025, hl = h[1] - 2 * t;
+      for (let k = 0; k <= 6; k++) { const sv = k / 6; ringY(r1 + (r2 - r1) * (sv + bu * 1.3 * sv * (1 - sv)) + t, -hl + sv * 2 * hl); }
+      break;
+    }
+    case 'wheel': ringZ(h[0], -h[2]); ringZ(h[0], h[2]); break;
+    case 'sphere': case 'ellipsoid': case 'seat':
+      for (let i = 0; i < RING; i++) { const a = (i / RING) * 2 * Math.PI, c = Math.cos(a), s = Math.sin(a); out.push([h[0] * c, h[1] * s, 0], [h[0] * c, 0, h[2] * s], [0, h[1] * c, h[2] * s]); }
+      break;
+    case 'arc': {
+      const R = sp.R ?? 0.3, hs = sp.size ? [sp.size[0] / 2, sp.size[1] / 2] : [sp.r ?? 0.006, sp.r ?? 0.006];
+      const a0 = (sp.a0 ?? 0) * DEG, a1 = (sp.a1 ?? 90) * DEG;
+      for (let k = 0; k <= 16; k++) { const a = a0 + ((a1 - a0) * k) / 16; for (const rr of [R - hs[0], R + hs[0]]) for (const z of [-hs[1], hs[1]]) out.push([rr * Math.cos(a), rr * Math.sin(a), z]); }
+      break;
+    }
+    default: for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) out.push([h[0] * sx, h[1] * sy, h[2] * sz]);
+  }
+  return out;
+}
+function partSamples(pt) {
+  if (pt.path) { const r = pt.r; return pt.path.flatMap(q => [[r, 0, 0], [-r, 0, 0], [0, r, 0], [0, -r, 0], [0, 0, r], [0, 0, -r]].map(d => add(q, d))); }
+  return localSamples(pt).map(v => add(pt.c, matVec(pt.R, v)));
+}
+// a part named n, or with a trailing * every part whose name begins so ("saddle*" takes "saddle spring R")
+const nameMatch = (name, n) => !!name && (n.endsWith('*') ? name.startsWith(n.slice(0, -1)) : name === n);
+
+/* ------------------------------------------------------------------ props: what a product carries or works with */
+/*
+  A scene shows the product loaded or in use: a child seat with its belts on a bicycle's rack, a
+  crate of fruit, a pannier bag, a desk with a book and a mug under a lamp, a parcel in a gripper.
+  Each prop is composed of ordinary parts, at the size of the real thing, standing on its own base
+  (y = 0) and facing x. In a scene: { "prop": "crate", "at": [x, y, z], "yaw": 90, "scale": 1,
+  "size": [...], "color": "#hex", "mats": { role: material }, "in": "group", "name": "front crate" }.
+  Units are metres (scale converts: 1000 for a spec in millimetres).
+*/
+const M = {
+  oak: { kind: 'wood', color: '#c9a273', grain: 'x' },
+  card: { kind: 'paint', color: '#b98c5a', finish: 'matte' },
+  tape: { kind: 'plastic', color: '#d3b98c', finish: 'satin' },
+  paper: { kind: 'paint', color: '#f3f1ea', finish: 'matte' },
+  webbing: { kind: 'fabric', color: '#1e1f21', weave: 900 },
+  ceramic: { kind: 'paint', color: '#ebe8e1', finish: 'gloss' },
+};
+const role = (p, k, d) => (p.mats && p.mats[k]) || d;
+const PROPS = {
+  // a slatted wooden crate, open on top; contents: 'fruit' | 'bottles' | 'loaves' | 'parcels' | 'none'
+  crate(p) {
+    const s = p.size || [0.4, 0.25, 0.3], wood = role(p, 'wood', p.color ? { ...M.oak, color: p.color } : M.oak);
+    const out = [{ name: 'body', type: 'basket', at: [0, s[1] / 2, 0], size: s, style: 'slats', pitch: s[1] / 4, wire: (s[1] / 4) * 0.36, t: 0.011, round: 0.008, mat: wood, rimMat: wood }];
+    const c = p.contents || 'fruit';
+    if (c === 'fruit') {
+      const cols = ['#d9822b', '#b8342a', '#e3b33b', '#d9822b', '#7d9f3a', '#b8342a'], r = Math.min(s[0], s[2]) * 0.16;
+      for (let i = 0; i < 6; i++) { const ix = i % 3, iz = (i / 3) | 0; out.push({ name: 'fruit', type: 'sphere', at: [(ix - 1) * s[0] * 0.28, s[1] - r * 0.55 + (i % 2) * r * 0.25, (iz - 0.5) * s[2] * 0.42], r, mat: { kind: 'plastic', color: cols[i], finish: 'satin' } }); }
+    } else if (c === 'bottles') {
+      for (let i = 0; i < 3; i++) {
+        const x = (i - 1) * s[0] * 0.28, glass = { kind: 'plastic', color: ['#2e5b3a', '#6b3a1f', '#2e5b3a'][i], finish: 'gloss' };
+        out.push({ name: 'bottle', type: 'cylinder', at: [x, s[1] * 0.75, 0], r: Math.min(s[0], s[2]) * 0.13, h: s[1] * 1.1, round: 0.012, mat: glass });
+        out.push({ name: 'bottle neck', type: 'tube', from: [x, s[1] * 1.28, 0], to: [x, s[1] * 1.62, 0], r: 0.013, mat: glass });
+      }
+    } else if (c === 'loaves') {
+      for (let i = 0; i < 2; i++) out.push({ name: 'loaf', type: 'ellipsoid', at: [(i - 0.5) * s[0] * 0.42, s[1] * 0.92, 0], size: [s[0] * 0.4, s[1] * 0.5, s[2] * 0.6], mat: { kind: 'paint', color: '#b9773b', finish: 'satin' } });
+    } else if (c === 'parcels') {
+      out.push({ name: 'parcel', type: 'box', at: [-s[0] * 0.12, s[1] * 0.85, 0], size: [s[0] * 0.55, s[1] * 0.6, s[2] * 0.7], round: 0.005, mat: M.card });
+    }
+    return out;
+  },
+  // a cloth bag: style 'pannier' (a flap, two straps, a handle; hooks: true hangs it on a rack) or 'tote'
+  bag(p) {
+    const s = p.size || [0.32, 0.34, 0.13], cloth = role(p, 'cloth', { kind: 'fabric', color: p.color || '#3e4a40', weave: 640 });
+    const trim = role(p, 'trim', { kind: 'leather', color: '#5b3a22' });
+    if (p.style === 'tote') return [
+      { name: 'body', type: 'box', at: [0, s[1] / 2, 0], size: s, round: 0.03, mat: cloth },
+      { name: 'handle', type: 'arc', at: [0, s[1], s[2] * 0.3], axis: 'z', R: s[0] * 0.24, a0: 0, a1: 180, size: [0.012, 0.03], mat: trim },
+      { name: 'handle', type: 'arc', at: [0, s[1], -s[2] * 0.3], axis: 'z', R: s[0] * 0.24, a0: 0, a1: 180, size: [0.012, 0.03], mat: trim },
+    ];
+    const zf = s[2] * 0.56 + 0.004, out = [
+      { name: 'body', type: 'box', at: [0, s[1] / 2, 0], size: s, round: Math.min(0.04, s[2] * 0.3), mat: cloth },
+      { name: 'flap', type: 'box', at: [0, s[1] * 0.8, s[2] * 0.03], size: [s[0] * 1.03, s[1] * 0.42, s[2] * 1.08], round: Math.min(0.035, s[2] * 0.28), mat: role(p, 'flap', cloth) },
+      { name: 'strap', type: 'beam', from: [-s[0] * 0.24, s[1] * 1.0, zf], to: [-s[0] * 0.24, s[1] * 0.5, zf], w: 0.026, d: 0.007, up: [0, 0, 1], mat: trim },
+      { name: 'strap', type: 'beam', from: [s[0] * 0.24, s[1] * 1.0, zf], to: [s[0] * 0.24, s[1] * 0.5, zf], w: 0.026, d: 0.007, up: [0, 0, 1], mat: trim },
+      { name: 'handle', type: 'arc', at: [0, s[1] * 1.005, 0], axis: 'z', R: s[0] * 0.15, a0: 0, a1: 180, size: [0.011, 0.024], mat: trim },
+    ];
+    if (p.hooks) for (const sx of [-1, 1]) out.push({ name: 'hook', type: 'path', points: [[sx * s[0] * 0.3, s[1] * 0.92, -s[2] / 2], [sx * s[0] * 0.3, s[1] + 0.035, -s[2] / 2 - 0.004], [sx * s[0] * 0.3, s[1] + 0.035, -s[2] / 2 - 0.035]], r: 0.005, smooth: false, mat: 'black' });
+    return out;
+  },
+  // a child's seat for a rack: a high back, side wings, a cushion, shoulder and lap belts to a buckle, footrests
+  'child-seat'(p) {
+    const shell = role(p, 'shell', { kind: 'plastic', color: p.color || '#2b2d31', finish: 'satin' });
+    const pad = role(p, 'pad', { kind: 'fabric', color: '#7b8576', weave: 700 }), belt = role(p, 'belt', M.webbing);
+    const buckle = role(p, 'buckle', { kind: 'plastic', color: '#c23b2a', finish: 'gloss' });
+    return [
+      { name: 'bracket', type: 'box', at: [0, 0.015, 0], size: [0.24, 0.03, 0.12], round: 0.008, mat: 'black' },
+      { name: 'shell', type: 'box', at: [0, 0.075, 0], size: [0.33, 0.09, 0.31], round: 0.03, mat: shell },
+      { name: 'cushion', type: 'seat', at: [0.02, 0.128, 0], size: [0.27, 0.045, 0.25], style: 'cushion', mat: pad },
+      { name: 'back', type: 'box', at: [-0.155, 0.36, 0], size: [0.05, 0.52, 0.31], round: 0.024, rot: [0, 0, 7], mat: shell },
+      { name: 'back pad', type: 'box', at: [-0.125, 0.35, 0], size: [0.02, 0.42, 0.24], round: 0.009, rot: [0, 0, 7], mat: pad },
+      { name: 'wing', type: 'box', at: [-0.03, 0.2, 0.155], size: [0.27, 0.15, 0.03], round: 0.014, mat: shell },
+      { name: 'wing', type: 'box', at: [-0.03, 0.2, -0.155], size: [0.27, 0.15, 0.03], round: 0.014, mat: shell },
+      { name: 'belt', type: 'beam', from: [-0.138, 0.52, 0.065], to: [0.03, 0.16, 0.02], w: 0.032, d: 0.006, up: [1, 0, 0], mat: belt },
+      { name: 'belt', type: 'beam', from: [-0.138, 0.52, -0.065], to: [0.03, 0.16, -0.02], w: 0.032, d: 0.006, up: [1, 0, 0], mat: belt },
+      { name: 'lap belt', type: 'beam', from: [-0.07, 0.16, 0.13], to: [0.03, 0.16, 0.025], w: 0.03, d: 0.006, up: [0, 1, 0], mat: belt },
+      { name: 'lap belt', type: 'beam', from: [-0.07, 0.16, -0.13], to: [0.03, 0.16, -0.025], w: 0.03, d: 0.006, up: [0, 1, 0], mat: belt },
+      { name: 'buckle', type: 'box', at: [0.035, 0.168, 0], size: [0.04, 0.03, 0.055], round: 0.008, mat: buckle },
+      { name: 'footrest', type: 'tube', from: [0.12, 0.05, 0.12], to: [0.17, -0.22, 0.125], r: 0.011, mat: 'black' },
+      { name: 'footrest', type: 'tube', from: [0.12, 0.05, -0.12], to: [0.17, -0.22, -0.125], r: 0.011, mat: 'black' },
+      { name: 'foot cup', type: 'box', at: [0.18, -0.235, 0.125], size: [0.1, 0.035, 0.06], round: 0.012, mat: shell },
+      { name: 'foot cup', type: 'box', at: [0.18, -0.235, -0.125], size: [0.1, 0.035, 0.06], round: 0.012, mat: shell },
+    ];
+  },
+  // a padded bench for seats children or passengers in a row, facing x: a back, and per seat two belts to a buckle
+  bench(p) {
+    const n = Math.max(1, Math.min(3, p.seats || 2)), w = p.width || 0.24 * n + 0.04;
+    const frame = role(p, 'frame', M.oak), pad = role(p, 'pad', { kind: 'fabric', color: p.color || '#5f6b5c', weave: 700 });
+    const belt = role(p, 'belt', M.webbing), buckle = role(p, 'buckle', { kind: 'plastic', color: '#c23b2a', finish: 'gloss' });
+    const out = [
+      { name: 'frame', type: 'box', at: [0, 0.04, 0], size: [0.25, 0.08, w], round: 0.01, mat: frame },
+      { name: 'cushion', type: 'seat', at: [0.02, 0.105, 0], size: [0.22, 0.05, w * 0.96], style: 'cushion', mat: pad },
+      { name: 'back', type: 'box', at: [-0.11, 0.27, 0], size: [0.045, 0.32, w * 0.96], round: 0.018, rot: [0, 0, 8], mat: pad },
+    ];
+    for (let i = 0; i < n; i++) {
+      const zc = (i - (n - 1) / 2) * (w / n);
+      out.push({ name: 'belt', type: 'beam', from: [-0.115, 0.4, zc + 0.05], to: [0.035, 0.14, zc + 0.012], w: 0.028, d: 0.006, up: [1, 0, 0], mat: belt });
+      out.push({ name: 'belt', type: 'beam', from: [-0.115, 0.4, zc - 0.05], to: [0.035, 0.14, zc - 0.012], w: 0.028, d: 0.006, up: [1, 0, 0], mat: belt });
+      out.push({ name: 'buckle', type: 'box', at: [0.04, 0.142, zc], size: [0.034, 0.028, 0.046], round: 0.007, mat: buckle });
+    }
+    return out;
+  },
+  // a cardboard parcel with a strip of tape and a label
+  parcel(p) {
+    const s = p.size || [0.3, 0.2, 0.24];
+    return [
+      { name: 'box', type: 'box', at: [0, s[1] / 2, 0], size: s, round: Math.min(...s) * 0.03, mat: role(p, 'card', p.color ? { ...M.card, color: p.color } : M.card) },
+      { name: 'tape', type: 'box', at: [0, s[1], 0], size: [s[0] + 0.002, 0.004, Math.min(0.05, s[2] * 0.22)], round: 0.0015, mat: M.tape },
+      { name: 'label', type: 'box', at: [0, s[1] * 0.55, s[2] / 2], size: [s[0] * 0.42, s[1] * 0.34, 0.003], round: 0.001, mat: M.paper },
+    ];
+  },
+  // a tabletop the product stands on; lit: { at: [x, z] (scene units), r, k } the pool of a lamp's light on it
+  desk(p) {
+    const s = p.size || [0.9, 0.032, 0.55];
+    const wood = role(p, 'wood', { kind: 'wood', color: p.color || '#a8774c', grain: 'x' });
+    return [{ name: 'top', type: 'box', at: [0, s[1] / 2, 0], size: s, round: Math.min(0.006, s[1] * 0.3), mat: p.lit ? { ...(typeof wood === 'string' ? BUILTIN[wood] || BUILTIN.wood : wood), lit: p.lit } : wood }];
+  },
+  // books: count of them stacked, boards, a spine and the page block
+  book(p) {
+    const s = p.size || [0.23, 0.03, 0.16], n = Math.max(1, Math.min(3, p.count || 1)), cols = p.colors || ['#2f4858', '#8a3b2e', '#b8a57c'];
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      const y = k * s[1], cover = { kind: 'fabric', color: cols[k % cols.length], weave: 800 }, tw = (k % 2 ? 5 : -3);
+      const b = [
+        { name: 'board', type: 'box', at: [0, y + 0.002, 0], size: [s[0], 0.004, s[2]], round: 0.0015, mat: cover },
+        { name: 'board', type: 'box', at: [0, y + s[1] - 0.002, 0], size: [s[0], 0.004, s[2]], round: 0.0015, mat: cover },
+        { name: 'spine', type: 'box', at: [-s[0] / 2 + 0.003, y + s[1] / 2, 0], size: [0.007, s[1], s[2]], round: 0.003, mat: cover },
+        { name: 'pages', type: 'box', at: [0.002, y + s[1] / 2, 0], size: [s[0] - 0.01, s[1] - 0.007, s[2] - 0.008], round: 0.001, mat: M.paper },
+      ];
+      out.push(...placeProp(b, { yaw: tw }));
+    }
+    return out;
+  },
+  // a mug: an open cup (a shade with straight walls), what is in it, a handle
+  mug(p) {
+    const r = p.r || 0.041, h = p.h || 0.095, cer = role(p, 'ceramic', p.color ? { ...M.ceramic, color: p.color } : M.ceramic);
+    return [
+      { name: 'cup', type: 'shade', from: [0, 0.003, 0], to: [0, h, 0], r1: r, r2: r, t: 0.0035, bulge: 0, mat: cer, innerMat: cer },
+      { name: 'coffee', type: 'cylinder', at: [0, h * 0.8, 0], r: r - 0.003, h: 0.004, round: 0.001, mat: { kind: 'plastic', color: '#3b2416', finish: 'gloss' } },
+      { name: 'handle', type: 'arc', at: [r + 0.002, h * 0.52, 0], axis: 'z', R: 0.025, a0: -80, a1: 80, size: [0.011, 0.01], mat: cer },
+    ];
+  },
+  // a sheet of paper lying flat
+  sheet(p) { const s = p.size || [0.297, 0.002, 0.21]; return [{ name: 'sheet', type: 'box', at: [0, s[1] / 2, 0], size: s, round: 0.0008, mat: role(p, 'paper', M.paper) }]; },
+  // a low tray or bin, open on top; parcels: how many small boxes in it
+  tray(p) {
+    const s = p.size || [0.42, 0.07, 0.3], out = [{ name: 'tray', type: 'basket', at: [0, s[1] / 2, 0], size: s, style: 'solid', t: 0.006, round: 0.012, mat: role(p, 'plastic', { kind: 'plastic', color: p.color || '#2e3238', finish: 'satin' }) }];
+    const n = Math.max(0, Math.min(4, p.parcels ?? 3));
+    // the parcels stand taller than the rim, so they read from any view
+    for (let i = 0; i < n; i++) out.push(...placeProp(PROPS.parcel({ size: [s[0] * 0.2, s[1] * 1.35, s[2] * 0.25] }), { at: [(i - (n - 1) / 2) * s[0] * 0.25, 0.008, (i % 2 ? 1 : -1) * s[2] * 0.15], yaw: (i * 23) % 40 - 15 }));
+    return out;
+  },
+};
+// a prop's parts moved to its place: turned about y by yaw (degrees), scaled, then moved to at
+function placeProp(list, { at = [0, 0, 0], yaw = 0, scale = 1, group } = {}) {
+  const Ry = euler([0, yaw, 0]);
+  const T = v => add(at, matVec(Ry, mul(v, scale)));
+  return list.map(p0 => {
+    const q = { ...p0 };
+    for (const k of LENGTH_KEYS) if (typeof q[k] === 'number') q[k] *= scale;
+    for (const k of LENGTH_ARRAYS) if (Array.isArray(q[k])) q[k] = q[k].map(v => v * scale);
+    if (q.from && q.to) { q.from = T(q.from); q.to = T(q.to); if (q.up) q.up = matVec(Ry, q.up); }
+    else if (q.points) q.points = q.points.map(T);
+    else { q.at = T(q.at || [0, 0, 0]); if (yaw) q._pre = q._pre ? matMul(Ry, q._pre) : Ry; }
+    if (group && !q.in) q.in = group;
+    return q;
+  });
+}
+function expandProps(list = []) {
+  return list.flatMap((p, i) => {
+    if (!p.prop) return [p];
+    const make = PROPS[p.prop];
+    if (!make) throw new Error(`product-render: unknown prop "${p.prop}" (one of ${Object.keys(PROPS).join(', ')})`);
+    const label = p.name || p.prop.replace(/-/g, ' ');
+    return placeProp(make(p), { at: p.at, yaw: p.yaw || 0, scale: p.scale || 1, group: p.in }).map(q => ({ ...q, name: `${label} ${q.name || 'part'}` }));
+  });
+}
+
+/* ------------------------------------------------------------------ scenes, colourways, views */
+/** the spec as a scene shows it (props added, parts hidden) in a colourway's materials */
+export function resolveSpec(spec, { scene, color } = {}) {
+  const sc = scene ? spec.scenes?.[scene] : null;
+  if (scene && !sc) throw new Error(`product-render: ${spec.id}: no scene "${scene}" (${Object.keys(spec.scenes || {}).join(', ') || 'none'})`);
+  const cw = color ? colorOf(spec, color) : null;
+  if (!sc && !cw?.materials) return spec;
+  const out = { ...spec, materials: { ...(spec.materials || {}), ...(sc?.materials || {}), ...(cw?.materials || {}) } };
+  if (sc) {
+    const hide = [].concat(sc.hide || []);
+    let props = [...expandProps(sc.props), ...(sc.parts || [])];
+    // lit: the light the product throws on what is round it (a lamp's pool on the desk, the book, the paper)
+    if (sc.lit) {
+      const lit = m => { const d = typeof m === 'string' ? (out.materials[m] || BUILTIN[m]) : m; const o = typeof d === 'string' ? BUILTIN[d] : d; return o && o.kind !== 'light' ? { ...o, lit: sc.lit } : m; };
+      props = props.map(p => ({ ...p, mat: lit(p.mat || 'graphite'), ...(p.innerMat ? { innerMat: lit(p.innerMat) } : {}), ...(p.type === 'basket' ? { rimMat: lit(p.rimMat || p.mat || 'black') } : {}) }));
+    }
+    out.parts = [...spec.parts.filter(p => !hide.some(n => nameMatch(p.name, n))), ...props];
+    if ('pool' in sc) out.pool = sc.pool;
+    if (sc.label) out.label = sc.label;
+    if (sc.click !== undefined) out.click = sc.click;
+  }
+  return out;
+}
+/** a colourway by id: { id, name, accent, materials? }; 'page' (or none) keeps the page's accent */
+export function colorOf(spec, id) {
+  if (!id || id === 'page') return null;
+  return (spec.colors || []).find(c => c.id === id) || null;
+}
+const STD_VIEWS = ['three-quarter', 'side', 'front', 'rear', 'top', 'low'];
+/** the views a spec has: the standard ones and its own (spec.views), or only those it lists in spec.supports (the views it draws well) */
+export const viewNames = spec => spec.supports ? [...new Set([].concat(spec.supports))] : [...new Set([...STD_VIEWS, ...Object.keys(spec.views || {})])];
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+/**
+  A view: a name ('three-quarter', 'side', 'side-left', 'front', 'rear', 'top', 'low', 'detail:<part>[,<part>]',
+  or one of spec.views) or { angle, elev, part, margin, from }. Front is the product's x toward the camera.
+  part: the named parts (a name takes the parts it begins: "saddle" takes "saddle spring R") are framed
+  and the rest of the product runs off the frame: a close-up. margin: room round what is framed. cover: the widest
+  frame (width over height; a tall one is covered to 1 : 1.25) a close-up's shot must fill with the product running on past the framed
+  parts, so the parts sit centred in a wide tile with no hard cut inside it (default 2; 1 frames only the margin).
+*/
+export function resolveView(spec, v = 'three-quarter') {
+  const a = spec.angle ?? -32, e = spec.camera?.elev ?? 12;
+  const std = {
+    'three-quarter': { angle: a, elev: e }, side: { angle: 0, elev: 3 }, 'side-left': { angle: 180, elev: 3 },
+    front: { angle: -90, elev: 7 }, rear: { angle: 90, elev: 7 }, top: { angle: a * 0.45, elev: 68 }, low: { angle: a * 0.85, elev: 1.5 },
+  };
+  let o, name;
+  if (typeof v === 'string') {
+    name = v;
+    // spec.supports: the views this product draws well. A view outside it (a bike from above reads as lying on its
+    // side) is refused, so no page shows it; a close-up of named parts (detail:<part>) is always the page's choice
+    if (spec.supports && !spec.supports.includes(v) && !/^detail[:-]/.test(v) && (spec.views?.[v] || STD_VIEWS.includes(v) || v === 'side-left')) {
+      throw new Error(`product-render: ${spec.id}: the view "${v}" is not one this product shows well (supports: ${viewNames(spec).join(', ')})`);
+    }
+    const own = spec.views?.[v];
+    if (own) o = { ...(std[own.from] || std['three-quarter']), ...own };
+    else if (std[v]) o = std[v];
+    else if (/^detail[:-]/.test(v)) o = { ...std['three-quarter'], elev: Math.max(e, 14), part: v.replace(/^detail[:-]/, '').split(',').map(s => s.trim()) };
+    else throw new Error(`product-render: ${spec.id}: no view "${v}" (${viewNames(spec).join(', ')}, or detail:<part name>)`);
+  } else {
+    o = { ...(std[v.from] || std['three-quarter']), ...v };
+    name = v.name || `a${Math.round(o.angle)}e${Math.round(o.elev)}${o.part ? '-' + [].concat(o.part).join('-') : ''}`;
+  }
+  const part = o.part ? [].concat(o.part) : null;
+  return { name, key: slug(name), angle: o.angle, elev: Math.max(0, Math.min(80, o.elev)), part, margin: o.margin ?? (part ? 1.3 : 1), cover: o.cover ?? 2, dist: o.dist ?? spec.camera?.dist ?? 6 };
+}
+/**
+  The framing of a view: the object moved across (off, before the turn) and the camera raised (ty) so
+  what is framed sits centred, and its half width and height as the camera sees it (ex), so print3d's
+  size is the share of the frame the product fills: 0.86 fills 86% of the width or the height, whichever
+  is tighter. swingK: the size to keep the whole sway inside that frame.
+*/
+function frameView(focus, all, v, swing) {
+  const e = v.elev * DEG, ce = Math.cos(e), se = Math.sin(e), D = v.dist;
+  const proj = (pts, yawDeg, off, ty) => {
+    const a = yawDeg * DEG, c = Math.cos(a), s = Math.sin(a);
+    const b = [Infinity, -Infinity, Infinity, -Infinity];
+    for (const q of pts) {
+      const ax = q[0] + off[0], ay = q[1] - ty, az = q[2] + off[2];
+      const wx = c * ax + s * az, wz = -s * ax + c * az;
+      const dy = ay - D * se, dz = wz - D * ce;
+      const yu = ce * dy - se * dz, zf = -se * dy - ce * dz;
+      const ux = (D * wx) / zf, uy = (D * yu) / zf;
+      if (ux < b[0]) b[0] = ux; if (ux > b[1]) b[1] = ux; if (uy < b[2]) b[2] = uy; if (uy > b[3]) b[3] = uy;
+    }
+    return b;
+  };
+  const lo = [0, 1, 2].map(k => Math.min(...focus.map(q => q[k]))), hi = [0, 1, 2].map(k => Math.max(...focus.map(q => q[k])));
+  let off = [-(lo[0] + hi[0]) / 2, 0, -(lo[2] + hi[2]) / 2], ty = (lo[1] + hi[1]) / 2;
+  const a = v.angle * DEG;
+  for (let i = 0; i < 6; i++) {
+    const b = proj(focus, v.angle, off, ty), cx = (b[0] + b[1]) / 2, cy = (b[2] + b[3]) / 2;
+    off = [off[0] - Math.cos(a) * cx, 0, off[2] - Math.sin(a) * cx];
+    ty += cy / ce;
+  }
+  const b = proj(focus, v.angle, off, ty);
+  const exF = [Math.max(-b[0], b[1], 1e-3), Math.max(-b[2], b[3], 1e-3)];   // the framed parts' own half extents
+  const ex = [exF[0] * v.margin, exF[1] * v.margin];
+  // a close-up: where the rest of the product runs on past the shot, the shot reaches as far as a wide (or tall) frame
+  // centred on the framed parts will show (v.cover), up to the product's own end, so the parts can be centred in any such
+  // frame and the product still runs off its edges. (The frame keeps the parts at about 0.84 of its tight side.)
+  if (v.part && v.cover > 1) {
+    const bb = proj(all, v.angle, off, ty), ox = Math.max(-bb[0], bb[1]) * 1.03, oy = Math.max(-bb[2], bb[3]) * 1.03;
+    ex[0] = Math.max(ex[0], Math.min(v.cover / 0.84 * exF[1], ox));
+    ex[1] = Math.max(ex[1], Math.min(Math.min(v.cover, 1.25) / 0.84 * exF[0], oy));   // a tall frame is rarer than a wide one: covered to 1 : 1.25
+  }
+  let swingK = 1;
+  if (swing) {
+    let ux = 0, uy = 0;
+    const steps = swing >= 180 ? [-180, -150, -120, -90, -60, -30, 30, 60, 90, 120, 150] : [-1, -0.5, 0.5, 1].map(k => k * swing);
+    for (const d of steps) { const bb = proj(focus, v.angle + d, off, ty); ux = Math.max(ux, -bb[0], bb[1]); uy = Math.max(uy, -bb[2], bb[3]); }
+    swingK = Math.min(1, ex[0] / ux, ex[1] / uy);
+  }
+  // the rays' bounding sphere and the floor's reach, about the new pivot
+  let bound = 0, foot = 0;
+  for (const q of all) {
+    const x = q[0] + off[0], z = q[2] + off[2];
+    bound = Math.max(bound, Math.hypot(x, q[1] - ty, z));
+    foot = Math.max(foot, Math.hypot(x, z));
+  }
+  return { off, ty, ex, exF, swingK, bound, foot };
+}
+
 /* ------------------------------------------------------------------ the build */
 const knownKind = new Set(Object.keys(PARTS));
 
 /** problems with a spec, as plain lines (empty when it builds) */
-export function checkSpec(spec) {
+export function checkSpec(spec, opts = {}) {
   const out = [];
   if (!spec || typeof spec !== 'object') return ['the spec is not an object'];
   if (!Array.isArray(spec.parts) || !spec.parts.length) out.push('parts: a non-empty list is needed');
@@ -418,7 +773,35 @@ export function checkSpec(spec) {
     const mat = p.mat;
     if (typeof mat === 'string' && !(spec.materials || {})[mat] && !BUILTIN[mat]) out.push(`${at}: unknown material "${mat}"`);
   });
-  if ((spec.parts || []).length > 90) out.push(`parts: ${spec.parts.length} parts; keep a product under about 90 (each one is evaluated per ray step)`);
+  const limit = opts.limit || 90;
+  if ((spec.parts || []).length > limit) out.push(`parts: ${spec.parts.length} parts; keep a product under about ${limit} (each one is evaluated per ray step)`);
+  if (opts.deep !== false) {
+    // its scenes, views and colourways
+    const names = (spec.parts || []).map(p => p.name).filter(Boolean);
+    for (const [id, sc] of Object.entries(spec.scenes || {})) {
+      for (const n of [].concat(sc.hide || [])) if (!names.some(m => nameMatch(m, n))) out.push(`scenes.${id}.hide: no part named "${n}"`);
+      for (const p of sc.props || []) if (p.prop && !PROPS[p.prop]) out.push(`scenes.${id}: unknown prop "${p.prop}" (one of ${Object.keys(PROPS).join(', ')})`);
+      try { out.push(...checkSpec(resolveSpec(spec, { scene: id }), { limit: 110, deep: false }).map(s => `scenes.${id}: ${s}`)); } catch (e) { out.push(`scenes.${id}: ${e.message}`); }
+    }
+    for (const [id, v] of Object.entries(spec.views || {})) {
+      for (const n of [].concat(v.part || [])) if (!names.some(m => nameMatch(m, n))) out.push(`views.${id}.part: no part named "${n}"`);
+    }
+    if (spec.supports !== undefined) {
+      if (!Array.isArray(spec.supports) || !spec.supports.length) out.push('supports: a non-empty list of view names (the views this product draws well)');
+      else {
+        const known = new Set([...STD_VIEWS, 'side-left', ...Object.keys(spec.views || {})]);
+        for (const n of spec.supports) if (!known.has(n) && !/^detail[:-]/.test(n)) out.push(`supports: "${n}" is no view of this spec (${[...known].join(', ')})`);
+        if (!spec.supports.includes('three-quarter')) out.push('supports: keep "three-quarter" (the three-quarter view is the hero)');
+        for (const v of spec.make?.variants || []) { const n = String(v).split('+')[0]; if (!spec.supports.includes(n) && !/^detail[:-]/.test(n)) out.push(`make.variants: "${n}" is not in supports`); }
+      }
+    }
+    const ids = new Set();
+    for (const c of spec.colors || []) {
+      if (!c.id || ids.has(c.id)) out.push(`colors: every colourway needs its own id (${c.id || 'none'})`);
+      ids.add(c.id);
+      if (!c.accent && !c.materials) out.push(`colors.${c.id}: give it an accent (#hex) or materials`);
+    }
+  }
   return out;
 }
 
@@ -426,8 +809,9 @@ export function checkSpec(spec) {
   build(spec, { base }) -> a print object (definePrint), ready to mount.
   base: the URL the spec came from (posters are found beside it).
 */
-export function build(spec, { base } = {}) {
-  const problems = checkSpec(spec);
+export function build(spec0, { base, view, scene, color, grounds } = {}) {
+  const spec = resolveSpec(spec0, { scene, color });
+  const problems = checkSpec(spec, { limit: scene ? 110 : 90, deep: !scene });
   if (problems.length) throw new Error(`product-render: ${spec?.id || 'spec'}:\n  ${problems.join('\n  ')}`);
   /* materials: one id per distinct material (wheels, joints, shades and baskets take several) */
   const mats = [], matKey = new Map();
@@ -485,14 +869,33 @@ export function build(spec, { base } = {}) {
   // object space: the floor at the lowest point at rest, centred over the floor plan, the largest side 1 unit
   const cx = (restLo[0] + restHi[0]) / 2, cz = (restLo[2] + restHi[2]) / 2, y0 = restLo[1];
   const S = 1 / Math.max(restHi[0] - restLo[0], restHi[1] - restLo[1], restHi[2] - restLo[2]);
-  const P = v => [(v[0] - cx) * S, (v[1] - y0) * S, (v[2] - cz) * S];
+  const P0 = v => [(v[0] - cx) * S, (v[1] - y0) * S, (v[2] - cz) * S];
   // the radius about the turn's axis and the height, over every pose
   let rxz = 0;
   for (const pt of parts) {
     const c = chain(pt.spec.in), cs = corners(pt);
-    for (const ang of poses(c)) for (const v of posed(cs, c, ang)) { const q = P(v); rxz = Math.max(rxz, Math.hypot(q[0], q[2])); }
+    for (const ang of poses(c)) for (const v of posed(cs, c, ang)) { const q = P0(v); rxz = Math.max(rxz, Math.hypot(q[0], q[2])); }
   }
   const height = (hi[1] - y0) * S;
+
+  /* a view (fit): the product framed as the camera sees it from that view, centred, at the frame's scale */
+  let fit = null, vw = null, off = [0, 0, 0];
+  if (view) {
+    vw = resolveView(spec0, view);
+    const restPts = [], allPts = [], focusPts = [];
+    for (const pt of parts) {
+      const c = chain(pt.spec.in), cs = partSamples(pt);
+      const rest = posed(cs, c, c.map(g => (g.rest || 0) * DEG)).map(P0);
+      for (const q of rest) restPts.push(q);
+      if (vw.part && vw.part.some(n => nameMatch(pt.spec.name, n))) for (const q of rest) focusPts.push(q);
+      for (const ang of poses(c)) for (const v of posed(cs, c, ang)) allPts.push(P0(v));
+    }
+    if (vw.part && !focusPts.length) throw new Error(`product-render: ${spec.id}: view "${vw.name}": no part named ${vw.part.join(', ')}`);
+    const swing = spec.turn?.mode === 'still' ? 0 : spec.turn?.mode === 'spin' ? 180 : (spec.turn?.amp ?? 26);
+    fit = frameView(focusPts.length ? focusPts : restPts, allPts, vw, swing);
+    off = fit.off;
+  }
+  const P = v => { const q = P0(v); return [q[0] + off[0], q[1], q[2] + off[2]]; };
 
   /* GLSL: the groups' points, then each part (skipped when its bounding sphere is further than the best so far) */
   const on = spec.click === 'light' ? 'u_step' : '1.0';
@@ -539,7 +942,7 @@ export function build(spec, { base } = {}) {
 
   let surf = 'void surf(float id, vec3 p, vec3 n, inout Surf s) {\n';
   mats.forEach((m, i) => {
-    const g = materialGlsl(m, on);
+    const g = materialGlsl(m, on, P, S);
     surf += `  ${i ? 'else ' : ''}if (id < ${f(i + 1.5)}) { if (u_render > 0.5) { ${g.render} } else { ${g.print} } }\n`;
   });
   surf += '}\n';
@@ -562,7 +965,10 @@ export function build(spec, { base } = {}) {
   const turn = spec.turn?.mode === 'spin' ? { mode: 'spin', speed: spec.turn.speed ?? 10 }
     : { mode: 'sway', amp: spec.turn?.amp ?? 26, period: spec.turn?.period ?? 22 };
   const name = spec.name || spec.id || 'Product';
-  const posterName = spec.poster || spec.id || 'product';
+  const posterName0 = spec.poster || spec.id || 'product';
+  // a view's posters carry its name (and the scene's, and a colourway's that changes materials)
+  const posterName = fit ? `${posterName0}-${variantKey({ view: vw.name, scene, color: colorOf(spec0, color)?.materials ? color : null })}` : posterName0;
+  const made = fit ? (grounds || []) : ['light', 'dark'];
   const def = {
     id: spec.id || 'product',
     name,
@@ -600,15 +1006,31 @@ export function build(spec, { base } = {}) {
       card: { transparent: 1, size: 1.2, x: -0.22, y: -0.18, narrow: { size: 1.0, x: -0.15, y: -0.14 } },
     },
     // the posters beside the spec: <poster>.fallback-render.png / .fallback-render-dark.png (a print: .fallback.png / .fallback-dark.png); print3d reads "fallback-render" in the name as a render poster
-    poster: (palette, dark, render) => `./${posterName}.fallback${render ? '-render' : ''}${dark ? '-dark' : ''}.png`,
+    // a view whose posters were not made falls back to the spec's own turntable poster (<poster>.fallback-render.png, when the
+    // spec ships one), so a page without WebGL still shows the product; a print view without posters shows nothing until it draws
+    poster: (palette, dark, render) => (made.length ? `./${posterName}.fallback${render ? '-render' : ''}${dark && made.includes('dark') ? '-dark' : ''}.png`
+      : fit && render ? `./${posterName0}.fallback-render${dark ? '-dark' : ''}.png` : CLEAR_PX),
     posterPrint: 'halftone',
   };
+  if (fit) {
+    // the view's framing replaces the turntable's: centred on what is framed, the extent as the camera sees it
+    Object.assign(def, {
+      pivot: [0, fit.ty, 0], camera: { elev: vw.elev, dist: vw.dist, target: fit.ty },
+      extent: fit.ex, bound: fit.bound * 1.03 + 0.01, foot: Math.max(fit.foot, 0.05),
+      place: Object.fromEntries(Object.entries(FILL).map(([k, s]) => [k, { transparent: 1, size: s, x: 0, y: 0 }])),
+    });
+    def.params.angle = { default: vw.angle };
+  }
   const obj = definePrint(def);
   obj.spec = spec;
+  obj.posterName = posterName;
+  obj.fit = fit ? { ...fit, view: vw, scene: scene || null } : null;
   obj.problems = () => glslProblems(obj.source().form);
   // mount: a phone or a coarse pointer shows one still frame (turn 0) unless the page asks for the turn;
   // only one product render a page turns (the first mounted); the others hold still until touched
   const mount0 = obj.mount.bind(obj);
+  obj.mount0 = mount0;
+  if (fit) return obj;   // a view is mounted by mountProduct (below), which decides the turn, the still and the colour
   obj.mount = (el, opts = {}) => {
     const given = { ...(opts.params || {}) };
     const phone = HAS_DOM && (matchMedia('(max-width: 700px)').matches || matchMedia('(pointer: coarse)').matches);
@@ -634,12 +1056,332 @@ function scaleSpec(p, S, P) {
   return o;
 }
 
-/** fetch a spec (a URL relative to the page) and build it */
+/* ------------------------------------------------------------------ the product: its views, scenes, colours and stills */
+// the share of the frame the product fills at each place (the product's bounds, the tighter way)
+const FILL = { hero: 0.88, stage: 0.86, tile: 0.84, card: 0.9, none: 0.86 };
+const CLEAR_PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+/** the name of a variant's files: view, then scene, then a colourway that changes materials ('side', 'three-quarter-loaded') */
+export function variantKey({ view = 'three-quarter', scene, color, off } = {}) {
+  const v = typeof view === 'string' ? view : view.name || `a${Math.round(view.angle ?? 0)}e${Math.round(view.elev ?? 0)}`;
+  return [slug(v), scene && slug(scene), color && slug(color), off && 'off'].filter(Boolean).join('-');
+}
+
+/**
+  The product a spec describes (loadProduct gives it):
+    product.mount(el, { place, view, scene, color, mode, fill, params, palette }) -> controller
+    product.variant({ view, scene, color })   the built print object of one view (cached)
+    product.views, product.scenes, product.colors, product.still({ view, scene, color, ground, off })
+  manifest: <poster>.stills.json beside the spec (make-posters.mjs writes it), what was made.
+*/
+export function makeProduct(spec, { base, manifest = null } = {}) {
+  const cache = new Map();
+  const product = {
+    spec, base, manifest,
+    id: spec.id, name: spec.name,
+    get views() { return viewNames(spec); },
+    get scenes() { return Object.keys(spec.scenes || {}); },
+    get colors() { return spec.colors || []; },
+    defaultColor: spec.colors?.length ? spec.colors[0].id : null,
+    color: id => colorOf(spec, id),
+    /** a variant's print object; color only matters for a colourway that changes materials */
+    variant({ view = 'three-quarter', scene = null, color = null } = {}) {
+      const mc = colorOf(spec, color)?.materials ? color : null;
+      const vn = resolveView(spec, view).name;
+      const key = variantKey({ view: vn, scene, color: mc });
+      if (!cache.has(key)) cache.set(key, build(spec, { base, view, scene, color: mc, grounds: manifest?.variants?.[key]?.grounds || [] }));
+      return cache.get(key);
+    },
+    /** the legacy turntable (the old places: the product right of the words in a wide frame) */
+    legacy() { if (!cache.has('')) cache.set('', build(spec, { base })); return cache.get(''); },
+    /** a still image make-posters.mjs made: { src, src2 (half size), w, h, box [x0, y0, x1, y1] (the product, 0..1) } or null */
+    still({ view = 'three-quarter', scene = null, color, ground = 'light', off = false } = {}) {
+      if (!manifest) return null;
+      let vn;
+      try { vn = resolveView(spec, view).name; } catch (_) { return null; }
+      const mc = colorOf(spec, color)?.materials ? color : null;
+      const v = manifest.variants?.[variantKey({ view: vn, scene, color: mc, off })];
+      if (!v) return null;
+      const g = v.stills?.[ground] || v.stills?.light;
+      const s = g && (g[color || product.defaultColor || 'page'] || g[Object.keys(g)[0]]);
+      return s ? { ...s, src: new URL(s.file, base).href, src2: s.half ? new URL(s.half, base).href : null, box: v.box, focus: v.focus || null, cut: v.cut || null } : null;
+    },
+    mount(el, opts = {}) { return mountProduct(product, el, opts); },
+    problems() { return product.legacy().problems(); },
+    posterPrint: 'halftone',
+  };
+  return product;
+}
+
+/** fetch a spec (a URL relative to the page) and make its product (with what make-posters made for it) */
 export async function loadProduct(url) {
   const href = new URL(url, HAS_DOM ? document.baseURI : 'file:///').href;
   const res = await fetch(href);
   if (!res.ok) throw new Error(`product-render: no spec at ${href}`);
-  return build(await res.json(), { base: href });
+  const spec = await res.json();
+  let manifest = null;
+  if (spec.make) {
+    const m = await fetch(new URL(`./${spec.poster || spec.id}.stills.json`, href).href, { cache: 'no-cache' }).catch(() => null);
+    if (m && m.ok) manifest = await m.json().catch(() => null);
+  }
+  return makeProduct(spec, { base: href, manifest });
 }
 
-export default { build, loadProduct, checkSpec, PARTS: Object.keys(PARTS), MATERIALS: Object.keys(BUILTIN) };
+/* ------------------------------------------------------------------ mounting a product on the page */
+/*
+  Three ways to show a view, picked per mount (mode, default 'auto'):
+    live   print3d's render: the turn, the pointer's light, a lamp's click; a WebGL context while it moves
+    image  the still make-posters.mjs made for this view, scene and colour: an <img>, no WebGL at all
+    still  the view rendered once at the frame's size, kept as an <img>; its context freed and its
+           canvases taken off the page (no checker counts them), rendered again on a resize or a colour
+  auto: image when make-posters made the still (unless params.turn > 0 asks for the turn); else live when
+  it turns (the first product mounted, the default view, a wide screen, no reduced motion); else still.
+  The page reads what each frame does: data-product-mode, data-product-state (image | still | live |
+  poster), and window.__tpProduct { stills, images, live, freed } counts them.
+*/
+const turningMounts = new Set();
+let stillChain = Promise.resolve();
+const queueStill = fn => (stillChain = stillChain.then(fn, fn));
+const stats = HAS_DOM ? (window.__tpProduct = window.__tpProduct || { stills: 0, images: 0, live: 0, freed: 0 }) : {};
+
+export function mountProduct(product, el, opts = {}) {
+  const spec = product.spec;
+  const given = { ...(opts.params || {}) };
+  if (opts.fit === false || opts.place === 'legacy') return product.legacy().mount(el, { ...opts, place: opts.place === 'legacy' ? 'hero' : opts.place });
+  const st = {
+    view: opts.view || (given.angle != null ? { angle: given.angle, elev: given.elev ?? spec.camera?.elev ?? 12 } : 'three-quarter'),
+    scene: opts.scene || null,
+    color: opts.color ?? product.defaultColor,
+    on: given.step != null ? given.step > 0 : true,
+  };
+  if (typeof st.view === 'string') resolveView(spec, st.view);   // a view the spec does not show (spec.supports) stops here, so auto.js reports it (data-product-error)
+  const place = typeof opts.place === 'string' ? opts.place : 'stage';
+  let fill = Math.max(0.3, Math.min(1.2, opts.fill ?? given.size ?? FILL[place] ?? 0.86));
+  const mq = q => HAS_DOM && matchMedia(q).matches;
+  const reduced = () => mq('(prefers-reduced-motion: reduce)');
+  const phone = () => mq('(max-width: 700px)') || mq('(pointer: coarse)');
+  const mode0 = opts.mode || 'auto';
+  const label = el.getAttribute('aria-label') || spec.label || spec.name;
+  const clickable = spec.click === 'light' && given.interactive !== 0;
+  let inner = null, img = null, mode = '', token = 0, destroyed = false, shownRes = null, lastSize = [0, 0], rt = 0;
+  let shown = new Promise(r => (shownRes = r));
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  const overflow0 = el.style.overflow;
+  el.classList.add('product-render');
+
+  const isDefault = () => st.view === 'three-quarter' && !st.scene;
+  const turns = () => {
+    const t = given.turn ?? (isDefault() && spec.turn?.mode !== 'still' ? 1 : 0);
+    return t > 0 && !reduced() && !phone() && (!turningMounts.size || turningMounts.has(api));
+  };
+  const ground = () => { const p = palette(); return lightOf(p.bg) < 0.5 ? 'dark' : 'light'; };
+  const stillOf = () => product.still({ view: st.view, scene: st.scene, color: st.color, ground: ground(), off: clickable && !st.on });
+  function palette() {
+    const p = opts.palette ? normalizePalette(opts.palette) : readPalette(el);
+    const cw = colorOf(spec, st.color);
+    return cw?.accent ? { ...p, accent: cw.accent } : p;
+  }
+  function setRole() {
+    el.setAttribute('aria-label', label);
+    if (clickable && mode !== 'live') {
+      el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-pressed', String(st.on));
+    } else if (mode !== 'live') { el.setAttribute('role', 'img'); el.removeAttribute('tabindex'); el.removeAttribute('aria-pressed'); }
+    else { el.removeAttribute('role'); el.removeAttribute('tabindex'); el.removeAttribute('aria-pressed'); }
+  }
+  function clearInner() {
+    if (inner) { const c = inner; inner = null; try { c.release?.(); c.destroy(); stats.freed++; } catch (_) { /* gone */ } }
+    turningMounts.delete(api);
+  }
+  function done() { if (shownRes) { shownRes(api); shownRes = null; } }
+
+  // the picture as an <img>: a still from make-posters (placed by its product box) or a frame rendered here (the whole frame)
+  function showImage(src, s) {
+    const im = new Image();
+    im.decoding = 'async'; im.alt = ''; im.draggable = false; im.className = 'product-render__img';
+    im.setAttribute('aria-hidden', 'true');
+    Object.assign(im.style, { position: 'absolute', display: 'block', maxWidth: 'none', pointerEvents: 'none', userSelect: 'none', opacity: '0', transition: 'opacity 240ms ease' });
+    im._s = s;
+    const old = img;
+    im.onload = () => {
+      if (destroyed || !im.isConnected) return;
+      img = im; layout();
+      requestAnimationFrame(() => { im.style.opacity = '1'; });
+      if (old && old !== im) setTimeout(() => { if (old._url) URL.revokeObjectURL(old._url); old.remove(); }, reduced() ? 0 : 260);
+      done();
+    };
+    im.onerror = () => { if (!destroyed) { el.dataset.productError = `no still at ${src}`; im.remove(); if (mode === 'image') { mode = 'still'; queueStill(() => renderStill(token)); } } };
+    if (src.startsWith('blob:')) im._url = src;
+    if (s?.src2 && s.w) im.srcset = `${s.src2} ${Math.round(s.w / 2)}w, ${s.src} ${s.w}w`;
+    im.src = src;
+    el.appendChild(im);
+  }
+  function layout() {
+    if (!img) return;
+    const w = el.clientWidth, h = el.clientHeight, s = img._s;
+    if (!s || !s.box) { Object.assign(img.style, { left: '0px', top: '0px', width: w + 'px', height: h + 'px' }); return; }
+    // the product's box (a close-up: the framed parts' box) fills `fill` of the frame (the tighter way), centred; the
+    // shadow round it may run past. A close-up's cut sides (where the rest of the product runs off the shot) are kept
+    // at or past the frame's edge, so no hard cut shows inside the frame: the picture slides toward them, and grows
+    // when sliding alone cannot do it (the frame clips it: overflow hidden while a close-up shows).
+    const [x0, y0, x1, y1] = s.focus || s.box, bw = (x1 - x0) * s.w, bh = (y1 - y0) * s.h;
+    const cut = s.cut || [0, 0, 0, 0];
+    const k0 = fill * Math.min(w / bw, h / bh);
+    // one axis: the image's start (px) for size `is` in a frame of size `fs`, centred on the focus [f0, f1], or null
+    const axis = (is, fs, f0, f1, lo, hi, nudge) => {
+      let a = fs / 2 - ((f0 + f1) / 2) * is + nudge, min = -f0 * is, max = fs - f1 * is;   // the focus stays inside
+      if (lo) max = Math.min(max, 0);
+      if (hi) min = Math.max(min, fs - is);
+      return min <= max + 0.5 ? Math.min(Math.max(a, min), Math.max(min, max)) : null;
+    };
+    let k = k0, left = 0, top = 0;
+    for (let i = 0; i < 40; i++, k *= 1.05) {
+      const iw = s.w * k, ih = s.h * k;
+      const l = axis(iw, w, x0, x1, cut[0], cut[2], (given.x || 0) * w), t = axis(ih, h, y0, y1, cut[1], cut[3], -(given.y || 0) * h);
+      if (l != null && t != null) { left = l; top = t; break; }
+      left = w / 2 - ((x0 + x1) / 2) * iw; top = h / 2 - ((y0 + y1) / 2) * ih;
+    }
+    const iw = s.w * k, ih = s.h * k;
+    el.style.overflow = s.cut ? 'hidden' : overflow0;
+    Object.assign(img.style, { left: left + 'px', top: top + 'px', width: iw + 'px', height: ih + 'px' });
+    if (img.srcset) img.sizes = Math.round(iw) + 'px';
+  }
+  // print3d's size for a view in this frame: the share of the frame its extent fills. A close-up's extent runs wider than its parts
+  // (the shot's cover), so its size is the one that makes the framed parts fill `fill` of the frame, the tighter way
+  function sizeFor(v) {
+    if (!v.fit.view.part) return fill;
+    const w = el.clientWidth || 1, h = el.clientHeight || 1, [ex, exF] = [v.fit.ex, v.fit.exF];
+    return Math.min(1.8, fill * Math.min(w / (2 * exF[0]), h / (2 * exF[1])) / Math.min(w / (2 * ex[0]), h / (2 * ex[1])));
+  }
+  // the view rendered once here at the frame's size, then only an <img>: the context and its canvases go. Its product is
+  // measured (alpha) and placed by layout() as a make-posters still is, so a frame in 'still' mode fills the place's share
+  // (hero .88, stage .86, tile .84, card .9) exactly as a poster still does, centred, and a close-up is centred on its parts
+  async function renderStill(my) {
+    if (destroyed || my !== token) return;
+    const v = product.variant(st), vw = v.fit.view;
+    clearInner();
+    const size = sizeFor(v);
+    const c = v.mount0(el, { palette: palette(), params: { transparent: 1, size, x: given.x || 0, y: given.y || 0, turn: 0, interactive: 0, step: st.on ? 1 : 0, shadow: given.shadow } });
+    inner = c;
+    lastSize = [el.clientWidth, el.clientHeight];
+    await c.ready();
+    if (destroyed || my !== token || inner !== c) return;
+    if (c.info.fallback) { c.release(); el.dataset.productState = 'poster'; done(); return; }   // its poster stays
+    c.pose({ t: 0, step: st.on ? 1 : 0 });
+    const cv = c.canvas;
+    const blob = cv ? await new Promise(r => cv.toBlob(r, 'image/webp', 0.94)) : null;   // the bitmap is taken now, in this task
+    if (destroyed || my !== token) return;
+    const W = cv ? cv.width : 0, H = cv ? cv.height : 0, ex = v.fit.ex;
+    clearInner();
+    if (!blob) return;
+    let s = null;
+    try { s = await measureStill(blob, W, H, ex, v.fit.exF, size, vw); } catch (_) { s = null; }   // not measured: the whole frame, as before
+    if (destroyed || my !== token) return;
+    stats.stills++;
+    el.dataset.productState = 'still';
+    showImage(URL.createObjectURL(blob), s);
+  }
+  // the product's box in a still (its opaque pixels: the floor shadow is partly clear), and for a close-up the framed parts' box
+  // (the framing's own, centred) and the sides where the rest of the product runs off the picture
+  async function measureStill(blob, W, H, ex, exF, size, vw) {
+    const bmp = await createImageBitmap(blob);
+    const k = Math.min(1, 900 / Math.max(W, H)), w = Math.max(1, Math.round(W * k)), h = Math.max(1, Math.round(H * k));
+    const cv2 = document.createElement('canvas'); cv2.width = w; cv2.height = h;
+    const x = cv2.getContext('2d', { willReadFrequently: true });
+    x.drawImage(bmp, 0, 0, w, h); bmp.close?.();
+    const d = x.getImageData(0, 0, w, h).data;
+    const b = [w, h, -1, -1];
+    for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) if (d[(yy * w + xx) * 4 + 3] > 200) { if (xx < b[0]) b[0] = xx; if (xx > b[2]) b[2] = xx; if (yy < b[1]) b[1] = yy; if (yy > b[3]) b[3] = yy; }
+    if (b[2] < 0) return null;
+    const s = { w: W, h: H, box: [b[0] / w, b[1] / h, (b[2] + 1) / w, (b[3] + 1) / h].map(v => +v.toFixed(4)) };
+    if (vw.part) {
+      const ppu = size * Math.min(W / (2 * ex[0]), H / (2 * ex[1])), fx = exF[0] * ppu / W, fy = exF[1] * ppu / H;
+      s.focus = [0.5 - fx, 0.5 - fy, 0.5 + fx, 0.5 + fy].map(v => +Math.min(1, Math.max(0, v)).toFixed(4));
+      s.cut = [b[0] <= 1, b[1] <= 1, b[2] >= w - 2, b[3] >= h - 2].map(Number);
+    }
+    return s;
+  }
+  function mountLive(turn) {
+    const v = product.variant(st);
+    inner = v.mount0(el, { palette: palette(), params: { transparent: 1, size: sizeFor(v) * (turn ? v.fit.swingK : 1), x: given.x || 0, y: given.y || 0, turn: turn ? 1 : 0, step: st.on ? 1 : 0, shadow: given.shadow, interactive: given.interactive } });
+    if (turn) turningMounts.add(api);
+    stats.live++;
+    el.dataset.productState = 'live';
+    const poll = () => { if (!inner || destroyed) return; const i = inner.info; if (i.shown || i.fallback || i.still === 'frame') done(); else setTimeout(poll, 120); };
+    poll();
+  }
+  function show() {
+    const my = ++token;
+    const turn = turns();
+    const s = stillOf();
+    // auto: the still make-posters made, when there is one and the page did not ask for the turn (no WebGL on the
+    // page at all); else the turn where it may turn; else one frame rendered here and freed
+    mode = mode0 === 'auto' ? (s && !(given.turn > 0) ? 'image' : turn ? 'live' : s ? 'image' : 'still') : mode0 === 'image' && !s ? 'still' : mode0;
+    el.dataset.productMode = mode;
+    el.dataset.productView = typeof st.view === 'string' ? st.view : resolveView(spec, st.view).name;
+    if (st.color) el.dataset.productColorShown = st.color;
+    setRole();
+    if (mode !== 'live' || !inner) clearInner();
+    if (mode === 'live') { if (!inner) mountLive(turn); return; }
+    if (img && mode === 'image' && img._s && img._s.src === s.src) { done(); return; }
+    if (mode === 'image') { stats.images++; el.dataset.productState = 'image'; showImage(s.src, s); return; }
+    queueStill(() => renderStill(my));
+  }
+  // a lamp: a click switches it (the live render does this itself)
+  const toggle = () => { if (mode === 'live' || !clickable) return; st.on = !st.on; show(); };
+  const onKey = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } };
+  el.addEventListener('click', toggle);
+  el.addEventListener('keydown', onKey);
+  const ro = HAS_DOM ? new ResizeObserver(() => {
+    layout();
+    if (mode !== 'still') return;
+    const w = el.clientWidth, h = el.clientHeight;
+    if (Math.abs(w - lastSize[0]) > lastSize[0] * 0.08 || Math.abs(h - lastSize[1]) > lastSize[1] * 0.08) { clearTimeout(rt); rt = setTimeout(show, 320); }
+  }) : null;
+  ro?.observe(el);
+
+  const api = {
+    get mode() { return mode; },
+    get view() { return st.view; },
+    get scene() { return st.scene; },
+    get color() { return st.color; },
+    get colors() { return spec.colors || []; },
+    get canvas() { return inner?.canvas || null; },
+    get params() { return inner ? inner.params : { size: fill, angle: resolveView(spec, st.view).angle }; },
+    get info() {
+      if (inner) return { ...inner.info, mode };
+      return { mode, webgl: 0, live: false, shown: !!img, still: img ? 'frame' : '', fallback: null, running: false, dirty: false, near: true, turning: false };
+    },
+    /** a colourway by id (spec.colors): the image swaps to its still, a live render takes its colours */
+    setColor(id) {
+      if (id === st.color || (id && !colorOf(spec, id) && id !== 'page')) return;
+      const before = colorOf(spec, st.color)?.materials, after = colorOf(spec, id)?.materials;
+      st.color = id;
+      el.dataset.productColorShown = id;
+      if (mode === 'live' && inner && !before && !after) { inner.setPalette(palette()); return; }
+      clearInner(); show();
+    },
+    setView(v) { if (typeof v === 'string') resolveView(spec, v); st.view = v; clearInner(); show(); },
+    setScene(s) { st.scene = s || null; clearInner(); show(); },
+    pause() { inner?.pause(); }, resume() { inner?.resume(); },
+    get paused() { return !!inner?.paused; },
+    step(on) { if (mode === 'live') inner?.step(on); else { st.on = on == null ? !st.on : !!on; show(); } },
+    set(next = {}) { Object.assign(given, next); if (next.size != null) fill = next.size; if (next.angle != null) st.view = { angle: next.angle, elev: next.elev ?? resolveView(spec, st.view).elev }; clearInner(); show(); return api.params; },
+    setPalette(p) { if (p !== undefined) opts = { ...opts, palette: p || undefined }; if (mode === 'live' && inner) inner.setPalette(palette()); else show(); },
+    /** resolves once the view shows a picture of its own (the image, the still, the live frame or its poster for good) */
+    ready() { return shown; },
+    release() { inner?.release?.(); },
+    pose(o) { inner?.pose?.(o); }, snapshot(p) { return inner?.snapshot ? inner.snapshot(p) : ''; },
+    destroy() {
+      destroyed = true; token++;
+      clearInner(); ro?.disconnect(); clearTimeout(rt);
+      el.removeEventListener('click', toggle); el.removeEventListener('keydown', onKey);
+      if (img) { if (img._url) URL.revokeObjectURL(img._url); img.remove(); img = null; }
+      el.classList.remove('product-render'); el.style.overflow = overflow0;
+    },
+  };
+  show();
+  return api;
+}
+// the lightness of a colour, 0..1 (enough to tell a dark ground from a light one)
+function lightOf(hex) { const [r, g, b] = hexRgb(hex || '#ffffff'); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }
+
+export default { build, loadProduct, makeProduct, mountProduct, checkSpec, resolveView, viewNames, variantKey, PARTS: Object.keys(PARTS), PROPS: Object.keys(PROPS), MATERIALS: Object.keys(BUILTIN) };

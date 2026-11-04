@@ -1,6 +1,6 @@
 # Layout: one section per screen, equal edges, heroes, type
 
-The layout spec for every page (Leon's rules 3, 4 and 6). `system.css` implements the tokens, the
+The layout spec for every page (house rules 3, 4 and 6). `system.css` implements the tokens, the
 section box, the grid and the hero frame; `assets/layout/` holds the heroes (`layout.css`,
 `layout.js`, `heroes.json`, `hero-<id>.html`), the hero dealer (`deal.mjs`) and the check
 (`layout-check.js`, `check.mjs`). Link `layout.css` after `system.css`, `ui/cards.css`,
@@ -9,19 +9,19 @@ section box, the grid and the hero frame; `assets/layout/` holds the heroes (`la
 
 ## 1. What the good sites do
 
-- figma.com and x.ai (Leon's recording): the hero fills the first screen and nothing of the next
+- figma.com and x.ai (the reference recording): the hero fills the first screen and nothing of the next
   section shows at load; sections hold 0.45 to 1.25 screens of content with about a quarter screen
-  between them. Both still show a neighbour in a shot of one section: the look Leon asked us to go
+  between them. Both still show a neighbour in a shot of one section: the look the house asks us to go
   past.
-- research-059 (327 sites at 1440x900 and 390x844): the hero is alone on the first screen on 78% of
+- A study of 327 sites at 1440x900 and 390x844: the hero is alone on the first screen on 78% of
   company sites; a section shows alone more often the taller it is (0.29 under 0.6 screens, 0.80
   at 0.95 to 1.1) and the wider the gap (0.42 under 60px, 0.82 at 220px and more). Its place sample
-  holds no local shops, so the place numbers below are Leon's ask and taste, not measurements.
+  holds no local shops, so the place numbers below are the house's own ask and taste, not measurements.
 - So the look comes from heights and padding only: every section is exactly one or two screens.
 
 ## 2. One section per screen
 
-**The judge tile.** Leon's "shot" is the screen at scrollY = k x H (k x 900 at 1440x900, k x 844
+**The judge tile.** The "shot" is the screen at scrollY = k x H (k x 900 at 1440x900, k x 844
 at 390x844). Every tile shows exactly one section, the hero included. Plan the page as a list of
 screens before building. `html { scroll-padding-top: 0; scroll-behavior: auto }`, so an anchor jump
 lands on a tile (the fixed header covers the top of the section's padding).
@@ -55,6 +55,20 @@ third screen, never a height set by script.
 At 390 (`--padt` 96, `--padb` 48 plus the bar): one screen holds 464 to 700 - bar, two hold 1,268
 to 1,544 - bar; between, use `.g2m` or cut the phone copy. Split or cut a long feature grid; never
 shrink it.
+
+**The tablet (640 to 1023; the judges hold it upright at 768x1024 and 820x1180).** There the box
+grows past its screens rather than overlap, so a section a little too tall pushes every later
+section off the screen grid and each tile shows one section's tail and the next one's head, cards
+cut by the tile's edge (seen at 768). Stacked content c at 768x1024 (the stricter):
+
+| c at 768x1024 | Do |
+|---|---|
+| up to 832 | one screen |
+| 832 to 1,130 | cut to one screen: a lower `--p-h` for the group at tablet, the split's frame as `.fill` (it takes what is left), the grey line or a fourth card out |
+| 1,130 to 1,856 | two screens there, `@media (min-width: 640px) and (max-width: 1023px) { #<id> { --h: 2 } }` (the one page-CSS rule on a section), no card row across the screen line at 1024 |
+
+Run `consistency.mjs` with `--rhythm-widths 1440,820,768,390`: its SR-2 `section-height` then
+fails a section that is not one or two screens at the tablet too (the default runs 1440, 768 and 390; this adds 820). The system's 48px tablet gutter is right: never widen it.
 
 - **Two screens as two groups:** `.g2` (or `.g2m`, phone only) makes the `.wrap` two rows, each at
   most 708px; row 1 holds the h2 and the first group (360 to 708), row 2 the rest (420 to 708) with
@@ -96,6 +110,16 @@ shrink it.
   or below them only if the whole hero ends by H - 24. A frame under the words ends by y 836 (about
   296px under a 356px text block); larger becomes a layer. Never a first screen that ends on a
   visual cut by the fold, never half a picture under the text.
+- **The first screen at 768 and 820.** The split stacks: the words, then the picture in what is
+  left. Its bottom edge ends on a whole element or clearly bleeds a large picture on purpose:
+  - whole: the picture (a fragment, a phone, a render) ends 24px or more above the hero's foot;
+  - a bleed: a photograph or ground filling its frame (`.frame--photo`, `object-fit: cover`), or a
+    fragment in `.frame > .stage` cut by the frame's bottom through 96px or more of its rows under
+    `.stage--fade-b`, the point (the comment, the button, the row worked on) above the fade.
+  Never a card, window or diff in a wrapper of your own whose lower edge the fold slices (in testing:
+  a 480x688 diff in `div.hero__art` lost its lower edge at 820, `fold-card` FAIL); never 1 to 95px
+  of a box under the fold. Below 1024 `.at-over` pieces hide; give the main piece a `.fit` width
+  (it narrows), never a fixed one. Shoot 820x1180 and 768x1024 and read the first screen's foot.
 - **Docked strip:** software and product may dock one row under the hero's content (real customer
   logos with permission, a rating line the brief gives, or three facts), at most 96px, still, hidden
   on a phone unless it ends by H - 24 - bar. Service and place dock nothing.
@@ -122,9 +146,9 @@ node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kin
 adds `--kind gaming` (its own weights, never `ui`): `--has film,photo` when the brief supplies its
 trailer or key art, `--has object` without art files (its key art rendered with the product-render
 helper on the `product` stage; a game never deals `statement` or `word`, and always passes `--has`);
-hardware adds `--kind tech`. A product or hardware with no photographs passes `--has object` and its
-product render takes the stage or the `split` frame (`sections.md`, Product), never an order form
-alone. Printed, never dealt: the place hero.
+hardware adds `--kind tech`. A product or hardware with no photographs passes `--has object`, which
+always prints the `product` hero: its render whole on the full-width stage, its widest view, never a
+`split` column or an order form alone (`sections.md`, Product). Printed, never dealt: the place hero.
 
 It prints the hero (its demo, numbers, and the moment, ground and effect ids that fit the kind; on
 other only the hero itself counts). Copy only its `<section class="hero …">` from
@@ -137,7 +161,7 @@ dealt only without a strong photograph.
 |---|---|---|---|
 | `split` | text span-5; the picture span-6 start-7, top-aligned with the h1, ending on the right line; one opaque float card on its lower left | text, then the picture (at least 240 tall) | the float card's dot (tech) |
 | `photo` | a full-bleed photograph layer, the words on its calm, dark side on six columns (h1 80, two lines), four facts at the foot | the photograph cut to the top, the words under it on the ground | none |
-| `product` | a head row (h1 cols 1-7, buttons 9-12), then the object whole on a lit stage with one to three hotspots (no photographs: its product render; a game without art: its hero object or world scene, the game named in the h1) | the stage 342 wide; a tap opens a hotspot | hotspots on click; a render turns slowly |
+| `product` | a head row (h1 cols 1-7 on two lines; the lead and the buttons stacked on cols 9-12, their foot on the h1's), then the product itself big with one to three hotspots: a render (its widest view, `data-product-place="stage"`) or a cut-out on the page's ground across the wrap, no box, gradient or radius, the stage down to 24 above the fold (1280x566 at 1440x900: the city bike's side 1046 wide, 82% of the wrap); a product photograph edge to edge down to the fold, square corners. A game names itself in the h1; a `[data-print]` or `[data-scene]` on the stage keeps the lit, rounded stage | stacked; the render 86% of the column (294 of 342), the photograph the screen width; a tap opens a hotspot | hotspots on click; a render is a still (live only when asked, `data-product-mode="live"`) |
 | `editorial` | the headline is the picture: 156px on three lines across the wrap, one or two photographs set in the line as pills | 56px on four lines | the pills open once on load (tech); still elsewhere |
 | `collage` | text span-5; a lit frame span-6 start-7 with the product window cut by its bottom, one result card that loops | the window alone | one card loop (tech) |
 | `word` | an oversized h1 (144px, two lines) with one live word last, underlined; lead and buttons span-6, four facts span-5 start-8 | 54px on three lines | the live word, two rounds then rest (tech only) |
@@ -238,12 +262,12 @@ move.
 
 ## 6. The check
 
-`layout-check.js` frames every section as Leon frames a shot; `check.mjs` runs it in one headless
+`layout-check.js` frames every section as a reviewer frames a shot; `check.mjs` runs it in one headless
 Chrome (WebGL on the CPU, closed by its own PID) and writes the framed shots:
 
 ```bash
 node <skill>/assets/layout/check.mjs --url http://127.0.0.1:<port>/index.html --profile <own dir> \
-     --sizes 1440x900,1024x768,768x1024,390x844 [--shots <dir>] [--json]     # pass these four: the judge shoots the tablet at 768x1024
+     --sizes 1440x900,1024x768,820x1180,768x1024,390x844 [--shots <dir>] [--json]     # pass these five: the judges shoot the tablet at 768x1024 and 820x1180
 ```
 
 | Finding | Means |

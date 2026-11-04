@@ -26,11 +26,12 @@
   not made for, when named twice, or with an effect it avoids). Effects that list each other in
   meta.avoidWith never share a page. --page is required (like moments.mjs): effects are dealt only on tech, gaming and
   software pages (and a product with a technical subject: --page product --tech-subject); a place, shop, cafe, service
-  or other product page gets an empty deal (exit 0), so the caller places no effect (Leon: effects fit the trade). --quiet leaves out the focal grounds (meta "focal": true: a sphere,
+  or other product page gets an empty deal (exit 0), so the caller places no effect (house rule: effects fit the trade). --quiet leaves out the focal grounds (meta "focal": true: a sphere,
   a beam, peaks), for slots that carry a big UI window, a screenshot or text.
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -408,8 +409,9 @@ class CDP {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function launch(a) {
-  if (!a.profile || a.profile === true) die('pass --profile <dir> (your own Chrome profile folder, e.g. a folder in your temp directory)');
-  const profile = path.resolve(a.profile);
+  // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
+  const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'fx-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-fx-' + process.pid);
+  const profile = path.resolve(a.profile && a.profile !== true ? a.profile : defaultProfile());
   fs.mkdirSync(profile, { recursive: true });
   const portFile = path.join(profile, 'DevToolsActivePort');
   try { fs.rmSync(portFile); } catch (_) { /* none */ }
