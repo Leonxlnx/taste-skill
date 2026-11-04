@@ -35,7 +35,7 @@ fills it.
 | `data-product-params` | `{"turn":1}` asks for the live turn; `{"x":0.1,"y":-0.05}` moves it; `{"step":0}` a lamp off |
 | `data-product-palette` | `{ bg, surface, ink, accent }`; else the page's tokens `--bg`, `--ink`, `--accent` |
 
-**Each section a different view.** A product page shows the product big in every section and never the
+**Each section a different view.** A product page shows the product big, whole in three sections at most, and never the
 same view twice: the widest view in the hero (a bike's `side`; a lamp's or an arm's `three-quarter`), another angle by the specs, a close-up on the part a section
 talks about, the loaded scene where the copy promises what it carries. Every promise in a headline is
 shown in a picture (a child seat with its belts, the crates, a lamp's light on the desk).

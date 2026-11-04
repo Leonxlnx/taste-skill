@@ -17,6 +17,32 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
   section are the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
   half a tile or more, 50/50 in a split, a whole screen as a layer. The close is its own picture (a
   photograph, the big button or the name set wide).
+- **One object never carries the page** (in testing: a robot arm in six sections and a game's
+  salvage rig in six, each "one object six times", both capped at 4 to 4.5). The object shown whole
+  (the product, its photograph or render, a game's hero object) leads the hero and **at most two
+  more sections**; every other picture section is carried by another kind of visual the brief
+  supports, from its row below, no kind more than twice. A new angle, a recolour, a crop of the
+  whole, or the object on its floor with one prop beside it, is the object again; a use scene counts
+  as use only when its setting fills the frame (a `desk` as the bench across the frame, trays,
+  parcels and sheets on it, half the picture or more; the object one thing among them). The check counts a declared scene as use, so whether one prop makes it the object again is the builder's call. Write each plan line's kind; three object
+  lines at most.
+
+  | Kind | the object whole: hero + 2 | carries the other sections |
+  |---|---|---|
+  | Software | the `app-frame` | UI fragments of its subject on cards, a diagram card, real tool icons, a type moment, a named quote with its face, the effect or scene |
+  | Gaming | the hero object (ship, rig, mech) or the client's key art | the world (a scene of the world's own objects, the hero object small or absent; its `top` view as a map), the crew at work (the client's screenshots, else one scene a job), the trailer frame, the screenshot strip, a type moment, the real platform marks |
+  | Tech hardware | the product (photograph, CAD render or its render) | its use (the arm at a bench among trays and parts, the device in its place), an exploded or parts view, the motion video frame, a diagram card held still, a type moment (one figure set large), a context photograph of the trade (a workshop, a lab) |
+  | Product | the product (photograph or render) | its use (loaded, carried, at home), people with it, close-ups of its parts, a diagram card held still, a type moment, a context photograph of where it lives |
+
+- **The client's own assets get designed slots.** When the brief says the client has a trailer,
+  key art, in-engine screenshots, CAD renders, an exploded model or a motion video, each gets a slot
+  that reads finished now: the frame at the file's final ratio, holding a stand-in from the kit
+  (a still of the world or the product in use), named in a comment for the client's file, never an
+  empty, grey or broken frame and never a line saying the file is missing. The slots
+  (`sections-library.md`, client-slots): the **trailer or motion video frame** (a real `<video>`
+  with a kit poster, and a play control only when there is a page or file to play), the **screenshot strip** (three to five frames of the
+  world composed from the kit, framed like captures), the **CAD or render frame**, the **exploded
+  frame**; key art fills the hero's stage. The report lists every slot, its file and its stand-in.
 - **One idea per section,** one h2, one action at most besides the main one (a pair only in the
   hero, or where a product needs "compare" beside "buy"). A two-screen section holds one list, table
   or form, or one idea in two groups, never two ideas.
@@ -107,8 +133,9 @@ Never: stock people at screens; an object render in place of the product; a page
 shows only as small fragments centred on coloured panels (in testing: about 3.5 points under Linear).
 
 **Gaming** (a game, a studio launching its game; page type software, site-kind gaming). nav, hero
-(the game, named), the world (one or two sections, full bleed), what you do (feature cards: three
-or four open cards, one verb each, sail, salvage, rebuild, each with its picture), [a system of
+(the game, named), [the trailer frame], the world (one or two sections, full bleed), what you do
+(the screenshot strip as three to five open cards, one verb each, sail, salvage, rebuild, each
+with its capture), [a system of
 the game as a diagram card: matchmaking, saves, stores], platforms and editions (the real store and
 platform icons, prices from), [press lines or a quote the brief gives], [faq], footer.closing with
 the main action (Add to Steam wishlist, Pre-order). In testing, a game page that never named the game
@@ -122,21 +149,31 @@ game's world, feature cards and real platform icons. So:
 - **Key art in the hero and the world sections, full bleed:** the client's trailer (a film hero),
   key art and in-engine shots, one grade, as layers or on the column lines. Deal the hero with
   `deal.mjs --type software --kind gaming --has film,photo` when the art is supplied.
+- **The world and the crew carry the page, not the hero object** (section 1, One object): the
+  hero object whole in the hero and two more sections at most; the world, the crew at their jobs,
+  the trailer frame and the screenshot strip carry the rest. Art the brief names gets its slot
+  either way (section 1, client slots): a trailer frame, the screenshot strip, key art on the
+  stage.
 - **No art files** (the brief names art it does not supply, or none): the key art is **rendered**,
   never replaced by an effect. Write a product-render spec (`effects-objects.md`, Product renders)
   of the game's hero object (its ship, crane barge, mech, car) or a scene of its world composed from
   its own objects on one floor (the barge at the quay with its crates, lanterns and cables; under 90
   parts), in the game's palette, `light` material for its fires, lamps and screens; make its
-  posters. Deal `deal.mjs --type software --kind gaming --has object` (the `product` stage): the
+  posters. Write two: the hero object and the world (its quay, wrecks with hulls cut open, cranes,
+  crates, lanterns, the hero object small in it or left out), the world with one scene per job
+  (`"scenes"`: the torch's `light` in a cut hull, the winch over a crate stack, the helm lanterns
+  by night). Deal `deal.mjs --type software --kind gaming --has object` (the `product` stage): the
   render whole on the stage, turning slowly (`data-product-mode="live"`: the page's one live render;
   every other frame a still). The one effect (`effects.mjs pick --page gaming
   --palette dark --slots hero --exclude ruled-grounds,grid-pulse,contour-lines,dot-terrain,dotted-globe,ridgeline,bayer-dither,halftone-screen,ascii-shade,line-engraving,duotone-grade`,
   again until it reads as water, fog, embers or light, or the product hero's `spotlight-cone`,
   `edge-glow`) may sit behind it as the stage's ground, the
   render drawn over it (every placement is transparent over its frame's ground), never instead of it. The world
-  section: the scene again from another angle or closer, `data-product-place="stage"` in a
-  full-bleed `media-band` or `dark-band` frame, the h2 above the render, never on it. Each feature card shows the object its
-  verb uses as a still (`data-product-place="card"`, `{"turn":0}`) or a crop of the world. One
+  section: the world spec's widest view (or its `top` view as the map), `data-product-place="stage"` in a
+  full-bleed `media-band` or `dark-band` frame, the h2 above the render, never on it. The feature
+  cards are the screenshot strip: each card one job scene of the world spec, 16:9, its props
+  spread so the scene spans the frame, on the world's own ground, never the hero object alone
+  again (a `data-product-fill` over 1 drew an empty frame in testing: widen the scene instead). The trailer frame's poster is the world's widest still. One
   render turns; the rest are stills. The helper cannot model characters, faces, creatures, cloth
   or glass: compose the world's machines, buildings and props, never a character. The report
   names the art to replace.
@@ -153,12 +190,13 @@ players at screens.
 sections (one benefit each, each its own composition, below), specs (`rows--spec` or
 comparison-table), proof (a review or press line the brief gives), [visit-map for a showroom],
 [faq, five questions at most], footer.closing with the newsletter. Every main section shows the
-product, two or three photographs a screen (one per feature section of the part it names; a grid
-of 4 to 8 cut-outs on one backdrop). Prices are "from" prices on cards or in a table, never a plan
+product's world, two or three photographs a screen (one per feature section of the part it names;
+a grid of 4 to 8 cut-outs on one backdrop): the product whole in three at most (section 1, One
+object), its use, its parts and the people with it in the rest. Prices are "from" prices on cards or in a table, never a plan
 table or a monthly switch. A technical product (site-kind tech) may take its render or the effect;
 any other product takes no effect, and its render only when it has no photographs (below).
-- **The product is the hero of every frame.** The bar is Figure and 1X: in every section the
-  product fills the frame at large scale. In testing, a rendered product page scored 5.5,
+- **The product is the hero, not every frame.** The bar is Figure and 1X: where the product is
+  shown whole it fills the frame at large scale, and its use, parts and place carry the rest. In testing, a rendered product page scored 5.5,
   creativity 4.5 ("a safe grey template"), because every visual was a mid-size product in a grey
   rounded panel on a grey ground, five pictures in three poses, one structure three times. With
   photographs or with the render alike:
@@ -174,12 +212,12 @@ any other product takes no effect, and its render only when it has no photograph
      rounded `.panel` on a grey ground: a render is transparent and stands on the ground itself
      (`layout.css` takes the fill, border and padding off every `.frame[data-product]`), a
      cut-out the same; a photograph is the frame.
-  2. **A different view in every section.** Three-quarter, side, front, a close-up of the part the
-     section is about (the box, the motor, the battery, the shade), the product in use or loaded,
-     the colourways side by side. Never one view twice: a smaller file (`-700`), a recolour or a
-     mirror of a view is the same view; a scene (loaded, in use) and a close-up are views of their own;
-     the colourway row is one view in every colour. Each plan line names its section's view; no two
-     alike.
+  2. **The whole product in three sections at most, a different picture in every section.** The
+     product whole (any angle, any colour) in the hero and two more; the rest carried by its use
+     (loaded, at the bench, at home: the setting fills the frame), close-ups of its parts, an
+     exploded view, people with it, a diagram card held still or a type moment (section 1, One
+     object). Never one view twice: a smaller file (`-700`), a recolour or a mirror of a view is
+     the same view. Each plan line names its section's picture and its kind; no two alike.
   3. **Every promise in a headline is shown in a picture.** A family bike shows the child bench
      with its belts; a lamp shows the light it throws on the table; "takes four crates" shows four
      crates, readable at the section's size. A promise with no picture: add the picture or cut
@@ -200,8 +238,8 @@ any other product takes no effect, and its render only when it has no photograph
      id>"` and `value="<colour id>"` (an id of the spec's `colors`), and `auto.js` swaps the frame's
      still with no page script, `effects-objects.md`, Views; photographs: one per colour, the swatch
      swaps the `src` and `alt`), and every colour offered is shown at least once on the
-     page (the colourways side by side in the range, or one colour per section). A colour offered
-     and never shown is a fault.
+     page (one colour per section: the hero, the split, the use scene and the order frame each in
+     another colour). A colour offered and never shown is a fault.
   6. **No fact twice.** A stat strip never repeats the spec rows below it: the strip takes the
      three figures that sell (load, range, price), the rows the rest (sizes, weight, motor,
      battery, warranty). One fact, one place, one wording.
@@ -224,30 +262,36 @@ any other product takes no effect, and its render only when it has no photograph
   one, `tile` in a square or portrait tile. The render is the product's picture, not an effect:
   **stills by default, live only when asked (`data-product-mode="live"`), at most one live
   context**, on the page's flat ground, no print, shader ground, moment or scene beside it; the same
-  on a product of site-kind other and on hardware. The views of rule 2 come from the one spec
+  on a product of site-kind other and on hardware. The pictures of rule 2 come from the one spec
   (`effects-objects.md`, Views): the views its `supports` lists of `three-quarter`, `side`,
   `front`, `rear`, `top`, `low`, views of its own (`views`) and `detail:<part>` (a close-up), the
   spec's `scenes` (loaded or in use, from the props `crate`, `bag`, `child-seat`, `bench`,
   `parcel`, `desk`, `book`, `mug`, `sheet`, `tray`) and its `colors`; `make-posters.mjs` prints
   every `make.variants` entry as a still per colour. `deal.mjs --type product --has object`
   (hardware adds `--kind tech`) always prints the `product` hero: its full-width stage, never a
-  `split` column. Then the **full product page**, never the short page, one view a section (put
-  all six in `make.variants`):
+  `split` column. Then the **full product page**, never the short page, one picture a section,
+  the product whole in sections 1, 2 and 6 only (put every view and scene in `make.variants`):
   1. hero, view **`side`** (the widest view; a tall product, a lamp or an arm: `three-quarter`)
      whole on the `product` stage, the h1 naming the product and its buyer, the order action;
   2. the product, view **`three-quarter`** (a tall product: `side`), the page's one `split`:
      the frame on 8 columns, the three selling figures on the other 4 (rule 6; `bleed` is never
      right after the hero);
-  3. what it does or carries, view **the scene** (`three-quarter+loaded`, or in use), the
-     headline's promise readable (rule 3): `bleed` across the wrap with the uses in a row of
-     three under it, or `tall-small` with a close-up;
-  4. the parts, views **`detail:<part>`**: a `strip` or `trio` of close-ups, one per part the
-     section names (the box, the motor, the battery, the stand), none in section 3; or how it is
-     used: three steps or a lanes diagram card held still (charge, ride, park);
-  5. specs as `rows--spec` (only the facts the strip does not hold) with the colourway row, view
-     **`front`**: one small frame per colour offered, side by side, each with its name; and the
-     real colour icons of the component brands the brief names; this or section 2 is the
-     contrasting ground;
+  3. what it does or carries, its **use**: a scene (`three-quarter+loaded`, `work`) whose
+     setting fills the frame (a `desk` as the bench across it, `tray`s, `parcel`s, `sheet`s,
+     crates; the kit's arm with one tray reads as the arm again), the headline's promise
+     readable (rule 3): `bleed` across the wrap with the uses in a row of three under it, or
+     `tall-small` with a close-up; a motion video the brief names: its frame here, the poster this
+     scene (client slots);
+  4. the **parts**, views **`detail:<part>`**: a `strip` or `trio` of close-ups, one per part the
+     section names (the box, the motor, the gripper, the stand), the part filling its frame; or an
+     exploded view (a scene `exploded` that hides the assembled parts and adds them again as
+     plain `parts` spaced along their axis, shot as `three-quarter+exploded`: a close-up view
+     frames only the spec's own parts, so the spaced ones fall out of it; an exploded model the
+     brief names: its slot); or how
+     it is used: three steps or a lanes diagram card held still (charge, ride, park);
+  5. specs as `rows--spec` (only the facts the strip does not hold) beside a diagram card held
+     still or one figure set large (a type moment), and the real colour icons of the component
+     brands the brief names; this or section 2 is the contrasting ground;
   6. ordering, view **`rear-quarter`**, a view of the spec's own (`"views": { "rear-quarter":
      { "from": "three-quarter", "angle": <the spec's angle + 180> } }`, listed in `supports`): a
      live order card (model or size, colour as swatches, delivery slot or town, the price that
@@ -260,7 +304,8 @@ any other product takes no effect, and its render only when it has no photograph
   not compose, mood stock, a photograph of another maker's product or an object of another kind (a
   wheel is not a bicycle). **Hardware without photographs or renders goes here too** (in testing: a
   robot arm's page with a silk shader and an order form lost; CAD renders or a film the brief names
-  but does not supply count as missing): a robot arm follows the kit's worked
+  but does not supply count as missing, and each gets its slot: the CAD frame is section 2's
+  picture, the motion video section 3's, the exploded model section 4's): a robot arm follows the kit's worked
   `robot-arm` spec, rebuilt to the client's own sizes, joints and colours; a drone is a rounded box body, beam arms, cylinder motors and disc rotors; a camera a
   rounded box and a cylinder lens; a curved shell is rounded boxes and fillets (`round`, `blend`,
   `seams`) at its real measurements. Never a `split` hero holding only an order form or the
@@ -269,7 +314,8 @@ Nav `nav-cards|nav-split|nav-mega` · footer `footer-columns|footer-dark` · clo
 `close-photo|close-type|close-word` · rhythm `dark-band|brand-band` (one contrasting ground,
 rule 4) · buttons `arrow|solid|block|pill`.
 Never: a photograph of something else; screens of an app the product does not have; logo rows;
-tabs; anything that apologises for what is missing; the product mid-size in a grey panel; one
+tabs; anything that apologises for what is missing; the product mid-size in a grey panel; the
+product whole in more than three sections; one
 view twice; a promise not shown; a colour offered and never shown; a fact twice.
 
 **Service** (clinics, firms, agencies, studios, trades). nav, hero, services-list (each with one line

@@ -133,7 +133,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
   dark timber or steel only when the whole set matches. Never studio black with daylight, HDR beside a snapshot,
   two photographers' grades. Black and white is one deliberate frame. Never the same frame twice on a page (a smaller
   file, a crop or a mirror of a frame is the same frame) and never three near-identical ones. On a product page
-  every section shows the product from another view or a detail (`sections.md`, Product, rule 2).
+  the product whole in three sections at most, its use, its parts and the people with it in the rest (`sections.md`, Product, rule 2).
 - **Hero**: plain full colour, as the client's own (Recipe 3 on a place: a full-bleed top photograph, 480 px tall, with
   nothing on it and the words below it); a software or product hero ends inside the screen. **Rooms**: one detail per
   room beside its facts, a place's rooms are the client's own photographs first. **Menu or goods**: the list in plain

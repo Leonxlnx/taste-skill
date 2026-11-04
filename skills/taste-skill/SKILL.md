@@ -15,9 +15,7 @@ description: >-
 
 Build the website a good company would ship: it says plainly what is sold, shows the real thing on
 every screen, and looks made for this client, not from a template and not like an art piece.
-figma.com and x.ai are the bar (in words: `layout-v4.md` section 1). The judge asks: does this read as a professional, clean
-site made for this client, with real pictures and plain words, and nothing added only to look less
-machine-made?
+figma.com and x.ai are the bar (in words: `layout-v4.md` section 1).
 
 `<skill>` is this folder. It needs Node 22+ and Chrome. Copy `<skill>/assets` into the project's
 `assets` and start from `assets/starter.html`.
@@ -76,43 +74,48 @@ page is photographs, flat colour, type, real icons and the hover layer.
 The full plans, deal lists and section order: `references/sections.md`.
 
 - **Place** (a cafe, bakery, guesthouse, shop). Photographs lead: 12 to 20 on the full page, 8 to
-  12 on the compact page, under 8 the 3-screen short page; no client photographs: the draft path
-  (`photos.md`), still a full page. The hero is a photograph whenever a frame fits (a remote place:
-  its region's landscape), the visit block on screen two, the offer, the place, orders or booking.
+  12 compact, under 8 the 3-screen short page; no client photographs: the draft path
+  (`photos.md`). The hero a photograph whenever a frame fits (a remote place: its region's
+  landscape), the visit block on screen two, the offer, the place, orders or booking.
   **Variety without effects** (`sections.md` section 4): the offer and the place deal different
-  photo compositions (`bleed`, `pair`, `trio`, `strip`, `tall-small`), never two sections built
-  round one picture; one type moment (the address or name set large); one main action a screen; list text 16px. Flat grounds, square
+  compositions, never two sections round one picture; one type moment (the address or name set large); one main action a screen; list text 16px. Flat grounds, square
   photographs, one button style, the phone bar; no effect, ground, moment, loop, fragment, diagram
   or tab.
 - **Product and service** (site-kind other). Photographs lead: the product, the people, the rooms,
   the work, two or more a screen on a product page. Real icons for the tools a studio uses; one
   still diagram at most; flat grounds and one brand band. No shader effect, print, grain, gradient,
   moment, scene or loop; WebGL only for the product render. **A physical product with no
-  photographs is shown, never hidden:** its render from `assets/objects/product-render` (stills;
-  live only when asked, `data-product-mode="live"`) leads the hero, then the full product page, never the short page, a drawing or mood stock (`sections.md`).
-- **Every product page** (a physical product, photographed or rendered, hardware too; the bar is
-  Figure and 1X, the product the hero of every frame; `sections.md`, Product, its seven rules): the
-  product **big** in the hero and one more section (most of its frame, or on the ground at anchor
-  scale), never mid-size in a grey rounded panel on a grey ground; **a different view each
-  section** (the recipe names six), never one view twice; **every headline promise pictured** (a family bike shows the child bench); dealt
-  compositions (`bleed`, `pair`, `trio`, `strip`, `tall-small`), no structure twice, one
-  contrasting ground; the order card's **swatch changes the picture**, every colour offered shown
-  once; **no fact twice** (a stat strip never repeats the spec rows); buttons step and press (rule 5).
+  photographs is shown:** its render (`assets/objects/product-render`, stills) leads the hero,
+  then the full product page, never a drawing or mood stock (`sections.md`).
+- **Every product page** (photographed or rendered, hardware too; the bar is Figure and 1X;
+  `sections.md`, Product): the product **big** where it stands
+  whole (most of its frame, or on the ground at anchor scale), never mid-size in a grey rounded
+  panel on a grey ground; **a different picture each section**, never one view twice; **every headline promise pictured** (a family bike shows the child bench); dealt
+  compositions, no structure twice, one contrasting ground; the **swatch changes the picture**,
+  every colour shown once; **no fact twice**; buttons step and press (rule 5).
 - **Tech** (software, gaming, hardware). The client's own subject leads at true size. Software: its
   own UI as live HTML showing what it works on (a code-review tool: a red and green diff with its
   Accept action) in one `app-frame`, never a generic dashboard or only fragments on panels; cards:
   fragments on lit panels, pulsing diagrams, real icons. Hardware: its photographs, else its
   render (as above), never a split hero of only an order form or a drawn SVG. A game: its name in
   the h1, a launch line, its world as full-bleed key art (else its render), an effect never in its
-  place (`sections.md`, Gaming). **60 to 80 words a screen**
-  outside UI mocks (`copy.md`). On top, by deal: **one
-  effect** (a live shader ground in the hero or the one `[data-visual]` frame, a WebGL part, an
-  object or one big scene) and **one or two section moments** inside their own sections. At most four live WebGL contexts;
-  no card ever moves with the scroll. Budgets and gates: `effects-usage.md`.
+  place (`sections.md`, Gaming). **60 to 80 words a screen** outside UI mocks (`copy.md`). By
+  deal: **one effect** (a shader ground in the hero or the one `[data-visual]` frame, a WebGL
+  part, an object or one big scene) and **one or two moments** in their own sections; four live
+  WebGL contexts at most; no card moves with the scroll (`effects-usage.md`).
+- **One object never carries the page.** The product or hero object whole leads the hero and **two more sections at
+  most**; another kind of visual the brief supports carries the rest (`sections.md` section 1,
+  its table): a game's world, crew and map; hardware's use at the bench, an exploded or parts
+  view; a still diagram card, a type moment, a context photograph where the trade allows.
+- **The client's own assets get slots.** A trailer, key art, screenshots, CAD renders or a motion
+  video the brief names each get a frame that reads finished now (a real `<video>` with a kit
+  poster, a play control only when there is a page or file to play, three to five world
+  captures from the kit, a CAD frame), named in a comment for the client's file, never empty
+  (`sections-library.md`, client-slots).
 
 ## 3. What serves which page
 
-Use the asset family the table names for the kind and open its reference first. A dash means never.
+Open the reference of every asset family the page uses first. A dash means never.
 
 | Need | Asset | Software, gaming | Hardware | Product, service | Place | Reference |
 |---|---|---|---|---|---|---|
@@ -129,7 +132,7 @@ Use the asset family the table names for the kind and open its reference first. 
 | CSS grounds | `assets/backgrounds` | 0-2 dealt | 0-2 dealt | flat tokens | flat tokens | `backgrounds.md` |
 | Shader grounds | `assets/effects` | the one effect | the one effect | - | - | `effects-usage.md` |
 | Creative parts (`fx-*`) | `assets/components` | yes | yes | `fx-photo` plain, `fx-map` still | `fx-map` still | `effects-creative.md` |
-| Objects and prints | `assets/objects` | one, as the effect; a game without art: its key art render | its product render without photographs | its product render without photographs | - | `effects-objects.md` |
+| Objects and prints | `assets/objects` | one, as the effect; a game without art: its render | its render without photographs | its render without photographs | - | `effects-objects.md` |
 | Award-site moments | `assets/moments` | 0-2 | 0-2 | - | - | `moments.md` |
 | Big scenes | `assets/scenes` | 0-1 | 0-1 | - | - | `scenes.md` |
 | Speed and weight | `scripts/perf.mjs` | yes | yes | yes | yes | `perf.md` |
@@ -142,14 +145,13 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    action (the transaction: Book a room, Order a cake, Start a free trial; a place with neither:
    Get directions) and the real material: logo, screens, photographs, prices, address, hours.
 
-2. **Write all the copy first,** in a plain text file, as `copy.md` says: the h1 names the category
+2. **Write all the copy first,** as `copy.md` says: the h1 names the category
    and the buyer or the place (a game: its name and genre), one hard fact on the first screen, a noun in every heading, buttons
    as a verb and an object. Nothing is invented but a coined brand name (searched first, the result
-   kept in `names.json` beside the page) and, on a place, plausible hours and prices. Contacts as
-   rule 9 says.
+   kept in `names.json` beside the page) and, on a place, plausible hours and prices.
 
 3. **Plan the page as screens.** Line 1: the kind. Line 2: the deal (step 4). Then one line per
-   section: its id, its one idea, its picture (photograph, UI, diagram, real icons, the effect), its
+   section: its id, its one idea, its picture and its kind (object, use, parts, world, slot, diagram, type; three object lines at most), its
    screens (1 or 2, from its content height, `layout-v4.md` section 2), and on tech which section
    holds the effect, the scene or a moment. Pick the photographs now (`photos.md`); their count,
    stand-ins included, sets a place's length (section 2). Then read `cards.md` and the recipe of
@@ -166,11 +168,9 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
 
    A product, hardware or a game with no photographs or art deals with `--has object`: always the
    `product` hero, its render's widest view across the wrap, no box (a game always passes `--has`). A place's hero is printed, never dealt (`--type
-   place`). A dealt part that needs a photograph the page lacks (`nav-cards`, `close-photo`,
-   `media-band`) is dealt again (`sections.md` section 2). Take the palette and pairing that suit
+   place`). A dealt part that needs a photograph the page lacks is dealt again (`sections.md` section 2). Take the palette and pairing that suit
    the client (its own colours: `start.mjs brand`, always on a place, with `sections.md` section 4,
-   Look); never violet: deal again. Keep the `:root` block as printed (`library/type.json` is the
-   one source of faces). Radius: `sharp` for fintech and developer tools, `soft` by default,
+   Look); never violet: deal again. Keep the `:root` block as printed. Radius: `sharp` for fintech and developer tools, `soft` by default,
    `round` for consumer apps, square on a place. On tech only: the lit ground (`<html data-ground>`:
    `sand|sky|sage` through the one-liner), the CSS grounds (`backgrounds.md`), the one effect
    (`effects-usage.md`) and the moments (`moments.md`). Write every result on plan line 2 and in
@@ -187,9 +187,8 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    name, number and logo to the client's (kit icons become `data-icon`, `cards.md`); a diagram card is `data-diagram="<preset>"`
    with the client's labels; run `icons.mjs scan index.html --out assets/icons --colour` last, so every icon
    the page names is a local file. Mount an effect, object, moment or scene exactly as its
-   reference says, never from your own script.
-   Credits: the one footer line from `photos.mjs credits`, linking the credits list, never a link
-   per photograph.
+   reference says, never from your own script. Credits: the one footer line from
+   `photos.mjs credits`.
 
 6. **Check and look.** Only the skill's scripts, each running one headless Chrome with WebGL on the
    CPU, closed by its own PID, one at a time; never a windowed browser or a browser tool. Serve the
@@ -203,13 +202,13 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    ```
 
    Shoot 1024, 820x1180, 768x1024 and 390 as well. Every `check.mjs` finding fails the page (no `--no-stress`).
-   Fix every FAIL (one you judge false goes in the report with the reason), shoot again, and read
-   every screenshot against the checklist beside the figma.com and x.ai frames.
+   Fix every FAIL (one you judge false goes in the report with its reason), shoot again, and read
+   every screenshot against the checklist.
 
 7. **Report:** the kind, the deal (palette, pairing, hero, grounds, effect, moments, scene); the
    checker, layout and perf results; what you could not check; every assumed price, hour or
    address and the coined name's search; the photographs and art the client must supply, every
-   stand-in frame among them.
+   stand-in frame among them; every client slot, its file and its stand-in.
 
 ## 5. Checklist
 
@@ -234,11 +233,12 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
   `.example` address [placeholder, sample-label].
 - **The right things for the kind:** no effect ground, print, scene or moment outside tech
   (WebGL only for a product render) [effect-kind, effects-fit, photo-print]; the subject itself
-  shows: the product, as a photograph or its render, big, a view a section [product-shown, photo-repeat], a
-  game's name and its world as key art, the diff of a code-review tool, software's `app-frame`;
+  shows: the product big, whole in three sections at most, a new picture each [product-shown,
+  same-object, photo-repeat]; each asset the brief names in its slot; a game's name and its world as key art,
+  the diff of a code-review tool, software's `app-frame`;
   real photographs where they fit, none twice [photo-set, photo-repeat, photo-upscale]; real icons in their own
   colours; flat grounds on other [grounds]; a place deals two different compositions and one type
-  moment; tech stays near 60 to 80 words a screen.
+  moment.
 - **Motion:** every button, link, linked card and linked photograph visibly answers the pointer,
   nothing tilts [motion-layer, hover, hover-move, tilt]; card loops cycle in 2.5-4 s [loop-cycle]; nothing moves because the page scrolled except a dealt moment or the big
   scene inside its own section on tech [scroll-linked, scroll-reveal, pinned: expected only there]; anything
@@ -261,8 +261,6 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
 ## 6. Never
 
 - A card, row or tile that animates on scroll; a reveal, fade-in or parallax; random blinking.
-- Shader effects, prints, grain or gradients on a page whose trade is not technical (WebGL only
-  for its product render).
 - Stock photographs passed off as the client's product, people or place; a product page that
   never shows the product.
 - A drawn look-alike of a real logo; invented reviews, quotes, customers or figures.

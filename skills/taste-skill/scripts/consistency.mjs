@@ -194,6 +194,12 @@
 //              colour suffix, are one picture whatever the colour: WARN, FAIL when they sit in neighbouring sections or share a colour
 //              copy-length WARNs a tech, gaming or software page over about 80 words a screen outside the UI mocks (a section over 90, or
 //              80 across the page; the words in [data-ui], diagrams, svg and aria-hidden parts are left out; first width, 1000px and wider)
+//              same-object WARNs a product, tech, gaming or software page whose object is WHOLE in more than three sections (n >= 4): the
+//              section's main visual (the largest picture, render or object in it) shows the object whole. One object is a [data-product]
+//              spec in any whole view or colour (and the stills exported from it), a [data-object] or [data-print] id, or a still's file
+//              stem less its width, half-size, colour, ground and view suffixes. A use scene (data-product-scene: its setting fills the
+//              frame), a detail:<part> close-up, the exploded view and stills named -detail-, -loaded-, -work-, -desk-, -exploded- or by
+//              another scene word the page uses are other kinds of picture and are not counted; it names the sections
 //   one id     a visual empty-visual tells is not told again by visual-empty, a line caption tells not again by
 //              visual-caption, the WebGL effects-fit tells not again by effect-kind
 //   added in v5i (what the second adversarial check found)
@@ -1043,8 +1049,8 @@ async function pageEffects(ctx, scan, K) {
   const S = { url: ctx.url, kind, from, tech, told: new Set(), max: { guard: false, created: 0, asked: 0, peak: 0, at: [], big: 0, outsidePrint: 0, dataFx: 0, dataScene: 0, dataPrint: 0, dataMoment: 0, bigScene: 0, fxBeside: 0, printObjects: [] } };
   if (!kind) { ctx.log('no kind given or marked: effects are not judged'); return S; }
   S.sig = effectSignals(scan);
-  S.rate = (await ctx.safe('effect-kind', () => ctx.tab.eval(call(particleProbe), 15000))) || 0;
-  S.linked = ctx.quick ? [] : (await ctx.safe('effect-kind', () => ctx.tab.eval(call(driftProbe, { settle: 400 }), 180000))) || [];
+  S.rate = (await ctx.safe('effect-kind particle rate', () => ctx.tab.eval(call(particleProbe), 15000))) || 0;
+  S.linked = ctx.quick ? [] : (await ctx.safe('effect-kind drift walk', () => ctx.tab.eval(call(driftProbe, { settle: 400 }), 180000))) || [];
   return S;
 }
 
@@ -1116,11 +1122,11 @@ function effectFindings(ctx, K) {
 async function run(ctx) {
   const tab = ctx.tab;
   if (ctx.first) { pageFx = null; rich = { url: ctx.url, sels: new Set() }; }
-  const y0 = await ctx.safe('visuals', () => tab.eval('Math.round(scrollY)'));
+  const y0 = await ctx.safe('visual probe', () => tab.eval('Math.round(scrollY)'));
   if (y0 == null) return [];
   const F = [];
   try {
-    const P = await ctx.safe('visuals', () => tab.eval(call(visualProbe, { first: ctx.first }), 60000));
+    const P = await ctx.safe('visual probe', () => tab.eval(call(visualProbe, { first: ctx.first }), 60000));
     if (P) {
       if (P.overN) ctx.errors.push(`visual-empty: ${P.overN} visual${P.overN > 1 ? 's' : ''} past the first 40 not shot at ${ctx.width}px: ${P.over.join(', ')}${P.overN > P.over.length ? ', ...' : ''}`);
       F.push(...captionFindings(ctx, P));
@@ -7096,6 +7102,94 @@ function lib() {
         const sec = (o) => { const k = secIndex(o.el); return k >= 0 ? (S[k].id ? '#' + S[k].id : 'section ' + (k + 1)) : 'the page'; };
         out.viewRepeats.push({ id: idOf(sorted[1].el), sel: sel(sorted[1].el), text: sorted[0].name.slice(0, 50), n: list.length, sameColour, adjacent, colours: [...cols].filter(Boolean), where: sorted.map(sec), doc: doc(sorted[1].el), more: [doc(sorted[0].el)] });
       } }
+    // same-object: the sections whose MAIN visual (the largest picture, render or object a section holds) is one and the same object.
+    // An object is a [data-product] spec whatever its colour (and every still the render kit exported for it), a [data-object] or [data-print]
+    // id, or a still file stem less its width, half-size, colour, ground and view suffixes. It counts only WHOLE: a section whose main visual is a
+    // use scene, a detail close-up or the exploded view (frame or still) is another kind of picture and counts for no object
+    out.sameObject = null;
+    { const SECS = S.filter((s) => !/^(FOOTER|HEADER)$/.test(s.tagName));
+      const COLOUR = /^(black|white|grey|gray|silver|graphite|stone|sand|cream|beige|ivory|red|blue|navy|green|olive|sage|yellow|orange|pink|purple|brown|tan|charcoal|natural|oak|walnut|bone|moss|clay|rust|teal|gold|copper|slate|ash|mint|sky|night|ink|petrol|forest|sea|ocean|coral|plum|wine|mustard|lemon|lime|rose|blush|mist|fog|smoke|chalk|snow|steel|chrome|bronze|brass|ember|signal|amber|dark|light)$/i;
+      const VIEWTOK = /^(side|front|rear|back|top|three|quarter|detail|closeup|profile|angle|iso|exploded|hero|loaded|square|carry|studio)$/;
+      const baseOf = (u) => String(u || '').split(/[?#]/)[0].split('/').pop().replace(/\.(stills\.)?json$/i, '').toLowerCase();
+      const bases = [...new Set([...document.querySelectorAll('[data-product]')].map((f) => baseOf(f.getAttribute('data-product'))).filter(Boolean))].sort((a, b) => b.length - a.length);
+      // a picture of the object that is NOT the object whole: a use scene (its setting fills the frame), a detail:<part> close-up, the exploded
+      // scene. The scene words are the page's own data-product-scene names plus the common ones; a still names its view and scene after the stem
+      // The scene names a product spec declares are read too (the spec the frames point to and any stills manifest the page loaded, best
+      // effort, read once: only files the page itself already loaded, so nothing new is requested); the built-in words stay as a fallback
+      if (!window.__ccDeclared) {
+        const sc = new Set(), co = new Set(), seen = new Set(), tokens = (s) => String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter((x) => x.length >= 3);
+        const urls = [...document.querySelectorAll('[data-product]')].map((f) => f.getAttribute('data-product') || '').filter((u) => /\.json(?:[?#]|$)/i.test(u));
+        try { for (const e of performance.getEntriesByType('resource')) if (/\/specs?\/[^?#]*\.json(?:[?#]|$)/i.test(e.name) || /\.stills\.json(?:[?#]|$)/i.test(e.name)) urls.push(e.name); } catch (e) { /* no resource timing */ }
+        for (const u of urls) {
+          if (seen.size >= 8) break;
+          let abs; try { abs = new URL(u, document.baseURI).href; } catch (e) { continue; }
+          if (seen.has(abs)) continue; seen.add(abs);
+          try {
+            const x = new XMLHttpRequest(); x.open('GET', abs, false); x.send(null);
+            if (x.status < 200 || x.status >= 300) continue;
+            const d = JSON.parse(x.responseText);
+            for (const k of Object.keys(d.scenes || {})) tokens(k).forEach((t) => sc.add(t));
+            for (const v of Object.values(d.variants || {})) if (v && v.scene) tokens(v.scene).forEach((t) => sc.add(t));
+            for (const c of Array.isArray(d.colors) ? d.colors : []) tokens(typeof c === 'string' ? c : (c.id || '') + '-' + (c.name || '')).forEach((t) => co.add(t));
+          } catch (e) { /* best effort */ }
+        }
+        window.__ccDeclared = { scenes: sc, colours: co };
+      }
+      const SCENEW = new Set(['detail', 'closeup', 'exploded', 'loaded', 'work', 'desk', 'carry', 'scene', 'use', 'inuse', 'lifestyle', 'bench', 'parts', 'macro',
+        ...[...document.querySelectorAll('[data-product-scene]')].flatMap((f) => String(f.getAttribute('data-product-scene') || '').toLowerCase().split(/[^a-z0-9]+/)).filter((x) => x.length >= 3),
+        ...window.__ccDeclared.scenes]);
+      const notWhole = (f) => {
+        if ((f.getAttribute('data-product-scene') || '').trim()) return true;
+        const v = (f.getAttribute('data-product-view') || f.dataset.productView || '').toLowerCase();
+        return /^(detail|closeup|exploded)/.test(v);
+      };
+      // a scene still: a scene word anywhere after the stem's first word, or, once the width, half, ground and colour suffixes are off, a token
+      // after the view tokens (<id>-three-quarter-handling-graphite is the use scene "handling": a view alone is the object whole)
+      const sceneStill = (n) => {
+        if (n.split(/[-_]/).slice(1).some((x) => SCENEW.has(x))) return true;
+        const t = n.split(/[-_]/);
+        while (t.length > 1 && (/^(half|\d{3,4}|\d{3,4}x\d{3,4}|@\dx|2x|3x)$/.test(t[t.length - 1]) || COLOUR.test(t[t.length - 1]) || window.__ccDeclared.colours.has(t[t.length - 1]))) t.pop();
+        const v = t.findIndex((x, i) => i >= 1 && VIEWTOK.test(x)); if (v < 1) return false;
+        let e = v; while (e < t.length && VIEWTOK.test(t[e])) e++;
+        return e < t.length;
+      };
+      const stillKey = (u) => {
+        let p; try { p = new URL(u, document.baseURI).pathname; } catch (e) { p = String(u).split(/[?#]/)[0]; }
+        const n = decodeURIComponent(p.slice(p.lastIndexOf('/') + 1)).replace(/\.\w+$/, '').toLowerCase();
+        if (sceneStill(n)) return 'X|scene';
+        const b = bases.find((x) => n === x || n.startsWith(x + '-')); if (b) return 'S|' + b;
+        const t = n.split('-'); // width, half-size, colour and ground suffixes come off the end, then the view and what follows it
+        while (t.length > 1 && (/^(half|\d{3,4}|\d{3,4}x\d{3,4}|@\dx|2x|3x)$/.test(t[t.length - 1]) || COLOUR.test(t[t.length - 1]))) t.pop();
+        const v = t.findIndex((x, i) => i >= 1 && VIEWTOK.test(x)); if (v >= 1) t.length = v;
+        const s = t.join('-'); return s.length >= 4 && !/^(photo|img|image|pic|picture|hero|bg|background|shot|still|render)$/.test(s) ? 'F|' + s : null;
+      };
+      const vis = [];
+      for (const f of document.querySelectorAll('[data-product], [data-object], [data-print]')) {
+        if (f.parentElement && f.parentElement.closest('[data-product], [data-object], [data-print]')) continue;
+        if (inFixed(f) || f.closest('[class*="marquee"], [class*="ticker"]') || !visible(f)) continue;
+        const r = f.getBoundingClientRect(); if (r.width < 120 || r.height < 90) continue;
+        // a use scene, a close-up or the exploded view is another kind of picture: it can be a section's main visual, but it is not the object whole
+        if (f.hasAttribute('data-product') && notWhole(f)) { vis.push({ el: f, key: 'X|scene', area: r.width * r.height, name: 'scene' }); continue; }
+        const key = f.hasAttribute('data-product') ? 'S|' + baseOf(f.getAttribute('data-product')) : 'O|' + String(f.getAttribute('data-object') || f.getAttribute('data-print') || '').trim().toLowerCase();
+        if (/\|$/.test(key)) continue;
+        vis.push({ el: f, key, area: r.width * r.height, name: key.slice(2) });
+      }
+      for (const i of document.images) {
+        if (i.closest('[data-product], [data-object], [data-print]') || inDrawn(i) || inFixed(i) || !visible(i) || i.closest('[class*="marquee"], [class*="ticker"]')) continue;
+        const r = i.getBoundingClientRect(); if (r.width < 160 || r.height < 100) continue;
+        const u = i.getAttribute('src') || i.currentSrc || ''; if (!u || /\.svg([?#]|$)/i.test(u) || /^data:/i.test(u)) continue;
+        const key = stillKey(u); if (!key) continue;
+        vis.push({ el: i, key, area: r.width * r.height, name: key.slice(2) });
+      }
+      const main = new Map(); // section index -> its largest visual
+      for (const v of vis) { const k = SECS.findIndex((s) => s.contains(v.el)); if (k < 0) continue; const m = main.get(k); if (!m || v.area > m.area) main.set(k, v); }
+      const by = new Map(); for (const [k, v] of main) { if (v.key === 'X|scene') continue; if (!by.has(v.key)) by.set(v.key, []); by.get(v.key).push({ k, v }); }
+      let best = null; for (const [key, arr] of by) if (!best || arr.length > best.arr.length) best = { key, arr };
+      if (best && best.arr.length >= 4) {
+        const name = (k) => { const s = SECS[k], h = s.querySelector('h1, h2, h3'); return k === 0 && s.matches('.hero, [class*="hero"]') ? 'the hero' : s.id ? '#' + s.id : h ? `"${label(h).slice(0, 24)}"` : 'section ' + (k + 1); };
+        const arr = best.arr.sort((a, b) => a.k - b.k), v0 = arr[0].v;
+        out.sameObject = { id: idOf(v0.el), sel: sel(v0.el), text: v0.name.slice(0, 50), n: arr.length, total: SECS.length, where: arr.map((x) => name(x.k)), doc: doc(v0.el), more: arr.slice(1, 6).map((x) => doc(x.v.el)) };
+      } }
     // photo-weight: a photograph far wider than it is drawn, with no srcset: on a phone it arrives late and its frame
     // shows only its ground until then (an empty frame on a phone)
     for (const i of document.images) {
@@ -7955,6 +8049,7 @@ const FIX = {
   'copy-length': 'cut the heading to one short line (2 to 12 words) and move the rest into the text under it',
   'button-contrast': 'give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink',
   'photo-repeat': 'show each photograph once',
+  'same-object': 'give each section its own kind of visual: the world, the crew, the product in use, its parts, a diagram, a type moment; the object whole in three sections at most',
   'progress-bar': 'show the figure in words or as a number ("2 of 5 done"), not as a bar that fills',
   'nav-current': 'mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls',
   'photo-print': 'show the photograph plain (in colour, or greyed into the palette with CSS): no halftone, dither or engraving over it',
@@ -8187,10 +8282,16 @@ function extrasFindings(X, PG, AU, first, later, vw) {
   for (const p of (X.fragPlaces || []).slice(0, 2)) if (vw >= 700) push('ui-centre', 'WARN', p, `in a group of ${p.n} cards, the UI of ${p.odd} sits ${Math.abs(p.off)}% of its panel's width to the ${p.off > 0 ? 'right' : 'left'} of where the others sit (${p.med === 0 ? 'the middle' : `${p.med}% off the middle`}): one card group, two placements`, { more: p.more, fix: 'place the UI the same way in every card of the group: all centred, or all pinned to the same edge' });
   if (first && X.progress && X.progress.length) { const p = X.progress[0]; push('progress-bar', 'WARN', p, `${X.progress.length > 1 ? `${X.progress.length} progress or meter bars` : 'a progress or meter bar'} on the page${p.fixed ? ' (fixed to the screen)' : ''}, like the one in "${p.text.slice(0, 30)}": the house rules have no drag or progress bars`, { more: X.progress.slice(1).map((x) => x.doc) }); }
   // on a product page one view twice is a fault (the same side view in two sections reads as a page with few pictures), not a hint; elsewhere a WARN
-  for (const p of (X.repeats || []).slice(0, 3)) push('photo-repeat', TYPE === 'product' ? 'FAIL' : 'WARN', p, `the photograph ${p.text} is shown ${p.n} times on the page: a picture the visitor has already seen`, { more: p.more, fix: TYPE === 'product' ? 'show each view of the product once: the hero side, the product section three-quarter, the scene loaded or in use, the parts as close-ups, the colourway row front, the order rear-quarter' : 'show each photograph once: a different picture of what this section names, or none' });
+  for (const p of (X.repeats || []).slice(0, 3)) push('photo-repeat', TYPE === 'product' ? 'FAIL' : 'WARN', p, `the photograph ${p.text} is shown ${p.n} times on the page: a picture the visitor has already seen`, { more: p.more, fix: TYPE === 'product' ? 'show each view of the product once: the hero side, the product section three-quarter, the use scene, the parts as close-ups or the exploded view, the order rear-quarter' : 'show each photograph once: a different picture of what this section names, or none' });
   // the same VIEW in another colour is the same picture (product pages only): a recoloured side view is still the side view; WARN, FAIL when the
   // two sit in neighbouring sections (or the same colour twice)
-  if (TYPE === 'product') for (const p of (X.viewRepeats || []).slice(0, 3)) push('photo-repeat', p.adjacent || p.sameColour ? 'FAIL' : 'WARN', p, `the ${p.text} view of the product is shown ${p.n} times (${p.where.join(', ')})${p.colours.length ? ` in ${p.colours.join(', ')}` : ''}: another colour is not another picture${p.adjacent ? ', and two of them sit in neighbouring sections' : ''}`, { more: p.more, fix: 'give every picture of the product its own view: the hero side, the product section three-quarter, the scene loaded or in use, the parts as close-ups, the colourway row front (one row, every colour), the order rear-quarter' });
+  if (TYPE === 'product') for (const p of (X.viewRepeats || []).slice(0, 3)) push('photo-repeat', p.adjacent || p.sameColour ? 'FAIL' : 'WARN', p, `the ${p.text} view of the product is shown ${p.n} times (${p.where.join(', ')})${p.colours.length ? ` in ${p.colours.join(', ')}` : ''}: another colour is not another picture${p.adjacent ? ', and two of them sit in neighbouring sections' : ''}`, { more: p.more, fix: 'give every picture of the product its own view: the hero side, the product section three-quarter, the use scene, the parts as close-ups or the exploded view, the order rear-quarter; the product whole in three sections at most' });
+  // same-object (a product, tech or gaming page): one object shown WHOLE (a render's spec in a whole view or colour, or one still's stem; no use scene,
+  // close-up or exploded view) as the main visual of more than three sections is one picture told again and again (the hero and two more are allowed)
+  if (first && (TYPE === 'product' || TECH) && X.sameObject && X.sameObject.n >= 4) {
+    const o = X.sameObject;
+    push('same-object', 'WARN', o, `one object, ${o.text}, is shown whole as the main visual of ${o.n} of the page's ${o.total} sections (${o.where.join(', ')}): the page shows one thing again and again in other views`, { more: o.more, fix: 'give each section its own kind of visual: the world it lives in, the crew or the people who use it, the product in use, its parts as close-ups, a diagram of how it works, or a type moment (a large word or figure); the object whole in three sections at most (the hero and two more)' });
+  }
   if (vw < 700 && X.heavy && X.heavy.length) {
     const h = [...X.heavy].sort((a, b) => b.kb - a.kb)[0];
     push('photo-weight', 'WARN', h, `${X.heavy.length > 1 ? `${X.heavy.length} photographs are` : 'a photograph is'} 3x or more wider than drawn on the phone, with no srcset: ${h.text} is ${h.nw}px (${h.kb} KB${h.lazy ? ', lazy' : ''}) for a ${h.w}px frame; on a phone it arrives late and its frame shows only its ground until then`, { more: X.heavy.slice(1, 5).map((x) => x.doc), fix: 'give each photograph srcset and sizes (a 800px and a 1600px file), or a smaller file: the frame never shows empty' });
@@ -8423,7 +8524,7 @@ async function glFallbackPass(cdp, helper, { w: width, h }) {
       s = Math.min(y + 0.85 * height, mx);
     }
     asked = (await tab.eval('window.__ccgl ? window.__ccgl.asked : 0').catch(() => 0)) || 0;
-  } catch (e) { errors.push('gl-fallback: ' + e.message); } finally { await tab.close(); }
+  } catch (e) { lose(errors, 'gl-fallback', e); } finally { await tab.close(); }
   return { F, errors, hosts, asked };
 }
 
@@ -8511,7 +8612,7 @@ async function slowPass(cdp, helper) {
       await weigh(list, `a tap on "${t.label}" in the menu brings it on screen`);
       F.push(...list);
     }
-  } catch (e) { errors.push('slow line: ' + e.message); } finally { await tab.close(); }
+  } catch (e) { lose(errors, 'slow line', e); } finally { await tab.close(); }
   return { F, errors, stops: stopsN };
 }
 // reduced motion (the house rule: loops hold their finished picture, nothing animates in on scroll): the page at the
@@ -8536,7 +8637,7 @@ async function reducedPass(cdp, helper, { w: width, h }) {
       await sleep(1500);
       // a screen the browser cannot shoot in time (a page heavy with CPU WebGL) is tried once more, then skipped and counted
       let A = null, B = null, C = null;
-      for (let t = 0; t < 2 && !C; t++) { try { A = await tab.shot(92); await sleep(1200); B = await tab.shot(92); await sleep(1300); C = await tab.shot(92); } catch (e) { A = B = C = null; if (t) errors.push(`reduced motion: screen ${k} not read (${e.message})`); } }
+      for (let t = 0; t < 2 && !C; t++) { try { A = await tab.shot(92); await sleep(1200); B = await tab.shot(92); await sleep(1300); C = await tab.shot(92); } catch (e) { A = B = C = null; if (t) lose(errors, 'reduced motion', e, `screen ${k} not read (${e.message})`); } }
       if (!C) { missed++; const mx0 = await tab.eval('Math.max(0, document.scrollingElement.scrollHeight - innerHeight)').catch(() => 0); if (sy >= mx0 - 2) break; y = Math.min(sy + height, mx0); continue; }
       read++;
       await helper.eval(`window.__h.use("rmA", ${JSON.stringify(A)})`); await helper.eval(`window.__h.keep("rmB", ${JSON.stringify(B)})`); await helper.eval(`window.__h.keep("rmC", ${JSON.stringify(C)})`);
@@ -8571,7 +8672,7 @@ async function reducedPass(cdp, helper, { w: width, h }) {
     }
     for (const f of F.slice(0, 12)) { await cropTo(helper, f.shot, f, width, height, `${width}-rm-${String(++n).padStart(2, '0')}-${f.check}.jpg`); }
     for (const f of F) delete f.shot;
-  } catch (e) { errors.push('reduced motion: ' + e.message); } finally { await tab.close(); }
+  } catch (e) { lose(errors, 'reduced motion', e); } finally { await tab.close(); }
   return { F, errors, read, missed };
 }
 // hidden-content: text on this screen that is not seen: an
@@ -8685,10 +8786,57 @@ async function deadIoPass(cdp, helper, { w: width, h }) {
     }
     for (const f of F.slice(0, 10)) await cropTo(helper, f.shot, f, width, height, `${width}-io-${String(++n).padStart(2, '0')}-hidden-content.jpg`);
     for (const f of F) delete f.shot;
-  } catch (e) { errors.push('hidden content: ' + e.message); } finally { await tab.close(); }
+  } catch (e) { lose(errors, 'hidden content', e); } finally { await tab.close(); }
   return { F, errors, read };
 }
-async function safe2(errors, name, fn) { try { return await fn(); } catch (e) { errors.push(`${name}: ${e.message}`); return null; } }
+// a probe that timed out or threw hands its caller null, 0 or an empty list, and the check it feeds would read PASS
+// for what nobody measured: the failing call is kept by name (errors.lost) and told as a WARN on the checks it feeds
+const LOST_FIX = 'run the check again on a quieter machine; if it keeps failing, the probe error line says what stopped it';
+const LOST_CHECKS = {
+  'visual probe': [['visual-caption', 'visual-empty'], 'the visuals of the page (their captions and whether they draw)'],
+  'effect-kind': [['effect-kind'], 'the effect files and the WebGL and mount counts'],
+  'effect-kind particle rate': [['effect-kind'], 'the particle rate (canvas 2D shapes a second)'],
+  'effect-kind drift walk': [['effect-kind'], 'the parts that drift off the scroll'],
+  'empty-visual': [['empty-visual'], 'whether the visuals show one colour all over'],
+  ghosts: [['empty-visual'], 'pictures that load but stay empty'],
+  gl: [['shader-lint'], 'the shaders the page compiled'], 'shader-lint': [['shader-lint'], 'the shader code'],
+  seams: [['flush'], 'the seams between sections'], seam: [['section-gaps'], 'the gaps between sections'],
+  timelines: [['scroll-linked'], 'the scroll timelines'], hold: [['scroll-linked', 'pinned'], 'the held sections'],
+  reveal: [['scroll-reveal'], 'the parts that reveal on scroll'], 'io-reveal': [['scroll-reveal'], 'the reveals that wait for the viewport'],
+  hover: [['hover', 'hover-move', 'hover-spill'], 'the hover states'], 'hover-kinds': [['hover-move'], 'the kinds of hover'],
+  hidden: [['hidden-visual'], 'what a hover shows or hides'], loops: [['loop-pause'], 'the loops and their pause'], forms: [['forms'], 'the forms'],
+  webgl: [['webgl'], 'the WebGL counts'], moments: [['effects-fit'], 'the scroll moments'], place: [['effects-fit'], 'where the effect parts sit'],
+  'no-visual': [['no-visual'], 'the sections without a visual'], 'hero-fill': [['hero-fill'], 'the hero against the screen'],
+  'nav-collapse': [['nav'], 'the nav collapse'], anchors: [['links'], 'the in-page links'], fades: [['fade-cut'], 'the fades'],
+  'reduced motion': [['reduced-motion'], 'the page under reduced motion'], reduced: [['reduced-motion'], 'the moving parts under reduced motion'],
+  'hidden content': [['hidden-content'], 'content hidden until a script reveals it'], 'gl-fallback': [['gl-fallback'], 'the WebGL fallback'],
+  'first screen': [['spill', 'off-viewport', 'cut-text', 'nav', 'hero-fill'], 'the first screen'],
+  tilt: [['tilt'], 'tilted parts'], spill: [['spill'], 'spill'], marquee: [['marquee'], 'marquees'], cut: [['cut-text'], 'cut text'], stagger: [['stagger'], 'stagger'],
+  orphan: [['orphan'], 'orphan words'], contrast: [['contrast'], 'contrast'], 'top-stagger': [['top-stagger'], 'the top edges'],
+  extras: [['same-object', 'photo-repeat', 'photo-weight', 'button-styles', 'caption', 'credit-wall', 'heading-scale', 'nav-labels', 'nesting', 'placeholder', 'progress-bar', 'proximity', 'sample-label', 'tab-wrap', 'ui-centre', 'unit-break'], 'the page-wide reads (repeated objects and photographs, picture weight, buttons, captions, credits, headings, nav labels, nesting, stand-in text, progress bars, tabs, units)'],
+  audit: [['caption', 'card-layout', 'col-edge', 'effect-repeat', 'nesting', 'placeholder', 'pricing-tiers', 'proximity', 'sample-label'], 'the page audit (captions, card layouts, column edges, repeated effects, nesting, stand-in text, price tiers, spacing)'],
+  more: [['action-count', 'button-styles', 'copy-length', 'fact-agree', 'fold-action', 'grounds', 'links', 'one-screen', 'photo-print', 'product-shown', 'split-align'], 'the page-wide reads (the main action, buttons, copy length, facts, the first fold, grounds, links, prints on photographs, the product shown, split alignment)'],
+};
+function lose(errors, name, e, msg) {
+  const why = msg ?? (e && e.message) ?? String(e);
+  errors.push(`${name}: ${why}`);
+  (errors.lost ||= []).push({ name, why: String(why).split('\n')[0].slice(0, 90) });
+}
+// what the page's own probe could not read ("spill: TypeError ..."): told by its part's name
+const takePage = (to, list, pre = '') => { for (const e of list) { const name = String(e).split(':')[0]; to.push(pre + e); (to.lost ||= []).push({ name, why: String(e).slice(name.length + 2).slice(0, 90) }); } };
+const takeErrors = (to, from) => { to.push(...from); if (from.lost) (to.lost ||= []).push(...from.lost); };
+// the lost calls, as one WARN a check a width: "partly measured: <what>"; `have` are the findings of that width
+function lostFindings(lost, have) {
+  const by = new Map();
+  for (const l of lost || []) {
+    const mid = String(l.name).split(' ')[0], mod = MODULES.find((m) => m.id === l.name) || MODULES.find((m) => m.id === mid);
+    const t = (Object.hasOwn(LOST_CHECKS, l.name) ? LOST_CHECKS[l.name] : null) || (mod ? [mod.checks.map((c) => c.id), `the ${l.name} block`] : ORDER.includes(l.name) ? [[l.name], `the ${l.name} probe`] : null);
+    if (!t) continue;
+    for (const c of t[0]) { if (!by.has(c)) by.set(c, new Set()); by.get(c).add(`${t[1]} (${l.why})`); }
+  }
+  return [...by].filter(([c]) => !have.some((f) => f.check === c && /^partly measured/.test(f.msg))).map(([check, what]) => clean({ check, sev: 'WARN', id: 0, sel: '(the page)', text: '', msg: `partly measured: ${[...what].join('; ')}`, fix: LOST_FIX }));
+}
+async function safe2(errors, name, fn) { try { return await fn(); } catch (e) { lose(errors, name, e); return null; } }
 
 // ---------------------------------------------------------------- one width
 const near =(a, b) => (a === b) || (a && b && a !== 'gradient' && b !== 'gradient' && Math.max(...[1, 3, 5].map((i) => Math.abs(parseInt(a.slice(i, i + 2), 16) - parseInt(b.slice(i, i + 2), 16)))) <= 28);
@@ -8751,7 +8899,7 @@ function groupSame(F) {
   }
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
-const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown'];
+const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object'];
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
 for (const M of MODULES) for (const c of M.checks) if (!ORDER.includes(c.id)) ORDER.push(c.id);
@@ -8789,7 +8937,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
   const btnSeen = new Set(); // buttons already read against their ground (button-contrast)
   let vw = width, vh = height, docWidth = width, stops = 0, held = [], PG = null, copy = null, secCount = 0;
   let tm0 = Date.now(); const TM = (n) => { if (process.env.CC_TIMING) { console.error(`  [${width}] ${n}: ${((Date.now() - tm0) / 1000).toFixed(1)} s`); } tm0 = Date.now(); };
-  const safe = async (name, fn) => { try { return await fn(); } catch (e) { errors.push(`${name}: ${e.message}`); return null; } };
+  const safe = async (name, fn) => { try { return await fn(); } catch (e) { lose(errors, name, e); return null; } };
   // a box in page coordinates, put on the measured screen that shows the most of it
   const place = (d) => {
     let best = -1, ov = 0;
@@ -8920,7 +9068,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       if (k === 0) secCount = m.sections.length;
       shots[k] = await tab.shot();
       if (keepStops) writeFileSync(join(outDir, `${width}-stop-${String(k).padStart(2, '0')}.jpg`), Buffer.from(shots[k], 'base64'));
-      errors.push(...m.errors.map((e) => `stop ${k}: ${e}`));
+      takePage(errors, m.errors, `stop ${k}: `);
       for (const f of m.findings) F.push(Object.assign(f, { stop: k }));
       for (const x of m.ink) inks.push(Object.assign(x, { stop: k }));
       for (const x of m.body) bodies.push(Object.assign(x, { stop: k }));
@@ -8955,7 +9103,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       // empty-visual: a picture, canvas, effect ground or frame that shows one colour all over (its ground, or nothing)
       if (m.visuals && m.visuals.length) {
         await helper.eval(`window.__h.use("vis", ${JSON.stringify(shots[k])})`);
-        const fl = (await safe('visuals', () => helper.eval(`window.__h.flat("vis", ${JSON.stringify(m.visuals.map((v) => ({ rect: v.rect, holes: v.holes })))})`))) || [];
+        const fl = (await safe('empty-visual', () => helper.eval(`window.__h.flat("vis", ${JSON.stringify(m.visuals.map((v) => ({ rect: v.rect, holes: v.holes })))})`))) || [];
         // the same screen again with each visual's own content hidden: a picture, canvas or effect canvas whose screen
         // does not change when it is hidden shows only its ground, a gradient as much as one flat colour (an image left
         // at opacity 0 by a reveal that never fires, a shader that failed over a radial ground). Confirmed once more
@@ -8967,11 +9115,11 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
             const B = await tab.shot(92);
             await tab.eval('window.__cc.hideVis([], false)');
             await helper.eval(`window.__h.use("hvA", ${JSON.stringify(A)})`); await helper.eval(`window.__h.keep("hvB", ${JSON.stringify(B)})`);
-            const d = (await safe('visuals', () => helper.eval(`window.__h.diffH("hvA", "hvB", ${JSON.stringify(list.map((x) => ({ rect: x.v.rect, holes: x.v.holes })))}, 3)`))) || [];
+            const d = (await safe('empty-visual', () => helper.eval(`window.__h.diffH("hvA", "hvB", ${JSON.stringify(list.map((x) => ({ rect: x.v.rect, holes: x.v.holes })))}, 3)`))) || [];
             return list.filter((x, j) => d[j] && d[j].n >= 150 && d[j].share < 0.004).map((x, j) => Object.assign(x, { d: d[list.indexOf(x)] }));
           };
-          let sus = await safe('visuals', async () => still(hv, await tab.shot(92))) || [];
-          if (sus.length) { await sleep(1200); sus = (await safe('visuals', async () => still(sus, await tab.shot(92)))) || []; }
+          let sus = await safe('empty-visual', async () => still(hv, await tab.shot(92))) || [];
+          if (sus.length) { await sleep(1200); sus = (await safe('empty-visual', async () => still(sus, await tab.shot(92)))) || []; }
           for (const { v, i, d } of sus) {
             fl[i] = { n: d.n, share: 1, mode: 'unchanged', hid: true };
           }
@@ -9227,6 +9375,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         told.add(q.url);
         // a connection that dropped on a third-party host (the Google Fonts link) is the network, not the page: WARN, and run again
         const blip = !q.url.startsWith(base) && /^ERR_(SOCKET_NOT_CONNECTED|CONNECTION_(RESET|CLOSED|TIMED_OUT|REFUSED)|NETWORK_CHANGED|TIMED_OUT|INTERNET_DISCONNECTED|NAME_NOT_RESOLVED|EMPTY_RESPONSE|HTTP2_PROTOCOL_ERROR)/.test(q.why);
+        // a product-render spec with no <poster>.stills.json beside it: its frame renders itself live; the stills are made once
+        if (/\.stills\.json(?:[?#]|$)/i.test(q.url)) { F.push({ check: 'assets', sev: 'WARN', id: 0, sel: '(the page)', text: q.url.split(/[?#]/)[0].split('/').pop(), stop: null, rects: [], msg: 'no stills made for this product yet: run assets/objects/product-render/make-posters.mjs on the spec (each frame renders itself in the browser until then)', fix: 'run assets/objects/product-render/make-posters.mjs on the spec to make its stills' }); continue; }
         F.push({ check: 'assets', sev: /font|data/.test(kind) || blip ? 'WARN' : 'FAIL', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `the ${kind} ${q.url.startsWith(base) ? q.url.slice(base.length) : q.url} did not load (${q.why})${blip ? ': the connection dropped, a network blip and not the page; run the check again' : kind === 'stylesheet' ? ': everything here was measured without it' : ''}` });
       }
     }
@@ -9718,7 +9868,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // a fault inside a scroll-linked animation is caught mid-way: a WARN (the animation is the FAIL, told on its own);
     // with --quick, the same for anything in a held section or a scroll scene, whose motion was not checked
     // (what does not depend on where a moving part was caught keeps its severity: sizes, words, links, pictures, loops)
-    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown']);
+    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object']);
     for (const M of MODULES) for (const c of M.checks) told.add(c.id);
     const ids = F.map((f) => (told.has(f.check) ? 0 : f.id || 0));
     const inside = (await safe('inside', () => tab.eval(`window.__cc.insideMoving(${JSON.stringify(ids)})`))) || [];
@@ -9760,7 +9910,7 @@ async function sweepWidth(cdp, w) {
     await tab.eval(`(${lib.toString()})()`);
     const m = await tab.eval('window.__cc.measure(0)', 120000);
     vw = m.vw; vh = m.vh; shot = await tab.shot();
-    errors.push(...m.errors);
+    takePage(errors, m.errors);
     // hero-fill at this width too (the readers' tablet is 768x1024: a hero that ends short shows the next heading)
     const hf = await tab.eval('window.__cc.heroFill()', 30000).catch(() => null);
     if (hf) F.push({ check: 'hero-fill', sev: 'FAIL', id: hf.id, sel: hf.sel, text: hf.text, rects: [{ left: 0, top: hf.top, width: vw, height: Math.max(4, vh - hf.top) }], msg: `the next section shows on the first screen: it starts at ${hf.top}px on a ${hf.vh}px screen (the hero ends at ${hf.heroBottom}px)` });
@@ -9779,14 +9929,14 @@ async function sweepWidth(cdp, w) {
     }
     if (m.docWidth > m.vw + 1) F.push({ check: 'off-viewport', sev: 'FAIL', id: 0, sel: '(the page)', text: '', rects: [], msg: `the page is ${m.docWidth}px wide on a ${m.vw}px screen and scrolls sideways` });
   } catch (e) {
-    errors.push(e.message);
+    lose(errors, 'first screen', e);
   } finally {
     await tab.close();
   }
   return { w, vw, vh, shot, F, errors };
 }
 async function runSweep(cdp, helper, main) {
-  const told = new Map(), out = [], errors = [], widths = [];
+  const told = new Map(), out = [], errors = [], widths = [], lostAt = [];
   const mainKeys = new Set(main.flatMap((w) => w.findings.map((f) => f.check + '|' + f.sel)));
   let n = 0;
   for (const w of SWEEP) {
@@ -9794,6 +9944,7 @@ async function runSweep(cdp, helper, main) {
     widths.push(w);
     const r = await sweepWidth(cdp, w);
     errors.push(...r.errors.map((e) => `${w}: ${e}`));
+    for (const l of r.errors.lost || []) lostAt.push({ w, l });
     for (const f of r.F.sort(bySev)) {
       const key = f.check + '|' + f.sel;
       if (mainKeys.has(key)) continue; // told at a main width
@@ -9802,6 +9953,8 @@ async function runSweep(cdp, helper, main) {
       if (r.shot && f.rects && f.rects.length) await cropTo(helper, r.shot, f, r.vw, r.vh, `sweep-${w}-${String(++n).padStart(2, '0')}-${f.check}.jpg`);
     }
   }
+  // a width of the sweep that lost a probe: its checks are partly measured there, never a PASS
+  for (const w of widths) for (const f of lostFindings(lostAt.filter((x) => x.w === w).map((x) => x.l), out.filter((x) => x.width === w))) out.push(Object.assign(f, { width: w, also: [] }));
   for (const f of out) if (f.also.length) f.msg += ` (also at ${f.also.join(', ')})`;
   return { widths, errors, findings: out.sort(bySev).map(({ also, ...f }) => clean(f)) };
 }
@@ -9830,14 +9983,14 @@ try {
     // gl-fallback: once, at the first width, on a page that asks for WebGL
     if (i === 0 && report.widths[0].glAsked && !noGlFail) {
       const g = await glFallbackPass(cdp, helper, w);
-      report.widths[0].findings.push(...g.F.map(clean)); report.widths[0].errors.push(...g.errors);
+      report.widths[0].findings.push(...g.F.map(clean)); takeErrors(report.widths[0].errors, g.errors);
       report.glFallback = { hosts: g.hosts, asked: g.asked, empty: g.F.length };
     }
     // reduced motion: once, at the first width (skipped with --quick or --no-reduced)
     if (i === 0 && noReduced && !quick) report.notChecked = [...(report.notChecked || []), 'reduced-motion (--no-reduced)'];
     if (i === 0 && !quick && !noReduced && report.widths[0].screens > 0) {
       const g = await reducedPass(cdp, helper, w);
-      report.widths[0].findings.push(...g.F.map(clean)); report.widths[0].errors.push(...g.errors);
+      report.widths[0].findings.push(...g.F.map(clean)); takeErrors(report.widths[0].errors, g.errors);
       report.reduced = { screens: g.read, notRead: g.missed };
       // a pass that read no screen, or under half of them, says so: never a PASS for screens nobody looked at
       if (!g.read || g.missed > g.read) report.notChecked = [...(report.notChecked || []), `reduced-motion (${g.read} of ${g.read + g.missed} screens read)`];
@@ -9847,7 +10000,7 @@ try {
     if (i === 0 && noHidden && !quick) report.notChecked = [...(report.notChecked || []), 'hidden-content (--no-hidden)'];
     if (i === 0 && !quick && !noHidden && r.screens > 0) {
       const g = await deadIoPass(cdp, helper, w);
-      r.findings.push(...g.F.map(clean)); r.errors.push(...g.errors);
+      r.findings.push(...g.F.map(clean)); takeErrors(r.errors, g.errors);
       report.hidden = { screens: g.read };
     }
     // the blocks that open their own tab: at the first width unless their when() says otherwise
@@ -9866,12 +10019,14 @@ try {
     // a phone over a slow mobile line: once, at the first phone width (skipped with --quick or --no-slow)
     if (w.w < 700 && !quick && !noSlow && !report.slow && r.screens > 0) {
       const g = await slowPass(cdp, helper);
-      r.findings.push(...g.F.map(clean)); r.errors.push(...g.errors);
+      r.findings.push(...g.F.map(clean)); takeErrors(r.errors, g.errors);
       report.slow = { stops: g.stops, late: g.F.length };
     }
   }
   // a block whose when() takes no width of this run (rhythm at --widths 1280,768, tiles with no 1440 or phone width): not checked, never PASS
   for (const M of MODULES) if (!modOff(M) && M.when && !WIDTHS.some((w, i) => M.when({ width: w.w, height: w.h || HEIGHTS[w.w] || (w.w < 700 ? 844 : 900), mobile: w.w < 700, first: i === 0, quick, flags: MOD_FLAGS.get(M.id) }))) report.notChecked = [...(report.notChecked || []), ...M.checks.map((c) => `${c.id} (${M.id}: no width of this run is one it runs at)`)];
+  // a probe that timed out or threw at a width: the checks it feeds read WARN there ("partly measured"), never PASS
+  for (const r of report.widths) if (r.screens > 0) r.findings.push(...lostFindings(r.errors.lost, r.findings));
   if (!noSweep) report.sweep = await runSweep(cdp, helper, report.widths);
 } catch (e) {
   console.error('consistency: ' + e.message); code = 2;

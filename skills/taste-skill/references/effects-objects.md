@@ -23,9 +23,10 @@ Thirteen objects in three families and one builder; each family's README is the 
   page that never showed the bike scored 3 of 10). The client's own render or CAD view comes
   first; else `assets/objects/product-render` composes this product from a JSON spec of its own
   parts, sizes and materials (Product renders, below) and it leads the hero (`deal.mjs --type
-  product --has object`), then shows in every section that pictures the product, each section a
-  different view (another angle, a close-up of its part, loaded or in use, a colourway), big in
-  its frame, never in a grey panel (Views, below; `sections.md`, Product, its seven rules). It is the product's picture, not
+  product --has object`), then whole in at most two more sections, each a different view, big in
+  its frame, never in a grey panel; its use (a scene whose setting fills the frame), close-ups of
+  its parts and an exploded view carry the other sections (Views, below; `sections.md` section 1,
+  One object, and Product, its seven rules). It is the product's picture, not
   an effect: on the page's flat ground or the lit ground on tech, stills by default, live only when
   asked (`data-product-mode="live"`), at most one live context, no print,
   no shader ground or moment beside it on site-kind other. A `print-*` object of the product's own
@@ -121,10 +122,10 @@ their format, never ship one as the client's product.
   theme switch), `destroy()`. `auto.js` exports `products` (element to controller), `ready` and
   `mountAll(root)`. A spec that fails to load sets `data-product-error` on its element.
 
-### Views (a product page shows a different one in every section)
+### Views (a different one in every section; the product whole in three at most)
 
 All from the one spec, with the kit's own names (`build.js`, the three worked specs show each);
-write each section's view on its plan line, no two alike (`sections.md`, Product: the six-section recipe names them: `side`, `three-quarter`, a scene, `detail:<part>`, `front` for the colourway row, a `rear-quarter` of the spec's own).
+write each section's view on its plan line, no two alike (`sections.md`, Product: the six-section recipe names them: `side`, `three-quarter`, the use scene, `detail:<part>` or an `exploded` scene, a `rear-quarter` of the spec's own; whole views in three sections at most).
 
 | spec key | what it gives |
 |---|---|

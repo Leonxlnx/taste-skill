@@ -750,6 +750,67 @@ word; a line says when the reply comes ("We reply within a day").
 
 **Mistakes.** A form that sends nowhere; more than six fields; a fake success message; a modal.
 
+## client-slots
+
+**Job and use.** The client's own trailer, key art, in-engine screenshots, CAD renders, exploded
+model or motion video, when the brief says the client has them (`sections.md` section 1): each
+gets a frame that reads finished now and takes the client's file later with one line changed. Tech
+pages (software, gaming, hardware); a product page's CAD frame too. The stand-in is always from the
+kit (a product-render still or scene of the client's own spec), never stock, a drawing or an empty
+or grey frame; nothing on the page says it is a stand-in.
+
+**The comment.** Every slot opens with one comment the client's team can search for:
+`<!-- CLIENT FILE trailer: assets/client/trailer.mp4 (1920x1080, H.264, the 60 s trailer) and
+assets/client/trailer.jpg (its poster); stand-in poster: <spec>-<view>.webp -->`. The report lists
+each slot: its name, file, ratio and stand-in.
+
+**Trailer or motion video frame.** Its own section after the hero (or the world's section), the
+h2 above it, the frame across the wrap: `figure.frame.frame--photo.fit-screen` (page CSS `--ratio: 56.25%`; at 16:9 the frame across
+the wrap is about 700px tall at 1440x900, taller than one screen with its heading, so `fit-screen` (`layout.css`: the height one
+screen leaves under the heading, 720px at most, `auto` under 1024px so a tablet and a phone keep 16:9) or a `max-height` on the
+frame keeps the section one screen; the contained poster then sits letterboxed on the dark ground)
+holding `<video class="frame__img" playsinline preload="none" poster="<the stand-in still>">`, the
+poster a kit still that already reads as the film's first frame (a game: the world's widest view;
+hardware: the use scene, the arm at the bench mid-move). The play control is real or absent, never
+dead. With the file: `controls`, `preload="metadata"`, `<source src="assets/client/trailer.mp4"
+type="video/mp4">`, the client's poster. Without it: no `<source>` and no `controls` (a missing
+file or a dead control bar is a broken frame); the stand-in still is transparent, so the video
+also takes `.slot__poster` and page CSS `.frame > .frame__img.slot__poster { object-fit: contain }`
+(the kit's `cover` crops the still to a fragment of the product), the frame the world's or the
+page's dark ground, its stills made on that ground (`make-posters.mjs --grounds dark`: a light-ground still keeps a pale floor patch on dark); the play control is `<a
+class="ly-play" href="<the trailer's page the brief gives: the store page>"
+aria-label="Watch the trailer">` with its `.ly-play__disc`: the `.frame` is a centring flex box, but system.css's rule `.frame > :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d)` makes the
+control `position: relative`, so `.ly-play`'s `left` and `bottom` (`--s-6` each) move the disc 32px right and up of dead centre, not
+to a corner; page CSS `.frame > .ly-play { left: auto; bottom: auto }` centres it; with no such page,
+no control: the poster stands as the section's still until the file lands. With its file, a
+motion video on tech may play muted and looped instead (`autoplay muted loop`), with its pause
+button (`motion.md`), the poster alone under reduced motion and on a phone; never with sound.
+
+**Screenshot strip.** The world shown as the game is played: three to five frames framed like
+captures, 16:9, the same size (a `trio` or a row of four on the `.wrap`; a phone: one column), square
+corners or the page radius, no device chrome, no shadow, no caption. With the files: each
+`<img class="frame__img">` in `figure.frame.frame--photo`. Without them: each frame holds one job
+scene of the world spec (`sections.md`, Gaming), `data-product-place="stage"`,
+the frame itself the `[data-product]` element (`div.frame.slot`, page CSS `.frame.slot[data-product]
+{ --ratio: 56.25%; background: <the world's water, fog or night colour> }`: `layout.css` clears a
+`.frame[data-product]`'s ground, so a weaker selector leaves the render on white), the scene's props spread so it spans
+the frame, a still, no two the same scene. Never `data-product-fill` over 1 (in testing the
+frame drew empty). As the "what you do" cards it is three to five open cards, each a
+verb over its capture.
+
+**CAD or render frame.** The client's CAD render of the whole product: the product section's
+split frame (`frame--split`) or a `bleed`, the render on a light flat ground, square corners. Its
+stand-in is the product-render view no other section uses (`front` or `top`), so it counts as one of
+the object's three sections. **Exploded frame:** the parts section's picture, the client's exploded
+model, else the spec's `exploded` scene (`sections.md`, Product, section 4).
+
+**Key art.** The hero's stage (the `product` stage, or the `film` hero's poster) and the world's
+band: the stand-in render there, the comment naming `assets/client/key-art.jpg`.
+
+**Mistakes.** A slot the brief names and the page leaves out; an empty, grey or black frame; a
+play button that does nothing; a `<source>` pointing at a file that is not there; a caption saying
+the file is coming; the hero object as the stand-in in every slot.
+
 # Price and questions
 
 ## pricing-three
@@ -974,10 +1035,11 @@ faq (four questions), footer.closing. Flat grounds, no effect, no moment.
 
 **With no photographs yet** (*Pellum, a desk lamp*): the lamp is rendered, never hidden. The hero
 (`deal.mjs --type product --has object`: `product` or `split`) holds its product render whole on
-the stage, switched on; product-statement shows the render closer on the dial with three facts;
-what it does as a split (the render at warm light beside the uses as rows); how it is used as
-three steps; specs as `rows--spec` with the real icons of the component brands the brief names;
-ordering as a live order card (finish swatches that recolour the render, delivery, the price);
+the stage, switched on; product-statement shows the dial close up with three facts (parts);
+what it does as a split (the desk scene: the warm pool of light on the books and the mug across
+the frame, the lamp cut by its edge; use); how it is used as three steps; specs as `rows--spec` with the real icons of the component brands the brief names;
+ordering as a live order card (finish swatches that recolour the render, delivery, the price):
+the lamp whole twice, never in every section;
 faq; footer.closing. Flat grounds, no effect, no drawing, no line about missing photographs; the
 report lists the shots to take.
 
@@ -1002,15 +1064,20 @@ anywhere.
 in its place. Two product-render specs in the game's palette (`effects-objects.md`, Product
 renders): the salvage sloop (hull and deck as rounded boxes and panels, mast and boom as tubes,
 rigging as paths, a furled sail as a tube, two `light` lanterns; about 40 parts) and the world
-scene (the sloop moored at a drowned pier: posts as cylinders, planks as beams, crates as boxes, a
-crane's rope as a path, under 90 parts). Dealt `deal.mjs --type software --kind gaming --has
+scene (the drowned pier and the sunken town's roofs: posts as cylinders, planks as beams, crates
+as boxes, a crane's rope as a path, the sloop small at the pier, under 90 parts; one scene per
+job: a hull cut open under a `light` lantern, a crate swung up on the crane, the harbour rebuilt). Dealt `deal.mjs --type software --kind gaming --has
 object`: hero `product`, the effect `aurora-curtains` dealt for the hero slot (dark, read as a
 dusk sky over water) as the stage's ground behind the turning sloop (`data-product-mode="live"`), h1 "Kelpmoor, a co-op sailing
-game", "Coming to Steam in spring." and "Add to Steam wishlist" in the head row. Then the world:
-the pier scene, `stage`, full bleed on the dark band, the h2 above it; what you do: three open
-cards, each the still render of the thing its verb uses (the sloop, a salvage crate, the harbour
-crane; `card`, `{"turn":0}`); a section holding the dealt moment; platforms with the real store
-icons; faq; footer.closing. One render turns, the rest are stills; nothing says "render". The
+game", "Coming to Steam in spring." and "Add to Steam wishlist" in the head row. Then the
+trailer frame (client-slots: the pier scene's widest still as the poster, the play control to
+the trailer on the store page the brief gives); the world: the pier scene from above (its `top`
+view, the map of the coast), full bleed on the dark band, the h2 above it; what you do: the
+screenshot strip as three open cards, each a verb over one job scene of the world, 16:9, filled
+to the edges on the world's water (client-slots); a section holding the dealt moment; platforms
+with the real store icons and the sloop's second whole view; faq; footer.closing. The sloop whole
+twice; the world carries the rest. One render turns, the rest are stills; nothing says "render";
+each slot names the client's file in its comment. The
 report names the art to replace.
 
 ## Place
