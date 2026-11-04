@@ -5,6 +5,8 @@
   </picture>
 </p>
 
+[English](README.md) | [한국어](README.ko.md)
+
 <p align="center">
   <a href="https://tasteskill.dev" title="Visit tasteskill.dev"><img src="https://img.shields.io/badge/website-tasteskill.dev-24292f?style=flat" alt="Visit tasteskill.dev" /></a>
   &nbsp;
