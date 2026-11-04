@@ -1,0 +1,568 @@
+{
+ "version": 1,
+ "generated": "2026-11-02T23:38:06.093Z",
+ "count": 11,
+ "fits": {
+  "statement": 7,
+  "between": 2,
+  "product": 4
+ },
+ "rule": "Tech pages only (software, tech, gaming): at most one big scene a page, dealt at random among those whose fits, types and needs the brief meets (references/scenes.md); phones and reduced motion get the still or the light version; the rest of the page stays calm.",
+ "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"> and <link rel=\"stylesheet\" href=\"assets/scenes/<id>/scene.css\"> in <head>; <section class=\"sc\" data-big-scene=\"<id>\" data-big-scene-opts='{…}'><div class=\"sc__stage\">…</div></section>; <script type=\"module\" src=\"assets/scenes/scenes.js\"></script> once at the end of <body>.",
+ "scenes": [
+  {
+   "id": "descend-through-weather",
+   "name": "Descend through the weather",
+   "family": "camera-through-space",
+   "look": "The first screen sinks through a cloud deck onto the place below: a full-bleed photograph from above the weather stands behind a flat band of the page's ground across the foot, which carries the name, one line and the action; two layers of cloud rise at different speeds and the band leaves as the cloud reaches it; a wall of mist fills the frame for a breath while one short line rises through it; then the frame clears from the bottom, under a ceiling of cloud, onto the second photograph, where a two-line statement rises on a band at the foot. The cloud is drawn once from layered noise in the page's own mist tint. No word sits straight on a photograph.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 2,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The picture from above, the name, the line and the action, then the statement and the picture from below.",
+   "phone": "The finished composition.",
+   "maxPerPage": 1,
+   "weight": 0.7,
+   "needs": {
+    "pictures": "two photographs of the client's own site or world, one from above the cloud or high up (a launch site, a test range, a data centre on its plain, a game's world from above), one from below with a calm lower half",
+    "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines"
+   },
+   "never": "a brief with no high and low pictures of its own site; a software page whose product is a screen (the hero shows the product); a local-business or place page; stock cloud photographs pasted in. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+   "avoidWith": [
+    "fixed-hero-object",
+    "powers-of-ten-pullback",
+    "fly-into-the-shape",
+    "shaped-window-over-fixed-world"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 700
+    },
+    "middle": {
+     "p": 0.5,
+     "wait": 600
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 700
+    }
+   },
+   "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "window-parallax"
+   ]
+  },
+  {
+   "id": "dot-becomes-the-full-stop",
+   "name": "The dot becomes the full stop",
+   "family": "type-choreography",
+   "look": "One large dot drops onto the page's ground and the claim grows out of it to the left one whole word at a time, the first word right behind the drop; the dot steps right and a step smaller with every word until it is exactly the sentence's own full stop as the last word lands. An optional second beat cuts the ground to the inverse in one step and sets one supporting line under the claim.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "software",
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The claim and the line as a plain statement section.",
+   "phone": "The light version: the same stage, nothing overlapping, the claim on two rows.",
+   "maxPerPage": 1,
+   "weight": 0.8,
+   "needs": {
+    "words": "one claim of 4-6 words ending on a full stop, in a display face whose full stop is a round dot, and optionally one line of 8-16 words; the section after it on the inverse ground when the cut is used"
+   },
+   "never": "an accent on the dot; a claim of seven words or more; right after another type scene",
+   "avoidWith": [
+    "letter-physics",
+    "letter-bar-floods-the-ground"
+   ],
+   "states": {
+    "start": {
+     "p": 0.12,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.5,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "word-highlight",
+    "counter-rolls"
+   ]
+  },
+  {
+   "id": "fixed-hero-object",
+   "name": "Fixed hero object",
+   "family": "object-scrub",
+   "look": "One product stays on its own layer and turns with the scroll while the page's first chapters pass beneath it: it opens as the hero with the title and the action in the clear half, glides to the other side as each chapter's copy and spec list rise where it was, and a chapter marked dark brings the inverse ground up behind it. The markup carries the object's still; the render draws over it only while the scene is live and near.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 2,
+   "cost": "mid",
+   "webgl": 1,
+   "reduced": "The hero with the object's still in its right half, the chapters as sections under it.",
+   "phone": "The finished composition: the hero copy first, then the still, then the chapters under it.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "object": "one object: a render from assets/objects (print-globe, print-cards, print-wheel, print-lamp, print-cup) with its still made by shoot.mjs make, or the client's own cut-out photograph (an <img class=\"fho__img\">)",
+    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows"
+   },
+   "never": "a gauge, a counter or a frame readout under the object; copy over the object; a second moving ground behind it; an object of another trade than the client's; a print effect on a product page (the render shows). Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+   "avoidWith": [
+    "object-through-giant-type",
+    "powers-of-ten-pullback",
+    "descend-through-weather",
+    "shaped-window-over-fixed-world"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 900
+    },
+    "middle": {
+     "p": 0.4,
+     "wait": 700
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 700
+    }
+   },
+   "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "liquid-hover"
+   ]
+  },
+  {
+   "id": "fly-into-the-shape",
+   "name": "Fly into the shape",
+   "family": "mask-and-reveal",
+   "look": "The brand's own mark, a clean clip of its true shape with the next chapter's photograph already inside it and the chapter's title on its face, rises to the centre of the stage, turns to face you, and the camera flies into it: it grows about its inscribed circle until its edges rush past every side of the screen and the photograph fills the page; then a flat band of the page's ground rises across the foot with the chapter's title and its first sentence. The title on the face grows with the mark to its full size, never faster. The clip is a CSS clip-path in page pixels, never an SVG clipPath repainted each frame.",
+   "fits": [
+    "between",
+    "product"
+   ],
+   "types": [
+    "software",
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The chapter's aside, the mark small, its picture, then the title and the sentence side by side under it.",
+   "phone": "The finished composition.",
+   "maxPerPage": 1,
+   "weight": 0.9,
+   "needs": {
+    "mark": "the client's own solid mark as one closed SVG path in a 100 x 100 box (a monogram, an emblem, a symbol), never a plain circle",
+    "photo": "one photograph of the chapter's world with a calm, dark middle for light type on its face (nothing is laid over it: no scrim, gradient or veil)",
+    "words": "a title of 2-6 words on two lines and one sentence of 10-18 words"
+   },
+   "never": "an extruded, bevelled or shaded mark; a generic circle or square as the mark; a bright photograph; words on the photograph outside the band",
+   "avoidWith": [
+    "descend-through-weather",
+    "shaped-window-over-fixed-world"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.6,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "line-carries-colour",
+    "closing-lift"
+   ]
+  },
+  {
+   "id": "letter-bar-floods-the-ground",
+   "name": "Letter bar floods the ground",
+   "family": "colour-and-ground",
+   "look": "A statement of 2-4 words stands on one line at display size with one straight-stemmed letter (l or I) on the centre of the screen. The camera zooms on that letter until only its stem is left, a flat column of ink that widens to full bleed and becomes the next section's ground; the next statement arrives inside the column while the outgoing words' edges are still in frame. The stem is a solid column rasterised once at full size, never the glyph scaled up; the ground is one layer clipped by clip-path. The section after sits on the same ground, so there is no seam.",
+   "fits": [
+    "between",
+    "statement"
+   ],
+   "types": [
+    "software",
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The statement on the page ground, then the next statement on the inverse ground under it.",
+   "phone": "The finished composition.",
+   "maxPerPage": 1,
+   "weight": 0.6,
+   "needs": {
+    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures"
+   },
+   "never": "an accent on the column; a statement whose stem letter has a curl, a bar or a serif; a light section after it",
+   "avoidWith": [
+    "dot-becomes-the-full-stop",
+    "letter-physics"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.55,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "line-carries-colour",
+    "word-highlight",
+    "giant-type-pass",
+    "letters-assemble",
+    "iris-opens"
+   ]
+  },
+  {
+   "id": "letter-physics",
+   "name": "Letter physics",
+   "family": "type-choreography",
+   "look": "A bold claim stands readable on the inverse ground, breathes in and flies apart in 3D in one short burst: every letter leaves along its own line from the centre with spin and a little gravity, the middle letters rushing nearest the viewer, each gone before the screen's edge cuts it. While the last letters leave, the one-sentence answer is already coming out of depth, whole, and lands at the claim's size on the page's own ground; a photograph behind it comes up like a room's lights, dimmed to the ground under the words.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "software",
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The claim with the answer under it on the inverse ground, the photograph faint at the edges.",
+   "phone": "The light version: the letters fade and drift instead of flying in depth.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "words": "a claim of 12-36 characters and an answer of 16-60 characters that answers it",
+    "photo": "optional: one dark photograph with a calm centre"
+   },
+   "never": "a glow or blurred type under the answer; a claim over 40 characters; on a calm or clinical brief (the burst reads as loud); on a product page about a physical thing",
+   "avoidWith": [
+    "dot-becomes-the-full-stop",
+    "letter-bar-floods-the-ground"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.24,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "word-highlight",
+    "giant-type-pass",
+    "letters-assemble"
+   ]
+  },
+  {
+   "id": "object-through-giant-type",
+   "name": "Object through giant type",
+   "family": "type-choreography",
+   "look": "A short quote stands in huge capitals filling the held stage. One object (a render from assets/objects or the client's cut-out photograph) falls down the wall: each line parts at its word gap and its halves open round the object's silhouette, wide enough that it never covers a letter, then close behind it, and each line turns from muted to full ink as the object reaches it. In the last line the object swells toward the camera, tips and falls away into the page, and the quote stands closed, in ink, with its credit. The markup carries the object's still; the render draws over it only while the scene is live and near.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "tech",
+    "gaming",
+    "software"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "mid",
+   "webgl": 1,
+   "reduced": "The quote in ink with the object's still standing above it and the credit under.",
+   "phone": "The finished composition.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "words": "a quote of 10-18 words in 3-5 lines of 9-13 characters with the gap near the middle, and a credit of 5 words at most",
+    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)"
+   },
+   "never": "an archive or black-and-white photograph as the object; a line longer than 13 characters; an eyebrow above the quote; an object of another trade than the client's; on a local-business or place page",
+   "avoidWith": [
+    "fixed-hero-object",
+    "letter-physics"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 900
+    },
+    "middle": {
+     "p": 0.42,
+     "wait": 700
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 700
+    }
+   },
+   "avoidMoments": [
+    "giant-type-pass",
+    "word-highlight",
+    "letters-assemble"
+   ]
+  },
+  {
+   "id": "parts-lock-into-the-whole",
+   "name": "Parts lock into the whole",
+   "family": "grid-reassembly",
+   "look": "The stage opens on one huge word alone (a year, a figure, a name). It steps back into its place in the product's own interface while the interface's panels fly in from the four edges and lock into one whole screen; then layers of detail ink in one by one (the data, the team's comments, an agent's edit), and the finished screen steps aside into a column at least 580px wide beside the heading and a short spec list. No caption under the screen.",
+   "fits": [
+    "product"
+   ],
+   "types": [
+    "software"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The finished screen beside the heading and spec list.",
+   "phone": "The finished composition: the screen with its toolbar and main pane, the spec under it.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "ui": "the product's real screen as HTML cut along its own panels (a toolbar, a sidebar, a main pane, an inspector), 2 to 4 detail layers marked data-layer",
+    "words": "one word that sits in the screen's title, a heading and 3-4 spec rows"
+   },
+   "never": "an illustration drawn for the page or a screenshot cut into tiles; a screen that cannot be cut into meaningful parts; a caption under the screen; a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
+   "avoidWith": [
+    "powers-of-ten-pullback",
+    "product-assembles-into-its-action"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.55,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "lines-rise"
+   ]
+  },
+  {
+   "id": "powers-of-ten-pullback",
+   "name": "Powers-of-ten pull-back",
+   "family": "camera-through-space",
+   "look": "The stage opens on the product's own interface filling the whole screen. The camera pulls back at a steady rate (the scale eased in log space, so it never seems to stop) until the interface is the screen of a device standing on the page's lit ground; the device settles into its slot at the right and the heading, copy and action arrive at the left. A product section under the hero, never the hero itself: its first screen carries no heading and no action.",
+   "fits": [
+    "product"
+   ],
+   "types": [
+    "software",
+    "tech"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The composition: copy at the left, the device on its ground at the right.",
+   "phone": "The finished composition: the copy over the device, a 4:5 crop of the screen.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is drawn by _demo/demo.css, which is for the demo pages only: never copy it to a page",
+    "words": "a label, a heading, one line and one action"
+   },
+   "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",
+   "avoidWith": [
+    "product-assembles-into-its-action",
+    "parts-lock-into-the-whole"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.5,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight"
+   ]
+  },
+  {
+   "id": "product-assembles-into-its-action",
+   "name": "Product assembles into its action",
+   "family": "object-scrub",
+   "look": "The product's own working screen builds itself in the order of its story while the page is held: it opens on its first rows with its box only as tall as what it holds, each step slides the next part in from the foot of the screen with the newest rows in the accent for a beat and the step's caption taking the ink in the list beside it; then the rows fold back into the one action, nearest first, the screen's box closes round the action and goes, and the action stands alone, larger, with its state beside it and one closing line centred under it. The action stays a real button.",
+   "fits": [
+    "product"
+   ],
+   "types": [
+    "software"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 1,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The copy and its step list beside the finished screen.",
+   "phone": "The finished composition: the copy and its steps above the finished screen.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "ui": "the product's real screen as HTML in its finished state, each part marked with the step it arrives at (data-at)",
+    "words": "4 to 6 steps a user would really take, one list item a step in the same order, 4-10 words each; the action labelled with the figure the screen built; a closing line of 4-8 words"
+   },
+   "never": "a screenshot cut into parts; a counter or progress bar; a heading that counts the steps wrongly; beside the hero's product window (it carries another view); a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
+   "avoidWith": [
+    "powers-of-ten-pullback",
+    "parts-lock-into-the-whole"
+   ],
+   "states": {
+    "start": {
+     "p": 0.04,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.42,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "lines-rise"
+   ]
+  },
+  {
+   "id": "shaped-window-over-fixed-world",
+   "name": "Shaped window over a fixed world",
+   "family": "mask-and-reveal",
+   "look": "One full-bleed photograph of the client's site stays still behind a shutter painted in the page's ground. Two tall windows cut in it, level and side by side, show the site through a mullion under the title; the scroll widens them outward, closes the bar into one window, holds a beat, then scales the shutter past the screen's edges so the reader pushes through into the place; a flat band of the ground rises across the foot carrying the chapter's one word, then its lede and the action. The shutter is five flat pieces moved by transform: no mask edge, no hairline, no word on the photograph.",
+   "fits": [
+    "statement"
+   ],
+   "types": [
+    "tech",
+    "gaming"
+   ],
+   "trigger": "scroll",
+   "hold": 1,
+   "restH": 2,
+   "cost": "low",
+   "webgl": 0,
+   "reduced": "The title, the photograph, the word, the lede and the action under it.",
+   "phone": "The finished composition.",
+   "maxPerPage": 1,
+   "weight": 0.7,
+   "needs": {
+    "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
+    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
+   },
+   "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+   "avoidWith": [
+    "descend-through-weather",
+    "fly-into-the-shape",
+    "fixed-hero-object"
+   ],
+   "states": {
+    "start": {
+     "p": 0.02,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.5,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.98,
+     "wait": 600
+    }
+   },
+   "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "window-parallax"
+   ]
+  }
+ ]
+}

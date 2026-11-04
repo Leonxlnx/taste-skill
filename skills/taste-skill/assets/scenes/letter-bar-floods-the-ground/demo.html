@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letter bar floods the ground · big scene demo</title>
+<meta name="description" content="Demo of the scene in which one letter's stem widens into the next section's ground, on a database company's page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #f5f2ec; --p-surface: #ebe6dc; --p-ink: #1e1b17; --p-muted: #68625a; --p-accent: #8a5a2b; --p-accent-ink: #ffffff; --p-action: #1e1b17; --p-action-ink: #f5f2ec;
+          --p-inv-bg: #1e1b17; --p-inv-surface: #2a2621; --p-inv-ink: #f5f2ec; --p-inv-muted: #aaa397; --p-inv-accent: #e3b07c; --p-inv-accent-ink: #1e1b17; --p-inv-action: #f5f2ec; --p-inv-action-ink: #1e1b17;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Ferrite</a>
+  <nav class="demo-nav__links"><a href="#">Database</a><a href="#">Pricing</a><a href="#">Docs</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="grid grid--middle">
+        <div class="span-6 stack-5">
+          <h1>A database that keeps every version of every row</h1>
+          <p class="t-lead" style="margin-top:16px">Ferrite is Postgres with time built in: query any table as it was on any day, branch it for a test, and roll a mistake back in one statement. From $0 for 5 GB.</p>
+          <div class="btn-row" style="margin-top:24px"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Read the docs</a></div>
+        </div>
+        <div class="span-6 start-7">
+          <div class="ux" role="img" aria-label="The Ferrite console: the orders table as it was on 3 November, 2.1 million rows">
+            <div class="ux__bar"><i></i><i></i><i></i><b>Ferrite</b><span>production · as of 3 Nov 09:00</span></div>
+            <div class="ux__body">
+              <div class="ux__side"><span class="on">orders<em>2.1M</em></span><span>customers<em>184k</em></span><span>payments</span><span>Branches<em>3</em></span><span>History</span></div>
+              <div class="ux__main">
+                <div class="ux__head"><h4>orders, as of 3 Nov</h4><span class="ux__btn">Branch</span></div>
+                <div class="ux__tiles"><div class="ux__tile"><span>Rows</span><b>2,104,318</b></div><div class="ux__tile"><span>Versions kept</span><b>41 days</b></div><div class="ux__tile"><span>Size</span><b>3.2 GB</b></div></div>
+                <div class="ux__rows">
+                  <div class="ux__row"><div><b>#88412</b><span>Changed 3 Nov 08:41 by api</span></div><span>paid</span><span class="ux__tag ok">v7</span></div>
+                  <div class="ux__row"><div><b>#88411</b><span>Changed 3 Nov 08:40 by api</span></div><span>shipped</span><span class="ux__tag ok">v3</span></div>
+                  <div class="ux__row"><div><b>#88409</b><span>Rolled back 2 Nov 17:12 by mira</span></div><span>refunded</span><span class="ux__tag">v9</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="letter-bar-floods-the-ground" style="--h: 1" aria-labelledby="lbf-h">
+    <div class="sc__stage">
+      <h2 class="lbf__line" id="lbf-h">Built to <span class="lbf__pivot">l</span>ast</h2>
+      <div class="lbf__ground"><div class="lbf__next"><h2>Every version, kept</h2><p>Nothing is overwritten. A row's past is a query away, for 41 days by default and for as long as you like on the Archive plan.</p></div></div>
+    </div>
+  </section>
+
+  <section class="section ground-inverse">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What is kept</h2><p class="t-lead" style="margin-top:16px">The rows, the schema and every migration, with who changed what and when.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Row versions</span><span class="rows__value">41 days, or forever</span></li>
+          <li><span class="rows__name">Schema history</span><span class="rows__value">Every migration</span></li>
+          <li><span class="rows__name">Branches</span><span class="rows__value">Unlimited, copy-on-write</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Ferrite · demo page for the big scene “Letter bar floods the ground”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

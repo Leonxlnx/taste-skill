@@ -1,0 +1,67 @@
+{
+  "id": "desk-lamp",
+  "name": "Desk lamp",
+  "label": "A desk lamp on an oak base, switched on",
+  "units": "m",
+  "angle": -38,
+  "turn": { "mode": "sway", "amp": 24, "period": 22 },
+  "click": "light",
+  "pool": { "at": [0.52, 0, 0.05], "r": 0.18 },
+  "colors": [
+    { "id": "orange", "name": "Ember orange", "accent": "#d9542b" },
+    { "id": "black", "name": "Soft black", "accent": "#2a2b2e" },
+    { "id": "sage", "name": "Sage", "accent": "#8ea489" }
+  ],
+  "views": {
+    "detail-shade": { "part": ["shade", "bulb", "socket", "neck", "head joint"], "angle": -58, "elev": 24, "margin": 1.3 }
+  },
+  "scenes": {
+    "desk": {
+      "label": "A desk lamp switched on over a desk, its light on a sheet of paper beside two books and a mug",
+      "pool": null,
+      "lit": { "at": [0.53, 0.11], "r": 0.19, "k": 3.6 },
+      "props": [
+        { "prop": "desk", "at": [0.2, -0.032, 0.02], "size": [0.86, 0.032, 0.52] },
+        { "prop": "sheet", "at": [0.4, 0, 0.12], "yaw": 14 },
+        { "prop": "book", "at": [0.3, 0, -0.15], "yaw": -8, "count": 2 },
+        { "prop": "mug", "at": [0.12, 0, 0.17] }
+      ]
+    }
+  },
+  "supports": ["three-quarter", "side", "front", "top", "detail-shade"],
+  "make": { "variants": ["three-quarter", "side", "front", "top", "detail-shade", "three-quarter+desk"], "grounds": ["light", "dark"] },
+  "materials": {
+    "arm": { "kind": "paint", "color": "#1c1d1f", "finish": "satin" },
+    "shade": { "kind": "paint", "color": "accent", "finish": "gloss" },
+    "inner": { "kind": "paint", "color": "#f1efe9", "finish": "matte", "glow": 0.45 },
+    "base": { "kind": "wood", "color": "#b5895a", "grain": "x" },
+    "knob": { "kind": "wood", "color": "#b98d5d", "grain": "z", "scale": 2 },
+    "bulb": { "kind": "light", "color": "#fff3dc" },
+    "cord": { "kind": "fabric", "color": "#2a2b2d", "weave": 900 }
+  },
+  "parts": [
+    { "name": "base", "type": "cylinder", "at": [0, 0.016, 0], "r": 0.105, "h": 0.032, "round": 0.008, "mat": "base" },
+    { "name": "base plate", "type": "cylinder", "at": [0, 0.036, 0], "r": 0.036, "h": 0.01, "round": 0.004, "mat": "arm", "seams": [0.2] },
+    { "name": "post", "type": "tube", "from": [0, 0.04, 0], "to": [0, 0.062, 0], "r": 0.012, "mat": "arm" },
+    { "name": "base joint", "type": "joint", "at": [0, 0.064, 0], "axis": "z", "r": 0.017, "w": 0.044, "mat": "arm", "capMat": "chrome" },
+
+    { "name": "lower rod front", "type": "tube", "from": [0, 0.064, 0.013], "to": [0.09, 0.4, 0.013], "r": 0.0055, "mat": "arm" },
+    { "name": "lower rod back", "type": "tube", "from": [0, 0.064, -0.013], "to": [0.09, 0.4, -0.013], "r": 0.0055, "mat": "arm" },
+    { "name": "spring", "type": "spring", "from": [0.012, 0.11, 0], "to": [0.06, 0.29, 0], "R": 0.0075, "r": 0.0013, "turns": 22, "mat": "chrome" },
+    { "name": "spring anchor", "type": "tube", "from": [0.008, 0.095, -0.013], "to": [0.008, 0.095, 0.013], "r": 0.0035, "mat": "chrome" },
+    { "name": "spring hook", "type": "tube", "from": [0.064, 0.305, -0.013], "to": [0.064, 0.305, 0.013], "r": 0.0035, "mat": "chrome" },
+    { "name": "elbow", "type": "joint", "at": [0.09, 0.4, 0], "axis": "z", "r": 0.018, "w": 0.05, "mat": "arm", "capMat": "knob" },
+
+    { "name": "upper rod front", "type": "tube", "from": [0.09, 0.4, 0.013], "to": [0.4, 0.432, 0.013], "r": 0.0055, "mat": "arm" },
+    { "name": "upper rod back", "type": "tube", "from": [0.09, 0.4, -0.013], "to": [0.4, 0.432, -0.013], "r": 0.0055, "mat": "arm" },
+    { "name": "head joint", "type": "joint", "at": [0.4, 0.432, 0], "axis": "z", "r": 0.014, "w": 0.042, "mat": "arm", "capMat": "chrome" },
+    { "name": "neck", "type": "tube", "from": [0.4, 0.432, 0], "to": [0.418, 0.404, 0], "r": 0.009, "mat": "arm" },
+
+    { "name": "shade", "type": "shade", "from": [0.418, 0.404, 0], "to": [0.462, 0.268, 0.045], "r1": 0.026, "r2": 0.076, "t": 0.0022, "bulge": 0.85, "mat": "shade", "innerMat": "inner" },
+    { "name": "socket", "type": "tube", "from": [0.42, 0.4, 0.002], "to": [0.43, 0.37, 0.012], "r": 0.016, "mat": "arm" },
+    { "name": "bulb", "type": "sphere", "at": [0.437, 0.348, 0.018], "r": 0.024, "mat": "bulb" },
+
+    { "name": "cord", "type": "path", "points": [[-0.006, 0.07, 0.024], [0.03, 0.2, 0.024], [0.088, 0.39, 0.024], [0.2, 0.42, 0.022], [0.395, 0.44, 0.02]], "r": 0.0026, "mat": "cord" },
+    { "name": "base cord", "type": "path", "points": [[-0.006, 0.07, 0.024], [-0.04, 0.036, 0.03], [-0.098, 0.03, 0.04]], "r": 0.0026, "mat": "cord" }
+  ]
+}

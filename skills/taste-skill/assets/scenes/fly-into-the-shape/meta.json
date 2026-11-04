@@ -1,0 +1,26 @@
+{
+  "id": "fly-into-the-shape",
+  "name": "Fly into the shape",
+  "family": "mask-and-reveal",
+  "look": "The brand's own mark, a clean clip of its true shape with the next chapter's photograph already inside it and the chapter's title on its face, rises to the centre of the stage, turns to face you, and the camera flies into it: it grows about its inscribed circle until its edges rush past every side of the screen and the photograph fills the page; then a flat band of the page's ground rises across the foot with the chapter's title and its first sentence. The title on the face grows with the mark to its full size, never faster. The clip is a CSS clip-path in page pixels, never an SVG clipPath repainted each frame.",
+  "fits": ["between", "product"],
+  "types": ["software", "tech", "gaming"],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The chapter's aside, the mark small, its picture, then the title and the sentence side by side under it.",
+  "phone": "The finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.9,
+  "needs": {
+    "mark": "the client's own solid mark as one closed SVG path in a 100 x 100 box (a monogram, an emblem, a symbol), never a plain circle",
+    "photo": "one photograph of the chapter's world with a calm, dark middle for light type on its face (nothing is laid over it: no scrim, gradient or veil)",
+    "words": "a title of 2-6 words on two lines and one sentence of 10-18 words"
+  },
+  "never": "an extruded, bevelled or shaded mark; a generic circle or square as the mark; a bright photograph; words on the photograph outside the band",
+  "avoidWith": ["descend-through-weather", "shaped-window-over-fixed-world"],
+  "states": { "start": { "p": 0.02, "wait": 500 }, "middle": { "p": 0.6, "wait": 500 }, "end": { "p": 0.98, "wait": 600 } },
+  "avoidMoments": ["line-carries-colour", "closing-lift"]
+}

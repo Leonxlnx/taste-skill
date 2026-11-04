@@ -1,0 +1,407 @@
+{
+ "version": 3,
+ "generated": "2026-11-03T09:12:28.298Z",
+ "count": 19,
+ "load": "import ui from './ui.js'; <div data-ui-load=\"<name>\"></div>; ui.loadAll(document)",
+ "motion": "One rule, the same as system.js: data-ui-loop on the group's one loop (the placeholder, the pasted root or an element around it); every other fragment holds its finished picture. With system.js the page needs nothing more (it marks the rest data-ui-still, and on a phone, on kind other and on a place every fragment); without it, ui.loadAll / ui.startAll do the same once the page holds any data-ui-loop. data-ui-still holds one by hand; data-ui-cycles=\"2\" plays two cycles then rests. One cycle is 2.5 to 4 s, its finished picture held for at most 15% of it, and repeats while on screen, 0.6 s after the fragment shows (ui.js warns in the console about a cycle outside 2.5 to 4 s); the pointer entering its card restarts it, a held fragment plays while the pointer is on its card, and ui.restart(el) restarts the fragments in el (a tab shown again). Every loop gets a pause button in its panel's bottom-right corner (ui.js); nothing moves under reduced motion. A fragment never writes words of its own over the markup: every state it shows comes from the markup (data-* beside the text) or opts.",
+ "cards": "cards.css: .card, .panel (--inset, --flush, --top, --device), .stage with .at-corner/.at-rise/.at-right/.at-over (a dialog over a window)/.at-center (only a small control on a focal tile), .fit (--fit-max), .wide (--w), .to-edge and .stage--fade-b/-r/-br (--fade-h); rules in references/cards.md",
+ "grounds": "ui.grounds(document, fx) mounts the [data-fx] grounds: a still one is drawn once at up to 2 device pixels and kept as a picture (its WebGL context freed), a ground a fragment drives (data-fx-live, or a slider with opts.drive) stays live near the screen only, at 1 device pixel, and is baked under reduced motion; the page needs one or two WebGL contexts. Behind a fragment, a soft lit field (painterly-landscape, grain-gradient, gradient-mesh, silk-folds), never a line, grid or dot pattern.",
+ "fragments": [
+  {
+   "name": "window",
+   "title": "App window (queue)",
+   "shows": "A product window: window dots, a breadcrumb with the app's real icon, search; a sidebar with counts; a list of conversations with people, subjects, status and age. The assistant takes each open row: Working, then Replied.",
+   "useFor": [
+    "product overview",
+    "support",
+    "inbox",
+    "workspace",
+    "SaaS",
+    "admin",
+    "agents"
+   ],
+   "size": [
+    600,
+    378
+   ],
+   "js": true,
+   "place": "at-corner 24 to 40px in, cut by the right and bottom edges (.stage--fade-br), or in a .fit (--fit-max its width) when the whole width should show: the window lays itself out for the width it gets (a container query: rows stack name over subject under 540px, the sidebar goes under 420px), so no column is ever sliced. Pair with cursor laid over its lower-right edge",
+   "edit": "Rows are HTML (data-tone 1-5 on each avatar). A row whose status reads the open word is worked on. The words are data-open, data-work and data-done on the root (or opts). opts.compact: a 456px window; any narrower wrapper gets the stacked rows by itself, and the breadcrumb gives way before the search box.",
+   "loop": "about 2.6 s a cycle: two steps of the queue, a row done and the next open row taken; after the last it starts over; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "chat",
+   "title": "Chat with sources",
+   "shows": "An assistant window: a customer's question, then an answer written word by word with the two sources it used (a real app icon and a help article) the customer's thanks and an input.",
+   "useFor": [
+    "AI assistant",
+    "support",
+    "search answers",
+    "messaging",
+    "Q&A"
+   ],
+   "size": [
+    400,
+    392
+   ],
+   "js": true,
+   "place": "at-rise to-edge fit with --fit-max: 400px, 32 to 56px down, with .stage--fade-b: the body fills the wrapper, so the input always sits past the bottom edge, whatever the panel's height; the answer and its sources stay clear of the fade",
+   "edit": "Write the product's own question and answer; keep the answer to three lines and name real sources (a small mark beside the source's name stays in the ink, like the text it sits in).",
+   "loop": "about 3 s a cycle: typing dots for 0.8 s, the answer's last sentence written again in place in under 0.8 s (never below 72% ink), its sources back one by one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "cursor",
+   "title": "Approve with a click",
+   "shows": "A drafted reply waiting for approval: the text, the action it carries (a refund with its amount) and two buttons. The pointer glides to the main button and clicks; it spins, then reads Sent and the status turns Sent.",
+   "useFor": [
+    "automation",
+    "agents",
+    "approvals",
+    "one-click actions",
+    "publishing",
+    "workflows"
+   ],
+   "size": [
+    360,
+    262
+   ],
+   "js": true,
+   "place": "at-over only: laid over the lower-right edge of a window fragment (--bx 24px, --by 24px; in a split or hero frame --by -40px runs it out through the bottom, its button still in view). Never alone: not centred on a ground, not cut through its buttons (the click is its point)",
+   "edit": "The dialog is HTML. The busy and done words sit beside the text they replace: data-busy and data-done on the button, data-done on the state chip and on the line under the item; without them a text stays as written.",
+   "loop": "about 2.8 s a cycle: the pointer glides to the main button and clicks, a short spin, then done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "notify",
+   "title": "Notification stack",
+   "shows": "Three notifications (the assistant handing over, a person taking over, a count) with avatars and times; a new one slides in on top and the oldest leaves.",
+   "useFor": [
+    "handoffs",
+    "activity",
+    "alerts",
+    "teams",
+    "status",
+    "real-time"
+   ],
+   "size": [
+    380,
+    208
+   ],
+   "js": true,
+   "place": "a short stack sits low: at-rise fit with --fit-max: 380px, --ax 32px and --ay (and --ay-sm) calc(100% - 180px), with .stage--fade-b, so its third row is cut by the bottom edge like its neighbours' windows and the newest one (the point) stays clear of the fade; or at-over a window's lower edge",
+   "edit": "The stack is HTML. What slides in is opts.items [[icon, title, body]] when given, else the oldest notification of the stack comes round to the top; the times stay with their places.",
+   "loop": "about 2.8 s a cycle: three notifications slide in at the top in turn, the oldest leaving at the bottom; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "toggles",
+   "title": "Rules with switches",
+   "shows": "A titled list of four rules, each a label, a grey line and a switch; one switch flips at a time (the changed row takes the accent) and the count follows.",
+   "useFor": [
+    "settings",
+    "permissions",
+    "rules",
+    "policies",
+    "preferences",
+    "controls"
+   ],
+   "size": [
+    380,
+    290
+   ],
+   "js": true,
+   "edit": "Rows are HTML (is-on on the switches that are on). The count keeps its words; only its first figure follows.",
+   "loop": "about 2.6 s a cycle: two switches flip in turn and the count follows; back to the page's state every six; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card",
+   "place": "at-corner or at-right (32px in, 56px down), cut by the bottom edge with .stage--fade-b"
+  },
+  {
+   "name": "stat",
+   "title": "Number with a bar chart",
+   "shows": "A dashboard card: a label and a period, one big number with its change, and 14 daily bars (the last in the accent). The bars fall back to the period before and rise to this one; the number stays on this period, so it matches the copy beside it. With opts.window the bars are cut out of the card, so the effect ground shows through them.",
+   "useFor": [
+    "analytics",
+    "results",
+    "growth",
+    "reports",
+    "dashboards",
+    "KPIs"
+   ],
+   "size": [
+    420,
+    296
+   ],
+   "js": true,
+   "place": "at-corner or at-right, cut by the bottom edge; with opts.window, set the panel's vignette off (--calm-k: 0%) so the ground stays bright in the bars",
+   "edit": "The number and labels are HTML (the number stays as written). data-values and data-prev (comma lists) or opts.data and opts.prev set the bars; opts.window cuts them out of the panel; opts.fill takes the fragment's height.",
+   "loop": "about 2.9 s a cycle: the bars sink to the period before and rise to this one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "search",
+   "title": "Search with a typed query",
+   "shows": "A command bar: the query types in, three results with the matches in bold, the selection steps down, keyboard hints at the foot.",
+   "useFor": [
+    "search",
+    "command menu",
+    "find anything",
+    "knowledge base",
+    "navigation"
+   ],
+   "size": [
+    380,
+    280
+   ],
+   "js": true,
+   "edit": "The query and results as written come first; opts.queries [{q, rows: [[icon, title, meta]]}] adds more, one per cycle. With none it types its own query again.",
+   "loop": "about 3 s a cycle: the query is typed again, results appear one by one, the selection steps down; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "integrations",
+   "title": "Connected apps",
+   "shows": "A list of apps with their real marks (in their own colours on light tiles), what each does and its state; the pointer connects one. The default for any card about integrations.",
+   "useFor": [
+    "integrations",
+    "apps",
+    "connections",
+    "setup",
+    "platform"
+   ],
+   "size": [
+    380,
+    282
+   ],
+   "js": true,
+   "place": "at-corner or at-right 32 to 40px in, cut by the bottom edge through a row below the one that connects (.stage--fade-b); on a soft ground, never a pattern; or at-over on a window",
+   "edit": "Each row is HTML: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. Use only apps the product really works with.",
+   "loop": "about 2.8 s a cycle: the pointer clicks Connect on the target app, it spins, then Connected; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "slider",
+   "title": "Property panel",
+   "shows": "A design tool's property card: an icon, a name, two sliders with values and a three-way switch. The first thumb glides between values; with opts.drive it also changes the effect ground it sits on (Figma's Texture tile).",
+   "useFor": [
+    "design tools",
+    "customisation",
+    "branding",
+    "settings",
+    "editors",
+    "controls"
+   ],
+   "size": [
+    288,
+    268
+   ],
+   "js": true,
+   "place": "Two ways. Full (288 x 268): at-rise fit with --fit-max: 288px, --ax: max(24px, 50% - 144px), 40px down, cut by the bottom (.stage--fade-b) below its second slider. Compact (opts.compact, 248 x 128): .at-center on a focal tile, the one fragment allowed in the calm middle. Its ground is a soft field it drives (grain-gradient with data-ui-opts={\"drive\":{\"param\":\"grain\",\"min\":0.15,\"max\":0.95}}), so the control visibly changes the picture under it",
+   "edit": "Labels and values are HTML: the finished picture is the markup (the thumb at style=\"--v:0.42\", the <output> as written; only its figure changes while the thumb moves, its words and unit stay). opts.stops (0..1) sets where the thumb goes, one per cycle; opts.scale the figure at 1.0 (else read from the output and --v); opts.compact keeps only the name and the first slider.",
+   "loop": "about 3.3 s a cycle: the thumb glides out and back to the page's value; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "voice",
+   "title": "Voice call with an orb",
+   "shows": "A call card: a status and timer, the assistant's orb, who is talking, captions that light up word by word, and a bar with mute, a waveform and end call. On a dark surface the orb is a live effect (orb-sphere: a pale nebula with specks of light); on a light one a pearl drawn in CSS, with clouds of the accent and the ink turning slowly inside it and a few specks of light.",
+   "useFor": [
+    "voice",
+    "calls",
+    "AI assistant",
+    "phone support",
+    "speech"
+   ],
+   "size": [
+    264,
+    336
+   ],
+   "js": true,
+   "place": "at-rise to-edge fit, 32px down, cut by the bottom through its bar's lower half at most (the orb, the caption and the waveform stay clear of the fade); needs ../effects next to ui (assets/effects) for the live orb. Held like any other fragment unless it is the group's data-ui-loop (its orb holds one frame)",
+   "edit": "The caption, names and time are HTML; the script speaks the caption as written (opts.lines: several in turn) and counts on from the time as written. opts.orb: false keeps the CSS pearl on dark.",
+   "loop": "about 2.75 s a cycle: the wave runs, the caption is spoken again word by word in under 0.8 s (never below 72% ink) (or opts.lines in turn), the timer counts on; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card; held (data-ui-still, a phone, kind other) it shows its finished picture and plays while the pointer is on its card"
+  },
+  {
+   "name": "files",
+   "title": "File tiles",
+   "shows": "A status pill over a grid of file tiles, each with its app's real mark (Zendesk, Notion, Google Docs, Confluence, Markdown) or a plain file glyph (PDF), a name and its app. Each tile is read in turn and gets a check.",
+   "useFor": [
+    "imports",
+    "supported formats",
+    "uploads",
+    "documents",
+    "sync"
+   ],
+   "size": [
+    440,
+    340
+   ],
+   "js": true,
+   "icons": "One treatment for the whole grid: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. A file type with no app (PDF, DOCX) is its colour file icon from assets/icons, or the .ui-file__glyph (PDF red). Never a grey box or a look-alike.",
+   "place": "at-corner wide (cards.css .wide, --w 680px) with .stage--fade-br: four columns cut by the right edge and enough rows to leave through the bottom; never centred with even ground round it. On a phone it takes the panel's width in two columns",
+   "edit": "Tiles are HTML (real icons). The status line is the page's own: while the wave runs it reads data-reading on the root, with {n} and {total} filled in (write it in the page's words); without data-reading only the first number in the line counts up, and a line with no number stays as written.",
+   "loop": "about 3.2 s a cycle: a wave runs across the grid, each tile reads and gets its check; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card",
+   "fluid": "fills its wrapper, 300 to 560px wide"
+  },
+  {
+   "name": "calendar",
+   "title": "Calendar with dates",
+   "shows": "A month with one dated range and, under it, the dates that matter as rows (date tile, title, one line). The pointer sets the range; each row lights up as its day is reached.",
+   "useFor": [
+    "dates",
+    "deadlines",
+    "rounds",
+    "booking",
+    "scheduling",
+    "planning"
+   ],
+   "size": [
+    440,
+    452
+   ],
+   "fluid": "fills its .fit, 280 to 440px wide",
+   "js": true,
+   "edit": "data-start, data-end and data-month on the root set the range (the client's real dates); is-mark on one day rings a single date; each [data-ev] row is one dated event (its day, title and one line). Mark today with is-today. No Apply or Clear: it shows a plan, not a picker.",
+   "loop": "about 3.2 s a cycle: the pointer sets the range, the dated rows light up, it points at the marked date; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "code",
+   "title": "Code with a highlighted line",
+   "shows": "An editor pane with two tabs, eight lines of code, one highlighted line and a one-line note on the change below.",
+   "useFor": [
+    "developer tools",
+    "code review",
+    "APIs",
+    "AI coding",
+    "docs"
+   ],
+   "size": [
+    400,
+    284
+   ],
+   "js": true,
+   "edit": "Lines are spans with data-n (line number); tokens use .k keyword, .f function, .n number, .c comment. The first change is the line marked is-mark with the note as written; every other changed line carries its own note as data-note=\"...\" (or opts.steps [{line, text}]). The chip is left as written.",
+   "loop": "about 3 s a cycle: the highlight moves through three changed lines, the note naming each; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "diff-review",
+   "title": "Code review on a diff",
+   "shows": "One file of a pull request: the file path with its real TypeScript mark and its +/- counts, a hunk header, fourteen lines of a unified diff (removed lines red, added green, old and new line numbers in the gutter) and a reviewer's one-line suggestion under the line it is about, naming the change. The Apply button steps and is pressed: that line becomes a removed line with the suggested line added under it, the counts update and an Applied status takes the button's place.",
+   "useFor": [
+    "code review",
+    "pull requests",
+    "developer tools",
+    "AI coding",
+    "suggestions",
+    "git"
+   ],
+   "size": [
+    480,
+    428
+   ],
+   "fluid": "fills its .fit, 280 to 760px wide (checked at 280)",
+   "js": true,
+   "place": "at-corner fit or at-rise fit with --fit-max: 480px, 32 to 40px in, cut by the bottom edge with .stage--fade-b: the reviewed line, the suggestion, the comment and its button sit in the top 250px, and the diff runs on for two more context lines, so in a 352px panel at 36px down it is cut by 32px or more at every width (112px at 480px wide); a panel 400px or taller would show the diff's end, so give it more --ay or a shorter panel. Never cut by the right edge (the button is at the comment's right); a .fit narrows it instead: under 500px the hunk header starts after one gutter, under 440px it lays itself out (a container query: one 26px gutter, the new number, or the old one on a removed line; rows at 11/16; the function name leaves the hunk header; wrapped code hangs 2ch inside the line it continues). On a phone give the panel 340px or more, so the comment's line clears the fade. In a wide panel set --fit-max up to 760px",
+   "edit": "Lines are HTML: each .ui-diff__ln holds its old and new numbers (<i>, empty on the side it is not on), is-del or is-add, and its code (.ui-diff__code with data-i, its indent level, and the indent itself in .ui-diff__ind; tokens .k keyword, .f function, .n number, .s string; <mark class=\"ui-diff__w\"> the changed words). The reviewed line is [data-diff-target] with is-target, written as a context line with its changed words marked; the suggestion is the added line in [data-diff-sug] right under it (its new number the reviewed line's). Applied, the reviewed line shows as removed and the suggestion unfolds, so the hunk counts stay true. The file header carries the file's real mark on a light tile (its colour icon as an <img src=\"assets/ui/icons/x.svg\">, or the client's own mark fetched with icons.mjs into assets/icons: TypeScript here; use the mark of the file's own language). The file path is the folders in .ui-diff__dir and the file name in <b>: in a panel under 470px the repo leaves the header first and under 340px the folders, so the file name always shows whole. Every row starts with a filled gutter (the changed rows red or green, the others a faint grey), which keeps the rows on one left edge. The hunk header's counts (@@ -38,10 +38,11 @@) match the lines written. The header's counts are written twice (.ui-diff__was as written, .ui-diff__now applied). The comment carries the fragment's one accent, a short 2px bar beside its text, set in from the comment's edge so it keeps a gap from the red and green rows (avatar with data-tone 1-5, keep it off the add and remove hues: 4 or 1; name, time, one line naming the change in <code>), the button and the Applied status are written in the markup. --diff-add and --diff-del set the two hues.",
+   "loop": "about 3 s a cycle: the diff as it was with the reviewer's comment and its button, the button steps (lifted, ringed) and is pressed for 140 ms, waits with a spinner (two turns, 0.5 s), the reviewed line turns removed with the suggestion added under it, the counts update and Applied replaces the button; the status then leaves first, the diff goes back and only then does the button return; the finished picture holds for about 10% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "terminal-run",
+   "title": "Terminal with a test run",
+   "shows": "A terminal pane (the repo, the shell, the branch): a command at the prompt, then a thin meter, one line per test file with its count and time, a blank row, a two-line summary and a status line with a green check and the run's duration; a fresh prompt waits under it with the caret. The command is typed again and run: each file's line arrives running (a spinner), then ticks, and the output streams in.",
+   "useFor": [
+    "developer tools",
+    "CLI",
+    "CI",
+    "testing",
+    "builds",
+    "deploys",
+    "AI coding"
+   ],
+   "size": [
+    440,
+    286
+   ],
+   "fluid": "fills its .fit up to --fit-max, 280 to 560px wide; under 380px the test counts go, under 300px the branch and the repo's parent folder (the prompt reads ~/api) and the path ellipsizes before the timing",
+   "js": true,
+   "place": "at-rise fit with --fit-max: 440px, 32 to 40px in and 32 to 40px down, whole with 24px or more of ground under it (a 352px panel at 40px down, 344px at 32px). Never cut: the fresh prompt under the status line is too short to carry a fade, so the status line would sit in it. In a wide panel or a split card, --fit-max up to 560px (the path column stops at 28 characters, so a wider pane only adds ground at its right). Not .to-edge: the screen keeps the finished picture's height",
+   "edit": "Lines are HTML, each one 20px row (it ellipsizes, never wraps; a blank line is an empty row, never a margin, so the run scrolls on the row grid). The command is [data-term-cmd] on the first prompt, as written (or opts.cmd, which replaces it); it is typed again each cycle. Every [data-term-out] line streams in after it, in order: a [data-term-step] line (a file) arrives with the kit's .ui-spin where its tick goes, then ticks and moves the meter ([data-term-meter]: its bar at --p, its count's first figure, so \"4 of 4 files\" reads \"2 of 4 files\"); an empty row comes with the line after it; [data-term-done] is the status line (the green check, the word, the duration). The last line, [data-term-next], is the fresh prompt with the caret, left empty. The prompt's path is ~/<span class=\"ui-term__up\">parent/</span>repo, so a narrow pane keeps ~/repo. Keep the ticks on the file lines in the ink: the check on the status line is the only green and the strongest mark, the meter's thin bar the one accent.",
+   "loop": "about 3.1 s a cycle: the command is typed again at the fresh prompt (50 to 80 ms a character), each file's line arrives running (a spinner turning once a second for 0.15 s) and ticks as the meter fills, the summary and the green check follow while the older run scrolls up a row at a time (each line leaving the top fades out whole and a new row waits for the scroll), then a fresh prompt; the finished picture holds for about 13% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "doc",
+   "title": "Document with marks",
+   "shows": "A page of a document (here a returns policy) with marked phrases and a note beside the current one: what kind of issue, what is wrong, where else it appears. Runs off the panel's bottom edge.",
+   "useFor": [
+    "review",
+    "comments",
+    "AI checks",
+    "compliance",
+    "policies",
+    "contracts"
+   ],
+   "size": [
+    440,
+    330
+   ],
+   "js": true,
+   "place": "at-corner to-edge with .stage--fade-b, 32 to 40px in: the page runs past the bottom edge (a cut page, never a whole sheet floating in the panel); the first mark sits in its top half so the note never lands in the fade",
+   "edit": "Write the client's own document. Mark phrases with <mark class=\"ui-doc__mark\">. The first mark's note is the note box as written; give a later mark its own note on the mark itself (data-kind, data-msg, data-where), or pass opts.notes [{kind, msg, where}] in mark order. A mark with no note stays a quiet underline: the script never shows a note the page did not write.",
+   "loop": "about 3 s a cycle: two marks in turn, each sweeping in with its note sliding up beside it; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "checklist",
+   "title": "Check list",
+   "shows": "A titled list of five steps with a progress bar; the next step ticks (the check draws, the label is struck) until all are done.",
+   "useFor": [
+    "onboarding",
+    "setup",
+    "tasks",
+    "launch",
+    "compliance",
+    "progress"
+   ],
+   "size": [
+    340,
+    268
+   ],
+   "js": true,
+   "place": "at-rise fit with --fit-max: 340px, 40px down: whole with 24px or more of ground under it, or cut by 24px or more through its last step only (the steps that tick, the count and the bar never sit in the fade)",
+   "edit": "Items are HTML (is-done on those already done). The count keeps its words; only its first figure follows the ticks.",
+   "loop": "about 3 s a cycle: back to the page's state, the open items tick in turn to all done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+  },
+  {
+   "name": "pipeline-board",
+   "title": "Pipeline run",
+   "shows": "A CI run: repo, branch and run number, a total time and a status chip; the commit it runs for with a Cancel button; five steps on a rail (checkout, install, test, build, deploy), each with the real mark of its tool (Git, npm, Node.js, Docker, Kubernetes) on a light tile: done steps with an ink-outlined check and their time, the running step with a turning accent ring and a bar, the waiting steps muted. The running step moves down to the end, the run passes (the chip takes an ink check, the total stands in bold), Re-run is pressed and the board goes straight back to the picture it began on. Wide (680px or more of its own width) the steps are a row of bordered nodes with their times, and the running step's commands and log under them.",
+   "useFor": [
+    "CI/CD",
+    "deploys",
+    "developer tools",
+    "data pipelines",
+    "automation",
+    "build status"
+   ],
+   "size": [
+    420,
+    290
+   ],
+   "fluid": "fills its .fit, 280 to 960px wide: steps as rows under 680px, a row of nodes with a log from 680px (checked at 280)",
+   "js": true,
+   "place": "whole: at-rise fit with --fit-max: 420px, 32 to 40px down, with 24px or more of ground under it (a panel of 350px or more), no fade: the running step reaches the last row in turn, so never cut through the steps. Wide: at-corner fit with --fit-max its width in a large panel or a split card (about 300px tall with its log), the panel's bottom-right corner left clear for the pause button",
+   "edit": "Steps are HTML: is-done on the steps already done (their time as written), is-run and style=\"--k:0.6\" on the running one (its time so far as written), none on the waiting ones, whose time cell holds the word Queued (muted; it stays until the step starts); every step that is not done carries its finished time as data-time on its time cell (\"1m 12s\" or \"1:12\", the format the total uses). Keep each step's command short (a few words: the rows show it, the wide nodes leave it to the log). The chip's and the button's words once the run has passed are their data-done. The log lines are HTML, each with data-step naming its step; the wide layout shows the running step's lines (is-on on them as written). Only figures follow: the running time counts to its data-time and the total adds the steps; a time it cannot read stays as written. Each step's name carries its tool's mark (.ui-pipe__tool holding its colour icon as an <img src=\"assets/ui/icons/x.svg\">, or the client's own mark fetched with icons.mjs into assets/icons, one treatment for all five; the commands name the same tools). The cycle starts and ends on the markup as written, so write it as the picture to rest on: the run partly done. A board written already passed starts with the button pressed and the first step running and ends on the passed run.",
+   "loop": "about 3.4 s a cycle: from the markup as written the running step's bar fills, it turns done with its time and the next step starts, to the last; the run passes and holds 0.7 s, the button is pressed and every step goes straight back to the written picture, which holds 0.45 s (about 13% of the cycle); restarts when the pointer enters its card; on a phone and under reduced motion it holds that picture"
+  },
+  {
+   "name": "apps",
+   "title": "Apps around the product (second choice)",
+   "shows": "Fourteen real app marks (in their own colours on light tiles) in a 5 x 3 field around the product's own mark, each joined to it by a hairline. In turn one app connects: its line lights and runs, its tile takes the accent ring and its name appears.",
+   "useFor": [
+    "ecosystem",
+    "platform"
+   ],
+   "size": [
+    456,
+    272
+   ],
+   "js": true,
+   "place": "at-corner wide with --w: 560px and .stage--fade-br: set wider than the panel and cut by its right and bottom edges, so the field reads as part of a bigger map, never centred with even ground round it; on a still soft ground (grain-gradient, gradient-mesh), never a pattern.",
+   "edit": "Tiles are HTML: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. The 8th item is the product's mark. opts.order lists the tiles that connect. Use only apps the product really works with.",
+   "loop": "about 2.8 s a cycle: three apps take the ring in turn, their lines lighting; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card",
+   "prefer": "integrations",
+   "note": "A second choice. For a card about integrations the integrations list (each app with what it does and its state) is clearer and is the default; use this field only for a platform whose point is the number of things it connects, with marks that read at 26px (glyphs, never wordmarks)."
+  }
+ ]
+}

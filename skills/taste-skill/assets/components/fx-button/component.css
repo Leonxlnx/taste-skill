@@ -1,0 +1,26 @@
+/* fx-button: the system's buttons, with an effect in the fill (primary) or the border (secondary) on hover and focus */
+.cx-btns { display: grid; justify-items: center; gap: var(--s-5); text-align: center; }
+.cx-btns__row { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); }
+
+.cx-fxbtn { position: relative; isolation: isolate; }
+.cx-fxbtn > :not(.cx-fxbtn__fx) { position: relative; z-index: 1; }
+/* the fill: the effect fades in from the button's middle outward, so it never sits as a smudge at one end */
+.cx-fxbtn__fx {
+  position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden;
+  opacity: 0; transition: opacity .45s var(--cx-ease); pointer-events: none;
+}
+.cx-fxbtn__fx:not(.cx-ring) {
+  -webkit-mask: radial-gradient(120% 140% at 50% 50%, #000 40%, rgb(0 0 0 / .55) 100%);
+  mask: radial-gradient(120% 140% at 50% 50%, #000 40%, rgb(0 0 0 / .55) 100%);
+}
+.cx-fxbtn__fx.cx-ring { --ring: 1.5px; inset: calc(-1px - var(--ring) + 1px); border-radius: calc(var(--r-btn) + 1px); overflow: visible; }
+.cx-fxbtn.is-lit .cx-fxbtn__fx { opacity: 1; }
+.cx-fxbtn--edge.is-lit:has(.fx-canvas[style*="opacity: 1"]) { border-color: transparent; }
+.cx-fxbtn__arrow { transition: transform var(--dur) var(--ease); }
+.cx-fxbtn:hover .cx-fxbtn__arrow, .cx-fxbtn:focus-visible .cx-fxbtn__arrow { transform: translateX(2px); }
+/* the system's hover darkening would fight the light: keep the fill */
+.cx-fxbtn.btn--primary:hover { background: var(--action); }
+@media (max-width: 639px) {
+  .cx-btns { justify-items: stretch; }
+  .cx-btns__row { flex-direction: column; align-items: stretch; }
+}

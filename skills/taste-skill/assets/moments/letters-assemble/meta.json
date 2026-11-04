@@ -1,0 +1,44 @@
+{
+  "id": "letters-assemble",
+  "name": "Letters assemble",
+  "kind": "scroll",
+  "fits": [
+    "statement"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "A statement of two to five words, set very large: its letters start scattered, shifted and turned, and fly into the line one after the other as the statement rises through the screen, whole before it reaches the middle.",
+  "reduced": "The statement stands as written.",
+  "phone": "The statement stands as written, in a smaller size.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "words": "a statement of 2 to 5 words (up to about 28 letters) and one or two lines under it"
+  },
+  "avoidWith": [
+    "giant-type-pass",
+    "word-highlight",
+    "lines-rise",
+    "counter-rolls"
+  ],
+  "states": {
+    "start": {
+      "view": 0.12,
+      "wait": 300
+    },
+    "middle": {
+      "view": 0.2,
+      "wait": 300
+    },
+    "end": {
+      "view": 0.5,
+      "wait": 300
+    }
+  }
+}

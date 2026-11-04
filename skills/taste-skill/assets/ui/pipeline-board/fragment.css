@@ -1,0 +1,162 @@
+/* pipeline-board: a CI run (repo, branch, commit) and its steps on one rail: done steps take an
+   ink-outlined check and their time, the running step its spinner and bar, waiting steps stay muted.
+   The running step is the fragment's one accent touch (its ring, its bar, its node's edge) and its
+   strongest mark; the status chip, the checks and the times are the ink. From 680px of its own width
+   (a container query) the steps become a row of connected nodes with the running step's log under them. */
+.ui-pipe { width: 420px; overflow: hidden; container: ui-pipe / inline-size; }
+.ui-pipe code { font: inherit; }
+
+/* head: branch, run, total time, status */
+.ui-pipe__head { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px 0 14px; border-bottom: 1px solid var(--u-line); min-width: 0; }
+.ui-pipe__branch { flex: none; width: 14px; height: 14px; color: var(--u-muted); }
+.ui-pipe__repo { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--u-muted); }
+.ui-pipe__slash { flex: none; font-style: normal; font-size: 12px; line-height: 16px; color: var(--u-soft); margin: 0 -2px; }
+.ui-pipe__ref { flex: none; padding: 2px 6px; border-radius: 5px; font: 500 12px/16px var(--ui-mono, ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace); color: var(--u-ink); background: var(--u-fill-2); box-shadow: inset 0 0 0 1px var(--u-line); }
+.ui-pipe__run { flex: none; font: 12px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-soft); }
+.ui-pipe__total { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 500 12px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-ink); font-variant-numeric: tabular-nums; }
+.ui-pipe__total .ui-icon { width: 14px; height: 14px; color: var(--u-muted); }
+.ui-pipe__chip::before { opacity: 1; }
+/* passed: the chip's dot becomes an ink check on a firmer fill and the total stands frozen in bold ink,
+   so the end of the run reads at a glance without a colour of its own */
+.ui-pipe.is-passed .ui-pipe__chip { background: var(--u-fill-2); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.ui-pipe.is-passed .ui-pipe__chip::before {
+  width: 10px; height: 10px; border-radius: 0; background: currentColor; opacity: 1; animation: none;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8.4 3.2 3.2L13 4.6' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8.4 3.2 3.2L13 4.6' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.ui-pipe.is-passed .ui-pipe__total { font-weight: 700; }
+.ui-pipe.is-passed .ui-pipe__total .ui-icon { color: var(--u-ink); }
+
+/* the commit the run is for */
+.ui-pipe__commit { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px 0 14px; border-bottom: 1px solid var(--u-line); background: var(--u-fill); min-width: 0; }
+.ui-pipe__msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; line-height: 20px; color: var(--u-text-2); }
+.ui-pipe__sha { flex: none; font: 12px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-muted); }
+/* the button steps toward the ink under a fine pointer and presses (the loop presses it to re-run) */
+.ui-pipe__btn { transition: transform 90ms var(--u-ease), background-color 200ms var(--u-ease), box-shadow 200ms var(--u-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .ui-pipe__btn:hover { background: var(--u-fill-2); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--u-ink) 24%, transparent); transition-duration: 90ms, 140ms, 140ms; }
+}
+.ui-pipe__btn:active, .ui-pipe__btn.is-pressed { transform: scale(0.96); background: var(--u-fill-3); }
+
+/* steps: rows on a rail */
+.ui-pipe__steps { padding: 4px 0; }
+.ui-pipe__step {
+  position: relative; display: grid; grid-template-columns: 18px auto minmax(0, 1fr) auto; align-items: center; column-gap: 12px;
+  height: 40px; padding: 0 16px 0 14px; transition: background-color 240ms var(--u-ease);
+}
+.ui-pipe__step.is-run { background: color-mix(in oklab, var(--u-ink) 3.5%, transparent); }
+/* the marker's box is 18px (the running ring fills it); waiting and done draw a 16px ring inside it */
+.ui-pipe__ico {
+  position: relative; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--u-ink);
+  transition: box-shadow 240ms var(--u-ease);
+}
+.ui-pipe__ico::after {
+  content: ""; position: absolute; inset: 1px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--u-ink) 30%, transparent); transition: box-shadow 240ms var(--u-ease);
+}
+.ui-pipe__ico svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ui-pipe__ico path { stroke-dasharray: 12; stroke-dashoffset: 12; transition: stroke-dashoffset 280ms var(--u-ease) 60ms; }
+/* the rail: a short line up to the step before; it darkens once that step is done */
+.ui-pipe__step + .ui-pipe__step .ui-pipe__ico::before {
+  content: ""; position: absolute; left: 50%; bottom: calc(100% + 3px); width: 1.5px; height: 16px; margin-left: -0.75px;
+  background: var(--u-line-2); transition: background-color 240ms var(--u-ease);
+}
+.ui-pipe__step:is(.is-done, .is-run) .ui-pipe__ico::before { background: color-mix(in oklab, var(--u-ink) 38%, transparent); }
+/* done: an ink-outlined ring and an ink check, quieter than the running ring */
+.ui-pipe__step.is-done .ui-pipe__ico::after { box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--u-ink) 70%, transparent); }
+.ui-pipe__step.is-done .ui-pipe__ico path { stroke-dashoffset: 0; }
+/* running: an accent ring that turns round an accent dot (the life sign: 1 s a turn) */
+.ui-pipe__step.is-run .ui-pipe__ico {
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--u-accent) 24%, transparent);
+  background: radial-gradient(circle, var(--u-accent) 0 3px, transparent 3.5px);
+}
+.ui-pipe__step.is-run .ui-pipe__ico::after {
+  inset: 0; box-shadow: inset 0 0 0 1.5px transparent;
+  border: 1.5px solid transparent; border-top-color: var(--u-accent); border-right-color: var(--u-accent);
+  animation: ui-spin 1s linear infinite;
+}
+.ui-pipe__name { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; line-height: 20px; font-weight: 500; white-space: nowrap; color: var(--u-muted); transition: color 240ms var(--u-ease); }
+.ui-pipe__nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* the tool each step runs, its real mark in its own colours on the light tile every surface gets; a
+   waiting step's tile is dimmed, a done or running step's is at full strength */
+.ui-pipe__tool {
+  display: grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 6px;
+  background: var(--u-tile); box-shadow: var(--u-tile-edge); opacity: 0.55; transition: opacity 240ms var(--u-ease);
+}
+.ui-pipe__tool :is(.ui-brand, img) { width: 13px; height: 13px; }
+.ui-pipe__step:is(.is-done, .is-run) .ui-pipe__tool { opacity: 1; }
+.ui-pipe__cmd { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 12px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-soft); transition: color 240ms var(--u-ease); }
+.ui-pipe__time { min-width: 48px; text-align: right; white-space: nowrap; font: 12px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-muted); font-variant-numeric: tabular-nums; }
+.ui-pipe__step:is(.is-done, .is-run) .ui-pipe__name { color: var(--u-ink); }
+.ui-pipe__step:is(.is-done, .is-run) .ui-pipe__cmd { color: var(--u-muted); }
+.ui-pipe__step.is-run .ui-pipe__time { color: var(--u-ink); }
+/* the running step's bar (--k, 0 to 1): only the running step shows it */
+.ui-pipe__bar {
+  position: absolute; left: 44px; right: 16px; bottom: 3px; height: 2px; border-radius: 1px; overflow: hidden;
+  background: var(--u-line-2); opacity: 0; transition: opacity 200ms var(--u-ease);
+}
+.ui-pipe__bar i { position: absolute; inset: 0; background: var(--u-accent); transform-origin: left; transform: scaleX(var(--k, 0)); }
+.ui-pipe__step.is-run .ui-pipe__bar { opacity: 1; }
+/* the run starting over: every step back at once */
+.ui-pipe.is-reset * { transition-duration: 160ms !important; transition-delay: 0ms !important; }
+
+/* the running step's log: only in the wide layout */
+.ui-pipe__log { display: none; }
+.ui-pipe__line { display: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-pipe__line.is-on { display: block; animation: ui-pipe-in 240ms var(--u-ease) both; }
+.ui-pipe__line b { margin-right: 8px; font-weight: 500; color: var(--u-ink); }
+.ui-pipe__line:has(b) { color: var(--u-text-2); }
+@keyframes ui-pipe-in { from { opacity: 0; transform: translateY(2px); } }
+
+/* narrow: the run number, the commit id and the clock give way first, then the repo (the branch glyph,
+   the branch, the total and the status always stay), then the commands */
+@container ui-pipe (max-width: 399px) {
+  .ui-pipe .ui-pipe__run, .ui-pipe .ui-pipe__sha, .ui-pipe .ui-pipe__total .ui-icon { display: none; }
+  .ui-pipe .ui-pipe__head { gap: 6px; }
+  .ui-pipe .ui-pipe__step { column-gap: 10px; padding: 0 12px; }
+  .ui-pipe .ui-pipe__bar { left: 40px; right: 12px; }
+}
+@container ui-pipe (max-width: 299px) {
+  .ui-pipe :is(.ui-pipe__repo, .ui-pipe__slash) { display: none; }
+  .ui-pipe .ui-pipe__time { min-width: 40px; }
+}
+@container ui-pipe (max-width: 279px) {
+  .ui-pipe .ui-pipe__step { grid-template-columns: 18px minmax(0, 1fr) auto; }
+  .ui-pipe .ui-pipe__cmd { display: none; }
+}
+
+/* wide (a .fit in a large panel or a split card): the steps as a row of connected nodes, each with
+   its name and time, the running node with its bar; the commands move to the running step's log */
+@container ui-pipe (min-width: 680px) {
+  .ui-pipe .ui-pipe__steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 24px; padding: 16px; }
+  /* each node is a real 1px border; only its colour and the fill change, the running node's shadow
+     comes and goes without a transition */
+  .ui-pipe .ui-pipe__step {
+    grid-template-columns: 18px minmax(0, 1fr); grid-template-rows: 20px 16px 4px; row-gap: 8px; column-gap: 10px;
+    height: auto; padding: 11px; border: 1px solid var(--u-line-2); border-radius: var(--u-r2);
+    background: var(--u-bg); box-shadow: none;
+    transition: background-color 240ms var(--u-ease);
+  }
+  .ui-pipe .ui-pipe__step.is-run { background: var(--u-bg); border-color: color-mix(in oklab, var(--u-accent) 46%, transparent); box-shadow: var(--u-shadow-sm); }
+  .ui-pipe .ui-pipe__step:not(.is-done, .is-run) { background: var(--u-fill); border-color: var(--u-line); }
+  .ui-pipe .ui-pipe__ico { grid-area: 1 / 1; }
+  .ui-pipe .ui-pipe__name { grid-area: 1 / 2; min-width: 0; overflow: hidden; }
+  .ui-pipe .ui-pipe__time { grid-area: 2 / 2; min-width: 0; text-align: left; }
+  .ui-pipe .ui-pipe__cmd { display: none; }
+  .ui-pipe .ui-pipe__bar { position: relative; left: auto; right: auto; bottom: auto; grid-area: 3 / 1 / 4 / 3; height: 4px; border-radius: 2px; }
+  /* the rail turns sideways: a line across the gap to the next node, from border to border */
+  .ui-pipe .ui-pipe__step + .ui-pipe__step .ui-pipe__ico::before { content: none; }
+  .ui-pipe .ui-pipe__step:not(:last-child)::after {
+    content: ""; position: absolute; left: calc(100% + 1px); top: 20px; width: 24px; height: 1.5px; margin-top: -0.75px;
+    background: var(--u-line-2); transition: background-color 240ms var(--u-ease);
+  }
+  .ui-pipe .ui-pipe__step.is-done:not(:last-child)::after { background: color-mix(in oklab, var(--u-ink) 38%, transparent); }
+  .ui-pipe .ui-pipe__log {
+    display: block; min-height: 82px; margin: 0 16px 16px; padding: 11px 14px;
+    border-radius: var(--u-r2); background: var(--u-fill); box-shadow: inset 0 0 0 1px var(--u-line);
+    font: 12px/20px var(--ui-mono, ui-monospace, monospace); color: var(--u-text-2);
+  }
+}
+
+/* phone: the board takes the panel's width (cards.css); the queries above lay it out */
+@media (max-width: 639px) { .ui-pipe { width: 100%; } }

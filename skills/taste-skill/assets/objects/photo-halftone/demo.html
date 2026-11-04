@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-palette="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halftone photograph</title>
+<meta name="description" content="A photograph printed in one ink: round dots on a 45° screen, clean paper in the light, solid ink in the deepest shadows. Point at it and a loupe shows the photo in its own colours.">
+<link rel="stylesheet" href="../photo-kit/demo.css">
+</head>
+<body>
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<script type="module">
+  import object from './object.js';
+  import { demo } from '../photo-kit/demo.js';
+  demo(object, {
+    blurb: "A photograph printed in one ink: round dots on a 45° screen, clean paper in the light, solid ink in the deepest shadows. Point at it and a loupe shows the photo in its own colours.",
+    notes: [["At rest","The print holds still. It is finished from the first frame."],["Light photos","Near-whites stay clean paper, and a dotted outline keeps a pale object on a pale wall."],["On hover","A round loupe shows the photo itself, a little larger. On a phone a tap shows it."]],
+    ...{ params: {} },
+  });
+</script>
+</body>
+</html>

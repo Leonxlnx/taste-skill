@@ -1,0 +1,51 @@
+{
+  "id": "letter-physics",
+  "name": "Letter physics",
+  "family": "type-choreography",
+  "look": "A bold claim stands readable on the inverse ground, breathes in and flies apart in 3D in one short burst: every letter leaves along its own line from the centre with spin and a little gravity, the middle letters rushing nearest the viewer, each gone before the screen's edge cuts it. While the last letters leave, the one-sentence answer is already coming out of depth, whole, and lands at the claim's size on the page's own ground; a photograph behind it comes up like a room's lights, dimmed to the ground under the words.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "software",
+    "tech",
+    "gaming"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The claim with the answer under it on the inverse ground, the photograph faint at the edges.",
+  "phone": "The light version: the letters fade and drift instead of flying in depth.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "words": "a claim of 12-36 characters and an answer of 16-60 characters that answers it",
+    "photo": "optional: one dark photograph with a calm centre"
+  },
+  "never": "a glow or blurred type under the answer; a claim over 40 characters; on a calm or clinical brief (the burst reads as loud); on a product page about a physical thing",
+  "avoidWith": [
+    "dot-becomes-the-full-stop",
+    "letter-bar-floods-the-ground"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.24,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "avoidMoments": [
+    "word-highlight",
+    "giant-type-pass",
+    "letters-assemble"
+  ]
+}

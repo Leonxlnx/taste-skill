@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-radius="sharp" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parts lock into the whole · big scene demo</title>
+<meta name="description" content="Demo of the scene in which the product's interface flies in as its panels and locks into one screen.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f4f4f4; --p-ink: #111111; --p-muted: #666666; --p-accent: #d9480f; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
+          --font-display: "Geist", system-ui, sans-serif; --font-text: "Geist", system-ui, sans-serif; --display-weight: 500; }
+  /* the demo's planning screen: the client's own screen would replace this */
+  .hr .pl__bar { display: flex; align-items: center; gap: 14px; padding: 0 16px; color: var(--muted); }
+  .hr .pl__bar b { color: var(--ink); font-weight: 500; }
+  .hr .pl__bar .dots { display: inline-flex; gap: 5px; margin-right: 6px; } .hr .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+  .hr .pl__bar .tab { padding: 4px 10px; border-radius: 6px; } .hr .pl__bar .tab.on { background: var(--surface); color: var(--ink); }
+  .hr .pl__side { padding: 14px 12px; display: grid; align-content: start; gap: 4px; color: var(--muted); }
+  .hr .pl__side span { padding: 6px 8px; border-radius: 6px; } .hr .pl__side span.on { background: var(--surface); color: var(--ink); }
+  .hr .pl__side small { margin: 10px 8px 2px; font-size: 11px; letter-spacing: .02em; text-transform: uppercase; }
+  .hr .pl__main { padding: 18px 20px; display: grid; align-content: start; gap: 12px; }
+  .hr .pl__title { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  .hr table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .hr th { text-align: left; font-weight: 400; color: var(--muted); padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+  .hr td { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .hr td.n { text-align: right; } .hr th.n { text-align: right; }
+  .hr th + th, .hr td + td { padding-left: 14px; }
+  .hr .bar { position: relative; display: block; height: 8px; border-radius: 4px; background: var(--surface); overflow: clip; width: min(120px, 100%); }
+  .hr .bar b { position: absolute; inset: 0; width: calc(var(--v) * 100%); background: var(--accent); border-radius: 4px; }
+  .hr .talk { background: color-mix(in oklab, var(--accent) 12%, transparent); border-radius: 4px; padding: 0 4px; margin: 0 -4px; }
+  .hr .pl__insp { padding: 16px 14px; display: grid; align-content: start; gap: 10px; }
+  .hr .pl__insp h4 { font: 500 12px/1.4 var(--font-text); color: var(--muted); letter-spacing: .02em; text-transform: uppercase; }
+  .hr .note { display: grid; gap: 4px; padding: 10px; border-radius: 8px; background: var(--surface); font-size: 12px; }
+  .hr .note b { font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .hr .note b i { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-style: normal; background: var(--accent); color: var(--accent-ink); }
+  .hr .agent b i { background: var(--ink); color: var(--bg); }
+  @media (max-width: 767px) { .hr .pl__bar .tab:last-child { display: none; } .hr .pl__main { padding: 16px; } }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Headroom</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Customers</a><a href="#">Pricing</a><a href="#">Docs</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Book a demo</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <h1>Plan next year's headcount in one sheet everyone can see</h1>
+        <p>Headroom pulls roles from your HR system and salaries from payroll, and shows what every hire does to the budget. Used by 340 finance teams.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Book a demo</a><a class="btn btn--secondary" href="#">See pricing</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="parts-lock-into-the-whole" style="--h: 1" aria-labelledby="pl-h">
+    <div class="sc__stage">
+      <p class="pl__word" aria-hidden="true">2027</p>
+      <div class="pl__ui hr" data-ui role="img" aria-label="The Headroom planning screen for 2027">
+        <div class="pl__panel pl__bar"><span class="dots"><i></i><i></i><i></i></span><b>Headroom</b> <span class="tab on">Plan</span><span class="tab">Budget</span><span class="tab">Approvals</span></div>
+        <div class="pl__panel pl__side"><small>Plans</small><span class="on">Headcount 2027</span><span>Q3 reforecast</span><span>Hiring freeze case</span><small>Teams</small><span>Engineering</span><span>Sales</span><span>Operations</span></div>
+        <div class="pl__panel pl__main">
+          <p class="pl__title">Headcount <span class="pl__title-word">2027</span></p>
+          <table>
+            <thead><tr><th>Team</th><th class="n">Now</th><th class="n">Plan</th><th>Cost</th></tr></thead>
+            <tbody>
+              <tr><td>Engineering</td><td class="n">42</td><td class="n" data-layer="1">58</td><td><span class="bar"><b data-layer="1" data-ink="x" style="--v:.78"></b></span></td></tr>
+              <tr><td class="talk" data-layer="2">Sales</td><td class="n">18</td><td class="n" data-layer="1">26</td><td><span class="bar"><b data-layer="1" data-ink="x" style="--v:.4"></b></span></td></tr>
+              <tr><td>Operations</td><td class="n">11</td><td class="n" data-layer="1">14</td><td><span class="bar"><b data-layer="1" data-ink="x" style="--v:.22"></b></span></td></tr>
+              <tr><td>Support</td><td class="n">9</td><td class="n" data-layer="3">9 <s style="color:var(--muted)">12</s></td><td><span class="bar"><b data-layer="1" data-ink="x" style="--v:.16"></b></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pl__panel pl__insp">
+          <h4>Comments</h4>
+          <div class="note" data-layer="2"><b><i>MK</i>Mira Kaur</b>Sales plan assumes 2 new regions. Confirm with Tom before Friday.</div>
+          <div class="note agent" data-layer="3"><b><i>H</i>Headroom</b>Support at 12 breaks the Q2 budget by £84k. Set to 9 and moved 3 to Q4.</div>
+        </div>
+      </div>
+      <div class="pl__spec">
+        <h2 id="pl-h">One plan, every number live</h2>
+        <dl><div><dt>Sources</dt><dd>Workday, Personio, Xero</dd></div><div><dt>Refresh</dt><dd>Every night</dd></div><div><dt>Approvals</dt><dd>Per team, per quarter</dd></div><div><dt>Export</dt><dd>Sheets, Excel, CSV</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>Built for the monthly close</h2><p class="t-lead" style="margin-top:16px">The plan reconciles to payroll on the first of every month, so the numbers in the board pack are the numbers in the plan.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Reconciled</span><span class="rows__value">1st of the month</span></li>
+          <li><span class="rows__name">Board pack</span><span class="rows__value">Exported in one click</span></li>
+          <li><span class="rows__name">Audit trail</span><span class="rows__value">Every change, by name</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Headroom · demo page for the big scene “Parts lock into the whole”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* dot-becomes-the-full-stop - at rest: the claim at display size with the line under it. Live: the
+   claim fitted to one row on the held stage, grown word by word out of the dot. */
+[data-big-scene="dot-becomes-the-full-stop"] { background: var(--bg); color: var(--ink); }
+[data-big-scene="dot-becomes-the-full-stop"].is-cut { background: var(--p-inv-bg); color: var(--p-inv-ink); --muted: var(--p-inv-muted); }
+[data-big-scene="dot-becomes-the-full-stop"] > .sc__stage { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad); }
+[data-big-scene="dot-becomes-the-full-stop"] .dfs__line { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: var(--t-h1); line-height: 1.06; }
+[data-big-scene="dot-becomes-the-full-stop"] .dfs__sub { margin-top: var(--s-5); font-size: var(--t-lead); line-height: 1.5; max-width: 52ch; }
+
+/* ---------- finished composition */
+[data-big-scene="dot-becomes-the-full-stop"]:not(.is-live) > .sc__stage { display: grid; align-content: center; min-height: 50svh; }
+
+/* ---------- the held stage */
+[data-big-scene="dot-becomes-the-full-stop"].is-live > .sc__stage { display: grid; align-content: center; justify-items: center; padding-top: var(--nav-h, 0px); }
+[data-big-scene="dot-becomes-the-full-stop"].is-live .dfs__line { position: relative; line-height: 1.12; text-align: left; will-change: transform; }
+[data-big-scene="dot-becomes-the-full-stop"].is-live .dfs__line .w { display: inline-block; opacity: 0; will-change: transform, opacity; }
+[data-big-scene="dot-becomes-the-full-stop"].is-live .dfs__stop { opacity: 0; }
+[data-big-scene="dot-becomes-the-full-stop"].is-live .dfs__dot { position: absolute; left: 0; top: 0; border-radius: 50%; background: currentColor; transform-origin: 50% 50%; will-change: transform; }
+[data-big-scene="dot-becomes-the-full-stop"].is-live .dfs__sub { opacity: 0; text-align: center; will-change: transform, opacity; }
+
+/* ---------- finished composition in the page rhythm: the claim at giant size fills its screen */
+[data-big-scene="dot-becomes-the-full-stop"]:not(.is-live) .dfs__line { font-size: clamp(56px, 14.5vw, 224px); line-height: 1.02; text-wrap: balance; }
+[data-big-scene="dot-becomes-the-full-stop"]:not(.is-live) .dfs__sub { margin-top: var(--s-6); }
+@media (max-width: 767px) { [data-big-scene="dot-becomes-the-full-stop"]:not(.is-live) .dfs__line { font-size: clamp(44px, 21vw, 100px); line-height: 1.1; } [data-big-scene="dot-becomes-the-full-stop"]:not(.is-live) .dfs__sub { margin-top: var(--s-7); } }

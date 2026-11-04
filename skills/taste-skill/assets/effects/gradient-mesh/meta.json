@@ -1,0 +1,10 @@
+{
+  "id": "gradient-mesh",
+  "name": "Gradient mesh",
+  "family": "mesh",
+  "look": "Soft islands of the page colours blend over a slowly folding surface, lit where it folds; a thin mesh grid can be drawn on top.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"]
+}

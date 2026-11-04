@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 326" width="256" height="326"><defs>
+        <linearGradient id="a" x1="71.83" x2="156.83" y1="148" y2="8" gradientUnits="userSpaceOnUse">
+          <stop offset="0.1" stop-color="#ffe921"></stop>
+          <stop offset="0.48" stop-color="#fdd313"></stop>
+          <stop offset="0.86" stop-color="#ffbe00"></stop>
+        </linearGradient>
+        <linearGradient id="c" x1="96" x2="96" y1="140.04" y2="8" gradientUnits="userSpaceOnUse">
+          <stop offset="0.16" stop-color="#ffe921"></stop>
+          <stop offset="0.64" stop-color="#fec700"></stop>
+          <stop offset="0.96" stop-color="#ffbe00"></stop>
+        </linearGradient>
+        <linearGradient id="f" x1="96" x2="96" y1="51.19" y2="142.89" gradientUnits="userSpaceOnUse">
+          <stop offset="0.11" stop-color="#ffb8dd" stop-opacity="0"></stop>
+          <stop offset="0.68" stop-color="#ffb5e8"></stop>
+        </linearGradient>
+        <filter id="d" width="203.2" height="235.2" x="-5.6" y="6.4" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+          <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+          <feGaussianBlur result="effect1_foregroundBlur_37487_16896" stdDeviation="28.8"></feGaussianBlur>
+        </filter>
+        <filter id="e" width="88" height="140" x="52" y="58" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+          <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+          <feGaussianBlur result="effect1_foregroundBlur_37487_16896" stdDeviation="6"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g>
+        <mask id="b" width="140" height="140" x="26" y="8" maskUnits="userSpaceOnUse" style="mask-type:alpha">
+          <path fill="url(#a)" d="M166 78c0 27.13-15.434 50.381-38 62-9.591 4.938-20.47 8-32 8s-22.41-3.062-32-8c-22.566-11.619-38-34.87-38-62C26 39.34 57.34 8 96 8s70 31.34 70 70"></path>
+        </mask>
+        <g transform="matrix(1.828572, 0, 0, 1.828572, -47.542854, -14.628572)">
+          <g mask="url(#b)">
+            <circle cx="96" cy="78" r="70" fill="url(#c)"></circle>
+            <g filter="url(#d)">
+              <path fill="#fdfd6d" d="M52 124c0-38.137 14.81-60 44-60s44 21.863 44 60c0 33.137-19.699 60-44 60s-44-26.863-44-60"></path>
+            </g>
+            <g filter="url(#e)">
+              <path fill="url(#f)" d="M64 102c0-17.673 14.327-32 32-32s32 14.327 32 32v52c0 17.673-14.327 32-32 32s-32-14.327-32-32z"></path>
+            </g>
+            <path fill="#fff" d="M78 127c0-7.18 5.82-13 13-13h10c7.18 0 13 5.82 13 13s-5.82 13-13 13H91c-7.18 0-13-5.82-13-13"></path>
+          </g>
+          <g mask="url(#g)">
+            <path fill="#f6a100" d="M96 56c-18.4 0-32 14.4-32 33.6v62.8c0 19.2 13.6 33.6 32 33.6s32-14.4 32-33.6V89.6C128 70.4 114.4 56 96 56"></path>
+          </g>
+        </g>
+        <mask id="g" width="80" height="46" x="56" y="140" maskUnits="userSpaceOnUse" style="mask-type:alpha">
+          <path fill="#ffbe00" d="M56 140h80v46H56z"></path>
+        </mask>
+    </g></svg>

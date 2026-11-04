@@ -1,0 +1,22 @@
+{
+ "name": "diff-review",
+ "title": "Code review on a diff",
+ "shows": "One file of a pull request: the file path with its real TypeScript mark and its +/- counts, a hunk header, fourteen lines of a unified diff (removed lines red, added green, old and new line numbers in the gutter) and a reviewer's one-line suggestion under the line it is about, naming the change. The Apply button steps and is pressed: that line becomes a removed line with the suggested line added under it, the counts update and an Applied status takes the button's place.",
+ "useFor": [
+  "code review",
+  "pull requests",
+  "developer tools",
+  "AI coding",
+  "suggestions",
+  "git"
+ ],
+ "size": [
+  480,
+  428
+ ],
+ "fluid": "fills its .fit, 280 to 760px wide (checked at 280)",
+ "js": true,
+ "place": "at-corner fit or at-rise fit with --fit-max: 480px, 32 to 40px in, cut by the bottom edge with .stage--fade-b: the reviewed line, the suggestion, the comment and its button sit in the top 250px, and the diff runs on for two more context lines, so in a 352px panel at 36px down it is cut by 32px or more at every width (112px at 480px wide); a panel 400px or taller would show the diff's end, so give it more --ay or a shorter panel. Never cut by the right edge (the button is at the comment's right); a .fit narrows it instead: under 500px the hunk header starts after one gutter, under 440px it lays itself out (a container query: one 26px gutter, the new number, or the old one on a removed line; rows at 11/16; the function name leaves the hunk header; wrapped code hangs 2ch inside the line it continues). On a phone give the panel 340px or more, so the comment's line clears the fade. In a wide panel set --fit-max up to 760px",
+ "edit": "Lines are HTML: each .ui-diff__ln holds its old and new numbers (<i>, empty on the side it is not on), is-del or is-add, and its code (.ui-diff__code with data-i, its indent level, and the indent itself in .ui-diff__ind; tokens .k keyword, .f function, .n number, .s string; <mark class=\"ui-diff__w\"> the changed words). The reviewed line is [data-diff-target] with is-target, written as a context line with its changed words marked; the suggestion is the added line in [data-diff-sug] right under it (its new number the reviewed line's). Applied, the reviewed line shows as removed and the suggestion unfolds, so the hunk counts stay true. The file header carries the file's real mark on a light tile (its colour icon as an <img src=\"assets/ui/icons/x.svg\">, or the client's own mark fetched with icons.mjs into assets/icons: TypeScript here; use the mark of the file's own language). The file path is the folders in .ui-diff__dir and the file name in <b>: in a panel under 470px the repo leaves the header first and under 340px the folders, so the file name always shows whole. Every row starts with a filled gutter (the changed rows red or green, the others a faint grey), which keeps the rows on one left edge. The hunk header's counts (@@ -38,10 +38,11 @@) match the lines written. The header's counts are written twice (.ui-diff__was as written, .ui-diff__now applied). The comment carries the fragment's one accent, a short 2px bar beside its text, set in from the comment's edge so it keeps a gap from the red and green rows (avatar with data-tone 1-5, keep it off the add and remove hues: 4 or 1; name, time, one line naming the change in <code>), the button and the Applied status are written in the markup. --diff-add and --diff-del set the two hues.",
+ "loop": "about 3 s a cycle: the diff as it was with the reviewer's comment and its button, the button steps (lifted, ringed) and is pressed for 140 ms, waits with a spinner (two turns, 0.5 s), the reviewed line turns removed with the suggestion added under it, the counts update and Applied replaces the button; the status then leaves first, the diff goes back and only then does the button return; the finished picture holds for about 10% of the cycle; restarts when the pointer enters its card"
+}

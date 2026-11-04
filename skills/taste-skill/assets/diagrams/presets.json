@@ -1,0 +1,1270 @@
+{
+  "about": "Ready specs for diagram.js (references/diagrams.md). Copy one into the page as data-diagram='{...}' or a <script type=\"application/json\"> inside the .dg, then rename every label, icon and number to the client's own tools and steps. types: the page kinds a preset suits (software, tech, gaming, product, service); a place page gets no diagram. Icons: a curated short name (gmail, google-docs, pdf) or logos:<name>, file:<name>, si:<slug> is the file icons.mjs fetched into assets/icons (icons.mjs scan <page.html> fetches every id a page names), in full colour (the Simple Icons mark in its brand hex where no colour mark exists); ui:<name> a line glyph in the ink; text:Ab the product's own letters.",
+  "presets": {
+    "hub-tools": {
+      "types": [
+        "software",
+        "product",
+        "service"
+      ],
+      "layout": "hub",
+      "alt": "The agent connects Gmail, Slack, Notion, Google Drive, Salesforce and Zendesk.",
+      "center": {
+        "label": "Agent",
+        "icon": "ui:bot"
+      },
+      "spokes": [
+        {
+          "label": "Gmail",
+          "icon": "gmail"
+        },
+        {
+          "label": "Slack",
+          "icon": "slack"
+        },
+        {
+          "label": "Notion",
+          "icon": "notion"
+        },
+        {
+          "label": "Google Drive",
+          "icon": "google-drive"
+        },
+        {
+          "label": "Salesforce",
+          "icon": "salesforce"
+        },
+        {
+          "label": "Zendesk",
+          "icon": "zendesk"
+        }
+      ]
+    },
+    "hub-branches": {
+      "types": [
+        "software",
+        "tech"
+      ],
+      "layout": "hub",
+      "alt": "Search reads Google Drive, Notion, GitHub and Gmail, down to single files.",
+      "center": {
+        "label": "Search",
+        "icon": "ui:search"
+      },
+      "spokes": [
+        {
+          "label": "Drive",
+          "icon": "google-drive",
+          "children": [
+            {
+              "label": "Q3 plan",
+              "icon": "google-docs"
+            },
+            {
+              "label": "Budget",
+              "icon": "google-sheets"
+            }
+          ]
+        },
+        {
+          "label": "Notion",
+          "icon": "notion",
+          "children": [
+            {
+              "label": "Roadmap",
+              "icon": "ui:file-text"
+            },
+            {
+              "label": "Onboarding",
+              "icon": "ui:file-text"
+            }
+          ]
+        },
+        {
+          "label": "GitHub",
+          "icon": "github",
+          "children": [
+            {
+              "label": "api",
+              "icon": "ui:git-branch"
+            },
+            {
+              "label": "web",
+              "icon": "ui:git-branch"
+            }
+          ]
+        },
+        {
+          "label": "Gmail",
+          "icon": "gmail",
+          "children": [
+            {
+              "label": "Invoices",
+              "icon": "ui:receipt"
+            },
+            {
+              "label": "Contract.pdf",
+              "icon": "pdf"
+            }
+          ]
+        }
+      ]
+    },
+    "hub-web": {
+      "types": [
+        "software",
+        "tech"
+      ],
+      "layout": "hub",
+      "shape": "radial",
+      "alt": "One knowledge base reads the tools of every team: HubSpot and Salesforce, Zendesk and Intercom, GitHub and Linear, QuickBooks and Xero.",
+      "center": {
+        "label": "Knowledge base",
+        "icon": "ui:layers"
+      },
+      "spokes": [
+        {
+          "label": "Sales",
+          "children": [
+            {
+              "label": "HubSpot",
+              "icon": "hubspot"
+            },
+            {
+              "label": "Salesforce",
+              "icon": "salesforce"
+            }
+          ]
+        },
+        {
+          "label": "Support",
+          "children": [
+            {
+              "label": "Zendesk",
+              "icon": "zendesk"
+            },
+            {
+              "label": "Intercom",
+              "icon": "intercom"
+            }
+          ]
+        },
+        {
+          "label": "Engineering",
+          "children": [
+            {
+              "label": "GitHub",
+              "icon": "github"
+            },
+            {
+              "label": "Linear",
+              "icon": "linear"
+            }
+          ]
+        },
+        {
+          "label": "Finance",
+          "children": [
+            {
+              "label": "QuickBooks",
+              "icon": "quickbooks"
+            },
+            {
+              "label": "Xero",
+              "icon": "xero"
+            }
+          ]
+        }
+      ]
+    },
+    "ring-apps": {
+      "types": [
+        "software",
+        "product"
+      ],
+      "layout": "ring",
+      "alt": "Eight apps connected around one workspace: Gmail, Slack, Google Drive, Notion, HubSpot, GitHub, Zoom and Google Calendar.",
+      "center": {
+        "label": "Workspace",
+        "icon": "ui:layers"
+      },
+      "ring": [
+        {
+          "label": "Gmail",
+          "icon": "gmail"
+        },
+        {
+          "label": "Slack",
+          "icon": "slack"
+        },
+        {
+          "label": "Google Drive",
+          "icon": "google-drive"
+        },
+        {
+          "label": "Notion",
+          "icon": "notion"
+        },
+        {
+          "label": "HubSpot",
+          "icon": "hubspot"
+        },
+        {
+          "label": "GitHub",
+          "icon": "github"
+        },
+        {
+          "label": "Zoom",
+          "icon": "zoom"
+        },
+        {
+          "label": "Google Calendar",
+          "icon": "google-calendar"
+        }
+      ]
+    },
+    "tree-orders": {
+      "types": [
+        "product",
+        "service",
+        "software"
+      ],
+      "layout": "tree",
+      "alt": "A new Shopify order branches into payment, stock and shipping, each finished in turn.",
+      "root": {
+        "label": "Order 4821",
+        "icon": "shopify",
+        "children": [
+          {
+            "label": "Payment",
+            "icon": "ui:credit-card",
+            "children": [
+              {
+                "label": "Card charged",
+                "done": true
+              },
+              {
+                "label": "Receipt sent",
+                "done": true
+              }
+            ]
+          },
+          {
+            "label": "Stock",
+            "icon": "ui:package",
+            "children": [
+              {
+                "label": "2 items reserved",
+                "done": true
+              }
+            ]
+          },
+          {
+            "label": "Shipping",
+            "icon": "ui:truck",
+            "children": [
+              {
+                "label": "Label printed",
+                "done": true
+              },
+              {
+                "label": "Courier booked",
+                "done": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "lanes-agent": {
+      "types": [
+        "software",
+        "tech"
+      ],
+      "layout": "lanes",
+      "alt": "Mail from the support inbox goes to the agent, which drafts a reply, updates the ticket and adds the lead at once.",
+      "input": {
+        "label": "Support inbox",
+        "icon": "gmail",
+        "sub": "support@"
+      },
+      "core": {
+        "label": "Agent",
+        "icon": "ui:bot"
+      },
+      "lanes": [
+        {
+          "label": "Reply drafted",
+          "icon": "ui:pen-line",
+          "done": true,
+          "sub": "Waits for you"
+        },
+        {
+          "label": "Ticket updated",
+          "icon": "zendesk",
+          "done": true,
+          "sub": "Zendesk #2210"
+        },
+        {
+          "label": "Lead added",
+          "icon": "salesforce",
+          "done": true,
+          "sub": "Salesforce"
+        }
+      ]
+    },
+    "lanes-media": {
+      "types": [
+        "software",
+        "tech",
+        "gaming"
+      ],
+      "layout": "lanes",
+      "alt": "One upload is encoded into a video, thumbnails and captions in parallel, then published.",
+      "curve": "curve",
+      "input": {
+        "label": "Upload",
+        "icon": "video",
+        "meta": "2.4 GB"
+      },
+      "core": {
+        "label": "Encoder",
+        "icon": "ui:cpu"
+      },
+      "lanes": [
+        {
+          "label": "1080p",
+          "icon": "ui:film",
+          "meta": "H.264"
+        },
+        {
+          "label": "Thumbnails",
+          "icon": "image",
+          "meta": "12"
+        },
+        {
+          "label": "Captions",
+          "icon": "ui:captions",
+          "meta": "EN DE"
+        }
+      ],
+      "output": {
+        "label": "Published",
+        "icon": "ui:globe",
+        "done": true
+      }
+    },
+    "lanes-deploy": {
+      "types": [
+        "software",
+        "tech",
+        "gaming"
+      ],
+      "layout": "lanes",
+      "alt": "A push to GitHub is built once and goes live in Frankfurt, Virginia and Tokyo.",
+      "curve": "curve",
+      "input": {
+        "label": "git push",
+        "icon": "github",
+        "meta": "main"
+      },
+      "core": {
+        "label": "Build",
+        "icon": "ui:box"
+      },
+      "lanes": [
+        {
+          "label": "Frankfurt",
+          "icon": "ui:server",
+          "meta": "fra1",
+          "done": true
+        },
+        {
+          "label": "Virginia",
+          "icon": "ui:server",
+          "meta": "iad1",
+          "done": true
+        },
+        {
+          "label": "Tokyo",
+          "icon": "ui:server",
+          "meta": "hnd1",
+          "done": true
+        }
+      ]
+    },
+    "fanin-warehouse": {
+      "types": [
+        "software",
+        "tech",
+        "service"
+      ],
+      "layout": "fanin",
+      "alt": "Orders, payments, ads and support data flow into one warehouse and one dashboard.",
+      "sources": [
+        {
+          "label": "Shopify",
+          "icon": "shopify",
+          "sub": "Orders"
+        },
+        {
+          "label": "PayPal",
+          "icon": "paypal",
+          "sub": "Payments"
+        },
+        {
+          "label": "Postgres",
+          "icon": "postgres",
+          "sub": "App data"
+        },
+        {
+          "label": "Google Ads",
+          "icon": "google-ads",
+          "sub": "Spend"
+        },
+        {
+          "label": "HubSpot",
+          "icon": "hubspot",
+          "sub": "Contacts"
+        },
+        {
+          "label": "Zendesk",
+          "icon": "zendesk",
+          "sub": "Tickets"
+        }
+      ],
+      "target": {
+        "label": "Warehouse",
+        "icon": "ui:database"
+      },
+      "then": {
+        "label": "Dashboard",
+        "icon": "ui:chart-column",
+        "meta": "live"
+      }
+    },
+    "bowtie-events": {
+      "types": [
+        "software",
+        "tech"
+      ],
+      "layout": "bowtie",
+      "alt": "Events from the shop, the payments and the app are collected once and sent to Mailchimp, HubSpot, Snowflake and Intercom.",
+      "sources": [
+        {
+          "label": "Shopify",
+          "icon": "shopify",
+          "sub": "Orders"
+        },
+        {
+          "label": "PayPal",
+          "icon": "paypal",
+          "sub": "Payments"
+        },
+        {
+          "label": "iOS app",
+          "icon": "ui:smartphone",
+          "sub": "Sessions"
+        }
+      ],
+      "core": {
+        "label": "Events",
+        "icon": "ui:zap"
+      },
+      "targets": [
+        {
+          "label": "Mailchimp",
+          "icon": "mailchimp",
+          "sub": "Campaigns"
+        },
+        {
+          "label": "HubSpot",
+          "icon": "hubspot",
+          "sub": "Contacts"
+        },
+        {
+          "label": "Snowflake",
+          "icon": "snowflake",
+          "sub": "Warehouse"
+        },
+        {
+          "label": "Intercom",
+          "icon": "intercom",
+          "sub": "Messages"
+        }
+      ]
+    },
+    "ring-regions": {
+      "types": [
+        "software",
+        "tech",
+        "gaming"
+      ],
+      "layout": "ring",
+      "alt": "Six regions around the edge network, each answering in a few milliseconds.",
+      "center": {
+        "label": "Edge",
+        "icon": "ui:globe"
+      },
+      "ring": [
+        {
+          "label": "Frankfurt",
+          "icon": "ui:map-pin",
+          "meta": "8 ms"
+        },
+        {
+          "label": "London",
+          "icon": "ui:map-pin",
+          "meta": "11 ms"
+        },
+        {
+          "label": "Virginia",
+          "icon": "ui:map-pin",
+          "meta": "14 ms"
+        },
+        {
+          "label": "São Paulo",
+          "icon": "ui:map-pin",
+          "meta": "21 ms"
+        },
+        {
+          "label": "Sydney",
+          "icon": "ui:map-pin",
+          "meta": "19 ms"
+        },
+        {
+          "label": "Tokyo",
+          "icon": "ui:map-pin",
+          "meta": "12 ms"
+        }
+      ]
+    },
+    "sync-crm": {
+      "types": [
+        "software",
+        "service"
+      ],
+      "layout": "sync",
+      "alt": "Postgres and HubSpot keep contacts, companies and deals in sync both ways.",
+      "left": {
+        "label": "Postgres",
+        "icon": "postgres",
+        "meta": "prod",
+        "rows": [
+          {
+            "label": "Contacts",
+            "meta": "2,481"
+          },
+          {
+            "label": "Companies",
+            "meta": "312"
+          },
+          {
+            "label": "Deals",
+            "meta": "96"
+          }
+        ]
+      },
+      "link": {
+        "label": "Two-way",
+        "icon": "ui:refresh-cw"
+      },
+      "right": {
+        "label": "HubSpot",
+        "icon": "hubspot",
+        "meta": "CRM",
+        "rows": [
+          {
+            "label": "Contacts",
+            "meta": "2,481"
+          },
+          {
+            "label": "Companies",
+            "meta": "312"
+          },
+          {
+            "label": "Deals",
+            "meta": "96"
+          }
+        ]
+      }
+    },
+    "timeline-onboarding": {
+      "types": [
+        "software",
+        "product",
+        "service"
+      ],
+      "layout": "timeline",
+      "alt": "A new customer signs up, verifies their email, connects a bank, sends a first invoice and gets paid.",
+      "steps": [
+        {
+          "label": "Signed up",
+          "sub": "09:02",
+          "icon": "ui:user-plus"
+        },
+        {
+          "label": "Email verified",
+          "sub": "09:03",
+          "icon": "ui:mail-check"
+        },
+        {
+          "label": "Bank connected",
+          "sub": "09:10",
+          "icon": "ui:landmark"
+        },
+        {
+          "label": "First invoice",
+          "sub": "09:24",
+          "icon": "ui:file-text"
+        },
+        {
+          "label": "Paid",
+          "sub": "11:40",
+          "icon": "ui:banknote"
+        }
+      ]
+    },
+    "grid-documents": {
+      "types": [
+        "software",
+        "service"
+      ],
+      "layout": "grid",
+      "alt": "Google Docs, Word, Excel, PDF, Notion and Gmail files are read, checked and reported on.",
+      "group": "Your files",
+      "sources": [
+        {
+          "label": "Google Docs",
+          "icon": "google-docs"
+        },
+        {
+          "label": "Word",
+          "icon": "docx"
+        },
+        {
+          "label": "Excel",
+          "icon": "xlsx"
+        },
+        {
+          "label": "PDF",
+          "icon": "pdf"
+        },
+        {
+          "label": "Notion",
+          "icon": "notion"
+        },
+        {
+          "label": "Gmail",
+          "icon": "gmail"
+        }
+      ],
+      "stages": [
+        {
+          "label": "Read",
+          "icon": "ui:scan-text"
+        },
+        {
+          "label": "Check",
+          "icon": "ui:list-checks"
+        },
+        {
+          "label": "Report",
+          "icon": "ui:file-check",
+          "meta": "3 notes"
+        }
+      ]
+    },
+    "free-approval": {
+      "types": [
+        "software",
+        "service",
+        "product"
+      ],
+      "layout": "free",
+      "alt": "A spending request goes to a manager and is approved; the rejected branch stays unused.",
+      "nodes": [
+        {
+          "id": "req",
+          "label": "Request",
+          "icon": "ui:file-text",
+          "meta": "€1,240",
+          "at": [
+            0.17,
+            0.5
+          ],
+          "atCompact": [
+            0.5,
+            0.14
+          ]
+        },
+        {
+          "id": "mgr",
+          "label": "Manager",
+          "icon": "ui:user",
+          "at": [
+            0.47,
+            0.5
+          ],
+          "atCompact": [
+            0.5,
+            0.42
+          ]
+        },
+        {
+          "id": "ok",
+          "label": "Approved",
+          "icon": "ui:check",
+          "done": true,
+          "at": [
+            0.8,
+            0.29
+          ],
+          "atCompact": [
+            0.27,
+            0.74
+          ]
+        },
+        {
+          "id": "no",
+          "label": "Rejected",
+          "icon": "ui:x",
+          "at": [
+            0.8,
+            0.71
+          ],
+          "atCompact": [
+            0.73,
+            0.74
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "req",
+          "to": "mgr"
+        },
+        {
+          "from": "mgr",
+          "to": "ok",
+          "curve": "elbow"
+        },
+        {
+          "from": "mgr",
+          "to": "no",
+          "curve": "elbow",
+          "idle": true
+        }
+      ]
+    },
+    "lanes-render": {
+      "types": [
+        "tech",
+        "gaming",
+        "software"
+      ],
+      "layout": "lanes",
+      "curve": "curve",
+      "alt": "One render job is split by the scheduler over three GPUs and the frames are joined again.",
+      "input": {
+        "label": "Render job",
+        "icon": "ui:file-code",
+        "meta": "4,800 frames"
+      },
+      "core": {
+        "label": "Scheduler",
+        "icon": "ui:cpu"
+      },
+      "lanes": [
+        {
+          "label": "GPU 0",
+          "icon": "ui:microchip",
+          "meta": "1,600 frames",
+          "done": true
+        },
+        {
+          "label": "GPU 1",
+          "icon": "ui:microchip",
+          "meta": "1,600 frames",
+          "done": true
+        },
+        {
+          "label": "GPU 2",
+          "icon": "ui:microchip",
+          "meta": "1,600 frames",
+          "done": true
+        }
+      ],
+      "output": {
+        "label": "Movie",
+        "icon": "ui:film",
+        "done": true
+      }
+    },
+    "hub-stack": {
+      "types": [
+        "tech",
+        "software"
+      ],
+      "layout": "hub",
+      "alt": "The API reads and writes Postgres, Redis, Kafka, Stripe, Sentry and Grafana.",
+      "center": {
+        "label": "API",
+        "icon": "ui:server"
+      },
+      "spokes": [
+        {
+          "label": "Postgres",
+          "icon": "postgres"
+        },
+        {
+          "label": "Redis",
+          "icon": "redis"
+        },
+        {
+          "label": "Kafka",
+          "icon": "kafka"
+        },
+        {
+          "label": "Stripe",
+          "icon": "stripe"
+        },
+        {
+          "label": "Sentry",
+          "icon": "sentry"
+        },
+        {
+          "label": "Grafana",
+          "icon": "grafana"
+        }
+      ]
+    },
+    "bowtie-model": {
+      "types": [
+        "tech",
+        "software"
+      ],
+      "layout": "bowtie",
+      "alt": "Docs, Slack and GitHub go into one model, which answers questions, writes summaries and raises alerts.",
+      "sources": [
+        {
+          "label": "Google Docs",
+          "icon": "google-docs",
+          "sub": "1,240 files"
+        },
+        {
+          "label": "Slack",
+          "icon": "slack",
+          "sub": "38 channels"
+        },
+        {
+          "label": "GitHub",
+          "icon": "github",
+          "sub": "64 repos"
+        }
+      ],
+      "core": {
+        "label": "Model",
+        "icon": "ui:brain"
+      },
+      "targets": [
+        {
+          "label": "Answers",
+          "icon": "ui:message-square",
+          "sub": "In chat"
+        },
+        {
+          "label": "Summaries",
+          "icon": "ui:file-text",
+          "sub": "Every Monday"
+        },
+        {
+          "label": "Alerts",
+          "icon": "ui:bell-ring",
+          "sub": "On a change"
+        }
+      ]
+    },
+    "fanin-telemetry": {
+      "types": [
+        "tech",
+        "software"
+      ],
+      "layout": "fanin",
+      "alt": "Metrics, traces and errors from Prometheus, OpenTelemetry, Sentry and Docker flow into one collector and raise alerts.",
+      "sources": [
+        {
+          "label": "Prometheus",
+          "icon": "prometheus",
+          "sub": "Metrics"
+        },
+        {
+          "label": "OpenTelemetry",
+          "icon": "opentelemetry",
+          "sub": "Traces"
+        },
+        {
+          "label": "Sentry",
+          "icon": "sentry",
+          "sub": "Errors"
+        },
+        {
+          "label": "Docker",
+          "icon": "docker",
+          "sub": "Logs"
+        }
+      ],
+      "target": {
+        "label": "Collector",
+        "icon": "ui:database"
+      },
+      "then": {
+        "label": "Alerts",
+        "icon": "ui:bell-ring",
+        "meta": "3 open"
+      }
+    },
+    "tree-release": {
+      "types": [
+        "tech",
+        "software"
+      ],
+      "layout": "tree",
+      "alt": "A pull request on GitHub starts the build, a preview on Vercel and a review.",
+      "root": {
+        "label": "Pull request 482",
+        "icon": "github",
+        "children": [
+          {
+            "label": "Build",
+            "icon": "ui:container",
+            "children": [
+              {
+                "label": "Lint",
+                "done": true
+              },
+              {
+                "label": "212 tests",
+                "done": true
+              }
+            ]
+          },
+          {
+            "label": "Preview",
+            "icon": "vercel",
+            "children": [
+              {
+                "label": "Deployed",
+                "done": true
+              }
+            ]
+          },
+          {
+            "label": "Review",
+            "icon": "ui:git-pull-request",
+            "children": [
+              {
+                "label": "Approved",
+                "done": true
+              },
+              {
+                "label": "Merged",
+                "done": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ring-edge": {
+      "types": [
+        "tech",
+        "software"
+      ],
+      "layout": "ring",
+      "alt": "Cloudflare, AWS, Vercel, Docker, Kubernetes and Postgres around one platform.",
+      "center": {
+        "label": "Platform",
+        "icon": "ui:layers"
+      },
+      "ring": [
+        {
+          "label": "Cloudflare",
+          "icon": "cloudflare"
+        },
+        {
+          "label": "AWS",
+          "icon": "aws"
+        },
+        {
+          "label": "Vercel",
+          "icon": "vercel"
+        },
+        {
+          "label": "Docker",
+          "icon": "docker"
+        },
+        {
+          "label": "Kubernetes",
+          "icon": "kubernetes"
+        },
+        {
+          "label": "Postgres",
+          "icon": "postgres"
+        }
+      ]
+    },
+    "lanes-matchmaking": {
+      "types": [
+        "gaming"
+      ],
+      "layout": "lanes",
+      "curve": "curve",
+      "alt": "Players waiting in the queue are matched into lobbies in Europe, North America and Asia.",
+      "input": {
+        "label": "Queue",
+        "icon": "ui:gamepad-2",
+        "meta": "12,480 waiting"
+      },
+      "core": {
+        "label": "Matchmaker",
+        "icon": "ui:swords"
+      },
+      "lanes": [
+        {
+          "label": "Europe",
+          "icon": "ui:server",
+          "meta": "8 ms",
+          "done": true
+        },
+        {
+          "label": "North America",
+          "icon": "ui:server",
+          "meta": "14 ms",
+          "done": true
+        },
+        {
+          "label": "Asia",
+          "icon": "ui:server",
+          "meta": "12 ms",
+          "done": true
+        }
+      ],
+      "output": {
+        "label": "Match start",
+        "icon": "ui:play",
+        "done": true
+      }
+    },
+    "hub-stores": {
+      "types": [
+        "gaming"
+      ],
+      "layout": "hub",
+      "alt": "One build ships to Steam, Epic Games, PlayStation, itch.io and Roblox.",
+      "center": {
+        "label": "Your game",
+        "icon": "ui:gamepad-2"
+      },
+      "spokes": [
+        {
+          "label": "Steam",
+          "icon": "steam"
+        },
+        {
+          "label": "Epic Games",
+          "icon": "epic-games"
+        },
+        {
+          "label": "PlayStation",
+          "icon": "playstation"
+        },
+        {
+          "label": "itch.io",
+          "icon": "itch-io"
+        },
+        {
+          "label": "Roblox",
+          "icon": "roblox"
+        }
+      ]
+    },
+    "ring-servers": {
+      "types": [
+        "gaming",
+        "tech"
+      ],
+      "layout": "ring",
+      "alt": "Six game server regions around the matchmaker, each with its ping.",
+      "center": {
+        "label": "Servers",
+        "icon": "ui:server"
+      },
+      "ring": [
+        {
+          "label": "Frankfurt",
+          "icon": "ui:map-pin",
+          "meta": "18 ms"
+        },
+        {
+          "label": "Virginia",
+          "icon": "ui:map-pin",
+          "meta": "24 ms"
+        },
+        {
+          "label": "Tokyo",
+          "icon": "ui:map-pin",
+          "meta": "21 ms"
+        },
+        {
+          "label": "São Paulo",
+          "icon": "ui:map-pin",
+          "meta": "32 ms"
+        },
+        {
+          "label": "Sydney",
+          "icon": "ui:map-pin",
+          "meta": "29 ms"
+        },
+        {
+          "label": "Dubai",
+          "icon": "ui:map-pin",
+          "meta": "26 ms"
+        }
+      ]
+    },
+    "sync-saves": {
+      "types": [
+        "gaming"
+      ],
+      "layout": "sync",
+      "alt": "Saves and trophies stay in step between the console and the PC.",
+      "left": {
+        "label": "Console",
+        "icon": "ui:gamepad-2",
+        "meta": "PS5",
+        "rows": [
+          {
+            "label": "Saves",
+            "meta": "12"
+          },
+          {
+            "label": "Trophies",
+            "meta": "48"
+          },
+          {
+            "label": "Friends",
+            "meta": "63"
+          }
+        ]
+      },
+      "link": {
+        "label": "Cloud save",
+        "icon": "ui:refresh-cw"
+      },
+      "right": {
+        "label": "PC",
+        "icon": "ui:monitor",
+        "meta": "Steam",
+        "rows": [
+          {
+            "label": "Saves",
+            "meta": "12"
+          },
+          {
+            "label": "Trophies",
+            "meta": "48"
+          },
+          {
+            "label": "Friends",
+            "meta": "63"
+          }
+        ]
+      }
+    },
+    "timeline-season": {
+      "types": [
+        "gaming"
+      ],
+      "layout": "timeline",
+      "alt": "A game goes from alpha through closed beta and early access to launch and the first season.",
+      "steps": [
+        {
+          "label": "Alpha",
+          "sub": "March",
+          "icon": "ui:flask-conical"
+        },
+        {
+          "label": "Closed beta",
+          "sub": "June",
+          "icon": "ui:users"
+        },
+        {
+          "label": "Early access",
+          "sub": "September",
+          "icon": "ui:rocket"
+        },
+        {
+          "label": "Launch",
+          "sub": "February",
+          "icon": "ui:trophy"
+        },
+        {
+          "label": "Season 1",
+          "sub": "April",
+          "icon": "ui:swords"
+        }
+      ]
+    },
+    "grid-assets": {
+      "types": [
+        "gaming",
+        "tech"
+      ],
+      "layout": "grid",
+      "alt": "Models, textures and sounds from Blender, Photoshop and the audio files are imported, compressed and packed into one build.",
+      "group": "Your assets",
+      "sources": [
+        {
+          "label": "Blender",
+          "icon": "blender"
+        },
+        {
+          "label": "Photoshop",
+          "icon": "photoshop"
+        },
+        {
+          "label": "Audio",
+          "icon": "audio"
+        },
+        {
+          "label": "Video",
+          "icon": "video"
+        },
+        {
+          "label": "Images",
+          "icon": "image"
+        },
+        {
+          "label": "Fonts",
+          "icon": "font"
+        }
+      ],
+      "stages": [
+        {
+          "label": "Import",
+          "icon": "ui:download"
+        },
+        {
+          "label": "Compress",
+          "icon": "ui:package"
+        },
+        {
+          "label": "Build",
+          "icon": "ui:box",
+          "meta": "2.1 GB"
+        }
+      ]
+    }
+  }
+}

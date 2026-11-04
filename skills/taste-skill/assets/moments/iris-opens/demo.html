@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iris opens · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #0f1411; --p-surface: #182019; --p-ink: #ece9df; --p-muted: #9aa394; --p-accent: #d7e26b; --p-accent-ink: #0f1411; --p-action: #ece9df; --p-action-ink: #0f1411;
+          --p-inv-bg: #ece9df; --p-inv-surface: #ffffff; --p-inv-ink: #0f1411; --p-inv-muted: #555c52; --p-inv-accent: #4f6238; --p-inv-accent-ink: #ffffff; --p-inv-action: #0f1411; --p-inv-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Nodeline</a>
+  <nav class="demo-nav__links"><a href="#">Platform</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Get started</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Run every data pipeline from one place</h1><p>Nodeline connects your warehouse, your queues and your dashboards, and tells you which job is late before a customer does.</p><div class="btn-row"><a class="btn btn--primary" href="#">Get started</a><a class="btn btn--secondary" href="#">Contact sales</a></div></div>
+      <div class="frame frame--hero demo-lit" style="--ratio: 72%">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Nodeline · Pipelines</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span class="on">Pipelines</span><span>Alerts</span><span>Sources</span><span>Settings</span></div>
+            <div class="dw__main"><h4>Running now</h4>
+              <div class="dw__row"><div><b>Orders to warehouse</b><span>1.2M rows in 41 s</span></div><span class="dw__tag">On time</span></div>
+              <div class="dw__row"><div><b>Clickstream, hourly</b><span>Waiting for the queue</span></div><span class="dw__tag">Late</span></div>
+              <div class="dw__row"><div><b>Billing export</b><span>Next run at 18:00</span></div><span class="dw__tag">Idle</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head"><h2>One schedule for every job. <span class="muted">Nothing runs twice.</span></h2><p>Set when a pipeline runs and what it waits for; Nodeline keeps the order, the retries and the history.</p><a class="link" href="#">How scheduling works</a></div>
+      <img class="demo-photo" src="../_demo/photo-855.jpg" alt="A painted wall in morning light" width="1800" height="1200">
+    </div>
+  </section>
+  <section class="section ground-inverse" data-moment="iris-opens" data-moment-opts='{"from": "base"}'>
+    <div class="container demo-split">
+      <div class="section-head"><h2>Then it watches every run. <span class="muted">Late, slow or empty: you hear first.</span></h2><p>Nodeline compares each run with the last thirty, so a job that finishes on time with half the rows still raises a flag.</p><a class="link" href="#">See the alert rules</a></div>
+      <div class="dw"><div class="dw__bar"><i></i><i></i><i></i><span>Nodeline · Alerts</span></div><div class="dw__main"><h4>Today</h4>
+        <div class="dw__row"><div><b>Clickstream, hourly</b><span>Half the usual rows</span></div><span class="dw__tag">Flagged</span></div>
+        <div class="dw__row"><div><b>Orders to warehouse</b><span>On time, normal size</span></div><span class="dw__tag">Fine</span></div>
+        <div class="dw__row"><div><b>Billing export</b><span>Runs at 18:00</span></div><span class="dw__tag">Waiting</span></div></div></div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer ground-inverse"><span>Nodeline · demo page for the moment “Iris opens”</span><span>Demo copy only</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

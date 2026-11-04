@@ -1,0 +1,21 @@
+{
+  "name": "calendar",
+  "title": "Calendar with dates",
+  "shows": "A month with one dated range and, under it, the dates that matter as rows (date tile, title, one line). The pointer sets the range; each row lights up as its day is reached.",
+  "useFor": [
+    "dates",
+    "deadlines",
+    "rounds",
+    "booking",
+    "scheduling",
+    "planning"
+  ],
+  "size": [
+    440,
+    452
+  ],
+  "fluid": "fills its .fit, 280 to 440px wide",
+  "js": true,
+  "edit": "data-start, data-end and data-month on the root set the range (the client's real dates); is-mark on one day rings a single date; each [data-ev] row is one dated event (its day, title and one line). Mark today with is-today. No Apply or Clear: it shows a plan, not a picker.",
+  "loop": "about 3.2 s a cycle: the pointer sets the range, the dated rows light up, it points at the marked date; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

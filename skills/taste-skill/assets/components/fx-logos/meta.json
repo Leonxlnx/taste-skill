@@ -1,0 +1,10 @@
+{
+  "id": "fx-logos",
+  "name": "Logo row with a light sweep",
+  "for": "A row of the brands a product works with (or real customers): the marks stay still and quiet, and every 9 s a soft band of light passes through them once.",
+  "effects": ["grain-gradient", "aurora-curtains", "soft-light-bars"],
+  "default": "grain-gradient",
+  "how": "fill() over the marks (one-colour inline SVG marks from scripts/icons.mjs fetch --mono, names as text), with the overlay beside the list (never inside the <ul>) and masked to a band whose position is an animated custom property: 3 s across, 6 s rest. A pause button sits at the row's right end.",
+  "rules": ["Real brands only, and only ones the product really works with or real customers who agreed.", "Marks in one muted colour, never their brand colours here.", "One sweep per page; it never runs faster than one pass in 8 s, and its pause button holds it."],
+  "a11y": "A labelled list of names in text; the marks are aria-hidden and the list holds only <li>. Reduced motion shows the plain row with no band and no button."
+}

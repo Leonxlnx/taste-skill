@@ -1,0 +1,110 @@
+<!doctype html>
+<!-- layout v4 demo: hero-place (heroes.json "place"): local-business Recipe 3, the only place hero, never dealt
+     (ST-53, PH-47, PH-81). The client's photograph full-bleed under the header with nothing on it; the h1 on
+     columns 1-6 under it, the sub-line and one button from the split line. type: place. fonts: fraunces. -->
+<html lang="en" data-type="place" data-radius="sharp" data-ground="sand" data-buttons="block">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saltmarsh Bakery: sourdough, buns and coffee in Leith</title>
+<meta name="description" content="A bakery and coffee bar on Henderson Street, Leith. Bread from 7:30, coffee from our own roast, cakes to order.">
+<meta name="site-kind" content="other"><meta name="page-type" content="place"><meta name="page-kind" content="place">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..500,0..100,0..1&family=Figtree:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #f7f2ea; --p-surface: #eee5d7; --p-ink: #211c17; --p-muted: #665c51;
+  --p-accent: #b4532a; --p-accent-ink: #ffffff; --p-action: #211c17; --p-action-ink: #f7f2ea;
+  --p-inv-bg: #211c17; --p-inv-surface: #2d2620; --p-inv-ink: #f7f2ea; --p-inv-muted: #b9ad9e;
+  --p-inv-accent: #e08a5c; --p-inv-accent-ink: #211c17; --p-inv-action: #f7f2ea; --p-inv-action-ink: #211c17;
+  --font-display: "Fraunces", Georgia, serif; --font-text: "Figtree", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.015em; --display-axes: 'SOFT' 70, 'WONK' 0;
+}
+.rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="petal" aria-hidden="true"></span>Saltmarsh</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#counter">Bread and coffee</a></div>
+      <div class="nav__item"><a class="nav__link" href="#contact">Cakes</a></div>
+      <div class="nav__item"><a class="nav__link" href="#contact">Visit</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="#contact">Order a cake</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--place" aria-labelledby="hero-h">
+    <img class="hero__bg" src="img/photo-c8.jpg" alt="Milk poured into a cup of latte art, held in one hand, in warm light" style="--ly-pos: 50% 52%" fetchpriority="high">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__text">
+        <h1 id="hero-h">Sourdough, buns and coffee in Leith</h1>
+        <p class="hero__lead">A bakery and coffee bar on Henderson Street, open today from 7:30 to 16:00.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#counter">See today's bake</a></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="counter" aria-labelledby="counter-h">
+    <div class="wrap grid grid--top">
+      <div class="span-6">
+        <div class="section-head">
+          <h2 id="counter-h">At the counter today</h2>
+          <p>Baked overnight, sold from 7:30.</p>
+        </div>
+        <ul class="rows">
+          <li><span class="rows__name">Country sourdough<small>Wholemeal, 36-hour ferment</small></span><span class="rows__value">£5.20</span></li>
+          <li><span class="rows__name">Cardamom bun<small>Out of the oven at 10:30</small></span><span class="rows__value">£3.10</span></li>
+          <li><span class="rows__name">Rye with sunflower seeds<small>Thursdays and Saturdays</small></span><span class="rows__value">£4.80</span></li>
+          <li><span class="rows__name">Filter coffee<small>This week: Huila, Colombia</small></span><span class="rows__value">£3.20</span></li>
+        </ul>
+      </div>
+      <figure class="pl-photo pl-photo--end span-6 start-7" style="--pl-r: .8"><img src="img/photo-c96.jpg" alt="Hot water poured from a copper kettle into a pour-over dripper on a pale table" loading="lazy"></figure>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--visit" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--photo">
+      <div class="section-head--split">
+        <div><h2 id="close-h">Order a cake</h2><p class="t-lead">Two days' notice, collected from the counter.</p></div>
+        <a class="btn btn--primary" href="mailto:cakes@saltmarsh.example">Order a cake<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      </div>
+      <div class="close__media"><img src="img/photo-c7.jpg" alt="Rosetta latte art in a white cup on a grey slate table" loading="lazy" style="--pos: 50% 45%"></div>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-4">
+          <address class="footer__address">Henderson Street, Leith</address>
+          <p><a class="link" href="https://www.openstreetmap.org/search?query=Henderson%20Street%20Leith">Get directions</a></p>
+        </div>
+        <div class="span-6 start-7 stack-4">
+          <h4>Opening hours</h4>
+          <dl class="hours" data-tz="Europe/London"><dt data-days="tue-fri">Tuesday to Friday</dt><dd>7:30 to 16:00</dd><dt data-days="sat,sun">Saturday and Sunday</dt><dd>8:00 to 15:00</dd><dt data-days="mon">Monday</dt><dd>Closed</dd></dl>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Saltmarsh Bakery</span>
+        <details class="credits"><summary>Photographs by Kim Sanso and Drew Coffman (CC0)</summary><p>Latte pour and pour-over by Kim Sanso (CC0); latte art by Drew Coffman (CC0).</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<nav class="actionbar" aria-label="Quick actions">
+  <a class="btn btn--secondary" href="https://www.openstreetmap.org/search?query=Henderson%20Street%20Leith">Directions</a>
+  <a class="btn btn--primary" href="mailto:cakes@saltmarsh.example">Order a cake</a>
+</nav>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

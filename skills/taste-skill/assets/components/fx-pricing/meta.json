@@ -1,0 +1,10 @@
+{
+  "id": "fx-pricing",
+  "name": "Pricing with an effect border",
+  "for": "A pricing section of two to four plans: the recommended plan gets a thin border of the effect and a faint wash of it behind its name and price; the others stay plain.",
+  "effects": ["gradient-mesh", "aurora-curtains", "grain-gradient"],
+  "default": "gradient-mesh",
+  "how": "One still effect host behind the plan, 1px outside it, masked to a 1.5px ring (content box cut out of the border box) plus a 20% wash fading down over 150px.",
+  "rules": ["Only the one recommended plan carries the effect.", "Its call to action is the only primary button in the row.", "The wash stays under 20% where text sits.", "Still (speed 0): a pricing card carries no pause button, so nothing in it loops."],
+  "a11y": "Plans are articles with headings, prices in text and real links; the badge describes the featured plan. Without WebGL the featured plan keeps a solid accent border. The effect is still."
+}

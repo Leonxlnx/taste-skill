@@ -1,0 +1,57 @@
+/* moments/_demo/demo.css - the chrome of the moment demo pages only (a plain nav, stand-in sections, a
+   drawn UI window, a footer line). Never shipped on a page: a page uses system.css and its own parts. */
+.demo-nav { position: sticky; top: 0; z-index: 40; height: var(--nav-h); border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 96%, transparent); }
+.demo-nav .container { height: 100%; display: flex; align-items: center; gap: var(--s-6); }
+.demo-nav__logo { font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.02em; flex: none; }
+.demo-nav__links { display: flex; gap: var(--s-1); flex: 1; }
+.demo-nav__links a { font-size: var(--t-small); font-weight: 500; padding: 0 var(--s-3); height: 36px; display: inline-flex; align-items: center; border-radius: var(--r-sm); transition: background-color var(--dur) var(--ease); }
+.demo-nav__links a:hover { background: color-mix(in oklab, var(--ink) 6%, transparent); }
+.demo-nav__actions { display: flex; gap: var(--s-2); margin-left: auto; }
+@media (max-width: 1023px) { .demo-nav__links { display: none; } }
+@media (max-width: 639px) { .demo-nav__actions .btn--secondary { display: none; } }
+
+.demo-split { display: grid; gap: var(--s-7); align-items: center; }
+@media (min-width: 1024px) { .demo-split { grid-template-columns: 5fr 6fr; gap: var(--s-8); } .demo-split--flip > :first-child { order: 2; } }
+/* in the hero system.css turns a plain .container into a column flexbox (and align-items: center would
+   then centre the text block on the page, off the left edge): the split stays a grid, its row centred
+   in the first screen, the text on the page's left edge and the frame on the right */
+.section--hero > .container.demo-split { display: grid; flex: 1 0 auto; align-content: center; }
+
+/* a lit frame: the page's dealt ground behind UI (system.css --ground-*) */
+.demo-lit { background: var(--ground-bg); border-color: transparent; color: var(--ground-ink);
+  --bg: var(--ground-surface); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
+  --line: color-mix(in oklab, var(--ground-ink) 12%, transparent); --line-strong: color-mix(in oklab, var(--ground-ink) 24%, transparent); }
+
+/* a drawn UI window stand-in: a title bar, a side list and rows */
+.dw { width: 100%; max-width: 760px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md);
+  overflow: hidden; box-shadow: 0 24px 48px -24px rgb(0 0 0 / .28); font-size: var(--t-small); text-align: left; }
+.dw__bar { height: 40px; display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-4); border-bottom: 1px solid var(--line); color: var(--muted); }
+.dw__bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); display: inline-block; }
+.dw__body { display: grid; grid-template-columns: 168px 1fr; min-height: 300px; }
+.dw__side { border-right: 1px solid var(--line); padding: var(--s-4); display: grid; gap: var(--s-1); align-content: start; }
+.dw__side span { height: 30px; border-radius: var(--r-sm); padding: 0 var(--s-2); display: flex; align-items: center; color: var(--muted); }
+.dw__side span.on { background: color-mix(in oklab, var(--ink) 7%, transparent); color: var(--ink); }
+.dw__main { padding: var(--s-5); display: grid; gap: 0; align-content: start; }
+.dw__main h4 { font-size: var(--t-body); margin-bottom: var(--s-3); }
+.dw__row { display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); align-items: center; }
+.dw__row b { font-weight: 500; display: block; } .dw__row span { color: var(--muted); }
+/* a status pill in the ink at 8%: a tint of a blue accent on sand reads lavender, so never the accent here */
+.dw__tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: color-mix(in oklab, var(--ink) 8%, transparent); color: var(--ink); font-size: 12px; }
+@media (max-width: 639px) { .dw__body { grid-template-columns: 1fr; } .dw__side { display: none; } .dw__main { padding: var(--s-4); } }
+
+.demo-photo { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-lg); }
+.demo-footer { padding: var(--s-7) 0; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--t-small); display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
+.demo-logos { display: flex; flex-wrap: wrap; gap: var(--s-5) var(--s-8); align-items: center; color: var(--muted); font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.01em; }
+
+/* Under system.css every main > section is --h screens tall and its .container a full-height column
+   (layout-v4.md). A demo split stays a grid inside that box, and its photograph fills its cell. */
+main > :is(.section, .section--hero) > .container.demo-split { display: grid; height: 100%; align-content: start; align-items: center; min-height: 0; }
+main > .section--hero > .container.demo-split { align-content: center; }
+.demo-split > .demo-photo { aspect-ratio: auto !important; width: 100%; height: 100%; max-height: min(100%, 62svh); min-height: 0; }
+.demo-split > .frame { max-height: 100%; min-height: 0; }
+.demo-statement { align-content: start; }
+
+/* a drawn window in a hero frame beside the text (1024-1279): the side list goes, so the rows keep one line
+   each and the window stays shorter than its frame (it was cut at the frame's top and foot at 1024x768) */
+@media (max-width: 1279px) { .frame .dw__body { grid-template-columns: 1fr; min-height: 0; } .frame .dw__side { display: none; } .frame .dw__row:nth-of-type(n+3) { display: none; } }

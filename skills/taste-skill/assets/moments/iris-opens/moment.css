@@ -1,0 +1,19 @@
+/* iris-opens: one layer inside the section, never wider than the section. The section keeps its own
+   ground edge to edge. The stage is inset from all four sides by one even gutter (--mo-gap) and has the
+   corners of a card, so it can neither sit flush against the section before or after, nor spill out of
+   its own section. Inside the stage, the cover is the ground of the section before it with a round hole
+   (mask) of radius --mo-r at --mo-cx/--mo-cy, and the ring is a hairline circle of the same radius.
+   Once the hole has uncovered the whole stage (.is-open) the stage is taken off the screen. At rest (a
+   phone, reduced motion, no script) it does not exist. The words and pictures are made whole by the
+   script (moment.js), not here: with no script nothing is hidden. */
+.mo-io { --mo-r: 0px; --mo-cx: 50%; --mo-cy: 50%; --mo-gap: clamp(8px, 1.2vw, 18px); position: relative; overflow: clip; }
+.mo-io > .mo-io__stage { position: absolute; inset: var(--mo-gap); z-index: 20; pointer-events: none; overflow: clip; border-radius: var(--r-lg, 16px); }
+.mo-io__stage > .mo-io__cover { position: absolute; inset: 0; background: var(--mo-from, var(--p-bg, var(--bg)));
+  -webkit-mask-image: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - 0.5px), #000 var(--mo-r));
+  mask-image: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - 0.5px), #000 var(--mo-r)); will-change: mask-image; }
+.mo-io__stage > .mo-io__ring { position: absolute; left: var(--mo-cx); top: var(--mo-cy); width: calc(var(--mo-r) * 2); height: calc(var(--mo-r) * 2); transform: translate(-50%, -50%);
+  border-radius: 50%; border: 1px solid var(--accent); will-change: width, height; }
+.mo-io--surface { --mo-from: var(--p-surface, var(--surface)); }
+.mo-io--inverse { --mo-from: var(--p-inv-bg, var(--bg)); }
+.mo-io.is-open > .mo-io__stage { display: none; }
+@media (prefers-reduced-motion: reduce) { .mo-io > .mo-io__stage { display: none; } }

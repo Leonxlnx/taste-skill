@@ -1,0 +1,28 @@
+{
+  "name": "motion",
+  "title": "Micro-interactions",
+  "shows": "Buttons (they step 1px up on hover, 2px on the large size, and press 1px down on click), arrows, links, the nav underline and menu, the current page, tabs, focus, cards, photographs, fields, switches, checks, numbers that tick once, and the cadence of the loops inside a card's panel.",
+  "files": {
+    "motion.css": "link after system.css and ui/cards.css; rules apply under <html data-motion>",
+    "motion.js": "type=module, after system.js; starts by itself; export { init, refresh }",
+    "demo.html": "every interaction on one company page; ?theme=dark, ?live (number tick in a headless shot)"
+  },
+  "requires": ["assets/system.css", "assets/ui/cards.css", "assets/system.js"],
+  "tokens": ["--bg", "--surface", "--ink", "--muted", "--accent", "--accent-ink", "--action", "--action-ink", "--line", "--line-strong", "--card", "--r-sm", "--r-btn"],
+  "hooks": {
+    "svg.m-arrow": "<svg class=\"m-arrow\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path class=\"m-arrow__stem\" d=\"M1 6h8\"/><path class=\"m-arrow__head\" d=\"M4.5 2.5 8 6l-3.5 3.5\"/></svg> as the last child of a button, link or pill",
+    "[data-m-count]": "on a stat whose text holds one count (8,402 / 4.5 h / 64%); data-m-count=\"1600\" sets the time in ms",
+    "[data-m-loop]": "on a panel holding the page's own CSS keyframe loop; style --m-cycle (2.5s-4s) and --m-still (0-1, the finished frame)",
+    ".m-switch": "<button class=\"m-switch\" type=\"button\" role=\"switch\" aria-checked=\"false\" aria-label=\"...\"></button>",
+    ".m-check": "<input type=\"checkbox\" class=\"m-check\">",
+    ".m-link": "an underline that draws, on any other link",
+    ".m-zoom": "a wrapper whose img or video scales 1.03 on hover",
+    ".m-nolift": "a card that must not lift",
+    "aria-current=\"page\"": "on the nav word of the page you are on"
+  },
+  "automatic": [".btn", ".btn--arrow", ".link", "a.pill", "p a without a class", ".footer ul a", ".nav__links (drawn underline)", ".nav__menu", ".tabs[role=tablist]", ":focus-visible", ".card", ".card--open > .panel", ".frame__img and .tile__media img in a link or a card with a link", ".field input/select/textarea"],
+  "reducedMotion": "colours change; nothing moves or scales (a button keeps its colour change only); loops hold the --m-still frame; numbers show their final text; no pause buttons",
+  "phone": "no hover states; the sheet fades in 8px; loops hold their finished frame like ui.js fragments",
+  "screenshot": "a HeadlessChrome page shows final numbers unless <html data-motion=\"live\">",
+  "cost": "motion.css 17 KB, motion.js 12 KB unminified (about 4 KB and 4 KB gzipped); one IntersectionObserver per feature; transforms and opacity only (the tab indicator also animates width)"
+}

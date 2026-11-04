@@ -1,0 +1,14 @@
+/* picture-develops: the frame holds the photograph (cover) and, while developing, one canvas of the
+   halftone print over it. The photograph settles from a slight zoom when the print clears. */
+.mo-pd { position: relative; overflow: hidden; isolation: isolate; }
+.mo-pd > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mo-pd.is-live > img { transform: scale(1.05); }
+.mo-pd.is-developing > img, .mo-pd.is-done > img { transition: transform 1400ms cubic-bezier(.16, 1, .3, 1); }
+.mo-pd.is-done > img { transform: none; }
+.mo-pd > .mo-pd__print { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; display: block; background: var(--surface); border-radius: inherit; }
+.mo-pd.is-developing > img { transform: none; }
+@media (prefers-reduced-motion: reduce) { .mo-pd > img { transform: none !important; } .mo-pd > .mo-pd__print { display: none; } }
+/* a failed or finished moment never keeps the print over the photograph */
+.mo-pd:is(.is-done, .mo-safe) > .mo-pd__print { display: none; }
+/* a printed or saved page never waits for the develop: the photograph stands */
+@media print { .mo-pd > img { transform: none !important; } .mo-pd > .mo-pd__print { display: none; } }

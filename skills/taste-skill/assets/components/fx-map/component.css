@@ -1,0 +1,168 @@
+/* fx-map: the real streets around the place in the page's colours, a pin, the walk from the station and
+   an address card. Light pages: white streets on a land a step darker than the page; dark pages: lighter
+   streets on a land a step lighter. Water and parks keep their natural blue and green, mixed into the land. */
+.cx-map {
+  position: relative; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--cx-line); container-type: inline-size;
+  --map-land: color-mix(in oklab, var(--ink) 6%, var(--bg));
+  --map-road: var(--bg);
+  --map-casing: color-mix(in oklab, var(--ink) 15%, var(--bg));
+  --map-path: color-mix(in oklab, var(--ink) 20%, var(--bg));
+  --map-rail: color-mix(in oklab, var(--ink) 30%, var(--bg));
+  --map-water: color-mix(in oklab, #86b4d8 46%, var(--map-land));
+  --map-green: color-mix(in oklab, #a4cf8f 40%, var(--map-land));
+  --map-plaza: color-mix(in oklab, var(--ink) 2.5%, var(--bg));
+  --map-name: color-mix(in oklab, var(--ink) 66%, var(--bg));
+}
+.cx-map.is-dark {
+  --map-land: color-mix(in oklab, var(--ink) 7%, var(--bg));
+  --map-road: color-mix(in oklab, var(--ink) 19%, var(--bg));
+  --map-casing: color-mix(in oklab, var(--ink) 11%, var(--bg));
+  --map-path: color-mix(in oklab, var(--ink) 16%, var(--bg));
+  --map-rail: color-mix(in oklab, var(--ink) 26%, var(--bg));
+  --map-water: color-mix(in oklab, #3d7bab 34%, var(--map-land));
+  --map-green: color-mix(in oklab, #4f8f4f 26%, var(--map-land));
+  --map-plaza: color-mix(in oklab, var(--ink) 12%, var(--bg));
+  --map-name: color-mix(in oklab, var(--ink) 62%, var(--bg));
+}
+/* the height from the width (16:7), never under 380px; a height, not aspect-ratio with a min-height, which
+   widened the ground past the card at 820 */
+.cx-map__ground { position: relative; isolation: isolate; height: max(380px, 43.75cqw); background: var(--map-land); overflow: hidden; }
+.cx-map.has-ground .cx-map__ground { background: var(--cx-panel); }
+/* the fallback ground is no map data: no OpenStreetMap credit on it */
+.cx-map.has-ground .cx-map__credit { display: none; }
+/* nor a scale: the fallback is a picture, not a map at any scale */
+.cx-map.has-ground .cx-map__scale { display: none; }
+.cx-map__svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; --m: 1; --k: 1; }
+
+/* the layers; widths are screen pixels (--m is metres per pixel, --k thins them when zoomed out) */
+.cx-map__land { fill: var(--map-land); }
+.cx-map__svg .is-area { stroke: none; fill-rule: evenodd; }
+.cx-map__sea, .cx-map__water { fill: var(--map-water); }
+.cx-map__land, .cx-map__svg path.cx-map__land { fill: var(--map-land); }
+.cx-map__green { fill: var(--map-green); }
+.cx-map__plaza { fill: var(--map-plaza); }
+.cx-map__svg .is-line, .cx-map__svg .is-casing { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.cx-map__river { stroke: var(--map-water); stroke-width: calc(7px * var(--m)); }
+.cx-map__canal { stroke: var(--map-water); stroke-width: calc(4px * var(--m)); }
+.cx-map__stream { stroke: var(--map-water); stroke-width: calc(1.6px * var(--m)); }
+.cx-map__path.is-line { stroke: var(--map-path); stroke-width: calc(1px * var(--m)); stroke-dasharray: calc(3px * var(--m)) calc(2px * var(--m)); }
+.cx-map__rail { stroke: var(--map-rail); stroke-width: calc(1.6px * var(--m)); }
+.cx-map__tram { stroke: var(--map-rail); stroke-width: calc(1px * var(--m)); opacity: .8; }
+.cx-map__minor.is-line { stroke: var(--map-road); stroke-width: calc(2.6px * var(--m) * var(--k)); }
+.cx-map__street.is-casing { stroke: var(--map-casing); stroke-width: calc(6.4px * var(--m) * var(--k)); }
+.cx-map__street.is-line { stroke: var(--map-road); stroke-width: calc(4.6px * var(--m) * var(--k)); }
+.cx-map__major.is-casing { stroke: var(--map-casing); stroke-width: calc(10px * var(--m) * var(--k)); }
+.cx-map__major.is-line { stroke: var(--map-road); stroke-width: calc(8px * var(--m) * var(--k)); }
+.cx-map.is-dark .cx-map__street.is-casing, .cx-map.is-dark .cx-map__major.is-casing { stroke: transparent; }
+.cx-map.is-dark .cx-map__major.is-line { stroke: color-mix(in oklab, var(--ink) 24%, var(--bg)); }
+
+/* the walk from the station: dots at rest; pointed at, a solid line runs from the station to the door */
+.cx-map__route-casing { fill: none; stroke: var(--bg); stroke-width: calc(7px * var(--m)); stroke-linecap: round; stroke-linejoin: round; opacity: .7; }
+.cx-map__route { fill: none; stroke: var(--accent); stroke-width: calc(5px * var(--m)); stroke-linecap: round; stroke-linejoin: round; }
+.cx-map__pass {
+  fill: none; stroke: var(--accent); stroke-width: calc(4.5px * var(--m)); stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 100 100; stroke-dashoffset: 100; opacity: 0;
+  transition: opacity .25s var(--cx-ease);
+}
+.cx-map.is-walking .cx-map__pass { opacity: 1; animation: cx-map-walk 1.1s var(--cx-ease) forwards; }
+@keyframes cx-map-walk { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+/* street names, set along their streets with a halo of the land */
+.cx-map__name {
+  font: 500 calc(11.5px * var(--m)) / 1 var(--font-text); letter-spacing: .01em;
+  fill: var(--map-name); stroke: var(--map-land); stroke-width: calc(3px * var(--m)); stroke-linejoin: round; paint-order: stroke;
+  pointer-events: none; user-select: none;
+}
+.cx-map__name.is-major { font-weight: 600; fill: color-mix(in oklab, var(--ink) 74%, var(--bg)); }
+
+/* the pin, the station and the walk time */
+.cx-map__pin { position: absolute; left: 64%; top: 42%; z-index: 2; width: 0; height: 0; }
+.cx-map__dot {
+  position: absolute; left: -10px; top: -10px; width: 20px; height: 20px; border-radius: 99px;
+  background: var(--accent); border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 6px 16px -4px rgb(0 0 0 / .35);
+}
+.cx-map__halo {
+  position: absolute; left: -36px; top: -36px; width: 72px; height: 72px; border-radius: 99px;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent);
+  transform: scale(.8); opacity: .8;
+}
+/* the halo answers once when the walk is drawn, then rests */
+.cx-map.is-walking .cx-map__halo { animation: cx-map-breathe 1.2s var(--cx-ease) .9s 1; }
+@keyframes cx-map-breathe { 0%, 100% { transform: scale(.8); opacity: .8; } 45% { transform: scale(1.25); opacity: .35; } }
+.cx-map__tag {
+  position: absolute; left: 18px; top: -15px; white-space: nowrap; height: 30px; display: inline-flex; align-items: center;
+  padding: 0 11px; border-radius: var(--r-md); background: var(--bg); color: var(--ink); font-size: 14px; font-weight: 600;
+  box-shadow: var(--cx-shadow);
+}
+.cx-map__pin[data-side="l"] .cx-map__tag { left: auto; right: 18px; }
+.cx-map__pin[data-side="t"] .cx-map__tag { left: 0; top: -50px; transform: translateX(-50%); }
+.cx-map__pin[data-side="b"] .cx-map__tag { left: 0; top: 20px; transform: translateX(-50%); }
+.cx-map__stop { position: absolute; z-index: 1; width: 0; height: 0; pointer-events: none; }
+.cx-map__stop i {
+  position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 4px;
+  background: var(--ink); border: 2px solid var(--bg); box-shadow: 0 1px 4px rgb(0 0 0 / .25);
+}
+.cx-map__stop b {
+  position: absolute; left: 13px; top: -11px; white-space: nowrap; height: 22px; display: inline-flex; align-items: center;
+  padding: 0 7px; border-radius: 6px; background: color-mix(in oklab, var(--bg) 88%, transparent);
+  font: 500 12.5px/1 var(--font-text); color: var(--ink);
+}
+.cx-map__stop[data-side="l"] b { left: auto; right: 13px; }
+.cx-map__stop[data-side="t"] b { left: 0; top: -36px; transform: translateX(-50%); }
+.cx-map__stop[data-side="b"] b { left: 0; top: 13px; transform: translateX(-50%); }
+.cx-map__walk {
+  position: absolute; z-index: 1; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 5px;
+  height: 26px; padding: 0 10px 0 8px; border-radius: 99px; white-space: nowrap; pointer-events: none;
+  background: var(--accent); color: var(--accent-ink, #fff); font: 600 12.5px/1 var(--font-text);
+  box-shadow: 0 2px 8px -2px rgb(0 0 0 / .3);
+}
+.cx-map__walk svg circle { fill: currentColor; }
+.cx-map__walk[hidden] { display: none; }
+
+.cx-map__scale {
+  position: absolute; right: var(--s-5); bottom: var(--s-5); z-index: 2; display: grid; justify-items: end; gap: 5px;
+  font: 500 11px/1 var(--font-text); color: var(--map-name);
+}
+.cx-map__scale span { width: 72px; height: 6px; border: 1.5px solid var(--map-name); border-top: 0; }
+.cx-map__credit {
+  position: absolute; right: 0; bottom: 0; z-index: 2; padding: 3px 8px; border-top-left-radius: 6px;
+  font: 400 10.5px/1.3 var(--font-text); color: var(--map-name); text-decoration: none;
+  background: color-mix(in oklab, var(--map-land) 80%, transparent);
+}
+.cx-map__credit:hover { color: var(--ink); text-decoration: underline; }
+.cx-map__scale { bottom: calc(var(--s-5) + 8px); }
+
+.cx-map__card {
+  position: absolute; left: var(--s-5); bottom: var(--s-5); z-index: 3; width: min(340px, calc(100% - 48px));
+  display: grid; gap: var(--s-2); padding: var(--s-5); border-radius: var(--r-md);
+  background: var(--bg); box-shadow: var(--cx-shadow);
+}
+.cx-map__addr { font-style: normal; font-size: var(--t-small); line-height: 1.55; color: var(--ink); }
+.cx-map__line { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--t-label); color: var(--muted); }
+.cx-map__hours { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--t-label); color: var(--muted); }
+.cx-map__open { width: 7px; height: 7px; border-radius: 9px; background: color-mix(in oklab, var(--accent) 85%, var(--ink)); }
+.cx-map__actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-3); }
+.cx-map__coords { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cx-map.is-walking .cx-map__halo { animation: none; }
+  .cx-map.is-walking .cx-map__pass { animation: none; opacity: 0; }
+}
+/* under 900px (a tablet, a phone, a half column) the card sits below the map, so it never covers the
+   pin, the walk or the scale bar, and the map keeps the whole width */
+@container (max-width: 899px) {
+  .cx-map__ground { height: max(340px, 50cqw); }
+  .cx-map__card {
+    position: relative; left: auto; bottom: auto; width: auto; border-radius: 0; box-shadow: none; border-top: 1px solid var(--cx-line);
+    grid-template-columns: 1fr auto; column-gap: var(--s-6); align-items: end;
+  }
+  .cx-map__card > * { grid-column: 1; }
+  .cx-map__actions { grid-column: 2; grid-row: 1 / span 5; align-self: end; margin-top: 0; }
+  .cx-map__scale { bottom: calc(var(--s-4) + 8px); right: var(--s-4); }
+}
+@container (max-width: 559px) {
+  .cx-map__ground { height: 340px; }
+  .cx-map__card { grid-template-columns: 1fr; }
+  .cx-map__actions { grid-column: 1; grid-row: auto; margin-top: var(--s-3); }
+  .cx-map__actions .btn { flex: 1; }
+}

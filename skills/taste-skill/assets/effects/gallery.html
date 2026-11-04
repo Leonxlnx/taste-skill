@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Effects library</title>
+<meta name="description" content="Effects drawn in code for hero frames, feature cards and bands, in the page palette.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<style>
+  /* the page palette; the script sets these from the palette switcher */
+  :root {
+    --bg: #ddd6c6; --surface: #d2cab8; --ink: #2a2a26; --muted: #59574e; --accent: #4f6238; --accent-ink: #ffffff;
+    --card: #d2cab8; --panel: #cbc3b1; --win: #eeebe3; --win-surface: #e4e0d6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0d14; --surface: #131824; --ink: #e9edf3; --muted: #8891a1; --accent: #5ab9fc; --accent-ink: #0a0d14;
+      --card: #131824; --panel: #0a0d14; --win: #1d2230; --win-surface: #262c3b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0d14; --surface: #131824; --ink: #e9edf3; --muted: #8891a1; --accent: #5ab9fc; --accent-ink: #0a0d14;
+    --card: #131824; --panel: #0a0d14; --win: #1d2230; --win-surface: #262c3b;
+    color-scheme: dark;
+  }
+  :root {
+    --line: color-mix(in oklab, var(--ink) 12%, transparent);
+    --line-2: color-mix(in oklab, var(--ink) 22%, transparent);
+    --chip: color-mix(in oklab, var(--ink) 6%, var(--bg));
+    --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+    --wrap: 1320px;
+    --gut: 24px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; font-feature-settings: "ss01" 0;
+    overflow-x: hidden;
+  }
+  button, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: calc(var(--wrap) + 2 * var(--gut)); margin: 0 auto; padding: 0 var(--gut); }
+
+  /* top bar */
+  .top { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--bg) 86%, transparent);
+    backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); border-bottom: 1px solid var(--line); }
+  .top-in { display: flex; align-items: center; gap: 12px 8px; padding-top: 12px; padding-bottom: 12px; }
+  .top-in .controls { margin-left: auto; }
+  .brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .brand b { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+  .brand span { color: var(--muted); font-size: 14px; white-space: nowrap; }
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--chip); box-shadow: inset 0 0 0 1px var(--line); }
+  .seg button { height: 30px; border: 0; background: transparent; padding: 0 12px; border-radius: 7px; cursor: pointer; color: var(--muted); font-size: 14px; }
+  .seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / 0.08); }
+  .btn, .select {
+    height: 36px; padding: 0 14px; border-radius: 10px; border: 0; background: var(--bg); color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-2); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 500; white-space: nowrap;
+  }
+  .btn:hover, .select:hover { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 38%, transparent); }
+  .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+  .btn--primary:hover { box-shadow: none; background: color-mix(in oklab, var(--accent) 88%, var(--ink)); }
+  .btn svg { width: 16px; height: 16px; flex: none; }
+  .select { max-width: 220px; padding-right: 10px; }
+
+  /* hero: a dealt hero effect with text in its calm area */
+  .hero { position: relative; margin-top: 24px; height: clamp(480px, 68vh, 660px); border-radius: 20px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end; }
+  .hero::after, .stage::after, .panel::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); pointer-events: none; z-index: 2; }
+  .hero-copy { position: relative; z-index: 1; padding: 56px; max-width: 760px; }
+  .hero h1 { max-width: 9.5em; margin: 0 0 18px; font-size: clamp(38px, 3.4vw + 10px, 62px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 520; text-wrap: balance; }
+  .hero p { margin: 0; max-width: 44ch; font-size: 18px; line-height: 28px; color: var(--muted); text-wrap: pretty; }
+  .hero-tag { position: absolute; right: 20px; bottom: 20px; z-index: 3; }
+  .tag { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px;
+    background: color-mix(in oklab, var(--bg) 82%, transparent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); white-space: nowrap; }
+  .tag span { color: var(--muted); }
+
+  /* sections */
+  section { padding-top: 96px; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 32px; }
+  .sec-head h2 { margin: 0 0 10px; font-size: clamp(28px, 1.2vw + 18px, 36px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 520; }
+  .sec-head p { margin: 0; color: var(--muted); max-width: 56ch; font-size: 16px; line-height: 24px; text-wrap: pretty; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filters button { height: 32px; padding: 0 12px; border-radius: 999px; border: 0; cursor: pointer; font-size: 14px; color: var(--muted);
+    background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+  .filters button b { font-weight: 500; }
+  .filters button span { margin-left: 6px; font-variant-numeric: tabular-nums; opacity: 0.75; }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); box-shadow: none; }
+
+  /* the grid of every effect: one size of tile, labels under the picture */
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 24px; }
+  .tile { min-width: 0; display: flex; flex-direction: column; }
+  .tile[hidden] { display: none; }
+  .stage { position: relative; aspect-ratio: 3 / 2; border-radius: 14px; overflow: hidden; background: var(--bg); }
+  .badge { position: absolute; top: 12px; left: 12px; z-index: 3; }
+  .info { padding: 16px 2px 0; display: grid; gap: 6px; }
+  .info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .info h3 { margin: 0; font-size: 17px; line-height: 24px; font-weight: 560; letter-spacing: -0.01em; }
+  .fam { flex: none; font-size: 14px; color: var(--muted); }
+  .look { margin: 0; color: var(--muted); font-size: 14px; line-height: 21px; max-width: 62ch; min-height: 42px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .info-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 2px; }
+  .for { margin: 0; font-size: 14px; line-height: 20px; }
+  .links { flex: none; display: flex; gap: 16px; }
+  .links button { border: 0; background: none; padding: 4px 0; cursor: pointer; font-size: 14px; color: var(--muted);
+    text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 4px; }
+  .links button:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+  /* feature cards: an effect ground in the inset panel and a UI fragment on top */
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .card { background: var(--card); border-radius: 18px; padding: 28px 28px 24px; box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; min-width: 0; }
+  .card h3 { margin: 0 0 8px; font-size: 18px; line-height: 24px; font-weight: 560; letter-spacing: -0.01em; }
+  .card > p:not(.ground) { margin: 0; color: var(--muted); font-size: 15px; line-height: 24px; max-width: 44ch; min-height: 48px; text-wrap: pretty; }
+  .panel { position: relative; margin-top: 24px; height: 380px; border-radius: 12px; overflow: hidden; display: grid; place-items: center; padding: 32px; }
+  .panel--bleed { place-items: end center; padding-bottom: 0; }
+  .panel--bleed > .slot { margin-bottom: -48px; }
+  .slot { position: relative; z-index: 1; max-width: 100%;
+    --ui-font: var(--font); --ui-mono: var(--mono); --ui-radius: 12px;
+    --fx-bg: var(--win); --fx-surface: var(--win-surface); --fx-ink: var(--ink); --fx-muted: var(--muted);
+    --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink); }
+  .ground { margin: 14px 2px 0; font-size: 13px; line-height: 20px; color: var(--muted); }
+  .ground b { font-weight: 500; color: var(--ink); }
+
+  .foot { padding-top: 96px; padding-bottom: 48px; }
+  .foot-in > div { border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; gap: 16px 48px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+  .foot-in p { margin: 0; max-width: 72ch; }
+  .foot a { color: var(--ink); text-underline-offset: 4px; text-decoration-color: var(--line-2); }
+  .empty { padding: 64px 0; color: var(--muted); }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 60; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+    max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 12px; background: var(--ink); color: var(--bg); font-size: 14px;
+    transition: opacity .2s ease, transform .2s ease; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 1080px) {
+    .hero-copy { padding: 40px; }
+  }
+  @media (max-width: 860px) {
+    .grid, .cards { grid-template-columns: minmax(0, 1fr); }
+    .grid { gap: 40px; }
+  }
+  @media (max-width: 720px) {
+    :root { --gut: 16px; }
+    .top { position: static; }
+    .brand span, .select { display: none; }
+    .top-in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand deal" "controls controls"; }
+    .brand { grid-area: brand; }
+    #deal { grid-area: deal; }
+    .top-in .controls { grid-area: controls; margin-left: 0; flex-wrap: nowrap; }
+    .seg { flex: 1; }
+    .seg button { flex: 1; }
+    .hero { margin-top: 16px; height: 560px; border-radius: 16px; }
+    .hero-copy { padding: 28px 24px 72px; }
+    .hero p { font-size: 16px; line-height: 24px; }
+    .hero-tag { left: 24px; right: auto; bottom: 20px; }
+    section { padding-top: 72px; }
+    .card { padding: 20px; }
+    .panel { height: 340px; padding: 20px 16px; }
+    .info-foot { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand"><b>Effects library</b><span id="count"></span></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Palette kind">
+        <button type="button" data-kind="light">Light</button>
+        <button type="button" data-kind="dark">Dark</button>
+        <button type="button" data-kind="colour">Colour</button>
+      </div>
+      <select class="select" id="pal" aria-label="Palette"></select>
+      <button type="button" class="btn" id="pause" aria-pressed="false">Pause</button>
+    </div>
+    <button type="button" class="btn btn--primary" id="deal">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h2.2c1.2 0 2 .6 2.7 1.6l1.2 1.8c.7 1 1.5 1.6 2.7 1.6h2.2M11.6 2.5l2 2-2 2M2.5 11.5h2.2c.9 0 1.6-.3 2.2-.9M11.6 9.5l2 2-2 2M9.3 5.4c.6-.6 1.3-.9 2.1-.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Random pick
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero" id="hero">
+      <div class="hero-copy">
+        <h1>Effects for hero frames and feature cards</h1>
+        <p id="lede">Grain, dither, mesh, light, liquid, pattern and material grounds, drawn in code. Every colour comes from the page palette, and each page is dealt its own at random.</p>
+      </div>
+      <div class="hero-tag"><span class="tag" id="hero-tag"><span>Hero</span> <b></b></span></div>
+    </div>
+  </div>
+
+  <section id="all">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>All effects</h2>
+          <p>Each one live, in the palette above. A tile names the effect, its family and the slots it is made for.</p>
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Family"></div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section id="cards">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>On feature cards</h2>
+          <p>Four effects dealt for card slots, each under a fragment from the UI kit. Random pick deals a new set.</p>
+        </div>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Ask in plain words</h3>
+          <p>Ask about any project or document. Every answer links to its source.</p>
+          <div class="panel" data-card="0"><div class="slot" data-ui-load="chat"></div></div>
+          <p class="ground">Ground: <b></b></p>
+        </article>
+        <article class="card">
+          <h3>Hand off busy work</h3>
+          <p>Show it a task once. It repeats the steps for you and asks before it publishes.</p>
+          <div class="panel" data-card="1"><div class="slot" data-ui-load="cursor"></div></div>
+          <p class="ground">Ground: <b></b></p>
+        </article>
+        <article class="card">
+          <h3>See what changed</h3>
+          <p>A short weekly report shows what went up, what went down and why.</p>
+          <div class="panel" data-card="2"><div class="slot" data-ui-load="stat"></div></div>
+          <p class="ground">Ground: <b></b></p>
+        </article>
+        <article class="card">
+          <h3>Connect your tools</h3>
+          <p>Slack, Notion, Figma and GitHub connect in a few clicks.</p>
+          <div class="panel" data-card="3"><div class="slot" data-ui-load="integrations"></div></div>
+          <p class="ground">Ground: <b></b></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap foot-in"><div>
+      <p>Every effect is drawn in code: no images, no video. It pauses when it leaves the screen, holds one still frame under reduced motion and falls back to a CSS picture without WebGL.</p>
+      <p><a id="lab" href="lab.html">Parameters and layouts</a></p>
+    </div></div>
+  </footer>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="paths" type="application/json">{"fx": "./", "ui": "../ui/"}</script>
+<script id="palettes" type="application/json">[{"id":"white-link-blue","name":"Sheet and biro","bg":"#ffffff","surface":"#f4f4f4","ink":"#111111","muted":"#6b6b6b","accent":"#1a4be0","accentInk":"#ffffff"},{"id":"cool-white-slate","name":"Frost and slate","bg":"#f7f9fa","surface":"#ecf0f2","ink":"#1f3038","muted":"#5d6b72","accent":"#0d7480","accentInk":"#ffffff"},{"id":"rose-grey-green","name":"Rose grey, green","bg":"#ebe5e3","surface":"#e1dad7","ink":"#2b2622","muted":"#6a615d","accent":"#0f7d45","accentInk":"#ffffff"},{"id":"paper-grey-brass","name":"Newsprint and brass","bg":"#e8e8e3","surface":"#dcdcd6","ink":"#181715","muted":"#63625c","accent":"#bfb21a","accentInk":"#181715"},{"id":"stone-blueprint","name":"Stone and blueprint","bg":"#dfdedb","surface":"#d3d2ce","ink":"#26251e","muted":"#5f5d55","accent":"#2456d6","accentInk":"#ffffff"},{"id":"white-navy-tab","name":"Navy on white","bg":"#ffffff","surface":"#f4f4f2","ink":"#1f2b4d","muted":"#6a7186","accent":"#f7941d","accentInk":"#1f2b4d"},{"id":"three-stones","name":"Three stones","bg":"#eeecea","surface":"#e4e1dd","ink":"#333231","muted":"#6b6763","accent":"#5c6b54","accentInk":"#ffffff"},{"id":"putty-black-teal","name":"Putty and black","bg":"#dedad3","surface":"#d3cec6","ink":"#0a0a0a","muted":"#5c5852","accent":"#256f82","accentInk":"#ffffff"},{"id":"moss-sand","name":"Sand and moss","bg":"#ddd6c6","surface":"#d2cab8","ink":"#2a2a26","muted":"#59574e","accent":"#4f6238","accentInk":"#ffffff"},{"id":"green-mat-chocolate","name":"Bone, green, chocolate","bg":"#e5e1d8","surface":"#dad5ca","ink":"#2a1d17","muted":"#6b5b51","accent":"#456f3a","accentInk":"#ffffff"},{"id":"lunar-grey-bronze","name":"Lunar and bronze","bg":"#111111","surface":"#1c1c1c","ink":"#f2f2f2","muted":"#8f8f8f","accent":"#a08672","accentInk":"#111111"},{"id":"blue-black-cornflower","name":"Night and sky blue","bg":"#0a0d14","surface":"#131824","ink":"#e9edf3","muted":"#8891a1","accent":"#5ab9fc","accentInk":"#0a0d14"},{"id":"green-black-bone","name":"Green-black and bone","bg":"#161c1a","surface":"#1f2725","ink":"#e3e2da","muted":"#8e948d","accent":"#9fc7b8","accentInk":"#161c1a"},{"id":"black-crimson","name":"Black and crimson","bg":"#0a0a0a","surface":"#151515","ink":"#efefef","muted":"#8c8c8c","accent":"#b11226","accentInk":"#ffffff"},{"id":"forest-pale-lime","name":"Forest and lime","bg":"#0f1f10","surface":"#162a17","ink":"#ffffff","muted":"#9aa39a","accent":"#c6f19d","accentInk":"#0f1f10"},{"id":"charcoal-room-sage","name":"Charcoal and sage","bg":"#1c1c1c","surface":"#262626","ink":"#f1f1ef","muted":"#9a9b96","accent":"#8fa68e","accentInk":"#1c1c1c"},{"id":"warm-black-gold","name":"Warm black, gold","bg":"#0c0a08","surface":"#181512","ink":"#ffffff","muted":"#8f8a84","accent":"#c9a45a","accentInk":"#0c0a08"},{"id":"graphite-safety-orange","name":"Graphite and orange","bg":"#18191b","surface":"#222427","ink":"#eff0f1","muted":"#9c9ea3","accent":"#ff4a1f","accentInk":"#18191b"},{"id":"soot-pale-lime","name":"Soot and lime","bg":"#0f0f0f","surface":"#1a1a1a","ink":"#ffffff","muted":"#8f8f8f","accent":"#dafa9c","accentInk":"#0f0f0f"},{"id":"plum-black-pink","name":"Plum-black and pink","bg":"#0d060b","surface":"#1b0e17","ink":"#ffffff","muted":"#9a8f97","accent":"#ff488b","accentInk":"#0d060b"},{"id":"white-signal-red","name":"Signal red, white","bg":"#ffffff","surface":"#f2f2f2","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#d92b21","accentInk":"#ffffff"},{"id":"white-mint-tiles","name":"Greys and mint","bg":"#ffffff","surface":"#f3f3f3","ink":"#232323","muted":"#6e6e6e","accent":"#a1ffcb","accentInk":"#232323"},{"id":"cool-grey-cobalt","name":"Cool grey, cobalt","bg":"#eef0f3","surface":"#e2e5ea","ink":"#0b0c0e","muted":"#5d6470","accent":"#1f2de6","accentInk":"#ffffff"},{"id":"offwhite-bottle-yellow","name":"Bottle ink, yellow","bg":"#f7f7f7","surface":"#ebebeb","ink":"#0d2a1c","muted":"#5f6b64","accent":"#f6e016","accentInk":"#0d2a1c"},{"id":"teal-on-paper","name":"Teal on paper","bg":"#f7f9f8","surface":"#ebf0ee","ink":"#06525c","muted":"#2f737d","accent":"#06525c","accentInk":"#f7f9f8"},{"id":"navy-pink","name":"Navy and pink","bg":"#1a2039","surface":"#212846","ink":"#f9a3c0","muted":"#b9879c","accent":"#f9a3c0","accentInk":"#1a2039"},{"id":"blush-aubergine","name":"Blush and aubergine","bg":"#edccbe","surface":"#e8c2b2","ink":"#351a2b","muted":"#6c4857","accent":"#351a2b","accentInk":"#edccbe"},{"id":"cobalt-on-sand","name":"Cobalt on sand","bg":"#e6dbc7","surface":"#ddd0b9","ink":"#062b8a","muted":"#3a5aa8","accent":"#062b8a","accentInk":"#e6dbc7"},{"id":"oxblood-grey","name":"Oxblood and grey","bg":"#e2e2e2","surface":"#d6d6d6","ink":"#7d0c14","muted":"#7a4a4e","accent":"#7d0c14","accentInk":"#e2e2e2"},{"id":"olive-on-bone","name":"Olive on bone","bg":"#ecebe7","surface":"#e1dfd9","ink":"#38450f","muted":"#5d683a","accent":"#38450f","accentInk":"#ecebe7"},{"id":"burgundy-bubblegum","name":"Burgundy and bubblegum","bg":"#3d0012","surface":"#4d0519","ink":"#ff99d3","muted":"#c77aa0","accent":"#ff99d3","accentInk":"#3d0012"},{"id":"bottle-green-gold","name":"Bottle green, gold","bg":"#133621","surface":"#1a4429","ink":"#f4d96c","muted":"#b3a55e","accent":"#f4d96c","accentInk":"#133621"},{"id":"cobalt-field","name":"Cobalt field","bg":"#0034eb","surface":"#002fd6","ink":"#ffffff","muted":"#dfe4f2","accent":"#e9e34a","accentInk":"#111111"},{"id":"mustard-field","name":"Mustard and black","bg":"#e1ac10","surface":"#cd9d0f","ink":"#0b0b0b","muted":"#4d3d0a","accent":"#24338f","accentInk":"#ffffff"},{"id":"carmine-field","name":"Carmine field","bg":"#9c1220","surface":"#8a101c","ink":"#ffffff","muted":"#f0b9bd","accent":"#ffd9dc","accentInk":"#9c1220"},{"id":"pink-field-lime","name":"Bubblegum and lime","bg":"#ff87ab","surface":"#ff739d","ink":"#0a0a0a","muted":"#6b1f3a","accent":"#def915","accentInk":"#0a0a0a"},{"id":"sky-field-navy","name":"Sky and navy","bg":"#6bb4ee","surface":"#7dbdf0","ink":"#0e1822","muted":"#1b3d5c","accent":"#ff5a1f","accentInk":"#0e1822"},{"id":"orange-field-black","name":"Orange and black","bg":"#ff7a1f","surface":"#ff8633","ink":"#050f16","muted":"#5a2306","accent":"#050f16","accentInk":"#ff7a1f"},{"id":"tobacco-olive","name":"Tobacco and olive","bg":"#472913","surface":"#55321a","ink":"#e4e0cf","muted":"#b39f84","accent":"#525e1b","accentInk":"#e4e0cf"},{"id":"poster-chapters","name":"Poster chapters","bg":"#e6e0d2","surface":"#dcd5c5","ink":"#1a1a1a","muted":"#5f5b52","accent":"#18bc42","accentInk":"#1a1a1a"},{"id":"blue-red-black","name":"Blue, red, black","bg":"#ffffff","surface":"#f3f3f3","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#1f30e0","accentInk":"#ffffff"},{"id":"charcoal-primaries","name":"Charcoal and primaries","bg":"#191919","surface":"#242424","ink":"#ffffff","muted":"#9a9a9a","accent":"#0c7866","accentInk":"#ffffff"},{"id":"ultramarine-yellow","name":"Ultramarine and yellow","bg":"#1423b8","surface":"#1220a6","ink":"#ffffff","muted":"#e4e2d6","accent":"#1fc27a","accentInk":"#0a0a0a"},{"id":"candy-chapters","name":"Candy chapters","bg":"#ffd249","surface":"#f5c63c","ink":"#0a0a0a","muted":"#5e4a0a","accent":"#f53fd6","accentInk":"#0a0a0a"},{"id":"orange-sky-lime","name":"Orange, sky, lime","bg":"#ff8126","surface":"#ff8d3a","ink":"#111111","muted":"#5c2a05","accent":"#de194b","accentInk":"#ffffff"},{"id":"post-red-mustard","name":"Post red, mustard","bg":"#e2dccf","surface":"#d7d0c1","ink":"#2a1110","muted":"#6b524c","accent":"#4a6f84","accentInk":"#ffffff"},{"id":"mint-orange-grey","name":"Grey, mint, orange","bg":"#ffffff","surface":"#f5f5f5","ink":"#000000","muted":"#666666","accent":"#a7ff9c","accentInk":"#000000"},{"id":"report-blocks","name":"Report blocks","bg":"#ffffff","surface":"#f6f6f6","ink":"#000000","muted":"#5f5f5f","accent":"#fe7141","accentInk":"#000000"},{"id":"card-pastels","name":"Card pastels","bg":"#f7f7f5","surface":"#ebebe8","ink":"#000000","muted":"#666662","accent":"#d0106f","accentInk":"#ffffff"},{"id":"mint-pink-accounts","name":"Mint and pink","bg":"#f8f8f8","surface":"#eeeeee","ink":"#0a0a0a","muted":"#6a6a6a","accent":"#1f6b3a","accentInk":"#ffffff"},{"id":"swap-pastels","name":"Swapping pastels","bg":"#c3d7e5","surface":"#d0e0eb","ink":"#141414","muted":"#4a5068","accent":"#0f5257","accentInk":"#ffffff"},{"id":"blush-sage-slate","name":"Blush, sage, slate","bg":"#a6b3bc","surface":"#b2bdc5","ink":"#1c1c1c","muted":"#38424a","accent":"#2c3620","accentInk":"#e3e2da"},{"id":"candy-on-black","name":"Candy on black","bg":"#000000","surface":"#0d0d0d","ink":"#ffffff","muted":"#999999","accent":"#93f1f7","accentInk":"#000000"},{"id":"sky-sand","name":"Sky and sand","bg":"#cbe4f2","surface":"#bcdcee","ink":"#0a0a0a","muted":"#44606e","accent":"#b0298f","accentInk":"#ffffff"},{"id":"studio-grey","name":"Studio grey","bg":"#a8a8aa","surface":"#b4b4b6","ink":"#0e0e0e","muted":"#3a3a3c","accent":"#1f5c49","accentInk":"#ffffff"},{"id":"walnut-tan","name":"Walnut and tan","bg":"#2b2216","surface":"#382d1e","ink":"#e4e2da","muted":"#a39a8b","accent":"#bda38b","accentInk":"#2b2216"}]</script>
+<script id="presets" type="application/json">{"light":"moss-sand","dark":"blue-black-cornflower","colour":"cobalt-field"}</script>
+<script type="module">
+  const $ = s => document.querySelector(s);
+  const PATHS = JSON.parse($('#paths').textContent);
+  const PALETTES = JSON.parse($('#palettes').textContent);
+  const PRESETS = JSON.parse($('#presets').textContent);
+  const byId = Object.fromEntries(PALETTES.map(p => [p.id, p]));
+  const q = new URLSearchParams(location.search);
+
+  const [{ default: fx }, { pick }] = await Promise.all([import(PATHS.fx + 'fx.js'), import(PATHS.fx + 'pick.js')]);
+  const ui = await import(PATHS.ui + 'ui.js').then(m => m.default).catch(() => null);
+
+  $('#lab').href = PATHS.fx + 'lab.html';
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  if (q.has('webgl1')) fx.config.forceWebGL1 = true;
+  if (q.has('time')) fx.setClock(+q.get('time'));
+
+  const FAMILIES = { grain: 'Grain', dither: 'Dither', mesh: 'Mesh', light: 'Light', liquid: 'Liquid', pattern: 'Pattern', material: 'Material', photo: 'Photo' };
+  const ORDER = Object.keys(FAMILIES);
+  const SLOT_WORDS = { hero: 'hero frames', card: 'cards', band: 'bands', footer: 'footers' };
+  const SLOT_ORDER = ['hero', 'card', 'band', 'footer'];
+  const KIND_WORDS = { light: 'light', dark: 'dark', colour: 'colour' };
+  // seeds that show each effect well in the grid; New seed on a tile deals another
+  const SEEDS = {};
+  const famName = f => FAMILIES[f] || f[0].toUpperCase() + f.slice(1);
+  const andList = a => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+
+  const tiles = [];
+  const cards = [...document.querySelectorAll('[data-card]')].map(el => ({ el, label: el.parentElement.querySelector('.ground b'), ctrl: null, id: null }));
+  const hero = { el: $('#hero'), label: $('#hero-tag b'), ctrl: null, id: null };
+  let index = null, palette = null, kind = 'light', paused = false, family = q.get('family') || '';
+
+  /* ---------------------------------------------------------------- palette */
+  function initialPalette() {
+    const key = q.get('palette');
+    if (key) return byId[PRESETS[key] || key] || byId[PRESETS.light];
+    const dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+    return byId[PRESETS[dark ? 'dark' : 'light']] || PALETTES[0];
+  }
+  // the card, its inset panel and the UI window on it, all from the page palette
+  function derived(p, k) {
+    const c = fx.color;
+    if (k === 'light') return { card: c.mix(p.bg, p.ink, 0.045), panel: c.mix(p.surface, p.ink, 0.06), win: c.mix(p.bg, '#ffffff', 0.55), winSurface: c.mix(p.bg, '#ffffff', 0.25) };
+    if (k === 'dark') return { card: c.mix(p.bg, p.ink, 0.05), panel: p.bg, win: c.mix(p.surface, p.ink, 0.07), winSurface: c.mix(p.surface, p.ink, 0.12) };
+    return { card: c.mix(p.bg, p.ink, 0.07), panel: p.bg, win: c.mix(p.surface, p.ink, 0.12), winSurface: c.mix(p.surface, p.ink, 0.18) };
+  }
+  const cardPalette = () => { const d = derived(palette, kind); return fx.normalizePalette({ ...palette, bg: d.panel, surface: d.card }); };
+
+  function applyVars() {
+    const r = document.documentElement;
+    const d = derived(palette, kind);
+    const vars = { bg: palette.bg, surface: palette.surface, ink: palette.ink, muted: palette.muted, accent: palette.accent, 'accent-ink': palette.accentInk,
+      card: d.card, panel: d.panel, win: d.win, 'win-surface': d.winSurface };
+    for (const [k, v] of Object.entries(vars)) r.style.setProperty('--' + k, v);
+    r.dataset.theme = kind === 'light' ? 'light' : 'dark';
+    r.style.colorScheme = kind === 'light' ? 'light' : 'dark';
+    for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.kind === kind));
+    $('#pal').value = palette.id;
+  }
+
+  // a controller may come back as a promise when the effect remounts to change colour
+  function hold(holder, result) {
+    if (result && typeof result.then === 'function') result.then(c => { holder.ctrl = c; if (paused) c.pause(); });
+  }
+
+  function setPalette(p) {
+    const before = kind;
+    palette = p;
+    kind = fx.paletteKind(p);
+    applyVars();
+    if (kind !== before) order();
+    const pal = fx.normalizePalette(p);
+    for (const t of tiles) {
+      fitBadge(t);
+      if (t.ctrl) hold(t, t.ctrl.setPalette(pal));
+    }
+    if (kind !== before) deal();
+    else {
+      if (hero.ctrl) hold(hero, hero.ctrl.setPalette(pal));
+      for (const c of cards) if (c.ctrl) hold(c, c.ctrl.setPalette(cardPalette()));
+    }
+    syncUrl();
+  }
+
+  /* ---------------------------------------------------------------- tiles */
+  function fitBadge(t) {
+    const fits = t.meta.palettes.includes(kind);
+    t.badge.hidden = fits;
+    if (!fits) t.badge.querySelector('.tag').textContent = `Made for ${andList(t.meta.palettes.map(k => KIND_WORDS[k]))} pages`;
+  }
+  function snippet(t) {
+    return `<div data-fx="${t.meta.id}" data-fx-seed="${t.seed}"></div>`;
+  }
+  function buildTile(meta) {
+    const el = document.createElement('article');
+    el.className = 'tile';
+    el.dataset.id = meta.id;
+    el.dataset.family = meta.family;
+    el.innerHTML = `
+      <div class="stage"><div class="badge" hidden><span class="tag"></span></div></div>
+      <div class="info">
+        <div class="info-top"><h3></h3><span class="fam"></span></div>
+        <p class="look"></p>
+        <div class="info-foot"><p class="for"></p><div class="links"><button type="button" data-act="seed">New seed</button><button type="button" data-act="copy">Copy code</button></div></div>
+      </div>`;
+    el.querySelector('h3').textContent = meta.name;
+    el.querySelector('.fam').textContent = famName(meta.family);
+    el.querySelector('.look').textContent = meta.look;
+    const slots = SLOT_ORDER.filter(s => meta.bestOn.includes(s)).map(s => SLOT_WORDS[s]);
+    // an effect with "random": false is a literal subject: the random pick never deals it
+    el.querySelector('.for').textContent = `For ${andList(slots)}${meta.motion === 'still' ? ', still' : ''}${meta.random === false ? '. Chosen on purpose, never dealt' : ''}`;
+    const t = { meta, el, stage: el.querySelector('.stage'), badge: el.querySelector('.badge'), seed: SEEDS[meta.id] ?? 100 + fx.hashSeed(meta.id) % 900, ctrl: null };
+    el.querySelector('[data-act="seed"]').addEventListener('click', () => { t.seed = Math.floor(Math.random() * 10000); mountTile(t); });
+    el.querySelector('[data-act="copy"]').addEventListener('click', async () => {
+      const code = snippet(t);
+      try { await navigator.clipboard.writeText(code); toast('Copied ' + code); }
+      catch (_) { toast(code, 4000); }
+    });
+    return t;
+  }
+  async function mountTile(t) {
+    try {
+      t.ctrl = await fx.mount(t.stage, t.meta.id, { palette: fx.normalizePalette(palette), seed: t.seed });
+      if (paused) t.ctrl.pause();
+    } catch (err) { console.warn(`${t.meta.id}:`, err); }
+  }
+
+  function buildFilters() {
+    const box = $('#filters');
+    const counts = {};
+    for (const e of index.effects) counts[e.family] = (counts[e.family] || 0) + 1;
+    const fams = [...ORDER.filter(f => counts[f]), ...Object.keys(counts).filter(f => !ORDER.includes(f))];
+    const make = (key, label, n) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.family = key;
+      b.innerHTML = '<b></b><span></span>';
+      b.querySelector('b').textContent = label;
+      b.querySelector('span').textContent = n;
+      b.addEventListener('click', () => { family = key; filter(); syncUrl(); });
+      box.append(b);
+    };
+    make('', 'All', index.effects.length);
+    for (const f of fams) make(f, famName(f), counts[f]);
+  }
+  // effects made for this palette kind first, in family order; the others after them
+  function order() {
+    const grid = $('#grid');
+    const fits = t => t.meta.palettes.includes(kind);
+    for (const t of [...tiles.filter(fits), ...tiles.filter(t => !fits(t))]) grid.append(t.el);
+  }
+  function filter() {
+    if (family && !tiles.some(t => t.meta.family === family)) family = '';
+    for (const t of tiles) t.el.hidden = !!family && t.meta.family !== family;
+    for (const b of document.querySelectorAll('#filters button')) b.setAttribute('aria-pressed', String(b.dataset.family === family));
+  }
+
+  /* ---------------------------------------------------------------- random pick */
+  const HISTORY_KEY = 'fx-gallery-history';
+  function readHistory() {
+    try { const h = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); return Array.isArray(h) ? h : []; } catch (_) { return []; }
+  }
+  function writeHistory(h) {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-100))); } catch (_) { /* no storage: picks are still spread within a deal */ }
+  }
+  let dealSeed = q.get('deal') || null;
+  async function deal(seed) {
+    const history = readHistory();
+    let dealt;
+    try {
+      // a seed from the address deals the same set every time, so it ignores this browser's history
+      dealt = pick(index.effects, { palette: kind, slots: ['hero', 'card', 'card', 'card', 'card'], history: seed == null ? history : [], seed: seed ?? undefined });
+    } catch (err) { toast(err.message); return; }
+    if (seed == null) writeHistory([...history, ...dealt.picks.map(p => p.id)]);
+    dealSeed = dealt.seed;
+    const n = fx.hashSeed(dealt.seed);
+    const [h, ...rest] = dealt.picks;
+    const jobs = [];
+    hero.id = h.id;
+    hero.label.textContent = nameOf(h.id);
+    // the effect keeps the area under the hero's text calm
+    const fr = hero.el.getBoundingClientRect(), tr = hero.el.querySelector('.hero-copy h1').getBoundingClientRect();
+    const tp = hero.el.querySelector('.hero-copy p').getBoundingClientRect();
+    const calm = fr.width ? { calmX: Math.min(0.8, Math.max(0.15, (tr.left + Math.min(tr.width, tp.width) * 0.42 - fr.left) / fr.width)), calmY: Math.min(0.85, Math.max(0.3, ((tr.top + tp.bottom) / 2 - fr.top) / fr.height)) } : { calmX: 0.24, calmY: 0.7 };
+    jobs.push(fx.mount(hero.el, h.id, { palette: fx.normalizePalette(palette), seed: n, params: calm }).then(c => { hero.ctrl = c; if (paused) c.pause(); }));
+    rest.forEach((p, i) => {
+      const c = cards[i];
+      c.id = p.id;
+      c.label.textContent = nameOf(p.id);
+      jobs.push(fx.mount(c.el, p.id, { palette: cardPalette(), seed: n + 17 * (i + 1) }).then(ctrl => { c.ctrl = ctrl; if (paused) ctrl.pause(); }));
+    });
+    await Promise.all(jobs.map(j => j.catch(err => console.warn(err))));
+    syncUrl();
+    return dealt;
+  }
+  const nameOf = id => (index.effects.find(e => e.id === id) || { name: id }).name;
+
+  /* ---------------------------------------------------------------- controls */
+  function toast(msg, ms = 1800) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('on');
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => el.classList.remove('on'), ms);
+  }
+  function syncUrl() {
+    try {
+      const u = new URL(location.href);
+      u.searchParams.set('palette', palette.id);
+      if (family) u.searchParams.set('family', family); else u.searchParams.delete('family');
+      if (dealSeed) u.searchParams.set('deal', dealSeed);
+      history.replaceState(null, '', u);
+    } catch (_) { /* a sandboxed frame may refuse; the page works without it */ }
+  }
+  for (const b of document.querySelectorAll('.seg button')) b.addEventListener('click', () => setPalette(byId[PRESETS[b.dataset.kind]]));
+  const sel = $('#pal');
+  const groups = { light: [], dark: [], colour: [] };
+  for (const p of PALETTES) groups[fx.paletteKind(p)].push(p);
+  for (const [k, list] of Object.entries(groups)) {
+    const og = document.createElement('optgroup');
+    og.label = k[0].toUpperCase() + k.slice(1);
+    for (const p of list) og.append(new Option(p.name, p.id));
+    sel.append(og);
+  }
+  sel.addEventListener('change', () => setPalette(byId[sel.value]));
+  $('#pause').addEventListener('click', e => {
+    paused = !paused;
+    e.currentTarget.textContent = paused ? 'Play' : 'Pause';
+    e.currentTarget.setAttribute('aria-pressed', String(paused));
+    for (const h of [...tiles, hero, ...cards]) if (h.ctrl) paused ? h.ctrl.pause() : h.ctrl.resume();
+  });
+  $('#deal').addEventListener('click', async () => {
+    const d = await deal();
+    if (d) toast(`Dealt: ${d.picks.map(p => nameOf(p.id)).join(', ')}`, 2600);
+  });
+
+  /* ---------------------------------------------------------------- load */
+  palette = initialPalette();
+  kind = fx.paletteKind(palette);
+  applyVars();
+  try {
+    index = await fetch(PATHS.fx + 'index.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  } catch (err) {
+    $('#grid').innerHTML = '<p class="empty">The effects index did not load. Serve this folder over http (node scripts/effects.mjs serve) and run node scripts/effects.mjs index.</p>';
+    throw err;
+  }
+  const famCount = new Set(index.effects.map(e => e.family)).size;
+  $('#count').textContent = `${index.effects.length} effects in ${famCount} families`;
+  const sorted = [...index.effects].sort((a, b) => (ORDER.indexOf(a.family) + 99 * !ORDER.includes(a.family)) - (ORDER.indexOf(b.family) + 99 * !ORDER.includes(b.family)) || a.name.localeCompare(b.name));
+  for (const meta of sorted) { const t = buildTile(meta); tiles.push(t); $('#grid').append(t.el); fitBadge(t); }
+  order();
+  buildFilters();
+  filter();
+  if (!ui) document.getElementById('cards').hidden = true;
+  await Promise.all([
+    ...tiles.map(mountTile),
+    deal(dealSeed),
+    ui ? ui.loadAll(document).catch(err => console.warn(err)) : null,
+  ]);
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

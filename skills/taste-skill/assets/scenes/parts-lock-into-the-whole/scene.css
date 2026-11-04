@@ -1,0 +1,50 @@
+/* parts-lock-into-the-whole - at rest: the heading and spec list beside the finished screen. Live:
+   the screen centred on the held stage, its panels flown in by transform; the word huge at the
+   centre until it steps into its place; the spec beside the screen at the end. */
+[data-big-scene="parts-lock-into-the-whole"] { background: var(--bg); color: var(--ink); --pl-ui-w: 880px; }
+[data-big-scene="parts-lock-into-the-whole"] > .sc__stage { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad); }
+[data-big-scene="parts-lock-into-the-whole"] .pl__ui {
+  display: grid; grid-template-columns: 180px minmax(0, 1fr) 200px; grid-template-rows: 44px minmax(0, 1fr); grid-template-areas: "bar bar bar" "side main insp";
+  gap: 1px; width: 100%; max-width: var(--pl-ui-w); margin-inline: auto; aspect-ratio: 16 / 10;
+  --pl-box: 1;
+  background: color-mix(in oklab, var(--line) calc(var(--pl-box) * 100%), transparent); border: 1px solid color-mix(in oklab, var(--line) calc(var(--pl-box) * 100%), transparent); border-radius: var(--r-md); overflow: clip;
+  font-family: var(--font-text); font-size: 13px; line-height: 1.4; color: var(--ink);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--ink) calc(var(--pl-box) * 6%), transparent), 0 16px 40px -20px color-mix(in oklab, var(--ink) calc(var(--pl-box) * 30%), transparent);
+}
+[data-big-scene="parts-lock-into-the-whole"] .pl__panel { background: var(--card, var(--surface)); min-width: 0; overflow: clip; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__bar { grid-area: bar; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__side { grid-area: side; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__main { grid-area: main; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__insp { grid-area: insp; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__word { display: none; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__spec h2 { max-width: 16ch; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__spec dl { margin: var(--s-6) 0 0; border-top: 1px solid var(--line); max-width: 420px; }
+[data-big-scene="parts-lock-into-the-whole"] .pl__spec dl > div { display: flex; justify-content: space-between; gap: var(--s-5); padding-block: var(--s-3); border-bottom: 1px solid var(--line); }
+[data-big-scene="parts-lock-into-the-whole"] .pl__spec dt { color: var(--muted); }
+[data-big-scene="parts-lock-into-the-whole"] .pl__spec dd { text-align: right; }
+[data-big-scene="parts-lock-into-the-whole"] [data-ink="x"] { transform-origin: 0 50%; }
+@media (max-width: 767px) {
+  [data-big-scene="parts-lock-into-the-whole"] .pl__ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: 40px minmax(0, 1fr); grid-template-areas: "bar" "main"; aspect-ratio: auto; font-size: 12px; }
+  [data-big-scene="parts-lock-into-the-whole"] .pl__ui .pl__side, [data-big-scene="parts-lock-into-the-whole"] .pl__ui .pl__insp { display: none; }
+}
+
+/* ---------- finished composition: the spec beside the screen */
+[data-big-scene="parts-lock-into-the-whole"]:not(.is-live) > .sc__stage { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center; }
+[data-big-scene="parts-lock-into-the-whole"]:not(.is-live) .pl__ui { grid-column: 1 / 8; grid-row: 1; }
+[data-big-scene="parts-lock-into-the-whole"]:not(.is-live) .pl__spec { grid-column: 9 / 13; grid-row: 1; }
+@media (max-width: 1023px) {
+  [data-big-scene="parts-lock-into-the-whole"]:not(.is-live) > .sc__stage { grid-template-columns: 1fr; row-gap: var(--s-7); }
+  [data-big-scene="parts-lock-into-the-whole"]:not(.is-live) .pl__ui, [data-big-scene="parts-lock-into-the-whole"]:not(.is-live) .pl__spec { grid-column: 1; grid-row: auto; }
+}
+
+/* ---------- the held stage */
+[data-big-scene="parts-lock-into-the-whole"].is-live > .sc__stage { display: grid; place-items: center; padding-top: calc(var(--nav-h, 0px) + var(--s-5)); }
+[data-big-scene="parts-lock-into-the-whole"].is-live .pl__ui { grid-area: 1 / 1; will-change: transform; max-height: calc(100svh - var(--nav-h, 0px) - 160px); aspect-ratio: 16 / 10; }
+[data-big-scene="parts-lock-into-the-whole"].is-live .pl__panel { will-change: transform; }
+[data-big-scene="parts-lock-into-the-whole"].is-live .pl__word {
+  display: block; grid-area: 1 / 1; z-index: 3; margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking);
+  font-size: clamp(72px, 16vw, 260px); line-height: 1; transform-origin: 0 0; will-change: transform; pointer-events: none;
+}
+[data-big-scene="parts-lock-into-the-whole"].is-live .pl__title-word { visibility: hidden; }
+[data-big-scene="parts-lock-into-the-whole"].is-live .pl__spec { position: absolute; left: var(--pl-spec-x, 62%); right: var(--pad); top: 50%; transform: translateY(-50%); opacity: 0; will-change: transform, opacity; }
+[data-big-scene="parts-lock-into-the-whole"].is-live [data-layer] { opacity: 0; }

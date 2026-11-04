@@ -1,0 +1,50 @@
+{
+  "id": "dot-object",
+  "name": "Dot object",
+  "kind": "scene",
+  "source": "photo",
+  "shows": "A real object rebuilt from dots. It is cut out of a photograph taken on a seamless plain ground (the ground, even a graded one, is modelled from the border; an object running off the edge is not taken for ground), or out of a cut-out PNG by its alpha. Each dot takes the photograph's tone where it sits, so the dots draw the form, not only the outline.",
+  "suits": [
+    "software"
+  ],
+  "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: a feature card about a real thing the product works with: a device the app runs or controls, the hardware a developer tool ships to, a product photographed for a shop builder or a photo app. Only with a plain-ground shot or a cut-out PNG; a busy or sunlit background does not cut out.",
+  "never": "Never on a place, service, product or local-business page (a cafe, a shop, a hotel, a studio people visit, a maker of things): those show their photographs plain, or a product its object render, never printed in dots. No caption that explains the dots; the photograph's credit goes in the footer's one credit line.",
+  "effect": "dots",
+  "motion": "None at rest: the finished object, drawn once.",
+  "hover": "A loupe: under the pointer the dots take the photograph's real colour and swell until they almost touch, so the object shows through the print; it eases back when the pointer leaves. Touch: the same under the finger.",
+  "reducedMotion": "The same still object; the loupe follows the pointer without easing.",
+  "params": {
+    "gap": "CSS px between dots; default from the panel size, 4.2 to 7.5",
+    "fit": "share of the panel the object fills, default 0.78",
+    "threshold": "0..1, how far from the ground colour counts as the object, default 0.5",
+    "radius": "loupe radius in CSS px; default from the panel size, 70 to 150",
+    "focus": "[x, y] crop centre of the fallback photograph",
+    "alt": "what the picture shows"
+  },
+  "palette": "ink dots on bg (dot size follows the photograph's darkness on a light page, its lightness on a dark one); under the loupe the photograph's own colours.",
+  "fallback": "the photograph as an <img>, cover-cropped at its focus.",
+  "cost": "low: 3 000 to 8 000 points in a static buffer, one draw call, drawn only while the loupe moves",
+  "photos": [
+    {
+      "id": "commons-minimal-yellow-tulip",
+      "by": "Alistair Dent",
+      "licence": "CC0",
+      "page": "https://commons.wikimedia.org/wiki/File:Minimal_yellow_tulip_(Unsplash).jpg",
+      "use": "default and demo"
+    },
+    {
+      "id": "commons-minimal-orange-dahlia",
+      "by": "Alex Blăjan",
+      "licence": "CC0",
+      "page": "https://commons.wikimedia.org/wiki/File:Minimal_orange_dahlia_(Unsplash).jpg",
+      "use": "demo card"
+    },
+    {
+      "id": "commons-retro-items-on-white-table",
+      "by": "Dmitry Ratushny",
+      "licence": "CC0",
+      "page": "https://commons.wikimedia.org/wiki/File:Retro_items_on_white_table_(Unsplash).jpg",
+      "use": "demo card"
+    }
+  ]
+}

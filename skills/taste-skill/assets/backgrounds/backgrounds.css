@@ -1,0 +1,516 @@
+/*
+  taste-skill backgrounds.css - 16 section and page grounds, drawn in CSS (no WebGL, no images except the
+  photograph ground's own). Link after system.css and assets/ui/cards.css. Rules: references/backgrounds.md.
+
+  A ground is one class on a <section> (or on <body> / a wrapper for the two page grounds, or on a panel for
+  .bg-stage):
+    <section class="section bg-halo"> ... </section>
+  Every ground sets the page tokens for its own children (--bg --surface --ink --muted --accent --card
+  --action --line, --fx-*), so the system's cards, buttons and fragments work on it unchanged. It draws on
+  the page palette (--p-*) and the lit ground (--ground-*, system.css). Body text keeps 7:1 and muted text
+  4.5:1 on its text zone (index.json "textZone"; check.mjs measures it on every palette). The one
+  exception is .bg-stage, a panel for a visual: words on it sit on a card, never on the stage itself.
+
+  Knobs, all optional, on :root or on one section:
+    --g-hue      the colour the tints lean to (default: the accent, hue-guarded: never violet or lavender)
+    --g-hue-b    its neighbour, 30 degrees round the wheel (default derived, and guarded the same way)
+    --g-k, --g-kl, --g-kd   strength of the tints, of the lines, of the dark grounds: 1 at most; backgrounds.js
+                 sets them from the palette's contrast headroom (see there)
+    --tone       the second brand tone of .bg-band / .bg-field (default: the lit ground, system.css)
+    --tone-ink   its text colour (default: the lit ground's ink)
+    --g-photo    url(...) for .bg-photo
+  <html data-mode="light|dark"> says whether the page ink is dark or light; <html data-tint="away"> marks a
+  palette whose bg is a strong colour or a mid tone (tints then move away from the ink); <html
+  data-lowchroma> marks a grey accent (the stage then takes the lit ground's colour). backgrounds.js sets
+  them and --g-k / --g-kl / --g-kd from the palette, unless the page already has (load it plain in <head>).
+*/
+
+/* ---------------------------------------------------------------- tokens */
+:root {
+  /* the hue the tints lean to: the accent, with an oklch hue in 262-338 (violet, lavender, purple) moved
+     to azure (262-300) or pink (300-338), so a cobalt or plum accent never tints a ground violet */
+  --g-hue-src: var(--p-accent);
+  /* the tint's lightness is held between these, so a pale lime on a dark page or a navy on a white one
+     tints as deeply as a mid blue would */
+  --g-L-lo: 0.62; --g-L-hi: 1;
+  --g-hue: oklch(from var(--g-hue-src) clamp(var(--g-L-lo), l, var(--g-L-hi)) c
+    calc(h + clamp(0, (h - 262) * 1000, 1) * clamp(0, (338 - h) * 1000, 1)
+      * (250 + clamp(0, (h - 300) * 1000, 1) * 95 - h)));
+  /* the neighbour: 30 degrees toward the cooler side (toward the warmer side for a red or a pink, hues under 40
+     or over 330, so it never turns rose-violet). Any colour's own hue goes through this:
+     oklch(from X l c calc(h + var(--g-hs))) */
+  --g-hs: calc(30 - 60 * clamp(0, (h - 40) * 1000, 1) * clamp(0, (330 - h) * 1000, 1));
+  --g-hue-b: oklch(from var(--g-hue) l c calc(h + var(--g-hs)));
+  /* the hue as a pale pool, its lightness fixed: for the second-tone grounds, whose ink is dark whatever the page is */
+  --g-pool: oklch(from var(--g-hue) 0.8 calc(c * 0.6) h);
+  /* a second, different tone for two-colour fields: the lit ground (sand, sky, sage, painting) */
+  --g-hue-2: var(--ground-bg, #d9ccb7);
+  /* ...as a tint: its lightness held to the same band as --g-hue, so the contrast headroom (--g-k) counts for it too.
+     The soft grounds take it as their SECOND hue (not the accent's 30-degree neighbour), so a blue page is not blue
+     throughout: a blue wash with a sand light in the corner, as on Figma's colour fields */
+  --g-hue-t: oklch(from var(--g-hue-2) clamp(var(--g-L-lo), l, var(--g-L-hi)) c h);
+  /* the accent's own hue with the same guard: the stage uses it on a strong-colour page (data-tint="away"),
+     where --g-hue is the page's own colour and a stage in it would be a muddy tan on the same colour */
+  --g-acc: oklch(from var(--p-accent) 0.7 c calc(h + clamp(0, (h - 262) * 1000, 1) * clamp(0, (338 - h) * 1000, 1)
+    * (250 + clamp(0, (h - 300) * 1000, 1) * 95 - h)));
+  /* black when the page ink is light, white when it is dark: the way a shade moves away from the ink */
+  --g-away: oklab(from var(--p-ink) calc(1 - round(l)) 0 0);
+  --g-k: 1; --g-kl: 1; --g-kd: 1; --g-kp: 1;
+
+  /* the dark side: the page's inverse on a light page, its own bg on a dark one (data-mode) */
+  --g-dark-bg: var(--p-inv-bg);          --g-dark-surface: var(--p-inv-surface);
+  --g-dark-ink: var(--p-inv-ink);        --g-dark-muted: var(--p-inv-muted);
+  --g-dark-accent: var(--p-inv-accent);  --g-dark-accent-ink: var(--p-inv-accent-ink);
+  --g-dark-action: var(--p-inv-action);  --g-dark-action-ink: var(--p-inv-action-ink);
+  --g-light-bg: var(--p-bg);             --g-light-ink: var(--p-ink);        --g-light-muted: var(--p-muted);
+  --g-light-action: var(--p-action);     --g-light-action-ink: var(--p-action-ink);
+  --g-light-accent: var(--p-accent);     --g-light-accent-ink: var(--p-accent-ink);
+  --g-card: var(--p-bg);                 /* a card on a tinted light ground is the page's own white */
+  --g-grain: var(--g-noise-mul); --g-grain-mode: multiply;   /* grain on a light page darkens, on a dark page lightens */
+
+  /* a cover over the grain, so it thins out with --g-k (--g-kd on the dark grounds) */
+  --g-cover: color-mix(in oklab, var(--bg) calc(100% - 100% * var(--g-k)), transparent);
+  --g-cover-d: color-mix(in oklab, var(--bg) calc(100% - 100% * var(--g-kd)), transparent);
+  --g-fade: 120px;                       /* the soft grounds fade into the page over this much at top and bottom */
+  --g-edge: 160px;                       /* .bg-dusk: how long the tone change takes */
+
+  /* grain: SVG fractal noise as a data URI, 240px tile, two octaves at 1.2 so it is fine, like film, never
+     like sand. soft is mean grey (neutral under soft-light, for the mid-tone grounds), mul sits near white
+     (multiply, for light pages), scr near black (screen, for dark) */
+  --g-noise-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.6' intercept='.2'/%3E%3CfeFuncG type='linear' slope='0.6' intercept='.2'/%3E%3CfeFuncB type='linear' slope='0.6' intercept='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --g-noise-mul: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.26' intercept='.84'/%3E%3CfeFuncG type='linear' slope='.26' intercept='.84'/%3E%3CfeFuncB type='linear' slope='.26' intercept='.84'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --g-noise-scr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.17' intercept='-.05'/%3E%3CfeFuncG type='linear' slope='.17' intercept='-.05'/%3E%3CfeFuncB type='linear' slope='.17' intercept='-.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+html[data-mode="dark"] {
+  --g-L-lo: 0; --g-L-hi: 0.55;
+  --g-dark-bg: var(--p-bg);              --g-dark-surface: var(--p-surface);
+  --g-dark-ink: var(--p-ink);            --g-dark-muted: var(--p-muted);
+  --g-dark-accent: var(--p-accent);      --g-dark-accent-ink: var(--p-accent-ink);
+  --g-dark-action: var(--p-action);      --g-dark-action-ink: var(--p-action-ink);
+  --g-light-bg: var(--p-inv-bg);         --g-light-ink: var(--p-inv-ink);    --g-light-muted: var(--p-inv-muted);
+  --g-light-action: var(--p-inv-action); --g-light-action-ink: var(--p-inv-action-ink);
+  --g-light-accent: var(--p-inv-accent); --g-light-accent-ink: var(--p-inv-accent-ink);
+  --g-card: var(--p-surface);            /* a card on a dark ground is one step lighter than it */
+  --g-grain: var(--g-noise-scr); --g-grain-mode: screen;
+}
+/* a palette whose bg is a strong colour (cobalt, mustard, pink) or a mid tone (stone, slate): the accent is
+   another hue, and mixing the two turns the ground to mud, so the tints are the bg's own colour pushed
+   away from the ink: a deeper cobalt on white text, a paler mustard on black text */
+html[data-tint="away"][data-mode="light"] { --g-grain: var(--g-noise-scr); --g-grain-mode: screen; }
+html[data-tint="away"][data-mode="dark"] { --g-grain: var(--g-noise-mul); --g-grain-mode: multiply; }
+html[data-tint="away"] { --g-hue-src: color-mix(in oklab, var(--p-bg) 58%, var(--g-away)); --g-hue-2: color-mix(in oklab, color-mix(in oklab, var(--p-bg) 66%, var(--g-away)) 90%, var(--p-accent)); }
+
+/* ---------------------------------------------------------------- the contract of every ground */
+.bg-mist, .bg-halo, .bg-grain, .bg-dusk, .bg-ruled, .bg-dots, .bg-arcs,
+.bg-band, .bg-field, .bg-stage, .bg-photo, .bg-horizon, .bg-deep, .bg-liquid {
+  position: relative; isolation: isolate; overflow: clip;
+  --bg: var(--p-bg); --surface: var(--p-surface); --ink: var(--p-ink);
+  /* muted leans to the ink (60/40), so a tint under it never costs the 4.5:1 (backgrounds.js counts on 60/40) */
+  --muted: color-mix(in oklab, var(--p-ink) 60%, var(--p-muted));
+  --accent: var(--p-accent); --accent-ink: var(--p-accent-ink);
+  --action: var(--p-action); --action-ink: var(--p-action-ink);
+  --card: var(--g-card);
+  --line: color-mix(in oklab, var(--ink) 11%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 20%, transparent);
+  --fx-bg: var(--bg); --fx-surface: var(--surface); --fx-ink: var(--ink); --fx-muted: var(--muted);
+  --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
+  --ui-font: var(--font-text); --ui-mono: var(--font-mono); --ui-radius: var(--r-md);
+  background-color: var(--bg); color: var(--ink);
+}
+/* the two page grounds (.bg-paper on <body>, .bg-topglow on a wrapper) set NO tokens: the page keeps its own --card,
+   --muted, --line and --accent (a ground that restyled the body would turn every card flat). They paint only
+   background-image and ::before. */
+.bg-paper, .bg-topglow { position: relative; isolation: isolate; }
+.bg-paper { background-color: var(--bg); }   /* the base the grain blends with */
+/* the soft grounds are overlays: they paint no colour of their own, so they sit on the page ground (plain or .bg-paper) */
+:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-arcs, .bg-liquid) { background-color: transparent; }
+/* the decorations of the soft grounds sit on ::before, behind the content, and fade into the page at
+   the top and bottom, so a soft ground can neighbour any other */
+:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-arcs)::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent);
+          mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent);
+}
+
+/* dark grounds take the dark side's tokens */
+.bg-horizon, .bg-deep, .bg-photo {
+  --bg: color-mix(in oklab, var(--g-dark-bg) 80%, black);
+  --surface: color-mix(in oklab, var(--g-dark-surface) 80%, black);
+  --ink: var(--g-dark-ink);
+  --muted: color-mix(in oklab, var(--g-dark-ink) 60%, var(--g-dark-muted));
+  --accent: var(--g-dark-accent); --accent-ink: var(--g-dark-accent-ink);
+  --action: var(--g-dark-action); --action-ink: var(--g-dark-action-ink);
+  --card: color-mix(in oklab, var(--bg) 88%, var(--ink));
+  /* the light on a dark ground: the ground's own colour and the hue, then pulled toward the ink */
+  --lit: color-mix(in oklab, color-mix(in oklab, var(--bg) 55%, var(--g-hue)) 68%, var(--ink));
+}
+/* the second-tone grounds take the lit ground's tokens (sand, sky, sage, painting), or --tone */
+.bg-band, .bg-field {
+  /* a little lighter than the lit ground, so its dark ink keeps 7:1 on all four (painting is the darkest) */
+  --bg: var(--tone, color-mix(in oklab, var(--ground-bg) 55%, var(--ground-surface)));
+  --surface: var(--ground-surface);
+  --ink: var(--tone-ink, color-mix(in oklab, var(--ground-ink) 85%, black));
+  --muted: color-mix(in oklab, var(--ink) 60%, var(--ground-muted));
+  --accent: var(--ground-accent); --accent-ink: var(--ground-surface);
+  --action: var(--ink); --action-ink: var(--bg);
+  --card: color-mix(in oklab, var(--ground-surface) 70%, white);
+  /* the tone's own neighbours, so a field is one family of colour and never two that turn to mud: a richer
+     neighbour 30 degrees round the wheel (a peach beside sand, cyan beside sky) and a deeper shade of itself */
+  --t-b: oklch(from var(--bg) l clamp(0, c * 1.6 + 0.022, 0.075) calc(h + var(--g-hs)));
+  --t-c: oklch(from var(--bg) calc(l - 0.032) calc(c * 1.3 + 0.012) h);
+}
+
+/* .bg-inset: a hard ground as a rounded panel on the page's grid, its left and right edges on the container's
+   (Figma's colour panels, x.ai's video card). Add it next to the ground class: class="section bg-field bg-inset".
+   On a dark page a band or a field is always inset (a pale full-bleed slab is the brightest thing on a dark page and
+   harsh at a phone's width); .bg-bleed opts out. */
+.bg-inset, html[data-mode="dark"] :is(.bg-band, .bg-field):not(.bg-bleed) { width: min(calc(100% - 2 * var(--pad)), var(--container)); margin-inline: auto; margin-block: var(--s-5); border-radius: var(--r-lg); }
+
+/* Spacing. A ground that changes the colour is spaced like the system's own bands, and a little more; a soft one a half
+   step more than a plain section; and each holds a screen of its own (min-height, the words centred), so a shot of one
+   section never shows the next. The system's own variants keep what they set: the hero (.section--hero: its top, its
+   screen-high box), .section--flush-top and .section--rule are never touched. --g-screen on a section sets its minimum
+   height (0px = the words' own height). */
+.section:is(.bg-band, .bg-field, .bg-grain, .bg-horizon, .bg-deep, .bg-photo):not(.section--hero, .section--flush-top, .section--rule) { padding-block: calc(var(--section-band) * 1.25); }
+.section:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-arcs, .bg-liquid):not(.section--hero, .section--flush-top, .section--rule) { padding-block: calc(var(--section) * 1.5); }
+/* a hero on a ground keeps its system top and its screen height and gets the ground's room under it */
+.section--hero:is(.bg-band, .bg-field, .bg-grain, .bg-horizon, .bg-deep, .bg-photo) { padding-bottom: calc(var(--section-band) * 1.25); }
+.section--hero:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-arcs, .bg-liquid) { padding-bottom: calc(var(--section) * 1.5); }
+.section:is(.bg-band, .bg-field, .bg-grain, .bg-dusk, .bg-horizon, .bg-deep):not(.section--hero) { min-height: var(--g-screen, min(88svh, 860px)); display: grid; align-content: center; }
+.section:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-liquid):not(.section--hero) { min-height: var(--g-screen, min(76svh, 760px)); display: grid; align-content: center; }
+/* on a phone the stacked words already fill the screen: the sections keep their padding and no minimum height */
+@media (max-width: 767px) {
+  .section:is(.bg-band, .bg-field, .bg-grain, .bg-dusk, .bg-horizon, .bg-deep, .bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-liquid):not(.section--hero) { min-height: var(--g-screen, 0px); }
+}
+/* system.css forces the last section before the footer to one plain bottom padding (!important): a ground that closes the
+   page keeps its own (the horizon's dome needs its 150px; a band stays even top and bottom) */
+main > section.section:is(.bg-band, .bg-field, .bg-grain, .bg-deep, .bg-photo):not(.section--hero):last-of-type { padding-bottom: calc(var(--section-band) * 1.25) !important; }
+main > section.section:is(.bg-mist, .bg-halo, .bg-ruled, .bg-dots, .bg-arcs, .bg-liquid):not(.section--hero):last-of-type { padding-bottom: calc(var(--section) * 1.5) !important; }
+main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--section-band) * 1.25 + 150px) !important; }
+
+/* ---------------------------------------------------------------- 1 mist: a soft gradient field */
+.bg-mist::before {
+  background:
+    radial-gradient(54% 70% at 4% 6%, color-mix(in oklab, var(--g-hue) calc(42% * var(--g-k)), transparent), transparent),
+    radial-gradient(46% 62% at 98% 16%, color-mix(in oklab, var(--g-hue-t) calc(48% * var(--g-k)), transparent), transparent),
+    radial-gradient(64% 64% at 66% 116%, color-mix(in oklab, var(--g-hue) calc(24% * var(--g-k)), transparent), transparent),
+    radial-gradient(34% 46% at 22% 104%, color-mix(in oklab, var(--g-hue-b) calc(18% * var(--g-k)), transparent), transparent);
+}
+
+/* ---------------------------------------------------------------- 2 halo: a radial light behind the heading */
+.bg-halo { --halo-x: 50%; --halo-y: 38%; }
+.bg-halo::before {
+  background:
+    radial-gradient(34% 40% at var(--halo-x) var(--halo-y), color-mix(in oklab, var(--g-hue) calc(30% * var(--g-k)), transparent), transparent),
+    radial-gradient(70% 76% at var(--halo-x) var(--halo-y), color-mix(in oklab, var(--g-hue) calc(15% * var(--g-k)), transparent), transparent),
+    radial-gradient(30% 34% at calc(var(--halo-x) + 18%) calc(var(--halo-y) + 16%), color-mix(in oklab, var(--g-hue-t) calc(32% * var(--g-k)), transparent), transparent);
+}
+
+/* ---------------------------------------------------------------- 3 grain: a tint with fine grain on it */
+.bg-grain {
+  --bg: color-mix(in oklab, var(--p-bg) calc(100% - 11% * var(--g-k)), var(--g-hue));
+  --surface: color-mix(in oklab, var(--p-surface) calc(100% - 11% * var(--g-k)), var(--g-hue));
+  background-image:
+    radial-gradient(90% 100% at 0% 0%, color-mix(in oklab, var(--p-bg) 74%, transparent), transparent 70%),
+    radial-gradient(54% 80% at 100% 0%, color-mix(in oklab, var(--g-hue-b) calc(20% * var(--g-k)), transparent), transparent 72%),
+    radial-gradient(80% 90% at 100% 100%, color-mix(in oklab, var(--g-hue) calc(26% * var(--g-k)), transparent), transparent 70%),
+    radial-gradient(46% 70% at 0% 100%, color-mix(in oklab, var(--g-hue-b) calc(12% * var(--g-k)), transparent), transparent 72%),
+    linear-gradient(var(--g-cover), var(--g-cover)),
+    var(--g-grain);
+  background-blend-mode: normal, normal, normal, normal, normal, var(--g-grain-mode);
+}
+
+/* ---------------------------------------------------------------- 4 paper: the page ground, never flat */
+.bg-paper {
+  overflow: visible;
+  background-image:
+    radial-gradient(120% 60vh at 50% 0, color-mix(in oklab, var(--g-hue) calc(9% * var(--g-kp)), transparent), transparent),
+    radial-gradient(60% 50vh at 100% 0, color-mix(in oklab, var(--g-hue-b) calc(6% * var(--g-kp)), transparent), transparent),
+    linear-gradient(to bottom, transparent 70%, color-mix(in oklab, var(--g-hue) calc(6% * var(--g-kp)), transparent)),
+    /* the page ground carries every word of the page, so its grain is a quarter of the grain ground's */
+    linear-gradient(color-mix(in oklab, var(--bg) calc(100% - 28% * var(--g-kp)), transparent), color-mix(in oklab, var(--bg) calc(100% - 28% * var(--g-kp)), transparent)),
+    var(--g-grain);
+  background-blend-mode: normal, normal, normal, normal, var(--g-grain-mode);
+}
+
+/* ---------------------------------------------------------------- 5 dusk: one tone moves into the next, no edge */
+.bg-dusk {
+  /* the two ends are transparent, so the tone melts into whatever the page really paints there (plain, .bg-paper's grain, a
+     neighbouring tint) and never meets a page colour it was not. Set --g-from / --g-next to a colour to melt from or into one. */
+  --g-from: transparent; --g-to: color-mix(in oklab, var(--p-bg) calc(100% - 15% * var(--g-k)), var(--g-hue)); --g-next: transparent;
+  --bg: var(--g-to);
+  --surface: color-mix(in oklab, var(--p-surface) calc(100% - 15% * var(--g-k)), var(--g-hue));
+  background-color: transparent;
+  background-repeat: no-repeat;
+  /* the two melting edges and, between them (a pixel of overlap each side), the solid tone */
+  background-size: 100% var(--g-edge), 100% var(--g-edge), 100% calc(100% - 2 * var(--g-edge) + 2px);
+  background-position: top, bottom, center;
+  /* a smoothstep: 0, .04, .16, .32, .5, .68, .84, .96, 1 of the way */
+  background-image:
+    linear-gradient(to bottom,
+      var(--g-from), color-mix(in oklab, var(--g-to) 4%, var(--g-from)) 12.5%, color-mix(in oklab, var(--g-to) 16%, var(--g-from)) 25%,
+      color-mix(in oklab, var(--g-to) 32%, var(--g-from)) 37.5%, color-mix(in oklab, var(--g-to) 50%, var(--g-from)) 50%,
+      color-mix(in oklab, var(--g-to) 68%, var(--g-from)) 62.5%, color-mix(in oklab, var(--g-to) 84%, var(--g-from)) 75%,
+      color-mix(in oklab, var(--g-to) 96%, var(--g-from)) 87.5%, var(--g-to)),
+    linear-gradient(to top,
+      var(--g-next), color-mix(in oklab, var(--g-to) 4%, var(--g-next)) 12.5%, color-mix(in oklab, var(--g-to) 16%, var(--g-next)) 25%,
+      color-mix(in oklab, var(--g-to) 32%, var(--g-next)) 37.5%, color-mix(in oklab, var(--g-to) 50%, var(--g-next)) 50%,
+      color-mix(in oklab, var(--g-to) 68%, var(--g-next)) 62.5%, color-mix(in oklab, var(--g-to) 84%, var(--g-next)) 75%,
+      color-mix(in oklab, var(--g-to) 96%, var(--g-next)) 87.5%, var(--g-to)),
+    linear-gradient(var(--g-to), var(--g-to));
+}
+.section.bg-dusk:not(.section--hero) { padding-block: calc(var(--section) + var(--g-edge) * .5); }
+
+/* ---------------------------------------------------------------- 6 topglow: light under the nav, the page lifts out of it */
+/* on <body> (with bg-paper) or a wrapper that holds the nav and the hero: a pool of light and a thin lit line just
+   under the nav bar, fading out by 700px down, a second tone leaning in from the right. It draws on ::before, so it
+   stacks with bg-paper on one element. */
+.bg-topglow { overflow: visible; }
+.bg-topglow::before {
+  content: ""; position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: min(100%, 720px); pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, color-mix(in oklab, var(--g-hue) calc(60% * var(--g-kp)), transparent) 50%, transparent) 50% var(--nav-h, 64px) / 62% 1px no-repeat,
+    radial-gradient(62% 470px at 50% var(--nav-h, 64px), color-mix(in oklab, var(--g-hue) calc(27% * var(--g-kp)), transparent), transparent),
+    radial-gradient(42% 380px at 86% calc(var(--nav-h, 64px) + 60px), color-mix(in oklab, var(--g-hue-b) calc(18% * var(--g-kp)), transparent), transparent),
+    radial-gradient(120% 300px at 50% var(--nav-h, 64px), color-mix(in oklab, var(--g-hue) calc(12% * var(--g-kp)), transparent), transparent);
+}
+
+/* ---------------------------------------------------------------- 7 ruled: a fine grid that fades out */
+/* square rules (Vercel's and Linear's heroes). The glow is ::before, full width; the grid is ::after, exactly as wide as the
+   container: its first rule lies on the container's left edge, the cells are spaced to fit, and its right edge is a rule too, so
+   the grid is the page's own frame and never a second system across it. It is clear behind the heading (a hole in the mask)
+   and fades toward the top and bottom. For a section with no row rules of its own: never over a table, pricing or a list
+   (index.json: ruled is dealt only to the sections that list it). */
+.bg-ruled::before {
+  background: radial-gradient(50% 44% at 50% 0%, color-mix(in oklab, var(--g-hue) calc(20% * var(--g-k)), transparent), transparent);
+}
+.bg-ruled::after {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; pointer-events: none; box-sizing: border-box;
+  --rule: color-mix(in oklab, var(--ink) calc(8% * var(--g-kl)), transparent);
+  --cell: 72px;
+  left: max(var(--pad), calc((100% - var(--container)) / 2)); right: max(var(--pad), calc((100% - var(--container)) / 2));
+  border-right: 1px solid var(--rule);
+  background:
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / var(--cell) var(--cell) space repeat,
+    linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / var(--cell) var(--cell) repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 120% 90% at 50% 40%, #000 30%, transparent 92%), radial-gradient(ellipse 46% 34% at 50% 38%, transparent 40%, #000 100%);
+          mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 120% 90% at 50% 40%, #000 30%, transparent 92%), radial-gradient(ellipse 46% 34% at 50% 38%, transparent 40%, #000 100%);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+@media (max-width: 767px) { .bg-ruled::after { --cell: 48px; } }
+
+/* ---------------------------------------------------------------- 8 dots: a dot field that fades out */
+/* the dots live in the margins and the corners and are clear behind the heading and the words (a hole in the middle of the mask,
+   not a spotlight on it), at 24% of the ink, so no line of body copy ever sits on them */
+.bg-dots::before {
+  background:
+    radial-gradient(34% 46% at 6% 34%, color-mix(in oklab, var(--g-hue) calc(16% * var(--g-k)), transparent), transparent),
+    radial-gradient(30% 40% at 96% 70%, color-mix(in oklab, var(--g-hue-t) calc(24% * var(--g-k)), transparent), transparent),
+    radial-gradient(circle at 11px 11px, color-mix(in oklab, var(--ink) calc(26% * var(--g-kl)), transparent) 1.15px, transparent 1.9px) 0 0 / 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 58% 70% at 50% 40%, transparent 24%, #000 78%);
+          mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 58% 70% at 50% 40%, transparent 24%, #000 78%);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+
+/* ---------------------------------------------------------------- 9 arcs: rings that rise from below, x.ai's footer */
+/* the rings need room under the words: a minimum height (the words centred), not more padding, so the gaps stay the page's */
+.section.bg-arcs { min-height: clamp(420px, 36vw, 540px); display: grid; align-content: center; }
+.bg-arcs::before {
+  background:
+    radial-gradient(56% 56% at 50% 100%, color-mix(in oklab, var(--g-hue) calc(22% * var(--g-k)), transparent), transparent),
+    radial-gradient(30% 40% at 78% 100%, color-mix(in oklab, var(--g-hue-t) calc(24% * var(--g-k)), transparent), transparent),
+    repeating-radial-gradient(circle at 50% 140%, transparent 0 79px, color-mix(in oklab, var(--ink) calc(22% * var(--g-kl)), transparent) 79px 80px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 84% 94% at 50% 100%, #000 30%, transparent 82%);
+          mask-image: linear-gradient(to bottom, transparent, #000 var(--g-fade), #000 calc(100% - var(--g-fade)), transparent), radial-gradient(ellipse 84% 94% at 50% 100%, #000 30%, transparent 82%);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+
+/* ---------------------------------------------------------------- 10 band: a coloured band in a second tone */
+/* the lit ground's tone with a light corner, a richer neighbour of the same colour leaning in from the right and a
+   deeper shade of itself in the far corner, under fine grain: one family of colour, never flat */
+.bg-band {
+  background-image:
+    var(--g-noise-soft),
+    radial-gradient(66% 120% at 0% 0%, color-mix(in oklab, var(--bg) 42%, var(--g-hi, white)), transparent 72%),
+    radial-gradient(52% 96% at 100% 0%, color-mix(in oklab, var(--t-b) 62%, transparent), transparent 76%),
+    radial-gradient(64% 104% at 100% 100%, color-mix(in oklab, var(--t-c) 70%, transparent), transparent 78%);
+  background-blend-mode: soft-light, normal, normal, normal;
+}
+
+/* .bg-tint, with .bg-band or .bg-field: the second tone is a pale tint of the accent's own colour (a mint for a teal accent,
+   an azure for a blue one, Figma's flat mint panel) instead of the lit ground, so the band is coloured on a sand page too */
+.bg-tint {
+  --tone: oklch(from var(--g-hue) 0.93 clamp(0.035, c * 0.32, 0.075) h);
+  --tone-ink: color-mix(in oklab, var(--g-light-ink) 58%, black);
+  --accent: var(--g-light-accent); --accent-ink: var(--g-light-accent-ink);
+  --surface: color-mix(in oklab, var(--tone) 60%, white);
+  --card: color-mix(in oklab, var(--g-light-bg) 80%, white);
+}
+/* on a dark page a pale tinted slab is the brightest thing there: the tint is a deep tone of the accent's colour with light words */
+html[data-mode="dark"] .bg-tint {
+  --tone: oklch(from var(--g-hue) 0.24 clamp(0.04, c * 0.42, 0.09) h);
+  --tone-ink: color-mix(in oklab, var(--p-ink) 92%, white);
+  --muted: color-mix(in oklab, var(--tone-ink) 82%, var(--tone));
+  --accent: var(--p-accent); --accent-ink: var(--p-accent-ink);
+  --surface: color-mix(in oklab, var(--tone) 80%, white);
+  --card: color-mix(in oklab, var(--tone) 86%, black);
+  --action: var(--tone-ink); --action-ink: var(--tone);
+  --g-hi: color-mix(in oklab, var(--tone) 88%, white);   /* the light corner of the band and the field stays deep, under light words */
+}
+
+/* ---------------------------------------------------------------- 11 field: a grainy gradient in the lit tone, Figma's panel */
+.bg-field {
+  background-image:
+    var(--g-noise-soft),
+    linear-gradient(112deg, transparent 38%, color-mix(in oklab, var(--g-hi, white) 26%, transparent) 50%, transparent 62%),
+    radial-gradient(58% 86% at 8% 0%, color-mix(in oklab, var(--g-hi, white) 58%, transparent), transparent),
+    radial-gradient(54% 80% at 82% 6%, color-mix(in oklab, var(--t-b) 80%, transparent), transparent),
+    radial-gradient(60% 96% at 100% 100%, color-mix(in oklab, var(--t-c) 76%, transparent), transparent),
+    radial-gradient(40% 60% at 0% 100%, color-mix(in oklab, var(--t-b) 50%, transparent), transparent);
+  background-blend-mode: soft-light, normal, normal, normal, normal, normal;
+}
+
+/* ---------------------------------------------------------------- 12 stage: a vivid panel for a visual, Figma's tiles */
+/* a rounded panel (not a section) behind one card or window: the accent's colour as a mesh with a light corner and a
+   deep one, and grain. It has NO text of its own: every word sits on a card on it (that is what lets it be vivid).
+     <div class="bg-stage"><div class="mini">...</div></div>
+   A grey accent (data-lowchroma) takes the lit ground's colour. --stage-pad is the room round the card. */
+.bg-stage {
+  --st-src: var(--g-hue);
+  /* yellows go olive at mid lightness, so around hue 90 the mid and deep tones are lifted (+.12, +.1) */
+  --st-1: oklch(from var(--st-src) calc(0.64 + 0.12 * clamp(0, 1 - max(h - 90, 90 - h) / 45, 1)) clamp(0.07, c * 0.8, 0.14) calc(h - 8 * clamp(0, 1 - max(h - 90, 90 - h) / 45, 1)));
+  --st-2: oklch(from var(--st-src) 0.8 clamp(0.05, c * 0.6, 0.1) calc(h + var(--g-hs)));
+  --st-3: oklch(from var(--st-src) 0.95 0.035 h);
+  /* a yellow darkened turns olive: its deep tone leans to amber instead (hue -24 at yellow) */
+  --st-4: oklch(from var(--st-src) calc(0.44 + 0.1 * clamp(0, 1 - max(h - 90, 90 - h) / 45, 1)) clamp(0.05, c * 0.7, 0.12) calc(h - 24 * clamp(0, 1 - max(h - 90, 90 - h) / 45, 1)));
+  --stage-pad: clamp(20px, 4.5vw, 64px);
+  display: grid; place-items: center; padding: var(--stage-pad); border-radius: var(--r-lg);
+  background-color: var(--st-1);
+  background-image:
+    var(--g-noise-soft),
+    radial-gradient(58% 78% at 10% 4%, color-mix(in oklab, var(--st-3) 90%, transparent), transparent 72%),
+    radial-gradient(48% 70% at 90% 12%, color-mix(in oklab, var(--st-2) 92%, transparent), transparent 74%),
+    radial-gradient(70% 90% at 78% 112%, color-mix(in oklab, var(--st-4) 94%, transparent), transparent 74%),
+    radial-gradient(46% 62% at 4% 100%, color-mix(in oklab, var(--st-2) 60%, transparent), transparent 72%);
+  background-blend-mode: soft-light, normal, normal, normal, normal;
+}
+html[data-tint="away"] .bg-stage { --st-src: var(--g-acc); }
+html[data-lowchroma] .bg-stage { --st-src: oklch(from var(--ground-accent) l c h); }
+.bg-stage > * { position: relative; width: min(100%, var(--stage-w, 520px)); }
+
+/* ---------------------------------------------------------------- 13 photo: a full-bleed photograph under a calm scrim */
+/* The photograph is an <img class="bg-photo__img" src alt> child (alt text, lazy loading, found early by the
+   browser), or --g-photo: url(...) when the section cannot hold one. The scrim is the dark side's tone and is at
+   least .76 deep from the bottom edge up to --scrim-h (the top of the words; backgrounds.js measures it from the
+   section's own text and sets it, 66% by default, 86% on a phone), so white words keep 7:1 even on a white
+   photograph (a scrim of .76 over white is darker than #595959). A pale photograph takes .bg-photo--light: the scrim is
+   the light side's tone and the words are dark. The scrim is the section's ::before, above the photograph.
+   --g-photo-pos: where the subject sits (object-position, e.g. "70% 30%"); --g-photo-pos-m the same on a phone, where the
+   words take the lower part and the subject belongs in the upper one. */
+.bg-photo {
+  --scrim: color-mix(in oklab, var(--g-dark-bg) 70%, black);
+  /* the scrim deepens as the palette's dark side loses headroom (--g-kd): .88 / .80 / .76 at 1, solid at 0 */
+  --scrim-a: color-mix(in oklab, var(--scrim) calc(100% - 12% * var(--g-kd)), transparent);
+  --scrim-b: color-mix(in oklab, var(--scrim) calc(100% - 20% * var(--g-kd)), transparent);
+  --scrim-c: color-mix(in oklab, var(--scrim) calc(100% - 24% * var(--g-kd)), transparent);
+  --scrim-h: 66%; --scrim-w: 56%;
+  min-height: clamp(520px, 52vw, 760px); display: grid; align-content: end;
+  background: var(--g-photo, none) var(--g-photo-pos, center) / cover no-repeat, var(--scrim);
+}
+.bg-photo__img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: var(--g-photo-pos, 50% 50%); }
+.bg-photo::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(to top, var(--scrim-a), var(--scrim-b) calc(var(--scrim-h) * .45), var(--scrim-c) var(--scrim-h), transparent calc(var(--scrim-h) + 26%));
+}
+.bg-photo--left { align-content: center; }
+.bg-photo--left::before { background: linear-gradient(to right, var(--scrim-a), var(--scrim-b) calc(var(--scrim-w) * .64), var(--scrim-c) var(--scrim-w), transparent calc(var(--scrim-w) + 26%)); }
+.bg-photo--light {
+  --scrim: var(--g-light-bg);
+  --scrim-a: color-mix(in oklab, var(--scrim) 94%, transparent);
+  --scrim-b: color-mix(in oklab, var(--scrim) 88%, transparent);
+  --scrim-c: color-mix(in oklab, var(--scrim) 76%, transparent);
+  --bg: color-mix(in oklab, var(--g-light-bg) 90%, white); --surface: var(--p-surface); --ink: var(--g-light-ink);
+  --muted: color-mix(in oklab, var(--g-light-ink) 60%, var(--g-light-muted));
+  --accent: var(--g-light-accent); --accent-ink: var(--g-light-accent-ink);
+  --action: var(--g-light-action); --action-ink: var(--g-light-action-ink);
+  --card: var(--g-light-bg);
+}
+@media (max-width: 767px) {
+  .bg-photo { --scrim-h: 86%; min-height: 640px; background-position: var(--g-photo-pos-m, var(--g-photo-pos, center)); }
+  .bg-photo__img { object-position: var(--g-photo-pos-m, var(--g-photo-pos, 50% 50%)); }
+  .bg-photo--left { align-content: end; }
+  .bg-photo--left::before { background: linear-gradient(to top, var(--scrim-a), var(--scrim-b) calc(var(--scrim-h) * .45), var(--scrim-c) var(--scrim-h), transparent calc(var(--scrim-h) + 12%)); }
+}
+
+/* ---------------------------------------------------------------- 14 horizon: a dark band with a lit horizon */
+/* a dome of the page's dark tone rising from the bottom edge, its rim a thin line of light that is brightest at the
+   top and fades to both sides, with the glow above it (the planet's edge in x.ai's dark pages) */
+.section.bg-horizon:not(.section--flush-top, .section--rule) { padding-bottom: calc(var(--section-band) * 1.25 + 150px); }   /* (0,3,0), after the spacing block: keeps the dome's room, hero or not */
+.bg-horizon::before {
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: 640px; pointer-events: none;
+  background:
+    radial-gradient(26% 74px at 50% calc(100% - 140px), color-mix(in oklab, var(--lit) calc(70% * var(--g-kd)), transparent), transparent),
+    radial-gradient(54% 76% at 50% 100%, color-mix(in oklab, var(--lit) calc(44% * var(--g-kd)), transparent), transparent 74%),
+    radial-gradient(120% 84% at 50% 100%, color-mix(in oklab, var(--g-hue) calc(22% * var(--g-kd)), transparent), transparent 76%);
+}
+.bg-horizon::after {
+  /* a dome as wide as 170% of the section and never less than 1200px, so its curve stays a flat planet's rim on a phone (a
+     dome as wide as the phone is a pointed arch) */
+  content: ""; position: absolute; z-index: -1; left: 50%; translate: -50% 0; width: max(170%, 1200px); bottom: -560px; height: 700px; pointer-events: none;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(60% 100% at 50% 0, color-mix(in oklab, var(--lit) 34%, var(--bg)), var(--bg) 72%);
+  border-top: 2px solid color-mix(in oklab, var(--lit) 90%, white);
+  box-shadow: 0 -12px 56px -8px color-mix(in oklab, var(--lit) 62%, transparent), 0 -1px 16px color-mix(in oklab, var(--lit) 70%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent 5%, #000 36%, #000 64%, transparent 95%);
+          mask-image: linear-gradient(90deg, transparent 5%, #000 36%, #000 64%, transparent 95%);
+}
+
+/* ---------------------------------------------------------------- 15 deep: near-black with a spotlight and grain, x.ai's dark */
+.bg-deep {
+  --bg: color-mix(in oklab, var(--g-dark-bg) 70%, black);
+  background-image:
+    radial-gradient(64% 70% at 50% 0%, color-mix(in oklab, var(--g-hue) calc(21% * var(--g-kd)), transparent), transparent 76%),
+    radial-gradient(48% 60% at 100% 100%, color-mix(in oklab, var(--g-hue-t) calc(18% * var(--g-kd)), transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in oklab, var(--g-dark-surface) calc(40% * var(--g-kd)), var(--bg)), var(--bg) 70%),
+    linear-gradient(var(--g-cover-d), var(--g-cover-d)),
+    var(--g-noise-scr);
+  background-blend-mode: normal, normal, normal, normal, screen;
+}
+/* a hairline of light along the top edge, brightest in the middle (a lit lip, as on x.ai's cards) */
+.bg-deep::before {
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 6%, color-mix(in oklab, var(--ink) calc(28% * var(--g-kd)), transparent) 50%, transparent 94%);
+}
+
+/* ---------------------------------------------------------------- 16 liquid: a slow mesh of colour, transform only */
+/* two layers, each wider than the section (160%), each holding two wide ellipses of colour that fade to nothing inside the
+   layer's own height (their radii end before the section's top and bottom, so nothing is clipped into an edge). They drift,
+   skew and stretch against each other (translate, skewX, scaleY: transforms only, nothing repaints), so the mesh keeps
+   changing shape. Three hues: the accent, the lit ground's tone (a second hue, so the wash is not blue all through) and
+   the accent's neighbour, all low in chroma. Held still, it is the same picture. */
+.bg-liquid::before, .bg-liquid::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none; top: 0; bottom: 0; left: -30%; right: -30%; will-change: transform;
+}
+.bg-liquid::before {
+  background:
+    radial-gradient(ellipse 30% 36% at 30% 44%, color-mix(in oklab, var(--g-hue) calc(40% * var(--g-k)), transparent), transparent),
+    radial-gradient(ellipse 22% 24% at 54% 74%, color-mix(in oklab, var(--g-hue-t) calc(44% * var(--g-k)), transparent), transparent);
+  animation: g-liq-a 26s ease-in-out infinite alternate;
+}
+.bg-liquid::after {
+  background:
+    radial-gradient(ellipse 28% 30% at 68% 38%, color-mix(in oklab, var(--g-hue-b) calc(32% * var(--g-k)), transparent), transparent),
+    radial-gradient(ellipse 20% 20% at 44% 26%, color-mix(in oklab, var(--g-hue-t) calc(36% * var(--g-k)), transparent), transparent);
+  animation: g-liq-b 34s ease-in-out infinite alternate;
+}
+@keyframes g-liq-a { from { transform: translate3d(-7%, 0, 0) skewX(-7deg) scaleY(.94); } to { transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.05); } }
+@keyframes g-liq-b { from { transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.04); } to { transform: translate3d(-9%, 0, 0) skewX(-6deg) scaleY(.92); } }
+.bg-liquid.is-off::before, .bg-liquid.is-off::after, .bg-liquid.is-held::before, .bg-liquid.is-held::after { animation-play-state: paused; }
+/* the pause disc sits on the container's right edge, not the section's corner */
+.bg-liquid > .loop-pause { right: max(var(--pad), calc((100% - var(--container)) / 2)); bottom: 16px; }
+
+/* ---------------------------------------------------------------- motion and print */
+@media (prefers-reduced-motion: reduce) {
+  .bg-liquid::before, .bg-liquid::after { animation: none; }
+}
+@media print { .bg-liquid::before, .bg-liquid::after { display: none; } }

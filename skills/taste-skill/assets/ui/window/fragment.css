@@ -1,0 +1,92 @@
+/* window: a helpdesk queue (sidebar, list); the assistant works down the open rows */
+.ui-win { width: 600px; overflow: hidden; }
+.ui-win__bar { display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 12px 0 14px; border-bottom: 1px solid var(--u-line); background: var(--u-fill); min-width: 0; }
+/* the breadcrumb gives way first (an ellipsis), so the search box at the right is never pushed out or cut */
+.ui-win__crumb { display: inline-flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto; overflow: hidden; font-size: 13px; line-height: 16px; color: var(--u-muted); white-space: nowrap; }
+.ui-win__crumb b { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ui-win__crumb .ui-brand, .ui-win__crumb i { flex: none; }
+.ui-win__crumb .ui-brand { width: 14px; height: 14px; }
+.ui-win__crumb i { font-style: normal; color: var(--u-muted); }
+.ui-win__crumb b { font-weight: 500; color: var(--u-ink); }
+.ui-win__search { display: inline-flex; flex: none; align-items: center; gap: 8px; height: 28px; width: 168px; padding: 0 4px 0 8px; border-radius: 7px; background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2); font-size: 13px; color: var(--u-soft); }
+.ui-win__search .ui-icon { width: 14px; height: 14px; color: var(--u-muted); }
+.ui-win__search .ui-kbd { margin-left: auto; min-width: 20px; height: 20px; font-size: 13px; }
+.ui-win__body { display: grid; grid-template-columns: 152px 1fr; min-height: 312px; }
+.ui-win__side { display: grid; align-content: start; gap: 1px; padding: 8px; border-right: 1px solid var(--u-line); }
+.ui-win__nav {
+  display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border-radius: 6px;
+  font-size: 13px; line-height: 16px; color: var(--u-muted);
+}
+.ui-win__nav .ui-icon { width: 14px; height: 14px; }
+.ui-win__nav em { margin-left: auto; font-style: normal; font-size: 13px; color: var(--u-soft); }
+.ui-win__nav.is-on { background: var(--u-fill-2); color: var(--u-ink); font-weight: 500; }
+.ui-win__nav.is-on em { color: var(--u-muted); }
+.ui-win__label { margin: 12px 8px 4px; font-size: 13px; line-height: 16px; color: var(--u-soft); }
+.ui-win__hash { width: 14px; text-align: center; color: var(--u-soft); }
+.ui-win__main { min-width: 0; }
+.ui-win__cols, .ui-win__row { display: grid; grid-template-columns: 24px 92px minmax(0, 1fr) 96px 28px; align-items: center; gap: 0 12px; padding: 0 16px; }
+.ui-win__cols { height: 32px; border-bottom: 1px solid var(--u-line); font-size: 13px; line-height: 16px; color: var(--u-soft); }
+.ui-win__cols span:first-child { grid-column: 1 / 3; }
+.ui-win__row { height: 44px; font-size: 13px; line-height: 16px; transition: background-color 260ms var(--u-ease); }
+.ui-win__row + .ui-win__row { box-shadow: inset 0 1px 0 var(--u-line); }
+.ui-win__row.is-sel { background: color-mix(in oklab, var(--u-ink) 4%, var(--u-bg)); }
+.ui-win__row .ui-avatar { width: 24px; height: 24px; }
+.ui-win__who { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-win__sub { color: var(--u-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-win__age { color: var(--u-soft); text-align: right; font-size: 13px; }
+.ui-win__st {
+  display: inline-flex; align-items: center; gap: 6px; justify-self: start; height: 22px; padding: 0 8px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--u-muted); box-shadow: inset 0 0 0 1px var(--u-line-2);
+  transition: color 240ms var(--u-ease), background-color 240ms var(--u-ease), box-shadow 240ms var(--u-ease);
+}
+.ui-win__st::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; flex: none; }
+/* the row being worked on is the window's one accent touch */
+.ui-win__st.is-work { color: var(--u-accent-text); background: var(--u-tint); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--u-accent) 22%, transparent); }
+.ui-win__st.is-work::before { width: 8px; height: 8px; background: none; border: 1.5px solid color-mix(in oklab, currentColor 30%, transparent); border-top-color: currentColor; opacity: 1; animation: ui-spin 800ms linear infinite; }
+.ui-win__st.is-done { color: var(--u-soft); box-shadow: inset 0 0 0 1px var(--u-line); }
+.ui-win__st.is-you { color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2); background: var(--u-fill-2); }
+.ui-win__st.is-you::before { background: var(--u-ink); opacity: 1; }
+/* compact (opts.compact): a narrower window whose rows stack name over subject, for a card panel
+   where the whole width must show; the status stays in view */
+.ui-win--compact { width: 456px; }
+.ui-win--compact .ui-win__body { grid-template-columns: 128px 1fr; }
+.ui-win--compact .ui-win__search { width: 112px; }
+.ui-win--compact .ui-win__cols { display: none; }
+.ui-win--compact .ui-win__row { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-rows: 18px 16px; align-content: center; height: 56px; row-gap: 1px; padding: 0 14px; }
+.ui-win--compact .ui-win__row .ui-avatar { grid-row: 1 / 3; }
+.ui-win--compact .ui-win__who { grid-column: 2; grid-row: 1; line-height: 18px; }
+.ui-win--compact .ui-win__sub { grid-column: 2; grid-row: 2; font-size: 13px; }
+.ui-win--compact .ui-win__st { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+.ui-win--compact .ui-win__age { display: none; }
+/* narrow: the window's own width decides its layout (a container query), so a .fit wrapper, a small
+   card at 1024 or a phone panel never slices its columns:
+   - under 540px the rows stack name over subject, the column heads and the age go (the compact rows);
+   - under 420px the sidebar goes too and the search shrinks to its icon. */
+.ui-win { container: ui-win / inline-size; }
+@container ui-win (max-width: 539px) {
+  .ui-win .ui-win__cols { display: none; }
+  .ui-win .ui-win__row { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-rows: 18px 16px; align-content: center; height: 56px; row-gap: 1px; padding: 0 14px; }
+  .ui-win .ui-win__row .ui-avatar { grid-row: 1 / 3; }
+  .ui-win .ui-win__who { grid-column: 2; grid-row: 1; line-height: 18px; }
+  .ui-win .ui-win__sub { grid-column: 2; grid-row: 2; font-size: 13px; }
+  .ui-win .ui-win__st { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+  .ui-win .ui-win__age { display: none; }
+  .ui-win .ui-win__body { grid-template-columns: 128px minmax(0, 1fr); }
+  .ui-win .ui-win__search { width: 112px; }
+}
+@container ui-win (max-width: 419px) {
+  .ui-win .ui-win__body { grid-template-columns: minmax(0, 1fr); }
+  .ui-win .ui-win__side { display: none; }
+  .ui-win .ui-win__search { width: 28px; padding: 0; justify-content: center; gap: 0; }
+  .ui-win .ui-win__search :is(.ui-kbd, .ui-win__ph) { display: none; }
+  .ui-win .ui-win__row { gap: 0 10px; padding: 0 12px; }
+  .ui-win .ui-win__bar { gap: 10px; padding: 0 8px 0 12px; }
+}
+/* very narrow: the window dots go too, the crumb keeps its last word */
+@container ui-win (max-width: 299px) {
+  .ui-win .ui-dots { display: none; }
+}
+/* phone: the window takes the panel's width (cards.css); the queries above lay it out */
+@media (max-width: 639px) {
+  .ui-win, .ui-win--compact { width: 100%; }
+}

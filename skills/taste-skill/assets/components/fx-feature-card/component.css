@@ -1,0 +1,161 @@
+/*
+  fx-feature-card: a 2x2 of feature cards, each a title and two grey lines on the card fill, then an
+  inset panel with its own 8px margin (radius = card radius - margin) holding a still effect ground
+  and one smaller UI window. Two panels (one per row) run a short pointer demo; the others show a
+  settled still. The cards and panels never move.
+*/
+.cx-feat { --cx-feat-m: var(--s-2); --cx-feat-h: 340px; display: grid; gap: var(--s-7); }
+.cx-feat__head { display: grid; justify-items: center; gap: var(--s-3); text-align: center; }
+.cx-feat__h { font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.03em; margin: 0; max-width: 20ch; text-wrap: balance; }
+.cx-feat__sub { margin: 0; max-width: 54ch; font-size: var(--t-lead); line-height: 1.5; color: var(--muted); text-wrap: balance; }
+
+/* each card spans two rows of the grid (text, panel) as a subgrid, so the text zones of a row share
+   one height and the panels of a row start on one line */
+.cx-feat__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.cx-feat__card {
+  display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; min-width: 0; overflow: hidden;
+  border-radius: var(--r-lg); background: var(--cx-card); border: 1px solid var(--cx-line);
+  box-shadow: inset 0 1px 0 var(--cx-hi);
+}
+/* the text zone: same height in every card of a row (the grid row sizes it), never over the panel */
+.cx-feat__copy { display: grid; align-content: start; gap: 6px; padding: var(--s-5) var(--s-5) var(--s-5); }
+.cx-feat__title { font: 500 var(--t-card)/1.3 var(--font-text); letter-spacing: -0.01em; margin: 0; }
+.cx-feat__text { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 50ch; text-wrap: pretty; }
+
+/* the inset panel: one step off the card, its radius the card's minus its margin */
+.cx-feat__panel {
+  position: relative; isolation: isolate; overflow: hidden; height: var(--cx-feat-h); align-self: end;
+  margin: 0 var(--cx-feat-m) var(--cx-feat-m); border-radius: calc(var(--r-lg) - var(--cx-feat-m));
+  background: var(--cx-panel);
+}
+
+/* ---- the UI window on the ground (opaque, page ground colour) */
+.cx-feat__win {
+  position: absolute; z-index: 1; display: grid; align-content: start;
+  background: var(--bg); color: var(--ink); border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--cx-line-2), 0 2px 4px rgb(0 0 0 / .12), 0 18px 40px -12px rgb(0 0 0 / .45);
+  font-size: 13px; line-height: 1.4;
+}
+/* every window starts some way down the panel and runs out through its bottom edge, so it reads as a
+   cut from a real screen, never as a dialog floating in the middle of an empty ground */
+.cx-feat__win--bleed { left: 12%; right: 12%; top: 56px; bottom: -24px; }
+.cx-feat__win--narrow { left: 50%; width: min(300px, calc(100% - 64px)); transform: translateX(-50%); top: 44px; bottom: -24px; }
+.cx-feat__win--side { left: 9%; right: 22%; top: 72px; bottom: -24px; }
+
+.cx-feat__bar { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 10px 0 16px; border-bottom: 1px solid var(--cx-line); }
+.cx-feat__name { font-weight: 500; font-size: 13px; }
+/* in a window's bar the title keeps one line (it gives way with an ellipsis, never wraps) */
+.cx-feat__bar .cx-feat__name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cx-feat__chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: var(--r-sm);
+  font: 500 11.5px/1 var(--font-text); font-style: normal; color: var(--muted); background: var(--cx-panel);
+  transition: background-color .3s var(--cx-ease), color .3s var(--cx-ease);
+}
+.cx-feat__chip::before { content: ""; width: 6px; height: 6px; border-radius: 9px; background: currentColor; opacity: .7; }
+.cx-feat__chip.is-on { color: var(--ink); background: color-mix(in oklab, var(--accent) 22%, var(--bg)); }
+.cx-feat__chip.is-on::before { background: var(--accent); opacity: 1; }
+.cx-feat__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 30px; padding: 0 14px; margin-left: auto;
+  border-radius: var(--r-sm); background: var(--action); color: var(--action-ink); font: 500 12.5px/1 var(--font-text);
+  transition: transform .12s var(--cx-ease), filter .2s var(--cx-ease);
+}
+.cx-feat__btn.is-down { transform: scale(.96); filter: brightness(.92); }
+.cx-feat__btn.is-done::before {
+  content: ""; width: 9px; height: 5px; margin-top: -3px; border-left: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor; transform: rotate(-45deg);
+}
+.cx-feat__btn--wide { margin: 10px 0 0; width: 100%; height: 36px; font-size: 13px; }
+
+.cx-feat__meta { display: grid; gap: 8px; margin: 0; padding: 14px 16px; border-bottom: 1px solid var(--cx-line); }
+.cx-feat__meta div { display: grid; grid-template-columns: 88px 1fr; }
+.cx-feat__meta dt { color: var(--muted); }
+.cx-feat__meta dd { margin: 0; }
+.cx-feat__lines { margin: 0; padding: 6px 16px; list-style: none; }
+.cx-feat__lines li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; }
+.cx-feat__lines li + li { border-top: 1px solid var(--cx-line); }
+.cx-feat__lines b { font-weight: 500; }
+.cx-feat__lines .is-total span { color: var(--muted); }
+.cx-feat__foot { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--cx-line); background: var(--cx-card); color: var(--muted); }
+.cx-feat__foot span:last-child { color: var(--ink); text-align: right; }
+
+/* payment link */
+.cx-feat__pay { gap: 4px; padding: 18px; justify-items: start; }
+.cx-feat__pay .cx-feat__name { color: var(--muted); font-weight: 400; }
+.cx-feat__amount { font: 560 28px/1.15 var(--font-display); letter-spacing: -0.025em; }
+.cx-feat__note { color: var(--muted); font-size: 12px; }
+.cx-feat__label { margin-top: 12px; color: var(--muted); font-size: 12px; }
+.cx-feat__label + .cx-feat__field { margin-top: 2px; }
+.cx-feat__field {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; height: 38px; margin: 0 0 4px;
+  padding: 0 12px; border-radius: var(--r-sm); box-shadow: inset 0 0 0 1px var(--cx-line-2); font-size: 12.5px; letter-spacing: .02em;
+}
+.cx-feat__marks { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+.cx-feat__marks .cx-mark { height: 11px; width: auto; flex: none; fill: currentColor; }
+.cx-feat__or { justify-self: center; margin-top: 10px; color: var(--muted); font-size: 12px; }
+
+/* payout: the schedule switch in the window's bar, then the payouts */
+.cx-feat__payout .cx-feat__bar { justify-content: space-between; }
+.cx-feat__seg { display: grid; grid-template-columns: repeat(3, auto); padding: 2px; border-radius: var(--r-sm); background: var(--cx-panel); }
+.cx-feat__seg span { display: grid; place-items: center; height: 26px; padding: 0 10px; border-radius: calc(var(--r-sm) - 2px); color: var(--muted); font-size: 12px; }
+.cx-feat__seg .is-on { background: var(--bg); color: var(--ink); font-weight: 500; box-shadow: 0 0 0 1px var(--cx-line-2), 0 1px 2px rgb(0 0 0 / .12); }
+.cx-feat__payout .cx-feat__lines li:first-child span { color: var(--ink); }
+.cx-feat__payout .cx-feat__lines li:not(:first-child) { color: var(--muted); }
+
+/* invite */
+.cx-feat__invite { display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--cx-line); }
+.cx-feat__input, .cx-feat__select {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 1px var(--cx-line-2); white-space: nowrap;
+}
+.cx-feat__input { flex: 1; min-width: 0; overflow: hidden; }
+.cx-feat__select { gap: 6px; color: var(--muted); }
+.cx-feat__invite .cx-feat__btn { margin-left: 0; height: 32px; }
+.cx-feat__caret { width: 1px; height: 15px; margin-left: 1px; background: var(--ink); animation: cx-feat-caret 1s steps(1) infinite; }
+@keyframes cx-feat-caret { 50% { opacity: 0; } }
+.cx-feat__people { margin: 0; padding: 6px 12px; list-style: none; }
+.cx-feat__people li { display: flex; align-items: center; gap: 10px; height: 44px; }
+.cx-feat__people li + li { border-top: 1px solid var(--cx-line); }
+.cx-feat__people em { margin-left: auto; font-style: normal; color: var(--muted); font-size: 12px; }
+.cx-feat__people em.cx-feat__chip { color: var(--ink); background: color-mix(in oklab, var(--accent) 22%, var(--bg)); }
+.cx-feat__people em.cx-feat__chip::before { background: var(--accent); opacity: 1; }
+.cx-feat__ava {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; flex: none;
+  background: color-mix(in oklab, var(--accent) var(--a), var(--cx-raise)); font-size: 10.5px; font-weight: 500; letter-spacing: .02em;
+}
+/* the new invite opens at the top of the list and pushes the others down (never a blank row) */
+.cx-feat__new { overflow: hidden; transition: opacity .35s var(--cx-ease), height .35s var(--cx-ease); }
+.cx-feat__win:not(.is-added) .cx-feat__new { opacity: 0; height: 0; }
+.cx-feat__win:not(.is-added) .cx-feat__new + li { border-top: 0; }
+
+/* ---- the pointer and its click ring (added by the script) */
+.cx-feat__ptr {
+  position: absolute; left: 0; top: 0; z-index: 3; width: 20px; height: 20px; pointer-events: none; opacity: 0;
+  transition: transform 1.1s cubic-bezier(.45, 0, .2, 1), opacity .3s var(--cx-ease);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / .35));
+}
+.cx-feat__ptr svg { display: block; width: 20px; height: 20px; }
+.cx-feat__ptr path { fill: var(--ink); stroke: var(--bg); stroke-width: 1.5; stroke-linejoin: round; }
+.cx-feat__ring {
+  position: absolute; left: -14px; top: -14px; z-index: 2; width: 28px; height: 28px; border-radius: 99px; pointer-events: none;
+  border: 1.5px solid color-mix(in oklab, var(--ink) 70%, transparent); opacity: 0;
+}
+.cx-feat__ring.is-on { animation: cx-feat-ring .5s var(--cx-ease) forwards; }
+@keyframes cx-feat-ring { from { opacity: .9; scale: .4; } to { opacity: 0; scale: 1.25; } }
+
+/* the pause sits in the panel's top-right corner, above the window */
+.cx-feat__panel > .cx-pause { top: var(--s-3); right: var(--s-3); bottom: auto; }
+
+@media (prefers-reduced-motion: reduce) { .cx-feat__caret { animation: none; } }
+@media (max-width: 899px) {
+  .cx-feat__grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 639px) {
+  .cx-feat { --cx-feat-h: 300px; gap: var(--s-6); }
+  .cx-feat__copy { padding: var(--s-5) var(--s-4) var(--s-4); }
+  /* the ground keeps a clear margin round the window on a phone, as on a wide screen */
+  .cx-feat__win--bleed, .cx-feat__win--side { left: 28px; right: 28px; top: 52px; }
+  .cx-feat__win--narrow { top: 44px; width: calc(100% - 56px); }
+  .cx-feat__invite .cx-feat__select { display: none; }
+  /* the window title keeps one line: the state chip gives way (the button says Sent) */
+  .cx-feat__bar .cx-feat__chip { display: none; }
+  .cx-feat__meta div { grid-template-columns: 76px 1fr; }
+}

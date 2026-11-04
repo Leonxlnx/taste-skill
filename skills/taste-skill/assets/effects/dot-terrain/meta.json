@@ -1,0 +1,10 @@
+{
+  "id": "dot-terrain",
+  "name": "Dot terrain",
+  "family": "pattern",
+  "look": "Rolling land drawn as a cloud of points, like a laser scan, lit from one side and heaving in slow waves toward a soft horizon.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"]
+}

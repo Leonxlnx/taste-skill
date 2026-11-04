@@ -1,0 +1,12 @@
+{
+  "id": "edge-glow",
+  "name": "Edge glow",
+  "family": "light",
+  "look": "Light runs around the edge of a card or prompt box, a bright head with a long fading tail that washes the box with its colour as it passes.",
+  "bestOn": ["card"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"],
+  "random": false,
+  "subjects": ["the one key object of a page: the prompt box or the featured plan"]
+}

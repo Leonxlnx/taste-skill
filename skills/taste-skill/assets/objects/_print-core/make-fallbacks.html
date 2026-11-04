@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Print fallbacks</title>
+<style>
+  body { margin: 0; padding: 24px; font: 14px/1.5 system-ui, sans-serif; background: #eee; }
+  .host { position: relative; width: 640px; height: 640px; background: #fff; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .row a { display: block; font-size: 12px; color: #111; }
+  .row img { height: 160px; background: #000; display: block; }
+</style>
+</head>
+<body>
+<!--
+  Maintainers only: prints each object's posters after a change to its model. Open
+  ?ids=print-cup,print-lamp (every object without ids) and save each link into the object's folder;
+  window.__plates holds the data URLs for a script, and data-ready is set when all are done.
+  - a print: fallback.png (light paper) and fallback-dark.png: red ink, green accent, blue the silhouette.
+  - the render: fallback-render.png and fallback-render-dark.png, twice as wide: the plates on the left
+    (red the floor's shadow, green the accent part, blue the coverage) and the render in colour on the
+    right, its accent part in RENDER_REF (or a plate's own accent), lit again in the page's accent.
+  - any further plates an object lists (the globe's for a blue accent on the sea).
+  The frame and size match FB in print3d.js, so the poster lands where the live picture will.
+-->
+<p>Each object's posters: the prints, then the render (plates left, colour right). Click to save.</p>
+<div class="host" id="host"></div>
+<div class="row" id="out"></div>
+<script type="module">
+  import { FB, RENDER_REF } from './print3d.js';
+  const q = new URLSearchParams(location.search);
+  const ids = (q.get('ids') || 'print-cup,print-wheel,print-lamp,print-globe,print-cards').split(',');
+  const host = document.getElementById('host'), out = document.getElementById('out');
+  host.style.width = FB.w + 'px'; host.style.height = FB.h + 'px';
+  window.__plates = {};
+  const PAPER = { light: { bg: '#ffffff', surface: '#f4f4f4', ink: '#111111', accent: '#e5531c' }, dark: { bg: '#0b0b0c', surface: '#161618', ink: '#f2f2f2', accent: '#ff7a3c' } };
+  const BASE = { size: FB.size, x: 0, y: 0, transparent: 1, turn: 0, interactive: 0 };
+  // one picture: mount, hold a live context, wait for the shaders, pose at rest, snapshot
+  async function shoot(obj, palette, params, plate) {
+    host.innerHTML = '';
+    const ctrl = obj.mount(host, { palette, params: { ...BASE, ...params } });
+    await ctrl.ready();
+    if (ctrl.info.fallback) throw new Error(`${obj.id}: no live picture (${ctrl.info.fallback})`);
+    ctrl.pose({ t: 0 });
+    const url = ctrl.snapshot(plate);
+    ctrl.destroy();
+    return url;
+  }
+  const load = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  function show(id, name, url) {
+    window.__plates[`${id}/${name}`] = url;
+    const a = document.createElement('a');
+    a.href = url; a.download = `${id}-${name}`;
+    a.innerHTML = `<img src="${url}" alt=""> ${id}/${name}`;
+    out.appendChild(a);
+  }
+  try {
+    for (const id of ids) {
+      const obj = (await import(`../${id}/object.js`)).default;
+      const extra = obj.plates || [];
+      // the prints
+      const prints = [['fallback.png', 'light'], ['fallback-dark.png', 'dark'], ...extra.filter(p => !p.render).map(p => [p.file, p.paper, p.accent])];
+      for (const [name, paper, accent] of prints) {
+        show(id, name, await shoot(obj, { ...PAPER[paper], ...(accent ? { accent } : {}) }, { effect: obj.posterPrint }, true));
+      }
+      // the render: the plates with the floor's shadow, then the colour without a floor, side by side
+      const renders = [['fallback-render.png', 'light', RENDER_REF], ['fallback-render-dark.png', 'dark', RENDER_REF], ...extra.filter(p => p.render).map(p => [p.file, p.paper, p.accent])];
+      for (const [name, paper, accent] of renders) {
+        const pal = { ...PAPER[paper], accent };
+        const plates = await load(await shoot(obj, pal, { effect: 'render' }, true));
+        const colour = await load(await shoot(obj, pal, { effect: 'render', shadow: 0 }, false));
+        const c = document.createElement('canvas');
+        c.width = plates.width * 2; c.height = plates.height;
+        const x = c.getContext('2d');
+        x.drawImage(plates, 0, 0);
+        x.drawImage(colour, plates.width, 0, plates.width, plates.height);
+        show(id, name, c.toDataURL('image/png'));
+      }
+    }
+    document.documentElement.dataset.ready = '1';
+  } catch (e) {
+    console.error(e);
+    document.documentElement.dataset.ready = 'error';
+  }
+</script>
+</body>
+</html>

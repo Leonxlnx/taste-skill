@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagrams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="diagram.css">
+<style>
+  /* two page palettes (the same as assets/ui/cards.html); every colour of the cards and the diagrams
+     comes from these */
+  :root {
+    --font-text: "Geist", system-ui, sans-serif;
+    --font-display: "Geist", system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+  }
+  [data-theme="light"] {
+    --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; --frag: #ffffff; --ground-bg: #ebeae6; --ground-accent: #dcd9d0;
+  }
+  [data-theme="light"][data-accent="blue"] { --accent: #2456e8; }
+  [data-theme="light"][data-accent="green"] { --accent: #16825d; }
+  [data-theme="dark"] {
+    --bg: #070708; --card: #141416; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; --frag: #1c1d20; --ground-bg: #101012; --ground-accent: #232326;
+  }
+  [data-theme="dark"][data-accent="white"] { --accent: #f2f2ef; --accent-ink: #0b0b0c; }
+  [data-theme="dark"][data-accent="green"] { --accent: #3ccf8e; --accent-ink: #06130d; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: #f3f3f1; color: #0f0f0e; -webkit-font-smoothing: antialiased; }
+  .set { background: var(--bg); color: var(--ink); padding: 72px 0 96px; }
+  .wrap { max-width: 1232px; margin: 0 auto; padding: 0 24px; }
+  .head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
+  .head h2 { margin: 0; font: 500 32px/1.15 var(--font-display); letter-spacing: -0.02em; }
+  .head p { margin: 0; color: var(--muted); font-size: 15px; max-width: 46ch; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .grid--one { grid-template-columns: minmax(0, 1fr); }
+  /* the panel heights of the brief: a card panel about 340 high, a section panel 560 */
+  .card > .panel { --p-h: 340px; }
+  .card--wide > .panel { --p-h: 560px; }
+  .item { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .item > .card { flex: 1; }
+  .item > code { font: 400 12px/1 var(--font-mono); color: var(--muted); padding-left: 4px; }
+  .top { background: #f3f3f1; border-bottom: 1px solid rgb(0 0 0 / .07); }
+  .top .wrap { display: flex; align-items: center; gap: 16px; height: 60px; font-size: 14px; }
+  .top b { font-weight: 560; }
+  .top span { color: #686863; }
+  /* a held moment (?dg=rest or mid) shows its end state at once, for screenshots */
+  .dg-hold .dg *, .dg-hold .dg *::before, .dg-hold .dg *::after { transition: none !important; animation: none !important; }
+  @media (max-width: 1023px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 639px) {
+    .set { padding: 48px 0 64px; }
+    .wrap { padding: 0 16px; }
+    .head { flex-direction: column; gap: 8px; margin-bottom: 28px; }
+    .head h2 { font-size: 26px; }
+    .card > .panel { --p-h: 300px; }
+    .card--wide > .panel { --p-h: 420px; }
+  }
+</style>
+</head>
+<body data-icon-base="../icons/demo/">
+<!-- icons load from ../icons/demo/ (every curated icon, written by scripts/icons.mjs fetch --all). A real page loads them from assets/icons/, filled once with:
+     node scripts/icons.mjs scan index.html --out assets/icons -->
+<header class="top"><div class="wrap"><b>Diagrams</b><span>diagram.js with presets.json: node-and-line visuals for a card or a section. <a href="lab.html">Open the builder</a></span></div></header>
+<main id="sets"></main>
+
+<script type="module">
+  import dg from './diagram.js';
+
+  // plain card copy for the demo only (a page writes its own)
+  const COPY = {
+    'hub-tools': ['Works with the tools you have', 'Connect Gmail, Slack, Notion, Drive, Salesforce and Zendesk once. The agent reads and writes in each.'],
+    'hub-branches': ['Searches every file you own', 'One search across Drive, Notion, GitHub and Gmail, down to the single document.'],
+    'hub-web': ['Answers from every team’s tools', 'Ask once. It reads what sales, support, engineering and finance keep.'],
+    'ring-apps': ['Everything your team uses, in one place', 'Mail, chat, files, calls and the CRM, connected to one workspace.'],
+    'tree-orders': ['Every order handled the same way', 'Payment, stock and shipping start the moment an order comes in.'],
+    'lanes-agent': ['One email, three jobs done', 'A message to support is answered, logged in Zendesk and added to Salesforce at once.'],
+    'lanes-media': ['Upload once, publish everywhere', 'Video, thumbnails and captions are made in parallel, then go live together.'],
+    'lanes-deploy': ['Push once, live in three regions', 'Every push to main is built once and served from Frankfurt, Virginia and Tokyo.'],
+    'fanin-warehouse': ['All your numbers in one place', 'Orders, payments, ads and tickets land in one warehouse and one dashboard.'],
+    'bowtie-events': ['Collect once, send everywhere', 'Orders, payments and app events reach every tool that needs them.'],
+    'ring-regions': ['Close to every customer', 'Six regions answer in under 25 ms, wherever your customers are.'],
+    'sync-crm': ['Your database and CRM agree', 'Contacts, companies and deals sync both ways within seconds.'],
+    'timeline-onboarding': ['From sign-up to first payment', 'See where each new customer is, and what happens next.'],
+    'grid-documents': ['Reads the files you already have', 'Docs, Word, Excel, PDF, Notion and Gmail, checked and summed up in one report.'],
+    'free-approval': ['Approvals without the chasing', 'Each request goes straight to the right manager, who approves it in one click.'],
+    'lanes-render': ['Render on every GPU at once', 'The scheduler splits a job over your GPUs and joins the frames into one movie.'],
+    'hub-stack': ['One API for your whole stack', 'Reads and writes Postgres, Redis, Kafka, Stripe, Sentry and Grafana.'],
+    'bowtie-model': ['Answers from your docs, chats and code', 'Docs, Slack and GitHub feed one model that answers, summarises and raises alerts.'],
+    'fanin-telemetry': ['Every signal in one place', 'Metrics, traces, errors and logs reach one collector, and the alerts follow.'],
+    'tree-release': ['From pull request to production', 'Each pull request is built, previewed and reviewed before it merges.'],
+    'ring-edge': ['Runs wherever you run', 'Cloudflare, AWS, Vercel, Docker, Kubernetes and Postgres around one platform.'],
+    'lanes-matchmaking': ['Matches in seconds, close to home', 'Players in the queue are placed in a lobby in their own region.'],
+    'hub-stores': ['One build, every store', 'Ship to Steam, Epic Games, PlayStation, itch.io and Roblox from one place.'],
+    'ring-servers': ['Servers near every player', 'Six regions, each with its own ping, round one matchmaker.'],
+    'sync-saves': ['Saves follow the player', 'Saves, trophies and friends stay in step between console and PC.'],
+    'timeline-season': ['From alpha to season one', 'The road from first playtest to the first season, in five steps.'],
+    'grid-assets': ['Assets in, one build out', 'Models, textures, sound and video are imported, compressed and packed.'],
+  };
+  const q = new URLSearchParams(location.search);
+  const only = q.get('ids') ? q.get('ids').split(',') : null;
+  const themes = q.get('theme') ? q.get('theme').split(',') : ['light', 'dark'];
+  const type = q.get('type');                // software | tech | gaming | product | service
+  const show = q.get('show') || 'all';      // all | cards | grounds | sections
+  const groundAll = q.get('ground');         // ?ground=glow tries one ground on every card
+
+  const presets = await dg.presets();
+  const ids = Object.keys(presets).filter(id => (!only || only.includes(id)) && (!type || (presets[id].types || []).includes(type)));
+  const root = document.getElementById('sets');
+
+  const card = (id, cls = '', opts = null) => {
+    const [t, p] = COPY[id] || [id, ''];
+    const wrap = document.createElement('div');
+    wrap.className = 'item';
+    const a = document.createElement('article');
+    a.className = 'card card--row ' + cls;
+    a.innerHTML = `<h3></h3><p></p><div class="panel"><div class="dg" data-diagram="${id}"></div></div>`;
+    a.querySelector('h3').textContent = t;
+    a.querySelector('p').textContent = p;
+    const o = { ...(opts || {}), ...(groundAll ? { ground: groundAll } : {}) };
+    if (Object.keys(o).length) a.querySelector('.dg').dataset.diagramOpts = JSON.stringify(o);
+    a.dataset.preset = id;
+    wrap.append(a);
+    if (q.get('labels')) { const code = document.createElement('code'); code.textContent = id + (o.ground ? ` · ground ${o.ground}` : ''); wrap.append(code); }
+    return wrap;
+  };
+  const set = (theme, title, text, list, wideCards, accent) => {
+    const sec = document.createElement('section');
+    sec.className = 'set';
+    sec.dataset.theme = theme;
+    if (accent) sec.dataset.accent = accent;
+    sec.innerHTML = `<div class="wrap"><div class="head"><h2></h2><p></p></div><div class="grid${wideCards ? ' grid--one' : ''}"></div></div>`;
+    sec.querySelector('h2').textContent = title;
+    sec.querySelector('.head p').textContent = text;
+    const grid = sec.querySelector('.grid');
+    list.forEach(x => { const [id, o] = Array.isArray(x) ? x : [x, null]; if (presets[id]) grid.appendChild(card(id, wideCards ? 'card--wide' : '', o)); });
+    root.appendChild(sec);
+  };
+  if (show === 'all' || show === 'cards') {
+    if (themes.includes('light')) set('light', 'In a card', 'Every preset in a feature card, its panel about 540 by 340.', ids);
+    if (themes.includes('dark')) set('dark', 'On a dark page', 'The same presets on the dark palette. The light is the accent.', ids);
+  }
+  if (show === 'all' || show === 'grounds') {
+    const g = [['hub-tools', { ground: 'rings' }], ['lanes-agent', { ground: 'glow' }], ['bowtie-events', { ground: 'glow dots' }], ['ring-apps', { ground: 'glow' }]]
+      .filter(([id]) => !only || only.includes(id));
+    if (themes.includes('light')) set('light', 'Grounds', 'Rings round a hub, or a soft light with a fine grain under the core.', g, false, 'green');
+    if (themes.includes('dark')) set('dark', 'Grounds, dark', 'The same grounds on the dark palette.', g, false, 'green');
+  }
+  if (show === 'all' || show === 'sections') {
+    const wl = ['lanes-agent', 'bowtie-events'].filter(id => !only || only.includes(id));
+    const wd = ['hub-branches', 'sync-crm'].filter(id => !only || only.includes(id));
+    if (themes.includes('light')) set('light', 'In a section', 'The same specs at section size, about 1170 by 560. Nodes with a line become cards.', wl, true, 'blue');
+    if (themes.includes('dark')) set('dark', 'Section, dark', 'A white light on the dark palette.', wd, true, 'white');
+  }
+
+  const all = await dg.auto(document);
+  window.__dg = all;
+  await document.fonts.ready;
+  await dg.ready();
+  // ?dg=rest holds every diagram at rest, ?dg=mid at its busiest moment (screenshots)
+  const hold = q.get('dg');
+  if (hold) { document.documentElement.classList.add('dg-hold'); all.forEach(d => d.seek(hold === 'rest' ? d.T - 0.05 : d.stillT)); }
+  requestAnimationFrame(() => { document.documentElement.dataset.ready = '1'; });
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+/* fly-into-the-shape - at rest: the aside, the mark small, the chapter's picture, then its title and
+   sentence side by side on the page's ground. Live: the page's ground over the whole stage with the
+   world clipped to the mark in the middle, the title's copy on the face, the band rising across the
+   foot once the world fills the screen. */
+[data-big-scene="fly-into-the-shape"] { background: var(--bg); color: var(--ink); }
+[data-big-scene="fly-into-the-shape"] .fis__world { position: relative; overflow: clip; background: var(--p-inv-bg, #111); }
+[data-big-scene="fly-into-the-shape"] .fis__media { display: block; width: 100%; height: 100%; object-fit: cover; }
+[data-big-scene="fly-into-the-shape"] .fis__title, [data-big-scene="fly-into-the-shape"] .fis__face { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1.02; }
+[data-big-scene="fly-into-the-shape"] .fis__title span, [data-big-scene="fly-into-the-shape"] .fis__face span { display: block; }
+[data-big-scene="fly-into-the-shape"] .fis__sub { margin: 0; font-size: var(--t-lead); line-height: 1.5; max-width: 46ch; }
+[data-big-scene="fly-into-the-shape"] .fis__aside { margin: 0; font-size: var(--t-small); color: var(--muted); }
+[data-big-scene="fly-into-the-shape"] .fis__mark { width: 56px; height: 56px; fill: currentColor; }
+[data-big-scene="fly-into-the-shape"] .fis__face { display: none; }
+[data-big-scene="fly-into-the-shape"] .fis__band { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--gutter); align-items: start; }
+[data-big-scene="fly-into-the-shape"] .fis__band .fis__title { font-size: var(--t-h2); }
+
+/* ---------- finished composition: the chapter opens on its picture */
+[data-big-scene="fly-into-the-shape"]:not(.is-live) > .sc__stage { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad); display: grid; gap: var(--s-5); }
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__outside { order: 1; }
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__mark { order: 2; }
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__world { order: 3; aspect-ratio: 16 / 9; border-radius: var(--r-lg); }
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__media { position: absolute; inset: 0; }
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__band { order: 4; margin-top: var(--s-3); }
+@media (max-width: 767px) {
+  [data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__world { aspect-ratio: 4 / 5; }
+  [data-big-scene="fly-into-the-shape"] .fis__band { grid-template-columns: 1fr; row-gap: var(--s-4); }
+}
+
+/* ---------- the held stage */
+[data-big-scene="fly-into-the-shape"].is-live > .sc__stage { background: var(--bg); }
+[data-big-scene="fly-into-the-shape"].is-live .fis__outside { position: absolute; inset: 0; z-index: 1; background: var(--bg); }
+[data-big-scene="fly-into-the-shape"].is-live .fis__aside { position: absolute; left: var(--pad); top: calc(var(--nav-h, 0px) + var(--s-6)); will-change: opacity; }
+[data-big-scene="fly-into-the-shape"].is-live .fis__mark { display: none; }
+[data-big-scene="fly-into-the-shape"].is-live .fis__world { position: absolute; inset: 0; z-index: 2; transform-origin: 50% 50%; will-change: transform, clip-path; }
+[data-big-scene="fly-into-the-shape"].is-live .fis__media { position: absolute; inset: 0; }
+[data-big-scene="fly-into-the-shape"].is-live .fis__face {
+  display: block; position: absolute; left: 50%; top: 50%; z-index: 3; width: min(92vw, 16ch); font-size: clamp(40px, 6.2vw, 96px); text-align: center; transform-origin: 50% 50%;
+  will-change: transform, opacity; color: var(--p-inv-ink, #fff);
+}
+/* the title and the sentence land on a flat band of the section's ground across the foot of the stage: readable on any photograph */
+[data-big-scene="fly-into-the-shape"].is-live .fis__band {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+  padding: var(--s-6) max(var(--pad), calc((100vw - var(--container)) / 2)); background: var(--bg); color: var(--ink);
+  opacity: 0; will-change: transform, opacity;
+}
+
+/* ---------- finished composition in the page rhythm: the picture no taller than 40% of the screen */
+[data-big-scene="fly-into-the-shape"]:not(.is-live) .fis__world { max-height: 40svh; }

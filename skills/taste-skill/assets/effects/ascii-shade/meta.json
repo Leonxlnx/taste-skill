@@ -1,0 +1,11 @@
+{
+  "id": "ascii-shade",
+  "name": "ASCII shade",
+  "family": "dither",
+  "look": "A slowly turning sphere (or a cloud, or a wave across the frame) made only of monospace characters, sparse dots to dense signs, so it reads as code.",
+  "bestOn": ["hero", "card", "footer"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true
+}

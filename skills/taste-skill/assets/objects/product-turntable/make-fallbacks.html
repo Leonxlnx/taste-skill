@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turntable stills</title>
+<link rel="icon" href="data:,">
+<style>
+  body { margin: 0; padding: 16px; font: 13px/1.4 system-ui, sans-serif; background: #8a8a8a; display: grid; grid-template-columns: repeat(2, 480px); gap: 12px; }
+  .host { position: relative; width: 480px; height: 360px; }
+  figure { margin: 0; } figcaption { padding: 4px 0; }
+</style>
+</head>
+<body>
+<!--
+  Renders the turntable's no-WebGL stills: each form on a clear ground, in a dark ink (for light pages)
+  and a light ink (for dark pages), the accent a neutral grey so it suits any page. Open it, wait for
+  "done", then save each canvas as fallback-<form>-<light|dark>.png in this folder (window.__stills
+  holds them as data URLs).
+-->
+<script type="module">
+  import turntable from './object.js';
+  const forms = ['camera', 'chair', 'speaker', 'cup'];
+  const inks = { light: { bg: '#ffffff', ink: '#161616', muted: '#5a5a5a', accent: '#6e6e6e' }, dark: { bg: '#121212', ink: '#efefef', muted: '#a8a8a8', accent: '#9a9a9a' } };
+  const out = {};
+  for (const form of forms) for (const kind of ['light', 'dark']) {
+    const fig = document.createElement('figure');
+    fig.innerHTML = `<div class="host"></div><figcaption>fallback-${form}-${kind}.png</figcaption>`;
+    document.body.append(fig);
+    const host = fig.firstChild;
+    host.scrollIntoView({ block: 'center' });
+    const ctl = turntable.mount(host, { palette: inks[kind], params: { form, transparent: 1, autoplay: 0, cell: 1.5 } });
+    await new Promise(r => setTimeout(r, 900));
+    ctl.stage.redraw();
+    const c = host.querySelector('canvas');
+    const url = c ? c.toDataURL('image/png') : null;
+    out[`fallback-${form}-${kind}.png`] = url;
+    // one live context at a time: keep the still as a picture and free the canvas
+    ctl.destroy();
+    if (url) host.innerHTML = `<img src="${url}" alt="" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated">`;
+  }
+  window.__stills = out;
+  document.documentElement.dataset.ready = '1';
+  document.title = 'done';
+</script>
+</body>
+</html>

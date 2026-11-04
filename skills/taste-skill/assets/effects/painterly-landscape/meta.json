@@ -1,0 +1,10 @@
+{
+  "id": "painterly-landscape",
+  "name": "Painterly landscape",
+  "family": "mesh",
+  "look": "A soft, out-of-focus landscape painted in broad dabs: sky, hazy far hills and a near hill with a lit crest in the page colours, to sit under a UI window.",
+  "bestOn": ["card", "hero"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"]
+}

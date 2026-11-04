@@ -1,0 +1,30 @@
+/* fx-logos: a still row of brand marks; every few seconds a band of light passes through them */
+@property --cx-sweep { syntax: "<percentage>"; inherits: true; initial-value: -30%; }
+.cx-logos { position: relative; display: grid; justify-items: center; gap: var(--s-6); text-align: center; padding-inline: 44px; }
+.cx-logos__title { margin: 0; font-size: var(--t-small); color: var(--muted); }
+.cx-logos__row {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: clamp(28px, 4.5vw, 64px); row-gap: var(--s-5);
+  margin: 0; padding: 4px 8px; list-style: none;
+}
+.cx-logos__row li {
+  display: inline-flex; align-items: center; gap: 10px; color: color-mix(in oklab, var(--ink) 62%, var(--bg));
+  font: 600 20px/1 var(--font-display); letter-spacing: -0.02em;
+}
+.cx-logos__row .cx-mark { width: 24px; height: 24px; flex: none; fill: currentColor; }
+/* the light: the fill overlay (the row's next sibling) is shown only inside a soft band that crosses the row, then rests */
+.cx-logos__row + .cx-fill {
+  -webkit-mask: linear-gradient(100deg, transparent calc(var(--cx-sweep) - 16%), #000 var(--cx-sweep), transparent calc(var(--cx-sweep) + 16%));
+  mask: linear-gradient(100deg, transparent calc(var(--cx-sweep) - 16%), #000 var(--cx-sweep), transparent calc(var(--cx-sweep) + 16%));
+  animation: cx-sweep 9s cubic-bezier(.45, .05, .55, .95) infinite;
+  animation-delay: .8s;
+}
+@keyframes cx-sweep { 0% { --cx-sweep: -30%; } 34% { --cx-sweep: 130%; } 100% { --cx-sweep: 130%; } }
+/* the pause sits at the row's right end, on the row's middle line */
+.cx-logos > .cx-pause { right: 0; bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .cx-logos__row + .cx-fill { display: none; } }
+@media (max-width: 639px) {
+  .cx-logos { padding-inline: 0; padding-bottom: 48px; }
+  .cx-logos > .cx-pause { right: 50%; transform: translateX(50%); bottom: 0; }
+  .cx-logos__row { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; column-gap: 40px; }
+  .cx-logos__row li { font-size: 18px; }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-radius="round" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lines rise · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #fbfaf7; --p-surface: #f0eee8; --p-ink: #1c1d1a; --p-muted: #666a60; --p-accent: #2f7d4f; --p-accent-ink: #ffffff; --p-action: #1c1d1a; --p-action-ink: #fbfaf7;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Relay</a>
+  <nav class="demo-nav__links"><a href="#">Agents</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Download</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Give an agent a job, not a prompt</h1><p>Relay runs the work you hand it: the inbox, the tickets, the weekly report. You see every step and sign off the ones that matter.</p><div class="btn-row"><a class="btn btn--primary" href="#">Download for Mac</a><a class="btn btn--secondary" href="#">Contact sales</a></div></div>
+      <div class="frame frame--hero demo-lit" style="--ratio: 72%">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Jobs</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span class="on">Running</span><span>Done</span><span>Review</span><span>Settings</span></div>
+            <div class="dw__main"><h4>Running now</h4>
+              <div class="dw__row"><div><b>Support queue · Zendesk</b><span>14 tickets answered since 9:00</span></div><span class="dw__tag">Working</span></div>
+              <div class="dw__row"><div><b>Weekly report · Finance</b><span>Reading the ledger export</span></div><span class="dw__tag">Working</span></div>
+              <div class="dw__row"><div><b>Onboarding emails · Sales</b><span>3 drafts waiting for you</span></div><span class="dw__tag">Review</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section" data-moment="lines-rise">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head">
+        <h2>Every step on record, every decision yours</h2>
+        <p>Each job keeps a log of what Relay read, wrote and sent. A manager can check any day's work in a minute, and nothing goes out without the sign-off you set.</p>
+        <a class="link" href="#">See the audit log</a>
+      </div>
+      <div class="frame demo-lit mo-lr__follow" style="--ratio: 80%">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Log</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span>Running</span><span>Done</span><span class="on">Log</span><span>Settings</span></div>
+            <div class="dw__main"><h4>Tuesday</h4>
+              <div class="dw__row"><div><b>Read 14 tickets</b><span>09:02 · Support queue</span></div><span class="dw__tag">Done</span></div>
+              <div class="dw__row"><div><b>Sent 11 replies</b><span>09:40 · 3 held for review</span></div><span class="dw__tag">Done</span></div>
+              <div class="dw__row"><div><b>Asked for sign-off: refund €240</b><span>10:15 · waiting for Ana</span></div><span class="dw__tag">Review</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section ground-surface">
+    <div class="container demo-split">
+      <div class="section-head"><h2>Works where you work. <span class="muted">Mail, files, code.</span></h2><p>Relay signs in to the tools you already use and keeps the context across them, so a question about a file can end in a sent reply.</p><a class="link" href="#">See the integrations</a></div>
+      <img class="demo-photo" src="../_demo/photo-1081.jpg" alt="A glass building against the sky" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Relay · demo page for the moment “Lines rise”</span><span>Photograph by Julien Moreau on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

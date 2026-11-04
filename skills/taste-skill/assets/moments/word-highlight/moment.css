@@ -1,0 +1,8 @@
+/* word-highlight: the statement in the display face; each word rests at half ink on the ground and turns to ink when
+   the scroll reaches it, a <strong> word to the accent. Without script every word is ink. */
+.mo-wh__text, [data-moment="word-highlight"] > .container > p { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--t-h2); line-height: 1.16; letter-spacing: var(--display-tracking); max-width: 960px; text-wrap: pretty; }
+.mo-wh .mo-w { color: color-mix(in oklab, var(--ink) 50%, var(--bg)); transition: color 160ms ease; }
+.mo-wh .mo-w.is-on { color: var(--ink); }
+.mo-wh strong { font-weight: inherit; }
+.mo-wh strong .mo-w.is-on { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .mo-wh .mo-w { color: var(--ink); transition: none; } .mo-wh strong .mo-w { color: var(--accent); } }

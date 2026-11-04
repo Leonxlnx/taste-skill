@@ -1,0 +1,22 @@
+{
+ "name": "pipeline-board",
+ "title": "Pipeline run",
+ "shows": "A CI run: repo, branch and run number, a total time and a status chip; the commit it runs for with a Cancel button; five steps on a rail (checkout, install, test, build, deploy), each with the real mark of its tool (Git, npm, Node.js, Docker, Kubernetes) on a light tile: done steps with an ink-outlined check and their time, the running step with a turning accent ring and a bar, the waiting steps muted. The running step moves down to the end, the run passes (the chip takes an ink check, the total stands in bold), Re-run is pressed and the board goes straight back to the picture it began on. Wide (680px or more of its own width) the steps are a row of bordered nodes with their times, and the running step's commands and log under them.",
+ "useFor": [
+  "CI/CD",
+  "deploys",
+  "developer tools",
+  "data pipelines",
+  "automation",
+  "build status"
+ ],
+ "size": [
+  420,
+  290
+ ],
+ "fluid": "fills its .fit, 280 to 960px wide: steps as rows under 680px, a row of nodes with a log from 680px (checked at 280)",
+ "js": true,
+ "place": "whole: at-rise fit with --fit-max: 420px, 32 to 40px down, with 24px or more of ground under it (a panel of 350px or more), no fade: the running step reaches the last row in turn, so never cut through the steps. Wide: at-corner fit with --fit-max its width in a large panel or a split card (about 300px tall with its log), the panel's bottom-right corner left clear for the pause button",
+ "edit": "Steps are HTML: is-done on the steps already done (their time as written), is-run and style=\"--k:0.6\" on the running one (its time so far as written), none on the waiting ones, whose time cell holds the word Queued (muted; it stays until the step starts); every step that is not done carries its finished time as data-time on its time cell (\"1m 12s\" or \"1:12\", the format the total uses). Keep each step's command short (a few words: the rows show it, the wide nodes leave it to the log). The chip's and the button's words once the run has passed are their data-done. The log lines are HTML, each with data-step naming its step; the wide layout shows the running step's lines (is-on on them as written). Only figures follow: the running time counts to its data-time and the total adds the steps; a time it cannot read stays as written. Each step's name carries its tool's mark (.ui-pipe__tool holding its colour icon as an <img src=\"assets/ui/icons/x.svg\">, or the client's own mark fetched with icons.mjs into assets/icons, one treatment for all five; the commands name the same tools). The cycle starts and ends on the markup as written, so write it as the picture to rest on: the run partly done. A board written already passed starts with the button pressed and the first step running and ends on the passed run.",
+ "loop": "about 3.4 s a cycle: from the markup as written the running step's bar fills, it turns done with its time and the next step starts, to the last; the run passes and holds 0.7 s, the button is pressed and every step goes straight back to the written picture, which holds 0.45 s (about 13% of the cycle); restarts when the pointer enters its card; on a phone and under reduced motion it holds that picture"
+}

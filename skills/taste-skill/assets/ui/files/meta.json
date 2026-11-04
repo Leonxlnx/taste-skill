@@ -1,0 +1,22 @@
+{
+  "name": "files",
+  "title": "File tiles",
+  "shows": "A status pill over a grid of file tiles, each with its app's real mark (Zendesk, Notion, Google Docs, Confluence, Markdown) or a plain file glyph (PDF), a name and its app. Each tile is read in turn and gets a check.",
+  "useFor": [
+    "imports",
+    "supported formats",
+    "uploads",
+    "documents",
+    "sync"
+  ],
+  "size": [
+    440,
+    340
+  ],
+  "js": true,
+  "icons": "One treatment for the whole grid: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. A file type with no app (PDF, DOCX) is its colour file icon from assets/icons, or the .ui-file__glyph (PDF red). Never a grey box or a look-alike.",
+  "place": "at-corner wide (cards.css .wide, --w 680px) with .stage--fade-br: four columns cut by the right edge and enough rows to leave through the bottom; never centred with even ground round it. On a phone it takes the panel's width in two columns",
+  "edit": "Tiles are HTML (real icons). The status line is the page's own: while the wave runs it reads data-reading on the root, with {n} and {total} filled in (write it in the page's words); without data-reading only the first number in the line counts up, and a line with no number stays as written.",
+  "loop": "about 3.2 s a cycle: a wave runs across the grid, each tile reads and gets its check; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card",
+  "fluid": "fills its wrapper, 300 to 560px wide"
+}

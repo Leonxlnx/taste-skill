@@ -1,0 +1,911 @@
+{
+ "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place's hero is never dealt: it is always 'place' (local-business Recipe 3, hero-place.html), and no other hero lists place. Every hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. Nothing is laid over a photograph to make words readable (no scrim, gradient or veil: PH-31). Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale.",
+ "fields": {
+  "types": "business types it may be dealt to, with weights; a type missing is never dealt. place is never dealt: deal.mjs always prints the 'place' hero for it. gaming is a kind, not a page type (a game is page type software): its weights are read by deal.mjs for a game (--kind gaming, or --type software --has film,photo without ui) and never for a software brief; no hero for a game lists ui. A game without art files passes --has object (its key art is rendered with assets/objects/product-render) and is dealt the product stage; a game never deals statement or word: an effect never replaces its key art",
+  "needs": "the material it cannot do without (a|b means either): photo (a strong photograph of the real thing, at least 1920 wide for a full-bleed one), ui (the client's screens or kit fragments from assets/ui rewritten to its names), film (a real film; without one the control links to the film's page, never a dead button), object (a product photograph on a plain ground, a cut-out, the client's render, or a product render composed with assets/objects/product-render: a physical product, hardware or a game's hero object or world piece without photographs or art), ground (nothing: a CSS ground from assets/backgrounds)",
+  "h1": "the layout.css token, its size at 1440 and 390 before --ly-scale, the leading, the most lines at each width and the longest headline that fits",
+  "grid": "where each block stands on the 12 columns at 1440 (from 1024 up); below 1024 everything stacks in the order given",
+  "at1440": "measured on the demo at 1440x900 (the fixed header 72 over the hero's top, the hero exactly 900, words from y 120, content ending by y 836, container x 80 to 1360)",
+  "at390": "measured on the demo at 390x844 (header 56, the hero exactly 844, words from y 96, content ending by y 820, container x 24 to 366)",
+  "moment": "the hero's own small motion (layout.js), how it rests, and what reduced motion and a phone show. On kind other (site-kind other) and on a place nothing moves by itself: the live word, the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
+  "moments": "assets/moments/index.json ids that may be dealt onto this hero (one at most; moments.mjs pick --fits hero decides), as { id, only? }: only \"tech\" means software, AI and gaming briefs only",
+  "grounds": "assets/backgrounds/index.json ids the hero may stand on, as { id, only?, dark? }: only \"tech\" for software, AI and gaming briefs only; dark true for a dark page only",
+  "effects": "assets/effects ids the hero's visual may carry, as { id, as? }: every effect is for tech, software, AI and gaming briefs only, never a place or a local business; 'as' says where it goes when that is not the visual itself",
+  "mistakes": "what makes it fail the house's look",
+  "avoid": "the material that rules it out: with it in --has the hero is never dealt (word and statement are for briefs without a strong photograph or a film; with one, it leads)"
+ },
+ "heroes": [
+  {
+   "id": "place",
+   "name": "Place, Recipe 3: the photograph under the header, the words under it",
+   "from": "local-business Recipe 3 (bakeries, cafes, guesthouses, shops: Pentreath and Hall, Tartine, Ace Hotel)",
+   "demo": "hero-place.html",
+   "job": "The only place hero, never dealt (ST-53, ST-55, PH-47, PH-81): the client's own photograph of the place full-bleed under the header with nothing on it, and on the ground under it the h1 left and, from the split line, the kind of place, where and today's hours, and one filled button.",
+   "types": {
+    "place": 1
+   },
+   "needs": [
+    "photo"
+   ],
+   "h1": {
+    "token": "--t-h1 (place: 48 / 32)",
+    "size": [
+     48,
+     32
+    ],
+    "leading": 1.104,
+    "lines": [
+     2,
+     3
+    ],
+    "maxChars": 48
+   },
+   "grid": {
+    "photo": "full bleed, y 72 to 552 (--photo: min(480px, 53svh)), the subject in the middle 640px, nothing on it (no text, scrim, gradient, fade or box)",
+    "h1": "columns 1-6 (x 120-708 on the 1200 place column), --hgap 40 under the photograph",
+    "aside": "columns 7-12 (from x 732): the sub-line, two lines at most, then one filled 48px button 24 under it",
+    "below": "below 1024 everything stacks: the photograph 56vw (at most 46svh), then the h1, the sub-line and the button"
+   },
+   "at1440": {
+    "hero": "1440x900: exactly one screen; the visit block is screen 2, never in screen 1",
+    "photo": "1440x477 at y 72 (53svh at 900 tall; 480 on a taller screen)",
+    "text": "h1 48/53 on 2 lines, its capitals at y 589; sub 20/30 from x 732; button 48, 24 under the sub; the row ends by about y 750",
+    "measured": "hero 900/900, h1 48px on 2 lines from y 589, the photograph 1440x477 at y 72"
+   },
+   "at390": {
+    "hero": "844: one screen, the action bar at its foot",
+    "photo": "390x293 (4:3) at y 56, the subject centred (a phone crop through <picture> when the desktop one cuts it)",
+    "text": "--hgap 24: h1 32/37 on at most 3 lines from y 373, sub 18/28 (the opening days and time), one full-width 48px button; ends by 844 - 24 - the bar",
+    "measured": "hero 844/844, h1 32px on 2 lines from y 373"
+   },
+   "moment": "none: the hero carries no move, nothing moves by itself (a place is kind other)",
+   "moments": [],
+   "grounds": [
+    {
+     "id": "paper",
+     "only": "tech"
+    }
+   ],
+   "effects": [],
+   "mistakes": [
+    "words, a scrim, a gradient or a box on the photograph",
+    "a dealt hero (split, photo, film, editorial) on a place",
+    "the visit block or the address inside the first screen",
+    "a stock photograph standing in for the client's own place",
+    "rounded corners on the photograph (place photographs are square)",
+    "two buttons, or a pill button"
+   ]
+  },
+  {
+   "id": "split",
+   "name": "Split, the picture on the right",
+   "from": "Stripe, Linear customer pages, Aesop, Cowboy, most hotel and clinic sites",
+   "demo": "hero-split.html",
+   "job": "Text left, the real thing right, both whole on the first screen: a photograph of the product in use, the place or the people; a phone or one window for software.",
+   "types": {
+    "product": 3,
+    "service": 3,
+    "software": 2
+   },
+   "needs": [
+    "photo|ui|object"
+   ],
+   "h1": {
+    "token": "--ly-h1",
+    "size": [
+     72,
+     40
+    ],
+    "leading": 1.02,
+    "lines": [
+     3,
+     3
+    ],
+    "maxChars": 45
+   },
+   "grid": {
+    "text": "span-5 (519), top-aligned: the first line (a notice line or the h1) on the picture's top line, y 120",
+    "visual": "span-6 start-7 (628), ending on the right line, as tall as the hero's content box (716 at 1440x900: 900 - 120 - 64)"
+   },
+   "at1440": {
+    "hero": "1440x900",
+    "text": "519 wide; a notice line 14px at y 120, 16 to the h1; h1 72/1.02 on 3 lines from y 158 (from y 120 with no notice line, its capitals trimmed to the picture's top); lead 20/30 on 3 lines, max 42ch, 24 under the h1; buttons 44, 32 under the lead",
+    "visual": "628x716 at x 732, y 120 (48 under the header), radius --r-lg on all four corners",
+    "float": "one opaque card 300 wide, flat (a hairline, no shadow), 24 in from the picture's lower-left: a live fact (out of the oven at 10:30, next free slot)",
+    "measured": "hero 900/900, h1 72px (weight 400) on 3 lines, its box from y 158, the visual 628x716 at x 732, y 120"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "text": "h1 40 on 2 lines from y 134 under the notice line, lead 17/25.5 on 4 lines, buttons stacked full width (44 + 12 + 44)",
+    "visual": "342 x what is left (303 here, at least 240), 32 under the buttons, cover-cropped round the subject",
+    "measured": "hero 844/844, h1 40px on 2 lines from y 134, the visual 342x303 at y 517"
+   },
+   "moment": "none on a photograph (the float card's dot breathes every 2.4 s); one loop inside a window or phone for software",
+   "moments": [
+    {
+     "id": "liquid-hover",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "paper",
+     "only": "tech"
+    },
+    {
+     "id": "topglow",
+     "only": "tech"
+    }
+   ],
+   "effects": [],
+   "mistakes": [
+    "the picture out to the viewport edge (one-sided bleed)",
+    "a photograph cropped through faces",
+    "the picture above the text on a phone",
+    "a picture narrower than six columns",
+    "the float card covering the subject",
+    "a second float card"
+   ]
+  },
+  {
+   "id": "photo",
+   "name": "Full-bleed photograph, the words on its calm side",
+   "from": "Aman, Ace Hotel, Le Labo, Cowboy, x.ai's film section",
+   "demo": "hero-photo.html",
+   "job": "A place or a product with one strong photograph that has a calm area for the words: sky, a wall, cloud, shadow. Never for a software product (its own UI leads); a game with key art is dealt it.",
+   "types": {
+    "product": 2,
+    "service": 2,
+    "gaming": 3
+   },
+   "needs": [
+    "photo"
+   ],
+   "h1": {
+    "token": "--ly-h1-xl",
+    "size": [
+     80,
+     44
+    ],
+    "leading": 1.02,
+    "lines": [
+     3,
+     3
+    ],
+    "maxChars": 32
+   },
+   "grid": {
+    "text": "the left six columns (628) on the calm side, the words in a solid box of the page's colours (padding 48); data-calm=left|right|top moves the box; data-box=none sets the words straight on a calm part that is dark (data-tone=dark) or light and empty at the desktop crop",
+    "facts": "with data-box=none only: a hairline and four facts on span-3, docked 48 above the photograph's foot (beside a box they are not shown)"
+   },
+   "at1440": {
+    "hero": "1440x900: the photograph edge to edge under the fixed header (full bleed is symmetric)",
+    "text": "in its box: h1 80 (89.6 after the pairing's scale) on 3 lines from y 231; lead 20/30 on 3 or 4 lines, max 42ch; buttons 44, the page's own pair",
+    "photo": "at least 1920 wide; object-position keeps the subject off the words",
+    "measured": "hero 900/900, h1 90px (weight 400) on 3 lines, its box from y 231, the visual 1440x900 at x 0, y 0",
+    "box": "a solid box in the page's ground colour, radius --r-lg, never a scrim, gradient, veil or blurred panel (PH-31, VI-49)"
+   },
+   "at390": {
+    "hero": "844: the photograph a layer under the header (42svh: 354 here), the words under it on the page ground; from 1023 down the same (56vw, at most 46svh)",
+    "text": "h1 44 (49) on 2 lines from y 450, lead 17 on 4 lines, buttons stacked",
+    "facts": "not shown below 1024 (a desktop line); the next section carries them",
+    "measured": "hero 844/844, h1 49px on 2 lines from y 450, the visual 390x354 at y 56"
+   },
+   "moment": "none: the photograph is the hero",
+   "moments": [
+    {
+     "id": "liquid-hover",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "photo"
+    }
+   ],
+   "effects": [],
+   "mistakes": [
+    "words over a busy part of the picture",
+    "a box behind the words",
+    "a photograph that does not show the place or the product",
+    "a blown-up photograph under 1920px",
+    "a carousel",
+    "a scrim, gradient or veil over the photograph",
+    "words straight on a busy or pale part of the photograph",
+    "this hero on a place (a place has hero-place)"
+   ]
+  },
+  {
+   "id": "product",
+   "name": "Product stage with one object",
+   "from": "Figma's hero row, Apple product pages, Cowboy, Teenage Engineering",
+   "demo": "hero-product.html",
+   "job": "The product itself, big, under one head row: the headline left, the lead and the buttons right. A render or a cut-out stands on the page's own ground across the wrap (no box, no gradient, no radius), its widest view (a bike's side) spanning 80% or more of the wrap at 1440; a product photograph runs edge to edge down to the fold, cropped so the product spans 80% or more of the wrap. Hotspots name its parts. A product, hardware or a game without photographs or art: its product render (assets/objects/product-render), a still; a game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its hero object or a scene of its world composed from its own objects (a print or scene keeps the lit stage), an effect allowed only behind it.",
+   "types": {
+    "product": 3,
+    "software": 1,
+    "gaming": 1
+   },
+   "needs": [
+    "object|photo"
+   ],
+   "h1": {
+    "token": "--ly-h1",
+    "size": [
+     72,
+     40
+    ],
+    "leading": 1.02,
+    "lines": [
+     2,
+     2
+    ],
+    "maxChars": 40
+   },
+   "grid": {
+    "head": "at 1280 and up the h1 on cols 1-7 (two lines), the lead and the buttons stacked on cols 9-12, their foot on the h1's foot; 1024-1279 the h1 on cols 1-6, lead and buttons on 7-12; under 1024 stacked",
+    "stage": "a render or cut-out: span-12 (1280), 32 under the head, down to 24 above the fold, no box; its frame reaches 7% past the stage's top and bottom so the product fills the stage's height. A photograph: the full screen width, down to the fold, square corners"
+   },
+   "at1440": {
+    "hero": "1440x900",
+    "head": "h1 72 on 2 lines from y 131; lead 20/30 on 3 lines, 411 wide; buttons 44; the head ends at y 278",
+    "stage": "1280x566 at y 310, the product whole on the page ground: the city bike's side still 1046x554 (81.7% of the wrap), its three-quarter 818x554 (63.9%, under 8 columns: the hero takes the widest view)",
+    "spots": "one to three 32px discs on the object, each opening a 230px spec card on hover, focus or tap",
+    "measured": "the city bike's side still: hero 900/900, stage 1280x566 at y 310, product 1046x554 at x 197 (81.7%); 1024x768 744x394 of 864 (86.1%); 768x1024 578 of 672 (86.0%); 390x844 294 of 342 (86.0%)"
+   },
+   "at390": {
+    "hero": "844: one screen",
+    "stage": "a render: 342 wide and what the head leaves (394 at 390x844), the product 86% of the wrap (294 wide), centred in it; a photograph: the screen width at its own ratio (390x293)",
+    "spots": "a tap opens the card under its disc, centred on it and kept 16px inside the stage",
+    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the stage 342x394 at y 426, the bike 294x156"
+   },
+   "moment": "the hotspots (layout.js .ly-spot); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
+   "moments": [
+    {
+     "id": "cursor-spotlight",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "paper",
+     "only": "tech"
+    },
+    {
+     "id": "topglow",
+     "only": "tech"
+    },
+    {
+     "id": "field",
+     "only": "tech"
+    }
+   ],
+   "effects": [
+    {
+     "id": "edge-glow",
+     "only": "tech"
+    },
+    {
+     "id": "spotlight-cone",
+     "only": "tech"
+    }
+   ],
+   "mistakes": [
+    "the object small in an empty stage",
+    "the object in a rounded box or on a gradient panel",
+    "the three-quarter view of a long product in the hero (the widest view fills the stage)",
+    "the object cut by the stage",
+    "words on the stage",
+    "UI cards over the product",
+    "a second object",
+    "a game's stage holding an abstract effect, a pattern or a toy object instead of its world",
+    "a game hero that never names the game"
+   ]
+  },
+  {
+   "id": "editorial",
+   "name": "Editorial type with pictures in the line",
+   "from": "award-site studios and agencies (pictures set inside the headline), Pentagram, Linear's manifesto pages, architecture practices",
+   "demo": "hero-editorial.html",
+   "job": "RETIRED, never dealt: it set photographs inside the headline as pills, which breaks the house rule \"no picture inside a headline\" (CONTEXT.md). The headline is the picture: three lines of big left-aligned type across the whole container with one or two photographs set in the line as pills, whole on the first frame. The lead and the buttons dock to the foot under a hairline. For studios, practices, agencies, makers and shops with two or three strong details (never a place: it has hero-place).",
+   "types": {
+    "service": 0,
+    "product": 0,
+    "software": 0
+   },
+   "needs": [
+    "photo"
+   ],
+   "h1": {
+    "token": "--ly-h1-mega",
+    "size": [
+     156,
+     56
+    ],
+    "leading": 0.98,
+    "lines": [
+     3,
+     4
+    ],
+    "maxChars": 34
+   },
+   "grid": {
+    "h1": "span-12 (1280) from the left line, centred in the height the foot leaves; one or two .ly-pic pills (0.8em tall, 1.7 to 2.1em wide) after a word, never two in one line, whole on the first frame (no opening)",
+    "foot": "a hairline, then the lead on span-6 and the buttons on cols 9-12 right-aligned"
+   },
+   "at1440": {
+    "hero": "1440x900",
+    "h1": "156 (146.6 after the 0.94 scale) on 3 lines from y 173; pills 117 tall, about 246 and 199 wide",
+    "foot": "hairline at y 737, lead 20/30 on 3 or 4 lines, buttons 44 on the right line",
+    "measured": "hero 900/900, h1 147px (weight 400) on 3 lines, its box from y 173, the visual 308x117 at x 794, y 222"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "h1": "56 (52.6) on 4 to 5 lines with a long lead; keep it to 4 (cut the headline)",
+    "foot": "lead 17 on 4 lines, buttons stacked",
+    "measured": "hero 844/844, h1 53px on 5 lines from y 211"
+   },
+   "moment": "the pills are whole on the first frame (no opening, no settle: the h1 never reflows after load) and still under the pointer; letters thicken and widen near the pointer (data-ly-letters=wdth, fine pointers only).",
+   "moments": [],
+   "grounds": [
+    {
+     "id": "paper",
+     "only": "tech"
+    },
+    {
+     "id": "topglow",
+     "only": "tech"
+    },
+    {
+     "id": "grain",
+     "only": "tech"
+    }
+   ],
+   "effects": [],
+   "mistakes": [
+    "a picture that is mood, not the work",
+    "two pills in one line",
+    "pills taller than 0.8em",
+    "the headline centred",
+    "a slogan instead of what the company does",
+    "a frame under the type (then it is another hero)"
+   ]
+  },
+  {
+   "id": "collage",
+   "name": "UI collage cut by its frame",
+   "from": "Linear, Attio, Ramp, Granola, Mercury (research: corner-window-bleed, 19 sites)",
+   "demo": "hero-collage.html",
+   "job": "Software: the text on the left, the product's main window on a lit ground on the right six columns, the window cut by the frame's right and bottom edges, one small card over its lower-left corner showing the result.",
+   "types": {
+    "software": 3
+   },
+   "needs": [
+    "ui"
+   ],
+   "h1": {
+    "token": "--ly-h1-col",
+    "size": [
+     64,
+     40
+    ],
+    "leading": 1.02,
+    "lines": [
+     3,
+     3
+    ],
+    "maxChars": 48
+   },
+   "grid": {
+    "text": "span-5 (519), top-aligned: the h1's capitals on the art frame's top line, y 120",
+    "art": "span-6 start-7 (628x716), ending on the right line, radius --r-lg on all corners"
+   },
+   "at1440": {
+    "art": "628x716 at x 732, y 120: the lit ground (sand, sky, sage or painting) with one soft light, or an effect (no grain on its own)",
+    "window": "64 from the frame's left and top, the frame's width less 64 plus 28 (it runs 28px past the right edge); its content keeps 48px clear at the right, so the cut falls in empty margin after the status chips; no time column",
+    "card": "300 wide, 32 in from the frame's lower-left, over the window",
+    "text": "h1 64 (62.7) on 3 lines from y 120, lead 20/30, buttons 44, one muted proof line 24 under them",
+    "measured": "hero 900/900, h1 63px (weight 500) on 3 lines, its box from y 249, the visual 628x716 at x 732, y 120"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "art": "342 x what is left (244 here, at least 220), 32 under the text",
+    "window": "the window alone, 16 in, its side bar and quantity column hidden, the chips whole; the small card is not shown on a phone",
+    "measured": "hero 844/844, h1 39px on 3 lines from y 96, the visual 342x256 at y 564"
+   },
+   "moment": "a loop inside the small card: it shows finished first, holds 1.8 s, then its three steps arrive 0.7 s apart and it holds again; restarts when the pointer enters; pause disc bottom-right; a phone holds the finished card",
+   "moments": [
+    {
+     "id": "cursor-spotlight",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "topglow",
+     "only": "tech"
+    },
+    {
+     "id": "dots",
+     "only": "tech"
+    },
+    {
+     "id": "ruled",
+     "only": "tech"
+    }
+   ],
+   "effects": [
+    {
+     "id": "grain-gradient",
+     "only": "tech"
+    },
+    {
+     "id": "painterly-landscape",
+     "only": "tech"
+    },
+    {
+     "id": "gradient-mesh",
+     "only": "tech"
+    },
+    {
+     "id": "ruled-grounds",
+     "only": "tech"
+    }
+   ],
+   "mistakes": [
+    "the frame out to the viewport edge (one-sided bleed)",
+    "a window cut on all four sides",
+    "the status column cut off",
+    "more than one small card",
+    "a frosted wrapper round the window",
+    "UI text under 12px",
+    "a status chip cut by the frame's edge"
+   ]
+  },
+  {
+   "id": "word",
+   "name": "Oversized headline with one live word",
+   "from": "x.ai ('for everything you build / imagine / search'), Vercel, Stripe Sessions",
+   "demo": "hero-word.html",
+   "job": "Type does the work, for a brief without a strong photograph: an oversized headline across the container where one word changes (what you move, where you ship, who it is for), then a foot row with the line and the buttons on the left half and four facts as a column on the right half.",
+   "types": {
+    "service": 2,
+    "software": 2,
+    "product": 1,
+    "gaming": 0
+   },
+   "needs": [
+    "ground"
+   ],
+   "h1": {
+    "token": "--ly-h1-word",
+    "size": [
+     144,
+     54
+    ],
+    "leading": 0.92,
+    "lines": [
+     2,
+     3
+    ],
+    "maxChars": 28
+   },
+   "grid": {
+    "h1": "span-12 from the left line, its two lines locked (layout.js), the live word last",
+    "foot": "the lead and the buttons under it on span-6; the four facts as a column (label left, value right, hairlines) on span-5 start-8, ending on the right line"
+   },
+   "at1440": {
+    "hero": "1440x900, the block centred in it",
+    "h1": "144 (129.6 after the 0.9 scale) on 2 lines from y 227, 1280 wide from x 80; the lines locked, the live word's slot as wide as its widest word",
+    "underline": "the accent, 0.05em thick, under the live word only; each word brings its own",
+    "foot": "64 under the h1: the lead 20/30 on 3 lines on span-6, the buttons 44 32 under it; the four facts as a column on span-5 start-8 (rows of 50, hairlines), ending on the right line",
+    "measured": "hero 900/900, h1 130px (weight 400) on 2 lines, its box from y 227"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "h1": "54 (48.6) on 3 lines",
+    "facts": "2 x 2 under the buttons",
+    "measured": "hero 844/844, h1 49px on 3 lines from y 149"
+   },
+   "moment": "the live word (data-ly-word): a new word every 2 s for two rounds, then it rests on the first and plays again when the pointer enters; no line moves (the slot is as wide as the widest word). Letters near the pointer thicken (+200) and widen (+10%) on a face with a wdth axis (data-ly-letters=wdth), on lines locked at rest. A phone and reduced motion hold the first word, no letters",
+   "moments": [],
+   "grounds": [
+    {
+     "id": "halo",
+     "only": "tech"
+    },
+    {
+     "id": "mist",
+     "only": "tech"
+    },
+    {
+     "id": "paper",
+     "only": "tech"
+    },
+    {
+     "id": "grain",
+     "only": "tech"
+    },
+    {
+     "id": "dots",
+     "only": "tech"
+    },
+    {
+     "id": "ruled",
+     "only": "tech"
+    },
+    {
+     "id": "liquid",
+     "only": "tech"
+    }
+   ],
+   "effects": [],
+   "mistakes": [
+    "a slogan; the sentence must say what is sold",
+    "more than four words in the rotation",
+    "a word that changes the line's meaning into nonsense",
+    "the underline on the whole headline",
+    "a face without a wght axis for the letters",
+    "a line that breaks differently when the word changes or a letter widens",
+    "the moments kit's word-rotate on top of the live word",
+    "dealt to a brief that has photographs (a photograph leads then)"
+   ],
+   "avoid": [
+    "photo",
+    "film",
+    "ui",
+    "object"
+   ]
+  },
+  {
+   "id": "film",
+   "name": "Cinema frame: the film's poster with the words on it",
+   "from": "x.ai ('Play, We recently hired a new teammate'), Apple, Cowboy, Netlify, tour operators",
+   "demo": "hero-film.html",
+   "job": "One rounded frame on the container's lines fills the first screen less 16px; the film's poster in it, the headline, the line and the buttons on its dark foot ( For a client with a real film, or a strong photograph with a calm dark foot.",
+   "types": {
+    "product": 2,
+    "service": 2,
+    "software": 1,
+    "gaming": 3
+   },
+   "needs": [
+    "film|photo"
+   ],
+   "h1": {
+    "token": "--ly-h1",
+    "size": [
+     72,
+     40
+    ],
+    "leading": 1.02,
+    "lines": [
+     3,
+     3
+    ],
+    "maxChars": 42
+   },
+   "grid": {
+    "frame": "span-12 (1280) from 16 under the nav to 16 above the fold",
+    "words": "in a solid box of the page's inverse ground at the frame's lower left, 32 in (max 600 wide: h1 15ch, lead 42ch); never on a scrim",
+    "play": "the frame's right foot, 64 in"
+   },
+   "at1440": {
+    "hero": "1440x900",
+    "frame": "1280x716 at x 80, y 120",
+    "h1": "72 (70.6) on 3 lines from y 358, in the box (padding 48)",
+    "play": "a 64px white disc, its label 20px in a solid pill of the inverse ground, the running time 14px under it",
+    "measured": "hero 900/900, h1 71px (weight 400) on 3 lines, its box from y 358, the visual 1280x716 at x 80, y 120"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "frame": "342x724 at y 96",
+    "words": "the box across the frame's foot, 12 in, padding 24; the play disc (52) and its label first, then the h1 40 on 3 lines, lead 17, buttons stacked",
+    "measured": "hero 844/844, h1 39px on 3 lines from y 389, the visual 342x724 at y 96"
+   },
+   "moment": "the play control: the film plays in the frame with controls (data-film) or the control goes to the film's page; the poster never autoplays sound",
+   "moments": [
+    {
+     "id": "cursor-spotlight",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "deep",
+     "only": "tech",
+     "dark": true
+    }
+   ],
+   "effects": [
+    {
+     "id": "film-light-leak",
+     "only": "tech"
+    }
+   ],
+   "mistakes": [
+    "a play button with no film behind it",
+    "words over the poster's busy part",
+    "an autoplaying film with sound",
+    "a poster that is a stock picture",
+    "the frame narrower than the container",
+    "a scrim or gradient over the film to carry white words"
+   ]
+  },
+  {
+   "id": "statement",
+   "name": "Quiet statement over a ground",
+   "from": "Anthropic, Stripe Press, Mercury, private banks and advisers",
+   "demo": "hero-statement.html",
+   "job": "One calm sentence at 56px over a ground that fills the hero, the buttons, then four facts docked under a hairline. For a company whose product is trust or a service, when there is no strong picture. The ground carries the look: a dark horizon with a lit rim, a grainy field in the lit tone, a halo, dusk or (software) liquid.",
+   "types": {
+    "service": 3,
+    "software": 2,
+    "gaming": 0,
+    "product": 2
+   },
+   "needs": [
+    "ground"
+   ],
+   "h1": {
+    "token": "--ly-h1-quiet",
+    "size": [
+     56,
+     34
+    ],
+    "leading": 1.1,
+    "lines": [
+     2,
+     3
+    ],
+    "maxChars": 54
+   },
+   "grid": {
+    "text": "from the left line, h1 max 21ch, lead max 42ch",
+    "facts": "4 x span-3 under a hairline, docked at the hero's foot (64 above the fold)"
+   },
+   "at1440": {
+    "hero": "1440x900, the text block top-aligned (layout-v4.md section 3: the h1 first, top at y 120), the facts docked at the foot",
+    "order": "pill 32 at y 120 (only for real news), 32, h1 56 (59.4) on 2 lines (from y 120 without the pill, y 184 with it), 24, lead 20/30 on 3 or 4 lines, 32, buttons 44; the four facts under a hairline at the hero's foot",
+    "ground": "the demo: bg-horizon on a dark page (the lit rim rises from the hero's foot behind the facts)",
+    "measured": "hero 900/900, h1 59px (weight 400) on 2 lines, its box from y 120 (no pill)"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "h1": "34 (36) on 3 lines",
+    "facts": "2 x 2",
+    "measured": "hero 844/844, h1 36px on 3 lines from y 96 (80 on a place page: --hgap 24)"
+   },
+   "moment": "the ground: liquid (two slow blobs, software only, with its pause disc) or a still horizon, field, halo, dusk or grain",
+   "moments": [
+    {
+     "id": "liquid-type",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "horizon",
+     "only": "tech",
+     "dark": true
+    },
+    {
+     "id": "deep",
+     "only": "tech",
+     "dark": true
+    },
+    {
+     "id": "field",
+     "only": "tech"
+    },
+    {
+     "id": "halo",
+     "only": "tech"
+    },
+    {
+     "id": "dusk",
+     "only": "tech"
+    },
+    {
+     "id": "grain",
+     "only": "tech"
+    },
+    {
+     "id": "mist",
+     "only": "tech"
+    },
+    {
+     "id": "liquid",
+     "only": "tech"
+    }
+   ],
+   "effects": [
+    {
+     "id": "aurora-curtains",
+     "only": "tech"
+    },
+    {
+     "id": "grain-gradient",
+     "only": "tech"
+    },
+    {
+     "id": "soft-light-bars",
+     "only": "tech"
+    }
+   ],
+   "mistakes": [
+    "a pale wash that reads as an empty page",
+    "a ground that fights the words",
+    "the statement centred",
+    "a second visual on the hero",
+    "a lead longer than three lines",
+    "liquid-type (tech only) on a headline of more than six words: it is for a short, large one"
+   ],
+   "avoid": [
+    "photo",
+    "film",
+    "ui",
+    "object"
+   ]
+  },
+  {
+   "id": "triptych",
+   "name": "Headline, collage, button (Figma's hero)",
+   "from": "figma.com ('The full-stack creative canvas')",
+   "demo": "hero-triptych.html",
+   "job": "Three columns: the headline on the left, a collage of three to five pieces in the middle that changes set every 2.8 s, one large button on the right line. For a product with many outputs: a design tool, a menu or print tool, a shop with several lines.",
+   "types": {
+    "software": 2,
+    "product": 1
+   },
+   "needs": [
+    "ui|photo"
+   ],
+   "h1": {
+    "token": "--ly-h1-side",
+    "size": [
+     52,
+     40
+    ],
+    "leading": 1.04,
+    "lines": [
+     3,
+     2
+    ],
+    "maxChars": 34
+   },
+   "grid": {
+    "headline": "span-3 (302), centred in the screen's height, a 16px line under it",
+    "collage": "span-6 start-4: 628x716",
+    "button": "span-3 start-10, right-aligned on the right line"
+   },
+   "at1440": {
+    "collage": "628x716 at x 406, y 120: each set three to five pieces placed in % of the collage (photographs, a printed piece, a small UI card), overlapping only where no line of text sits; one piece in each set ends at 96% x 96%, and the pause disc sits on its corner",
+    "headline": "52 on 3 lines (302 wide) centred in the height (from y 365), a 16/24 line under it",
+    "button": "64 tall, 20px label, the page's primary, its right edge on the right line",
+    "measured": "hero 900/900, h1 52px (weight 500) on 3 lines, its box from y 365, the visual 628x716 at x 406, y 120"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "headline": "40 on 2 lines",
+    "collage": "342 x what is left (433 here, at least 300), the same picture smaller",
+    "button": "56 tall, full width, under the collage",
+    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the visual 342x433 at y 287"
+   },
+   "moment": "the sets crossfade (0.7 s) every 2.8 s through ui.loop with its pause disc; nothing moves inside a set; a phone holds set one",
+   "moments": [],
+   "grounds": [
+    {
+     "id": "paper",
+     "only": "tech"
+    },
+    {
+     "id": "topglow",
+     "only": "tech"
+    }
+   ],
+   "effects": [
+    {
+     "id": "grain-gradient",
+     "only": "tech",
+     "as": "a collage piece's own ground"
+    }
+   ],
+   "mistakes": [
+    "pieces that slide, scale or tilt",
+    "a piece cut by the collage's edge",
+    "more than five pieces in a set",
+    "a set that resizes",
+    "the button a different style from the page's primary",
+    "a piece over another piece's text",
+    "the pause disc on empty ground or over text"
+   ]
+  },
+  {
+   "id": "centred",
+   "name": "Centred headline over one window (x.ai's hero)",
+   "from": "x.ai ('Meet Grok Bot'), Cursor, Raycast, Vercel",
+   "demo": "hero-centred.html",
+   "job": "Software whose product is one window or one assistant: a news pill, a centred headline with the mark inline, a grey line, two pill buttons, then the window rising out of a lit frame that takes the rest of the first screen and fades into the ground at the hero's foot.",
+   "types": {
+    "software": 3
+   },
+   "needs": [
+    "ui"
+   ],
+   "h1": {
+    "token": "--ly-h1",
+    "size": [
+     72,
+     40
+    ],
+    "leading": 1.02,
+    "lines": [
+     2,
+     3
+    ],
+    "maxChars": 36
+   },
+   "grid": {
+    "text": "centred on the page axis, max 880; h1 max 16ch (a centred block is symmetric, so both edges stay equal)",
+    "frame": "span-12 (1280), 32 under the buttons, down to the hero's foot, its last 18% fading out (mask from 82%)"
+   },
+   "at1440": {
+    "hero": "1440x900: one screen; the frame shows its top 335px, solid to 82%",
+    "order": "pill 32 at y 120, 16, h1 72 (74.9) on 2 lines, 16, lead 20/30 grey on 2 lines max 52ch, 28, buttons 44 (centred)",
+    "window": "880 wide, 32 under the frame's top; the exchange (the question on one line, the tool line, a two-line answer, Send and Edit) ends 278px into the frame, above the fade; the inbox column beside it is context and may run into the fade",
+    "measured": "hero 900/900, h1 75px (weight 500) on 2 lines, its box from y 168, the visual 1280x335 at x 80, y 501"
+   },
+   "at390": {
+    "hero": "844: exactly one screen",
+    "frame": "342 x what the words leave (313 here, at least 280), fading from 82%",
+    "window": "the frame's width less 32, 16 in, its list column and the bar's right label hidden; the exchange ends about 270px in",
+    "measured": "hero 844/844, h1 42px on 2 lines from y 144, the visual 342x313 at y 507"
+   },
+   "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
+   "moments": [
+    {
+     "id": "cursor-spotlight",
+     "only": "tech"
+    }
+   ],
+   "grounds": [
+    {
+     "id": "deep",
+     "only": "tech"
+    },
+    {
+     "id": "topglow",
+     "only": "tech"
+    }
+   ],
+   "effects": [
+    {
+     "id": "painterly-landscape",
+     "only": "tech"
+    },
+    {
+     "id": "gradient-mesh",
+     "only": "tech"
+    },
+    {
+     "id": "grain-gradient",
+     "only": "tech"
+    },
+    {
+     "id": "aurora-curtains",
+     "only": "tech"
+    }
+   ],
+   "mistakes": [
+    "a lone fragment floating in the middle of the frame",
+    "a third button",
+    "a frame wider than the container",
+    "dark UI on a dark ground",
+    "the hero taller than one screen, so the window's foot meets the next section",
+    "the window cut through its first rows",
+    "the exchange (question, answer, actions) in the fade"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "fx-tabs",
+  "name": "Tabs with a grain indicator",
+  "for": "A tab bar for a product tour or a dashboard preview: the active pill is a small window of a still, low-contrast grain in the accent, and it glides to the tab you choose while the panel below changes.",
+  "effects": ["grain-gradient", "flat"],
+  "default": "grain-gradient",
+  "how": "The effect spans the whole bar and stays put, in a palette within a few steps of the accent so the active label reads; the pill is a clip-path window that slides over it, so nothing is redrawn or resized. The grain is still (speed 0, grainMotion 0). 'flat' mounts nothing and keeps the plain accent. On a phone the bar scrolls sideways with a faded far edge.",
+  "rules": ["One tab bar like this per page; the label on it keeps 4.5:1.", "The pill never shines, folds or streaks: no silk, glass or metal looks, no motion inside it.", "The indicator moves only when a tab is chosen, never on a timer.", "Panels hold real product content, not lorem."],
+  "a11y": "ARIA tabs: tablist, tabs with aria-selected and aria-controls, roving tabindex, arrow keys, Home and End; panels are focusable. Reduced motion jumps instead of gliding."
+}

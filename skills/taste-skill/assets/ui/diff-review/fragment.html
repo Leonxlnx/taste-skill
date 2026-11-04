@@ -1,0 +1,40 @@
+<div class="ui ui-panel ui-diff" data-ui="diff-review">
+  <div class="ui-diff__head">
+    <svg class="ui-icon ui-diff__fold" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 6.25 3.5 3.5 3.5-3.5"/></svg>
+    <span class="ui-diff__tool" aria-hidden="true"><img src="assets/ui/icons/typescript.svg" alt=""></span>
+    <span class="ui-diff__repo">harbor/api</span><i class="ui-diff__slash" aria-hidden="true">/</i>
+    <span class="ui-diff__path"><span class="ui-diff__dir">services/ledger/</span><b>settle.ts</b></span>
+    <span class="ui-spacer"></span>
+    <span class="ui-diff__stat"><b class="is-add"><span class="ui-diff__was">+3</span><span class="ui-diff__now">+4</span></b><b class="is-del"><span class="ui-diff__was">&minus;2</span><span class="ui-diff__now">&minus;3</span></b><span class="ui-diff__bar" aria-hidden="true"><i class="is-add"></i><i class="is-add"></i><i class="is-add"></i><i class="is-del"></i><i class="is-del"></i></span></span>
+  </div>
+  <div class="ui-diff__hunk"><span>@@ -38,10 +38,11 @@</span> <em class="ui-diff__sig">function settleJob(job, i = 0) {</em></div>
+  <div class="ui-diff__lines">
+    <div class="ui-diff__ln"><i>38</i><i>38</i><span class="ui-diff__code" data-i="1"><span class="ui-diff__ind">  </span><span class="k">const</span> cfg = <span class="f">loadConfig</span>(<span class="s">"ledger"</span>);</span></div>
+    <div class="ui-diff__ln is-del"><i>39</i><i></i><span class="ui-diff__code" data-i="1"><span class="ui-diff__ind">  </span><span class="k">while</span> (i++ &lt; <mark class="ui-diff__w"><span class="n">5</span></mark>) {</span></div>
+    <div class="ui-diff__ln is-add"><i></i><i>39</i><span class="ui-diff__code" data-i="1"><span class="ui-diff__ind">  </span><span class="k">while</span> (i++ &lt; <mark class="ui-diff__w">cfg.max</mark>) {</span></div>
+    <div class="ui-diff__ln is-target" data-diff-target><i>40</i><i>40</i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span><span class="k">const</span> res = <span class="k">await</span> <span class="f">post</span>(job, <mark class="ui-diff__w"><span class="n">8000</span></mark>);</span></div>
+    <div class="ui-diff__sug" data-diff-sug><div class="ui-diff__ln is-add"><i></i><i>40</i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span><span class="k">const</span> res = <span class="k">await</span> <span class="f">post</span>(job, <mark class="ui-diff__w">cfg.timeout</mark>);</span></div></div>
+    <div class="ui-diff__thread">
+      <div class="ui-diff__by">
+        <span class="ui-avatar" data-tone="4">MO</span>
+        <span class="ui-diff__name">Mara Okafor</span>
+        <span class="ui-diff__time">2m</span>
+        <span class="ui-spacer"></span>
+        <span class="ui-diff__act" data-diff-act>
+          <button class="ui-btn ui-btn--sm ui-diff__apply" type="button" tabindex="-1" data-diff-apply><span class="ui-diff__lbl">Apply suggestion</span><i class="ui-diff__spin" aria-hidden="true"></i></button>
+          <span class="ui-chip ui-diff__done"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 8.4 2.6 2.6L12 5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Applied</span>
+        </span>
+      </div>
+      <div class="ui-diff__msg">Use <code>cfg.timeout</code> here, like the loop.</div>
+    </div>
+    <div class="ui-diff__ln"><i>41</i><i>41</i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span><span class="k">if</span> (res.ok) <span class="k">return</span> res.receipt;</span></div>
+    <div class="ui-diff__ln is-del"><i>42</i><i></i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span><span class="k">await</span> <span class="f">sleep</span>(<mark class="ui-diff__w"><span class="n">1000</span></mark>);</span></div>
+    <div class="ui-diff__ln is-add"><i></i><i>42</i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span><span class="k">await</span> <span class="f">sleep</span>(<mark class="ui-diff__w"><span class="f">backoff</span>(i, cfg.baseMs)</mark>);</span></div>
+    <div class="ui-diff__ln is-add"><i></i><i>43</i><span class="ui-diff__code" data-i="2"><span class="ui-diff__ind">    </span>log.<span class="f">warn</span>(<span class="s">"retry"</span>, job.id);</span></div>
+    <div class="ui-diff__ln"><i>43</i><i>44</i><span class="ui-diff__code" data-i="1"><span class="ui-diff__ind">  </span>}</span></div>
+    <div class="ui-diff__ln"><i>44</i><i>45</i><span class="ui-diff__code" data-i="1"><span class="ui-diff__ind">  </span><span class="k">throw new</span> <span class="f">SettleError</span>(job.id);</span></div>
+    <div class="ui-diff__ln"><i>45</i><i>46</i><span class="ui-diff__code" data-i="0">}</span></div>
+    <div class="ui-diff__ln"><i>46</i><i>47</i><span class="ui-diff__code" data-i="0"></span></div>
+    <div class="ui-diff__ln"><i>47</i><i>48</i><span class="ui-diff__code" data-i="0"><span class="k">export default</span> settleJob;</span></div>
+  </div>
+</div>

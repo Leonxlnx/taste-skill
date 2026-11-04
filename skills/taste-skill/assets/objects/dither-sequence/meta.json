@@ -1,0 +1,87 @@
+{
+  "id": "dither-sequence",
+  "name": "Dither sequence",
+  "kind": "scene",
+  "source": "photo-sequence",
+  "shows": "Two to six real photographs that belong together printed with an ordered dither in the page palette and played like a slow loop of film. Each cut is a dithered wipe on a slight diagonal with a one-cell accent line on its leading edge; a small pill counts the frames (or shows the captions given) on a segmented timeline.",
+  "suits": [
+    "software"
+  ],
+  "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: two to six real photographs that belong together (a device from several sides, the stages of what the software makes, a game's scenes), never a random set.",
+  "never": "Never on a place, service, product or local-business page (a cafe, a shop, a hotel, a studio people visit, a maker of things): those show their photographs plain, never dithered. Never mood pictures that only fill the frame. No caption that explains the effect; the photographs' credits go in the footer's one credit line.",
+  "effect": "dither",
+  "motion": "Each frame holds 2.2 s (nothing is drawn while it holds), then wipes to the next over 1.5 s at up to 30 frames a second. With autoplay 0 it holds the first frame until hovered (auto.js lets one sequence per group move).",
+  "hover": "The pointer scrubs the timeline: each frame holds for most of its stretch and wipes to the next near its end. Touch: drag.",
+  "reducedMotion": "The first frame, still, no pause disc; the pointer still picks a frame.",
+  "params": {
+    "cell": "CSS px per dither cell; default from the panel size, 2 to 3",
+    "hold": "seconds a frame holds, default 2.2",
+    "captions": "an array, one per frame (otherwise the pill counts 01 / 04)",
+    "focus": "an array of [x, y] cover-crop centres, one per frame (default each entry's focus)",
+    "fit": "'cover' (default) or 'contain': the whole photograph on the page's paper, for mixed shapes",
+    "autoplay": "0 holds still until hovered (default 1)",
+    "drift": "1 lets each frame drift slowly, like a held camera (off by default: it redraws every frame)",
+    "alt": "what the pictures show"
+  },
+  "palette": "four print tones from bg to ink; on a dark page light prints as ink, capped short of solid so a bright photograph is never a white slab; accent for the wipe line; the pill takes bg and ink.",
+  "fallback": "the first photograph that loaded, as an <img>, cover-cropped; a photograph that fails is left out of the loop.",
+  "cost": "low: two textures at the dither-cell resolution, drawn only during a wipe or a scrub",
+  "photos": [
+    {
+      "id": 1081,
+      "by": "Julien Moreau",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/688Fna1pwOQ",
+      "use": "default"
+    },
+    {
+      "id": 942,
+      "by": "Carl Nenzen Loven",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/busqfOj6i80",
+      "use": "default"
+    },
+    {
+      "id": 315,
+      "by": "Liam Andrew",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/W7CopGaHkEM",
+      "use": "default"
+    },
+    {
+      "id": 951,
+      "by": "Sérgio Rola",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/4aQY2CrXsa8",
+      "use": "default"
+    },
+    {
+      "id": 618,
+      "by": "Mika Ruusunen",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/ypVM8PnygUo",
+      "use": "demo card"
+    },
+    {
+      "id": 893,
+      "by": "Samuel Zeller",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/j0g8taxHZa0",
+      "use": "demo card"
+    },
+    {
+      "id": 949,
+      "by": "Drew Patrick Miller",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/VLT62-JzddA",
+      "use": "demo card"
+    },
+    {
+      "id": 679,
+      "by": "Len dela Cruz",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/ScEKf8u7y-c",
+      "use": "demo card"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "fx-bars",
+  "name": "Bar chart with grain bars",
+  "for": "A revenue or usage card: every bar is a window onto one still, low-contrast grain in the accent, so the bars read as one printed material while their heights stay exact on a labelled scale.",
+  "effects": ["grain-gradient", "flat"],
+  "default": "grain-gradient",
+  "how": "windows(): one effect host over the plot, masked to the bar boxes, in a palette within a few steps of the accent; the grain is still (speed 0, grainMotion 0). A 0 / 50k / 100k scale sits left of the plot. The latest bar carries a thin ring and its value is the header figure; hover shows any other value. 'flat' mounts nothing.",
+  "rules": ["Bars start at zero on a labelled scale.", "The header names the month it shows, and the change matches the data.", "Mark the latest bar with a ring, never by veiling the others.", "No glass, satin or metal streaks in the bars, and no motion inside them.", "Real numbers. Invented ones are placeholders covered by the page's one placeholder note and listed in the report, never a sample tag in the chart."],
+  "a11y": "The plot is decorative; a hidden table holds every month and value. The effect is still, so reduced motion changes nothing."
+}

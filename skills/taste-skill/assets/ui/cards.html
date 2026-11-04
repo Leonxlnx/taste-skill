@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feature cards</title>
+<meta name="description" content="Nine feature-card layouts from the taste-skill kit: effect grounds drawn in code with real product UI on top, in light and dark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="cards.css">
+<style>
+  /* the two page palettes; every colour of the cards, effects and fragments comes from these */
+  :root {
+    --font-text: "Geist", system-ui, sans-serif;
+    --font-display: "Geist", system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+  }
+  [data-theme="light"] {
+    --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff;
+    --g-bg: #e9e8e4; --g-surface: #f6f5f2; --frag: #ffffff;
+    --sky: #86a6c8; --sand: #c9a679; --sage: #8fa98d; --warm: #c9a679;
+  }
+  [data-theme="dark"] {
+    --bg: #070708; --card: #151517; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08;
+    --g-bg: #0e0e10; --g-surface: #1b1c1f; --frag: #1c1d20;
+    --sky: #7d9bbd; --sand: #c4a173; --sage: #87a184; --warm: #9c9689;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; transition: background-color 300ms ease; }
+  ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+
+  /* every effect ground reads these (the panel's own hue in --hue). A ground that holds UI also takes a
+     lit data-fx-palette of its own, the same on both themes: on the dark page it is the bright picture
+     behind the dark UI (x.ai), on the light page a clear step darker than the white UI */
+  .panel, .panel__screen, .fxg {
+    --fx-bg: var(--g-bg); --fx-surface: var(--g-surface); --fx-ink: var(--ink); --fx-muted: var(--muted);
+    --fx-accent: var(--hue, var(--sky)); --fx-accent-ink: var(--accent-ink); --calm: var(--g-bg);
+  }
+
+  /* page frame */
+  .top { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid color-mix(in oklab, var(--ink) 8%, transparent); }
+  .top__in { max-width: 1232px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 16px; font-size: 14px; line-height: 20px; }
+  .top__name { font-weight: 560; letter-spacing: -0.01em; }
+  .top__note { color: var(--muted); }
+  .top__sp { flex: 1; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: color-mix(in oklab, var(--ink) 6%, var(--bg)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 6%, transparent); }
+  .seg button { font: inherit; font-size: 13px; font-weight: 500; border: 0; background: none; color: color-mix(in oklab, var(--ink) 72%, var(--bg)); height: 30px; padding: 0 14px; border-radius: 7px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 1px 2px rgb(0 0 0 / .1); }
+  .top__in a { color: var(--ink); text-decoration: none; font-weight: 500; }
+
+  .wrap { max-width: 1232px; margin: 0 auto; padding: 0 24px; }
+  .sec { padding: 56px 0; }
+  .sec:last-of-type { padding-bottom: 128px; }
+  .intro + .sec { padding-top: 112px; }
+  .sec__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 40px; }
+  .sec__head h2 { margin: 0; max-width: 720px; font-size: clamp(30px, 1.6vw + 16px, 40px); line-height: 1.12; letter-spacing: -0.03em; font-weight: 500; text-wrap: balance; }
+  .sec__head h2 span { color: var(--muted); }
+  .sec__tag { flex: none; font: 500 12px/16px var(--font-mono); color: var(--muted); padding-bottom: 6px; }
+  .intro { padding: 96px 0 0; }
+  .intro h1 { margin: 0; max-width: 820px; font-size: clamp(38px, 2.6vw + 18px, 56px); line-height: 1.04; letter-spacing: -0.04em; font-weight: 500; text-wrap: balance; }
+  .intro p { margin: 20px 0 0; max-width: 620px; font-size: 18px; line-height: 1.55; color: color-mix(in oklab, var(--ink) 80%, var(--bg)); text-wrap: pretty; }
+
+  /* layouts */
+  .g2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .bento { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: auto auto; gap: 16px; }
+  .bento > :first-child { grid-row: span 2; }
+  .bento > :first-child .panel { --p-h: 520px; }
+  .bento > :not(:first-child) .panel { --p-h: 236px; }
+  .g-stat { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .g2 .panel { --p-h: 336px; }
+
+  /* stat cards (Figma's "64%"): a title, one big number and a caption, no picture under it; both numbers share
+     one size and one box (cards.css), so the captions start level. The 68% is filled with a still grain */
+  .card--stat { --knock-size: clamp(96px, 7vw + 24px, 128px); }
+  .card--stat .knock, .card--stat .stat__num { margin-top: 20px; }
+  .card--stat .stat__label { margin-top: 16px; max-width: 34ch; }
+
+  /* testimonial: the quote beside one result */
+  .card--quote { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 40px; align-items: stretch; }
+  .card--quote .card__body { display: flex; flex-direction: column; justify-content: space-between; padding: 8px 0; }
+
+  /* tall cards: the panel on top, each on its own ground; the fragment starts at the top inset and its
+     window runs off the panel's bottom edge (.to-edge) */
+  .g3 .panel--top { aspect-ratio: auto; height: 376px; min-height: 0; }
+
+  /* inline fragments for the tall cards (built from base.css, as the skill asks for pieces the kit lacks) */
+  .mail { width: 100%; overflow: hidden; }
+  .mail__bar { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--u-line); }
+  .mail__bar .ui-icon { color: var(--u-muted); }
+  .mail__subj { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mail__msg { display: flex; gap: 10px; padding: 14px 16px 0; }
+  .mail__msg > .ui-agent, .mail__msg > .ui-avatar { margin-top: 1px; }
+  .mail__col { min-width: 0; }
+  .mail__who { display: flex; align-items: baseline; gap: 8px; font-size: 13px; line-height: 20px; }
+  .mail__who b { font-weight: 500; }
+  .mail__who time { margin-left: auto; font-size: 11px; color: var(--u-soft); }
+  .mail__text { margin-top: 2px; font-size: 13px; line-height: 20px; color: var(--u-text-2); }
+  .mail__cite { display: inline-flex; align-items: center; gap: 6px; height: 24px; margin-top: 10px; padding: 0 8px 0 6px; border-radius: 6px; font-size: 11px; font-weight: 500; color: var(--u-muted); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+  .mail__cite .ui-icon { width: 13px; height: 13px; }
+  .widget { width: 100%; overflow: hidden; }
+  .widget__head { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 14px; background: var(--u-ink); color: var(--u-bg); border-radius: calc(var(--u-r) - 1px) calc(var(--u-r) - 1px) 0 0; }
+  .widget__head .ui-agent { width: 28px; height: 28px; background: var(--u-bg); }
+  .widget__head .ui-agent::after { background: var(--u-ink); }
+  .widget__head b { display: block; font-size: 13px; font-weight: 500; line-height: 18px; }
+  .widget__head small { display: block; font-size: 11px; line-height: 16px; opacity: .7; }
+  .widget__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 14px 12px; }
+  .widget__bot, .widget__me { max-width: min(248px, 88%); padding: 8px 12px; font-size: 13px; line-height: 20px; }
+  .widget__bot { justify-self: start; border-radius: 4px 14px 14px 14px; background: var(--u-fill-2); color: var(--u-text-2); }
+  .widget__me { justify-self: end; border-radius: 14px 14px 4px 14px; background: var(--u-ink); color: var(--u-bg); }
+  .widget__order { display: flex; align-items: center; gap: 10px; justify-self: start; width: min(248px, 100%); padding: 10px 10px 10px 12px; border-radius: 10px; background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+  .widget__order > .ui-icon { color: var(--u-muted); }
+  .widget__order > span:not(.ui-chip) { display: grid; flex: 1; min-width: 0; }
+  .widget__order b { font-size: 13px; font-weight: 500; line-height: 18px; }
+  .widget__order small { font-size: 12px; line-height: 16px; color: var(--u-muted); }
+
+
+  /* developer tools: the terminal needs 352px of panel (40px down, 24px of ground under it), the board 360px */
+  .g2--dev .panel { --p-h: 352px; }
+  .card--wide .panel { --p-h: 360px; }
+
+  .foot { padding-block: 64px 96px; color: var(--muted); font-size: 13px; line-height: 20px; }
+
+  @media (max-width: 1023px) {
+    .bento, .g-stat { grid-template-columns: minmax(0, 1fr); }
+    .bento > :first-child { grid-row: auto; }
+    .bento > :first-child .panel { --p-h: 420px; }
+    /* tablet: cards with a panel take the full row, so no row is ever half empty */
+    .g2, .g3 { grid-template-columns: minmax(0, 1fr); }
+    .card--quote { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+  @media (max-width: 760px) {
+    .g2, .g3 { grid-template-columns: minmax(0, 1fr); }
+    .sec { padding-block: 40px; }
+    .intro + .sec { padding-top: 80px; }
+    .sec__head { margin-bottom: 28px; }
+    .sec__tag { display: none; }
+    .intro { padding-top: 56px; }
+    .top__note { display: none; }
+    .wrap, .top__in { padding: 0 16px; }
+    .g2 .panel { --p-h: 320px; }
+    .bento > :first-child .panel { --p-h: 380px; }
+    /* the small bento fragments are about 250px tall and start 24px down: a 240px panel cuts them by
+       30px or more, through the fade (never a sliver of ground under them) */
+    .bento > :not(:first-child) .panel { --p-h: 240px; }
+    .g3 .panel--top { height: 360px; }
+    .g2--dev .panel { --p-h: 372px; }
+    .card--wide .panel { --p-h: 372px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top__in">
+    <span class="top__name">Feature cards</span>
+    <span class="top__note">Nine card layouts, in light and dark</span>
+    <span class="top__sp"></span>
+    <div class="seg" role="group" aria-label="Theme">
+      <button type="button" data-set-theme="light" aria-pressed="true">Light</button>
+      <button type="button" data-set-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Relay answers your customers, and hands the hard ones to your team.</h1>
+    <p>Relay is an assistant for online shops. It answers customer emails, chats and calls from your help center and order data, and passes the hard cases to a person.</p>
+  </section>
+
+  <!-- 1. 2x2 grid ------------------------------------------------------------------------- -->
+  <section class="sec" id="grid">
+    <div class="sec__head">
+      <h2>One assistant for the whole inbox. <span>It answers, acts and asks for help when it should.</span></h2>
+      <span class="sec__tag">01 / 2x2 grid</span>
+    </div>
+    <div class="g2">
+      <article class="card card--row">
+        <h3>Answers from your help center</h3>
+        <p>Relay reads your help articles and past replies, and shows where each answer came from.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="5" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"calm":0.2,"calmX":0.45,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-rise fit to-edge" style="--ax:32px;--ay:40px;--fit-max:400px" data-ui-load="chat" data-ui-loop></div></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Works inside your helpdesk</h3>
+        <p>It picks up tickets in Zendesk, replies and updates the status, like a person on your team.</p>
+        <div class="panel panel--device">
+          <div class="panel__bar"><span class="ui-agent" aria-hidden="true"></span><span>Relay</span><span class="muted">6 open tickets</span><span class="sp"></span><span class="panel__status"><i></i>Running</span></div>
+          <div class="panel__screen" data-fx="painterly-landscape" data-fx-seed="8" data-fx-palette='{"bg":"#a3b0b6","accent":"#c49a6c"}' data-fx-params='{"blur":1,"brush":0.35,"slope":0,"hillY":0.3,"horizon":0.62,"calm":0.2,"calmX":0.6,"calmY":0.8,"drift":0,"side":1}' style="--calm-k:0%">
+            <div class="stage stage--fade-b"><div class="at-corner fit" style="--ax:24px;--ay:28px;--fit-max:456px" data-ui-load="window" data-ui-opts='{"compact":true}'></div></div>
+          </div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Hands off when it should</h3>
+        <p>Refunds over your limit or an upset customer go straight to a person, with the full history.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="14" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}' data-fx-params='{"speed":0,"calm":0.15,"calmX":0.4,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-rise fit" style="--ax:32px;--ay:calc(100% - 180px);--ay-sm:calc(100% - 180px);--fit-max:380px" data-ui-load="notify"></div></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Follows your rules</h3>
+        <p>Choose what Relay may do on its own, from refunds to order changes.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="21" data-fx-palette='{"bg":"#cdd6c6","surface":"#dce3d6","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}' data-fx-params='{"speed":0,"calm":0.2,"calmX":0.6,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-right" style="--ax:32px;--ay:56px" data-ui-load="toggles"></div></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 2. bento ------------------------------------------------------------------------------ -->
+  <section class="sec" id="bento">
+    <div class="sec__head">
+      <h2>Set up in an afternoon. <span>Connect what you already wrote and choose how it looks.</span></h2>
+      <span class="sec__tag">02 / Bento</span>
+    </div>
+    <div class="bento">
+      <article class="card">
+        <h3>Learns from what you already wrote</h3>
+        <p>Import help articles, saved replies and policies from Zendesk, Notion, Confluence, Google Docs or PDF files.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="31" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.3,"calmY":0.35,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div class="stage stage--fade-br"><div class="at-corner wide" style="--ax:40px;--ay:48px;--w:680px">
+            <div class="ui ui-files" data-ui="files" data-reading="Reading source {n} of {total}">
+              <div class="ui-files__status"><span class="ui-dot"></span><span data-files-status>16 sources read</span></div>
+              <ul class="ui-files__grid">
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/zendesk.svg" alt=""></span><span class="ui-file__name">Saved replies</span><span class="ui-file__kind">Zendesk</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/notion.svg" alt=""></span><span class="ui-file__name">Help center</span><span class="ui-file__kind">Notion</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/google-docs.svg" alt=""></span><span class="ui-file__name">Shipping FAQ</span><span class="ui-file__kind">Google Docs</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/confluence.svg" alt=""></span><span class="ui-file__name">Returns process</span><span class="ui-file__kind">Confluence</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><svg class="ui-file__glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.25 2.75h8L18.75 7.25v14H6.25z"/><path d="M14 2.75v4.75h4.75M9 12.5h6.5M9 15.5h6.5M9 18.5h4"/></svg></span><span class="ui-file__name">Refund policy.pdf</span><span class="ui-file__kind">PDF</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/md.svg" alt=""></span><span class="ui-file__name">Tone of voice.md</span><span class="ui-file__kind">Markdown</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/intercom.svg" alt=""></span><span class="ui-file__name">Help articles</span><span class="ui-file__kind">Intercom</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/google-drive.svg" alt=""></span><span class="ui-file__name">Warranty terms</span><span class="ui-file__kind">Google Drive</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><svg class="ui-file__glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.25 2.75h8L18.75 7.25v14H6.25z"/><path d="M14 2.75v4.75h4.75M9 12.5h6.5M9 15.5h6.5M9 18.5h4"/></svg></span><span class="ui-file__name">Size guide.pdf</span><span class="ui-file__kind">PDF</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/zendesk.svg" alt=""></span><span class="ui-file__name">Macros</span><span class="ui-file__kind">Zendesk</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/google-docs.svg" alt=""></span><span class="ui-file__name">Holiday hours</span><span class="ui-file__kind">Google Docs</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/notion.svg" alt=""></span><span class="ui-file__name">Product specs</span><span class="ui-file__kind">Notion</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/shopify.svg" alt=""></span><span class="ui-file__name">Product catalogue</span><span class="ui-file__kind">Shopify</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/gmail.svg" alt=""></span><span class="ui-file__name">Order emails</span><span class="ui-file__kind">Gmail</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><img src="icons/confluence.svg" alt=""></span><span class="ui-file__name">Escalation rules</span><span class="ui-file__kind">Confluence</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="ui-file is-done"><span class="ui-file__icon"><svg class="ui-file__glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.25 2.75h8L18.75 7.25v14H6.25z"/><path d="M14 2.75v4.75h4.75M9 12.5h6.5M9 15.5h6.5M9 18.5h4"/></svg></span><span class="ui-file__name">Care guide.pdf</span><span class="ui-file__kind">PDF</span><span class="ui-file__bar"><i></i></span><span class="ui-file__check"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Looks like your brand</h3>
+        <p>Set the chat widget&rsquo;s colours, corners and texture.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-live data-fx-seed="47" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.15,"calmX":0.5,"calmY":0.5,"tint":0.7,"contrast":0.7,"grain":0.42}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-rise fit" style="--ax:max(24px, 50% - 144px);--ay:40px;--fit-max:288px" data-ui-load="slider" data-ui-opts='{"drive":{"param":"grain","min":0.1,"max":1}}' data-ui-loop></div></div>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Finds past answers</h3>
+        <p>Search every reply your team has sent.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="58" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.3,"calmY":0.6,"tint":0.6,"contrast":0.6}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-rise fit" style="--ax:28px;--ay:32px;--fit-max:400px">
+            <div class="ui ui-panel ui-search" data-ui="search" data-ui-opts='{"queries":[{"q":"refund damaged","rows":[["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M4 2.5h5l3 3v8H4z\"/><path d=\"M9 2.5v3h3\"/></svg>","<b>Refund</b>s for <b>damaged</b> items","Article"],["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M2.5 4.5h11v8h-11z\"/><path d=\"m2.5 5 5.5 4 5.5-4\"/></svg>","Re: lamp arrived <b>damaged</b>","Reply"],["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M3 4.5h10M3 8h10M3 11.5h6\"/></svg>","<b>Refund</b> without return","Macro"]]},{"q":"change address","rows":[["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M4 2.5h5l3 3v8H4z\"/><path d=\"M9 2.5v3h3\"/></svg>","<b>Change</b> an order before it ships","Article"],["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M2.5 4.5h11v8h-11z\"/><path d=\"m2.5 5 5.5 4 5.5-4\"/></svg>","Re: new delivery <b>address</b>","Reply"],["<svg class=\"ui-icon\" viewBox=\"0 0 16 16\"><path d=\"M3 4.5h10M3 8h10M3 11.5h6\"/></svg>","<b>Address</b> after dispatch","Macro"]]}]}'>
+              <div class="ui-search__field">
+                <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                <span class="ui-search__q"><span data-search-q>refund damaged</span><i class="ui-search__caret"></i></span>
+                <kbd class="ui-search__kbd">Ctrl K</kbd>
+              </div>
+              <div class="ui-search__group">Best matches</div>
+              <ul class="ui-search__list" data-search-list>
+                <li class="ui-search__row is-sel"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></svg></span><span class="ui-search__t"><b>Refund</b>s for <b>damaged</b> items</span><span class="ui-search__m">Article</span></li>
+                <li class="ui-search__row"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M2.5 4.5h11v8h-11z"/><path d="m2.5 5 5.5 4 5.5-4"/></svg></span><span class="ui-search__t">Re: lamp arrived <b>damaged</b></span><span class="ui-search__m">Reply</span></li>
+                <li class="ui-search__row"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 4.5h10M3 8h10M3 11.5h6"/></svg></span><span class="ui-search__t"><b>Refund</b> without return</span><span class="ui-search__m">Macro</span></li>
+              </ul>
+              <div class="ui-search__foot"><span><kbd>&uarr;</kbd><kbd>&darr;</kbd> to move</span><span><kbd>Enter</kbd> to open</span></div>
+            </div>
+          </div></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3. text left, panel right -------------------------------------------------------------- -->
+  <section class="sec" id="split">
+    <div class="sec__head">
+      <h2>A weekly report you can read in a minute. <span>What it solved, what it handed off, and why.</span></h2>
+      <span class="sec__tag">03 / Text and panel</span>
+    </div>
+    <article class="card card--split">
+      <div class="card__body">
+        <h3 class="card__title">See what it handled</h3>
+        <p class="card__text">Every Monday you get a short report by email and in Slack.</p>
+        <ul class="card__points">
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14V9M7.5 14V5M12 14v-3.5M16 14H2"/></svg><span><b>68% solved</b> without a person, up 7 points</span></li>
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 5.5V9l2.5 1.5"/></svg><span><b>1 min 40 s</b> median first reply</span></li>
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5 11 6.6l4.5.6-3.3 3.1.8 4.5L9 12.6l-4 2.2.8-4.5-3.3-3.1 4.5-.6z"/></svg><span><b>4.8 of 5</b> average customer rating</span></li>
+        </ul>
+        <a class="card__link" href="#split">Read last week&rsquo;s report <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="panel" data-fx="silk-folds" data-fx-seed="27" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#b08a62"}' data-fx-params='{"speed":0,"tone":1,"scale":1.3,"folds":0.55,"sheen":0.5,"angle":-28,"calm":0.2,"calmX":0.5,"calmY":0.9}' style="--calm-k:0%">
+        <div class="stage stage--fade-b"><div class="at-corner to-edge fit" style="--ax:40px;--ay:48px;--fit-max:520px" data-ui-load="stat" data-ui-opts='{"window":true,"fill":true}' data-ui-loop></div></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 4. stat cards ---------------------------------------------------------------------------- -->
+  <section class="sec" id="stats">
+    <div class="sec__head">
+      <h2>Numbers from October. <span>Across 1,200 stores that use Relay.</span></h2>
+      <span class="sec__tag">04 / Stat cards</span>
+    </div>
+    <div class="g-stat">
+      <article class="card card--stat">
+        <h3>Solved without a person</h3>
+        <div class="knock fxg" data-knock data-fx="grain-gradient" data-fx-seed="9"><span class="knock__text">68%</span></div>
+        <p class="stat__label">of all conversations, from the first message to <b>solved</b>, with no one on your team stepping in.</p>
+      </article>
+      <article class="card card--stat">
+        <h3>Median first reply</h3>
+        <div class="stat__num">1:40<span class="stat__unit"> min</span></div>
+        <p class="stat__label">Day and night, weekends included. Before Relay it was <b>6 hours</b>.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 5. integrations -------------------------------------------------------------------------- -->
+  <section class="sec" id="apps">
+    <div class="sec__head">
+      <h2>Works with the tools you have. <span>Nothing to install.</span></h2>
+      <span class="sec__tag">05 / Integrations</span>
+    </div>
+    <article class="card card--split">
+      <div class="card__body">
+        <h3 class="card__title">Connect in a few clicks</h3>
+        <p class="card__text">Relay reads from your helpdesk, store and docs, and writes back where your team works.</p>
+        <ul class="card__points">
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 7 13.5 15 4.5"/></svg><span><b>Helpdesks:</b> Zendesk, Intercom, Gmail</span></li>
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 7 13.5 15 4.5"/></svg><span><b>Stores:</b> Shopify, with orders and refunds</span></li>
+          <li><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 7 13.5 15 4.5"/></svg><span><b>Docs:</b> Notion, Google Drive, Confluence</span></li>
+        </ul>
+        <a class="card__link" href="#apps">See all 40 integrations <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="panel" data-fx="silk-folds" data-fx-seed="6" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","muted":"#5d6873","accent":"#7f9fbd"}' data-fx-params='{"speed":0,"tone":1,"scale":1.3,"folds":0.55,"sheen":0.55,"angle":-28,"calm":0.25,"calmX":0.35,"calmY":0.45}' style="--calm-k:0%">
+        <div class="stage stage--fade-b"><div class="at-corner fit" style="--ax:40px;--ay:48px;--fit-max:480px" data-ui-loop>
+          <div class="ui ui-panel ui-apps" data-ui="integrations">
+            <div class="ui-head">
+              <div class="ui-title">Connected apps</div>
+              <span class="ui-spacer"></span>
+              <div class="ui-meta" data-apps-count>6 connected</div>
+            </div>
+            <ul class="ui-apps__list">
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/zendesk.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Zendesk</span><span class="ui-app__sub">Reads and answers tickets</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/intercom.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Intercom</span><span class="ui-app__sub">Answers chats on your site</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app" data-apps-target>
+                <span class="ui-logo ui-logo--sm"><img src="icons/confluence.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Confluence</span><span class="ui-app__sub">Reads your team&rsquo;s how-tos</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/gmail.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Gmail</span><span class="ui-app__sub">Answers the support inbox</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/shopify.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Shopify</span><span class="ui-app__sub">Looks up orders and refunds</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/notion.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Notion</span><span class="ui-app__sub">Learns from your help pages</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+              <li class="ui-app is-on">
+                <span class="ui-logo ui-logo--sm"><img src="icons/google-drive.svg" alt=""></span>
+                <span class="ui-app__text"><span class="ui-app__name">Google Drive</span><span class="ui-app__sub">Reads your policies</span></span>
+                <span class="ui-app__state"><span class="ui-chip ui-app__on">Connected</span><button class="ui-btn ui-btn--ghost ui-btn--sm ui-app__connect" type="button"><span class="ui-spin ui-app__spin" aria-hidden="true"></span><span>Connect</span></button></span>
+              </li>
+
+            </ul>
+          </div>
+        </div></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 6. testimonial --------------------------------------------------------------------------- -->
+  <section class="sec" id="quote">
+    <div class="sec__head">
+      <h2>From a team that uses it. <span>Northwind sells lamps and furniture in three countries.</span></h2>
+      <span class="sec__tag">06 / Testimonial</span>
+    </div>
+    <article class="card card--quote">
+      <div class="card__body">
+        <blockquote class="quote">&ldquo;We used to need four people on the inbox every weekend. Now Relay answers most of it, and we check the rest on Monday morning.&rdquo;</blockquote>
+        <div class="person">
+          <span class="person__logo" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M14 3 25 9.5v9L14 25 3 18.5v-9z" stroke="currentColor" stroke-width="2"/><path d="M14 9v10M9.5 11.5 14 9l4.5 2.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+          <span><span class="person__name">Maya Lindqvist</span><span class="person__role">Head of support, Northwind Supply</span></span>
+        </div>
+      </div>
+      <div class="result">
+        <div>
+          <div class="result__fig">&minus;75%</div>
+          <p class="result__cap">fewer people on the Northwind inbox at weekends since March</p>
+        </div>
+        <ul class="result__bars" aria-label="People on the inbox each weekend">
+          <li><span>Before Relay</span><i style="--w:100%"></i><b>4 people</b></li>
+          <li><span>With Relay</span><i style="--w:25%"></i><b>1 person</b></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- 7. pricing ------------------------------------------------------------------------------- -->
+  <section class="sec" id="pricing">
+    <div class="sec__head">
+      <h2>Pay for what it solves. <span>Every plan starts with a 14-day trial.</span></h2>
+      <span class="sec__tag">07 / Pricing</span>
+    </div>
+    <div class="g3">
+      <article class="card plan">
+        <div class="plan__name">Starter</div>
+        <div class="plan__price">&euro;49<small>per month</small></div>
+        <p class="plan__for">For a small shop with one support inbox.</p>
+        <a class="plan__btn" href="#pricing">Start a trial</a>
+        <ul class="plan__list"><li>300 solved conversations</li><li>Email and chat</li><li>One helpdesk</li></ul>
+      </article>
+      <article class="card plan is-featured" data-glow="edge-glow" data-glow-params='{"radius":20,"width":1.2,"glow":10,"bloom":0.3,"segment":0.3,"speed":400,"idle":0.3,"wash":0,"fill":1}' style="--fx-bg:var(--bg);--fx-surface:var(--card);--fx-accent:var(--accent)">
+        <div class="plan__name">Growth <span class="plan__badge">Most teams</span></div>
+        <div class="plan__price">&euro;199<small>per month</small></div>
+        <p class="plan__for">For teams that answer customers every day.</p>
+        <a class="plan__btn plan__btn--primary" href="#pricing">Start a trial</a>
+        <ul class="plan__list"><li>2,000 solved conversations</li><li>Email, chat and voice</li><li>All integrations</li><li>Rules and handoffs</li></ul>
+      </article>
+      <article class="card plan">
+        <div class="plan__name">Scale</div>
+        <div class="plan__price">Custom</div>
+        <p class="plan__for">For several brands, stores and languages.</p>
+        <a class="plan__btn" href="#pricing">Talk to sales</a>
+        <ul class="plan__list"><li>Any volume</li><li>Single sign-on</li><li>A named support engineer</li></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- 8. tall cards, panel on top ------------------------------------------------------------ -->
+  <!-- one placement for all three: rising from 24px down, centred, the same width, out through the
+       bottom (.to-edge) with a short fade; each window full enough to reach the edge -->
+  <section class="sec" id="channels">
+    <div class="sec__head">
+      <h2>Wherever customers write or call. <span>One assistant, one history.</span></h2>
+      <span class="sec__tag">08 / Tall cards</span>
+    </div>
+    <div class="g3">
+      <article class="card">
+        <div class="panel panel--top" data-fx="gradient-mesh" data-fx-seed="3" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","muted":"#5d6873","accent":"#5c86ad"}' data-fx-params='{"speed":0,"calm":0.5,"calmX":0.5,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b" style="--fade-h:40px"><div class="at-rise fit to-edge" style="--ax:max(24px, 50% - 156px);--ay:24px;--fit-max:312px">
+            <div class="ui ui-panel mail">
+              <div class="mail__bar"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h11v8h-11z"/><path d="m2.5 5 5.5 4 5.5-4"/></svg><span class="mail__subj">Lamp arrived broken</span><span class="ui-chip ui-chip--accent">Solved</span></div>
+              <div class="mail__msg"><span class="ui-avatar" data-tone="1">LF</span><div class="mail__col"><div class="mail__who"><b>Lena Fischer</b><time>9:12</time></div><div class="mail__text">The base was cracked when it arrived. Can I get my money back?</div></div></div>
+              <div class="mail__msg"><span class="ui-agent" aria-hidden="true"></span><div class="mail__col"><div class="mail__who"><b>Relay</b><time>9:13</time></div><div class="mail__text">Sorry about that, Lena. I refunded &euro;48.00 to your card. It shows in 3 to 5 days.</div><span class="mail__cite"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></svg>Refund policy, section 2</span></div></div>
+              <div class="mail__msg"><span class="ui-avatar" data-tone="1">LF</span><div class="mail__col"><div class="mail__who"><b>Lena Fischer</b><time>9:20</time></div><div class="mail__text">Thank you, that was quick.</div></div></div>
+            </div>
+          </div></div>
+        </div>
+        <h3>Email</h3>
+        <p>Answers your support inbox in your tone, with the right policy behind each reply.</p>
+        <a class="card__link" href="#channels">Email support <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+      <article class="card">
+        <div class="panel panel--top" data-fx="gradient-mesh" data-fx-seed="8" data-fx-palette='{"bg":"#cdd6c6","surface":"#dce3d6","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}' data-fx-params='{"speed":0,"calm":0.5,"calmX":0.5,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b" style="--fade-h:40px"><div class="at-rise fit to-edge" style="--ax:max(24px, 50% - 156px);--ay:24px;--fit-max:312px">
+            <div class="ui ui-panel widget">
+              <div class="widget__head"><span class="ui-agent" aria-hidden="true"></span><span><b>Northwind help</b><small>Replies in seconds</small></span></div>
+              <div class="widget__body">
+                <div class="widget__me">Where is order #4790?</div>
+                <div class="widget__bot">It left our Lyon warehouse this morning.</div>
+                <div class="widget__order"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5 8 2.5 13.5 5v6L8 13.5 2.5 11z"/><path d="M2.5 5 8 7.5 13.5 5M8 7.5v6"/></svg><span><b>Order #4790</b><small>Arrives Thursday</small></span><span class="ui-chip ui-chip--accent">Shipped</span></div>
+                <div class="widget__me">Can I still change the address?</div>
+                <div class="widget__bot">Yes, until 18:00 today. Send me the new one.</div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+        <h3>Chat</h3>
+        <p>A chat widget for your site that answers at once and passes on to your team.</p>
+        <a class="card__link" href="#channels">Chat widget <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+      <article class="card">
+        <div class="panel panel--top" data-fx="gradient-mesh" data-fx-seed="11" data-fx-palette='{"bg":"#ddd1be","surface":"#ebe3d6","ink":"#2a2622","muted":"#6f675c","accent":"#c09a6e"}' data-fx-params='{"speed":0,"calm":0.5,"calmX":0.5,"calmY":0.95,"tint":0.5,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b" style="--fade-h:40px"><div class="at-rise fit to-edge" style="--ax:max(24px, 50% - 156px);--ay:24px;--fit-max:312px" data-ui-load="voice"></div></div>
+        </div>
+        <h3>Voice</h3>
+        <p>Takes phone calls, speaks 32 languages and texts the customer what was agreed.</p>
+        <a class="card__link" href="#channels">Phone support <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+    </div>
+  </section>
+  <!-- 9. developer tools ------------------------------------------------------------------------ -->
+  <section class="sec" id="dev">
+    <div class="sec__head">
+      <h2>Your developers get it too. <span>It reviews changes, runs the tests and shows each build.</span></h2>
+      <span class="sec__tag">09 / Developer tools</span>
+    </div>
+    <div class="g2 g2--dev">
+      <article class="card card--row">
+        <h3>Reviews a change line by line</h3>
+        <p>Relay suggests the exact line in a pull request, and the author applies it from the comment.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="33" data-fx-palette='{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"calm":0.2,"calmX":0.45,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage stage--fade-b"><div class="at-corner fit" style="--ax:32px;--ay:36px;--fit-max:480px" data-ui-load="diff-review"></div></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Runs the tests from one place</h3>
+        <p>Every test file runs, and you see each result as it arrives, with the time it took.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="41" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}' data-fx-params='{"speed":0,"calm":0.15,"calmX":0.4,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage"><div class="at-rise fit" style="--ax:32px;--ay:40px;--fit-max:440px" data-ui-load="terminal-run" data-ui-loop></div></div>
+        </div>
+      </article>
+    </div>
+    <div class="g2" style="margin-top:16px;grid-template-columns:minmax(0,1fr)">
+      <article class="card card--row card--wide">
+        <h3>Follows every build to the end</h3>
+        <p>See each step of a build as it runs, which one is running now and how long the whole run took.</p>
+        <div class="panel" data-fx="gradient-mesh" data-fx-seed="47" data-fx-palette='{"bg":"#cdd6c6","surface":"#dce3d6","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}' data-fx-params='{"speed":0,"calm":0.2,"calmX":0.6,"calmY":0.95,"tint":0.6,"relief":0.35}' style="--calm-k:0%">
+          <div class="stage"><div class="at-corner fit" style="--ax:max(24px, 50% - 440px);--ay:40px;--ay-sm:32px;--fit-max:880px" data-ui-load="pipeline-board"></div></div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot">App icons: Simple Icons 16.30.0, CC0.</footer>
+
+<script type="module">
+  import fx from '../effects/fx.js';
+  import ui from './ui.js';
+  const q = new URLSearchParams(location.search);
+  if (q.has('t')) fx.setClock(+q.get('t'));
+  const root = document.documentElement;
+  const saved = (() => { try { return localStorage.getItem('cards-theme'); } catch { return null; } })();
+  const theme0 = q.get('theme') || saved || 'light';
+
+  // per-theme effect ids and params: data-fx-dark / data-fx-params-dark override on dark
+  for (const el of document.querySelectorAll('[data-fx]')) { el.dataset.fxLight = el.dataset.fx; el.dataset.fxParamsLight = el.dataset.fxParams || ''; }
+  function apply(theme) {
+    root.dataset.theme = theme;
+    for (const b of document.querySelectorAll('[data-set-theme]')) b.setAttribute('aria-pressed', String(b.dataset.setTheme === theme));
+    for (const el of document.querySelectorAll('[data-fx-light]')) {
+      const dark = theme === 'dark';
+      el.dataset.fx = dark && el.dataset.fxDark ? el.dataset.fxDark : el.dataset.fxLight;
+      const p = dark && el.dataset.fxParamsDark ? el.dataset.fxParamsDark : el.dataset.fxParamsLight;
+      if (p) el.dataset.fxParams = p; else delete el.dataset.fxParams;
+      // the big number: a light effect under white text on dark (darken), a dark one under black text on light (lighten)
+      if (el.hasAttribute('data-knock')) {
+        el.classList.toggle('knock--light', !dark);
+        el.dataset.fxPalette = JSON.stringify(dark
+          ? { bg: '#f2efea', surface: '#ffffff', ink: '#1a1a1a', muted: '#9a948c', accent: '#a9a397' }
+          : { bg: '#121110', surface: '#262422', ink: '#f2f2ef', muted: '#77736d', accent: '#5e5953' });
+        // held still: a number that keeps moving would be a loop with no pause button
+        el.dataset.fxParams = JSON.stringify({ speed: 0, grainMotion: 0, calm: 0, tint: 0.9, contrast: 0.85, grain: 0.5, softness: 0.4 });
+      }
+    }
+  }
+  // The featured plan rests on a quiet accent hairline (cards.css). On hover or keyboard focus a light runs
+  // once round its edge (edge-glow, mounted for that one lap of about 4.6 s, then faded and freed), so
+  // nothing on the card moves on its own or because the page scrolled.
+  function glowOnHover() {
+    for (const el of document.querySelectorAll('[data-glow]')) {
+      let busy = false;
+      const lap = async () => {
+        if (busy || ui.reduced()) return;
+        busy = true;
+        try {
+          const c = await fx.mount(el, el.dataset.glow, { palette: fx.readPalette(el), params: JSON.parse(el.dataset.glowParams || '{}'), seed: 2 });
+          const r = el.getBoundingClientRect(), per = 2 * (r.width + r.height);
+          await new Promise(res => setTimeout(res, per / Math.min(c.params.speed, per / 4) * 1000));
+          el.classList.add('is-fading');
+          await new Promise(res => setTimeout(res, 650));
+          c.destroy();
+        } catch (e) { console.warn(e); }
+        el.classList.remove('is-fading');
+        busy = false;
+      };
+      el.addEventListener('pointerenter', lap);
+      el.addEventListener('focusin', lap);
+      fx.load(el.dataset.glow).catch(() => {});    // the shader module is ready before the first hover
+    }
+  }
+
+  apply(theme0);
+  // one loop per card group carries data-ui-loop; ui.loadAll / ui.startAll hold every other fragment on its
+  // finished picture (and on a phone every fragment but voice), the same rule system.js applies.
+  // ui.grounds draws each still ground once and frees its WebGL context: the page needs one or two
+  await Promise.all([ui.loadAll(document), ui.startAll(document), ui.grounds(document, fx)]);
+  glowOnHover();
+  root.dataset.ready = '1';
+
+  async function setTheme(theme) {
+    if (theme === root.dataset.theme) return;
+    try { localStorage.setItem('cards-theme', theme); } catch {}
+    apply(theme);
+    // effects that fragments mount themselves (the voice orb) follow at once; the grounds are drawn again
+    for (const el of document.querySelectorAll('[data-ui]')) el.__ui?.repaint?.();
+    await ui.grounds(document.querySelector('main'), fx);
+  }
+  for (const b of document.querySelectorAll('[data-set-theme]')) b.addEventListener('click', () => setTheme(b.dataset.setTheme));
+</script>
+</body>
+</html>

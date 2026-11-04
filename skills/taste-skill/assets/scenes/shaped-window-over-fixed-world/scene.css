@@ -1,0 +1,43 @@
+/* shaped-window-over-fixed-world - at rest: the title and the action, the photograph, then the chapter's
+   word, the lede and the action on the page's ground. Live: the photograph full-bleed behind the
+   shutter (five pieces of the page's ground, moved by transform only), the title above the windows
+   and the action under them, then a flat band of the ground across the foot with the word, the lede
+   and the action. */
+[data-big-scene="shaped-window-over-fixed-world"] { background: var(--bg); color: var(--ink); }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__world { position: relative; overflow: clip; background: var(--surface); }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__media { display: block; width: 100%; height: 100%; object-fit: cover; }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__title { margin: 0; font-size: var(--t-h1); line-height: 1.04; letter-spacing: var(--display-tracking); font-weight: var(--display-weight); max-width: 18ch; text-wrap: balance; }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__cta { margin: 0; }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__word { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1; font-size: var(--t-h1); }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__lede { display: grid; gap: var(--s-5); justify-items: start; }
+[data-big-scene="shaped-window-over-fixed-world"] .sw__lede p:not(.sw__word) { margin: 0; font-size: var(--t-lead); line-height: 1.5; max-width: 52ch; }
+
+/* ---------- finished composition */
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) > .sc__stage { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--s-7) var(--pad) var(--section); display: grid; gap: var(--s-5); }
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__title { order: 1; }
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__cta { order: 2; }
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__world { order: 3; aspect-ratio: 16 / 8; border-radius: var(--r-lg); margin-top: var(--s-4); }
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__media { position: absolute; inset: 0; }
+[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__lede { order: 4; margin-top: var(--s-4); }
+@media (max-width: 767px) { [data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) .sw__world { aspect-ratio: 4 / 5; } }
+
+/* ---------- the held stage */
+[data-big-scene="shaped-window-over-fixed-world"].is-live > .sc__stage { background: var(--bg); }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__world { position: absolute; inset: 0; z-index: 1; transform-origin: 50% 50%; will-change: transform; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__media { position: absolute; inset: 0; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__shutter { position: absolute; inset: 0; z-index: 2; pointer-events: none; will-change: transform; overflow: clip; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__s { position: absolute; background: var(--bg); will-change: transform; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__title {
+  position: absolute; left: 0; right: 0; top: calc(var(--sw-y1, 30svh) - 0.5 * (var(--sw-y1, 30svh) - var(--nav-h, 0px))); translate: 0 -50%; z-index: 3;
+  width: 100%; margin-inline: auto; padding-inline: var(--pad); text-align: center; max-width: none;
+  font-size: clamp(30px, 3.6vw, 52px); will-change: transform, opacity;
+}
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__cta { position: absolute; left: 0; right: 0; top: calc(var(--sw-y2, 84svh) + 0.5 * (100svh - var(--sw-y2, 84svh))); translate: 0 -50%; z-index: 3; justify-content: center; padding-inline: var(--pad); will-change: transform, opacity; }
+/* the band: the word at the left, the lede and the action at the right */
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__lede {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; background: var(--bg); color: var(--ink); opacity: 0; will-change: transform, opacity;
+  padding: var(--s-6) max(var(--pad), calc((100vw - var(--container)) / 2)) var(--s-7); grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto auto; align-items: start; column-gap: var(--gutter); row-gap: var(--s-4);
+}
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__word { grid-column: 1; grid-row: 1 / 3; font-size: clamp(48px, 6.4vw, 104px); white-space: nowrap; opacity: 0; will-change: transform, opacity; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__lede > :not(.sw__word) { grid-column: 2; opacity: 0; will-change: transform, opacity; }
+[data-big-scene="shaped-window-over-fixed-world"].is-live .sw__lede .btn { width: auto; }

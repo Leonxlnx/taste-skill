@@ -1,0 +1,11 @@
+{
+  "id": "orb-sphere",
+  "name": "Light orb",
+  "family": "light",
+  "look": "One sphere with a slowly turning nebula, a bright rim and specks of light: glowing in a dark field on light-text pages, a dark glass ball on others.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true
+}

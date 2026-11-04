@@ -1,0 +1,21 @@
+{
+  "name": "notify",
+  "title": "Notification stack",
+  "shows": "Three notifications (the assistant handing over, a person taking over, a count) with avatars and times; a new one slides in on top and the oldest leaves.",
+  "useFor": [
+    "handoffs",
+    "activity",
+    "alerts",
+    "teams",
+    "status",
+    "real-time"
+  ],
+  "size": [
+    380,
+    208
+  ],
+  "js": true,
+  "place": "a short stack sits low: at-rise fit with --fit-max: 380px, --ax 32px and --ay (and --ay-sm) calc(100% - 180px), with .stage--fade-b, so its third row is cut by the bottom edge like its neighbours' windows and the newest one (the point) stays clear of the fade; or at-over a window's lower edge",
+  "edit": "The stack is HTML. What slides in is opts.items [[icon, title, body]] when given, else the oldest notification of the stack comes round to the top; the times stay with their places.",
+  "loop": "about 2.8 s a cycle: three notifications slide in at the top in turn, the oldest leaving at the bottom; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

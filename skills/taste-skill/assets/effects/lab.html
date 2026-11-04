@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Effects lab</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #ddd6c6; --surface: #d2cab8; --ink: #2a2a26; --muted: #59574e; --accent: #4f6238; --accent-ink: #ffffff;
+    --line: color-mix(in oklab, var(--ink) 13%, transparent);
+    --line-strong: color-mix(in oklab, var(--ink) 22%, transparent);
+    --chip: color-mix(in oklab, var(--ink) 6%, var(--bg));
+    --radius: 16px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, select, input { font: inherit; color: inherit; }
+  .bar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+    padding: 14px 24px; background: color-mix(in oklab, var(--bg) 90%, transparent);
+    backdrop-filter: saturate(1.2) blur(14px); -webkit-backdrop-filter: saturate(1.2) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .title { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+  .title h1 { margin: 0; font-size: 17px; font-weight: 640; letter-spacing: -0.01em; }
+  .title p { margin: 0; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--chip); border: 1px solid var(--line); }
+  .seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 7px; cursor: pointer; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 2px color-mix(in oklab, var(--ink) 14%, transparent); }
+  .btn, select {
+    height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--bg);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover, select:hover { border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+  .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  label.check { display: inline-flex; align-items: center; gap: 7px; padding: 0 6px; cursor: pointer; color: var(--muted); }
+  label.check input { accent-color: var(--accent); width: 15px; height: 15px; }
+  select { max-width: 210px; }
+
+  .grid {
+    display: grid; gap: 20px; padding: 24px; max-width: 1680px; margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  }
+  body[data-layout="wide"] .grid { grid-template-columns: 1fr; max-width: 1280px; }
+  body[data-layout="hero"] .grid { grid-template-columns: 1fr; max-width: none; padding: 0; gap: 0; }
+  .tile { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--bg); display: flex; flex-direction: column; min-width: 0; }
+  body[data-layout="hero"] .tile { border-radius: 0; border-width: 0 0 1px; }
+  .stage { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+  body[data-layout="wide"] .stage { aspect-ratio: 16 / 9; }
+  body[data-layout="hero"] .stage { aspect-ratio: auto; height: 100vh; min-height: 560px; }
+  .stage[data-unfit]::after {
+    content: attr(data-unfit); position: absolute; top: 12px; right: 12px; padding: 4px 9px; border-radius: 999px;
+    font-size: 12px; background: color-mix(in oklab, var(--bg) 85%, transparent); color: var(--muted); border: 1px solid var(--line);
+  }
+
+  /* sample content that sits on the effect */
+  .sample { position: absolute; inset: 0; display: none; pointer-events: none; }
+  body[data-ui="1"] .sample { display: block; }
+  .sample-card {
+    position: absolute; left: 22px; bottom: 22px; width: min(232px, calc(100% - 44px));
+    display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: center;
+    padding: 12px 14px 12px 12px; border-radius: 12px; background: var(--surface); color: var(--ink);
+    box-shadow: 0 1px 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 10px 30px -12px rgb(0 0 0 / 0.3);
+    border: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
+  }
+  .sample-card .ic {
+    width: 36px; height: 36px; border-radius: 8px; background: var(--bg);
+    background-image: radial-gradient(color-mix(in oklab, var(--ink) 55%, transparent) 1.1px, transparent 1.4px);
+    background-size: 6px 6px; background-position: 3px 3px; border: 1px solid var(--line);
+  }
+  .sample-card b { display: block; font-size: 13px; font-weight: 600; }
+  .sample-card span { display: block; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sample-card .track { grid-column: 1 / -1; height: 4px; border-radius: 4px; background: color-mix(in oklab, var(--ink) 12%, transparent); position: relative; }
+  .sample-card .track i { position: absolute; inset: 0 45% 0 0; border-radius: inherit; background: var(--accent); }
+  .sample-head { position: absolute; left: 24px; top: 22px; right: 24px; color: var(--ink); }
+  .sample-head b { display: block; font-size: clamp(18px, 2.2vw, 30px); font-weight: 640; letter-spacing: -0.02em; line-height: 1.1; max-width: 16ch; }
+  .sample-head span { display: block; margin-top: 6px; color: var(--muted); max-width: 34ch; }
+  body[data-layout="hero"] .sample-head { left: 48px; top: auto; bottom: 30vh; }
+  body[data-layout="hero"] .sample-head b { font-size: clamp(36px, 5vw, 72px); }
+  body[data-layout="hero"] .sample-card { left: 48px; bottom: 48px; }
+
+  /* card layout: a feature card with an inset effect panel and a small UI window on it */
+  .card-head { display: none; }
+  body[data-layout="card"] .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); max-width: 1240px; gap: 16px; }
+  body[data-layout="card"] .tile { padding: 22px; border: 0; background: color-mix(in oklab, var(--ink) 4.5%, var(--bg)); border-radius: 18px; }
+  body[data-layout="card"] .card-head { display: block; }
+  .card-head b { display: block; font-size: 15px; font-weight: 620; }
+  .card-head p { margin: 4px 0 0; color: var(--muted); max-width: 52ch; }
+  body[data-layout="card"] .stage { margin-top: 18px; border-radius: 12px; aspect-ratio: 16 / 10; }
+  body[data-layout="card"] .info { display: none; }
+  body[data-layout="card"] .sample { display: block; }
+  body[data-layout="card"] .sample-head, body[data-layout="card"] .sample-card { display: none; }
+  .window { display: none; }
+  body[data-layout="card"] .window {
+    display: block; position: absolute; left: 50%; top: 54%; transform: translate(-50%, -50%); width: 64%;
+    border-radius: 10px; background: var(--surface); color: var(--ink);
+    box-shadow: 0 1px 0 color-mix(in oklab, var(--ink) 6%, transparent), 0 18px 40px -16px rgb(0 0 0 / 0.35);
+    border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent); overflow: hidden; font-size: 12px;
+  }
+  .window .wbar { display: flex; align-items: center; gap: 5px; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .window .wbar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in oklab, var(--ink) 22%, transparent); }
+  .window .wbar span { margin-left: 8px; color: var(--muted); }
+  .window .wbody { padding: 12px 12px 14px; display: grid; gap: 8px; }
+  .window .wrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .window .wrow em { font-style: normal; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .window .wbtn { justify-self: start; margin-top: 2px; padding: 5px 10px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .info { padding: 14px 16px 16px; display: grid; gap: 4px; border-top: 1px solid var(--line); }
+  body[data-layout="hero"] .info { display: none; }
+  .info-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .info h2 { margin: 0; font-size: 15px; font-weight: 620; letter-spacing: -0.005em; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 2px; }
+  .tags span { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); border: 1px solid var(--line); }
+  .look { margin: 0; color: var(--muted); }
+  .actions { display: flex; gap: 6px; flex: none; }
+  .actions .btn { height: 30px; padding: 0 10px; font-size: 13px; }
+
+  .params { display: none; padding: 4px 16px 16px; gap: 10px 18px; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .tile.open .params { display: grid; }
+  .param { display: grid; gap: 4px; }
+  .param label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .param output { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .param input[type=range] { width: 100%; accent-color: var(--ink); margin: 0; }
+  .params .row { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+  .params .row input { width: 90px; height: 30px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--bg); padding: 0 8px; }
+
+  .empty { padding: 80px 24px; text-align: center; color: var(--muted); }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; transition: .25s ease; z-index: 30;
+  }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 640px) {
+    .bar { padding: 12px 16px; }
+    .grid { padding: 16px; gap: 16px; }
+    .title p { display: none; }
+  }
+</style>
+</head>
+<body data-layout="grid">
+<header class="bar">
+  <div class="title">
+    <h1>Effects lab</h1>
+    <p id="count"></p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Palette type">
+      <button type="button" data-kind="light">Light</button>
+      <button type="button" data-kind="dark">Dark</button>
+      <button type="button" data-kind="colour">Colour</button>
+    </div>
+    <select id="pal" aria-label="Palette"></select>
+    <select id="layout" aria-label="Layout"><option value="grid">Grid</option><option value="card">Cards</option><option value="wide">Wide</option><option value="hero">Hero</option></select>
+    <label class="check"><input type="checkbox" id="ui"> Show UI on top</label>
+    <button type="button" class="btn" id="reseed">New seeds</button>
+    <button type="button" class="btn" id="pause">Pause</button>
+  </div>
+</header>
+<main class="grid" id="grid"></main>
+<div class="toast" id="toast" role="status"></div>
+<script id="palettes" type="application/json">[{"id":"white-link-blue","name":"Sheet and biro","bg":"#ffffff","surface":"#f4f4f4","ink":"#111111","muted":"#6b6b6b","accent":"#1a4be0","accentInk":"#ffffff"},{"id":"cool-white-slate","name":"Frost and slate","bg":"#f7f9fa","surface":"#ecf0f2","ink":"#1f3038","muted":"#5d6b72","accent":"#0d7480","accentInk":"#ffffff"},{"id":"rose-grey-green","name":"Rose grey, green","bg":"#ebe5e3","surface":"#e1dad7","ink":"#2b2622","muted":"#6a615d","accent":"#0f7d45","accentInk":"#ffffff"},{"id":"paper-grey-brass","name":"Newsprint and brass","bg":"#e8e8e3","surface":"#dcdcd6","ink":"#181715","muted":"#63625c","accent":"#bfb21a","accentInk":"#181715"},{"id":"stone-blueprint","name":"Stone and blueprint","bg":"#dfdedb","surface":"#d3d2ce","ink":"#26251e","muted":"#5f5d55","accent":"#2456d6","accentInk":"#ffffff"},{"id":"white-navy-tab","name":"Navy on white","bg":"#ffffff","surface":"#f4f4f2","ink":"#1f2b4d","muted":"#6a7186","accent":"#f7941d","accentInk":"#1f2b4d"},{"id":"three-stones","name":"Three stones","bg":"#eeecea","surface":"#e4e1dd","ink":"#333231","muted":"#6b6763","accent":"#5c6b54","accentInk":"#ffffff"},{"id":"putty-black-teal","name":"Putty and black","bg":"#dedad3","surface":"#d3cec6","ink":"#0a0a0a","muted":"#5c5852","accent":"#256f82","accentInk":"#ffffff"},{"id":"moss-sand","name":"Sand and moss","bg":"#ddd6c6","surface":"#d2cab8","ink":"#2a2a26","muted":"#59574e","accent":"#4f6238","accentInk":"#ffffff"},{"id":"green-mat-chocolate","name":"Bone, green, chocolate","bg":"#e5e1d8","surface":"#dad5ca","ink":"#2a1d17","muted":"#6b5b51","accent":"#456f3a","accentInk":"#ffffff"},{"id":"lunar-grey-bronze","name":"Lunar and bronze","bg":"#111111","surface":"#1c1c1c","ink":"#f2f2f2","muted":"#8f8f8f","accent":"#a08672","accentInk":"#111111"},{"id":"blue-black-cornflower","name":"Night and sky blue","bg":"#0a0d14","surface":"#131824","ink":"#e9edf3","muted":"#8891a1","accent":"#5ab9fc","accentInk":"#0a0d14"},{"id":"green-black-bone","name":"Green-black and bone","bg":"#161c1a","surface":"#1f2725","ink":"#e3e2da","muted":"#8e948d","accent":"#9fc7b8","accentInk":"#161c1a"},{"id":"black-crimson","name":"Black and crimson","bg":"#0a0a0a","surface":"#151515","ink":"#efefef","muted":"#8c8c8c","accent":"#b11226","accentInk":"#ffffff"},{"id":"forest-pale-lime","name":"Forest and lime","bg":"#0f1f10","surface":"#162a17","ink":"#ffffff","muted":"#9aa39a","accent":"#c6f19d","accentInk":"#0f1f10"},{"id":"charcoal-room-sage","name":"Charcoal and sage","bg":"#1c1c1c","surface":"#262626","ink":"#f1f1ef","muted":"#9a9b96","accent":"#8fa68e","accentInk":"#1c1c1c"},{"id":"warm-black-gold","name":"Warm black, gold","bg":"#0c0a08","surface":"#181512","ink":"#ffffff","muted":"#8f8a84","accent":"#c9a45a","accentInk":"#0c0a08"},{"id":"graphite-safety-orange","name":"Graphite and orange","bg":"#18191b","surface":"#222427","ink":"#eff0f1","muted":"#9c9ea3","accent":"#ff4a1f","accentInk":"#18191b"},{"id":"soot-pale-lime","name":"Soot and lime","bg":"#0f0f0f","surface":"#1a1a1a","ink":"#ffffff","muted":"#8f8f8f","accent":"#dafa9c","accentInk":"#0f0f0f"},{"id":"plum-black-pink","name":"Plum-black and pink","bg":"#0d060b","surface":"#1b0e17","ink":"#ffffff","muted":"#9a8f97","accent":"#ff488b","accentInk":"#0d060b"},{"id":"white-signal-red","name":"Signal red, white","bg":"#ffffff","surface":"#f2f2f2","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#d92b21","accentInk":"#ffffff"},{"id":"white-mint-tiles","name":"Greys and mint","bg":"#ffffff","surface":"#f3f3f3","ink":"#232323","muted":"#6e6e6e","accent":"#a1ffcb","accentInk":"#232323"},{"id":"cool-grey-cobalt","name":"Cool grey, cobalt","bg":"#eef0f3","surface":"#e2e5ea","ink":"#0b0c0e","muted":"#5d6470","accent":"#1f2de6","accentInk":"#ffffff"},{"id":"offwhite-bottle-yellow","name":"Bottle ink, yellow","bg":"#f7f7f7","surface":"#ebebeb","ink":"#0d2a1c","muted":"#5f6b64","accent":"#f6e016","accentInk":"#0d2a1c"},{"id":"teal-on-paper","name":"Teal on paper","bg":"#f7f9f8","surface":"#ebf0ee","ink":"#06525c","muted":"#2f737d","accent":"#06525c","accentInk":"#f7f9f8"},{"id":"navy-pink","name":"Navy and pink","bg":"#1a2039","surface":"#212846","ink":"#f9a3c0","muted":"#b9879c","accent":"#f9a3c0","accentInk":"#1a2039"},{"id":"blush-aubergine","name":"Blush and aubergine","bg":"#edccbe","surface":"#e8c2b2","ink":"#351a2b","muted":"#6c4857","accent":"#351a2b","accentInk":"#edccbe"},{"id":"cobalt-on-sand","name":"Cobalt on sand","bg":"#e6dbc7","surface":"#ddd0b9","ink":"#062b8a","muted":"#3a5aa8","accent":"#062b8a","accentInk":"#e6dbc7"},{"id":"oxblood-grey","name":"Oxblood and grey","bg":"#e2e2e2","surface":"#d6d6d6","ink":"#7d0c14","muted":"#7a4a4e","accent":"#7d0c14","accentInk":"#e2e2e2"},{"id":"olive-on-bone","name":"Olive on bone","bg":"#ecebe7","surface":"#e1dfd9","ink":"#38450f","muted":"#5d683a","accent":"#38450f","accentInk":"#ecebe7"},{"id":"burgundy-bubblegum","name":"Burgundy and bubblegum","bg":"#3d0012","surface":"#4d0519","ink":"#ff99d3","muted":"#c77aa0","accent":"#ff99d3","accentInk":"#3d0012"},{"id":"bottle-green-gold","name":"Bottle green, gold","bg":"#133621","surface":"#1a4429","ink":"#f4d96c","muted":"#b3a55e","accent":"#f4d96c","accentInk":"#133621"},{"id":"cobalt-field","name":"Cobalt field","bg":"#0034eb","surface":"#002fd6","ink":"#ffffff","muted":"#dfe4f2","accent":"#e9e34a","accentInk":"#111111"},{"id":"mustard-field","name":"Mustard and black","bg":"#e1ac10","surface":"#cd9d0f","ink":"#0b0b0b","muted":"#4d3d0a","accent":"#24338f","accentInk":"#ffffff"},{"id":"carmine-field","name":"Carmine field","bg":"#9c1220","surface":"#8a101c","ink":"#ffffff","muted":"#f0b9bd","accent":"#ffd9dc","accentInk":"#9c1220"},{"id":"pink-field-lime","name":"Bubblegum and lime","bg":"#ff87ab","surface":"#ff739d","ink":"#0a0a0a","muted":"#6b1f3a","accent":"#def915","accentInk":"#0a0a0a"},{"id":"sky-field-navy","name":"Sky and navy","bg":"#6bb4ee","surface":"#7dbdf0","ink":"#0e1822","muted":"#1b3d5c","accent":"#ff5a1f","accentInk":"#0e1822"},{"id":"orange-field-black","name":"Orange and black","bg":"#ff7a1f","surface":"#ff8633","ink":"#050f16","muted":"#5a2306","accent":"#050f16","accentInk":"#ff7a1f"},{"id":"tobacco-olive","name":"Tobacco and olive","bg":"#472913","surface":"#55321a","ink":"#e4e0cf","muted":"#b39f84","accent":"#525e1b","accentInk":"#e4e0cf"},{"id":"poster-chapters","name":"Poster chapters","bg":"#e6e0d2","surface":"#dcd5c5","ink":"#1a1a1a","muted":"#5f5b52","accent":"#18bc42","accentInk":"#1a1a1a"},{"id":"blue-red-black","name":"Blue, red, black","bg":"#ffffff","surface":"#f3f3f3","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#1f30e0","accentInk":"#ffffff"},{"id":"charcoal-primaries","name":"Charcoal and primaries","bg":"#191919","surface":"#242424","ink":"#ffffff","muted":"#9a9a9a","accent":"#0c7866","accentInk":"#ffffff"},{"id":"ultramarine-yellow","name":"Ultramarine and yellow","bg":"#1423b8","surface":"#1220a6","ink":"#ffffff","muted":"#e4e2d6","accent":"#1fc27a","accentInk":"#0a0a0a"},{"id":"candy-chapters","name":"Candy chapters","bg":"#ffd249","surface":"#f5c63c","ink":"#0a0a0a","muted":"#5e4a0a","accent":"#f53fd6","accentInk":"#0a0a0a"},{"id":"orange-sky-lime","name":"Orange, sky, lime","bg":"#ff8126","surface":"#ff8d3a","ink":"#111111","muted":"#5c2a05","accent":"#de194b","accentInk":"#ffffff"},{"id":"post-red-mustard","name":"Post red, mustard","bg":"#e2dccf","surface":"#d7d0c1","ink":"#2a1110","muted":"#6b524c","accent":"#4a6f84","accentInk":"#ffffff"},{"id":"mint-orange-grey","name":"Grey, mint, orange","bg":"#ffffff","surface":"#f5f5f5","ink":"#000000","muted":"#666666","accent":"#a7ff9c","accentInk":"#000000"},{"id":"report-blocks","name":"Report blocks","bg":"#ffffff","surface":"#f6f6f6","ink":"#000000","muted":"#5f5f5f","accent":"#fe7141","accentInk":"#000000"},{"id":"card-pastels","name":"Card pastels","bg":"#f7f7f5","surface":"#ebebe8","ink":"#000000","muted":"#666662","accent":"#d0106f","accentInk":"#ffffff"},{"id":"mint-pink-accounts","name":"Mint and pink","bg":"#f8f8f8","surface":"#eeeeee","ink":"#0a0a0a","muted":"#6a6a6a","accent":"#1f6b3a","accentInk":"#ffffff"},{"id":"swap-pastels","name":"Swapping pastels","bg":"#c3d7e5","surface":"#d0e0eb","ink":"#141414","muted":"#4a5068","accent":"#0f5257","accentInk":"#ffffff"},{"id":"blush-sage-slate","name":"Blush, sage, slate","bg":"#a6b3bc","surface":"#b2bdc5","ink":"#1c1c1c","muted":"#38424a","accent":"#2c3620","accentInk":"#e3e2da"},{"id":"candy-on-black","name":"Candy on black","bg":"#000000","surface":"#0d0d0d","ink":"#ffffff","muted":"#999999","accent":"#93f1f7","accentInk":"#000000"},{"id":"sky-sand","name":"Sky and sand","bg":"#cbe4f2","surface":"#bcdcee","ink":"#0a0a0a","muted":"#44606e","accent":"#b0298f","accentInk":"#ffffff"},{"id":"studio-grey","name":"Studio grey","bg":"#a8a8aa","surface":"#b4b4b6","ink":"#0e0e0e","muted":"#3a3a3c","accent":"#1f5c49","accentInk":"#ffffff"},{"id":"walnut-tan","name":"Walnut and tan","bg":"#2b2216","surface":"#382d1e","ink":"#e4e2da","muted":"#a39a8b","accent":"#bda38b","accentInk":"#2b2216"}]</script>
+<script id="presets" type="application/json">{"light":"moss-sand","dark":"blue-black-cornflower","colour":"cobalt-field"}</script>
+<script type="module">
+  import fx from './fx.js';
+
+  const q = new URLSearchParams(location.search);
+  const PALETTES = JSON.parse(document.getElementById('palettes').textContent);
+  const PRESETS = JSON.parse(document.getElementById('presets').textContent);
+  const byId = Object.fromEntries(PALETTES.map(p => [p.id, p]));
+  const $ = s => document.querySelector(s);
+  const grid = $('#grid');
+
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  if (q.has('webgl1')) fx.config.forceWebGL1 = true;
+  if (q.has('time')) fx.setClock(+q.get('time'));
+  document.body.dataset.layout = ['wide', 'hero', 'card'].includes(q.get('layout')) ? q.get('layout') : 'grid';
+  $('#layout').value = document.body.dataset.layout;
+  $('#layout').addEventListener('change', e => { document.body.dataset.layout = e.target.value; syncUrl(); });
+  document.body.dataset.ui = q.get('ui') === '1' ? '1' : '0';
+  $('#ui').checked = document.body.dataset.ui === '1';
+
+  let palette = pickPalette(q.get('palette') || 'light');
+  let paused = false;
+  const tiles = [];
+
+  function pickPalette(key) {
+    const id = PRESETS[key] || key;
+    return byId[id] || byId[PRESETS.light] || PALETTES[0];
+  }
+  function applyPalette(p) {
+    const r = document.documentElement.style;
+    r.setProperty('--bg', p.bg); r.setProperty('--surface', p.surface); r.setProperty('--ink', p.ink);
+    r.setProperty('--muted', p.muted); r.setProperty('--accent', p.accent); r.setProperty('--accent-ink', p.accentInk);
+    document.documentElement.style.colorScheme = fx.paletteKind(p) === 'light' ? 'light' : 'dark';
+    const kind = fx.paletteKind(p);
+    for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(PRESETS[b.dataset.kind] === p.id));
+    $('#pal').value = p.id;
+    for (const t of tiles) {
+      const fits = t.meta.palettes.includes(kind);
+      if (fits) t.stage.removeAttribute('data-unfit'); else t.stage.setAttribute('data-unfit', `Not made for ${kind} palettes`);
+      t.ctrl?.setPalette(fx.normalizePalette(p));
+    }
+  }
+  function toast(msg) {
+    const el = $('#toast'); el.textContent = msg; el.classList.add('on');
+    clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 1600);
+  }
+  const fmt = (v, d) => (d.step && d.step >= 1 ? String(Math.round(v)) : (+v).toFixed(2));
+
+  function snippet(t) {
+    const p = t.ctrl.params, d = t.meta.params || {};
+    const changed = Object.fromEntries(Object.entries(p).filter(([k, v]) => d[k] && v !== d[k].default));
+    const attrs = [`data-fx="${t.meta.id}"`, `data-fx-seed="${t.ctrl.seed}"`];
+    if (Object.keys(changed).length) attrs.push(`data-fx-params='${JSON.stringify(changed)}'`);
+    return `<div ${attrs.join(' ')}></div>`;
+  }
+
+  function buildTile(meta, i) {
+    const tile = document.createElement('article');
+    tile.className = 'tile';
+    tile.dataset.id = meta.id;
+    tile.innerHTML = `
+      <div class="card-head"><b></b><p></p></div>
+      <div class="stage">
+        <div class="sample" aria-hidden="true">
+          <div class="window"><div class="wbar"><i></i><i></i><i></i><span>Settings</span></div>
+            <div class="wbody"><div class="wrow"><span>Grain</span><em>0.60</em></div><div class="wrow"><span>Speed</span><em>0.50</em></div><span class="wbtn">Apply</span></div></div>
+          <div class="sample-head"><b>A headline sits here</b><span>Secondary text, to check contrast on the effect.</span></div>
+          <div class="sample-card"><div class="ic"></div><div><b></b><span></span></div><div class="track"><i></i></div></div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="info-top">
+          <h2></h2>
+          <div class="actions">
+            <button type="button" class="btn" data-act="params" aria-expanded="false">Settings</button>
+            <button type="button" class="btn" data-act="copy">Copy code</button>
+          </div>
+        </div>
+        <div class="tags"></div>
+        <p class="look"></p>
+      </div>
+      <div class="params"></div>`;
+    tile.querySelector('h2').textContent = meta.name;
+    tile.querySelector('.card-head b').textContent = meta.name;
+    tile.querySelector('.card-head p').textContent = meta.look;
+    tile.querySelector('.window .wbar span').textContent = meta.name;
+    const wk = Object.keys(meta.params || {}).slice(0, 2);
+    tile.querySelectorAll('.window .wrow').forEach((row, n) => {
+      const k = wk[n];
+      if (!k) { row.remove(); return; }
+      row.querySelector('span').textContent = k[0].toUpperCase() + k.slice(1);
+      row.querySelector('em').textContent = fmt(meta.params[k].default, meta.params[k]);
+    });
+    tile.querySelector('.look').textContent = meta.look;
+    tile.querySelector('.sample-card b').textContent = meta.name;
+    const keys = Object.keys(meta.params || {}).slice(0, 2);
+    tile.querySelector('.sample-card span').textContent = keys.map(k => `${k} ${fmt(meta.params[k].default, meta.params[k])}`).join(' · ');
+    const tags = [meta.family, meta.motion, `${meta.cost} cost`, `best on ${meta.bestOn.join(', ')}`, ...(meta.random === false ? ['chosen on purpose'] : [])];
+    tile.querySelector('.tags').append(...tags.map(s => Object.assign(document.createElement('span'), { textContent: s })));
+    const stage = tile.querySelector('.stage');
+    const seed = q.has('seed') ? (+q.get('seed') + i * 101) : 1000 + i * 37;
+    const t = { meta, tile, stage, seed, ctrl: null };
+    tile.querySelector('[data-act="copy"]').addEventListener('click', async () => {
+      if (!t.ctrl) return;
+      try { await navigator.clipboard.writeText(snippet(t)); toast('Code copied'); }
+      catch (_) { prompt('Copy this code', snippet(t)); }
+    });
+    tile.querySelector('[data-act="params"]').addEventListener('click', e => {
+      const open = tile.classList.toggle('open');
+      e.currentTarget.setAttribute('aria-expanded', String(open));
+    });
+    buildParams(t);
+    return t;
+  }
+
+  function buildParams(t) {
+    const box = t.tile.querySelector('.params');
+    box.innerHTML = '';
+    for (const [k, d] of Object.entries(t.meta.params || {})) {
+      const id = `${t.meta.id}-${k}`;
+      const row = document.createElement('div');
+      row.className = 'param';
+      row.innerHTML = `<label for="${id}"><span>${k}</span><output></output></label><input type="range" id="${id}">`;
+      const inp = row.querySelector('input'), out = row.querySelector('output');
+      inp.min = d.min; inp.max = d.max; inp.step = d.step || (d.max - d.min) / 100; inp.value = d.default;
+      out.textContent = fmt(d.default, d);
+      inp.addEventListener('input', () => { out.textContent = fmt(+inp.value, d); t.ctrl?.set({ [k]: +inp.value }); });
+      box.append(row);
+    }
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<span>Seed</span><input type="number" min="0" max="9999" step="1"><button type="button" class="btn">Reset</button>`;
+    const seedIn = row.querySelector('input');
+    seedIn.value = t.seed;
+    seedIn.addEventListener('change', () => { t.seed = +seedIn.value || 0; remount(t); });
+    row.querySelector('button').addEventListener('click', () => { buildParams(t); remount(t); });
+    box.append(row);
+  }
+
+  async function remount(t, params) {
+    t.ctrl = await fx.mount(t.stage, t.meta.id, { palette: fx.normalizePalette(palette), params: params || currentParams(t), seed: t.seed });
+    if (paused) t.ctrl.pause();
+    t.tile.querySelector('.params .row input').value = t.seed;
+    // the seed may place the calm area and focal point (fx.compose): show the values in use
+    for (const [k, d] of Object.entries(t.meta.params || {})) {
+      const inp = t.tile.querySelector(`#${t.meta.id}-${k}`);
+      if (inp && t.ctrl.params[k] != null) { inp.value = t.ctrl.params[k]; inp.previousElementSibling.querySelector('output').textContent = fmt(t.ctrl.params[k], d); }
+    }
+  }
+  function currentParams(t) {
+    const out = {};
+    for (const inp of t.tile.querySelectorAll('.param input')) out[inp.id.slice(t.meta.id.length + 1)] = +inp.value;
+    return out;
+  }
+
+  // controls
+  for (const b of document.querySelectorAll('.seg button')) {
+    b.addEventListener('click', () => { palette = pickPalette(b.dataset.kind); applyPalette(palette); syncUrl(); });
+  }
+  const sel = $('#pal');
+  const groups = { light: [], dark: [], colour: [] };
+  for (const p of PALETTES) groups[fx.paletteKind(p)].push(p);
+  for (const [k, list] of Object.entries(groups)) {
+    const og = document.createElement('optgroup');
+    og.label = k[0].toUpperCase() + k.slice(1);
+    for (const p of list) og.append(new Option(p.name, p.id));
+    sel.append(og);
+  }
+  sel.addEventListener('change', () => { palette = pickPalette(sel.value); applyPalette(palette); syncUrl(); });
+  $('#ui').addEventListener('change', e => {
+    document.body.dataset.ui = e.target.checked ? '1' : '0';
+    syncUrl();
+    // a page puts the calm area where its text is; with the sample text on, do the same
+    const calm = textCalm();
+    for (const t of tiles) remount(t, calm ? { ...currentParams(t), ...calm } : {});
+  });
+  $('#layout').addEventListener('change', () => {
+    const calm = textCalm();
+    if (calm) for (const t of tiles) remount(t, { ...currentParams(t), ...calm });
+  });
+  // where the sample headline sits (0..1 of the frame), or null when no text is on the effect
+  function textCalm() {
+    const layout = document.body.dataset.layout;
+    if (document.body.dataset.ui !== '1' || layout === 'card') return null;
+    return layout === 'hero' ? { calmX: 0.2, calmY: 0.62 } : { calmX: 0.2, calmY: 0.18 };
+  }
+  $('#reseed').addEventListener('click', () => {
+    for (const t of tiles) { t.seed = Math.floor(Math.random() * 10000); remount(t); }
+  });
+  $('#pause').addEventListener('click', e => {
+    paused = !paused;
+    e.currentTarget.textContent = paused ? 'Play' : 'Pause';
+    for (const t of tiles) paused ? t.ctrl?.pause() : t.ctrl?.resume();
+  });
+  function syncUrl() {
+    const u = new URL(location.href);
+    u.searchParams.set('palette', palette.id);
+    if (document.body.dataset.ui === '1') u.searchParams.set('ui', '1'); else u.searchParams.delete('ui');
+    if (document.body.dataset.layout !== 'grid') u.searchParams.set('layout', document.body.dataset.layout); else u.searchParams.delete('layout');
+    history.replaceState(null, '', u);
+  }
+
+  // load
+  let index;
+  try { index = await fetch('./index.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  catch (err) { grid.innerHTML = '<p class="empty">index.json did not load. Run: node scripts/effects.mjs index, and serve this folder over http.</p>'; throw err; }
+  let list = index.effects || [];
+  const only = (q.get('only') || '').split(',').map(s => s.trim()).filter(Boolean);
+  if (only.length) list = only.map(id => list.find(e => e.id === id)).filter(Boolean);
+  if (q.get('family')) list = list.filter(e => e.family === q.get('family'));
+  const kinds = new Set(list.map(e => e.family));
+  $('#count').textContent = `${list.length} effect${list.length === 1 ? '' : 's'} in ${kinds.size} famil${kinds.size === 1 ? 'y' : 'ies'}. Colours come from the page palette.`;
+  if (!list.length) grid.innerHTML = '<p class="empty">No effects match.</p>';
+  list.forEach((meta, i) => { const t = buildTile(meta, i); tiles.push(t); grid.append(t.tile); });
+  applyPalette(palette);
+  await Promise.all(tiles.map(t => remount(t, { ...(textCalm() || {}) })));
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

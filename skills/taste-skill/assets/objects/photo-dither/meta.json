@@ -1,0 +1,43 @@
+{
+  "id": "photo-dither",
+  "name": "Dithered photograph",
+  "kind": "photo",
+  "shows": "A photograph printed whole as a three-colour grain of crisp square cells, like a riso print: the photograph's deepest colour, its most colourful one and the page's surface as paper (k-means over the photograph finds them), the tone spread over the photograph's own range and dithered as light by a blue-noise threshold (an even grain) or the 8 x 8 Bayer cross-hatch (retro). Its near-whites print as clean paper.",
+  "suits": [
+    "software",
+    "ai",
+    "design-tool",
+    "gaming"
+  ],
+  "bestWith": "An object or a building in clear light, a white subject included (its near-whites print as clean paper). Three tones take the photograph's own colour; two tones (ink and paper) read most graphic.",
+  "motion": "None at rest and no entry (breathe > 0 adds a slow drift of the threshold, off by default).",
+  "hover": "The photograph develops through the grain in a soft circle around the cursor, in a coarser grain at its rim; the circle scales with the frame (about a third of its short side). A quick stroke leaves a short fading trail.",
+  "takes": "The <img> inside the frame (its largest srcset size, its alt, its object-position as the subject's place), else src, else data-src: the client's own photograph, or one from scripts/photos.mjs that prints well (\"prints\": true), credited in the footer with photos.mjs credits --adapted <id>.",
+  "palettes": [
+    "light",
+    "dark",
+    "colour"
+  ],
+  "touch": "A tap shows the hover state at the finger for 1.6 s; lifting the finger does not end it (checked at 390). Nothing moves on its own.",
+  "reducedMotion": "The same still print; hover still answers, without easing.",
+  "fallback": "The photograph itself, greyed into the palette (multiplied into light paper, screened on dark): shown under the canvas before the first frame and while the canvas is released off screen, and kept when WebGL is missing, the shader fails to compile or link, the shader uses a GLSL ES reserved word (refused by photo-kit's lint, so CPU WebGL shows what a GPU would), or the photograph's host sends no CORS headers. Checked with a broken shader and with a reserved word: the still shows, never an empty frame. With no photograph at all: the effects' palette ground.",
+  "params": "cell (2 CSS px), tones (3: ink, a colour and paper; 2: ink and paper), pattern (1 blue noise, 0 Bayer), colour (1 the photograph's colours, 0 the page's ink and accent), ground (1 the surface as paper, 0 the page), clean (the lightest 0.1 of the tones print no grain), breathe, speed, radius, clarity, contrast, exposure, focusX, focusY",
+  "testedOn": [
+    "lamp: product, Commons d88, LoMit, CC BY-SA 4.0 (high-key)",
+    "bowls of beans: Commons c70, Alorin (high-key, white on white)",
+    "chair at a window: Unsplash 311, Logan Adermatt (dark)",
+    "room: picsum 625, Breather, Unsplash licence",
+    "concrete: picsum 942, Carl Nenzen Loven, Unsplash licence"
+  ],
+  "credits": "../photo-kit/photos.json",
+  "runtime": "../photo-kit/photo.js: one canvas and one WebGL context per print, counted in fx.glBudget; at most 3 prints hold a context on a page (a fourth shows its still until one leaves the screen; a frame scrolling away gives way to one coming in); released 1.5 s after its frame leaves the screen; paused off screen and with the tab hidden; crisp: whole screen px per canvas px, at most 1 canvas px per CSS px, always pixelated so the cells stay sharp squares; never over 1.5 MP; shader compiled off the main thread where KHR_parallel_shader_compile exists.",
+  "demo": "demo.html",
+  "credit": "In the footer's one credits line, never under the print: photos.mjs credits --out . --adapted <id>; for other photographs photoCredit() or creditsLine() in ../photo-kit/photo.js (author, licence linked, \"adapted\").",
+  "cost": {
+    "perPixel": "about 4 mipmapped photo or noise-map reads; no loops",
+    "renderScale": "crisp: 1 at DPR 1, 2 or 3; 0.875 at 1.75; 0.75 at 1.5; never over 1.5 MP",
+    "contexts": 1
+  },
+  "where": "One crafted moment on a software, AI, design-tool or gaming page: the page's one photograph band or a feature tile about the picture. Never over the hero photograph or a section's main photograph, never on a cafe, guesthouse or local business page, never with a caption under it.",
+  "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph."
+}

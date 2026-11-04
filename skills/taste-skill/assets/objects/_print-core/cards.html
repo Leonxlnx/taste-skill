@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objects in cards</title>
+<meta name="description" content="The objects in feature cards over a still ground: renders in cards, prints in tiles, a render in a wide frame; light and dark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../ui/base.css">
+<link rel="stylesheet" href="../../ui/cards.css">
+<style>
+  :root { --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; }
+  [data-theme="light"] { --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; }
+  [data-theme="dark"] { --bg: #060607; --card: #111113; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .top { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 86%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid color-mix(in oklab, var(--ink) 8%, transparent); }
+  .top__in { max-width: 1232px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 16px; font-size: 14px; }
+  .top__name { font-weight: 560; } .top__sp { flex: 1; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: color-mix(in oklab, var(--ink) 6%, var(--bg)); }
+  .seg button { font: inherit; font-size: 13px; font-weight: 500; border: 0; background: none; color: var(--muted); height: 30px; padding: 0 14px; border-radius: 7px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent); }
+  .wrap { max-width: 1232px; margin: 0 auto; padding: 0 24px; }
+  .sec { padding: 96px 0 0; }
+  .sec:last-of-type { padding-bottom: 120px; }
+  .sec h2 { margin: 0 0 40px; max-width: 720px; font-size: clamp(30px, 1.6vw + 16px, 40px); line-height: 1.12; letter-spacing: -0.03em; font-weight: 500; text-wrap: balance; }
+  .sec h2 span { color: var(--muted); }
+  .g2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .g2 .panel { --p-h: 336px; }
+  .g3 .panel--top { aspect-ratio: auto; height: 376px; min-height: 0; }
+  /* the wide frame: 16:7, square on a phone. Its ground is light in both themes, so the frame carries
+     its own ink tokens and its ground's colour as a fill (the text reads before the ground draws) */
+  .wide { --bg: #c6d3df; --ink: #17181b; --muted: #4a4c52; position: relative; isolation: isolate; overflow: clip; border-radius: 20px; aspect-ratio: 16 / 7; background: var(--bg); color: var(--ink); border: 1px solid color-mix(in oklab, var(--ink) 8%, transparent); }
+  .wide__text { position: absolute; left: 48px; top: 48px; z-index: 3; max-width: 30ch; pointer-events: none; }
+  .wide__text h3 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
+  .wide__text p { margin: 10px 0 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
+  .foot { padding: 48px 0 96px; color: var(--muted); font-size: 13px; }
+  @media (max-width: 1023px) { .g2, .g3 { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 760px) {
+    .wrap, .top__in { padding: 0 16px; }
+    .sec { padding-top: 72px; }
+    .g2 .panel { --p-h: 300px; }
+    .g3 .panel--top { height: 340px; }
+    .wide { aspect-ratio: 1; }
+    .wide__text { left: 24px; top: 24px; }
+    .wide__text h3 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top__in">
+    <span class="top__name">Objects in cards</span>
+    <span class="top__sp"></span>
+    <div class="seg" role="group" aria-label="Theme">
+      <button type="button" data-set-theme="light" aria-pressed="true">Light</button>
+      <button type="button" data-set-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- card: the default x.ai panel; the render over the still ground, cut by the bottom-left edge -->
+  <section class="sec">
+    <h2>Objects in feature cards. <span>A render of the thing the card is about, over a still ground.</span></h2>
+    <div class="g2">
+      <article class="card card--row">
+        <h3>Porcelain, glazed twice</h3>
+        <p>Six colours. Safe in the dishwasher and the microwave.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="31" data-fx-palette='{"bg":"#d9ccb7","surface":"#ece5d9","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.65,"calmY":0.6,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-cup" data-print-place="card"></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Alloy wheelset</h3>
+        <p>24 spokes a wheel, sealed bearings, 1,480 g the pair.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="12" data-fx-palette='{"bg":"#c6d3df","surface":"#e1e8ee","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.7,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-wheel" data-print-place="card"></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Holds any angle</h3>
+        <p>Two balanced arms on steel springs. No knobs to tighten.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="58" data-fx-palette='{"bg":"#d9ccb7","surface":"#ece5d9","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.6,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-lamp" data-print-place="card"></div>
+        </div>
+      </article>
+      <article class="card card--row">
+        <h3>Linen-finish cards</h3>
+        <p>54 cards in a tuck box. They still shuffle cleanly after years.</p>
+        <div class="panel" data-fx="grain-gradient" data-fx-seed="47" data-fx-palette='{"bg":"#cdd6c6","surface":"#e4e9df","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.6,"calmY":0.6,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-cards" data-print-place="card"></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- tile: a tall card with the panel on top; the object whole, low in the tile, in a print (software pages) -->
+  <section class="sec">
+    <h2>Prints in tiles. <span>Engraving, halftone and dither, for software, tech and games pages.</span></h2>
+    <div class="g3">
+      <article class="card">
+        <div class="panel panel--top" data-fx="grain-gradient" data-fx-seed="5" data-fx-palette='{"bg":"#1a2230","surface":"#232d3d","ink":"#e8ecf2","muted":"#8d97a6","accent":"#5a8fd0"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.5,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-globe" data-print-place="tile" data-print-params='{"effect":"engrave"}'></div>
+        </div>
+        <h3>14 regions</h3>
+        <p>Pick where your data lives. Move it later in two clicks.</p>
+      </article>
+      <article class="card">
+        <div class="panel panel--top" data-fx="grain-gradient" data-fx-seed="21" data-fx-palette='{"bg":"#cdd6c6","surface":"#e4e9df","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.5,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-cards" data-print-place="tile" data-print-params='{"effect":"halftone"}'></div>
+        </div>
+        <h3>Fair draws</h3>
+        <p>Every shuffle is logged, so any player can check a deal.</p>
+      </article>
+      <article class="card">
+        <div class="panel panel--top" data-fx="grain-gradient" data-fx-seed="9" data-fx-palette='{"bg":"#1a2230","surface":"#232d3d","ink":"#e8ecf2","muted":"#8d97a6","accent":"#5a8fd0"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.5,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+          <div data-print="print-lamp" data-print-place="tile" data-print-params='{"effect":"dither","step":1}' aria-label="A desk lamp, switched on"></div>
+        </div>
+        <h3>Focus mode</h3>
+        <p>Alerts wait until you switch it off.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- hero: a wide frame, the render large to the right of the text (a product page without photographs) -->
+  <section class="sec">
+    <h2>A wide frame. <span>The hero preset: the product's render right, the text in the clear half.</span></h2>
+    <div class="wide" data-fx="grain-gradient" data-fx-seed="77" data-fx-palette='{"bg":"#c6d3df","surface":"#e1e8ee","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.25,"calmY":0.3,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+      <div class="wide__text"><h3>A desk globe with the real coastlines.</h3><p>Brass meridian, walnut stand, 30 cm across.</p></div>
+      <div data-print="print-globe" data-print-place="hero" data-print-palette='{"bg":"#c6d3df","surface":"#e1e8ee","ink":"#17181b","accent":"#2f5f93"}' style="position:absolute;inset:0;z-index:1"></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot">Objects: <code>assets/objects</code>. Grounds: <code>assets/effects</code>.</footer>
+
+<script type="module">
+  // grounds are drawn once and kept as pictures (ui.grounds); the objects share 2 live contexts, so
+  // this page never holds more than 3 WebGL contexts at a time
+  import fx from '../../effects/fx.js';
+  import ui from '../../ui/ui.js';
+  import auto from './auto.js';
+  const q = new URLSearchParams(location.search);
+  const root = document.documentElement;
+  const apply = theme => {
+    root.dataset.theme = theme;
+    for (const b of document.querySelectorAll('[data-set-theme]')) b.setAttribute('aria-pressed', String(b.dataset.setTheme === theme));
+    for (const c of auto.prints.values()) c.setPalette(null);
+  };
+  document.querySelector('.top .seg').addEventListener('click', e => { const b = e.target.closest('[data-set-theme]'); if (b) { apply(b.dataset.setTheme); ui.grounds(document, fx); } });
+  apply(q.get('theme') || 'light');
+  await Promise.all([ui.grounds(document, fx), auto.mountAll(document)]);
+  root.dataset.ready = '1';
+</script>
+</body>
+</html>

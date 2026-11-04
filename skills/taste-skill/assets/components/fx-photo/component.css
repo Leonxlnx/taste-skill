@@ -1,0 +1,30 @@
+/* fx-photo: the section's own photograph in natural colour, the copy in a solid card inset in its corner
+   (never a gradient scrim over the picture). .is-graded (data-cx-grade="duotone"): the picture graded into
+   the page tones. */
+.cx-photo__frame {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: flex-end;
+  aspect-ratio: 16 / 8; min-height: 380px; border-radius: var(--r-lg); background: var(--cx-panel);
+}
+.cx-photo__frame > img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 62%; z-index: -2;
+  transition: transform 1.4s var(--cx-ease);
+}
+/* no scrim and no word straight on the picture: the copy stands in a solid card inset in the corner */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cx-photo:not(.is-graded) .cx-photo__frame:hover > img { transform: scale(1.03); }
+}
+.cx-photo__copy { position: relative; display: grid; justify-items: start; gap: var(--s-3); max-width: 460px; margin: var(--s-6); padding: var(--s-6); border-radius: var(--r-md, var(--r-lg)); background: var(--bg); }
+.cx-photo__eyebrow { font-size: var(--t-label); font-weight: 500; color: var(--ink); opacity: .8; }
+.cx-photo__title { font: 500 clamp(24px, 1.2vw + 16px, 32px)/1.15 var(--font-display); letter-spacing: -0.02em; margin: 0; color: var(--ink); text-wrap: balance; }
+.cx-photo__link {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; margin-top: var(--s-2);
+  border-radius: var(--r-btn); background: var(--bg); color: var(--ink); font-size: var(--t-small); font-weight: 500;
+  border: 1px solid var(--cx-line-2);
+}
+.cx-photo__link::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
+.cx-photo__link:hover::after { transform: translateX(3px); }
+@media (max-width: 639px) {
+  .cx-photo__frame { aspect-ratio: 4 / 5; min-height: 0; }
+  .cx-photo__copy { margin: var(--s-4); padding: var(--s-5); max-width: none; }
+  .cx-photo__frame > img { object-position: 62% 50%; }
+}

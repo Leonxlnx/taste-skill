@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-radius="sharp" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line carries the colour · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #111111; --p-muted: #6b6b6b; --p-accent: #c8102e; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
+          --p-inv-bg: #111111; --p-inv-surface: #1c1c1c; --p-inv-ink: #f4f4f2; --p-inv-muted: #a3a3a3; --p-inv-accent: #ff5a5f; --p-inv-accent-ink: #111111; --p-inv-action: #f4f4f2; --p-inv-action-ink: #111111;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .press { display: grid; gap: var(--s-6); }
+  .press .rows { display: grid; }
+  .press .row { display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+  .press .row:last-child { border-bottom: 1px solid var(--line); }
+  .press .row span { color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Kiln & Co</a>
+  <nav class="demo-nav__links"><a href="#">Prints</a><a href="#">Books</a><a href="#">Studio</a><a href="#">Contact</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Visit</a><a class="btn btn--primary btn--sm" href="#">Get a quote</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Offset and letterpress printing for small runs</h1><p>Books, posters, packaging and stationery from 50 copies, printed in our own shop in Rotterdam and shipped within ten days.</p><div class="btn-row"><a class="btn btn--primary" href="#">Get a quote</a><a class="btn btn--secondary" href="#">See the paper stock</a></div></div>
+      <img class="demo-photo" src="../_demo/photo-887.jpg" alt="The shop front on a quiet street" width="1800" height="1200">
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head"><h2>One quote, one price. <span class="muted">No surprises on the invoice.</span></h2><p>Send the file and the quantity; you get a price, a proof and a delivery date back within a working day.</p><a class="link" href="#">How a quote works</a></div>
+      <img class="demo-photo" src="../_demo/photo-855.jpg" alt="A painted wall in morning light" width="1800" height="1200">
+    </div>
+  </section>
+  <section class="section ground-inverse" data-moment="line-carries-colour" data-moment-opts='{"from": "base"}'>
+    <div class="container demo-split">
+      <div class="section-head"><h2>Three presses, two inks, 400 papers</h2><p>Colour work runs on the offset presses; covers, cards and invitations take the Heidelberg, which prints and scores in one pass.</p></div>
+      <div class="press">
+        <div class="rows">
+          <div class="row"><b>Heidelberg KORD 64</b><span>Letterpress, 1962</span></div>
+          <div class="row"><b>Komori Lithrone 29</b><span>Offset, four colours</span></div>
+          <div class="row"><b>Ryobi 3302</b><span>Offset, two colours</span></div>
+          <div class="row"><b>Polar 78</b><span>Cutting</span></div>
+        </div>
+        <a class="link" href="#">Book a visit to the shop</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer ground-inverse"><span>Kiln & Co · demo page for the moment “Line carries the colour”</span><span>Photographs by Roman Kraft and Rodion Kutsaev on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>
