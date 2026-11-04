@@ -133,7 +133,7 @@ fails a section that is not one or two screens at the tablet too (the default ru
 - **Pictures in the hero are the work:** the client's product, place or work, never a colour field
   or a mood.
 
-### The ten heroes
+### The eleven heroes
 
 Dealt by kind and by the material the brief really has, never by taste, never the same within three
 pages; a place never deals (the place hero below):

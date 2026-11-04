@@ -83,7 +83,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-fro
 
 That installs the skill with the [`npx skills`](https://github.com/vercel-labs/agent-skills) CLI.
 
-The skill runs its scripts with **Node 22+** and an installed **Chrome, Edge or Chromium**. It installs nothing and needs no API keys. Bundled Wikimedia Commons photographs work offline; fetching additional photographs or icons uses network access.
+The skill runs its scripts with **Node 22+** and an installed **Chrome, Edge or Chromium** (set `CHROME_PATH` if it is in a non-standard place). Optional: **ffmpeg** on the PATH, for WebP output and the phone crop of a hero photograph in `photos.mjs`. It installs nothing and needs no API keys. Bundled Wikimedia Commons photographs work offline; fetching additional photographs or icons uses network access.
 
 <details>
 <summary>Claude Code plugin</summary>
@@ -114,7 +114,7 @@ Start a new Codex session afterwards so the skill is loaded.
 <details>
 <summary>From a clone, linked instead of copied</summary>
 
-`./install.sh` symlinks the skill into Claude Code (`--codex` for Codex, `--all-agents` for both), so a `git pull` updates it in place.
+`./install.sh` symlinks the skill into Claude Code (`--codex` for Codex, `--all-agents` for both), so a `git pull` updates it in place. On Windows (Git Bash) it makes a real link, or a directory junction when symlinks are not allowed, and it reports an older copied folder instead of skipping it silently.
 
 </details>
 
@@ -124,7 +124,7 @@ Already have the skill? Run the install command again; the install name did not 
 
 Use it by asking your agent to build or redesign a company site; the agent loads the skill, copies `assets/` into the project, starts from `assets/starter.html` and runs the checker before it hands the page over. Every build starts by classifying the client's business (`software`, `gaming`, `tech`, `product`, `service` or `place`) and planning the page screen by screen before writing markup:
 
-1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette and Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `film`, `statement` or `triptych`).
+1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette and Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `word`, `film`, `statement` or `triptych`).
 2. **Start from one system.** `assets/starter.html`, `assets/system.css` and `assets/layout/layout.css` enforce one section per screen at desktop (`1440x900`), equal left and right content edges, a fixed navigation bar and a single-screen closing footer (`footer.closing`).
 3. **Show real product UI and real photographs.** Software and tech pages populate lit feature cards (`assets/ui/cards.css`) with rewritten HTML UI fragments (`assets/ui/`) and node-and-line diagrams (`assets/diagrams/`), with real brand and interface SVGs resolved locally by `scripts/icons.mjs`. Place, shop, hospitality and non-technical product pages lead with curated photographs (`scripts/photos.mjs`, `assets/photos/`), typography and flat colour, crediting sources in one expandable footer line with no captions under images.
 4. **Keep effects for tech and gaming pages.** Shader grounds (`scripts/effects.mjs`), creative scroll or pointer moments (`scripts/moments.mjs`), scroll scenes (`assets/scenes/`) and procedural 3D prints (`assets/objects/`) are dealt only on `software`, `tech` and `gaming` pages within a four-context WebGL cap, with static fallbacks for phones and reduced motion. Cafes, hotels, shops, studios and services get zero WebGL or scroll effects.
@@ -139,12 +139,14 @@ Everything is a plain Node 22+ script in the skill folder; none installs anythin
 | Tool | What it does |
 | --- | --- |
 | `scripts/start.mjs` | Deals a palette and a Google Fonts pairing for the page kind and prints the `<head>` links and `:root` tokens. |
-| `assets/layout/deal.mjs` | Deals one of ten tested hero layouts; `assets/layout/check.mjs` checks it with long-headline stress tests. |
+| `assets/layout/deal.mjs` | Deals one of eleven tested hero layouts; `assets/layout/check.mjs` checks it with long-headline stress tests. |
 | `scripts/photos.mjs` | Deals vetted photographs by trade, enforces image weight and writes the one footer credit line. |
 | `scripts/icons.mjs` | Resolves real brand and interface icons into local SVG files. |
 | `scripts/effects.mjs`, `scripts/moments.mjs` | Deal shader grounds and creative moments for tech, gaming and software pages. |
 | `scripts/consistency.mjs` | The checker: renders the page in headless Chrome over HTTP at `1440`, `1024`, `768` and `390` and prints PASS, WARN or FAIL per rule. |
 | `scripts/perf.mjs`, `scripts/shoot.mjs` | Page weight and speed, and full-page and per-section screenshots. |
+
+First run: `node scripts/start.mjs deal --page software` (kinds: `software`, `gaming`, `tech`, `product`, `service`, `place`). Check a built page with `node scripts/consistency.mjs <url or file> --page <kind>`.
 
 ## Moved skills
 
@@ -166,7 +168,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill-classics --skill "high-en
 ## Common Questions
 
 **What does the skill need?**  
-Node 22 or newer and Chrome, Edge or Chromium. It installs nothing and uses no API keys. Bundled Commons photographs are stored locally; network access is used only when downloading additional photographs, Google Fonts or brand icons.
+Node 22 or newer and Chrome, Edge or Chromium; ffmpeg is optional (WebP photographs and the phone crop of a hero photograph). It installs nothing and uses no API keys. Bundled Commons photographs are stored locally; network access is used only when downloading additional photographs, Google Fonts or brand icons.
 
 **Where do the pictures come from, and can I use them?**  
 From the skill's vetted photograph library (`assets/photos/photos.json`, including bundled Wikimedia Commons WebP sets and Unsplash photographs) dealt by `scripts/photos.mjs`. Library frames are used for trade and material details (or marked explicitly as draft stand-ins when the client has no photographs yet), never passed off as the client's own room, staff or product, and credited in one expandable footer line (`photos.mjs credits`).

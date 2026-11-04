@@ -17,7 +17,7 @@ Build the website a good company would ship: it says plainly what is sold, shows
 every screen, and looks made for this client, not from a template and not like an art piece.
 figma.com and x.ai are the bar (in words: `layout-v4.md` section 1).
 
-`<skill>` is this folder. It needs Node 22+ and Chrome. Copy `<skill>/assets` into the project's
+`<skill>` is this folder. It needs Node 22+ and Chrome, Edge or Chromium (ffmpeg optional). Copy `<skill>/assets` into the project's
 `assets` and start from `assets/starter.html`.
 
 ## House rules
