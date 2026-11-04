@@ -474,7 +474,8 @@ to 4.5 because every section was text beside one picture and nothing answered th
   - **Menu or prices** (drinks, a bakery counter, repairs, bouquet sizes, classes): the groups with
     the offer's dealt composition (Designed variety): `strip`: three groups on span-4, the strip of
     four details under them; `pair` or `tall-small`: two groups on span-3 at the left, the
-    photographs on the right span-6, their top level with the group labels. A group: a 13px label
+    photographs on the right span-6, their top level with the group labels; the two groups hold
+    the same number of rows (4 against 5 fails `row-lines`, SR-7: 245/303px). A group: a 13px label
     (`.t-label`, weight 500, ink), 12px of air under it and no rule (a rule under a label fails
     `section-air`, SR-3: parts are told apart by air and weight), then `.rows` (each row closes
     with its own 1px rule, none above the first): the name at 16/24/500 left, the price right in tabular
@@ -533,6 +534,7 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
   or goods only if sold.
 - **Bakery:** what it bakes (goods with prices); orders (one card per kind); the process (its
   composition, a `strip` or `trio`, one screen at most). Several shops: a ruled list, each with its street.
+  Under 8 frames (the library deals a bakery 4) it is the short page (section 4, The short page).
 - **Guesthouse or small hotel:** the hero is the landscape of its region when the brief names one
   (a remote house is sold by where it stands, as Fogo Island Inn is); location as the visit (how to
   arrive, the `address` moment fits); rooms; the house (shared spaces and breakfast in its
@@ -568,8 +570,7 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
 Under 8 usable, whatever the trade (the count in Plan and length): three screens, 2,700px at most at 1440 (the tablet
 runs longer, below): hero, one `--h: 1` section holding the
 visit and the offer, footer.closing. With one or two good photographs, the best is the hero's and
-the other sits in that section, the menu or prices as ruled text beside it and the visit block
-under both. With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
+the other is the section's, in one row with the groups (With its photograph, below). With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
 h1, the sub-line, the inverted button) and the section has no picture on purpose (the one
 exception to "two picture-less sections are never neighbours").
 - **The section** is open type on the page ground, never a card or a ground box (across the `.wrap`
@@ -577,6 +578,19 @@ exception to "two picture-less sections are never neighbours").
   groups of rows, prices visible), then the visit block as three `span-4` columns on the grid
   (address, hours with today marked, access; a phone only when the brief gives one). A maker's
   story is one 20/30 paragraph at the head of the visit block, never a section of its own.
+- **With its photograph** (a bakery deals 4 frames, so this is the usual case): the groups and the
+  photograph in one `.grid.grid--top` row, the photograph last (the next frame after the hero's, its
+  `<img>` as `photos.mjs fetch` prints it), its top level with the group
+  labels; the visit block across under the row at `margin-top: var(--s-7)`. Three groups: each on
+  `span-3` and `<figure class="pl-photo span-3" style="--pl-r: 1">` (1:1, 282x282). Two groups: each
+  on `span-3` and `<figure class="pl-photo span-6" style="--pl-r: 1.5">` (3:2, 588x392). Content
+  about 560px at 1440, the page 2,700. A 4:3 `span-6` beside the groups runs to 852px, past 828
+  (`section-height`). Every group holds the same number of rows and every name fits one line
+  beside its price on `span-3` (about 24 characters: "Rye chocolate cake, 10 slices" wraps,
+  245/270px, `row-lines`; shorten it, "Rye cake, 10 slices"). Under 640, `--hm: 2` on the section
+  (`style="--h: 1; --hm: 2"`) and the photograph after the groups at 16:9, a
+  second page-CSS rule: `@media (max-width: 639px) { #shop .pl-photo > img { aspect-ratio: 16 / 9;
+  } }` (at 1:1 the section runs 119px past its two screens).
 - **Nav and the main action:** three or four words, one per group, each pointing at an `id` on that
   group (`#tableware`, `#classes`, `#visit`); the main action points at the group that does it
   (section 1, One page). One section has no scroll-marked word: leave `aria-current` off.
@@ -595,9 +609,18 @@ exception to "two picture-less sections are never neighbours").
   `@media (min-width: 640px) and (max-width: 1023px) { #shop .grid { grid-template-columns:
   repeat(3, minmax(0, 1fr)); } #shop .grid > .span-4 { grid-column: auto; } #shop .visit__cols {
   grid-template-columns: repeat(3, minmax(0, 1fr)); } }`, which makes the content about 700px, and
-  `--hm` under 640. With a photograph in the section the content is taller: if it measures 1,130 to
-  1,856 at 768, set `--h: 2` at the tablet (`layout-v4.md` section 2) and fill both screens. The
-  page is 3 screens at 1440 and 3 or 4 at the tablet.
+  `--hm` under 640. With a photograph in the section, `--h: 2` at the tablet, read as two screens:
+  screen 1 the h2 and the photograph full width down to the screen's bottom padding, screen 2 the
+  groups across and the three visit columns, `--padt` under its top (no `hole`; content 1,640 of
+  2,048 at 768). This rule replaces the one above (with two groups `repeat(2, minmax(0, 1fr))` on
+  `#shop .grid`): `@media (min-width: 640px) and (max-width: 1023px) { #shop { --h: 2; } #shop .grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)); } #shop .grid > :not(.pl-photo) { grid-column:
+  auto; } #shop .grid > .pl-photo { grid-column: 1 / -1; order: -1; } #shop .pl-photo > img {
+  aspect-ratio: auto; height: calc(var(--pl-room) - 1.25 * var(--t-h2) - var(--head-gap));
+  margin-bottom: calc(var(--padt) + var(--padb) + var(--bar) - var(--card-gap)); } #shop .visit__cols
+  { grid-template-columns: repeat(3, minmax(0, 1fr)); } }` (the photograph's height leaves room for
+  an h2 of one line: keep the h2 to one line at the tablet). The page is 3
+  screens at 1440 and 3 or 4 at the tablet.
 
 No mood stock, code ground, drawing, empty box or note. The report lists the shots to take
 (`photos.md`). At 8 good photographs it grows to the compact page, at 12 to the full page. A place

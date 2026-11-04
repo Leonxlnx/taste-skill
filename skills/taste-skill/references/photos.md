@@ -82,7 +82,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 ```
 
 - **Order and places.** `pick` prints its follow-up `fetch` with the script's absolute path (forward slashes, quoted when it holds a
-  space), so it runs as printed from any folder. `fetch` writes the files into `assets/img/` under `--out` (the project's own folder, `--dir` changes it; `--out .` from the
+  space) and `--out .`, so it runs as printed from the site folder (from elsewhere, give `--out` the site's path). `fetch` writes the files into `assets/img/` under `--out` (the project's own folder, `--dir` changes it; `--out .` from the
   project root, so the markup says `assets/img/photo-<id>-1200.webp`), and prints the `<img>` or `<picture>` to paste; if the
   folder it prints differs, use that one. `credits` reads the page, so run it last, after the markup references the
   photographs: before that it exits 1 with "none of the fetched photographs is on the page".

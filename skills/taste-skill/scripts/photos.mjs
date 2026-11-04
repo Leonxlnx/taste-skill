@@ -561,7 +561,7 @@ function pick() {
     console.log(`\nfor the build report, stand-ins to replace (${got.length}; never on the page, no caption):`);
     for (const c of got) console.log(`- ${c.p.id} (${c.slot === 'lead' ? 'hero' : c.section || c.p.subject}): ${standIn(c)}`);
   }
-  if (ps.length) console.log(`\nthen: node ${cmdPath(path.join(HERE, 'photos.mjs'))} fetch ${ps.map((p) => p.id).join(',')}${leadId ? ' --hero ' + leadId : ''} --out <site folder>\n  (fetch writes the files to <site folder>/assets/img/, or to --dir <a folder under the site>, and prints the markup that loads them as assets/img/<file>, or <--dir>/<file>)`);
+  if (ps.length) console.log(`\nthen: node ${cmdPath(path.join(HERE, 'photos.mjs'))} fetch ${ps.map((p) => p.id).join(',')}${leadId ? ' --hero ' + leadId : ''} --out .\n  (as printed from the site folder; from elsewhere give --out the site's path. fetch writes the files to <site folder>/assets/img/, or to --dir <a folder under the site>, and prints the markup that loads them as assets/img/<file>, or <--dir>/<file>)`);
   if (!histFile) console.log('(no --history: the next deal may lead with the same photograph)');
 }
 
