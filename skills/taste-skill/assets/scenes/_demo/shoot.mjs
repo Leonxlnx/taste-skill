@@ -60,12 +60,14 @@ function validate(meta, folder, base = DIR) {
 // where index writes: --out (a .json file, or a folder for its index.json), else the project's own assets/scenes
 // under the folder it runs from, else next to this script when this copy is not the installed skill; null when the
 // only place left is the skill's own folder (--in-skill writes there on purpose)
+// a path compared by its real location, so a symlinked install (install.sh) is the same file
+const realOf = (p) => { try { return fs.realpathSync(p).toLowerCase(); } catch { return path.resolve(p).toLowerCase(); } };
 function indexTarget() {
   const o = opt('out');
   if (o && o !== true) { const p = path.resolve(String(o)); return /\.json$/i.test(p) ? p : path.join(p, 'index.json'); }
   if (!IN_SKILL || opt('in-skill') === true) return INDEX;
   const local = path.resolve('assets', 'scenes');
-  if (fs.existsSync(local) && path.relative(DIR, local) !== '') return path.join(local, 'index.json');
+  if (fs.existsSync(local) && realOf(local) !== realOf(DIR)) return path.join(local, 'index.json');
   return null;
 }
 const hasScenes = d => { try { return fs.readdirSync(d, { withFileTypes: true }).some(e => e.isDirectory() && !e.name.startsWith('_') && fs.existsSync(path.join(d, e.name, 'meta.json'))); } catch { return false; } };
@@ -94,7 +96,7 @@ function buildIndex({ quiet = false, write = true } = {}) {
     scenes,
   };
   if (write && !target) {
-    console.error(`index: not written. ${fwd(INDEX)} belongs to the installed skill, and ${fwd(process.cwd())} ${path.relative(DIR, path.resolve('assets', 'scenes')) === '' ? 'is the installed skill itself' : 'has no assets/scenes of its own'}: run it from the project folder (it writes <project>/assets/scenes/index.json), pass --out <file|dir>, or --in-skill to rewrite the skill's own index on purpose`);
+    console.error(`index: not written. ${fwd(INDEX)} belongs to the installed skill, and ${fwd(process.cwd())} ${realOf(path.resolve('assets', 'scenes')) === realOf(DIR) ? 'is the installed skill itself' : 'has no assets/scenes of its own'}: run it from the project folder (it writes <project>/assets/scenes/index.json), pass --out <file|dir>, or --in-skill to rewrite the skill's own index on purpose`);
     process.exitCode = 2;
     return index;
   }

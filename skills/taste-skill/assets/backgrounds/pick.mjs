@@ -169,7 +169,9 @@ export function deal(index, opts = {}) {
 export function readIndex() { return JSON.parse(fs.readFileSync(path.join(HERE, 'index.json'), 'utf8')); }
 
 /* ---------------------------------------------------------------- command line */
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// a path compared by its real location, so a symlinked install (install.sh) is the same file
+const realOf = (p) => { try { return fs.realpathSync(p).toLowerCase(); } catch { return path.resolve(p).toLowerCase(); } };
+if (process.argv[1] && realOf(process.argv[1]) === realOf(fileURLToPath(import.meta.url))) {
   const args = process.argv.slice(2);
   const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
   const list = k => (opt(k) && opt(k) !== true ? String(opt(k)).split(',').map(s => s.trim()).filter(Boolean) : null);

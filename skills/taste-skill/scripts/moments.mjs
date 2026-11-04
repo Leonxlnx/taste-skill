@@ -525,7 +525,9 @@ function cmdCheck(a) {
 }
 
 /* ------------------------------------------------------------------ main (only when run, not when `deal` is imported) */
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+// a path compared by its real location, so a symlinked install (install.sh) is the same file
+const realOf = (p) => { try { return fs.realpathSync(p).toLowerCase(); } catch { return path.resolve(p).toLowerCase(); } };
+const isMain = process.argv[1] && realOf(process.argv[1]) === realOf(fileURLToPath(import.meta.url));
 if (isMain) {
   const a = parseArgs(process.argv.slice(2));
   const cmd = a._[0];
