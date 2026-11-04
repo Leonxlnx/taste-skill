@@ -42,7 +42,7 @@ These nine win over everything else in this skill.
 8. **The big award-site scenes and creative moments are part of the skill,** but shader effects
    only where the trade has a technical subject (tech, AI, developer tools, gaming, fintech,
    hardware), never on a local cafe, bakery, guesthouse or shop: those get photographs.
-9. **Addresses:** street and district only, no house number, postcode or coordinates; no register
+9. **Addresses:** street and district only (no street given: the district), no house number, postcode or coordinates; no register
    or VAT numbers; no phone in a real format; contacts on `.example`.
 
 ## 1. The kind of business decides everything
@@ -74,8 +74,8 @@ page is photographs, flat colour, type, real icons and the hover layer.
 The full plans, deal lists and section order: `references/sections.md`.
 
 - **Place** (a cafe, bakery, guesthouse, shop). Photographs lead: 12 to 20 on the full page, 8 to
-  12 compact, under 8 the 3-screen short page; no client photographs: the draft path
-  (`photos.md`). The hero a photograph whenever a frame fits (a remote place: its region's
+  12 compact, under 8 frames the 3-screen short page, whatever the trade; no client photographs: the draft path
+  (`photos.md`), then count. The hero a photograph whenever a frame fits (a remote place: its region's
   landscape), the visit block on screen two, the offer, the place, orders or booking.
   **Variety without effects** (`sections.md` section 4): the offer and the place deal different
   compositions, never two sections round one picture; one type moment (the address or name set large); one main action a screen; list text 16px. Flat grounds, square
@@ -163,6 +163,7 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    node <skill>/assets/layout/deal.mjs --type <page type> --has <photo,ui,object,film> --history .taste-skill/layout-history.json   # the hero; a game adds --kind gaming, hardware --kind tech
    node <skill>/scripts/start.mjs deal --page <kind> --history .taste-skill/history.json    # three palettes, three pairings; add --axis after a word or editorial hero
    node <skill>/scripts/start.mjs css --page <kind> --palette <id> --type <id> --radius soft --history .taste-skill/history.json
+   node <skill>/scripts/start.mjs brand --page place --bg "#.." --ink "#.." --accent "#.." [--surface "#.."] [--muted "#.."] --type <id> --radius soft   # a place: its own colours, in place of css
    node -e "for(const l of process.argv.slice(1)){const o=l.split('|');console.log(o[Math.floor(Math.random()*o.length)])}" <the kind's lists in sections.md>
    ```
 
@@ -174,7 +175,7 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    `round` for consumer apps, square on a place. On tech only: the lit ground (`<html data-ground>`:
    `sand|sky|sage` through the one-liner), the CSS grounds (`backgrounds.md`), the one effect
    (`effects-usage.md`) and the moments (`moments.md`). Write every result on plan line 2 and in
-   the comment at the top of `<body>`, and build exactly that.
+   the comment at the top of `<body>`, and build exactly that (a short page drops what it has no section for: `sections.md` section 4).
 
 5. **Build.** In `starter.html`: set `<html data-type data-radius data-buttons data-motion>` and the
    three metas, the nav class; copy only the `<section class="hero …">` of
@@ -188,17 +189,17 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
    with the client's labels; run `icons.mjs scan index.html --out assets/icons --colour` last, so every icon
    the page names is a local file. Mount an effect, object, moment or scene exactly as its
    reference says, never from your own script. Credits: the one footer line from
-   `photos.mjs credits`.
+   `photos.mjs credits`, once the markup uses the photographs (it reads the page).
 
 6. **Check and look.** Only the skill's scripts, each running one headless Chrome with WebGL on the
-   CPU, closed by its own PID, one at a time; never a windowed browser or a browser tool. Serve the
-   page on a free local port, then:
+   CPU, closed by its own PID, one at a time; never a windowed browser or a browser tool.
+   Each serves the page file itself over http on 127.0.0.1 (never `file://`), so no server is needed. Then:
 
    ```bash
-   node <skill>/scripts/consistency.mjs <url> --widths 1440,1024,820,768,390 --rhythm-widths 1440,820,768,390 --profile <dir> --page <kind> --category "<what is sold>" --primary "<main action>"
-   node <skill>/assets/layout/check.mjs --url <url> --profile <dir> --sizes 1440x900,1024x768,820x1180,768x1024,390x844 --shots shots/layout
-   node <skill>/scripts/shoot.mjs --url <url> --w 1440 --out shots/1440.png --profile <dir>
-   node <skill>/scripts/perf.mjs <site/index.html> --profile <dir>
+   node <skill>/scripts/consistency.mjs index.html --widths 1440,1024,820,768,390 --rhythm-widths 1440,820,768,390 --profile <dir> --page <kind> --category "<what is sold>" --primary "<main action>"
+   node <skill>/assets/layout/check.mjs --url index.html --profile <dir> --sizes 1440x900,1024x768,820x1180,768x1024,390x844 --shots shots/layout
+   node <skill>/scripts/shoot.mjs --url index.html --w 1440 --out shots/1440.png --profile <dir>
+   node <skill>/scripts/perf.mjs index.html --profile <dir>
    ```
 
    Shoot 1024, 820x1180, 768x1024 and 390 as well. Every `check.mjs` finding fails the page (no `--no-stress`).

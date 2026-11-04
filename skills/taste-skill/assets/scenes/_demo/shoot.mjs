@@ -2,7 +2,10 @@
 /*
   scenes/_demo/shoot.mjs - the big scenes' own tools (taste-skill, references/scenes.md). Node 22+, no packages.
 
-    node assets/scenes/_demo/shoot.mjs index                        scan assets/scenes/<id>/meta.json into index.json
+    node assets/scenes/_demo/shoot.mjs index [--out <file|dir>] [--in-skill]
+         scan assets/scenes/<id>/meta.json into index.json. It writes to --out, else to the project's own
+         assets/scenes/index.json (under the folder it runs from), else next to this script when this copy is not
+         the installed skill; it never rewrites the skill's own index.json unless --in-skill says so
     node assets/scenes/_demo/shoot.mjs shoot --out <out-dir> --profile <profile-dir>
          [--only a,b] [--widths 1440,390] [--states start,middle,end | 0,0.25,0.5,0.75,1] [--port 5833]
          [--reduced] [--page <url>]      (--page shoots that page's own big scene instead of the demos)
@@ -29,6 +32,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DIR = path.resolve(HERE, '..');                   // assets/scenes
 const ROOT = path.resolve(DIR, '..', '..');             // the taste-skill folder
 const INDEX = path.join(DIR, 'index.json');
+const IN_SKILL = fs.existsSync(path.join(ROOT, 'SKILL.md'));   // this assets/scenes is the installed skill's own
 const FITS = ['hero', 'statement', 'product', 'between', 'closing'];
 const COSTS = ['low', 'mid', 'high'];
 
@@ -40,7 +44,7 @@ const die = m => { console.error(m); process.exit(1); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ------------------------------------------------------------------ index */
-function validate(meta, folder) {
+function validate(meta, folder, base = DIR) {
   const errs = [];
   for (const k of ['id', 'name', 'look', 'reduced', 'trigger']) if (typeof meta[k] !== 'string' || !meta[k].trim()) errs.push(`meta.${k} must be a non-empty string`);
   if (meta.id && meta.id !== folder) errs.push(`meta.id "${meta.id}" must match the folder "${folder}"`);
@@ -50,18 +54,34 @@ function validate(meta, folder) {
   if (typeof meta.hold !== 'number') errs.push('meta.hold must be a number (screens of scroll)');
   if (meta.maxPerPage !== 1) errs.push('meta.maxPerPage must be 1');
   if (!meta.states || !['start', 'middle', 'end'].every(s => meta.states[s])) errs.push('meta.states needs start, middle and end');
-  for (const f of ['scene.js', 'scene.css', 'demo.html']) if (!fs.existsSync(path.join(DIR, folder, f))) errs.push(`${f} is missing`);
+  for (const f of ['scene.js', 'scene.css', 'demo.html']) if (!fs.existsSync(path.join(base, folder, f))) errs.push(`${f} is missing`);
   return errs;
 }
-function buildIndex({ quiet = false } = {}) {
-  const dirs = fs.readdirSync(DIR, { withFileTypes: true }).filter(d => d.isDirectory() && !d.name.startsWith('_')).map(d => d.name).sort();
+// where index writes: --out (a .json file, or a folder for its index.json), else the project's own assets/scenes
+// under the folder it runs from, else next to this script when this copy is not the installed skill; null when the
+// only place left is the skill's own folder (--in-skill writes there on purpose)
+function indexTarget() {
+  const o = opt('out');
+  if (o && o !== true) { const p = path.resolve(String(o)); return /\.json$/i.test(p) ? p : path.join(p, 'index.json'); }
+  if (!IN_SKILL || opt('in-skill') === true) return INDEX;
+  const local = path.resolve('assets', 'scenes');
+  if (fs.existsSync(local) && path.relative(DIR, local) !== '') return path.join(local, 'index.json');
+  return null;
+}
+const hasScenes = d => { try { return fs.readdirSync(d, { withFileTypes: true }).some(e => e.isDirectory() && !e.name.startsWith('_') && fs.existsSync(path.join(d, e.name, 'meta.json'))); } catch { return false; } };
+const fwd = p => p.replace(/\\/g, '/');
+function buildIndex({ quiet = false, write = true } = {}) {
+  const target = write ? indexTarget() : null;
+  // the scenes read are the ones beside the index it writes (the project's own copy), else this script's own
+  const BASE = target && hasScenes(path.dirname(target)) ? path.dirname(target) : DIR;
+  const dirs = fs.readdirSync(BASE, { withFileTypes: true }).filter(d => d.isDirectory() && !d.name.startsWith('_')).map(d => d.name).sort();
   const scenes = [], problems = [];
   for (const id of dirs) {
-    const mp = path.join(DIR, id, 'meta.json');
+    const mp = path.join(BASE, id, 'meta.json');
     if (!fs.existsSync(mp)) continue;
     let meta;
     try { meta = JSON.parse(fs.readFileSync(mp, 'utf8')); } catch (e) { problems.push(`${id}: meta.json: ${e.message}`); continue; }
-    const errs = validate(meta, id);
+    const errs = validate(meta, id, BASE);
     if (errs.length) { problems.push(...errs.map(e => `${id}: ${e}`)); continue; }
     scenes.push({ ...meta, weight: meta.weight ?? 1, needs: meta.needs || {}, types: meta.types || ['software', 'tech', 'gaming'] });
   }
@@ -73,11 +93,18 @@ function buildIndex({ quiet = false } = {}) {
     load: '<link rel="stylesheet" href="assets/scenes/scenes.css"> and <link rel="stylesheet" href="assets/scenes/<id>/scene.css"> in <head>; <section class="sc" data-big-scene="<id>" data-big-scene-opts=\'{…}\'><div class="sc__stage">…</div></section>; <script type="module" src="assets/scenes/scenes.js"></script> once at the end of <body>.',
     scenes,
   };
-  fs.writeFileSync(INDEX, JSON.stringify(index, null, 1) + '\n');
+  if (write && !target) {
+    console.error(`index: not written. ${fwd(INDEX)} belongs to the installed skill, and ${fwd(process.cwd())} ${path.relative(DIR, path.resolve('assets', 'scenes')) === '' ? 'is the installed skill itself' : 'has no assets/scenes of its own'}: run it from the project folder (it writes <project>/assets/scenes/index.json), pass --out <file|dir>, or --in-skill to rewrite the skill's own index on purpose`);
+    process.exitCode = 2;
+    return index;
+  }
+  if (write) { fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, JSON.stringify(index, null, 1) + '\n'); }
+  if (!quiet && write) console.log(`wrote ${fwd(target)} (from the scenes in ${fwd(BASE)})`);
   if (!quiet) { console.log(`index: ${scenes.length} scenes (${Object.entries(fits).map(([k, n]) => `${k} ${n}`).join(', ')})`); if (problems.length) console.log('problems:\n  ' + problems.join('\n  ')); }
   return index;
 }
-function readIndex() { try { return JSON.parse(fs.readFileSync(INDEX, 'utf8')); } catch { return buildIndex({ quiet: true }); } }
+// read only: a missing or broken index.json is built in memory, never written from here
+function readIndex() { try { return JSON.parse(fs.readFileSync(INDEX, 'utf8')); } catch { return buildIndex({ quiet: true, write: false }); } }
 
 /* ------------------------------------------------------------------ PNG (8-bit RGB/RGBA) */
 function decodePNG(buf) {
@@ -308,4 +335,4 @@ if (cmd === 'index') buildIndex();
 else if (cmd === 'shoot') cmdShoot();
 else if (cmd === 'make') cmdMake();
 else if (cmd === 'probe') cmdProbe();
-else die('usage: shoot.mjs index | shoot --out <dir> [--profile <dir>] [--only ids] | probe --only <id> --p 0.5 --expr "<js>" --profile <dir> | make --html <path> --save <png> --profile <dir>');
+else die('usage: shoot.mjs index [--out <file|dir>] [--in-skill] | shoot --out <dir> [--profile <dir>] [--only ids] | probe --only <id> --p 0.5 --expr "<js>" --profile <dir> | make --html <path> --save <png> --profile <dir>');

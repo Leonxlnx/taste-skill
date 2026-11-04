@@ -25,7 +25,7 @@
                   path for a brief that supplies no photograph files (a cafe, a guesthouse): the 1-in-3 cap and the one frame per
                   section lift, so it deals the lead plus N frames (pick --draft-lead --pictures 8 --sections hero,bar,coffee,...:
                   each picture section gets one, then a second and third in turn, never the same motif twice) for a whole page
-                  that leads with photographs, never the short page; it prints every frame as a STAND-IN for the build report;
+                  that leads with photographs (under 8 frames, every word repeated, it is the short page); it prints every frame as a STAND-IN for the build report;
                   nothing on the page says so (no captions). A place whose lead is land (a guesthouse) is dealt a landscape lead
                   when the --brief or --place names its region (a lead needs no --own-land); with no region, its frames still come and the hero is the statement. --no-client-photos is the same flag.
     --own-land    the brief says the client IS that landscape (a tour, a lodge on its own land): with --place, frames
@@ -65,6 +65,9 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
+// a path printed in a command: absolute, forward slashes, quoted when it holds a space (the same in Git Bash, PowerShell and cmd)
+const slash = (p) => path.resolve(p).replace(/\\/g, '/');
+const cmdPath = (p) => (/\s/.test(slash(p)) ? '"' + slash(p) + '"' : slash(p));
 const LIB_FILE = path.join(HERE, '..', 'assets', 'photos', 'photos.json');
 const UA = 'taste-skill-photos/1.0 (+https://github.com/Leonxlnx/taste-skill)';
 const lib = JSON.parse(fs.readFileSync(LIB_FILE, 'utf8'));
@@ -558,7 +561,7 @@ function pick() {
     console.log(`\nfor the build report, stand-ins to replace (${got.length}; never on the page, no caption):`);
     for (const c of got) console.log(`- ${c.p.id} (${c.slot === 'lead' ? 'hero' : c.section || c.p.subject}): ${standIn(c)}`);
   }
-  if (ps.length) console.log(`\nthen: node ${path.relative(process.cwd(), path.join(HERE, 'photos.mjs')) || 'photos.mjs'} fetch ${ps.map((p) => p.id).join(',')}${leadId ? ' --hero ' + leadId : ''} --out <site folder>`);
+  if (ps.length) console.log(`\nthen: node ${cmdPath(path.join(HERE, 'photos.mjs'))} fetch ${ps.map((p) => p.id).join(',')}${leadId ? ' --hero ' + leadId : ''} --out <site folder>\n  (fetch writes the files to <site folder>/assets/img/, or to --dir <a folder under the site>, and prints the markup that loads them as assets/img/<file>, or <--dir>/<file>)`);
   if (!histFile) console.log('(no --history: the next deal may lead with the same photograph)');
 }
 
@@ -741,6 +744,9 @@ async function fetchCmd() {
     const style = [p.focus ? 'object-position: ' + p.focus : '', lqip && p.lqip ? 'background: center / cover url(' + p.lqip + ')' : ''].filter(Boolean).join('; ');
     tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero) + '" width="' + srcW + '" height="' + h + '" alt="' + p.alt.replace(/"/g, '&quot;') + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" data-source="library-057" data-subject="' + p.subject + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));
     if (crop) { const i = tags.length - 1; tags[i] = '<picture><source media="' + HERO_CROP.media + '" srcset="' + rel + '/' + crop.file + ' ' + HERO_CROP.w + 'w" sizes="100vw">' + tags[i] + '</picture>'; }
+    // where the hero's tag goes: a full-bleed photograph (hero--place, hero--photo) is the section's one layer
+    if (isHero) tags[tags.length - 1] += crop ? '  <!-- full-bleed (hero--place, hero--photo): <picture class="hero__bg">, a direct child of the section beside its .wrap; in a frame (.hero__media): as printed -->'
+      : '  <!-- full-bleed (hero--place, hero--photo): <img class="hero__bg">, a direct child of the section beside its .wrap; in a frame (.hero__media): as printed -->';
     console.log('saved ' + files.map((f) => f.file + ' (' + f.kb + ' KB)').join(', ') + '  ' + p.orientation + ' ' + p.ratio + '  ' + p.alt);
     if (dropped.length) console.log('  left out (over the ' + capKb + ' KB ' + (isHero ? 'hero' : 'image') + ' cap): ' + dropped.map((f) => f.w + 'w ' + f.kb + ' KB').join(', '));
     const over = files.filter((f) => f.kb > capKb);
@@ -750,6 +756,7 @@ async function fetchCmd() {
     if (!isHero && !p.files && p.source === 'commons' && !FFMPEG) console.log('  JPEG: ffmpeg is not on the path, so no WebP (PH-27 asks for WebP or AVIF)');
   }
   fs.writeFileSync(credFile, JSON.stringify(cred, null, 1) + '\n');
+  console.log('\nwrote to ' + slash(dir) + '/ (' + rel + '/ in the site folder ' + slash(out) + '; a page in that folder loads them as ' + rel + '/<file>)');
   const wt = pageWeight(dir, cred.photos), total = wt.reduce((a, r) => a + r.kb, 0), n = (v) => v.toLocaleString('en');
   if (wt.length) {
     const verdict = total > PAGE_KIB.fail ? 'FAIL: perf.mjs fails a page whose images pass ' + n(PAGE_KIB.fail) + ' KiB; drop a photograph or its largest file'
@@ -758,7 +765,7 @@ async function fetchCmd() {
     if (total > PAGE_KIB.warn) console.log('  heaviest: ' + [...wt].sort((a, b) => b.kb - a.kb).slice(0, 3).map((r) => r.n + ' ' + r.kb + ' KiB').join(', '));
   }
   if (tags.length) console.log('\nthe <img> for each (the hero is sized 100vw, as Recipe 3 shows it full width, with a 780x584 phone crop in a <picture>; any other picture is sized for a half-width or full-width frame: set sizes to the shown width; the hero eager, the rest lazy, none hidden or faded in; a photograph in a nav menu, a tab, a carousel or a sideways-scrolling row drops loading="lazy", which may never fire there; data-source and data-subject stay on every picture):\n' + tags.join('\n'));
-  console.log('\n' + credFile + '\nonce the page is built: photos.mjs credits --out ' + out + ' prints the footer credits for the photographs it uses');
+  console.log('\n' + slash(credFile) + '\nonce the page\'s markup uses these files (credits reads the page for them, so not before): node ' + cmdPath(path.join(HERE, 'photos.mjs')) + ' credits --out ' + cmdPath(out) + (rel !== 'assets/img' ? ' --dir ' + rel : '') + ' prints the footer credits for the photographs it uses');
   if (failed.length) { console.log('\nnot saved:\n' + failed.join('\n')); process.exitCode = 1; }
 }
 // the footer holds ONE line that links the credits page; the list of photographers, licences and source pages is a block of its own
@@ -820,7 +827,7 @@ function creditsCmd() {
     fs.writeFileSync(path.join(out, href), creditsPage(out, href, used, brand));
     console.log('wrote ' + path.join(out, href) + ' (' + used.length + ' credits, in the site\'s legal-page shell)\n\nthe footer line, in the legal row (the only credit in the footer):\n' + line);
   } else {
-    console.log('1. the footer line, in the legal row (replacing starter.html\'s credits block): ONE line, no credit per photograph\n\n' + line + '\n\n2. the list: its own page (' + href + ', or: photos.mjs credits --out ' + out + ' --write) or a block outside the footer\n\n' + creditList(used));
+    console.log('1. the footer line, in the legal row (replacing starter.html\'s credits block): ONE line, no credit per photograph\n\n' + line + '\n\n2. the list: its own page (' + href + ', or: node ' + cmdPath(path.join(HERE, 'photos.mjs')) + ' credits --out ' + cmdPath(out) + (opt('dir') && opt('dir') !== true ? ' --dir ' + opt('dir') : '') + ' --write) or a block outside the footer\n\n' + creditList(used));
     console.log('\n(never a credit under a picture, never a link per photograph in the footer: consistency.mjs FAILs both)');
   }
   if (text.length > 110) console.log('WARNING: the footer line is ' + text.length + ' characters (110 at most): name the sources only');

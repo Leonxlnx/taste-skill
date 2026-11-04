@@ -137,7 +137,7 @@ unless the brief gives the accounts.
 - `.card` as `cards.md` builds it; one height per row; never text in a box in a box. Open tiles
   (`.tile`) for rooms, models and people; `.rows` for menus, prices and specs (a 1px rule closing
   each row); FAQs open in full (`.faq`, no accordion).
-- Opening hours: `<dl class="hours">` with `data-days="tue wed thu fri sat sun"` on each row and
+- Opening hours: `<dl class="hours">` of `dt`/`dd` pairs with `data-days="tue-sun"` or `data-days="sat,sun"` on each `dt` (the row's label; the `dd` takes none) and
   `data-tz="Europe/Berlin"` on the `dl.hours` itself (the venue's zone; system.js reads it only there): system.js marks today's row (weight 500) and
   fills `[data-open-now]` ("Open now, until 16:00"; "Closed, opens Tuesday at 7:30"); never
   `.is-today` by hand. Without `data-tz` the rows read as plain text, and the panel must read right

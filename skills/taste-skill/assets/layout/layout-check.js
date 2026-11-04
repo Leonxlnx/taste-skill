@@ -136,7 +136,9 @@ window.lyCheck = function lyCheck(opts = {}) {
   /* nav and footer edges */
   const navEl = document.querySelector('header.nav, .nav');
   const logo = navEl && navEl.querySelector('.nav__logo');
-  if (logo && shown(logo) && Math.abs(logo.getBoundingClientRect().left - L) > tol) add('edge-left', 'nav logo', `at x ${R1(logo.getBoundingClientRect().left)}, the page's left line is ${R1(L)}`);
+  // nav-split puts the name on the page's centre line (sections-library.md); every other nav starts it on L
+  const logoMid = logo && navEl.matches('.nav--split') && (r => Math.abs((r.left + r.right) / 2 - (L + R) / 2) <= tol + 0.5)(logo.getBoundingClientRect());
+  if (logo && shown(logo) && !logoMid && Math.abs(logo.getBoundingClientRect().left - L) > tol) add('edge-left', 'nav logo', `at x ${R1(logo.getBoundingClientRect().left)}, the page's left line is ${R1(L)}${navEl.matches('.nav--split') ? ', or its centre on the centre line ' + R1((L + R) / 2) : ''}`);
   const acts = navEl && [...navEl.querySelectorAll('.nav__actions > *, .nav__toggle')].filter(shown);
   if (acts && acts.length) {
     const right = Math.max(...acts.map(a => a.getBoundingClientRect().right));

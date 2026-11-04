@@ -1989,20 +1989,24 @@ function measure(opt) {
   // a layer is an img, picture (with its img), video or canvas that is a DIRECT child of a section (beside .wrap), with
   // class layer or position:absolute spanning 0 to W; the same picture inside .wrap is content, so SR-6 T2 tests it
   const layerMemo = new Map(), secSet = new Set(list);
+  // a <picture> (the hero photos.mjs fetch prints: a phone <source> and one <img>) is one image: when the picture
+  // stays in the flow and its img is the positioned one, the img's box and position stand for the picture
+  const picImg = (p) => { if (TU(p) !== 'PICTURE' || /absolute|fixed/.test(cs(p).position)) return null; const i = p.querySelector(':scope > img'); return i && /absolute|fixed/.test(cs(i).position) ? i : null; };
   const layerOf = (el) => {
     if (layerMemo.has(el)) return layerMemo.get(el);
     let v = false, m = el;
     if (TU(m) === 'IMG' && m.parentElement && TU(m.parentElement) === 'PICTURE') m = m.parentElement;
     if (/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(m)) && m.parentElement && secSet.has(m.parentElement)) {
+      const pm = picImg(m) || m;
       if (m.classList.contains('layer') || el.classList.contains('layer')) v = true;
-      else { const s = cs(m); if (s.position === 'absolute') { const r = rectOf(m); v = r.l <= SX + 1 && r.r >= SX + W - 1; } }
+      else { const s = cs(pm); if (s.position === 'absolute') { const r = rectOf(pm); v = r.l <= SX + 1 && r.r >= SX + W - 1; } }
     }
     layerMemo.set(el, v); return v;
   };
   // SR-6 T1: what is wrong with a layer child of section s (also decides SR-3's fill 1.0)
-  const layerProblems = (k, s) => {
-    const r = rectOf(k), probs = [];
-    if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k))) probs.push('not img, picture, video or canvas');
+  const layerProblems = (k0, s) => {
+    const k = picImg(k0) || k0, r = rectOf(k), probs = [];
+    if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('not img, picture, video or canvas');
     if (cs(k).position !== 'absolute') probs.push('position ' + cs(k).position + ', not absolute');
     if (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1) probs.push('does not span the screen from 0 to ' + W + 'px');
     if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('runs outside the section box');
@@ -2132,6 +2136,9 @@ function measure(opt) {
     if (ok) gridLikes.push({ el: g, z: it.z, kids, cls: hasCls });
   }
   const rows = [], splits = [], rowStat = new Map(), splitStat = new Map();
+  const MEDIA = 'img, picture, video, canvas';
+  const picItem = (e) => (/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(e)) || !!e.querySelector(MEDIA)) && !(e.textContent || '').trim();
+  const textItem = (e) => !e.querySelector(MEDIA) && !!(e.textContent || '').trim() && !boxed(e);
   const nestAnc = (el, z) => { for (let e = el.parentElement; e && e !== S[z].el && e !== body; e = e.parentElement) if (rowStat.has(e) || splitStat.has(e)) return e; return null; };
   for (const G of gridLikes) {
     // the rows and columns inside a drawn mock (a file list, a window's rows) are the mock's own layout, not the page's
@@ -2162,7 +2169,12 @@ function measure(opt) {
       g.sort((p, q2) => p.r.l - q2.r.l);
       const isRow = g.length >= 3 || (g.length === 2 && (sameKind(g[0].el, g[1].el) || (boxed(g[0].el) && boxed(g[1].el))));
       if (!isRow) continue;
-      rows.push({ G, z: G.z, items: g, nested: !!nest, ref: nest ? innerBox(nest) : Cz, footer: !!G.el.closest('footer') });
+      // a photograph beside text groups (the offer's pair or tall-small: two menu groups on span-3, the photograph on
+      // span-6) is a composition, not a row of cards: the groups keep one height among themselves, the photographs
+      // theirs, and the row still runs line to line; a 4:3 photograph is never stretched to the groups' height
+      const kinds = g.map((x) => (picItem(x.el) ? 'p' : textItem(x.el) ? 't' : '?')).join('');
+      const mixed = /^(t+p+|p+t+)$/.test(kinds);
+      rows.push({ G, z: G.z, items: g, nested: !!nest, ref: nest ? innerBox(nest) : Cz, footer: !!G.el.closest('footer'), kinds: mixed ? kinds : null });
       g.forEach((itm, k) => rowStat.set(itm.el, { card: boxed(itm.el), first: k === 0 }));
     }
   }
@@ -2540,7 +2552,7 @@ function measure(opt) {
     }
     for (const s of S) {
       const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k));
-      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position));
+      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k));
       const wraps = inflow.filter((k) => k.classList.contains('wrap'));
       if (wraps.length !== 1 || inflow.length !== 1) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `the section needs exactly one in-flow child .wrap (it has ${inflow.length} in-flow child${inflow.length === 1 ? '' : 'ren'}, ${wraps.length} .wrap)`));
       let heroLayers = 0;
@@ -2664,10 +2676,15 @@ function measure(opt) {
       if (Math.abs(f.r.l - row.ref.l) > 2) probs.push(`its first item starts at ${px(f.r.l - SX)}px, ${line} left line at ${px(row.ref.l - SX)}px`);
       if (Math.abs(l.r.r - row.ref.r) > 2) probs.push(`its last item ends at ${px(l.r.r - SX)}px, ${line} right line at ${px(row.ref.r - SX)}px`);
       const hs = row.items.map((x) => ht(x.r));
-      if (!row.footer && Math.max(...hs) - Math.min(...hs) > 2) probs.push(`its items are ${hs.map(px).join('/')}px tall, not one height`);
+      if (row.kinds) {
+        for (const [k, what] of [['t', 'text groups'], ['p', 'photographs']]) {
+          const kh = hs.filter((h, i) => row.kinds[i] === k);
+          if (kh.length > 1 && Math.max(...kh) - Math.min(...kh) > 2) probs.push(`its ${what} beside each other are ${kh.map(px).join('/')}px tall, not one height`);
+        }
+      } else if (!row.footer && Math.max(...hs) - Math.min(...hs) > 2) probs.push(`its items are ${hs.map(px).join('/')}px tall, not one height`);
       if (!probs.length) continue;
       const t = Math.min(...row.items.map((x) => x.r.t)), b = Math.max(...row.items.map((x) => x.r.b));
-      rOff.push(off(row.G.el, { l: f.r.l, r: l.r.r, t, b }, `a row of ${row.items.length} items: ${probs.join('; ')} (2px either way)`, { d: Math.max(Math.abs(f.r.l - row.ref.l), Math.abs(l.r.r - row.ref.r), row.footer ? 0 : Math.max(...hs) - Math.min(...hs)), ref: [cbox(row.ref, t, b)] }));
+      rOff.push(off(row.G.el, { l: f.r.l, r: l.r.r, t, b }, `a row of ${row.items.length} items: ${probs.join('; ')} (2px either way)`, { d: Math.max(Math.abs(f.r.l - row.ref.l), Math.abs(l.r.r - row.ref.r), row.footer || row.kinds ? 0 : Math.max(...hs) - Math.min(...hs)), ref: [cbox(row.ref, t, b)] }));
     }
     T.push(test('T-rows', rOff.length ? 'FAIL' : 'PASS', rOff));
     // T-overflow: no overflow-x auto or scroll scroller (pre and code in .wrap exempt); a clipped carousel matches the

@@ -15,7 +15,7 @@
       --font-display, --font-text, --font-mono, --display-weight, --display-tracking, --display-tracking-xl,
       --display-stretch, --display-axes, --ly-scale), and records the choice in the history. A pairing that
       is not on the kind's list stops (exit 2) unless --force.
-  node scripts/start.mjs brand --page <kind> --bg #.. --ink #.. --accent #.. [--surface #..] [--muted #..] --type <id>
+  node scripts/start.mjs brand --page <kind> --bg "#.." --ink "#.." --accent "#.." [--surface "#.."] [--muted "#.."] --type <id>
       the same block from a client's own colours
   node scripts/start.mjs types --page <kind>
       every pairing the kind can be dealt, with its exact Google Fonts link

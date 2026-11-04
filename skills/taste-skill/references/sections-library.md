@@ -718,7 +718,7 @@ PDF or an image; tabs or an accordion.
 door; on a place the visit section is `sections.md` section 4 (Visit) and this recipe gives only
 the map.
 
-**At 1440.** The page's split: the text (h2, the `<address>` as street and district, the hours as
+**At 1440.** The page's split: the text (h2, the `<address>` as street and district (no street in the brief: the district, `copy.md`), the hours as
 `dl.hours` with `data-tz`, the phone and email only when the brief gives them, the main action and
 Get directions); on the right the street map: `fx-map` baked from OpenStreetMap
 (`effects-creative.md`) only for a street the brief gives, the pin on the street line, still on
@@ -974,7 +974,7 @@ row. On a dark page system.css keeps it a step darker than the page with a hairl
 and the hours, so a visitor needs nothing else.
 
 **At 1440.** `footer.closing.footer--visit` as `starter.html` (`links-visit`): on `span-7`
-`address.footer__address` (street and district on two lines, 32/40 on a place, 48px elsewhere, in the
+`address.footer__address` (street and district on two lines, the district alone when the brief names no street, 32/40 on a place, 48px elsewhere, in the
 display face), one line on the way there (the stop, minutes on foot) and `a.link` "Get directions"
 (the OpenStreetMap search, `copy.md`); on `span-4 start-9` "Opening hours" over `dl.hours` with
 `data-tz` (system.js marks today). Then the nav row (the logo, the nav's words, Contact), the legal

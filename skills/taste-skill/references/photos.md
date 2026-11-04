@@ -31,12 +31,13 @@ at work, one detail, each room of a guesthouse; 1x lens, window light, no flash,
 --pictures 12` lifts the 1-in-3 cap. `pick` deals one frame per word, so repeat a word for each row or detail
 (`bar,bar,coffee,coffee,beans,beans`, `rooms,rooms,rooms,breakfast,breakfast`) until it returns 8 or more: a cafe
 reaches 8 to 12, a guesthouse 9 detail frames. The page stays a whole place page that leads with photographs (house
-rule 6), the compact page at 8 to 12 frames, never the 3-screen short page. The hero is the lead `pick` returns (a
+rule 6), the compact page at 8 to 12 frames. The hero is the lead `pick` returns (a
 cafe's bar). A place whose trade leads with land (a guesthouse, a lodge, a remote inn) passes the region its brief
 names as `--place "<region>"` (or the brief itself, `--brief BRIEF.md`, which reads the region from it) and leads with that region's landscape: a place hero always carries a photograph when
 any frame fits, and the `statement` hero is left for a place the library holds no frame of (`sections.md` section 4). Every frame is listed in the report as a stand-in to replace; nothing on the page says so
-(no caption, no note). Only a trade whose frames total under eight (florist, wellness, office) or none (pottery, a
-restaurant) is the short page (PH-07: 2,700 px at most; `sections.md` section 4, The short page). No drawn box, grid
+(no caption, no note). **The count decides, not the trade:** when `pick`, with each word repeated until it says "no new
+motif left", still returns under eight frames, the page is the short page (PH-07: 2,700 px at most at 1440; `sections.md`
+section 4, The short page), whatever the trade: a bakery (4), florist, wellness, office, pottery or a restaurant are examples. No drawn box, grid
 or effect takes the place of a photograph.
 
 Two exceptions, both for a draft or the short page and both named in the report as stand-ins to replace:
@@ -76,9 +77,15 @@ node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,bar,coffee
      --history .taste-skill/history.json                                                     # no client photographs
 node <skill>/scripts/photos.mjs pick --trade guesthouse --sections hero,rooms,rooms --pictures 12 \
      --draft-lead --own-land --place "Lofoten, Norway" --history .taste-skill/history.json   # a draft only
-node <skill>/scripts/photos.mjs fetch <ids> [--hero <lead id>] --out . [--big id] [--lqip]
+node <skill>/scripts/photos.mjs fetch <ids> [--hero <lead id>] --out . [--big id] [--lqip]   # run from the project root
 node <skill>/scripts/photos.mjs credits --out . --write     # the footer line and credits.html; --text for a report
 ```
+
+- **Order and places.** `pick` prints its follow-up `fetch` with the script's absolute path (forward slashes, quoted when it holds a
+  space), so it runs as printed from any folder. `fetch` writes the files into `assets/img/` under `--out` (the project's own folder, `--dir` changes it; `--out .` from the
+  project root, so the markup says `assets/img/photo-<id>-1200.webp`), and prints the `<img>` or `<picture>` to paste; if the
+  folder it prints differs, use that one. `credits` reads the page, so run it last, after the markup references the
+  photographs: before that it exits 1 with "none of the fetched photographs is on the page".
 
 - `--trade`: cafe, bakery, hotel, bike (--shop only), food, florist, workshop, studio, office, shop, books,
   outdoors, wellness, farm, wine, bar; a brief's word works (roastery, bread, inn, bookshop, yoga studio, blacksmith). No trade for a

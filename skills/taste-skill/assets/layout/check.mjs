@@ -3,7 +3,7 @@
   taste-skill layout check - runs assets/layout/layout-check.js on a page in one headless Chrome (WebGL on
   the CPU), at each width, and prints every finding. Closes Chrome by its own PID.
 
-    node <skill>/assets/layout/check.mjs --url <url> --profile <own chrome dir>
+    node <skill>/assets/layout/check.mjs --url <url or file> --profile <own chrome dir>
          [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--json]
 
   --shots writes, per size, the first screen (first-<w>.png) and every section framed as the check
@@ -11,11 +11,13 @@
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
   h1.maxChars, with words from the lead) and checks again: the hero must still be one screen
   (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). --no-stress skips it.
+  A file (or its folder, for index.html) is served from its folder over http on 127.0.0.1 (5770-5779).
   Exit code 1 when there is a finding.
 */
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -24,14 +26,41 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
 const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'layout-check-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-layout-check-' + process.pid);
-const url = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots');
+const target = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots');
 const sizes = String(opt('sizes', '1440x900,1024x768,820x1180,768x1024,390x844')).split(',').map(s => s.split('x').map(Number));
-if (!url || url === true) { console.error('usage: check.mjs --url <url> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
+if (!target || target === true) { console.error('usage: check.mjs --url <url or file> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
 if (!chrome) { console.error('no Chrome found (set CHROME_PATH)'); process.exit(2); }
 const src = fs.readFileSync(path.join(here, 'layout-check.js'), 'utf8');
+// a page file is served from its folder over http on 127.0.0.1 (5770-5779), never opened from file://
+let url = target, server = null;
+if (!/^https?:\/\//i.test(target)) {
+  let file = path.resolve(/^file:/i.test(target) ? fileURLToPath(target) : target);
+  if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+  if (!fs.existsSync(file)) { console.error(`check: no page at ${file}`); process.exit(2); }
+  // serve from high enough that the page's ../ references resolve
+  const ups = Math.max(0, ...[...fs.readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map(m => m[1].length / 3));
+  let root = path.dirname(file); for (let i = 0; i < ups; i++) root = path.dirname(root);
+  const MIME = { '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml',
+    '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf',
+    '.mp4': 'video/mp4', '.webm': 'video/webm', '.glb': 'model/gltf-binary', '.txt': 'text/plain', '.ico': 'image/x-icon' };
+  server = http.createServer((req, res) => {
+    try {
+      let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+      if (p.endsWith('/')) p += 'index.html';
+      const f = path.join(root, p);
+      if (!(f === root || f.startsWith(root + path.sep)) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end('not found'); return; }
+      res.writeHead(200, { 'Content-Type': MIME[path.extname(f).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' });
+      res.end(fs.readFileSync(f));
+    } catch { res.writeHead(404); res.end('not found'); }
+  });
+  let port = 0;
+  for (let p = 5770; p <= 5779 && !port; p++) port = await new Promise(r => { server.once('error', () => r(0)); server.listen(p, '127.0.0.1', () => r(p)); });
+  if (!port) { console.error('check: no free port in 5770-5779'); process.exit(2); }
+  url = `http://127.0.0.1:${port}/${path.relative(root, file).split(path.sep).map(encodeURIComponent).join('/')}`;
+}
 const { heroes } = JSON.parse(fs.readFileSync(path.join(here, 'heroes.json'), 'utf8'));
 // the stress: the page's own h1 markup (from its source, before layout.js split it) with words from the
 // lead added to its last plain text until it holds maxChars characters; the letters moment is left off
@@ -131,6 +160,7 @@ try {
 } finally {
   clearTimeout(guard);
   kill();
+  server?.close();
 }
 
 if (opt('json')) console.log(JSON.stringify(report, null, 1));

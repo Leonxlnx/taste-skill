@@ -186,12 +186,20 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
           <h1>..</h1><p class="hero__lead">..</p><div class="btn-row"><a class="btn btn--primary">..</a></div>
         </div></div></div></section> */
 .hero--place, :root[data-type="place"] .hero--photo { --photo: min(480px, 53svh); background: var(--bg); color: var(--ink); }
-.hero--place > .hero__bg, :root[data-type="place"] .hero--photo > .hero__bg,
-.hero--place > picture.hero__bg > img {
+.hero--place > .hero__bg, :root[data-type="place"] .hero--photo > .hero__bg {
   position: absolute; left: 0; right: 0; top: var(--nav); bottom: auto; z-index: 0; width: 100%; height: var(--photo); max-width: none;
   object-fit: cover; object-position: var(--ly-pos, 50% 50%); border-radius: 0;
 }
-.hero--place > picture.hero__bg { position: static; }
+/* the hero as photos.mjs fetch prints it: <picture class="hero__bg"><source media="(max-width: 639px)" ..><img ..></picture>.
+   The picture is the layer (placed as img.hero__bg above, out of the flow beside the .wrap); its img fills it */
+:is(.hero--photo, .hero--place) > picture.hero__bg { display: block; overflow: hidden; }
+:is(.hero--photo, .hero--place) > picture.hero__bg > img {
+  display: block; width: 100%; height: 100%; max-width: none; border-radius: 0;
+  object-fit: cover; object-position: var(--ly-pos, 50% 50%);
+}
+@media (max-width: 1023px) {
+  :is(.hero--photo, .hero--place) > picture.hero__bg > img { object-position: var(--ly-pos-phone, var(--ly-pos, 50% 50%)); }
+}
 :root[data-type="place"] .hero--photo, :root[data-type="place"] .hero--photo[data-tone] { --ink: var(--p-ink); --muted: var(--p-muted); color: var(--p-ink); }
 :is(.hero--place, :root[data-type="place"] .hero--photo) > .wrap > .hero-text { display: block; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text {

@@ -362,7 +362,7 @@ The nav is not a screen; `footer.closing` is one; a 2-screen section counts two.
   `<html data-page-mode="short">`.
 - **No client photographs (the draft path):** `photos.mjs pick --trade <trade> --sections <words>
   --draft-lead --pictures 12` lifts the 1-in-3 cap, and the page is a whole place page that leads
-  with photographs, never the short page. `pick` deals one frame per word: repeat a word for each
+  with photographs when it reaches 8 frames. `pick` deals one frame per word: repeat a word for each
   row or detail (`bar,bar,coffee,coffee,beans,beans`; `rooms,rooms,rooms,breakfast,breakfast`)
   until it returns 8 or more (a cafe 8 to 12, a guesthouse 9). **The hero is always a photograph
   when any frame fits:** the lead `pick` returns (a cafe's bar); a place whose trade leads with land
@@ -371,8 +371,10 @@ The nav is not a screen; `footer.closing` is one; a 2-screen section counts two.
   of that region leads, because a remote place is sold by where it stands (in testing: a remote
   guesthouse shown as a type band scored 3.5). The `statement` hero on `.ground-brand` only when
   the library holds no frame of the region and no lead. Every frame is listed in the report as a
-  stand-in to replace; nothing on the page says so. Only a trade whose frames total under 8
-  (florist, wellness, office) or none (pottery) takes the short page.
+  stand-in to replace; nothing on the page says so. **The count decides, not the trade:** after
+  the words are repeated until `pick` answers "no new motif left", under 8 frames in all (the
+  client's own included) is the short page, whatever the trade (a bakery holds 4, a florist 3,
+  pottery or a restaurant none: examples, not a list); 8 to 12 is the compact page, 12 or more the full page.
 
 These three names mean only these lengths everywhere in the skill.
 - **Photographs by section,** all distinct: hero 1; visit 1 (0 with a map); menu or prices 1; rooms
@@ -419,8 +421,8 @@ to 4.5 because every section was text beside one picture and nothing answered th
   The offer deals `pair`, `strip` or `tall-small`: `strip` runs under the menu's groups, `pair`
   and `tall-small` take the photograph slot beside them (the groups narrow to span-6). The place
   deals `bleed`, `trio`, `strip`, `pair`, `wall` or `story` (below). Rooms keep their own grid.
-- **One display-type moment** (dealt `address|name`): `address` sets the street and district large
-  right under the visit section's h2 ("Find us" at the page's h2 size, so the heading scale holds):
+- **One display-type moment** (dealt `address|name`): `address` sets the street and district large (no street in the brief: the
+  district alone, never an invented street, `copy.md`) right under the visit section's h2 ("Find us" at the page's h2 size, so the heading scale holds):
   `<p class="type-moment"><a href="<map search>">Mill Street, Leith</a></p>`, page CSS
   `.type-moment { font: var(--display-weight) clamp(48px, 7vw, 104px)/1.02 var(--font-display);
   letter-spacing: -0.03em }`, one or two lines on the `.wrap`'s left line, the drawn underline on
@@ -472,8 +474,10 @@ to 4.5 because every section was text beside one picture and nothing answered th
   - **Menu or prices** (drinks, a bakery counter, repairs, bouquet sizes, classes): the groups with
     the offer's dealt composition (Designed variety): `strip`: three groups on span-4, the strip of
     four details under them; `pair` or `tall-small`: two groups on span-3 at the left, the
-    photographs on the right span-6, their top level with the group labels. A group: a 13px label, a
-    1px ink rule 12px under it, then rows: the name at 16/24/500 left, the price right in tabular
+    photographs on the right span-6, their top level with the group labels. A group: a 13px label
+    (`.t-label`, weight 500, ink), 12px of air under it and no rule (a rule under a label fails
+    `section-air`, SR-3: parts are told apart by air and weight), then `.rows` (each row closes
+    with its own 1px rule, none above the first): the name at 16/24/500 left, the price right in tabular
     figures, an optional description at 16/24 muted; rows 44px (64 with a description), at most 6
     with descriptions or 8 without, the rest behind the head row's link. Always text, whole, prices
     visible: never an image, a PDF, tabs or an accordion. At 390 one column, the photographs after
@@ -546,7 +550,7 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
 - **Grounds:** the page ground from the place's walls, paper or shopfront: warm off-white by default
   (`#F7F3EC`; white for a shop that sells mostly online), the surface one step darker (`#EDE6DA`),
   ink `#2A2622`, muted `#665E55` (5.8:1 on the ground), hairline `#DAD3C8`; then
-  `start.mjs brand --bg #F7F3EC --surface #EDE6DA --ink #2A2622 --muted #665E55 --accent <hex> --type <pairing>`.
+  `start.mjs brand --bg "#F7F3EC" --surface "#EDE6DA" --ink "#2A2622" --muted "#665E55" --accent "#<hex>" --type <pairing>` (colours quoted: a bare `#` starts a shell comment).
   One full surface band at most; one brand band (`backgrounds.md`); no dark section except that
   band (the nav bar may take the dark ink). Flat colour only (`backgrounds.md`).
 - **Accent:** one, from the place (the shopfront paint, the tiles, a bag label) on the primary
@@ -561,7 +565,8 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
 
 ### The short page (under 8 photographs)
 
-Under 8 usable: three screens, 2,700px at most at 1440: hero, one `--h: 1` section holding the
+Under 8 usable, whatever the trade (the count in Plan and length): three screens, 2,700px at most at 1440 (the tablet
+runs longer, below): hero, one `--h: 1` section holding the
 visit and the offer, footer.closing. With one or two good photographs, the best is the hero's and
 the other sits in that section, the menu or prices as ruled text beside it and the visit block
 under both. With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
@@ -578,12 +583,27 @@ exception to "two picture-less sections are never neighbours").
 - **Re-dealt without pictures** (section 2): `nav-split` with no panel, the close as the head row
   of `close-word` without the name. Either the brand band (the close on `colour-band`) or the name
   set wide in the footer, not both.
+- **What the deal drops.** The page has no place section, no second offer and no room for a moment:
+  of the printed deal build the nav, footer, rhythm (`space`), buttons, mark and the offer's
+  groups, and skip the place's composition, the type moment and the rooms layout (the `address`
+  moment is not built; the visit block's three columns are the address). Write "not used" beside
+  each skipped part on plan line 2.
+- **At the tablet (640 to 1023) the section stays one screen,** content 600 to 830px at 768x1024.
+  Stacked, the groups and the visit block run to about 1,600px: `section-height` and `one-section`
+  FAIL, and `--h: 2` on that stack leaves a `hole` (768) and a `section-air` WARN, 48% (820). So keep
+  the three groups and the three visit columns across, one page-CSS rule (use the ids as built):
+  `@media (min-width: 640px) and (max-width: 1023px) { #shop .grid { grid-template-columns:
+  repeat(3, minmax(0, 1fr)); } #shop .grid > .span-4 { grid-column: auto; } #shop .visit__cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr)); } }`, which makes the content about 700px, and
+  `--hm` under 640. With a photograph in the section the content is taller: if it measures 1,130 to
+  1,856 at 768, set `--h: 2` at the tablet (`layout-v4.md` section 2) and fill both screens. The
+  page is 3 screens at 1440 and 3 or 4 at the tablet.
 
 No mood stock, code ground, drawing, empty box or note. The report lists the shots to take
 (`photos.md`). At 8 good photographs it grows to the compact page, at 12 to the full page. A place
 with no photographs of its own takes the draft path first (Plan and length); the short page is for
 a trade the library cannot fill (`photos.mjs` names no trade for it: pottery, a restaurant, a salon)
-or deals under 8.
+or whose frames, counted as in Plan and length, total under 8.
 
 ## 5. Visuals
 

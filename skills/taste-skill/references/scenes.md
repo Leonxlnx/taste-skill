@@ -116,8 +116,12 @@ reads empty (rule 2).
 
 ```bash
 node <skill>/assets/scenes/_demo/shoot.mjs shoot --out <dir> --profile <your own Chrome profile dir> [--only <id>] [--page <url>] [--reduced] [--port 5836]
-node <skill>/assets/scenes/_demo/shoot.mjs index        # meta.json files into index.json
+node <skill>/assets/scenes/_demo/shoot.mjs index [--out <file|dir>]   # from the project folder: its own index.json
 ```
+
+`index` writes the project's own `assets/scenes/index.json` when run from a project folder that has `assets/scenes` (or with `--out <file|dir>`).
+Inside the installed skill it refuses and writes nothing; `--in-skill` rewrites the skill's own index on purpose, which
+is not a page's work. A page needs it only after a scene's `meta.json` changes, so on a normal page skip it.
 
 One headless Chrome with WebGL on the CPU, closed by its own PID: start, middle and end at 1440 and
 390, a contact sheet a scene. Read every sheet; shoot `--reduced` once.

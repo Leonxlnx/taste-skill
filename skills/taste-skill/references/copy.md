@@ -108,8 +108,11 @@ phone number still gets the address, email and imprint rules.
   a postcode or map coordinates. One street address a page (the visit block and the footer, at 390
   too), never readable only on a sign in a photograph. Several shops: each name, then its street. A
   studio by appointment says so.
+- **A brief with no street:** print the district only ("Eimsbüttel, Hamburg"), the town when no district is named,
+  and never an invented street or number; the type moment `address` sets that district. List the missing street in the report
+  as the client's to supply.
 - **Maps:** no map loads with the page. Get directions opens
-  `https://www.openstreetmap.org/search?query=<street>+<district>` (an invented street:
+  `https://www.openstreetmap.org/search?query=<street>+<district>` (no street given:
   `?query=<district>+<town>`), with no coordinates and no route; on the phone the address opens the
   same search. A map is drawn only for a street the brief gives (`fx-map` baked still, the pin on the
   street line, never a building); a builder's real street never gets a real map, since it pins a

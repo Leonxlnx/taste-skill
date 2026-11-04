@@ -266,7 +266,7 @@ move.
 Chrome (WebGL on the CPU, closed by its own PID) and writes the framed shots:
 
 ```bash
-node <skill>/assets/layout/check.mjs --url http://127.0.0.1:<port>/index.html --profile <own dir> \
+node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
      --sizes 1440x900,1024x768,820x1180,768x1024,390x844 [--shots <dir>] [--json]     # pass these five: the judges shoot the tablet at 768x1024 and 820x1180
 ```
 
