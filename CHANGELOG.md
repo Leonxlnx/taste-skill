@@ -4,7 +4,7 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
-## 2.5.0 - 2026-11-03
+## 2.5.0 - 2026-11-05
 
 A complete rebuild of `design-taste-frontend` (`tasteskill 2.5.0`) around professional company websites at the `figma.com` and `x.ai` bar, replacing the `2.1.x` direction-sheet and app-screen pipeline (`draw.mjs`, `assets.mjs`, `lint.mjs`, `inspect.mjs`, `scenes.mjs`).
 
