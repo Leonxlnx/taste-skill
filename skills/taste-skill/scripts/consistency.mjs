@@ -3705,6 +3705,12 @@ const GL_GUARD = `(() => {
     try { if (c && c.closest && c.closest('[data-product]')) return true; } catch (e) {}
     try { return /\\/objects\\/product-render\\//.test(String(new Error().stack || '')); } catch (e) { return false; }
   };
+  // a render kit may ask for a context before it puts the canvas in its frame: a canvas off the page at the ask is judged
+  // again once the asking code has run, and counts as the product's own when it then sits in a [data-product] frame
+  const late = (c, rec, refused) => {
+    try { if (!c || c.isConnected || !c.closest) return; } catch (e) { return; }
+    queueMicrotask(() => { try { if (c.closest('[data-product]')) { if (rec) rec.prod = true; S.prodAsked++; if (refused) S.prodRefused++; } } catch (e) {} });
+  };
   const isGL =(t) => /^(webgl2?|experimental-webgl)$/i.test(String(t));
   const name = (c) => {
     try {
@@ -3742,12 +3748,14 @@ const GL_GUARD = `(() => {
       if (L.length + 1 > S.peak) { S.peak = L.length + 1; S.peakAt = [...L.map((x) => name(x.el)), name(this)]; }
       if (L.length >= CAP) {
         const v = L.filter(far).sort((a, b) => a.born - b.born)[0];
-        if (!v) { S.refused++; if (prod) S.prodRefused++; try { S.refusedEls.add(this); } catch (e) {} return null; }
+        if (!v) { S.refused++; if (prod) S.prodRefused++; else late(this, null, true); try { S.refusedEls.add(this); } catch (e) {} return null; }
         try { const e = v.g.deref().getExtension('WEBGL_lose_context'); if (e) e.loseContext(); } catch (e) {}
         S.evicted++;
       }
       const g = orig.apply(this, arguments);
-      if (g) S.list.push({ c: new WeakRef(this), g: new WeakRef(g), born: performance.now(), ever: !!this.isConnected, prod });
+      const rec = g ? { c: new WeakRef(this), g: new WeakRef(g), born: performance.now(), ever: !!this.isConnected, prod } : null;
+      if (rec) S.list.push(rec);
+      if (!prod) late(this, rec, !g);
       return g;
     };
   };

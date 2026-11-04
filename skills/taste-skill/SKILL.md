@@ -269,6 +269,8 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
 - Violet or lavender in the page's own design: accent, ground, gradient, effect colour or tint (a
   real third-party logo keeps its own colours, `icons.md`).
 - Copying a reference site's code, copy, pictures or signature effect.
+- Deleting or editing the kit's own files (`assets/`, `scripts/`) to clear a check: a check that
+  flags a kit file is reported, and the page is checked again after any change.
 
 ## References
 
