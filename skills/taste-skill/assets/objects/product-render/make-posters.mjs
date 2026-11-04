@@ -145,13 +145,15 @@ try {
         fs.writeFileSync(file, Buffer.from(data.split(',')[1], 'base64'));
         if (!opt('quiet')) console.log(`  wrote ${name} (${Math.round(fs.statSync(file).size / 1024)} kB)`);
       }
-      // the manifest: what was made, merged with an earlier run's at the same size
+      // the manifest: what was made, merged with the earlier runs' (each variant keeps the size it was made at: a
+      // close-up at --px 800 and the hero at 1100 live in one manifest; the page reads each still's own w, h and box)
       const made = await ev('window.__manifest');
       if (made && Object.keys(made.variants).length) {
         const mf = path.join(dir, `${spec.poster || spec.id}.stills.json`);
         let prev = null; try { prev = JSON.parse(fs.readFileSync(mf, 'utf8')); } catch { /* none */ }
         // an earlier run's variants stay, unless the spec no longer supports their view (spec.supports: a view dropped as it read wrong)
-        const keep = Object.fromEntries(Object.entries(prev && prev.px === made.px ? prev.variants : {}).filter(([, v]) => !spec.supports || spec.supports.includes(v.view) || /^detail[:-]/.test(v.view)));
+        const keep = Object.fromEntries(Object.entries(prev && prev.variants ? prev.variants : {}).filter(([, v]) => !spec.supports || spec.supports.includes(v.view) || /^detail[:-]/.test(v.view)));
+        for (const v of Object.values(made.variants)) v.px = made.px;
         const merged = { ...made, variants: { ...keep, ...made.variants } };
         fs.writeFileSync(mf, JSON.stringify(merged, null, 1) + '\n');
         console.log(`  wrote ${path.relative(dir, mf)} (${Object.keys(merged.variants).length} variants)`);
