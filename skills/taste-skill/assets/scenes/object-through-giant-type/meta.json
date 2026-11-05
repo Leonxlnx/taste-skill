@@ -1,0 +1,51 @@
+{
+  "id": "object-through-giant-type",
+  "name": "Object through giant type",
+  "family": "type-choreography",
+  "look": "A short quote stands in huge capitals filling the held stage. One object (a render from assets/objects or the client's cut-out photograph) falls down the wall: each line parts at its word gap and its halves open round the object's silhouette, wide enough that it never covers a letter, then close behind it, and each line turns from muted to full ink as the object reaches it. In the last line the object swells toward the camera, tips and falls away into the page, and the quote stands closed, in ink, with its credit. The markup carries the object's still; the render draws over it only while the scene is live and near.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "mid",
+  "webgl": 1,
+  "reduced": "The quote in ink with the object's still standing above it and the credit under.",
+  "phone": "The finished composition.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "words": "a quote of 10-18 words in 3-5 lines of 9-13 characters with the gap near the middle, and a credit of 5 words at most",
+    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)"
+  },
+  "never": "an archive or black-and-white photograph as the object; a line longer than 13 characters; an eyebrow above the quote; an object of another trade than the client's; on a local-business or place page",
+  "avoidWith": [
+    "fixed-hero-object",
+    "letter-physics"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 900
+    },
+    "middle": {
+      "p": 0.42,
+      "wait": 700
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 700
+    }
+  },
+  "avoidMoments": [
+    "giant-type-pass",
+    "word-highlight",
+    "letters-assemble"
+  ]
+}

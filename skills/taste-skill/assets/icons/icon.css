@@ -1,0 +1,186 @@
+/*
+  taste-skill icons/icon.css - how a real icon sits on the page: bare, in a tile, in a list row, in a chip,
+  in an avatar stack, in an integration grid, on a file card. Link it after system.css. It reads the
+  ground tokens (--bg --surface --card --ink --muted --accent --line) and the radius set, so the same
+  markup is right on a light page, on .ground-surface and on .ground-inverse. Nothing here animates.
+
+  Markup comes from `node scripts/icons.mjs fetch ... --out assets/icons`: a colour icon is an
+  <img class="ic ic-24">, a glyph (ui:) or any --mono icon is an inline <svg class="ic ic-svg ic-24"> that
+  takes the text colour (works from file:// too; --mask prints a <span class="ic-mask"> instead, which needs
+  http). Sizes: ic-16 ic-20 ic-24 ic-28 ic-32 ic-36 ic-40 ic-48 ic-56.
+*/
+
+/* the only colours outside the ground tokens: a white plate for logos, and the connected dot */
+:root { --ic-white: #fff; --ic-ok: var(--ok, #2f9e5b); }
+
+/* ------------------------------------------------------------ the icon itself */
+.ic { --ic-s: 24px; display: inline-block; flex: none; height: var(--ic-s); width: auto; max-width: none; vertical-align: middle; object-fit: contain; }
+.ic-16 { --ic-s: 16px; } .ic-20 { --ic-s: 20px; } .ic-24 { --ic-s: 24px; } .ic-28 { --ic-s: 28px; } .ic-32 { --ic-s: 32px; }
+.ic-36 { --ic-s: 36px; } .ic-40 { --ic-s: 40px; } .ic-48 { --ic-s: 48px; } .ic-56 { --ic-s: 56px; }
+.ic-svg { width: var(--ic-s); }
+.ic-mask { width: var(--ic-s); background-color: currentColor; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+.ic-muted { color: var(--muted); }
+.ic-accent { color: var(--accent); }
+
+/* a wordmark (aspect over 1.8, flagged ic-wide by the tool) is drawn smaller than a square mark of the same
+   size, so a row of both has an even weight; inside a tile it is fitted by the tile rule below */
+.ic-wide { height: calc(var(--ic-s) * 0.7); max-width: min(100%, calc(var(--ic-s) * 4.5)); }
+.ic-svg.ic-wide { width: auto; }
+
+/* One-tone marks. ic-ink is a black mark (GitHub, Apple, X): white on a dark ground. ic-paper is a white mark
+   (Notion): it would vanish on a light ground, so it is shown black there, bare or in a light tile. A tile with
+   a dark or brand fill keeps a white mark as drawn and turns a black one white (.ic-tile--ink, --brand). */
+.ic-paper { filter: invert(1); }
+:is(.ground-inverse, .ic-dark) .ic-ink { filter: invert(1); }
+:is(.ground-inverse, .ic-dark) .ic-paper { filter: none; }
+.ic-keep { filter: none !important; }
+
+/* ------------------------------------------------------------ the tile behind a logo */
+.ic-tile {
+  --tile: 40px;
+  --tile-bg: color-mix(in oklab, var(--ic-white) 72%, var(--bg));
+  --tile-line: var(--line);
+  display: inline-grid; place-items: center; flex: none;
+  width: var(--tile); height: var(--tile); border-radius: calc(var(--tile) * 0.28);
+  background: var(--tile-bg); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--tile-line), 0 1px 2px color-mix(in oklab, var(--ink) 7%, transparent);
+}
+.ic-tile > .ic { --ic-s: calc(var(--tile) * 0.6); }
+/* a wordmark or an odd-shaped logo is fitted into the square box, never allowed to spill out of its tile */
+.ic-tile > img.ic, .ic-file > img.ic, .ic-point > img.ic { width: var(--ic-s); object-fit: contain; }
+/* a landscape mark (Salesforce, AWS, YouTube: ic-land) and a portrait one (Google Docs, Figma: ic-tall) are drawn on their long
+   side a little larger than a square mark, so a row of marks has an even weight and none reads small in its tile */
+.ic-tile > img.ic.ic-land, .ic-tile > .ic-svg.ic-land { width: calc(var(--tile) * 0.7); height: auto; max-height: 80%; }
+.ic-tile > img.ic.ic-tall, .ic-tile > .ic-svg.ic-tall { height: calc(var(--tile) * 0.68); width: auto; max-width: 80%; }
+.ic-tile--24 { --tile: 24px; } .ic-tile--32 { --tile: 32px; } .ic-tile--40 { --tile: 40px; }
+.ic-tile--48 { --tile: 48px; } .ic-tile--56 { --tile: 56px; } .ic-tile--72 { --tile: 72px; }
+.ic-tile--round { border-radius: 50%; }
+/* a wordmark-only logo (Stripe, Visa): a wide tile, the mark enlarged to fill it (about 1.7 tiles wide, never
+   taller than 58% of the tile), at its own proportions */
+.ic-tile--wide { width: calc(var(--tile) * 2.4); }
+.ic-tile.ic-tile--wide > .ic { width: calc(var(--tile) * 1.7); height: auto; max-width: 80%; max-height: 58%; object-fit: contain; }
+.ic-tile--flat { box-shadow: inset 0 0 0 1px var(--tile-line); }
+/* a glyph in a tile: the surface colour, ink strokes, or the accent */
+.ic-tile--glyph { --tile-bg: color-mix(in oklab, var(--ink) 5%, var(--bg)); box-shadow: none; }
+.ic-tile--accent { --tile-bg: color-mix(in oklab, var(--accent) 12%, var(--bg)); color: var(--accent); box-shadow: none; }
+.ic-tile--ink { --tile-bg: var(--ink); color: var(--bg); box-shadow: none; }
+/* on a dark ground --ink is light, so an ink tile is a dark plate (the ground lifted a little) instead (its black marks are
+   inverted to white either way) */
+:is(.ground-inverse, .ic-dark) .ic-tile--ink { --tile-bg: color-mix(in oklab, var(--ink) 10%, var(--bg)); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+/* a tile in a brand colour (set --tile-bg inline): white marks stay white, black marks turn white */
+.ic-tile--brand { --tile-bg: var(--accent); color: var(--ic-white); box-shadow: none; }
+:is(.ic-tile--ink, .ic-tile--brand) .ic-paper { filter: none; }
+:is(.ic-tile--ink, .ic-tile--brand) .ic-ink { filter: invert(1); }
+/* dark grounds: a light tile, so every brand colour reads and black marks need no inversion */
+:is(.ground-inverse, .ic-dark) .ic-tile:not(.ic-tile--glyph, .ic-tile--accent, .ic-tile--ink) {
+  --tile-bg: color-mix(in oklab, var(--ink) 94%, var(--bg)); --tile-line: transparent; color: var(--bg);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--bg) 70%, transparent);
+}
+:is(.ground-inverse, .ic-dark) .ic-tile:not(.ic-tile--ink, .ic-tile--brand) .ic-ink { filter: none; }
+:is(.ground-inverse, .ic-dark) .ic-tile:not(.ic-tile--ink, .ic-tile--brand) .ic-paper { filter: invert(1); }
+:is(.ground-inverse, .ic-dark) .ic-tile--glyph { --tile-bg: color-mix(in oklab, var(--ink) 9%, var(--bg)); }
+:is(.ground-inverse, .ic-dark) .ic-tile--accent { --tile-bg: color-mix(in oklab, var(--accent) 22%, var(--bg)); }
+/* a tile of a dark-ground brand, glass: for one-colour marks only */
+.ic-tile--ghost { --tile-bg: color-mix(in oklab, var(--ink) 6%, transparent); box-shadow: inset 0 0 0 1px var(--line); }
+
+/* ------------------------------------------------------------ chip: icon and a name */
+.ic-chip {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 8px;
+  border-radius: 999px; background: var(--card, var(--surface)); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line); font-size: var(--t-small, 14px); line-height: 1; white-space: nowrap;
+}
+.ic-chip > .ic { --ic-s: 18px; }
+.ic-chip--lg { height: 40px; padding: 0 16px 0 10px; gap: 10px; font-size: var(--t-body, 16px); }
+.ic-chip--lg > .ic { --ic-s: 22px; }
+.ic-chip > .ic-wide { height: auto; width: calc(var(--ic-s) * 2.2); max-height: calc(var(--ic-s) * 0.9); }
+/* on a dark ground a brand colour (Salesforce blue, Dropbox, Jira) or a dark file icon (InDesign) sits close to the
+   ground: a bare mark in a chip or on a file card gets a small light plate, as a tile does */
+:is(.ground-inverse, .ic-dark) :is(.ic-chip, .ic-file) > img.ic { box-sizing: content-box; padding: 3px; border-radius: 7px; background: color-mix(in oklab, var(--ink) 94%, var(--bg)); }
+:is(.ground-inverse, .ic-dark) .ic-file > img.ic { padding: 4px; border-radius: 10px; }
+:is(.ground-inverse, .ic-dark) :is(.ic-chip, .ic-file) > img.ic-ink { filter: none; }
+:is(.ground-inverse, .ic-dark) :is(.ic-chip, .ic-file) > img.ic-paper { filter: invert(1); }
+.ic-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+a.ic-chip:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
+
+/* ------------------------------------------------------------ list row: tile, text, a value at the end */
+.ic-list { display: grid; }
+.ic-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); min-width: 0; }
+.ic-row:first-child { border-top: 0; }
+.ic-row__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.ic-row__title { font-size: var(--t-body, 16px); font-weight: 500; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ic-row__meta { font-size: var(--t-small, 14px); color: var(--muted); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ic-row__end { flex: none; font-size: var(--t-small, 14px); color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+.ic-row__end .ic { --ic-s: 16px; }
+/* a connected / off state as a dot with its word */
+.ic-state { display: inline-flex; align-items: center; gap: 6px; }
+.ic-state::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+.ic-state--on { color: var(--ink); }
+.ic-state--on::before { background: var(--ic-ok); }
+
+/* ------------------------------------------------------------ avatar stack: overlapping tiles */
+.ic-stack { display: inline-flex; align-items: center; }
+.ic-stack > * { margin-left: -10px; box-shadow: 0 0 0 2px var(--bg); }
+.ic-stack > :first-child { margin-left: 0; }
+.ic-stack > .ic-tile { box-shadow: inset 0 0 0 1px var(--tile-line), 0 0 0 2px var(--bg); }
+.ic-stack__more {
+  display: inline-grid; place-items: center; height: 40px; min-width: 40px; padding: 0 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--ink) 8%, var(--bg)); color: var(--muted); font-size: var(--t-label, 13px); font-weight: 500;
+}
+.ic-stack--sm > .ic-tile { --tile: 32px; } .ic-stack--sm .ic-stack__more { height: 32px; min-width: 32px; }
+
+/* ------------------------------------------------------------ integration grid */
+.ic-grid { display: grid; gap: var(--card-gap, 16px); grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); }
+.ic-cell {
+  display: grid; align-content: start; gap: 14px; padding: 20px; border-radius: var(--r-md, 12px);
+  background: var(--card, var(--surface)); box-shadow: inset 0 0 0 1px var(--line); min-width: 0;
+}
+.ic-cell__name { font-size: var(--t-body, 16px); font-weight: 500; line-height: 1.25; }
+.ic-cell__meta { font-size: var(--t-small, 14px); color: var(--muted); line-height: 1.4; margin-top: 2px; }
+a.ic-cell:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
+/* the mosaic: one outline, cells divided by hairlines */
+.ic-grid--mosaic { gap: 1px; background: var(--line); border-radius: var(--r-lg, 20px); overflow: hidden; border: 1px solid var(--line); }
+.ic-grid--mosaic > .ic-cell { border-radius: 0; box-shadow: none; background: var(--bg); }
+.ic-grid--mosaic > .ic-cell:hover { background: color-mix(in oklab, var(--ink) 3%, var(--bg)); }
+/* a logo wall: tiles only, no names */
+.ic-wall { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
+.ic-wall > .ic-tile { --tile: 64px; justify-self: start; }
+.ic-wall > .ic-tile--wide { grid-column: span 2; }
+.ic-grid--cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .ic-grid--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .ic-grid--cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 639px) { .ic-grid--cols-3, .ic-grid--cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ------------------------------------------------------------ file card */
+.ic-file {
+  display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-width: 0;
+  border-radius: var(--r-md, 12px); background: var(--card, var(--surface)); box-shadow: inset 0 0 0 1px var(--line);
+}
+.ic-file > .ic { --ic-s: 36px; }
+/* a wordmark on a file card (a YAML, a Visa) keeps its own proportions at a readable width, never a strip in a 36px square */
+.ic-file > img.ic.ic-wide, .ic-file > .ic-svg.ic-wide { width: calc(var(--ic-s) * 1.9); height: auto; max-height: var(--ic-s); }
+.ic-file > img.ic.ic-land, .ic-file > .ic-svg.ic-land { width: calc(var(--ic-s) * 1.15); height: auto; }
+.ic-file > img.ic.ic-tall, .ic-file > .ic-svg.ic-tall { width: auto; height: var(--ic-s); }
+.ic-file__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.ic-file__name { font-size: var(--t-body, 16px); font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.ic-file__meta { font-size: var(--t-small, 14px); color: var(--muted); line-height: 1.3; overflow-wrap: anywhere; }
+.ic-file__end { flex: none; color: var(--muted); font-size: var(--t-small, 14px); }
+.ic-file-list { display: grid; gap: 10px; }
+/* a file as a compact tile: icon on top, name under it */
+.ic-file--tile { display: grid; justify-items: start; gap: 12px; padding: 18px; }
+.ic-file--tile > .ic { --ic-s: 40px; }
+.ic-file--tile > img.ic.ic-wide, .ic-file--tile > .ic-svg.ic-wide { width: calc(var(--ic-s) * 2.1); }
+.ic-file--tile .ic-file__main { width: 100%; }
+
+/* ------------------------------------------------------------ feature list with glyphs */
+.ic-points { display: grid; gap: 16px; }
+.ic-point { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
+.ic-point > .ic-tile { --tile: 36px; }
+.ic-point > .ic-tile > .ic { --ic-s: 18px; }
+.ic-point__title { font-weight: 500; line-height: 1.3; }
+.ic-point__text { color: var(--muted); font-size: var(--t-small, 14px); line-height: 1.5; margin-top: 2px; }
+
+/* ------------------------------------------------------------ a phone: names wrap, file tiles stack */
+@media (max-width: 479px) {
+  .ic-row__title, .ic-row__meta { white-space: normal; overflow: visible; text-overflow: clip; }
+  .ic-grid--cols-2:has(> .ic-file--tile) { grid-template-columns: 1fr; }
+  .ic-file--tile { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
+}

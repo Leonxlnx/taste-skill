@@ -1,0 +1,50 @@
+/* fx-prompt: a prompt field whose border carries a slow travelling light (edge-glow), blooming outward */
+.cx-prompt { --inset: 20px; width: min(100%, 600px); margin-inline: auto; display: grid; }
+.cx-prompt__box {
+  position: relative; isolation: isolate;
+  padding: calc(var(--inset) + 14px) calc(var(--inset) + 14px) calc(var(--inset) + 12px);
+  margin: calc(-1 * var(--inset)); border-radius: calc(var(--r-lg) + var(--inset));
+}
+/* before the effect is drawn (and in forced colours), a plain card */
+.cx-prompt__box::before {
+  content: ""; position: absolute; inset: var(--inset); z-index: -2; border-radius: var(--r-lg);
+  background: var(--cx-card); border: 1px solid var(--cx-line-2);
+}
+/* the plain card goes only while a canvas has actually drawn (fx sets opacity:1 on its first frame) */
+.cx-prompt__box::before { transition: background-color .5s, border-color .5s; }
+.cx-prompt__box:has(> .fx-canvas[style*="opacity: 1"])::before { background: transparent; border-color: transparent; }
+.cx-prompt__input {
+  display: block; width: 100%; min-height: 52px; resize: none; border: 0; outline: 0; background: transparent;
+  font: 400 var(--t-body)/1.5 var(--font-text); color: var(--ink); padding: 0; caret-color: var(--accent);
+}
+.cx-prompt__input::placeholder { color: var(--muted); }
+.cx-prompt__box:has(.cx-prompt__input:focus-visible) { outline: 2px solid var(--action); outline-offset: calc(-1 * var(--inset) + 3px); }
+.cx-prompt__bar { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); }
+.cx-prompt__tool {
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-sm); border: 1px solid var(--cx-line-2);
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.cx-prompt__tool:hover { color: var(--ink); }
+.cx-prompt__chip {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--cx-line-2); font-size: var(--t-label); color: var(--ink);
+}
+.cx-prompt__dot { width: 6px; height: 6px; border-radius: 9px; background: var(--accent); }
+.cx-prompt__send {
+  margin-left: auto; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; border: 0;
+  background: var(--action); color: var(--action-ink); cursor: pointer;
+}
+.cx-prompt__hints {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); padding: 0 40px; list-style: none;
+  margin: calc(var(--inset) + var(--s-4)) 0 0; position: relative; z-index: 1;
+}
+/* the pause sits at the right end of the examples row */
+.cx-prompt > .cx-pause { right: 0; bottom: 0; width: 30px; height: 30px; }
+.cx-prompt__hints button {
+  height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--cx-line); background: transparent;
+  font-size: var(--t-label); color: var(--muted); cursor: pointer;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.cx-prompt__hints button:hover { color: var(--ink); border-color: var(--cx-line-2); }
+@media (max-width: 639px) { .cx-prompt { --inset: 12px; } }

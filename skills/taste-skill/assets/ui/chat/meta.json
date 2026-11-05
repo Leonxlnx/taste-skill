@@ -1,0 +1,20 @@
+{
+  "name": "chat",
+  "title": "Chat with sources",
+  "shows": "An assistant window: a customer's question, then an answer written word by word with the two sources it used (a real app icon and a help article) the customer's thanks and an input.",
+  "useFor": [
+    "AI assistant",
+    "support",
+    "search answers",
+    "messaging",
+    "Q&A"
+  ],
+  "size": [
+    400,
+    392
+  ],
+  "js": true,
+  "place": "at-rise to-edge fit with --fit-max: 400px, 32 to 56px down, with .stage--fade-b: the body fills the wrapper, so the input always sits past the bottom edge, whatever the panel's height; the answer and its sources stay clear of the fade",
+  "edit": "Write the product's own question and answer; keep the answer to three lines and name real sources (a small mark beside the source's name stays in the ink, like the text it sits in).",
+  "loop": "about 2.7 s a cycle: typing dots for 0.8 s, the answer's last sentence written again in place in under 0.8 s (never below 72% ink), its sources back one by one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

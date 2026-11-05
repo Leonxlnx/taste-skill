@@ -1,0 +1,10 @@
+{
+  "id": "fx-avatar",
+  "name": "Speaker ring",
+  "for": "A call, presence or team card: the active person's avatar gets a thin ring of the effect with its own soft glow, and the ring glides to whoever speaks next.",
+  "effects": ["gradient-mesh", "silk-folds", "aurora-curtains", "grain-gradient"],
+  "default": "gradient-mesh",
+  "how": "One small effect host (avatar plus 16px) shaped by a radial mask into a 2.5px ring and a fading glow; it moves by transform, so one canvas serves every avatar.",
+  "rules": ["One lit ring at a time.", "The ring moves only on a state change (a new speaker, a status), never on a timer faster than 3 s.", "Avatars are the people's own photos or initials, never stock faces."],
+  "a11y": "The speaker is named in text next to the bars; the ring and bars are decorative. Reduced motion holds the first speaker and stops the bars."
+}

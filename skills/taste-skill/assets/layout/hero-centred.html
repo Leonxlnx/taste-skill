@@ -1,0 +1,206 @@
+<!doctype html>
+<!-- layout v4 demo: hero-centred (references/layout-v4.md, heroes.json "centred"). type: software. fonts: instrument. dark page. ground: painterly-landscape (assets/effects), CSS fallback under it. -->
+<html lang="en" data-type="software" data-radius="round" data-ground="painting" data-buttons="pill">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="software">
+<title>Relay: an AI teammate for your support inbox</title>
+<meta name="description" content="Relay answers the support questions it can, drafts the rest for your team and learns from every reply. From $29 a seat.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root {
+  --p-bg: #0c0d0f; --p-surface: #16181b; --p-ink: #f2f2f0; --p-muted: #9ea2a7;
+  --p-accent: #8fbcff; --p-accent-ink: #0c0d0f; --p-action: #f2f2f0; --p-action-ink: #0c0d0f;
+  --p-inv-bg: #f2f2f0; --p-inv-surface: #e6e6e3; --p-inv-ink: #0c0d0f; --p-inv-muted: #5b5e62;
+  --p-inv-accent: #2f6fd6; --p-inv-accent-ink: #ffffff; --p-inv-action: #0c0d0f; --p-inv-action-ink: #f2f2f0;
+  --font-display: "Instrument Sans", system-ui, sans-serif; --font-text: "Instrument Sans", system-ui, sans-serif;
+  --display-weight: 500; --display-tracking: -0.03em; --display-tracking-xl: -0.042em; --display-stretch: 92%; --ly-scale: 1.04;
+}
+/* the frame's painted ground when WebGL is not there: sky, far hills, a lit near hill */
+.hero__window { background:
+  radial-gradient(120% 60% at 70% 118%, #6f7f3a 0 40%, transparent 41%),
+  radial-gradient(90% 50% at 10% 108%, #57703f 0 42%, transparent 43%),
+  radial-gradient(80% 40% at 60% 92%, #9fb2c4 0 40%, transparent 41%),
+  linear-gradient(#5f93cc, #a9c7e4 70%, #c8d6dd); }
+.d-win--dark .d-win__body { grid-template-columns: 250px 1fr; min-height: 420px; }
+.d-win--dark .d-win__bar b { color: #eceef0; font-weight: 500; } .d-win--dark .d-win__bar .sp { flex: 1; }
+/* the exchange stands in the window's top 260px: one-line question, the tool line, a two-line answer, its actions */
+.hero__window .d-chat { padding: 14px 18px; gap: 8px; }
+.hero__window .d-msg--me small { display: none; }
+.hero__window .d-msg--bot { max-width: 86%; }
+.hero__window .d-msg--bot small { display: inline; margin: 0 0 0 8px; white-space: nowrap; }
+@media (max-width: 639px) { .hero__window .d-win__bar .sp ~ span { display: none; } }
+.inbox { border-right: 1px solid rgb(255 255 255 / .07); padding: 10px; display: grid; align-content: start; gap: 2px; }
+.inbox .q { height: 34px; margin-bottom: 6px; border-radius: 9px; background: rgb(255 255 255 / .06); display: flex; align-items: center; padding: 0 10px; color: #7d8389; font-size: 13px; }
+.inbox .t { display: grid; grid-template-columns: 30px 1fr auto; gap: 1px 10px; padding: 9px 8px; border-radius: 9px; font-size: 13px; }
+.inbox .t.is-on { background: rgb(255 255 255 / .07); }
+.inbox .t i { grid-row: 1 / span 2; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 13px/1 var(--font-text); font-style: normal; color: #0c0d0f; }
+.inbox .t b { font-weight: 500; color: #eceef0; } .inbox .t time { color: #7d8389; font-size: 13px; }
+.inbox .t span { grid-column: 2 / -1; color: #8d9399; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.convo { display: grid; min-width: 0; align-content: start; }
+.d-msg--bot { background: #22262b; color: #e9ecee; }
+.acts { display: flex; gap: 8px; } .acts span { height: 30px; padding: 0 12px; border-radius: 99px; display: inline-flex; align-items: center; font-size: 13px; font-weight: 500; background: #f2f2f0; color: #0c0d0f; }
+.acts span + span { background: rgb(255 255 255 / .08); color: #e9ecee; }
+/* the numbers section: three cards, each number over its own inset panel on the hero's painted ground */
+.stat-cards .card { --c-text: var(--muted); }
+.stat-cards strong { display: block; font: var(--display-weight) var(--t-stat)/1 var(--font-display); letter-spacing: var(--display-tracking); font-stretch: var(--display-stretch); }
+.stat-cards .card > p { margin-top: var(--s-3); }
+.stat-cards .panel { --p-h: 236px; background:
+  radial-gradient(120% 60% at 70% 118%, #6f7f3a 0 40%, transparent 41%),
+  radial-gradient(90% 50% at 10% 108%, #57703f 0 42%, transparent 43%),
+  linear-gradient(#5f93cc, #a9c7e4 70%, #c8d6dd); }
+.stat-cards .panel::before { display: none; }
+.stat-cards .stage > .at-rise { --ax: 20px; --ay: 28px; --fit-max: 300px; }
+.d-pane { background: #17191c; color: #e9ecee; border-radius: 12px; padding: 14px 16px; font: 400 13px/1.4 var(--font-text); box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 20px 40px -20px rgb(0 0 0 / .7); }
+.d-pane h5 { margin: 0 0 10px; font: 500 13px/1.3 var(--font-text); color: #aeb3b8; }
+.d-split { display: flex; height: 8px; border-radius: 99px; overflow: hidden; gap: 2px; margin-bottom: 12px; }
+.d-split i { display: block; height: 100%; } .d-legend { display: grid; gap: 6px; }
+.d-legend span { display: flex; align-items: center; gap: 8px; } .d-legend span::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+.d-legend b { margin-left: auto; font-weight: 500; color: #fff; font-variant-numeric: tabular-nums; }
+.d-times { display: grid; } .d-times span { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid rgb(255 255 255 / .07); }
+.d-times span:first-child { border-top: 0; } .d-times b { font-weight: 500; color: #fff; font-variant-numeric: tabular-nums; }
+.d-quote { margin: 0; font-size: 14px; color: #fff; } .d-quote + small { display: block; margin-top: 8px; color: #9aa0a6; }
+.d-stars { display: flex; gap: 2px; margin-bottom: 8px; color: #f3c98b; } .d-stars svg { width: 14px; height: 14px; }
+/* three cards across from 1024 (their fragments are made to fit a 220px panel, so the kit's 1024-1279
+   two-up rule for span-4 panels is not needed: these cards carry no span class); text beside the panel
+   from 640 to 1023; stacked with a 148px panel on a phone: the section stays one screen (1.3 at most) */
+.stat-cards > .card { grid-column: 1 / -1; }
+@media (min-width: 1024px) { .stat-cards > .card { grid-column: auto / span 4; } }
+@media (min-width: 640px) and (max-width: 1023px) {
+  .stat-cards > .card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-auto-rows: min-content; column-gap: var(--s-6); align-content: start; }
+  .stat-cards > .card > :not(.panel) { grid-column: 1; }
+  .stat-cards > .card > .panel { grid-column: 2; grid-row: 1 / span 4; --p-h: 208px; margin: calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) 0; border-radius: calc(var(--c-r) - var(--c-gap)); }
+}
+@media (max-width: 639px) { .stat-cards .panel { --p-h: 148px; } .stage > .at-rise { --ay-sm: 20px; } .stat-cards > .card > .panel { margin-top: var(--s-5); } }
+@media (max-width: 639px) { .d-win--dark .d-win__body { grid-template-columns: 1fr; } .inbox { display: none; } .hero__window .d-chat { font-size: 13px; padding: 12px 14px; } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="ring" aria-hidden="true"></span>Relay</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#numbers">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Inbox</p><a href="#numbers">Answers<span>Sent when Relay is sure</span></a><a href="#numbers">Drafts<span>For your team to send</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Connects to</p><a href="#numbers">Help desks<span>Zendesk, Front, Help Scout</span></a><a href="#numbers">Shops<span>Shopify and Stripe orders</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#numbers">Customers</a></div>
+      <div class="nav__item"><a class="nav__link" href="#numbers">Pricing</a></div>
+      <div class="nav__item"><a class="nav__link" href="#numbers">Docs</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="#numbers">Contact sales</a>
+      <a class="btn btn--primary" href="#numbers">Start free</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--centred" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <a class="pill" href="#numbers"><span>Relay 2 is here</span><span class="muted">Read the launch post</span></a>
+        <h1 id="hero-h" aria-label="Relay answers your support inbox"><span class="ly-mark" aria-hidden="true"></span> Relay answers your support inbox</h1>
+        <p class="hero__lead">It answers the questions it is sure about, drafts the rest for your team and learns from every reply. Works inside Zendesk, Front and Help Scout.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#numbers">Start free for 14 days</a><a class="btn btn--secondary" href="#numbers">Contact sales</a></div>
+      </div>
+      <div class="hero__window" data-fx="painterly-landscape" data-fx-seed="7" role="img" aria-label="Relay drafting a reply to a customer about a late order">
+        <div class="ly-piece d-win d-win--dark" aria-hidden="true">
+          <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Maya Alvarez</b> · Order 4468</span><span class="sp"></span><span>Shopify · DHL</span></div>
+          <div class="d-win__body">
+            <div class="inbox">
+              <div class="q">Search</div>
+              <div class="t is-on"><i style="background:#f3c98b">MA</i><b>Maya Alvarez</b><time>10:42</time><span>My order hasn't arrived and it's been…</span></div>
+              <div class="t"><i style="background:#9fd3b5">JT</i><b>Jonas Thiel</b><time>10:31</time><span>Can I change the size on order 4471?</span></div>
+              <div class="t"><i style="background:#a9c4f0">PK</i><b>Priya Kaur</b><time>10:12</time><span>Answered by Relay · refund sent</span></div>
+              <div class="t"><i style="background:#e9b4a4">LB</i><b>Luca Bianchi</b><time>9:58</time><span>Invoice for March, please</span></div>
+              <div class="t"><i style="background:#d8d2a6">SO</i><b>Sam Okafor</b><time>9:40</time><span>Answered by Relay · tracking link</span></div>
+            </div>
+            <div class="convo">
+              <div class="d-chat" data-ly-steps="900">
+                <div class="d-msg d-msg--me">My order hasn't arrived after eight days. Can you check?<small>10:42</small></div>
+                <div class="d-tool" data-step>Reading order 4468 and the DHL tracking</div>
+                <div class="d-msg d-msg--bot" data-step>Hi Maya, it's at the DHL depot in Leipzig after a missed delivery. I've booked it for tomorrow before 12:00 and refunded the €4.90 shipping.<small>Draft · 3 sources</small></div>
+                <div class="acts" data-step><span>Send</span><span>Edit</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="numbers" aria-labelledby="numbers-h">
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <h2 id="numbers-h">A teammate that never leaves the inbox. <span class="muted">Numbers from 420 shops over the last 90 days.</span></h2>
+      </div>
+      <div class="grid stat-cards">
+        <article class="card card--row">
+          <strong>62%</strong>
+          <p>of questions answered without a person</p>
+          <div class="panel panel--inset" role="img" aria-label="Of 1,240 questions this week, Relay answered 62%, drafted 31% and passed 7% to a person">
+            <div class="stage"><div class="at-rise fit"><div class="d-pane" aria-hidden="true">
+              <h5>1,240 questions this week</h5>
+              <div class="d-split"><i style="width:62%; background:#8fbcff"></i><i style="width:31%; background:#5d7fb0"></i><i style="width:7%; background:#4a4f56"></i></div>
+              <div class="d-legend"><span style="--c:#8fbcff">Answered by Relay<b>769</b></span><span style="--c:#5d7fb0">Drafted for you<b>384</b></span><span style="--c:#4a4f56">To a person<b>87</b></span></div>
+            </div></div></div>
+          </div>
+        </article>
+        <article class="card card--row">
+          <strong>1 min 40</strong>
+          <p>median time to the first reply</p>
+          <div class="panel panel--inset" role="img" aria-label="First replies this morning, between 48 seconds and 2 minutes 5">
+            <div class="stage"><div class="at-rise fit"><div class="d-pane" aria-hidden="true">
+              <h5>First reply, this morning</h5>
+              <div class="d-times"><span>Priya Kaur<b>0:48</b></span><span>Maya Alvarez<b>1:12</b></span><span>Sam Okafor<b>1:40</b></span><span>Jonas Thiel<b>2:05</b></span></div>
+            </div></div></div>
+          </div>
+        </article>
+        <article class="card card--row">
+          <strong>4.8 of 5</strong>
+          <p>customer rating for Relay's answers</p>
+          <div class="panel panel--inset" role="img" aria-label="A five-star rating of an answer from Relay">
+            <div class="stage"><div class="at-rise fit"><div class="d-pane" aria-hidden="true">
+              <div class="d-stars"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg></div>
+              <p class="d-quote">Sorted in a minute and the refund was already there.</p><small>Lena, order 4410 · rated Relay's answer</small>
+            </div></div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Start free for 14 days</h2></div>
+      <a class="btn btn--primary btn--xl btn--wide" href="#numbers">Start free for 14 days<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5"><a class="footer__mark" href="#"><span class="mark" data-mark="ring" aria-hidden="true"></span>Relay</a></div>
+        <div class="span-3 start-7 footer__col"><h4>Product</h4><ul><li><a href="#numbers">Inbox</a></li><li><a href="#numbers">Integrations</a></li><li><a href="#numbers">Pricing</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Company</h4><ul><li><a href="#numbers">About</a></li><li><a href="#numbers">Security</a></li><li><a href="#numbers">Contact</a></li></ul></div>
+      </div>
+      <div class="footer__legal"><span>&copy; 2026 Relay Labs Inc.</span><span><a href="#numbers">Privacy</a> &nbsp; <a href="#numbers">Terms</a></span></div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

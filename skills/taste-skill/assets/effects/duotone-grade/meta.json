@@ -1,0 +1,12 @@
+{
+  "id": "duotone-grade",
+  "name": "Duotone grade",
+  "family": "photo",
+  "look": "The section's own photograph graded into two or three page tones with still grain; without one, a calm study of window light kept clear of the text.",
+  "bestOn": ["hero", "band", "card"],
+  "motion": "still",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"],
+  "random": false,
+  "usesImg": true
+}

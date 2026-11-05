@@ -1,0 +1,11 @@
+/* letters-assemble: each letter is an inline-block that the script moves by transform and opacity; the
+   section clips sideways only while live, so a scattered letter never makes the page scroll. At rest
+   (a phone, reduced motion, no script, a failed module) the statement is plain text. */
+.mo-la__type { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(56px, 12.5vw, 208px); line-height: 0.98; letter-spacing: -0.04em; margin: 0; color: var(--ink); text-wrap: balance; max-width: 13ch; }
+.mo-la__sub { margin-top: var(--s-6); max-width: 52ch; font-size: var(--t-lead); line-height: 1.5; color: var(--muted); }
+.mo-la.is-live { overflow-x: clip; }
+.mo-la.is-live .mo-w { display: inline-block; white-space: nowrap; }
+.mo-la.is-live .mo-c { display: inline-block; }
+.mo-la.is-live .mo-i { display: inline-block; will-change: transform, opacity; }
+@media (max-width: 639px) { .mo-la__type { font-size: clamp(48px, 16vw, 96px); } }
+@media (prefers-reduced-motion: reduce) { .mo-la .mo-i { transform: none !important; opacity: 1 !important; } }

@@ -1,0 +1,47 @@
+{
+  "id": "product-assembles-into-its-action",
+  "name": "Product assembles into its action",
+  "family": "object-scrub",
+  "look": "The product's own working screen builds itself in the order of its story while the page is held: it opens on its first rows with its box only as tall as what it holds, each step slides the next part in from the foot of the screen with the newest rows in the accent for a beat and the step's caption taking the ink in the list beside it; then the rows fold back into the one action, nearest first, the screen's box closes round the action and goes, and the action stands alone, larger, with its state beside it and one closing line centred under it. The action stays a real button.",
+  "fits": [
+   "product"
+  ],
+  "types": [
+   "software"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The copy and its step list beside the finished screen.",
+  "phone": "The finished composition: the copy and its steps above the finished screen.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+   "ui": "the product's real screen as HTML in its finished state, each part marked with the step it arrives at (data-at)",
+   "words": "4 to 6 steps a user would really take, one list item a step in the same order, 4-10 words each; the action labelled with the figure the screen built; a closing line of 4-8 words"
+  },
+  "never": "a screenshot cut into parts; a counter or progress bar; a heading that counts the steps wrongly; beside the hero's product window (it carries another view); a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
+  "avoidWith": [
+   "powers-of-ten-pullback",
+   "parts-lock-into-the-whole"
+  ],
+  "states": {
+   "start": {
+    "p": 0.04,
+    "wait": 500
+   },
+   "middle": {
+    "p": 0.42,
+    "wait": 500
+   },
+   "end": {
+    "p": 0.98,
+    "wait": 600
+   }
+  },
+  "avoidMoments": [
+   "lines-rise"
+  ]
+}

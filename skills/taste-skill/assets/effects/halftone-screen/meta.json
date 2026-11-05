@@ -1,0 +1,10 @@
+{
+  "id": "halftone-screen",
+  "name": "Halftone screen",
+  "family": "dither",
+  "look": "A gradient field or a big lit sphere printed as a rotated screen of round dots that grow in the shadows, like a zoomed-in magazine print.",
+  "bestOn": ["hero", "band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

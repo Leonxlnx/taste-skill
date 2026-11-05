@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Powers-of-ten pull-back · big scene demo</title>
+<meta name="description" content="Demo of the powers-of-ten pull-back scene as the product section of a software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #0b0e14; --p-surface: #141a24; --p-ink: #eef1f6; --p-muted: #8d95a5; --p-accent: #5ab9fc; --p-accent-ink: #0b0e14; --p-action: #ffffff; --p-action-ink: #0b0e14;
+          --p-inv-bg: #eef1f6; --p-inv-surface: #e0e5ec; --p-inv-ink: #0b0e14; --p-inv-muted: #4f5868; --p-inv-accent: #1667c9; --p-inv-accent-ink: #ffffff; --p-inv-action: #0b0e14; --p-inv-action-ink: #ffffff;
+          --font-display: "Inter Tight", system-ui, sans-serif; --font-text: "Inter", system-ui, sans-serif; --display-weight: 500; color-scheme: dark; }
+  .pb__screen .ux { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; box-shadow: none; border: 0; font-size: 14px; }
+  .pb__screen .ux__body { grid-template-rows: 1fr; height: calc(100% - 42px); }
+  @media (max-width: 767px) { .pb__screen .ux { width: 640px; right: auto; } }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Relay</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">Customers</a><a href="#">Docs</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <h1>Every customer email answered within the hour</h1>
+        <p>Relay sorts the inbox, drafts the reply from your help articles and hands the hard ones to a person. Teams of 2 to 40, from £19 a seat.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Watch a demo</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="powers-of-ten-pullback" style="--h: 1" aria-labelledby="pb-h">
+    <div class="sc__stage">
+      <div class="pb__ground" aria-hidden="true"></div>
+      <div class="pb__copy">
+        <p class="t-label">The inbox</p>
+        <h2 id="pb-h">One queue, drafted before you open it</h2>
+        <p>Every conversation arrives sorted and with a draft reply. Send it as it is, edit it, or hand it to a colleague with one key.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">See the drafts</a></div>
+      </div>
+      <div class="pb__device"><div class="pb__screen">
+        <div class="ux" role="img" aria-label="The Relay inbox with six open conversations">
+          <div class="ux__bar"><i></i><i></i><i></i><b>Relay</b><span>Support · Open</span></div>
+          <div class="ux__body">
+            <div class="ux__side"><span class="on">Open<em>24</em></span><span>Mine<em>6</em></span><span>Waiting<em>3</em></span><span>Solved</span><span>Refunds</span><span>Shipping</span></div>
+            <div class="ux__main">
+              <div class="ux__head"><h4>Open conversations</h4><span class="ux__btn">Draft all</span></div>
+              <div class="ux__rows">
+                <div class="ux__row"><div><b>Lena Fischer</b><span>Lamp arrived broken</span></div><span class="ux__tag">Drafting</span><span>2m</span></div>
+                <div class="ux__row"><div><b>Omar Malik</b><span>New delivery address</span></div><span class="ux__tag ok">Replied</span><span>6m</span></div>
+                <div class="ux__row"><div><b>Julia Sousa</b><span>Invoice for October</span></div><span class="ux__tag ok">Replied</span><span>11m</span></div>
+                <div class="ux__row"><div><b>Tom Keller</b><span>Cancel subscription</span></div><span class="ux__tag">Needs you</span><span>18m</span></div>
+                <div class="ux__row"><div><b>Ana Ruiz</b><span>Where is my order?</span></div><span class="ux__tag ok">Replied</span><span>24m</span></div>
+                <div class="ux__row"><div><b>Noah Brandt</b><span>Wrong size, exchange</span></div><span class="ux__tag ok">Replied</span><span>31m</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>Drafts you can send as they are</h2><p class="t-lead" style="margin-top:16px">Relay writes from your own help centre and past replies, and cites what it used. Nothing goes out without a person pressing send.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">First reply</span><span class="rows__value">Median 41 minutes</span></li>
+          <li><span class="rows__name">Drafted by Relay</span><span class="rows__value">71% of tickets</span></li>
+          <li><span class="rows__name">Connects to</span><span class="rows__value">Gmail, Outlook, Slack</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Relay · demo page for the big scene “Powers-of-ten pull-back”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

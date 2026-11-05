@@ -1,0 +1,22 @@
+/* fx-stat: big numbers on hairline rules; the digits carry a still effect on dark grounds, an ink fade on light ones */
+/* sized by its own width (a container), not the window: in a narrow column at 1440 three numbers sized
+   to the window ran into each other */
+.cx-stat { display: grid; gap: var(--s-4); container-type: inline-size; }
+.cx-stat__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); margin: 0; }
+.cx-stat__item { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: var(--s-3); border-top: 1px solid var(--cx-line-2); padding-top: var(--s-5); min-width: 0; }
+.cx-stat__num {
+  margin: 0; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.045em; line-height: .95;
+  font-size: clamp(48px, 7.4cqi, 104px); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+/* light grounds: ink at the top fading to about 60% ink at the foot of the digits */
+.cx-stat--fade .cx-stat__num {
+  background: linear-gradient(180deg, var(--ink) 20%, color-mix(in oklab, var(--ink) 60%, var(--bg)) 95%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.cx-stat__label { font-size: var(--t-small); line-height: 1.5; color: var(--muted); max-width: 26ch; }
+.cx-stat__note { font-size: var(--t-label); color: var(--muted); margin: 0; }
+@media (forced-colors: active) { .cx-stat--fade .cx-stat__num { color: CanvasText; background: none; } }
+@container (max-width: 699px) {
+  .cx-stat__row { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .cx-stat__num { font-size: clamp(48px, 15cqi, 72px); }
+}

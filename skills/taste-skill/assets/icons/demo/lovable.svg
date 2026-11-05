@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 256 261" width="256" height="261"><defs>
+        <path d="M76.8123863,0 C119.234826,0 153.624773,34.4807795 153.624773,77.0148673 L153.624773,106.28533 L179.187958,106.28533 C221.610913,106.28533 256,140.76611 256,183.299509 C256,225.834285 221.610913,260.314549 179.187958,260.314549 L0,260.314549 L0,77.0148673 C0,34.4807795 34.3901189,0 76.8123863,0 Z" id="path-1"></path>
+        <radialGradient cx="7.16588364%" cy="52.1075484%" fx="7.16588364%" fy="52.1075484%" r="113.046187%" gradientTransform="translate(0.0717, 0.5211), scale(0.1701, 1), translate(-0.0717, -0.5211)" id="radialGradient-3">
+            <stop stop-color="#4B73FF" offset="0%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9984" offset="17%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9907" offset="25%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9717" offset="31%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9571" offset="33.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9322" offset="36.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.9037" offset="39%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.8661" offset="41.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.8211" offset="44%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.7666" offset="46.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.7049" offset="49%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.6353" offset="51.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.4532" offset="57.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.3359" offset="61.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.2825" offset="63.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.2445" offset="65%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.1788" offset="68%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.1415" offset="70%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.1026" offset="72.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.0774" offset="74.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.0494" offset="77.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.0209" offset="82.5%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0.0055" offset="89%"></stop>
+            <stop stop-color="#4B73FF" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="8.38075741%" cy="16.444129%" fx="8.38075741%" fy="16.444129%" r="131.290697%" gradientTransform="translate(0.0838, 0.1644), scale(0.1701, 1), translate(-0.0838, -0.1644)" id="radialGradient-4">
+            <stop stop-color="#FF66F4" offset="0%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.995" offset="27%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.9831" offset="33%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.9585" offset="38%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.914" offset="42%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.8858" offset="44%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.8213" offset="47.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.7655" offset="50%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.7131" offset="52%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.6106" offset="55.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.3872" offset="62.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.2983" offset="65.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.2568" offset="67%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.1967" offset="69.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.1264" offset="73%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.1034" offset="74.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.0591" offset="78.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.0358" offset="81.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.0222" offset="84%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0.0052" offset="90.5%"></stop>
+            <stop stop-color="#FF66F4" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="10.6907355%" cy="4.21903871%" fx="10.6907355%" fy="4.21903871%" r="113.046187%" gradientTransform="translate(0.1069, 0.0422), scale(0.1701, 1), translate(-0.1069, -0.0422)" id="radialGradient-5">
+            <stop stop-color="#FF0105" stop-opacity="0.9998" offset="0%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.9978" offset="14.5%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.9893" offset="22.5%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.967" offset="29%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.9518" offset="31.5%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.9305" offset="34%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.8761" offset="38.5%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.8166" offset="42%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.7757" offset="44%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.7302" offset="46%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.6244" offset="50%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.3605" offset="59%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.2557" offset="63%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.171" offset="67%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.1062" offset="71%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.0715" offset="74%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.0492" offset="76.5%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.0198" offset="82%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0.005" offset="89%"></stop>
+            <stop stop-color="#FF0105" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="8.57773875%" cy="16.4309032%" fx="8.57773875%" fy="16.4309032%" r="87.1414774%" gradientTransform="translate(0.0858, 0.1643), scale(0.1701, 1), translate(-0.0858, -0.1643)" id="radialGradient-6">
+            <stop stop-color="#FE7B02" stop-opacity="0.9721" offset="0%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.9638" offset="7%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.9369" offset="13.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.9205" offset="16%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.8851" offset="20%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.8246" offset="25%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.7533" offset="29.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.6462" offset="35%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.5475" offset="39.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.4195" offset="45%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.2622" offset="52.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.2091" offset="55.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.1486" offset="59.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.091" offset="64.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.0488" offset="70%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.0194" offset="77%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0.005" offset="85.5%"></stop>
+            <stop stop-color="#FE7B02" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g>
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <g></g>
+        <g mask="url(#mask-2)">
+            <rect fill="url(#radialGradient-3)" x="0" y="0" width="1567.2065" height="266.648747"></rect>
+            <rect fill="url(#radialGradient-4)" x="0" y="0" width="1567.2065" height="266.648747"></rect>
+            <rect fill="url(#radialGradient-5)" x="0" y="0" width="1567.2065" height="266.648747"></rect>
+            <rect fill="url(#radialGradient-6)" x="0" y="0" width="1567.2065" height="266.648747"></rect>
+        </g>
+    </g></svg>

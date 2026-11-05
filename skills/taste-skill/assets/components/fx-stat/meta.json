@@ -1,0 +1,10 @@
+{
+  "id": "fx-stat",
+  "name": "Effect stat numbers",
+  "for": "A band of two to four proof numbers (uptime, speed, scale) where the big digits carry the effect and the captions stay plain.",
+  "effects": ["aurora-curtains", "grain-gradient"],
+  "default": "aurora-curtains",
+  "how": "Dark or colour ground: fill() on the row, one still canvas for all numbers, blended so only the digits show it. Light ground: no effect; the digits fade from ink to about 60% ink, because an effect inside digits on white reads as scratched metal.",
+  "rules": ["56px and up, weight 600; never small numbers.", "The effect in the digits is still (speed 0).", "Real figures. Invented ones are placeholders covered by the page's one placeholder note and listed in the report, never a sample tag on each number.", "The note under the row says where the figures come from.", "No count-up on scroll: the final number shows at once."],
+  "a11y": "A description list: each number is real text with its caption as the term; the overlay sits beside the list, not in it. Forced colours show plain digits."
+}

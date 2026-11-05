@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 155" width="256" height="155"><defs>
+        <linearGradient id="linear-gradient" x1="84.2" y1="-2328.6" x2="72.6" y2="-2442.5" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#75be2c"/>
+          <stop offset="0.9" stop-color="#9dc03b"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient1" x1="78.7" y1="-2376.1" x2="78.7" y2="-2338.8" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#238d37"/>
+          <stop offset="0.9" stop-color="#35537f"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient2" x1="74.7" y1="-2395.4" x2="80.5" y2="-2357.4" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#67d84d"/>
+          <stop offset="1" stop-color="#348522"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient3" x1="132.4" y1="-2425.4" x2="132.4" y2="-2359.2" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#e4d00a"/>
+          <stop offset="0.6" stop-color="#c4d132"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient4" x1="24.8" y1="-2425.4" x2="24.8" y2="-2359.2" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#e4d00a"/>
+          <stop offset="0.6" stop-color="#c4d132"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient5" x1="117.3" y1="-2358.4" x2="117.3" y2="-2336.3" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#8ab11b"/>
+          <stop offset="1" stop-color="#6eaf02"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient6" x1="133.3" y1="-2385.1" x2="128.7" y2="-2347.9" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#75be2c"/>
+          <stop offset="0.9" stop-color="#9dc03b"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient7" x1="40" y1="-2358.3" x2="40" y2="-2336.4" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#8ab11b"/>
+          <stop offset="1" stop-color="#6eaf02"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient8" x1="28.4" y1="-2384.9" x2="23.8" y2="-2340.2" gradientTransform="matrix(1.734414, 0, 0, 1.734414, -8.325185, 4206.548203)" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#75be2c"/>
+          <stop offset="0.9" stop-color="#9dc03b"/>
+        </linearGradient>
+    </defs>
+    <g>
+        <path fill="url(#linear-gradient)" d="M 247.674 27.303 L 203.446 1.634 C 195.99 -2.702 186.623 2.675 186.623 11.347 L 186.623 76.388 L 155.231 58.349 C 138.405 48.637 117.593 48.637 100.769 58.349 L 69.377 76.388 L 69.377 11.173 C 69.377 2.501 60.01 -2.702 52.554 1.46 L 8.326 27.303 C 3.123 30.252 0 35.803 0 41.698 L 0 102.924 C 0 107.26 1.041 111.249 3.123 114.891 C 5.203 118.534 7.979 121.655 11.621 124.083 L 34.515 138.652 L 52.033 149.752 C 62.613 156.516 75.967 155.824 86.026 148.365 L 87.415 147.324 C 87.415 147.324 87.587 147.152 87.762 146.978 L 114.125 126.859 C 121.756 120.962 134.418 120.962 142.223 126.859 L 168.413 146.806 C 168.413 146.806 168.413 146.806 168.413 146.806 L 169.972 148.019 C 179.859 155.477 193.387 155.998 203.967 149.406 L 221.485 138.306 L 244.379 123.737 C 248.021 121.483 250.969 118.188 252.877 114.544 C 254.785 110.903 256 106.913 256 102.577 L 256 41.526 C 256 35.629 252.877 30.078 247.674 27.129 L 247.674 27.303 Z"/>
+        <path fill="url(#linear-gradient1)" d="M 186.969 115.932 L 186.969 137.96 C 186.969 144.724 182.113 150.273 176.216 150.273 C 170.32 150.273 171.013 149.06 168.238 146.978 L 142.049 126.859 C 134.418 120.962 121.756 120.962 113.951 126.859 L 87.587 146.978 C 84.987 148.885 83.251 149.58 80.823 149.58 C 74.754 149.58 69.203 145.07 69.203 137.785 L 69.203 115.932 L 106.841 91.65 C 119.674 83.326 136.326 83.326 149.159 91.65 L 186.969 115.411 L 186.969 115.932 Z"/>
+        <path fill="url(#linear-gradient2)" d="M 186.623 76.214 L 186.623 116.28 C 186.623 116.28 149.333 92.344 149.333 92.344 C 136.498 84.019 120.021 84.019 107.013 92.344 L 69.377 116.28 L 69.377 76.214 C 69.377 76.214 100.769 58.175 100.769 58.175 C 117.593 48.462 138.233 48.462 155.231 58.175 L 186.623 76.214 Z"/>
+        <path fill="url(#linear-gradient3)" d="M 256 41.698 L 256 102.75 C 256 107.086 254.959 111.075 252.877 114.718 L 186.623 76.214 L 186.623 11.173 C 186.623 2.501 195.99 -2.702 203.446 1.46 L 247.674 27.129 C 252.877 30.078 256 35.629 256 41.526 L 256 41.698 Z"/>
+        <path fill="url(#linear-gradient4)" d="M 69.377 11.173 L 69.377 76.388 L 3.123 114.891 C 1.041 111.249 0 107.26 0 102.924 L 0 41.698 C 0 35.803 3.123 30.252 8.326 27.303 L 52.554 1.634 C 60.01 -2.702 69.377 2.675 69.377 11.347 L 69.377 11.173 Z"/>
+        <path fill="url(#linear-gradient5)" d="M 175.349 149.406 C 181.246 149.406 186.797 144.724 186.797 138.132 L 186.797 116.106 C 186.797 116.106 221.831 138.48 221.831 138.48 L 204.141 149.752 C 193.561 156.516 180.033 155.998 170.146 148.365 L 168.413 146.978 C 170.839 148.713 172.921 149.406 175.349 149.406 Z"/>
+        <path fill="url(#linear-gradient6)" d="M 252.877 114.891 C 250.969 118.534 248.021 121.655 244.379 124.083 L 221.485 138.652 L 186.623 116.452 L 186.623 76.388 C 186.623 76.388 252.877 115.065 252.877 115.065 L 252.877 114.891 Z"/>
+        <path fill="url(#linear-gradient7)" d="M 69.377 138.132 C 69.377 144.896 74.926 150.101 80.823 149.406 C 83.426 149.06 85.508 148.713 87.587 147.152 L 86.026 148.365 C 76.141 155.824 62.613 156.344 52.033 149.752 L 34.515 138.652 C 34.515 138.652 69.377 116.28 69.377 116.28 L 69.377 138.132 Z"/>
+        <path fill="url(#linear-gradient8)" d="M 69.377 76.214 L 69.377 116.28 L 34.515 138.652 C 34.515 138.652 11.621 124.083 11.621 124.083 C 7.979 121.829 5.031 118.534 3.123 114.891 L 69.377 76.388 L 69.377 76.214 Z"/>
+    </g></svg>

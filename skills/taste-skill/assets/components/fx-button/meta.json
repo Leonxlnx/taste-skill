@@ -1,0 +1,10 @@
+{
+  "id": "fx-button",
+  "name": "Effect button",
+  "for": "The one primary call to action: on hover and focus a slow effect fades into its fill; a secondary button can carry the effect in its border instead.",
+  "effects": ["grain-gradient", "gradient-mesh", "film-light-leak", "caustics", "soft-light-bars"],
+  "default": "grain-gradient",
+  "how": "An effect host inside the button (fill) or a cx-ring host around it (border), in a palette within a few steps of the accent; the fill is centred (calm 0, low scatter, a soft radial mask) and low in contrast. Mounted paused, it runs only while pointed at or focused.",
+  "rules": ["Only the primary call to action, or one button pair, per page.", "The label keeps 4.5:1 on every frame of the fill.", "The fill is even across the button: no bright patch at one end.", "Nothing moves until hover or focus.", "Demo notes ('hover to see it') belong to the showcase, never to the component markup."],
+  "a11y": "A real link with its own text; the effect host is aria-hidden. Keyboard focus lights it as hover does. Reduced motion shows a still frame."
+}

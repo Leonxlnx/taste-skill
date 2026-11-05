@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split reveal</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_scenes/demo.css">
+</head>
+<body>
+<script type="module">
+  import demo from '../_scenes/demo.js';
+  import split, { DEFAULT_PHOTO } from './object.js';
+  const roof = { id: 618, ratio: 1.5, alt: 'Curving glass and steel lattice roof in black and white', by: 'Mika Ruusunen', licence: 'Unsplash licence', licenceUrl: 'https://unsplash.com/license', page: 'https://unsplash.com/photos/ypVM8PnygUo' };
+  const facade = { id: 951, ratio: 1.6, alt: 'A building facade of red, yellow and white panels', by: 'Sérgio Rola', licence: 'Unsplash licence', licenceUrl: 'https://unsplash.com/license', page: 'https://unsplash.com/photos/4aQY2CrXsa8' };
+  demo(split, {
+    kind: 'Scene object · photograph, halftone',
+    eyebrow: 'Photo app',
+    title: 'Print any photograph.',
+    lede: 'A real photograph, half of it printed as a halftone screen in the page ink. Move across it and the line follows; near the seam the dots take the photograph’s colour back.',
+    hero: { src: DEFAULT_PHOTO },
+    section: { title: 'In a card panel', text: 'At card size the screen gets finer with the panel. The print can sit on either side of the line.' },
+    cards: [
+      { title: 'A glass roof', text: 'Steel lattice over a courtyard, the print on the right.', src: roof, params: { side: 'right', split: 0.42 }, surface: true },
+      { title: 'A facade in colour', text: 'Red and yellow panels: the print keeps their weight, the photograph their colour.', src: facade, surface: true },
+    ],
+    credits: [DEFAULT_PHOTO, roof, facade],
+  });
+</script>
+</body>
+</html>

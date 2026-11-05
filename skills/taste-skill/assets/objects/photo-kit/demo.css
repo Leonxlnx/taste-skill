@@ -1,0 +1,81 @@
+/* photo-kit/demo.css - the shared page of the photo objects' demos */
+:root, :root[data-palette="light"] {
+  --bg: #f2f0eb; --surface: #e8e5de; --ink: #141414; --muted: #6f6b64; --accent: #2b50e6; --accent-ink: #ffffff;
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+}
+:root[data-palette="dark"] {
+  --bg: #0e0f11; --surface: #17191c; --ink: #ecebe6; --muted: #8b8d92; --accent: #ff7a45; --accent-ink: #111111;
+}
+/* a blue held toward cyan (OKLCH hue about 255), so its light tints read as sky, never lavender */
+:root[data-palette="colour"] {
+  --bg: #0d4fae; --surface: #175bbb; --ink: #f6f3ec; --muted: #a9c3e8; --accent: #ffb547; --accent-ink: #121212;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 15px/1.5 "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .4s ease, color .4s ease;
+}
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, currentColor 40%, transparent); }
+a:hover { text-decoration-color: currentColor; }
+
+.page { max-width: 1320px; margin: 0 auto; padding: 32px 40px 72px; }
+.top { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px 48px; padding-bottom: 28px; }
+.eyebrow { margin: 0 0 14px; font-size: 13px; color: var(--muted); letter-spacing: .01em; }
+.eyebrow b { font-weight: 500; color: var(--ink); }
+h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.04; letter-spacing: -.025em; }
+.blurb { margin: 14px 0 0; max-width: 60ch; color: var(--muted); font-size: 15px; }
+
+.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface); }
+.seg button, .btn {
+  appearance: none; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 500;
+  height: 32px; padding: 0 14px; border-radius: 999px; cursor: pointer; transition: background-color .2s, color .2s;
+}
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 2px color-mix(in oklab, var(--ink) 12%, transparent); }
+.btn { background: var(--ink); color: var(--bg); }
+.seg button:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.grid { display: grid; grid-template-columns: 5fr 7fr; gap: 20px; }
+.grid figure { margin: 0; display: flex; flex-direction: column; min-width: 0; }
+.grid .wide { grid-column: 1 / -1; }
+.frame { position: relative; overflow: hidden; border-radius: 6px; background: var(--surface); cursor: crosshair; }
+.grid figure:nth-child(1) .frame { aspect-ratio: 4 / 5; }
+.grid figure:nth-child(2) .frame { flex: 1; min-height: 0; }
+.grid .wide .frame { aspect-ratio: 21 / 9; }
+figcaption { display: flex; justify-content: space-between; gap: 16px; padding-top: 10px; font-size: 12.5px; color: var(--muted); }
+figcaption .kind { color: var(--ink); font-weight: 500; }
+figcaption .credit { text-align: right; max-width: 48%; }
+.notes { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; border-top: 1px solid var(--line); padding-top: 22px; }
+.notes h2 { margin: 0 0 6px; font-size: 13px; font-weight: 500; }
+.notes p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+/* solo: one picture filling the window (hero shots and frame-rate checks) */
+body.solo .page { max-width: none; padding: 0; }
+body.solo .top, body.solo .notes { display: none; }
+/* the credit stays in solo: a small line over the picture's bottom left */
+body.solo figcaption > span:first-child { display: none; }
+body.solo figcaption .credit { max-width: none; text-align: left; }
+body.solo figcaption {
+  position: fixed; left: 12px; bottom: 12px; z-index: 2; padding: 4px 9px; border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 82%, transparent); color: var(--ink); font-size: 11.5px;
+}
+body.solo .grid { display: block; }
+body.solo .grid figure:not(:first-child) { display: none; }
+body.solo .grid figure:first-child .frame { aspect-ratio: auto; height: 100vh; width: 100vw; border-radius: 0; }
+
+@media (max-width: 760px) {
+  .page { padding: 20px 16px 48px; }
+  .top { grid-template-columns: 1fr; gap: 18px; }
+  .controls { justify-content: flex-start; }
+  .grid { grid-template-columns: 1fr; gap: 16px; }
+  .grid figure:nth-child(2) .frame { aspect-ratio: 4 / 3; flex: none; }
+  .grid .wide .frame { aspect-ratio: 4 / 3; }
+  .notes { grid-template-columns: 1fr; gap: 16px; }
+  figcaption { flex-direction: column; gap: 2px; }
+  figcaption .credit { text-align: left; max-width: none; }
+}

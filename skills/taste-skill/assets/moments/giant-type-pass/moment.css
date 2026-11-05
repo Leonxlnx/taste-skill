@@ -1,0 +1,13 @@
+/* giant-type-pass: the statement at 12vw with the photograph clipped to its glyphs under a 35% ink
+   tint (the letters stay readable on a pale patch); --mo-y (0-100%) is the picture's vertical
+   position, moved by the script with the scroll, resting on the lower half. Without the picture
+   (no script, no image) the words are plain ink. */
+.mo-gt__type { --mo-y: 62%; --mo-x: 50%; --mo-tint: color-mix(in oklab, var(--ink) 35%, transparent);
+  font-size: clamp(64px, 12vw, 200px); line-height: 0.98; letter-spacing: -0.03em; font-weight: var(--display-weight); margin: 0; color: var(--ink);
+  background-image: linear-gradient(var(--mo-tint), var(--mo-tint)), var(--mo-img, none); background-size: cover, cover; background-position: var(--mo-x) var(--mo-y); background-repeat: no-repeat;
+  -webkit-background-clip: text; background-clip: text; text-wrap: balance; width: fit-content; max-width: 100%; }
+[data-moment="giant-type-pass"].is-live .mo-gt__type { -webkit-text-fill-color: transparent; color: transparent; }
+[data-moment="giant-type-pass"] .mo-gt__row { display: grid; gap: var(--s-4); margin-top: var(--s-7); max-width: 56ch; }
+[data-moment="giant-type-pass"] .mo-gt__row p { font-size: var(--t-lead); line-height: 1.5; color: var(--ink); }
+@media (min-width: 1024px) { [data-moment="giant-type-pass"] .mo-gt__row { grid-template-columns: 1fr auto; align-items: end; gap: var(--s-8); max-width: none; } [data-moment="giant-type-pass"] .mo-gt__row p { max-width: 56ch; } }
+@media (max-width: 639px) { .mo-gt__type { font-size: clamp(56px, 19vw, 96px); } }

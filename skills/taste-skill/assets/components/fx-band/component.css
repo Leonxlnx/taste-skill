@@ -1,0 +1,22 @@
+/* fx-band: a divider band between two sections, its effect kept to the far side of the headline */
+.cx-band {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center;
+  min-height: 320px; padding: var(--s-7) var(--s-8); border-radius: var(--r-lg);
+  background: var(--cx-card); border: 1px solid var(--cx-line);
+}
+/* the effect lives in the right part and fades in from the copy's side; the script sets its left edge
+   48px past the copy's widest line (this 52% is the picture before it runs) */
+.cx-band__fx {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 52%; z-index: 0;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 22%); mask: linear-gradient(90deg, transparent, #000 22%);
+}
+.cx-band__copy { position: relative; z-index: 1; display: grid; justify-items: start; gap: var(--s-3); max-width: 460px; }
+.cx-band__title { font-size: var(--t-h2); line-height: 1.08; margin: 0; }
+.cx-band__text { color: var(--muted); font-size: var(--t-body); line-height: 1.55; margin: 0 0 var(--s-2); max-width: 40ch; }
+@media (max-width: 899px) {
+  .cx-band { padding: var(--s-6); min-height: 460px; align-items: flex-start; }
+  .cx-band__fx { left: 0; top: 46%; -webkit-mask: linear-gradient(180deg, transparent, #000 30%); mask: linear-gradient(180deg, transparent, #000 30%); }
+}
+@media (max-width: 639px) {
+  .cx-band { padding: var(--s-5); min-height: 480px; }
+}

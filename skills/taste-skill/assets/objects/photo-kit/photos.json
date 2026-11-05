@@ -1,0 +1,90 @@
+{
+  "note": "Test photographs for the photo objects, from the skill's vetted library, saved here so the demos run offline. Wherever one is shown, show its credit as photoCredit() in photo.js writes it: the author, the licence linked, and 'adapted' (an effect render changes the picture). A client's own photograph replaces them through `src`.",
+  "photos": [
+    {
+      "key": "lamp",
+      "file": "photos/lamp.jpg",
+      "kind": "product",
+      "libraryId": "d88",
+      "set": "interior-and-table",
+      "alt": "Cream ceramic table lamp on a glossy side table, low sun throwing long shadows across a white wall",
+      "by": "LoMit",
+      "licence": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons",
+      "page": "https://commons.wikimedia.org/wiki/File:Lamp_with_a_lampshade_illuminated_by_sunlight.jpg",
+      "size": [
+        1280,
+        1757
+      ],
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    {
+      "key": "room",
+      "file": "photos/room.jpg",
+      "kind": "room",
+      "libraryId": 625,
+      "set": "interior-and-table",
+      "alt": "Wooden dining table with white moulded chairs beside large windows",
+      "by": "Breather",
+      "licence": "Unsplash licence",
+      "source": "Unsplash, via Lorem Picsum",
+      "page": "https://unsplash.com/photos/DEdM9Vs6s8w",
+      "size": [
+        1920,
+        1280
+      ],
+      "focus": [
+        0.52,
+        0.55
+      ],
+      "licenceUrl": "https://unsplash.com/license"
+    },
+    {
+      "key": "platform",
+      "file": "photos/platform.jpg",
+      "kind": "person from behind",
+      "libraryId": 821,
+      "set": "people",
+      "alt": "Woman seen from behind on a platform as a train blurs past",
+      "by": "Eutah Mizushima",
+      "licence": "Unsplash licence",
+      "source": "Unsplash, via Lorem Picsum",
+      "page": "https://unsplash.com/photos/2TlAsvhqiL0",
+      "size": [
+        1920,
+        1280
+      ],
+      "focus": [
+        0.5,
+        0.5
+      ],
+      "licenceUrl": "https://unsplash.com/license",
+      "caution": "Her white top meets the white train: in halftone, engraving and dither the figure loses its outline. Use it only with clarity at 0.5 or more, or pick a figure against a darker ground."
+    },
+    {
+      "key": "concrete",
+      "file": "photos/concrete.jpg",
+      "kind": "place",
+      "libraryId": 942,
+      "set": "architecture",
+      "alt": "White angular concrete building against a black sky",
+      "by": "Carl Nenzen Loven",
+      "licence": "Unsplash licence",
+      "source": "Unsplash, via Lorem Picsum",
+      "page": "https://unsplash.com/photos/busqfOj6i80",
+      "size": [
+        1920,
+        1280
+      ],
+      "focus": [
+        0.5,
+        0.5
+      ],
+      "licenceUrl": "https://unsplash.com/license"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+/* stat: one number with its change and a bar chart whose bars rise to the new values.
+   .is-window (or opts.window) cuts the bars out of the fragment, so the effect ground under the panel
+   shows through them: the effect becomes the data, not the backdrop.
+   .is-fill (or opts.fill) lets the chart take whatever height the placement gives the fragment, so the
+   bars can run off the panel's bottom edge on purpose. */
+.ui-stat { width: 420px; overflow: hidden; }
+.ui-stat__head { padding: 16px 16px 4px; }
+.ui-stat__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ui-stat__label { font-size: 13px; font-weight: 500; line-height: 20px; white-space: nowrap; }
+.ui-stat__range { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 6px 0 10px; border-radius: 7px; font-size: 13px; color: var(--u-muted); white-space: nowrap; box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.ui-stat__range .ui-icon { width: 14px; height: 14px; }
+.ui-stat__line { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.ui-stat__num { font-size: 36px; line-height: 40px; font-weight: 600; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+/* the change is a quiet ink chip: an accent here would read as an alarm, not as good news */
+.ui-stat__delta { color: var(--u-ink); }
+.ui-stat__delta svg { width: 11px; height: 11px; margin: 0 -1px 0 -2px; }
+.ui-stat__sub { font-size: 13px; line-height: 16px; color: var(--u-muted); }
+.ui-stat__chart { padding: 12px 16px 12px; }
+.ui-stat__svg { display: block; width: 100%; height: 120px; overflow: visible; }
+.ui-stat__grid { fill: none; stroke: var(--u-line); stroke-width: 1; stroke-dasharray: 2 4; vector-effect: non-scaling-stroke; }
+.ui-stat__bars rect { fill: var(--u-fill-3); }
+.ui-stat__bars rect:last-child { fill: var(--u-accent); }
+.ui-stat__cover { display: none; }
+.ui-stat__axis { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; line-height: 16px; color: var(--u-soft); }
+
+/* window bars: the panel stops painting its own surface under the chart; the cover paints it, with a
+   hole for each bar. The holes keep the same 16px inset as the text above and the axis below. */
+.ui-stat.is-window { background: transparent; }
+.ui-stat.is-window .ui-stat__head { background: var(--u-bg); border-radius: calc(var(--u-r) - 1px) calc(var(--u-r) - 1px) 0 0; padding-bottom: 16px; }
+.ui-stat.is-window .ui-stat__chart { position: relative; padding: 0; }
+.ui-stat.is-window .ui-stat__svg { height: 144px; }
+.ui-stat.is-window .ui-stat__cover { display: block; fill: var(--u-bg); }
+.ui-stat.is-window .ui-stat__bars { display: none; }
+.ui-stat.is-window .ui-stat__grid { display: none; }
+.ui-stat.is-window .ui-stat__axis { margin: 0; padding: 4px 16px 12px; background: var(--u-bg); border-radius: 0 0 calc(var(--u-r) - 1px) calc(var(--u-r) - 1px); }
+/* fill: the fragment takes its wrapper's height and the chart grows into it; the axis is dropped,
+   because the bars leave through the panel's bottom edge */
+.ui-stat.is-fill { height: 100%; display: flex; flex-direction: column; border-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.ui-stat.is-fill .ui-stat__chart { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.ui-stat.is-fill .ui-stat__svg { flex: 1; height: auto; min-height: 96px; }
+.ui-stat.is-fill .ui-stat__axis { display: none; }
+@media (max-width: 639px) {
+  .ui-stat__range .ui-icon { display: none; }
+  .ui-stat__range { padding: 0 8px; font-size: 13px; }
+}

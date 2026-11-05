@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagram lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="diagram.css">
+<style>
+  /* The builder: pick a preset, change the JSON or the controls, see the card at once, copy the markup. Not part of a page. */
+  :root { --font-text: "Geist", system-ui, sans-serif; --font-display: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; }
+  [data-theme="light"] { --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; --frag: #ffffff; --ground-bg: #ebeae6; --ground-accent: #dcd9d0; --line: rgb(0 0 0 / .1); --field: #ffffff; }
+  [data-theme="light"][data-accent="blue"] { --accent: #2456e8; }
+  [data-theme="light"][data-accent="green"] { --accent: #16825d; }
+  [data-theme="dark"] { --bg: #070708; --card: #141416; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; --frag: #1c1d20; --ground-bg: #101012; --ground-accent: #232326; --line: rgb(255 255 255 / .12); --field: #101012; }
+  [data-theme="dark"][data-accent="white"] { --accent: #f2f2ef; --accent-ink: #0b0b0c; }
+  [data-theme="dark"][data-accent="green"] { --accent: #3ccf8e; --accent-ink: #06130d; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  .lab { display: grid; gap: 32px; max-width: 1440px; margin: 0 auto; padding: 32px 24px 64px; }
+  .side { display: grid; gap: 16px; align-content: start; min-width: 0; }
+  .side h1 { margin: 0; font: 500 24px/1.2 var(--font-display); letter-spacing: -0.02em; }
+  .row { display: grid; gap: 6px; }
+  .row > label, .row > .lbl { font-size: 13px; color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  select, textarea, button, input[type=range] { font: inherit; color: inherit; }
+  select, textarea { width: 100%; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; }
+  select { height: 40px; }
+  textarea { min-height: 360px; resize: vertical; font: 400 12.5px/1.5 var(--font-mono); white-space: pre; tab-size: 2; }
+  textarea.is-bad { border-color: #c4321c; }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.b { height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); cursor: pointer; font-weight: 500; }
+  button.b:hover { border-color: var(--ink); }
+  button.b--main { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .out { font: 400 12.5px/1.5 var(--font-mono); color: var(--muted); overflow-wrap: anywhere; min-height: 1.5em; }
+  .out b { color: var(--ink); font-weight: 500; }
+  .out .bad { color: #c4321c; }
+  .lb-stage { min-width: 0; display: grid; align-content: start; gap: 16px; }
+  .lb-stage .card > .panel { --p-h: 340px; }
+  .lb-stage .card--wide > .panel { --p-h: 560px; }
+  .lb-stage .card--phone { max-width: 390px; }
+  .lb-stage .card--phone > .panel { --p-h: 300px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; background: var(--card); width: fit-content; }
+  .seg button { height: 34px; padding: 0 14px; border: 0; background: none; border-radius: 999px; cursor: pointer; font-weight: 500; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  @media (min-width: 1024px) { .lab { grid-template-columns: 400px minmax(0, 1fr); gap: 40px; padding-top: 40px; } textarea { min-height: 330px; } .side { position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow: auto; padding-right: 4px; } }
+  @media (max-width: 639px) { .lab { padding: 24px 16px 48px; } }
+</style>
+</head>
+<body data-theme="light" data-icon-base="../icons/demo/">
+<div class="lab">
+  <aside class="side">
+    <h1>Diagram lab</h1>
+    <div class="two">
+      <div class="row"><label for="type">Page kind</label><select id="type"><option value="">All</option><option>software</option><option>tech</option><option>gaming</option><option>product</option><option>service</option></select></div>
+      <div class="row"><label for="preset">Preset</label><select id="preset"></select></div>
+    </div>
+    <div class="two">
+      <div class="row"><label for="ground">Ground</label><select id="ground"><option value="">Default</option><option>dots</option><option>rings</option><option>grid</option><option>glow</option><option>glow dots</option><option>glow rings</option><option>none</option></select></div>
+      <div class="row"><label for="pulse">Light</label><select id="pulse"><option value="">Comet</option><option>dot</option><option>none</option></select></div>
+    </div>
+    <div class="two">
+      <div class="row"><label for="curve">Lines</label><select id="curve"><option value="">As the layout draws them</option><option>curve</option><option>elbow</option><option>swirl</option></select></div>
+      <div class="row"><label for="cycle">Cycle <span id="cycleV">3.2 s</span></label><input id="cycle" type="range" min="2.5" max="4" step="0.1" value="3.2"></div>
+    </div>
+    <div class="row"><label for="json">Spec</label><textarea id="json" spellcheck="false"></textarea></div>
+    <div class="btns">
+      <button class="b b--main" id="copy" type="button">Copy markup</button>
+      <button class="b" id="copyIcons" type="button">Copy icon line</button>
+      <button class="b" id="restart" type="button">Restart</button>
+    </div>
+    <div class="out" id="info"></div>
+  </aside>
+  <main class="lb-stage">
+    <div class="btns">
+      <div class="seg" id="size" role="group" aria-label="Size"><button type="button" data-v="card" aria-pressed="true">Card</button><button type="button" data-v="section" aria-pressed="false">Section</button><button type="button" data-v="phone" aria-pressed="false">Phone</button></div>
+      <div class="seg" id="theme" role="group" aria-label="Palette"><button type="button" data-v="light" aria-pressed="true">Light</button><button type="button" data-v="dark" aria-pressed="false">Dark</button></div>
+    </div>
+    <article class="card card--row" id="card"><h3 id="ct"></h3><p id="cp"></p><div class="panel"><div class="dg" id="dg"></div></div></article>
+  </main>
+</div>
+<script type="module">
+  import dg from './diagram.js';
+  const $ = id => document.getElementById(id);
+  const presets = await dg.presets();
+  const base = new URL('../icons/demo/', location.href).href;
+  const q = new URLSearchParams(location.search);
+  let spec = null, d = null, size = 'card';
+
+  const names = type => Object.keys(presets).filter(k => !type || (presets[k].types || []).includes(type));
+  const fillPresets = () => { $('preset').innerHTML = names($('type').value).map(k => `<option>${k}</option>`).join(''); };
+  const load = id => { spec = JSON.parse(JSON.stringify(presets[id])); delete spec.types; $('json').value = JSON.stringify(spec, null, 2); sync(); };
+  const first = n => (spec.center || spec.core || spec.input || spec.root || spec.left || {}).label || n;
+
+  function iconIds(o, out = new Set()) {
+    if (Array.isArray(o)) o.forEach(x => iconIds(x, out));
+    else if (o && typeof o === 'object') for (const k in o) { if (k === 'icon' && typeof o[k] === 'string' && !/^text:|[/.]/.test(o[k])) out.add(o[k]); else iconIds(o[k], out); }
+    return out;
+  }
+  function markup() {
+    const j = JSON.stringify(spec);
+    return /'/.test(j)
+      ? `<div class="panel"><div class="dg" data-diagram><script type="application/json">${j}<\/script></div></div>`
+      : `<div class="panel"><div class="dg" data-diagram='${j}'></div></div>`;
+  }
+  function paint() {
+    const card = $('card');
+    card.classList.toggle('card--wide', size === 'section');
+    card.classList.toggle('card--phone', size === 'phone');
+    const s = JSON.parse(JSON.stringify(spec));
+    if (size === 'section') s.size = 'section';
+    $('ct').textContent = 'A card title';
+    $('cp').textContent = 'The card text sits above its picture.';
+    const el = $('dg');
+    d = dg.mount(el, s, { iconBase: base });
+    const ids = [...iconIds(spec)];
+    setTimeout(() => {
+      $('info').innerHTML = `<b>cycle ${d.T ? d.T.toFixed(2) : '-'} s</b> · ${d.E ? d.E.filter(e => e.lit).length : 0} lines · ${ids.length} icons`;
+    }, 400);
+  }
+  function sync() {
+    try { spec = JSON.parse($('json').value); $('json').classList.remove('is-bad'); } catch (e) { $('json').classList.add('is-bad'); $('info').innerHTML = `<span class="bad">${e.message}</span>`; return; }
+    paint();
+  }
+  // a control writes into the spec and the textarea
+  function setField(path, v) {
+    try { spec = JSON.parse($('json').value); } catch { return; }
+    const [a, b] = path.split('.');
+    if (b) { spec[a] = spec[a] || {}; if (v === '' || v == null) delete spec[a][b]; else spec[a][b] = v; if (!Object.keys(spec[a]).length) delete spec[a]; }
+    else if (v === '' || v == null) delete spec[a]; else spec[a] = v;
+    $('json').value = JSON.stringify(spec, null, 2);
+    sync();
+  }
+  $('type').onchange = () => { fillPresets(); load($('preset').value); };
+  $('preset').onchange = () => { $('ground').value = $('pulse').value = $('curve').value = ''; $('cycle').value = 3.2; $('cycleV').textContent = '3.2 s'; load($('preset').value); };
+  $('ground').onchange = () => setField('ground', $('ground').value);
+  $('pulse').onchange = () => setField('motion.pulse', $('pulse').value);
+  $('curve').onchange = () => setField('curve', $('curve').value);
+  $('cycle').oninput = () => { $('cycleV').textContent = (+$('cycle').value).toFixed(1) + ' s'; setField('motion.cycle', +$('cycle').value === 3.2 ? '' : +$('cycle').value); };
+  let t0; $('json').oninput = () => { clearTimeout(t0); t0 = setTimeout(sync, 350); };
+  $('restart').onclick = () => d && d.restart && d.restart();
+  const copy = async (text, btn, label) => { try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; } catch { btn.textContent = 'Copy failed'; } setTimeout(() => (btn.textContent = label), 1400); };
+  $('copy').onclick = () => copy(markup(), $('copy'), 'Copy markup');
+  $('copyIcons').onclick = () => copy(`node <skill>/scripts/icons.mjs fetch ${[...iconIds(spec)].join(' ')} --out assets/icons`, $('copyIcons'), 'Copy icon line');
+  for (const [id, key] of [['size', 'size'], ['theme', 'theme']]) {
+    $(id).onclick = ev => {
+      const b = ev.target.closest('button'); if (!b) return;
+      [...$(id).children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      if (key === 'size') { size = b.dataset.v; paint(); } else document.body.dataset.theme = b.dataset.v;
+    };
+  }
+  if (q.get('type')) $('type').value = q.get('type');
+  fillPresets();
+  if (q.get('preset') && presets[q.get('preset')]) $('preset').value = q.get('preset');
+  if (q.get('theme') === 'dark') { document.body.dataset.theme = 'dark'; $('theme').children[1].click(); }
+  load($('preset').value);
+  window.__lab = { get d() { return d; } };
+</script>
+</body>
+</html>

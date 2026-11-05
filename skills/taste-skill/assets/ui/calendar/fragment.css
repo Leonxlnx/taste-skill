@@ -1,0 +1,68 @@
+/* calendar: a month with one dated range and the dates that matter listed under it (deadlines,
+   rounds, bookings). Fluid: it fills its .fit (up to 440px); the day grid stretches with it.
+   The range is the ink (a light ink band, the ends filled ink); the accent is used once, on the one
+   marked date (.is-mark), the date that matters most. */
+.ui-calendar { position: relative; width: 100%; min-width: 280px; max-width: 440px; overflow: hidden; }
+.ui-cal__head { display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 12px 0 20px; }
+.ui-cal__month { font-size: 14px; font-weight: 500; line-height: 20px; }
+.ui-cal__month span { color: var(--u-muted); font-weight: 400; }
+.ui-cal__head .ui-chip { margin-right: 4px; }
+.ui-cal__nav { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--u-r3); color: var(--u-muted); }
+
+.ui-cal__dow, .ui-cal__days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 16px; }
+.ui-cal__dow span { height: 24px; font-size: 13px; font-weight: 500; line-height: 24px; text-align: center; color: var(--u-muted); }
+.ui-cal__days { row-gap: 4px; padding-bottom: 12px; }
+
+.ui-cal__d { position: relative; display: grid; place-items: center; height: 36px; font-size: 13px; }
+.ui-cal__d b {
+  position: relative; z-index: 1; display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%; font-weight: 450;
+  transition: background-color 220ms var(--u-ease), color 220ms var(--u-ease), box-shadow 220ms var(--u-ease);
+}
+.ui-cal__d.is-out { color: var(--u-soft); }
+.ui-cal__d::before {
+  content: ""; position: absolute; inset: 2px 0; background: var(--u-fill-2);
+  opacity: 0; transition: opacity 220ms var(--u-ease);
+}
+.ui-cal__days > :nth-child(7n + 1)::before { border-radius: 16px 0 0 16px; }
+.ui-cal__days > :nth-child(7n)::before { border-radius: 0 16px 16px 0; }
+.ui-cal__d:is(.is-in, .is-start, .is-end)::before { opacity: 1; }
+.ui-cal__d.is-start::before { left: 50%; }
+.ui-cal__d.is-end::before { right: 50%; }
+.ui-cal__d.is-start.is-end::before { opacity: 0; }
+.ui-cal__d.is-in b { color: var(--u-ink); }
+.ui-cal__d:is(.is-start, .is-end) b {
+  background: var(--u-ink); color: var(--u-bg); font-weight: 600;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+/* a single marked date outside the range: a ring */
+.ui-cal__d.is-mark b { box-shadow: inset 0 0 0 1.5px var(--u-accent); color: var(--u-accent-text); font-weight: 600; }
+.ui-cal__d.is-today b::after {
+  content: ""; position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px;
+  border-radius: 50%; background: var(--u-muted);
+}
+.ui-cal__d.is-today:is(.is-start, .is-end) b::after { background: var(--u-bg); }
+
+.ui-cal__days.is-clearing .ui-cal__d::before { opacity: 0; }
+.ui-cal__days.is-clearing .ui-cal__d:is(.is-start, .is-end, .is-in) b { background: transparent; color: inherit; box-shadow: none; font-weight: 450; }
+
+.ui-cal__events { display: grid; gap: 4px; padding: 8px; border-top: 1px solid var(--u-line); background: var(--u-fill); }
+.ui-cal__ev {
+  display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: var(--u-r2);
+  transition: background-color 260ms var(--u-ease), box-shadow 260ms var(--u-ease), opacity 260ms var(--u-ease);
+}
+.ui-cal__ev.is-now { background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2), 0 1px 2px color-mix(in oklab, var(--u-sh) 40%, transparent); }
+.ui-cal__ev.is-dim { opacity: 0.45; }
+.ui-cal__date {
+  display: grid; place-items: center; align-content: center; flex: none; width: 40px; height: 40px; border-radius: var(--u-r3);
+  background: var(--u-bg); box-shadow: 0 0 0 1px var(--u-line);
+}
+.ui-cal__date b { font-size: 15px; font-weight: 600; line-height: 16px; }
+.ui-cal__date i { font-size: 13px; font-style: normal; font-weight: 500; line-height: 12px; color: var(--u-muted); }
+.ui-cal__ev.is-now .ui-cal__date { background: var(--u-ink); box-shadow: none; }
+.ui-cal__ev.is-now .ui-cal__date :is(b, i) { color: var(--u-bg); }
+.ui-cal__evtext { display: grid; min-width: 0; }
+.ui-cal__evtitle { font-size: 13px; font-weight: 500; line-height: 20px; }
+.ui-cal__evsub { font-size: 13px; line-height: 16px; color: var(--u-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-calendar .ui-pointer { transition: transform 380ms var(--u-ease), opacity 300ms var(--u-ease); }
+@media (max-width: 400px) { .ui-calendar { min-width: 0; } .ui-cal__d b { width: 30px; height: 30px; } }

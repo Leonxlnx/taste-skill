@@ -1,0 +1,29 @@
+/* fx-globe: the dotted globe as a data visual, rising from the panel's floor, beside live region figures */
+.cx-globe { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-4); padding: var(--s-4); overflow: hidden; }
+.cx-globe__copy { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-5) var(--s-4) var(--s-4); min-width: 0; }
+.cx-globe__title { font: 500 var(--t-h3)/1.2 var(--font-display); letter-spacing: -0.02em; margin: var(--s-1) 0 0; max-width: 18ch; text-wrap: balance; }
+.cx-globe__live { width: 7px; height: 7px; border-radius: 9px; background: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent); }
+.cx-globe__table { width: 100%; border-collapse: collapse; margin-top: auto; font-size: var(--t-small); }
+.cx-globe__table tr { border-top: 1px solid var(--cx-line); }
+.cx-globe__table tr:last-child { border-bottom: 1px solid var(--cx-line); }
+.cx-globe__table th, .cx-globe__table td { padding: 11px 0; text-align: left; font-weight: 400; }
+.cx-globe__table th { color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.cx-globe__table td:nth-child(2) { color: var(--muted); font-family: var(--cx-mono); font-size: 12px; }
+.cx-globe__table td:last-child { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.cx-globe__dot { width: 6px; height: 6px; border-radius: 9px; background: color-mix(in oklab, var(--accent) 80%, var(--ink)); }
+.cx-globe__panel {
+  position: relative; isolation: isolate; min-height: 440px; border-radius: var(--r-md); overflow: hidden;
+  background: var(--cx-panel); padding: var(--s-5);
+}
+.cx-globe__chip {
+  position: relative; z-index: 1; display: inline-grid; gap: 2px; padding: 12px 14px; border-radius: var(--r-md);
+  background: color-mix(in oklab, var(--bg) 82%, transparent); backdrop-filter: blur(10px);
+  box-shadow: var(--cx-shadow);
+}
+.cx-globe__chip-k { font-size: 12px; color: var(--muted); }
+.cx-globe__chip-v { font: 500 22px/1.15 var(--font-display); letter-spacing: -0.02em; }
+@media (max-width: 899px) {
+  .cx-globe { grid-template-columns: minmax(0, 1fr); }
+  .cx-globe__panel { min-height: 360px; order: -1; }
+  .cx-globe__copy { padding: var(--s-2) var(--s-2) var(--s-2); }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "voice",
+  "title": "Voice call with an orb",
+  "shows": "A call card: a status and timer, the assistant's orb, who is talking, captions that light up word by word, and a bar with mute, a waveform and end call. On a dark surface the orb is a live effect (orb-sphere: a pale nebula with specks of light); on a light one a pearl drawn in CSS, with clouds of the accent and the ink turning slowly inside it and a few specks of light.",
+  "useFor": [
+    "voice",
+    "calls",
+    "AI assistant",
+    "phone support",
+    "speech"
+  ],
+  "size": [
+    264,
+    336
+  ],
+  "js": true,
+  "place": "at-rise to-edge fit, 32px down, cut by the bottom through its bar's lower half at most (the orb, the caption and the waveform stay clear of the fade); needs ../effects next to ui (assets/effects) for the live orb. Held like any other fragment unless it is the group's data-ui-loop (its orb holds one frame)",
+  "edit": "The caption, names and time are HTML; the script speaks the caption as written (opts.lines: several in turn) and counts on from the time as written. opts.orb: false keeps the CSS pearl on dark.",
+  "loop": "about 2.75 s a cycle: the wave runs, the caption is spoken again word by word in under 0.8 s (never below 72% ink) (or opts.lines in turn), the timer counts on; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card; held (data-ui-still, a phone, kind other) it shows its finished picture and plays while the pointer is on its card"
+}

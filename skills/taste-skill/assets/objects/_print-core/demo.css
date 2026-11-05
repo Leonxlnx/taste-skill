@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+:root {
+  --bg: #ddd6c6; --surface: #d2cab8; --ink: #2a2a26; --muted: #59574e; --accent: #4f6238; --accent-ink: #ffffff;
+  --font-text: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  color-scheme: light dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 15px/1.45 var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .3s ease, color .3s ease;
+}
+.pd { position: relative; min-height: 100svh; overflow: hidden; }
+.pd-stage { position: absolute; inset: 0; }
+.pd-head { position: absolute; left: clamp(16px, 4vw, 56px); top: clamp(16px, 4.5vw, 52px); max-width: 30ch; pointer-events: none; z-index: 3; }
+.pd-id { margin: 0 0 10px; font: 500 12px/1 var(--font-mono); letter-spacing: .02em; color: var(--muted); }
+.pd-head h1 { margin: 0; font-size: clamp(26px, 3.2vw, 44px); line-height: 1.02; font-weight: 500; letter-spacing: -0.03em; }
+.pd-shows { margin: 12px 0 0; color: var(--muted); font-size: 15px; text-wrap: pretty; }
+.pd-hint { position: absolute; right: clamp(16px, 4vw, 56px); top: clamp(16px, 4.5vw, 52px); max-width: 26ch; text-align: right; color: var(--muted); font-size: 13px; pointer-events: none; z-index: 3; }
+.pd-bar { position: absolute; left: clamp(16px, 4vw, 56px); right: clamp(16px, 4vw, 56px); bottom: clamp(16px, 3.5vw, 40px); display: flex; flex-wrap: wrap; gap: 10px 16px; justify-content: space-between; pointer-events: none; z-index: 7; }
+.pd-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: color-mix(in oklab, var(--surface) 78%, transparent); backdrop-filter: blur(6px); pointer-events: auto; }
+.pd-seg button { appearance: none; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; min-height: 32px; }
+.pd-seg button:hover { color: var(--ink); }
+.pd-seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.pd-seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pd-seg i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid; display: inline-block; }
+/* the demo's own pause button sits above the switch bar */
+.pd-stage > .print3d-pause { bottom: clamp(72px, 9vw, 96px); right: clamp(16px, 4vw, 56px); }
+@media (max-width: 640px) {
+  .pd-hint { display: none; }
+  .pd-head { max-width: none; right: 16px; }
+  .pd-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  .pd-seg { justify-content: space-between; }
+  .pd-seg button { padding: 7px 9px; font-size: 12.5px; gap: 5px; }
+  .pd-stage > .print3d-pause { bottom: 116px; right: 16px; }
+}

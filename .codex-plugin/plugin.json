@@ -1,7 +1,7 @@
 {
   "name": "taste-skill",
-  "version": "2.1.5",
-  "description": "tasteskill v2: art direction for websites, product pages, dashboards and app screens, checked in a real browser.",
+  "version": "2.5.0",
+  "description": "tasteskill 2.5.0: professional company websites at the figma.com and x.ai level, checked in a real browser.",
   "author": {
     "name": "leonxlnx",
     "url": "https://github.com/Leonxlnx"
@@ -14,21 +14,22 @@
     "frontend",
     "design",
     "taste",
-    "ui"
+    "ui",
+    "websites"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Taste Skill",
-    "shortDescription": "Art direction for websites, dashboards and app screens.",
-    "longDescription": "tasteskill v2 from Leonxlnx/taste-skill: researched directions, real pictures and a real-browser inspector for websites, product pages, dashboards and app screens.",
+    "shortDescription": "Professional company websites, checked in a real browser.",
+    "longDescription": "tasteskill 2.5.0 from Leonxlnx/taste-skill: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser consistency checker.",
     "developerName": "leonxlnx",
     "category": "Design",
     "capabilities": [],
     "websiteURL": "https://github.com/Leonxlnx/taste-skill",
     "defaultPrompt": [
-      "Design a distinctive frontend without generic AI patterns.",
-      "Redesign this interface while preserving its brand.",
-      "Build the dashboard for this product with real data and charts."
+      "Design a professional company website without generic AI patterns.",
+      "Redesign this landing page while preserving its brand and content.",
+      "Build a product page with real UI cards and one section per screen."
     ]
   }
 }

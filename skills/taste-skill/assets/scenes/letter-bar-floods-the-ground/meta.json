@@ -1,0 +1,53 @@
+{
+  "id": "letter-bar-floods-the-ground",
+  "name": "Letter bar floods the ground",
+  "family": "colour-and-ground",
+  "look": "A statement of 2-4 words stands on one line at display size with one straight-stemmed letter (l or I) on the centre of the screen. The camera zooms on that letter until only its stem is left, a flat column of ink that widens to full bleed and becomes the next section's ground; the next statement arrives inside the column while the outgoing words' edges are still in frame. The stem is a solid column rasterised once at full size, never the glyph scaled up; the ground is one layer clipped by clip-path. The section after sits on the same ground, so there is no seam.",
+  "fits": [
+    "between",
+    "statement"
+  ],
+  "types": [
+    "software",
+    "tech",
+    "gaming"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The statement on the page ground, then the next statement on the inverse ground under it.",
+  "phone": "The finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.6,
+  "needs": {
+    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures"
+  },
+  "never": "an accent on the column; a statement whose stem letter has a curl, a bar or a serif; a light section after it",
+  "avoidWith": [
+    "dot-becomes-the-full-stop",
+    "letter-physics"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.55,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "avoidMoments": [
+    "line-carries-colour",
+    "word-highlight",
+    "giant-type-pass",
+    "letters-assemble",
+    "iris-opens"
+  ]
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statement lights up · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #0f1411; --p-surface: #182019; --p-ink: #ece9df; --p-muted: #9aa394; --p-accent: #d7e26b; --p-accent-ink: #0f1411; --p-action: #ece9df; --p-action-ink: #0f1411;
+          --p-inv-bg: #ece9df; --p-inv-surface: #ffffff; --p-inv-ink: #0f1411; --p-inv-muted: #555c52; --p-inv-accent: #4f6238; --p-inv-accent-ink: #ffffff; --p-inv-action: #0f1411; --p-inv-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .statement { padding-block: var(--s-10); }
+  .statement .t-label { color: var(--muted); margin-bottom: var(--s-6); }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Relay</a>
+  <nav class="demo-nav__links"><a href="#">Agents</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Download</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Give an agent a job, not a prompt</h1><p>Relay runs the work you hand it: the inbox, the tickets, the weekly report. You see every step and sign off the ones that matter.</p><div class="btn-row"><a class="btn btn--primary" href="#">Download for Mac</a><a class="btn btn--secondary" href="#">Contact sales</a></div></div>
+      <div class="frame frame--hero demo-lit" style="--ratio: 72%">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Jobs</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span class="on">Running</span><span>Done</span><span>Review</span><span>Settings</span></div>
+            <div class="dw__main"><h4>Running now</h4>
+              <div class="dw__row"><div><b>Support queue · Zendesk</b><span>14 tickets answered since 9:00</span></div><span class="dw__tag">Working</span></div>
+              <div class="dw__row"><div><b>Weekly report · Finance</b><span>Reading the ledger export</span></div><span class="dw__tag">Working</span></div>
+              <div class="dw__row"><div><b>Onboarding emails · Sales</b><span>3 drafts waiting for you</span></div><span class="dw__tag">Review</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section statement" data-moment="word-highlight">
+    <div class="container">
+      <p class="t-label">Why teams switch</p>
+      <p class="mo-wh__text">Give tasks to <strong>Relay</strong> the way you would to a teammate. It takes a project from the first message to the finished work, keeps the context between the tools you use, and comes back only when a decision is yours to make.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head"><h2>Every step on record. <span class="muted">Nothing happens in the dark.</span></h2><p>Each job keeps a log of what Relay read, wrote and sent, so a manager can check any day's work in a minute.</p><a class="link" href="#">See the audit log</a></div>
+      <img class="demo-photo" src="../_demo/photo-887.jpg" alt="A building facade in even light" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Relay · demo page for the moment “Statement lights up”</span><span>Photograph by Roman Kraft on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

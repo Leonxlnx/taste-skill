@@ -1,0 +1,36 @@
+/* apps: a field of real app icons around the product's own mark, joined by hairlines (hub and orbit);
+   one app at a time connects: its line lights and runs, its tile takes the accent ring and its name */
+.ui-field { position: relative; width: 456px; padding: 8px; }
+.ui-field__grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(5, 64px); gap: 28px 32px; justify-content: center; }
+.ui-field__tile, .ui-field__hub {
+  position: relative; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 16px;
+  background: var(--u-bg); border: 1px solid var(--u-border); box-shadow: var(--u-shadow-sm);
+  transition: box-shadow 320ms var(--u-ease), border-color 320ms var(--u-ease);
+}
+.ui-field__tile { background: var(--u-tile); border-color: transparent; box-shadow: var(--u-tile-edge), var(--u-shadow-sm); }
+.ui-field__tile :is(.ui-brand, img) { width: 26px; height: 26px; }
+.ui-field__hub { border-radius: 18px; box-shadow: var(--u-shadow); }
+.ui-field__hub .ui-agent { width: 30px; height: 30px; }
+.ui-field__hubname { position: absolute; top: calc(100% + 8px); font-size: 13px; font-weight: 500; line-height: 16px; color: var(--u-ink); white-space: nowrap; }
+.ui-field__tile.is-dim { opacity: 0.55; }
+.ui-field__tile { transition: box-shadow 320ms var(--u-ease), border-color 320ms var(--u-ease), opacity 400ms var(--u-ease); }
+.ui-field__tile.is-on { border-color: color-mix(in oklab, var(--u-accent) 70%, transparent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--u-accent) 16%, transparent), var(--u-shadow); }
+.ui-field__tag {
+  position: absolute; top: calc(100% + 6px); left: 50%; translate: -50% 0; display: inline-flex; align-items: center; gap: 5px;
+  height: 20px; padding: 0 7px; border-radius: 6px; white-space: nowrap; font-size: 13px; font-weight: 500; line-height: 1;
+  background: var(--u-bg); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2), 0 2px 6px -2px color-mix(in oklab, var(--u-sh) 60%, transparent);
+  opacity: 0; transform: translateY(-3px); transition: opacity 240ms var(--u-ease), transform 320ms var(--u-ease); z-index: 2;
+}
+.ui-field__tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--u-accent); }
+.ui-field__tile.is-on .ui-field__tag { opacity: 1; transform: none; }
+.ui-field__lines { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.ui-field__lines path { fill: none; stroke: var(--u-line-2); stroke-width: 1; }
+.ui-field__lines path.is-on { stroke: var(--u-accent); stroke-width: 1.5; stroke-dasharray: 4 6; animation: ui-field-run 900ms linear infinite; }
+@keyframes ui-field-run { to { stroke-dashoffset: -20; } }
+@media (max-width: 480px) {
+  .ui-field { width: 320px; padding: 4px; }
+  .ui-field__grid { grid-template-columns: repeat(5, 52px); gap: 24px 10px; }
+  .ui-field__tile, .ui-field__hub { width: 52px; height: 52px; border-radius: 13px; }
+  .ui-field__tile :is(.ui-brand, img) { width: 22px; height: 22px; }
+  .ui-field__hub .ui-agent { width: 26px; height: 26px; }
+}

@@ -1,0 +1,10 @@
+<svg data-ic="violet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><defs>
+        <linearGradient x1="99.9909179%" y1="-0.0107311249%" x2="0.00995772309%" y2="100.010253%" id="linearGradient-1">
+            <stop stop-color="#E44857" offset="0.3435144%"></stop>
+            <stop stop-color="#C711E1" offset="46.89%"></stop>
+            <stop stop-color="#7F52FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <polygon fill="url(#linearGradient-1)" fill-rule="nonzero" points="256 256 0 256 0 0 256 0 128 127.948759"></polygon>
+    </g></svg>

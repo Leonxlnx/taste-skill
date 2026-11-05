@@ -1,0 +1,10461 @@
+{
+ "version": 2,
+ "note": "Curated short names for scripts/icons.mjs. icon = <set>:<name>; the sets are pinned in scripts/icons.mjs: logos (Gil Barbara, CC0, full colour, read from cdn.jsdelivr.net/gh/gilbarbara/logos at a pinned commit) is the source of every colour brand mark; si (Simple Icons, one colour in the brand hex) only where no colour mark exists (Google Docs, Sheets, Slides, Forms, Chat, Tasks, Calendly ...); file (vscode-icons) for file types, ui (Lucide) for glyphs. theSVG was dropped (no verified licence per mark). boxes = the measured drawing box of each colour mark (icons.mjs measure).",
+ "sets": {
+  "logos": {
+   "pkg": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+   "licence": "CC0-1.0",
+   "use": "full-colour brand marks, served from cdn.jsdelivr.net/gh/gilbarbara/logos at this commit (the repository has no tags)"
+  },
+  "si": {
+   "pkg": "simple-icons@16.30.0",
+   "licence": "CC0-1.0",
+   "use": "one-colour brand marks in the brand hex: only where logos has no colour mark"
+  },
+  "file": {
+   "pkg": "@iconify-json/vscode-icons@1.2.30",
+   "licence": "MIT",
+   "use": "full-colour file types"
+  },
+  "ui": {
+   "pkg": "@iconify-json/lucide@1.2.100",
+   "licence": "ISC",
+   "use": "interface glyphs, one line set"
+  }
+ },
+ "apps": [
+  {
+   "id": "google-docs",
+   "name": "Google Docs",
+   "icon": "si:googledocs",
+   "tags": [
+    "docs",
+    "office",
+    "google"
+   ]
+  },
+  {
+   "id": "google-sheets",
+   "name": "Google Sheets",
+   "icon": "si:googlesheets",
+   "tags": [
+    "sheets",
+    "spreadsheet",
+    "office",
+    "google"
+   ]
+  },
+  {
+   "id": "google-slides",
+   "name": "Google Slides",
+   "icon": "si:googleslides",
+   "tags": [
+    "slides",
+    "presentation",
+    "office",
+    "google"
+   ]
+  },
+  {
+   "id": "google-forms",
+   "name": "Google Forms",
+   "icon": "si:googleforms",
+   "tags": [
+    "forms",
+    "survey",
+    "office",
+    "google"
+   ]
+  },
+  {
+   "id": "google-drive",
+   "name": "Google Drive",
+   "icon": "logos:google-drive",
+   "tags": [
+    "storage",
+    "files",
+    "google"
+   ],
+   "violetShare": 0.14,
+   "knock": true
+  },
+  {
+   "id": "gmail",
+   "name": "Gmail",
+   "icon": "logos:google-gmail",
+   "tags": [
+    "mail",
+    "inbox",
+    "google"
+   ]
+  },
+  {
+   "id": "google-calendar",
+   "name": "Google Calendar",
+   "icon": "logos:google-calendar",
+   "tags": [
+    "calendar",
+    "schedule",
+    "google"
+   ],
+   "violetShare": 0.13,
+   "knock": true
+  },
+  {
+   "id": "google-meet",
+   "name": "Google Meet",
+   "icon": "logos:google-meet",
+   "tags": [
+    "meeting",
+    "video",
+    "google"
+   ],
+   "knock": true
+  },
+  {
+   "id": "google-chat",
+   "name": "Google Chat",
+   "icon": "si:googlechat",
+   "tags": [
+    "chat",
+    "google"
+   ]
+  },
+  {
+   "id": "google-keep",
+   "name": "Google Keep",
+   "icon": "logos:google-keep",
+   "tags": [
+    "notes",
+    "google"
+   ],
+   "knock": true
+  },
+  {
+   "id": "google-tasks",
+   "name": "Google Tasks",
+   "icon": "si:googletasks",
+   "tags": [
+    "tasks",
+    "google"
+   ]
+  },
+  {
+   "id": "google-photos",
+   "name": "Google Photos",
+   "icon": "logos:google-photos",
+   "tags": [
+    "photos",
+    "storage",
+    "google"
+   ],
+   "violetShare": 0.13
+  },
+  {
+   "id": "google-maps",
+   "name": "Google Maps",
+   "icon": "logos:google-maps",
+   "tags": [
+    "maps",
+    "location",
+    "google"
+   ]
+  },
+  {
+   "id": "google-analytics",
+   "name": "Google Analytics",
+   "icon": "logos:google-analytics",
+   "tags": [
+    "analytics",
+    "marketing",
+    "google"
+   ]
+  },
+  {
+   "id": "google-ads",
+   "name": "Google Ads",
+   "icon": "logos:google-ads",
+   "tags": [
+    "marketing",
+    "ads",
+    "google"
+   ]
+  },
+  {
+   "id": "google-cloud",
+   "name": "Google Cloud",
+   "icon": "logos:google-cloud",
+   "tags": [
+    "cloud",
+    "dev",
+    "google"
+   ]
+  },
+  {
+   "id": "google-chrome",
+   "name": "Chrome",
+   "icon": "logos:chrome",
+   "tags": [
+    "browser",
+    "google"
+   ],
+   "knock": true
+  },
+  {
+   "id": "gemini",
+   "name": "Gemini",
+   "icon": "logos:google-gemini-icon",
+   "tags": [
+    "ai",
+    "google"
+   ],
+   "knock": true
+  },
+  {
+   "id": "google-pay",
+   "name": "Google Pay",
+   "icon": "logos:google-pay",
+   "tags": [
+    "payments",
+    "google"
+   ],
+   "wide": true
+  },
+  {
+   "id": "google-play",
+   "name": "Google Play",
+   "icon": "logos:google-play-icon",
+   "tags": [
+    "apps",
+    "store",
+    "google"
+   ]
+  },
+  {
+   "id": "youtube",
+   "name": "YouTube",
+   "icon": "logos:youtube-icon",
+   "tags": [
+    "video",
+    "social",
+    "google"
+   ],
+   "knock": true
+  },
+  {
+   "id": "teams",
+   "name": "Microsoft Teams",
+   "icon": "logos:microsoft-teams",
+   "tags": [
+    "chat",
+    "meeting",
+    "video",
+    "microsoft"
+   ],
+   "knock": true
+  },
+  {
+   "id": "onedrive",
+   "name": "OneDrive",
+   "icon": "logos:microsoft-onedrive",
+   "tags": [
+    "storage",
+    "files",
+    "microsoft"
+   ]
+  },
+  {
+   "id": "power-bi",
+   "name": "Power BI",
+   "icon": "logos:microsoft-power-bi",
+   "tags": [
+    "analytics",
+    "dashboards",
+    "microsoft"
+   ],
+   "knock": true
+  },
+  {
+   "id": "azure",
+   "name": "Azure",
+   "icon": "logos:microsoft-azure",
+   "tags": [
+    "cloud",
+    "dev",
+    "microsoft"
+   ]
+  },
+  {
+   "id": "windows",
+   "name": "Windows",
+   "icon": "logos:microsoft-windows-icon",
+   "tags": [
+    "os",
+    "microsoft"
+   ]
+  },
+  {
+   "id": "notion",
+   "name": "Notion",
+   "icon": "logos:notion-icon",
+   "tags": [
+    "docs",
+    "notes",
+    "wiki",
+    "pm"
+   ],
+   "knock": true
+  },
+  {
+   "id": "slack",
+   "name": "Slack",
+   "icon": "logos:slack-icon",
+   "tags": [
+    "chat",
+    "team"
+   ]
+  },
+  {
+   "id": "figma",
+   "name": "Figma",
+   "icon": "logos:figma",
+   "tags": [
+    "design"
+   ],
+   "violetShare": 0.2
+  },
+  {
+   "id": "airtable",
+   "name": "Airtable",
+   "icon": "logos:airtable",
+   "tags": [
+    "database",
+    "pm",
+    "sheets"
+   ]
+  },
+  {
+   "id": "asana",
+   "name": "Asana",
+   "icon": "logos:asana-icon",
+   "tags": [
+    "pm",
+    "tasks"
+   ]
+  },
+  {
+   "id": "trello",
+   "name": "Trello",
+   "icon": "logos:trello",
+   "tags": [
+    "pm",
+    "tasks"
+   ],
+   "knock": true
+  },
+  {
+   "id": "jira",
+   "name": "Jira",
+   "icon": "logos:jira",
+   "tags": [
+    "pm",
+    "tasks",
+    "dev"
+   ]
+  },
+  {
+   "id": "linear",
+   "name": "Linear",
+   "icon": "logos:linear-icon",
+   "tags": [
+    "pm",
+    "tasks",
+    "dev"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "monday",
+   "name": "monday.com",
+   "icon": "logos:monday-icon",
+   "tags": [
+    "pm",
+    "tasks"
+   ]
+  },
+  {
+   "id": "clickup",
+   "name": "ClickUp",
+   "icon": "logos:clickup-icon",
+   "tags": [
+    "pm",
+    "tasks"
+   ],
+   "violet": true
+  },
+  {
+   "id": "confluence",
+   "name": "Confluence",
+   "icon": "logos:confluence",
+   "tags": [
+    "docs",
+    "wiki"
+   ]
+  },
+  {
+   "id": "todoist",
+   "name": "Todoist",
+   "icon": "logos:todoist-icon",
+   "tags": [
+    "tasks"
+   ],
+   "knock": true
+  },
+  {
+   "id": "basecamp",
+   "name": "Basecamp",
+   "icon": "logos:basecamp-icon",
+   "tags": [
+    "pm",
+    "tasks"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "coda",
+   "name": "Coda",
+   "icon": "logos:coda-icon",
+   "tags": [
+    "docs",
+    "pm"
+   ]
+  },
+  {
+   "id": "miro",
+   "name": "Miro",
+   "icon": "logos:miro-icon",
+   "tags": [
+    "whiteboard",
+    "design"
+   ]
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "icon": "logos:loom-icon",
+   "tags": [
+    "video",
+    "meeting"
+   ],
+   "violet": true
+  },
+  {
+   "id": "calendly",
+   "name": "Calendly",
+   "icon": "si:calendly",
+   "tags": [
+    "calendar",
+    "schedule"
+   ]
+  },
+  {
+   "id": "zoom",
+   "name": "Zoom",
+   "icon": "logos:zoom-icon",
+   "tags": [
+    "meeting",
+    "video"
+   ],
+   "knock": true
+  },
+  {
+   "id": "evernote",
+   "name": "Evernote",
+   "icon": "si:evernote",
+   "tags": [
+    "notes"
+   ]
+  },
+  {
+   "id": "dropbox",
+   "name": "Dropbox",
+   "icon": "logos:dropbox",
+   "tags": [
+    "storage",
+    "files"
+   ]
+  },
+  {
+   "id": "box",
+   "name": "Box",
+   "icon": "logos:box",
+   "tags": [
+    "storage",
+    "files"
+   ],
+   "wide": true
+  },
+  {
+   "id": "typeform",
+   "name": "Typeform",
+   "icon": "logos:typeform-icon",
+   "tags": [
+    "forms",
+    "survey"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "zapier",
+   "name": "Zapier",
+   "icon": "logos:zapier",
+   "tags": [
+    "automation"
+   ],
+   "wide": true
+  },
+  {
+   "id": "n8n",
+   "name": "n8n",
+   "icon": "logos:n8n-icon",
+   "tags": [
+    "automation"
+   ],
+   "wide": true
+  },
+  {
+   "id": "retool",
+   "name": "Retool",
+   "icon": "logos:retool-icon",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "github",
+   "name": "GitHub",
+   "icon": "logos:github-icon",
+   "tags": [
+    "dev",
+    "code"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "gitlab",
+   "name": "GitLab",
+   "icon": "logos:gitlab-icon",
+   "tags": [
+    "dev",
+    "code"
+   ]
+  },
+  {
+   "id": "bitbucket",
+   "name": "Bitbucket",
+   "icon": "logos:bitbucket",
+   "tags": [
+    "dev",
+    "code"
+   ]
+  },
+  {
+   "id": "vercel",
+   "name": "Vercel",
+   "icon": "logos:vercel-icon",
+   "tags": [
+    "dev",
+    "cloud",
+    "hosting"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "netlify",
+   "name": "Netlify",
+   "icon": "logos:netlify-icon",
+   "tags": [
+    "dev",
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "cloudflare",
+   "name": "Cloudflare",
+   "icon": "logos:cloudflare-icon",
+   "tags": [
+    "dev",
+    "cloud",
+    "security"
+   ],
+   "wide": true
+  },
+  {
+   "id": "aws",
+   "name": "AWS",
+   "icon": "logos:aws",
+   "tags": [
+    "cloud",
+    "dev"
+   ]
+  },
+  {
+   "id": "supabase",
+   "name": "Supabase",
+   "icon": "logos:supabase-icon",
+   "tags": [
+    "dev",
+    "db",
+    "cloud"
+   ]
+  },
+  {
+   "id": "firebase",
+   "name": "Firebase",
+   "icon": "logos:firebase-icon",
+   "tags": [
+    "dev",
+    "db",
+    "cloud"
+   ]
+  },
+  {
+   "id": "docker",
+   "name": "Docker",
+   "icon": "logos:docker-icon",
+   "tags": [
+    "dev",
+    "cloud"
+   ]
+  },
+  {
+   "id": "kubernetes",
+   "name": "Kubernetes",
+   "icon": "logos:kubernetes",
+   "tags": [
+    "dev",
+    "cloud"
+   ],
+   "knock": true
+  },
+  {
+   "id": "terraform",
+   "name": "Terraform",
+   "icon": "logos:terraform-icon",
+   "tags": [
+    "dev",
+    "cloud"
+   ],
+   "violet": true
+  },
+  {
+   "id": "sentry",
+   "name": "Sentry",
+   "icon": "logos:sentry-icon",
+   "tags": [
+    "dev",
+    "monitoring"
+   ]
+  },
+  {
+   "id": "datadog",
+   "name": "Datadog",
+   "icon": "logos:datadog-icon",
+   "tags": [
+    "dev",
+    "monitoring",
+    "analytics"
+   ],
+   "violet": true
+  },
+  {
+   "id": "grafana",
+   "name": "Grafana",
+   "icon": "logos:grafana",
+   "tags": [
+    "dev",
+    "monitoring",
+    "analytics"
+   ]
+  },
+  {
+   "id": "postgres",
+   "name": "PostgreSQL",
+   "icon": "logos:postgresql",
+   "tags": [
+    "db",
+    "dev"
+   ],
+   "knock": true
+  },
+  {
+   "id": "mysql",
+   "name": "MySQL",
+   "icon": "logos:mysql-icon",
+   "tags": [
+    "db",
+    "dev"
+   ]
+  },
+  {
+   "id": "mongodb",
+   "name": "MongoDB",
+   "icon": "logos:mongodb-icon",
+   "tags": [
+    "db",
+    "dev"
+   ]
+  },
+  {
+   "id": "redis",
+   "name": "Redis",
+   "icon": "logos:redis",
+   "tags": [
+    "db",
+    "dev"
+   ],
+   "knock": true
+  },
+  {
+   "id": "snowflake",
+   "name": "Snowflake",
+   "icon": "logos:snowflake-icon",
+   "tags": [
+    "db",
+    "analytics",
+    "cloud"
+   ]
+  },
+  {
+   "id": "databricks",
+   "name": "Databricks",
+   "icon": "logos:databricks-icon",
+   "tags": [
+    "db",
+    "analytics",
+    "cloud"
+   ]
+  },
+  {
+   "id": "postman",
+   "name": "Postman",
+   "icon": "logos:postman-icon",
+   "tags": [
+    "dev",
+    "api"
+   ],
+   "knock": true
+  },
+  {
+   "id": "npm",
+   "name": "npm",
+   "icon": "logos:npm-icon",
+   "tags": [
+    "dev",
+    "code"
+   ],
+   "knock": true
+  },
+  {
+   "id": "openai",
+   "name": "OpenAI",
+   "icon": "logos:openai-icon",
+   "tags": [
+    "ai"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "anthropic",
+   "name": "Anthropic",
+   "icon": "logos:anthropic-icon",
+   "tags": [
+    "ai"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "claude",
+   "name": "Claude",
+   "icon": "logos:claude-icon",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "mistral",
+   "name": "Mistral AI",
+   "icon": "logos:mistral-ai-icon",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "hugging-face",
+   "name": "Hugging Face",
+   "icon": "logos:hugging-face-icon",
+   "tags": [
+    "ai",
+    "dev"
+   ],
+   "knock": true
+  },
+  {
+   "id": "stripe",
+   "name": "Stripe",
+   "icon": "logos:stripe",
+   "tags": [
+    "payments"
+   ],
+   "wide": true,
+   "violet": true
+  },
+  {
+   "id": "paypal",
+   "name": "PayPal",
+   "icon": "logos:paypal",
+   "tags": [
+    "payments"
+   ]
+  },
+  {
+   "id": "apple-pay",
+   "name": "Apple Pay",
+   "icon": "logos:apple-pay",
+   "tags": [
+    "payments",
+    "apple"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "visa",
+   "name": "Visa",
+   "icon": "logos:visa",
+   "tags": [
+    "payments",
+    "cards"
+   ],
+   "wide": true
+  },
+  {
+   "id": "mastercard",
+   "name": "Mastercard",
+   "icon": "logos:mastercard",
+   "tags": [
+    "payments",
+    "cards"
+   ]
+  },
+  {
+   "id": "amex",
+   "name": "American Express",
+   "icon": "logos:amex",
+   "tags": [
+    "payments",
+    "cards"
+   ],
+   "knock": true
+  },
+  {
+   "id": "revolut",
+   "name": "Revolut",
+   "icon": "si:revolut",
+   "tags": [
+    "payments",
+    "banking"
+   ]
+  },
+  {
+   "id": "square",
+   "name": "Square",
+   "icon": "logos:square",
+   "tags": [
+    "payments",
+    "commerce"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "quickbooks",
+   "name": "QuickBooks",
+   "icon": "si:quickbooks",
+   "tags": [
+    "accounting",
+    "finance"
+   ]
+  },
+  {
+   "id": "xero",
+   "name": "Xero",
+   "icon": "logos:xero",
+   "tags": [
+    "accounting",
+    "finance"
+   ],
+   "knock": true
+  },
+  {
+   "id": "gusto",
+   "name": "Gusto",
+   "icon": "logos:gusto",
+   "tags": [
+    "payroll",
+    "hr",
+    "finance"
+   ],
+   "wide": true
+  },
+  {
+   "id": "hubspot",
+   "name": "HubSpot",
+   "icon": "logos:hubspot",
+   "tags": [
+    "crm",
+    "marketing"
+   ],
+   "wide": true
+  },
+  {
+   "id": "salesforce",
+   "name": "Salesforce",
+   "icon": "logos:salesforce",
+   "tags": [
+    "crm"
+   ],
+   "knock": true
+  },
+  {
+   "id": "mailchimp",
+   "name": "Mailchimp",
+   "icon": "logos:mailchimp-icon",
+   "tags": [
+    "marketing",
+    "mail"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "intercom",
+   "name": "Intercom",
+   "icon": "logos:intercom-icon",
+   "tags": [
+    "support",
+    "chat"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "zendesk",
+   "name": "Zendesk",
+   "icon": "logos:zendesk-icon",
+   "tags": [
+    "support"
+   ]
+  },
+  {
+   "id": "twilio",
+   "name": "Twilio",
+   "icon": "logos:twilio-icon",
+   "tags": [
+    "dev",
+    "messaging"
+   ]
+  },
+  {
+   "id": "segment",
+   "name": "Segment",
+   "icon": "logos:segment-icon",
+   "tags": [
+    "analytics",
+    "data"
+   ]
+  },
+  {
+   "id": "mixpanel",
+   "name": "Mixpanel",
+   "icon": "logos:mixpanel",
+   "tags": [
+    "analytics"
+   ],
+   "wide": true
+  },
+  {
+   "id": "amplitude",
+   "name": "Amplitude",
+   "icon": "logos:amplitude-icon",
+   "tags": [
+    "analytics"
+   ],
+   "violet": true
+  },
+  {
+   "id": "tableau",
+   "name": "Tableau",
+   "icon": "logos:tableau-icon",
+   "tags": [
+    "analytics",
+    "dashboards"
+   ]
+  },
+  {
+   "id": "looker",
+   "name": "Looker",
+   "icon": "logos:looker-icon",
+   "tags": [
+    "analytics",
+    "dashboards"
+   ]
+  },
+  {
+   "id": "shopify",
+   "name": "Shopify",
+   "icon": "logos:shopify",
+   "tags": [
+    "commerce"
+   ],
+   "knock": true
+  },
+  {
+   "id": "woocommerce",
+   "name": "WooCommerce",
+   "icon": "logos:woocommerce-icon",
+   "tags": [
+    "commerce",
+    "cms"
+   ],
+   "violet": true
+  },
+  {
+   "id": "wordpress",
+   "name": "WordPress",
+   "icon": "logos:wordpress-icon",
+   "tags": [
+    "cms"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "webflow",
+   "name": "Webflow",
+   "icon": "logos:webflow",
+   "tags": [
+    "cms",
+    "design"
+   ],
+   "wide": true
+  },
+  {
+   "id": "framer",
+   "name": "Framer",
+   "icon": "logos:framer",
+   "tags": [
+    "cms",
+    "design"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "squarespace",
+   "name": "Squarespace",
+   "icon": "logos:squarespace",
+   "tags": [
+    "cms"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "wix",
+   "name": "Wix",
+   "icon": "logos:wix",
+   "tags": [
+    "cms"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "airbnb",
+   "name": "Airbnb",
+   "icon": "logos:airbnb-icon",
+   "tags": [
+    "travel"
+   ]
+  },
+  {
+   "id": "whatsapp",
+   "name": "WhatsApp",
+   "icon": "logos:whatsapp-icon",
+   "tags": [
+    "chat",
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "messenger",
+   "name": "Messenger",
+   "icon": "logos:messenger",
+   "tags": [
+    "chat",
+    "social"
+   ],
+   "violetShare": 0.25,
+   "knock": true
+  },
+  {
+   "id": "telegram",
+   "name": "Telegram",
+   "icon": "logos:telegram",
+   "tags": [
+    "chat",
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "discord",
+   "name": "Discord",
+   "icon": "logos:discord-icon",
+   "tags": [
+    "chat",
+    "social"
+   ]
+  },
+  {
+   "id": "instagram",
+   "name": "Instagram",
+   "icon": "logos:instagram-icon",
+   "tags": [
+    "social"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "facebook",
+   "name": "Facebook",
+   "icon": "logos:facebook",
+   "tags": [
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "x",
+   "name": "X",
+   "icon": "logos:x",
+   "tags": [
+    "social"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "linkedin",
+   "name": "LinkedIn",
+   "icon": "logos:linkedin-icon",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "tiktok",
+   "name": "TikTok",
+   "icon": "logos:tiktok-icon",
+   "tags": [
+    "social",
+    "video"
+   ]
+  },
+  {
+   "id": "pinterest",
+   "name": "Pinterest",
+   "icon": "logos:pinterest",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "reddit",
+   "name": "Reddit",
+   "icon": "logos:reddit-icon",
+   "tags": [
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "spotify",
+   "name": "Spotify",
+   "icon": "logos:spotify-icon",
+   "tags": [
+    "music"
+   ]
+  },
+  {
+   "id": "vimeo",
+   "name": "Vimeo",
+   "icon": "logos:vimeo-icon",
+   "tags": [
+    "video"
+   ]
+  },
+  {
+   "id": "twitch",
+   "name": "Twitch",
+   "icon": "logos:twitch",
+   "tags": [
+    "video",
+    "social"
+   ],
+   "violet": true
+  },
+  {
+   "id": "app-store",
+   "name": "App Store",
+   "icon": "logos:apple-app-store",
+   "tags": [
+    "apps",
+    "store",
+    "apple"
+   ],
+   "knock": true
+  },
+  {
+   "id": "apple",
+   "name": "Apple",
+   "icon": "logos:apple",
+   "tags": [
+    "os",
+    "apple"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "photoshop",
+   "name": "Photoshop",
+   "icon": "logos:adobe-photoshop",
+   "tags": [
+    "design",
+    "adobe"
+   ]
+  },
+  {
+   "id": "illustrator",
+   "name": "Illustrator",
+   "icon": "logos:adobe-illustrator",
+   "tags": [
+    "design",
+    "adobe"
+   ]
+  },
+  {
+   "id": "indesign",
+   "name": "InDesign",
+   "icon": "logos:adobe-indesign",
+   "tags": [
+    "design",
+    "adobe",
+    "docs"
+   ]
+  },
+  {
+   "id": "premiere",
+   "name": "Premiere Pro",
+   "icon": "logos:adobe-premiere",
+   "tags": [
+    "video",
+    "adobe"
+   ],
+   "violet": true
+  },
+  {
+   "id": "after-effects",
+   "name": "After Effects",
+   "icon": "logos:adobe-after-effects",
+   "tags": [
+    "video",
+    "design",
+    "adobe"
+   ],
+   "violet": true
+  },
+  {
+   "id": "sketch",
+   "name": "Sketch",
+   "icon": "logos:sketch",
+   "tags": [
+    "design"
+   ]
+  },
+  {
+   "id": "perplexity",
+   "name": "perplexity",
+   "icon": "logos:perplexity-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ]
+  },
+  {
+   "id": "cohere",
+   "name": "Cohere",
+   "icon": "logos:cohere-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "violet": true
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek",
+   "icon": "logos:deepseek-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ]
+  },
+  {
+   "id": "groq",
+   "name": "Groq",
+   "icon": "logos:groq",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "wide": true
+  },
+  {
+   "id": "ollama",
+   "name": "Ollama",
+   "icon": "logos:ollama",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "openrouter",
+   "name": "OpenRouter",
+   "icon": "logos:openrouter-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "violet": true
+  },
+  {
+   "id": "togetherai",
+   "name": "Together AI",
+   "icon": "logos:togetherai-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "violetShare": 0.33
+  },
+  {
+   "id": "grok",
+   "name": "Grok",
+   "icon": "logos:grok-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "claude-code",
+   "name": "Claude Code",
+   "icon": "logos:claude-code",
+   "tags": [
+    "ai",
+    "llm"
+   ]
+  },
+  {
+   "id": "github-copilot",
+   "name": "GitHub Copilot",
+   "icon": "logos:github-copilot",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "codex",
+   "name": "Codex",
+   "icon": "logos:codex",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "cursor",
+   "name": "Cursor",
+   "icon": "logos:cursor-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "cline",
+   "name": "Cline",
+   "icon": "logos:cline-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "kiro",
+   "name": "Kiro",
+   "icon": "logos:kiro",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "knock": true
+  },
+  {
+   "id": "mcp",
+   "name": "Model Context Protocol",
+   "icon": "logos:model-context-protocol-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "meta",
+   "name": "Meta",
+   "icon": "logos:meta-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ]
+  },
+  {
+   "id": "google-bard",
+   "name": "Bard",
+   "icon": "logos:google-bard-icon",
+   "tags": [
+    "ai",
+    "llm"
+   ],
+   "violetShare": 0.17
+  },
+  {
+   "id": "pytorch",
+   "name": "PyTorch",
+   "icon": "logos:pytorch-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "tensorflow",
+   "name": "TensorFlow",
+   "icon": "logos:tensorflow",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "jupyter",
+   "name": "Jupyter",
+   "icon": "logos:jupyter",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "midjourney",
+   "name": "Midjourney",
+   "icon": "logos:midjourney",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "elevenlabs",
+   "name": "ElevenLabs",
+   "icon": "logos:elevenlabs-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "stability-ai",
+   "name": "Stability AI",
+   "icon": "logos:stability-ai-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "violet": true
+  },
+  {
+   "id": "langchain",
+   "name": "LangChain",
+   "icon": "logos:langchain-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "langfuse",
+   "name": "Langfuse",
+   "icon": "logos:langfuse-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "crewai",
+   "name": "CrewAI",
+   "icon": "logos:crewai",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "wide": true,
+   "knock": true
+  },
+  {
+   "id": "dify",
+   "name": "Dify",
+   "icon": "logos:dify",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "wide": true
+  },
+  {
+   "id": "cerebras",
+   "name": "Cerebras",
+   "icon": "logos:cerebras-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "coreweave",
+   "name": "CoreWeave",
+   "icon": "logos:coreweave-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "baseten",
+   "name": "Baseten",
+   "icon": "logos:baseten-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "deepgram",
+   "name": "Deepgram",
+   "icon": "logos:deepgram-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "livekit",
+   "name": "LiveKit",
+   "icon": "logos:livekit-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "pipecat",
+   "name": "Pipecat",
+   "icon": "logos:pipecat",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "mem0",
+   "name": "Mem0",
+   "icon": "logos:mem0-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "lovable",
+   "name": "Lovable",
+   "icon": "logos:lovable-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "violetShare": 0.25,
+   "knock": true
+  },
+  {
+   "id": "v0",
+   "name": "v0",
+   "icon": "logos:v0",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "vapi",
+   "name": "Vapi",
+   "icon": "logos:vapi-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "retell",
+   "name": "Retell",
+   "icon": "logos:retell-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "gradio",
+   "name": "Gradio",
+   "icon": "logos:gradio-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "streamlit",
+   "name": "Streamlit",
+   "icon": "logos:streamlit",
+   "tags": [
+    "ai",
+    "ml"
+   ],
+   "wide": true
+  },
+  {
+   "id": "wandb",
+   "name": "Weights & Biases",
+   "icon": "logos:wandb-icon",
+   "tags": [
+    "ai",
+    "ml"
+   ]
+  },
+  {
+   "id": "pinecone",
+   "name": "Pinecone",
+   "icon": "logos:pinecone-icon",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "qdrant",
+   "name": "Qdrant",
+   "icon": "logos:qdrant-icon",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ]
+  },
+  {
+   "id": "weaviate",
+   "name": "Weaviate",
+   "icon": "logos:weaviate-icon",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ]
+  },
+  {
+   "id": "milvus",
+   "name": "Milvus",
+   "icon": "logos:milvus-icon",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ]
+  },
+  {
+   "id": "chroma",
+   "name": "Chroma",
+   "icon": "logos:chroma",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ]
+  },
+  {
+   "id": "lancedb",
+   "name": "LanceDB",
+   "icon": "logos:lancedb-icon",
+   "tags": [
+    "ai",
+    "vector",
+    "db"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "typescript",
+   "name": "Typescript",
+   "icon": "logos:typescript-icon",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "javascript",
+   "name": "Javascript (JS)",
+   "icon": "logos:javascript",
+   "tags": [
+    "dev",
+    "language"
+   ]
+  },
+  {
+   "id": "python",
+   "name": "Python",
+   "icon": "logos:python",
+   "tags": [
+    "dev",
+    "language"
+   ]
+  },
+  {
+   "id": "rust",
+   "name": "Rust",
+   "icon": "logos:rust",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "go",
+   "name": "Go",
+   "icon": "logos:go",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "wide": true
+  },
+  {
+   "id": "java",
+   "name": "Java",
+   "icon": "logos:java",
+   "tags": [
+    "dev",
+    "language"
+   ]
+  },
+  {
+   "id": "kotlin",
+   "name": "Kotlin",
+   "icon": "logos:kotlin-icon",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "violet": true
+  },
+  {
+   "id": "swift",
+   "name": "Swift",
+   "icon": "logos:swift",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "ruby",
+   "name": "Ruby",
+   "icon": "logos:ruby",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "php",
+   "name": "PHP",
+   "icon": "logos:php",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "wide": true,
+   "knock": true
+  },
+  {
+   "id": "c-sharp",
+   "name": "C Sharp",
+   "icon": "logos:c-sharp",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "c-plusplus",
+   "name": "C++",
+   "icon": "logos:c-plusplus",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "dart",
+   "name": "Dart",
+   "icon": "logos:dart",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "scala",
+   "name": "Scala",
+   "icon": "logos:scala",
+   "tags": [
+    "dev",
+    "language"
+   ]
+  },
+  {
+   "id": "zig",
+   "name": "Zig",
+   "icon": "logos:zig",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "wide": true
+  },
+  {
+   "id": "lua",
+   "name": "Lua",
+   "icon": "logos:lua",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "knock": true
+  },
+  {
+   "id": "haskell",
+   "name": "Haskell",
+   "icon": "logos:haskell-icon",
+   "tags": [
+    "dev",
+    "language"
+   ],
+   "violet": true
+  },
+  {
+   "id": "react",
+   "name": "React",
+   "icon": "logos:react",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "vue",
+   "name": "Vue.js",
+   "icon": "logos:vue",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "angular",
+   "name": "Angular",
+   "icon": "logos:angular-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "violet": true
+  },
+  {
+   "id": "svelte",
+   "name": "Svelte",
+   "icon": "logos:svelte-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "svelte-kit",
+   "name": "SvelteKit",
+   "icon": "logos:svelte-kit",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "wide": true,
+   "knock": true
+  },
+  {
+   "id": "nextjs",
+   "name": "Next.js",
+   "icon": "logos:nextjs-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "nuxt",
+   "name": "Nuxt",
+   "icon": "logos:nuxt-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "astro",
+   "name": "Astro",
+   "icon": "logos:astro-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "remix",
+   "name": "Remix",
+   "icon": "logos:remix-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "solidjs",
+   "name": "Solid",
+   "icon": "logos:solidjs-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "qwik",
+   "name": "Qwik",
+   "icon": "logos:qwik-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "htmx",
+   "name": "htmx",
+   "icon": "logos:htmx-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "alpinejs",
+   "name": "Alpine.js",
+   "icon": "logos:alpinejs-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "tailwindcss",
+   "name": "Tailwind CSS",
+   "icon": "logos:tailwindcss-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "bootstrap",
+   "name": "Bootstrap",
+   "icon": "logos:bootstrap",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "violet": true
+  },
+  {
+   "id": "material-ui",
+   "name": "Material UI",
+   "icon": "logos:material-ui",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "vitejs",
+   "name": "Vite",
+   "icon": "logos:vite-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "violet": true
+  },
+  {
+   "id": "webpack",
+   "name": "webpack",
+   "icon": "logos:webpack",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "esbuild",
+   "name": "esbuild",
+   "icon": "logos:esbuild",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "turborepo",
+   "name": "Turborepo",
+   "icon": "logos:turborepo-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "nx",
+   "name": "Nx",
+   "icon": "logos:nx",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "storybook",
+   "name": "Storybook",
+   "icon": "logos:storybook-icon",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "gsap",
+   "name": "GSAP",
+   "icon": "logos:gsap",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "threejs",
+   "name": "Three.js",
+   "icon": "logos:threejs",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "pixijs",
+   "name": "PixiJS",
+   "icon": "logos:pixijs",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "p5js",
+   "name": "p5.js",
+   "icon": "logos:p5js",
+   "tags": [
+    "dev",
+    "frontend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "d3",
+   "name": "D3",
+   "icon": "logos:d3",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "chartjs",
+   "name": "Chart.js",
+   "icon": "logos:chartjs",
+   "tags": [
+    "dev",
+    "frontend"
+   ]
+  },
+  {
+   "id": "nodejs",
+   "name": "Node.js",
+   "icon": "logos:nodejs-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "express",
+   "name": "Express",
+   "icon": "logos:express",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "fastify",
+   "name": "Fastify",
+   "icon": "logos:fastify-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "nestjs",
+   "name": "NestJS",
+   "icon": "logos:nestjs",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "fastapi",
+   "name": "FastAPI",
+   "icon": "logos:fastapi-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "django",
+   "name": "Django",
+   "icon": "logos:django-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "flask",
+   "name": "Flask",
+   "icon": "logos:flask",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "laravel",
+   "name": "Laravel",
+   "icon": "logos:laravel",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "rails",
+   "name": "Rails",
+   "icon": "logos:rails",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "spring",
+   "name": "Spring",
+   "icon": "logos:spring-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "dotnet",
+   "name": ".NET",
+   "icon": "logos:dotnet",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "phoenix",
+   "name": "Phoenix",
+   "icon": "logos:phoenix",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "hono",
+   "name": "Hono",
+   "icon": "logos:hono",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "bun",
+   "name": "Bun",
+   "icon": "logos:bun",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "deno",
+   "name": "Deno",
+   "icon": "logos:deno",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "knock": true
+  },
+  {
+   "id": "graphql",
+   "name": "GraphQL",
+   "icon": "logos:graphql",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "trpc",
+   "name": "tRPC",
+   "icon": "logos:trpc",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "prisma",
+   "name": "Prisma",
+   "icon": "logos:prisma",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "drizzle-orm",
+   "name": "Drizzle",
+   "icon": "logos:drizzle-orm-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "grpc",
+   "name": "gRPC",
+   "icon": "logos:grpc",
+   "tags": [
+    "dev",
+    "backend"
+   ],
+   "wide": true
+  },
+  {
+   "id": "openapi",
+   "name": "OpenAPI",
+   "icon": "logos:openapi-icon",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "swagger",
+   "name": "Swagger",
+   "icon": "logos:swagger",
+   "tags": [
+    "dev",
+    "backend"
+   ]
+  },
+  {
+   "id": "flutter",
+   "name": "Flutter",
+   "icon": "logos:flutter-icon",
+   "tags": [
+    "dev",
+    "mobile"
+   ]
+  },
+  {
+   "id": "android",
+   "name": "Android",
+   "icon": "logos:android-icon",
+   "tags": [
+    "dev",
+    "mobile"
+   ]
+  },
+  {
+   "id": "ios",
+   "name": "iOS",
+   "icon": "logos:ios",
+   "tags": [
+    "dev",
+    "mobile"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "expo",
+   "name": "Expo",
+   "icon": "logos:expo-icon",
+   "tags": [
+    "dev",
+    "mobile"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "electron",
+   "name": "Electron",
+   "icon": "logos:electron",
+   "tags": [
+    "dev",
+    "mobile"
+   ]
+  },
+  {
+   "id": "tauri",
+   "name": "Tauri",
+   "icon": "logos:tauri",
+   "tags": [
+    "dev",
+    "mobile"
+   ]
+  },
+  {
+   "id": "capacitorjs",
+   "name": "Capacitor",
+   "icon": "logos:capacitorjs-icon",
+   "tags": [
+    "dev",
+    "mobile"
+   ]
+  },
+  {
+   "id": "git",
+   "name": "Git",
+   "icon": "logos:git-icon",
+   "tags": [
+    "dev",
+    "tools"
+   ]
+  },
+  {
+   "id": "visual-studio-code",
+   "name": "VS Code",
+   "icon": "logos:visual-studio-code",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "neovim",
+   "name": "Neovim",
+   "icon": "logos:neovim",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "wide": true
+  },
+  {
+   "id": "vim",
+   "name": "Vim",
+   "icon": "logos:vim",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "jetbrains",
+   "name": "JetBrains",
+   "icon": "logos:jetbrains-icon",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "intellij-idea",
+   "name": "IntelliJ IDEA",
+   "icon": "logos:intellij-idea",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "violetShare": 0.13,
+   "knock": true
+  },
+  {
+   "id": "xcode",
+   "name": "Xcode",
+   "icon": "logos:xcode",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "webstorm",
+   "name": "WebStorm",
+   "icon": "logos:webstorm",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "pycharm",
+   "name": "PyCharm",
+   "icon": "logos:pycharm",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "homebrew",
+   "name": "Homebrew",
+   "icon": "logos:homebrew",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "pnpm",
+   "name": "pnPM",
+   "icon": "logos:pnpm",
+   "tags": [
+    "dev",
+    "tools"
+   ]
+  },
+  {
+   "id": "yarn",
+   "name": "Yarn",
+   "icon": "logos:yarn",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "eslint",
+   "name": "ESLint",
+   "icon": "logos:eslint",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "violet": true
+  },
+  {
+   "id": "prettier",
+   "name": "Prettier",
+   "icon": "logos:prettier",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "violetShare": 0.22
+  },
+  {
+   "id": "babel",
+   "name": "Babel",
+   "icon": "logos:babel",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "wide": true
+  },
+  {
+   "id": "bash",
+   "name": "Bash",
+   "icon": "logos:bash-icon",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "knock": true
+  },
+  {
+   "id": "insomnia",
+   "name": "Insomnia",
+   "icon": "logos:insomnia",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "httpie",
+   "name": "HTTPie",
+   "icon": "logos:httpie-icon",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "curl",
+   "name": "curl",
+   "icon": "logos:curl",
+   "tags": [
+    "dev",
+    "tools"
+   ],
+   "wide": true
+  },
+  {
+   "id": "jest",
+   "name": "Jest",
+   "icon": "logos:jest",
+   "tags": [
+    "dev",
+    "testing"
+   ],
+   "knock": true
+  },
+  {
+   "id": "vitest",
+   "name": "Vitest",
+   "icon": "logos:vitest",
+   "tags": [
+    "dev",
+    "testing"
+   ]
+  },
+  {
+   "id": "playwright",
+   "name": "Playwright",
+   "icon": "logos:playwright",
+   "tags": [
+    "dev",
+    "testing"
+   ]
+  },
+  {
+   "id": "cypress",
+   "name": "Cypress",
+   "icon": "logos:cypress-icon",
+   "tags": [
+    "dev",
+    "testing"
+   ]
+  },
+  {
+   "id": "selenium",
+   "name": "Selenium",
+   "icon": "logos:selenium",
+   "tags": [
+    "dev",
+    "testing"
+   ]
+  },
+  {
+   "id": "puppeteer",
+   "name": "Puppeteer",
+   "icon": "logos:puppeteer",
+   "tags": [
+    "dev",
+    "testing"
+   ],
+   "knock": true
+  },
+  {
+   "id": "testing-library",
+   "name": "Testing Library",
+   "icon": "logos:testing-library",
+   "tags": [
+    "dev",
+    "testing"
+   ]
+  },
+  {
+   "id": "mocha",
+   "name": "Mocha",
+   "icon": "logos:mocha",
+   "tags": [
+    "dev",
+    "testing"
+   ],
+   "knock": true
+  },
+  {
+   "id": "helm",
+   "name": "Helm",
+   "icon": "logos:helm",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "ansible",
+   "name": "Ansible",
+   "icon": "logos:ansible",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "knock": true
+  },
+  {
+   "id": "pulumi",
+   "name": "Pulumi",
+   "icon": "logos:pulumi-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "violetShare": 0.33
+  },
+  {
+   "id": "packer",
+   "name": "Packer",
+   "icon": "logos:packer",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "vagrant",
+   "name": "Vagrant",
+   "icon": "logos:vagrant-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "nginx",
+   "name": "NGINX",
+   "icon": "logos:nginx",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "knock": true
+  },
+  {
+   "id": "traefik-proxy",
+   "name": "Traefik",
+   "icon": "logos:traefik-proxy-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "envoy",
+   "name": "Envoy",
+   "icon": "logos:envoy-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "violet": true
+  },
+  {
+   "id": "linkerd",
+   "name": "linkerd",
+   "icon": "logos:linkerd",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "kong",
+   "name": "Kong",
+   "icon": "logos:kong-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "tailscale",
+   "name": "Tailscale",
+   "icon": "logos:tailscale",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "ngrok",
+   "name": "ngrok",
+   "icon": "logos:ngrok",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "argo",
+   "name": "Argo",
+   "icon": "logos:argo-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "knock": true
+  },
+  {
+   "id": "jenkins",
+   "name": "Jenkins",
+   "icon": "logos:jenkins",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "knock": true
+  },
+  {
+   "id": "circleci",
+   "name": "CircleCI",
+   "icon": "logos:circleci",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "github-actions",
+   "name": "GitHub Actions",
+   "icon": "logos:github-actions",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "buildkite",
+   "name": "Buildkite",
+   "icon": "logos:buildkite-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "teamcity",
+   "name": "TeamCity",
+   "icon": "logos:teamcity",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "violetShare": 0.25,
+   "knock": true
+  },
+  {
+   "id": "jfrog",
+   "name": "JFrog",
+   "icon": "logos:jfrog",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "sonarqube",
+   "name": "SonarQube",
+   "icon": "logos:sonarqube",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "wide": true
+  },
+  {
+   "id": "snyk",
+   "name": "Snyk",
+   "icon": "logos:snyk",
+   "tags": [
+    "dev",
+    "devops"
+   ],
+   "violetShare": 0.21,
+   "knock": true
+  },
+  {
+   "id": "vault",
+   "name": "Vault",
+   "icon": "logos:vault-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "consul",
+   "name": "Consul",
+   "icon": "logos:consul",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "nomad",
+   "name": "Nomad",
+   "icon": "logos:nomad-icon",
+   "tags": [
+    "dev",
+    "devops"
+   ]
+  },
+  {
+   "id": "linux-tux",
+   "name": "Linux",
+   "icon": "logos:linux-tux",
+   "tags": [
+    "dev",
+    "os"
+   ]
+  },
+  {
+   "id": "ubuntu",
+   "name": "ubuntu",
+   "icon": "logos:ubuntu",
+   "tags": [
+    "dev",
+    "os"
+   ],
+   "knock": true
+  },
+  {
+   "id": "debian",
+   "name": "debian",
+   "icon": "logos:debian",
+   "tags": [
+    "dev",
+    "os"
+   ]
+  },
+  {
+   "id": "archlinux",
+   "name": "Archlinux",
+   "icon": "logos:archlinux",
+   "tags": [
+    "dev",
+    "os"
+   ]
+  },
+  {
+   "id": "fedora",
+   "name": "fedora",
+   "icon": "logos:fedora",
+   "tags": [
+    "dev",
+    "os"
+   ],
+   "knock": true
+  },
+  {
+   "id": "redhat",
+   "name": "RedHat",
+   "icon": "logos:redhat-icon",
+   "tags": [
+    "dev",
+    "os"
+   ]
+  },
+  {
+   "id": "rocky-linux",
+   "name": "Rocky Linux",
+   "icon": "logos:rocky-linux-icon",
+   "tags": [
+    "dev",
+    "os"
+   ]
+  },
+  {
+   "id": "kafka",
+   "name": "Kafka",
+   "icon": "logos:kafka-icon",
+   "tags": [
+    "dev",
+    "api"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "rabbitmq",
+   "name": "RabbitMQ",
+   "icon": "logos:rabbitmq-icon",
+   "tags": [
+    "dev",
+    "api"
+   ]
+  },
+  {
+   "id": "nats",
+   "name": "NATS",
+   "icon": "logos:nats-icon",
+   "tags": [
+    "dev",
+    "api"
+   ],
+   "knock": true
+  },
+  {
+   "id": "elasticsearch",
+   "name": "Elasticsearch",
+   "icon": "logos:elasticsearch",
+   "tags": [
+    "dev",
+    "api"
+   ]
+  },
+  {
+   "id": "opensearch",
+   "name": "OpenSearch",
+   "icon": "logos:opensearch-icon",
+   "tags": [
+    "dev",
+    "api"
+   ]
+  },
+  {
+   "id": "algolia",
+   "name": "Algolia",
+   "icon": "logos:algolia",
+   "tags": [
+    "dev",
+    "api"
+   ],
+   "wide": true,
+   "knock": true
+  },
+  {
+   "id": "meilisearch",
+   "name": "Meilisearch",
+   "icon": "logos:meilisearch",
+   "tags": [
+    "dev",
+    "api"
+   ]
+  },
+  {
+   "id": "typesense",
+   "name": "typesense",
+   "icon": "logos:typesense-icon",
+   "tags": [
+    "dev",
+    "api"
+   ]
+  },
+  {
+   "id": "sqlite",
+   "name": "SQLite",
+   "icon": "logos:sqlite",
+   "tags": [
+    "db"
+   ],
+   "wide": true
+  },
+  {
+   "id": "mariadb",
+   "name": "MariaDB",
+   "icon": "logos:mariadb-icon",
+   "tags": [
+    "db"
+   ]
+  },
+  {
+   "id": "couchdb",
+   "name": "CouchDB",
+   "icon": "logos:couchdb-icon",
+   "tags": [
+    "db"
+   ]
+  },
+  {
+   "id": "cassandra",
+   "name": "Cassandra",
+   "icon": "logos:cassandra",
+   "tags": [
+    "db"
+   ],
+   "knock": true
+  },
+  {
+   "id": "neo4j",
+   "name": "Neo4j",
+   "icon": "logos:neo4j",
+   "tags": [
+    "db"
+   ],
+   "wide": true
+  },
+  {
+   "id": "influxdb",
+   "name": "InfluxDB",
+   "icon": "logos:influxdata-icon",
+   "tags": [
+    "db"
+   ]
+  },
+  {
+   "id": "planetscale",
+   "name": "PlanetScale",
+   "icon": "logos:planetscale",
+   "tags": [
+    "db"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "neon",
+   "name": "Neon",
+   "icon": "logos:neon-icon",
+   "tags": [
+    "db"
+   ]
+  },
+  {
+   "id": "upstash",
+   "name": "Upstash",
+   "icon": "logos:upstash-icon",
+   "tags": [
+    "db"
+   ],
+   "knock": true
+  },
+  {
+   "id": "singlestore",
+   "name": "SingleStore",
+   "icon": "logos:singlestore-icon",
+   "tags": [
+    "db"
+   ],
+   "violet": true
+  },
+  {
+   "id": "surrealdb",
+   "name": "SurrealDB",
+   "icon": "logos:surrealdb-icon",
+   "tags": [
+    "db"
+   ],
+   "violet": true
+  },
+  {
+   "id": "webassembly",
+   "name": "WebAssembly",
+   "icon": "logos:webassembly",
+   "tags": [
+    "dev",
+    "web"
+   ],
+   "violet": true
+  },
+  {
+   "id": "webgpu",
+   "name": "WebGPU",
+   "icon": "logos:webgpu",
+   "tags": [
+    "dev",
+    "web"
+   ]
+  },
+  {
+   "id": "vulkan",
+   "name": "Vulkan",
+   "icon": "logos:vulkan",
+   "tags": [
+    "dev",
+    "web"
+   ],
+   "wide": true
+  },
+  {
+   "id": "opengl",
+   "name": "Open GL",
+   "icon": "logos:opengl",
+   "tags": [
+    "dev",
+    "web"
+   ],
+   "wide": true
+  },
+  {
+   "id": "webrtc",
+   "name": "WebRTC",
+   "icon": "logos:webrtc",
+   "tags": [
+    "dev",
+    "web"
+   ],
+   "knock": true
+  },
+  {
+   "id": "websocket",
+   "name": "WebSocket",
+   "icon": "logos:websocket",
+   "tags": [
+    "dev",
+    "web"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "prometheus",
+   "name": "Prometheus",
+   "icon": "logos:prometheus",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "opentelemetry",
+   "name": "OpenTelemetry",
+   "icon": "logos:opentelemetry-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "new-relic",
+   "name": "New Relic",
+   "icon": "logos:new-relic-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "dynatrace",
+   "name": "Dynatrace",
+   "icon": "logos:dynatrace-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ],
+   "violetShare": 0.33
+  },
+  {
+   "id": "splunk",
+   "name": "Splunk",
+   "icon": "logos:splunk",
+   "tags": [
+    "monitoring",
+    "observability"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "pagerduty",
+   "name": "PagerDuty",
+   "icon": "logos:pagerduty-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "opsgenie",
+   "name": "OpsGenie",
+   "icon": "logos:opsgenie",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "rollbar",
+   "name": "Rollbar",
+   "icon": "logos:rollbar-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "posthog",
+   "name": "PostHog",
+   "icon": "logos:posthog-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ],
+   "wide": true
+  },
+  {
+   "id": "hotjar",
+   "name": "Hotjar",
+   "icon": "logos:hotjar-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "heap",
+   "name": "Heap",
+   "icon": "logos:heap-icon",
+   "tags": [
+    "monitoring",
+    "observability"
+   ]
+  },
+  {
+   "id": "digitalocean",
+   "name": "DigitalOcean",
+   "icon": "logos:digital-ocean-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "linode",
+   "name": "Linode",
+   "icon": "logos:linode",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "vultr",
+   "name": "Vultr",
+   "icon": "logos:vultr-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "fly",
+   "name": "Fly",
+   "icon": "logos:fly-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "railway",
+   "name": "Railway",
+   "icon": "logos:railway",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "heroku",
+   "name": "Heroku",
+   "icon": "logos:heroku-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "cloudflare-workers",
+   "name": "Cloudflare Workers",
+   "icon": "logos:cloudflare-workers-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "fastly",
+   "name": "Fastly",
+   "icon": "logos:fastly",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true
+  },
+  {
+   "id": "akamai",
+   "name": "Akamai",
+   "icon": "logos:akamai",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true
+  },
+  {
+   "id": "ibm",
+   "name": "IBM",
+   "icon": "logos:ibm",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "oracle",
+   "name": "Oracle",
+   "icon": "logos:oracle",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true
+  },
+  {
+   "id": "vmware",
+   "name": "VMware",
+   "icon": "logos:vmware",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true
+  },
+  {
+   "id": "openstack",
+   "name": "openstack",
+   "icon": "logos:openstack-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "openshift",
+   "name": "OpenShift",
+   "icon": "logos:openshift",
+   "tags": [
+    "cloud",
+    "hosting"
+   ]
+  },
+  {
+   "id": "rancher",
+   "name": "Rancher",
+   "icon": "logos:rancher-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "wide": true
+  },
+  {
+   "id": "hashicorp",
+   "name": "HashiCorp",
+   "icon": "logos:hashicorp-icon",
+   "tags": [
+    "cloud",
+    "hosting"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "auth0",
+   "name": "Auth0",
+   "icon": "logos:auth0-icon",
+   "tags": [
+    "security",
+    "auth"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "okta",
+   "name": "Okta",
+   "icon": "logos:okta-icon",
+   "tags": [
+    "security",
+    "auth"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "clerk",
+   "name": "Clerk",
+   "icon": "logos:clerk-icon",
+   "tags": [
+    "security",
+    "auth"
+   ],
+   "violet": true
+  },
+  {
+   "id": "stytch",
+   "name": "Stytch",
+   "icon": "logos:stytch",
+   "tags": [
+    "security",
+    "auth"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "workos",
+   "name": "WorkOS",
+   "icon": "logos:workos-icon",
+   "tags": [
+    "security",
+    "auth"
+   ],
+   "violet": true
+  },
+  {
+   "id": "dashlane",
+   "name": "Dashlane",
+   "icon": "logos:dashlane-icon",
+   "tags": [
+    "security",
+    "auth"
+   ]
+  },
+  {
+   "id": "sendgrid",
+   "name": "SendGrid",
+   "icon": "logos:sendgrid-icon",
+   "tags": [
+    "email",
+    "api"
+   ]
+  },
+  {
+   "id": "mailgun",
+   "name": "Mailgun",
+   "icon": "logos:mailgun-icon",
+   "tags": [
+    "email",
+    "api"
+   ]
+  },
+  {
+   "id": "resend",
+   "name": "Resend",
+   "icon": "logos:resend-icon",
+   "tags": [
+    "email",
+    "api"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "sparkpost",
+   "name": "SparkPost",
+   "icon": "logos:sparkpost",
+   "tags": [
+    "email",
+    "api"
+   ],
+   "wide": true
+  },
+  {
+   "id": "contentful",
+   "name": "Contentful",
+   "icon": "logos:contentful",
+   "tags": [
+    "cms"
+   ]
+  },
+  {
+   "id": "sanity",
+   "name": "Sanity",
+   "icon": "logos:sanity",
+   "tags": [
+    "cms"
+   ],
+   "wide": true
+  },
+  {
+   "id": "strapi",
+   "name": "Strapi",
+   "icon": "logos:strapi-icon",
+   "tags": [
+    "cms"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "ghost",
+   "name": "Ghost",
+   "icon": "logos:ghost",
+   "tags": [
+    "cms"
+   ],
+   "wide": true
+  },
+  {
+   "id": "drupal",
+   "name": "Drupal",
+   "icon": "logos:drupal-icon",
+   "tags": [
+    "cms"
+   ]
+  },
+  {
+   "id": "joomla",
+   "name": "Joomla",
+   "icon": "logos:joomla",
+   "tags": [
+    "cms"
+   ]
+  },
+  {
+   "id": "medusa",
+   "name": "medusa",
+   "icon": "logos:medusa-icon",
+   "tags": [
+    "cms"
+   ],
+   "violet": true
+  },
+  {
+   "id": "payload",
+   "name": "Payload",
+   "icon": "logos:payload",
+   "tags": [
+    "cms"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "storyblok",
+   "name": "Storyblok",
+   "icon": "logos:storyblok-icon",
+   "tags": [
+    "cms"
+   ]
+  },
+  {
+   "id": "datocms",
+   "name": "DatoCMS",
+   "icon": "logos:datocms-icon",
+   "tags": [
+    "cms"
+   ]
+  },
+  {
+   "id": "adyen",
+   "name": "Adyen",
+   "icon": "logos:adyen",
+   "tags": [
+    "payments"
+   ],
+   "wide": true
+  },
+  {
+   "id": "nvidia",
+   "name": "Nvidia",
+   "icon": "logos:nvidia",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "amd",
+   "name": "AMD",
+   "icon": "logos:amd",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "intel",
+   "name": "Intel",
+   "icon": "logos:intel",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "arm",
+   "name": "Arm",
+   "icon": "logos:arm",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "qualcomm",
+   "name": "Qualcomm",
+   "icon": "logos:qualcomm",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "broadcom",
+   "name": "Broadcom",
+   "icon": "logos:broadcom-icon",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "knock": true
+  },
+  {
+   "id": "micron",
+   "name": "Micron",
+   "icon": "logos:micron-icon",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "samsung",
+   "name": "Samsung",
+   "icon": "logos:samsung",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "sk-hynix",
+   "name": "SK Hynix",
+   "icon": "logos:sk-hynix",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "wide": true
+  },
+  {
+   "id": "tsmc",
+   "name": "TSMC",
+   "icon": "logos:tsmc",
+   "tags": [
+    "hardware",
+    "chips"
+   ],
+   "knock": true
+  },
+  {
+   "id": "raspberry-pi",
+   "name": "Raspberry Pi",
+   "icon": "logos:raspberry-pi",
+   "tags": [
+    "hardware",
+    "chips"
+   ]
+  },
+  {
+   "id": "arduino",
+   "name": "Arduino",
+   "icon": "logos:arduino",
+   "tags": [
+    "hardware",
+    "chips"
+   ]
+  },
+  {
+   "id": "risc-v",
+   "name": "RISC-V",
+   "icon": "logos:risc-v-icon",
+   "tags": [
+    "hardware",
+    "chips"
+   ]
+  },
+  {
+   "id": "unity",
+   "name": "Unity",
+   "icon": "logos:unity",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "unrealengine",
+   "name": "Unreal Engine",
+   "icon": "logos:unrealengine-icon",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "godot",
+   "name": "Godot",
+   "icon": "logos:godot-icon",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "knock": true
+  },
+  {
+   "id": "blender",
+   "name": "Blender",
+   "icon": "logos:blender",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "knock": true
+  },
+  {
+   "id": "game-analytics",
+   "name": "GameAnalytics",
+   "icon": "logos:game-analytics-icon",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "steam",
+   "name": "Steam",
+   "icon": "logos:steam",
+   "tags": [
+    "gaming",
+    "engine"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "mastodon",
+   "name": "Mastodon",
+   "icon": "logos:mastodon-icon",
+   "tags": [
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "bluesky",
+   "name": "Bluesky",
+   "icon": "logos:bluesky",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "threads",
+   "name": "Threads",
+   "icon": "logos:threads-icon",
+   "tags": [
+    "social"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "signal",
+   "name": "Signal",
+   "icon": "logos:signal",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "tumblr",
+   "name": "tumblr",
+   "icon": "logos:tumblr-icon",
+   "tags": [
+    "social"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "producthunt",
+   "name": "Product Hunt",
+   "icon": "logos:producthunt",
+   "tags": [
+    "social"
+   ],
+   "knock": true
+  },
+  {
+   "id": "dribbble",
+   "name": "dribbble",
+   "icon": "logos:dribbble-icon",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "behance",
+   "name": "Behance",
+   "icon": "logos:behance",
+   "tags": [
+    "social"
+   ],
+   "wide": true,
+   "tone": "ink"
+  },
+  {
+   "id": "medium",
+   "name": "Medium",
+   "icon": "logos:medium-icon",
+   "tags": [
+    "social"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "hashnode",
+   "name": "Hashnode",
+   "icon": "logos:hashnode-icon",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "stackoverflow",
+   "name": "Stack Overflow",
+   "icon": "logos:stackoverflow-icon",
+   "tags": [
+    "social"
+   ]
+  },
+  {
+   "id": "penpot",
+   "name": "Penpot",
+   "icon": "logos:penpot-icon",
+   "tags": [
+    "design"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "invision",
+   "name": "Invision",
+   "icon": "logos:invision-icon",
+   "tags": [
+    "design"
+   ],
+   "knock": true
+  },
+  {
+   "id": "zeplin",
+   "name": "Zeplin",
+   "icon": "logos:zeplin",
+   "tags": [
+    "design"
+   ]
+  },
+  {
+   "id": "obsidian",
+   "name": "Obsidian",
+   "icon": "logos:obsidian-icon",
+   "tags": [
+    "pm",
+    "tools"
+   ],
+   "violet": true
+  },
+  {
+   "id": "dbt",
+   "name": "dbt",
+   "icon": "logos:dbt-icon",
+   "tags": [
+    "data",
+    "analytics"
+   ]
+  },
+  {
+   "id": "airflow",
+   "name": "Airflow",
+   "icon": "logos:airflow-icon",
+   "tags": [
+    "data",
+    "analytics"
+   ]
+  },
+  {
+   "id": "airbyte",
+   "name": "Airbyte",
+   "icon": "logos:airbyte-icon",
+   "tags": [
+    "data",
+    "analytics"
+   ],
+   "violet": true
+  },
+  {
+   "id": "metabase",
+   "name": "Metabase",
+   "icon": "logos:metabase",
+   "tags": [
+    "data",
+    "analytics"
+   ]
+  },
+  {
+   "id": "rudderstack",
+   "name": "RudderStack",
+   "icon": "logos:rudderstack-icon",
+   "tags": [
+    "data",
+    "analytics"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "bitcoin",
+   "name": "Bitcoin",
+   "icon": "logos:bitcoin",
+   "tags": [
+    "crypto",
+    "finance"
+   ],
+   "knock": true
+  },
+  {
+   "id": "ethereum",
+   "name": "Ethereum",
+   "icon": "logos:ethereum",
+   "tags": [
+    "crypto",
+    "finance"
+   ]
+  },
+  {
+   "id": "metamask",
+   "name": "MetaMask",
+   "icon": "logos:metamask-icon",
+   "tags": [
+    "crypto",
+    "finance"
+   ]
+  },
+  {
+   "id": "cardano",
+   "name": "Cardano",
+   "icon": "logos:cardano-icon",
+   "tags": [
+    "crypto",
+    "finance"
+   ]
+  },
+  {
+   "id": "kraken",
+   "name": "Kraken",
+   "icon": "logos:kraken",
+   "tags": [
+    "crypto",
+    "finance"
+   ]
+  },
+  {
+   "id": "helpscout",
+   "name": "Help Scout",
+   "icon": "logos:helpscout-icon",
+   "tags": [
+    "hr",
+    "support"
+   ]
+  },
+  {
+   "id": "frontapp",
+   "name": "Front",
+   "icon": "logos:frontapp",
+   "tags": [
+    "hr",
+    "support"
+   ]
+  },
+  {
+   "id": "coursera",
+   "name": "coursera",
+   "icon": "logos:coursera",
+   "tags": [
+    "education"
+   ],
+   "wide": true
+  },
+  {
+   "id": "udemy",
+   "name": "Udemy",
+   "icon": "logos:udemy-icon",
+   "tags": [
+    "education"
+   ],
+   "violet": true
+  },
+  {
+   "id": "khan_academy",
+   "name": "Khan Academy",
+   "icon": "logos:khan_academy-icon",
+   "tags": [
+    "education"
+   ],
+   "knock": true
+  },
+  {
+   "id": "codecademy",
+   "name": "codecademy",
+   "icon": "logos:codecademy",
+   "tags": [
+    "education"
+   ],
+   "wide": true
+  },
+  {
+   "id": "pluralsight",
+   "name": "Pluralsight",
+   "icon": "logos:pluralsight-icon",
+   "tags": [
+    "education"
+   ],
+   "knock": true
+  },
+  {
+   "id": "chrome",
+   "name": "Chrome",
+   "icon": "logos:chrome",
+   "tags": [
+    "browser"
+   ],
+   "knock": true
+  },
+  {
+   "id": "firefox",
+   "name": "Firefox",
+   "icon": "logos:firefox",
+   "tags": [
+    "browser"
+   ]
+  },
+  {
+   "id": "safari",
+   "name": "Safari",
+   "icon": "logos:safari",
+   "tags": [
+    "browser"
+   ],
+   "knock": true
+  },
+  {
+   "id": "brave",
+   "name": "Brave",
+   "icon": "logos:brave",
+   "tags": [
+    "browser"
+   ],
+   "knock": true
+  },
+  {
+   "id": "opera",
+   "name": "Opera",
+   "icon": "logos:opera",
+   "tags": [
+    "browser"
+   ]
+  },
+  {
+   "id": "microsoft-edge",
+   "name": "Microsoft Edge",
+   "icon": "logos:microsoft-edge",
+   "tags": [
+    "browser"
+   ]
+  },
+  {
+   "id": "arc",
+   "name": "Arc",
+   "icon": "logos:arc",
+   "tags": [
+    "browser"
+   ],
+   "knock": true
+  },
+  {
+   "id": "soundcloud",
+   "name": "soundcloud",
+   "icon": "logos:soundcloud",
+   "tags": [
+    "music",
+    "media"
+   ]
+  },
+  {
+   "id": "netflix",
+   "name": "Netflix",
+   "icon": "logos:netflix-icon",
+   "tags": [
+    "music",
+    "media"
+   ]
+  },
+  {
+   "id": "tidal",
+   "name": "Tidal",
+   "icon": "logos:tidal-icon",
+   "tags": [
+    "music",
+    "media"
+   ],
+   "tone": "ink"
+  },
+  {
+   "id": "getyourguide",
+   "name": "Get Your Guide",
+   "icon": "logos:getyourguide",
+   "tags": [
+    "travel"
+   ]
+  },
+  {
+   "id": "playstation",
+   "name": "PlayStation",
+   "icon": "si:playstation",
+   "tags": [
+    "gaming",
+    "console"
+   ]
+  },
+  {
+   "id": "epic-games",
+   "name": "Epic Games",
+   "icon": "si:epicgames",
+   "tags": [
+    "gaming",
+    "engine"
+   ]
+  },
+  {
+   "id": "riot-games",
+   "name": "Riot Games",
+   "icon": "si:riotgames",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "battle-net",
+   "name": "Battle.net",
+   "icon": "si:battledotnet",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "itch-io",
+   "name": "itch.io",
+   "icon": "si:itchdotio",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "roblox",
+   "name": "Roblox",
+   "icon": "si:roblox",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "ea",
+   "name": "EA",
+   "icon": "si:ea",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "ubisoft",
+   "name": "Ubisoft",
+   "icon": "si:ubisoft",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "rockstar",
+   "name": "Rockstar Games",
+   "icon": "si:rockstargames",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "valve",
+   "name": "Valve",
+   "icon": "si:valve",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "curseforge",
+   "name": "CurseForge",
+   "icon": "si:curseforge",
+   "tags": [
+    "gaming",
+    "mods"
+   ]
+  },
+  {
+   "id": "modrinth",
+   "name": "Modrinth",
+   "icon": "si:modrinth",
+   "tags": [
+    "gaming",
+    "mods"
+   ]
+  },
+  {
+   "id": "gog",
+   "name": "GOG",
+   "icon": "si:gogdotcom",
+   "tags": [
+    "gaming"
+   ]
+  }
+ ],
+ "files": [
+  {
+   "id": "pdf",
+   "name": "PDF",
+   "icon": "file:pdf2",
+   "ext": [
+    "pdf"
+   ],
+   "tags": [
+    "file",
+    "pdf"
+   ],
+   "knock": true
+  },
+  {
+   "id": "docx",
+   "name": "Word document",
+   "icon": "file:file-type-word",
+   "ext": [
+    "doc",
+    "docx"
+   ],
+   "tags": [
+    "file",
+    "doc",
+    "docx"
+   ],
+   "knock": true
+  },
+  {
+   "id": "xlsx",
+   "name": "Excel workbook",
+   "icon": "file:file-type-excel",
+   "ext": [
+    "xls",
+    "xlsx"
+   ],
+   "tags": [
+    "file",
+    "xls",
+    "xlsx"
+   ],
+   "knock": true
+  },
+  {
+   "id": "pptx",
+   "name": "PowerPoint deck",
+   "icon": "file:file-type-powerpoint",
+   "ext": [
+    "ppt",
+    "pptx"
+   ],
+   "tags": [
+    "file",
+    "ppt",
+    "pptx"
+   ],
+   "knock": true
+  },
+  {
+   "id": "gdoc",
+   "name": "Google Doc",
+   "icon": "si:googledocs",
+   "ext": [
+    "gdoc"
+   ],
+   "tags": [
+    "file",
+    "gdoc"
+   ],
+   "violetShare": 0.2,
+   "knock": true
+  },
+  {
+   "id": "gsheet",
+   "name": "Google Sheet",
+   "icon": "si:googlesheets",
+   "ext": [
+    "gsheet"
+   ],
+   "tags": [
+    "file",
+    "gsheet"
+   ]
+  },
+  {
+   "id": "gslides",
+   "name": "Google Slides",
+   "icon": "si:googleslides",
+   "ext": [
+    "gslides"
+   ],
+   "tags": [
+    "file",
+    "gslides"
+   ],
+   "knock": true
+  },
+  {
+   "id": "txt",
+   "name": "Text file",
+   "icon": "file:text",
+   "ext": [
+    "txt"
+   ],
+   "tags": [
+    "file",
+    "txt"
+   ]
+  },
+  {
+   "id": "md",
+   "name": "Markdown",
+   "icon": "file:markdown",
+   "ext": [
+    "md"
+   ],
+   "tags": [
+    "file",
+    "md"
+   ]
+  },
+  {
+   "id": "json",
+   "name": "JSON",
+   "icon": "file:json",
+   "ext": [
+    "json"
+   ],
+   "tags": [
+    "file",
+    "json"
+   ]
+  },
+  {
+   "id": "yaml",
+   "name": "YAML",
+   "icon": "file:light-yaml",
+   "ext": [
+    "yml",
+    "yaml"
+   ],
+   "tags": [
+    "file",
+    "yml",
+    "yaml"
+   ],
+   "wide": true
+  },
+  {
+   "id": "xml",
+   "name": "XML",
+   "icon": "file:xml",
+   "ext": [
+    "xml"
+   ],
+   "tags": [
+    "file",
+    "xml"
+   ]
+  },
+  {
+   "id": "html",
+   "name": "HTML",
+   "icon": "file:html",
+   "ext": [
+    "html"
+   ],
+   "tags": [
+    "file",
+    "html"
+   ],
+   "knock": true
+  },
+  {
+   "id": "css",
+   "name": "CSS",
+   "icon": "file:css",
+   "ext": [
+    "css"
+   ],
+   "tags": [
+    "file",
+    "css"
+   ],
+   "violet": true,
+   "knock": true
+  },
+  {
+   "id": "js",
+   "name": "JavaScript",
+   "icon": "file:js-official",
+   "ext": [
+    "js"
+   ],
+   "tags": [
+    "file",
+    "js"
+   ]
+  },
+  {
+   "id": "ts",
+   "name": "TypeScript",
+   "icon": "file:typescript-official",
+   "ext": [
+    "ts"
+   ],
+   "tags": [
+    "file",
+    "ts"
+   ],
+   "knock": true
+  },
+  {
+   "id": "py",
+   "name": "Python",
+   "icon": "file:python",
+   "ext": [
+    "py"
+   ],
+   "tags": [
+    "file",
+    "py"
+   ]
+  },
+  {
+   "id": "sql",
+   "name": "SQL",
+   "icon": "file:sql",
+   "ext": [
+    "sql"
+   ],
+   "tags": [
+    "file",
+    "sql"
+   ]
+  },
+  {
+   "id": "zip",
+   "name": "ZIP archive",
+   "icon": "file:zip",
+   "ext": [
+    "zip"
+   ],
+   "tags": [
+    "file",
+    "zip"
+   ]
+  },
+  {
+   "id": "image",
+   "name": "Image",
+   "icon": "file:image",
+   "ext": [
+    "png",
+    "jpg",
+    "jpeg",
+    "gif"
+   ],
+   "tags": [
+    "file",
+    "png",
+    "jpg",
+    "jpeg",
+    "gif"
+   ],
+   "knock": true
+  },
+  {
+   "id": "svg",
+   "name": "SVG",
+   "icon": "file:svg",
+   "ext": [
+    "svg"
+   ],
+   "tags": [
+    "file",
+    "svg"
+   ],
+   "knock": true
+  },
+  {
+   "id": "video",
+   "name": "Video",
+   "icon": "file:video",
+   "ext": [
+    "mp4",
+    "mov"
+   ],
+   "tags": [
+    "file",
+    "mp4",
+    "mov"
+   ],
+   "knock": true
+  },
+  {
+   "id": "audio",
+   "name": "Audio",
+   "icon": "file:audio",
+   "ext": [
+    "mp3",
+    "wav"
+   ],
+   "tags": [
+    "file",
+    "mp3",
+    "wav"
+   ]
+  },
+  {
+   "id": "font",
+   "name": "Font",
+   "icon": "file:font",
+   "ext": [
+    "ttf",
+    "otf",
+    "woff"
+   ],
+   "tags": [
+    "file",
+    "ttf",
+    "otf",
+    "woff"
+   ]
+  },
+  {
+   "id": "epub",
+   "name": "E-book",
+   "icon": "file:epub",
+   "ext": [
+    "epub"
+   ],
+   "tags": [
+    "file",
+    "epub"
+   ]
+  },
+  {
+   "id": "psd",
+   "name": "Photoshop file",
+   "icon": "file:photoshop",
+   "ext": [
+    "psd"
+   ],
+   "tags": [
+    "file",
+    "psd"
+   ]
+  },
+  {
+   "id": "ai",
+   "name": "Illustrator file",
+   "icon": "file:ai",
+   "ext": [
+    "ai"
+   ],
+   "tags": [
+    "file",
+    "ai"
+   ]
+  },
+  {
+   "id": "figma-file",
+   "name": "Figma file",
+   "icon": "logos:figma",
+   "ext": [
+    "fig"
+   ],
+   "tags": [
+    "file",
+    "fig"
+   ],
+   "violetShare": 0.2
+  },
+  {
+   "id": "sketch-file",
+   "name": "Sketch file",
+   "icon": "file:sketch",
+   "ext": [
+    "sketch"
+   ],
+   "tags": [
+    "file",
+    "sketch"
+   ]
+  },
+  {
+   "id": "keynote",
+   "name": "Keynote",
+   "icon": "file:key",
+   "ext": [
+    "key"
+   ],
+   "tags": [
+    "file",
+    "key"
+   ]
+  },
+  {
+   "id": "odt",
+   "name": "OpenDocument text",
+   "icon": "file:libreoffice-writer",
+   "ext": [
+    "odt"
+   ],
+   "tags": [
+    "file",
+    "odt"
+   ],
+   "knock": true
+  },
+  {
+   "id": "ods",
+   "name": "OpenDocument sheet",
+   "icon": "file:libreoffice-calc",
+   "ext": [
+    "ods"
+   ],
+   "tags": [
+    "file",
+    "ods"
+   ],
+   "knock": true
+  },
+  {
+   "id": "odp",
+   "name": "OpenDocument slides",
+   "icon": "file:libreoffice-impress",
+   "ext": [
+    "odp"
+   ],
+   "tags": [
+    "file",
+    "odp"
+   ],
+   "knock": true
+  },
+  {
+   "id": "eml",
+   "name": "Email",
+   "icon": "file:file-type-outlook",
+   "ext": [
+    "eml",
+    "msg"
+   ],
+   "tags": [
+    "file",
+    "eml",
+    "msg"
+   ]
+  },
+  {
+   "id": "log",
+   "name": "Log file",
+   "icon": "file:log",
+   "ext": [
+    "log"
+   ],
+   "tags": [
+    "file",
+    "log"
+   ]
+  },
+  {
+   "id": "cert",
+   "name": "Certificate",
+   "icon": "file:cert",
+   "ext": [
+    "pem",
+    "crt"
+   ],
+   "tags": [
+    "file",
+    "pem",
+    "crt"
+   ]
+  },
+  {
+   "id": "db",
+   "name": "Database",
+   "icon": "file:db",
+   "ext": [
+    "db",
+    "sqlite"
+   ],
+   "tags": [
+    "file",
+    "db",
+    "sqlite"
+   ]
+  },
+  {
+   "id": "default",
+   "name": "File",
+   "icon": "file:default-file",
+   "ext": [],
+   "tags": [
+    "file"
+   ]
+  }
+ ],
+ "ui": [
+  {
+   "id": "arrow-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "arrow-left",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "arrow-up",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "arrow-down",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "arrow-up-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "arrow-down-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "move-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "chevron-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "chevron-down",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "chevron-up",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "chevron-left",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "chevrons-up-down",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "corner-down-right",
+   "tags": [
+    "arrows"
+   ]
+  },
+  {
+   "id": "check",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "x",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "plus",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "minus",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "search",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "menu",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "play",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "pause",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "download",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "upload",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "share-2",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "link",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "external-link",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "copy",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "trash-2",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "pencil",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "settings",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "sliders-horizontal",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "filter",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "refresh-cw",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "rotate-ccw",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "log-in",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "log-out",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "scan-text",
+   "tags": [
+    "actions",
+    "ai"
+   ]
+  },
+  {
+   "id": "paperclip",
+   "tags": [
+    "actions",
+    "files"
+   ]
+  },
+  {
+   "id": "send",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "maximize-2",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "ellipsis",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "grip-vertical",
+   "tags": [
+    "actions"
+   ]
+  },
+  {
+   "id": "mail",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "message-square",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "message-circle",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "phone",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "at-sign",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "inbox",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "bell",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "megaphone",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "headphones",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "video",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "mic",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "user",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "users",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "user-plus",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "handshake",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "circle-user-round",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "contact",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "house",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "building-2",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "building",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "map-pin",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "globe",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "store",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "plane",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "car",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "bike",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "truck",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "bar-chart-3",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "line-chart",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "pie-chart",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "trending-up",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "trending-down",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "activity",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "database",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "table",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "layers",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "layout-grid",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "columns-3",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "list-checks",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "clipboard-check",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "gauge",
+   "tags": [
+    "data"
+   ]
+  },
+  {
+   "id": "terminal",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "code",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "git-branch",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "workflow",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "puzzle",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "plug",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "server",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "cloud",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "cpu",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "bot",
+   "tags": [
+    "dev",
+    "ai"
+   ]
+  },
+  {
+   "id": "braces",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "webhook",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "sparkles",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "wand-sparkles",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "brain",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "lightbulb",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "zap",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "languages",
+   "tags": [
+    "ai"
+   ]
+  },
+  {
+   "id": "credit-card",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "wallet",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "receipt",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "banknote",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "circle-dollar-sign",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "percent",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "shopping-cart",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "package",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "scale",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "piggy-bank",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "landmark",
+   "tags": [
+    "money"
+   ]
+  },
+  {
+   "id": "lock",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "shield-check",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "key-round",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "eye",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "fingerprint",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "accessibility",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "badge-check",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "award",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "trophy",
+   "tags": [
+    "trust"
+   ]
+  },
+  {
+   "id": "info",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "triangle-alert",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-check",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-x",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-help",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "flag",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "target",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "rocket",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "star",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "heart",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "thumbs-up",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "bookmark",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "tag",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "clock",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "calendar",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "file",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-text",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "folder",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "image",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "quote",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "sun",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "moon",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "leaf",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "coffee",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "utensils",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "graduation-cap",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "stethoscope",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "heart-pulse",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "hammer",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "wrench",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "ruler",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "palette",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "brush",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "type",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "life-buoy",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "camera",
+   "tags": [
+    "life"
+   ]
+  },
+  {
+   "id": "gamepad-2",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "joystick",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "swords",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "sword",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "shield",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "crown",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "gem",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "dices",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "ghost",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "skull",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "flame",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "medal",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "crosshair",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "compass",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "radar",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "telescope",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "orbit",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "heart-crack",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "hand-metal",
+   "tags": [
+    "gaming"
+   ]
+  },
+  {
+   "id": "monitor",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "laptop",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "smartphone",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "tablet",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "tv",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "keyboard",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "mouse",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "mouse-pointer-2",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "hard-drive",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "memory-stick",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "circuit-board",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "microchip",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "network",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "router",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "ethernet-port",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "usb",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "plug-zap",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "battery-full",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "satellite",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "antenna",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "wifi",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "bluetooth",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "signal",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "printer",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "speaker",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "watch",
+   "tags": [
+    "hardware"
+   ]
+  },
+  {
+   "id": "binary",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "bug",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "test-tube",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "flask-conical",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "atom",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "regex",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "file-code",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "file-json",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "folder-git-2",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "git-merge",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "git-pull-request",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "git-commit-horizontal",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "git-fork",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "package-open",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "container",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "boxes",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "blocks",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "component",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "cuboid",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "box",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "shapes",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "terminal-square",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "square-terminal",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "code-xml",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "variable",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "function-square",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "brackets",
+   "tags": [
+    "dev"
+   ]
+  },
+  {
+   "id": "route",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "split",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "merge",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "waypoints",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "spline",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "repeat",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "shuffle",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "infinity",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "arrow-up-down",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "arrow-left-right",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "git-compare",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "cable",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "unplug",
+   "tags": [
+    "flow"
+   ]
+  },
+  {
+   "id": "send-horizontal",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "mail-check",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "mail-open",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "bell-ring",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "message-square-text",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "message-square-more",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "messages-square",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "rss",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "podcast",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "radio",
+   "tags": [
+    "comms"
+   ]
+  },
+  {
+   "id": "calendar-check",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "calendar-days",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "calendar-clock",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "clock-3",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "timer",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "hourglass",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "history",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "alarm-clock",
+   "tags": [
+    "time"
+   ]
+  },
+  {
+   "id": "shopping-bag",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "gift",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "ticket",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "coins",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "hand-coins",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "wallet-cards",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "badge-percent",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "tags",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "barcode",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "qr-code",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "receipt-text",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "banknote-arrow-up",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "package-check",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "warehouse",
+   "tags": [
+    "commerce"
+   ]
+  },
+  {
+   "id": "chart-line",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-pie",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-column",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-area",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-no-axes-column",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-bar",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-spline",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "chart-gantt",
+   "tags": [
+    "charts"
+   ]
+  },
+  {
+   "id": "check-check",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-check-big",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "square-check",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "list-todo",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "toggle-left",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "toggle-right",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-dot",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "circle-alert",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "octagon-alert",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "shield-alert",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "shield-x",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "loader",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "loader-circle",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "badge-alert",
+   "tags": [
+    "status"
+   ]
+  },
+  {
+   "id": "notebook",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "notebook-pen",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "book-open",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "library",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "newspaper",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-spreadsheet",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-chart-column",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-check",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-search",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-plus",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "files",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "folder-open",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "folder-sync",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "folder-plus",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "archive",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "clipboard-list",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "clipboard-copy",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "clipboard-paste",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-up",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-down",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-lock",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-video",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-audio",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "file-image",
+   "tags": [
+    "files"
+   ]
+  },
+  {
+   "id": "text-cursor-input",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "mouse-pointer-click",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "pointer",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "hand",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "scan-face",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "lock-keyhole",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "lock-open",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "key",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "scan",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "scan-line",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "scan-search",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "scan-barcode",
+   "tags": [
+    "input"
+   ]
+  },
+  {
+   "id": "film",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "clapperboard",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "images",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "aperture",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "music",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "music-2",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "mic-vocal",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "audio-lines",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "volume-2",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "camera-off",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "video-off",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "captions",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "subtitles",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "play-circle",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "circle-play",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "skip-forward",
+   "tags": [
+    "media"
+   ]
+  },
+  {
+   "id": "bus",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "train-front",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "ship",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "bed-double",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "bath",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "sofa",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "lamp",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "flower-2",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "wine",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "beer",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "cake",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "croissant",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "pizza",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "sandwich",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "salad",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "ice-cream-cone",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "cup-soda",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "soup",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "dumbbell",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "tent",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "trees",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "mountain",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "waves",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "sunrise",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "cloud-sun",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "umbrella",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "wind",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "snowflake",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "thermometer",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "map",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "route-off",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "navigation",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "signpost",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "locate",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "hotel",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "school",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "church",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "castle",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "factory",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "tractor",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "shovel",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "hard-hat",
+   "tags": [
+    "places"
+   ]
+  },
+  {
+   "id": "users-round",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "user-check",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "user-cog",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "user-round-plus",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "user-search",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "contact-round",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "baby",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "heart-handshake",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "hand-heart",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "smile",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "laugh",
+   "tags": [
+    "people"
+   ]
+  },
+  {
+   "id": "shield-ellipsis",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "key-square",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "scan-eye",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "eye-off",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "ban",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "bug-off",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "siren",
+   "tags": [
+    "security"
+   ]
+  },
+  {
+   "id": "heading-1",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "list-ordered",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "list",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "text-quote",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "align-left",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "pilcrow",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "spell-check",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "bold",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "italic",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "underline",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "link-2",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "hash",
+   "tags": [
+    "text"
+   ]
+  },
+  {
+   "id": "layout-dashboard",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "layout-template",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "panel-left",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "panel-top",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "sidebar",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "columns-2",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "rows-3",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "grid-2x2",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "square-stack",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "frame",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "app-window",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "layout-panel-left",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "maximize",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "minimize",
+   "tags": [
+    "layout"
+   ]
+  },
+  {
+   "id": "fullscreen",
+   "tags": [
+    "layout"
+   ]
+  }
+ ],
+ "boxes": {
+  "si:googledocs": [
+   3.273,
+   0,
+   17.454,
+   24
+  ],
+  "si:googlesheets": [
+   3.273,
+   0,
+   17.455,
+   24
+  ],
+  "si:googleslides": [
+   3.273,
+   0,
+   17.455,
+   24
+  ],
+  "si:googleforms": [
+   3.273,
+   0,
+   17.454,
+   24
+  ],
+  "logos:google-drive": [
+   0,
+   0,
+   256,
+   237.268
+  ],
+  "logos:google-gmail": [
+   0,
+   0,
+   256,
+   203.636
+  ],
+  "logos:google-calendar": [
+   0,
+   0,
+   256,
+   274.532
+  ],
+  "logos:google-meet": [
+   0,
+   0,
+   256,
+   200.727
+  ],
+  "si:googlechat": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "logos:google-keep": [
+   0,
+   0,
+   256,
+   325.486
+  ],
+  "si:googletasks": [
+   0,
+   0.617,
+   24,
+   22.766
+  ],
+  "logos:google-photos": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:google-maps": [
+   0,
+   0,
+   255.999,
+   366.903
+  ],
+  "logos:google-analytics": [
+   0,
+   0,
+   256,
+   283.395
+  ],
+  "logos:google-ads": [
+   0,
+   0,
+   255.806,
+   229.53
+  ],
+  "logos:google-cloud": [
+   0,
+   0,
+   256,
+   205.797
+  ],
+  "logos:chrome": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:google-gemini-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:google-pay": [
+   0,
+   0,
+   512,
+   203.491
+  ],
+  "logos:google-play-icon": [
+   0,
+   0,
+   256,
+   282.473
+  ],
+  "logos:youtube-icon": [
+   0,
+   0,
+   255.996,
+   179.284
+  ],
+  "logos:microsoft-teams": [
+   0,
+   0,
+   256,
+   238.14
+  ],
+  "logos:microsoft-onedrive": [
+   0,
+   0,
+   256,
+   164.013
+  ],
+  "logos:microsoft-power-bi": [
+   0,
+   0,
+   256,
+   342
+  ],
+  "logos:microsoft-azure": [
+   0,
+   0,
+   256,
+   241.22
+  ],
+  "logos:microsoft-windows-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:notion-icon": [
+   0,
+   0,
+   256,
+   267.468
+  ],
+  "logos:slack-icon": [
+   0,
+   0,
+   255.39,
+   255.187
+  ],
+  "logos:figma": [
+   0,
+   0,
+   256,
+   384
+  ],
+  "logos:airtable": [
+   0.001,
+   0,
+   255.879,
+   214.057
+  ],
+  "logos:asana-icon": [
+   0,
+   0,
+   256,
+   236.624
+  ],
+  "logos:trello": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:jira": [
+   0,
+   0,
+   255.324,
+   255.324
+  ],
+  "logos:linear-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:monday-icon": [
+   0,
+   0,
+   256,
+   154.242
+  ],
+  "logos:clickup-icon": [
+   0,
+   0,
+   256,
+   310.293
+  ],
+  "logos:confluence": [
+   0,
+   0,
+   255.376,
+   245.387
+  ],
+  "logos:todoist-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:basecamp-icon": [
+   0,
+   0,
+   256,
+   222.572
+  ],
+  "logos:coda-icon": [
+   0,
+   0,
+   256,
+   274.278
+  ],
+  "logos:miro-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:loom-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "si:calendly": [
+   0.221,
+   0,
+   23.557,
+   24
+  ],
+  "logos:zoom-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "si:evernote": [
+   1.828,
+   0,
+   20.344,
+   24
+  ],
+  "logos:dropbox": [
+   0,
+   0,
+   256,
+   217.543
+  ],
+  "logos:box": [
+   0,
+   0,
+   512,
+   276.371
+  ],
+  "logos:typeform-icon": [
+   0,
+   0,
+   256,
+   256.76
+  ],
+  "logos:zapier": [
+   0,
+   0,
+   512,
+   138.743
+  ],
+  "logos:n8n-icon": [
+   0,
+   0,
+   256,
+   134.737
+  ],
+  "logos:retool-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:github-icon": [
+   0,
+   0,
+   256,
+   249.681
+  ],
+  "logos:gitlab-icon": [
+   0,
+   0,
+   256,
+   246.49
+  ],
+  "logos:bitbucket": [
+   0,
+   0,
+   256,
+   230.199
+  ],
+  "logos:vercel-icon": [
+   0,
+   0,
+   256,
+   221.705
+  ],
+  "logos:netlify-icon": [
+   0,
+   0,
+   256,
+   225.252
+  ],
+  "logos:cloudflare-icon": [
+   0,
+   0,
+   256,
+   117
+  ],
+  "logos:aws": [
+   0.566,
+   0.085,
+   254.873,
+   152.413
+  ],
+  "logos:supabase-icon": [
+   0,
+   0,
+   256,
+   262.947
+  ],
+  "logos:firebase-icon": [
+   0,
+   0,
+   256,
+   321.537
+  ],
+  "logos:docker-icon": [
+   0,
+   0,
+   256,
+   184.743
+  ],
+  "logos:kubernetes": [
+   0.532,
+   0.165,
+   255.432,
+   248.733
+  ],
+  "logos:terraform-icon": [
+   0,
+   0,
+   256,
+   290.909
+  ],
+  "logos:sentry-icon": [
+   0,
+   0.82,
+   256,
+   225.72
+  ],
+  "logos:datadog-icon": [
+   0,
+   0,
+   256,
+   274.036
+  ],
+  "logos:grafana": [
+   0,
+   0,
+   256,
+   278.199
+  ],
+  "logos:postgresql": [
+   0.297,
+   0.364,
+   255.386,
+   263.298
+  ],
+  "logos:mysql-icon": [
+   0.024,
+   0,
+   255.805,
+   251.104
+  ],
+  "logos:mongodb-icon": [
+   0,
+   0,
+   256,
+   548.266
+  ],
+  "logos:redis": [
+   0,
+   0.583,
+   256,
+   218.587
+  ],
+  "logos:snowflake-icon": [
+   0,
+   0,
+   256,
+   254.897
+  ],
+  "logos:databricks-icon": [
+   0,
+   0,
+   256,
+   275.641
+  ],
+  "logos:postman-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:npm-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:openai-icon": [
+   0,
+   0,
+   256,
+   259.528
+  ],
+  "logos:anthropic-icon": [
+   0,
+   0,
+   256,
+   175.78
+  ],
+  "logos:claude-icon": [
+   0,
+   0,
+   256,
+   256.194
+  ],
+  "logos:mistral-ai-icon": [
+   0,
+   0,
+   256,
+   232.727
+  ],
+  "logos:hugging-face-icon": [
+   0,
+   0,
+   256,
+   237.671
+  ],
+  "logos:stripe": [
+   0,
+   0,
+   512,
+   213.049
+  ],
+  "logos:paypal": [
+   0.035,
+   0.816,
+   255.021,
+   300.93
+  ],
+  "logos:apple-pay": [
+   0,
+   0,
+   512,
+   210.224
+  ],
+  "logos:visa": [
+   0,
+   0,
+   256,
+   82.668
+  ],
+  "logos:mastercard": [
+   0,
+   0,
+   255.746,
+   198.45
+  ],
+  "logos:amex": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "si:revolut": [
+   2.424,
+   0,
+   19.152,
+   24
+  ],
+  "logos:square": [
+   0,
+   0,
+   255.321,
+   255.321
+  ],
+  "si:quickbooks": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "logos:xero": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:gusto": [
+   0,
+   0,
+   512,
+   194.827
+  ],
+  "logos:hubspot": [
+   0.06,
+   0.002,
+   511.94,
+   148.453
+  ],
+  "logos:salesforce": [
+   0.128,
+   0.128,
+   255.744,
+   179.006
+  ],
+  "logos:mailchimp-icon": [
+   0,
+   0,
+   256,
+   271.699
+  ],
+  "logos:intercom-icon": [
+   0,
+   0,
+   256,
+   262.706
+  ],
+  "logos:zendesk-icon": [
+   0,
+   0,
+   256,
+   194.006
+  ],
+  "logos:twilio-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:segment-icon": [
+   0,
+   0,
+   256,
+   264.968
+  ],
+  "logos:mixpanel": [
+   0,
+   0.001,
+   511.89,
+   167.588
+  ],
+  "logos:amplitude-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:tableau-icon": [
+   0,
+   0,
+   255.998,
+   250.793
+  ],
+  "logos:looker-icon": [
+   0,
+   0,
+   255.995,
+   412.728
+  ],
+  "logos:shopify": [
+   0.037,
+   0.779,
+   255.449,
+   290.498
+  ],
+  "logos:woocommerce-icon": [
+   0,
+   0,
+   256,
+   152.385
+  ],
+  "logos:wordpress-icon": [
+   0,
+   0,
+   255.016,
+   255
+  ],
+  "logos:webflow": [
+   0,
+   0,
+   512,
+   128.776
+  ],
+  "logos:framer": [
+   0,
+   0,
+   256,
+   384
+  ],
+  "logos:squarespace": [
+   0,
+   0,
+   256,
+   203.599
+  ],
+  "logos:wix": [
+   0,
+   0,
+   512,
+   201.45
+  ],
+  "logos:airbnb-icon": [
+   0,
+   0,
+   256,
+   274.581
+  ],
+  "logos:whatsapp-icon": [
+   0,
+   0,
+   256,
+   257.147
+  ],
+  "logos:messenger": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:telegram": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:discord-icon": [
+   0,
+   0,
+   256,
+   198.169
+  ],
+  "logos:instagram-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:facebook": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:x": [
+   0,
+   0,
+   250.495,
+   256
+  ],
+  "logos:linkedin-icon": [
+   0,
+   0,
+   255.999,
+   255.999
+  ],
+  "logos:tiktok-icon": [
+   0,
+   0,
+   255.993,
+   289.273
+  ],
+  "logos:pinterest": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:reddit-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:spotify-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:vimeo-icon": [
+   0,
+   0.334,
+   256,
+   221.867
+  ],
+  "logos:twitch": [
+   0,
+   0,
+   256,
+   267.691
+  ],
+  "logos:apple-app-store": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:apple": [
+   0,
+   0,
+   256,
+   314.4
+  ],
+  "logos:adobe-photoshop": [
+   0,
+   0,
+   256,
+   249.6
+  ],
+  "logos:adobe-illustrator": [
+   0,
+   0,
+   256,
+   249.6
+  ],
+  "logos:adobe-indesign": [
+   0,
+   0,
+   256,
+   249.6
+  ],
+  "logos:adobe-premiere": [
+   0,
+   0,
+   256,
+   249.6
+  ],
+  "logos:adobe-after-effects": [
+   0,
+   0,
+   256,
+   249.6
+  ],
+  "logos:sketch": [
+   0,
+   0,
+   256,
+   231.662
+  ],
+  "logos:perplexity-icon": [
+   0,
+   0,
+   256,
+   297.412
+  ],
+  "logos:cohere-icon": [
+   0,
+   0,
+   256,
+   262.478
+  ],
+  "logos:deepseek-icon": [
+   0,
+   0,
+   256,
+   188.391
+  ],
+  "logos:groq": [
+   0,
+   0,
+   512,
+   145.292
+  ],
+  "logos:ollama": [
+   0,
+   0,
+   256,
+   338.362
+  ],
+  "logos:openrouter-icon": [
+   0,
+   0,
+   256,
+   180.885
+  ],
+  "logos:togetherai-icon": [
+   0,
+   0,
+   256,
+   238.15
+  ],
+  "logos:grok-icon": [
+   0,
+   0,
+   256,
+   245.764
+  ],
+  "logos:claude-code": [
+   0,
+   0.333,
+   256,
+   160
+  ],
+  "logos:github-copilot": [
+   0,
+   0,
+   256,
+   208
+  ],
+  "logos:codex": [
+   0,
+   0,
+   256,
+   255.999
+  ],
+  "logos:cursor-icon": [
+   0,
+   0,
+   256,
+   291.844
+  ],
+  "logos:cline-icon": [
+   0,
+   0,
+   256,
+   267.811
+  ],
+  "logos:kiro": [
+   0,
+   0,
+   256,
+   311.216
+  ],
+  "logos:model-context-protocol-icon": [
+   0,
+   0,
+   256,
+   284.762
+  ],
+  "logos:meta-icon": [
+   0,
+   0,
+   256,
+   170.038
+  ],
+  "logos:google-bard-icon": [
+   0,
+   0,
+   256,
+   257.191
+  ],
+  "logos:pytorch-icon": [
+   0,
+   0,
+   256,
+   309.435
+  ],
+  "logos:tensorflow": [
+   0,
+   0,
+   255.022,
+   273.439
+  ],
+  "logos:jupyter": [
+   0.146,
+   0,
+   255.305,
+   299.131
+  ],
+  "logos:midjourney": [
+   0,
+   0,
+   256,
+   213.255
+  ],
+  "logos:elevenlabs-icon": [
+   0,
+   0,
+   256,
+   415.289
+  ],
+  "logos:stability-ai-icon": [
+   0,
+   0,
+   256,
+   212.45
+  ],
+  "logos:langchain-icon": [
+   0,
+   0,
+   256,
+   255.999
+  ],
+  "logos:langfuse-icon": [
+   0,
+   0,
+   256,
+   160.36
+  ],
+  "logos:crewai": [
+   0,
+   0,
+   512,
+   154.715
+  ],
+  "logos:dify": [
+   0,
+   0,
+   512,
+   227.556
+  ],
+  "logos:cerebras-icon": [
+   0,
+   0,
+   256,
+   335.023
+  ],
+  "logos:coreweave-icon": [
+   0,
+   0,
+   256,
+   152.536
+  ],
+  "logos:baseten-icon": [
+   0,
+   0,
+   256,
+   319.991
+  ],
+  "logos:deepgram-icon": [
+   0,
+   0,
+   256,
+   281.223
+  ],
+  "logos:livekit-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:pipecat": [
+   0,
+   0,
+   256,
+   148.049
+  ],
+  "logos:mem0-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:lovable-icon": [
+   0,
+   0,
+   256,
+   261
+  ],
+  "logos:v0": [
+   0,
+   0,
+   512,
+   243.81
+  ],
+  "logos:vapi-icon": [
+   0,
+   0.004,
+   256,
+   162.573
+  ],
+  "logos:retell-icon": [
+   0,
+   0,
+   256,
+   263.347
+  ],
+  "logos:gradio-icon": [
+   0,
+   0,
+   256,
+   223.307
+  ],
+  "logos:streamlit": [
+   0,
+   0,
+   256,
+   139.22
+  ],
+  "logos:wandb-icon": [
+   0,
+   0,
+   256,
+   255.473
+  ],
+  "logos:pinecone-icon": [
+   0,
+   0,
+   256,
+   287.319
+  ],
+  "logos:qdrant-icon": [
+   0,
+   0,
+   256,
+   295.613
+  ],
+  "logos:weaviate-icon": [
+   0,
+   0,
+   256,
+   154.481
+  ],
+  "logos:milvus-icon": [
+   0,
+   0,
+   256,
+   174.373
+  ],
+  "logos:chroma": [
+   0,
+   0,
+   256,
+   163.84
+  ],
+  "logos:lancedb-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:typescript-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:javascript": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:python": [
+   0.145,
+   0.072,
+   255.384,
+   254.054
+  ],
+  "logos:rust": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:go": [
+   0,
+   0,
+   512,
+   191.287
+  ],
+  "logos:java": [
+   0.517,
+   0.371,
+   254.725,
+   345.38
+  ],
+  "logos:kotlin-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:swift": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:ruby": [
+   0,
+   0,
+   254.881,
+   254.173
+  ],
+  "logos:php": [
+   0,
+   0,
+   256,
+   134.6
+  ],
+  "logos:c-sharp": [
+   0,
+   0,
+   256,
+   284.294
+  ],
+  "logos:c-plusplus": [
+   0,
+   0,
+   256,
+   287.722
+  ],
+  "logos:dart": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:scala": [
+   0,
+   0,
+   256,
+   416
+  ],
+  "logos:zig": [
+   0,
+   0,
+   512,
+   180.964
+  ],
+  "logos:lua": [
+   0.081,
+   0.084,
+   255.845,
+   255.842
+  ],
+  "logos:haskell-icon": [
+   0,
+   0,
+   256,
+   180.591
+  ],
+  "logos:react": [
+   0,
+   0,
+   256,
+   227.767
+  ],
+  "logos:vue": [
+   0,
+   0,
+   256,
+   220.8
+  ],
+  "logos:angular-icon": [
+   0,
+   0,
+   256,
+   270.981
+  ],
+  "logos:svelte-icon": [
+   0,
+   0,
+   256,
+   307.659
+  ],
+  "logos:svelte-kit": [
+   0,
+   0,
+   512,
+   91.608
+  ],
+  "logos:nextjs-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:nuxt-icon": [
+   0,
+   0,
+   256,
+   167.029
+  ],
+  "logos:astro-icon": [
+   0,
+   0,
+   256,
+   322.91
+  ],
+  "logos:remix-icon": [
+   0,
+   0,
+   256,
+   296.887
+  ],
+  "logos:solidjs-icon": [
+   256,
+   239,
+   256,
+   238.214
+  ],
+  "logos:qwik-icon": [
+   0,
+   0,
+   256,
+   271.548
+  ],
+  "logos:htmx-icon": [
+   0,
+   0,
+   256,
+   167.111
+  ],
+  "logos:alpinejs-icon": [
+   0,
+   0,
+   256,
+   117.421
+  ],
+  "logos:tailwindcss-icon": [
+   0,
+   0,
+   256,
+   153.6
+  ],
+  "logos:bootstrap": [
+   0,
+   0,
+   256,
+   203.932
+  ],
+  "logos:material-ui": [
+   0,
+   0,
+   256,
+   221.301
+  ],
+  "logos:vite-icon": [
+   0,
+   0,
+   256,
+   157
+  ],
+  "logos:webpack": [
+   0,
+   0.048,
+   256,
+   289.666
+  ],
+  "logos:esbuild": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:turborepo-icon": [
+   0,
+   0,
+   256,
+   317.982
+  ],
+  "logos:nx": [
+   0,
+   0,
+   255.996,
+   159.058
+  ],
+  "logos:storybook-icon": [
+   0,
+   0,
+   255.497,
+   318.323
+  ],
+  "logos:gsap": [
+   0,
+   0,
+   512,
+   189.983
+  ],
+  "logos:threejs": [
+   0,
+   0,
+   256,
+   258.471
+  ],
+  "logos:pixijs": [
+   0,
+   0,
+   512,
+   179.038
+  ],
+  "logos:p5js": [
+   0,
+   0,
+   512,
+   236.573
+  ],
+  "logos:d3": [
+   0,
+   0,
+   255.917,
+   242.411
+  ],
+  "logos:chartjs": [
+   0,
+   0,
+   256,
+   295.561
+  ],
+  "logos:nodejs-icon": [
+   0,
+   0,
+   256,
+   288.464
+  ],
+  "logos:express": [
+   0,
+   0,
+   512,
+   148.285
+  ],
+  "logos:fastify-icon": [
+   0,
+   0,
+   256,
+   164.18
+  ],
+  "logos:nestjs": [
+   0,
+   0,
+   256,
+   254.996
+  ],
+  "logos:fastapi-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:django-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:flask": [
+   0,
+   0,
+   256,
+   328.826
+  ],
+  "logos:laravel": [
+   0,
+   0,
+   256,
+   263.54
+  ],
+  "logos:rails": [
+   0,
+   0,
+   511.226,
+   179.651
+  ],
+  "logos:spring-icon": [
+   0,
+   0,
+   256,
+   255.52
+  ],
+  "logos:dotnet": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:phoenix": [
+   0,
+   0,
+   256,
+   174.983
+  ],
+  "logos:hono": [
+   0,
+   0,
+   256,
+   329.983
+  ],
+  "logos:bun": [
+   0,
+   0,
+   256,
+   224.405
+  ],
+  "logos:deno": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:graphql": [
+   0,
+   0,
+   256,
+   287.644
+  ],
+  "logos:trpc": [
+   0,
+   0,
+   256,
+   304.505
+  ],
+  "logos:prisma": [
+   0,
+   0,
+   255.999,
+   309.138
+  ],
+  "logos:drizzle-orm-icon": [
+   0,
+   0.252,
+   255.991,
+   133.859
+  ],
+  "logos:grpc": [
+   0,
+   0,
+   512,
+   207.761
+  ],
+  "logos:openapi-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:swagger": [
+   0,
+   0,
+   256,
+   255.997
+  ],
+  "logos:flutter-icon": [
+   0,
+   0,
+   228.868,
+   283.363
+  ],
+  "logos:android-icon": [
+   0,
+   0,
+   256,
+   149.118
+  ],
+  "logos:ios": [
+   0.672,
+   0,
+   256,
+   127.02
+  ],
+  "logos:expo-icon": [
+   0,
+   0,
+   256,
+   230.319
+  ],
+  "logos:electron": [
+   0,
+   0,
+   256,
+   277.503
+  ],
+  "logos:tauri": [
+   0,
+   0,
+   256,
+   288.336
+  ],
+  "logos:capacitorjs-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:git-icon": [
+   0.001,
+   0,
+   255.999,
+   255.995
+  ],
+  "logos:visual-studio-code": [
+   0,
+   0,
+   255.159,
+   253.705
+  ],
+  "logos:neovim": [
+   0.019,
+   0.573,
+   511.981,
+   147.037
+  ],
+  "logos:vim": [
+   0,
+   0,
+   256,
+   256.342
+  ],
+  "logos:jetbrains-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:intellij-idea": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:xcode": [
+   0,
+   0,
+   256,
+   261.753
+  ],
+  "logos:webstorm": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:pycharm": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:homebrew": [
+   0,
+   0,
+   163.413,
+   254.966
+  ],
+  "logos:pnpm": [
+   0,
+   0,
+   512,
+   367.342
+  ],
+  "logos:yarn": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:eslint": [
+   0,
+   0,
+   256,
+   224.878
+  ],
+  "logos:prettier": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:babel": [
+   0,
+   0,
+   512,
+   199.393
+  ],
+  "logos:bash-icon": [
+   0,
+   0,
+   223.996,
+   256
+  ],
+  "logos:insomnia": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:httpie-icon": [
+   0,
+   0,
+   256,
+   305.048
+  ],
+  "logos:curl": [
+   0,
+   0,
+   512,
+   153.612
+  ],
+  "logos:jest": [
+   0,
+   0,
+   255.553,
+   282.233
+  ],
+  "logos:vitest": [
+   0,
+   0,
+   256,
+   233.537
+  ],
+  "logos:playwright": [
+   0,
+   0,
+   256,
+   191.83
+  ],
+  "logos:cypress-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:selenium": [
+   0,
+   0,
+   256,
+   268.263
+  ],
+  "logos:puppeteer": [
+   0,
+   0,
+   256,
+   382.146
+  ],
+  "logos:testing-library": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:mocha": [
+   0,
+   0,
+   256,
+   290.81
+  ],
+  "logos:helm": [
+   0,
+   0,
+   256,
+   296.322
+  ],
+  "logos:ansible": [
+   0.264,
+   0.302,
+   255.615,
+   313.836
+  ],
+  "logos:pulumi-icon": [
+   0,
+   0,
+   256,
+   270.729
+  ],
+  "logos:packer": [
+   0.357,
+   0.188,
+   254.953,
+   412.509
+  ],
+  "logos:vagrant-icon": [
+   0,
+   0,
+   255.996,
+   265.064
+  ],
+  "logos:nginx": [
+   0,
+   0,
+   256,
+   290.842
+  ],
+  "logos:traefik-proxy-icon": [
+   0,
+   0,
+   256,
+   230.624
+  ],
+  "logos:envoy-icon": [
+   0,
+   0,
+   256,
+   190.958
+  ],
+  "logos:linkerd": [
+   0,
+   0.094,
+   255.996,
+   238.129
+  ],
+  "logos:kong-icon": [
+   0,
+   0,
+   256,
+   224.866
+  ],
+  "logos:tailscale": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:ngrok": [
+   0,
+   0,
+   512,
+   192
+  ],
+  "logos:argo-icon": [
+   0,
+   0,
+   256,
+   326.132
+  ],
+  "logos:jenkins": [
+   0.893,
+   0.296,
+   254.313,
+   416.647
+  ],
+  "logos:circleci": [
+   0.835,
+   0,
+   254.33,
+   258.016
+  ],
+  "logos:github-actions": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:buildkite-icon": [
+   0,
+   0,
+   256,
+   170.667
+  ],
+  "logos:teamcity": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:jfrog": [
+   0,
+   0,
+   256,
+   247.326
+  ],
+  "logos:sonarqube": [
+   0,
+   0,
+   511.916,
+   124.712
+  ],
+  "logos:snyk": [
+   0,
+   0,
+   256,
+   418.319
+  ],
+  "logos:vault-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:consul": [
+   0,
+   0,
+   256,
+   258.411
+  ],
+  "logos:nomad-icon": [
+   0,
+   0,
+   256,
+   295.503
+  ],
+  "logos:linux-tux": [
+   10.044,
+   0.832,
+   235.082,
+   280.024
+  ],
+  "logos:ubuntu": [
+   0.27,
+   0,
+   255.367,
+   255.363
+  ],
+  "logos:debian": [
+   0.65,
+   0,
+   254.585,
+   316.895
+  ],
+  "logos:archlinux": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:fedora": [
+   0,
+   0,
+   256,
+   255.997
+  ],
+  "logos:redhat-icon": [
+   0,
+   0,
+   255.996,
+   193.661
+  ],
+  "logos:rocky-linux-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:kafka-icon": [
+   0,
+   0,
+   256,
+   412.673
+  ],
+  "logos:rabbitmq-icon": [
+   0,
+   0,
+   256,
+   256.061
+  ],
+  "logos:nats-icon": [
+   0,
+   0,
+   256,
+   265.027
+  ],
+  "logos:elasticsearch": [
+   0,
+   0,
+   256,
+   287.642
+  ],
+  "logos:opensearch-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:algolia": [
+   0,
+   0.05,
+   511.324,
+   126.422
+  ],
+  "logos:meilisearch": [
+   0,
+   0,
+   256,
+   149.289
+  ],
+  "logos:typesense-icon": [
+   0,
+   0,
+   256,
+   254.418
+  ],
+  "logos:sqlite": [
+   0,
+   0,
+   511.779,
+   227.138
+  ],
+  "logos:mariadb-icon": [
+   0,
+   0,
+   256,
+   170
+  ],
+  "logos:couchdb-icon": [
+   0,
+   0,
+   256,
+   167.999
+  ],
+  "logos:cassandra": [
+   0.9,
+   0.2,
+   255.1,
+   168.7
+  ],
+  "logos:neo4j": [
+   0,
+   0,
+   512,
+   169.551
+  ],
+  "logos:influxdata-icon": [
+   0,
+   0,
+   256,
+   260.291
+  ],
+  "logos:planetscale": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:neon-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:upstash-icon": [
+   0,
+   0,
+   256,
+   340.832
+  ],
+  "logos:singlestore-icon": [
+   0,
+   0,
+   255.997,
+   256
+  ],
+  "logos:surrealdb-icon": [
+   0,
+   0,
+   256,
+   298.636
+  ],
+  "logos:webassembly": [
+   0,
+   0,
+   256,
+   255.997
+  ],
+  "logos:webgpu": [
+   0,
+   0,
+   256,
+   208.634
+  ],
+  "logos:vulkan": [
+   0,
+   0,
+   512,
+   146.114
+  ],
+  "logos:opengl": [
+   0,
+   0,
+   512,
+   223.676
+  ],
+  "logos:webrtc": [
+   0.02,
+   0.392,
+   255.959,
+   248.287
+  ],
+  "logos:websocket": [
+   0,
+   0,
+   256,
+   192.105
+  ],
+  "logos:prometheus": [
+   0,
+   0.667,
+   256,
+   255.995
+  ],
+  "logos:opentelemetry-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:new-relic-icon": [
+   0,
+   0,
+   256,
+   295.586
+  ],
+  "logos:dynatrace-icon": [
+   0,
+   0,
+   255.997,
+   259.026
+  ],
+  "logos:splunk": [
+   0,
+   0,
+   512,
+   152.048
+  ],
+  "logos:pagerduty-icon": [
+   0,
+   0,
+   256,
+   371.476
+  ],
+  "logos:opsgenie": [
+   0,
+   0,
+   256,
+   304.81
+  ],
+  "logos:rollbar-icon": [
+   0,
+   0,
+   256,
+   213.68
+  ],
+  "logos:posthog-icon": [
+   0,
+   0,
+   256,
+   141.8
+  ],
+  "logos:hotjar-icon": [
+   0,
+   0.144,
+   256,
+   286.978
+  ],
+  "logos:heap-icon": [
+   0,
+   0,
+   256,
+   414.425
+  ],
+  "logos:digital-ocean-icon": [
+   0,
+   0,
+   256,
+   255.998
+  ],
+  "logos:linode": [
+   0,
+   0.041,
+   256,
+   306.959
+  ],
+  "logos:vultr-icon": [
+   0,
+   0,
+   256,
+   220.081
+  ],
+  "logos:fly-icon": [
+   0,
+   0,
+   256,
+   230.264
+  ],
+  "logos:railway": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:heroku-icon": [
+   0,
+   0,
+   256,
+   284.444
+  ],
+  "logos:cloudflare-workers-icon": [
+   0,
+   0,
+   256,
+   230.88
+  ],
+  "logos:fastly": [
+   0,
+   0,
+   512,
+   198.274
+  ],
+  "logos:akamai": [
+   0.446,
+   0.446,
+   511.219,
+   208.172
+  ],
+  "logos:ibm": [
+   0,
+   0,
+   512,
+   204.283
+  ],
+  "logos:oracle": [
+   0,
+   0,
+   512,
+   66.559
+  ],
+  "logos:vmware": [
+   0,
+   0,
+   512,
+   81.422
+  ],
+  "logos:openstack-icon": [
+   0,
+   0,
+   256,
+   250.559
+  ],
+  "logos:openshift": [
+   0.939,
+   0.935,
+   254.507,
+   235.75
+  ],
+  "logos:rancher-icon": [
+   0,
+   0,
+   256,
+   120.309
+  ],
+  "logos:hashicorp-icon": [
+   0,
+   0,
+   256,
+   271
+  ],
+  "logos:auth0-icon": [
+   0,
+   0,
+   255.999,
+   284.564
+  ],
+  "logos:okta-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:clerk-icon": [
+   0,
+   0,
+   256,
+   323.781
+  ],
+  "logos:stytch": [
+   0,
+   0,
+   512,
+   162.32
+  ],
+  "logos:workos-icon": [
+   0,
+   0,
+   256,
+   221.873
+  ],
+  "logos:dashlane-icon": [
+   0,
+   0.004,
+   256,
+   345.773
+  ],
+  "logos:sendgrid-icon": [
+   0,
+   0,
+   256,
+   255.996
+  ],
+  "logos:mailgun-icon": [
+   0,
+   0.048,
+   256,
+   260.075
+  ],
+  "logos:resend-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:sparkpost": [
+   0.643,
+   0.386,
+   510.714,
+   133.146
+  ],
+  "logos:contentful": [
+   0,
+   0,
+   255.247,
+   288.11
+  ],
+  "logos:sanity": [
+   0.29,
+   0.58,
+   510.84,
+   102.835
+  ],
+  "logos:strapi-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:ghost": [
+   0.19,
+   0.791,
+   511.044,
+   163.786
+  ],
+  "logos:drupal-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:joomla": [
+   0.663,
+   0.747,
+   255.004,
+   256.801
+  ],
+  "logos:medusa-icon": [
+   0,
+   0,
+   256,
+   276.135
+  ],
+  "logos:payload": [
+   0,
+   0,
+   256,
+   304.427
+  ],
+  "logos:storyblok-icon": [
+   0,
+   0,
+   256,
+   301.327
+  ],
+  "logos:datocms-icon": [
+   0,
+   0.653,
+   256,
+   257.646
+  ],
+  "logos:adyen": [
+   0,
+   0,
+   512,
+   165.642
+  ],
+  "logos:nvidia": [
+   0,
+   0,
+   512,
+   97.217
+  ],
+  "logos:amd": [
+   0,
+   0,
+   512,
+   122.137
+  ],
+  "logos:intel": [
+   0,
+   0,
+   512,
+   215.987
+  ],
+  "logos:arm": [
+   0,
+   0,
+   512,
+   155.897
+  ],
+  "logos:qualcomm": [
+   0,
+   0,
+   512,
+   94.022
+  ],
+  "logos:broadcom-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:micron-icon": [
+   0,
+   0,
+   256,
+   134.558
+  ],
+  "logos:samsung": [
+   0,
+   0,
+   512,
+   78.418
+  ],
+  "logos:sk-hynix": [
+   0,
+   0,
+   512,
+   268.168
+  ],
+  "logos:tsmc": [
+   0,
+   0,
+   256,
+   201.384
+  ],
+  "logos:raspberry-pi": [
+   0,
+   0,
+   256,
+   326.92
+  ],
+  "logos:arduino": [
+   0.747,
+   0,
+   255.004,
+   173.953
+  ],
+  "logos:risc-v-icon": [
+   0,
+   0,
+   256,
+   254.866
+  ],
+  "logos:unity": [
+   0,
+   0.06,
+   255.941,
+   262.338
+  ],
+  "logos:unrealengine-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:godot-icon": [
+   0,
+   0,
+   256,
+   241.412
+  ],
+  "logos:blender": [
+   0,
+   0,
+   256,
+   207.956
+  ],
+  "logos:game-analytics-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:steam": [
+   0,
+   0,
+   256,
+   258.786
+  ],
+  "logos:mastodon-icon": [
+   0,
+   0,
+   255.309,
+   273.707
+  ],
+  "logos:bluesky": [
+   0,
+   0,
+   256,
+   225.405
+  ],
+  "logos:threads-icon": [
+   0,
+   0,
+   256,
+   291.804
+  ],
+  "logos:signal": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:tumblr-icon": [
+   0,
+   0.042,
+   256,
+   445.412
+  ],
+  "logos:producthunt": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:dribbble-icon": [
+   0,
+   0,
+   256,
+   255.7
+  ],
+  "logos:behance": [
+   0.06,
+   0.009,
+   511.937,
+   94.734
+  ],
+  "logos:medium-icon": [
+   0,
+   0,
+   256,
+   145.39
+  ],
+  "logos:hashnode-icon": [
+   0,
+   0.001,
+   256,
+   255.998
+  ],
+  "logos:stackoverflow-icon": [
+   0,
+   0,
+   255.885,
+   303.142
+  ],
+  "logos:penpot-icon": [
+   0,
+   0,
+   256,
+   338.121
+  ],
+  "logos:invision-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:zeplin": [
+   0,
+   0,
+   256,
+   204.632
+  ],
+  "logos:obsidian-icon": [
+   0,
+   0,
+   256,
+   331.679
+  ],
+  "logos:dbt-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:airflow-icon": [
+   0,
+   0,
+   256,
+   255.987
+  ],
+  "logos:airbyte-icon": [
+   0,
+   0,
+   256,
+   268.995
+  ],
+  "logos:metabase": [
+   0,
+   0,
+   256,
+   323.681
+  ],
+  "logos:rudderstack-icon": [
+   0,
+   0,
+   256,
+   257.909
+  ],
+  "logos:bitcoin": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:ethereum": [
+   0,
+   0,
+   255.999,
+   416.907
+  ],
+  "logos:metamask-icon": [
+   0,
+   0,
+   256,
+   239.933
+  ],
+  "logos:cardano-icon": [
+   0,
+   0.002,
+   256,
+   236.548
+  ],
+  "logos:kraken": [
+   0,
+   0.3,
+   255.8,
+   228.1
+  ],
+  "logos:helpscout-icon": [
+   0,
+   0,
+   256,
+   309.248
+  ],
+  "logos:frontapp": [
+   0,
+   0,
+   255.997,
+   365.71
+  ],
+  "logos:coursera": [
+   0,
+   0,
+   512,
+   72.381
+  ],
+  "logos:udemy-icon": [
+   0,
+   0,
+   256,
+   496.313
+  ],
+  "logos:khan_academy-icon": [
+   0,
+   0,
+   256,
+   275.849
+  ],
+  "logos:codecademy": [
+   0.191,
+   0,
+   511.758,
+   107.625
+  ],
+  "logos:pluralsight-icon": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:firefox": [
+   1.3,
+   0.004,
+   254.7,
+   264.618
+  ],
+  "logos:safari": [
+   4,
+   2,
+   248,
+   248
+  ],
+  "logos:brave": [
+   0,
+   0,
+   256,
+   300.4
+  ],
+  "logos:opera": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:microsoft-edge": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "logos:arc": [
+   0,
+   0,
+   256,
+   218.233
+  ],
+  "logos:soundcloud": [
+   0,
+   0,
+   255.104,
+   144.037
+  ],
+  "logos:netflix-icon": [
+   0,
+   0,
+   255.904,
+   255.904
+  ],
+  "logos:tidal-icon": [
+   0,
+   0,
+   256,
+   170.676
+  ],
+  "logos:getyourguide": [
+   0,
+   0,
+   256,
+   202.372
+  ],
+  "si:playstation": [
+   0,
+   2.596,
+   24,
+   18.808
+  ],
+  "si:epicgames": [
+   1.66,
+   0,
+   20.682,
+   23.999
+  ],
+  "si:riotgames": [
+   0,
+   0.86,
+   24,
+   22.28
+  ],
+  "si:battledotnet": [
+   0,
+   0.39,
+   24,
+   23.219
+  ],
+  "si:itchdotio": [
+   0,
+   1.205,
+   24,
+   21.59
+  ],
+  "si:roblox": [
+   0,
+   0.002,
+   24,
+   23.996
+  ],
+  "si:ea": [
+   0,
+   6.162,
+   24,
+   11.678
+  ],
+  "si:ubisoft": [
+   0.439,
+   0,
+   23.122,
+   24
+  ],
+  "si:rockstargames": [
+   0.026,
+   0,
+   23.947,
+   24
+  ],
+  "si:valve": [
+   0,
+   8.579,
+   24,
+   6.842
+  ],
+  "si:curseforge": [
+   0,
+   4.4,
+   24,
+   15.2
+  ],
+  "si:modrinth": [
+   0.001,
+   0,
+   23.999,
+   24
+  ],
+  "si:gogdotcom": [
+   0,
+   0.58,
+   24,
+   22.84
+  ],
+  "file:pdf2": [
+   2.265,
+   2,
+   27.47,
+   28
+  ],
+  "file:file-type-word": [
+   2,
+   3,
+   28,
+   26
+  ],
+  "file:file-type-excel": [
+   2,
+   3,
+   28,
+   26
+  ],
+  "file:file-type-powerpoint": [
+   2,
+   3,
+   28,
+   26
+  ],
+  "file:text": [
+   4.625,
+   2,
+   22.75,
+   28
+  ],
+  "file:markdown": [
+   2.5,
+   7.955,
+   27,
+   16.091
+  ],
+  "file:json": [
+   4.014,
+   3.996,
+   23.972,
+   24.01
+  ],
+  "file:light-yaml": [
+   2,
+   12.21,
+   28.001,
+   7.582
+  ],
+  "file:xml": [
+   2,
+   7.677,
+   28,
+   16.646
+  ],
+  "file:html": [
+   3.655,
+   2,
+   24.69,
+   28
+  ],
+  "file:css": [
+   1.995,
+   1.994,
+   28,
+   28
+  ],
+  "file:js-official": [
+   2,
+   2,
+   28,
+   28
+  ],
+  "file:typescript-official": [
+   2,
+   2,
+   28,
+   28
+  ],
+  "file:python": [
+   2,
+   2.088,
+   28,
+   27.824
+  ],
+  "file:sql": [
+   6.037,
+   2,
+   19.926,
+   28
+  ],
+  "file:zip": [
+   4.333,
+   2,
+   23.334,
+   28.011
+  ],
+  "file:image": [
+   2,
+   5.851,
+   28,
+   20.298
+  ],
+  "file:svg": [
+   1.999,
+   3.944,
+   28.001,
+   26.113
+  ],
+  "file:video": [
+   3.266,
+   2,
+   25.461,
+   28.005
+  ],
+  "file:audio": [
+   2,
+   4,
+   28,
+   24.002
+  ],
+  "file:font": [
+   2,
+   7.491,
+   28,
+   17.019
+  ],
+  "file:epub": [
+   2.003,
+   2.003,
+   27.995,
+   27.995
+  ],
+  "file:photoshop": [
+   2,
+   2.35,
+   28,
+   27.3
+  ],
+  "file:ai": [
+   2,
+   2.35,
+   28,
+   27.3
+  ],
+  "file:sketch": [
+   2,
+   3.433,
+   28,
+   25.134
+  ],
+  "file:key": [
+   4.625,
+   2,
+   22.752,
+   28.991
+  ],
+  "file:libreoffice-writer": [
+   4.629,
+   2,
+   22.761,
+   28
+  ],
+  "file:libreoffice-calc": [
+   4.629,
+   1.998,
+   22.761,
+   28.002
+  ],
+  "file:libreoffice-impress": [
+   4.629,
+   2,
+   22.751,
+   28
+  ],
+  "file:file-type-outlook": [
+   2.153,
+   2,
+   27.702,
+   28
+  ],
+  "file:log": [
+   2.5,
+   4.5,
+   26.9,
+   23.1
+  ],
+  "file:cert": [
+   4.625,
+   2,
+   22.752,
+   28.991
+  ],
+  "file:db": [
+   6.037,
+   2,
+   19.926,
+   28
+  ],
+  "file:default-file": [
+   5,
+   2,
+   22,
+   28
+  ]
+ }
+}

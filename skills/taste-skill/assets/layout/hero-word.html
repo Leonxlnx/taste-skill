@@ -1,0 +1,123 @@
+<!doctype html>
+<!-- layout v4 demo: hero-word (references/layout-v4.md, heroes.json "word"). type: service. fonts: archivo (letters: wdth). ground: none, flat colour (a dealt CSS ground such as bg-halo is for tech only, never a service, product or place page). -->
+<html lang="en" data-type="service" data-radius="soft" data-ground="sand" data-buttons="solid">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="other">
+<title>Elbe Umzüge: Hamburg movers for flats, offices and pianos</title>
+<meta name="description" content="Fixed-price moves in Hamburg after a 15-minute video call. Two to six movers, a truck, blankets and boxes included.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../backgrounds/backgrounds.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #fbf8f1; --p-surface: #f1ece0; --p-ink: #141311; --p-muted: #5e5a52;
+  --p-accent: #e0a100; --p-accent-ink: #141311; --p-action: #141311; --p-action-ink: #fbf8f1;
+  --p-inv-bg: #141311; --p-inv-surface: #1f1d1a; --p-inv-ink: #fbf8f1; --p-inv-muted: #b1aca2;
+  --p-inv-accent: #f5c242; --p-inv-accent-ink: #141311; --p-inv-action: #f5c242; --p-inv-action-ink: #141311;
+  --font-display: "Archivo", system-ui, sans-serif; --font-text: "Archivo", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.025em; --display-tracking-xl: -0.035em; --display-stretch: 112%; --ly-scale: .9;
+}
+.hero--word { --halo-x: 30%; --halo-y: 34%; }
+.price-rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+.quote-card { display: grid; gap: var(--s-5); align-content: start; padding: var(--s-6); border-radius: var(--r-lg); background: var(--surface); }
+.quote-card blockquote { font: var(--display-weight) var(--t-h3)/1.25 var(--font-display); font-stretch: 100%; letter-spacing: -0.015em; }
+.quote-card figcaption { font-size: var(--t-small); color: var(--muted); }
+.stars { display: flex; gap: 3px; color: var(--accent); } .stars svg { width: 18px; height: 18px; }
+@media (max-width: 1023px) { .quote-card { margin-top: var(--s-7); } }
+</style>
+<script src="../backgrounds/backgrounds.js"></script>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Elbe Umzüge</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#prices">Moves <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3"><p class="t-label">Homes</p><a href="#prices">Flats<span>From €390 for one bedroom</span></a><a href="#prices">Houses<span>Fixed price after a call</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Special</p><a href="#prices">Pianos<span>Upright and grand</span></a><a href="#prices">Offices<span>Over a weekend</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#prices">Prices</a></div>
+      <div class="nav__item"><a class="nav__link" href="#prices">Boxes</a></div>
+      <div class="nav__item"><a class="nav__link" href="#prices">Reviews</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="#prices">Get a price</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--word"aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text hero__in">
+      <h1 id="hero-h" data-ly-letters="wdth">Hamburg movers for <span class="ly-word" data-ly-word='["offices.","pianos.","studios."]'>flats.</span></h1>
+      <div class="grid hero__foot">
+        <div class="span-6">
+          <p class="hero__lead">A fixed price after a 15-minute video call. Two to six movers, a 7.5-tonne truck, blankets and boxes included, insured to €50,000.</p>
+          <div class="btn-row"><a class="btn btn--primary" href="#prices">Get a fixed price</a><a class="btn btn--secondary" href="#prices">See the prices</a></div>
+        </div>
+        <dl class="hero__facts hero__facts--col span-5 start-8">
+          <div><dt>One-bedroom flat</dt><dd>From €390</dd></div>
+          <div><dt>Insured</dt><dd>Up to €50,000</dd></div>
+          <div><dt>Reviews</dt><dd>4.9 from 1,240</dd></div>
+          <div><dt>Moving days</dt><dd>Monday to Saturday</dd></div>
+        </dl>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="prices" aria-labelledby="prices-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-6">
+        <div class="section-head">
+          <h2 id="prices-h">Prices for a move inside Hamburg. <span class="muted">Third floor without a lift is included.</span></h2>
+        </div>
+        <ul class="rows price-rows">
+          <li><span class="rows__name">Studio or one bedroom<small>Two movers, about four hours</small></span><span class="rows__value">from €390</span></li>
+          <li><span class="rows__name">Two or three bedrooms<small>Three movers, a full day</small></span><span class="rows__value">from €780</span></li>
+          <li><span class="rows__name">Upright piano<small>Up or down any staircase</small></span><span class="rows__value">€290</span></li>
+          <li><span class="rows__name">Office up to 20 desks<small>Over a weekend, IT packed by us</small></span><span class="rows__value">from €2,400</span></li>
+        </ul>
+      </div>
+      <figure class="quote-card span-5 start-8">
+        <div class="stars" aria-label="5 out of 5" role="img"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg></div>
+        <blockquote>“They carried a Bechstein down four floors in Eimsbüttel and the price was the one on the quote.”</blockquote>
+        <figcaption>Clara Nowak, moved in March</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Get a fixed price</h2></div>
+      <a class="btn btn--primary btn--xl" href="#prices">Get a fixed price<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Elbe Umzüge</a>
+          <p class="footer__lede">Stresemannstraße, Altona.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Ask</h4><ul><li><a href="mailto:moves@elbe-umzuege.example">Write to us</a></li><li>Monday to Saturday, 7:00 to 20:00</li></ul></div>
+        <div class="span-3 footer__col"><h4>Moves</h4><ul><li><a href="#prices">Flats</a></li><li><a href="#prices">Offices</a></li><li><a href="#prices">Pianos</a></li></ul></div>
+      </div>
+      <div class="footer__legal"><span>&copy; 2026 Elbe Umzüge GmbH</span><span><a href="#prices">Datenschutz</a></span></div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

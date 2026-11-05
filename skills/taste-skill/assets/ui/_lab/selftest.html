@@ -1,0 +1,35 @@
+<!doctype html><html><head><script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8"><title>Card kit self-test</title>
+<link rel="stylesheet" href="../base.css"><link rel="stylesheet" href="../cards.css">
+<style>body{margin:0;padding:16px;background:#f3f2ef;--bg:#f3f2ef;--card:#fff;--ink:#141414;--muted:#666;--accent:#d2552d;font:14px/20px system-ui}#out{white-space:pre-wrap;font:13px/18px monospace;background:#fff;padding:12px}.bare{width:358px}.g{display:grid;grid-template-columns:358px 1fr;gap:16px}</style></head><body>
+<pre id="out">running</pre>
+<div class="g">
+  <div class="bare" id="bare"><div data-ui-load="window"></div></div>
+  <div>
+    <article class="card" id="held" style="width:420px"><h3>Held card</h3><p>A link: <a href="#x" id="lnk">link</a></p>
+      <div class="panel"><div class="stage"><div class="at-corner" style="--ax:24px;--ay:24px" data-ui-load="toggles" data-ui-still></div></div></div></article>
+    <div id="files" style="width:440px;margin-top:16px"><div class="ui ui-files" data-ui="files">
+      <div class="ui-files__status"><span class="ui-dot"></span><span data-files-status>16 sources read</span></div>
+      <ul class="ui-files__grid"><li class="ui-file is-done"><span class="ui-file__name">A</span><span class="ui-file__kind">x</span><span class="ui-file__bar"><i></i></span></li><li class="ui-file is-done"><span class="ui-file__name">B</span><span class="ui-file__kind">y</span><span class="ui-file__bar"><i></i></span></li><li class="ui-file is-done"><span class="ui-file__name">C</span><span class="ui-file__kind">z</span><span class="ui-file__bar"><i></i></span></li></ul></div></div>
+  </div>
+</div>
+<script type="module">
+import ui from '../ui.js';
+const out = document.getElementById('out'), log = [];
+const say = s => { log.push(s); out.textContent = log.join('\n'); };
+await ui.loadAll(document); await ui.startAll(document);
+const wait = ms => new Promise(r => setTimeout(r, ms));
+// files status words
+const st = document.querySelector('#files [data-files-status]'); const seen = new Set();
+const mo = new MutationObserver(() => seen.add(st.textContent)); mo.observe(st, { childList: true, characterData: true, subtree: true });
+// focus once on a held card
+let cycles = 0; document.getElementById('held').addEventListener('ui-cycle', () => cycles++);
+await wait(1500);
+const bare = document.getElementById('bare'), btn = bare.querySelector('.loop-pause'), win = bare.querySelector('.ui');
+if (btn && win) { const b = btn.getBoundingClientRect(), w = win.getBoundingClientRect(); say(`bare pause: btn top ${Math.round(b.top)} win bottom ${Math.round(w.bottom)} -> ${b.top >= w.bottom - 1 ? 'clear of window' : 'OVERLAPS'}`); } else say('bare pause: ' + (btn ? 'no window' : 'no button'));
+document.getElementById('lnk').focus();
+await wait(9000);
+say(`held card, focus kept 9 s: ${cycles} cycle(s) ${cycles <= 1 ? 'ok' : 'LOOPS'}; held button: ${document.querySelector('#held .loop-pause') ? 'yes' : 'none'}`);
+say('files status texts seen: ' + [...seen].join(' | '));
+document.body.dataset.ready = '1';
+</script></body></html>

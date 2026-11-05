@@ -1,0 +1,10 @@
+/* lines-rise: each word is clipped by its own box and rises with its line; what follows the heading
+   is held at opacity 0 until the animation starts. Hidden only while the loader is live and never
+   after .mo-safe on <html> (2.5 s) or on the element (a failed module). */
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) { .mo-js:not(.mo-safe) [data-moment="lines-rise"]:not(.is-live):not(.is-done):not(.mo-safe):not([data-moment-still]) :is(.section-head > *, .mo-lr__follow) { opacity: 0; } }
+[data-moment="lines-rise"].is-live .mo-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+[data-moment="lines-rise"].is-live .mo-i { display: inline-block; will-change: transform; transform: translateY(106%); }
+[data-moment="lines-rise"].is-live :is(.section-head > :not(h1):not(h2):not(h3), .mo-lr__follow) { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { [data-moment="lines-rise"] :is(.section-head > *, .mo-lr__follow, .mo-i) { opacity: 1 !important; transform: none !important; } }
+/* a printed or saved page shows the section as written, whatever has been scrolled to */
+@media print { [data-moment="lines-rise"] :is(.section-head > *, .mo-lr__follow, .mo-i) { opacity: 1 !important; transform: none !important; } }

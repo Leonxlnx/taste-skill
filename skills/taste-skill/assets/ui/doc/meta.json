@@ -1,0 +1,21 @@
+{
+  "name": "doc",
+  "title": "Document with marks",
+  "shows": "A page of a document (here a returns policy) with marked phrases and a note beside the current one: what kind of issue, what is wrong, where else it appears. Runs off the panel's bottom edge.",
+  "useFor": [
+    "review",
+    "comments",
+    "AI checks",
+    "compliance",
+    "policies",
+    "contracts"
+  ],
+  "size": [
+    440,
+    330
+  ],
+  "js": true,
+  "place": "at-corner to-edge with .stage--fade-b, 32 to 40px in: the page runs past the bottom edge (a cut page, never a whole sheet floating in the panel); the first mark sits in its top half so the note never lands in the fade",
+  "edit": "Write the client's own document. Mark phrases with <mark class=\"ui-doc__mark\">. The first mark's note is the note box as written; give a later mark its own note on the mark itself (data-kind, data-msg, data-where), or pass opts.notes [{kind, msg, where}] in mark order. A mark with no note stays a quiet underline: the script never shows a note the page did not write.",
+  "loop": "about 2.7 s a cycle: two marks in turn, each sweeping in with its note sliding up beside it; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

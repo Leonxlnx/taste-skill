@@ -1,0 +1,52 @@
+{
+  "id": "fixed-hero-object",
+  "name": "Fixed hero object",
+  "family": "object-scrub",
+  "look": "One product stays on its own layer and turns with the scroll while the page's first chapters pass beneath it: it opens as the hero with the title and the action in the clear half, glides to the other side as each chapter's copy and spec list rise where it was, and a chapter marked dark brings the inverse ground up behind it. The markup carries the object's still; the render draws over it only while the scene is live and near.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "gaming"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 2,
+  "cost": "mid",
+  "webgl": 1,
+  "reduced": "The hero with the object's still in its right half, the chapters as sections under it.",
+  "phone": "The finished composition: the hero copy first, then the still, then the chapters under it.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "object": "one object: a render from assets/objects (print-globe, print-cards, print-wheel, print-lamp, print-cup) with its still made by shoot.mjs make, or the client's own cut-out photograph (an <img class=\"fho__img\">)",
+    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows"
+  },
+  "never": "a gauge, a counter or a frame readout under the object; copy over the object; a second moving ground behind it; an object of another trade than the client's; a print effect on a product page (the render shows). Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+  "avoidWith": [
+    "object-through-giant-type",
+    "powers-of-ten-pullback",
+    "descend-through-weather",
+    "shaped-window-over-fixed-world"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 900
+    },
+    "middle": {
+      "p": 0.4,
+      "wait": 700
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 700
+    }
+  },
+  "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "liquid-hover"
+  ]
+}
