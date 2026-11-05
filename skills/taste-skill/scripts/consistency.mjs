@@ -227,13 +227,14 @@
 // first width only. A fault inside a scroll-linked animation is a
 // WARN (the animation is the FAIL). --quick skips the scroll-motion, hover, loop and form passes and says so. --stops
 // saves every screen. A part caught mid-move on a sweep screen (measured again 0.9 s later) is not told. report.json and
-// the crops go to --out, else to .taste-skill/consistency beside the page file, or to a temp folder for a URL: never into
-// the current directory.
+// the crops go to --out, else to .taste-skill/consistency beside the page file (.taste-skill/consistency-<name> for a page
+// not named index.html, so two pages in one folder keep their own), or to a temp folder for a URL: never into the current
+// directory.
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
-import { join, resolve, dirname, extname, relative, sep } from 'node:path';
+import { join, resolve, dirname, basename, extname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
 
@@ -3615,7 +3616,8 @@ else {
   // the default range is 5200-5299; a --port outside it gets that port and the next 9
   const port = await listenFree(server, PORT, PORT >= 5200 && PORT <= 5299 ? 5299 : PORT + 9);
   url = `http://127.0.0.1:${port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;
-  outDir = resolve(OUT || join(dirname(file), '.taste-skill', 'consistency'));
+  // index.html keeps .taste-skill/consistency; about.html gets .taste-skill/consistency-about, so it never wipes index's crops
+  outDir = resolve(OUT || join(dirname(file), '.taste-skill', basename(file) === 'index.html' ? 'consistency' : 'consistency-' + slug(basename(file, extname(file)))));
 }
 mkdirSync(outDir, { recursive: true });
 for (const f of readdirSync(outDir)) if (/^(sweep-)?\d{3,4}-.+\.jpg$/.test(f)) unlinkSync(join(outDir, f));
