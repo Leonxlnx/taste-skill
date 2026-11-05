@@ -1,0 +1,11 @@
+{
+  "id": "film-light-leak",
+  "name": "Film light leak",
+  "family": "grain",
+  "look": "Light bleeds in from one edge of a dark or coloured frame, with a blown-out core, a soft fringe and fine moving film grain.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["dark", "colour"],
+  "focal": true
+}

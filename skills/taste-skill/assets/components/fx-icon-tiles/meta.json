@@ -1,0 +1,10 @@
+{
+  "id": "fx-icon-tiles",
+  "name": "Icon tiles",
+  "for": "A grid of features where each icon chip is filled with the effect, like an app icon: one canvas seen through every chip, so the chips are related but each a little different.",
+  "effects": ["grain-gradient", "gradient-mesh"],
+  "default": "grain-gradient",
+  "how": "windows(): one still effect host over the grid, masked to the chips' boxes (12px radius, the --r-md token); the glyphs sit above it in the accent ink. Before the canvas draws, each chip is plain accent.",
+  "rules": ["Glyphs in the accent ink, drawn by hand or from one icon set; never brand logos here.", "Still: no drift and no flicker in chips this small.", "Chip radius is the --r-md token (12px), as for every chip in the kit.", "One tile group with filled chips per page."],
+  "a11y": "Chips are decorative (aria-hidden); every tile has a heading and a sentence. The effect is still."
+}

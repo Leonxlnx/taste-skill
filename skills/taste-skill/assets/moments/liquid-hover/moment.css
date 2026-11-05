@@ -1,0 +1,5 @@
+/* liquid-hover: the photograph fills its frame; while the frame is near the screen one canvas draws
+   it with the ripple on top. Without the canvas the photograph is what shows. */
+.mo-lq { position: relative; overflow: hidden; isolation: isolate; cursor: default; }
+.mo-lq > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mo-lq > .mo-lq__gl { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; display: block; }

@@ -1,0 +1,19 @@
+{
+  "name": "code",
+  "title": "Code with a highlighted line",
+  "shows": "An editor pane with two tabs, eight lines of code, one highlighted line and a one-line note on the change below.",
+  "useFor": [
+    "developer tools",
+    "code review",
+    "APIs",
+    "AI coding",
+    "docs"
+  ],
+  "size": [
+    400,
+    284
+  ],
+  "js": true,
+  "edit": "Lines are spans with data-n (line number); tokens use .k keyword, .f function, .n number, .c comment. The first change is the line marked is-mark with the note as written; every other changed line carries its own note as data-note=\"...\" (or opts.steps [{line, text}]). The chip is left as written.",
+  "loop": "about 2.7 s a cycle: the highlight moves through three changed lines, the note naming each; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

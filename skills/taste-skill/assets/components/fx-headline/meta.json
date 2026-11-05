@@ -1,0 +1,10 @@
+{
+  "id": "fx-headline",
+  "name": "Effect headline",
+  "for": "The one display line on a page (hero or closing call to action) where a key phrase, or the whole line, is filled with a still effect while the rest stays in ink.",
+  "effects": ["silk-folds", "aurora-curtains", "grain-gradient"],
+  "default": "silk-folds",
+  "how": "fill(): one still canvas over the headline (speed 0), blended so only the glyphs of the [data-fill] phrase show it; the real text stays selectable. Still, so it needs no pause button.",
+  "rules": ["One filled headline per page.", "Fill a phrase of two or three words, or one short line; never body text.", "Display size only: 40px and up, weight 500 or more.", "Never fluted-glass in type: on a colour ground it paints thick accent bars through the letters."],
+  "a11y": "The text stays real and is read normally; the overlay is aria-hidden. Forced colours and no-script show the plain ink. Reduced motion shows one still frame."
+}

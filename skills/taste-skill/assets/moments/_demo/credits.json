@@ -1,0 +1,14 @@
+{
+ "about": "Photographs used only by the moment demo pages. All are Unsplash photographs served by Lorem Picsum (picsum.photos) under the Unsplash License, from the skill's vetted library (assets/photos/photos.json). Mid to dark tones with edges and detail only: a pale dusk sky reads lavender and shows no ripple.",
+ "photos": [
+  { "file": "photo-855.jpg", "id": "855", "by": "Rodion Kutsaev", "page": "https://unsplash.com/photos/855", "licence": "Unsplash License" },
+  { "file": "photo-887.jpg", "id": "887", "by": "Roman Kraft", "licence": "Unsplash License" },
+  { "file": "photo-1081.jpg", "id": "1081", "by": "Julien Moreau", "licence": "Unsplash License" },
+  { "file": "photo-702.jpg", "id": "702", "by": "Dominik Schröder", "licence": "Unsplash License" },
+  { "file": "photo-702-tall.jpg", "id": "702", "by": "Dominik Schröder", "licence": "Unsplash License" },
+  { "file": "photo-1049.jpg", "id": "1049", "by": "Rosan Harmens", "licence": "Unsplash License" },
+  { "file": "photo-1049-tall.jpg", "id": "1049", "by": "Rosan Harmens", "licence": "Unsplash License" },
+  { "file": "photo-640.jpg", "id": "640", "by": "Sarah Bürvenich", "licence": "Unsplash License" }
+ ],
+ "line": "Photographs by Rodion Kutsaev, Roman Kraft, Julien Moreau, Dominik Schröder, Rosan Harmens and Sarah Bürvenich on Unsplash."
+}

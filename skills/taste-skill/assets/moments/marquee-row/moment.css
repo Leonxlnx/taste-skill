@@ -1,0 +1,22 @@
+/* marquee-row: the rail holds the track and its copy, moving left by one track width in a linear
+   loop, and fades into the ground at both edges; the pause button sits outside the mask at the
+   right. At rest the items wrap into a plain row. */
+.mo-mq { --mo-gap: 64px; --mo-dur: 40s; --mo-w: 1000px; position: relative; padding-block: var(--s-4); }
+.mo-mq .mo-mq__rail { display: flex; gap: var(--mo-gap); overflow: hidden; padding-right: 56px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.mo-mq .mo-mq__track { display: flex; align-items: center; gap: var(--mo-gap); flex: none; margin: 0; padding: 0; list-style: none; white-space: nowrap;
+  font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.01em; color: var(--muted); }
+.mo-mq .mo-mq__track img { height: 28px; width: auto; opacity: .8; }
+.mo-mq.is-live .mo-mq__track { animation: mo-mq var(--mo-dur) linear infinite; animation-play-state: paused; will-change: transform; }
+.mo-mq.is-live.is-on:not(.is-paused) .mo-mq__track { animation-play-state: running; }
+.mo-mq.is-live:hover .mo-mq__track { animation-play-state: paused; }
+@keyframes mo-mq { to { transform: translateX(calc(-1 * var(--mo-w) - var(--mo-gap))); } }
+.mo-mq:not(.is-live) .mo-mq__track { flex-wrap: wrap; white-space: normal; row-gap: var(--s-3); }
+.mo-mq .mo-mq__pause { right: 0; bottom: auto; top: 50%; transform: translateY(-50%); }
+@media (prefers-reduced-motion: reduce) {
+  .mo-mq .mo-mq__track { animation: none !important; }
+  /* a preference that changed after the loop was built: no rail to clip, no copy, a wrapped row */
+  .mo-mq.is-live .mo-mq__rail { display: block; overflow: visible; padding-right: 0; -webkit-mask-image: none; mask-image: none; }
+  .mo-mq.is-live .mo-mq__track { flex-wrap: wrap; white-space: normal; row-gap: var(--s-3); }
+  .mo-mq.is-live .mo-mq__clone, .mo-mq.is-live .mo-mq__pause { display: none; }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "split-reveal",
+  "name": "Split reveal",
+  "kind": "scene",
+  "source": "photo",
+  "shows": "A real photograph split by a line: one side printed as an amplitude halftone screen in the page ink, the other the photograph itself. Dots near the seam take the photograph's own colour, so the print turns back into the picture as it reaches the line.",
+  "suits": [
+    "software"
+  ],
+  "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: a feature card or a wide frame: a real photograph of what the product works on (a photo or design app's picture, the device a tech company makes, a game's key art).",
+  "never": "Never on a place, service, product or local-business page (a cafe, a shop, a hotel, a studio people visit, a maker of things): those show their photographs plain, never printed as a halftone. No chips or caption that explain the print; the photograph's credit goes in the footer's one credit line.",
+  "effect": "halftone",
+  "motion": "None at rest: the line at its rest position, drawn once.",
+  "hover": "The line follows the pointer on a smooth spring. Touch: drag it. Keyboard: the handle is a slider (arrow keys, Shift for bigger steps, Home and End).",
+  "reducedMotion": "One still frame with the line at rest; dragging and the keyboard still move it, at once.",
+  "params": {
+    "cell": "halftone pitch in CSS px; default from the panel size, 5 to 8 (x1.15 on a dark ground)",
+    "angle": "screen angle in degrees, default 45",
+    "split": "rest position 0..1, default the entry's split, else 0.5",
+    "side": "'left' (halftone on the left, default) or 'right'",
+    "focusX": "cover crop centre 0..1, default the entry's focus",
+    "focusY": "cover crop centre 0..1, default the entry's focus",
+    "labels": "1 shows two small chips (never under 480 px wide); off by default",
+    "labelPrint": "chip text for the print side, default 'Print'",
+    "labelPhoto": "chip text for the photograph side, default 'Photograph'",
+    "alt": "what the picture shows"
+  },
+  "palette": "bg is the paper and the line, ink the dots (light dots on a dark page, capped so a bright photograph stays an open screen, never a light slab); the handle takes bg and ink.",
+  "fallback": "the photograph as an <img>, cover-cropped at its focus; the handle goes.",
+  "cost": "low: one pass at 1 canvas px per CSS px, two texture reads (the photograph and a copy softened to the screen pitch), drawn only while the line moves",
+  "photos": [
+    {
+      "id": 1081,
+      "by": "Julien Moreau",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/688Fna1pwOQ",
+      "use": "default"
+    },
+    {
+      "id": 618,
+      "by": "Mika Ruusunen",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/ypVM8PnygUo",
+      "use": "demo card"
+    },
+    {
+      "id": 951,
+      "by": "Sérgio Rola",
+      "licence": "Unsplash licence",
+      "page": "https://unsplash.com/photos/4aQY2CrXsa8",
+      "use": "demo card"
+    }
+  ]
+}

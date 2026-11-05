@@ -1,0 +1,22 @@
+{
+  "name": "window",
+  "title": "App window (queue)",
+  "shows": "A product window: window dots, a breadcrumb with the app's real icon, search; a sidebar with counts; a list of conversations with people, subjects, status and age. The assistant takes each open row: Working, then Replied.",
+  "useFor": [
+    "product overview",
+    "support",
+    "inbox",
+    "workspace",
+    "SaaS",
+    "admin",
+    "agents"
+  ],
+  "size": [
+    600,
+    378
+  ],
+  "js": true,
+  "place": "at-corner 24 to 40px in, cut by the right and bottom edges (.stage--fade-br), or in a .fit (--fit-max its width) when the whole width should show: the window lays itself out for the width it gets (a container query: rows stack name over subject under 540px, the sidebar goes under 420px), so no column is ever sliced. Pair with cursor laid over its lower-right edge",
+  "edit": "Rows are HTML (data-tone 1-5 on each avatar). A row whose status reads the open word is worked on. The words are data-open, data-work and data-done on the root (or opts). opts.compact: a 456px window; any narrower wrapper gets the stacked rows by itself, and the breadcrumb gives way before the search box.",
+  "loop": "about 2.6 s a cycle: two steps of the queue, a row done and the next open row taken; after the last it starts over; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

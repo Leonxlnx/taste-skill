@@ -1,0 +1,525 @@
+/*
+  taste-skill layout.css - layout v4 (references/layout-v4.md): one section per screen, equal left and
+  right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
+  Link it after system.css, ui/cards.css and backgrounds/backgrounds.css; load layout.js after system.js.
+
+  Section   system.css sets the rhythm: every main > section exactly one or two screens (--h), its h2
+            first, --padt under its top; this file adds the heroes and the display tokens.
+  Hero      <section class="hero hero--<type>"><div class="wrap"><div class="hero-text ..">..</div></div>
+            first in main: exactly the first screen, the fixed header over its top.
+  Edges     one container; no one-sided bleed (a block stands on the lines or runs edge to edge).
+  Type      start.mjs deals the pairing (VI-02) and prints --font-*, --display-weight (400; 400 to 500
+            on tech) and --display-tracking; a page may add --display-stretch, --display-axes and
+            --ly-scale (the face's optical size against the default grotesk, 1 when unsure).
+  Place     a place's hero is never dealt: always hero--place (Recipe 3: the photograph under the
+            header, the words under it on the ground). Nothing is laid over a photograph to make
+            words readable, on any type: no scrim, gradient or veil (PH-31, VI-49).
+
+  Every number here is in references/layout-v4.md with what it was measured on; change it there first.
+*/
+
+/* ---------------------------------------------------------------- tokens */
+:root {
+  --ly-nav: var(--nav, 72px);
+  --ly-screen: calc(100svh - var(--ly-nav));      /* one screen under the fixed header: 828 at 1440x900, 788 at 390x844 */
+  --ly-pad: var(--padt, 120px);
+  --ly-hero-pad: var(--hgap, 48px);
+  --ly-head-gap: var(--head-gap, 48px);            /* a section's heading block to its visual (system.css) */
+  /* the content box of one screen (708 at 1440x900) and of the hero (716 = 900 - 72 - 48 - 64) */
+  --ly-fit: calc(100svh - var(--padt, 120px) - var(--padb, 72px) - var(--bar, 0px));
+  --ly-hero-h: calc(100svh - var(--nav, 72px) - var(--hgap, 48px) - var(--hpadb, 64px) - var(--bar, 0px));
+  --ly-scale: 1;
+  /* hero sizes: straight lines from 390 to 1440, times the pairing's --ly-scale (layout-v4.md, section 3) */
+  --ly-h1:       calc(var(--ly-scale) * clamp(40px, 3.048vw + 28.11px, 72px));    /* 72 / 40: split, product, film, centred */
+  --ly-h1-xl:    calc(var(--ly-scale) * clamp(44px, 3.429vw + 30.63px, 80px));    /* 80 / 44: photo */
+  --ly-h1-col:   calc(var(--ly-scale) * clamp(40px, 2.286vw + 31.09px, 64px));    /* 64 / 40: collage */
+  --ly-h1-mega:  calc(var(--ly-scale) * clamp(56px, 9.524vw + 18.86px, 156px));   /* 156 / 56: editorial */
+  --ly-h1-word:  calc(var(--ly-scale) * clamp(54px, 8.571vw + 20.57px, 144px));   /* 144 / 54: word */
+  --ly-h1-quiet: calc(var(--ly-scale) * clamp(34px, 2.095vw + 25.83px, 56px));    /* 56 / 34: statement */
+  --ly-h1-side:  calc(var(--ly-scale) * clamp(40px, 1.143vw + 35.54px, 52px));    /* 52 / 40: triptych */
+  --ly-lead: clamp(17px, .286vw + 15.89px, 20px);                                  /* 20 / 17 */
+}
+
+/* the pairing's display axes (fonts.json): width through font-stretch, the rest as settings */
+h1, h2, h3, .ly-display { font-stretch: var(--display-stretch, 100%); font-variation-settings: var(--display-axes, normal); }
+.card h3, .card h4, .tile h3 { font-stretch: 100%; font-variation-settings: normal; }
+
+/* ---------------------------------------------------------------- one section per screen
+   system.css makes every main > section exactly one or two screens (--h) with its h2 first; nothing
+   here centres a section's content (a short block centred in a tall screen hides that it is short) */
+main > .section .section-head { margin-bottom: var(--ly-head-gap); }
+/* a visual sized to what one screen leaves after its heading (--ly-head, about 160px for a two-line
+   h2 and a sub-line): or put .fill on it inside the section's .wrap */
+.fit-screen { height: clamp(280px, calc(var(--ly-fit) - var(--ly-head, 160px) - var(--ly-head-gap)), 720px); }
+@media (max-width: 1023px) { .fit-screen { height: auto; } }
+
+/* ---------------------------------------------------------------- edges */
+/* no one-sided bleed: a block either stands on the container's lines or runs edge to edge (a
+   full-bleed photograph or ground). layout-check.js flags a block that touches one viewport edge. */
+
+/* ---------------------------------------------------------------- the hero (every type) */
+/* the box (exactly the first screen, padded under the fixed header) is system.css's; .hero-text fills
+   what is left, and a type that grows a picture down to the fold lets it take the rest */
+.hero { position: relative; isolation: isolate; }
+.hero > .wrap > .hero-text { height: 100%; }
+.hero__in { display: flex; flex-direction: column; }
+.hero h1 { font-size: var(--ly-h1); line-height: 1.02; letter-spacing: var(--display-tracking-xl, var(--display-tracking)); text-wrap: balance; }
+.hero .hero__lead { font-size: var(--ly-lead); line-height: 1.5; max-width: 42ch; text-wrap: pretty; color: var(--ink); }
+.hero .hero__lead .muted, .hero__lead.muted { color: var(--muted); }
+.hero__kicker { display: flex; align-items: center; gap: var(--s-2); font-size: var(--t-small); color: var(--muted); }
+.hero__kicker .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+.hero__text > * + * { margin-top: var(--s-5); }
+.hero__text > .btn-row { margin-top: var(--s-6); }
+.hero__text > .hero__kicker + h1 { margin-top: var(--s-4); }
+.hero__grid { align-items: center; align-content: center; }
+/* a hero grid with a picture as tall as the hero (split, collage, triptych): one row, the whole height */
+.hero-text.hero__grid { grid-template-rows: minmax(0, 1fr); align-content: stretch; }
+.hero__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5); align-items: end; }
+.hero__head > :first-child { grid-column: 1 / span 7; }
+.hero__head > :first-child > * + * { margin-top: var(--s-4); }
+.hero__head > .btn-row { grid-column: 9 / -1; justify-content: flex-end; }
+.hero__foot { margin-top: var(--s-6); align-items: end; }
+.hero__foot > .btn-row { justify-content: flex-end; }
+.hero__fill { flex: 1 1 auto; position: relative; min-height: 0; }
+.hero__media { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--surface); }
+.hero__media > img, .hero__media > video, .hero__media > picture > img {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%);
+}
+@media (max-width: 1023px) {
+  .hero__head > :first-child, .hero__head > .btn-row { grid-column: 1 / -1; justify-content: flex-start; }
+  .hero__foot > .btn-row { justify-content: flex-start; }
+  .hero__media > img { object-position: var(--ly-pos-phone, var(--ly-pos, 50% 50%)); }
+}
+/* facts docked to the hero's foot: a hairline and four short facts on the column lines */
+.hero__facts { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5);
+               border-top: 1px solid var(--line); padding-top: var(--s-5); margin: 0; }
+.hero__facts > div { grid-column: auto / span 3; display: grid; gap: var(--s-1); }
+.hero__facts dt { font-size: var(--t-small); color: var(--muted); }
+.hero__facts dd { margin: 0; font-size: var(--t-body); font-weight: 500; }
+@media (max-width: 639px) { .hero__facts > div { grid-column: auto / span 6; } }
+/* a proof strip (logos, a rating) docked to the hero's foot instead of a section of its own */
+.hero__dock { margin-top: auto; padding-top: var(--s-7); }
+
+/* a small card laid on a hero picture, 24px in from a corner (the opening hours, today's bake,
+   an order's state): one, opaque, in the page's colours */
+.ly-float {
+  position: absolute; z-index: 2; left: var(--s-5); bottom: var(--s-5); width: min(300px, calc(100% - 2 * var(--s-5)));
+  display: grid; gap: var(--s-1); padding: var(--s-4); border-radius: var(--r-md);
+  background: var(--bg); color: var(--ink); border: 1px solid var(--line);   /* flat: no shadow at rest (ST-97) */
+}
+.ly-float--tr { left: auto; bottom: auto; right: var(--s-5); top: var(--s-5); }
+.ly-float__row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); font-size: var(--t-small); color: var(--muted); }
+.ly-float__title { font-weight: 500; font-size: var(--t-body); }
+.ly-live { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-label); color: var(--ink); }
+.ly-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 50%, transparent); animation: ly-pulse 2.4s ease-out infinite; }
+@keyframes ly-pulse { 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+/* kind other (a cafe, a shop, a studio) and a place: nothing moves by itself (MO-07) */
+:root:is([data-type="place"], :has(meta[name="site-kind"][content="other"])) .ly-live::before { animation: none; }
+
+/* 1. hero--split: text on span-5, the picture on span-6 start-7, ending on the right line (never out
+      to the viewport edge: the page's two edges stay equal), as tall as the screen less the hero's
+      padding: 628 x 740 at 1440x900. A phone stacks text then picture, and the picture takes what the
+      first screen leaves (at least 240px), so the hero is still one screen */
+.hero--split .hero__media { height: 100%; min-height: 0; }
+.hero--split .hero__grid { align-items: stretch; }
+.hero--split .hero__text { align-self: start; }
+.hero--collage .hero__text { align-self: start; }
+/* the words' first line on the picture's top line: an h1 first in its column starts at its capitals */
+:is(.hero--split, .hero--collage) .hero__text > h1:first-child { text-box: trim-start cap alphabetic; }
+@media (max-width: 1023px) {
+  .hero--split .hero__grid, .hero--collage .hero__grid { display: flex; flex-direction: column; align-items: stretch; }
+  .hero--split .hero__media { height: auto; flex: 1 1 0; min-height: 240px; margin-top: var(--s-6); }
+}
+
+/* 2. hero--photo (product, service, software): the photograph over the whole first screen and the
+      words on its calm side, in a solid box in the page's own colours (the default), or with
+      data-box="none" straight on a calm part of the photograph that is dark (data-tone="dark") or
+      light (data-tone="light") and empty at the desktop crop. Nothing is laid over the photograph:
+      no scrim, gradient or veil (PH-31, VI-49). From 1023 down the photograph is a layer under the
+      header (--photo) and the words sit under it on the ground. On a place see hero--place. */
+.hero--photo { color: var(--ink); background: #1b1b1b; }
+.hero--photo > .hero__bg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%); }
+.hero--photo[data-box="none"][data-tone="dark"] { --ink: #ffffff; --muted: #ffffff; --line: rgb(255 255 255 / .4); --line-strong: rgb(255 255 255 / .7); color: #fff; }
+.hero--photo[data-box="none"][data-tone="light"] { --ink: #111111; --muted: #111111; --line: rgb(17 17 17 / .24); --line-strong: rgb(17 17 17 / .5); color: #111; }
+.hero--photo:not([data-box="none"]) .hero__text {
+  padding: var(--s-7); background: var(--p-bg); color: var(--p-ink); border-radius: var(--r-lg);
+  --ink: var(--p-ink); --muted: var(--p-muted); --line: color-mix(in oklab, var(--p-ink) 11%, transparent); --line-strong: color-mix(in oklab, var(--p-ink) 20%, transparent);
+}
+/* the facts are small words: on the photograph only on a calm part (data-box="none"), never beside a box */
+.hero--photo:not([data-box="none"]) .hero__facts { display: none; }
+.hero--photo > .wrap > .hero-text { display: flex; flex-direction: column; justify-content: flex-end; }
+.hero--photo[data-calm="left"] > .wrap > .hero-text, .hero--photo[data-calm="right"] > .wrap > .hero-text { justify-content: center; }
+.hero--photo[data-calm="top"] > .wrap > .hero-text { justify-content: flex-start; }
+.hero--photo .hero__text { width: calc(50% - var(--gutter) / 2); }   /* six of the twelve columns: 628 at 1440 */
+@media (max-width: 1023px) { .hero--photo .hero__text { width: 100%; } }
+.hero--photo[data-calm="right"] .hero__text { margin-left: auto; }
+.hero--photo h1 { font-size: var(--ly-h1-xl); max-width: 14ch; }
+.hero--photo .hero__facts { margin-top: var(--s-8); }
+.hero--photo[data-calm="left"] > .wrap > .hero-text, .hero--photo[data-calm="right"] > .wrap > .hero-text { position: relative; }
+.hero--photo[data-calm="left"] .hero__facts, .hero--photo[data-calm="right"] .hero__facts { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; }
+/* the page's own button pair (never a third style) */
+.hero--photo .btn-row { --ink: var(--p-ink); --bg: var(--p-bg); --action: var(--p-action); --action-ink: var(--p-action-ink); --line-strong: color-mix(in oklab, var(--p-ink) 20%, transparent); }
+html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="none"][data-tone="dark"] .btn--secondary { color: #fff; text-decoration-color: rgb(255 255 255 / .6); }
+/* a tablet and a phone: no calm part survives every crop, so the photograph is a layer under the
+   header (--photo) and the words sit --hgap under it on the page ground, in the page's own colours */
+@media (max-width: 1023px) {
+  .hero--photo, .hero--photo[data-tone] { background: var(--bg); color: var(--p-ink); --ink: var(--p-ink); --muted: var(--p-muted);
+    --line: color-mix(in oklab, var(--p-ink) 11%, transparent); --line-strong: color-mix(in oklab, var(--p-ink) 20%, transparent); }
+  .hero--photo { --photo: min(46svh, 56vw); }
+  .hero--photo > .hero__bg { top: var(--nav); bottom: auto; height: var(--photo); object-position: var(--ly-pos-phone, var(--ly-pos, 50% 50%)); }
+  .hero--photo .hero__facts { display: none; }
+  .hero--photo > .wrap > .hero-text, .hero--photo[data-calm] > .wrap > .hero-text { justify-content: flex-start; }
+  .hero--photo .hero__text, .hero--photo:not([data-box="none"]) .hero__text { padding: 0; background: none; border-radius: 0; }
+  .hero--photo[data-calm="right"] .hero__text { margin-left: 0; }
+  html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-tone="dark"] .btn--secondary { color: var(--p-ink); text-decoration-color: var(--line-strong); }
+}
+@media (max-width: 639px) { .hero--photo { --photo: 42svh; } }
+
+/* 0. hero--place: the only place hero, never dealt (local-business Recipe 3; ST-53, PH-47, PH-81).
+      The client's photograph full-bleed under the header (--photo: 480 at 1440x900, y 72-552, at most
+      53% of the screen; a phone's 4:3 crop, 390x292), nothing on it. On the ground below, --hgap
+      (40, 24 on a phone) under it: the h1 on columns 1-6 (48/53, 32/37 on a phone), and from the
+      split line the sub-line (the kind of place, where, today's hours) and one filled 48px button.
+      html[data-type="place"] .hero--photo is drawn the same way (the older markup).
+      <section class="hero hero--place"><img class="hero__bg" src=".." alt=".." fetchpriority="high">
+        <div class="wrap"><div class="hero-text"><div class="hero__text">
+          <h1>..</h1><p class="hero__lead">..</p><div class="btn-row"><a class="btn btn--primary">..</a></div>
+        </div></div></div></section> */
+.hero--place, :root[data-type="place"] .hero--photo { --photo: min(480px, 53svh); background: var(--bg); color: var(--ink); }
+.hero--place > .hero__bg, :root[data-type="place"] .hero--photo > .hero__bg {
+  position: absolute; left: 0; right: 0; top: var(--nav); bottom: auto; z-index: 0; width: 100%; height: var(--photo); max-width: none;
+  object-fit: cover; object-position: var(--ly-pos, 50% 50%); border-radius: 0;
+}
+/* the hero as photos.mjs fetch prints it: <picture class="hero__bg"><source media="(max-width: 639px)" ..><img ..></picture>.
+   The picture is the layer (placed as img.hero__bg above, out of the flow beside the .wrap); its img fills it */
+:is(.hero--photo, .hero--place) > picture.hero__bg { display: block; overflow: hidden; }
+:is(.hero--photo, .hero--place) > picture.hero__bg > img {
+  display: block; width: 100%; height: 100%; max-width: none; border-radius: 0;
+  object-fit: cover; object-position: var(--ly-pos, 50% 50%);
+}
+@media (max-width: 1023px) {
+  :is(.hero--photo, .hero--place) > picture.hero__bg > img { object-position: var(--ly-pos-phone, var(--ly-pos, 50% 50%)); }
+}
+:root[data-type="place"] .hero--photo, :root[data-type="place"] .hero--photo[data-tone] { --ink: var(--p-ink); --muted: var(--p-muted); color: var(--p-ink); }
+:is(.hero--place, :root[data-type="place"] .hero--photo) > .wrap > .hero-text { display: block; }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-content: start; align-items: start;
+  width: 100%; margin: 0; padding: 0; background: none; border-radius: 0;
+}
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { grid-column: 7 / -1; margin: 0; }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 {
+  grid-column: 1 / span 6; grid-row: 1 / span 3; max-width: none; font-size: var(--t-h1); line-height: 1.104; text-box: trim-start cap alphabetic;
+}
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; max-width: 40ch; color: var(--ink); }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: var(--s-5); }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .btn { height: 48px; }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__facts { display: none; }
+@media (max-width: 1023px) {
+  .hero--place, :root[data-type="place"] .hero--photo { --photo: min(56vw, 46svh); }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text { display: flex; flex-direction: column; gap: var(--s-5); }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: 0; }
+}
+/* a tablet held upright (820x1180): a 56vw photograph would leave a third of the screen empty under
+   the button, so the photograph grows to a little over half the screen (656 at 820x1180) */
+@media (min-width: 640px) and (max-width: 1023px) and (orientation: portrait) {
+  .hero--place, :root[data-type="place"] .hero--photo { --photo: min(80vw, 56svh); }
+}
+@media (max-width: 639px) {
+  .hero--place, :root[data-type="place"] .hero--photo { --photo: 75vw; }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 { line-height: 1.156; }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: 18px; line-height: 1.556; }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: 0; }
+}
+
+/* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
+      one object on a stage that fills the rest of the screen. The lit, rounded stage below is for a print
+      or a scene (tech, games); the product itself (a render, a cut-out, a photograph) takes 3b: no box */
+.hero--product .hero__stage { margin-top: var(--s-7); }
+.hero__stage {
+  position: relative; overflow: hidden; border-radius: var(--r-lg); min-height: clamp(260px, 40svh, 400px); flex: 1 1 auto;
+  background:
+    radial-gradient(60% 70% at 50% 42%, color-mix(in oklab, var(--ground-surface, #e9e0d2) 90%, white), transparent 72%),
+    linear-gradient(to bottom, var(--ground-bg, #d9ccb7) 0 72%, color-mix(in oklab, var(--ground-bg, #d9ccb7) 86%, black) 100%);
+}
+.hero__stage > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%); }
+.hero__stage > img.is-cutout { object-fit: contain; padding: 5% 0 4%; }
+.hero__stage > [data-print], .hero__stage > [data-scene] { position: absolute; inset: 0; }
+/* 3b. the product itself on the stage, never boxed (in testing: a render at 44% of a rounded lit box
+      read as "small and boxed"). The lit box above stays for a print or a world scene (tech, games).
+      - a render (a [data-product] frame) or a cut-out (img.is-cutout): no box, no gradient, no radius;
+        the page's own ground. The stage runs across the wrap and down to --s-5 above the fold, the
+        head row's gap is --s-6, and a render's frame reaches 7% past the stage's top and bottom, so
+        the product's long side fills the stage's height (the place's 0.86-0.88 margin taken back):
+        a wide product's widest view (a bike's side) spans 80% or more of the wrap at 1440.
+      - a product photograph (any other img): edge to edge across the screen, square corners, no ground;
+        crop it (--ly-pos) so the product spans 80% or more of the wrap.
+      <div class="hero__stage"><div class="frame" data-product="…/specs/<id>.json" data-product-place="stage"
+        data-product-view="side"></div> one to three .ly-spot </div> */
+.hero--product .hero__stage:is(:has(> [data-product]), :has(> img.is-cutout)) {
+  margin-top: var(--s-6); margin-bottom: calc(var(--s-5) - var(--hpadb, 64px));
+  border-radius: 0; background: none; overflow: visible;
+}
+.hero--product .hero__stage > [data-product] {
+  position: absolute; inset: -7% 0; width: auto; height: auto; min-height: 0;
+  padding: 0; border: 0; border-radius: 0; background: none; overflow: visible;
+}
+.hero--product .hero__stage > [data-product]::before { content: none; }
+/* the head row gives the product its height: the h1 on cols 1-7 (two lines), the lead and the buttons
+   stacked on cols 9-12, their foot on the h1's foot (the head ends at y 278 at 1440x900, against y 373
+   with the lead under the h1); the stage takes the rest: 1280x566 at y 310 */
+@media (min-width: 1024px) {
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head { grid-template-rows: auto auto; row-gap: var(--s-5); }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > :first-child { display: contents; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 7; grid-row: 1 / span 2; align-self: end; margin: 0; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead { grid-column: 9 / -1; grid-row: 1; align-self: end; margin: 0; max-width: none; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 9 / -1; grid-row: 2; justify-content: flex-start; }
+}
+/* a small laptop (1024-1279): h1 on cols 1-6, the lead and the buttons on cols 7-12, so the two
+   buttons stay on one line and the lead on three */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 6; }
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead,
+  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 7 / -1; }
+}
+.hero--product .hero__stage:has(> img:not(.is-cutout), > picture) {
+  border-radius: 0; background: none; margin-inline: calc(50% - 50vw); margin-bottom: calc(0px - var(--hpadb, 64px));
+}
+@media (max-width: 639px) { .hero--product .hero__stage:has(> img:not(.is-cutout), > picture) { margin-bottom: 0; } }
+/* every product render frame is the product on its section's ground: never a grey panel (sections.md
+   Product, rule 1); the frame keeps its size and clips a close-up at its edges */
+.frame[data-product] { background: none; border: 0; padding: 0; }
+/* a hotspot on the product: a disc that opens one short spec card on hover, focus or tap */
+.ly-spot { position: absolute; z-index: 2; left: var(--x); top: var(--y); transform: translate(-50%, -50%); }
+.ly-spot > button {
+  display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 0; background: var(--p-bg, #fff); color: var(--p-ink, #111); box-shadow: 0 0 0 6px rgb(255 255 255 / .28), 0 6px 18px -6px rgb(0 0 0 / .45);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.ly-spot > button svg { width: 12px; height: 12px; transition: transform var(--dur) var(--ease); }
+.ly-spot > button:hover, .ly-spot.is-open > button { transform: scale(1.08); box-shadow: 0 0 0 9px rgb(255 255 255 / .32), 0 6px 18px -6px rgb(0 0 0 / .45); }
+.ly-spot.is-open > button svg { transform: rotate(45deg); }
+.ly-spot__card {
+  position: absolute; left: calc(100% + 12px); top: 50%; width: 230px; padding: var(--s-3) var(--s-4); border-radius: var(--r-md);
+  background: var(--p-bg, #fff); color: var(--p-ink, #111); font-size: var(--t-small); line-height: 1.45;
+  box-shadow: 0 16px 36px -16px rgb(0 0 0 / .45); opacity: 0; visibility: hidden; transform: translate(-6px, -50%);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility 0s linear var(--dur);
+}
+.ly-spot__card strong { display: block; font-size: var(--t-body); font-weight: 500; margin-bottom: 2px; }
+.ly-spot--left .ly-spot__card { left: auto; right: calc(100% + 12px); transform: translate(6px, -50%); }
+.ly-spot.is-open .ly-spot__card, .ly-spot:hover .ly-spot__card, .ly-spot:focus-within .ly-spot__card { opacity: 1; visibility: visible; transform: translate(0, -50%); transition-delay: 0s; }
+/* a phone: the card opens under its disc, centred on it and nudged by layout.js (--dx) so it stays
+   16px inside the stage; never beside the disc, where the stage would cut it */
+@media (max-width: 639px) {
+  .hero--product .hero__stage { margin-top: var(--s-6); flex: none; min-height: 0; aspect-ratio: 4 / 5; }
+  /* a render or a cut-out takes what the head leaves, at least 240 tall: the product's width is the bound */
+  .hero--product .hero__stage:is(:has(> [data-product]), :has(> img.is-cutout)) { flex: 1 1 auto; aspect-ratio: auto; min-height: 240px; margin-bottom: 0; }
+  .ly-spot__card, .ly-spot--left .ly-spot__card { left: 50%; right: auto; top: calc(100% + 10px); width: 230px;
+    transform: translate(calc(-50% + var(--dx, 0px)), -4px); }
+  .ly-spot.is-open .ly-spot__card, .ly-spot:hover .ly-spot__card, .ly-spot:focus-within .ly-spot__card { transform: translate(calc(-50% + var(--dx, 0px)), 0); }
+}
+
+/* 4. hero--editorial: the headline IS the picture. Three lines of big left-aligned type (128px at
+      1440, 52 at 390) across the whole container, with one or two photographs set in the line as
+      pills (.ly-pic, 0.8em tall, 1.9em wide), whole on the first frame (no opening, no settle: the
+      h1 never reflows after load, MO-62); the lead and the buttons dock to the foot under a
+      hairline. No frame under it: the type fills the screen. */
+.hero--editorial .hero__in { justify-content: space-between; }
+.hero--editorial h1 { font-size: var(--ly-h1-mega); line-height: .98; letter-spacing: var(--display-tracking-xl, -0.04em); max-width: none; margin-block: auto; padding-block: var(--s-6); text-wrap: initial; }
+.hero--editorial .hero__foot { margin-top: 0; padding-top: var(--s-5); border-top: 1px solid var(--line); align-items: end; }
+.ly-pic {
+  display: inline-block; position: relative; overflow: hidden; vertical-align: -0.04em;
+  height: .8em; width: var(--w, 1.9em); margin-inline: .04em; border-radius: 999px; background: var(--surface);
+}
+.ly-pic > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%); }
+.ly-pic--sq { border-radius: .16em; }
+@media (max-width: 639px) { .ly-pic { --w: 1.5em; } .hero--editorial h1 { padding-block: var(--s-5); } }
+
+/* 5. hero--collage: text on span-5, a UI collage from column 7 out through the right viewport edge;
+      the main window starts 56px in from its left and top and runs out through the right and bottom */
+.hero--collage h1 { font-size: var(--ly-h1-col); }
+.hero__art {
+  position: relative; overflow: hidden; height: 100%; min-height: 0;
+  border-radius: var(--r-lg); background: var(--ground-bg, #d9ccb7);
+  --fx-bg: var(--ground-bg); --fx-surface: var(--ground-surface); --fx-ink: var(--ground-ink); --fx-accent: var(--ground-accent);
+}
+/* the frame stands on the container's right line; the window inside is cut by the frame's right and
+   bottom edges, never by the viewport. It runs --ly-cut (28px) past the right edge and keeps that much
+   plus 20px of its own empty margin at its right (--ly-cut-room, on its content), so the cut falls
+   after the last column a visitor reads (the status chip), never through it. A window's widest
+   columns (times, ids) are left out or hidden (.ly-cut-hide). */
+.hero__art > .ly-piece { position: absolute; }
+.hero__art { --ly-cut: 28px; --ly-cut-room: calc(var(--ly-cut) + 20px); }
+.hero__art > .ly-piece--main { left: var(--s-8); top: var(--s-8); width: calc(100% - var(--s-8) + var(--ly-cut)); }
+.hero__art .ly-cut-hide { display: none; }
+@media (max-width: 1023px) {
+  .hero__art { height: auto; flex: 1 1 0; min-height: 220px; margin-top: var(--s-6); }
+  .hero__art > .ly-piece--main { left: var(--s-6); top: var(--s-6); width: calc(100% - var(--s-6) + var(--ly-cut)); }
+}
+/* a phone: the window alone, its side bar hidden, 16px in; the small card waits for a wider screen
+   (a 300px card over a 340px frame covers the window and leaves a sliver of cut rows) */
+@media (max-width: 639px) {
+  .hero__art > .ly-piece--main { left: var(--s-4); top: var(--s-4); width: calc(100% - var(--s-4) + var(--ly-cut)); }
+  .hero__art > .ly-piece:not(.ly-piece--main) { display: none; }
+}
+
+/* 6. hero--word: an oversized headline (144px) across the container with one live word last, then a
+      foot row: the line and the buttons on span-6, the four facts as a column on span-5 start-8
+      (the right half has a job: the prices and promises a visitor checks first) */
+.hero--word, .hero--editorial { overflow-x: clip; }
+.hero--word .hero__in { justify-content: center; }
+.hero--word h1 { font-size: var(--ly-h1-word); line-height: .92; max-width: none; }
+.hero--word .hero__foot { margin-top: var(--s-8); align-items: start; }
+.hero--word .hero__foot .btn-row { margin-top: var(--s-6); }
+.hero--word .hero__facts { margin-top: var(--s-8); }
+/* facts as a column: one row each, the label left and the value right, hairlines between */
+.hero__facts.hero__facts--col { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 0; padding-top: 0; border-top: 0; margin-top: 0; }
+.hero__facts--col > div { grid-column: auto; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+                          padding-block: var(--s-3); border-top: 1px solid var(--line); }
+.hero__facts--col > div:last-child { border-bottom: 1px solid var(--line); }
+.hero__facts--col dd { text-align: right; }
+@media (max-width: 1023px) {
+  .hero--word .hero__foot > .hero__facts--col { margin-top: var(--s-7); grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); }
+  .hero__facts--col > div { display: grid; gap: var(--s-1); justify-content: start; }
+  .hero__facts--col > div:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+  .hero__facts--col dd { text-align: left; }
+}
+/* the live word: one slot in the headline as wide as its widest word (the grid's one cell holds them
+   all), so a change never moves another word or breaks a line; each word carries its own underline in
+   the accent and brings it with it */
+.ly-word { position: relative; display: inline-grid; vertical-align: bottom; overflow: clip; overflow-clip-margin: .14em; margin-bottom: -.1em; }
+.ly-word > span { grid-area: 1 / 1; justify-self: start; white-space: nowrap; padding-bottom: .1em;
+                  background: linear-gradient(var(--accent), var(--accent)) 0 calc(100% - .05em) / 100% max(3px, .05em) no-repeat;
+                  transition: transform .6s var(--ease, ease), opacity .6s var(--ease, ease); }
+.ly-word > span.is-out { transform: translateY(-105%); opacity: 0; }
+.ly-word > span.is-next { transform: translateY(105%); opacity: 0; }
+/* letters that answer the pointer: each letter's weight (and width, on a face with a wdth axis). The
+   headline's lines are locked first (layout.js puts a break where each line ends at rest and stops
+   wrapping), so a heavier, wider letter never sends a word to the next line */
+.ly-letters .ly-l { display: inline-block; font-weight: var(--w, inherit); font-stretch: var(--wd, inherit); transition: font-weight .32s var(--ease, ease), font-stretch .32s var(--ease, ease); }
+h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
+
+/* 7. hero--film: a cinema frame. The film's poster fills one rounded frame on the container's lines,
+      the whole first screen less 16px (1280 x 804 at 1440x900); the headline, the line and the
+      buttons stand in a solid box of the page's inverse ground at the frame's lower left, the play
+      control and its label (a solid pill) at its right foot (x.ai's film card). Nothing is laid
+      over the film to make words readable: no scrim or gradient (PH-31). */
+.hero--film { padding-block: var(--s-4); }
+.hero--film .hero__media { flex: 1 1 auto; min-height: 520px; background: #000; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; }
+.hero__over { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--s-6); padding: var(--s-6); }
+.hero__over > :first-child {
+  justify-self: start; max-width: 600px; padding: var(--s-7); border-radius: var(--r-md);
+  background: var(--p-inv-bg); color: var(--p-inv-ink);
+  --bg: var(--p-inv-bg); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted); --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink);
+  --line: color-mix(in oklab, var(--p-inv-ink) 14%, transparent); --line-strong: color-mix(in oklab, var(--p-inv-ink) 30%, transparent);
+}
+.hero__over h1 { max-width: 15ch; }
+.hero__over .hero__lead { color: var(--p-inv-ink); margin-top: var(--s-4); }
+.hero__over .btn-row { margin-top: var(--s-6); }
+.hero--film .ly-play { position: relative; left: auto; bottom: auto; }
+.hero--film .ly-play__label { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--p-inv-bg); color: var(--p-inv-ink); }
+/* the running time under the play label (before the media block below, which hides it on a phone) */
+.ly-play__label small { display: block; margin-top: 2px; font-size: var(--t-small); color: var(--p-inv-muted); font-weight: 400; }
+@media (max-width: 1023px) {
+  .hero__over { grid-template-columns: 1fr; gap: var(--s-4); padding: var(--s-5); }
+  .hero__over > :first-child { max-width: none; justify-self: stretch; padding: var(--s-6); }
+  .hero--film .ly-play { order: -1; justify-self: start; gap: var(--s-3); font-size: var(--t-body); }
+  .ly-play__label small { display: none; }
+}
+@media (max-width: 639px) {
+  .hero__over { padding: var(--s-3); }
+  .hero__over > :first-child { padding: var(--s-5); }
+  .hero--film .hero__media { min-height: 0; }
+}
+.ly-play { position: absolute; z-index: 2; left: var(--s-6); bottom: var(--s-6); display: inline-flex; align-items: center; gap: var(--s-4);
+           padding: 0; border: 0; background: none; color: #fff; cursor: pointer; font: 500 var(--t-lead)/1.2 var(--font-text); text-align: left; }
+.ly-play__disc { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #111; flex: none;
+                 transition: transform var(--dur) var(--ease); }
+.ly-play__disc svg { width: 18px; height: 18px; margin-left: 3px; }
+.ly-play:hover .ly-play__disc, .ly-play:focus-visible .ly-play__disc { transform: scale(1.06); }
+@media (max-width: 639px) { .ly-play__disc { width: 52px; height: 52px; } }
+
+/* 8. hero--statement: a quiet statement over a ground (assets/backgrounds), facts docked at the foot */
+.hero--statement .hero__in { justify-content: space-between; }   /* the h1 top-aligned at y 120 (layout-v4.md section 3), the facts docked at the foot */
+.hero--statement h1 { font-size: var(--ly-h1-quiet); line-height: 1.1; max-width: 21ch; }
+.hero--statement .hero__lead { margin-top: var(--s-5); }
+.hero--statement .btn-row { margin-top: var(--s-6); }
+.hero--statement .hero__facts { margin-top: var(--s-8); }
+/* on a phone the facts of a photo or statement hero are a desktop line: the hero stays one screen and the
+   ground's foot (a horizon's rim, the photograph) stays clear; the next section carries them */
+@media (max-width: 639px) { .hero--statement .hero__facts { display: none; } }
+
+/* 9. hero--triptych: the headline on span-3, a collage of three to five pieces on span-6 start-4
+      that changes set every 2.8 s, one large button on span-3 at the right line (Figma's hero).
+      Every set has one piece (a photograph or a piece with a quiet corner) that ends at 96% of the
+      collage's width and height, so the pause disc sits on that piece's corner, never in empty ground;
+      no piece covers a line of another piece's text */
+.hero--triptych .hero__grid > :first-child { align-self: center; }
+.hero--triptych h1 { font-size: var(--ly-h1-side); line-height: 1.04; }
+.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 30ch; margin-top: var(--s-4); }
+.hero--triptych .hero__cta { display: flex; justify-content: flex-end; }
+.hero--triptych .hero__cta .btn { height: 64px; padding-inline: var(--s-6); font-size: var(--t-lead); }
+/* 1024 to 1279: three columns get too narrow, so it becomes a split: the headline and the button on
+   span-4, the collage on span-7 start-6 to the right line */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero--triptych .hero__grid { grid-template-rows: 1fr auto 1fr; }
+  .hero--triptych .hero__grid > :first-child { grid-column: 1 / span 4; grid-row: 1; align-self: end; }
+  .hero--triptych .ly-collage { grid-column: 6 / span 7; grid-row: 1 / span 3; }
+  .hero--triptych .hero__cta { grid-column: 1 / span 4; grid-row: 2; justify-content: flex-start; margin-top: var(--s-6); }
+  .hero--triptych .hero__cta .btn { height: 56px; font-size: var(--t-body); }
+}
+.ly-collage { position: relative; height: 100%; min-height: 0; }
+.ly-collage__set { position: absolute; inset: 0; transition: opacity .7s var(--ease, ease); }
+.ly-collage__set:not(.is-on) { opacity: 0; pointer-events: none; }
+/* a copy of the markup that lost its .is-on: the first set shows rather than an empty hole */
+.ly-collage:not(:has(> .ly-collage__set.is-on)) > .ly-collage__set:first-child { opacity: 1; pointer-events: auto; }
+.ly-collage .ly-piece { position: absolute; overflow: hidden; border-radius: var(--r-md); background: var(--surface);
+                        box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 18px 40px -18px rgb(0 0 0 / .32); }
+.ly-collage .ly-piece > img { width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.ly-collage > button.loop-pause.loop-pause { right: calc(4% + 12px); bottom: calc(4% + 12px); }
+@media (max-width: 1023px) {
+  .hero--triptych .hero__cta { justify-content: stretch; } .hero--triptych .hero__cta .btn { width: 100%; height: 56px; }
+  .hero--triptych .hero__grid { display: flex; flex-direction: column; align-items: stretch; }
+  .hero--triptych .hero__grid > :first-child { align-self: stretch; }
+  .ly-collage { height: auto; flex: 1 1 0; min-height: 300px; margin-block: var(--s-6); }
+}
+
+/* 10. hero--centred: news pill, centred headline and two buttons, one product window rising out of
+       a lit frame that takes the rest of the screen and fades at the hero's foot (x.ai's hero). The
+       window's story (the question, the work, the answer, its actions) sits in its top 260px, so it
+       stands whole above the fade, which starts at 82% of the frame */
+.hero--centred .hero__c { display: grid; justify-items: center; text-align: center; gap: var(--s-4); max-width: 880px; margin-inline: auto; }
+.hero--centred h1 { max-width: 16ch; }
+.hero--centred .hero__lead { max-width: 52ch; color: var(--muted); }
+.hero--centred .btn-row { justify-content: center; margin-top: var(--s-3); }
+.hero--centred > .wrap > .hero-text { display: flex; flex-direction: column; }
+.hero--centred .hero__window { flex: 1 1 0; min-height: clamp(220px, 32svh, 340px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent); mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  position: relative; overflow: hidden; margin-top: var(--s-6);
+  border-radius: var(--r-lg); background: var(--ground-bg, #d9ccb7);
+  --fx-bg: var(--ground-bg); --fx-surface: var(--ground-surface); --fx-ink: var(--ground-ink); --fx-accent: var(--ground-accent); }
+.hero--centred .hero__window > .ly-piece { position: absolute; z-index: 1; left: 50%; top: var(--s-6); width: min(880px, calc(100% - 2 * var(--s-6))); transform: translateX(-50%); }
+.ly-mark { display: inline-block; width: .8em; height: .8em; vertical-align: -.06em; margin-inline: .06em; border-radius: 50%; background: var(--ink); position: relative; }
+.ly-mark::before, .ly-mark::after { content: ""; position: absolute; top: 27%; width: 13%; height: 42%; border-radius: 99px; background: var(--bg); transform: skewX(-12deg); }
+.ly-mark::before { left: 31%; } .ly-mark::after { left: 56%; }
+@media (max-width: 639px) {
+  .hero--centred .btn-row { width: 100%; }
+  .hero--centred .hero__window { margin-top: var(--s-6); min-height: 280px; }
+  .hero--centred .hero__window > .ly-piece { top: var(--s-4); width: calc(100% - 2 * var(--s-4)); left: var(--s-4); transform: none; }
+}
+
+/* ---------------------------------------------------------------- micro-interactions the heroes share */
+/* buttons keep the page's one hover (system.css, motion.css: the fill steps, the arrow moves 3px, the
+   press sinks 1px; no shadow on a button, ST-105); a text link draws its underline from the left */
+.ly-link { position: relative; font-weight: 500; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .28s var(--ease); }
+.ly-link:hover, .ly-link:focus-visible { background-size: 100% 1px; }
+
+/* steps inside a piece of UI (layout.js [data-ly-steps]): each arrives in place, nothing travels */
+[data-ly-steps] [data-step] { transition: opacity .35s var(--ease, ease), transform .35s var(--ease, ease); }
+[data-ly-steps] [data-step].is-off { opacity: 0; transform: translateY(6px); }
+
+/* ---------------------------------------------------------------- no entrance
+   the hero is set on its first frame on every kind: no entrance fade, rise or opening (MO-62) */
+@media (prefers-reduced-motion: reduce) {
+  .ly-live::before { animation: none; }
+  .ly-word > span, .ly-collage__set, .ly-letters .ly-l { transition: none; }
+}

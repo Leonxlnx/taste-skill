@@ -1,0 +1,53 @@
+/* files: file tiles with real app icons; each one is read in turn and gets a check.
+   Every mark is one treatment: the app's colour icon (a local file in icons/) on a light tile, or a plain ink
+   file glyph for a bare file type such as PDF. */
+/* fluid: two columns at 300px, three from about 430px, four from about 590px (cards.css .wide sets it
+   wider than its panel so the grid is cut by the right edge) */
+.ui-files { width: 100%; min-width: 300px; max-width: 760px; display: grid; gap: 14px; justify-items: start; align-content: start; }
+.ui-files__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 12px; width: 100%; }
+.ui-file {
+  position: relative; display: grid; justify-items: center; align-content: start;
+  height: 132px; padding: 26px 10px 0; border-radius: var(--u-r);
+  background: var(--u-bg); border: 1px solid var(--u-border); box-shadow: var(--u-shadow-sm);
+  transition: box-shadow 320ms var(--u-ease), border-color 320ms var(--u-ease);
+}
+/* the app's own mark in its colours on a light tile (the same on light and dark) */
+.ui-file__icon { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 12px; border-radius: 11px; background: var(--u-tile); box-shadow: var(--u-tile-edge); }
+.ui-file__icon :is(.ui-brand, img) { width: 24px; height: 24px; }
+.ui-file__icon .ui-file__glyph { width: 26px; height: 26px; stroke: #d93025; }   /* a PDF, in the red of PDF icons */
+.ui-file__glyph { width: 32px; height: 32px; fill: none; stroke: var(--u-ink); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+.ui-file__name { max-width: 100%; font-size: 13px; font-weight: 500; line-height: 16px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-file__kind { font-size: 13px; line-height: 16px; color: var(--u-muted); }
+.ui-file__bar {
+  position: absolute; left: 16px; right: 16px; bottom: 10px; height: 2px; border-radius: 2px;
+  background: var(--u-line); overflow: hidden; opacity: 0; transition: opacity 200ms var(--u-ease);
+}
+.ui-file__bar i { position: absolute; inset: 0; background: var(--u-accent); transform: scaleX(0); transform-origin: left; }
+.ui-file__check {
+  position: absolute; top: 8px; right: 8px; display: grid; place-items: center;
+  width: 18px; height: 18px; border-radius: 50%; background: var(--u-ink); color: var(--u-bg);
+  transform: scale(0.4); opacity: 0;
+  transition: transform 360ms var(--u-spring), opacity 200ms var(--u-ease);
+}
+.ui-file__check svg { width: 12px; height: 12px; }
+/* the tile being read is the fragment's one accent touch */
+.ui-file.is-reading { border-color: color-mix(in oklab, var(--u-accent) 55%, transparent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--u-accent) 14%, transparent), var(--u-shadow-sm); }
+.ui-file.is-reading .ui-file__bar { opacity: 1; }
+.ui-file.is-reading .ui-file__bar i { transform: scaleX(1); transition: transform 440ms cubic-bezier(0.4, 0, 0.2, 1); }
+.ui-file.is-done .ui-file__check { transform: scale(1); opacity: 1; }
+.ui-files.is-reset .ui-file__check { transition-duration: 240ms; }
+
+.ui-files__status {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 10px; border-radius: 999px;
+  background: var(--u-bg); border: 1px solid var(--u-border); box-shadow: var(--u-shadow-sm); font-size: 13px; font-weight: 500; line-height: 16px;
+}
+.ui-files__status .ui-dot { width: 6px; height: 6px; background: var(--u-ink); }
+/* narrow (a phone panel): two columns, and a long name wraps onto a second line instead of being cut */
+@media (max-width: 639px) {
+  .ui-files { min-width: 0; }
+  .ui-files__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .ui-file { height: 124px; padding: 18px 8px 0; }
+  .ui-file__icon { margin-bottom: 10px; }
+  .ui-file__name { white-space: normal; overflow: visible; text-wrap: balance; }
+}
+.ui-file :is(.ui-file__name, .ui-file__kind).is-cut { visibility: hidden; }

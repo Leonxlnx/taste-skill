@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-palette="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engraved photograph</title>
+<meta name="description" content="A photograph printed as an engraved plate: diagonal lines that swell in the shadows, thin out in the light and bend over the shapes, over a light wash of the photo’s colour.">
+<link rel="stylesheet" href="../photo-kit/demo.css">
+</head>
+<body>
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<script type="module">
+  import object from './object.js';
+  import { demo } from '../photo-kit/demo.js';
+  demo(object, {
+    blurb: "A photograph printed as an engraved plate: diagonal lines that swell in the shadows, thin out in the light and bend over the shapes, over a light wash of the photo’s colour.",
+    notes: [["At rest","The lines hold still. The plate is finished from the first frame."],["Light photos","Anything lighter than the paper prints as bare paper."],["On hover","The lines part around the cursor and the photo shows through. On a phone a tap does it."]],
+    ...{ params: {} },
+  });
+</script>
+</body>
+</html>

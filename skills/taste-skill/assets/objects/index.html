@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en" data-palette="paper">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objects</title>
+<meta name="description" content="Thirteen objects for one strong moment a page: products drawn in code, photographs printed by a shader, scenes that answer the pointer.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui/base.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<style>
+  /* palettes: page tokens, four grounds (--g1 sand, --g2 sky, --g3 sage, --g4 deep) and the globe's sea */
+  :root {
+    --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace;
+    --ease: cubic-bezier(.2, .7, .2, 1);
+    --gutter: 32px; --max: 1312px;
+  }
+  [data-palette="paper"] { --bg: #f6f5f1; --card: #ffffff; --surface: #ffffff; --ink: #111110; --muted: #66655f; --accent: #e5531c; --accent-ink: #ffffff;
+    --g1: #e4ddd0; --g2: #d4dee7; --g3: #dbe2d3; --g4: #1a2230; --sea: #2f6aa8; --line: rgb(17 17 16 / 0.09); }
+  [data-palette="stone"] { --bg: #e6e5e1; --card: #f3f2ef; --surface: #f3f2ef; --ink: #1a1b1d; --muted: #5d5e62; --accent: #2456d6; --accent-ink: #ffffff;
+    --g1: #d6d5d0; --g2: #c9d4df; --g3: #dad3c6; --g4: #1d2633; --sea: #2456d6; --line: rgb(26 27 29 / 0.1); }
+  [data-palette="graphite"] { --bg: #0b0b0c; --card: #141416; --surface: #141416; --ink: #f2f2ef; --muted: #96979c; --accent: #ff7a3c; --accent-ink: #120c08;
+    --g1: #1e1d1b; --g2: #17202a; --g3: #1b201b; --g4: #23262c; --sea: #4f9be0; --line: rgb(242 242 239 / 0.09); }
+  [data-palette="night"] { --bg: #070b14; --card: #0e1420; --surface: #0e1420; --ink: #e9edf3; --muted: #8b94a4; --accent: #5ab9fc; --accent-ink: #07101a;
+    --g1: #121a29; --g2: #0f2231; --g3: #16202b; --g4: #1b2536; --sea: #5ab9fc; --line: rgb(233 237 243 / 0.09); }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 64px; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.5;
+    transition: background-color 320ms var(--ease), color 320ms var(--ease); }
+  a { color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ------------------------------------------------ the bar */
+  .bar { position: sticky; top: 0; z-index: 30; background: color-mix(in oklab, var(--bg) 84%, transparent); backdrop-filter: blur(16px) saturate(1.2); border-bottom: 1px solid var(--line); }
+  .bar__in { height: 64px; display: flex; align-items: center; gap: 32px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; text-decoration: none; }
+  .brand svg { width: 22px; height: 22px; }
+  .brand svg .a { fill: var(--accent); transition: transform 420ms var(--ease); transform-origin: 11px 11px; }
+  .brand:hover svg .a { transform: rotate(90deg); }
+  .nav { display: flex; gap: 24px; font-size: 14px; }
+  .nav a { position: relative; text-decoration: none; color: var(--muted); transition: color 180ms ease; padding: 6px 0; }
+  .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 260ms var(--ease); }
+  .nav a:hover { color: var(--ink); }
+  .nav a:hover::after { transform: scaleX(1); }
+  .sp { flex: 1; }
+  .swatches { display: flex; align-items: center; gap: 6px; padding: 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); }
+  .sw { position: relative; width: 26px; height: 26px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--s-bg) 0 50%, var(--s-ac) 50% 100%);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12); transition: transform 200ms var(--ease); }
+  .sw::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--ink); opacity: 0; transform: scale(0.8); transition: opacity 200ms ease, transform 260ms var(--ease); }
+  .sw:hover { transform: scale(1.08); }
+  .sw:active { transform: scale(0.94); }
+  .sw[aria-pressed="true"]::after { opacity: 1; transform: scale(1); }
+  .sw:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .sw-label { font-size: 13px; color: var(--muted); min-width: 60px; text-align: right; }
+
+  /* ------------------------------------------------ grounds: a soft lit mesh of the ground's own tone, a fine grain */
+  .gr, .card > .panel.gr { --calm-k: 0%; background-color: var(--pg);
+    background-image:
+      radial-gradient(80% 90% at 92% 100%, color-mix(in oklab, var(--accent) 13%, var(--pg)), transparent 68%),
+      radial-gradient(70% 80% at 0% 0%, color-mix(in oklab, var(--lift, #ffffff) var(--lift-k, 34%), var(--pg)), transparent 72%); }
+  .gr.dk, [data-palette="graphite"] .gr, [data-palette="night"] .gr { --lift: #ffffff; --lift-k: 6%; }
+  .grain { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .32; mix-blend-mode: soft-light; border-radius: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .slot { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  .slot > .host { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
+
+  /* ------------------------------------------------ hero */
+  .hero { min-height: calc(100svh - 64px); display: grid; align-items: center; padding: 56px 0; }
+  .hero__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: center; }
+  .hero__copy { grid-column: 1 / span 5; }
+  .hero h1 { margin: 0; font-size: clamp(44px, 3.4vw + 12px, 72px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 520; text-wrap: balance; }
+  .hero__lede { margin: 24px 0 0; font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 40ch; text-wrap: pretty; }
+  .index { margin: 40px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); max-width: 460px; }
+  .index a { display: grid; grid-template-columns: 1fr auto 20px; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); text-decoration: none; font-size: 16px; font-weight: 500; }
+  .index a span { font: 500 13px/1 var(--font-mono); color: var(--muted); }
+  .index a svg { width: 16px; height: 16px; transition: transform 260ms var(--ease); }
+  .index a:hover svg { transform: translateX(4px); }
+  .hero__pics { grid-column: 7 / span 6; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: min(70svh, 660px); min-height: 440px; }
+  .pic { position: relative; overflow: clip; border-radius: 20px; border: 1px solid var(--line); isolation: isolate; }
+  .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block; }
+  .pic--down { margin-top: 48px; }
+
+  /* ------------------------------------------------ an object, one screen */
+  .obj { min-height: calc(100svh - 64px); display: grid; align-content: center; padding: 64px 0; border-top: 1px solid var(--line); }
+  .obj__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: end; margin-bottom: 32px; }
+  .obj__title { grid-column: 1 / span 5; }
+  .obj__n { margin: 0 0 14px; font: 500 13px/1 var(--font-mono); color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  .obj__n b { color: var(--ink); font-weight: 500; }
+  .obj__n i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .obj h2 { margin: 0; font-size: clamp(34px, 1.9vw + 16px, 52px); line-height: 1.04; letter-spacing: -0.035em; font-weight: 520; text-wrap: balance; }
+  .obj__about { grid-column: 7 / span 6; }
+  .obj__line { margin: 0; font-size: 17px; line-height: 1.5; color: color-mix(in oklab, var(--ink) 82%, var(--bg)); max-width: 52ch; text-wrap: pretty; }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 20px 0 0; }
+  .facts div { border-top: 1px solid var(--line); padding-top: 10px; }
+  .facts dt { font: 500 12px/1 var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .facts dd { margin: 8px 0 0; font-size: 14px; line-height: 1.4; }
+  .copy { margin-top: 24px; display: inline-flex; align-items: center; gap: 10px; height: 34px; padding: 0 6px 0 12px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); font: 500 13px/1 var(--font-mono); cursor: pointer; transition: border-color 180ms ease, transform 160ms var(--ease); }
+  .copy:hover { border-color: color-mix(in oklab, var(--ink) 24%, transparent); }
+  .copy:active { transform: scale(0.97); }
+  .copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .copy em { font-style: normal; display: inline-grid; place-items: center; height: 24px; padding: 0 8px; border-radius: 6px; background: color-mix(in oklab, var(--ink) 7%, transparent); font-family: var(--font-text); font-size: 12px; overflow: hidden; }
+  .copy em span { grid-area: 1 / 1; transition: transform 260ms var(--ease), opacity 200ms ease; }
+  .copy em span + span { transform: translateY(110%); opacity: 0; }
+  .copy.done em span:first-child { transform: translateY(-110%); opacity: 0; }
+  .copy.done em span + span { transform: none; opacity: 1; }
+
+  .duo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; height: clamp(400px, calc(100svh - 360px), 600px); }
+  .big { grid-column: 1 / span 8; position: relative; overflow: clip; isolation: isolate; border-radius: 24px; border: 1px solid var(--line); }
+  .duo .card { grid-column: 9 / span 4; }
+  .obj:nth-of-type(even) .big { grid-column: 5 / span 8; grid-row: 1; }
+  .obj:nth-of-type(even) .duo .card { grid-column: 1 / span 4; grid-row: 1; }
+  .duo .card > .panel { flex: 1 1 auto; min-height: 0; }
+
+  /* ------------------------------------------------ footer */
+  .foot { border-top: 1px solid var(--line); padding: 40px 0 48px; font-size: 14px; color: var(--muted); }
+  .foot__row { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: baseline; }
+  .foot__row b { color: var(--ink); font-weight: 600; }
+  .foot__row a { text-decoration: none; }
+  .foot__row a:hover { color: var(--ink); }
+  .credits { margin: 24px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+  .credits a { text-decoration: underline; text-decoration-color: color-mix(in oklab, currentColor 40%, transparent); text-underline-offset: 2px; }
+
+  @media (max-width: 1023px) {
+    .hero__copy, .hero__pics { grid-column: 1 / -1; }
+    .hero__pics { height: auto; min-height: 0; }
+    .pic { aspect-ratio: 3 / 4; }
+    .obj__title, .obj__about { grid-column: 1 / -1; }
+    .duo { height: auto; grid-template-columns: minmax(0, 1fr); }
+    .big, .duo .card, .obj:nth-of-type(even) .big, .obj:nth-of-type(even) .duo .card { grid-column: 1 / -1; grid-row: auto; }
+    .big { aspect-ratio: 4 / 3; }
+    .duo .card > .panel { flex: none; height: 320px; }
+  }
+  @media (max-width: 760px) {
+    :root { --gutter: 16px; }
+    .nav, .sw-label { display: none; }
+    .hero { padding: 32px 0 40px; }
+    .hero__lede { font-size: 17px; }
+    .hero__pics { gap: 10px; }
+    .pic { border-radius: 16px; }
+    .pic--down { margin-top: 28px; }
+    .obj { padding: 72px 0; min-height: 0; }
+    .obj .wrap { display: flex; flex-direction: column; }
+    .obj__head, .obj__about { display: contents; }
+    .obj__title { order: 1; margin-bottom: 16px; }
+    .obj__line { order: 2; margin-bottom: 28px; }
+    .duo { order: 3; }
+    .facts { order: 4; margin-top: 28px; }
+    .copy, .index { display: none; }
+    .facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .facts div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 10px 0; }
+    .facts dd { margin: 0; }
+    .big { aspect-ratio: 4 / 5; border-radius: 18px; }
+    .duo .card > .panel { height: 300px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; } }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap bar__in">
+    <a class="brand" href="#top" aria-label="Objects, back to the top">
+      <svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="6" fill="currentColor"/><rect class="a" x="7" y="7" width="8" height="8" rx="2"/></svg>
+      Objects
+    </a>
+    <nav class="nav" aria-label="Families">
+      <a href="#print-cup">Print objects</a>
+      <a href="#photo-halftone">Photo prints</a>
+      <a href="#split-reveal">Scenes</a>
+    </nav>
+    <span class="sp"></span>
+    <span class="sw-label" id="sw-label">Paper</span>
+    <div class="swatches" role="group" aria-label="Palette">
+      <button type="button" class="sw" data-pal="paper" aria-label="Paper" aria-pressed="true" style="--s-bg:#f6f5f1;--s-ac:#e5531c"></button>
+      <button type="button" class="sw" data-pal="stone" aria-label="Stone" aria-pressed="false" style="--s-bg:#e6e5e1;--s-ac:#2456d6"></button>
+      <button type="button" class="sw" data-pal="graphite" aria-label="Graphite" aria-pressed="false" style="--s-bg:#141416;--s-ac:#ff7a3c"></button>
+      <button type="button" class="sw" data-pal="night" aria-label="Night" aria-pressed="false" style="--s-bg:#0e1420;--s-ac:#5ab9fc"></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <h1>Objects for one strong moment a page.</h1>
+        <p class="hero__lede">Products drawn in code, photographs printed by a shader, and scenes that answer the pointer. A photograph leads where there is one. An object leads where there is none.</p>
+        <ul class="index">
+          <li><a href="#print-cup">Print objects <span>05</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></li>
+          <li><a href="#photo-halftone">Photo prints <span>03</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></li>
+          <li><a href="#split-reveal">Scenes <span>05</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></li>
+        </ul>
+      </div>
+      <div class="hero__pics">
+        <div class="pic"><img src="photo-kit/photos/lamp.jpg" width="1280" height="1757" alt="Cream ceramic table lamp on a glossy side table in low sun" decoding="async"></div>
+        <article class="pic pic--down gr" style="--pg: var(--g1)" aria-label="A balanced-arm desk lamp">
+          <div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-lamp","place":"card","ground":"g1","params":{"size":1.06,"x":-0.08,"y":-0.2}}'></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== print objects -->
+  <section class="obj" id="print-cup">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>01</b> Print object</p><h2>Cup and saucer</h2>
+          <button type="button" class="copy" data-copy='<div data-print="print-cup" data-print-place="card"></div>'>data-print="print-cup"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A porcelain cup of coffee on its saucer, the glaze in your accent. Click it to stir.</p>
+          <dl class="facts"><div><dt>Leads</dt><dd>A tableware maker with no photographs</dd></div><div><dt>As a print</dt><dd>A software card about a morning</dd></div><div><dt>GPU</dt><dd>High while it turns, one frame at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g1)"><div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-cup","place":"hero","ground":"g1","params":{"size":0.96,"x":0.16,"y":-0.04}}'></div></article>
+        <article class="card"><h3>Morning digest</h3><p>One email at 8:00 with everything that changed overnight.</p>
+          <div class="panel gr" style="--pg: var(--g2)"><div class="grain"></div>
+            <div class="slot" data-slot='{"kind":"print","id":"print-cup","place":"card","ground":"g2","params":{"effect":"halftone","turn":0}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="print-wheel">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>02</b> Print object</p><h2>Bicycle wheel</h2>
+          <button type="button" class="copy" data-copy='<div data-print="print-wheel" data-print-place="card"></div>'>data-print="print-wheel"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A road wheel with a tan-wall tyre, an alloy rim and 24 spokes, the hub in your accent. Click it to spin it up.</p>
+          <dl class="facts"><div><dt>Leads</dt><dd>A maker of wheels or hubs, never a whole bike</dd></div><div><dt>As a print</dt><dd>A card about speed or a mechanism</dd></div><div><dt>GPU</dt><dd>High while it turns, one frame at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g2)"><div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-wheel","place":"card","ground":"g2","params":{"size":1.34,"x":-0.08,"y":-0.3}}'></div></article>
+        <article class="card"><h3>Background sync</h3><p>Runs every five minutes, whether the app is open or not.</p>
+          <div class="panel gr" style="--pg: var(--g3)"><div class="grain"></div>
+            <div class="slot" data-slot='{"kind":"print","id":"print-wheel","place":"card","ground":"g3","params":{"effect":"halftone","turn":0}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="print-lamp">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>03</b> Print object</p><h2>Desk lamp</h2>
+          <button type="button" class="copy" data-copy='<div data-print="print-lamp" data-print-place="card"></div>'>data-print="print-lamp"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A balanced-arm desk lamp on chrome springs, the base and shade enamelled in your accent. Click it to switch it on.</p>
+          <dl class="facts"><div><dt>Leads</dt><dd>A lighting maker with no photographs</dd></div><div><dt>As a print</dt><dd>A card about focus or working late</dd></div><div><dt>GPU</dt><dd>High while it moves, one frame at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g3)"><div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-lamp","place":"hero","ground":"g3","params":{"size":0.98,"x":0.14,"y":-0.06,"angle":-24}}'></div></article>
+        <article class="card"><h3>Focus mode</h3><p>Alerts wait until you switch it off.</p>
+          <div class="panel gr dk" style="--pg: var(--g4)"><div class="grain"></div>
+            <div class="slot" data-slot='{"kind":"print","id":"print-lamp","place":"card","ground":"g4","params":{"effect":"dither","step":1,"turn":0}}' aria-label="A desk lamp, switched on"></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="print-globe">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>04</b> Print object</p><h2>Desk globe</h2>
+          <button type="button" class="copy" data-copy='<div data-print="print-globe" data-print-place="card" data-print-params=&apos;{"effect":"engrave"}&apos;></div>'>data-print="print-globe"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A desk globe with the real coastlines, a brass meridian and a walnut stand. Its sea takes a blue or teal accent. Click it to spin.</p>
+          <dl class="facts"><div><dt>Leads</dt><dd>A maker of globes or maps</dd></div><div><dt>As a print</dt><dd>A card about regions or shipping</dd></div><div><dt>GPU</dt><dd>High while it turns, one frame at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g2)"><div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-globe","place":"card","ground":"g2","sea":true,"params":{"size":1.3,"x":-0.1,"y":-0.3}}'></div></article>
+        <article class="card"><h3>14 regions</h3><p>Pick where your data lives. Move it later in two clicks.</p>
+          <div class="panel gr dk" style="--pg: var(--g4)"><div class="grain"></div>
+            <div class="slot" data-slot='{"kind":"print","id":"print-globe","place":"card","ground":"g4","sea":true,"params":{"effect":"engrave","turn":0}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="print-cards">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>05</b> Print object</p><h2>Playing cards</h2>
+          <button type="button" class="copy" data-copy='<div data-print="print-cards" data-print-place="card"></div>'>data-print="print-cards"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A stack of playing cards, the ace of diamonds face up and the backs in your accent. Click to fan them out.</p>
+          <dl class="facts"><div><dt>Leads</dt><dd>A maker of card or board games</dd></div><div><dt>As a print</dt><dd>A games card about a hand or a deal</dd></div><div><dt>GPU</dt><dd>High while it moves, one frame at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g3)"><div class="grain"></div>
+          <div class="slot" data-slot='{"kind":"print","id":"print-cards","place":"hero","ground":"g3","params":{"size":0.98,"x":0.16,"y":-0.04}}'></div></article>
+        <article class="card"><h3>Fair draws</h3><p>Every shuffle is logged, so any player can check a deal.</p>
+          <div class="panel gr" style="--pg: var(--g1)"><div class="grain"></div>
+            <div class="slot" data-slot='{"kind":"print","id":"print-cards","place":"card","ground":"g1","params":{"effect":"halftone","turn":0}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== photo prints -->
+  <section class="obj" id="photo-halftone">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>06</b> Photo print</p><h2>Halftone photograph</h2>
+          <button type="button" class="copy" data-copy="import print from './assets/objects/photo-halftone/object.js'; print.mount(frame, { palette: fx.readPalette(frame) });">photo-halftone<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">One photograph in one ink: round dots on a 45° screen, clean paper in the light. Point at it and a loupe shows its colour.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>One photograph band on a design or software page</dd></div><div><dt>Never</dt><dd>A hero photograph, a cafe, a guesthouse</dd></div><div><dt>GPU</dt><dd>Low, one context, still at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g1)">
+          <div class="slot" data-slot='{"kind":"photo","id":"photo-halftone","ground":"g1","photo":"concrete"}'></div></article>
+        <article class="card"><h3>Screens for print</h3><p>Send any photograph to press as a one-ink halftone.</p>
+          <div class="panel gr" style="--pg: var(--g2)">
+            <div class="slot" data-slot='{"kind":"photo","id":"photo-halftone","ground":"g2","photo":"lamp","params":{"tint":1}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="photo-engraving">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>07</b> Photo print</p><h2>Engraved photograph</h2>
+          <button type="button" class="copy" data-copy="import print from './assets/objects/photo-engraving/object.js'; print.mount(frame, { palette: fx.readPalette(frame) });">photo-engraving<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">Diagonal lines that swell in the shadows and bend over the forms, over a light wash of the photograph's colour. Point at it and the lines part.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A tile whose subject is the photograph</dd></div><div><dt>Never</dt><dd>A hero photograph, a cafe, a guesthouse</dd></div><div><dt>GPU</dt><dd>Low, one context, still at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g2)">
+          <div class="slot" data-slot='{"kind":"photo","id":"photo-engraving","ground":"g2","photo":"platform","photoDark":"concrete"}'></div></article>
+        <article class="card"><h3>Line art from a photo</h3><p>Turn a product shot into a plate for packaging.</p>
+          <div class="panel gr" style="--pg: var(--g3)">
+            <div class="slot" data-slot='{"kind":"photo","id":"photo-engraving","ground":"g3","photo":"concrete","photoDark":"room"}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="photo-dither">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>08</b> Photo print</p><h2>Dithered photograph</h2>
+          <button type="button" class="copy" data-copy="import print from './assets/objects/photo-dither/object.js'; print.mount(frame, { palette: fx.readPalette(frame) });">photo-dither<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A three-colour grain from the photograph's deepest and most colourful tones. Point at it and the photograph develops through the grain.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A games or AI page's one photograph</dd></div><div><dt>Never</dt><dd>A hero photograph, a cafe, a guesthouse</dd></div><div><dt>GPU</dt><dd>Low, one context, still at rest</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g3)">
+          <div class="slot" data-slot='{"kind":"photo","id":"photo-dither","ground":"g3","photo":"room"}'></div></article>
+        <article class="card"><h3>Three colours, any picture</h3><p>A grain that keeps a photograph readable in two inks and the paper.</p>
+          <div class="panel gr" style="--pg: var(--g1)">
+            <div class="slot" data-slot='{"kind":"photo","id":"photo-dither","ground":"g1","photo":"platform"}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== scenes -->
+  <section class="obj" id="split-reveal">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>09</b> Scene</p><h2>Split reveal</h2>
+          <button type="button" class="copy" data-copy='<div data-scene="split-reveal" data-scene-src="assets/img/photo.jpg"></div>'>data-scene="split-reveal"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">One photograph, half of it printed as a halftone screen. The line follows the pointer; on a phone it follows a drag.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A photo or design app, a device, a game's key art</dd></div><div><dt>Never</dt><dd>A place, a service, a product page</dd></div><div><dt>GPU</dt><dd>Low, drawn only while the line moves</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g2)">
+          <div class="slot" data-slot='{"kind":"scene","id":"split-reveal","ground":"g2","src":"default"}'></div></article>
+        <article class="card"><h3>Before and after</h3><p>Drag the line to compare the print with the original.</p>
+          <div class="panel gr" style="--pg: var(--g1)">
+            <div class="slot" data-slot='{"kind":"scene","id":"split-reveal","ground":"g1","src":"roof","params":{"side":"right","split":0.42}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="dither-sequence">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>10</b> Scene</p><h2>Dither sequence</h2>
+          <button type="button" class="copy" data-copy='<div data-scene="dither-sequence" data-scene-src=&apos;[{"src":"a.jpg"},{"src":"b.jpg"}]&apos;></div>'>data-scene="dither-sequence"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">Two to six photographs that belong together, dithered and cut one to the next like a slow film. Move across it to pick a frame.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A device from several sides, a game's scenes</dd></div><div><dt>Never</dt><dd>A random or mood set of pictures</dd></div><div><dt>GPU</dt><dd>Low, drawn only during a cut</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g3)">
+          <div class="slot" data-slot='{"kind":"scene","id":"dither-sequence","ground":"g3","src":"default"}'></div></article>
+        <article class="card"><h3>Every version kept</h3><p>Step back through earlier versions of a picture.</p>
+          <div class="panel gr" style="--pg: var(--g2)">
+            <div class="slot" data-slot='{"kind":"scene","id":"dither-sequence","ground":"g2","src":"spirals","params":{"fit":"contain","autoplay":0}}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="dot-object">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>11</b> Scene</p><h2>Dot object</h2>
+          <button type="button" class="copy" data-copy='<div data-scene="dot-object" data-scene-src="assets/img/object-on-white.jpg"></div>'>data-scene="dot-object"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">An object cut out of its photograph and set in dots that keep its tones. Under the pointer the dots take its real colour.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A thing shot on a plain ground, or a cut-out</dd></div><div><dt>Never</dt><dd>A busy or sunlit background</dd></div><div><dt>GPU</dt><dd>Low, one draw call while the loupe moves</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g1)">
+          <div class="slot" data-slot='{"kind":"scene","id":"dot-object","ground":"g1","src":"default"}'></div></article>
+        <article class="card"><h3>Cut-outs in one click</h3><p>The ground is read from the border and left out.</p>
+          <div class="panel gr" style="--pg: var(--g3)">
+            <div class="slot" data-slot='{"kind":"scene","id":"dot-object","ground":"g3","src":"dahlia"}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="exploded-layers">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>12</b> Scene</p><h2>Exploded layers</h2>
+          <button type="button" class="copy" data-copy='<div data-scene="exploded-layers" data-scene-src="assets/img/photo.jpg" data-scene-params=&apos;{"names":["Photo","Colour","Light","Depth"]}&apos;></div>'>data-scene="exploded-layers"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">One photograph as four printed sheets in perspective. Hover and they open apart, each named in the product's own words.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>Software that works in layers: imaging, maps</dd></div><div><dt>Never</dt><dd>Sheets named after the effects</dd></div><div><dt>GPU</dt><dd>Low, drawn only while it opens</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g2)">
+          <div class="slot" data-slot='{"kind":"scene","id":"exploded-layers","ground":"g2","src":"default","params":{"names":["Photo","Colour","Light","Depth"]}}'></div></article>
+        <article class="card"><h3>Edits you can undo</h3><p>Turn any layer off later without touching the rest.</p>
+          <div class="panel gr" style="--pg: var(--g3)">
+            <div class="slot" data-slot='{"kind":"scene","id":"exploded-layers","ground":"g3","src":"lattice"}'></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="obj" id="product-turntable">
+    <div class="wrap">
+      <div class="obj__head">
+        <div class="obj__title"><p class="obj__n"><i></i><b>13</b> Scene</p><h2>Product turntable</h2>
+          <button type="button" class="copy" data-copy='<div data-scene="product-turntable" data-scene-params=&apos;{"form":"chair"}&apos;></div>'>data-scene="product-turntable"<em><span>Copy</span><span>Copied</span></em></button></div>
+        <div class="obj__about">
+          <p class="obj__line">A camera, a chair, a speaker or a cup, stepping round on a studio turntable. Move across it to turn it yourself.</p>
+          <dl class="facts"><div><dt>Use</dt><dd>A kind of thing the software handles</dd></div><div><dt>Never</dt><dd>The client's own product</dd></div><div><dt>GPU</dt><dd>Low, drawn only while it steps</dd></div></dl>
+        </div>
+      </div>
+      <div class="duo">
+        <article class="big gr" style="--pg: var(--g1)">
+          <div class="slot" data-slot='{"kind":"scene","id":"product-turntable","ground":"g1","params":{"form":"camera"}}' aria-label="A camera on a turntable"></div></article>
+        <article class="card"><h3>See it from every side</h3><p>Check each piece from all angles before you rent it.</p>
+          <div class="panel gr" style="--pg: var(--g2)">
+            <div class="slot" data-slot='{"kind":"scene","id":"product-turntable","ground":"g2","params":{"form":"chair","start":-40,"autoplay":0}}' aria-label="A side chair"></div></div></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__row">
+      <b>Objects</b>
+      <a href="_print-core/README.md">Print objects</a>
+      <a href="photo-kit/README.md">Photo prints</a>
+      <a href="_scenes/README.md">Scenes</a>
+      <a href="../../references/effects-objects.md">When to use one</a>
+    </div>
+    <p class="credits" id="credits"></p>
+  </div>
+</footer>
+
+<script type="module">
+  /*
+    The showcase's own mounting: every [data-slot] mounts when it comes near the screen and is destroyed
+    when it leaves, and never more than MAX are mounted at once, so the page holds at most 4 live WebGL
+    contexts (each mounted object holds one at most; still print objects hold none).
+  */
+  import fx from '../effects/fx.js';
+  import { creditsLine } from './photo-kit/photo.js';
+  import { DEFAULT_PHOTO as SPLIT } from './split-reveal/object.js';
+  import { DEFAULT_SEQUENCE } from './dither-sequence/object.js';
+  import { DEFAULT_PHOTO as TULIP } from './dot-object/object.js';
+  import { DEFAULT_PHOTO as MIXER } from './exploded-layers/object.js';
+
+  const MAX = 4, CAP = { print: 4, photo: 3, scene: 4 };
+  const root = document.documentElement;
+  const q = new URLSearchParams(location.search);
+  const U = 'https://unsplash.com/license', CC0 = 'https://creativecommons.org/publicdomain/zero/1.0/';
+  const SRC = {
+    roof: { id: 618, ratio: 1.5, alt: 'Curving glass and steel lattice roof in black and white', by: 'Mika Ruusunen', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/ypVM8PnygUo' },
+    lattice: { id: 893, ratio: 1.5, alt: 'Curved latticed building facade forming sweeping lines', by: 'Samuel Zeller', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/j0g8taxHZa0' },
+    spirals: [
+      { id: 949, ratio: 0.66, alt: 'A white spiral atrium under a glass dome, seen from below', by: 'Drew Patrick Miller', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/VLT62-JzddA' },
+      { id: 679, ratio: 1, alt: 'Spiralling concrete curves around a small round window', by: 'Len dela Cruz', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/ScEKf8u7y-c' },
+    ],
+    dahlia: { id: 'commons-minimal-orange-dahlia', source: 'commons', ratio: 1.523, width: 5830, focus: [0.5, 0.5], alt: 'An orange dahlia on a black ground', by: 'Alex Blăjan', licence: 'CC0', licenceUrl: CC0,
+      url: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Minimal_orange_dahlia_%28Unsplash%29.jpg', page: 'https://commons.wikimedia.org/wiki/File:Minimal_orange_dahlia_(Unsplash).jpg' },
+  };
+  const DEFAULTS = { 'split-reveal': SPLIT, 'dither-sequence': DEFAULT_SEQUENCE, 'dot-object': TULIP, 'exploded-layers': MIXER };
+  const lib = await fetch(new URL('./photo-kit/photos.json', import.meta.url)).then(r => r.json()).catch(() => ({ photos: [] }));
+  const PHOTOS = Object.fromEntries(lib.photos.map(p => [p.key, p]));
+
+  // ---- palette: the page tokens, a ground's paper and an ink that reads on it
+  const tok = n => getComputedStyle(root).getPropertyValue(n).trim();
+  const lum = hex => { const h = hex.replace('#', ''); const c = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16) / 255); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  function paletteFor(cfg) {
+    const bg = tok('--' + (cfg.ground || 'g1')), ink = tok('--ink');
+    const light = lum(bg) > 0.4, pageLight = lum(ink) < 0.4;
+    const gInk = light ? (pageLight ? ink : '#17181b') : (pageLight ? '#eef0f2' : ink);
+    return fx.normalizePalette({ bg, surface: bg, ink: gInk, accent: cfg.sea ? tok('--sea') : tok('--accent'), accentInk: tok('--accent-ink') });
+  }
+
+  // ---- mounting
+  const slots = [...document.querySelectorAll('[data-slot]')];
+  const st = new Map(slots.map(el => [el, { cfg: JSON.parse(el.dataset.slot), near: false, ctrl: null, host: null, busy: false }]));
+  const mods = new Map();
+  const load = id => { if (!mods.has(id)) mods.set(id, import(`./${id}/object.js`).then(m => m.default)); return mods.get(id); };
+  // a photo print may name a darker photograph for the dark palettes (a pale one prints as a light plate there)
+  const isDark = () => lum(tok('--bg')) < 0.4;
+  const photoKey = cfg => (cfg.photoDark && isDark() ? cfg.photoDark : cfg.photo);
+  const srcOf = cfg => {
+    if (cfg.kind === 'photo') return new URL('./photo-kit/' + PHOTOS[photoKey(cfg)].file, import.meta.url).href;
+    if (!cfg.src) return undefined;
+    return cfg.src === 'default' ? DEFAULTS[cfg.id] : SRC[cfg.src];
+  };
+  // a photo print's slot shows its photograph toned into the ground until the print draws, before it
+  // mounts too: never an empty panel, even on a slow device
+  function underlay(box, cfg) {
+    if (cfg.kind !== 'photo') return;
+    const p = PHOTOS[photoKey(cfg)];
+    Object.assign(box.style, { backgroundColor: 'var(--pg)', backgroundImage: 'url(' + srcOf(cfg) + ')', backgroundSize: 'cover',
+      backgroundPosition: (p.focus[0] * 100) + '% ' + (p.focus[1] * 100) + '%', backgroundBlendMode: 'luminosity' });
+  }
+  async function mount(el) {
+    const s = st.get(el);
+    s.busy = true;
+    try {
+      const obj = await load(s.cfg.id);
+      if (!s.want) return;
+      const host = document.createElement('div');
+      host.className = 'host';
+      if (el.hasAttribute('aria-label')) host.setAttribute('aria-label', el.getAttribute('aria-label'));
+      el.appendChild(host);
+      const cfg = s.cfg, palette = paletteFor(cfg);
+      let ctrl;
+      if (cfg.kind === 'print') ctrl = obj.mount(host, { place: cfg.place, params: cfg.params || {}, palette });
+      else if (cfg.kind === 'photo') {
+        const p = PHOTOS[photoKey(cfg)];
+        s.photo = photoKey(cfg);
+        underlay(host, cfg);
+        ctrl = obj.mount(host, { palette, src: srcOf(cfg), params: { focusX: p.focus[0], focusY: p.focus[1], ...(cfg.params || {}) } });
+      } else ctrl = obj.mount(host, { palette, src: srcOf(cfg), params: cfg.params || {} });
+      s.ctrl = ctrl; s.host = host;
+    } catch (e) { console.warn('objects:', s.cfg.id, e); }
+    finally { s.busy = false; if (!s.want && s.ctrl) unmount(el); schedule(); }
+  }
+  function unmount(el) {
+    const s = st.get(el);
+    if (!s.ctrl) return;
+    try { s.ctrl.destroy(); } catch (e) { console.warn(e); }
+    s.host?.remove();
+    s.ctrl = null; s.host = null;
+  }
+  let queued = 0;
+  function reconcile() {
+    queued = 0;
+    const mid = innerHeight / 2;
+    const dist = el => { const r = el.getBoundingClientRect(); return Math.abs((r.top + r.bottom) / 2 - mid); };
+    // the nearest first, at most MAX, and at most CAP of one family (photo-kit warns past 3)
+    const near = [], kinds = {};
+    for (const el of slots.filter(e => st.get(e).near).sort((a, b) => dist(a) - dist(b))) {
+      const k = st.get(el).cfg.kind;
+      if (near.length < MAX && (kinds[k] || 0) < CAP[k]) { near.push(el); kinds[k] = (kinds[k] || 0) + 1; }
+    }
+    const want = new Set(near);
+    for (const el of slots) { const s = st.get(el); s.want = want.has(el); if (!s.want && s.ctrl && !s.busy) unmount(el); }
+    // never more than MAX mounted (or mounting) at once
+    let count = slots.filter(el => { const s = st.get(el); return s.ctrl || s.busy; }).length;
+    for (const el of near) { const s = st.get(el); if (!s.ctrl && !s.busy && count < MAX) { count++; mount(el); } }
+  }
+  const schedule = () => { if (!queued) queued = requestAnimationFrame(reconcile); };
+  const io = new IntersectionObserver(es => { for (const e of es) st.get(e.target).near = e.isIntersecting; schedule(); }, { rootMargin: '60% 0px' });
+  slots.forEach(el => io.observe(el));
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule, { passive: true });
+
+  // ---- palette switch
+  const PAL = ['paper', 'stone', 'graphite', 'night'];
+  const label = document.getElementById('sw-label');
+  function setPalette(name, save) {
+    if (!PAL.includes(name)) name = 'paper';
+    root.dataset.palette = name;
+    for (const b of document.querySelectorAll('[data-pal]')) b.setAttribute('aria-pressed', String(b.dataset.pal === name));
+    label.textContent = name[0].toUpperCase() + name.slice(1);
+    for (const [el, s] of st) {
+      if (s.ctrl && s.cfg.kind === 'photo' && s.photo !== photoKey(s.cfg)) unmount(el);   // its photograph changes: mount it again
+      else if (s.ctrl?.setPalette) s.ctrl.setPalette(paletteFor(s.cfg));
+    }
+    for (const [el, s] of st) underlay(el, s.cfg);
+    schedule();
+    if (save) try { localStorage.setItem('objects-palette', name); } catch (_) { /* private window */ }
+  }
+  let saved = null;
+  try { saved = localStorage.getItem('objects-palette'); } catch (_) { /* private window */ }
+  setPalette(q.get('palette') || saved || 'paper');
+  document.querySelector('.swatches').addEventListener('click', e => { const b = e.target.closest('[data-pal]'); if (b) setPalette(b.dataset.pal, true); });
+
+  // ---- copy a mount snippet
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('.copy');
+    if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.copy); } catch (_) { /* no clipboard: the button still answers */ }
+    b.classList.add('done');
+    clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('done'), 1400);
+  });
+
+  // ---- the one credit line
+  const pk = ['lamp', 'concrete', 'platform', 'room'].map(k => PHOTOS[k]).filter(Boolean).map(p => ({ ...p, adapted: true }));
+  const sc = [SPLIT, ...DEFAULT_SEQUENCE, TULIP, MIXER, SRC.roof, SRC.lattice, ...SRC.spirals, SRC.dahlia]
+    .map(p => ({ ...p, source: p.source === 'commons' ? 'Wikimedia Commons' : (p.source || 'Unsplash'), adapted: true }));
+  const seen = new Set();
+  document.getElementById('credits').innerHTML = creditsLine([...pk, ...sc].filter(p => { const k = p.page || p.by; if (seen.has(k)) return false; seen.add(k); return true; }));
+
+  // fetch every object's module and the photographs while the page is idle, so a panel mounts at once
+  const prefetch = () => {
+    const ids = [...new Set([...st.values()].map(s => s.cfg.id))];
+    let i = 0;
+    const next = () => { if (i < ids.length) load(ids[i++]).catch(() => {}).finally(() => setTimeout(next, 80)); };
+    next();
+    for (const p of Object.values(PHOTOS)) { const im = new Image(); im.decoding = 'async'; im.src = new URL('./photo-kit/' + p.file, import.meta.url).href; }
+  };
+  (window.requestIdleCallback || ((f) => setTimeout(f, 600)))(prefetch, { timeout: 1500 });
+
+  window.__objects = { st, live: () => [...st.values()].filter(s => s.ctrl).length };
+  if (document.fonts) await document.fonts.ready;
+  root.dataset.ready = '1';
+</script>
+</body>
+</html>

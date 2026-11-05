@@ -1,0 +1,10 @@
+{
+  "id": "fx-chart",
+  "name": "Area chart",
+  "for": "A metrics card in a product or infrastructure section: one metric over 14 days, a crisp accent line over a soft accent fade, the chart's own grid, and a reading for any day by pointer or arrow keys.",
+  "effects": ["fade", "ruled-grounds"],
+  "default": "fade",
+  "how": "'fade' is plain CSS: the area under the line fades from the accent to the card. 'ruled-grounds' masks a still accent dot ruling to the area (an SVG mask of the area path and a top-to-bottom fade). The line is a plain SVG path on top. Pointer and arrow keys read each day; the tooltip is pinned inside the plot beside the point.",
+  "rules": ["Real numbers (invented ones are covered by the page's one placeholder note, never a sample tag in the chart); axis labels on the data's own scale.", "The fill stays inside the area, never behind the labels, and is still: no moving traces, no pulses.", "The chart has one grid, its own; never an effect that draws a second one (grid-pulse) or a tone that runs across the frame (halftone-screen leaves half the area empty).", "One live chart per screen."],
+  "a11y": "The plot is a focusable image with a label; arrow keys, Home and End read each day into a polite live region; a hidden table holds all values."
+}

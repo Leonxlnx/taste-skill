@@ -1,0 +1,40 @@
+{
+  "id": "closing-lift",
+  "name": "Closing lift",
+  "kind": "transition",
+  "fits": [
+    "closing"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [],
+  "retired": "Not dealt: it needs a closing section of its own (a picture under a sheet, then the page) where the page ends in footer.closing, the close and the footer in one screen (layout-v4.md), and its words stand on a gradient over the photograph (system.md). Rebuild it on footer.closing with a flat band before it is dealt again.",
+  "look": "The last content section scrolls away like a sheet and uncovers the closing photograph held under it; the photograph settles from a close crop and the closing line with the one action fades up on it.",
+  "reduced": "A plain closing section with the photograph, the line and the action.",
+  "phone": "A plain closing section with the photograph, the line and the action after the sheet.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "needs": {
+    "photo": true,
+    "words": "a closing line of 3 to 7 words, one line and one action"
+  },
+  "avoidWith": [
+    "pinned-chapters",
+    "line-carries-colour"
+  ],
+  "states": {
+    "start": {
+      "p": 0.08,
+      "wait": 300
+    },
+    "middle": {
+      "p": 0.55,
+      "wait": 300
+    },
+    "end": {
+      "p": 1,
+      "wait": 300
+    }
+  }
+}

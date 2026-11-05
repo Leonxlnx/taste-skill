@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-radius="sharp" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The dot becomes the full stop · big scene demo</title>
+<meta name="description" content="Demo of the scene in which a claim grows out of one large dot that ends as its full stop, on a payroll software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f2f3f1; --p-ink: #121412; --p-muted: #5f645f; --p-accent: #1f6f4a; --p-accent-ink: #ffffff; --p-action: #121412; --p-action-ink: #ffffff;
+          --p-inv-bg: #121412; --p-inv-surface: #1c1f1c; --p-inv-ink: #f4f5f3; --p-inv-muted: #a3a8a3; --p-inv-accent: #9bd3b4; --p-inv-accent-ink: #121412; --p-inv-action: #f4f5f3; --p-inv-action-ink: #121412;
+          --font-display: "Onest", system-ui, sans-serif; --font-text: "Onest", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Payrun</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Accountants</a><a href="#">Pricing</a><a href="#">Help</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="grid grid--middle">
+        <div class="span-6 stack-5">
+          <h1>Payroll that files itself</h1>
+          <p class="t-lead" style="margin-top:16px">Payrun runs the month, pays everyone on the day and files with HMRC the same night. For companies of 1 to 200 people, from £4 a person a month.</p>
+          <div class="btn-row" style="margin-top:24px"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">See pricing</a></div>
+        </div>
+        <div class="span-6 start-7">
+          <div class="ux" role="img" aria-label="The Payrun pay run for October: 48 people paid, filed with HMRC">
+            <div class="ux__bar"><i></i><i></i><i></i><b>Payrun</b><span>October 2026</span></div>
+            <div class="ux__body">
+              <div class="ux__side"><span class="on">Pay run<em>48</em></span><span>People</span><span>Pensions</span><span>Filings<em>Done</em></span><span>Reports</span></div>
+              <div class="ux__main">
+                <div class="ux__head"><h4>October pay run</h4><span class="ux__btn">Approve and pay</span></div>
+                <div class="ux__tiles"><div class="ux__tile"><span>Net pay</span><b>£142,300</b></div><div class="ux__tile"><span>PAYE and NI</span><b>£61,840</b></div><div class="ux__tile"><span>Filed</span><b>31 Oct</b></div></div>
+                <div class="ux__rows">
+                  <div class="ux__row"><div><b>Salaries, 48 people</b><span>Paid 31 October</span></div><span>£142,300.00</span><span class="ux__tag ok">Paid</span></div>
+                  <div class="ux__row"><div><b>HMRC, PAYE and NI</b><span>FPS filed 31 October</span></div><span>£61,840.00</span><span class="ux__tag ok">Filed</span></div>
+                  <div class="ux__row"><div><b>Pensions</b><span>Nest, uploaded</span></div><span>£9,120.00</span><span class="ux__tag ok">Sent</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="dot-becomes-the-full-stop" style="--h: 1" aria-labelledby="dfs-h">
+    <div class="sc__stage">
+      <h2 class="dfs__line" id="dfs-h">Filed on time, every month.</h2>
+      <p class="dfs__sub">4,200 companies filed with Payrun last month. Not one was late.</p>
+    </div>
+  </section>
+
+  <section class="section ground-inverse">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What is included</h2><p class="t-lead" style="margin-top:16px">One price a person. No filing fees, no year-end charge.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Monthly pay run</span><span class="rows__value">Included</span></li>
+          <li><span class="rows__name">HMRC filings</span><span class="rows__value">Included</span></li>
+          <li><span class="rows__name">Pension uploads</span><span class="rows__value">Included</span></li>
+          <li><span class="rows__name">Year-end P60s</span><span class="rows__value">Included</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Payrun · demo page for the big scene “The dot becomes the full stop”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

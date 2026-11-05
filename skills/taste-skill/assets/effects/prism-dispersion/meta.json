@@ -1,0 +1,11 @@
+{
+  "id": "prism-dispersion",
+  "name": "Prism light",
+  "family": "light",
+  "look": "A soft white beam crosses a dark room, breaks into a widening fan of colour and lands as a glowing spectrum on the far wall.",
+  "bestOn": ["hero", "band", "card"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["dark"],
+  "focal": true
+}

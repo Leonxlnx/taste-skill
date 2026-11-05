@@ -1,0 +1,30 @@
+/* search: a command bar; the query types in and the results follow */
+.ui-search { width: 400px; overflow: hidden; }
+.ui-search__field { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--u-line); color: var(--u-muted); }
+.ui-search__field .ui-icon { width: 18px; height: 18px; }
+.ui-search__q { flex: 1; display: flex; align-items: center; min-width: 0; font-size: 15px; line-height: 20px; color: var(--u-ink); white-space: pre; }
+.ui-search__caret { width: 1.5px; height: 18px; margin-left: 1px; background: var(--u-ink); animation: ui-caret 1s steps(1) infinite; }
+@keyframes ui-caret { 50% { opacity: 0; } }
+.ui-search kbd {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 5px;
+  font: 500 13px/1 var(--ui-font, inherit); color: var(--u-muted); background: var(--u-fill); box-shadow: inset 0 0 0 1px var(--u-line);
+}
+.ui-search__group { padding: 12px 16px 4px; font-size: 13px; font-weight: 500; line-height: 16px; color: var(--u-muted); }
+.ui-search__list { padding: 0 8px 8px; min-height: 128px; }
+.ui-search__row {
+  display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 8px; border-radius: var(--u-r3);
+  font-size: 13px; line-height: 20px; transition: opacity 240ms var(--u-ease), transform 300ms var(--u-ease), background-color 200ms var(--u-ease);
+}
+.ui-search__row.is-sel { background: var(--u-fill-2); }
+.ui-search__row.is-hidden { opacity: 0; transform: translateY(4px); }
+.ui-search__row.is-stale { opacity: 0.38; }
+.ui-search__ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line); color: var(--u-muted); }
+.ui-search__row.is-sel .ui-search__ico { background: var(--u-bg); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.ui-search__row.is-sel { box-shadow: inset 2px 0 0 var(--u-accent); }
+.ui-search__t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: color-mix(in oklab, var(--u-ink) 75%, var(--u-bg)); }
+.ui-search__t b { font-weight: 500; color: var(--u-ink); }
+.ui-search__m { font-size: 13px; color: var(--u-muted); }
+.ui-search__foot { display: flex; gap: 16px; height: 36px; align-items: center; padding: 0 16px; border-top: 1px solid var(--u-line); font-size: 13px; color: var(--u-muted); }
+.ui-search__foot span { display: inline-flex; align-items: center; gap: 4px; }
+.ui-search__foot kbd { min-width: 20px; height: 20px; font-size: 13px; }
+@media (max-width: 420px) { .ui-search { width: 100%; } }

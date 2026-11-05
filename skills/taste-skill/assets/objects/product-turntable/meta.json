@@ -1,0 +1,31 @@
+{
+  "id": "product-turntable",
+  "name": "Product turntable",
+  "kind": "scene",
+  "source": "3d-form",
+  "shows": "A generic thing on a studio turntable with a degree scale, modelled in code (signed distance forms: a rangefinder camera, a wooden side chair, a cylindrical speaker or a glazed cup on its saucer) and printed in the page palette with an 8x8 ordered dither, one canvas pixel per dither cell. The camera is fitted to the form and the panel, so the platter is never cut.",
+  "suits": [
+    "software"
+  ],
+  "for": "The one moment of a software, tech or games page, on a feature card about a kind of thing the product handles: cameras in a rental platform's inventory, a chair in a furniture marketplace, a speaker an audio app controls.",
+  "never": "Never the client's own product and never on a product page (a maker of things shows its photographs or its object render, assets/objects/print-*). Never on a place, service or local-business page. No caption calling it a drawing, a model or a stand-in; the heading says what the card is about.",
+  "effect": "dither",
+  "motion": "Steps round 15 degrees every 1.7 s, each step landing on a stiff damped spring; nothing is drawn between steps. With autoplay 0 it holds still until hovered (auto.js lets one turntable per group move).",
+  "hover": "Moving across it clicks the turntable round step by step after the pointer (one full turn across the panel) and leans the key light toward the pointer. Touch: drag across.",
+  "reducedMotion": "One still frame, no pause disc; hover still turns it, without easing.",
+  "params": {
+    "form": "'camera' (default), 'chair', 'speaker' or 'cup'",
+    "cell": "CSS px per dither cell; default from the panel size, 2 to 3",
+    "step": "degrees per step, default 15",
+    "hold": "seconds between steps at rest, default 1.7",
+    "start": "starting angle in degrees, default -30",
+    "autoplay": "0 holds still until hovered (default 1; auto.js sets it per group)",
+    "readout": "1 shows the angle under the stage (default off)",
+    "transparent": "1 leaves the ground clear (used to render the fallback stills)",
+    "alt": "what the picture shows (default per form)"
+  },
+  "palette": "bg, ink and muted give the four print tones; accent marks the camera's release button and lens ring, the speaker's control ring and light, the cup's glaze and the index mark. On a dark ground light prints as ink.",
+  "fallback": "fallback-<form>-light.png or -dark.png: a still of the form rendered by this object on a clear ground (make-fallbacks.html).",
+  "cost": "low: raymarched at the dither-cell resolution (about 250 x 220 pixels for a 1440 hero), only while it steps or is hovered, 30 frames a second at rest",
+  "photos": []
+}

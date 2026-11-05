@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product renders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap">
+<style>
+  :root { --bg: #ecebe6; --ink: #151515; --muted: #5f5e59; --accent: #1f6f5c; --surface: #e3e2dc; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.5 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  section { position: relative; min-height: 100svh; display: grid; overflow: hidden; }
+  .s-bike { --bg: #ecebe6; --ink: #151515; --muted: #5f5e59; --accent: #1f6f5c; background: var(--bg); color: var(--ink); }
+  .s-lamp { --bg: #121314; --ink: #f1f0ec; --muted: #9c9b96; --accent: #d9542b; --surface: #1b1c1e; background: var(--bg); color: var(--ink); }
+  .s-arm  { --bg: #e6e8ea; --ink: #121417; --muted: #5a5f66; --accent: #2b5fd9; --surface: #dcdfe2; background: var(--bg); color: var(--ink); }
+  .frame { position: absolute; inset: 0; }
+  .s-lamp, .s-arm { align-content: start; }
+  .s-lamp .frame, .s-arm .frame { position: relative; inset: auto; height: calc(100svh - 260px); min-height: 360px; margin: 24px clamp(16px, 5vw, 72px) 0; }
+  .copy { position: relative; z-index: 2; align-self: start; padding: clamp(28px, 7vw, 96px) clamp(16px, 5vw, 72px) 0; max-width: 620px; pointer-events: none; }
+  .copy h2 { margin: 0; font-weight: 500; font-size: clamp(36px, 5.2vw, 76px); line-height: 0.98; letter-spacing: -0.035em; }
+  .copy p { margin: 18px 0 0; color: var(--muted); font-size: clamp(16px, 1.3vw, 18px); max-width: 34ch; }
+  .s-lamp .copy, .s-arm .copy { max-width: none; text-align: center; margin: 0 auto; }
+  .s-lamp .copy p, .s-arm .copy p { margin-left: auto; margin-right: auto; max-width: 44ch; }
+  @media (max-width: 700px) { section { display: block; min-height: 0; padding-bottom: 24px; } .frame { position: relative; inset: auto; height: min(118vw, 64svh); } .copy { padding-top: 40px; } .s-lamp .copy, .s-arm .copy { text-align: left; margin: 0; } .s-lamp .copy p, .s-arm .copy p { margin-left: 0; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="s-bike" data-id="city-bike">
+    <div class="copy"><h2>Built for the ride to work.</h2><p>A steel city frame, a basket up front and a rack behind.</p></div>
+    <div class="frame" data-product="specs/city-bike.json" data-product-place="legacy"></div>
+  </section>
+  <section class="s-lamp" data-id="desk-lamp">
+    <div class="copy"><h2>Light where you work.</h2><p>Two springs hold the arm wherever you leave it.</p></div>
+    <div class="frame" data-product="specs/desk-lamp.json" data-product-place="stage"></div>
+  </section>
+  <section class="s-arm" data-id="robot-arm">
+    <div class="copy"><h2>Three joints. One steady hand.</h2><p>A bench arm that picks, places and repeats.</p></div>
+    <div class="frame" data-product="specs/robot-arm.json" data-product-place="stage"></div>
+  </section>
+</main>
+<script type="module">
+  // the bike: the legacy turntable right of the words; the lamp and the arm: a view framed under the words (views.html shows the views, scenes and colours)
+  // ?only=city-bike shows one section; ?turn=0 a still; ?fallback=1 the no-WebGL path (the poster)
+  const q = new URLSearchParams(location.search);
+  if (q.get('fallback') === '1') window.__printForceFallback = true;
+  if (q.get('only')) document.querySelectorAll('section').forEach(s => { if (s.dataset.id !== q.get('only')) s.remove(); });
+  if (q.has('turn')) document.querySelectorAll('[data-product]').forEach(el => { const p = JSON.parse(el.dataset.productParams || '{}'); p.turn = +q.get('turn'); el.dataset.productParams = JSON.stringify(p); });
+  const { ready } = await import('./auto.js');
+  const products = await ready;
+  window.__products = products;
+  // ready for a screenshot: every product has drawn a frame of its own (or shows its poster for good)
+  const t0 = performance.now();
+  (function wait() {
+    const all = [...products.values()];
+    const done = all.length && all.every(c => c.info.fallback || (c.info.still === 'frame' && !c.info.live) || (c.info.shown && !c.info.running && !c.info.dirty) || (!c.info.near && c.info.still === 'poster'));
+    if (done || performance.now() - t0 > 120000) document.documentElement.dataset.ready = done ? '1' : 'timeout';
+    else setTimeout(wait, 250);
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+/* fx-spotlight: plain cards with a faint dot ruling in their empty corner; a small soft light under the pointer brings it up */
+@property --cx-spot-r { syntax: "<length>"; inherits: true; initial-value: 0px; }
+.cx-spot {
+  --cx-spot-r: 0px; --mx: 50%; --my: 50%;
+  position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4);
+  transition: --cx-spot-r .45s var(--cx-ease);
+}
+.cx-spot.is-on { --cx-spot-r: 150px; }
+.cx-spot__card {
+  position: relative; display: flex; flex-direction: column; gap: var(--s-6); min-height: 300px; padding: var(--s-6);
+  border-radius: var(--r-lg); background: var(--cx-card); border: 1px solid var(--cx-line); box-shadow: inset 0 1px 0 var(--cx-hi);
+}
+.cx-spot__card > * { position: relative; z-index: 2; }
+.cx-spot__icon {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-md);
+  background: var(--bg); border: 1px solid var(--cx-line-2); color: var(--ink);
+}
+.cx-spot__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cx-spot__body { display: grid; gap: var(--s-2); margin-top: auto; }
+.cx-spot__link {
+  font-size: var(--t-small); font-weight: 500; color: var(--ink); display: inline-flex; gap: 6px; align-items: center; width: fit-content;
+}
+.cx-spot__link::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
+.cx-spot__link:hover::after { transform: translateX(2px); }
+.cx-spot__card { cursor: pointer; }
+.cx-spot__card:has(.cx-spot__link:focus-visible) { outline: 2px solid var(--action); outline-offset: 2px; }
+.cx-spot__fx { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+@media (max-width: 899px) {
+  .cx-spot { grid-template-columns: minmax(0, 1fr); }
+  .cx-spot__card { min-height: 220px; }
+}

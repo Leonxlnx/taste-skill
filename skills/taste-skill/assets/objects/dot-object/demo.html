@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dot object</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_scenes/demo.css">
+</head>
+<body>
+<script type="module">
+  import demo from '../_scenes/demo.js';
+  import dots, { DEFAULT_PHOTO } from './object.js';
+  const CC0 = 'https://creativecommons.org/publicdomain/zero/1.0/';
+  const dahlia = { id: 'commons-minimal-orange-dahlia', source: 'commons', ratio: 1.523, width: 5830, focus: [0.5, 0.5], alt: 'An orange dahlia on a black ground', by: 'Alex Blăjan', licence: 'CC0', licenceUrl: CC0,
+    url: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Minimal_orange_dahlia_%28Unsplash%29.jpg', page: 'https://commons.wikimedia.org/wiki/File:Minimal_orange_dahlia_(Unsplash).jpg' };
+  const desk = { id: 'commons-retro-items-on-white-table', source: 'commons', ratio: 1.333, width: 3209, focus: [0.5, 0.5], alt: 'Glasses, a rangefinder camera and a wristwatch laid out on a white table', by: 'Dmitry Ratushny', licence: 'CC0', licenceUrl: CC0,
+    url: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Retro_items_on_white_table_%28Unsplash%29.jpg', page: 'https://commons.wikimedia.org/wiki/File:Retro_items_on_white_table_(Unsplash).jpg' };
+  demo(dots, {
+    kind: 'Scene object · photograph, dots',
+    eyebrow: 'Product photos',
+    title: 'A tulip, set in dots.',
+    lede: 'A photograph on a plain ground, cut out and set in dots that keep its tones. Move the pointer over it to see its real colour through the dots.',
+    hero: { src: DEFAULT_PHOTO },
+    section: { title: 'In a card panel', text: 'Any object shot on a plain ground: the ground is read from the border and left out.' },
+    cards: [
+      { title: 'A dahlia', text: 'Orange petals on black: a light object on a dark ground cuts out as well.', src: dahlia, surface: true },
+      { title: 'Glasses, a camera, a watch', text: 'Three things on a white table, cut out together.', src: desk, params: { fit: 0.84 }, surface: true },
+    ],
+    credits: [DEFAULT_PHOTO, dahlia, desk],
+  });
+</script>
+</body>
+</html>

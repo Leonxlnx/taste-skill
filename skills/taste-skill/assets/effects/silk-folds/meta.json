@@ -1,0 +1,10 @@
+{
+  "id": "silk-folds",
+  "name": "Silk folds",
+  "family": "material",
+  "look": "Large, unevenly spaced folds of satin in one page colour (a muted tint on light pages), with a broad soft sheen along them as they move slowly.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

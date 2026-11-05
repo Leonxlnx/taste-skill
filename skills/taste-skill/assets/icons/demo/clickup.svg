@@ -1,0 +1,14 @@
+<svg data-ic="violet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 311" width="256" height="311"><defs>
+        <linearGradient x1="5.68692603e-15%" y1="118.010489%" x2="100%" y2="118.010489%" id="linearGradient-1">
+            <stop stop-color="#7612FA" offset="0%"></stop>
+            <stop stop-color="#40DDFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="2.22574778e-15%" y1="118.009906%" x2="100%" y2="118.009906%" id="linearGradient-2">
+            <stop stop-color="#FA12E3" offset="0%"></stop>
+            <stop stop-color="#FFD700" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <path d="M0,238.388403 L47.2398261,201.835473 C72.33792,234.921611 99.003528,250.172215 128.684343,250.172215 C158.20698,250.172215 184.118582,235.101917 208.085338,202.275583 L256,237.947473 C221.418142,285.282697 178.443862,310.292769 128.684343,310.292769 C79.0835746,310.292769 35.6927884,285.443333 0,238.388403 L0,238.388403 Z" fill="url(#linearGradient-1)"></path>
+        <polygon fill="url(#linearGradient-2)" points="128.533542 79.5196995 44.4498377 152.707024 5.58259945 107.175679 128.712208 0 250.868657 107.255177 211.823408 152.626706"></polygon>
+    </g></svg>

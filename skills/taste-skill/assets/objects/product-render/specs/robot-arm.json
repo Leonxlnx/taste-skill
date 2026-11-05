@@ -1,0 +1,74 @@
+{
+  "id": "robot-arm",
+  "name": "Robot arm",
+  "label": "A robot arm with three joints and a gripper",
+  "units": "m",
+  "angle": -26,
+  "turn": { "mode": "sway", "amp": 14, "period": 28 },
+  "colors": [
+    { "id": "blue", "name": "Signal blue", "accent": "#2b5fd9" },
+    { "id": "orange", "name": "Safety orange", "accent": "#e0702b" },
+    { "id": "graphite", "name": "Graphite", "accent": "#3a3d42" }
+  ],
+  "views": {
+    "detail-gripper": { "part": ["gripper", "finger*", "pad*", "tool flange", "wrist link"], "angle": -40, "elev": 14, "margin": 1.35 }
+  },
+  "scenes": {
+    "work": {
+      "label": "A robot arm lifting a small parcel from a tray of parcels",
+      "props": [
+        { "prop": "tray", "at": [0.63, 0, 0], "size": [0.3, 0.06, 0.24], "parcels": 3, "name": "tray" },
+        { "prop": "parcel", "at": [0.652, 0.3075, 0], "size": [0.045, 0.045, 0.047], "in": "wrist", "name": "held parcel" }
+      ]
+    }
+  },
+  "supports": ["three-quarter", "side", "front", "top", "detail-gripper"],
+  "make": { "variants": ["three-quarter", "side", "front", "top", "detail-gripper", "three-quarter+work"], "grounds": ["light"] },
+  "materials": {
+    "shell": { "kind": "paint", "color": "#e7e6e2", "finish": "satin" },
+    "dark": { "kind": "paint", "color": "#2a2c30", "finish": "satin" },
+    "cap": { "kind": "paint", "color": "accent", "finish": "gloss" },
+    "ring": { "kind": "light", "color": "#8ec8ff" },
+    "pad": { "kind": "rubber", "color": "#1a1a1a" }
+  },
+  "motion": [
+    { "id": "yaw", "pivot": [0, 0.14, 0], "axis": "y", "amp": 26, "period": 13 },
+    { "id": "shoulder", "parent": "yaw", "pivot": [0, 0.32, 0], "axis": "z", "amp": 9, "period": 11, "phase": 0.2 },
+    { "id": "elbow", "parent": "shoulder", "pivot": [0.24, 0.7, 0], "axis": "z", "amp": 13, "period": 9, "phase": 0.55 },
+    { "id": "wrist", "parent": "elbow", "pivot": [0.58, 0.6, 0], "axis": "z", "amp": 20, "period": 7, "phase": 0.1 }
+  ],
+  "parts": [
+    { "name": "plinth", "type": "cylinder", "at": [0, 0.03, 0], "r": 0.165, "h": 0.06, "round": 0.01, "mat": "dark", "seams": [0.35] },
+    { "name": "bolt 1", "type": "cylinder", "at": [0.138, 0.062, 0], "r": 0.009, "h": 0.008, "round": 0.003, "mat": "chrome" },
+    { "name": "bolt 2", "type": "cylinder", "at": [-0.138, 0.062, 0], "r": 0.009, "h": 0.008, "round": 0.003, "mat": "chrome" },
+    { "name": "bolt 3", "type": "cylinder", "at": [0, 0.062, 0.138], "r": 0.009, "h": 0.008, "round": 0.003, "mat": "chrome" },
+    { "name": "bolt 4", "type": "cylinder", "at": [0, 0.062, -0.138], "r": 0.009, "h": 0.008, "round": 0.003, "mat": "chrome" },
+    { "name": "base", "type": "cylinder", "at": [0, 0.1, 0], "r": 0.118, "h": 0.08, "round": 0.012, "mat": "shell" },
+    { "name": "status ring", "type": "torus", "at": [0, 0.142, 0], "R": 0.119, "r": 0.004, "mat": "ring" },
+
+    { "name": "turret", "type": "cylinder", "at": [0, 0.2, 0], "r": 0.108, "h": 0.11, "round": 0.014, "mat": "shell", "in": "yaw", "seams": [-0.62] },
+    { "name": "shoulder", "type": "cylinder", "at": [0, 0.32, 0], "axis": "z", "r": 0.088, "h": 0.17, "round": 0.014, "mat": "shell", "in": "yaw" },
+    { "name": "shoulder cap R", "type": "cylinder", "at": [0, 0.32, 0.088], "axis": "z", "r": 0.072, "h": 0.012, "round": 0.004, "mat": "cap", "in": "yaw" },
+    { "name": "shoulder cap L", "type": "cylinder", "at": [0, 0.32, -0.088], "axis": "z", "r": 0.072, "h": 0.012, "round": 0.004, "mat": "cap", "in": "yaw" },
+    { "name": "shoulder hub", "type": "cylinder", "at": [0, 0.32, 0.096], "axis": "z", "r": 0.024, "h": 0.008, "round": 0.003, "mat": "alloy", "in": "yaw" },
+
+    { "name": "upper arm", "type": "tube", "from": [0, 0.32, 0], "to": [0.24, 0.7, 0], "r": 0.056, "r2": 0.048, "round": 0.01, "mat": "shell", "in": "shoulder", "seams": [-0.55, 0.55] },
+    { "name": "elbow", "type": "cylinder", "at": [0.24, 0.7, 0], "axis": "z", "r": 0.07, "h": 0.14, "round": 0.012, "mat": "shell", "in": "shoulder" },
+    { "name": "elbow cap R", "type": "cylinder", "at": [0.24, 0.7, 0.072], "axis": "z", "r": 0.057, "h": 0.01, "round": 0.004, "mat": "cap", "in": "shoulder" },
+    { "name": "elbow cap L", "type": "cylinder", "at": [0.24, 0.7, -0.072], "axis": "z", "r": 0.057, "h": 0.01, "round": 0.004, "mat": "cap", "in": "shoulder" },
+    { "name": "elbow hub", "type": "cylinder", "at": [0.24, 0.7, 0.078], "axis": "z", "r": 0.019, "h": 0.006, "round": 0.002, "mat": "alloy", "in": "shoulder" },
+
+    { "name": "forearm", "type": "tube", "from": [0.24, 0.7, 0], "to": [0.58, 0.6, 0], "r": 0.045, "r2": 0.038, "round": 0.009, "mat": "shell", "in": "elbow", "seams": [0.5] },
+    { "name": "wrist", "type": "cylinder", "at": [0.58, 0.6, 0], "axis": "z", "r": 0.05, "h": 0.11, "round": 0.01, "mat": "shell", "in": "elbow" },
+    { "name": "wrist cap R", "type": "cylinder", "at": [0.58, 0.6, 0.056], "axis": "z", "r": 0.041, "h": 0.008, "round": 0.003, "mat": "cap", "in": "elbow" },
+    { "name": "wrist cap L", "type": "cylinder", "at": [0.58, 0.6, -0.056], "axis": "z", "r": 0.041, "h": 0.008, "round": 0.003, "mat": "cap", "in": "elbow" },
+
+    { "name": "wrist link", "type": "tube", "from": [0.58, 0.6, 0], "to": [0.618, 0.47, 0], "r": 0.036, "round": 0.008, "mat": "shell", "in": "wrist" },
+    { "name": "tool flange", "type": "tube", "from": [0.618, 0.47, 0], "to": [0.625, 0.445, 0], "r": 0.04, "round": 0.004, "mat": "alloy", "in": "wrist" },
+    { "name": "gripper", "type": "box", "at": [0.632, 0.41, 0], "size": [0.07, 0.055, 0.11], "round": 0.012, "rot": [0, 0, 16], "mat": "dark", "in": "wrist" },
+    { "name": "finger R", "type": "box", "at": [0.648, 0.352, 0.034], "size": [0.024, 0.072, 0.013], "round": 0.004, "rot": [0, 0, 16], "mat": "alloy", "in": "wrist" },
+    { "name": "finger L", "type": "box", "at": [0.648, 0.352, -0.034], "size": [0.024, 0.072, 0.013], "round": 0.004, "rot": [0, 0, 16], "mat": "alloy", "in": "wrist" },
+    { "name": "pad R", "type": "box", "at": [0.652, 0.335, 0.026], "size": [0.02, 0.034, 0.005], "round": 0.002, "rot": [0, 0, 16], "mat": "pad", "in": "wrist" },
+    { "name": "pad L", "type": "box", "at": [0.652, 0.335, -0.026], "size": [0.02, 0.034, 0.005], "round": 0.002, "rot": [0, 0, 16], "mat": "pad", "in": "wrist" }
+  ]
+}

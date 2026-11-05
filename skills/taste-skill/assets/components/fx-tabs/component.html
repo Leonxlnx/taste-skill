@@ -1,0 +1,46 @@
+<div class="cx cx-tabs" data-cx-seed="13">
+  <div class="cx-tabs__scroll">
+    <div class="cx-tabs__bar" role="tablist" aria-label="Dashboard views">
+      <span class="cx-tabs__ind" aria-hidden="true"></span>
+      <button class="cx-tabs__tab" role="tab" id="cx-tab-1" aria-selected="true" aria-controls="cx-panel-1" tabindex="0" type="button">Overview</button>
+      <button class="cx-tabs__tab" role="tab" id="cx-tab-2" aria-selected="false" aria-controls="cx-panel-2" tabindex="-1" type="button">Payments</button>
+      <button class="cx-tabs__tab" role="tab" id="cx-tab-3" aria-selected="false" aria-controls="cx-panel-3" tabindex="-1" type="button">Payouts</button>
+      <button class="cx-tabs__tab" role="tab" id="cx-tab-4" aria-selected="false" aria-controls="cx-panel-4" tabindex="-1" type="button">Reports</button>
+    </div>
+  </div>
+
+  <section class="cx-tabs__panel" role="tabpanel" id="cx-panel-1" aria-labelledby="cx-tab-1" tabindex="0">
+    <div class="cx-tabs__metrics">
+      <div><span>Gross volume</span><b class="cx-num">$48,210.40</b><em>+8.2%</em></div>
+      <div><span>Payments</span><b class="cx-num">1,204</b><em>+3.1%</em></div>
+      <div><span>Refund rate</span><b class="cx-num">0.8%</b><em>-0.2 pts</em></div>
+    </div>
+  </section>
+  <section class="cx-tabs__panel" role="tabpanel" id="cx-panel-2" aria-labelledby="cx-tab-2" tabindex="0" hidden>
+    <table class="cx-tabs__table">
+      <thead><tr><th scope="col">Amount</th><th scope="col">Customer</th><th scope="col">Status</th><th scope="col">Date</th></tr></thead>
+      <tbody>
+        <tr><td class="cx-num">$240.00</td><td>Northwind Ltd</td><td><span class="cx-tabs__chip is-ok">Paid</span></td><td>31 Oct</td></tr>
+        <tr><td class="cx-num">$1,080.00</td><td>Halden &amp; Co</td><td><span class="cx-tabs__chip">Pending</span></td><td>31 Oct</td></tr>
+        <tr><td class="cx-num">$64.50</td><td>R. Okafor</td><td><span class="cx-tabs__chip is-ok">Paid</span></td><td>30 Oct</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="cx-tabs__panel" role="tabpanel" id="cx-panel-3" aria-labelledby="cx-tab-3" tabindex="0" hidden>
+    <div class="cx-tabs__payout">
+      <div><span>Next payout</span><b class="cx-num">$12,480.22</b><p>On 3 November to the account ending 4821.</p></div>
+      <ol>
+        <li><span>27 Oct</span><b class="cx-num">$11,902.10</b></li>
+        <li><span>20 Oct</span><b class="cx-num">$10,377.84</b></li>
+        <li><span>13 Oct</span><b class="cx-num">$9,640.00</b></li>
+      </ol>
+    </div>
+  </section>
+  <section class="cx-tabs__panel" role="tabpanel" id="cx-panel-4" aria-labelledby="cx-tab-4" tabindex="0" hidden>
+    <ul class="cx-tabs__reports">
+      <li><span>Balance summary, October</span><a href="#">CSV</a></li>
+      <li><span>Payouts reconciliation, October</span><a href="#">CSV</a></li>
+      <li><span>Tax by country, Q3</span><a href="#">PDF</a></li>
+    </ul>
+  </section>
+</div>

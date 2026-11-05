@@ -1,0 +1,30 @@
+/* toggles: a settings list with switches; one flips at a time */
+.ui-toggles { width: 380px; overflow: hidden; }
+.ui-toggles__ico { color: var(--u-muted); }
+.ui-toggles__list { padding: 4px 0; }
+.ui-tg { display: flex; align-items: center; gap: 16px; min-height: 58px; padding: 8px 16px; transition: background-color 300ms var(--u-ease); }
+.ui-tg + .ui-tg { box-shadow: inset 0 1px 0 var(--u-line); }
+.ui-tg__text { display: grid; flex: 1; min-width: 0; }
+.ui-tg__label { font-size: 13px; font-weight: 500; line-height: 20px; }
+.ui-tg__sub { font-size: 13px; line-height: 16px; color: var(--u-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-switch {
+  position: relative; flex: none; width: 32px; height: 20px; border-radius: 999px;
+  background: var(--u-fill-3); box-shadow: inset 0 0 0 1px var(--u-line);
+  transition: background-color 240ms var(--u-ease), box-shadow 240ms var(--u-ease);
+}
+.ui-switch i {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 0 0 0.5px rgb(0 0 0 / 0.08);
+  transition: transform 300ms var(--u-spring);
+}
+.ui-switch.is-on { background: var(--u-ink); box-shadow: none; }
+.ui-switch.is-on i { transform: translateX(12px); background: var(--u-bg); }
+/* the row that just changed carries the one accent touch */
+.ui-tg.is-active { background: color-mix(in oklab, var(--u-accent) 6%, var(--u-bg)); }
+.ui-tg.is-active .ui-switch.is-on { background: var(--u-accent); }
+.ui-tg.is-active .ui-switch.is-on i { background: #fff; }
+/* phone: the list takes the panel's width (cards.css); a long line wraps instead of being cut */
+@media (max-width: 639px) {
+  .ui-tg { gap: 12px; padding: 8px 14px; }
+  .ui-tg__sub { white-space: normal; }
+}

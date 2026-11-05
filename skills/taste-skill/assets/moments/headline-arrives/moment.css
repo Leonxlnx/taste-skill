@@ -1,0 +1,14 @@
+/* headline-arrives: the words of the hero headline rise out of their masks once on load. Hidden only
+   under html.mo-js (the loader ran) and never after .mo-safe on <html> (2.5 s) or on the element (the
+   loader marks a failed module so): without script, under reduced motion or when the module fails
+   the headline stands as written, and so does it on a phone (under 640px: no hiding at all; the loader marks the host data-moment-still and the module leaves it done). The masks (.is-live) are taken off again once the words have
+   settled, so nothing clips an accent above a capital or an italic's overhang afterwards. */
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) { .mo-js:not(.mo-safe) [data-moment="headline-arrives"]:not(.is-live):not(.is-done):not(.mo-safe):not([data-moment-still]) > * { opacity: 0; } }
+[data-moment="headline-arrives"].is-live .mo-w { display: inline-block; vertical-align: top; }
+[data-moment="headline-arrives"].is-live .mo-w:not(:has(.mo-c)), [data-moment="headline-arrives"].is-live .mo-c { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+[data-moment="headline-arrives"].is-live .mo-i { display: inline-block; will-change: transform; }
+[data-moment="headline-arrives"].is-live:not(.is-done) .mo-i { opacity: 0.001; transform: translateY(108%); }
+[data-moment="headline-arrives"].is-live:not(.is-done):not(h1):not(h2) > :not(h1):not(h2) { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .mo-js [data-moment="headline-arrives"] > *, [data-moment="headline-arrives"] .mo-i { opacity: 1 !important; transform: none !important; }
+}

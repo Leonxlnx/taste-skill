@@ -1,0 +1,17 @@
+<div class="ui ui-panel ui-code" data-ui="code">
+  <div class="ui-code__tabs">
+    <span class="ui-code__tab is-on"><i class="ui-code__lang">TS</i>checkout.ts</span>
+    <span class="ui-code__tab"><i class="ui-code__lang">TS</i>api.ts</span>
+    <span class="ui-spacer"></span>
+    <span class="ui-chip ui-chip--plain ui-code__chip" data-code-chip>1 fix</span>
+  </div>
+  <pre class="ui-code__pre"><code><span class="ui-code__ln" data-n="12"><span class="k">export async function</span> <span class="f">charge</span>(order) {</span>
+<span class="ui-code__ln" data-n="13">  <span class="k">const</span> total = <span class="f">sum</span>(order.items);</span>
+<span class="ui-code__ln" data-n="14" data-note="Skips empty orders.">  <span class="k">if</span> (total &lt;= <span class="n">0</span>) <span class="k">return</span> <span class="k">null</span>;</span>
+<span class="ui-code__ln is-mark" data-n="15">  <span class="k">const</span> paid = <span class="k">await</span> <span class="f">pay</span>(total, order.currency);</span>
+<span class="ui-code__ln" data-n="16">  <span class="c">// keep the receipt with the order</span></span>
+<span class="ui-code__ln" data-n="17" data-note="Saves the receipt with the order.">  <span class="k">await</span> <span class="f">save</span>(order.id, paid.id);</span>
+<span class="ui-code__ln" data-n="18">  <span class="k">return</span> paid;</span>
+<span class="ui-code__ln" data-n="19">}</span></code></pre>
+  <div class="ui-code__hint" data-code-hint><span class="ui-dot"></span><span data-code-text>Added: wait for the payment before saving.</span></div>
+</div>

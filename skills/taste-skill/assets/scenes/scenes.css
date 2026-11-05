@@ -1,0 +1,47 @@
+/* scenes.css - the held stage every big scene runs on (taste-skill, references/scenes.md). The loader links
+   it; a page never writes its own. A scene section holds one stage as its first child. While the scene is
+   live the section is (--sc-hold + 1) screens tall and the stage sticks for --sc-hold screens; at rest
+   (reduced motion, a small screen, no script, a failed module) the stage is an ordinary block showing the
+   finished composition. */
+.sc { position: relative; }
+.sc > * { position: relative; }
+/* the page rhythm (system.css) holds at rest: the section keeps its --h screens (the page writes style="--h: 1", or 2
+   when the finished composition needs it) and its --padt / --padb, like every other section; the stage adds no
+   block padding or minimum height of its own, so the composition sits where any section's words sit. Live, the
+   section is (hold + 1) screens with no padding, so the stage sticks flush; hold 1 makes it exactly two. */
+main > .sc:not(.is-live) > .sc__stage { padding-block: 0; min-height: 0; }
+/* a finished composition taller than its screens grows its section instead of running over the next one (the page
+   rhythm still sets the least: --h screens), so a too-tall rest is a screen-height finding, never an overlap */
+@media (max-width: 639px) { main > .sc:not(.is-live) { height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100lvh); } }
+main > .sc:not(.is-live) { height: auto; min-height: calc(var(--h, 1) * 100vh); min-height: calc(var(--h, 1) * 100svh); }
+/* the hold is whole screens, so the sections after the scene still start on a screen's edge (the page rhythm) */
+/* a hero scene at rest (a phone, reduced motion) is the first section, under the fixed header: its words start
+   --hgap under it and its content ends --hpadb above the fold, as the hero rule does */
+main > .sc[data-big-scene]:first-child:not(.is-live) { padding-top: calc(var(--nav, var(--nav-h, 72px)) + var(--hgap, 40px)); padding-bottom: calc(var(--hpadb, 64px) + var(--bar, 0px)); }
+.sc-js .sc.is-live, .sc-js main > .sc.is-live[data-big-scene] { height: calc((var(--sc-hold, 1) + 1) * 100vh); height: calc((var(--sc-hold, 1) + 1) * 100svh); min-height: 0; padding: 0; }
+.sc-js .sc.is-live > :first-child {
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: clip;
+  contain: layout paint;
+}
+/* the moment between the first paint and the mount: the stage waits, a screen tall, instead of showing the
+   finished composition and jumping (no script: .sc-js is never set; a slow module: .sc-safe shows it) */
+.sc-js:not(.sc-safe) .sc[data-big-scene]:not(.is-live):not(.is-rest) { min-height: 100vh; min-height: 100svh; }
+.sc-js:not(.sc-safe) .sc[data-big-scene]:not(.is-live):not(.is-rest) > .sc__stage { visibility: hidden; }
+/* parts only the live scene draws */
+.sc [data-sc-live] { display: none; }
+.sc.is-live [data-sc-live] { display: block; }
+/* parts only the finished composition shows */
+.sc.is-live [data-sc-rest] { display: none; }
+/* split text (lib.split): the inner span moves, the outer keeps the line */
+.sc .sc-w, .sc .sc-c { display: inline-block; white-space: pre; }
+.sc .sc-i { display: inline-block; will-change: transform; }
+/* a plain skip link for keyboard users: live only, visible on focus */
+.sc .sc__skip { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 20; font-size: var(--t-small, 14px);
+  color: var(--ink); background: var(--bg); padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); opacity: 0; pointer-events: none; }
+.sc.is-live .sc__skip:focus-visible { opacity: 1; pointer-events: auto; }
+.sc:not(.is-live) .sc__skip { display: none; }
+/* print: lib.js sends every scene to rest; this only keeps the geometry honest should a scene still be live */
+@media print {
+  .sc-js .sc.is-live, .sc-js main > .sc.is-live[data-big-scene] { height: auto; min-height: 0; }
+  .sc-js .sc.is-live > :first-child { position: static; height: auto; overflow: visible; contain: none; }
+}

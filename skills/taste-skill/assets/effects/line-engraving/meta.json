@@ -1,0 +1,10 @@
+{
+  "id": "line-engraving",
+  "name": "Line engraving",
+  "family": "dither",
+  "look": "Fine parallel lines that swell in the shadows and bend over rolling hills or around a big sphere, like the engraving on a banknote.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "still",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dither sequence</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_scenes/demo.css">
+</head>
+<body>
+<script type="module">
+  import demo from '../_scenes/demo.js';
+  import seq, { DEFAULT_SEQUENCE } from './object.js';
+  const U = 'https://unsplash.com/license';
+  const pair = [
+    { id: 618, ratio: 1.5, alt: 'Curving glass and steel lattice roof in black and white', by: 'Mika Ruusunen', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/ypVM8PnygUo' },
+    { id: 893, ratio: 1.5, alt: 'Curved latticed building facade forming sweeping lines, black and white', by: 'Samuel Zeller', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/j0g8taxHZa0' },
+  ];
+  const spirals = [
+    { id: 949, ratio: 0.66, alt: 'A white spiral atrium under a glass dome, seen from below', by: 'Drew Patrick Miller', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/VLT62-JzddA' },
+    { id: 679, ratio: 1, alt: 'Spiralling concrete curves around a small round window', by: 'Len dela Cruz', licence: 'Unsplash licence', licenceUrl: U, page: 'https://unsplash.com/photos/ScEKf8u7y-c' },
+  ];
+  demo(seq, {
+    kind: 'Scene object · photographs, dither',
+    eyebrow: 'Gallery',
+    title: 'Four buildings, played like film.',
+    lede: 'A short run of real photographs printed in the page colours. Each cut develops through the dither, darkest ink first. Move across it to pick a frame.',
+    hero: { src: DEFAULT_SEQUENCE },
+    section: { title: 'In a card panel', text: 'Any two to six photographs that belong together: a device from several sides, the stages of a picture, a game’s scenes.' },
+    cards: [
+      { title: 'Two roofs', text: 'A pair is enough: the cut between them is the whole motion.', src: pair, params: { hold: 2.6 }, surface: true },
+      { title: 'Two spirals, whole', text: 'Fitted whole on the paper instead of cropped, for photographs of mixed shapes.', src: spirals, params: { fit: 'contain', autoplay: 0 }, surface: true },
+    ],
+    credits: [...DEFAULT_SEQUENCE, ...pair, ...spirals],
+  });
+</script>
+</body>
+</html>

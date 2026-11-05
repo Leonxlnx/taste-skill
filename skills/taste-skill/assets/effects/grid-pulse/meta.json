@@ -1,0 +1,10 @@
+{
+  "id": "grid-pulse",
+  "name": "Grid pulse",
+  "family": "pattern",
+  "look": "A fine hairline grid with signals running along the lines; the nodes and cells they pass light up and fade, like a circuit keeping a trace.",
+  "bestOn": ["hero", "card", "band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

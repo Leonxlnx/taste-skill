@@ -1,0 +1,142 @@
+/*
+  taste-skill components - shared base. Link after system.css. Every component reads the page tokens
+  (--bg --surface --ink --muted --accent --accent-ink --action --line, the radius, type and space
+  scales) and adds only the few steps below. Classes start with cx-.
+*/
+.cx {
+  --cx-card: color-mix(in oklab, var(--ink) 3.5%, var(--bg));
+  --cx-panel: color-mix(in oklab, var(--ink) 6.5%, var(--bg));
+  --cx-raise: color-mix(in oklab, var(--ink) 9%, var(--bg));
+  --cx-line: color-mix(in oklab, var(--ink) 9%, transparent);
+  --cx-line-2: color-mix(in oklab, var(--ink) 16%, transparent);
+  --cx-hi: color-mix(in oklab, var(--ink) 7%, transparent);
+  --cx-soft: color-mix(in oklab, var(--muted) 72%, var(--bg));
+  --cx-shadow:
+    0 0 0 1px var(--cx-line),
+    0 1px 2px rgb(0 0 0 / .08),
+    0 8px 24px -8px rgb(0 0 0 / .22),
+    0 24px 56px -24px rgb(0 0 0 / .32);
+  --cx-ease: cubic-bezier(.2, .7, .2, 1);
+  --cx-mono: var(--font-mono, ui-monospace, monospace);
+  color: var(--ink);
+  font-family: var(--font-text);
+}
+.cx *, .cx *::before, .cx *::after { box-sizing: border-box; }
+
+/* a card the system way, with a hairline top light so it does not read as a flat grey box */
+.cx-card {
+  position: relative;
+  background: var(--cx-card);
+  border: 1px solid var(--cx-line);
+  border-radius: var(--r-lg);
+  box-shadow: inset 0 1px 0 var(--cx-hi);
+}
+.cx-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 500 var(--t-label)/1.4 var(--font-text); color: var(--muted); letter-spacing: .01em;
+}
+.cx-title { font: 500 var(--t-card)/1.3 var(--font-text); letter-spacing: -.01em; color: var(--ink); margin: 0; }
+.cx-text { font-size: var(--t-small); line-height: 1.55; color: var(--muted); margin: 0; text-wrap: pretty; }
+.cx-num { font-variant-numeric: tabular-nums; }
+.cx-kbd {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: var(--r-sm); border: 1px solid var(--cx-line-2); background: var(--cx-panel);
+  font: 500 11px/1 var(--cx-mono); color: var(--muted);
+}
+.cx-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* a mono icon from an SVG file (Simple Icons): takes the text colour */
+.cx-glyph {
+  display: inline-block; width: var(--size, 20px); height: var(--size, 20px); flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat;
+}
+
+/* ---------------------------------------------------------------- fill (see shared.js) */
+/* the overlay is the next sibling of the filled element; fill() sets its left, top, width and height */
+.cx-fill {
+  position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; user-select: none;
+}
+.cx-fill--screen { mix-blend-mode: screen; }
+.cx-fill--multiply { mix-blend-mode: multiply; }
+.cx-filled [data-fill]:not(.cx-knock *),
+.cx-filled--all:not(.cx-knock),
+.cx-filled--all :not(.cx-fill, .cx-fill *) { color: transparent; }
+.cx-filled [data-fill="box"]:not(.cx-knock *) { background-color: transparent; }
+
+.cx-knock {
+  position: absolute !important; inset: 0 !important; margin: 0 !important;
+  width: auto !important; height: auto !important; max-width: none !important;
+  transform: none !important; animation: none !important; transition: none !important;
+}
+.cx-knock, .cx-knock * {
+  background-color: transparent !important; border-color: transparent !important;
+  box-shadow: none !important; outline: none !important; text-shadow: none !important;
+  text-decoration-color: transparent !important; opacity: 1 !important; filter: none !important;
+  animation: none !important; transition: none !important;
+}
+.cx-knock canvas, .cx-knock video { visibility: hidden !important; }
+.cx-knock img { visibility: hidden !important; }
+.cx-knock [data-fill] img { visibility: visible !important; }
+
+.cx-fill--screen .cx-knock { mix-blend-mode: multiply; background-color: #000 !important; }
+.cx-fill--screen .cx-knock, .cx-fill--screen .cx-knock * { color: #000 !important; }
+.cx-fill--screen .cx-knock--all, .cx-fill--screen .cx-knock--all *,
+.cx-fill--screen .cx-knock [data-fill], .cx-fill--screen .cx-knock [data-fill] * { color: #fff !important; }
+.cx-fill--screen .cx-knock [data-fill] img { filter: brightness(0) invert(1) !important; }
+
+.cx-fill--multiply .cx-knock { mix-blend-mode: screen; background-color: #fff !important; }
+.cx-fill--multiply .cx-knock, .cx-fill--multiply .cx-knock * { color: #fff !important; }
+.cx-fill--multiply .cx-knock--all, .cx-fill--multiply .cx-knock--all *,
+.cx-fill--multiply .cx-knock [data-fill], .cx-fill--multiply .cx-knock [data-fill] * { color: #000 !important; }
+.cx-fill--multiply .cx-knock [data-fill] img { filter: brightness(0) !important; }
+
+.cx-knock [data-fill="box"], .cx-knock .cx-glyph { background-color: currentColor !important; }
+/* inside a filled box, its own glyphs do not punch holes */
+.cx-knock [data-fill="box"] .cx-glyph { background-color: transparent !important; }
+
+@media (forced-colors: active) {
+  .cx-fill { display: none; }
+  .cx-filled [data-fill], .cx-filled--all, .cx-filled--all * { color: CanvasText !important; }
+}
+
+/* ---------------------------------------------------------------- ring and glow */
+/* an effect host shown only in its padding: a lit border of width --ring */
+.cx-ring {
+  position: absolute; inset: calc(-1 * var(--ring, 1.5px)); padding: var(--ring, 1.5px);
+  border-radius: inherit; pointer-events: none; z-index: 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+/* an effect host blurred into a soft light behind an object */
+.cx-glow {
+  position: absolute; pointer-events: none; z-index: -1;
+  filter: blur(var(--blur, 24px)); opacity: var(--glow, .5);
+  transition: opacity .5s var(--cx-ease);
+}
+
+/* ---------------------------------------------------------------- pause (see pauser() in shared.js) */
+/* a solid disc in one corner of a looping visual, never a see-through blur; 32px in a 40px hit area */
+.cx-pause {
+  --cx-pause-in: 12px;
+  position: absolute; z-index: 6; display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+  border-radius: 999px; border: 1px solid var(--cx-line-2, color-mix(in oklab, var(--ink) 16%, transparent));
+  background: var(--bg); color: var(--ink); cursor: pointer;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .12), 0 4px 12px -4px rgb(0 0 0 / .25);
+  opacity: .82; transition: opacity .2s var(--cx-ease, ease), border-color .2s var(--cx-ease, ease);
+}
+.cx-pause::before { content: ""; position: absolute; inset: -4px; border-radius: inherit; }
+.cx-pause:hover, .cx-pause:focus-visible { opacity: 1; border-color: color-mix(in oklab, var(--ink) 30%, transparent); }
+.cx-pause:focus-visible { outline: 2px solid var(--action, var(--accent)); outline-offset: 2px; }
+.cx-pause svg { fill: currentColor; }
+.cx-pause__on, .cx-pause.is-paused .cx-pause__off { display: none; }
+.cx-pause.is-paused .cx-pause__on { display: block; margin-left: 1px; }
+.cx-pause--br { right: var(--cx-pause-in); bottom: var(--cx-pause-in); }
+.cx-pause--bl { left: var(--cx-pause-in); bottom: var(--cx-pause-in); }
+.cx-pause--tr { right: var(--cx-pause-in); top: var(--cx-pause-in); }
+.cx-pause--tl { left: var(--cx-pause-in); top: var(--cx-pause-in); }
+.cx-pause--inline { position: relative; flex: none; margin-left: auto; width: 28px; height: 28px; box-shadow: none; }
+.cx-paused, .cx-paused *, .cx-paused *::before, .cx-paused *::after { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { .cx-pause { display: none; } }
+@media (forced-colors: active) { .cx-pause { border-color: ButtonText; } }

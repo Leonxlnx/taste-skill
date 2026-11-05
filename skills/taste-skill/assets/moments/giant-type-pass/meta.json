@@ -1,0 +1,43 @@
+{
+  "id": "giant-type-pass",
+  "name": "Giant type, picture passing",
+  "kind": "scroll",
+  "fits": [
+    "statement"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "Two to four words set at 12vw with a photograph showing through the letters under a 35% ink tint; the photograph passes upward through the type as the section crosses the screen.",
+  "reduced": "The photograph stands still inside the letters.",
+  "phone": "The photograph stands still in the letters, the type smaller (19vw).",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "photo": true,
+    "picture": "mid to dark tones with detail, no pale sky; the lower half of the picture is what shows",
+    "words": "a statement of 2 to 4 words and one line under it"
+  },
+  "avoidWith": [
+    "word-highlight"
+  ],
+  "states": {
+    "start": {
+      "view": 0.25,
+      "wait": 350
+    },
+    "middle": {
+      "view": 0.5,
+      "wait": 350
+    },
+    "end": {
+      "view": 0.75,
+      "wait": 350
+    }
+  }
+}
