@@ -3,11 +3,12 @@
   taste-skill shoot.mjs - a full-page screenshot of a page with live effects, and one tile per section.
 
     node <skill>/scripts/shoot.mjs --url <url or file> --w 1440 --out shots/1440.png --profile <own chrome dir>
-      [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--tiles <dir>] [--no-tiles]
+      [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--root <dir>] [--tiles <dir>] [--no-tiles]
 
   A file (a path, or a folder holding index.html) is served over http on 127.0.0.1 from a free port (5300-5399, or
   --port and the 9 after it) for the run, from high enough that the page's ../ links resolve: Chrome runs no module
   script from file://, so a page opened that way shows its kit, effects and diagrams empty. Never port 3000.
+  --root serves from that folder instead (a built site whose links start at its root, /style.css).
 
   Section tiles: at 1440 and at a phone width (under 600) it first shoots one screen
   per top-level section (the children of main, a body > section, a closing footer, the footer), starting at the
@@ -58,13 +59,13 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
 const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'shoot-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-shoot-' + process.pid);
-const target = opt('url'), out = opt('out'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile'));
+const target = opt('url'), out = opt('out'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), rootArg = opt('root');
 // the screen's height, as consistency.mjs has it: a tablet is held upright (820x1180, 768x1024), so a hero sized
 // to the screen (100svh) is shot at the height a tablet shows it
 const HEIGHTS = { 1440: 900, 1366: 768, 1280: 800, 1152: 864, 1024: 768, 896: 800, 834: 1194, 820: 1180, 810: 1080, 800: 1280, 768: 1024, 430: 932, 414: 896, 390: 844, 375: 812, 360: 780 };
 const W = +opt('w', 1440), VH = +opt('h', HEIGHTS[+opt('w', 1440)] || (W < 600 ? 844 : 900)), settle = +opt('wait', 450);
-if (!target || target === true || !out || out === true) {
-  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png [--profile <dir>] [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--tiles <dir>] [--no-tiles]');
+if (!target || target === true || !out || out === true || rootArg === true) {
+  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png [--profile <dir>] [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--root <dir>] [--tiles <dir>] [--no-tiles]');
   process.exit(1);
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -80,6 +81,7 @@ if (!/^https?:\/\//i.test(url)) {
   // served from high enough that the page's ../ references resolve
   const ups = Math.max(0, ...[...fs.readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map((m) => m[1].length / 3));
   let root = path.dirname(file); for (let i = 0; i < ups; i++) root = path.dirname(root);
+  if (rootArg) { root = path.resolve(rootArg); const rel = path.relative(root, file); if (rel.split(path.sep)[0] === '..' || path.isAbsolute(rel)) { console.error(`shoot: the page is not inside --root ${root}: ${file}`); process.exit(2); } }
   server = http.createServer((req, res) => {
     try {
       let f = path.resolve(path.join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));

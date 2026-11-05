@@ -4,14 +4,15 @@
   the CPU), at each width, and prints every finding. Closes Chrome by its own PID.
 
     node <skill>/assets/layout/check.mjs --url <url or file> --profile <own chrome dir>
-         [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--json]
+         [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--root <dir>] [--json]
 
   --shots writes, per size, the first screen (first-<w>.png) and every section framed as the check
   frames it (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
   h1.maxChars, with words from the lead) and checks again: the hero must still be one screen
   (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). --no-stress skips it.
-  A file (or its folder, for index.html) is served from its folder over http on 127.0.0.1 (5770-5779).
+  A file (or its folder, for index.html) is served from its folder over http on 127.0.0.1 (5770-5779),
+  or from --root, a built site's folder, so its root-relative links (/style.css) resolve.
   Exit code 1 when there is a finding.
 */
 import fs from 'node:fs';
@@ -26,15 +27,15 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
 const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'layout-check-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-layout-check-' + process.pid);
-const target = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots');
+const target = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots'), rootArg = opt('root');
 const sizes = String(opt('sizes', '1440x900,1024x768,820x1180,768x1024,390x844')).split(',').map(s => s.split('x').map(Number));
-if (!target || target === true) { console.error('usage: check.mjs --url <url or file> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--json]'); process.exit(2); }
+if (!target || target === true || rootArg === true) { console.error('usage: check.mjs --url <url or file> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--root dir] [--json]'); process.exit(2); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
 if (!chrome) { console.error('no Chrome found (set CHROME_PATH)'); process.exit(2); }
 const src = fs.readFileSync(path.join(here, 'layout-check.js'), 'utf8');
-// a page file is served from its folder over http on 127.0.0.1 (5770-5779), never opened from file://
+// a page file is served from its folder (or --root) over http on 127.0.0.1 (5770-5779), never opened from file://
 let url = target, server = null;
 if (!/^https?:\/\//i.test(target)) {
   let file = path.resolve(/^file:/i.test(target) ? fileURLToPath(target) : target);
@@ -43,6 +44,7 @@ if (!/^https?:\/\//i.test(target)) {
   // serve from high enough that the page's ../ references resolve
   const ups = Math.max(0, ...[...fs.readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map(m => m[1].length / 3));
   let root = path.dirname(file); for (let i = 0; i < ups; i++) root = path.dirname(root);
+  if (rootArg) { root = path.resolve(rootArg); const rel = path.relative(root, file); if (rel.split(path.sep)[0] === '..' || path.isAbsolute(rel)) { console.error(`check: the page is not inside --root ${root}: ${file}`); process.exit(2); } }
   const MIME = { '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml',
     '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf',
     '.mp4': 'video/mp4', '.webm': 'video/webm', '.glb': 'model/gltf-binary', '.txt': 'text/plain', '.ico': 'image/x-icon' };
