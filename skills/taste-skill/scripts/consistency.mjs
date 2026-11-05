@@ -6,7 +6,7 @@
 //     [--category "kettle"] [--audience "small offices"] [--place "Porto,Ribeira"]
 //     [--products "Kettle One,Kettle Two"] [--primary "Order a kettle"] [--known-brand] [--page tech|gaming|software|product|place|service]
 //     [--tech-subject] [--address-allow "Weserstraße 58|+354 555 0142"] [--rhythm-widths 1440,768,390] [--tiles-tol 24]
-//     [--out dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback]
+//     [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback]
 //     [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks] [--no-tiles]
 // The copy flags take comma lists. Without --category the terms come from a <title> written as the starter has it,
 // "Name: what it is for whom" ("Larkmoor: electric kettles for small offices"); with neither, the headline check warns.
@@ -231,13 +231,14 @@
 // first width only. A fault inside a scroll-linked animation is a
 // WARN (the animation is the FAIL). --quick skips the scroll-motion, hover, loop and form passes and says so. --stops
 // saves every screen. A part caught mid-move on a sweep screen (measured again 0.9 s later) is not told. report.json and
-// the crops go to --out, else to .taste-skill/consistency beside the page file, or to a temp folder for a URL: never into
-// the current directory.
+// the crops go to --out, else to .taste-skill/consistency beside the page file (.taste-skill/consistency-<name> for a page
+// not named index.html, so two pages in one folder keep their own), or to a temp folder for a URL: never into the current
+// directory.
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
-import { join, resolve, dirname, extname, relative, sep } from 'node:path';
+import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
 
@@ -3545,6 +3546,9 @@ async function run(ctx) {
 const MODULES = [visualMod, addressMod, rhythmMod, motionMod, tilesMod];
 
 const OUT = opt('out', null);
+// --root: a built site's folder, served instead of the page's own so its root-relative links (/style.css) resolve
+const ROOT = opt('root', null);
+if (ROOT !== null && (ROOT === undefined || !String(ROOT) || String(ROOT).startsWith('--'))) { console.error('--root needs a folder'); process.exit(2); }
 // widths as 1440,390 or with a height, 1440x800
 const WIDTHS = opt('widths', '1440,1024,820,768,390').split(',').map((v) => { const [w, h] = v.split('x').map(Number); return { w, h: h || null }; }).filter((v) => v.w >= 280);
 const PROBE = opt('probe', null); // debugging: an expression evaluated in the page after the first scroll pass
@@ -3569,7 +3573,7 @@ const KNOWN = has('known-brand');
 const PAGE_FLAG = opt('page', ''), TYPE_ONLY = opt('type', ''), TYPE_FLAG = PAGE_FLAG || TYPE_ONLY;
 const target = argv[0];
 if (!target) {
-  console.error('usage: node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] [--profile dir] [--category ..] [--audience ..] [--place ..] [--products ..] [--primary ..] [--known-brand] [--page tech|gaming|software|product|place|service] [--tech-subject] [--address-allow "a|b"] [--rhythm-widths 1440,768,390] [--tiles-tol 24] [--out dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback] [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks] [--no-tiles]');
+  console.error('usage: node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] [--profile dir] [--category ..] [--audience ..] [--place ..] [--products ..] [--primary ..] [--known-brand] [--page tech|gaming|software|product|place|service] [--tech-subject] [--address-allow "a|b"] [--rhythm-widths 1440,768,390] [--tiles-tol 24] [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback] [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks] [--no-tiles]');
   process.exit(2);
 }
 // a tablet is held upright: 820 (an iPad Air) is 1180 tall, 834 is 1194, 768 is 1024 (the judge's tablet: a full walk, not only the sweep's first screen)
@@ -3606,6 +3610,7 @@ else {
   // serve from high enough that the page's ../ references resolve
   const ups = Math.max(0, ...[...readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map((m) => m[1].length / 3));
   let root = dirname(file); for (let i = 0; i < ups; i++) root = dirname(root);
+  if (ROOT) { root = resolve(ROOT); const rel = relative(root, file); if (rel.split(sep)[0] === '..' || isAbsolute(rel)) { console.error(`The page is not inside --root ${root}: ${file}`); process.exit(2); } }
   serveRoot = root;
   server = createServer((req, res) => {
     try {
@@ -3619,7 +3624,8 @@ else {
   // the default range is 5200-5299; a --port outside it gets that port and the next 9
   const port = await listenFree(server, PORT, PORT >= 5200 && PORT <= 5299 ? 5299 : PORT + 9);
   url = `http://127.0.0.1:${port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;
-  outDir = resolve(OUT || join(dirname(file), '.taste-skill', 'consistency'));
+  // index.html keeps .taste-skill/consistency; about.html gets .taste-skill/consistency-about, so it never wipes index's crops
+  outDir = resolve(OUT || join(dirname(file), '.taste-skill', basename(file) === 'index.html' ? 'consistency' : 'consistency-' + slug(basename(file, extname(file)))));
 }
 mkdirSync(outDir, { recursive: true });
 for (const f of readdirSync(outDir)) if (/^(sweep-)?\d{3,4}-.+\.jpg$/.test(f)) unlinkSync(join(outDir, f));

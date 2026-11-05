@@ -193,7 +193,8 @@ Read `copy.md`, `system.md`, `layout-v4.md` and `sections.md` in full before the
 
 6. **Check and look.** Only the skill's scripts, each running one headless Chrome with WebGL on the
    CPU, closed by its own PID, one at a time; never a windowed browser or a browser tool.
-   Each serves the page file itself over http on 127.0.0.1 (never `file://`), so no server is needed. Then:
+   Each serves the page file itself over http on 127.0.0.1 (never `file://`), so no server is needed;
+   for a built page whose links start at the site root (`/_astro/page.css`), pass `--root` with the build folder (`dist`). Then:
 
    ```bash
    node <skill>/scripts/consistency.mjs index.html --widths 1440,1024,820,768,390 --rhythm-widths 1440,820,768,390 --profile <dir> --page <kind> --category "<what is sold>" --primary "<main action>"
