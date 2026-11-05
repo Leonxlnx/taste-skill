@@ -368,7 +368,9 @@ if (!/^https?:/.test(target)) {
 // default profile folder: --profile, else $TASTE_SKILL_TMP/chrome/perf, else a folder under the system temp dir
 const profileBase = path.resolve(profileArg || (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
 fs.mkdirSync(profileBase, { recursive: true });
-for (const d of fs.readdirSync(profileBase)) if (/^run-\d+$/.test(d)) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* another run, or locked */ } }
+// sweep only folders whose run has exited: run-<pid> of a live run is still that run's Chrome profile
+const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+for (const d of fs.readdirSync(profileBase)) { const m = /^run-(\d+)$/.exec(d); if (m && !alive(Number(m[1]))) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* locked */ } } }
 const profile = path.join(profileBase, 'run-' + process.pid);
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
