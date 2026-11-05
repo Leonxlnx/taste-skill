@@ -1,0 +1,14 @@
+{
+  "name": "taste-skill",
+  "version": "2.5.0",
+  "description": "tasteskill 2.5.0: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser consistency checker.",
+  "author": {
+    "name": "leonxlnx",
+    "email": "hello@tasteskill.dev"
+  },
+  "homepage": "https://github.com/Leonxlnx/taste-skill",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
+  "license": "MIT",
+  "keywords": ["skills", "frontend", "design", "taste", "ui", "websites"],
+  "skills": ["./skills/taste-skill"]
+}
