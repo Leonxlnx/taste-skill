@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exploded layers</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_scenes/demo.css">
+</head>
+<body>
+<script type="module">
+  import demo from '../_scenes/demo.js';
+  import layers, { DEFAULT_PHOTO } from './object.js';
+  const roof = { id: 618, ratio: 1.5, alt: 'Curving glass and steel lattice roof in black and white', by: 'Mika Ruusunen', licence: 'Unsplash licence', licenceUrl: 'https://unsplash.com/license', page: 'https://unsplash.com/photos/ypVM8PnygUo' };
+  const plant = { id: 400, ratio: 1.5, focus: [0.55, 0.45], alt: 'A green plant with tight flower buds against a dark teal ground', by: 'John French', licence: 'Unsplash licence', licenceUrl: 'https://unsplash.com/license', page: 'https://unsplash.com/photos/SNW4DWZEy8I' };
+  demo(layers, {
+    kind: 'Scene object · photograph, four sheets',
+    eyebrow: 'Photo editor',
+    title: 'Every edit on its own layer.',
+    lede: 'One photograph taken apart into the layers an editing app works on. Hover and the stack opens; with names, each layer gets a label.',
+    hero: { src: DEFAULT_PHOTO, params: { names: ['Photo', 'Colour', 'Light', 'Depth'] } },
+    section: { title: 'In a card panel', text: 'Without names it opens without labels.' },
+    cards: [
+      { title: 'A glass roof', text: 'One photograph, no labels.', src: roof, surface: true },
+      { title: 'A plant, named', text: 'The same four layers, labelled in the app’s own words.', src: plant, params: { names: ['Photo', 'Colour', 'Shade', 'Tone map'] }, surface: true },
+    ],
+    credits: [DEFAULT_PHOTO, roof, plant],
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+/* voice: a call card around the assistant's orb, with captions that light up as it speaks and a
+   waveform that moves while it does. The orb follows the fragment's surface:
+   - on a dark surface a live light orb (orb-sphere from ../effects: a pale nebula with specks of
+     light, x.ai's voice orb), mounted by fragment.js;
+   - on a light surface a still pearl drawn in CSS (no WebGL): a pale sphere of the ink and surface
+     with clouds of the accent and the ink turning slowly inside and a few specks of light; the ring opens while it speaks. Never a dark glass ball.
+   The call's one accent touch is the thin ring round the orb, which opens out while it speaks. */
+.ui-voice { width: 264px; padding: 12px 12px 12px; display: grid; justify-items: center; align-content: start; }
+.ui-voice__top { display: flex; align-items: center; width: 100%; height: 24px; }
+.ui-voice__time { font: 500 13px/16px var(--ui-mono, ui-monospace, monospace); color: var(--u-muted); font-variant-numeric: tabular-nums; }
+.ui-voice__orb {
+  position: relative; isolation: isolate; width: 76px; height: 76px; margin: 14px 0 6px; border-radius: 50%; overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--u-ink) 4%, var(--u-bg)) 0, color-mix(in oklab, var(--u-ink) 12%, var(--u-bg)) 64%, color-mix(in oklab, var(--u-ink) 30%, var(--u-bg)) 100%);
+  box-shadow: 0 0 0 4px var(--u-bg), 0 0 0 5.5px color-mix(in oklab, var(--u-accent) 80%, transparent), 0 0 0 5.5px transparent,
+    inset 0 -8px 16px -6px color-mix(in oklab, var(--u-ink) 22%, transparent);
+  transition: box-shadow 420ms var(--u-ease);
+}
+/* the pearl's inside: soft clouds of the accent and the ink that turn slowly (one turn in 18 s, a still
+   frame when held), so the light orb has depth and colour like the dark one, never a flat white disc */
+.ui-voice__orb::before {
+  content: ""; position: absolute; inset: -18%; z-index: 0; border-radius: 50%; pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 64%, color-mix(in oklab, var(--u-accent) 58%, var(--u-bg)) 0, transparent 34%),
+    radial-gradient(circle at 70% 36%, color-mix(in oklab, var(--u-ink) 34%, var(--u-bg)) 0, transparent 30%),
+    radial-gradient(circle at 62% 78%, color-mix(in oklab, var(--u-accent) 30%, var(--u-ink) 14%) 0, transparent 26%),
+    conic-gradient(from 40deg, transparent 0 18%, color-mix(in oklab, var(--u-accent) 26%, transparent) 30%, transparent 46%, color-mix(in oklab, var(--u-ink) 14%, transparent) 70%, transparent 86%);
+  filter: blur(7px); opacity: 0.92;
+  animation: ui-pearl 18s linear infinite;
+}
+@keyframes ui-pearl { to { transform: rotate(360deg); } }
+/* a few specks of light and the glossy highlight, over the clouds */
+.ui-voice__orb::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%; pointer-events: none;
+  background:
+    radial-gradient(circle at 24% 40%, #fff 0 0.7px, transparent 1.4px),
+    radial-gradient(circle at 41% 69%, #fff 0 0.6px, transparent 1.3px),
+    radial-gradient(circle at 63% 58%, #fff 0 0.9px, transparent 1.7px),
+    radial-gradient(circle at 74% 31%, #fff 0 0.6px, transparent 1.3px),
+    radial-gradient(circle at 52% 82%, #fff 0 0.5px, transparent 1.2px),
+    radial-gradient(circle at 80% 66%, #fff 0 0.5px, transparent 1.2px),
+    radial-gradient(circle at 36% 26%, color-mix(in oklab, #fff 90%, transparent) 0, color-mix(in oklab, #fff 34%, transparent) 18%, transparent 40%);
+}
+.ui-voice.is-talking .ui-voice__orb { box-shadow: 0 0 0 4px var(--u-bg), 0 0 0 5.5px var(--u-accent), 0 0 0 11px color-mix(in oklab, var(--u-accent) 12%, transparent), inset 0 -8px 16px -6px color-mix(in oklab, var(--u-ink) 22%, transparent); }
+/* the live orb on a dark surface fills the disc; the pearl's own layers step aside */
+.ui-voice__orb.has-fx { background: #000; }
+.ui-voice__orb.has-fx::before, .ui-voice__orb.has-fx::after { display: none; }
+.ui-voice__who { display: grid; justify-items: center; margin-top: 8px; }
+.ui-voice__name { font-size: 14px; font-weight: 500; line-height: 20px; }
+.ui-voice__with { font-size: 13px; line-height: 16px; color: var(--u-muted); }
+.ui-voice__cap { min-height: 40px; margin-top: 8px; padding: 0 8px; text-align: center; font-size: 13px; line-height: 20px; color: var(--u-text-2); text-wrap: balance; }
+.ui-voice__cap span { transition: opacity 220ms var(--u-ease); }
+.ui-voice__cap span.is-off { opacity: 0.72; }
+.ui-voice__bar { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 12px; padding: 8px; border-radius: 12px; background: var(--u-fill); box-shadow: inset 0 0 0 1px var(--u-line); }
+.ui-voice__btn { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--u-bg); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.ui-voice__end { background: var(--u-ink); color: var(--u-bg); box-shadow: none; }
+/* the waveform: bars of set heights (--h, in px), so the still picture is a real, frozen waveform;
+   while the assistant speaks each bar breathes about its own height */
+.ui-voice__wave { flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px; height: 24px; min-width: 0; overflow: hidden; }
+.ui-voice__wave i { flex: none; width: 2px; height: calc(var(--h, 6) * 1px); border-radius: 1px; background: color-mix(in oklab, var(--u-ink) 55%, var(--u-bg)); transform-origin: 50% 50%; transition: background-color 200ms var(--u-ease); }
+.ui-voice.is-talking .ui-voice__wave i { background: var(--u-ink); animation: ui-wave 820ms var(--u-ease) infinite alternate; }
+.ui-voice.is-talking .ui-voice__wave i:nth-child(3n) { animation-duration: 640ms; }
+.ui-voice.is-talking .ui-voice__wave i:nth-child(3n + 1) { animation-duration: 1040ms; }
+.ui-voice.is-talking .ui-voice__wave i:nth-child(4n) { animation-delay: -300ms; }
+.ui-voice.is-talking .ui-voice__wave i:nth-child(5n) { animation-delay: -560ms; }
+@keyframes ui-wave { from { transform: scaleY(0.35); } to { transform: scaleY(1.15); } }
+@media (max-width: 300px) { .ui-voice__wave i:nth-child(n + 19) { display: none; } }

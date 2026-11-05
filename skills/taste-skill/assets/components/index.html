@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en" data-radius="soft">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Effect components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="./base.css">
+<style>
+  :root {
+    --font-display: "Geist", system-ui, sans-serif;
+    --font-text: "Geist", system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+    --display-weight: 560;
+    --display-tracking: -0.03em;
+    --container: 1200px;
+  }
+  body { min-height: 100vh; }
+  .top {
+    position: sticky; top: 0; z-index: 50; height: 64px; background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .top .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 560; letter-spacing: -0.01em; }
+  .brand small { font: 400 13px/1 var(--font-mono); color: var(--muted); }
+  .top nav { display: flex; align-items: center; gap: 20px; }
+  .top nav a.link { font-size: 14px; }
+  .swatches { display: flex; gap: 4px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); }
+  .swatches button {
+    width: 30px; height: 30px; border-radius: 999px; border: 0; padding: 0; cursor: pointer; position: relative;
+    background: var(--sw-bg);
+  }
+  .swatches button::after {
+    content: ""; position: absolute; inset: 9px; border-radius: 999px; background: var(--sw-accent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--sw-ink) 25%, transparent);
+  }
+  .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--ink); }
+  .swatches button:focus-visible { outline-offset: 3px; }
+
+  .intro { padding-block: 64px 40px; display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 48px; align-items: end; }
+  .intro h1 { font-size: clamp(34px, 2.2vw + 18px, 52px); line-height: 1.05; max-width: 15ch; }
+  .intro p { margin-top: 16px; color: var(--muted); font-size: var(--t-body); line-height: 1.55; max-width: 52ch; }
+  .index { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
+  @media (max-width: 1023px) { .intro { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+  .index a {
+    display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 11px; border-radius: 999px;
+    border: 1px solid var(--line); font-size: 13px; color: var(--ink);
+    transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+  }
+  .index a span { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .index a:hover { border-color: var(--line-strong); background: color-mix(in oklab, var(--ink) 4%, var(--bg)); }
+
+  /* every part spans two rows of the list (its notes, its stage) as a subgrid, so the two parts of a
+     half-width pair share one notes height and one stage height: their stages start and end level */
+  .list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 0; padding-bottom: 120px; }
+  .sc { grid-column: 1 / -1; grid-row: span 2; display: grid; grid-template-rows: subgrid; row-gap: 20px; min-width: 0; scroll-margin-top: 88px; padding-top: 72px; }
+  .sc:first-child { padding-top: 0; }
+  .sc.is-half { grid-column: auto; }
+  .sc.is-half .sc__stage:not(.is-center) { display: grid; }
+  .sc__meta { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 6px; align-items: baseline; align-content: start; }
+  .sc__note { grid-column: 2; margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .sc__note::before { content: "Try it: "; color: var(--ink); font-weight: 500; }
+  .sc__no { font: 500 12px/1 var(--font-mono); color: var(--muted); padding-top: 2px; }
+  .sc__name { font: 500 20px/1.25 var(--font-text); letter-spacing: -0.015em; margin: 0; }
+  .sc__for { grid-column: 2; color: var(--muted); font-size: 14px; line-height: 1.55; max-width: 72ch; margin: 0; }
+  .sc__fx { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .sc__fx li {
+    font: 400 11.5px/1 var(--font-mono); color: var(--muted); height: 24px; display: inline-flex; align-items: center;
+    padding: 0 8px; border-radius: var(--r-sm); border: 1px solid var(--line);
+  }
+  .sc__fx li.is-on { color: var(--ink); border-color: var(--line-strong); background: color-mix(in oklab, var(--ink) 5%, var(--bg)); }
+  .sc__fx li.is-on::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: var(--accent); margin-right: 7px; }
+  .sc__stage {
+    position: relative; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: clamp(20px, 4vw, 56px); background: var(--bg);
+  }
+  .sc__stage.is-tall { padding-block: clamp(56px, 8vw, 120px); }
+  .sc__stage.is-flush { padding: 0; border: 0; }
+  .sc__stage.is-center { display: grid; place-items: center; min-height: 320px; }
+  /* one object, at a size a page would give it */
+  #fx-dither-object .sc__stage { display: grid; justify-items: center; }
+  #fx-dither-object .cx-obj { width: min(100%, 720px); }
+  .sc__pick { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .sc__pick button {
+    height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg);
+    font: 500 13px/1 var(--font-text); color: var(--muted); cursor: pointer;
+  }
+  .sc__pick button:hover { color: var(--ink); border-color: var(--line-strong); }
+  .sc__pick button[aria-pressed="true"] { color: var(--ink); border-color: var(--line-strong); background: color-mix(in oklab, var(--ink) 6%, var(--bg)); }
+  /* the search list opens below its field: leave it room inside the frame */
+  #fx-search .sc__stage { min-height: 440px; place-items: start center; padding-top: 72px; }
+  .sc__stage:empty::after { content: "Loading"; color: var(--muted); font-size: 13px; }
+
+  .foot { border-top: 1px solid var(--line); padding: 40px 0 64px; color: var(--muted); font-size: 14px; }
+  .foot p { max-width: 80ch; margin: 0 0 8px; }
+  .foot a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
+
+  @media (max-width: 899px) {
+    .list { grid-template-columns: minmax(0, 1fr); }
+    .sc.is-half { grid-column: 1 / -1; }
+    .top nav a.link { display: none; }
+  }
+  @media (max-width: 639px) {
+    .intro { padding-block: 48px 32px; }
+    .sc { padding-top: 48px; }
+    .sc__meta { grid-template-columns: 1fr; }
+    .sc__no { display: none; }
+    .sc__for, .sc__fx, .sc__note, .sc__pick { grid-column: 1; }
+    .sc__stage.is-center { min-height: 240px; }
+    .brand small { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="container">
+    <div class="brand">Effect components <small id="count"></small></div>
+    <nav aria-label="Palette and links">
+      <a class="link" href="../effects/gallery.html">Effects library</a>
+      <div class="swatches" id="swatches" role="group" aria-label="Page palette"></div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="intro container">
+    <div>
+      <h1>Effects as parts of the page, not only behind it</h1>
+      <p id="lede">Feature cards, real objects drawn in dither, type, numbers, buttons, borders, icons, a street map of the real place, a globe, charts and a photograph in its own colours. Every part takes its colours from the page palette: switch it at the top right. Parts that loop have a pause button.</p>
+    </div>
+    <nav class="index" id="index" aria-label="Components"></nav>
+  </section>
+  <div class="container list" id="list"></div>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <p>Each component is a folder in <code>assets/components</code> with its markup, CSS, script and a meta.json that says what it is for and which effects suit it. Use one strong effect moment per page; the rest stay quiet. <code>_lab.html?c=fx-chart&amp;fx=ruled-grounds&amp;palette=white-link-blue</code> shows one part with another effect.</p>
+    <p>Brand marks from <a href="https://simpleicons.org/">Simple Icons</a>. Meeting room photograph by Breather (<a href="https://unsplash.com/photos/DEdM9Vs6s8w">Unsplash licence</a>), from the skill's photo kit. Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</p>
+  </div>
+</footer>
+
+<script type="module">
+  import fx from '../effects/fx.js';
+
+  // component id, layout and stage style, in page order
+  const COMPONENTS = [
+    { id: 'fx-feature-card', stage: 'is-flush' },
+    { id: 'fx-dither-object', stage: 'is-flush', note: 'pick an object, then point at it and move across: sound rings out of the cups, the seat swivels, the lens zooms, the rotors spin up and the drone lifts off. One object is live at a time, as on a real page.' },
+    { id: 'fx-headline', stage: 'is-tall' },
+    { id: 'fx-button', half: true, stage: 'is-center', note: 'hover or tab to a button. The light runs only while it is pointed at.' },
+    { id: 'fx-prompt', half: true, stage: 'is-center' },
+    { id: 'fx-icon-tiles', stage: 'is-flush' },
+    { id: 'fx-stat' },
+    { id: 'fx-globe', stage: 'is-flush' },
+    { id: 'fx-map', stage: 'is-flush' },
+    { id: 'fx-chart', half: true, stage: 'is-flush' },
+    { id: 'fx-bars', half: true, stage: 'is-flush' },
+    { id: 'fx-band', stage: 'is-flush' },
+    { id: 'fx-spotlight', stage: 'is-flush' },
+    { id: 'fx-photo', stage: 'is-flush' },
+    { id: 'fx-avatar', half: true, stage: 'is-center' },
+    { id: 'fx-search', half: true, stage: 'is-center' },
+    { id: 'fx-logos' },
+    { id: 'fx-tabs' },
+    { id: 'fx-pricing', stage: 'is-flush' },
+    { id: 'fx-progress', stage: 'is-center' },
+  ];
+
+  const PALETTES = [
+    { id: 'blue-black-cornflower', name: 'Night, cornflower', bg: '#0a0d14', surface: '#131824', ink: '#e9edf3', muted: '#8891a1', accent: '#5ab9fc', accentInk: '#0a0d14' },
+    { id: 'graphite-safety-orange', name: 'Graphite, orange', bg: '#18191b', surface: '#222427', ink: '#eff0f1', muted: '#9c9ea3', accent: '#ff4a1f', accentInk: '#18191b' },
+    { id: 'white-link-blue', name: 'White, blue', bg: '#ffffff', surface: '#f4f4f4', ink: '#111111', muted: '#6b6b6b', accent: '#1a4be0', accentInk: '#ffffff' },
+    { id: 'moss-sand', name: 'Sand, moss', bg: '#ddd6c6', surface: '#d2cab8', ink: '#2a2a26', muted: '#59574e', accent: '#4f6238', accentInk: '#ffffff' },
+    { id: 'cobalt-field', name: 'Cobalt field', bg: '#0034eb', surface: '#002fd6', ink: '#ffffff', muted: '#dfe4f2', accent: '#e9e34a', accentInk: '#111111' },
+  ];
+
+  const q = new URLSearchParams(location.search);
+  if (q.has('time')) fx.setClock(+q.get('time'));
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  const only = q.get('only') ? q.get('only').split(',') : null;
+  const list = document.getElementById('list');
+  const index = document.getElementById('index');
+  const swatches = document.getElementById('swatches');
+
+  /*
+    The budget: a laptop's integrated GPU shares its memory with everything else, so this page never
+    holds more than 4 live WebGL contexts. A part is started when it comes near the viewport and
+    destroyed when it leaves it; still parts draw once and free their context; fx.js frees any idle
+    off-screen context past 4. liveGL() counts the contexts that are open right now.
+  */
+  fx.config.maxLive = 4;
+  const contexts = new Set();
+  let peakGL = 0;
+  const getContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+    const c = getContext.call(this, type, ...rest);
+    if (c && /webgl/i.test(type) && !contexts.has(c)) { contexts.add(c); peakGL = Math.max(peakGL, liveGL()); }
+    return c;
+  };
+  function liveGL() {
+    for (const c of contexts) if (c.isContextLost()) contexts.delete(c);
+    return contexts.size;
+  }
+
+  // the dither object: one live at a time, switched here (a real page shows one object)
+  const OBJECTS = {
+    headphones: ['Headphones', 'Over-ear, wireless'],
+    chair: ['Office chair', 'Swivel seat on five castors'],
+    camera: ['Camera', 'Mirrorless, with a zoom lens'],
+    drone: ['Drone', 'Four rotors and a camera'],
+  };
+  let object = OBJECTS[q.get('object')] ? q.get('object') : 'headphones';
+  // print (ordered dither, the default) or studio (a smooth shaded render: no picker until it is anti-aliased; ?render=studio)
+  let render = q.get('render') === 'studio' ? 'studio' : 'print';
+
+  function applyPalette(p) {
+    const c = fx.color;
+    const action = c.contrast(p.accent, p.bg) >= 2.2 ? p.accent : p.ink;
+    const actionInk = action === p.accent ? p.accentInk : p.bg;
+    const s = document.documentElement.style;
+    const set = (k, v) => s.setProperty(k, v);
+    set('--p-bg', p.bg); set('--p-surface', p.surface); set('--p-ink', p.ink); set('--p-muted', p.muted);
+    set('--p-accent', p.accent); set('--p-accent-ink', p.accentInk); set('--p-action', action); set('--p-action-ink', actionInk);
+    document.documentElement.style.colorScheme = c.isDark(p.bg) ? 'dark' : 'light';
+    for (const b of swatches.children) b.setAttribute('aria-pressed', String(b.dataset.id === p.id));
+  }
+
+  async function load(entry) {
+    const base = `./${entry.id}/`;
+    const [meta, html, mod] = await Promise.all([
+      fetch(base + 'meta.json').then(r => (r.ok ? r.json() : null)),
+      fetch(base + 'component.html').then(r => (r.ok ? r.text() : null)),
+      import(base + 'component.js').catch(err => { console.warn(entry.id, err); return null; }),
+    ]).catch(() => [null, null, null]);
+    if (!meta || !html || !mod) return null;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = base + 'component.css';
+    document.head.append(link);
+    await new Promise(r => { link.onload = link.onerror = r; });
+    return { ...entry, meta, html, mod };
+  }
+
+  function section(e, n) {
+    const s = document.createElement('section');
+    s.className = 'sc' + (e.half ? ' is-half' : '');
+    s.id = e.id;
+    const fxList = (e.meta.effects || []).map(id => `<li class="${id === e.meta.default ? 'is-on' : ''}">${id}</li>`).join('');
+    const pick = e.id === 'fx-dither-object'
+      ? `<div class="sc__pick" role="group" aria-label="Object">${Object.keys(OBJECTS).map(k => `<button type="button" data-object="${k}" aria-pressed="${k === object}">${OBJECTS[k][0]}</button>`).join('')}</div>`
+      : '';
+    s.innerHTML = `
+      <div class="sc__meta">
+        <span class="sc__no">${String(n).padStart(2, '0')}</span>
+        <h2 class="sc__name">${e.meta.name}</h2>
+        <p class="sc__for">${e.meta.for}</p>
+        ${fxList ? `<ul class="sc__fx" aria-label="Effects that suit it">${fxList}</ul>` : ''}
+        ${pick}
+        ${e.note ? `<p class="sc__note">${e.note}</p>` : ''}
+      </div>
+      <div class="sc__stage ${e.stage || ''}"></div>`;
+    return s;
+  }
+
+  // the markup is placed at once (the page keeps its full height); the scripts run only near the viewport
+  function markup(e) {
+    const stage = e.section.querySelector('.sc__stage');
+    stage.innerHTML = e.html;
+    if (e.id === 'fx-dither-object') {
+      const fig = stage.querySelector('.cx-obj');
+      fig.dataset.cxObject = object;
+      if (render === 'studio') fig.dataset.cxRender = 'studio'; else delete fig.dataset.cxRender;
+      fig.querySelector('.cx-obj__stage').removeAttribute('aria-label');
+    }
+    return stage;
+  }
+  function start(e) {
+    if (e.ctrl) return;
+    const stage = markup(e);
+    try { e.ctrl = e.mod.default(stage.firstElementChild || stage) || { destroy() {} }; } catch (err) { console.error(e.id, err); e.ctrl = { destroy() {} }; }
+  }
+  function stop(e) {
+    if (!e.ctrl) return;
+    try { e.ctrl.destroy?.(); } catch (err) { console.warn(e.id, err); }
+    fx.unmountAll(e.section);
+    e.ctrl = null;
+  }
+
+  function setPalette(p, entries) {
+    entries.forEach(stop);
+    applyPalette(p);
+    try { localStorage.setItem('cx-palette', p.id); } catch (_) {}
+    requestAnimationFrame(() => entries.forEach(e => (e.near ? start(e) : markup(e))));
+  }
+
+  let saved = null;
+  try { saved = localStorage.getItem('cx-palette'); } catch (_) {}
+  const first = PALETTES.find(p => p.id === q.get('palette')) || PALETTES.find(p => p.id === saved) || PALETTES[0];
+  for (const p of PALETTES) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.id = p.id;
+    b.title = p.name;
+    b.setAttribute('aria-label', p.name);
+    b.style.setProperty('--sw-bg', p.bg);
+    b.style.setProperty('--sw-accent', p.accent);
+    b.style.setProperty('--sw-ink', p.ink);
+    swatches.append(b);
+  }
+  applyPalette(first);
+
+  const wanted = COMPONENTS.filter(c => !only || only.includes(c.id));
+  const entries = (await Promise.all(wanted.map(load))).filter(Boolean);
+  document.getElementById('count').textContent = `${entries.length} parts`;
+  entries.forEach((e, i) => {
+    e.section = section(e, i + 1);
+    list.append(e.section);
+    markup(e);
+    const a = document.createElement('a');
+    a.href = '#' + e.id;
+    a.innerHTML = `<span>${String(i + 1).padStart(2, '0')}</span>${e.meta.name}`;
+    index.append(a);
+  });
+  await document.fonts.ready;
+  const near = new IntersectionObserver(seen => {
+    for (const en of seen) {
+      const e = entries.find(x => x.section === en.target);
+      if (!e) continue;
+      e.near = en.isIntersecting;
+      if (e.near) start(e); else stop(e);
+    }
+  }, { rootMargin: '10% 0px' });
+  entries.forEach(e => near.observe(e.section));
+  setTimeout(() => { document.documentElement.dataset.ready = '1'; }, 1500);
+
+  swatches.addEventListener('click', ev => {
+    const b = ev.target.closest('button');
+    if (!b) return;
+    const p = PALETTES.find(x => x.id === b.dataset.id);
+    if (p) setPalette(p, entries);
+  });
+  list.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-object], [data-render]');
+    if (!b || !(OBJECTS[b.dataset.object] || b.dataset.render)) return;
+    if (b.dataset.render) render = b.dataset.render; else object = b.dataset.object;
+    b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    const e = entries.find(x => x.id === 'fx-dither-object');
+    stop(e);
+    if (e.near) start(e); else markup(e);
+  });
+  window.__cx = {
+    entries,
+    setPalette: id => setPalette(PALETTES.find(p => p.id === id), entries),
+    setObject: k => list.querySelector(`[data-object="${k}"]`)?.click(),
+    gl: () => ({ live: liveGL(), peak: peakGL, started: entries.filter(e => e.ctrl).map(e => e.id) }),
+  };
+</script>
+
+</body>
+</html>

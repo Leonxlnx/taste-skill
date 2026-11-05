@@ -1,0 +1,10 @@
+{
+  "id": "fx-search",
+  "name": "Search with ambient glow",
+  "for": "A docs or command search field that gathers a soft light of the effect around it while it has focus, so the place you are typing is obvious without a loud ring.",
+  "effects": ["aurora-curtains", "grain-gradient", "gradient-mesh", "soft-light-bars"],
+  "default": "aurora-curtains",
+  "how": "aurora-curtains on a dark ground, grain-gradient on a light one, in a host behind the field, 22-30px larger on every side, blurred into ambient light; it fades in on focus and runs only then. A real combobox with a filtered list.",
+  "rules": ["The glow tints at most a few percent where it meets the field; text never sits on it.", "Glow only on focus, never at rest.", "One glowing field per page."],
+  "a11y": "An input with role combobox, a labelled listbox, aria-activedescendant for arrow keys, Enter to choose, Escape to clear; / focuses it. Reduced motion keeps the glow still."
+}

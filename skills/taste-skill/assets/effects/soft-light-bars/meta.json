@@ -1,0 +1,11 @@
+{
+  "id": "soft-light-bars",
+  "name": "Soft light bars",
+  "family": "light",
+  "look": "Four to seven soft, nearly upright bars of light grouped to one side, like light through slats on a wall, breathing slowly beside an empty gap for text.",
+  "bestOn": ["hero", "card", "band", "footer"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Object cards</title>
+<meta name="description" content="Lab: a real object from assets/objects printed in code on a card's panel, in halftone and engraving.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../cards.css">
+<style>
+  :root { --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; }
+  [data-theme="light"] { --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; }
+  [data-theme="dark"] { --bg: #070708; --card: #151517; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  main { max-width: 1232px; margin: 0 auto; padding: 64px 24px 96px; }
+  h2 { margin: 0 0 40px; max-width: 720px; font-size: clamp(30px, 1.6vw + 16px, 40px); line-height: 1.12; letter-spacing: -0.03em; font-weight: 500; }
+  h2 span { color: var(--muted); }
+  .g2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  /* the object is the panel's whole picture, printed over its still ground (assets/objects contract) */
+  .g2 .panel--top { aspect-ratio: auto; height: 400px; min-height: 0; }
+  @media (max-width: 760px) { .g2 { grid-template-columns: minmax(0, 1fr); } main { padding: 40px 16px 64px; } .g2 .panel--top { height: 320px; } }
+</style>
+</head>
+<body>
+<main>
+  <h2>The thing itself, printed in code. <span>A lamp in halftone, a phone in engraving; each leans toward the pointer.</span></h2>
+  <div class="g2">
+    <article class="card">
+      <div class="panel panel--top" data-fx="grain-gradient" data-fx-seed="31" data-fx-palette='{"bg":"#d9ccb7","surface":"#ece5d9","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.5,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+        <div data-print="print-lamp" data-print-place="tile" data-print-params='{"effect":"halftone"}' data-print-palette='{"bg":"#d9ccb7","surface":"#ece5d9","ink":"#2a2622","accent":"#a8794a"}' aria-label="A desk lamp, printed in halftone"></div>
+      </div>
+      <h3>A lamp that stays where you put it</h3>
+      <p>Two balanced arms and a spring, so the head holds at any angle without a screw.</p>
+    </article>
+    <article class="card">
+      <div class="panel panel--top" data-fx="grain-gradient" data-fx-seed="12" data-fx-palette='{"bg":"#c6d3df","surface":"#e1e8ee","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}' data-fx-params='{"speed":0,"grainMotion":0,"calm":0.2,"calmX":0.5,"calmY":0.5,"tint":0.6,"contrast":0.55}' style="--calm-k:0%">
+        <div data-print="print-phone" data-print-place="tile" data-print-params='{"effect":"engrave"}' data-print-palette='{"bg":"#c6d3df","surface":"#e1e8ee","ink":"#25303a","accent":"#3f6a92"}' aria-label="A phone, printed in engraving"></div>
+      </div>
+      <h3>On your phone</h3>
+      <p>Every approval and report in the app, for iPhone and Android.</p>
+    </article>
+  </div>
+</main>
+<script type="module">
+  // The page needs no object code of its own: assets/objects/_print-core/auto.js mounts every
+  // [data-print] (one object per group turns, with its own pause button), and ui.grounds draws each
+  // still ground once and frees its WebGL context, so this page holds two contexts: the two objects.
+  import fx from '../../effects/fx.js';
+  import ui from '../ui.js';
+  const q = new URLSearchParams(location.search);
+  if (q.get('theme')) document.documentElement.dataset.theme = q.get('theme');
+  // lab only: ?a=print-lamp:halftone&b=print-book:engrave swaps an object or its print, to compare
+  [...document.querySelectorAll('[data-print]')].forEach((el, i) => {
+    const v = q.get('ab'[i]);
+    if (!v || !/^print-[a-z]+(:[a-z]+)?$/.test(v)) return;
+    const [id, effect] = v.split(':');
+    el.dataset.print = id;
+    if (effect) el.dataset.printParams = JSON.stringify({ effect });
+  });
+  const auto = (await import('../../objects/_print-core/auto.js')).default;
+  await Promise.all([ui.grounds(document, fx), auto.mountAll(document)]);
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

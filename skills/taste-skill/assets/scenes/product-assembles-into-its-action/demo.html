@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product assembles into its action · big scene demo</title>
+<meta name="description" content="Demo of the scene in which the product's own screen builds itself and folds into its one action.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f5f4f1; --p-ink: #141414; --p-muted: #6a6a66; --p-accent: #0f7a5a; --p-accent-ink: #ffffff; --p-action: #141414; --p-action-ink: #ffffff;
+          --font-display: "Instrument Sans", system-ui, sans-serif; --font-text: "Instrument Sans", system-ui, sans-serif; --display-weight: 500; }
+  /* the demo's invoice: the client's own screen would replace this */
+  .inv .pa__row { padding: 14px 20px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center; }
+  .inv .pa__row:last-child { border-bottom: 0; }
+  .inv__head { display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
+  .inv__head small { font-weight: 400; color: var(--muted); }
+  .inv__to { color: var(--muted); font-size: 13px; }
+  .inv__to b { color: var(--ink); font-weight: 500; display: block; }
+  .inv .qty { color: var(--muted); font-size: 12px; }
+  .inv .amt { font-variant-numeric: tabular-nums; text-align: right; }
+  .inv__total { font-weight: 500; font-size: 15px; }
+  .inv__paid { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .inv__paid i { width: 8px; height: 8px; border-radius: 50%; background: #2f9e5f; }
+  .inv .pa__row--action { display: flex; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Tally</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">Studios</a><a href="#">Help</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <h1>Invoices that get paid</h1>
+        <p>Tally writes the invoice from your time sheet, sends it, chases it and marks it paid when the money lands. For studios of 1 to 20 people. £12 a month.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">See pricing</a></div>
+      </div>
+      <div class="frame frame--photo" style="--ratio: 44%">
+        <div class="ux" role="img" aria-label="The Tally invoice list for November: six invoices, four paid">
+          <div class="ux__bar"><i></i><i></i><i></i><b>Tally</b><span>November 2026</span></div>
+          <div class="ux__body">
+            <div class="ux__side"><span class="on">Invoices<em>6</em></span><span>Time sheet</span><span>Clients<em>14</em></span><span>Reminders<em>2</em></span><span>Reports</span></div>
+            <div class="ux__main">
+              <div class="ux__head"><h4>Invoices</h4><span class="ux__btn">New invoice</span></div>
+              <div class="ux__tiles"><div class="ux__tile"><span>Sent</span><b>£24,180</b></div><div class="ux__tile"><span>Paid</span><b>£17,268</b></div><div class="ux__tile"><span>Overdue</span><b>£0</b></div></div>
+              <div class="ux__rows">
+                <div class="ux__row"><div><b>Harlow &amp; Finch Architects</b><span>2026-041, website redesign</span></div><span>£6,912.00</span><span class="ux__tag ok">Paid 14 Nov</span></div>
+                <div class="ux__row"><div><b>Morrow Books</b><span>2026-040, catalogue</span></div><span>£3,480.00</span><span class="ux__tag ok">Paid 9 Nov</span></div>
+                <div class="ux__row"><div><b>Linden Dental</b><span>2026-039, brand</span></div><span>£5,200.00</span><span class="ux__tag">Sent, due 28 Nov</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="product-assembles-into-its-action" style="--h: 1" id="how" aria-labelledby="pa-h">
+    <div class="sc__stage">
+      <div class="pa__copy">
+        <h2 id="pa-h">An invoice in five steps</h2>
+        <ol class="pa__steps">
+          <li>Start from the client and the job</li>
+          <li>Add the hours from the time sheet</li>
+          <li>Add the expenses and the VAT</li>
+          <li>Send it, and Tally chases it for you</li>
+          <li>Paid, and matched to the bank</li>
+        </ol>
+        <p class="pa__close">One button. Tally does the rest.</p>
+        <a class="sc__skip" href="#after">Skip</a>
+      </div>
+      <div class="pa__screen inv" data-ui role="img" aria-label="An invoice being built in Tally">
+        <div class="pa__row"><div class="inv__head"><span>Invoice 2026-041 <small>Draft</small></span><small>Due in 14 days</small></div></div>
+        <div class="pa__row"><div class="inv__to"><b>Harlow &amp; Finch Architects</b>Website redesign, phase 2</div></div>
+        <div class="pa__row" data-at="2"><div>Design, 32 h <span class="qty">at £95</span></div><div class="amt">£3,040.00</div></div>
+        <div class="pa__row" data-at="2"><div>Build, 28 h <span class="qty">at £95</span></div><div class="amt">£2,660.00</div></div>
+        <div class="pa__row" data-at="3"><div>Stock photography <span class="qty">2 licences</span></div><div class="amt">£60.00</div></div>
+        <div class="pa__row" data-at="3"><div>VAT <span class="qty">20%</span></div><div class="amt">£1,152.00</div></div>
+        <div class="pa__row" data-at="3"><div class="inv__total">Total</div><div class="amt inv__total">£6,912.00</div></div>
+        <div class="pa__row pa__row--action"><button type="button" data-at="4" data-action>Send £6,912.00</button><span class="inv__paid" data-at="5"><i></i>Paid 14 Nov</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="after">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>Chased for you</h2><p class="t-lead" style="margin-top:16px">A polite reminder on the due date, another a week later. 84% of invoices sent with Tally are paid within 30 days.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Reminders</span><span class="rows__value">Day 14 and 21</span></li>
+          <li><span class="rows__name">Payment</span><span class="rows__value">Card, bank transfer</span></li>
+          <li><span class="rows__name">Matching</span><span class="rows__value">Automatic, daily</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Tally · demo page for the big scene “Product assembles into its action”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

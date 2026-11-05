@@ -1,0 +1,112 @@
+{
+  "id": "city-bike",
+  "name": "City bicycle",
+  "label": "A city bicycle with a front basket and a rear rack",
+  "units": "m",
+  "angle": -34,
+  "turn": { "mode": "sway", "amp": 22, "period": 24 },
+  "colors": [
+    { "id": "green", "name": "Moss green", "accent": "#1f6f5c" },
+    { "id": "blue", "name": "Deep blue", "accent": "#2c4f7c" },
+    { "id": "cream", "name": "Cream", "accent": "#e2d8c3" },
+    { "id": "red", "name": "Signal red", "accent": "#b3332a" }
+  ],
+  "views": {
+    "detail-saddle": { "part": ["saddle*", "seat post", "spring bridge"], "angle": -42, "elev": 16, "margin": 1.3 },
+    "detail-drive": { "part": ["chainring", "spider*", "crank*", "crank cap", "pedal R", "sprocket", "chain*"], "angle": -18, "elev": 10, "margin": 1.15 }
+  },
+  "scenes": {
+    "loaded": {
+      "label": "A city bicycle carrying a child seat with its belts on the rear rack, a crate of fruit up front and a pannier bag",
+      "hide": ["basket"],
+      "props": [
+        { "prop": "child-seat", "at": [-0.578, 0.796, 0], "name": "child seat" },
+        { "prop": "crate", "at": [0.6, 0.76, 0], "size": [0.3, 0.2, 0.32], "contents": "fruit", "name": "crate" },
+        { "prop": "bag", "at": [-0.62, 0.42, 0.152], "hooks": true, "name": "pannier" }
+      ]
+    }
+  },
+  "supports": ["three-quarter", "side", "front", "detail-saddle", "detail-drive"],
+  "make": { "variants": ["three-quarter", "side", "front", "detail-saddle", "detail-drive", "three-quarter+loaded"], "grounds": ["light"] },
+  "materials": {
+    "frame": { "kind": "paint", "color": "accent", "finish": "gloss" },
+    "rack": { "kind": "paint", "color": "#1d1e20", "finish": "satin" },
+    "brown": { "kind": "leather", "color": "#6a3d21" },
+    "chain": { "kind": "metal", "color": "#4a4b4e", "shine": 40 },
+    "lens": { "kind": "light", "color": "#fff1d6" },
+    "red": { "kind": "plastic", "color": "#a3231c" }
+  },
+  "parts": [
+    { "name": "rear wheel", "type": "wheel", "at": [-0.53, 0.35, 0], "r": 0.35, "tyre": [0.046, 0.044], "rim": [0.022, 0.026], "hub": [0.024, 0.11], "spokes": 36, "wall": "#c7a57a" },
+    { "name": "front wheel", "type": "wheel", "at": [0.55, 0.35, 0], "r": 0.35, "tyre": [0.046, 0.044], "rim": [0.022, 0.026], "hub": [0.02, 0.1], "spokes": 36, "wall": "#c7a57a" },
+
+    { "name": "seat tube", "type": "tube", "from": [-0.07, 0.29, 0], "to": [-0.232, 0.81, 0], "r": 0.017, "mat": "frame", "blend": 0.01 },
+    { "name": "head tube", "type": "tube", "from": [0.425, 0.625, 0], "to": [0.371, 0.8, 0], "r": 0.023, "mat": "frame", "blend": 0.008, "seams": [-0.82, 0.82] },
+    { "name": "down tube", "type": "path", "points": [[0.418, 0.648, 0], [0.27, 0.49, 0], [0.09, 0.345, 0], [-0.065, 0.29, 0]], "r": 0.021, "mat": "frame", "blend": 0.012 },
+    { "name": "low top tube", "type": "path", "points": [[0.39, 0.75, 0], [0.26, 0.58, 0], [0.07, 0.47, 0], [-0.137, 0.505, 0]], "r": 0.016, "mat": "frame", "blend": 0.01 },
+    { "name": "chainstay R", "type": "tube", "from": [-0.07, 0.29, 0.03], "to": [-0.53, 0.35, 0.066], "r": 0.011, "r2": 0.0085, "mat": "frame", "blend": 0.008 },
+    { "name": "chainstay L", "type": "tube", "from": [-0.07, 0.29, -0.03], "to": [-0.53, 0.35, -0.066], "r": 0.011, "r2": 0.0085, "mat": "frame", "blend": 0.008 },
+    { "name": "seatstay R", "type": "tube", "from": [-0.214, 0.745, 0.018], "to": [-0.53, 0.35, 0.066], "r": 0.009, "r2": 0.0075, "mat": "frame", "blend": 0.008 },
+    { "name": "seatstay L", "type": "tube", "from": [-0.214, 0.745, -0.018], "to": [-0.53, 0.35, -0.066], "r": 0.009, "r2": 0.0075, "mat": "frame", "blend": 0.008 },
+    { "name": "bottom bracket", "type": "cylinder", "at": [-0.07, 0.29, 0], "axis": "z", "r": 0.022, "h": 0.074, "mat": "frame", "blend": 0.008 },
+    { "name": "fork crown", "type": "box", "at": [0.428, 0.615, 0], "size": [0.05, 0.03, 0.13], "round": 0.012, "mat": "frame", "blend": 0.006 },
+    { "name": "fork blade R", "type": "path", "points": [[0.43, 0.61, 0.055], [0.47, 0.48, 0.057], [0.55, 0.35, 0.058]], "r": 0.011, "mat": "frame" },
+    { "name": "fork blade L", "type": "path", "points": [[0.43, 0.61, -0.055], [0.47, 0.48, -0.057], [0.55, 0.35, -0.058]], "r": 0.011, "mat": "frame" },
+
+    { "name": "front mudguard", "type": "arc", "at": [0.55, 0.35, 0], "R": 0.382, "a0": 12, "a1": 205, "size": [0.007, 0.06], "round": 0.003, "mat": "frame" },
+    { "name": "rear mudguard", "type": "arc", "at": [-0.53, 0.35, 0], "R": 0.382, "a0": 22, "a1": 196, "size": [0.007, 0.06], "round": 0.003, "mat": "frame" },
+    { "name": "front stay R", "type": "tube", "from": [0.55, 0.35, 0.062], "to": [0.192, 0.236, 0.034], "r": 0.003, "mat": "steel" },
+    { "name": "front stay L", "type": "tube", "from": [0.55, 0.35, -0.062], "to": [0.192, 0.236, -0.034], "r": 0.003, "mat": "steel" },
+    { "name": "rear stay R", "type": "tube", "from": [-0.53, 0.35, 0.07], "to": [-0.895, 0.258, 0.034], "r": 0.003, "mat": "steel" },
+    { "name": "rear stay L", "type": "tube", "from": [-0.53, 0.35, -0.07], "to": [-0.895, 0.258, -0.034], "r": 0.003, "mat": "steel" },
+
+    { "name": "seat post", "type": "tube", "from": [-0.232, 0.8, 0], "to": [-0.25, 0.865, 0], "r": 0.0135, "mat": "chrome" },
+    { "name": "saddle clamp", "type": "box", "at": [-0.255, 0.872, 0], "size": [0.05, 0.018, 0.03], "round": 0.006, "mat": "rack" },
+    { "name": "spring bridge", "type": "tube", "from": [-0.335, 0.856, -0.062], "to": [-0.335, 0.856, 0.062], "r": 0.005, "mat": "chrome" },
+    { "name": "saddle rail", "type": "path", "points": [[-0.2, 0.884, 0], [-0.255, 0.87, 0], [-0.335, 0.856, 0]], "r": 0.005, "mat": "chrome" },
+    { "name": "saddle spring R", "type": "spring", "from": [-0.335, 0.856, 0.058], "to": [-0.335, 0.892, 0.058], "R": 0.012, "r": 0.0024, "turns": 5, "mat": "chrome" },
+    { "name": "saddle spring L", "type": "spring", "from": [-0.335, 0.856, -0.058], "to": [-0.335, 0.892, -0.058], "R": 0.012, "r": 0.0024, "turns": 5, "mat": "chrome" },
+    { "name": "saddle", "type": "seat", "at": [-0.27, 0.912, 0], "size": [0.275, 0.07, 0.205], "rot": [0, 0, -2], "mat": "brown" },
+
+    { "name": "stem riser", "type": "tube", "from": [0.371, 0.795, 0], "to": [0.356, 0.905, 0], "r": 0.0135, "mat": "chrome" },
+    { "name": "stem", "type": "tube", "from": [0.356, 0.9, 0], "to": [0.4, 0.93, 0], "r": 0.012, "mat": "chrome", "blend": 0.006 },
+    { "name": "handlebar", "type": "path", "points": [[0.235, 0.957, -0.275], [0.33, 0.946, -0.222], [0.396, 0.932, -0.1], [0.4, 0.93, 0], [0.396, 0.932, 0.1], [0.33, 0.946, 0.222], [0.235, 0.957, 0.275]], "r": 0.0115, "mat": "chrome" },
+    { "name": "grip R", "type": "tube", "from": [0.29, 0.951, 0.247], "to": [0.226, 0.958, 0.28], "r": 0.0165, "mat": "brown" },
+    { "name": "grip L", "type": "tube", "from": [0.29, 0.951, -0.247], "to": [0.226, 0.958, -0.28], "r": 0.0165, "mat": "brown" },
+    { "name": "bell", "type": "ellipsoid", "at": [0.36, 0.955, -0.17], "size": [0.04, 0.026, 0.04], "mat": "chrome" },
+
+    { "name": "basket", "type": "basket", "at": [0.6, 0.865, 0], "size": [0.3, 0.21, 0.33], "style": "wire", "pitch": 0.04, "wire": 0.002, "mat": "rack" },
+    { "name": "basket rail R", "type": "tube", "from": [0.44, 0.754, 0.1], "to": [0.76, 0.754, 0.1], "r": 0.005, "mat": "rack" },
+    { "name": "basket rail L", "type": "tube", "from": [0.44, 0.754, -0.1], "to": [0.76, 0.754, -0.1], "r": 0.005, "mat": "rack" },
+    { "name": "basket stay R", "type": "tube", "from": [0.74, 0.754, 0.1], "to": [0.55, 0.35, 0.068], "r": 0.005, "mat": "rack" },
+    { "name": "basket stay L", "type": "tube", "from": [0.74, 0.754, -0.1], "to": [0.55, 0.35, -0.068], "r": 0.005, "mat": "rack" },
+    { "name": "basket bracket", "type": "tube", "from": [0.4, 0.72, 0], "to": [0.47, 0.756, 0], "r": 0.008, "mat": "rack" },
+    { "name": "head lamp", "type": "tube", "from": [0.455, 0.68, 0], "to": [0.515, 0.68, 0], "r": 0.03, "r2": 0.034, "mat": "chrome" },
+    { "name": "head lamp lens", "type": "cylinder", "at": [0.517, 0.68, 0], "axis": "x", "r": 0.028, "h": 0.006, "mat": "lens" },
+
+    { "name": "rear rack rail R", "type": "tube", "from": [-0.22, 0.79, 0.075], "to": [-0.72, 0.79, 0.075], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack rail L", "type": "tube", "from": [-0.22, 0.79, -0.075], "to": [-0.72, 0.79, -0.075], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack slat", "type": "tube", "from": [-0.72, 0.79, 0], "to": [-0.3, 0.79, 0], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack end", "type": "tube", "from": [-0.72, 0.79, -0.075], "to": [-0.72, 0.79, 0.075], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack stay R", "type": "tube", "from": [-0.68, 0.79, 0.075], "to": [-0.53, 0.35, 0.072], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack stay L", "type": "tube", "from": [-0.68, 0.79, -0.075], "to": [-0.53, 0.35, -0.072], "r": 0.006, "mat": "rack" },
+    { "name": "rear rack link", "type": "tube", "from": [-0.22, 0.79, 0], "to": [-0.215, 0.755, 0], "r": 0.006, "mat": "rack" },
+    { "name": "reflector", "type": "box", "at": [-0.73, 0.772, 0], "size": [0.012, 0.03, 0.08], "round": 0.004, "mat": "red" },
+
+    { "name": "chainring", "type": "torus", "at": [-0.07, 0.29, 0.07], "axis": "z", "R": 0.093, "r": 0.0055, "mat": "chain" },
+    { "name": "spider 1", "type": "tube", "from": [-0.07, 0.29, 0.074], "to": [-0.07, 0.382, 0.072], "r": 0.006, "mat": "alloy" },
+    { "name": "spider 2", "type": "tube", "from": [-0.07, 0.29, 0.074], "to": [0.0175, 0.3184, 0.072], "r": 0.006, "mat": "alloy" },
+    { "name": "spider 3", "type": "tube", "from": [-0.07, 0.29, 0.074], "to": [-0.016, 0.2156, 0.072], "r": 0.006, "mat": "alloy" },
+    { "name": "spider 4", "type": "tube", "from": [-0.07, 0.29, 0.074], "to": [-0.124, 0.2156, 0.072], "r": 0.006, "mat": "alloy" },
+    { "name": "spider 5", "type": "tube", "from": [-0.07, 0.29, 0.074], "to": [-0.1575, 0.3184, 0.072], "r": 0.006, "mat": "alloy" },
+    { "name": "crank cap", "type": "cylinder", "at": [-0.07, 0.29, 0.088], "axis": "z", "r": 0.024, "h": 0.016, "round": 0.005, "mat": "alloy" },
+    { "name": "chain top", "type": "beam", "from": [-0.07, 0.388, 0.07], "to": [-0.53, 0.39, 0.07], "w": 0.007, "d": 0.006, "mat": "chain" },
+    { "name": "chain bottom", "type": "beam", "from": [-0.07, 0.192, 0.07], "to": [-0.53, 0.31, 0.07], "w": 0.007, "d": 0.006, "mat": "chain" },
+    { "name": "sprocket", "type": "cylinder", "at": [-0.53, 0.35, 0.07], "axis": "z", "r": 0.04, "h": 0.004, "mat": "chain" },
+    { "name": "crank R", "type": "beam", "from": [-0.07, 0.29, 0.088], "to": [0.015, 0.143, 0.088], "w": 0.02, "d": 0.01, "up": [0, 0, 1], "mat": "alloy" },
+    { "name": "crank L", "type": "beam", "from": [-0.07, 0.29, -0.088], "to": [-0.155, 0.437, -0.088], "w": 0.02, "d": 0.01, "up": [0, 0, 1], "mat": "alloy" },
+    { "name": "pedal R", "type": "box", "at": [0.015, 0.143, 0.14], "size": [0.095, 0.022, 0.075], "round": 0.007, "mat": "plastic" },
+    { "name": "pedal L", "type": "box", "at": [-0.155, 0.437, -0.14], "size": [0.095, 0.022, 0.075], "round": 0.007, "mat": "plastic" },
+    { "name": "kickstand", "type": "tube", "from": [-0.2, 0.31, -0.045], "to": [-0.3, 0.004, -0.16], "r": 0.008, "r2": 0.006, "mat": "alloy" }
+  ]
+}

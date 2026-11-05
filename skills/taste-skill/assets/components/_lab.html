@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-radius="soft">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Component lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="./base.css">
+<style>
+  /* one component on its own, with a chosen effect (or object) and palette:
+     _lab.html?c=fx-chart&fx=ruled-grounds&palette=white-link-blue&w=640 */
+  :root { --font-display: "Geist", system-ui, sans-serif; --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; --display-weight: 560; --display-tracking: -0.03em; }
+  body { min-height: 100vh; margin: 0; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); font: 13px/1.4 var(--font-text); color: var(--muted); }
+  .bar select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); height: 30px; padding: 0 8px; }
+  .stage { padding: clamp(16px, 4vw, 48px); margin-inline: auto; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <label>Part <select id="c"></select></label>
+  <label>Effect <select id="fx"></select></label>
+  <label>Palette <select id="pal"></select></label>
+</div>
+<main class="stage" id="stage"></main>
+<script type="module">
+  import fx from '../effects/fx.js';
+  const PARTS = ['fx-feature-card', 'fx-dither-object', 'fx-headline', 'fx-button', 'fx-prompt', 'fx-icon-tiles', 'fx-stat', 'fx-globe', 'fx-map', 'fx-chart', 'fx-bars', 'fx-band', 'fx-spotlight', 'fx-photo', 'fx-avatar', 'fx-search', 'fx-logos', 'fx-tabs', 'fx-pricing', 'fx-progress'];
+  const PALETTES = {
+    'blue-black-cornflower': { bg: '#0a0d14', surface: '#131824', ink: '#e9edf3', muted: '#8891a1', accent: '#5ab9fc', accentInk: '#0a0d14' },
+    'graphite-safety-orange': { bg: '#18191b', surface: '#222427', ink: '#eff0f1', muted: '#9c9ea3', accent: '#ff4a1f', accentInk: '#18191b' },
+    'white-link-blue': { bg: '#ffffff', surface: '#f4f4f4', ink: '#111111', muted: '#6b6b6b', accent: '#1a4be0', accentInk: '#ffffff' },
+    'moss-sand': { bg: '#ddd6c6', surface: '#d2cab8', ink: '#2a2a26', muted: '#59574e', accent: '#4f6238', accentInk: '#ffffff' },
+    'cobalt-field': { bg: '#0034eb', surface: '#002fd6', ink: '#ffffff', muted: '#dfe4f2', accent: '#e9e34a', accentInk: '#111111' },
+  };
+  const q = new URLSearchParams(location.search);
+  const part = PARTS.includes(q.get('c')) ? q.get('c') : PARTS[0];
+  const palId = PALETTES[q.get('palette')] ? q.get('palette') : 'blue-black-cornflower';
+  const p = PALETTES[palId];
+  const s = document.documentElement.style;
+  const action = fx.color.contrast(p.accent, p.bg) >= 2.2 ? p.accent : p.ink;
+  Object.entries({ '--p-bg': p.bg, '--p-surface': p.surface, '--p-ink': p.ink, '--p-muted': p.muted, '--p-accent': p.accent, '--p-accent-ink': p.accentInk, '--p-action': action, '--p-action-ink': action === p.accent ? p.accentInk : p.bg }).forEach(([k, v]) => s.setProperty(k, v));
+  s.colorScheme = fx.color.isDark(p.bg) ? 'dark' : 'light';
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  // one part at a time: at most 4 live WebGL contexts on this page
+  fx.config.maxLive = 4;
+  if (q.has('w')) document.getElementById('stage').style.maxWidth = q.get('w') + 'px';
+
+  const base = `./${part}/`;
+  const [meta, html, mod] = await Promise.all([fetch(base + 'meta.json').then(r => r.json()), fetch(base + 'component.html').then(r => r.text()), import(base + 'component.js')]);
+  const link = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: base + 'component.css' });
+  document.head.append(link);
+  await new Promise(r => { link.onload = link.onerror = r; });
+  const choices = meta.effects?.length ? meta.effects : meta.objects || [];
+  const chosen = choices.includes(q.get('fx')) ? q.get('fx') : meta.default;
+  const stage = document.getElementById('stage');
+  stage.innerHTML = html;
+  const root = stage.firstElementChild;
+  // the chosen effect goes where the part reads it: data-cx-object, data-cx-fill, or data-cx-effect on the root
+  // the dither object: one figure set to the chosen object (one live object, as on a page); no caption under it
+  if (meta.objects) {
+    const fig = root.matches('[data-cx-object]') ? root : root.querySelector('[data-cx-object]');
+    fig.dataset.cxObject = chosen;
+    if (q.get('render') === 'studio') fig.dataset.cxRender = 'studio';
+    fig.querySelector('.cx-obj__stage').removeAttribute('aria-label');
+    fig.style.maxWidth = '720px';
+  }
+  // without ?fx= the markup keeps its own effects (the feature card mixes a landscape and a grain: setting
+  // the default on every panel would paint the grain panel as a landscape too)
+  else if (!choices.includes(q.get('fx'))) { /* as written */ }
+  else if (root.querySelector('[data-cx-fill]')) root.querySelectorAll('[data-cx-fill]').forEach(el => { el.dataset.cxFill = chosen; });
+  else if (root.querySelector('[data-cx-effect]')) root.querySelectorAll('[data-cx-effect]').forEach(el => { el.dataset.cxEffect = chosen; });
+  else root.dataset.cxEffect = chosen;
+  // the map draws its baked streets; an effect named with ?fx= shows its fallback ground (no map data) instead
+  if (part === 'fx-map' && choices.includes(q.get('fx'))) delete root.dataset.cxMap;
+  await document.fonts.ready;
+  window.__part = mod.default(root);
+  setTimeout(() => { document.documentElement.dataset.ready = '1'; }, 1200);
+
+  const fill = (sel, list, cur, key) => {
+    const el = document.getElementById(sel);
+    el.innerHTML = list.map(v => `<option${v === cur ? ' selected' : ''}>${v}</option>`).join('');
+    el.addEventListener('change', () => { q.set(key, el.value); if (key === 'c') q.delete('fx'); location.search = q.toString(); });
+  };
+  fill('c', PARTS, part, 'c');
+  // a part whose default is none (the map's streets, the photograph as it is) lists none first, so the
+  // select never shows an effect that is not on
+  fill('fx', meta.default === 'none' ? ['none', ...choices] : choices, chosen, 'fx');
+  fill('pal', Object.keys(PALETTES), palId, 'palette');
+</script>
+</body>
+</html>

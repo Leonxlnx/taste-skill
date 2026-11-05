@@ -1,0 +1,44 @@
+{
+  "id": "iris-opens",
+  "name": "Iris opens",
+  "kind": "transition",
+  "fits": [
+    "section"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut.",
+  "reduced": "The section stands on its own ground, no panel, no ring.",
+  "phone": "The section stands on its own ground, no panel, no ring.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "grounds": "the section sits on another ground than the one before it (ground-inverse, ground-surface)",
+    "words": "a section of one or two screens with its h2 first"
+  },
+  "avoidWith": [
+    "pinned-chapters",
+    "closing-lift",
+    "line-carries-colour"
+  ],
+  "states": {
+    "start": {
+      "view": 0.15,
+      "wait": 300
+    },
+    "middle": {
+      "view": 0.22,
+      "wait": 300
+    },
+    "end": {
+      "view": 0.5,
+      "wait": 300
+    }
+  }
+}

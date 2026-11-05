@@ -1,0 +1,9 @@
+/* word-rotate: the words share one cell; the one on view is underlined in the accent and the next
+   rises in from below while the old one leaves upward, both inside the cell's clip. */
+.mo-wr { display: inline-grid; justify-items: start; vertical-align: top; text-align: left; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.mo-wr__w { grid-area: 1 / 1; white-space: nowrap; transform: translateY(112%); opacity: 0;
+  transition: transform 640ms cubic-bezier(.16, 1, .3, 1), opacity 320ms ease;
+  text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.1em; text-decoration-color: var(--accent); text-decoration-skip-ink: none; }
+.mo-wr__w.is-on { transform: none; opacity: 1; }
+.mo-wr__w.is-out { transform: translateY(-112%); opacity: 0; transition-duration: 520ms, 260ms; }
+@media (prefers-reduced-motion: reduce) { .mo-wr__w { transition: none; } }

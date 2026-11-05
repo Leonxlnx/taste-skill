@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product views</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap">
+<!--
+  The product's views at anchor scale: every frame below is a [data-product] mount with a view, a scene
+  or a colourway, shown as the still make-posters.mjs makes (no WebGL; with none made, the frame renders itself once), filling its frame (hero 0.88,
+  stage 0.86, tile 0.84, card 0.9 of the frame's width or height) on the page's own ground, with no panel.
+  The colour buttons drive the frames they name (data-product-swatch); the robot's side view is rendered
+  once here (data-product-mode="still") and its canvases freed: it is measured and placed as a poster still is, so it
+  fills its tile the same. The bike has no top view (spec.supports lists the views a product draws well).
+  ?mode=live|still|image sets every frame's mode; ?only=bike|lamp|arm keeps one product.
+-->
+<style>
+  :root { --bg: #ecebe6; --ink: #151515; --muted: #5f5e59; --line: #d6d4cd; --accent: #1f6f5c; --gut: clamp(16px, 5vw, 80px); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.5 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  section { position: relative; min-height: 100svh; padding: clamp(32px, 6vw, 88px) var(--gut); display: grid; align-content: start; gap: clamp(20px, 3vw, 40px); }
+  h1, h2 { margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 0.98; }
+  h1 { font-size: clamp(40px, 6vw, 92px); }
+  h2 { font-size: clamp(32px, 4.2vw, 64px); }
+  p { margin: 0; color: var(--muted); max-width: 40ch; }
+  .frame { position: relative; width: 100%; }
+  .s-hero { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; }
+  .s-hero .copy { display: grid; align-content: space-between; gap: 32px; padding-bottom: 8px; }
+  .s-hero .frame { height: calc(100svh - 2 * clamp(32px, 6vw, 88px)); min-height: 420px; }
+  .order { display: grid; gap: 14px; }
+  .order .price { font-size: 20px; color: var(--ink); }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+  .swatch { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 8px 14px 8px 10px; font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 160ms ease, border-color 160ms ease; }
+  .swatch:hover { transform: translateY(-1px); border-color: var(--ink); }
+  .swatch:active { transform: translateY(0) scale(0.98); }
+  .swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .swatch i { width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12); }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 2vw, 24px); }
+  .tiles .frame { height: calc((100svh - 240px) / 2); min-height: 240px; }
+  .stage { height: calc(100svh - 220px); min-height: 380px; }
+  .s-lamp { --bg: #121314; --ink: #f1f0ec; --muted: #9c9b96; --line: #2c2d30; background: var(--bg); color: var(--ink); }
+  .pair { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(12px, 2vw, 24px); }
+  .pair .frame { height: min(62svh, 640px); }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+  .s-arm { --bg: #e6e8ea; --ink: #121417; --muted: #5a5f66; --line: #cfd3d7; background: var(--bg); color: var(--ink); }
+  @media (max-width: 700px) {
+    section { min-height: 0; }
+    .s-hero { grid-template-columns: 1fr; }
+    .s-hero .frame { height: auto; aspect-ratio: 1 / 1.05; min-height: 0; order: 2; }
+    .s-hero .copy { display: contents; }
+    .s-hero .order { order: 3; }
+    .tiles { grid-template-columns: 1fr; }
+    .tiles .frame { height: auto; min-height: 0; aspect-ratio: 4 / 3; }
+    .stage { height: auto; aspect-ratio: 1 / 1.1; min-height: 0; }
+    .pair { grid-template-columns: 1fr; }
+    .pair .frame { height: auto; aspect-ratio: 1 / 1.05; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <section class="s-hero" data-id="bike">
+    <div class="copy">
+      <div><h1>A city bike, built to carry.</h1><p style="margin-top:18px">A steel frame, a basket up front, a rack behind.</p></div>
+      <div class="order">
+        <div class="price">From €1,180</div>
+        <div class="swatches" role="radiogroup" aria-label="Colour">
+          <button class="swatch" type="button" style="--c:#1f6f5c" data-product-swatch="#bike-hero, #bike-loaded" value="green" aria-pressed="true"><i></i>Moss green</button>
+          <button class="swatch" type="button" style="--c:#2c4f7c" data-product-swatch="#bike-hero, #bike-loaded" value="blue" aria-pressed="false"><i></i>Deep blue</button>
+          <button class="swatch" type="button" style="--c:#e2d8c3" data-product-swatch="#bike-hero, #bike-loaded" value="cream" aria-pressed="false"><i></i>Cream</button>
+          <button class="swatch" type="button" style="--c:#b3332a" data-product-swatch="#bike-hero, #bike-loaded" value="red" aria-pressed="false"><i></i>Signal red</button>
+        </div>
+      </div>
+    </div>
+    <div class="frame" id="bike-hero" data-product="specs/city-bike.json" data-product-place="hero" data-product-color="green"></div>
+  </section>
+
+  <section data-id="bike">
+    <h2>Every side of it.</h2>
+    <div class="tiles">
+      <div class="frame" data-product="specs/city-bike.json" data-product-place="tile" data-product-view="side" data-product-color="blue"></div>
+      <div class="frame" data-product="specs/city-bike.json" data-product-place="tile" data-product-view="front" data-product-color="blue"></div>
+      <div class="frame" data-product="specs/city-bike.json" data-product-place="tile" data-product-view="detail-drive" data-product-color="blue"></div>
+      <div class="frame" data-product="specs/city-bike.json" data-product-place="tile" data-product-view="detail-saddle" data-product-color="blue"></div>
+    </div>
+  </section>
+
+  <section data-id="bike">
+    <h2>A child up back, the shopping up front.</h2>
+    <div class="frame stage" id="bike-loaded" data-product="specs/city-bike.json" data-product-place="stage" data-product-scene="loaded" data-product-color="green"></div>
+  </section>
+
+  <section class="s-lamp" data-id="lamp">
+    <div class="head">
+      <h2>Light where you work.</h2>
+      <div class="swatches" role="radiogroup" aria-label="Shade colour">
+        <button class="swatch" type="button" style="--c:#d9542b" data-product-swatch=".lamp" value="orange" aria-pressed="true"><i></i>Ember</button>
+        <button class="swatch" type="button" style="--c:#2a2b2e" data-product-swatch=".lamp" value="black" aria-pressed="false"><i></i>Soft black</button>
+        <button class="swatch" type="button" style="--c:#8ea489" data-product-swatch=".lamp" value="sage" aria-pressed="false"><i></i>Sage</button>
+      </div>
+    </div>
+    <div class="frame stage lamp" id="lamp-desk" data-product="specs/desk-lamp.json" data-product-place="stage" data-product-scene="desk"></div>
+    <div class="pair">
+      <div class="frame lamp" data-product="specs/desk-lamp.json" data-product-place="card" data-product-view="side"></div>
+      <div class="frame lamp" data-product="specs/desk-lamp.json" data-product-place="card" data-product-view="detail-shade"></div>
+    </div>
+  </section>
+
+  <section class="s-arm" data-id="arm">
+    <h2>Picks, places, repeats.</h2>
+    <div class="frame stage" data-product="specs/robot-arm.json" data-product-place="stage" data-product-scene="work" data-product-color="orange"></div>
+    <div class="tiles">
+      <div class="frame" id="arm-side" data-product="specs/robot-arm.json" data-product-place="tile" data-product-view="side" data-product-mode="still"></div>
+      <div class="frame" data-product="specs/robot-arm.json" data-product-place="tile" data-product-view="front"></div>
+      <div class="frame" data-product="specs/robot-arm.json" data-product-place="tile" data-product-view="top"></div>
+      <div class="frame" data-product="specs/robot-arm.json" data-product-place="tile" data-product-view="detail-gripper"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  if (q.get('only')) document.querySelectorAll('section').forEach(s => { if (s.dataset.id !== q.get('only')) s.remove(); });
+  if (q.get('mode')) document.querySelectorAll('[data-product]').forEach(el => { el.dataset.productMode = q.get('mode'); });
+  const { ready, products } = await import('./auto.js');
+  await ready;
+  window.__products = products;
+  await Promise.all([...products.values()].map(c => c.ready()));
+  // the product's share of each frame (the picture's product box against the frame, the tighter way)
+  window.__fill = () => [...products.entries()].map(([el, c]) => {
+    const img = el.querySelector('.product-render__img'), r = el.getBoundingClientRect();
+    let share = null;
+    if (img && img._s && img._s.box) {
+      const b = img._s.focus || img._s.box, ir = img.getBoundingClientRect();
+      const w = (b[2] - b[0]) * ir.width, h = (b[3] - b[1]) * ir.height;
+      share = +Math.max(w / r.width, h / r.height).toFixed(3);
+    } else if (img) share = 'whole frame';
+    return { id: el.id || null, view: el.dataset.productView, scene: el.dataset.productScene || null, color: el.dataset.productColorShown || null, mode: c.mode, state: el.dataset.productState, frame: [Math.round(r.width), Math.round(r.height)], share, src: img ? (img.currentSrc || img.src).split('/').pop().slice(0, 60) : null };
+  });
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

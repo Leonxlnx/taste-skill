@@ -1,0 +1,31 @@
+/* slider: a property panel with a live value, like a design tool's; it can drive the ground under it */
+.ui-slider { width: 288px; padding: 0 16px 16px; }
+.ui-slider__head { display: flex; align-items: center; gap: 10px; height: 60px; margin: 0 -16px 8px; padding: 0 16px; border-bottom: 1px solid var(--u-line); }
+.ui-slider__ico { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 8px; background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.ui-slider__ico svg { width: 16px; height: 16px; fill: var(--u-ink); }
+.ui-slider__name { display: grid; }
+.ui-slider__name .ui-meta { font-size: 13px; }
+.ui-slider__reset { font-size: 13px; color: var(--u-muted); }
+.ui-slider__row { padding: 10px 0 6px; }
+.ui-slider__top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; font-size: 13px; line-height: 16px; color: var(--u-muted); }
+.ui-slider__top output { min-width: 44px; height: 22px; padding: 0 6px; border-radius: 5px; text-align: right; font: 500 13px/22px var(--ui-mono, ui-monospace, monospace); color: var(--u-ink); font-variant-numeric: tabular-nums; background: var(--u-fill); box-shadow: inset 0 0 0 1px var(--u-line); margin: -3px 0; }
+.ui-slider__track { position: relative; height: 16px; --v: 0.5; }
+.ui-slider__track::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 4px; border-radius: 2px; background: var(--u-fill-3); }
+.ui-slider__fill { position: absolute; left: 0; top: 6px; height: 4px; width: calc(var(--v) * 100%); border-radius: 2px; background: var(--u-ink); }
+.ui-slider__thumb {
+  position: absolute; top: 0; left: calc(var(--v) * (100% - 16px)); width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.1), 0 1px 3px rgb(0 0 0 / 0.28);
+  transition: box-shadow 200ms var(--u-ease);
+}
+/* while it is dragged, the active slider takes the accent */
+.ui-slider__track.is-drag .ui-slider__fill { background: var(--u-accent); }
+.ui-slider__track.is-drag .ui-slider__thumb { box-shadow: 0 0 0 4px color-mix(in oklab, var(--u-accent) 24%, transparent), 0 0 0 1px rgb(0 0 0 / 0.1), 0 1px 3px rgb(0 0 0 / 0.28); }
+.ui-slider__seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 14px; padding: 2px; border-radius: 8px; background: var(--u-fill-2); }
+.ui-slider__seg span { display: grid; place-items: center; height: 28px; border-radius: 6px; font-size: 13px; color: var(--u-muted); }
+.ui-slider__seg .is-on { background: var(--u-bg); color: var(--u-ink); font-weight: 500; box-shadow: 0 0 0 1px var(--u-line), 0 1px 2px rgb(0 0 0 / 0.1); }
+/* compact (opts.compact): the name and the one slider that drives the ground, for the calm middle of a
+   focal tile (Figma's Texture tile): small enough to sit .at-center */
+.ui-slider--compact { width: 248px; padding-bottom: 12px; }
+.ui-slider--compact .ui-slider__head { height: 52px; margin-bottom: 4px; }
+.ui-slider--compact :is(.ui-slider__row + .ui-slider__row, .ui-slider__seg, .ui-slider__reset) { display: none; }
+@media (max-width: 320px) { .ui-slider { width: 100%; } }

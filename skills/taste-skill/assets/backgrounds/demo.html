@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backgrounds demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="backgrounds.css">
+<style>
+  :root { --font-display: "Hanken Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; --display-tracking: -0.035em; }
+  /* the demo's own frame: a tool bar and a small id tag on each ground (both off with ?bar=0&labels=0) */
+  .demo-bar { position: fixed; z-index: 90; right: 12px; bottom: 12px; display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 12px;
+              background: #111; color: #fff; font: 500 12px/1 ui-monospace, Menlo, Consolas, monospace; box-shadow: 0 8px 30px rgb(0 0 0 / .3); }
+  .demo-bar select { font: inherit; background: #222; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 5px 6px; max-width: 150px; }
+  body.no-bar .demo-bar, body.no-labels .demo-tag { display: none; }
+  .demo-tag { position: absolute; z-index: 3; top: 14px; left: 14px; padding: 4px 8px; border-radius: 6px; font: 500 11px/1 ui-monospace, Menlo, Consolas, monospace;
+              background: rgb(0 0 0 / .72); color: #fff; letter-spacing: .02em; }
+  [hidden] { display: none !important; }
+
+  /* small UI pieces, drawn with the ground's tokens so they show how a card reads on each ground */
+  .mini { background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px; font-size: 14px; line-height: 1.4;
+          box-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 12px 28px -16px rgb(0 0 0 / .25); }
+  .mini h4 { font: 500 14px/1.3 var(--font-text); letter-spacing: 0; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+  .mini h4 span { font-weight: 400; color: var(--muted); font-size: 13px; }
+  .rowline { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .rowline:first-of-type { border-top: 0; }
+  .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 500; background: color-mix(in oklab, var(--accent) 16%, var(--card)); color: var(--ink); }
+  .rowline b { font-weight: 500; display: block; }
+  .rowline small { color: var(--muted); font-size: 12.5px; }
+  .tag { font-size: 12px; padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line-strong); color: var(--ink); white-space: nowrap; }
+  .tag.on { background: var(--action); color: var(--action-ink); border-color: transparent; }
+  .sw { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .sw:first-of-type { border-top: 0; }
+  .sw i { width: 34px; height: 20px; border-radius: 99px; background: var(--line-strong); position: relative; flex: none; }
+  .sw i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 2px rgb(0 0 0 / .3); }
+  .sw i.on { background: var(--action); } .sw i.on::after { left: 16px; background: var(--action-ink); }
+  .week { display: grid; grid-template-columns: 64px repeat(5, 1fr); gap: 6px; font-size: 12.5px; }
+  .week > div { padding: 8px 8px; border-radius: 8px; background: color-mix(in oklab, var(--ink) 5%, var(--card)); min-height: 34px; }
+  .week > .h { background: none; color: var(--muted); padding: 4px 8px; }
+  .week > .c { background: color-mix(in oklab, var(--accent) 18%, var(--card)); }
+  .week > .n { background: none; color: var(--muted); padding-left: 0; }
+  .bubble { padding: 10px 12px; border-radius: 12px; background: color-mix(in oklab, var(--ink) 6%, var(--card)); max-width: 86%; }
+  .bubble.me { margin-left: auto; background: var(--action); color: var(--action-ink); }
+  .stack > * + * { margin-top: 8px; }
+  .big-stat { font: var(--display-weight) clamp(72px, 9vw, 132px)/.95 var(--font-display); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+  .steps li { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 1px solid var(--line-strong); }
+  .nav .btn { height: 36px; }
+  .vh { min-height: 0; }
+  .center { text-align: center; justify-items: center; }
+  .stats4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .stats4 b { display: block; font: var(--display-weight) 40px/1 var(--font-display); letter-spacing: -0.04em; margin-bottom: 6px; }
+  @media (max-width: 767px) { .stats4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .week { grid-template-columns: 44px repeat(3, 1fr); } .week > :nth-child(6n+5), .week > :nth-child(6n+6) { display: none; } }
+</style>
+<script>
+  const PALETTES = {
+    "white-link-blue": {"bg":"#ffffff","surface":"#f4f4f4","ink":"#111111","muted":"#6b6b6b","accent":"#1a4be0","accent-ink":"#ffffff","action":"#1a4be0","action-ink":"#ffffff","inv-bg":"#111111","inv-surface":"#1e1e1e","inv-ink":"#ffffff","inv-muted":"#9a9a9a","inv-accent":"#ffffff","inv-accent-ink":"#111111","inv-action":"#ffffff","inv-action-ink":"#111111"},
+    "cool-white-slate": {"bg":"#f7f9fa","surface":"#ecf0f2","ink":"#1f3038","muted":"#5d6b72","accent":"#0d7480","accent-ink":"#ffffff","action":"#0d7480","action-ink":"#ffffff","inv-bg":"#1f3038","inv-surface":"#2c3c44","inv-ink":"#f7f9fa","inv-muted":"#9ea7ab","inv-accent":"#f7f9fa","inv-accent-ink":"#1f3038","inv-action":"#f7f9fa","inv-action-ink":"#1f3038"},
+    "rose-grey-green": {"bg":"#ebe5e3","surface":"#e1dad7","ink":"#2b2622","muted":"#655c58","accent":"#0f7d45","accent-ink":"#ffffff","action":"#0f7d45","action-ink":"#ffffff","inv-bg":"#2b2622","inv-surface":"#36312d","inv-ink":"#ebe5e3","inv-muted":"#a29c99","inv-accent":"#ebe5e3","inv-accent-ink":"#2b2622","inv-action":"#ebe5e3","inv-action-ink":"#2b2622"},
+    "paper-grey-brass": {"bg":"#e8e8e3","surface":"#dcdcd6","ink":"#181715","muted":"#5c5b56","accent":"#bfb21a","accent-ink":"#181715","action":"#181715","action-ink":"#e8e8e3","inv-bg":"#181715","inv-surface":"#242321","inv-ink":"#e8e8e3","inv-muted":"#91908d","inv-accent":"#bfb21a","inv-accent-ink":"#181715","inv-action":"#bfb21a","inv-action-ink":"#181715"},
+    "stone-blueprint": {"bg":"#dfdedb","surface":"#d3d2ce","ink":"#26251e","muted":"#5a5850","accent":"#2456d6","accent-ink":"#ffffff","action":"#2456d6","action-ink":"#ffffff","inv-bg":"#26251e","inv-surface":"#313029","inv-ink":"#dfdedb","inv-muted":"#9e9d99","inv-accent":"#dfdedb","inv-accent-ink":"#26251e","inv-action":"#dfdedb","inv-action-ink":"#26251e"},
+    "white-navy-tab": {"bg":"#ffffff","surface":"#f4f4f2","ink":"#1f2b4d","muted":"#646b81","accent":"#f7941d","accent-ink":"#1f2b4d","action":"#f7941d","action-ink":"#1f2b4d","inv-bg":"#05070a","inv-surface":"#111417","inv-ink":"#ffffff","inv-muted":"#939597","inv-accent":"#f7941d","inv-accent-ink":"#1f2b4d","inv-action":"#f7941d","inv-action-ink":"#1f2b4d"},
+    "three-stones": {"bg":"#eeecea","surface":"#e4e1dd","ink":"#333231","muted":"#625f5b","accent":"#5c6b54","accent-ink":"#ffffff","action":"#5c6b54","action-ink":"#ffffff","inv-bg":"#333231","inv-surface":"#3e3d3c","inv-ink":"#eeecea","inv-muted":"#adaba9","inv-accent":"#eeecea","inv-accent-ink":"#333231","inv-action":"#eeecea","inv-action-ink":"#333231"},
+    "putty-black-teal": {"bg":"#dedad3","surface":"#d3cec6","ink":"#0a0a0a","muted":"#55514c","accent":"#256f82","accent-ink":"#ffffff","action":"#256f82","action-ink":"#ffffff","inv-bg":"#0a0a0a","inv-surface":"#151515","inv-ink":"#dedad3","inv-muted":"#84827e","inv-accent":"#256f82","inv-accent-ink":"#ffffff","inv-action":"#256f82","inv-action-ink":"#ffffff"},
+    "moss-sand": {"bg":"#ddd6c6","surface":"#d2cab8","ink":"#2a2a26","muted":"#55534b","accent":"#4f6238","accent-ink":"#ffffff","action":"#4f6238","action-ink":"#ffffff","inv-bg":"#2a2a26","inv-surface":"#353430","inv-ink":"#ddd6c6","inv-muted":"#a39e92","inv-accent":"#ddd6c6","inv-accent-ink":"#2a2a26","inv-action":"#ddd6c6","inv-action-ink":"#2a2a26"},
+    "green-mat-chocolate": {"bg":"#e5e1d8","surface":"#dad5ca","ink":"#2a1d17","muted":"#65564c","accent":"#456f3a","accent-ink":"#ffffff","action":"#456f3a","action-ink":"#ffffff","inv-bg":"#2a1d17","inv-surface":"#352822","inv-ink":"#e5e1d8","inv-muted":"#9e968e","inv-accent":"#e5e1d8","inv-accent-ink":"#2a1d17","inv-action":"#e5e1d8","inv-action-ink":"#2a1d17"},
+    "lunar-grey-bronze": {"bg":"#111111","surface":"#1c1c1c","ink":"#f2f2f2","muted":"#8f8f8f","accent":"#a08672","accent-ink":"#111111","action":"#a08672","action-ink":"#111111","inv-bg":"#f2f2f2","inv-surface":"#e0e0e0","inv-ink":"#111111","inv-muted":"#5c5c5c","inv-accent":"#a08672","inv-accent-ink":"#111111","inv-action":"#a08672","inv-action-ink":"#111111"},
+    "blue-black-cornflower": {"bg":"#0a0d14","surface":"#131824","ink":"#e9edf3","muted":"#8891a1","accent":"#5ab9fc","accent-ink":"#0a0d14","action":"#5ab9fc","action-ink":"#0a0d14","inv-bg":"#e9edf3","inv-surface":"#d7dbe1","inv-ink":"#0a0d14","inv-muted":"#54575f","inv-accent":"#0a0d14","inv-accent-ink":"#e9edf3","inv-action":"#0a0d14","inv-action-ink":"#e9edf3"},
+    "green-black-bone": {"bg":"#161c1a","surface":"#1f2725","ink":"#e3e2da","muted":"#8e948d","accent":"#9fc7b8","accent-ink":"#161c1a","action":"#9fc7b8","action-ink":"#161c1a","inv-bg":"#e3e2da","inv-surface":"#d3d2cb","inv-ink":"#161c1a","inv-muted":"#555a55","inv-accent":"#161c1a","inv-accent-ink":"#e3e2da","inv-action":"#161c1a","inv-action-ink":"#e3e2da"},
+    "black-crimson": {"bg":"#0a0a0a","surface":"#151515","ink":"#efefef","muted":"#8c8c8c","accent":"#b11226","accent-ink":"#ffffff","action":"#b11226","action-ink":"#ffffff","inv-bg":"#efefef","inv-surface":"#dcdcdc","inv-ink":"#0a0a0a","inv-muted":"#565656","inv-accent":"#b11226","inv-accent-ink":"#ffffff","inv-action":"#b11226","inv-action-ink":"#ffffff"},
+    "forest-pale-lime": {"bg":"#0f1f10","surface":"#162a17","ink":"#ffffff","muted":"#9aa39a","accent":"#c6f19d","accent-ink":"#0f1f10","action":"#c6f19d","action-ink":"#0f1f10","inv-bg":"#ffffff","inv-surface":"#ecedec","inv-ink":"#0f1f10","inv-muted":"#606c60","inv-accent":"#0f1f10","inv-accent-ink":"#ffffff","inv-action":"#0f1f10","inv-action-ink":"#ffffff"},
+    "charcoal-room-sage": {"bg":"#1c1c1c","surface":"#262626","ink":"#f1f1ef","muted":"#9a9b96","accent":"#8fa68e","accent-ink":"#1c1c1c","action":"#8fa68e","action-ink":"#1c1c1c","inv-bg":"#c8c5ba","inv-surface":"#bab8ae","inv-ink":"#1c1c1c","inv-muted":"#454442","inv-accent":"#1c1c1c","inv-accent-ink":"#c8c5ba","inv-action":"#1c1c1c","inv-action-ink":"#c8c5ba"},
+    "warm-black-gold": {"bg":"#0c0a08","surface":"#181512","ink":"#ffffff","muted":"#8f8a84","accent":"#c9a45a","accent-ink":"#0c0a08","action":"#c9a45a","action-ink":"#0c0a08","inv-bg":"#ffffff","inv-surface":"#ebebeb","inv-ink":"#0c0a08","inv-muted":"#5c5b59","inv-accent":"#0c0a08","inv-accent-ink":"#ffffff","inv-action":"#0c0a08","inv-action-ink":"#ffffff"},
+    "graphite-safety-orange": {"bg":"#18191b","surface":"#222427","ink":"#eff0f1","muted":"#9c9ea3","accent":"#ff4a1f","accent-ink":"#18191b","action":"#ff4a1f","action-ink":"#18191b","inv-bg":"#eff0f1","inv-surface":"#dedfe0","inv-ink":"#18191b","inv-muted":"#5b5c5e","inv-accent":"#18191b","inv-accent-ink":"#eff0f1","inv-action":"#18191b","inv-action-ink":"#eff0f1"},
+    "soot-pale-lime": {"bg":"#0f0f0f","surface":"#1a1a1a","ink":"#ffffff","muted":"#8f8f8f","accent":"#dafa9c","accent-ink":"#0f0f0f","action":"#dafa9c","action-ink":"#0f0f0f","inv-bg":"#ffffff","inv-surface":"#ececec","inv-ink":"#0f0f0f","inv-muted":"#5f5f5f","inv-accent":"#0f0f0f","inv-accent-ink":"#ffffff","inv-action":"#0f0f0f","inv-action-ink":"#ffffff"},
+    "plum-black-pink": {"bg":"#0d060b","surface":"#1b0e17","ink":"#ffffff","muted":"#9a8f97","accent":"#ff488b","accent-ink":"#0d060b","action":"#ff488b","action-ink":"#0d060b","inv-bg":"#ffffff","inv-surface":"#ebebeb","inv-ink":"#0d060b","inv-muted":"#5e575c","inv-accent":"#ff488b","inv-accent-ink":"#0d060b","inv-action":"#ff488b","inv-action-ink":"#0d060b"},
+    "white-signal-red": {"bg":"#ffffff","surface":"#f2f2f2","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#d92b21","accent-ink":"#ffffff","action":"#d92b21","action-ink":"#ffffff","inv-bg":"#000000","inv-surface":"#010101","inv-ink":"#ffffff","inv-muted":"#868686","inv-accent":"#d92b21","inv-accent-ink":"#ffffff","inv-action":"#d92b21","inv-action-ink":"#ffffff"},
+    "white-mint-tiles": {"bg":"#ffffff","surface":"#f3f3f3","ink":"#232323","muted":"#686868","accent":"#a1ffcb","accent-ink":"#232323","action":"#232323","action-ink":"#ffffff","inv-bg":"#232323","inv-surface":"#303030","inv-ink":"#ffffff","inv-muted":"#a4a4a4","inv-accent":"#a1ffcb","inv-accent-ink":"#232323","inv-action":"#a1ffcb","inv-action-ink":"#232323"},
+    "cool-grey-cobalt": {"bg":"#eef0f3","surface":"#e2e5ea","ink":"#0b0c0e","muted":"#5d6470","accent":"#1f2de6","accent-ink":"#ffffff","action":"#1f2de6","action-ink":"#ffffff","inv-bg":"#0b0c0e","inv-surface":"#17181a","inv-ink":"#eef0f3","inv-muted":"#8e8f92","inv-accent":"#eef0f3","inv-accent-ink":"#0b0c0e","inv-action":"#eef0f3","inv-action-ink":"#0b0c0e"},
+    "offwhite-bottle-yellow": {"bg":"#f7f7f7","surface":"#ebebeb","ink":"#0d2a1c","muted":"#5f6b64","accent":"#f6e016","accent-ink":"#0d2a1c","action":"#0d2a1c","action-ink":"#f7f7f7","inv-bg":"#0d2a1c","inv-surface":"#1c3629","inv-ink":"#f7f7f7","inv-muted":"#97a39c","inv-accent":"#f6e016","inv-accent-ink":"#0d2a1c","inv-action":"#f6e016","inv-action-ink":"#0d2a1c"},
+    "teal-on-paper": {"bg":"#f7f9f8","surface":"#ebf0ee","ink":"#06525c","muted":"#2f737d","accent":"#06525c","accent-ink":"#f7f9f8","action":"#06525c","action-ink":"#f7f9f8","inv-bg":"#06525c","inv-surface":"#205d66","inv-ink":"#f7f9f8","inv-muted":"#c1d0d2","inv-accent":"#f7f9f8","inv-accent-ink":"#06525c","inv-action":"#f7f9f8","inv-action-ink":"#06525c"},
+    "navy-pink": {"bg":"#1a2039","surface":"#212846","ink":"#f9a3c0","muted":"#b9879c","accent":"#f9a3c0","accent-ink":"#1a2039","action":"#f9a3c0","action-ink":"#1a2039","inv-bg":"#f9a3c0","inv-surface":"#e899b6","inv-ink":"#1a2039","inv-muted":"#483c56","inv-accent":"#1a2039","inv-accent-ink":"#f9a3c0","inv-action":"#1a2039","inv-action-ink":"#f9a3c0"},
+    "blush-aubergine": {"bg":"#edccbe","surface":"#e8c2b2","ink":"#351a2b","muted":"#6c4857","accent":"#351a2b","accent-ink":"#edccbe","action":"#351a2b","action-ink":"#edccbe","inv-bg":"#351a2b","inv-surface":"#402534","inv-ink":"#edccbe","inv-muted":"#b2938f","inv-accent":"#edccbe","inv-accent-ink":"#351a2b","inv-action":"#edccbe","inv-action-ink":"#351a2b"},
+    "cobalt-on-sand": {"bg":"#e6dbc7","surface":"#ddd0b9","ink":"#062b8a","muted":"#3253a4","accent":"#062b8a","accent-ink":"#e6dbc7","action":"#062b8a","action-ink":"#e6dbc7","inv-bg":"#062b8a","inv-surface":"#153a90","inv-ink":"#e6dbc7","inv-muted":"#aab0bc","inv-accent":"#e6dbc7","inv-accent-ink":"#062b8a","inv-action":"#e6dbc7","inv-action-ink":"#062b8a"},
+    "oxblood-grey": {"bg":"#e2e2e2","surface":"#d6d6d6","ink":"#7d0c14","muted":"#7a4a4e","accent":"#7d0c14","accent-ink":"#e2e2e2","action":"#7d0c14","action-ink":"#e2e2e2","inv-bg":"#7d0c14","inv-surface":"#862323","inv-ink":"#e2e2e2","inv-muted":"#d0b3af","inv-accent":"#e2e2e2","inv-accent-ink":"#7d0c14","inv-action":"#e2e2e2","inv-action-ink":"#7d0c14"},
+    "olive-on-bone": {"bg":"#ecebe7","surface":"#e1dfd9","ink":"#38450f","muted":"#5a6537","accent":"#38450f","accent-ink":"#ecebe7","action":"#38450f","action-ink":"#ecebe7","inv-bg":"#38450f","inv-surface":"#435020","inv-ink":"#ecebe7","inv-muted":"#bbbfaf","inv-accent":"#ecebe7","inv-accent-ink":"#38450f","inv-action":"#ecebe7","inv-action-ink":"#38450f"},
+    "burgundy-bubblegum": {"bg":"#3d0012","surface":"#4d0519","ink":"#ff99d3","muted":"#c77aa0","accent":"#ff99d3","accent-ink":"#3d0012","action":"#ff99d3","action-ink":"#3d0012","inv-bg":"#ff99d3","inv-surface":"#f08dc4","inv-ink":"#3d0012","inv-muted":"#6a263c","inv-accent":"#3d0012","inv-accent-ink":"#ff99d3","inv-action":"#3d0012","inv-action-ink":"#ff99d3"},
+    "bottle-green-gold": {"bg":"#133621","surface":"#1a4429","ink":"#f4d96c","muted":"#b8a95f","accent":"#f4d96c","accent-ink":"#133621","action":"#f4d96c","action-ink":"#133621","inv-bg":"#f4d96c","inv-surface":"#e3cd67","inv-ink":"#133621","inv-muted":"#495c33","inv-accent":"#133621","inv-accent-ink":"#f4d96c","inv-action":"#133621","inv-action-ink":"#f4d96c"},
+    "cobalt-field": {"bg":"#0034eb","surface":"#002fd6","ink":"#ffffff","muted":"#dfe4f2","accent":"#e9e34a","accent-ink":"#111111","action":"#e9e34a","action-ink":"#111111","inv-bg":"#ffffff","inv-surface":"#edf3ff","inv-ink":"#0034eb","inv-muted":"#265ff1","inv-accent":"#0034eb","inv-accent-ink":"#ffffff","inv-action":"#0034eb","inv-action-ink":"#ffffff"},
+    "mustard-field": {"bg":"#e1ac10","surface":"#cd9d0f","ink":"#0b0b0b","muted":"#42350d","accent":"#24338f","accent-ink":"#ffffff","action":"#24338f","action-ink":"#ffffff","inv-bg":"#0b0b0b","inv-surface":"#17140f","inv-ink":"#e1ac10","inv-muted":"#9f7b1f","inv-accent":"#e1ac10","inv-accent-ink":"#0b0b0b","inv-action":"#e1ac10","inv-action-ink":"#0b0b0b"},
+    "carmine-field": {"bg":"#9c1220","surface":"#8a101c","ink":"#ffffff","muted":"#f0b9bd","accent":"#ffd9dc","accent-ink":"#9c1220","action":"#ffd9dc","action-ink":"#9c1220","inv-bg":"#ffffff","inv-surface":"#faefee","inv-ink":"#9c1220","inv-muted":"#b34846","inv-accent":"#9c1220","inv-accent-ink":"#ffffff","inv-action":"#9c1220","inv-action-ink":"#ffffff"},
+    "pink-field-lime": {"bg":"#ff87ab","surface":"#ff739d","ink":"#0a0a0a","muted":"#631e36","accent":"#def915","accent-ink":"#0a0a0a","action":"#0a0a0a","action-ink":"#ff87ab","inv-bg":"#0a0a0a","inv-surface":"#181213","inv-ink":"#ff87ab","inv-muted":"#b9657d","inv-accent":"#def915","inv-accent-ink":"#0a0a0a","inv-action":"#def915","inv-action-ink":"#0a0a0a"},
+    "sky-field-navy": {"bg":"#6bb4ee","surface":"#7dbdf0","ink":"#0e1822","muted":"#1b3d5c","accent":"#ff5a1f","accent-ink":"#0e1822","action":"#0e1822","action-ink":"#6bb4ee","inv-bg":"#0e1822","inv-surface":"#14212e","inv-ink":"#6bb4ee","inv-muted":"#558fbe","inv-accent":"#ff5a1f","inv-accent-ink":"#0e1822","inv-action":"#ff5a1f","inv-action-ink":"#0e1822"},
+    "orange-field-black": {"bg":"#ff7a1f","surface":"#ff8633","ink":"#050f16","muted":"#5a2306","accent":"#050f16","accent-ink":"#ff7a1f","action":"#050f16","action-ink":"#ff7a1f","inv-bg":"#050f16","inv-surface":"#14171a","inv-ink":"#ff7a1f","inv-muted":"#cc672a","inv-accent":"#ff7a1f","inv-accent-ink":"#050f16","inv-action":"#ff7a1f","inv-action-ink":"#050f16"},
+    "tobacco-olive": {"bg":"#472913","surface":"#55321a","ink":"#e4e0cf","muted":"#b7a48a","accent":"#525e1b","accent-ink":"#e4e0cf","action":"#e4e0cf","action-ink":"#472913","inv-bg":"#c79a3e","inv-surface":"#b88f3c","inv-ink":"#111111","inv-muted":"#332a1e","inv-accent":"#111111","inv-accent-ink":"#c79a3e","inv-action":"#111111","inv-action-ink":"#c79a3e"},
+    "poster-chapters": {"bg":"#e6e0d2","surface":"#dcd5c5","ink":"#1a1a1a","muted":"#5f5b52","accent":"#18bc42","accent-ink":"#1a1a1a","action":"#1a1a1a","action-ink":"#e6e0d2","inv-bg":"#1a1a1a","inv-surface":"#262525","inv-ink":"#e6e0d2","inv-muted":"#918d85","inv-accent":"#18bc42","inv-accent-ink":"#1a1a1a","inv-action":"#18bc42","inv-action-ink":"#1a1a1a"},
+    "blue-red-black": {"bg":"#ffffff","surface":"#f3f3f3","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#1f30e0","accent-ink":"#ffffff","action":"#1f30e0","action-ink":"#ffffff","inv-bg":"#0a0a0a","inv-surface":"#171717","inv-ink":"#ffffff","inv-muted":"#979797","inv-accent":"#ffffff","inv-accent-ink":"#0a0a0a","inv-action":"#ffffff","inv-action-ink":"#0a0a0a"},
+    "charcoal-primaries": {"bg":"#191919","surface":"#242424","ink":"#ffffff","muted":"#9a9a9a","accent":"#0c7866","accent-ink":"#ffffff","action":"#0c7866","action-ink":"#ffffff","inv-bg":"#ffe927","inv-surface":"#edd92c","inv-ink":"#191919","inv-muted":"#5f5a2d","inv-accent":"#0c7866","inv-accent-ink":"#ffffff","inv-action":"#0c7866","inv-action-ink":"#ffffff"},
+    "ultramarine-yellow": {"bg":"#1423b8","surface":"#1220a6","ink":"#ffffff","muted":"#e4e2d6","accent":"#1fc27a","accent-ink":"#0a0a0a","action":"#1fc27a","action-ink":"#0a0a0a","inv-bg":"#f7dd47","inv-surface":"#e5d35f","inv-ink":"#1423b8","inv-muted":"#2c52b4","inv-accent":"#1423b8","inv-accent-ink":"#f7dd47","inv-action":"#1423b8","inv-action-ink":"#f7dd47"},
+    "candy-chapters": {"bg":"#ffd249","surface":"#f5c63c","ink":"#0a0a0a","muted":"#5e4a0a","accent":"#f53fd6","accent-ink":"#0a0a0a","action":"#f53fd6","action-ink":"#0a0a0a","inv-bg":"#0a0a0a","inv-surface":"#171510","inv-ink":"#ffd249","inv-muted":"#977e34","inv-accent":"#f53fd6","inv-accent-ink":"#0a0a0a","inv-action":"#f53fd6","inv-action-ink":"#0a0a0a"},
+    "orange-sky-lime": {"bg":"#ff8126","surface":"#ff8d3a","ink":"#111111","muted":"#5c2a05","accent":"#de194b","accent-ink":"#ffffff","action":"#111111","action-ink":"#ff8126","inv-bg":"#161615","inv-surface":"#241d18","inv-ink":"#ff8126","inv-muted":"#d06d29","inv-accent":"#de194b","inv-accent-ink":"#ffffff","inv-action":"#de194b","inv-action-ink":"#ffffff"},
+    "post-red-mustard": {"bg":"#e2dccf","surface":"#d7d0c1","ink":"#2a1110","muted":"#6b524c","accent":"#4a6f84","accent-ink":"#ffffff","action":"#4a6f84","action-ink":"#ffffff","inv-bg":"#2a1110","inv-surface":"#361d1b","inv-ink":"#e2dccf","inv-muted":"#9e8e85","inv-accent":"#4a6f84","inv-accent-ink":"#ffffff","inv-action":"#4a6f84","inv-action-ink":"#ffffff"},
+    "mint-orange-grey": {"bg":"#ffffff","surface":"#f5f5f5","ink":"#000000","muted":"#666666","accent":"#a7ff9c","accent-ink":"#000000","action":"#000000","action-ink":"#ffffff","inv-bg":"#000000","inv-surface":"#010101","inv-ink":"#ffffff","inv-muted":"#868686","inv-accent":"#a7ff9c","inv-accent-ink":"#000000","inv-action":"#a7ff9c","inv-action-ink":"#000000"},
+    "report-blocks": {"bg":"#ffffff","surface":"#f6f6f6","ink":"#000000","muted":"#5f5f5f","accent":"#fe7141","accent-ink":"#000000","action":"#fe7141","action-ink":"#000000","inv-bg":"#000000","inv-surface":"#010101","inv-ink":"#ffffff","inv-muted":"#868686","inv-accent":"#fe7141","inv-accent-ink":"#000000","inv-action":"#fe7141","inv-action-ink":"#000000"},
+    "card-pastels": {"bg":"#f7f7f5","surface":"#ebebe8","ink":"#000000","muted":"#666662","accent":"#d0106f","accent-ink":"#ffffff","action":"#d0106f","action-ink":"#ffffff","inv-bg":"#000000","inv-surface":"#010101","inv-ink":"#f7f7f5","inv-muted":"#828280","inv-accent":"#d0106f","inv-accent-ink":"#ffffff","inv-action":"#d0106f","inv-action-ink":"#ffffff"},
+    "mint-pink-accounts": {"bg":"#f8f8f8","surface":"#eeeeee","ink":"#0a0a0a","muted":"#6a6a6a","accent":"#1f6b3a","accent-ink":"#ffffff","action":"#1f6b3a","action-ink":"#ffffff","inv-bg":"#0a0a0a","inv-surface":"#171717","inv-ink":"#f8f8f8","inv-muted":"#939393","inv-accent":"#1f6b3a","inv-accent-ink":"#ffffff","inv-action":"#1f6b3a","inv-action-ink":"#ffffff"},
+    "swap-pastels": {"bg":"#c3d7e5","surface":"#d0e0eb","ink":"#141414","muted":"#4a5068","accent":"#0f5257","accent-ink":"#ffffff","action":"#0f5257","action-ink":"#ffffff","inv-bg":"#141414","inv-surface":"#1e1f20","inv-ink":"#c3d7e5","inv-muted":"#808b94","inv-accent":"#c3d7e5","inv-accent-ink":"#141414","inv-action":"#c3d7e5","inv-action-ink":"#141414"},
+    "blush-sage-slate": {"bg":"#a6b3bc","surface":"#b2bdc5","ink":"#1c1c1c","muted":"#38424a","accent":"#2c3620","accent-ink":"#e3e2da","action":"#2c3620","action-ink":"#e3e2da","inv-bg":"#2c3620","inv-surface":"#39422d","inv-ink":"#ffffff","inv-muted":"#a8ada3","inv-accent":"#ffffff","inv-accent-ink":"#2c3620","inv-action":"#ffffff","inv-action-ink":"#2c3620"},
+    "candy-on-black": {"bg":"#000000","surface":"#0d0d0d","ink":"#ffffff","muted":"#999999","accent":"#93f1f7","accent-ink":"#000000","action":"#93f1f7","action-ink":"#000000","inv-bg":"#9ae187","inv-surface":"#8bcc7a","inv-ink":"#000000","inv-muted":"#24391e","inv-accent":"#000000","inv-accent-ink":"#9ae187","inv-action":"#000000","inv-action-ink":"#9ae187"},
+    "sky-sand": {"bg":"#cbe4f2","surface":"#bcdcee","ink":"#0a0a0a","muted":"#44606e","accent":"#b0298f","accent-ink":"#ffffff","action":"#b0298f","action-ink":"#ffffff","inv-bg":"#0a0a0a","inv-surface":"#151616","inv-ink":"#cbe4f2","inv-muted":"#79878f","inv-accent":"#b0298f","inv-accent-ink":"#ffffff","inv-action":"#b0298f","inv-action-ink":"#ffffff"},
+    "studio-grey": {"bg":"#a8a8aa","surface":"#b4b4b6","ink":"#0e0e0e","muted":"#3a3a3c","accent":"#1f5c49","accent-ink":"#ffffff","action":"#1f5c49","action-ink":"#ffffff","inv-bg":"#1b1b1c","inv-surface":"#232324","inv-ink":"#a8a8aa","inv-muted":"#8c8c8e","inv-accent":"#a8a8aa","inv-accent-ink":"#1b1b1c","inv-action":"#a8a8aa","inv-action-ink":"#1b1b1c"},
+    "walnut-tan": {"bg":"#2b2216","surface":"#382d1e","ink":"#e4e2da","muted":"#a39a8b","accent":"#bda38b","accent-ink":"#2b2216","action":"#bda38b","action-ink":"#2b2216","inv-bg":"#bda38b","inv-surface":"#af9781","inv-ink":"#111111","inv-muted":"#36312c","inv-accent":"#111111","inv-accent-ink":"#bda38b","inv-action":"#111111","inv-action-ink":"#bda38b"}
+  };
+  (() => {
+    const q = new URLSearchParams(location.search), root = document.documentElement;
+    const id = q.get('palette') || 'white-link-blue';
+    for (const [k, v] of Object.entries(PALETTES[id] || PALETTES['white-link-blue'])) root.style.setProperty('--p-' + k, v);
+    root.dataset.ground = q.get('ground') || 'sand';
+    if (q.get('radius')) root.dataset.radius = q.get('radius');
+    if (q.get('tone')) root.style.setProperty('--tone', '#' + q.get('tone'));          // e.g. ?tone=c8f2e6&toneink=0f2d27: a second brand tone
+    if (q.get('toneink')) root.style.setProperty('--tone-ink', '#' + q.get('toneink'));
+    root.dataset.palette = id;
+    addEventListener('DOMContentLoaded', () => {
+      if (q.get('bar') === '0') document.body.classList.add('no-bar');
+      if (q.get('labels') === '0') document.body.classList.add('no-labels');
+      const only = q.get('only');
+      if (only) { const list = only.split(','); const main = document.querySelector('main'); main.style.display = 'flex'; main.style.flexDirection = 'column'; document.querySelectorAll('[data-g]').forEach(el => { const i = list.indexOf(el.dataset.g); if (i < 0) el.hidden = true; else el.style.order = i; }); }
+      const bar = document.querySelector('.demo-bar');
+      if (bar) {
+        const sel = bar.querySelector('select[name=palette]');
+        Object.keys(PALETTES).forEach(k => sel.add(new Option(k, k, false, k === id)));
+        const gsel = bar.querySelector('select[name=ground]');
+        gsel.value = root.dataset.ground;
+        bar.addEventListener('change', () => { const u = new URL(location); u.searchParams.set('palette', sel.value); u.searchParams.set('ground', gsel.value); location = u; });
+      }
+    });
+  })();
+</script>
+<script src="backgrounds.js"></script>
+</head>
+<body class="bg-paper">
+<div class="demo-bar"><span>palette</span><select name="palette"></select><span>lit</span><select name="ground"><option>sand</option><option>sky</option><option>sage</option><option>painting</option></select></div>
+
+<main>
+<!-- 6 topglow: on a wrapper here (on <body> with bg-paper in a real page): the first screen, under the nav -->
+<div class="bg-topglow" data-g="topglow">
+  <span class="demo-tag">topglow</span>
+  <header class="nav">
+    <div class="container nav__bar">
+      <a class="nav__logo" href="#">Northgate</a>
+      <nav class="nav__links" aria-label="Main">
+        <div class="nav__item"><a class="nav__link" href="#">Product</a></div>
+        <div class="nav__item"><a class="nav__link" href="#">Solutions</a></div>
+        <div class="nav__item"><a class="nav__link" href="#">Pricing</a></div>
+        <div class="nav__item"><a class="nav__link" href="#">Docs</a></div>
+      </nav>
+      <div class="nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+    </div>
+  </header>
+  <section class="section section--hero" style="padding-bottom: 72px">
+    <div class="container">
+      <div class="section-head section-head--center" style="margin-bottom: 48px">
+        <span class="pill">New <span class="muted">Shift swaps are here</span></span>
+        <h1>Schedules your team can trust</h1>
+        <p>Build the weekly rota in minutes, let people swap shifts on their phone, and see who is on at any hour.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Book a demo</a></div>
+      </div>
+      <div class="mini" style="max-width: 980px; margin-inline: auto; padding: 20px">
+        <h4>Week 14 <span>Kitchen, 12 people</span></h4>
+        <div class="week">
+          <div class="h"></div><div class="h">Mon</div><div class="h">Tue</div><div class="h">Wed</div><div class="h">Thu</div><div class="h">Fri</div>
+          <div class="n">Ana</div><div class="c">07:00 – 15:00</div><div class="c">07:00 – 15:00</div><div></div><div class="c">11:00 – 19:00</div><div class="c">11:00 – 19:00</div>
+          <div class="n">Jonas</div><div></div><div class="c">15:00 – 23:00</div><div class="c">15:00 – 23:00</div><div class="c">15:00 – 23:00</div><div></div>
+          <div class="n">Mira</div><div class="c">11:00 – 19:00</div><div></div><div class="c">07:00 – 15:00</div><div></div><div class="c">07:00 – 15:00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 1 mist -->
+<section class="section bg-mist" data-g="mist">
+  <span class="demo-tag">mist</span>
+  <div class="container">
+    <div class="section-head"><h2>One place for the rota, the swaps and the hours</h2><p>Managers plan the week. Staff see their shifts, trade them and clock in. Payroll gets the numbers without anyone retyping them.</p></div>
+    <div class="grid">
+      <article class="card span-4"><h3>Plan the week</h3><p>Drag people into shifts. Northgate warns you about overtime and missing cover before you publish.</p>
+        <div class="mini" style="margin-top: 20px"><div class="rowline"><span class="av">A</span><div><b>Ana</b><small>Mon to Wed, 07:00</small></div><span class="tag on">Set</span></div><div class="rowline"><span class="av">J</span><div><b>Jonas</b><small>Tue to Thu, 15:00</small></div><span class="tag">Open</span></div></div></article>
+      <article class="card span-4"><h3>Swap in two taps</h3><p>Staff ask a colleague to take a shift. The manager only approves what breaks a rule.</p>
+        <div class="mini stack" style="margin-top: 20px"><div class="bubble">Can anyone take my Thursday close?</div><div class="bubble me">I can. Mira</div></div></article>
+      <article class="card span-4"><h3>Hours that add up</h3><p>Clock-in times roll into one sheet per person, ready for payroll at month end.</p>
+        <div class="mini" style="margin-top: 20px"><h4>March <span>Total</span></h4><div class="rowline"><span class="av">M</span><div><b>Mira</b></div><span>148 h</span></div><div class="rowline"><span class="av">A</span><div><b>Ana</b></div><span>162 h</span></div></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- 3 grain -->
+<section class="section bg-grain" data-g="grain">
+  <span class="demo-tag">grain</span>
+  <div class="container grid grid--middle">
+    <div class="span-5">
+      <div class="section-head" style="margin-bottom: 0"><span class="t-label muted">Rules</span><h2>Say the rules once, and the rota follows them</h2><p>Minimum rest, maximum hours, who may close alone. Northgate checks every change against them.</p>
+      <div class="btn-row"><a class="btn btn--primary" href="#">Set up rules</a><a class="link" href="#">Read the guide</a></div></div>
+    </div>
+    <div class="span-6 start-7">
+      <div class="mini" style="max-width: 440px; margin-left: auto"><h4>Rest rules <span>Kitchen</span></h4>
+        <div class="sw">Minimum 11 hours between shifts<i class="on"></i></div><div class="sw">No more than 5 days in a row<i class="on"></i></div><div class="sw">Two people to close<i></i></div><div class="sw">Warn about overtime<i class="on"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 halo -->
+<section class="section bg-halo" data-g="halo">
+  <span class="demo-tag">halo</span>
+  <div class="container">
+    <div class="section-head section-head--center" style="margin-bottom: 0">
+      <span class="t-label muted">Shift swaps</span>
+      <h2 style="max-width: 18ch">Cover a missed shift before the day starts</h2>
+      <p>When someone calls in sick, Northgate messages the people who can take the shift and fills it with the first yes.</p>
+      <div class="btn-row"><a class="btn btn--primary btn--arrow" href="#">See how swaps work</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 horizon -->
+<section class="section bg-horizon" data-g="horizon">
+  <span class="demo-tag">horizon</span>
+  <div class="container">
+    <div class="section-head section-head--center" style="margin-bottom: 0">
+      <span class="pill">Security</span>
+      <h2 style="max-width: 20ch">Staff data stays where it belongs</h2>
+      <p>Hosted in the EU, encrypted at rest, and every change to a rota is logged with who made it.</p>
+      <div class="btn-row"><a class="btn btn--primary" href="#">Read the security page</a><a class="btn btn--secondary" href="#">Contact sales</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 paper: the page ground is on <body> (class bg-paper) and sets no tokens; this wrapper only carries the label -->
+<div data-g="paper" style="position: relative">
+  <span class="demo-tag">paper (on body)</span>
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>From first rota to full payroll in a week</h2></div>
+      <ol class="grid steps">
+        <li class="span-4"><span class="step-num">1</span><h3 class="t-card">Add your people</h3><p>Paste a list or import it from your payroll tool. Roles and contracts come with it.</p></li>
+        <li class="span-4"><span class="step-num">2</span><h3 class="t-card">Build the first week</h3><p>Start from last month's pattern, change what is different, and publish.</p></li>
+        <li class="span-4"><span class="step-num">3</span><h3 class="t-card">Send hours to payroll</h3><p>Approved hours export as one file, in the format your payroll tool takes.</p></li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<!-- 5 dusk -->
+<section class="section bg-dusk" data-g="dusk">
+  <span class="demo-tag">dusk</span>
+  <div class="container grid grid--middle">
+    <figure class="quote span-7" style="margin: 0"><blockquote>"We used to lose a Sunday every month to the rota. Now it takes twenty minutes, and nobody argues about the hours."</blockquote>
+      <figcaption class="person" style="margin-top: 24px"><span class="avatar">LM</span><span>Lena Moser, operations lead at a restaurant group</span></figcaption></figure>
+    <div class="span-4 start-9 stat-aside"><div class="t-stat">64%</div><p class="muted t-small" style="margin-top: 8px">fewer scheduling messages after the first month, across 2,400 teams</p></div>
+  </div>
+</section>
+
+<!-- 7 ruled -->
+<section class="section bg-ruled" data-g="ruled">
+  <span class="demo-tag">ruled</span>
+  <div class="container grid grid--middle">
+    <div class="span-5"><div class="section-head" style="margin-bottom: 0"><span class="t-label muted">Hours</span><h2>One sheet per person, checked every night</h2><p>Clock-in times roll into a sheet for each person, and anything off the rules waits for a manager before payroll sees it.</p></div></div>
+    <div class="span-6 start-7"><div class="mini" style="max-width: 460px; margin-left: auto"><h4>Mira <span>March</span></h4><div class="rowline"><span class="av">W</span><div><b>Week 10</b><small>5 shifts, no flags</small></div><span>38 h</span></div><div class="rowline"><span class="av">W</span><div><b>Week 11</b><small>5 shifts, 1 flag</small></div><span>41 h</span></div><div class="rowline"><span class="av">W</span><div><b>Week 12</b><small>4 shifts, no flags</small></div><span>31 h</span></div></div></div>
+  </div>
+</section>
+
+<!-- 10 band -->
+<section class="section bg-band" data-g="band">
+  <span class="demo-tag">band</span>
+  <div class="container grid grid--middle">
+    <div class="span-6"><div class="big-stat">11 h</div><h2 style="margin-top: 20px; max-width: 16ch">saved on every rota, every month</h2><p class="t-lead" style="margin-top: 16px; max-width: 44ch">The average across the first hundred teams on Northgate. They plan once and let the rules do the checking.</p><div class="btn-row" style="margin-top: 28px"><a class="btn btn--primary btn--arrow" href="#">Read the study</a></div></div>
+    <div class="span-5 start-8"><div class="mini"><h4>This month <span>Saved</span></h4><div class="rowline"><span class="av">K</span><div><b>Kitchen</b><small>12 people</small></div><span>9 h</span></div><div class="rowline"><span class="av">B</span><div><b>Bar</b><small>7 people</small></div><span>6 h</span></div><div class="rowline"><span class="av">F</span><div><b>Front of house</b><small>14 people</small></div><span>14 h</span></div></div></div>
+  </div>
+</section>
+
+<!-- 8 dots -->
+<section class="section bg-dots" data-g="dots">
+  <span class="demo-tag">dots</span>
+  <div class="container">
+    <div class="section-head section-head--center"><h2>Used every day by teams of every size</h2><p>From a single kitchen to a hospital with forty wards.</p></div>
+    <div class="stats4 center" style="text-align: center">
+      <div><b>2,400</b><span class="muted t-small">teams</span></div><div><b>61,000</b><span class="muted t-small">people on a rota</span></div><div><b>1.9 M</b><span class="muted t-small">shifts a month</span></div><div><b>4.8</b><span class="muted t-small">average app rating</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 field -->
+<section class="section bg-field bg-inset" data-g="field">
+  <span class="demo-tag">field</span>
+  <div class="container">
+    <div class="section-head section-head--center"><h2>Built for the shift you actually run</h2><p>Split shifts, on-call days, a floating pool. Set each one up the way your team works.</p></div>
+    <div class="grid grid--middle" style="max-width: 920px; margin-inline: auto">
+      <div class="mini span-6"><h4>Shift pattern <span>Bar</span></h4><div class="sw">Split shift<i class="on"></i></div><div class="sw">On-call weekends<i></i></div><div class="sw">Floating pool<i class="on"></i></div></div>
+      <div class="mini span-6"><h4>This week <span>Bar</span></h4><div class="rowline"><span class="av">L</span><div><b>Leo</b><small>Split, 11:00 and 18:00</small></div><span class="tag on">On</span></div><div class="rowline"><span class="av">S</span><div><b>Sofia</b><small>On call, Sat</small></div><span class="tag">Off</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 stage: a vivid panel for a visual; every word on it sits on a card -->
+<section class="section" data-g="stage">
+  <span class="demo-tag">stage</span>
+  <div class="container grid grid--middle">
+    <div class="span-5"><div class="section-head" style="margin-bottom: 0"><span class="t-label muted">Time clock</span><h2>Clock in from the phone, at the door</h2><p>People clock in where they work. The time lands on the rota next to the shift they were planned for.</p><div class="btn-row"><a class="btn btn--primary" href="#">See the app</a><a class="link" href="#">Download</a></div></div></div>
+    <div class="span-6 start-7"><div class="bg-stage" style="min-height: 400px">
+      <div class="mini" style="--stage-w: 420px"><h4>Today <span>Kitchen</span></h4><div class="rowline"><span class="av">A</span><div><b>Ana</b><small>In at 06:58</small></div><span class="tag on">On</span></div><div class="rowline"><span class="av">J</span><div><b>Jonas</b><small>Starts 15:00</small></div><span class="tag">Later</span></div><div class="rowline"><span class="av">M</span><div><b>Mira</b><small>Day off</small></div><span class="tag">Off</span></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 10 band, tinted: the second tone is a pale tint of the accent -->
+<section class="section bg-band bg-tint" data-g="band-tint">
+  <span class="demo-tag">band + tint</span>
+  <div class="container grid grid--middle">
+    <div class="span-6"><div class="section-head" style="margin-bottom: 0"><span class="t-label muted">Payroll</span><h2>Hours go to payroll without a spreadsheet</h2><p>Approved hours export in the format your payroll tool takes: one file, checked against every contract.</p><div class="btn-row"><a class="btn btn--primary" href="#">See the export</a></div></div></div>
+    <div class="span-5 start-8"><div class="mini"><h4>March export <span>Ready</span></h4><div class="rowline"><span class="av">K</span><div><b>Kitchen</b><small>12 people, 1,480 h</small></div><span class="tag on">Sent</span></div><div class="rowline"><span class="av">B</span><div><b>Bar</b><small>7 people, 760 h</small></div><span class="tag">Check</span></div></div></div>
+  </div>
+</section>
+
+<!-- 12 photo -->
+<section class="section bg-photo bg-inset" data-g="photo" style="--g-photo-pos-m: 88% 40%">
+  <img class="bg-photo__img" src="https://picsum.photos/id/853/2000/1300" alt="A lone rock in a calm blue sea beneath a pastel sky" loading="lazy" decoding="async">
+  <span class="demo-tag">photo</span>
+  <div class="container">
+    <div style="max-width: 560px; display: grid; gap: 16px; justify-items: start">
+      <h2>Made by a small team on the coast</h2>
+      <p class="t-lead">Fourteen people in two offices write Northgate, answer every message themselves and take their own rota seriously.</p>
+      <div class="btn-row"><a class="btn btn--primary" href="#">Meet the team</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 liquid -->
+<section class="section bg-liquid" data-g="liquid">
+  <span class="demo-tag">liquid</span>
+  <div class="container">
+    <div class="section-head section-head--center" style="margin-bottom: 0">
+      <h2 style="max-width: 16ch">Try this week's rota for free</h2>
+      <p>No card, no setup call. Add your team and publish the first week today.</p>
+      <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Talk to us</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 deep -->
+<section class="section bg-deep" data-g="deep">
+  <span class="demo-tag">deep</span>
+  <div class="container">
+    <div class="section-head section-head--center"><h2>Ask the rota a question</h2><p>"Who can close on Friday?" Northgate answers from the rules and the calendar, and offers to fill the gap.</p></div>
+    <div class="grid" style="max-width: 920px; margin-inline: auto">
+      <div class="mini span-6 stack"><h4>Assistant <span>Today</span></h4><div class="bubble me">Who can close the bar on Friday?</div><div class="bubble">Leo and Sofia. Leo has 11 h rest, Sofia is on call. Want me to offer it to Leo?</div></div>
+      <div class="mini span-6"><h4>Friday <span>Bar</span></h4><div class="rowline"><span class="av">L</span><div><b>Leo</b><small>Rested, 11 h</small></div><span class="tag on">Offer</span></div><div class="rowline"><span class="av">S</span><div><b>Sofia</b><small>On call</small></div><span class="tag">Skip</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 arcs: the close -->
+<section class="section bg-arcs" data-g="arcs">
+  <span class="demo-tag">arcs</span>
+  <div class="container">
+    <div class="cta-type">
+      <h2>Plan the next week in ten minutes</h2>
+      <div class="btn-row"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">Book a demo</a></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="container"><p class="credits">Photograph: Stephen Radford, Unsplash License.</p></div></footer>
+</body>
+</html>

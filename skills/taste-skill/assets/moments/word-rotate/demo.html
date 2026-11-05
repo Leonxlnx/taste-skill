@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-radius="round" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word rotates · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #0a0d14; --p-surface: #131824; --p-ink: #e9edf3; --p-muted: #8891a1; --p-accent: #5ab9fc; --p-accent-ink: #0a0d14; --p-action: #e9edf3; --p-action-ink: #0a0d14;
+          --p-inv-bg: #e9edf3; --p-inv-surface: #ffffff; --p-inv-ink: #0a0d14; --p-inv-muted: #4b5563; --p-inv-accent: #1a4be0; --p-inv-accent-ink: #ffffff; --p-inv-action: #0a0d14; --p-inv-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+  .hero-centre { text-align: center; max-width: 880px; margin-inline: auto; display: grid; gap: var(--s-5); justify-items: center; }
+  .hero-centre p { max-width: 54ch; color: var(--ink); font-size: var(--t-lead); }
+  .hero-window { margin-top: var(--s-8); --ratio: 46%; }
+  @media (max-width: 639px) { .hero-window { --ratio: 100%; } }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Relay</a>
+  <nav class="demo-nav__links"><a href="#">Agents</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Download</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="hero-centre">
+        <span class="pill"><span class="muted">New</span> Relay 2 is out · Read the post</span>
+        <h1>One assistant for everything you <span data-moment="word-rotate" data-moment-opts='{"words": ["build", "write", "search", "ship"], "every": 2200}'>build</span></h1>
+        <p>Relay reads your files, your mail and your code, and does the work you give it: drafts, answers, tickets, pull requests.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Download for Mac</a><a class="btn btn--secondary" href="#">Contact sales</a></div>
+      </div>
+      <div class="frame frame--hero demo-lit hero-window">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Inbox</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span class="on">Inbox</span><span>Drafts</span><span>Code</span><span>Files</span></div>
+            <div class="dw__main">
+              <h4>Today</h4>
+              <div class="dw__row"><div><b>Reply to Hana about the launch date</b><span>Drafted from the thread · 2 min ago</span></div><span class="dw__tag">Ready</span></div>
+              <div class="dw__row"><div><b>Fix the failing build on main</b><span>Pull request #412 opened</span></div><span class="dw__tag">In review</span></div>
+              <div class="dw__row"><div><b>Summarise the Q3 numbers for the board</b><span>Reading reports.xlsx</span></div><span class="dw__tag">Working</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split">
+      <div class="section-head"><h2>It works where you work. <span class="muted">Mail, files, code.</span></h2><p>Relay signs in to the tools you already use and keeps the context across them, so a question about a file can end in a sent reply.</p><a class="link" href="#">See the integrations</a></div>
+      <img class="demo-photo" src="../_demo/photo-1081.jpg" alt="A glass building against the sky" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Relay · demo page for the moment “Word rotates”</span><span>Photograph by Julien Moreau on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

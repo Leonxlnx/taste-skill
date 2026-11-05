@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-kind="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Effects library</title>
+<meta name="description" content="Effects drawn in code for company websites: 25 grounds, eight feature-card layouts, effects inside the page and real things printed in code.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<!--
+  The gallery of the taste-skill effects kit (scripts/fx-gallery.template.html). It is built on the kit
+  itself: system.css for the page, ui/cards.css for every card, the layouts of ui/cards.html, the
+  components and the objects. Its asset root is "../" (assets/effects/gallery.html); the publish
+  command of scripts/effects.mjs moves it to "./" and copies every file it loads beside it.
+
+  Light on a laptop GPU: every still ground is drawn once and kept as a picture (ui.grounds); the hero,
+  one effect tile (the one pointed at), the components and the objects near the screen are the only
+  live WebGL contexts, and the page keeps them at 4 or fewer (window.__gal.gl() counts them).
+-->
+<!--assets-->
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/base.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../components/base.css">
+<!--/assets-->
+<style>
+  /* ---------------------------------------------------------------- the three page palettes */
+  :root {
+    --font-display: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-text: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+    --display-weight: 500;
+    --display-tracking: -0.035em;
+    --container: 1232px;
+  }
+  html[data-kind="light"] {
+    --p-bg: #f3f3f1; --p-surface: #ffffff; --p-ink: #0f0f0e; --p-muted: #686863; --p-accent: #e5531c; --p-accent-ink: #ffffff;
+    --p-action: #0f0f0e; --p-action-ink: #ffffff; --chip: #e9e8e4; --sheet: #ffffff;
+    color-scheme: light;
+  }
+  html[data-kind="dark"] {
+    --p-bg: #070708; --p-surface: #151517; --p-ink: #f2f2ef; --p-muted: #8f9094; --p-accent: #ff7a3c; --p-accent-ink: #120c08;
+    --p-action: #f2f2ef; --p-action-ink: #070708; --chip: #18181a; --sheet: #111113;
+    color-scheme: dark;
+  }
+  html[data-kind="colour"] {
+    --p-bg: #0034eb; --p-surface: #1446ec; --p-ink: #ffffff; --p-muted: #d2dafa; --p-accent: #e9e34a; --p-accent-ink: #111111;
+    --p-action: #ffffff; --p-action-ink: #0034eb; --chip: #0f3be4; --sheet: #0b36e0;
+    color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--ink); }
+  ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+  :focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+  .container { --pad: 24px; }
+  @media (min-width: 1024px) { .container { --pad: 40px; } }
+  @media (max-width: 639px) { .container { --pad: 16px; } }
+
+  /* ---------------------------------------------------------------- controls */
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--chip); box-shadow: inset 0 0 0 1px var(--line); }
+  .seg button { height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font: 500 13px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .seg button:hover { color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / .12); }
+  .textbtn { border: 0; background: none; padding: 4px 0; font: 500 14px/20px var(--font-text); color: var(--muted); cursor: pointer;
+    text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
+  .textbtn:hover { color: var(--ink); text-decoration-color: currentColor; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips button, .chips a { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 0;
+    background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); font: 500 13px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .chips button:hover, .chips a:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .chips span { font-variant-numeric: tabular-nums; opacity: .7; font-weight: 400; }
+  .chips [aria-pressed="true"] { background: var(--ink); color: var(--bg); box-shadow: none; }
+
+  /* ---------------------------------------------------------------- nav (system.css .nav, menus filled from the data) */
+  .nav { --nav-h: 60px; }
+  .nav__bar { gap: 20px; }
+  .nav__logo { font: 600 15px/1 var(--font-text); letter-spacing: -0.01em; gap: 10px; }
+  .nav__logo svg { width: 20px; height: 20px; }
+  .nav__links { gap: 2px; }
+  .nav__link { font-size: 14px; }
+  .nav__menu { background: var(--sheet); }
+  .menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 40px; }
+  .menu-col > .t-label { margin-bottom: 4px; }
+  .menu-col a { padding: 5px 0; font-size: 14px; }
+  .menu-col a span { font-size: 13px; }
+  .menu-col a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong); }
+  .nav__actions .btn { height: 36px; padding: 0 14px; font-size: 14px; }
+  @media (max-width: 1023px) {
+    .nav__bar .seg-phone { display: inline-flex; margin-left: auto; }
+    .nav__toggle { margin-left: 0; }
+    .nav.is-open .nav__actions .seg { width: 100%; }
+    .nav.is-open .nav__actions .seg button { flex: 1; }
+  }
+  .seg-phone { display: none; }
+  @media (max-width: 639px) { .seg-phone button { padding: 0 9px; } .nav__logo .long { display: none; } }
+
+  /* ---------------------------------------------------------------- hero: the dealt hero ground, live */
+  .hero { padding: 88px 0 0; text-align: center; }
+  .hero__pill { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px 0 12px; border-radius: 999px;
+    background: var(--card); box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; color: var(--ink); }
+  .hero__pill b { font-weight: 500; }
+  .hero__pill .muted { color: var(--muted); }
+  .hero__pill svg { width: 12px; height: 12px; color: var(--muted); }
+  .hero h1 { margin: 24px auto 0; max-width: 18ch; font-size: clamp(42px, 3.6vw + 18px, 76px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
+  .hero__sub { margin: 22px auto 0; max-width: 58ch; color: var(--muted); font-size: 18px; line-height: 1.55; text-wrap: pretty; }
+  .hero .btn-row { justify-content: center; margin-top: 32px; }
+  .hero__frame { position: relative; isolation: isolate; overflow: clip; margin-top: 64px; aspect-ratio: 16 / 7; border-radius: 20px; background: var(--card); }
+  .hero__frame::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .hero__cap { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap; margin-top: 14px; font-size: 14px; line-height: 20px; color: var(--muted); text-align: left; }
+  .hero__cap b { color: var(--ink); font-weight: 500; }
+  .hero__cap .acts { display: flex; gap: 20px; }
+
+  /* the dock: the hero effect's own settings, live (Figma's Texture card), anchored top-right in the frame */
+  html[data-kind="light"] { --dock-bg: #ffffff; --dock-ink: #0f0f0e; --dock-muted: #6b6b66; --dock-line: rgb(15 15 14 / .1); --dock-track: rgb(15 15 14 / .12); }
+  html[data-kind="dark"] { --dock-bg: #1a1b1e; --dock-ink: #f2f2ef; --dock-muted: #8f9094; --dock-line: rgb(255 255 255 / .1); --dock-track: rgb(255 255 255 / .14); }
+  html[data-kind="colour"] { --dock-bg: #ffffff; --dock-ink: #0f0f0e; --dock-muted: #5b5f6e; --dock-line: rgb(0 20 120 / .12); --dock-track: rgb(0 20 120 / .14); }
+  .dock { position: absolute; z-index: 5; top: 28px; right: 28px; width: 300px; max-height: calc(100% - 56px); overflow: auto; scrollbar-width: none; padding: 16px 16px 4px; border-radius: 14px;
+    background: var(--dock-bg); color: var(--dock-ink); text-align: left; font-size: 13px; line-height: 18px;
+    box-shadow: 0 0 0 1px var(--dock-line), 0 1px 2px rgb(0 0 0 / .06), 0 16px 40px -16px rgb(0 0 0 / .32); }
+  .dock__head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; }
+  .dock__head div { display: grid; flex: 1; min-width: 0; }
+  .dock__head b { font-weight: 500; font-size: 14px; }
+  .dock__head span { color: var(--dock-muted); font-size: 12px; }
+  .dock__btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--dock-ink);
+    box-shadow: inset 0 0 0 1px var(--dock-line); font: 500 12px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .dock__btn:hover { box-shadow: inset 0 0 0 1px var(--dock-muted); }
+  .dock__btn svg { width: 12px; height: 12px; }
+  .dock__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--dock-line); }
+  .dock__row label { color: var(--dock-muted); font-size: 12px; }
+  .dock__row output { font: 500 12px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .dock__row input { grid-column: 1 / -1; }
+  .dock input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 18px; margin: 0; background: transparent; cursor: pointer; }
+  .dock input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(var(--dock-ink), var(--dock-ink)) 0 0 / var(--v, 50%) 100% no-repeat, var(--dock-track); }
+  .dock input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; background: var(--dock-bg); box-shadow: 0 0 0 1px var(--dock-muted), 0 1px 3px rgb(0 0 0 / .25); }
+  .dock input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--dock-track); }
+  .dock input[type="range"]::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--dock-ink); }
+  .dock input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--dock-bg); box-shadow: 0 0 0 1px var(--dock-muted), 0 1px 3px rgb(0 0 0 / .25); }
+  .dock input[type="range"]:focus-visible { outline: 2px solid var(--dock-ink); outline-offset: 2px; border-radius: 4px; }
+  .dock__pal { display: flex; align-items: center; gap: 6px; }
+  .dock__pal i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--dock-line); }
+  .dock__code { display: flex; align-items: center; gap: 12px; margin: 0 -16px; padding: 10px 16px 12px; border-top: 1px solid var(--dock-line); }
+  .dock__code code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dock-muted); font: 12px/18px var(--font-mono); }
+  .dock__code .textbtn { color: var(--dock-ink); font-size: 12px; padding: 0; }
+  @media (min-width: 900px) { .hero__cap { display: none; } }
+  @media (max-width: 899px) { .dock { display: none; } }
+
+  /* ---------------------------------------------------------------- section heads (Figma: ink, then the grey sentence) */
+  .sec-intro { display: flex; justify-content: space-between; align-items: end; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 40px; }
+  .sec-intro h2 { max-width: 22ch; font-size: clamp(32px, 1.8vw + 18px, 48px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 500; text-wrap: balance; }
+  .sec-intro h2 span { color: var(--muted); }
+  .sec-intro p { margin-top: 16px; max-width: 58ch; color: var(--muted); font-size: 17px; line-height: 1.55; }
+  .block { padding: 136px 0 0; }
+  .sub-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap; margin: 72px 0 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .sub-head h3 { font: 500 20px/1.3 var(--font-text); letter-spacing: -0.015em; }
+  .sub-head p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+
+  /* ---------------------------------------------------------------- 1. effects: one tile per effect */
+  .fx-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  .fx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 24px; }
+  @media (min-width: 1200px) { .fx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 52px 20px; } }
+  .fx-tile { min-width: 0; display: flex; flex-direction: column; scroll-margin-top: 96px; }
+  .fx-tile[hidden] { display: none; }
+  .fx-stage { position: relative; isolation: isolate; overflow: clip; aspect-ratio: 16 / 10; border-radius: 16px; background: var(--card); cursor: default; }
+  .fx-stage::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .fx-stage img[data-fx-photo] { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fx-play { position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: var(--bg); color: var(--ink); cursor: pointer;
+    box-shadow: 0 1px 2px rgb(0 0 0 / .12), 0 4px 12px -4px rgb(0 0 0 / .28); }
+  .fx-play::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
+  .fx-play svg { width: 12px; height: 12px; fill: currentColor; }
+  .fx-play .i-pause, .is-playing .fx-play .i-play { display: none; }
+  .is-playing .fx-play .i-pause { display: block; }
+  .fx-badge[hidden] { display: none; }
+  .fx-badge { position: absolute; left: 12px; top: 12px; z-index: 5; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px;
+    background: color-mix(in oklab, var(--bg) 88%, transparent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font-size: 12px; }
+  .fx-info { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 18px 2px 0; }
+  .fx-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .fx-top h3 { font: 560 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .fx-fam { flex: none; font-size: 14px; color: var(--muted); }
+  .fx-look { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 62ch; text-wrap: pretty; }
+  /* what it is for, then its two actions, level across a row of tiles */
+  .fx-foot { display: grid; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .fx-for { font-size: 14px; line-height: 20px; color: var(--ink); }
+  .fx-acts { display: flex; gap: 18px; }
+  .fx-empty { color: var(--muted); padding: 48px 0; }
+
+  /* ---------------------------------------------------------------- 2. cards: the layouts of ui/cards.html, on their own theme */
+  .cards-band { margin-top: 136px; padding: 112px 0 128px; background: var(--bg); color: var(--ink); }
+  .cards-band[data-theme="light"] {
+    --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; --surface: #ffffff;
+    --action: #0f0f0e; --action-ink: #ffffff; --chip: #e9e8e4; color-scheme: light;
+  }
+  .cards-band[data-theme="dark"] {
+    --bg: #070708; --card: #151517; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; --surface: #151517;
+    --action: #f2f2ef; --action-ink: #070708; --chip: #18181a; color-scheme: dark;
+  }
+  .cards-band {
+    --line: color-mix(in oklab, var(--ink) 11%, transparent); --line-strong: color-mix(in oklab, var(--ink) 20%, transparent);
+    --fx-bg: var(--bg); --fx-surface: var(--surface); --fx-ink: var(--ink); --fx-muted: var(--muted); --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
+  }
+  html[data-kind="light"] .cards-band[data-theme="light"], html[data-kind="dark"] .cards-band[data-theme="dark"] { margin-top: 24px; }
+  .cards-band .sec-intro { margin-bottom: 28px; }
+  .layout-nav { margin-bottom: 8px; }
+  .cardlib .sec { padding-top: 88px; scroll-margin-top: 72px; }
+  .cardlib .sec:first-child { padding-top: 48px; }
+  .cardlib .sec__head { margin-bottom: 28px; align-items: end; }
+  .cardlib .sec__head h2 { font-size: clamp(24px, 0.8vw + 17px, 30px); line-height: 1.15; letter-spacing: -0.025em; max-width: 30ch; }
+  .cardlib .sec__meta { display: grid; justify-items: end; gap: 4px; flex: none; text-align: right; }
+  .cardlib .sec__meta .sec__tag { padding: 0; }
+  .sec__ground { font-size: 13px; line-height: 18px; color: var(--muted); }
+  .sec__ground b { color: var(--ink); font-weight: 500; }
+  .cardlib-load { padding: 64px 0; color: var(--muted); }
+  @media (max-width: 760px) { .cardlib .sec__head { flex-direction: column; align-items: flex-start; gap: 10px; } .cardlib .sec__meta { justify-items: start; text-align: left; } .cardlib .sec__meta .sec__tag { display: block; } }
+
+  /* ---------------------------------------------------------------- 3. creative uses: the components */
+  .uses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 104px 24px; }
+  /* each part spans two rows of the list (its words, its stage), so two halves side by side start their stages level */
+  .use { grid-column: 1 / -1; grid-row: span 2; min-width: 0; display: grid; grid-template-rows: subgrid; row-gap: 28px; scroll-margin-top: 88px; }
+  .use.is-half { grid-column: auto; }
+  .use__meta { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 4px 12px; align-items: baseline; align-content: start; max-width: 760px; }
+  .use__no { font: 500 12px/1 var(--font-mono); color: var(--muted); }
+  .use__meta h3 { font: 500 20px/1.3 var(--font-text); letter-spacing: -0.015em; }
+  .use__meta p { grid-column: 2; color: var(--muted); font-size: 15px; line-height: 1.55; max-width: 64ch; }
+  .use__pick { grid-column: 2; margin-top: 10px; }
+  .use__stage { position: relative; min-width: 0; }
+  /* a small control on a lit, focal ground (Figma's Texture tile), never on an even one */
+  .use__box { position: relative; isolation: isolate; overflow: clip; display: grid; place-items: center; min-height: 400px; padding: 56px 32px; border-radius: 20px; background: var(--card); }
+  .use__box::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .use__ground { position: absolute; inset: 0; z-index: 0; border-radius: inherit; }
+  .use__box > .use__stage { z-index: 1; width: 100%; display: grid; justify-items: center; }
+  #use-fx-dither-object .use__stage { display: grid; justify-items: center; }
+  #use-fx-dither-object .cx-obj { width: min(100%, 760px); }
+
+  /* ---------------------------------------------------------------- 4. real things: objects, photographs, scenes */
+  .things { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .things > .card { min-width: 0; }
+  .things > .card.is-wide { grid-column: span 2; }
+  .things .panel--top { aspect-ratio: auto; height: 340px; min-height: 0; }
+  .things .card > p { min-height: 2lh; }
+  /* system.css caps every canvas at 100% of its box; a printed object sizes its canvas past the box on purpose */
+  .print3d > canvas { max-width: none; }
+  .photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .shot { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 14px; margin: 0; min-width: 0; }
+  .shot__frame { position: relative; isolation: isolate; overflow: clip; border-radius: 16px; background: var(--card); aspect-ratio: 4 / 5; }
+  /* before its print is drawn (or while it waits for a free context) a photograph shows greyed into the page */
+  .photos .shot__frame > img { filter: grayscale(1) contrast(1.06); opacity: .92; mix-blend-mode: multiply; }
+  html:not([data-kind="light"]) .photos .shot__frame > img { opacity: .85; mix-blend-mode: screen; }
+  /* scenes: x.ai's tab list at the left, one stage at the right (one WebGL context, whichever scene is picked) */
+  .scene-tabs { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 24px 48px; align-items: start; }
+  .scene-list { display: grid; border-top: 1px solid var(--line); }
+  .scene-tab { display: grid; gap: 8px; padding: 20px 0; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--muted); text-align: left; font: inherit; cursor: pointer; }
+  .scene-tab b { font: 500 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .scene-tab span { display: none; font-size: 15px; line-height: 1.5; text-wrap: pretty; }
+  .scene-tab small { display: none; font-size: 12px; line-height: 1.5; }
+  .scene-tab small a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  .scene-tab:hover b, .scene-tab[aria-selected="true"] b { color: var(--ink); }
+  .scene-tab[aria-selected="true"] span, .scene-tab[aria-selected="true"] small { display: block; }
+  .scene-frame { aspect-ratio: 3 / 2; }
+  .shot__frame::after { content: ""; position: absolute; inset: 0; z-index: 7; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .shot__frame > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shot figcaption { display: grid; gap: 4px; padding: 0 2px; }
+  .shot figcaption b { font: 560 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .shot figcaption span { color: var(--muted); font-size: 15px; line-height: 1.5; text-wrap: pretty; }
+  .shot figcaption small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .shot figcaption small a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+
+  /* ---------------------------------------------------------------- footer and toast */
+  .foot { margin-top: 136px; padding: 64px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .foot__top { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px 48px; }
+  .foot__brand .nav__logo { color: var(--ink); }
+  .foot__brand p { margin-top: 14px; max-width: 34ch; }
+  .foot__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; }
+  .foot__cols .t-label { margin-bottom: 10px; color: var(--ink); }
+  .foot__cols a { display: block; padding: 4px 0; color: var(--muted); font-size: 14px; line-height: 20px; }
+  .foot__cols a:hover { color: var(--ink); }
+  .foot__mark { margin-top: 88px; color: var(--ink); font: 500 clamp(56px, 10.5vw, 164px)/0.9 var(--font-display); letter-spacing: -0.055em; white-space: nowrap; overflow: hidden; }
+  .foot__base { display: flex; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; }
+  .foot__base a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
+  @media (max-width: 1023px) { .foot__top { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 639px) { .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot__mark { margin-top: 56px; } }
+  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 80; max-width: calc(100vw - 32px); padding: 12px 16px; border-radius: 12px;
+    background: var(--ink); color: var(--bg); font-size: 14px; line-height: 20px; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------------------------------------------------------------- tablet and phone */
+  @media (max-width: 1199px) {
+    .things { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 1023px) {
+    .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .uses { grid-template-columns: minmax(0, 1fr); gap: 88px; }
+    .use.is-half { grid-column: 1 / -1; }
+    .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .photos > :last-child { grid-column: 1 / -1; }
+    .photos > :last-child .shot__frame { aspect-ratio: 3 / 2; }
+  }
+  @media (max-width: 899px) {
+    .fx-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+    .scene-tabs { grid-template-columns: minmax(0, 1fr); }
+    .scene-view { order: -1; }
+  }
+  @media (max-width: 639px) {
+    .hero { padding-top: 48px; }
+    .hero h1 { font-size: 40px; letter-spacing: -0.04em; }
+    .hero__sub { font-size: 16px; }
+    .hero__frame { aspect-ratio: 4 / 5; margin-top: 40px; border-radius: 16px; }
+    .block { padding-top: 96px; }
+    .cards-band { margin-top: 96px; padding: 80px 0 96px; }
+    .sec-intro { margin-bottom: 28px; }
+    .sec-intro h2 { font-size: 32px; }
+    .fx-stage { border-radius: 14px; }
+    .things { grid-template-columns: minmax(0, 1fr); }
+    .things > .card.is-wide { grid-column: auto; }
+    .things .panel--top { height: 320px; }
+    .things .card > p { min-height: 0; }
+    .photos { grid-template-columns: minmax(0, 1fr); }
+    .photos > :last-child .shot__frame { aspect-ratio: 4 / 5; }
+    .use__meta { grid-template-columns: minmax(0, 1fr); }
+    .use__no { display: none; }
+    .use__meta p, .use__pick { grid-column: 1; }
+    .use__box { min-height: 320px; padding: 40px 16px; border-radius: 16px; }
+    .scene-frame { aspect-ratio: 4 / 3; }
+    .foot { margin-top: 96px; padding-top: 48px; }
+  }
+</style>
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="container nav__bar">
+    <a class="nav__logo" href="#top" aria-label="Effects library, back to the top">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".55"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".3"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".8"/></svg>
+      <span>Effects<span class="long"> library</span></span>
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <div class="nav__item"><a class="nav__link" href="#effects">Effects <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="effects"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#cards">Cards <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="cards"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#uses">Creative uses <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="uses"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#real">Real things <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="real"></div></div></div></div>
+    </nav>
+    <div class="nav__actions">
+      <div class="seg" role="group" aria-label="Page palette" data-kinds>
+        <button type="button" data-kind="light">Light</button><button type="button" data-kind="dark">Dark</button><button type="button" data-kind="colour">Colour</button>
+      </div>
+      <button type="button" class="btn btn--primary" data-deal>Random pick</button>
+    </div>
+    <div class="seg seg-phone" role="group" aria-label="Page palette" data-kinds>
+      <button type="button" data-kind="light">Light</button><button type="button" data-kind="dark">Dark</button><button type="button" data-kind="colour">Colour</button>
+    </div>
+    <button type="button" class="nav__toggle" aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- hero ---------------------------------------------------------------------------------- -->
+  <section class="hero">
+    <div class="container">
+      <a class="hero__pill" href="#real"><b>New</b><span class="muted">Real things, printed in code</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6h7M6.5 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <h1>Effects drawn in code for company websites</h1>
+      <p class="hero__sub" id="hero-sub">25 grounds drawn in your page colours, eight feature-card layouts, effects inside type, borders and maps, and real objects printed in dither and halftone.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" data-deal>Random pick</button>
+        <a class="btn btn--secondary" href="#effects" id="see-all">See all 25 effects</a>
+      </div>
+      <div class="hero__frame" id="hero-frame">
+        <aside class="dock" id="dock" aria-label="Settings of the hero effect">
+          <div class="dock__head"><div><b id="dock-name">Hero effect</b><span id="dock-meta"></span></div>
+            <button type="button" class="dock__btn" id="dock-seed"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M10 6a4 4 0 1 1-1.2-2.85M10 1.8v2.4H7.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>New seed</button></div>
+          <div id="dock-rows"></div>
+          <div class="dock__row"><label>Palette</label><span class="dock__pal" id="dock-pal"></span></div>
+          <div class="dock__code"><code id="dock-code"></code><button type="button" class="textbtn" id="dock-copy">Copy</button></div>
+        </aside>
+      </div>
+      <div class="hero__cap"><span id="hero-cap">Dealing a hero ground</span><span class="acts"><button type="button" class="textbtn" id="hero-seed">New seed</button><a class="textbtn" id="hero-tile" href="#effects">See its tile</a></span></div>
+    </div>
+  </section>
+
+  <!-- 1. effects ------------------------------------------------------------------------------ -->
+  <section class="block" id="effects">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2 id="fx-title">25 effects. <span>Each drawn live in the page palette.</span></h2>
+          <p>Point at a tile or press its play button to see it move. New seed draws another picture of the same effect. Random pick deals the hero and the card grounds again.</p>
+        </div>
+      </div>
+      <div class="fx-bar">
+        <div class="chips" id="families" role="group" aria-label="Family"></div>
+        <button type="button" class="btn btn--secondary btn--sm" data-deal>Random pick</button>
+      </div>
+      <div class="fx-grid" id="fx-grid"></div>
+    </div>
+  </section>
+
+  <!-- 2. cards: ui/cards.html, its layouts on their own theme ------------------------------------- -->
+  <section class="cards-band" id="cards" data-theme="light">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>8 card layouts. <span>Product UI on a lit ground, cut by the panel's edge.</span></h2>
+          <p>A sample support product, Relay, in every layout. The grounds are dealt from the quiet effects, a different one per group.</p>
+        </div>
+        <div class="seg" role="group" aria-label="Card theme" id="card-theme">
+          <button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+        </div>
+      </div>
+      <div class="chips layout-nav" id="layout-nav" aria-label="Layouts"></div>
+      <div class="cardlib" id="cardlib" data-theme="light"><p class="cardlib-load">Loading the card layouts</p></div>
+    </div>
+  </section>
+
+  <!-- 3. creative uses: the components ------------------------------------------------------------ -->
+  <section class="block" id="uses">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>Effects inside the page. <span>In cards, type, borders, maps and objects.</span></h2>
+          <p>Each part is a folder in the kit with its markup, styles and script. Parts that loop have a pause button.</p>
+        </div>
+      </div>
+      <div class="uses" id="uses-list"></div>
+    </div>
+  </section>
+
+  <!-- 4. real things: objects, photographs, scenes ----------------------------------------------- -->
+  <section class="block" id="real">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>Real things, printed in code. <span>For a product with no photographs yet.</span></h2>
+          <p>Point at an object and it leans toward you. Click it and it does one thing: the lamp switches on, the book opens.</p>
+        </div>
+      </div>
+      <div class="sub-head" id="real-objects"><h3>Objects modelled in 3D</h3><p id="objects-note">Printed in dither, halftone or engraving on a lit ground.</p></div>
+      <div class="things" id="things"></div>
+      <div class="sub-head" id="real-photos"><h3>Photographs printed in the palette</h3><p>Point at one: a loupe, parting lines or the photograph itself shows through.</p></div>
+      <div class="photos" id="photos"></div>
+      <div class="sub-head" id="real-scenes"><h3>Scenes</h3><p>A photograph or a model taken apart, set in dots or put on a turntable.</p></div>
+      <div class="scene-tabs" id="scenes">
+        <div class="scene-list" role="tablist" aria-label="Scenes" id="scene-list"></div>
+        <div class="scene-view"><div class="shot__frame scene-frame" id="scene-frame" role="tabpanel"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="foot__top">
+      <div class="foot__brand">
+        <a class="nav__logo" href="#top" aria-label="Effects library, back to the top">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".55"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".3"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".8"/></svg>
+          <span>Effects library</span>
+        </a>
+        <p>Part of the taste-skill kit. Still grounds are drawn once and kept as pictures; only what you point at, or what moves in view, uses the graphics chip.</p>
+      </div>
+      <nav class="foot__cols" id="foot-cols" aria-label="Footer"></nav>
+    </div>
+    <p class="foot__mark" aria-hidden="true">Effects library</p>
+    <div class="foot__base">
+      <p id="credits">App icons: <a href="https://simpleicons.org/">Simple Icons</a> 16.30.0. Relay, Northwind and the quotes are samples.</p>
+      <p><a id="lab-link" href="lab.html">Every parameter, on a workbench</a></p>
+    </div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="paths" type="application/json">{"root": "../"}</script>
+<script type="module">
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const ROOT = JSON.parse($('#paths').textContent).root;
+  const A = p => new URL(ROOT + p, location.href).href;
+  const q = new URLSearchParams(location.search);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const frame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+  /* ---------------------------------------------------------------- WebGL count (window.__gal.gl()) */
+  // a context counts while it is not lost and its canvas is in the page (a canvas a part dropped
+  // without losing its context draws nothing and is collected)
+  const glSet = new Set();
+  let glPeak = 0;
+  const liveGL = () => { let n = 0; for (const c of glSet) { if (c.isContextLost()) glSet.delete(c); else if (c.canvas.isConnected) n++; } return n; };
+  const getContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+    const c = getContext.call(this, type, ...rest);
+    if (c && /webgl/i.test(type) && !glSet.has(c)) { glSet.add(c); glPeak = Math.max(glPeak, liveGL() + (this.isConnected ? 0 : 1)); }
+    return c;
+  };
+  // the page's budget: a part that needs WebGL of its own starts only while fewer than BUDGET are live
+  // (the hero, the tile pointed at, a ground being drawn, the components and objects in view)
+  const BUDGET = 4;
+  const roomQueue = [];
+  let reserved = 0, roomTimer = 0;
+  function whenRoom(want, go) {
+    const run = () => { reserved++; setTimeout(() => { reserved--; }, 1500); go(); };
+    if (liveGL() + reserved < BUDGET) { run(); return; }
+    roomQueue.push({ want, run });
+    if (!roomTimer) roomTimer = setInterval(() => {
+      for (let i = 0; i < roomQueue.length; i++) {
+        const w = roomQueue[i];
+        if (!w.want()) { roomQueue.splice(i--, 1); continue; }
+        if (liveGL() + reserved < BUDGET) { roomQueue.splice(i--, 1); w.run(); }
+      }
+      if (!roomQueue.length) { clearInterval(roomTimer); roomTimer = 0; }
+    }, 300);
+  }
+
+  const [{ default: fx }, { pick }, { default: ui }] = await Promise.all([
+    import(A('effects/fx.js')), import(A('effects/pick.js')), import(A('ui/ui.js')),
+  ]);
+  if (q.has('time')) fx.setClock(+q.get('time'));
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  fx.config.maxLive = 3;
+  fx.config.maxDpr = 1;
+  $('#lab-link').href = A('effects/lab.html');
+
+  /* ---------------------------------------------------------------- palettes */
+  // the effects' palette for each kind of page (the page's own tokens are in the CSS above)
+  const FXP = {
+    // a surface a clear step under the paper, so a light effect has a second tone to draw with
+    light: { bg: '#f3f3f1', surface: '#dad7cf', ink: '#0f0f0e', muted: '#686863', accent: '#e5531c', accentInk: '#ffffff' },
+    dark: { bg: '#070708', surface: '#151517', ink: '#f2f2ef', muted: '#8f9094', accent: '#ff7a3c', accentInk: '#120c08' },
+    // on cobalt the effects draw in a deep navy, a sky blue and white, so a ground has depth, not one flat blue
+    // (the page's yellow stays for its buttons: most effects drop an accent that far round the wheel)
+    colour: { bg: '#0034eb', surface: '#001c96', ink: '#ffffff', muted: '#dfe4f2', accent: '#5cc6ff', accentInk: '#00135c' },
+  };
+  const KIND_WORDS = { light: 'light', dark: 'dark', colour: 'colour' };
+  // lit grounds behind UI (references/cards.md), the same on both card themes
+  const LIT = {
+    sky: { bg: '#c6d3df', surface: '#d6e0e9', ink: '#25303a', muted: '#5d6873', accent: '#3f6a92' },
+    sand: { bg: '#d9ccb7', surface: '#e9e0d2', ink: '#2a2622', muted: '#6f675c', accent: '#a8794a' },
+    sage: { bg: '#cdd6c6', surface: '#dce3d6', ink: '#262d24', muted: '#5f6a5a', accent: '#6c8e63' },
+    painting: { bg: '#79a8d6', accent: '#9c9b3c' },
+  };
+  let kind = ['light', 'dark', 'colour'].includes(q.get('palette')) ? q.get('palette')
+    : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const kindFor = meta => (meta.palettes.includes(kind) ? kind : meta.palettes.includes('dark') ? 'dark' : meta.palettes[0]);
+
+  const FAMILIES = { grain: 'Grain', dither: 'Dither', mesh: 'Mesh', light: 'Light', pattern: 'Pattern', material: 'Material', photo: 'Photo' };
+  const famName = f => FAMILIES[f] || f[0].toUpperCase() + f.slice(1);
+  const SLOT_WORDS = { hero: 'hero frames', card: 'cards', band: 'bands', footer: 'footers' };
+  const andList = a => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+  const upper = s => s[0].toUpperCase() + s.slice(1);
+
+  function toast(msg, ms = 2400) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('on');
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => el.classList.remove('on'), ms);
+  }
+  function syncUrl() {
+    try {
+      const u = new URL(location.href);
+      u.searchParams.set('palette', kind);
+      if (dealSeed) u.searchParams.set('deal', dealSeed);
+      u.searchParams.set('cards', cardTheme);
+      history.replaceState(null, '', u);
+    } catch { /* a sandboxed frame may refuse; the page works without it */ }
+  }
+
+  /* ---------------------------------------------------------------- a still picture of a live canvas */
+  // the same picture ui.grounds keeps: a 2D copy of the last frame under everything in the box, its
+  // WebGL context freed. Returns a stub controller ui.grounds can replace later.
+  function keepFrame(el, api) {
+    const src = el.querySelector(':scope > canvas.fx-canvas:not(.is-baked)');
+    let out = null;
+    if (src && src.width && src.style.opacity !== '0') {
+      try { api.set && api.set({}); } catch { /* no set: the copy below still holds the last frame */ }
+      out = document.createElement('canvas');
+      out.width = src.width; out.height = src.height;
+      try { out.getContext('2d').drawImage(src, 0, 0); } catch { out = null; }
+    }
+    api.destroy();
+    if (!out) return null;
+    out.className = 'fx-canvas is-baked';
+    out.setAttribute('aria-hidden', 'true');
+    Object.assign(out.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', display: 'block', zIndex: '-1', pointerEvents: 'none', borderRadius: 'inherit' });
+    el.insertBefore(out, el.firstChild);
+    const stub = { id: api.id, el, baked: true, pause() {}, resume() {}, set() { return stub; }, setPalette() { return stub; },
+      destroy() { out.remove(); if (el.__fx === stub) delete el.__fx; el.removeAttribute('data-fx-mounted'); } };
+    el.__fx = stub;
+    el.setAttribute('data-fx-mounted', api.id);
+    return stub;
+  }
+  // mount a live effect over the picture already in the box; the picture goes once the first frame shows
+  async function goLive(el, id, spec) {
+    const old = el.__fx;
+    if (old && old.baked) delete el.__fx;          // keep its picture under the live canvas for now
+    const api = await fx.mount(el, id, spec);
+    (async () => {
+      for (const t0 = performance.now(); performance.now() - t0 < 8000; await frame()) {
+        if (el.__fx !== api) return;
+        const c = el.querySelector(':scope > canvas.fx-canvas:not(.is-baked)');
+        if ((c && c.style.opacity === '1') || el.dataset.fxFallback) break;
+      }
+      if (el.__fx === api) for (const b of el.querySelectorAll(':scope > canvas.is-baked')) b.remove();
+    })();
+    return api;
+  }
+
+  /* ---------------------------------------------------------------- data */
+  let index;
+  try {
+    index = await fetch(A('effects/index.json'), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  } catch (err) {
+    $('#fx-grid').innerHTML = '<p class="fx-empty">The effects index did not load. Serve this folder over http.</p>';
+    throw err;
+  }
+  const byId = Object.fromEntries(index.effects.map(e => [e.id, e]));
+  const nameOf = id => (byId[id] || { name: id }).name;
+  const N = index.effects.length;
+  $('#fx-title').firstChild.textContent = `${N} effects. `;
+  $('#see-all').textContent = `See all ${N} effects`;
+  $('#hero-sub').textContent = $('#hero-sub').textContent.replace(/^\d+/, N);
+
+  /* ---------------------------------------------------------------- the hero ground */
+  const hero = { el: $('#hero-frame'), api: null, id: null, seed: 0, visible: true, paused: false, tweaks: {} };
+  const heroSpec = () => ({ palette: FXP[kind], seed: hero.seed, params: { calm: 0, ...hero.tweaks } });
+  async function mountHero() {
+    if (!hero.id) return;
+    const gen = (hero.gen = (hero.gen || 0) + 1);
+    hero.el.style.backgroundColor = FXP[kind].bg;
+    if (!hero.visible) { if (hero.api) { keepFrame(hero.el, hero.api); hero.api = null; } return; }
+    try {
+      const api = await goLive(hero.el, hero.id, heroSpec());
+      if (gen !== hero.gen) { if (hero.el.__fx === api) api.destroy(); return; }
+      hero.api = api;
+      if (hero.paused) api.pause();
+    } catch (err) { console.warn('hero', err); }
+    const m = byId[hero.id];
+    $('#hero-cap').innerHTML = `<b>${esc(m.name)}</b> &middot; ${esc(famName(m.family))} &middot; dealt for the hero, seed ${hero.seed}`;
+    $('#hero-tile').href = '#fx-' + hero.id;
+    dock();
+  }
+  // the dock: name, a few of the effect's own parameters as live sliders, the palette and the code
+  const humanize = k => upper(k.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase());
+  const fmt = (v, step) => (+v).toFixed(step >= 1 ? 0 : step >= 0.1 ? 1 : 2);
+  // a slider only for a range (a switch or a choice of modes is left to the workbench)
+  const isRange = s => typeof s.default === 'number' && s.max > s.min && !((s.step || 0) >= 1 && s.max - s.min <= 4);
+  function dock() {
+    const m = byId[hero.id];
+    if (!m) return;
+    $('#dock-name').textContent = m.name;
+    $('#dock-meta').textContent = `${famName(m.family)} · seed ${hero.seed}`;
+    $('#dock-code').textContent = `<div data-fx="${m.id}" data-fx-seed="${hero.seed}"></div>`;
+    const P = FXP[kind];
+    $('#dock-pal').innerHTML = ['bg', 'surface', 'ink', 'accent'].map(k => `<i style="background:${P[k]}" title="${k}"></i>`).join('') + `<span style="margin-left:4px">${upper(kind)}</span>`;
+    const api = hero.api && !hero.api.baked ? hero.api : null;
+    const schema = api?.effect?.params || {};
+    const keys = Object.keys(schema).filter(k => !/^(calm|seed)/i.test(k) && isRange(schema[k])).slice(0, 4);
+    if (!api) return;   // off screen: the rows stay as they were
+    $('#dock-rows').innerHTML = keys.map(k => {
+      const s = schema[k], step = s.step || +((s.max - s.min) / 100).toPrecision(2), v = api.params[k] ?? s.default;
+      return `<div class="dock__row"><label for="dock-${k}">${esc(humanize(k))}</label><output id="dock-out-${k}">${fmt(v, step)}</output>
+        <input type="range" id="dock-${k}" data-k="${k}" min="${s.min}" max="${s.max}" step="${step}" value="${v}" style="--v:${((v - s.min) / (s.max - s.min) * 100).toFixed(1)}%"></div>`;
+    }).join('');
+  }
+  $('#dock-rows').addEventListener('input', e => {
+    const r = e.target.closest('input[data-k]');
+    if (!r) return;
+    const k = r.dataset.k, v = +r.value;
+    r.style.setProperty('--v', `${((v - +r.min) / (+r.max - +r.min) * 100).toFixed(1)}%`);
+    $('#dock-out-' + k).textContent = fmt(v, +r.step);
+    hero.tweaks[k] = v;
+    if (hero.api && !hero.api.baked) hero.api.set({ [k]: v });
+  });
+  $('#dock-seed').addEventListener('click', () => { hero.seed = Math.floor(Math.random() * 10000); mountHero(); });
+  $('#dock-copy').addEventListener('click', async () => {
+    const code = $('#dock-code').textContent;
+    try { await navigator.clipboard.writeText(code); toast('Copied ' + code); } catch { toast(code, 5000); }
+  });
+  ui.pausable(hero.el, { pause() { hero.paused = true; hero.api?.pause(); }, resume() { hero.paused = false; hero.api?.resume(); } });
+  new IntersectionObserver(es => {
+    const vis = es[es.length - 1].isIntersecting;
+    if (vis === hero.visible) return;
+    hero.visible = vis;
+    if (!vis && hero.api) { hero.gen++; keepFrame(hero.el, hero.api); hero.api = null; }
+    else if (vis && !hero.api) mountHero();
+  }, { rootMargin: '0px' }).observe(hero.el);
+  $('#hero-seed').addEventListener('click', () => { hero.seed = Math.floor(Math.random() * 10000); mountHero(); });
+
+  /* ---------------------------------------------------------------- 1. effect tiles */
+  const ORDER = Object.keys(FAMILIES);
+  const famIndex = f => (ORDER.includes(f) ? ORDER.indexOf(f) : 99);
+  const tiles = [];
+  const photoSrc = A('objects/photo-kit/photos/room.jpg');
+  function tileSpec(t) {
+    const k = kindFor(t.meta);
+    t.stage.dataset.fxPalette = JSON.stringify(FXP[k]);
+    t.stage.dataset.fxSeed = String(t.seed);
+    t.stage.style.backgroundColor = FXP[k].bg;   // under an effect that draws only its marks
+    const fits = k === kind;
+    t.badge.hidden = fits;
+    if (!fits) t.badge.textContent = `Made for ${andList(t.meta.palettes.map(x => KIND_WORDS[x]))} pages`;
+    return { palette: FXP[k], seed: t.seed };
+  }
+  function buildTile(meta) {
+    const el = document.createElement('article');
+    el.className = 'fx-tile';
+    el.id = 'fx-' + meta.id;
+    el.dataset.family = meta.family;
+    const moves = meta.motion !== 'still';
+    el.innerHTML = `
+      <div class="fx-stage" data-fx="${esc(meta.id)}">
+        ${meta.usesImg ? `<img data-fx-photo src="${esc(photoSrc)}" alt="" crossorigin="anonymous">` : ''}
+        <span class="fx-badge" hidden></span>
+        ${moves ? `<button type="button" class="fx-play" aria-label="Play ${esc(meta.name)}"><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10.2 6z"/></svg><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/></svg></button>` : ''}
+      </div>
+      <div class="fx-info">
+        <div class="fx-top"><h3>${esc(meta.name)}</h3><span class="fx-fam">${esc(famName(meta.family))}</span></div>
+        <p class="fx-look">${esc(meta.look)}</p>
+        <div class="fx-foot">
+          <span class="fx-for">${esc(forLine(meta))}</span>
+          <span class="fx-acts"><button type="button" class="textbtn" data-act="seed">New seed</button><button type="button" class="textbtn" data-act="copy">Copy code</button></span>
+        </div>
+      </div>`;
+    const t = { meta, el, stage: el.querySelector('.fx-stage'), badge: el.querySelector('.fx-badge'), seed: 100 + fx.hashSeed(meta.id) % 900, api: null, pinned: false, visible: false };
+    tileSpec(t);
+    el.querySelector('[data-act="seed"]').addEventListener('click', () => {
+      t.seed = Math.floor(Math.random() * 10000);
+      tileSpec(t);
+      if (t.api) { const live = t.api; t.api = null; liveTile = null; live.destroy(); el.classList.remove('is-playing'); playTile(t, t.pinned); }
+      else ui.grounds(t.stage, fx);
+    });
+    el.querySelector('[data-act="copy"]').addEventListener('click', async () => {
+      const code = `<div data-fx="${meta.id}" data-fx-seed="${t.seed}"></div>`;
+      try { await navigator.clipboard.writeText(code); toast('Copied ' + code); } catch { toast(code, 5000); }
+    });
+    if (moves) {
+      const btn = el.querySelector('.fx-play');
+      btn.addEventListener('click', () => {
+        if (t.api && t.pinned) { t.pinned = false; stopTile(t); }
+        else playTile(t, true);
+      });
+      t.stage.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') playTile(t, false); });
+      t.stage.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !t.pinned) stopTile(t); });
+    }
+    return t;
+  }
+  function forLine(meta) {
+    const slots = ['hero', 'card', 'band', 'footer'].filter(s => meta.bestOn.includes(s)).map(s => SLOT_WORDS[s]);
+    let s = `For ${andList(slots)}`;
+    if (meta.motion === 'still') s += ', still';
+    if (meta.random === false) s += '. Chosen on purpose, never dealt';
+    return s;
+  }
+  // one tile plays at a time: the one pointed at, or the one whose play button was pressed
+  let liveTile = null;
+  async function playTile(t, pin) {
+    if (liveTile && liveTile !== t) { liveTile.pinned = false; stopTile(liveTile); }
+    t.pinned = t.pinned || pin;
+    if (t.api || t.starting) return;
+    liveTile = t;
+    t.starting = true;
+    t.el.classList.add('is-playing');
+    t.el.querySelector('.fx-play')?.setAttribute('aria-label', `Pause ${t.meta.name}`);
+    try {
+      const api = await goLive(t.stage, t.meta.id, tileSpec(t));
+      t.starting = false;
+      if (liveTile !== t) { keepFrame(t.stage, api); return; }
+      t.api = api;
+    } catch (err) { t.starting = false; console.warn(t.meta.id, err); }
+  }
+  function stopTile(t) {
+    if (liveTile === t) liveTile = null;
+    t.el.classList.remove('is-playing');
+    t.el.querySelector('.fx-play')?.setAttribute('aria-label', `Play ${t.meta.name}`);
+    const api = t.api;
+    t.api = null;
+    if (api && t.stage.__fx === api) keepFrame(t.stage, api);
+  }
+  const tileIO = new IntersectionObserver(es => {
+    for (const e of es) {
+      const t = tiles.find(x => x.stage === e.target);
+      if (t && !e.isIntersecting && t.api) { t.pinned = false; stopTile(t); }
+    }
+  });
+
+  const sorted = [...index.effects].sort((a, b) => famIndex(a.family) - famIndex(b.family) || a.name.localeCompare(b.name));
+  for (const meta of sorted) { const t = buildTile(meta); tiles.push(t); $('#fx-grid').append(t.el); tileIO.observe(t.stage); }
+  let family = q.get('family') || '';
+  function orderTiles() {
+    const fits = t => t.meta.palettes.includes(kind);
+    for (const t of [...tiles.filter(fits), ...tiles.filter(t => !fits(t))]) $('#fx-grid').append(t.el);
+  }
+  function filterTiles() {
+    if (family && !tiles.some(t => t.meta.family === family)) family = '';
+    for (const t of tiles) t.el.hidden = !!family && t.meta.family !== family;
+    for (const b of $$('#families button')) b.setAttribute('aria-pressed', String(b.dataset.family === family));
+  }
+  {
+    const counts = {};
+    for (const e of index.effects) counts[e.family] = (counts[e.family] || 0) + 1;
+    const fams = Object.keys(counts).sort((a, b) => famIndex(a) - famIndex(b));
+    const make = (key, label, n) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.family = key;
+      b.innerHTML = `${esc(label)} <span>${n}</span>`;
+      b.addEventListener('click', () => { family = key; filterTiles(); });
+      $('#families').append(b);
+    };
+    make('', 'All', index.effects.length);
+    for (const f of fams) make(f, famName(f), counts[f]);
+  }
+
+  /* ---------------------------------------------------------------- 2. cards: the layouts of ui/cards.html */
+  // the layouts are read from ui/cards.html at load, so the gallery always shows the kit's current cards;
+  // its page styles are kept to the layouts with @scope
+  function scopeCSS(css, scope) {
+    css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const out = [];
+    let i = 0;
+    const block = start => { let d = 0; for (let j = start; j < css.length; j++) { if (css[j] === '{') d++; else if (css[j] === '}' && --d === 0) return j; } return css.length - 1; };
+    while (i < css.length) {
+      const open = css.indexOf('{', i);
+      if (open < 0) break;
+      const prelude = css.slice(i, open).trim();
+      const end = block(open);
+      const body = css.slice(open + 1, end);
+      if (/^@media|^@supports|^@container/.test(prelude)) out.push(`${prelude} { @scope (${scope}) { ${body} } }`);
+      else if (/^@(keyframes|font-face|property)/.test(prelude)) out.push(`${prelude} {${body}}`);
+      else if (prelude && !/^:root$/.test(prelude) && !/^(html|body)(\s*,\s*(html|body))*$/.test(prelude)) out.push(`@scope (${scope}) { ${prelude} {${body}} }`);
+      i = end + 1;
+    }
+    return out.join('\n');
+  }
+  const cardlib = $('#cardlib');
+  let cardTheme = ['light', 'dark'].includes(q.get('cards')) ? q.get('cards') : (kind === 'light' ? 'light' : 'dark');
+  const cardGroups = [];
+  try {
+    const html = await fetch(A('ui/cards.html'), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const style = document.createElement('style');
+    style.textContent = scopeCSS([...doc.querySelectorAll('head style')].map(s => s.textContent).join('\n'), '#cardlib');
+    document.head.append(style);
+    const secs = [...doc.querySelectorAll('main section.sec')];
+    cardlib.replaceChildren(...secs.map(s => document.importNode(s, true)));
+    for (const sec of $$(':scope > .sec', cardlib)) {
+      sec.id = 'cards-' + sec.id;
+      const tag = sec.querySelector('.sec__tag');
+      const label = (tag?.textContent || '').replace(/^\s*\d+\s*\/\s*/, '').trim() || sec.id;
+      const meta = document.createElement('div');
+      meta.className = 'sec__meta';
+      if (tag) { tag.replaceWith(meta); meta.append(tag); } else sec.querySelector('.sec__head')?.append(meta);
+      const panels = $$('[data-fx]:not([data-knock])', sec);
+      // a group is dealt when nothing in it drives its ground (the slider in the bento changes its grain)
+      const driven = panels.some(p => p.hasAttribute('data-fx-live') || $$('[data-ui-opts]', p).some(f => /"drive"/.test(f.dataset.uiOpts || '')));
+      for (const p of panels) { p.dataset.fxOrig = p.dataset.fx; p.dataset.fxPaletteOrig = p.dataset.fxPalette || ''; p.dataset.fxParamsOrig = p.dataset.fxParams || ''; }
+      let ground = null;
+      if (panels.length) { ground = document.createElement('span'); ground.className = 'sec__ground'; meta.append(ground); }
+      cardGroups.push({ sec, label, panels, driven, ground });
+      const a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.textContent = label;
+      $('#layout-nav').append(a);
+    }
+    for (const el of $$('[data-fx]', cardlib)) { el.dataset.fxLight = el.dataset.fx; }
+  } catch (err) {
+    cardlib.innerHTML = '<p class="cardlib-load">The card layouts did not load (ui/cards.html).</p>';
+    console.warn('cards', err);
+  }
+  function applyCardTheme() {
+    const band = $('#cards');
+    band.dataset.theme = cardTheme;
+    cardlib.dataset.theme = cardTheme;
+    for (const b of $$('#card-theme button')) b.setAttribute('aria-pressed', String(b.dataset.themeSet === cardTheme));
+    const dark = cardTheme === 'dark';
+    // the big number: a light effect under white text on dark (darken), a dark one under black text on light (lighten)
+    for (const el of $$('[data-knock]', cardlib)) {
+      el.classList.toggle('knock--light', !dark);
+      el.dataset.fxPalette = JSON.stringify(dark
+        ? { bg: '#f2efea', surface: '#ffffff', ink: '#1a1a1a', muted: '#9a948c', accent: '#a9a397' }
+        : { bg: '#121110', surface: '#262422', ink: '#f2f2ef', muted: '#77736d', accent: '#5e5953' });
+      el.dataset.fxParams = JSON.stringify({ speed: 0, grainMotion: 0, calm: 0, tint: 0.9, contrast: 0.85, grain: 0.5, softness: 0.4 });
+    }
+  }
+  // one effect per dealt group; a group keeps its own lit palettes, and the painting's palette (made for
+  // the painterly landscape) becomes the sky for any other effect
+  const STILL = { speed: 0, drift: 0, grainMotion: 0 };
+  function setGroupGround(g, id) {
+    for (const p of g.panels) {
+      if (id === p.dataset.fxOrig) {
+        p.dataset.fx = id;
+        if (p.dataset.fxPaletteOrig) p.dataset.fxPalette = p.dataset.fxPaletteOrig; else delete p.dataset.fxPalette;
+        if (p.dataset.fxParamsOrig) p.dataset.fxParams = p.dataset.fxParamsOrig; else delete p.dataset.fxParams;
+        let own = {};
+        try { own = JSON.parse(p.dataset.fxPaletteOrig || '{}'); } catch { /* none */ }
+        p.style.backgroundColor = own.bg || '';
+      } else {
+        let pal = {};
+        try { pal = JSON.parse(p.dataset.fxPaletteOrig || '{}'); } catch { /* none */ }
+        if (!pal.ink) pal = LIT.sky;
+        let orig = {};
+        try { orig = JSON.parse(p.dataset.fxParamsOrig || '{}'); } catch { /* none */ }
+        const keep = Object.fromEntries(Object.entries(orig).filter(([k]) => /^calm/.test(k)));
+        p.dataset.fx = id;
+        p.dataset.fxPalette = JSON.stringify(pal);
+        p.dataset.fxParams = JSON.stringify({ ...keep, ...STILL });
+        // the lit ground's own paper under the picture: an effect that draws only its lines (grid
+        // pulse) never shows the dark panel through them
+        p.style.backgroundColor = pal.bg;
+      }
+      p.dataset.fxLight = p.dataset.fx;
+    }
+    if (g.ground) g.ground.innerHTML = `Ground: <b>${esc(nameOf(id))}</b>`;
+  }
+  function glowOnHover() {
+    for (const el of $$('[data-glow]', cardlib)) {
+      let busy = false;
+      const lap = async () => {
+        if (busy || ui.reduced()) return;
+        busy = true;
+        try {
+          const c = await fx.mount(el, el.dataset.glow, { palette: fx.readPalette(el), params: JSON.parse(el.dataset.glowParams || '{}'), seed: 2 });
+          const r = el.getBoundingClientRect(), per = 2 * (r.width + r.height);
+          await sleep(per / Math.min(c.params.speed, per / 4) * 1000);
+          el.classList.add('is-fading');
+          await sleep(650);
+          c.destroy();
+        } catch (e) { console.warn(e); }
+        el.classList.remove('is-fading');
+        busy = false;
+      };
+      el.addEventListener('pointerenter', lap);
+      el.addEventListener('focusin', lap);
+    }
+  }
+  async function setCardTheme(t) {
+    if (t === cardTheme) return;
+    cardTheme = t;
+    applyCardTheme();
+    syncUrl();
+    await ui.grounds(cardlib, fx);
+    for (const el of $$('[data-ui]', cardlib)) el.__ui?.repaint?.();
+  }
+  for (const b of $$('#card-theme button')) b.addEventListener('click', () => setCardTheme(b.dataset.themeSet));
+
+  /* ---------------------------------------------------------------- the deal: the hero, then the card grounds */
+  const HISTORY_KEY = 'fx-gallery-history';
+  const readHistory = () => { try { const h = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); return Array.isArray(h) ? h : []; } catch { return []; } };
+  const writeHistory = h => { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-100))); } catch { /* no storage */ } };
+  let dealSeed = q.get('deal') || null;
+  // the bento's grain is driven by its slider and the 68% is filled with grain: grain-gradient stays theirs
+  const FIXED = ['grain-gradient'];
+  function deal(seed) {
+    const fromUrl = seed != null;
+    const history = fromUrl ? [] : readHistory();
+    let h, c;
+    try {
+      h = pick(index.effects, { palette: kind, slots: ['hero'], history, seed: seed ?? undefined, exclude: FIXED });
+      const groups = cardGroups.filter(g => g.panels.length && !g.driven);
+      // second call: quiet grounds only (no orb, sphere or beam behind a big window), never the hero's effect
+      c = pick(index.effects, { palette: 'light', slots: groups.map(() => 'card'), quiet: true, history, seed: `${h.seed}/cards`, exclude: [h.picks[0].id, ...FIXED] });
+      groups.forEach((g, i) => setGroupGround(g, c.picks[i].id));
+    } catch (err) { toast(err.message, 4000); return null; }
+    for (const g of cardGroups) if (g.panels.length && g.driven && g.ground) g.ground.innerHTML = `Ground: <b>${esc(nameOf(g.panels[0].dataset.fx))}</b>, driven by the slider`;
+    if (!fromUrl) writeHistory([...history, h.picks[0].id, ...c.picks.map(p => p.id)]);
+    dealSeed = String(h.seed);
+    if (hero.id !== h.picks[0].id) hero.tweaks = {};
+    hero.id = h.picks[0].id;
+    hero.seed = fx.hashSeed(h.seed);
+    syncUrl();
+    return { hero: h.picks[0].id, cards: c.picks.map(p => p.id) };
+  }
+  async function dealAndDraw(seed) {
+    const d = deal(seed);
+    if (!d) return null;
+    await Promise.all([mountHero(), ui.grounds(cardlib, fx)]);
+    return d;
+  }
+  for (const b of $$('[data-deal]')) b.addEventListener('click', async () => {
+    const d = await dealAndDraw();
+    if (d) toast(`Hero: ${nameOf(d.hero)}. Cards: ${d.cards.map(nameOf).join(', ')}.`, 3600);
+  });
+
+  /* ---------------------------------------------------------------- lazy parts: started near the screen, stopped off it */
+  // gl: the part holds WebGL of its own, so it waits for room under the page's budget (whenRoom)
+  function lazy(el, start, stop, margin = '15% 0px', gl = true) {
+    let on = false, started = false;
+    const go = () => { if (on && !started) { started = true; try { start(); } catch (e) { console.warn(e); } } };
+    const io = new IntersectionObserver(es => {
+      const vis = es[es.length - 1].isIntersecting;
+      if (vis && !on) { on = true; if (gl) whenRoom(() => on && !started, go); else go(); }
+      else if (!vis && on) { on = false; if (started) { started = false; try { stop(); } catch (e) { console.warn(e); } } }
+    }, { rootMargin: margin });
+    io.observe(el);
+    return { get on() { return on; }, get started() { return started; }, restart() { if (started) { started = false; try { stop(); } catch (e) { console.warn(e); } } if (on) { if (gl) whenRoom(() => on && !started, go); else go(); } } };
+  }
+
+  /* ---------------------------------------------------------------- 3. creative uses: the components */
+  // the parts that hold up, in the order a page would use them. Left out (still in the kit): the
+  // effect button and the search glow (nothing to see until you act), icon tiles (a row of tinted
+  // chips), the area chart (a plain chart) and spotlight cards (plain until pointed at).
+  // box: a small control shown on a lit ground of its own, [effect, lit palette, params]
+  const USES = [
+    { id: 'fx-feature-card', line: 'A 2x2 of feature cards, each with an inset panel: a painted or grain ground and a small product window running out through its bottom edge.' },
+    { id: 'fx-dither-object', line: 'A real thing with no photograph, built as a 3D form and printed in dither. Point at it and move across.', pick: true },
+    { id: 'fx-globe', line: 'A dotted globe rising from the floor of a panel, with arcs between cities beside live figures by region.' },
+    { id: 'fx-map', line: 'Contour lines in place of a map tile, with one pin, coordinates and an address card. No map service.' },
+    { id: 'fx-band', line: 'A short band between two sections: one headline, one line, a link, and quiet contour lines on the far side.' },
+    { id: 'fx-prompt', half: true, box: ['grain-gradient', 'sand', { calm: 0.3, calmX: 0.5, calmY: 0.5 }], line: 'A prompt field with one light running slowly round its border.' },
+    { id: 'fx-avatar', half: true, box: ['painterly-landscape', 'painting', { blur: 0.4, brush: 0.8 }], line: 'A call card: whoever speaks gets a thin ring of the effect.' },
+    { id: 'fx-logos', line: 'A row of brand marks; every 9 seconds a soft band of light passes through them once.' },
+    { id: 'fx-headline', line: 'One key phrase of a display line filled with a still effect, the rest in ink.' },
+    { id: 'fx-stat', line: 'Proof numbers whose digits carry the effect; the captions stay plain.' },
+    { id: 'fx-bars', half: true, line: 'A bar chart whose bars are windows onto one still grain, on a labelled scale.' },
+    { id: 'fx-progress', half: true, box: ['contour-lines', 'sky', { calm: 0.25, calmX: 0.5, calmY: 0.5 }], line: 'An import step: the file being read fills with a soft light, a thin line gives the exact share.' },
+    { id: 'fx-pricing', line: 'Plans side by side; the recommended one has a thin border of the effect.' },
+    { id: 'fx-tabs', line: 'Tabs for a product tour; the active pill is a small window of grain that glides to the tab you pick.' },
+    { id: 'fx-photo', line: 'The client\'s own photograph graded into three page tones with still grain, copy on its quiet corner.' },
+  ].filter(u => !q.get('only') || q.get('only').split(',').includes(u.id));
+  const DITHER_OBJECTS = { bike: ['Cargo bike', 'Electric, with a box at the front'], cup: ['Cup of coffee', 'On a saucer, with steam rising'], book: ['Open book', 'Hardback, open at the middle'], house: ['House under mountains', 'Two floors and a shed'] };
+  let ditherObject = 'bike';
+  async function loadUse(u) {
+    const base = A(`components/${u.id}/`);
+    try {
+      const [meta, html, mod] = await Promise.all([
+        fetch(base + 'meta.json').then(r => (r.ok ? r.json() : null)),
+        fetch(base + 'component.html').then(r => (r.ok ? r.text() : null)),
+        import(base + 'component.js'),
+      ]);
+      if (!meta || !html || !mod) return null;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = base + 'component.css';
+      document.head.append(link);
+      await new Promise(r => { link.onload = link.onerror = r; });
+      return { ...u, meta, html, mod };
+    } catch (err) { console.warn(u.id, err); return null; }
+  }
+  const uses = (await Promise.all(USES.map(loadUse))).filter(Boolean);
+  // component.html is written for components/index.html: its relative urls start at components/
+  const fixUrls = (html, base) => html.replace(/(\s(?:src|data-src|poster)=")(?!https?:|data:|\/|#)([^"]+)"/g, (m, a, v) => `${a}${base}${v}"`);
+  function useMarkup(u) {
+    u.stage.innerHTML = fixUrls(u.html, A('components/'));
+    if (u.id === 'fx-dither-object') {
+      const fig = u.stage.querySelector('.cx-obj');
+      if (fig) {
+        fig.dataset.cxObject = ditherObject;
+        const n = fig.querySelector('.cx-obj__name'), s = fig.querySelector('.cx-obj__spec');
+        if (n) n.textContent = DITHER_OBJECTS[ditherObject][0];
+        if (s) s.textContent = DITHER_OBJECTS[ditherObject][1];
+        fig.querySelector('.cx-obj__stage')?.removeAttribute('aria-label');
+      }
+    }
+  }
+  function useStart(u) {
+    if (u.ctrl) return;
+    useMarkup(u);
+    try { u.ctrl = u.mod.default(u.stage.firstElementChild || u.stage) || { destroy() {} }; }
+    catch (err) { console.error(u.id, err); u.ctrl = { destroy() {} }; }
+  }
+  function useStop(u) {
+    if (!u.ctrl) return;
+    try { u.ctrl.destroy?.(); } catch (err) { console.warn(u.id, err); }
+    fx.unmountAll(u.stage);
+    u.ctrl = null;
+  }
+  uses.forEach((u, i) => {
+    const el = document.createElement('article');
+    el.className = 'use' + (u.half ? ' is-half' : '');
+    el.id = 'use-' + u.id;
+    const pickRow = u.pick ? `<div class="chips use__pick" role="group" aria-label="Object">${Object.keys(DITHER_OBJECTS).map(k => `<button type="button" data-object="${k}" aria-pressed="${k === ditherObject}">${DITHER_OBJECTS[k][0]}</button>`).join('')}</div>` : '';
+    let stage = '<div class="use__stage"></div>';
+    if (u.box) {
+      const [gid, palName, extra] = u.box;
+      stage = `<div class="use__box"><div class="use__ground" data-fx="${gid}" data-fx-seed="${31 + i * 13}" data-fx-palette='${esc(JSON.stringify(LIT[palName]))}' data-fx-params='${esc(JSON.stringify({ ...STILL, ...extra }))}' style="background-color:${LIT[palName].bg}"></div>${stage}</div>`;
+    }
+    el.innerHTML = `<div class="use__meta"><span class="use__no">${String(i + 1).padStart(2, '0')}</span><h3>${esc(u.meta.name)}</h3><p>${esc(u.line || u.meta.for)}</p>${pickRow}</div>${stage}`;
+    u.el = el;
+    u.stage = el.querySelector('.use__stage');
+    $('#uses-list').append(el);
+    useMarkup(u);
+    u.lazy = lazy(el, () => useStart(u), () => useStop(u), '10% 0px');
+    if (u.pick) el.querySelector('.use__pick').addEventListener('click', ev => {
+      const b = ev.target.closest('[data-object]');
+      if (!b) return;
+      ditherObject = b.dataset.object;
+      for (const x of el.querySelectorAll('[data-object]')) x.setAttribute('aria-pressed', String(x === b));
+      if (u.lazy.started) { useStop(u); useStart(u); } else useMarkup(u);
+    });
+  });
+
+  /* ---------------------------------------------------------------- 4. real things */
+  const objIndex = await fetch(A('objects/_print-core/index.json')).then(r => r.json()).catch(() => ({ objects: [] }));
+  const print3d = await import(A('objects/_print-core/print3d.js')).catch(() => null);
+  if (print3d?.config) print3d.config.maxLive = 1;   // with the page's other contexts, never more than 4
+  // each object on its own lit ground, the ground drawn once (ui.grounds)
+  const OBJ_GROUND = [
+    ['sand', 'grain-gradient'], ['sky', 'contour-lines'], ['sage', 'grain-gradient'], ['sky', 'grain-gradient'],
+    ['sand', 'line-engraving'], ['sage', 'contour-lines'], ['sand', 'grain-gradient'],
+  ];
+  const things = [];
+  objIndex.objects.forEach((o, i) => {
+    const [palName, ground] = OBJ_GROUND[i % OBJ_GROUND.length];
+    const pal = LIT[palName];
+    const card = document.createElement('article');
+    card.className = 'card' + (i === 0 ? ' is-wide' : '');
+    card.id = 'thing-' + o.id;
+    card.innerHTML = `<div class="panel panel--top" data-fx="${ground}" data-fx-seed="${11 + i * 7}" data-fx-palette='${esc(JSON.stringify(pal))}' data-fx-params='${esc(JSON.stringify({ ...STILL, calm: 0.2, calmX: 0.5, calmY: 0.55 }))}' style="--calm-k:0%;background-color:${pal.bg}">
+        <div data-print="${esc(o.id)}" data-print-place="tile" data-print-palette='${esc(JSON.stringify({ bg: pal.bg, surface: pal.surface, ink: pal.ink, accent: pal.accent }))}' aria-label="${esc(o.name)}, printed in ${esc(o.effect)}"></div>
+      </div>
+      <h3>${esc(o.name)}</h3><p>${esc(o.line)} Printed in ${esc(o.effect === 'engrave' ? 'engraving' : o.effect)}.</p>`;
+    $('#things').append(card);
+    things.push({ o, card, host: card.querySelector('[data-print]') });
+  });
+  // one object turns by itself (the first in view); the others hold still until pointed at
+  for (const t of things) {
+    let ctrl = null;
+    t.lazy = lazy(t.card, async () => {
+      try {
+        const mod = (await import(A(`objects/${t.o.id}/object.js`))).default;
+        if (!t.lazy.on) return;
+        let params = {};
+        if (t !== things[0]) params.turn = 0;
+        ctrl = mod.mount(t.host, { place: 'tile', params, palette: JSON.parse(t.host.dataset.printPalette) });
+        t.ctrl = ctrl;
+      } catch (e) { console.warn(t.o.id, e); }
+    }, () => { ctrl?.destroy(); ctrl = null; t.ctrl = null; t.host.replaceChildren(); }, '10% 0px');
+  }
+  $('#objects-note').textContent = `${things.length} objects, printed in dither, halftone or engraving on a lit ground.`;
+
+  // photographs printed in the palette (photo-kit), each with its credit
+  const photoLib = await fetch(A('objects/photo-kit/photos.json')).then(r => r.json()).catch(() => ({ photos: [] }));
+  const photoKit = await import(A('objects/photo-kit/photo.js')).catch(() => null);
+  const PHOTO_OBJECTS = [
+    { id: 'photo-halftone', photo: 'lamp', title: 'Halftone', line: 'Every grey kept, the dot screen showing through. Point at it: a loupe shows the dots over the photograph\'s own colours.' },
+    { id: 'photo-engraving', photo: 'concrete', title: 'Engraving', line: 'Lines that swell in the shadows and bend over the forms. Point at it and the lines part around the pointer.' },
+    { id: 'photo-dither', photo: 'room', title: 'Dither', line: 'Two tones and a fine dither grain. Point at it and the real photograph develops through the print.' },
+  ];
+  const photoParts = [];
+  for (const p of PHOTO_OBJECTS) {
+    const ph = photoLib.photos.find(x => x.key === p.photo) || photoLib.photos[0];
+    if (!ph) continue;
+    const fig = document.createElement('figure');
+    fig.className = 'shot';
+    fig.innerHTML = `<div class="shot__frame"><img src="${esc(A('objects/photo-kit/' + ph.file))}" alt="${esc(ph.alt)}"></div>
+      <figcaption><b>${esc(p.title)}</b><span>${esc(p.line)}</span><small>${photoKit?.photoCredit ? photoKit.photoCredit(ph) : esc(ph.by)}</small></figcaption>`;
+    $('#photos').append(fig);
+    const frameEl = fig.querySelector('.shot__frame');
+    const part = { p, ph, frameEl, ctrl: null };
+    photoParts.push(part);
+    part.lazy = lazy(frameEl, async () => {
+      try {
+        const mod = (await import(A(`objects/${p.id}/object.js`))).default;
+        if (!part.lazy.on) return;
+        part.ctrl = mod.mount(frameEl, { palette: fx.readPalette(frameEl), src: A('objects/photo-kit/' + ph.file), params: { focusX: ph.focus[0], focusY: ph.focus[1] } });
+      } catch (e) { console.warn(p.id, e); }
+    }, () => { part.ctrl?.destroy(); part.ctrl = null; }, '0px');
+  }
+
+  // scenes (objects/_scenes): on the vetted photographs, or a model
+  const SCENES = [
+    { id: 'product-turntable', title: 'Product on a turntable', line: 'A camera modelled in code, turning on a studio turntable, printed in ordered dither. Drag to turn it.' },
+    { id: 'split-reveal', photo: 'concrete', title: 'Split reveal', line: 'One side printed as a halftone screen, the other the photograph itself. Move the line with the pointer.' },
+    { id: 'dot-object', photo: 'lamp', title: 'Dot object', line: 'A lamp cut from its photograph and set in dots that keep its tones. Bring the pointer close and they step aside.' },
+    { id: 'exploded-layers', photo: 'room', title: 'Exploded layers', line: 'One photograph taken apart into its print plates, standing in perspective. Point at it to open the stack.' },
+  ].filter(s => !q.get('scenes') || q.get('scenes').split(',').includes(s.id));
+  // one stage, the scene picked in the list beside it (one WebGL context for all four)
+  const sceneParts = [];
+  const sceneFrame = $('#scene-frame');
+  const scene = { cur: null, ctrl: null, gen: 0 };
+  async function sceneStart() {
+    const part = scene.cur;
+    const gen = ++scene.gen;
+    try {
+      const mod = (await import(A(`objects/${part.s.id}/object.js`))).default;
+      if (gen !== scene.gen || !scene.lazy.started) return;
+      const opts = { palette: fx.readPalette(sceneFrame), params: {} };
+      if (part.ph) opts.src = A('objects/photo-kit/' + part.ph.file);
+      scene.ctrl = mod.mount(sceneFrame, opts);
+    } catch (e) { console.warn(part.s.id, e); }
+  }
+  function sceneStop() { scene.gen++; try { scene.ctrl?.destroy(); } catch (e) { console.warn(e); } scene.ctrl = null; sceneFrame.replaceChildren(); }
+  function pickScene(part) {
+    scene.cur = part;
+    for (const p of sceneParts) { p.tab.setAttribute('aria-selected', String(p === part)); p.tab.tabIndex = p === part ? 0 : -1; }
+    sceneFrame.setAttribute('aria-labelledby', part.tab.id);
+    if (scene.lazy?.started) { sceneStop(); sceneStart(); }
+  }
+  for (const s of SCENES) {
+    const ph = s.photo ? photoLib.photos.find(x => x.key === s.photo) : null;
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'scene-tab';
+    tab.id = 'scene-' + s.id;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', 'scene-frame');
+    tab.innerHTML = `<b>${esc(s.title)}</b><span>${esc(s.line)}</span>${ph ? `<small>${photoKit?.photoCredit ? photoKit.photoCredit(ph) : esc(ph.by)}</small>` : ''}`;
+    $('#scene-list').append(tab);
+    const part = { s, ph, tab };
+    sceneParts.push(part);
+    tab.addEventListener('click', e => { if (!e.target.closest('a')) pickScene(part); });
+  }
+  $('#scene-list').addEventListener('keydown', e => {
+    const i = sceneParts.indexOf(scene.cur), n = sceneParts.length;
+    const j = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? (i - 1 + n) % n : -1;
+    if (j < 0) return;
+    e.preventDefault();
+    pickScene(sceneParts[j]);
+    sceneParts[j].tab.focus();
+  });
+  if (sceneParts.length) {
+    scene.lazy = lazy(sceneFrame, sceneStart, sceneStop, '0px');
+    pickScene(sceneParts[0]);
+  }
+
+  /* ---------------------------------------------------------------- nav menus, from the data */
+  {
+    const fams = {};
+    for (const e of sorted) (fams[e.family] = fams[e.family] || []).push(e);
+    const famKeys = Object.keys(fams).sort((a, b) => fams[b].length - fams[a].length);
+    const cols = [[], [], [], []];
+    const size = c => c.reduce((s, f) => s + fams[f].length + 1.5, 0);
+    for (const f of famKeys) cols.sort((a, b) => size(a) - size(b))[0].push(f);
+    $('[data-menu="effects"]').innerHTML = cols.filter(c => c.length).map(c => `<div class="menu-col">${c.map(f =>
+      `<p class="t-label">${esc(famName(f))}</p>${fams[f].map(e => `<a href="#fx-${e.id}">${esc(e.name)}</a>`).join('')}`).join('<span style="height:12px"></span>')}</div>`).join('');
+    const half = Math.ceil(cardGroups.length / 2);
+    $('[data-menu="cards"]').innerHTML = [cardGroups.slice(0, half), cardGroups.slice(half)].map((list, i) => `<div class="menu-col"><p class="t-label">${i ? 'Proof and plans' : 'Feature cards'}</p>${list.map(g =>
+      `<a href="#${g.sec.id}">${esc(g.label)}<span>${esc((g.sec.querySelector('.sec__head h2')?.childNodes[0]?.textContent || '').trim())}</span></a>`).join('')}</div>`).join('')
+      + `<div class="menu-col"><p class="t-label">Themes</p><a href="#cards" data-theme-link="light">Light cards<span>White cards on a warm grey page</span></a><a href="#cards" data-theme-link="dark">Dark cards<span>Lit grounds behind dark UI</span></a></div>`;
+    for (const a of $$('[data-theme-link]')) a.addEventListener('click', () => setCardTheme(a.dataset.themeLink));
+    const ucols = [[], [], []];
+    uses.forEach((u, i) => ucols[Math.floor(i / Math.ceil(uses.length / 3))].push(u));
+    $('[data-menu="uses"]').innerHTML = ucols.filter(c => c.length).map((c, i) => `<div class="menu-col"><p class="t-label">${['On cards and panels', 'In type and controls', 'Charts, prices and photos'][i]}</p>${c.map(u => `<a href="#use-${u.id}">${esc(u.meta.name)}</a>`).join('')}</div>`).join('');
+    $('[data-menu="real"]').innerHTML = `<div class="menu-col"><p class="t-label">Objects modelled in 3D</p>${things.map(t => `<a href="#thing-${t.o.id}">${esc(t.o.name)}</a>`).join('')}</div>`
+      + `<div class="menu-col"><p class="t-label">Photographs</p>${photoParts.map(p => `<a href="#real-photos">${esc(p.p.title)}</a>`).join('')}</div>`
+      + `<div class="menu-col"><p class="t-label">Scenes</p>${sceneParts.map(p => `<a href="#scene-${p.s.id}">${esc(p.s.title)}</a>`).join('')}</div>`;
+
+    // the footer: the same four parts as the nav, shorter
+    const col = (title, links) => `<div><p class="t-label">${esc(title)}</p>${links.map(([href, label, extra = '']) => `<a href="${href}"${extra}>${esc(label)}</a>`).join('')}</div>`;
+    $('#foot-cols').innerHTML = [
+      col('Effects', [['#effects', `All ${N} effects`, ' data-family=""'], ...Object.keys(fams).sort((a, b) => famIndex(a) - famIndex(b)).map(f => ['#effects', `${famName(f)} (${fams[f].length})`, ` data-family="${f}"`])]),
+      col('Cards', [...cardGroups.map(g => [`#${g.sec.id}`, g.label]), ['#cards', 'Light cards', ' data-theme-link="light"'], ['#cards', 'Dark cards', ' data-theme-link="dark"']].slice(0, 10)),
+      col('Creative uses', [...uses.slice(0, 7).map(u => [`#use-${u.id}`, u.meta.name]), ['#uses', `All ${uses.length} uses`]]),
+      col('Real things', [['#real-objects', 'Objects modelled in 3D'], ['#real-photos', 'Photographs'], ['#real-scenes', 'Scenes'], [A('effects/lab.html'), 'Workbench']]),
+    ].join('');
+    for (const a of $$('#foot-cols [data-family]')) a.addEventListener('click', () => { family = a.dataset.family; filterTiles(); });
+    for (const a of $$('#foot-cols [data-theme-link]')) a.addEventListener('click', () => setCardTheme(a.dataset.themeLink));
+  }
+  // a link to a scene picks it in the list
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#scene-"]');
+    const part = a && sceneParts.find(p => '#' + p.tab.id === a.getAttribute('href'));
+    if (part) pickScene(part);
+  });
+  // the phone sheet
+  {
+    const nav = $('#nav'), toggle = nav.querySelector('.nav__toggle');
+    const bars = toggle.innerHTML;
+    const cross = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    const setOpen = open => { nav.classList.toggle('is-open', open); document.body.classList.toggle('nav-locked', open); toggle.setAttribute('aria-expanded', String(open)); toggle.innerHTML = open ? cross : bars; };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    nav.addEventListener('click', e => { if (e.target.closest('.nav__menu a, .nav__link')) setOpen(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------------------------------------------------------------- the palette switch */
+  function applyKind() {
+    document.documentElement.dataset.kind = kind;
+    for (const b of $$('[data-kinds] button')) b.setAttribute('aria-pressed', String(b.dataset.kind === kind));
+  }
+  async function setKind(k) {
+    if (k === kind) return;
+    kind = k;
+    applyKind();
+    if (cardTheme !== (kind === 'light' ? 'light' : 'dark')) { cardTheme = kind === 'light' ? 'light' : 'dark'; applyCardTheme(); }
+    orderTiles();
+    for (const t of tiles) { if (t.api) { t.pinned = false; stopTile(t); } tileSpec(t); }
+    await frame();
+    // the hero is dealt again for the new kind (some effects are made for dark pages only)
+    deal(null);
+    for (const u of uses) { if (u.lazy.started) { useStop(u); useStart(u); } else useMarkup(u); }
+    for (const p of photoParts) if (p.ctrl?.setPalette) p.ctrl.setPalette(fx.readPalette(p.frameEl)); else p.lazy.restart();
+    if (scene.ctrl?.setPalette) scene.ctrl.setPalette(fx.readPalette(sceneFrame)); else if (scene.lazy?.started) { sceneStop(); sceneStart(); }
+    // the objects' grounds and the boxes' grounds are lit palettes of their own: they stay as drawn
+    await Promise.all([mountHero(), ui.grounds($('#fx-grid'), fx), ui.grounds(cardlib, fx)]);
+    for (const el of $$('[data-ui]', cardlib)) el.__ui?.repaint?.();
+    syncUrl();
+  }
+  for (const b of $$('[data-kinds] button')) b.addEventListener('click', () => setKind(b.dataset.kind));
+
+  /* ---------------------------------------------------------------- start */
+  applyKind();
+  applyCardTheme();
+  orderTiles();
+  filterTiles();
+  deal(dealSeed);
+  glowOnHover();
+  await document.fonts?.ready;
+  await Promise.all([
+    mountHero(),
+    ui.loadAll(cardlib).catch(e => console.warn(e)),
+    ui.startAll(cardlib),
+    ui.grounds($('#fx-grid'), fx),
+    ui.grounds(cardlib, fx),
+    ui.grounds($('#things'), fx),
+    ui.grounds($('#uses-list'), fx, { skip: el => !el.classList.contains('use__ground') }),
+  ]);
+  if (location.hash) { try { document.querySelector(location.hash)?.scrollIntoView(); } catch { /* not an id */ } }
+  if (q.get('play')) { const t = tiles.find(x => x.meta.id === q.get('play')); if (t) { t.el.scrollIntoView({ block: 'center' }); playTile(t, true); } }
+  document.documentElement.dataset.ready = '1';
+  window.__gal = {
+    gl: () => ({ live: liveGL(), peak: glPeak }), resetPeak() { glPeak = liveGL(); },
+    glList: () => { liveGL(); return [...glSet].map(c => { const el = c.canvas; const host = el.isConnected ? el.closest('[id]') : null; return (host ? host.id : el.isConnected ? '?' : 'detached') + (el.width ? ` ${el.width}x${el.height}` : ''); }); },
+    tiles, hero, cardGroups, uses, things, photoParts, sceneParts, scene, pickScene, setKind, setCardTheme, deal: dealAndDraw, playTile, stopTile, fx, ui,
+  };
+</script>
+</body>
+</html>

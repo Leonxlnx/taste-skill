@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI fragment kit</title>
+<meta name="description" content="Nineteen pieces of real product UI from the taste-skill kit, each on an effect ground in a feature card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="cards.css">
+<style>
+  :root { --font-text: "Geist", system-ui, sans-serif; --font-display: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; }
+  [data-theme="light"] { --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; --g-bg: #e9e8e4; --g-surface: #f6f5f2; --frag: #ffffff; --warm: #c9a679; }
+  [data-theme="dark"] { --bg: #070708; --card: #151517; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; --g-bg: #0e0e10; --g-surface: #1b1c1f; --frag: #1c1d20; --warm: #9c9689; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-text); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .panel { --fx-bg: var(--g-bg); --fx-surface: var(--g-surface); --fx-ink: var(--ink); --fx-muted: var(--muted); --fx-accent: var(--hue, var(--warm)); --fx-accent-ink: var(--accent-ink); --calm: var(--g-bg); --p-h: 380px; }
+  .top { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid color-mix(in oklab, var(--ink) 8%, transparent); }
+  .top__in { max-width: 1232px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 16px; font-size: 14px; line-height: 20px; }
+  .top__in strong { font-weight: 560; }
+  .top__in > span { color: var(--muted); }
+  .sp { flex: 1; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: color-mix(in oklab, var(--ink) 6%, var(--bg)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 6%, transparent); }
+  .seg button { font: inherit; font-size: 13px; font-weight: 500; border: 0; background: none; color: color-mix(in oklab, var(--ink) 72%, var(--bg)); height: 30px; padding: 0 14px; border-radius: 7px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 1px 2px rgb(0 0 0 / .1); }
+  .top__in a { color: var(--ink); text-decoration: none; font-weight: 500; }
+  main { max-width: 1232px; margin: 0 auto; padding: 48px 24px 96px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .card > h3 code { font: 400 12px/16px var(--font-mono); color: var(--muted); margin-left: 8px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 600px) { main { padding: 24px 16px 64px; } .top__in { padding: 0 16px; } .top__in > span { display: none; } .panel { --p-h: 340px; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top__in">
+    <strong>UI fragment kit</strong><span>Real product UI to set on an effect ground</span>
+    <span class="sp"></span>
+    <div class="seg" role="group" aria-label="Theme"><button type="button" data-mode="light" aria-pressed="true">Light</button><button type="button" data-mode="dark" aria-pressed="false">Dark</button></div>
+    <a href="cards.html">Feature cards</a>
+  </div>
+</header>
+<main><div class="grid" id="grid"></div></main>
+
+<script type="module">
+  import fx from '../effects/fx.js';
+  import ui from './ui.js';
+  const index = await fetch('index.json').then(r => r.json());
+  // where each one sits, as its meta.json says: anchored at a corner or rising from the bottom and cut by
+  // the panel's edge, or whole with 24px or more of ground round it; a fade only where an edge cuts it.
+  // Only the compact slider sits in the calm middle (Figma's Texture tile); the cursor dialog is shown
+  // where it belongs, over the lower-right edge of a window. [class, fade, style, opts]
+  const PLACE = {
+    window: ['at-corner', 'stage--fade-br', '--ay:56px'],
+    chat: ['at-rise to-edge', 'stage--fade-b'],
+    cursor: ['at-over', '', '--bx:24px;--by:24px'],
+    notify: ['at-rise fit', 'stage--fade-b', '--ay:calc(100% - 180px);--ay-sm:calc(100% - 180px);--fit-max:380px'],
+    toggles: ['at-right', ''],
+    stat: ['at-corner', ''],
+    search: ['at-corner', ''],
+    integrations: ['at-corner', ''],
+    slider: ['at-center', '', '', '{"compact":true,"drive":{"param":"grain","min":0.15,"max":0.95}}'],
+    voice: ['at-rise to-edge fit', 'stage--fade-b', '--ax:max(24px, 50% - 132px);--ay:24px;--fit-max:264px'],
+    files: ['at-corner wide', 'stage--fade-br', '--w:680px;--ay:96px'],
+    calendar: ['at-rise fit', 'stage--fade-b', '--fit-max:440px'],
+    code: ['at-corner', ''],
+    'diff-review': ['at-corner fit', 'stage--fade-b', '--fit-max:480px'],
+    'terminal-run': ['at-rise fit', '', '--fit-max:440px'],
+    'pipeline-board': ['at-rise fit', '', '--fit-max:420px'],
+    doc: ['at-corner to-edge', 'stage--fade-b'],
+    checklist: ['at-rise fit', '', '--fit-max:340px'],
+    apps: ['at-corner wide', 'stage--fade-br', '--w:560px;--ay:48px'],
+  };
+  // grounds behind UI are soft lit fields (never a line or dot pattern), on both themes: the bright
+  // picture behind dark UI on the dark page, a clear step darker than white UI on the light page
+  // the painting stays abstract (a mist over warm sand, level, fully soft) and shows once on the page
+  const PAINT = ['painterly-landscape', { blur: 1, brush: 0.35, slope: 0, hillY: 0.3, horizon: 0.62, calm: 0.2, calmX: 0.6, calmY: 0.8, drift: 0, side: 1 }, '{"bg":"#a3b0b6","accent":"#c49a6c"}'];
+  const GRAIN = ['grain-gradient', { speed: 0, grainMotion: 0, calm: 0.2, calmX: 0.5, calmY: 0.6, tint: 0.6, contrast: 0.6 }, '{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","muted":"#6f675c","accent":"#a8794a"}'];
+  const SKY = [GRAIN[0], GRAIN[1], '{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","muted":"#5d6873","accent":"#3f6a92"}'];
+  const SAGE = [GRAIN[0], GRAIN[1], '{"bg":"#cdd6c6","surface":"#dce3d6","ink":"#262d24","muted":"#5f6a5a","accent":"#6c8e63"}'];
+  const GROUND = (m, i) => (m.name === 'slider' ? GRAIN : i === 0 ? PAINT : [GRAIN, SKY, SAGE][i % 3]);
+  const q = new URLSearchParams(location.search);
+  const grid = document.getElementById('grid');
+  grid.innerHTML = index.fragments.map((m, i) => {
+    const [at, fade, extra = '', opts = ''] = PLACE[m.name] || ['at-corner', 'stage--fade-br'];
+    const [id, params, pal] = GROUND(m, i);
+    const w = at === 'at-center' ? '' : ` style="--ax:32px;--ay:40px;${extra}"`;
+    const o = opts ? ` data-ui-opts='${opts}'` : '';
+    // the cursor is a dialog over a window's edge: the window under it holds still
+    const under = m.name === 'cursor' ? `<div class="at-corner" style="--ax:32px;--ay:40px" data-ui-load="window" data-ui-opts='{"compact":true}' data-ui-still></div>` : '';
+    return `<article class="card card--row"><h3>${m.title}<code>${m.name}</code></h3><p>${m.shows}</p>
+      <div class="panel" data-fx="${id}" data-fx-seed="${(i + 1) * 17}" data-fx-params='${JSON.stringify(params)}' data-fx-palette='${pal}' style="--calm-k:0%">
+        <div class="stage ${fade}">${under}<div class="${at}"${w}${o} data-ui-load="${m.name}"></div></div></div></article>`;
+  }).join('');
+  function setMode(mode) {
+    document.documentElement.dataset.theme = mode;
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  }
+  setMode(q.get('mode') === 'dark' ? 'dark' : 'light');
+  if (q.has('t')) fx.setClock(+q.get('t'));
+  // each ground is drawn once near the screen and kept as a picture (its WebGL context freed), so nineteen
+  // panels need one or two contexts, not nineteen
+  await Promise.all([ui.loadAll(grid), ui.grounds(grid, fx)]);
+  document.documentElement.dataset.ready = '1';
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', async () => {
+    setMode(b.dataset.mode);
+    for (const el of grid.querySelectorAll('[data-ui]')) el.__ui?.repaint?.();
+    await ui.grounds(grid, fx);
+  }));
+</script>
+</body>
+</html>

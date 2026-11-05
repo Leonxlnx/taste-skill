@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shaped window over a fixed world · big scene demo</title>
+<meta name="description" content="Demo of the hero scene in which two windows in a shutter open onto a photograph of the client's world, on a survey software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #f6f5f1; --p-surface: #ebe9e3; --p-ink: #191a18; --p-muted: #5f615c; --p-accent: #2f6b4f; --p-accent-ink: #ffffff; --p-action: #191a18; --p-action-ink: #f6f5f1;
+          --font-display: "Instrument Sans", system-ui, sans-serif; --font-text: "Instrument Sans", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Klippe</a>
+  <nav class="demo-nav__links"><a href="#">Surveys</a><a href="#">Models</a><a href="#">Viewer</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Book a survey</a></div>
+</div></header>
+<main>
+  <section class="sc" data-big-scene="shaped-window-over-fixed-world" style="--h: 2" aria-labelledby="sw-h">
+    <div class="sc__stage">
+      <div class="sw__world"><img class="sw__media" src="../_demo/photo-507.jpg" alt="A long fjord between steep green-grey walls, seen from a high rocky edge under big white cumulus cloud" width="1400" height="1053"></div>
+      <h1 class="sw__title" id="sw-h">The coast, mapped to two centimetres</h1>
+      <div class="sw__cta btn-row"><a class="btn btn--primary" href="#">Book a survey</a><a class="btn btn--secondary" href="#">Open the viewer</a></div>
+      <div class="sw__lede">
+        <p class="sw__word">Lysefjord</p>
+        <p>We flew the 42 kilometres of the fjord in nine days and turned 1.8 billion laser points into one model the rescue service now plans by.</p>
+        <a class="btn btn--secondary" href="#">Open the Lysefjord model</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What a survey delivers</h2><p class="t-lead" style="margin-top:16px">One flight plan, one crew, and a model you can open in the browser the week after.</p></div>
+        <ul class="rows rows--spec span-6 start-7">
+          <li><span class="rows__name">Accuracy</span><span class="rows__value">2 cm, checked on the ground</span></li>
+          <li><span class="rows__name">Formats</span><span class="rows__value">LAS, glTF, GeoTIFF</span></li>
+          <li><span class="rows__name">Viewer</span><span class="rows__value">In the browser, no install</span></li>
+          <li><span class="rows__name">From</span><span class="rows__value">38,000 kr a survey day</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Klippe · demo page for the big scene “Shaped window over a fixed world”</span><span>Photograph by Jeff Sheldon (Unsplash License), adapted.</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

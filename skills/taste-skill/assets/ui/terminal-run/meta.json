@@ -1,0 +1,23 @@
+{
+ "name": "terminal-run",
+ "title": "Terminal with a test run",
+ "shows": "A terminal pane (the repo, the shell, the branch): a command at the prompt, then a thin meter, one line per test file with its count and time, a blank row, a two-line summary and a status line with a green check and the run's duration; a fresh prompt waits under it with the caret. The command is typed again and run: each file's line arrives running (a spinner), then ticks, and the output streams in.",
+ "useFor": [
+  "developer tools",
+  "CLI",
+  "CI",
+  "testing",
+  "builds",
+  "deploys",
+  "AI coding"
+ ],
+ "size": [
+  440,
+  286
+ ],
+ "fluid": "fills its .fit up to --fit-max, 280 to 560px wide; under 380px the test counts go, under 300px the branch and the repo's parent folder (the prompt reads ~/api) and the path ellipsizes before the timing",
+ "js": true,
+ "place": "at-rise fit with --fit-max: 440px, 32 to 40px in and 32 to 40px down, whole with 24px or more of ground under it (a 352px panel at 40px down, 344px at 32px). Never cut: the fresh prompt under the status line is too short to carry a fade, so the status line would sit in it. In a wide panel or a split card, --fit-max up to 560px (the path column stops at 28 characters, so a wider pane only adds ground at its right). Not .to-edge: the screen keeps the finished picture's height",
+ "edit": "Lines are HTML, each one 20px row (it ellipsizes, never wraps; a blank line is an empty row, never a margin, so the run scrolls on the row grid). The command is [data-term-cmd] on the first prompt, as written (or opts.cmd, which replaces it); it is typed again each cycle. Every [data-term-out] line streams in after it, in order: a [data-term-step] line (a file) arrives with the kit's .ui-spin where its tick goes, then ticks and moves the meter ([data-term-meter]: its bar at --p, its count's first figure, so \"4 of 4 files\" reads \"2 of 4 files\"); an empty row comes with the line after it; [data-term-done] is the status line (the green check, the word, the duration). The last line, [data-term-next], is the fresh prompt with the caret, left empty. The prompt's path is ~/<span class=\"ui-term__up\">parent/</span>repo, so a narrow pane keeps ~/repo. Keep the ticks on the file lines in the ink: the check on the status line is the only green and the strongest mark, the meter's thin bar the one accent.",
+ "loop": "about 3.1 s a cycle: the command is typed again at the fresh prompt (50 to 80 ms a character), each file's line arrives running (a spinner turning once a second for 0.15 s) and ticks as the meter fills, the summary and the green check follow while the older run scrolls up a row at a time (each line leaving the top fades out whole and a new row waits for the scroll), then a fresh prompt; the finished picture holds for about 13% of the cycle; restarts when the pointer enters its card"
+}

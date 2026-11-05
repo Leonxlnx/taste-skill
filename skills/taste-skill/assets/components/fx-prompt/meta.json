@@ -1,0 +1,10 @@
+{
+  "id": "fx-prompt",
+  "name": "Prompt field with edge glow",
+  "for": "The hero prompt box of an AI or developer product: one light runs slowly around its border and blooms outward, so the one input on the page is found first.",
+  "effects": ["edge-glow"],
+  "default": "edge-glow",
+  "how": "edge-glow mounted on the box with an inset: it draws the card and its border, and the glow spreads into the margin around it. One lap takes about 12 s.",
+  "rules": ["One lit border per screen; other boxes stay static.", "A lap takes 6 to 18 s, never faster.", "The text area and buttons sit on the opaque card fill."],
+  "a11y": "A real form with a labelled textarea and labelled buttons; the canvas is aria-hidden. Reduced motion shows the border still, with its faint idle light."
+}

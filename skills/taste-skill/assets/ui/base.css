@@ -1,0 +1,266 @@
+/*
+  taste-skill UI fragment kit - shared base.
+  Small pieces of real product UI, set on an effect ground inside a card's inset panel.
+  The standard (references/cards.md): true product scale (13px text, 12px meta, never under 11px).
+  A fragment is a picture of a product's screen, so the page's 13px floor (VI-05) does not apply
+  inside .ui; every word the page itself says (titles, lines, labels, captions) keeps 13px or more.
+  The rest:
+  real-looking data, crisp 1px borders, radius 10-12, a soft layered shadow, one accent touch
+  (the agent's mark is the ink, so the accent stays free for that one touch).
+
+  Styled only by custom properties set by the page:
+    --ui-font, --ui-mono, --ui-radius
+    --fx-bg (the fragment's own surface), --fx-surface, --fx-ink, --fx-muted, --fx-accent, --fx-accent-ink
+  Light or dark is read from --fx-bg itself (relative colour), so a fragment needs no theme class.
+  Every size sits on a 4px grid. Loops stop under prefers-reduced-motion (the JS shows a still state).
+*/
+:where(.ui) {
+  --u-bg: var(--fx-bg, #ffffff);
+  --u-surface: var(--fx-surface, #f4f4f3);
+  --u-ink: var(--fx-ink, #111111);
+  --u-muted: var(--fx-muted, #6b6b6b);
+  --u-accent: var(--fx-accent, #e8571f);
+  --u-accent-ink: var(--fx-accent-ink, #ffffff);
+  --u-r: var(--ui-radius, 12px);
+  --u-r2: max(4px, calc(var(--u-r) - 4px));
+  --u-r3: max(4px, calc(var(--u-r) - 6px));
+
+  /* lines and fills, all mixed from the palette */
+  --u-line: color-mix(in oklab, var(--u-ink) 9%, transparent);
+  --u-line-2: color-mix(in oklab, var(--u-ink) 15%, transparent);
+  --u-border: color-mix(in oklab, var(--u-ink) 12%, transparent);
+  --u-fill: color-mix(in oklab, var(--u-ink) 3.5%, var(--u-bg));
+  --u-fill-2: color-mix(in oklab, var(--u-ink) 7%, var(--u-bg));
+  --u-fill-3: color-mix(in oklab, var(--u-ink) 11%, var(--u-bg));
+  --u-text-2: color-mix(in oklab, var(--u-ink) 80%, var(--u-bg));
+  --u-soft: color-mix(in oklab, var(--u-muted) 80%, var(--u-bg));
+  --u-tint: color-mix(in oklab, var(--u-accent) 13%, var(--u-bg));
+  --u-tint-2: color-mix(in oklab, var(--u-accent) 24%, var(--u-bg));
+  --u-accent-text: color-mix(in oklab, var(--u-accent) 74%, var(--u-ink));
+  --u-skel: color-mix(in oklab, var(--u-ink) 10%, var(--u-bg));
+  /* a brand tile is light on every surface, so a logo keeps its own colours (references/icons.md) */
+  --u-tile: #ffffff;
+  --u-tile-edge: inset 0 0 0 1px rgb(0 0 0 / 0.09), 0 1px 2px rgb(0 0 0 / 0.12);
+
+  /* depth: shadows grow and a top highlight appears as the fragment surface gets darker */
+  --u-sh: rgb(0 0 0 / 0.14);
+  --u-sh: oklch(from var(--u-bg) 0 0 0 / calc(0.5 - l * 0.38));
+  --u-hi: transparent;
+  --u-hi: oklch(from var(--u-bg) 1 0 0 / clamp(0, calc(0.11 - l * 0.11), 0.09));
+  --u-shadow:
+    inset 0 1px 0 var(--u-hi),
+    0 1px 1px color-mix(in oklab, var(--u-sh) 40%, transparent),
+    0 2px 4px -1px color-mix(in oklab, var(--u-sh) 45%, transparent),
+    0 12px 24px -8px color-mix(in oklab, var(--u-sh) 80%, transparent),
+    0 32px 64px -24px var(--u-sh);
+  --u-shadow-sm:
+    inset 0 1px 0 var(--u-hi),
+    0 1px 2px color-mix(in oklab, var(--u-sh) 55%, transparent),
+    0 6px 16px -6px color-mix(in oklab, var(--u-sh) 80%, transparent);
+  --u-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --u-spring: cubic-bezier(0.3, 1.3, 0.5, 1);
+
+  font-family: var(--ui-font, system-ui, -apple-system, "Segoe UI", sans-serif);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--u-ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  text-align: left;
+  letter-spacing: -0.003em;
+  box-sizing: border-box;
+}
+:where(.ui) *, :where(.ui) *::before, :where(.ui) *::after { box-sizing: border-box; }
+/* a fragment never runs out of its panel on its own: on a narrow panel it narrows; a placement that
+   crops it on purpose (cards.css, from 640px: every placement but .at-center) lifts this */
+[data-ui] { max-width: 100%; }
+/* fragments use div and span for text so page rules like `.card p` cannot reach them */
+.ui :where(ul, ol, li, figure, blockquote, article, aside, nav) { margin: 0; padding: 0; list-style: none; }
+.ui :where(mark) { background: none; color: inherit; }
+:where(.ui) button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: default; }
+:where(.ui) svg { display: block; flex: none; }
+
+/* ---------------------------------------------------------------- the window every fragment sits in */
+.ui-panel {
+  position: relative;
+  background: var(--u-bg);
+  border: 1px solid var(--u-border);
+  border-radius: var(--u-r);
+  box-shadow: var(--u-shadow);
+  max-width: 100%;
+}
+.ui-head {
+  display: flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--u-line);
+}
+.ui-title { font-size: 13px; font-weight: 500; line-height: 20px; white-space: nowrap; }
+.ui-meta { font-size: 13px; line-height: 16px; color: var(--u-muted); white-space: nowrap; }
+.ui-spacer { flex: 1; }
+.ui-sep { width: 1px; height: 16px; background: var(--u-line-2); flex: none; }
+
+/* window chrome: three quiet dots and a centred title */
+.ui-dots { display: flex; gap: 6px; flex: none; }
+.ui-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--u-fill-3); box-shadow: inset 0 0 0 0.5px var(--u-line); }
+
+/* ---------------------------------------------------------------- controls */
+/* the primary button is the ink (as on figma.com and x.ai); the accent is kept for one touch */
+.ui-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: none;
+  height: 28px; padding: 0 10px; border-radius: max(6px, var(--u-r3));
+  font-size: 13px; font-weight: 500; line-height: 1; white-space: nowrap;
+  background: var(--u-ink); color: var(--u-bg);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--u-bg) 14%, transparent), 0 1px 2px color-mix(in oklab, var(--u-sh) 60%, transparent);
+  transition: transform 160ms var(--u-ease), background-color 200ms var(--u-ease), color 200ms var(--u-ease);
+}
+.ui-btn--accent { background: var(--u-accent); color: var(--u-accent-ink); }
+.ui-btn--ghost { background: var(--u-bg); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2), 0 1px 2px color-mix(in oklab, var(--u-sh) 30%, transparent); }
+.ui-btn--quiet { background: transparent; color: var(--u-muted); box-shadow: none; }
+.ui-btn--sm { height: 24px; padding: 0 8px; font-size: 13px; }
+.ui-btn .ui-icon { width: 14px; height: 14px; }
+.ui-btn.is-pressed { transform: scale(0.96); }
+
+/* status: a dot and a word; quiet by default, the accent only where something is happening */
+.ui-chip {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  height: 22px; padding: 0 8px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; line-height: 1; white-space: nowrap;
+  background: var(--u-fill); color: var(--u-muted); box-shadow: inset 0 0 0 1px var(--u-line);
+}
+.ui-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.55; flex: none; }
+.ui-chip--plain::before { display: none; }
+.ui-chip--accent { background: var(--u-tint); color: var(--u-accent-text); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--u-accent) 22%, transparent); }
+.ui-chip--accent::before { background: var(--u-accent); opacity: 1; }
+.ui-chip--ink { color: var(--u-ink); }
+.ui-chip--ink::before { opacity: 1; }
+.ui-chip--live::before { animation: ui-live 1.6s var(--u-ease) infinite; }
+.ui-chip svg { width: 12px; height: 12px; margin: 0 -1px 0 -2px; }
+.ui-chip:has(svg)::before { display: none; }
+@keyframes ui-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.ui-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--u-accent); flex: none; }
+.ui-kbd {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 5px;
+  font: 500 13px/1 var(--ui-font, inherit); color: var(--u-muted);
+  background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2), inset 0 -1px 0 var(--u-line);
+}
+.ui-icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* people: initials on a quiet tone, five tones that never reach violet */
+.ui-avatar {
+  --h: 60;
+  display: grid; place-items: center; flex: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  font-size: 13px; font-weight: 600; line-height: 1; letter-spacing: -0.02em;
+  background: color-mix(in oklab, oklch(0.74 0.08 var(--h)) 34%, var(--u-bg));
+  color: color-mix(in oklab, oklch(0.5 0.09 var(--h)) 70%, var(--u-ink));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, oklch(0.6 0.08 var(--h)) 22%, transparent);
+}
+.ui-avatar[data-tone="1"] { --h: 40; }
+.ui-avatar[data-tone="2"] { --h: 85; }
+.ui-avatar[data-tone="3"] { --h: 150; }
+.ui-avatar[data-tone="4"] { --h: 220; }
+.ui-avatar[data-tone="5"] { --h: 20; }
+.ui-avatar--md { width: 32px; height: 32px; font-size: 13px; }
+.ui-avatar--accent { background: var(--u-accent); color: var(--u-accent-ink); box-shadow: none; }
+
+/* the product's own mark (an assistant, a bot): an ink disc with a four-point spark. It is the ink,
+   not the accent, so a fragment's one accent touch stays free for its status */
+.ui-agent {
+  position: relative; display: block; flex: none; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--u-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--u-bg) 12%, transparent), inset 0 1px 0 color-mix(in oklab, #fff 16%, transparent);
+}
+.ui-agent::after {
+  content: ""; position: absolute; inset: 26%; background: var(--u-bg);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 .8c.5 4.3 2.9 6.7 7.2 7.2-4.3.5-6.7 2.9-7.2 7.2C7.5 10.9 5.1 8.5.8 8 5.1 7.5 7.5 5.1 8 .8z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 .8c.5 4.3 2.9 6.7 7.2 7.2-4.3.5-6.7 2.9-7.2 7.2C7.5 10.9 5.1 8.5.8 8 5.1 7.5 7.5 5.1 8 .8z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* skeleton lines for the parts of a window that are only context */
+.ui-skel { display: block; height: 6px; border-radius: 3px; background: var(--u-skel); }
+
+/* ---------------------------------------------------------------- brand marks */
+/* Real brand icons are local files (icons/, written by scripts/icons.mjs fetch; icons-credits.json lists them): no page calls
+   a CDN for an icon. A mark on a tile (.ui-logo, .ui-file__icon, .ui-field__tile, .ui-diff__tool, .ui-pipe__tool) is a colour
+   file as <img src="icons/notion.svg" alt="">, the path as printed by fetch for the page that holds it. A small mark inline beside
+   text stays in the ink: the one-colour inline <svg class="ui-brand" aria-hidden="true"> that fetch --mono prints. */
+.ui-brand { display: block; flex: none; width: 18px; height: 18px; }
+svg.ui-brand { fill: currentColor; color: var(--u-ink); }
+.ui-brand--ink { color: var(--u-ink); }
+/* a brand logo on a small tile: the tile is light on every surface and the logo in its own colours */
+.ui-logo {
+  display: grid; place-items: center; flex: none;
+  width: 40px; height: 40px; border-radius: var(--u-r2);
+  background: var(--u-tile); box-shadow: var(--u-tile-edge);
+}
+.ui-logo img, .ui-file__icon img, .ui-field__tile img, .ui-diff__tool img, .ui-pipe__tool img { display: block; flex: none; object-fit: contain; }
+.ui-logo :is(svg, img, .ui-brand) { width: 20px; height: 20px; }
+.ui-logo--sm { width: 32px; height: 32px; border-radius: max(6px, var(--u-r3)); }
+.ui-logo--sm :is(svg, img, .ui-brand) { width: 16px; height: 16px; }
+.ui-logo--lg { width: 56px; height: 56px; border-radius: var(--u-r); }
+.ui-logo--lg :is(svg, img, .ui-brand) { width: 28px; height: 28px; }
+
+/* ---------------------------------------------------------------- the pointer */
+.ui-pointer {
+  position: absolute; left: 0; top: 0; z-index: 5;
+  width: 20px; height: 20px; pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.25)) drop-shadow(0 3px 6px rgb(0 0 0 / 0.2));
+  will-change: transform;
+}
+.ui-pointer svg { width: 20px; height: 20px; }
+/* a named pointer (a person or the agent working in the product) */
+.ui-pointer__name {
+  position: absolute; left: 14px; top: 18px; height: 20px; padding: 0 7px; border-radius: 6px 10px 10px 10px;
+  font: 500 13px/20px var(--ui-font, inherit); white-space: nowrap;
+  background: var(--u-accent); color: var(--u-accent-ink);
+}
+.ui-ring {
+  position: absolute; left: 0; top: 0; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+  border: 1.5px solid var(--u-accent); opacity: 0; pointer-events: none; z-index: 4;
+}
+.ui-ring.is-on { animation: ui-ring 520ms var(--u-ease) forwards; }
+@keyframes ui-ring { from { opacity: 0.8; transform: var(--at) scale(0.4); } to { opacity: 0; transform: var(--at) scale(1.5); } }
+
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+.ui-spin {
+  display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex: none;
+  border: 1.5px solid color-mix(in oklab, currentColor 30%, transparent); border-top-color: currentColor;
+  animation: ui-spin 700ms linear infinite;
+}
+
+/* ---------------------------------------------------------------- held, paused */
+/* a fragment held on its finished picture (data-ui-still, its cycles done) shows nothing that moves:
+   no caret, spinner or pulse runs on in a still picture */
+.is-ui-held, .is-ui-held *, .is-ui-held *::before, .is-ui-held *::after { animation: none !important; }
+.is-ui-paused, .is-ui-paused *, .is-ui-paused *::before, .is-ui-paused *::after { animation-play-state: paused !important; }
+
+/* the pause button ui.loop puts by a looping fragment (and an object from assets/objects, as
+   .loop-pause): a solid disc in the page colours (never a see-through blur), 32px in a 44px hit area,
+   the same as components' .cx-pause and system.css. In a card it sits beside the title (ui.js sets its
+   top and right; the title keeps 44px clear), in a panel outside a card 12px in from the bottom-right
+   corner, and with no panel under the fragment, in 44px kept free below it. */
+button.ui-pause.ui-pause, button.loop-pause {
+  position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center;
+  width: 32px; height: 32px; margin: 0; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--ink, #111) 16%, transparent);
+  background: var(--bg, #fff); color: var(--ink, #111);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 12px -4px rgb(0 0 0 / 0.28);
+  opacity: 0.88; transition: opacity 200ms ease, border-color 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+button.ui-pause.ui-pause--title { bottom: auto; box-shadow: none; opacity: 1; }
+button.ui-pause.ui-pause--below { right: 0; bottom: 6px; box-shadow: none; }
+.ui-pause-beside { padding-right: 44px; }
+button:is(.ui-pause, .loop-pause)::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
+button:is(.ui-pause, .loop-pause):is(:hover, :focus-visible) { opacity: 1; border-color: color-mix(in oklab, var(--ink, #111) 32%, transparent); }
+button:is(.ui-pause, .loop-pause):focus-visible { outline: 2px solid var(--ink, #111); outline-offset: 2px; }
+button:is(.ui-pause, .loop-pause) svg { display: block; width: 14px; height: 14px; fill: currentColor; }
+button:is(.ui-pause, .loop-pause).is-paused svg, button.loop-pause[aria-pressed="true"] svg { margin-left: 1px; }
+@media (forced-colors: active) { button.ui-pause.ui-pause, button.loop-pause { border-color: ButtonText; } }
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui) *, :where(.ui) *::before, :where(.ui) *::after { transition-duration: 0ms !important; animation: none !important; }
+  button.ui-pause.ui-pause, button.loop-pause { display: none; }
+}

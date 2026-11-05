@@ -1,0 +1,25 @@
+/* cursor: a reply waiting for approval; the pointer glides to the main button and clicks it */
+.ui-cursor { width: 360px; }
+.ui-cursor .ui-head .ui-agent { width: 20px; height: 20px; }
+.ui-cursor__state { transition: background-color 240ms var(--u-ease), color 240ms var(--u-ease), box-shadow 240ms var(--u-ease); }
+.ui-cursor.is-live .ui-cursor__state { background: var(--u-tint); color: var(--u-accent-text); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--u-accent) 22%, transparent); }
+.ui-cursor.is-live .ui-cursor__state::before { background: var(--u-accent); opacity: 1; }
+.ui-cursor__body { display: grid; gap: 12px; padding: 14px 16px 16px; }
+.ui-cursor__text { font-size: 13px; line-height: 20px; color: var(--u-text-2); }
+.ui-cursor__row { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 12px 0 8px; border-radius: 9px; background: var(--u-fill); box-shadow: inset 0 0 0 1px var(--u-line); }
+.ui-cursor__ico { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 7px; background: var(--u-bg); box-shadow: inset 0 0 0 1px var(--u-line-2); color: var(--u-muted); }
+.ui-cursor__what { display: grid; flex: 1; min-width: 0; }
+.ui-cursor__name { font-size: 13px; font-weight: 500; line-height: 16px; }
+.ui-cursor__sub { font-size: 13px; line-height: 16px; color: var(--u-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ui-cursor__amt { font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.ui-cursor__foot { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 16px; border-top: 1px solid var(--u-line); }
+.ui-cursor__hint { display: inline-flex; gap: 4px; }
+.ui-cursor__hint .ui-kbd { height: 20px; font-size: 13px; }
+.ui-cursor__go { min-width: 132px; }
+.ui-cursor__go :is(.ui-cursor__spin, .ui-cursor__ok) { display: none; }
+.ui-cursor__ok { width: 14px; height: 14px; }
+.ui-cursor__go.is-busy .ui-cursor__spin { display: inline-block; }
+.ui-cursor__go.is-done .ui-cursor__ok { display: block; }
+.ui-cursor .ui-pointer { transition: transform 820ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms var(--u-ease); }
+.ui-cursor .ui-pointer.is-down { scale: 0.88; transition: transform 820ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms var(--u-ease), scale 120ms var(--u-ease); }
+@media (max-width: 400px) { .ui-cursor { width: 320px; } .ui-cursor__hint { display: none; } }

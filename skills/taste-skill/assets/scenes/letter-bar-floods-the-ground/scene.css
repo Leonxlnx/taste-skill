@@ -1,0 +1,38 @@
+/* letter-bar-floods-the-ground - at rest: the statement on the page ground, then the next
+   statement on the inverse ground as a block under it. Live: the line on the held stage, scaled
+   round its stem (the pivot glyph hidden under a solid column that scales sharp); the ground a
+   full-width layer clipped to the column, the next statement inside it. */
+[data-big-scene="letter-bar-floods-the-ground"] { background: var(--bg); color: var(--ink); }
+[data-big-scene="letter-bar-floods-the-ground"] .lbf__line { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: var(--t-h1); line-height: 1; white-space: nowrap; }
+[data-big-scene="letter-bar-floods-the-ground"] .lbf__ground { background: var(--p-inv-bg); color: var(--p-inv-ink); }
+[data-big-scene="letter-bar-floods-the-ground"] .lbf__next h2 { margin: 0; font-size: var(--t-h2); line-height: 1.1; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); max-width: 18ch; }
+[data-big-scene="letter-bar-floods-the-ground"] .lbf__next p { margin-top: var(--s-4); font-size: var(--t-lead); line-height: 1.5; max-width: 48ch; color: var(--p-inv-ink); }
+[data-big-scene="letter-bar-floods-the-ground"] .lbf__stem { display: none; }
+
+/* ---------- finished composition */
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) > .sc__stage { display: grid; }
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__line { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad); white-space: normal; text-align: center; }
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__ground { padding: var(--section-band) var(--pad); }
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__next { width: 100%; max-width: var(--container); margin-inline: auto; text-align: center; display: grid; justify-items: center; }
+
+/* ---------- the held stage */
+[data-big-scene="letter-bar-floods-the-ground"].is-live > .sc__stage { display: grid; place-items: center; }
+[data-big-scene="letter-bar-floods-the-ground"].is-live .lbf__line { grid-area: 1 / 1; position: relative; will-change: transform; }
+[data-big-scene="letter-bar-floods-the-ground"].is-live .lbf__pivot { visibility: hidden; }     /* the solid column stands in its place */
+[data-big-scene="letter-bar-floods-the-ground"].is-live .lbf__stem {
+  display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: var(--ink); transform-origin: 0 0; will-change: transform; z-index: 1; pointer-events: none;
+}
+[data-big-scene="letter-bar-floods-the-ground"].is-live .lbf__ground {
+  position: absolute; inset: 0; visibility: hidden; z-index: 2; will-change: clip-path;
+}
+[data-big-scene="letter-bar-floods-the-ground"].is-live .lbf__next {
+  position: absolute; left: 50%; top: 50%; width: 100vw; max-width: 100vw; padding-inline: var(--pad); transform: translate(-50%, 0);
+  margin-top: -3em; text-align: center; display: grid; justify-items: center; opacity: 0; will-change: transform, opacity;
+}
+
+/* ---------- finished composition in the page rhythm: the statement large, the inverse band under it down to the section's foot (the next section sits on the same ground) */
+main > .sc[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) { padding-bottom: 0; }
+main > .sc[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) > .sc__stage { grid-template-rows: auto 1fr; min-height: calc(var(--h, 1) * 100svh - var(--padt, 120px)); }
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__line { padding-block: 0 var(--s-8); font-size: clamp(64px, 14vw, 216px); }
+[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__ground { display: grid; align-content: center; box-shadow: 0 0 0 100vmax var(--p-inv-bg); clip-path: inset(0 -100vmax); }
+@media (max-width: 639px) { main > .sc[data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) > .sc__stage { min-height: calc(var(--hm, var(--h, 1)) * 100svh - var(--padt, 96px)); } [data-big-scene="letter-bar-floods-the-ground"]:not(.is-live) .lbf__line { font-size: clamp(52px, 19vw, 96px); padding-bottom: var(--s-7); } }

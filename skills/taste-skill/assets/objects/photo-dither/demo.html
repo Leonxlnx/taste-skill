@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-palette="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dithered photograph</title>
+<meta name="description" content="A photograph printed in three colours as a fine grain: its darkest colour, its strongest colour and the paper. Point at it and the photo develops through the grain.">
+<link rel="stylesheet" href="../photo-kit/demo.css">
+</head>
+<body>
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<script type="module">
+  import object from './object.js';
+  import { demo } from '../photo-kit/demo.js';
+  demo(object, {
+    blurb: "A photograph printed in three colours as a fine grain: its darkest colour, its strongest colour and the paper. Point at it and the photo develops through the grain.",
+    notes: [["At rest","The grain holds still. The print is finished from the first frame."],["Light photos","Near-whites print as clean paper, with no stray grain."],["On hover","The photo comes through around the cursor. A quick stroke leaves a short trail."]],
+    ...{ params: {} },
+  });
+</script>
+</body>
+</html>

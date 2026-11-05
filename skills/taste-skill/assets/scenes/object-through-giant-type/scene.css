@@ -1,0 +1,43 @@
+/* object-through-giant-type - at rest: the quote in capitals, in ink, with the object's still standing
+   above it and the credit under. Live: the wall of capitals filling the held stage, the object on its
+   own layer falling through it (the render draws over its still while the scene is near). */
+[data-big-scene="object-through-giant-type"] { background: var(--bg); color: var(--ink); --ott-obj: min(44svh, 34vw); --ott-size: clamp(34px, 6.6vw, 104px); --ott-gap: .62; }
+[data-big-scene="object-through-giant-type"] .ott__quote { margin: 0; }
+[data-big-scene="object-through-giant-type"] .ott__line {
+  margin: 0; display: flex; justify-content: center; gap: 0.26em; white-space: nowrap;
+  font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: -0.01em; text-transform: uppercase;
+  font-size: var(--ott-size); line-height: 0.98;
+  color: color-mix(in oklab, var(--ink) calc(var(--k, 1) * 100%), var(--muted) );
+}
+[data-big-scene="object-through-giant-type"] .ott__half { display: inline-block; will-change: transform; }
+[data-big-scene="object-through-giant-type"] .ott__object { position: relative; }
+[data-big-scene="object-through-giant-type"] .ott__still, [data-big-scene="object-through-giant-type"] .ott__img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
+[data-big-scene="object-through-giant-type"] .ott__host { position: absolute; inset: 0; }
+[data-big-scene="object-through-giant-type"] .ott__host.is-failed { display: none; }
+[data-big-scene="object-through-giant-type"] .ott__credit { margin: 0; font-size: var(--t-body); color: var(--muted); text-align: center; }
+
+/* ---------- finished composition */
+[data-big-scene="object-through-giant-type"]:not(.is-live) > .sc__stage {
+  display: grid; gap: var(--s-7); justify-items: center; width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section) var(--pad);
+}
+[data-big-scene="object-through-giant-type"]:not(.is-live) .ott__object { width: min(300px, 64vw); order: -1; }
+[data-big-scene="object-through-giant-type"]:not(.is-live) .ott__line { --k: 1; }
+@media (max-width: 767px) {
+  [data-big-scene="object-through-giant-type"] { --ott-size: clamp(24px, 7.8vw, 36px); }
+  [data-big-scene="object-through-giant-type"]:not(.is-live) .ott__line { white-space: normal; flex-wrap: wrap; row-gap: 0; }
+}
+
+/* ---------- the held stage */
+[data-big-scene="object-through-giant-type"].is-live > .sc__stage { display: grid; place-items: center; padding: var(--nav-h, 0px) var(--pad) 0; perspective: 1200px; }
+[data-big-scene="object-through-giant-type"].is-live .ott__quote { grid-area: 1 / 1; will-change: transform; }
+[data-big-scene="object-through-giant-type"].is-live .ott__object {
+  grid-area: 1 / 1; z-index: 2; width: var(--ott-obj); will-change: transform, opacity; pointer-events: none; transform-style: preserve-3d;
+}
+[data-big-scene="object-through-giant-type"].is-live .ott__credit { position: absolute; left: 0; right: 0; bottom: var(--s-7); opacity: 0; will-change: transform, opacity; }
+
+/* ---------- finished composition in the page rhythm: one screen of the quote, a smaller object */
+@media (min-width: 768px) {
+  [data-big-scene="object-through-giant-type"]:not(.is-live) { --ott-size: clamp(34px, 5.4vw, 88px); }
+  [data-big-scene="object-through-giant-type"]:not(.is-live) > .sc__stage { gap: var(--s-5); }
+  [data-big-scene="object-through-giant-type"]:not(.is-live) .ott__object { width: min(220px, 22vw); }
+}

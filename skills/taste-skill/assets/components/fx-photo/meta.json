@@ -1,0 +1,16 @@
+{
+  "id": "fx-photo",
+  "name": "Photograph with copy",
+  "for": "A story, team or place card built on the client's own photograph of the subject the copy names, in its natural colour, with the copy in a solid card inset in one corner, as figma.com and x.ai show their pictures.",
+  "effects": [],
+  "default": "none",
+  "how": "Put the photograph in the frame as <img data-fx-photo> with real alt text. Nothing is drawn over it, no scrim and no gradient: the copy stands in a solid card in the page's own ground and ink (never a word straight on the picture); pointed at, the picture eases in 3%. No dealt effect ever applies to a photograph (effects is empty on purpose, data-cx-effect is ignored). data-cx-grade=\"duotone\" on the article, set by hand, is only for an editorial page that prints every picture in its own tones: duotone-grade then grades it into three page tones, drawn once and kept as a picture (no WebGL context at rest).",
+  "rules": [
+    "Only a photograph of what the copy is about: the client's product, people or place, or a vetted photograph of the same kind of thing. Never a blank notebook, a laptop on a desk, a coffee cup or a handshake.",
+    "Never halftone, dither, dissolve or print filters over a photograph: the picture is shown as it is.",
+    "One photograph card per screen.",
+    "The photographer's credit goes in the page's one footer credit line, never under the picture."
+  ],
+  "a11y": "The photograph keeps real alt text; the copy is a heading and a link. Nothing moves at rest; the ease-in only answers the pointer and is off under reduced motion.",
+  "photo": "meeting-room.jpg: Breather, Unsplash licence (https://unsplash.com/photos/DEdM9Vs6s8w), from the skill's vetted photo kit (assets/objects/photo-kit). A stand-in: replace with the client's own photograph."
+}

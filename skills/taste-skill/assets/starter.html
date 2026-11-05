@@ -1,0 +1,412 @@
+<!doctype html>
+<!-- data-type: the page's type, plan line 1 (SKILL.md section 1): software, product, place or service,
+     the same value as <meta name="page-type">.
+     data-radius: sharp, soft or round. data-ground: the lit ground behind UI (sand, sky, sage, or
+     painting with painterly-landscape). data-buttons: the dealt button look (sections.md, section 2):
+     solid, pill, tonal, arrow or block; the button markup stays the same. data-motion: the
+     micro-interactions of assets/motion (references/motion.md); keep it. -->
+<html lang="en" data-type="[software]" data-radius="soft" data-ground="sand" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>[Name]: [what it is] for [who or where]</title>
+<meta name="description" content="[One sentence: what it is, for whom or where, the main benefit.]">
+<!-- the kind decides every effect and motion allowance (SKILL.md section 1: data-type and page-type
+     carry the page type, site-kind the kind). software: an app, SaaS, AI, developer tool or fintech
+     (type software, site-kind software); a game (type software, site-kind gaming); hardware or a
+     tech device (type product, site-kind tech). Every other product or brand (type product), a
+     service firm or studio (type service) and a place (type place) are site-kind other:
+     photographs, type and flat colour, nothing moving by itself. A place adds
+     <meta name="page-kind" content="place">. -->
+<meta name="site-kind" content="[software]">
+<meta name="page-type" content="[software]">
+<!-- Replace the next line and the :root block with the block from: node <skill>/scripts/start.mjs css ...
+     (Google Fonts links, system.css and the :root palette). Keep the order: system.css, ui/cards.css,
+     motion/motion.css, backgrounds/backgrounds.css, layout/layout.css, icons/icon.css (the .ic-tile
+     and .ic-ink rules: a black mark such as GitHub or Apple needs them on a dark ground). -->
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<style>:root { /* --p-* palette, --font-* and --display-* exactly as start.mjs prints them (it alone deals the type) */ }</style>
+<!-- the UI fragments' own CSS, linked here so a fragment is drawn with scripts off or before they run (ui.js only
+     adds what is missing: it skips a stylesheet that is already linked). One line per fragment the page uses
+     (assets/ui/<name>/fragment.css); delete the line when the page uses none. -->
+<link rel="stylesheet" href="assets/ui/base.css">
+<link rel="stylesheet" href="assets/ui/[name]/fragment.css">
+<!-- a diagram card (assets/diagrams, references/diagrams.md): its stylesheet here and mount.js after the
+     other scripts; delete both lines when the page has no diagram -->
+<link rel="stylesheet" href="assets/diagrams/diagram.css">
+<!-- the grounds' page tokens before the first paint (assets/backgrounds; plain, not deferred) -->
+<script src="assets/backgrounds/backgrounds.js"></script>
+<!-- moments (only when moments.mjs dealt one; else delete these lines): the guard, then one preload
+     for the core, its lib and each dealt moment (assets/moments/<id>/moment.js). system.js mounts them.
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/[dealt id]/moment.js">
+-->
+<!-- page CSS: only what sits inside a visual and the kit lacks, and one --p-h per card group -->
+<style>
+  #features .panel { --p-h: 300px; }
+</style>
+</head>
+<!-- grounds (tech only; assets/backgrounds/pick.mjs deals 0 to 2 section grounds, never a page ground):
+     a section ground is one class on its <section>; bg-topglow goes on a wrapper round the nav and the
+     hero only when the deal lists it. On kind other (product, service, place: cafes, shops, studios) no
+     ground class at all, and no data-ground on <html>: flat colour and photographs. -->
+<body>
+<!-- type: [software | product | place | service]
+     deal: hero [..], nav [..], close [..], footer [..], rhythm [..], buttons [..], mark [..], grounds [..]
+     moments: [dealt ids and their sections]
+     The page is a stack of screens (layout-v4.md): the hero alone on the first, every other section
+     and the footer exactly one or two (style="--h: 2" or class="g2"), its h2 first. Plan the content
+     of each before building: one screen holds 708px of content at 1440x900.
+     Every [bracket] in this file is replaced before the page ships: system.js outlines any left in red.
+     One page: every link goes to an #id on it (a section's id, #contact, #top for the logo); Privacy,
+     Terms and Imprint go to small pages you write (privacy.html ...) or are deleted (sections.md). -->
+
+<!-- NAV (references/sections-library.md): one fixed, opaque bar on the page's .wrap. The dealt type is
+     a class: nav-mega and nav-cards "nav", nav-centre "nav nav--centre", nav-split "nav nav--split";
+     add nav--tone for the bar on the page's inverse ground. At least one word opens a full-width
+     panel on hover and goes to its section on click; on a phone system.js turns the bar into a sheet.
+     aria-current="page" marks the word of the page you are on, on an inner page only (pricing.html);
+     a one-page site leaves it off every word.
+     The logo: the client's own SVG; without one, the dealt mark and the name in the display face:
+     arc, ring, stack, dots: <span class="mark" data-mark="arc" aria-hidden="true"></span>
+     initial: <span class="mark mark--initial" aria-hidden="true">K</span> (the name's first letter)
+     wordmark: no mark, the name alone. The footer repeats it. -->
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#[section id]">[Word] <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <!-- nav-mega: two or three link columns and one menu card. nav-cards and nav-split: three or
+                 four a.menu-card.span-4 (or .span-3), each a .panel holding the client's photograph
+                 (<img class="frame__img">) or one fragment at its corner, over a title and one line. -->
+            <div class="menu-col span-3">
+              <p class="t-label">[Group]</p>
+              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
+              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
+              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">[Group]</p>
+              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
+              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#[section id]">
+              <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]"></div>
+              <span class="t-card">[What is new]</span>
+              <span class="t-small muted">[One line]</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
+      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
+      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
+    </nav>
+    <!-- the main action is the one button; a plain word before it only for something the client really
+         has (Sign in for an app with accounts, Gift cards it sells), else delete it -->
+    <div class="nav__actions">
+      <a class="nav__link" href="#[section id]">[Second action the client has]</a>
+      <a class="btn btn--primary" href="#[section id]">[Main action]</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO: exactly the first screen; the fixed header lies over its top. Paste the dealt hero from
+       assets/layout/hero-<id>.html (layout/deal.mjs deals it; heroes.json has its numbers) in place of
+       this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most).
+       A place's hero is never dealt: it is always assets/layout/hero-place.html (Recipe 3, the
+       photograph under the header with nothing on it, the words under it on the ground).
+       This default is the split: the words on span-6, the client's photograph on span-6 start-7 (the
+       page's split pair, the same on every split: 6/6, 5/7 or 7/5), as tall as the hero's content box. The primary button carries the drawn arrow (svg.m-arrow). -->
+  <section class="hero hero--split" aria-labelledby="hero-h">
+    <div class="wrap">
+      <div class="hero-text grid hero-split">
+        <div class="hero-copy span-6">
+          <!-- optional notice line: one line with a number (changed hours, a delivery cut-off) -->
+          <p class="hero-notice">[One line with a number]</p>
+          <h1 id="hero-h">[What it is] [for whom or where]</h1>
+          <p class="t-lead">[How it works and the main benefit, with one hard fact.]</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+            <a class="btn btn--secondary" href="#[section id]">[Second action]</a>
+          </div>
+          <!-- three short facts at the foot of the column, on the picture's bottom line (desktop only); on a
+               tech page one of them may count up once on load: <dd data-m-count>[1,240]</dd> -->
+          <dl class="hero-facts">
+            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
+            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
+            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
+          </dl>
+        </div>
+        <!-- a photograph of the client's work, place or product (its own frame: no caption under it);
+             or a window, a phone or an object as the dealt hero says -->
+        <div class="hero-visual frame frame--photo span-6 start-7">
+          <img class="frame__img" src="[photo]" alt="[what it shows]" fetchpriority="high" data-source="[client | library | shoot]" data-subject="[what it is of]">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIONS: the type's plan (references/sections.md), each built to its recipe and planned to its
+       screens. One example: the 2x2 of feature tiles, two boxes deep (.card--open: the words on the
+       page ground, the panel under them), as two screens (.g2): row 1 the h2 and the first two tiles,
+       row 2 the next two, starting --padt under the second screen's top. On a phone a section keeps
+       its desktop count unless it says otherwise: style="--hm: 2" or class="g2m" when its stacked
+       content needs two phone screens (check at 390x844: nothing may run into the next section).
+       Each fragment is pasted from
+       assets/ui/<name>/fragment.html and rewritten, at its recipe's place; one loop in the group
+       (data-ui-loop); the others hold their finished picture and play while the pointer is on them. -->
+  <section class="section g2" id="features" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="features-h">[What it does.] <span class="muted">[One sentence that sums up the four.]</span></h2>
+        </div>
+        <div class="grid">
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel" data-fx="[card effect: a tech page only]" data-fx-seed="21">
+              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:400px;--ax:max(24px, 50% - 200px);--ay:48px;--ay-sm:48px" data-ui-loop>
+                <div class="ui ui-panel ui-chat" data-ui="chat">
+                  <div class="ui-head"><span class="ui-agent" aria-hidden="true"></span><div class="ui-title">[Name]</div><span class="ui-chat__online">Online</span><span class="ui-spacer"></span></div>
+                  <div class="ui-chat__body">
+                    <div class="ui-chat__day">[Today, 9:41]</div>
+                    <div class="ui-msg ui-msg--me" data-chat-q><span class="ui-msg__text">[A real customer question]</span></div>
+                    <div class="ui-msg ui-msg--bot" data-chat-a>
+                      <span class="ui-agent ui-msg__av" aria-hidden="true"></span>
+                      <span class="ui-msg__col">
+                        <span class="ui-chat__typing" aria-hidden="true"><i></i><i></i><i></i></span>
+                        <span class="ui-chat__answer">[The answer in two lines, with <b>one real detail</b>.]</span>
+                        <span class="ui-chat__srcs"><span class="ui-chat__src"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></svg>[Its source]</span></span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ui-chat__input"><span class="ui-chat__ph">Write a message</span><span class="ui-chat__send" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 13V3.5M3.8 7.5 8 3.3l4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+                </div>
+              </div></div>
+            </div>
+          </article>
+          <!-- the second tile of row 1: a different fragment (notify, files with real icons, a diagram
+               from assets/diagrams) or the client's photograph in the panel (<img class="frame__img">) -->
+        </div>
+      </div>
+      <div class="grid">
+        <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ: every answer open, always (no accordion): <div class="faq"><div class="faq__item"><h3>[Question]</h3>
+       <p>[Answer in one or two sentences.]</p></div> ...</div>, the questions people really ask.
+       QUOTE-STAT: a quote with the speaker's face beside one big number, still. One screen; merge it into
+       the section above when alone it holds under 495px. A number that counts up (data-m-count,
+       motion.js) is a tech page's one count, in its hero only (a fact in .hero-facts), never in a card,
+       a panel or a section further down; a count, never a year or a price. -->
+  <template data-part="quote-stat">
+    <section class="section" id="[section id]" aria-labelledby="[quote id]">
+      <div class="wrap">
+        <div class="section-head"><h2 id="[quote id]">[Who uses it, plainly]</h2></div>
+        <div class="grid fill">
+          <figure class="quote span-8">
+            <blockquote>[What the customer said, in their words, at most 40 words.]</blockquote>
+            <div class="person"><img src="[portrait]" alt="[Full name]" width="40" height="40"><span><span class="person__name">[Full name]</span><span class="person__role">[Role], [Company]</span></span></div>
+          </figure>
+          <div class="stat-aside span-3 start-10">
+            <p class="t-stat">[64%]</p>
+            <p class="t-small muted">[What the number counts, over what time]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- PEEK-LIST (a place's or a service's moment): rows beside one photograph that changes at once to
+       the row under the pointer, the focus or a tap (system.js). Text left, the photograph on the split
+       line; every row's words on the left line (the row on show is marked by a dot after its name). -->
+  <template data-part="peek-list">
+    <section class="section" id="[section id]">
+      <div class="wrap">
+        <div class="section-head"><h2>[What the rows are: rooms, the house, services]</h2><p>[One line.]</p></div>
+        <div class="grid grid--top fill" data-peek>
+          <ul class="rows span-6">
+            <li data-peek-to="[key 1]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
+            <li data-peek-to="[key 2]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
+          </ul>
+          <div class="frame frame--photo frame--fill span-6 start-7">
+            <img class="frame__img" data-peek-for="[key 1]" src="[photo of row 1]" alt="[what it shows]">
+            <img class="frame__img" data-peek-for="[key 2]" src="[photo of row 2]" alt="[what it shows]" hidden>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- VISIT (a place, screen 2, directly after the hero; sections.md): system.css's .visit, on the container's lines.
+       Open type by default (no box). The full page puts it in a split column beside the client's photograph
+       (.visit.visit--card on span-6, the photograph on span-6 start-7: the panel on --g-alt, 1024px and up only).
+       The short page adds .visit--cols (address, hours and access as three columns, no rows) and puts the menu
+       as .rows under it in the same section. Street and district only; a phone only when the brief gives one;
+       at most two rows under the columns. -->
+  <template data-part="visit">
+    <section class="section" id="visit" data-place="visit" aria-label="Visit">
+      <div class="wrap">
+        <div class="visit">
+          <div class="visit__head"><p class="t-label muted">Visit</p><p class="t-small" data-open-now></p></div>
+          <div class="visit__cols">
+            <div class="visit__col stack-4">
+              <address class="visit__address">[Street]<br>[District]</address>
+              <a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a>
+            </div>
+            <div class="visit__col">
+              <!-- data-tz: the venue's time zone; system.js marks today's row there -->
+              <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
+            </div>
+          </div>
+          <ul class="visit__rows">
+            <li><span>[Access]</span><span>[Step-free at the front door]</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- DRAWING: only a dimension figure beside a product's specs (sections-library.md): the real side
+       view with its measured spans, one SVG unit a millimetre, the viewBox the product plus 6% all
+       round, --ar its width over height; every real part a g.part (lines .ln, a filled part .fill,
+       one part .acc in the accent); two or three dimension lines (.dim) whose figures are the
+       spans, placed in percent of the figure. Never the picture of a product that has no photograph
+       (that is a shot ladder or a short page, sections.md, never a drawing), never hardware drawn as
+       an SVG, clip-art or an icon. -->
+  <template data-part="drawing">
+    <figure class="drawing" style="--ar: [viewBox width / height]" role="img" aria-label="[The product, from the side, its main sizes]">
+      <svg viewBox="0 0 [width] [height]" aria-hidden="true">
+        <g class="part"><path class="fill" d="[a body or a top]"/></g>
+        <g class="part"><path class="ln" d="[a frame, a leg, a strap]"/></g>
+        <g class="part"><path class="acc" d="[the one part in the accent]"/></g>
+        <g class="dim"><path d="[M x1 y H x2: the line]"/><path d="[the two end ticks]"/></g>
+      </svg>
+      <span class="drawing__dim" style="left: [x]%; top: [y]%">[1,400 mm]</span>
+    </figure>
+  </template>
+</main>
+
+<!-- FOOTER.CLOSING: the close and the footer in one last screen (system.css). Its .wrap holds exactly
+     two children: the dealt close (row 1) and the links (row 2). The ground is dealt too: the page's
+     ground (this one), "footer closing footer--dark ground-inverse", or "footer closing
+     footer--statement" (the lit ground, full bleed). A place swaps row 2 for links-visit below.
+     The close repeats the main action word for word; its h2 is eight words or fewer.
+     Links go to the page's sections (#ids) and #contact; Privacy, Terms (and Imprint only when the
+     brief gives the details) go to pages you write, never left dead. The legal row ends with the
+     credits line when the page shows photographs that are not the client's: one short line naming the
+     sources actually used, which opens the list. No address the brief does not give: street and
+     district only, never a house number, a postcode, a phone in a real format or a register number. -->
+<footer class="footer closing" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <!-- close--type (this one): the h2 and a line, the big button across the .wrap. Others below. -->
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">[The main action, plainly]</h2>
+        <p>[One line: the trial, the price or the reply time.]</p>
+      </div>
+      <a class="btn btn--primary btn--xl btn--wide" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
+          <p class="footer__lede">[What the company does, in one plain line.]</p>
+        </div>
+        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="terms.html">Terms</a></span>
+        <div class="socials"><!-- empty unless the brief gives the client's accounts: node <skill>/scripts/icons.mjs
+             get si:x si:instagram --mono --out assets/icons prints one <span class="icon-mono"> per mark;
+             put each in <a href=".." aria-label="..">..</a> --></div>
+        <a class="credits" href="credits.html">Photographs via [sources used]</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<template data-part="close-photo">
+  <!-- row 1 as close--photo: the head row, then the client's photograph down to the links -->
+  <div class="closing__cta close--photo">
+    <div class="section-head--split">
+      <div><h2 id="close-h">[The main action, plainly]</h2><p class="t-lead">[One line with the price or the hours.]</p></div>
+      <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="close__media"><img src="[a second photograph, never the hero's]" alt="[what it shows]" loading="lazy" data-source="[client | library | shoot]" data-subject="[what it is of]"></div>
+  </div>
+</template>
+
+<template data-part="close-word">
+  <!-- row 1 as close--word: the h2 and the button, then the name across the .wrap -->
+  <div class="closing__cta close--word">
+    <div class="section-head--split">
+      <div><h2 id="close-h">[The main action, plainly]</h2><p class="t-lead">[One line: the trial or the reply time.]</p></div>
+      <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <p class="close__word" aria-hidden="true">[Name]</p>
+  </div>
+</template>
+
+<template data-part="links-visit">
+  <!-- row 2 on a place (footer closing footer--visit): where it is, set large, with the way there;
+       the hours from the split line; one row of the nav's words. Street and district only. -->
+  <div class="closing__links">
+    <div class="grid">
+      <div class="span-6 stack-4">
+        <address class="footer__address">[Street], [district]</address>
+        <p><a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a></p>
+      </div>
+      <div class="span-6 start-7 stack-4">
+        <h4>Opening hours</h4>
+        <!-- data-tz: the venue's time zone; system.js marks today's row there. Never .is-today by hand. -->
+        <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a></span>
+      <a class="credits" href="credits.html">Photographs via [sources used]</a>
+    </div>
+  </div>
+</template>
+
+<!-- ACTION BAR (a place: required; other types may use it): fixed at the phone's foot, the main
+     action, or Get directions and Book, as the brief allows. Delete it on other pages.
+<nav class="actionbar" aria-label="Quick actions">
+  <a class="btn btn--primary" href="#[section id]">[Main action]</a>
+</nav>
+-->
+
+<!-- nav, tabs, highlights, effects, fragments, moments, pause buttons and the guards: system.js;
+     hovers, presses, the nav's current word, tabs, focus, counts and card loops: motion.js;
+     the heroes' small moments: layout.js. Add no script for these. -->
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="assets/diagrams/mount.js"></script>
+<!-- a print object (data-print) loads its script after these (assets/objects/_print-core/README.md):
+<script type="module" src="assets/objects/_print-core/auto.js"></script>
+     a big scene (data-big-scene) loads assets/scenes/scenes.js instead (references/scenes.md) -->
+</body>
+</html>

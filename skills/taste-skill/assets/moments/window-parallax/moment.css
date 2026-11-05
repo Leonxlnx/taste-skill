@@ -1,0 +1,6 @@
+/* window-parallax: the picture is cut taller than its frame by --mo-travel each way and moved by
+   transform with the scroll. */
+.mo-wp { --mo-travel: 12%; position: relative; overflow: hidden; isolation: isolate; }
+.mo-wp > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mo-wp.is-live > img { position: absolute; left: 0; right: 0; top: calc(-1 * var(--mo-travel)); height: calc(100% + 2 * var(--mo-travel)); will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .mo-wp.is-live > img { position: static; height: 100%; transform: none !important; } }

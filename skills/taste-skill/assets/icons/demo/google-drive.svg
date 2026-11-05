@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 256 238" width="256" height="238"><defs>
+        <path d="M77.303013,29.2696361 C99.8343226,-9.75577512 156.165677,-9.75731561 178.696987,29.2696361 L248.07019,149.428404 C270.601499,188.455356 242.436592,237.238275 197.372432,237.238275 L58.6275676,237.238275 C13.563408,237.238275 -14.6014992,188.455356 7.92981036,149.428404 L77.303013,29.2696361 Z" id="path-1"></path>
+        <linearGradient x1="86.9238621%" y1="94.293942%" x2="7.62952552%" y2="45.9524317%" id="linearGradient-3">
+            <stop stop-color="#FFE921" offset="9%"></stop>
+            <stop stop-color="#FEC700" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="99.5381738%" y1="93.9010829%" x2="23.4369107%" y2="54.0328204%" id="linearGradient-4">
+            <stop stop-color="#A9A8FF" offset="15%"></stop>
+            <stop stop-color="#6D97FF" offset="33%"></stop>
+            <stop stop-color="#3186FF" offset="48%"></stop>
+        </linearGradient>
+        <linearGradient x1="87.1278959%" y1="51.5184912%" x2="-0.638984139%" y2="93.0781332%" id="linearGradient-5">
+            <stop stop-color="#0EBC5F" offset="55%"></stop>
+            <stop stop-color="#78C9FF" offset="85%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <g mask="url(#mask-2)">
+            <g transform="translate(-42.8696, -58.6696)">
+                <polygon fill="url(#linearGradient-3)" points="341.719213 295.937182 200.166022 295.937182 170.873471 245.202453 241.650066 122.61278"></polygon>
+                <polygon fill="url(#linearGradient-4)" points="0 295.915615 100.069146 122.591213 100.069146 122.594294 70.787379 173.316699 129.357076 173.316699 200.139833 295.912534 0.00154049703 295.914074"></polygon>
+                <polygon fill="url(#linearGradient-5)" points="170.881173 0 241.66239 122.600456 212.376001 173.325942 70.8120269 173.325942"></polygon>
+            </g>
+        </g>
+    </g></svg>

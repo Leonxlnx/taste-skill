@@ -1,0 +1,10 @@
+{
+  "id": "fx-globe",
+  "name": "Globe data card",
+  "for": "A feature card for a product whose reach is global (payments, hosting, logistics, networks): the dotted globe rises from the floor of an inset panel, with arcs between cities, beside live region figures.",
+  "effects": ["dotted-globe"],
+  "default": "dotted-globe",
+  "how": "dotted-globe mounted on the inset panel with the calm area at the top, so the globe is cut by the panel's floor; a small opaque card sits in the clear top corner.",
+  "rules": ["Only when the product really works across countries.", "Figures tick about once a second, by a few units; nothing counts up on scroll.", "One globe per page."],
+  "a11y": "Region figures are a real table with a caption; the globe is aria-hidden. Under reduced motion the figures and globe hold still."
+}

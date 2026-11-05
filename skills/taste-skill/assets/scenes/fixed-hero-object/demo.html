@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixed hero object · big scene demo</title>
+<meta name="description" content="Demo of the scene in which one product stays on its own layer and turns while the first chapters pass beneath it, on a card-game engine's page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #f7f5f0; --p-surface: #ece8df; --p-ink: #1b1a17; --p-muted: #65625a; --p-accent: #c2411c; --p-accent-ink: #ffffff; --p-action: #1b1a17; --p-action-ink: #f7f5f0;
+          --p-inv-bg: #1b1a17; --p-inv-surface: #26241f; --p-inv-ink: #f7f5f0; --p-inv-muted: #a6a195; --p-inv-accent: #f0a27a; --p-inv-accent-ink: #1b1a17; --p-inv-action: #f7f5f0; --p-inv-action-ink: #1b1a17;
+          --font-display: "Figtree", system-ui, sans-serif; --font-text: "Figtree", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Deckhand</a>
+  <nav class="demo-nav__links"><a href="#">Engine</a><a href="#">Games</a><a href="#">Pricing</a><a href="#">Docs</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start a game</a></div>
+</div></header>
+<main>
+  <section class="sc" data-big-scene="fixed-hero-object" style="--h: 2" data-big-scene-opts='{"object":"print-cards","effect":"render","turns":1}' aria-label="Deckhand, the card game engine">
+    <div class="sc__stage">
+      <div class="fho__object" data-move><img class="fho__still" src="../_demo/cards.png" alt="A stack of playing cards, the ace of diamonds face up" width="800" height="800"><div class="fho__host"></div></div>
+      <div class="fho__track">
+        <article class="fho__panel fho__panel--hero">
+          <div class="fho__copy">
+            <h1>A card game engine for designers, not programmers</h1>
+            <p class="t-lead">Write the rules in plain text, deal a hand in the browser, print the deck when it plays well. Free for one game.</p>
+            <div class="btn-row"><a class="btn btn--primary" href="#">Start a game</a><a class="btn btn--secondary" href="#">Play a demo game</a></div>
+          </div>
+        </article>
+        <article class="fho__panel">
+          <div class="fho__copy">
+            <h3>Rules written as cards</h3>
+            <p>Every card is a short file: its text, its cost and what it does when it is played. Deckhand reads the files and runs the game, turn by turn.</p>
+            <dl class="fho__specs"><div><dt>Cards a game</dt><dd>Up to 400</dd></div><div><dt>Rules</dt><dd>Plain text</dd></div><div><dt>Players</dt><dd>2 to 8</dd></div><div><dt>Export</dt><dd>PDF, Tabletop Simulator</dd></div></dl>
+          </div>
+        </article>
+        <article class="fho__panel">
+          <div class="fho__copy">
+            <h3>Playtest in the browser with anyone</h3>
+            <p>Send a link and your testers play in a tab. Every game is recorded, so you see which card decided it and which one nobody played.</p>
+            <dl class="fho__specs"><div><dt>Testers</dt><dd>Unlimited</dd></div><div><dt>Replays</dt><dd>Every game, kept</dd></div><div><dt>Balance report</dt><dd>Weekly</dd></div></dl>
+          </div>
+        </article>
+        <article class="fho__panel is-dark">
+          <div class="fho__copy">
+            <h3>Print the deck when it is ready</h3>
+            <p>One click sends the deck to our printer: 300 gsm linen stock, a tuck box, at your door in nine days.</p>
+            <div class="btn-row"><a class="btn btn--primary" href="#">Start a game</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What a game costs</h2><p class="t-lead" style="margin-top:16px">One game is free for as long as you like. Pay when you run more than one, or when you print.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">One game</span><span class="rows__value">Free</span></li>
+          <li><span class="rows__name">Up to five games</span><span class="rows__value">£12 a month</span></li>
+          <li><span class="rows__name">Printing</span><span class="rows__value">From £14 a deck</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Deckhand · demo page for the big scene “Fixed hero object”</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

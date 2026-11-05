@@ -1,0 +1,29 @@
+/* fx-headline: a display headline whose key phrase (or every word) is filled with an effect */
+.cx-headline {
+  display: grid; justify-items: center; text-align: center; gap: var(--s-5);
+  max-width: 980px; margin-inline: auto;
+}
+.cx-headline__pill {
+  display: inline-flex; align-items: center; gap: 10px; height: 32px; padding: 0 12px 0 4px;
+  border-radius: 999px; border: 1px solid var(--cx-line); background: var(--cx-card);
+  font-size: var(--t-label); color: var(--ink);
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.cx-headline__pill:hover { border-color: var(--cx-line-2); background: var(--cx-panel); }
+.cx-headline__pill svg { color: var(--muted); transition: transform var(--dur) var(--ease); }
+.cx-headline__pill:hover svg { transform: translateX(2px); }
+.cx-headline__tag {
+  display: inline-grid; place-items: center; height: 24px; padding: 0 10px; border-radius: 999px;
+  background: var(--action); color: var(--action-ink); font-weight: 500; font-size: 12px;
+}
+.cx-headline__title {
+  font-size: clamp(40px, 5.2vw + 12px, 88px); line-height: 1.02; letter-spacing: -0.035em;
+  max-width: 15ch; margin: 0;
+}
+.cx-headline__title [data-fill] { white-space: nowrap; }
+.cx-headline__sub { font-size: var(--t-lead); line-height: 1.5; color: var(--muted); max-width: 46ch; margin: 0; }
+.cx-headline__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  .cx-headline__actions { flex-direction: column; align-items: stretch; width: 100%; }
+  .cx-headline__title [data-fill] { white-space: normal; }
+}

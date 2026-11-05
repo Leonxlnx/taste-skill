@@ -1,0 +1,51 @@
+/* letter-physics - at rest: the claim with the answer under it on the inverse ground, the picture
+   faint at the edges. Live: the claim centred on the held stage, letters moved by transform, the
+   answer coming out of depth through the stage's perspective onto the page's own ground. */
+[data-big-scene="letter-physics"] { background: var(--bg); color: var(--ink); overflow: clip; }
+[data-big-scene="letter-physics"] > .sc__stage { position: relative; perspective: 1100px; perspective-origin: 50% 50%; }
+[data-big-scene="letter-physics"] .lp__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+[data-big-scene="letter-physics"] .lp__bg img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .3; }
+/* the answer lands on the page's own ground: the picture is dimmed to the ground over the whole middle (where the words are)
+   and only shows at the edges; the dim is at full strength, the picture itself at 30% under it */
+[data-big-scene="letter-physics"] .lp__bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 78% 64% at 50% 50%, var(--bg) 0%, var(--bg) 52%, color-mix(in oklab, var(--bg) 82%, transparent) 76%, color-mix(in oklab, var(--bg) 58%, transparent) 100%); }
+[data-big-scene="letter-physics"] .lp__label { position: absolute; z-index: 2; left: var(--pad); top: calc(var(--nav-h, 0px) + var(--s-6)); font-size: var(--t-small); color: var(--muted); }
+[data-big-scene="letter-physics"] .lp__a {
+  position: relative; z-index: 2; margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking);
+  font-size: clamp(40px, 7.4vw, 124px); line-height: 1; text-wrap: balance; max-width: 13ch;
+}
+[data-big-scene="letter-physics"] .lp__a .w { display: inline-block; white-space: nowrap; }
+[data-big-scene="letter-physics"] .lp__a .c { display: inline-block; will-change: transform, opacity; backface-visibility: hidden; }
+[data-big-scene="letter-physics"] .lp__b {
+  position: relative; z-index: 2; margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking);
+  font-size: clamp(28px, 4.6vw, 72px); line-height: 1.08; max-width: 22ch; text-wrap: balance;
+}
+
+/* ---------- finished composition */
+[data-big-scene="letter-physics"]:not(.is-live) > .sc__stage {
+  display: grid; gap: var(--s-7); align-content: center; min-height: 70svh;
+  width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--section-band) var(--pad);
+}
+[data-big-scene="letter-physics"]:not(.is-live) .lp__b { color: var(--muted); }
+[data-big-scene="letter-physics"]:not(.is-live) .lp__bg img { opacity: .22; }
+
+/* ---------- the held stage */
+[data-big-scene="letter-physics"].is-live > .sc__stage { display: grid; place-items: center; padding: var(--nav-h, 0px) var(--pad) 0; }
+[data-big-scene="letter-physics"].is-live .lp__a, [data-big-scene="letter-physics"].is-live .lp__b {
+  grid-area: 1 / 1; text-align: center; transform-style: preserve-3d; will-change: transform, opacity;
+}
+[data-big-scene="letter-physics"].is-live .lp__bg { opacity: 0; }
+@media (max-width: 767px) {
+  [data-big-scene="letter-physics"] .lp__a { font-size: clamp(34px, 11vw, 52px); max-width: 11ch; }
+  [data-big-scene="letter-physics"] .lp__b { font-size: clamp(24px, 7vw, 34px); }
+}
+
+/* ---------- finished composition in the page rhythm: the label above the claim, the claim large */
+[data-big-scene="letter-physics"]:not(.is-live) .lp__label { position: static; }
+[data-big-scene="letter-physics"]:not(.is-live) > .sc__stage { gap: var(--s-7); align-content: start; }
+[data-big-scene="letter-physics"]:not(.is-live) .lp__a { font-size: clamp(56px, 11vw, 172px); }
+[data-big-scene="letter-physics"]:not(.is-live) .lp__b { font-size: clamp(32px, 5vw, 80px); }
+@media (max-width: 767px) {
+  [data-big-scene="letter-physics"]:not(.is-live) > .sc__stage { gap: var(--s-8); }
+  [data-big-scene="letter-physics"]:not(.is-live) .lp__a { font-size: clamp(44px, 17.5vw, 84px); max-width: 100%; }
+  [data-big-scene="letter-physics"]:not(.is-live) .lp__b { font-size: clamp(26px, 9vw, 44px); }
+}

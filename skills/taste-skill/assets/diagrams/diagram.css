@@ -1,0 +1,377 @@
+/*
+  taste-skill diagram.css - the look of diagram.js (references/diagrams.md). Every colour comes from the
+  palette around it: --ink, --muted, --accent, --accent-ink and --card (or --bg); --frag sets the node
+  fill when a page has one. On a dark ground the nodes are one step lighter than the card, on a light
+  one white, as the UI fragments are. The core (the product) is an ink tile; the light is the accent.
+  Overrides on .dg or around it: --dg-pulse (the light; the accent by default, the ink for a quiet
+  diagram), --dg-w (line width, 1.25px), --dg-halo (the soft light behind the core, 0 to turn off),
+  --dg-glow-a (the glow under a running light), --dg-glow-k (the strength of the "glow" ground).
+  The light is a gradient stroke (.dg-comet, stops .dg-c0 to .dg-c2), a soft .dg-glow under it and a
+  .dg-spark on its head; grounds are .dg::before (dots, grid), .dg-rings (rings) and .dg::after (glow).
+*/
+
+.dg {
+  --dg-ink: var(--ink, #111);
+  --dg-muted: var(--muted, #6b6b6b);
+  --dg-accent: var(--accent, #1a4be0);
+  --dg-accent-ink: var(--accent-ink, #fff);
+  --dg-pulse: var(--dg-accent);
+  /* the head of the light: the brightest point of the pulse */
+  --dg-head: var(--dg-pulse);
+  --dg-node: var(--frag, oklch(from var(--card, var(--bg, #fff)) clamp(calc(l + 0.05), calc((l - 0.5) * 1000), 1) calc(c * 0.5) h));
+  --dg-border: color-mix(in oklab, var(--dg-ink) 11%, transparent);
+  --dg-line: color-mix(in oklab, var(--dg-ink) 18%, transparent);
+  --dg-faint: color-mix(in oklab, var(--dg-ink) 10%, transparent);
+  --dg-dot: color-mix(in oklab, var(--dg-ink) 15%, transparent);
+  --dg-w: 1.25px;
+  --dg-r: var(--r-sm, 8px);
+  --dg-halo: 0.08;
+  --dg-ease: cubic-bezier(.2, .7, .2, 1);
+  --dg-shadow: 0 1px 2px rgb(0 0 0 / .05), 0 8px 18px -12px rgb(0 0 0 / .22);
+  position: relative; display: block; width: 100%; min-width: 0; height: auto;
+  font: 500 13px/1.25 var(--font-text, system-ui, sans-serif); color: var(--dg-ink);
+  letter-spacing: -0.005em; overflow: clip; contain: layout paint;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+/* on a dark ground the light is a touch whiter at its head, the halo stronger, the shadows deeper
+   (diagram.js sets data-ground from the ink) */
+.dg[data-ground="dark"] {
+  --dg-head: color-mix(in oklab, var(--dg-pulse) 60%, #fff); --dg-glow-a: .34;
+  --dg-halo: 0.13; --dg-dot: color-mix(in oklab, var(--dg-ink) 13%, transparent);
+  --dg-shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 8px 20px -12px rgb(0 0 0 / .6);
+}
+/* inside a card's panel (or a device screen, or a frame) the diagram fills it */
+:is(.panel, .panel__screen, .frame) > .dg { position: absolute; inset: 0; z-index: 1; }
+/* a panel grows to what its diagram needs: diagram.js sets --dg-min on it when the nodes would not
+   fit, and a phone panel starts at 300px (flows turn vertical there) */
+.panel:has(> .dg) { position: relative; min-height: max(var(--p-h, 264px), var(--dg-min, 0px)); }
+/* a flat drawing (a timeline, a sync, a short chain) takes a band-high panel, not a 340px one that
+   would be mostly ground: diagram.js sets data-size="band" when it fills under 45% of the height,
+   or the spec asks with "size": "band" */
+.panel:has(> .dg[data-size="band"]) { --p-h: 240px; }
+@media (max-width: 639px) {
+  .panel:has(> .dg[data-orient="v"]) { min-height: max(var(--p-h, 264px), var(--dg-min, 300px)); }
+}
+
+/* the ground: a dot ruling (or a hairline grid) that fades out towards the edges, as on a drawing board */
+.dg::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 30%, transparent 100%);
+}
+.dg[data-dg-ground="dots"]::before {
+  background-image: radial-gradient(circle, var(--dg-dot) 0.9px, transparent 1.25px);
+  background-size: 16px 16px; background-position: center;
+}
+.dg[data-dg-ground="grid"]::before {
+  background-image:
+    linear-gradient(to right, var(--dg-faint) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--dg-faint) 1px, transparent 1px);
+  background-size: 32px 32px; background-position: center;
+}
+
+.dg::before { z-index: 0; }
+.dg-svg { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.dg-nodes { position: absolute; inset: 0; z-index: 2; }
+
+/* hairline circles round the core ("rings", the hub's default): each one fainter than the last */
+.dg-rings circle { fill: none; stroke: var(--dg-faint); stroke-width: 1px; }
+/* "glow": a soft light of the accent under the core and a fine grain over the whole ground */
+.dg::after { content: none; position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.dg[data-dg-ground~="glow"]::after {
+  content: "";
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 .32 0 0 0 -.11'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 46% 62% at var(--dg-cx, 50%) var(--dg-cy, 50%), color-mix(in oklab, var(--dg-pulse) var(--dg-glow-k, 15%), transparent), transparent 100%),
+    radial-gradient(ellipse 80% 55% at 50% 118%, color-mix(in oklab, var(--dg-pulse) 8%, transparent), transparent 72%);
+}
+.dg[data-ground="dark"] { --dg-glow-k: 20%; }
+
+/* ---------------------------------------------------------------- lines and the light */
+.dg-line, .dg-lit, .dg-glow, .dg-comet {
+  fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
+.dg-line { stroke: var(--dg-line); stroke-width: var(--dg-w); transition: stroke 260ms ease, opacity 260ms ease; }
+.dg-e.is-faint .dg-line { stroke: var(--dg-faint); }
+.dg-e.is-idle .dg-line { stroke: var(--dg-faint); stroke-dasharray: 2 4; }
+/* an orbit or a quiet guide: a hairline under everything */
+.dg-e.is-track .dg-line { stroke: var(--dg-faint); }
+/* a spoke of an orbit: a dotted thread from the inner ring out to a satellite */
+.dg-e.is-spoke .dg-line { stroke: var(--dg-line); stroke-dasharray: 1 4.5; }
+/* a route that is drawn only while the light runs it (along an orbit) */
+.dg-e.is-ghost > .dg-line { opacity: 0; }
+.dg-lit { stroke: var(--dg-pulse); stroke-width: var(--dg-w); stroke-opacity: .5; opacity: 0; }
+/* the light: a gradient stroke from clear (its tail) to full (its head), a soft glow under its
+   front, and a bright point on its head with a small halo. The stops take the palette. */
+.dg-c0 { stop-color: var(--dg-pulse); stop-opacity: 0; }
+.dg-c1 { stop-color: var(--dg-pulse); stop-opacity: .5; }
+.dg-c2 { stop-color: var(--dg-head); stop-opacity: 1; }
+.dg-comet { stroke-width: calc(var(--dg-w) + 1px); opacity: 0; }
+.dg-glow { stroke-width: 9px; opacity: 0; }
+.dg-e.is-run > .dg-comet { opacity: 1; }
+.dg-e.is-run > .dg-glow { opacity: var(--dg-glow-a, .26); }
+.dg-spark { fill: var(--dg-head); }
+.dg-spark-halo { fill: var(--dg-pulse); fill-opacity: .2; }
+.dg-e:not(.is-run) > :is(.dg-spark, .dg-spark-halo) { visibility: hidden; }
+/* the still (reduced motion, a phone, a held group): the lit route without the moving light */
+.dg.is-still :is(.dg-glow, .dg-comet, .dg-spark, .dg-spark-halo) { display: none; }
+.dg.is-still .dg-lit { stroke-opacity: .75; }
+.dg-port { fill: var(--dg-node); stroke: var(--dg-line); stroke-width: 1px; }
+.dg-halo { opacity: var(--dg-halo); pointer-events: none; }
+.dg-halo__in { stop-color: var(--dg-pulse); stop-opacity: 1; }
+.dg-halo__out { stop-color: var(--dg-pulse); stop-opacity: 0; }
+
+/* hover: every path through one node lit, the rest stepped back */
+.dg-e { transition: opacity 220ms ease; }
+.dg-node { transition-property: opacity, border-color, box-shadow, background-color, color; }
+.dg.is-focus .dg-e:not(.is-focus) { opacity: .28; }
+.dg.is-focus .dg-node:not(.is-focus) { opacity: .5; }
+.dg.is-focus .dg-port { opacity: .5; }
+.dg-e.is-focus:not(.is-ghost) .dg-line { stroke: color-mix(in oklab, var(--dg-pulse) 70%, transparent); }
+
+/* ---------------------------------------------------------------- nodes */
+.dg-node {
+  position: absolute; left: 0; top: 0; box-sizing: border-box;
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  background: var(--dg-node); color: var(--dg-ink);
+  border: 1px solid var(--dg-border); border-radius: calc(var(--dg-r) + 2px);
+  box-shadow: var(--dg-shadow);
+  /* a hover steps back at once (220ms); a light fades off a node slowly (900ms) */
+  transition-duration: 220ms, 900ms, 900ms, 900ms, 900ms; transition-timing-function: ease, var(--dg-ease), var(--dg-ease), var(--dg-ease), var(--dg-ease);
+}
+.dg-node.is-hit {
+  border-color: color-mix(in oklab, var(--dg-accent) 55%, var(--dg-border));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--dg-accent) 14%, transparent), var(--dg-shadow);
+  transition-duration: 220ms, 160ms, 160ms, 160ms, 160ms;
+}
+.dg-ic { position: relative; flex: none; display: grid; place-items: center; width: 18px; height: 18px; color: var(--dg-ink); }
+.dg-ic > :is(svg, img) { display: block; width: 100%; height: 100%; object-fit: contain; }
+.dg-ic--text { font: 600 12px/1 var(--font-text, system-ui, sans-serif); letter-spacing: 0; }
+/* a wordmark (Stripe, Visa: over 1.8 times as wide as tall) gets a 2:1 slot, and its tile widens to a pill */
+.dg .dg-ic.dg-ic--wide { width: auto !important; aspect-ratio: 2 / 1; }
+.dg .dg-node:is(.dg-node--tile, .dg-node--gtile, .dg-node--disc, .dg-node--core):has(> .dg-ic--wide) { width: auto; padding: 0 12px; border-radius: 999px; }
+.dg-logo:has(> .dg-ic--wide) { width: auto; padding: 0 6px; }
+.dg-label { font-weight: 500; }
+.dg-meta { font: 400 12px/1 var(--font-mono, ui-monospace, monospace); color: var(--dg-muted); letter-spacing: 0; }
+
+/* a status ring at the end of a pill or card: a hairline circle that fills with a check when the
+   work is done */
+.dg-st {
+  position: relative; flex: none; display: grid; place-items: center; width: 15px; height: 15px; margin: 0 -2px 0 2px;
+  border-radius: 50%; box-shadow: inset 0 0 0 1.25px color-mix(in oklab, var(--dg-ink) 22%, transparent);
+  color: var(--dg-accent-ink); transition: background-color 300ms ease, box-shadow 300ms ease;
+}
+.dg-st svg { width: 10px; height: 10px; opacity: 0; scale: .5; transition: opacity 200ms ease, scale 300ms var(--dg-ease); }
+.dg-node.is-done > .dg-st { background: var(--dg-accent); box-shadow: none; }
+.dg-node.is-done > .dg-st svg { opacity: 1; scale: 1; }
+/* the same check as a badge on the corner of an icon tile */
+.dg-check {
+  position: absolute; top: -5px; right: -5px; display: grid; place-items: center; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--dg-accent); color: var(--dg-accent-ink); box-shadow: 0 0 0 2px var(--dg-node);
+  opacity: 0; scale: .5; transition: opacity 240ms ease, scale 320ms var(--dg-ease);
+}
+.dg-check svg { width: 10px; height: 10px; }
+.dg-node.is-done > .dg-check { opacity: 1; scale: 1; }
+
+/* pill: an icon and a name */
+.dg-node--pill { height: 32px; padding: 0 12px 0 8px; }
+.dg-node--pill:not(:has(.dg-ic)) { padding: 0 12px; }
+.dg-node--pill:has(> .dg-st) { padding-right: 9px; }
+.dg-node--pill .dg-meta { margin-left: 2px; }
+/* the tight try for a crowded hub: less air in the pills before they lose their names */
+.dg--tight .dg-node--pill { padding: 0 9px 0 7px; gap: 6px; }
+.dg--tight .dg-node--pill:not(:has(.dg-ic)) { padding: 0 9px; }
+
+/* card: a logo box, a name and a line (sections, 900px and wider) */
+.dg-node--card { padding: 7px 14px 7px 7px; gap: 10px; border-radius: calc(var(--dg-r) + 4px); }
+.dg-logo { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--dg-r); background: color-mix(in oklab, var(--dg-ink) 4%, var(--dg-node)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--dg-ink) 7%, transparent); }
+.dg-logo .dg-ic { width: 18px; height: 18px; }
+.dg-txt { display: flex; flex-direction: column; gap: 2px; }
+.dg-sub { font-size: 12px; font-weight: 400; color: var(--dg-muted); }
+.dg-node--card .dg-meta { margin-left: 8px; }
+.dg-node--card > .dg-st { margin-left: 6px; }
+
+/* tile: an icon alone, its name below when it has room for one; disc: the same, round (an orbit) */
+.dg-node--tile, .dg-node--gtile, .dg-node--disc { justify-content: center; width: 40px; height: 40px; padding: 0; gap: 0; }
+.dg-node--tile .dg-ic { width: 20px; height: 20px; }
+.dg-node--disc { width: 44px; height: 44px; border-radius: 50%; }
+.dg-node--disc .dg-ic { width: 22px; height: 22px; }
+.dg-cap {
+  position: absolute; top: calc(100% + 6px); left: 50%; translate: -50% 0;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  font-size: 12px; line-height: 16px; font-weight: 450; color: var(--dg-muted); text-align: center; white-space: nowrap;
+  transition: color 600ms ease;
+}
+.dg-node.is-hit > .dg-cap, .dg-node.is-done > .dg-cap { color: var(--dg-ink); transition-duration: 160ms; }
+.dg-cap__s { font: 400 11px/14px var(--font-mono, ui-monospace, monospace); color: var(--dg-muted); }
+
+/* core: the product itself, the strongest node. An ink tile by default, on the accent with
+   "tone": "accent"; one hairline ring round it, and a ripple that leaves it when a light arrives */
+.dg-node--core { justify-content: center; width: 56px; height: 56px; padding: 0; gap: 0; border-radius: calc(var(--dg-r) + 8px); }
+.dg-node--core .dg-ic { width: 26px; height: 26px; }
+.dg-node--core > .dg-cap { color: var(--dg-ink); font-weight: 500; top: calc(100% + 10px); }
+/* the core's name sits inside its tile, under the icon: the tile grows to hold it (a long name wraps in two
+   balanced lines at 148px), so the name is never wider than its node, never cut at the diagram's edge */
+.dg[data-tier] .dg-node--core:has(> .dg-cap--in) { flex-direction: column; width: auto; min-width: 56px; height: auto; padding: 11px 14px 9px; gap: 6px; }
+.dg .dg-node--core > .dg-cap--in { position: static; translate: none; max-width: 148px; flex-direction: row; font-size: 12px; line-height: 16px; font-weight: 560;
+  color: inherit; white-space: normal; text-wrap: balance; text-align: center; overflow-wrap: anywhere; }   /* the tile's own colour: light on ink, dark on the accent's ink */
+.dg-node--core-pill { height: 42px; padding: 0 16px 0 12px; gap: 10px; border-radius: calc(var(--dg-r) + 6px); font-size: 14px; font-weight: 560; }
+.dg-node--core-pill .dg-ic { width: 20px; height: 20px; }
+.dg-node.is-ink {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--dg-ink) 84%, var(--dg-node)), var(--dg-ink));
+  border-color: transparent; color: var(--dg-node);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--dg-node) 16%, transparent), 0 1px 2px rgb(0 0 0 / .12), 0 10px 24px -12px rgb(0 0 0 / .45);
+}
+.dg[data-ground="dark"] .dg-node.is-ink {
+  background: linear-gradient(180deg, var(--dg-ink), color-mix(in oklab, var(--dg-ink) 86%, var(--dg-node)));
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / .12), 0 0 0 1px rgb(255 255 255 / .06), 0 12px 30px -10px rgb(0 0 0 / .7);
+}
+.dg-node.is-ink .dg-ic, .dg-node.is-ink .dg-label { color: var(--dg-node); }
+.dg-node.is-accent { background: var(--dg-accent); border-color: transparent; color: var(--dg-accent-ink); }
+.dg-node.is-accent .dg-ic { color: var(--dg-accent-ink); }
+:is(.is-ink, .is-accent) .dg-ic--text { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.dg-node:is(.dg-node--core, .dg-node--core-pill)::before,
+.dg-node:is(.dg-node--core, .dg-node--core-pill)::after {
+  content: ""; position: absolute; inset: -7px; pointer-events: none; border-radius: calc(var(--dg-r) + 13px);
+  border: 1px solid color-mix(in oklab, var(--dg-ink) 10%, transparent);
+}
+.dg-node:is(.dg-node--core, .dg-node--core-pill)::after { border-color: var(--dg-pulse); opacity: 0; }
+.dg-node:is(.dg-node--core, .dg-node--core-pill).is-hit { border-color: transparent; }
+.dg-node:is(.dg-node--core, .dg-node--core-pill).is-hit::before { border-color: color-mix(in oklab, var(--dg-pulse) 45%, transparent); transition: border-color 160ms ease; }
+.dg-node:is(.dg-node--core, .dg-node--core-pill).is-hit::after { animation: dg-ripple 1100ms cubic-bezier(.2, .6, .3, 1) both; }
+.dg-node:is(.dg-node--core, .dg-node--core-pill):not(.is-ink, .is-accent).is-hit { border-color: color-mix(in oklab, var(--dg-accent) 60%, var(--dg-border)); }
+@keyframes dg-ripple { from { opacity: .7; scale: 1; } to { opacity: 0; scale: 1.28; } }
+.dg.is-still .dg-node::after { animation: none !important; opacity: 0 !important; }
+
+/* step and dot: a point on a line */
+.dg-node--step, .dg-node--dot { justify-content: center; padding: 0; gap: 0; border-radius: 50%; box-shadow: none; }
+.dg-node--step { width: 18px; height: 18px; border: 1.5px solid color-mix(in oklab, var(--dg-ink) 24%, transparent); }
+.dg-node--step .dg-dot { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; color: var(--dg-accent-ink); }
+.dg-node--step .dg-dot svg { width: 11px; height: 11px; opacity: 0; scale: .5; transition: opacity 200ms ease, scale 300ms var(--dg-ease); }
+.dg-node--step.is-done { background: var(--dg-accent); border-color: var(--dg-accent); }
+.dg-node--step.is-done .dg-dot svg { opacity: 1; scale: 1; }
+.dg-node--step.is-hit { box-shadow: 0 0 0 5px color-mix(in oklab, var(--dg-accent) 16%, transparent); }
+.dg-node--step > .dg-cap { top: calc(100% + 10px); }
+.dg-node--step > .dg-cap .dg-cap__l { font-weight: 500; }
+.dg-node--dot { width: 9px; height: 9px; border: 0; background: color-mix(in oklab, var(--dg-ink) 30%, var(--dg-node)); }
+.dg-node--dot.is-hit { background: var(--dg-accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--dg-accent) 16%, transparent); }
+/* a caption beside its point (a timeline running down a phone, the leaves of a mind map) */
+.dg .dg-node.dg-node--side > .dg-cap { top: 50%; left: calc(100% + 10px); translate: 0 -50%; text-align: left; flex-direction: row; gap: 8px; align-items: baseline; max-width: none; white-space: nowrap; }
+.dg .dg-node.dg-node--side-l > .dg-cap { left: auto; right: calc(100% + 10px); text-align: right; flex-direction: row-reverse; }
+.dg-node--dot.dg-node--side > .dg-cap { color: var(--dg-ink); font-weight: 450; }
+.dg-node--dot.dg-node--side > .dg-cap .dg-cap__l { font-weight: 450; }
+
+/* chip: a small label on a line (the sync between two systems) */
+.dg-node--chip { height: 26px; padding: 0 10px 0 8px; gap: 6px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--dg-ink); }
+.dg-node--chip .dg-ic { width: 14px; height: 14px; color: var(--dg-muted); }
+.dg-node--chip.is-hit .dg-ic { color: var(--dg-accent); }
+
+/* system: a named store with a few records (sync) */
+.dg-node--system {
+  flex-direction: column; align-items: stretch; gap: 0; width: var(--dg-sys-w, 204px); padding: 0 0 4px;
+  border-radius: calc(var(--dg-r) + 4px); white-space: normal;
+}
+.dg-sys__head { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-bottom: 1px solid var(--dg-border); }
+.dg-sys__head .dg-meta { margin-left: auto; }
+.dg-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 30px; margin: 0 4px; padding: 0 8px;
+  border-radius: calc(var(--dg-r) - 2px); font-size: 12.5px; font-weight: 450; transition: background-color 900ms var(--dg-ease);
+}
+.dg-row:first-of-type { margin-top: 4px; }
+.dg-row .dg-meta { transition: color 900ms var(--dg-ease); }
+.dg-row.is-hit { background: color-mix(in oklab, var(--dg-accent) 10%, transparent); transition-duration: 160ms; }
+.dg-row.is-hit .dg-meta { color: var(--dg-accent); transition-duration: 160ms; }
+
+/* group: sources in a grid, one box that feeds a pipeline */
+.dg-node--group {
+  flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px;
+  border-radius: calc(var(--dg-r) + 8px); background: color-mix(in oklab, var(--dg-node) 55%, transparent);
+  box-shadow: none; white-space: nowrap; border-style: dashed; border-color: color-mix(in oklab, var(--dg-ink) 16%, transparent);
+}
+.dg-node--group:not(:has(.dg-group__label)) { padding: 10px; }
+.dg-group__label { font-size: 12px; line-height: 14px; font-weight: 500; color: var(--dg-muted); }
+.dg-group__grid { display: grid; grid-template-columns: repeat(var(--cols, 3), auto); gap: 8px; }
+.dg-node--gtile { position: relative; width: 38px; height: 38px; }
+.dg-node--gtile .dg-ic { width: 20px; height: 20px; }
+
+/* ---------------------------------------------------------------- sizes: under 480px and from 900px */
+.dg[data-tier="c"] { font-size: 12px; }
+.dg[data-tier="c"] .dg-node--pill { height: 28px; padding: 0 10px 0 7px; gap: 6px; }
+.dg[data-tier="c"] .dg-node--pill:not(:has(.dg-ic)) { padding: 0 10px; }
+.dg[data-tier="c"] .dg-node--pill:has(> .dg-st) { padding-right: 7px; }
+.dg[data-tier="c"] .dg-node--pill .dg-ic { width: 16px; height: 16px; }
+.dg[data-tier="c"] .dg-node--tile { width: 36px; height: 36px; }
+.dg[data-tier="c"] .dg-node--tile .dg-ic { width: 18px; height: 18px; }
+.dg[data-tier="c"] .dg-node--disc { width: 38px; height: 38px; }
+.dg[data-tier="c"] .dg-node--disc .dg-ic { width: 19px; height: 19px; }
+.dg[data-tier="c"] .dg-node--gtile { width: 32px; height: 32px; }
+.dg[data-tier="c"] .dg-node--gtile .dg-ic { width: 17px; height: 17px; }
+.dg[data-tier="c"] .dg-node--core { width: 46px; height: 46px; border-radius: calc(var(--dg-r) + 6px); }
+.dg[data-tier="c"] .dg-node--core .dg-ic { width: 22px; height: 22px; }
+.dg[data-tier="c"] .dg-node--core-pill { height: 34px; padding: 0 12px 0 9px; gap: 7px; font-size: 13px; }
+.dg[data-tier="c"] .dg-node--core-pill .dg-ic { width: 17px; height: 17px; }
+.dg[data-tier="c"] .dg-node:is(.dg-node--core, .dg-node--core-pill)::before,
+.dg[data-tier="c"] .dg-node:is(.dg-node--core, .dg-node--core-pill)::after { inset: -5px; border-radius: calc(var(--dg-r) + 11px); }
+.dg[data-tier="c"] .dg-cap { font-size: 11.5px; line-height: 14px; top: calc(100% + 5px); max-width: 92px; white-space: normal; text-wrap: balance; }
+.dg[data-tier="c"] .dg-node--group { padding: 8px; gap: 6px; border-radius: calc(var(--dg-r) + 6px); }
+.dg[data-tier="c"] .dg-group__grid { gap: 6px; }
+.dg[data-tier="c"] .dg-node--system { --dg-sys-w: 248px; }
+.dg[data-tier="c"] .dg-sys__head { height: 36px; }
+.dg[data-tier="c"] .dg-row { height: 28px; }
+.dg[data-tier="c"] .dg-meta { font-size: 11px; }
+.dg[data-tier="c"]::before { background-size: 14px 14px; }
+
+.dg[data-tier="l"] { font-size: 14px; --dg-w: 1.4px; }
+.dg[data-tier="l"] .dg-node--pill { height: 38px; padding: 0 14px 0 10px; gap: 9px; }
+.dg[data-tier="l"] .dg-node--pill .dg-ic { width: 20px; height: 20px; }
+.dg[data-tier="l"] .dg-node--tile { width: 48px; height: 48px; }
+.dg[data-tier="l"] .dg-node--tile .dg-ic { width: 24px; height: 24px; }
+.dg[data-tier="l"] .dg-node--disc { width: 52px; height: 52px; }
+.dg[data-tier="l"] .dg-node--disc .dg-ic { width: 26px; height: 26px; }
+.dg[data-tier="l"] .dg-node--gtile { width: 46px; height: 46px; }
+.dg[data-tier="l"] .dg-node--gtile .dg-ic { width: 24px; height: 24px; }
+.dg[data-tier="l"] .dg-node--core { width: 68px; height: 68px; border-radius: calc(var(--dg-r) + 10px); }
+.dg[data-tier="l"] .dg-node--core .dg-ic { width: 30px; height: 30px; }
+.dg[data-tier="l"] .dg-node:is(.dg-node--core, .dg-node--core-pill)::before,
+.dg[data-tier="l"] .dg-node:is(.dg-node--core, .dg-node--core-pill)::after { inset: -9px; border-radius: calc(var(--dg-r) + 18px); }
+.dg[data-tier="l"] .dg-node--core-pill { height: 48px; font-size: 15px; padding: 0 20px 0 14px; }
+.dg[data-tier="l"] .dg-node--core-pill .dg-ic { width: 22px; height: 22px; }
+.dg[data-tier="l"] .dg-cap { font-size: 13px; line-height: 18px; }
+.dg[data-tier="l"] .dg-node--system { --dg-sys-w: 260px; }
+.dg[data-tier="l"] .dg-sys__head { height: 46px; padding: 0 14px; }
+.dg[data-tier="l"] .dg-row { height: 34px; font-size: 13.5px; }
+.dg[data-tier="l"] .dg-node--step { width: 20px; height: 20px; }
+.dg[data-tier="l"] .dg-node--group { padding: 14px; gap: 10px; }
+.dg[data-tier="l"] .dg-group__grid { gap: 10px; }
+.dg[data-tier="l"] .dg-group__label { font-size: 13px; }
+.dg[data-tier="l"]::before { background-size: 20px 20px; }
+
+/* ---------------------------------------------------------------- the pause button (system.css and
+   assets/ui/base.css draw button.loop-pause; this is the same disc for a page that links neither).
+   diagram.js moves it to another corner when a node sits in the bottom-right one. */
+:where(button.loop-pause.dg-pause) {
+  position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center;
+  width: 32px; height: 32px; margin: 0; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--ink, #111) 16%, transparent);
+  background: var(--bg, #fff); color: var(--ink, #111);
+  box-shadow: 0 1px 2px rgb(0 0 0 / .12), 0 4px 12px -4px rgb(0 0 0 / .28);
+}
+:where(button.loop-pause.dg-pause) svg { display: block; width: 14px; height: 14px; fill: currentColor; }
+:where(button.loop-pause.dg-pause.is-paused) svg { margin-left: 1px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dg *, .dg *::before, .dg *::after { transition-duration: 0ms !important; animation: none !important; }
+  button.loop-pause.dg-pause { display: none; }
+}
+@media (forced-colors: active) {
+  .dg-line, .dg-lit { stroke: CanvasText; }
+  .dg::after, .dg-rings { display: none; }
+  .dg-node { border-color: CanvasText; }
+  .dg::before { display: none; }
+}
+
+/* ---------------------------------------------------------------- a spec that could not be read
+   (diagram.js logs why): the names it could still find, as a quiet row, never an empty panel */
+.dg--broken { display: grid; place-items: center; padding: 24px; }
+.dg-fallback { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 460px; margin: 0; padding: 0; list-style: none; }
+.dg-fallback li { padding: 6px 12px; border: 1px solid var(--dg-border); border-radius: calc(var(--dg-r) + 2px); background: var(--dg-node); color: var(--dg-ink); font-size: 13px; font-weight: 500; }

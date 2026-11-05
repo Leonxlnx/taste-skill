@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Object through giant type · big scene demo</title>
+<meta name="description" content="Demo of the scene in which one object falls through a quote set in giant capitals, on an edge-network company's page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #f6f7f9; --p-surface: #eaedf1; --p-ink: #14181d; --p-muted: #5d6670; --p-accent: #1f5f8b; --p-accent-ink: #ffffff; --p-action: #14181d; --p-action-ink: #f6f7f9;
+          --font-display: "Inter Tight", system-ui, sans-serif; --font-text: "Inter", system-ui, sans-serif; --display-weight: 600; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Meridian</a>
+  <nav class="demo-nav__links"><a href="#">Network</a><a href="#">Pricing</a><a href="#">Docs</a><a href="#">Status</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="grid grid--middle">
+        <div class="span-6 stack-5">
+          <h1>Serve every user from the nearest city</h1>
+          <p class="t-lead" style="margin-top:16px">Put your app on Meridian's edge in eighty cities and the median request comes back in 20 milliseconds, from Oslo to Osaka. From $0 for 10 million requests a month.</p>
+          <div class="btn-row" style="margin-top:24px"><a class="btn btn--primary" href="#">Start free</a><a class="btn btn--secondary" href="#">See the network</a></div>
+        </div>
+        <div class="frame frame--square span-5 start-8"><div data-print="print-globe" data-print-place="tile" data-print-effect="render" aria-label="A desk globe"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="object-through-giant-type" style="--h: 1" data-big-scene-opts='{"object":"print-globe","effect":"render"}' aria-label="Eighty cities. Your users are never more than 20 milliseconds away">
+    <div class="sc__stage">
+      <blockquote class="ott__quote">
+        <p class="ott__line"><span class="ott__half">Eighty</span> <span class="ott__half">cities.</span></p>
+        <p class="ott__line"><span class="ott__half">Your</span> <span class="ott__half">users</span></p>
+        <p class="ott__line"><span class="ott__half">are</span> <span class="ott__half">never</span></p>
+        <p class="ott__line"><span class="ott__half">more</span> <span class="ott__half">than</span></p>
+        <p class="ott__line"><span class="ott__half">20 ms</span> <span class="ott__half">away</span></p>
+      </blockquote>
+      <div class="ott__object" data-move><img class="ott__still" src="../_demo/globe.png" alt="" width="800" height="800"><div class="ott__host" aria-label="A desk globe"></div></div>
+      <p class="ott__credit">Noor Haddad, head of network</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>The network in numbers</h2><p class="t-lead" style="margin-top:16px">Our own racks in every city, peered with the local carriers, measured from real browsers every minute.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Cities</span><span class="rows__value">80, on six continents</span></li>
+          <li><span class="rows__name">Median latency</span><span class="rows__value">20 ms</span></li>
+          <li><span class="rows__name">Peering</span><span class="rows__value">1,400 networks</span></li>
+          <li><span class="rows__name">Uptime, 12 months</span><span class="rows__value">99.995%</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Meridian · demo page for the big scene “Object through giant type”</span></footer>
+<script type="module" src="../scenes.js"></script>
+<script type="module" src="../../objects/_print-core/auto.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "cursor",
+  "title": "Approve with a click",
+  "shows": "A drafted reply waiting for approval: the text, the action it carries (a refund with its amount) and two buttons. The pointer glides to the main button and clicks; it spins, then reads Sent and the status turns Sent.",
+  "useFor": [
+    "automation",
+    "agents",
+    "approvals",
+    "one-click actions",
+    "publishing",
+    "workflows"
+  ],
+  "size": [
+    360,
+    262
+  ],
+  "js": true,
+  "place": "at-over only: laid over the lower-right edge of a window fragment (--bx 24px, --by 24px; in a split or hero frame --by -40px runs it out through the bottom, its button still in view). Never alone: not centred on a ground, not cut through its buttons (the click is its point)",
+  "edit": "The dialog is HTML. The busy and done words sit beside the text they replace: data-busy and data-done on the button, data-done on the state chip and on the line under the item; without them a text stays as written.",
+  "loop": "about 2.8 s a cycle: the pointer glides to the main button and clicks, a short spin, then done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

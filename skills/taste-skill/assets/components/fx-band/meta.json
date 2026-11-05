@@ -1,0 +1,22 @@
+{
+  "id": "fx-band",
+  "name": "Divider band",
+  "for": "A short band between two sections that names the next part of the page: an eyebrow, one headline, one line and a link, with quiet topographic lines on the far side.",
+  "effects": [
+    "contour-lines",
+    "line-engraving",
+    "dot-terrain",
+    "soft-light-bars",
+    "ridgeline"
+  ],
+  "default": "contour-lines",
+  "how": "The effect host starts 48px past the end of the copy's widest line (measured) and fades in from that side; stacked, it sits under the copy. Each effect has quiet settings in component.js, all still: the band is drawn once and kept as a picture (no WebGL context and no frames at rest), so it needs no pause button.",
+  "rules": [
+    "At most one band per page, never two in a row.",
+    "Quiet line or dot effects only: no blobs or bokeh.",
+    "ridgeline only when the page names it (alone it reads as a record cover).",
+    "No line starts under the text: keep 48px clear after the copy.",
+    "The band never moves with scroll."
+  ],
+  "a11y": "A labelled section with a real heading and link; the lines are decorative and still."
+}

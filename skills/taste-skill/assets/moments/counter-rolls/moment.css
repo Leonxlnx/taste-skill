@@ -1,0 +1,8 @@
+/* counter-rolls: each digit is a column one line tall that clips a strip of digits; the strip is
+   moved by transform only. The figure keeps its own size and face (t-stat). */
+.mo-cr { display: inline-flex; align-items: baseline; white-space: pre; }
+.mo-cr__col { display: inline-block; height: 1em; line-height: 1; overflow: hidden; vertical-align: top; font-variant-numeric: tabular-nums; }
+.mo-cr__strip { display: block; will-change: transform; }
+.mo-cr__strip span { display: block; height: 1em; line-height: 1; }
+/* the signs between the digits (%, €, a space, a unit) at their own width, not a digit's */
+.mo-cr__ch { display: inline-block; line-height: 1; white-space: pre; font-variant-numeric: normal; }

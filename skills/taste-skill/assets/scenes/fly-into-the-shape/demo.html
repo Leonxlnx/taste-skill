@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fly into the shape · big scene demo</title>
+<meta name="description" content="Demo of the scene in which the brand's mark is the doorway into a dark chapter, on a sea-chart software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f2f3f3; --p-ink: #101214; --p-muted: #5f666d; --p-accent: #0f6fb5; --p-accent-ink: #ffffff; --p-action: #101214; --p-action-ink: #ffffff;
+          --p-inv-bg: #0f1215; --p-inv-surface: #1a1f24; --p-inv-ink: #f3f4f5; --p-inv-muted: #9aa3ab; --p-inv-accent: #7fc4ff; --p-inv-accent-ink: #0f1215; --p-inv-action: #f3f4f5; --p-inv-action-ink: #0f1215;
+          --font-display: "Inter Tight", system-ui, sans-serif; --font-text: "Inter", system-ui, sans-serif; --display-weight: 600; }
+  .demo-nav__logo svg { width: 22px; height: 22px; fill: var(--ink); }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 3 L90.7 26.5 L90.7 73.5 L50 97 L9.3 73.5 L9.3 26.5 Z"/></svg>Varde</a>
+  <nav class="demo-nav__links"><a href="#">Charts</a><a href="#">Routes</a><a href="#">Pricing</a><a href="#">Support</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Get the app</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="grid grid--middle">
+        <div class="span-5 stack-5">
+          <h1>Sea charts for the Norwegian coast, updated every night</h1>
+          <p class="t-lead" style="margin-top:16px">Plan a route on the laptop, sail it on the phone. Depths, marks and harbour notes for every fjord from Oslo to Kirkenes, from 490 kr a year.</p>
+          <div class="btn-row" style="margin-top:24px"><a class="btn btn--primary" href="#">Get the app</a><a class="btn btn--secondary" href="#">See the charts</a></div>
+        </div>
+        <div class="span-6 start-7">
+          <div class="ux" role="img" aria-label="The Varde route planner: Reine to Henningsvær, 38 nautical miles, three waypoints">
+            <div class="ux__bar"><i></i><i></i><i></i><b>Varde</b><span>Route · Reine to Henningsvær</span></div>
+            <div class="ux__body">
+              <div class="ux__side"><span class="on">Routes<em>4</em></span><span>Harbours</span><span>Marks</span><span>Tides</span><span>Offline<em>2</em></span></div>
+              <div class="ux__main">
+                <div class="ux__head"><h4>Reine to Henningsvær</h4><span class="ux__btn">Start route</span></div>
+                <div class="ux__tiles"><div class="ux__tile"><span>Distance</span><b>38 nm</b></div><div class="ux__tile"><span>At 6 knots</span><b>6 h 20</b></div><div class="ux__tile"><span>Least depth</span><b>4.1 m</b></div></div>
+                <div class="ux__rows">
+                  <div class="ux__row"><div><b>Reine harbour</b><span>Leave by the north channel</span></div><span>0 nm</span><span class="ux__tag ok">Start</span></div>
+                  <div class="ux__row"><div><b>Sund</b><span>Shallow at low water, 4.1 m</span></div><span>11 nm</span><span class="ux__tag">Check tide</span></div>
+                  <div class="ux__row"><div><b>Henningsvær</b><span>Guest berths on the east quay</span></div><span>38 nm</span><span class="ux__tag ok">Arrive</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc" data-big-scene="fly-into-the-shape" style="--h: 1" aria-labelledby="fis-h">
+    <div class="sc__stage">
+      <div class="fis__outside"><p class="fis__aside">Where the charts are made</p></div>
+      <div class="fis__world">
+        <img class="fis__media" src="../_demo/photo-c391.jpg" alt="A harbour bay with red fishing cabins on stilts below snowy peaks under storm cloud" width="1920" height="1280">
+      </div>
+      <div class="fis__band">
+        <h2 class="fis__title" id="fis-h"><span>Charted to</span><span>the last rock</span></h2>
+        <p class="fis__sub">Our survey boat has sounded every harbour in Lofoten again since 2024, so the app knows each rock.</p>
+      </div>
+      <svg class="fis__mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 3 L90.7 26.5 L90.7 73.5 L50 97 L9.3 73.5 L9.3 26.5 Z"/></svg>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>What is in a chart</h2><p class="t-lead" style="margin-top:16px">Every chart is drawn from our own soundings and the Mapping Authority's data, checked against each other every night.</p></div>
+        <ul class="rows span-6 start-7">
+          <li><span class="rows__name">Depths</span><span class="rows__value">Every 5 m in harbours</span></li>
+          <li><span class="rows__name">Marks and lights</span><span class="rows__value">All 21,000</span></li>
+          <li><span class="rows__name">Harbour notes</span><span class="rows__value">1,400 harbours</span></li>
+          <li><span class="rows__name">Offline</span><span class="rows__value">The whole coast, 3 GB</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Varde · demo page for the big scene “Fly into the shape”</span><span>Photograph by Ximonic (Simo Räsänen), CC BY-SA 3.0, via Wikimedia Commons, adapted.</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

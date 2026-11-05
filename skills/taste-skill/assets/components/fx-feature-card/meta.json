@@ -1,0 +1,24 @@
+{
+  "id": "fx-feature-card",
+  "name": "Feature cards with inset panels",
+  "for": "The features grid of a product page, as on the best company sites: a centred headline and a grey line, then a 2x2 of cards, each a title and two grey lines, then an inset panel with its own margin holding a bright painterly or grain ground and one smaller UI window that runs out through the panel's bottom edge. Two panels run a short pointer demo; the cards never move.",
+  "effects": [
+    "painterly-landscape",
+    "grain-gradient",
+    "ruled-grounds"
+  ],
+  "default": "painterly-landscape",
+  "how": "Each panel names its ground in data-cx-effect, its light in data-cx-scene (day, dusk or meadow, for painterly-landscape) and its composition in data-cx-params (horizon, side, slope), so no two panels look alike. The grounds are still: drawn once as they near the screen, kept as pictures and their WebGL context freed, one after another, so the cards hold no context and draw no frames at rest. A landscape takes a natural light near the page: a pale sky over graphite hills under a warm accent, blue-grey under a cool one, the accent itself when it is green or neutral, the page colour's own shades on a colour page; dusk is a deep blue evening sky lit in gold along the horizon, whatever the accent (a blue glow read as the day panel again); meadow is natural daylight (a blue sky over sunlit grass), as a photograph would show it. The sample grid mixes day, a grain, dusk and meadow. The window is plain HTML in the page's own ground colour, cut by the panel's bottom edge (classes --bleed, --narrow, --side vary its width and place); its content runs out through that edge. A card is a subgrid of two rows, so the text zones of a row share one height. Panels with data-cx-loop run a pointer demo (glide, click, state change, rest) only while on screen, each with a pause button in its top-right corner.",
+  "rules": [
+    "Text only in the top zone on the flat card fill; the panel never reaches under it.",
+    "Panel margin 8px on three sides, panel radius = card radius - margin.",
+    "Every window runs out through the panel's bottom edge; never a small dialog centred on an empty ground (that reads cheap).",
+    "No orb, sphere or other focal ground in these panels: the window is the subject.",
+    "One capability per card, one UI window per panel, real labels in it (never lorem), no UI text under 11px.",
+    "At most two looping panels in view (one per row); the others show a settled still.",
+    "The loop never follows scroll and the card never moves.",
+    "Every panel a different picture: a different scene or composition, or a grain; never four copies of one landscape, never a landscape painted in the accent hue only.",
+    "The window's content reaches the panel's bottom edge: no empty band under its last row."
+  ],
+  "a11y": "Each card has a heading and a sentence that say what the feature does; the UI windows are illustrations (aria-hidden). Looping panels have a pause button; reduced motion shows the end state with no pointer and no button."
+}

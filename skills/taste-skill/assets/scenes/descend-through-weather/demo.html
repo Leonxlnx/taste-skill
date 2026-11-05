@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descend through the weather · big scene demo</title>
+<meta name="description" content="Demo of the hero scene that sinks through a cloud deck onto the place below, on a weather software page.">
+<script>document.documentElement.classList.add('sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root { --p-bg: #f4f5f6; --p-surface: #e9ebee; --p-ink: #15191e; --p-muted: #5a626b; --p-accent: #2a5d8f; --p-accent-ink: #ffffff; --p-action: #15191e; --p-action-ink: #f4f5f6;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#"><i></i>Skodde</a>
+  <nav class="demo-nav__links"><a href="#">Forecasts</a><a href="#">API</a><a href="#">Pricing</a><a href="#">About</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Get the app</a></div>
+</div></header>
+<main>
+  <section class="sc" data-big-scene="descend-through-weather" style="--h: 2" aria-labelledby="wx-h">
+    <div class="sc__stage">
+      <figure class="wx__above"><img src="../_demo/photo-809.jpg" alt="A rocky peak breaking through thick white cloud" width="2000" height="1333"></figure>
+      <header class="wx__hero">
+        <h1 class="wx__title" id="wx-h">Skodde</h1>
+        <p class="wx__tagline">Hour-by-hour forecasts for the valley you are in, not the nearest city.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#">Get the app</a><a class="btn btn--secondary" href="#">Use the API</a></div>
+      </header>
+      <p class="wx__note">Through the cloud at 900 metres</p>
+      <figure class="wx__below"><img src="../_demo/photo-c393.jpg" alt="A white farmhouse with red roofs on a green fjord shore, dark mountains and evening cloud behind" width="1920" height="1280"></figure>
+      <h2 class="wx__statement"><span>Below the cloud,</span><span>a forecast for every farm.</span></h2>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5"><h2>The model</h2><p class="t-lead" style="margin-top:16px">Our own weather model on a 500 metre grid, run every hour and checked against 1,900 stations in the hills.</p></div>
+        <ul class="rows rows--spec span-6 start-7">
+          <li><span class="rows__name">Grid</span><span class="rows__value">500 m</span></li>
+          <li><span class="rows__name">New run</span><span class="rows__value">Every hour</span></li>
+          <li><span class="rows__name">Coverage</span><span class="rows__value">Norway, Sweden, Finland</span></li>
+          <li><span class="rows__name">API</span><span class="rows__value">Free for 10,000 calls a month</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Skodde · demo page for the big scene “Descend through the weather”</span><span>Photographs by Namphuong Van (Unsplash License) and Ximonic (Simo Räsänen), CC BY-SA 4.0, via Wikimedia Commons, adapted.</span></footer>
+<script type="module" src="../scenes.js"></script>
+</body>
+</html>

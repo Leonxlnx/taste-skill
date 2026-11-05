@@ -1,0 +1,65 @@
+{
+  "id": "print-lamp",
+  "kind": "form",
+  "name": "Desk lamp",
+  "line": "A balanced-arm desk lamp. Click to switch it on.",
+  "shows": "A balanced-arm desk lamp: a heavy stepped base with a turret, two pairs of rods, two coil springs hooked to a crossbar, knuckle joints with chrome caps, and a domed shade with a vent cowl and a rolled rim. Base and shade in a clear-coated enamel in the accent, graphite rods, chrome springs.",
+  "product": "A desk or task lamp: the product of a lighting maker.",
+  "suits": [
+    "product",
+    "software"
+  ],
+  "for": "Lighting and furniture; on a software page, a card about focus, reading or working late. A product page of site-kind other (a chair, a bike, a lamp, coffee) shows none: its photographs lead (MO-08); only a technical product (hardware) of that very kind may show it.",
+  "never": "Never an object of another kind for a product, never on a place page or beside the client's own photographs, and never a print (halftone, engraving, dither, type) outside a software, tech, AI or games page. No caption under it: never call it a render, a drawing, an illustration, a model, a sample or made in code; the heading and text say what the product is. Its aria-label names the thing plainly (as label does).",
+  "effect": "render",
+  "motion": "Sways slowly about its base, the profile always readable.",
+  "hover": "The light follows the pointer and the lamp leans toward it.",
+  "step": "Click or Enter: it switches on: the bulb and the inside of the shade glow, and in the render a pool of warm light falls on the desk (on light paper the paper there turns warm); a print leaves the pool out. Click again to switch it off.",
+  "note": "Switched on, it reads best on dark paper (light can be printed there).",
+  "effects": [
+    "render",
+    "halftone",
+    "engrave",
+    "dither",
+    "ascii"
+  ],
+  "use": {
+    "html": "<div class=\"panel\" data-fx=\"grain-gradient\" data-fx-params='{\"speed\":0,\"grainMotion\":0}'><div data-print=\"print-lamp\" data-print-place=\"card\"></div></div>, then load assets/objects/_print-core/auto.js once (type=\"module\", after system.js). auto.js mounts every [data-print].",
+    "js": "import obj from '<assets>/objects/print-lamp/object.js'; const ctrl = obj.mount(el, { place: 'card' });",
+    "host": "An empty element. In a .panel, .panel__screen or .frame it fills it (position absolute, inset 0) and prints over the panel's ground; anywhere else give it a size."
+  },
+  "place": {
+    "card": "transparent over the panel's ground, large, cut by the bottom-left edge so the bottom-right corner stays clear for the pause button (an x.ai or Figma feature card); in a panel about as tall as wide (a phone) it is cut less. auto.js uses it for an object in a .panel.",
+    "tile": "transparent, whole and standing low in a square .panel--top tile, the card's title and text under it. auto.js uses it in a .panel--top.",
+    "hero": "transparent, large, right of centre in a wide .frame, the text in the clear left half; in a frame about as tall as wide (a phone) it sits smaller and low, under the text. auto.js uses it in a .frame.",
+    "none": "outside a panel or frame: centred on its own paper (the demo page). data-print-place=\"none\" asks for it anywhere."
+  },
+  "params": {
+    "effect": "render (default: a studio render in its own materials) | halftone | engrave | dither | ascii (a print: software, tech, AI or games pages only)",
+    "size": "0.3..1.8, the share of the frame the object fills; over 1 it runs off the edges",
+    "x": "-0.6..0.6 across the frame (+ right)",
+    "y": "-0.6..0.6 up the frame (+ up)",
+    "angle": "turn at rest, degrees",
+    "turn": "1 turns by itself (and gets a pause button), 0 still until hovered or clicked",
+    "transparent": "1 prints over the ground (no paper of its own)",
+    "step": "1 starts with the step taken",
+    "interactive": "0 a picture only: no hover, no click, not focusable",
+    "shadow": "0..1.6 the floor shadow, 0 none",
+    "cell": "CSS px of a cell, screen or line pitch (0: the print's own)",
+    "accent": "0 prints everything in the ink"
+  },
+  "palette": "From the panel's dealt ground (its data-fx-palette: the ground's paper, an ink that reads on it, the page accent), else the page tokens --bg, --surface, --ink, --accent; or data-print-palette / { palette } with bg, surface, ink, accent.",
+  "group": "One object per card group turns (auto.js picks the first, or the one with data-print-loop); the others hold still until the pointer or a click moves them.",
+  "pause": "A turning object puts its own round pause button (.loop-pause, 36px) in the bottom-right corner of its panel. Keep that corner clear.",
+  "reducedMotion": "One still frame at the rest angle: no turn, no hover light, no pause button; a click shows the step at once.",
+  "keyboard": "The object is a button (role button, aria-pressed for a toggle) with a focus ring inside the panel; Enter or Space takes the step.",
+  "cost": "A WebGL2 context only while it moves near the screen; the objects of a page share 2. Raymarch at most 1 texel per CSS px while it moves (0.75 x 0.75 when large); a render at rest is drawn once at up to one texel per canvas pixel (1.2 megatexels at most), so the picture that stays is sharp; dither 1 texel per cell; a canvas never over 1.5 megapixels. A still object keeps its last frame as a plain picture.",
+  "fallback": "Posters made by _print-core/make-fallbacks.html: fallback-render.png / fallback-render-dark.png (the render: plates left, colour right, the accent part relit in the page accent) and fallback.png / fallback-dark.png (print plates). The poster shows at once in the palette, cross-fades to the live picture, and stays when WebGL2 is missing, a shader is rejected or fails, or the first frame comes out empty.",
+  "demo": {
+    "paper": "light",
+    "params": {
+      "effect": "render"
+    }
+  },
+  "print": "halftone"
+}

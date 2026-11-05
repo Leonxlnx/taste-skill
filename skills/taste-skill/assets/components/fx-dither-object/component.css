@@ -1,0 +1,7 @@
+/* fx-dither-object: a real object drawn in ordered dither on its own stage, never with a caption under it.
+   One figure per page, as the hero picture or the visual of one split section. */
+.cx-obj { margin: 0; display: grid; gap: var(--s-3); min-width: 0; }
+.cx-obj__stage {
+  position: relative; isolation: isolate; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: var(--r-lg); background: var(--cx-card); border: 1px solid var(--cx-line);
+}

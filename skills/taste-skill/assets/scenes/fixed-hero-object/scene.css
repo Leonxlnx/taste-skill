@@ -1,0 +1,68 @@
+/* fixed-hero-object - at rest: the hero with the object's still in its right half, then the chapters
+   as sections. Live: the object on its own layer over a held stage (the render draws over its still
+   while the scene is near); each chapter's copy in the half the object has left. */
+[data-big-scene="fixed-hero-object"] { background: var(--bg); color: var(--ink); --fho-obj: min(62svh, 44vw); }
+[data-big-scene="fixed-hero-object"] .fho__ground { position: absolute; inset: 0; background: var(--p-inv-bg); opacity: 0; pointer-events: none; }
+[data-big-scene="fixed-hero-object"] .fho__object { position: relative; }
+[data-big-scene="fixed-hero-object"] .fho__still, [data-big-scene="fixed-hero-object"] .fho__img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
+[data-big-scene="fixed-hero-object"] .fho__host { position: absolute; inset: 0; }
+[data-big-scene="fixed-hero-object"] .fho__host.is-failed { display: none; }
+[data-big-scene="fixed-hero-object"] .fho__copy h1 { max-width: 14ch; }
+[data-big-scene="fixed-hero-object"] .fho__copy h3 { font-size: var(--t-h2); line-height: 1.1; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); max-width: 16ch; }
+[data-big-scene="fixed-hero-object"] .fho__copy > p { margin-top: var(--s-4); font-size: var(--t-lead); line-height: 1.5; max-width: 44ch; color: var(--ink); }
+[data-big-scene="fixed-hero-object"] .fho__copy .btn-row { margin-top: var(--s-6); }
+[data-big-scene="fixed-hero-object"] .fho__specs { margin-top: var(--s-6); border-top: 1px solid var(--line); max-width: 440px; }
+[data-big-scene="fixed-hero-object"] .fho__specs > div { display: flex; justify-content: space-between; gap: var(--s-5); padding-block: var(--s-3); border-bottom: 1px solid var(--line); font-size: var(--t-body); }
+[data-big-scene="fixed-hero-object"] .fho__specs dt { color: var(--muted); }
+[data-big-scene="fixed-hero-object"] .fho__specs dd { font-variant-numeric: tabular-nums; text-align: right; }
+[data-big-scene="fixed-hero-object"] .fho__panel.is-dark {
+  --bg: var(--p-inv-bg); --surface: var(--p-inv-surface); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted);
+  --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink); --line: color-mix(in oklab, var(--ink) 14%, transparent);
+  color: var(--ink);
+}
+
+/* ---------- finished composition */
+[data-big-scene="fixed-hero-object"]:not(.is-live) > .sc__stage {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center;
+  width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--s-9) var(--pad) var(--section);
+}
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__object { grid-column: 7 / 13; grid-row: 1; width: 100%; max-width: 560px; justify-self: center; }
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__track { display: contents; }
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel--hero { grid-column: 1 / 7; grid-row: 1; }
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel:not(.fho__panel--hero) { grid-column: 1 / 8; padding-top: var(--section); }
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel.is-dark { grid-column: 1 / -1; background: var(--bg); padding: var(--section-band) var(--pad); margin-inline: calc(-1 * var(--pad)); border-radius: var(--r-lg); margin-top: var(--section); }
+[data-big-scene="fixed-hero-object"]:not(.is-live) .fho__ground { display: none; }
+@media (max-width: 767px) {
+  [data-big-scene="fixed-hero-object"]:not(.is-live) > .sc__stage { grid-template-columns: 1fr; padding-top: var(--s-7); }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__object { grid-column: 1; grid-row: 2; max-width: 320px; }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel--hero { grid-column: 1; grid-row: 1; }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel:not(.fho__panel--hero) { grid-column: 1; }
+}
+
+/* ---------- the held stage */
+[data-big-scene="fixed-hero-object"].is-live > .sc__stage { display: block; }
+[data-big-scene="fixed-hero-object"].is-live .fho__object {
+  position: absolute; left: 50%; top: 50%; width: var(--fho-obj); margin: calc(var(--fho-obj) / -2) 0 0 calc(var(--fho-obj) / -2); z-index: 2;
+  will-change: transform; pointer-events: none;
+}
+[data-big-scene="fixed-hero-object"].is-live .fho__panel {
+  position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center;
+  width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding-inline: var(--pad); padding-top: var(--nav-h, 0px);
+  z-index: 3; pointer-events: none;
+}
+[data-big-scene="fixed-hero-object"].is-live .fho__panel.is-current { pointer-events: auto; }
+[data-big-scene="fixed-hero-object"].is-live .fho__copy { grid-column: 1 / 6; will-change: transform, opacity; }
+[data-big-scene="fixed-hero-object"].is-live .fho__panel:nth-child(even) .fho__copy { grid-column: 7 / 13; }
+
+/* ---------- finished composition in the page rhythm (the section is two screens: style="--h: 2"): the chapters side by side on a wide screen, closer on a phone */
+@media (min-width: 768px) {
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel:not(.fho__panel--hero, .is-dark) { grid-column: span 6; padding-top: var(--s-7); }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel.is-dark { margin-top: var(--s-7); }
+}
+@media (max-width: 767px) {
+  [data-big-scene="fixed-hero-object"]:not(.is-live) > .sc__stage { row-gap: 0; }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__object { max-width: 140px; justify-self: start; }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel:not(.fho__panel--hero) { padding-top: var(--s-4); }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__panel.is-dark { padding-block: var(--s-4); margin-top: var(--s-4); }
+  [data-big-scene="fixed-hero-object"]:not(.is-live) .fho__specs > div { padding-block: var(--s-2); }
+}

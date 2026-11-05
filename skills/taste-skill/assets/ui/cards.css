@@ -1,0 +1,302 @@
+/*
+  taste-skill feature cards - the card, its inset panel and where a fragment sits on it.
+  The rules and their reasons are in references/cards.md. Link after system.css (it refines .card
+  and .panel there) or on its own with these tokens on a ground:
+    --bg (page), --card (one step off the page), --ink, --muted, --accent, --accent-ink,
+    --font-text, --font-mono
+  Fragments in a panel take --fx-* from .stage (set below from the same tokens).
+*/
+
+/* ---------------------------------------------------------------- the card */
+.card {
+  --c-r: 20px;                      /* card radius */
+  --c-pad: 28px;                    /* text padding = the panel's side inset */
+  --c-gap: 8px;                     /* an inset panel's margin; its radius is --c-r minus this */
+  --c-border: color-mix(in oklab, var(--ink) 8%, transparent);
+  --c-text: color-mix(in oklab, var(--ink) 84%, var(--card));   /* card text: the ink, a touch softer than titles */
+  --c-hi: oklch(from var(--card) 1 0 0 / clamp(0, calc(0.09 - l * 0.09), 0.07));
+  --c-sh: oklch(from var(--card) 0 0 0 / calc(0.07 - l * 0.04));
+  position: relative; display: flex; flex-direction: column; min-width: 0;
+  padding: var(--c-pad); border-radius: var(--c-r);
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--c-border);
+  box-shadow: inset 0 1px 0 var(--c-hi), 0 1px 2px var(--c-sh);
+  overflow: clip;
+  gap: 0;
+}
+@media (min-width: 1024px) { .card { --c-pad: 32px; } }
+@media (max-width: 639px) { .card { --c-r: 18px; --c-pad: 20px; } }
+
+.card > h3, .card__title {
+  margin: 0; font-family: var(--font-text); font-size: 18px; line-height: 26px; font-weight: 560;
+  letter-spacing: -0.012em; color: var(--ink); text-wrap: balance;
+}
+/* the two lines under a title: 16px in the ink (a touch softer than the title), never small grey text */
+.card > p, .card__text {
+  margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--c-text);
+  max-width: 46ch; text-wrap: pretty;
+}
+/* two muted lines keep one height in a row so the panels line up; only where cards sit side by side
+   (below 1024px a row is one column, and the held line would be an empty gap) */
+@media (min-width: 1024px) { .card--row > p { min-height: 2lh; } }
+.card__link {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; width: max-content;
+  font-size: 15px; font-weight: 500; line-height: 22px; color: var(--ink); text-decoration: none;
+}
+.card__link svg { width: 14px; height: 14px; transition: transform 200ms cubic-bezier(.2,.7,.2,1); }
+.card__link:hover svg { transform: translateX(2px); }
+
+/* ---------------------------------------------------------------- the inset panel */
+/* Default (x.ai): aligned with the text column and running off the card's bottom edge.
+   The effect canvas mounts on the panel (data-fx) and sits under everything in it. */
+.panel {
+  --p-r: 12px;
+  display: block; padding: 0;
+  --p-h: clamp(264px, 22vw + 8px, 340px);
+  position: relative; isolation: isolate; overflow: clip;
+  min-height: var(--p-h); flex: 1 0 auto;
+  border-radius: var(--p-r) var(--p-r) 0 0;
+  background: color-mix(in oklab, var(--ink) 4%, var(--card));
+}
+/* a panel with no effect mounted stands on the page's lit ground (system.css --ground-*: sand, sky,
+   sage, painting), never a grey a shade off the white UI on it: flat on kind other (cafes, shops,
+   studios); on a tech page (site-kind tech, software or gaming) a soft mesh of the ground's own tones,
+   the Figma tile, with no grain (grain or texture would be the page's one effect). A [data-fx] panel
+   draws its effect instead. */
+.panel:not([data-fx], .panel--device) { background: var(--ground-bg, #d9ccb7); }
+:root:has(meta[name="site-kind"]:is([content="tech"], [content="software"], [content="gaming"])) .panel:not([data-fx], .panel--device) {
+  background-color: var(--ground-bg, #d9ccb7);
+  background-image:
+    radial-gradient(70% 90% at 12% 0%, color-mix(in oklab, var(--ground-surface, #e9e0d2) 92%, white), transparent 70%),
+    radial-gradient(60% 80% at 100% 100%, color-mix(in oklab, var(--ground-accent, #a8794a) 34%, var(--ground-bg, #d9ccb7)), transparent 72%),
+    radial-gradient(50% 60% at 85% 10%, color-mix(in oklab, var(--ground-surface, #e9e0d2) 60%, transparent), transparent 70%);
+}
+.card > .panel { margin-top: 32px; margin-bottom: calc(-1 * var(--c-pad) - 1px); }
+.card > .panel--device { margin-top: 24px; }
+/* system.css spaces the text above a panel itself; here the panel carries the 32px */
+.card > :has(+ .panel) { margin-bottom: 0; }
+/* a crisp 1px edge over the ground and over any fragment it crops */
+.panel::after {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent), inset 0 1px 0 color-mix(in oklab, var(--ink) 4%, transparent);
+}
+/* the vignette that calms the ground where the fragment sits (--vx, --vy: its centre) */
+.panel::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; width: auto; padding: 0;
+  background: radial-gradient(ellipse 70% 62% at var(--vx, 50%) var(--vy, 62%),
+    color-mix(in oklab, var(--calm, var(--card)) var(--calm-k, 34%), transparent), transparent 72%);
+}
+/* inset on all sides by --c-gap; nested radius */
+.card > .panel--inset {
+  margin: 32px calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad));
+  border-radius: calc(var(--c-r) - var(--c-gap));
+}
+/* runs to the card's side and bottom edges (Figma's image band); the card's corners clip it */
+.card > .panel--flush {
+  margin: 32px calc(-1 * var(--c-pad) - 1px) calc(-1 * var(--c-pad) - 1px);
+  border-radius: 0;
+}
+.panel--flush::after { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ink) 7%, transparent); }
+/* the panel on top, the caption under it (tall cards) */
+.card > .panel--top {
+  order: -1; margin: calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) 24px;
+  border-radius: calc(var(--c-r) - var(--c-gap)); flex: none; min-height: 0; aspect-ratio: 1 / 1;
+}
+.panel--top.panel--wide { aspect-ratio: 4 / 3; }
+
+/* a device (x.ai's "Computer" card): a status row, then the ground as its screen. The row sits on the
+   card itself, not in a frame of its own, so the card stays two levels deep (card > picture > UI) */
+.panel--device { display: flex; padding: 0; flex-direction: column; background: none; overflow: visible; isolation: auto; border-radius: 0; }
+.panel--device::before, .panel--device::after { display: none; }
+.panel__bar {
+  display: flex; align-items: center; gap: 8px; height: 32px; margin-bottom: 12px; padding: 0; flex: none;
+  font: 500 13px/20px var(--font-text); color: var(--ink);
+}
+.panel__bar .muted { color: var(--muted); font-weight: 400; }
+.panel__bar .sp { flex: 1; }
+/* the bar's status is quiet ink: the accent belongs to the one status inside the screen */
+.panel__status {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 6px;
+  font: 500 var(--t-label)/1 var(--font-text); color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 6%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+}
+.panel__bar .ui-agent { width: 20px; height: 20px; --u-ink: var(--ink); --u-bg: var(--card); }
+/* a still dot: the bar's status never spins on its own (the moving part is the screen's one loop) */
+.panel__status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.panel__screen {
+  position: relative; isolation: isolate; overflow: clip; flex: 1;
+  margin: 0; border-radius: var(--p-r) var(--p-r) 0 0;
+  background: color-mix(in oklab, var(--ink) 4%, var(--card));
+}
+.panel__screen::after {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent);
+}
+.panel__screen::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 62% at var(--vx, 50%) var(--vy, 70%),
+    color-mix(in oklab, var(--calm, #000) var(--calm-k, 30%), transparent), transparent 72%);
+}
+
+/* ---------------------------------------------------------------- where a fragment sits */
+/* .stage holds the fragment(s) and gives them their palette: the fragment surface is one step
+   lighter than the card on dark grounds and white on light ones */
+.stage, .panel > .stage, .panel__screen > .stage {
+  position: absolute; inset: 0; z-index: 1; max-width: none;
+  --ui-font: var(--font-text); --ui-mono: var(--font-mono); --ui-radius: 12px;
+  /* the fragment surface: white on a light card, one step lighter than a dark card (--frag overrides) */
+  --fx-bg: var(--frag, oklch(from var(--card) clamp(calc(l + 0.05), calc((l - 0.5) * 1000), 1) calc(c * 0.5) h));
+  --fx-surface: var(--card); --fx-ink: var(--ink); --fx-muted: var(--muted);
+  --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
+}
+.stage > * { position: absolute; max-width: none; }
+/* from 640px a fragment keeps its true width and is cropped by the panel, never squeezed to fit
+   (on a phone it takes the panel's width instead: see the end of this block) */
+@media (min-width: 640px) { .stage > :not(.at-center) > [data-ui] { max-width: none; } }
+/* a fragment cut by the panel's edge dissolves into the ground over its last --fade-h (64px; 40px for a
+   short panel) instead of being sliced through a line of text (edge-fade-dissolve, 14 of 41 sites).
+   The fade only ever covers context: the fragment's point (the row that changes, the number, the
+   button) sits above it. */
+.stage { --fade-h: 64px; }
+.stage--fade-b { -webkit-mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)); mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)); }
+.stage--fade-r { -webkit-mask: linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px)); mask: linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px)); }
+.stage--fade-br {
+  -webkit-mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)), linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px));
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)), linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px));
+  mask-composite: intersect;
+}
+/* anchored at the top-left inset, cut by the right and bottom edges (19 of 41 sites) */
+.at-corner { left: var(--ax, 32px); top: var(--ay, 32px); }
+/* anchored at the top-right inset, cut by the bottom only: on a narrow panel it narrows to the panel
+   minus both insets rather than run out of the left edge through its text */
+.at-right { right: var(--ax, 32px); top: var(--ay, 32px); max-width: calc(100% - 2 * var(--ax, 32px)); }
+.stage > .at-right > :is([data-ui], .ui) { max-width: 100%; }
+/* rising out of the bottom edge (x.ai) */
+.at-rise { left: var(--ax, 18%); top: var(--ay, 48px); }
+/* .to-edge: the wrapper reaches --cut (72px) past the panel's bottom edge whatever the panel's height,
+   so a fragment that fills its wrapper (stat with opts.fill, a long list) is always cut on purpose and
+   never by a few accidental px */
+.stage > .to-edge { bottom: calc(-1 * var(--cut, 72px)); }
+.stage > .to-edge > :is([data-ui], .ui) { height: 100%; }
+/* .fit: the fragment takes the panel's width minus --ax on both sides instead of its own, for a narrow
+   panel where a few px of overhang would cut its text (contain it, or cut it by 48px or more).
+   --fit-max (its true width, e.g. 400px for chat) keeps it at that width on a wide panel, centred
+   between the insets (x.ai's window rising out of the bottom edge), so it only narrows where the
+   panel is too small: never a 1-23px sliver, a cut at 1024, or uneven ground at the sides */
+.stage > .fit { right: var(--ax, 32px); }
+.stage > .fit > :is([data-ui], .ui) { width: 100%; max-width: var(--fit-max, 100%); margin-inline: auto; }
+/* .wide: a fluid fragment (files, calendar) set wider than the panel (--w), so it is cut by the right
+   edge like a window, not centred with even ground round it; pair with .stage--fade-br. Whatever the
+   panel's width it runs at least 64px past the right edge */
+.stage > .wide { width: max(var(--w, 680px), 100% - var(--ax, 32px) + 64px); }
+.stage > .wide > :is([data-ui], .ui) { width: 100%; max-width: none; }
+/* a small control in the calm middle of a focal ground (Figma's Texture tile): never a window or a
+   dialog. It never runs past the panel: at most the panel less 24px a side */
+.at-center { left: 50%; top: 50%; translate: -50% -50%; max-width: calc(100% - 48px); }
+.stage > .at-center > :is([data-ui], .ui) { max-width: 100%; }
+/* a second fragment laid over the first one's edge */
+.at-over { right: var(--bx, 24px); bottom: var(--by, 24px); z-index: 2; }
+.at-over-l { left: var(--bx, 24px); bottom: var(--by, 24px); z-index: 2; }
+/* phone: a fragment takes the panel's width minus the inset on both sides (its own width stays the upper
+   bound), so it is only ever cut at the bottom, never through a line of text at the side. The desktop
+   --ax and --ay are ignored here; --ay-sm sets the top. */
+@media (max-width: 639px) {
+  .stage > :is(.at-corner, .at-right, .at-rise) { left: var(--ax-sm, 16px); right: var(--ax-sm, 16px); top: var(--ay-sm, 24px); max-width: none; }
+  .stage > :is(.at-corner, .at-right, .at-rise) > :is([data-ui], .ui) { max-width: 100%; }
+  .stage > .wide { width: auto; }
+  .stage > .at-center { max-width: calc(100% - 2 * var(--ax-sm, 16px)); }
+  /* a dialog over a window takes the panel's width less 12px a side, never running past it */
+  .stage > :is(.at-over, .at-over-l) { left: 12px; right: 12px; bottom: 16px; }
+  .stage > :is(.at-over, .at-over-l) > :is([data-ui], .ui) { width: auto; max-width: 100%; }
+}
+
+/* ---------------------------------------------------------------- variants */
+/* text beside the panel */
+.card--split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: stretch; }
+.card--split > .card__body { display: flex; flex-direction: column; justify-content: center; padding: 16px 0; }
+.card--split > .panel { margin: calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) 0; border-radius: calc(var(--c-r) - var(--c-gap)); min-height: 420px; }
+@media (max-width: 899px) {
+  .card--split { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .card--split > .card__body { padding: 0; }
+  .card--split > .panel { margin: 28px calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)); min-height: 360px; }
+}
+.card__points { display: grid; gap: 0; margin: 24px 0 0; padding: 0; list-style: none; }
+.card__points li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--c-border); font-size: 16px; line-height: 24px; color: var(--c-text); }
+.card__points li b { color: var(--ink); font-weight: 500; }
+.card__points svg { width: 18px; height: 18px; margin-top: 3px; flex: none; color: var(--ink); }
+
+/* the big number: filled with an effect through a blend knock-out (see cards.md) */
+.knock { position: relative; isolation: isolate; display: inline-block; line-height: 0.92; }
+.knock__text {
+  position: relative; z-index: 1; display: block;
+  font: 600 var(--knock-size, 128px)/0.92 var(--font-display, var(--font-text)); letter-spacing: -0.05em;
+  background: var(--card); color: #fff; mix-blend-mode: darken; padding: 0.04em 0.06em 0.08em 0;
+}
+.knock--light .knock__text { color: #000; mix-blend-mode: lighten; }
+/* a plain big number beside a knocked-out one: the same size and the same box, so the rows under both
+   start level */
+.stat__num {
+  display: block; font: 600 var(--knock-size, 128px)/0.92 var(--font-display, var(--font-text)); letter-spacing: -0.05em;
+  padding: 0.04em 0.06em 0.08em 0; color: var(--ink); white-space: nowrap;
+}
+.stat__unit { font-size: 0.32em; letter-spacing: -0.01em; color: var(--muted); font-weight: 500; margin-left: 0.2em; }
+.stat__label { font-size: 16px; line-height: 24px; color: var(--c-text); }
+.stat__label b { color: var(--ink); font-weight: 500; }
+
+/* testimonial: the quote and who said it, beside one result told as a number and two bars */
+.quote { margin: 0; font-family: var(--font-display, var(--font-text)); font-size: clamp(22px, 1.1vw + 12px, 28px); line-height: 1.32; letter-spacing: -0.02em; font-weight: 450; color: var(--ink); text-wrap: pretty; }
+.person { display: flex; align-items: center; gap: 12px; margin-top: 28px; }
+.person__logo { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 10px; color: var(--ink); background: color-mix(in oklab, var(--ink) 5%, var(--card)); box-shadow: inset 0 0 0 1px var(--c-border); }
+.person__logo svg { width: 22px; height: 22px; }
+.person__name { display: block; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); }
+.person__role { display: block; font-size: 16px; line-height: 24px; color: var(--c-text); }
+.result { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; padding-left: 40px; border-left: 1px solid var(--c-border); }
+.result__fig { font: 600 clamp(64px, 3.4vw + 24px, 88px)/0.95 var(--font-display, var(--font-text)); letter-spacing: -0.05em; color: var(--ink); }
+.result__cap { margin: 12px 0 0; max-width: 28ch; font-size: 16px; line-height: 24px; color: var(--c-text); }
+.result__bars { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.result__bars li { display: grid; grid-template-columns: 124px minmax(0, 1fr) auto; align-items: center; gap: 12px; font-size: 16px; line-height: 24px; color: var(--c-text); }
+.result__bars i { display: block; height: 8px; width: var(--w); border-radius: 4px; background: color-mix(in oklab, var(--ink) 16%, var(--card)); }
+.result__bars li:last-child i { background: var(--accent); }
+.result__bars b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+@media (max-width: 1023px) { .result { padding: 28px 0 0; border-left: 0; border-top: 1px solid var(--c-border); } }
+
+/* pricing */
+.plan { gap: 0; }
+/* every plan's name row is the badge's height, so prices, buttons and lists sit level across the row */
+.plan__name { height: 24px; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.plan__price { display: flex; align-items: baseline; gap: 6px; margin-top: 20px; font: 600 44px/1 var(--font-display, var(--font-text)); letter-spacing: -0.04em; }
+.plan__price small { font: 400 14px/20px var(--font-text); letter-spacing: 0; color: var(--muted); }
+.plan__for { margin-top: 12px; font-size: 16px; line-height: 24px; color: var(--c-text); min-height: 2lh; }
+.plan__btn {
+  display: inline-flex; align-items: center; justify-content: center; height: 40px; margin-top: 24px; border-radius: 10px;
+  font: 500 14px/1 var(--font-text); text-decoration: none; color: var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent);
+}
+.plan__btn--primary { background: var(--ink); color: var(--card); box-shadow: inset 0 1px 0 color-mix(in oklab, var(--card) 18%, transparent); }
+.plan__list { display: grid; gap: 10px; margin: 24px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid var(--c-border); font-size: 16px; line-height: 24px; color: var(--c-text); }
+.plan__list li { display: flex; gap: 10px; }
+.plan__list li::before {
+  content: ""; flex: none; width: 16px; height: 16px; margin-top: 4px; background: var(--ink); opacity: 0.85;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8.4 2.8 2.8 6.2-6.4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8.4 2.8 2.8 6.2-6.4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+/* the featured plan: the same --card fill as its neighbours and a quiet accent hairline, its one accent
+   touch (so the badge is quiet ink). On hover or focus a light runs once round the edge: an edge-glow
+   canvas (fill 1, wash 0) mounted for that lap only, which paints the same fill under a lit border and
+   then fades. Never a light that runs because the plan scrolled into view, never a comet left on one edge */
+.plan.is-featured { border-color: color-mix(in oklab, var(--accent) 48%, transparent); background: var(--card); }
+.plan.is-featured.is-fading > .fx-canvas { opacity: 0 !important; transition: opacity 600ms ease !important; }
+.plan.is-featured .plan__badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font: 500 var(--t-label)/1 var(--font-text); color: var(--ink); background: color-mix(in oklab, var(--ink) 7%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent); }
+
+/* on a phone a fragment fits the panel's width (see the placements), so it is only cut at the bottom:
+   the side fades go, the bottom fade stays */
+@media (max-width: 639px) {
+  .stage--fade-r { -webkit-mask: none; mask: none; }
+  .stage--fade-b, .stage--fade-br {
+    -webkit-mask: linear-gradient(to bottom, #000 calc(100% - min(56px, var(--fade-h))), transparent calc(100% - 4px));
+    mask: linear-gradient(to bottom, #000 calc(100% - min(56px, var(--fade-h))), transparent calc(100% - 4px));
+  }
+}
+
+@keyframes ui-spin { to { transform: rotate(360deg); } }
