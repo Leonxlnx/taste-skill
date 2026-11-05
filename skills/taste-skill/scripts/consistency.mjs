@@ -220,6 +220,10 @@
 //              24px either way, whose tile or the screen a whole screen on from its top shows another section's
 //              heading, text or picture, FAIL; only its ground, 24px or more, WARN; at 390x844 only a section
 //              shorter than the screen; not told again when hero-screen, section-height or one-section tells it)
+//   added later (a font the page asks for that never loads)
+//   type       font-load (the first family of each stack the type tokens, the h1, the h2s and the body text ask for: a web
+//              font no loaded face answers once the fonts are ready, a missing or misspelt font link or a family nothing
+//              loads, WARN, named with where it is used; generic families and system faces pass; first width)
 // Then the first screen at 1280, 1152, 1024, 896 and 768 for cut text, spills, overflow and nav faults (--no-sweep
 // skips it). Chrome runs headless on the CPU (--disable-gpu --use-angle=swiftshader), one Chrome at a time, and never
 // lets a page hold more than 4 live WebGL contexts: past 4 it frees the oldest one far off screen, or refuses the new
@@ -7461,6 +7465,38 @@ function lib() {
     scrollToY(0); await wait(200);
     return out;
   }
+  // font-load: the first family of each stack the type tokens, the h1, the h2s and the body text ask for, once the fonts
+  // are ready: a web font no loaded face answers (a missing or misspelt font link, a family nothing loads) shows its
+  // fallback. Generic families, system stacks and a face installed on this machine are no web fonts
+  async function fontLoad() {
+    if (!document.fonts) return [];
+    await Promise.race([document.fonts.ready, wait(5000)]);
+    const SYS = /^(serif|sans-serif|monospace|cursive|fantasy|math|emoji|fangsong|system-ui|ui-(serif|sans-serif|monospace|rounded)|-apple-system|blinkmacsystemfont|segoe ui.*|helvetica( neue)?|arial|georgia|times( new roman)?|menlo|monaco|consolas|sfmono-regular|sf mono|courier( new)?|liberation mono|.*emoji|inherit|initial|unset|revert)$/i;
+    const fam = (s) => String(s || '').split(',')[0].trim().replace(/^["']|["']$/g, '');
+    const fc = document.createElement('canvas').getContext('2d');
+    const wide = (f) => { fc.font = `40px ${f}`; return fc.measureText('mmmmmmmmmmlli WQ@').width; };
+    const local = (f) => ['monospace', 'serif'].some((g) => wide(`"${f}", ${g}`) !== wide(g));
+    const asks = new Map();
+    const ask = (s, where, e) => {
+      const f = fam(s); if (!f || SYS.test(f)) return;
+      const a = asks.get(f.toLowerCase()) || { f, where: [], e: null }; asks.set(f.toLowerCase(), a);
+      if (!a.where.includes(where)) a.where.push(where); a.e = a.e || e;
+    };
+    const root = getComputedStyle(document.documentElement);
+    for (const t of ['--font-display', '--font-text', '--font-mono']) ask(root.getPropertyValue(t), t, null);
+    for (const [q, where] of [['h1', 'the h1'], ['h2', 'the h2s'], ['body, p', 'the body text']]) for (const e of [...document.querySelectorAll(q)].slice(0, 6)) ask(getComputedStyle(e).fontFamily, where, e);
+    const out = [];
+    for (const { f, where, e } of asks.values()) {
+      const faces = [...document.fonts].filter((x) => fam(x.family).toLowerCase() === f.toLowerCase());
+      if (!faces.length && local(f)) continue;
+      // a face no text on the page has used yet (the mono token's) is asked for once
+      if (faces.length && !faces.some((x) => x.status === 'loaded')) await Promise.race([document.fonts.load(`16px "${f}"`).catch(() => {}), wait(3000)]);
+      if (faces.some((x) => x.status === 'loaded')) continue;
+      const r = e && e !== document.body ? e.getBoundingClientRect() : null;
+      out.push({ id: e ? idOf(e) : 0, sel: e ? sel(e) || 'body' : ':root', family: f, where: where.join(', ').replace(/, ([^,]*)$/, ' and $1'), why: faces.length ? 'its font file did not load' : 'no font link or @font-face loads it', doc: r && r.width >= 1 ? D(r) : null });
+    }
+    return out;
+  }
 
   // ------------------------------------------------ checks added in v4 (the readers' faults the
   // checker still missed on earlier test pages, and two of the house rules)
@@ -7760,7 +7796,7 @@ function lib() {
     return { sig: parts.join('#'), r: R(r) };
   }
 
-  window.__cc = { measure, arrive, probe, findHeld, holdPass, revealList, scrollTimelines, noVisual, seam, insideMoving, insideScene, momentOf, placeOf, rectOf, scrollTo: scrollToY, prescroll, hideText, navCollapse, closedAnchors,
+  window.__cc = { measure, arrive, probe, findHeld, holdPass, revealList, scrollTimelines, noVisual, seam, insideMoving, insideScene, momentOf, placeOf, rectOf, scrollTo: scrollToY, prescroll, hideText, navCollapse, closedAnchors, fontLoad,
     pageInfo, hiddenCands, isShownNow, hoverCands, hoverBox, hoverSig, hoverXf, loopCands, pauseFor, viewRect, formsList, trySubmit, audit, ioReveals, moreChecks, hoverKinds, lookSig,
     picsReady, heroFill, seams, extras, glInfo, glHosts, hideVis, stripHost, canvasArea, ghostPics, moverAt, motionNow, imgDone: (list) => list.map((id) => { const e = els.get(id); return !!(e && e.complete && e.naturalWidth); }) };
   return true;
@@ -8079,6 +8115,7 @@ const FIX = {
   grounds: 'three flat grounds at most (the base, one surface, one inverse): lay the other bands on one of them',
   'split-align': 'set every split one way: the text to the top of its visual, or every one centred on it',
   'fact-agree': 'say each fact once, or the same everywhere: one opening time per day, one price per thing',
+  'font-load': 'load every family the type asks for: name it in the font link as start.mjs prints it, spelt as Google Fonts spells it, or ask for a family the page loads',
   'fold-action': 'bring the hero\'s buttons onto the first screen: a shorter headline or line, the picture under the buttons',
   'action-count': 'the main action in the nav, the hero and the closing call; give the other sections their own action',
   'one-screen': 'give each section the screen (min-height: 100svh less the nav, its content centred), or join two short ones',
@@ -8922,7 +8959,7 @@ function groupSame(F) {
   }
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
-const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object'];
+const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object', 'font-load'];
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
 for (const M of MODULES) for (const c of M.checks) if (!ORDER.includes(c.id)) ORDER.push(c.id);
@@ -9079,6 +9116,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       moreFindings(MC, PG, first, later, width, height, copy && copy.T); }
     // links that land on a closed answer or a hidden panel (once)
     if (first) for (const x of (await safe('anchors', () => tab.eval('window.__cc.closedAnchors()', 30000))) || []) later.push({ check: 'links', sev: 'WARN', id: x.id, sel: x.sel, text: x.text, msg: `"${x.text.slice(0, 40)}" goes to #${x.target}, ${x.kind} that stays shut when the link is followed`, doc: null, fix: 'open the target when its hash is followed (details.open = true on hashchange), or link to the section' });
+    // web fonts the type asks for that never loaded (once)
+    if (first) for (const x of (await safe('font-load', () => tab.eval('window.__cc.fontLoad()', 30000))) || []) later.push({ check: 'font-load', sev: 'WARN', id: x.id, sel: x.sel, text: x.family, msg: `"${x.family}" is asked for by ${x.where} but never loaded (${x.why}): it shows in its fallback`, doc: x.doc });
     TM('hero+extras');
     const late = new Map(); // pictures still loading 3 s after they came on screen
     let s = 0;
@@ -9891,7 +9930,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // a fault inside a scroll-linked animation is caught mid-way: a WARN (the animation is the FAIL, told on its own);
     // with --quick, the same for anything in a held section or a scroll scene, whose motion was not checked
     // (what does not depend on where a moving part was caught keeps its severity: sizes, words, links, pictures, loops)
-    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object']);
+    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'font-load', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object']);
     for (const M of MODULES) for (const c of M.checks) told.add(c.id);
     const ids = F.map((f) => (told.has(f.check) ? 0 : f.id || 0));
     const inside = (await safe('inside', () => tab.eval(`window.__cc.insideMoving(${JSON.stringify(ids)})`))) || [];
