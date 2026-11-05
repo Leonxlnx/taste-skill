@@ -1,7 +1,5 @@
 # tasteskill v2 (`design-taste-frontend`)
 
-[English](README.md) | [한국어](README.ko.md)
-
 A design skill for coding agents, built from a study of 247 curated sites (One Page Love and Awwwards
 Sites of the Day, October 2026). It gives an agent an art direction instead of letting it fall back on
 the average landing page, holds it to a strict no-ornament house style, and makes it look at its own
