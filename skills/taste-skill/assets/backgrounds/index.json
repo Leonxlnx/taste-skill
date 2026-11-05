@@ -1,0 +1,794 @@
+{
+  "about": "16 section and page grounds drawn in CSS (backgrounds.css). One class on a section, a wrapper, body or a visual's panel. The twelve section grounds set the page tokens for their children; the two page grounds (paper, topglow) set none and only paint. Each works on light and dark palettes and keeps ink 7:1 and muted 4.5:1 on its text zone (check.mjs measures it). pick.mjs deals a page's grounds (at most 2 beyond the flat tokens, no page ground; paper and grain are marked dealt:false and never dealt, since a ground with grain is the page's one effect; --effect also skips the grounds marked texture), for software, tech and gaming pages only (VI-41, VI-42): a product, service or place page is flat and no ground is listed for it (a product page with a technical subject asks with --kind tech and is dealt as software). Grounds list the sections they fit (sections): pick.mjs deals those; strict ones go nowhere else, byRole ones (band, field) also fit by role when the plan has none of their ids. Grounds marked coloured (band, field, stage; grain is never dealt) count toward the one coloured ground every page of five sections or more holds.",
+  "version": 6,
+  "weights": {
+    "1": "calm: reads as the page",
+    "2": "medium: a visible change of ground",
+    "3": "loud: the one section a screen remembers"
+  },
+  "kinds": {
+    "soft": "paints no colour of its own and fades into the page at the top and bottom; neighbours anything",
+    "hard": "a band with its own colour and edges (add bg-inset for a rounded panel on the grid)",
+    "page": "a ground for the whole page (body or one wrapper), not for one section",
+    "panel": "a rounded panel behind one visual (bg-stage): vivid, with no text of its own; every word on it sits on a card"
+  },
+  "roles": [
+    "hero",
+    "body",
+    "proof",
+    "band",
+    "close",
+    "footer"
+  ],
+  "modifiers": {
+    "bg-inset": "a hard ground as a rounded panel whose left and right edges sit on the container's",
+    "bg-photo--left": "the photograph's scrim from the left, for words in the middle of the left side",
+    "bg-photo--light": "the scrim from the light side and dark words, for a pale photograph",
+    "bg-tint": "with bg-band or bg-field: the second tone is a pale tint of the accent's own colour (a mint for a teal accent) instead of the lit ground, so the band is coloured on a sand page",
+    "bg-bleed": "on a dark page a band or a field is inset automatically (a pale slab is the brightest thing there); bg-bleed keeps it full-bleed"
+  },
+  "knobs": {
+    "--g-hue": "the colour the tints lean to; default the accent with a hue guard (never violet or lavender)",
+    "--g-k": "strength of the tints, 1 by default",
+    "--tone / --tone-ink": "the second brand tone and its text colour for bg-band and bg-field; default the lit ground",
+    "--g-photo": "url(...) for bg-photo when no <img class=\"bg-photo__img\"> child is used",
+    "--g-screen": "a ground section's minimum height (default min(88svh, 860px) for a hard ground, min(76svh, 760px) for a soft one); 0px = the words' own height",
+    "--g-photo-pos": "where the subject of the photograph sits (object-position); --g-photo-pos-m on a phone",
+    "--scrim-h": "how high the photograph's scrim stays deep: backgrounds.js measures the words and sets it; a value the section sets is kept"
+  },
+  "grounds": [
+    {
+      "id": "mist",
+      "class": "bg-mist",
+      "name": "Mist",
+      "kind": "soft",
+      "weight": 1,
+      "animated": false,
+      "mood": "airy, soft colour fields like a wash of light in two neighbouring hues",
+      "where": "a section head over a row of three open cards; a feature list; any section that needs a little colour",
+      "roles": [
+        "hero",
+        "body"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "grain",
+        "band",
+        "horizon",
+        "photo",
+        "stage"
+      ],
+      "avoids": [
+        "halo",
+        "topglow",
+        "liquid",
+        "dusk"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "halo",
+      "class": "bg-halo",
+      "name": "Halo",
+      "kind": "soft",
+      "weight": 1,
+      "animated": false,
+      "mood": "calm, one light behind one thought",
+      "where": "a centred statement or a closing line: a heading, a few lines and a button. Move it with --halo-x and --halo-y to where the heading sits",
+      "roles": [
+        "hero",
+        "body",
+        "close"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "ruled",
+        "dots",
+        "grain",
+        "horizon",
+        "photo",
+        "stage"
+      ],
+      "avoids": [
+        "mist",
+        "liquid",
+        "arcs"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "grain",
+      "class": "bg-grain",
+      "name": "Grain",
+      "kind": "hard",
+      "weight": 2,
+      "animated": false,
+      "mood": "tactile, a tinted field with a fine film grain, a light corner and two neighbouring hues",
+      "where": "a split with text on the left and one UI card on the right (the Figma tile); a feature on a field",
+      "roles": [
+        "body",
+        "band"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "mist",
+        "ruled",
+        "halo"
+      ],
+      "avoids": [
+        "band",
+        "field",
+        "dusk",
+        "stage"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "coloured": true,
+      "dealt": false
+    },
+    {
+      "id": "paper",
+      "class": "bg-paper",
+      "name": "Paper",
+      "kind": "page",
+      "weight": 1,
+      "animated": false,
+      "mood": "quiet, a page ground that is never flat",
+      "where": "on body or one wrapper: fine grain and a faint tint at the top and bottom. Soft grounds are transparent, so it shows through them; hard grounds cover it",
+      "roles": [
+        "page"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "mist",
+        "halo",
+        "grain",
+        "dusk",
+        "ruled",
+        "dots",
+        "band",
+        "photo",
+        "stage"
+      ],
+      "avoids": [],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "dealt": false
+    },
+    {
+      "id": "dusk",
+      "class": "bg-dusk",
+      "name": "Dusk",
+      "kind": "hard",
+      "weight": 1,
+      "animated": false,
+      "mood": "gentle, one tone becomes the next with no edge: both ends melt into whatever the page paints there",
+      "where": "a quote with one big number, a proof section, any section between two plain ones. Set --g-to for the tone, --g-from and --g-next to melt from or into a colour instead of the page",
+      "roles": [
+        "body",
+        "proof"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "ruled",
+        "halo"
+      ],
+      "avoids": [
+        "mist",
+        "grain"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "topglow",
+      "class": "bg-topglow",
+      "name": "Top glow",
+      "kind": "page",
+      "weight": 1,
+      "animated": false,
+      "mood": "clean, light under the nav that the page lifts out of",
+      "where": "a wrapper around the nav and the hero: a glow from the top edge and a thin lit line. The hero's ground for software and service pages",
+      "roles": [
+        "hero"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "dusk",
+        "ruled",
+        "grain",
+        "band",
+        "horizon"
+      ],
+      "avoids": [
+        "mist",
+        "liquid"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "ruled",
+      "class": "bg-ruled",
+      "name": "Ruled",
+      "kind": "soft",
+      "weight": 1,
+      "animated": false,
+      "mood": "precise, a grid that is the page's own frame: its first and last rules lie on the container's edges, it fades toward the top and bottom and is clear behind the heading",
+      "where": "a centred hero or statement, a section with one big visual. Never over a table, pricing, a list or any section that draws row rules of its own",
+      "roles": [
+        "hero",
+        "body"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "halo",
+        "dusk",
+        "grain",
+        "band",
+        "stage"
+      ],
+      "avoids": [
+        "dots",
+        "arcs"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "sections": [
+        "hero-centred",
+        "hero-split",
+        "hero-editorial",
+        "hero-product",
+        "product-statement",
+        "chapter",
+        "features-2x2",
+        "bento",
+        "tabs-tour",
+        "integrations-grid",
+        "calendar-frame",
+        "split-text-left",
+        "split-text-right",
+        "closing-type"
+      ],
+      "strict": true
+    },
+    {
+      "id": "dots",
+      "class": "bg-dots",
+      "name": "Dots",
+      "kind": "soft",
+      "weight": 1,
+      "animated": false,
+      "mood": "quiet texture: a dot field in the margins and corners, clear behind the heading and the words",
+      "where": "a centred section with a row of figures, a logo row, an integrations section: a dot field and a pool of light behind the heading",
+      "roles": [
+        "body",
+        "proof",
+        "hero"
+      ],
+      "types": [
+        "software"
+      ],
+      "pairs": [
+        "paper",
+        "halo",
+        "band",
+        "horizon",
+        "dusk",
+        "stage"
+      ],
+      "avoids": [
+        "ruled",
+        "arcs"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "arcs",
+      "class": "bg-arcs",
+      "name": "Arcs",
+      "kind": "soft",
+      "weight": 1,
+      "animated": false,
+      "mood": "open, rings that rise from below like x.ai's footer",
+      "where": "the closing call to action, or the section above the footer: a heading and a button over rings",
+      "roles": [
+        "close",
+        "footer"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "closing-type"
+      ],
+      "pairs": [
+        "paper",
+        "mist",
+        "band",
+        "grain",
+        "photo"
+      ],
+      "avoids": [
+        "ruled",
+        "dots",
+        "halo",
+        "horizon",
+        "liquid"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "strict": true
+    },
+    {
+      "id": "band",
+      "class": "bg-band",
+      "name": "Band",
+      "kind": "hard",
+      "weight": 3,
+      "animated": false,
+      "mood": "warm, a coloured band in the page's second tone, lit from one corner and deeper in the other",
+      "where": "one big number and a UI card; one statement with a button. The tone is the lit ground (sand, sky, sage, painting) or --tone. On a dark page it is the one light band",
+      "roles": [
+        "band"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "quote-stat",
+        "product-statement",
+        "split-text-left",
+        "split-text-right",
+        "chapter",
+        "customer-proof-row",
+        "steps",
+        "pricing-three",
+        "pricing-two",
+        "comparison-table",
+        "timeline-rail",
+        "services-list",
+        "people-row",
+        "features-2x2",
+        "integrations-grid",
+        "rooms-list"
+      ],
+      "pairs": [
+        "paper",
+        "mist",
+        "halo",
+        "dusk",
+        "ruled",
+        "dots"
+      ],
+      "avoids": [
+        "field",
+        "grain",
+        "stage"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "variants": [
+        {
+          "id": "band-tint",
+          "class": "bg-band bg-tint",
+          "textZone": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "byRole": true,
+      "coloured": true
+    },
+    {
+      "id": "field",
+      "class": "bg-field",
+      "name": "Field",
+      "kind": "hard",
+      "weight": 3,
+      "animated": false,
+      "mood": "rich, a grainy gradient in one family of colour (a peach beside sand, a cyan beside sky) with a light sweep: Figma's sand tile",
+      "where": "a centred heading over one or two UI cards; best as a rounded inset panel (bg-inset)",
+      "roles": [
+        "band",
+        "hero"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "features-2x2",
+        "bento",
+        "tabs-tour",
+        "split-text-left",
+        "split-text-right",
+        "calendar-frame",
+        "integrations-grid",
+        "steps",
+        "pricing-three",
+        "pricing-two",
+        "comparison-table",
+        "timeline-rail",
+        "services-list",
+        "people-row",
+        "hero-centred",
+        "hero-editorial",
+        "chapter",
+        "product-statement"
+      ],
+      "pairs": [
+        "paper",
+        "halo",
+        "ruled",
+        "dots",
+        "dusk"
+      ],
+      "avoids": [
+        "band",
+        "grain",
+        "stage"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "variants": [
+        {
+          "id": "field-tint",
+          "class": "bg-field bg-tint",
+          "textZone": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "byRole": true,
+      "coloured": true,
+      "texture": true
+    },
+    {
+      "id": "stage",
+      "class": "bg-stage",
+      "name": "Stage",
+      "kind": "panel",
+      "weight": 2,
+      "animated": false,
+      "mood": "vivid, the accent as a grainy mesh that one card floats on: Figma's colour tiles",
+      "where": "the panel behind the one UI card or window beside a section's text (it is a panel, not a section: <div class=\"bg-stage\"><div class=\"mini\">). Never behind a heading: every word on it is on a card. On a strong-colour page (data-tint away) it takes the accent's hue, on a grey accent (data-lowchroma) the lit ground's colour. --stage-w is the card's width",
+      "roles": [
+        "body",
+        "hero"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "hero-split",
+        "hero-cycle",
+        "hero-product",
+        "split-text-left",
+        "split-text-right",
+        "tabs-tour",
+        "calendar-frame",
+        "hero-editorial",
+        "chapter",
+        "product-statement",
+        "integrations-grid"
+      ],
+      "pairs": [
+        "paper",
+        "mist",
+        "halo",
+        "dusk",
+        "ruled",
+        "dots"
+      ],
+      "avoids": [
+        "field",
+        "grain",
+        "band",
+        "liquid"
+      ],
+      "textZone": null,
+      "coloured": true,
+      "strict": true,
+      "texture": true
+    },
+    {
+      "id": "photo",
+      "class": "bg-photo",
+      "name": "Photo",
+      "kind": "hard",
+      "weight": 3,
+      "animated": false,
+      "mood": "calm and large, a photograph under a quiet scrim",
+      "where": "a media band, the hero of a place or product page, a closing photo. Put the photograph in as <img class=\"bg-photo__img\" src alt> (or --g-photo: url(...) where no img fits); words sit lower left (bg-photo--left: left side). A pale photograph takes bg-photo--light (dark words on a light scrim). Credits go in the footer line",
+      "roles": [
+        "hero",
+        "band",
+        "close"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "product-statement",
+        "quote-stat",
+        "chapter",
+        "closing-type"
+      ],
+      "needs": "a vetted photograph with a calm area (scripts/photos.mjs pick)",
+      "pairs": [
+        "paper",
+        "halo",
+        "mist",
+        "dusk"
+      ],
+      "avoids": [
+        "horizon",
+        "deep",
+        "liquid"
+      ],
+      "textZone": [
+        0,
+        0.6,
+        0.6,
+        1
+      ],
+      "variants": [
+        {
+          "id": "photo-left",
+          "class": "bg-photo bg-photo--left",
+          "textZone": [
+            0,
+            0,
+            0.45,
+            1
+          ]
+        },
+        {
+          "id": "photo-light",
+          "class": "bg-photo bg-photo--light",
+          "textZone": [
+            0,
+            0.6,
+            0.6,
+            1
+          ]
+        },
+        {
+          "id": "photo-white",
+          "class": "bg-photo",
+          "textZone": [
+            0,
+            0.6,
+            0.6,
+            1
+          ],
+          "note": "a white photograph under the dark scrim: the worst case for white words"
+        },
+        {
+          "id": "photo-left-white",
+          "class": "bg-photo bg-photo--left",
+          "textZone": [
+            0,
+            0,
+            0.45,
+            1
+          ]
+        }
+      ],
+      "strict": true
+    },
+    {
+      "id": "horizon",
+      "class": "bg-horizon",
+      "name": "Horizon",
+      "kind": "hard",
+      "weight": 3,
+      "animated": false,
+      "mood": "dramatic, a dark band with a lit curve like a planet's rim",
+      "where": "a statement the page is sure of (security, scale, a promise) with a button above the horizon; the page's one dark band. Words stay above the lit curve, whose rim is brightest at the top",
+      "roles": [
+        "band",
+        "close"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "product-statement",
+        "quote-stat",
+        "chapter",
+        "closing-type"
+      ],
+      "pairs": [
+        "paper",
+        "halo",
+        "dusk",
+        "mist",
+        "dots"
+      ],
+      "avoids": [
+        "deep",
+        "photo",
+        "arcs"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        0.58
+      ],
+      "strict": true
+    },
+    {
+      "id": "deep",
+      "class": "bg-deep",
+      "name": "Deep",
+      "kind": "hard",
+      "weight": 2,
+      "animated": false,
+      "mood": "quiet and dark, near-black with a cool pool at the top, a lit lip and grain like x.ai",
+      "where": "a feature section with two or three UI cards (chat, code, voice): the dark ground UI reads best on",
+      "roles": [
+        "band",
+        "hero",
+        "close"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "hero-split",
+        "hero-centred",
+        "hero-cycle",
+        "features-2x2",
+        "bento",
+        "tabs-tour",
+        "split-text-left",
+        "split-text-right",
+        "calendar-frame",
+        "integrations-grid",
+        "closing-type"
+      ],
+      "pairs": [
+        "paper",
+        "halo",
+        "dots",
+        "mist"
+      ],
+      "avoids": [
+        "horizon",
+        "photo"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "strict": true,
+      "texture": true
+    },
+    {
+      "id": "liquid",
+      "class": "bg-liquid",
+      "name": "Liquid",
+      "kind": "soft",
+      "weight": 2,
+      "animated": true,
+      "mood": "alive, two slow blobs of two neighbouring hues drifting; transforms only",
+      "where": "a call to action or a hero with a heading and two buttons. One a page; it is the page's moving thing, so no other looping effect in view",
+      "roles": [
+        "hero",
+        "close"
+      ],
+      "types": [
+        "software"
+      ],
+      "sections": [
+        "hero-centred",
+        "hero-editorial",
+        "hero-split",
+        "closing-type"
+      ],
+      "pairs": [
+        "paper",
+        "dusk",
+        "ruled",
+        "dots"
+      ],
+      "avoids": [
+        "mist",
+        "halo",
+        "topglow",
+        "arcs",
+        "photo",
+        "stage"
+      ],
+      "textZone": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "checkFrames": [
+        "liquid-mid",
+        "liquid-end"
+      ],
+      "strict": true,
+      "texture": true
+    }
+  ]
+}

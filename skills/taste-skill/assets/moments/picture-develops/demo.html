@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picture develops · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #111111; --p-muted: #6b6b6b; --p-accent: #c8102e; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .photo-frame { aspect-ratio: 3 / 2; border-radius: var(--r-lg); margin: 0; }
+  .facts { display: grid; gap: var(--s-3); margin-top: var(--s-5); }
+  .facts div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); padding: var(--s-3) 0; border-top: 1px solid var(--line); }
+  .facts span { color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Kiln & Co</a>
+  <nav class="demo-nav__links"><a href="#">Prints</a><a href="#">Books</a><a href="#">Studio</a><a href="#">Contact</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Visit</a><a class="btn btn--primary btn--sm" href="#">Get a quote</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Offset and letterpress printing for small runs</h1><p>Books, posters, packaging and stationery from 50 copies, printed in our own shop in Rotterdam and shipped within ten days.</p><div class="btn-row"><a class="btn btn--primary" href="#">Get a quote</a><a class="btn btn--secondary" href="#">See the paper stock</a></div></div>
+      <img class="demo-photo" src="../_demo/photo-855.jpg" alt="A painted wall in morning light" width="1800" height="1200">
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head">
+        <h2>Posters that hold up outdoors. <span class="muted">Printed on 200 g stock.</span></h2>
+        <p>Offset on heavy coated paper with a matt varnish, so a poster keeps its colour through a season on a wall. From 50 copies, A2 to A0.</p>
+        <div class="facts">
+          <div><span>Sizes</span><b>A2, A1, A0 and 70 × 100 cm</b></div>
+          <div><span>From</span><b>€180 for 50 A2 posters</b></div>
+          <div><span>Delivery</span><b>Within ten working days</b></div>
+        </div>
+      </div>
+      <figure class="photo-frame" data-moment="picture-develops" data-moment-opts='{"cell": 7}'>
+        <img src="../_demo/photo-1049.jpg" alt="A poster print of a rock off the coast at low tide" width="1800" height="1200">
+      </figure>
+    </div>
+  </section>
+  <section class="section ground-surface">
+    <div class="container demo-split">
+      <div class="section-head"><h2>One quote, one price. <span class="muted">No surprises on the invoice.</span></h2><p>Send the file and the quantity; you get a price, a proof and a delivery date back within a working day.</p><a class="link" href="#">How a quote works</a></div>
+      <img class="demo-photo" src="../_demo/photo-1081.jpg" alt="A glass building against the sky" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Kiln & Co · demo page for the moment “Picture develops”</span><span>Photographs by Rodion Kutsaev, Rosan Harmens and Julien Moreau on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

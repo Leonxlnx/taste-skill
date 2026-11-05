@@ -1,0 +1,10 @@
+{
+  "id": "fx-spotlight",
+  "name": "Spotlight cards",
+  "for": "A row of plain feature cards (security, admin, settings): a fine ruling sits faintly in each card's empty top-right corner, and a small soft light under the pointer brings that corner up; the cards themselves never move.",
+  "effects": ["ruled-grounds", "contour-lines"],
+  "default": "ruled-grounds",
+  "how": "One still effect host over the row, masked per card by a fade from the top-right corner (roundRectFade) that is gone well before the icon and the text, and by a 150px radial light at the pointer. The marks are a quiet step of the ink on the card colour.",
+  "rules": ["The only pointer-following element on the page.", "The effect never reaches the icon, the title or the body text.", "Pattern effects only (rulings, contours) at a few percent of the ink: never colour blobs, never a mesh."],
+  "a11y": "Each card is an article with a heading and one real link that covers the card. Keyboard focus lights the focused card's corner. The effect is still; reduced motion moves the light without easing."
+}

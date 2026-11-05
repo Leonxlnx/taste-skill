@@ -1,0 +1,5 @@
+/* liquid-type: the headline is plain at rest; the script puts an SVG displacement filter on it only while a
+   ripple is alive. The headline in the display face, large, with room around it for the ripple. */
+.mo-lt { cursor: default; }
+.mo-lt__type { font-size: clamp(52px, 9vw, 150px); line-height: 1; letter-spacing: -0.035em; margin: 0; color: var(--ink); max-width: 14ch; }
+@media (max-width: 639px) { .mo-lt__type { font-size: clamp(44px, 14vw, 84px); } }

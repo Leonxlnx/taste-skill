@@ -1,0 +1,11 @@
+{
+  "id": "spotlight-cone",
+  "name": "Stage spotlight",
+  "family": "light",
+  "look": "One slanted stage light from out of frame falls through drifting haze and lands as a soft pool on the floor, for a product or UI on stage.",
+  "bestOn": ["card", "hero"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["dark", "colour"],
+  "focal": true
+}

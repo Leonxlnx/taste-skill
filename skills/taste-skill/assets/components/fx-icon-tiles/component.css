@@ -1,0 +1,23 @@
+/* fx-icon-tiles: a hairline grid of features; every icon chip is a window onto one shared effect */
+.cx-tiles { position: relative; isolation: isolate; }
+.cx-tiles__grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; padding: 0; list-style: none;
+  background: var(--cx-line); border: 1px solid var(--cx-line); border-radius: var(--r-lg); overflow: hidden;
+}
+.cx-tiles__cell { display: grid; align-content: start; gap: var(--s-2); padding: var(--s-6) var(--s-6) var(--s-7); background: var(--bg); min-width: 0; }
+.cx-tiles__cell .cx-title { margin-top: var(--s-5); }
+.cx-tiles__chip {
+  position: relative; z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-md);
+  background: var(--accent); color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, #fff 28%, transparent), inset 0 0 0 1px color-mix(in oklab, #000 10%, transparent), 0 6px 16px -6px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+.cx-tiles.is-live .cx-tiles__chip { background: transparent; }
+.cx-tiles__chip svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.cx-tiles__fx { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+@media (max-width: 899px) { .cx-tiles__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 559px) {
+  .cx-tiles__grid { grid-template-columns: minmax(0, 1fr); }
+  .cx-tiles__cell { padding: var(--s-5); grid-template-columns: 48px 1fr; column-gap: var(--s-4); row-gap: 4px; }
+  .cx-tiles__chip { grid-row: span 2; }
+  .cx-tiles__cell .cx-title { margin-top: 2px; }
+}

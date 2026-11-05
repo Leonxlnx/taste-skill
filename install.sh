@@ -16,6 +16,16 @@
 
 set -euo pipefail
 
+# Windows (Git Bash, MSYS2, Cygwin): plain `ln -s` silently COPIES a folder there, so a
+# `git pull` would never reach the install. Ask for a real link, and fall back to a
+# directory junction (no admin or Developer Mode needed) when a symlink is not allowed.
+WINDOWS=0
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*)
+    WINDOWS=1
+    export MSYS=winsymlinks:nativestrict CYGWIN=winsymlinks:nativestrict ;;
+esac
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$REPO/skills"
 
@@ -72,17 +82,42 @@ wants() {
   return 1
 }
 
+# make_link <dir> <link> -- a symlink, or on Windows a junction when symlinks are not
+# allowed; fails (non-zero) rather than leaving a copy behind
+make_link() {
+  if ln -s "$1" "$2" 2>/dev/null && [[ -L $2 ]]; then return 0; fi
+  [[ -e $2 && ! -L $2 ]] && rm -rf "$2"   # a copy left by a non-strict ln
+  if [[ $WINDOWS -eq 1 ]] && command -v cygpath >/dev/null 2>&1; then
+    cmd //c mklink //J "$(cygpath -w "$2")" "$(cygpath -w "$1")" >/dev/null 2>&1 && [[ -L $2 || -d $2 ]] && return 0
+  fi
+  return 1
+}
+
+# remove_link <link> -- a symlink or a Windows junction, never the folder it points at
+remove_link() {
+  if [[ $WINDOWS -eq 1 ]] && command -v cygpath >/dev/null 2>&1; then
+    cmd //c rmdir "$(cygpath -w "$1")" >/dev/null 2>&1 && return 0
+  fi
+  rm "$1"
+}
+
+problems=0
+
 if [[ $mode == uninstall ]]; then
   for target in "${targets[@]}"; do
     [[ -d $target ]] || continue
     for link in "$target"/*; do
-      [[ -L $link ]] || continue
-      if owned_by_repo "$link"; then
-        rm "$link"; echo "removed  $link"
+      if [[ -L $link ]]; then
+        if owned_by_repo "$link"; then
+          remove_link "$link"; echo "removed  $link"
+        fi
+      elif [[ -d $link && -f $link/SKILL.md ]] && grep -q "$(basename "$link")" <(for d in "$SKILLS_DIR"/*/; do install_name "$d/SKILL.md"; done) 2>/dev/null; then
+        echo "left     $link (a copy, not a link -- delete it by hand)" >&2
+        problems=$((problems + 1))
       fi
     done
   done
-  exit 0
+  exit $(( problems > 0 ? 1 : 0 ))
 fi
 
 found=0
@@ -110,17 +145,23 @@ for dir in "$SKILLS_DIR"/*/; do
     link="$target/$name"
     if [[ -L $link ]]; then
       if owned_by_repo "$link"; then
-        rm "$link"
+        remove_link "$link"
       else
         echo "skip     $link (symlink to another install -- remove it first)" >&2
+        problems=$((problems + 1))
         continue
       fi
     elif [[ -e $link ]]; then
-      echo "skip     $link (real file/dir, not a symlink -- move it aside first)" >&2
+      echo "skip     $link (real file/dir, not a symlink: an older copy? move it aside first)" >&2
+      problems=$((problems + 1))
       continue
     fi
-    ln -s "$dir" "$link"
-    echo "linked   $link -> skills/$(basename "$dir")"
+    if make_link "$dir" "$link"; then
+      echo "linked   $link -> skills/$(basename "$dir")"
+    else
+      echo "error    could not link $link (on Windows: enable Developer Mode, or run from an elevated shell)" >&2
+      problems=$((problems + 1))
+    fi
   done
 done
 
@@ -131,5 +172,10 @@ if [[ ${#wanted[@]} -gt 0 && $found -ne ${#wanted[@]} ]]; then
   done
   echo "valid install names:" >&2
   printf '  %s\n' "${all_names[@]}" >&2
+  exit 1
+fi
+
+if [[ $problems -gt 0 ]]; then
+  echo "$problems install(s) not done: see the lines above" >&2
   exit 1
 fi

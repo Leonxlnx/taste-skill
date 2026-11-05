@@ -1,0 +1,10 @@
+{
+  "id": "bayer-dither",
+  "name": "Bayer dither",
+  "family": "dither",
+  "look": "A soft glow drawn in crisp square pixels with an ordered dither, in two or three page colours.",
+  "bestOn": ["hero", "card", "band", "footer"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

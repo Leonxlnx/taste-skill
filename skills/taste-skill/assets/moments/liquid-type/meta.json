@@ -1,0 +1,22 @@
+{
+  "id": "liquid-type",
+  "name": "Liquid type",
+  "kind": "liquid",
+  "fits": ["hero", "statement"],
+  "trigger": "pointer",
+  "cost": "low",
+  "webgl": 0,
+  "pages": ["tech", "gaming", "software"],
+  "look": "A very large headline ripples and stretches like type seen through water wherever the pointer crosses it, and settles back to crisp type within about a second; one SVG filter, only while it moves.",
+  "reduced": "The headline stands as written; also on touch screens.",
+  "phone": "The headline stands as written; there is no pointer.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": { "words": "a headline of 2 to 6 words, set large" },
+  "avoidWith": ["liquid-hover", "cursor-spotlight"],
+  "states": {
+    "start": { "see": true, "wait": 400 },
+    "middle": { "see": true, "pointer": { "target": ".mo-lt__type", "from": [0.1, 0.5], "to": [0.55, 0.5], "moves": 14, "step": 16 }, "wait": 40 },
+    "end": { "see": true, "pointer": { "target": ".mo-lt__type", "from": [0.1, 0.5], "to": [0.55, 0.5], "moves": 14, "step": 16 }, "wait": 2400 }
+  }
+}

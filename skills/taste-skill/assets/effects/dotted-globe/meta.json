@@ -1,0 +1,15 @@
+{
+  "id": "dotted-globe",
+  "name": "Dotted globe",
+  "family": "pattern",
+  "look": "A globe of fine dots with the real continents turns slowly, bright at the front and fading at the rim, while one thin arc at a time lifts between two cities.",
+  "bestOn": ["hero", "band", "card"],
+  "motion": "slow",
+  "cost": "mid",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true,
+  "random": false,
+  "literal": true,
+  "subjects": ["global", "network", "infrastructure", "payments", "logistics"],
+  "avoidWith": ["orb-sphere", "dot-terrain"]
+}

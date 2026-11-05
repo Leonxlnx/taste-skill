@@ -1,0 +1,43 @@
+{
+  "id": "photo-engraving",
+  "name": "Engraved photograph",
+  "kind": "photo",
+  "shows": "A photograph printed whole as an intaglio plate: engraved diagonal lines in the page's ink swell in the shadows, taper to hairlines in the light and bend over the forms, over a light wash of the photograph's own colour on the page's surface as paper. Parts lighter than the paper print as bare paper; a colour cast in the light parts is let go, so a white table stays white.",
+  "suits": [
+    "software",
+    "ai",
+    "design-tool",
+    "gaming"
+  ],
+  "bestWith": "One object or a building in strong light and shade (a product on a wall, a facade). Strongest on light paper; on a dark page pick a darker photograph, or a pale one turns into a large light plate. Weak on a busy interior: the lines fill every surface.",
+  "motion": "None at rest and no entry (light > 0 adds a slow light passing over the plate, off by default).",
+  "hover": "The lines part around the cursor as under a lens and the photograph shows through; the picture under them stays put.",
+  "takes": "The <img> inside the frame (its largest srcset size, its alt, its object-position as the subject's place), else src, else data-src: the client's own photograph, or one from scripts/photos.mjs that prints well (\"prints\": true), credited in the footer with photos.mjs credits --adapted <id>.",
+  "palettes": [
+    "light",
+    "dark",
+    "colour"
+  ],
+  "touch": "A tap shows the hover state at the finger for 1.6 s; lifting the finger does not end it (checked at 390). Nothing moves on its own.",
+  "reducedMotion": "The same still print; hover still answers, without easing.",
+  "fallback": "The photograph itself, greyed into the palette (multiplied into light paper, screened on dark): shown under the canvas before the first frame and while the canvas is released off screen, and kept when WebGL is missing, the shader fails to compile or link, the shader uses a GLSL ES reserved word (refused by photo-kit's lint, so CPU WebGL shows what a GPU would), or the photograph's host sends no CORS headers. Checked with a broken shader and with a reserved word: the still shows, never an empty frame. With no photograph at all: the effects' palette ground.",
+  "params": "pitch (4.5 CSS px), angle, bend, colour (the wash of the photograph's colours, 1; 0 lines on bare paper), ground (1 the surface as paper, 0 the page), push, radius, light, speed, clarity, contrast, exposure, focusX, focusY",
+  "testedOn": [
+    "lamp: product, Commons d88, LoMit, CC BY-SA 4.0 (high-key)",
+    "bowls of beans: Commons c70, Alorin (high-key, white on white)",
+    "chair at a window: Unsplash 311, Logan Adermatt (dark)",
+    "room: picsum 625, Breather, Unsplash licence",
+    "concrete: picsum 942, Carl Nenzen Loven, Unsplash licence"
+  ],
+  "credits": "../photo-kit/photos.json",
+  "runtime": "../photo-kit/photo.js: one canvas and one WebGL context per print, counted in fx.glBudget; at most 3 prints hold a context on a page (a fourth shows its still until one leaves the screen; a frame scrolling away gives way to one coming in); released 1.5 s after its frame leaves the screen; paused off screen and with the tab hidden; up to 2 canvas px per CSS px on a sharp screen, so the lines stay crisp; never over 1.5 MP; shader compiled off the main thread where KHR_parallel_shader_compile exists.",
+  "demo": "demo.html",
+  "credit": "In the footer's one credits line, never under the print: photos.mjs credits --out . --adapted <id>; for other photographs photoCredit() or creditsLine() in ../photo-kit/photo.js (author, licence linked, \"adapted\").",
+  "cost": {
+    "perPixel": "5 mipmapped photo reads, 2 screen-space derivatives, one OKLab-to-sRGB conversion; no noise, no loops",
+    "renderScale": "up to 2 canvas px per CSS px, never over 1.5 MP",
+    "contexts": 1
+  },
+  "where": "One crafted moment on a software, AI, design-tool or gaming page: the page's one photograph band or a feature tile about the picture. Never over the hero photograph or a section's main photograph, never on a cafe, guesthouse or local business page, never with a caption under it.",
+  "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph."
+}

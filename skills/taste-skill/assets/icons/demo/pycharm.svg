@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><defs>
+        <linearGradient x1="-46.685879%" y1="50%" x2="90.5139289%" y2="50%" id="pycharmLinearGradient-1">
+            <stop stop-color="#21D789" offset="0%"></stop>
+            <stop stop-color="#07C3F2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-19.1597915%" y1="105.481057%" x2="105.922196%" y2="-7.57713839%" id="pycharmLinearGradient-2">
+            <stop stop-color="#FCF84A" offset="1%"></stop>
+            <stop stop-color="#A7EB62" offset="11%"></stop>
+            <stop stop-color="#5FE077" offset="21%"></stop>
+            <stop stop-color="#32DA84" offset="27%"></stop>
+            <stop stop-color="#21D789" offset="31%"></stop>
+            <stop stop-color="#21D789" offset="58%"></stop>
+            <stop stop-color="#21D789" offset="60%"></stop>
+            <stop stop-color="#20D68C" offset="69%"></stop>
+            <stop stop-color="#1ED497" offset="76%"></stop>
+            <stop stop-color="#19D1A9" offset="83%"></stop>
+            <stop stop-color="#13CCC2" offset="90%"></stop>
+            <stop stop-color="#0BC6E1" offset="97%"></stop>
+            <stop stop-color="#07C3F2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="42.2298893%" y1="115.966514%" x2="61.1794942%" y2="22.2526636%" id="pycharmLinearGradient-3">
+            <stop stop-color="#21D789" offset="0%"></stop>
+            <stop stop-color="#24D888" offset="16%"></stop>
+            <stop stop-color="#2FD985" offset="30%"></stop>
+            <stop stop-color="#41DC80" offset="43%"></stop>
+            <stop stop-color="#5AE079" offset="55%"></stop>
+            <stop stop-color="#7AE46F" offset="67%"></stop>
+            <stop stop-color="#A1EA64" offset="79%"></stop>
+            <stop stop-color="#CFF157" offset="90%"></stop>
+            <stop stop-color="#FCF84A" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-9.711365%" y1="144.549783%" x2="118.64101%" y2="8.29174756%" id="pycharmLinearGradient-4">
+            <stop stop-color="#21D789" offset="0%"></stop>
+            <stop stop-color="#23D986" offset="9%"></stop>
+            <stop stop-color="#2ADE7B" offset="17%"></stop>
+            <stop stop-color="#36E669" offset="25%"></stop>
+            <stop stop-color="#3BEA62" offset="27%"></stop>
+            <stop stop-color="#47EB61" offset="35%"></stop>
+            <stop stop-color="#67ED5D" offset="49%"></stop>
+            <stop stop-color="#9AF156" offset="69%"></stop>
+            <stop stop-color="#E0F64D" offset="92%"></stop>
+            <stop stop-color="#FCF84A" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="105.92021%" y1="50.4805683%" x2="-8.03965366%" y2="49.366207%" id="pycharmLinearGradient-5">
+            <stop stop-color="#FCF84A" offset="39%"></stop>
+            <stop stop-color="#ECF74C" offset="46%"></stop>
+            <stop stop-color="#C1F451" offset="61%"></stop>
+            <stop stop-color="#7EEF5A" offset="82%"></stop>
+            <stop stop-color="#3BEA62" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <polygon fill="url(#pycharmLinearGradient-1)" points="179.493333 40.4 254.293333 102.613333 227.36 157.413333 182.266667 144.906667 143.253333 144.906667"></polygon>
+        <polygon fill="url(#pycharmLinearGradient-2)" points="104.133333 80.8 89.6533333 157.413333 88.2666667 183.44 51.76 199.253333 0 204.826667 15.7066667 39.3066667 109.493333 0 167.28 37.8933333"></polygon>
+        <polygon fill="url(#pycharmLinearGradient-3)" points="104.133333 80.8 111.173333 228.426667 87.7866667 256 1.42108547e-14 204.826667 72.08 97.4133333"></polygon>
+        <polygon fill="url(#pycharmLinearGradient-4)" points="200.72 70.0266667 112.026667 70.0266667 190.4 0"></polygon>
+        <polygon fill="url(#pycharmLinearGradient-5)" points="256 229.013333 177.92 255.52 73.9466667 226.24 104.133333 80.8 116.186667 70.0266667 179.493333 64.08 173.76 127.653333 224.106667 108.133333"></polygon>
+        <polygon fill="#000000" points="48 48 208 48 208 208 48 208"></polygon>
+        <path d="M67.9466667,177.76 L127.946667,177.76 L127.946667,187.76 L67.9466667,187.76 L67.9466667,177.76 Z M68,68 L92.5333333,68 C106.683733,68 115.319437,76.311248 115.490736,88.3539327 L115.493333,88.88 C115.493333,102.746667 104.693333,109.946667 91.2533333,109.946667 L81.3333333,109.946667 L81.3333333,127.92 L68,127.92 L68,68 Z M91.6266667,98.2133333 C98.1016949,98.2133333 101.948145,94.4250886 102.076673,89.4072913 L102.08,88.9866667 C102.08,83.0666667 97.9733333,79.8933333 91.4133333,79.8933333 L81.3333333,79.8933333 L81.3333333,98.2133333 L91.6266667,98.2133333 Z M122.64,98.16 L122.64,98 C122.484175,89.6931053 125.732055,81.6837881 131.62957,75.8316003 C137.527084,69.9794125 145.561221,66.7934226 153.866667,67.0133333 C162.69961,66.5667304 171.300685,69.9256152 177.493333,76.24 L169.12,85.92 C165.089608,81.7463734 159.586217,79.3153103 153.786667,79.1466667 C143.792296,79.1466667 136.562127,87.361037 136.40269,97.4718114 L136.4,98 C136.4,108.266667 143.52,116.826667 153.786667,116.826667 C160.01697,116.826667 164.043416,114.62281 168.270213,110.956394 L168.906036,110.395555 C169.118678,110.205014 169.332121,110.010909 169.546667,109.813333 L177.92,118.266667 C171.809646,125.410403 162.751505,129.344449 153.36,128.933333 C145.165901,129.057242 137.271786,125.853111 131.482048,120.053322 C125.692311,114.253533 122.501878,106.353871 122.64,98.16 Z" fill="#FFFFFF"></path>
+    </g></svg>

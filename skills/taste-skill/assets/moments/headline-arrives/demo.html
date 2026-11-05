@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headline arrives · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #111111; --p-muted: #6b6b6b; --p-accent: #1a4be0; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+  .hero-frame { --ratio: 72%; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Ledgerline</a>
+  <nav class="demo-nav__links"><a href="#">Product</a><a href="#">Customers</a><a href="#">Pricing</a><a href="#">Docs</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Log in</a><a class="btn btn--primary btn--sm" href="#">Start free</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head" data-moment="headline-arrives" data-moment-opts='{"unit":"words"}'>
+        <h1>Invoices your clients pay in minutes</h1>
+        <p>Ledgerline sends the invoice, takes the card payment and books it to your accounts. For studios, agencies and freelancers.</p>
+        <div class="btn-row"><a class="btn btn--primary btn--arrow" href="#">Start free</a><a class="btn btn--secondary" href="#">See a sample invoice</a></div>
+      </div>
+      <div class="frame frame--hero demo-lit hero-frame">
+        <div class="dw">
+          <div class="dw__bar"><i></i><i></i><i></i><span>Invoices · October</span></div>
+          <div class="dw__body">
+            <div class="dw__side"><span class="on">Invoices</span><span>Clients</span><span>Payments</span><span>Reports</span></div>
+            <div class="dw__main">
+              <h4>Open invoices</h4>
+              <div class="dw__row"><div><b>Studio Verde · Brand film</b><span>Due 12 Nov · €4,800</span></div><span class="dw__tag">Paid</span></div>
+              <div class="dw__row"><div><b>Hollis & Co · Website</b><span>Due 18 Nov · €2,350</span></div><span class="dw__tag">Sent</span></div>
+              <div class="dw__row"><div><b>Marrow Bakery · Menu print</b><span>Due 21 Nov · €640</span></div><span class="dw__tag">Draft</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head"><h2>One invoice, three steps. <span class="muted">Send, get paid, book it.</span></h2><p>Write the invoice from the client's record, send it by email with a card link, and the payment lands in your accounts the same day.</p><a class="link" href="#">How payments work</a></div>
+      <img class="demo-photo" src="../_demo/photo-855.jpg" alt="A studio wall in morning light" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Ledgerline · demo page for the moment “Headline arrives”</span><span>Photograph by Rodion Kutsaev on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

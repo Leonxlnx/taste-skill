@@ -1,0 +1,25 @@
+{
+  "id": "powers-of-ten-pullback",
+  "name": "Powers-of-ten pull-back",
+  "family": "camera-through-space",
+  "look": "The stage opens on the product's own interface filling the whole screen. The camera pulls back at a steady rate (the scale eased in log space, so it never seems to stop) until the interface is the screen of a device standing on the page's lit ground; the device settles into its slot at the right and the heading, copy and action arrive at the left. A product section under the hero, never the hero itself: its first screen carries no heading and no action.",
+  "fits": ["product"],
+  "types": ["software", "tech"],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The composition: copy at the left, the device on its ground at the right.",
+  "phone": "The finished composition: the copy over the device, a 4:5 crop of the screen.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is drawn by _demo/demo.css, which is for the demo pages only: never copy it to a page",
+    "words": "a label, a heading, one line and one action"
+  },
+  "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",
+  "avoidWith": ["product-assembles-into-its-action", "parts-lock-into-the-whole"],
+  "states": { "start": { "p": 0.02, "wait": 500 }, "middle": { "p": 0.5, "wait": 500 }, "end": { "p": 0.98, "wait": 600 } },
+  "avoidMoments": ["headline-arrives", "cursor-spotlight"]
+}

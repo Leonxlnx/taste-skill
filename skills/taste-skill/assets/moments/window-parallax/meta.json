@@ -1,0 +1,42 @@
+{
+  "id": "window-parallax",
+  "name": "Window parallax",
+  "kind": "scroll",
+  "fits": [
+    "section"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "One wide photograph seen through a frame moves a little slower than the page, so the frame reads as a window onto a larger picture.",
+  "reduced": "The photograph stands.",
+  "phone": "The photograph stands in its frame.",
+  "maxPerPage": 1,
+  "weight": 0.9,
+  "needs": {
+    "photo": true
+  },
+  "avoidWith": [
+    "picture-develops",
+    "liquid-hover"
+  ],
+  "states": {
+    "start": {
+      "view": 0.2,
+      "wait": 300
+    },
+    "middle": {
+      "view": 0.5,
+      "wait": 300
+    },
+    "end": {
+      "view": 0.8,
+      "wait": 300
+    }
+  }
+}

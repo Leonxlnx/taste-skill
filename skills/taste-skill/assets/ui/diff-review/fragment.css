@@ -1,0 +1,200 @@
+/* diff-review: one file of a code review: a unified diff (file header, hunk header, old and new line
+   numbers), one reviewer's suggestion under a line and its Apply button; applied (.is-applied on the
+   root), that line becomes a removed line with the suggestion added under it, the header's counts
+   take their applied values and the button gives way to an Applied status.
+   Removed and added are two fixed hues mixed into the palette (the way base.css tones the avatars), so
+   they read red and green on any --fx-bg, light or dark; a page can set --diff-add and --diff-del. Code
+   tokens are ink tints, as in code. The accent is used once: the short bar beside the comment's text,
+   set in from the comment's edge so it never reads as a third diff marker beside the red and green rows.
+   The file's mark is its real one (TypeScript) on a light tile. */
+.ui-diff {
+  --d-add: var(--diff-add, oklch(0.66 0.15 150));
+  --d-del: var(--diff-del, oklch(0.62 0.19 25));
+  --d-add-bg: color-mix(in oklab, var(--d-add) 12%, var(--u-bg));
+  --d-add-gut: color-mix(in oklab, var(--d-add) 20%, var(--u-bg));
+  --d-add-w: color-mix(in oklab, var(--d-add) 30%, var(--u-bg));
+  --d-add-ink: color-mix(in oklab, var(--d-add) 62%, var(--u-ink));
+  --d-del-bg: color-mix(in oklab, var(--d-del) 10%, var(--u-bg));
+  --d-del-gut: color-mix(in oklab, var(--d-del) 17%, var(--u-bg));
+  --d-del-w: color-mix(in oklab, var(--d-del) 26%, var(--u-bg));
+  --d-del-ink: color-mix(in oklab, var(--d-del) 62%, var(--u-ink));
+  --d-ctx-gut: color-mix(in oklab, var(--u-ink) 4.5%, var(--u-bg));   /* the gutter of an unchanged line: every row starts with a filled gutter, so every row starts on one left edge */
+  --d-mono: var(--ui-mono, ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace);
+  --d-gut: 36px;
+  width: 480px; overflow: hidden;
+  container: ui-diff / inline-size;
+}
+
+/* the file header: fold, file, repo / path, +/- counts and the five-block bar */
+.ui-diff__head { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 10px; border-bottom: 1px solid var(--u-line); background: var(--u-fill); min-width: 0; }
+.ui-diff__head .ui-icon { width: 14px; height: 14px; color: var(--u-muted); }
+.ui-diff__tool { display: grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 6px; background: var(--u-tile); box-shadow: var(--u-tile-edge); }
+.ui-diff__tool :is(.ui-brand, img) { width: 13px; height: 13px; }
+.ui-diff__head .ui-diff__fold { margin-right: -2px; }
+.ui-diff__repo { flex: none; font-size: 12px; line-height: 16px; color: var(--u-muted); white-space: nowrap; }
+.ui-diff__slash { flex: none; font-style: normal; font-size: 12px; color: var(--u-soft); }
+.ui-diff__path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 12px/16px var(--d-mono); color: var(--u-muted); }
+.ui-diff__path .ui-diff__dir { font-weight: 400; }
+.ui-diff__path b { font-weight: 500; color: var(--u-ink); }
+.ui-diff__stat { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 500 12px/16px var(--d-mono); }
+.ui-diff__stat .is-add { font-weight: 500; color: var(--d-add-ink); }
+.ui-diff__stat .is-del { font-weight: 500; color: var(--d-del-ink); }
+.ui-diff__bar { display: inline-flex; gap: 2px; margin-left: 2px; }
+.ui-diff__bar i { width: 8px; height: 8px; border-radius: 2px; }
+.ui-diff__bar .is-add { background: color-mix(in oklab, var(--d-add) 80%, var(--u-bg)); }
+.ui-diff__bar .is-del { background: color-mix(in oklab, var(--d-del) 80%, var(--u-bg)); }
+
+/* the hunk header */
+.ui-diff__hunk {
+  height: 28px; padding: 0 14px 0 calc(2 * var(--d-gut) + 20px); border-bottom: 1px solid var(--u-line);
+  font: 12px/28px var(--d-mono); color: var(--u-muted); background: color-mix(in oklab, var(--u-ink) 2.5%, var(--u-bg));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ui-diff__hunk span { color: var(--u-soft); margin-right: 4px; }
+/* the header's counts as written and as applied */
+.ui-diff__stat .ui-diff__now { display: none; }
+.ui-diff.is-applied .ui-diff__stat .ui-diff__was { display: none; }
+.ui-diff.is-applied .ui-diff__stat .ui-diff__now { display: inline; }
+
+/* the lines: old number, new number, then the code with its sign */
+.ui-diff__lines { padding: 0 0 8px; }
+.ui-diff__ln {
+  position: relative; display: grid; grid-template-columns: var(--d-gut) var(--d-gut) minmax(0, 1fr);
+  font: 12px/20px var(--d-mono); color: color-mix(in oklab, var(--u-ink) 68%, var(--u-bg));
+  transition: background-color 240ms var(--u-ease);
+}
+.ui-diff__ln > i {
+  font-style: normal; font-size: 11px; text-align: right; padding-right: 10px; color: var(--u-muted); background: var(--d-ctx-gut);
+  user-select: none; transition: background-color 240ms var(--u-ease), color 240ms var(--u-ease);
+}
+.ui-diff__code { position: relative; padding: 0 14px 0 20px; white-space: pre; overflow: hidden; }
+.ui-diff__code::before { content: ""; position: absolute; left: 6px; top: 0; width: 10px; text-align: center; text-indent: 0; user-select: none; }
+/* removed and added; applied, the reviewed line is a removed line (its new number goes) */
+.ui-diff__ln.is-del, .ui-diff.is-applied .ui-diff__ln.is-target { background: var(--d-del-bg); }
+.ui-diff__ln.is-del > i, .ui-diff.is-applied .ui-diff__ln.is-target > i { background: var(--d-del-gut); color: var(--d-del-ink); }
+.ui-diff.is-applied .ui-diff__ln.is-target > i:nth-child(2) { color: transparent; }
+.ui-diff__ln.is-del .ui-diff__code::before, .ui-diff.is-applied .ui-diff__ln.is-target .ui-diff__code::before { content: "\2212"; color: var(--d-del-ink); }
+.ui-diff__ln.is-add { background: var(--d-add-bg); }
+.ui-diff__ln.is-add > i { background: var(--d-add-gut); color: var(--d-add-ink); }
+.ui-diff__ln.is-add .ui-diff__code::before { content: "+"; color: var(--d-add-ink); }
+.ui-diff mark.ui-diff__w { color: inherit; background: none; border-radius: 3px; padding: 1px 0; transition: background-color 240ms var(--u-ease); }
+.ui-diff .is-del mark.ui-diff__w, .ui-diff.is-applied .is-target mark.ui-diff__w { background: var(--d-del-w); }
+.ui-diff .is-add mark.ui-diff__w { background: var(--d-add-w); }
+/* the suggestion: an added line under the reviewed one, folded away until it is applied */
+.ui-diff__sug { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 260ms var(--u-ease); }
+.ui-diff__sug > .ui-diff__ln { min-height: 0; overflow: hidden; opacity: 0; transition: opacity 200ms var(--u-ease) 80ms; }
+.ui-diff.is-applied .ui-diff__sug { grid-template-rows: 1fr; }
+.ui-diff.is-applied .ui-diff__sug > .ui-diff__ln { opacity: 1; }
+/* the reviewed line: its numbers go to ink while the comment is open */
+.ui-diff:not(.is-applied) .ui-diff__ln.is-target > i { color: var(--u-ink); }
+
+/* tokens: ink tints, as in code */
+.ui-diff .k { color: var(--u-ink); font-weight: 500; }
+.ui-diff .f { color: color-mix(in oklab, var(--u-ink) 88%, var(--u-bg)); }
+.ui-diff .n, .ui-diff .s { color: var(--u-muted); }
+
+/* the review comment, under the line it is about, lined up with the code */
+.ui-diff__thread {
+  --th-l: calc(2 * var(--d-gut) + 20px);
+  position: relative; padding: 10px 14px 10px var(--th-l);
+  background: var(--u-fill); border-block: 1px solid var(--u-line);
+  font-family: var(--ui-font, system-ui, sans-serif);
+}
+.ui-diff__by { display: flex; align-items: center; gap: 8px; height: 24px; min-width: 0; }
+.ui-diff__name { font-size: 13px; font-weight: 500; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ui-diff__time { flex: none; font-size: 12px; line-height: 16px; color: var(--u-muted); }
+.ui-diff__msg { margin-top: 4px; padding-left: 32px; font-size: 13px; line-height: 20px; color: var(--u-text-2); }
+.ui-diff__msg code { font: 12px/16px var(--d-mono); padding: 1px 4px; border-radius: 4px; background: var(--u-fill-2); color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line); }
+
+/* the fragment's one accent touch: a short bar beside the comment's text, 10px left of it and 12px in
+   from the comment's top and bottom, so it keeps a gap from the code rows above and below */
+.ui-diff__thread::before { content: ""; position: absolute; left: calc(var(--th-l) - 10px); top: 12px; bottom: 12px; width: 2px; border-radius: 1px; background: var(--u-accent); }
+/* in a wide panel the comment keeps a reading width, so its button stays beside the reviewer's name */
+.ui-diff__by, .ui-diff__msg { max-width: 56ch; }
+
+/* the button and the status share one place: the old one goes before the new one comes */
+.ui-diff__act { display: grid; justify-items: end; align-items: center; flex: none; }
+.ui-diff__act > * { grid-area: 1 / 1; }
+/* the button steps (lifted, a lighter fill, a focus ring), is pressed (down and inset, 140ms), then
+   waits at full strength with a spinner in its label's place, so it never reads as disabled */
+.ui-diff__apply {
+  display: inline-grid; place-items: center;
+  transition: transform 140ms var(--u-ease), background-color 140ms var(--u-ease), box-shadow 140ms var(--u-ease), opacity 160ms var(--u-ease) 140ms, visibility 0s 140ms;
+}
+.ui-diff__apply > * { grid-area: 1 / 1; }
+.ui-diff__lbl { transition: opacity 120ms var(--u-ease); }
+.ui-diff__spin {
+  width: 12px; height: 12px; border-radius: 50%; opacity: 0; box-sizing: border-box;
+  border: 1.5px solid color-mix(in oklab, var(--u-bg) 30%, transparent); border-top-color: var(--u-bg);
+  animation: ui-diff-spin 800ms linear 2 paused; transition: opacity 120ms var(--u-ease);
+}
+@keyframes ui-diff-spin { to { transform: rotate(1turn); } }
+.ui-diff__apply.is-step {
+  background: color-mix(in oklab, var(--u-ink) 72%, var(--u-bg)); transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--u-bg) 14%, transparent), 0 0 0 3px color-mix(in oklab, var(--u-ink) 18%, transparent), 0 4px 10px -3px color-mix(in oklab, var(--u-sh) 80%, transparent);
+}
+.ui-diff__apply.is-pressed {
+  background: var(--u-ink); transform: translateY(1px) scale(0.96); transition-duration: 70ms;
+  box-shadow: inset 0 2px 4px var(--u-sh), inset 0 1px 2px var(--u-sh), 0 0 0 3px color-mix(in oklab, var(--u-ink) 24%, transparent);
+}
+.ui-diff__apply.is-wait {
+  background: var(--u-ink); transform: none;
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--u-bg) 14%, transparent), 0 0 0 3px color-mix(in oklab, var(--u-ink) 14%, transparent);
+}
+.ui-diff__apply.is-wait .ui-diff__lbl { opacity: 0; }
+.ui-diff__apply.is-wait .ui-diff__spin { opacity: 1; animation-play-state: running; }   /* two turns, not a loop: the fragment's one loop is its cycle */
+.ui-diff__done {
+  color: var(--d-add-ink); background: var(--d-add-bg); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--d-add) 30%, transparent);
+  opacity: 0; visibility: hidden; transition: opacity 140ms var(--u-ease), visibility 0s 140ms;
+}
+.ui-diff__act.is-done .ui-diff__apply { opacity: 0; visibility: hidden; transition: opacity 120ms var(--u-ease), visibility 0s 120ms; }
+.ui-diff__act.is-done .ui-diff__done { opacity: 1; visibility: visible; transition: opacity 160ms var(--u-ease) 120ms, visibility 0s 120ms; }
+
+/* a cycle's reset: the status and the button are both away while the diff goes back */
+.ui-diff__act.is-gone .ui-diff__apply, .ui-diff__act.is-gone .ui-diff__done { opacity: 0; visibility: hidden; transition: opacity 120ms var(--u-ease), visibility 0s 120ms; }
+
+/* the file header never cuts its path (its whole row needs about 430px with a wide mono face): under 470px the
+   repo goes first, and under 340px the folders, so the file's own name always shows whole beside the counts */
+@container ui-diff (max-width: 469px) {
+  .ui-diff .ui-diff__repo, .ui-diff .ui-diff__slash { display: none; }
+}
+@container ui-diff (max-width: 339px) {
+  .ui-diff .ui-diff__dir { display: none; }
+}
+/* at card width (440-499px) the hunk header starts after one gutter, so the whole signature fits */
+@container ui-diff (max-width: 499px) {
+  .ui-diff .ui-diff__hunk { padding-left: calc(var(--d-gut) + 12px); }
+}
+/* narrow: the diff's own width decides (a container query), so a .fit wrapper or a phone panel never
+   slices a line: narrower gutters, the code wraps with a hanging indent, the comment starts at the left */
+@container ui-diff (max-width: 439px) {
+  .ui-diff > * { --d-gut: 26px; }
+  .ui-diff .ui-diff__repo, .ui-diff .ui-diff__slash, .ui-diff .ui-diff__bar, .ui-diff .ui-diff__fold, .ui-diff .ui-diff__sig { display: none; }
+  .ui-diff .ui-diff__head { height: 36px; padding-left: 12px; }
+  .ui-diff .ui-diff__hunk { height: 24px; font-size: 11px; line-height: 24px; padding-left: 12px; }
+  /* 11/16 rows; one gutter (the new number, the old one on a removed line), so the code keeps its width */
+  .ui-diff .ui-diff__ln { grid-template-columns: var(--d-gut) minmax(0, 1fr); font-size: 11px; line-height: 16px; }
+  .ui-diff .ui-diff__ln > i { grid-column: 1; grid-row: 1; padding-right: 8px; }
+  .ui-diff .ui-diff__ln > i:first-child { visibility: hidden; z-index: 1; }
+  .ui-diff .ui-diff__ln:has(> i:nth-child(2):empty) > i:first-child { visibility: visible; }
+  /* applied, the reviewed line is a removed line: its second cell goes transparent, so its first (the old number) shows */
+  .ui-diff.is-applied .ui-diff__ln.is-target > i:first-child { visibility: visible; }
+  .ui-diff .ui-diff__code { grid-column: 2; grid-row: 1; }
+  /* wrapped lines hang: the indent is 1ch a level (data-i on the code), and a continuation sits 2ch
+     inside the code it continues, never under the sign */
+  .ui-diff .ui-diff__code { --i: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 8px; padding-left: calc(14px + var(--i) * 0.75ch + 2ch); text-indent: -2ch; }
+  .ui-diff .ui-diff__code::before { left: 3px; }
+  .ui-diff .ui-diff__code[data-i="1"] { --i: 1; }
+  .ui-diff .ui-diff__code[data-i="2"] { --i: 2; }
+  .ui-diff .ui-diff__code[data-i="3"] { --i: 3; }
+  .ui-diff .ui-diff__ind { display: none; }
+  .ui-diff .ui-diff__thread { --th-l: 18px; padding-right: 12px; }
+}
+@container ui-diff (max-width: 339px) {
+  .ui-diff .ui-diff__msg { padding-left: 0; }
+  .ui-diff .ui-diff__time { display: none; }
+}
+/* phone: the diff takes the panel's width (cards.css); the queries above lay it out */
+@media (max-width: 639px) {
+  .ui-diff { width: 100%; }
+}

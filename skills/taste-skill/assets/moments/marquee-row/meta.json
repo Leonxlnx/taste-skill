@@ -1,0 +1,39 @@
+{
+  "id": "marquee-row",
+  "name": "Marquee row",
+  "kind": "scroll",
+  "fits": [
+    "section"
+  ],
+  "trigger": "loop",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "One row of client words, trades, cities or formats moves slowly sideways in a loop, fading at both edges; it pauses under the pointer and has a pause button.",
+  "reduced": "The words stand in a wrapped row.",
+  "phone": "The words stand in a wrapped row; nothing runs.",
+  "maxPerPage": 1,
+  "weight": 0.8,
+  "needs": {
+    "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients"
+  },
+  "avoidWith": [],
+  "states": {
+    "start": {
+      "see": true,
+      "wait": 200
+    },
+    "middle": {
+      "see": true,
+      "wait": 2600
+    },
+    "end": {
+      "see": true,
+      "wait": 5200
+    }
+  }
+}

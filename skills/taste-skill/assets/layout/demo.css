@@ -1,0 +1,57 @@
+/*
+  taste-skill layout demo.css - only for the hero demo pages in this folder (hero-*.html): the small
+  pieces of product UI the demos draw by hand. A real page pastes the client's screens or the kit's
+  fragments (assets/ui) into the same slots instead; nothing here is part of the system.
+*/
+.d-win { background: #fff; color: #16181a; border-radius: 12px; overflow: hidden; font: 400 14px/1.4 var(--font-text);
+         box-shadow: 0 0 0 1px rgb(0 0 0 / .07), 0 24px 60px -28px rgb(0 0 0 / .45); text-align: left; }
+.d-win--dark { background: #17191c; color: #eceef0; box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 30px 70px -30px rgb(0 0 0 / .8); }
+.d-win__bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid rgb(0 0 0 / .07); font-size: 13px; color: #5d6268; }
+.d-win--dark .d-win__bar { border-color: rgb(255 255 255 / .07); color: #9aa0a6; }
+.d-win__dots { display: flex; gap: 6px; } .d-win__dots i { width: 10px; height: 10px; border-radius: 50%; background: #dcdfe2; }
+.d-win--dark .d-win__dots i { background: #3a3e43; }
+.d-win__body { display: grid; grid-template-columns: 160px 1fr; min-height: 420px; }
+.d-side { padding: 14px 10px; border-right: 1px solid rgb(0 0 0 / .07); display: grid; align-content: start; gap: 2px; font-size: 13px; color: #4d5257; }
+.d-win--dark .d-side { border-color: rgb(255 255 255 / .07); color: #aeb3b8; }
+.d-side b { font-weight: 500; color: #16181a; } .d-win--dark .d-side b { color: #eceef0; }
+.d-side > span { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border-radius: 7px; }
+.d-side > span.is-on { background: rgb(0 0 0 / .05); color: #16181a; font-weight: 500; }
+.d-win--dark .d-side > span.is-on { background: rgb(255 255 255 / .07); color: #fff; }
+.d-side > span i { width: 14px; height: 14px; border-radius: 4px; background: currentColor; opacity: .3; flex: none; }
+.d-side .d-side__label { font-size: 13px; color: #8a8f94; height: 26px; margin-top: 8px; }
+.d-main { padding: 16px 18px; display: grid; align-content: start; gap: 12px; min-width: 0; }
+.d-main__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.d-main__head h4 { font: 600 16px/1.2 var(--font-text); letter-spacing: -0.01em; margin: 0; color: inherit; }
+.d-btn { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 7px; background: #16181a; color: #fff; font-size: 13px; font-weight: 500; }
+.d-btn--ghost { background: rgb(0 0 0 / .05); color: #16181a; }
+.d-tabs { display: flex; gap: 4px; font-size: 13px; } .d-tabs span { padding: 4px 10px; border-radius: 99px; color: #6b7076; } .d-tabs span.is-on { background: rgb(0 0 0 / .06); color: #16181a; font-weight: 500; }
+.d-rows { display: grid; border-top: 1px solid rgb(0 0 0 / .07); }
+.d-row { display: grid; grid-template-columns: 36px minmax(0, 1fr) 56px 96px 84px; align-items: center; gap: 12px; padding: 9px 2px; border-bottom: 1px solid rgb(0 0 0 / .07); font-size: 13px; }
+.d-row img, .d-row .d-thumb { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; background: #eef0ee; }
+.d-row b { display: block; font-weight: 500; color: #16181a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d-row small { color: #7b8086; font-size: 13px; }
+.d-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.d-row .when { color: #7b8086; font-size: 13px; text-align: right; white-space: nowrap; }
+@media (max-width: 639px) { .d-win__body { grid-template-columns: 1fr; } .d-side { display: none; } .d-row { grid-template-columns: 36px minmax(0, 1fr) 96px 84px; } .d-row .num { display: none; } }
+.d-chip { justify-self: end; display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 99px; font-size: 13px; font-weight: 500; background: #e7f4ec; color: #17673f; white-space: nowrap; }
+.d-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.d-chip--low { background: #fdf0dc; color: #8a5300; }
+.d-chip--out { background: #fbe6e3; color: #a3271b; }
+.d-card { background: #fff; color: #16181a; border-radius: 12px; padding: 14px 16px; font: 400 14px/1.4 var(--font-text); text-align: left;
+          box-shadow: 0 0 0 1px rgb(0 0 0 / .07), 0 18px 44px -20px rgb(0 0 0 / .45); }
+.d-card h5 { margin: 0 0 4px; font: 600 14px/1.3 var(--font-text); }
+.d-card p { margin: 0; color: #5d6268; font-size: 13px; }
+.d-card__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.d-bar { height: 6px; border-radius: 99px; background: #eceeed; overflow: hidden; margin-top: 10px; }
+.d-bar > i { display: block; height: 100%; width: var(--v, 40%); border-radius: inherit; background: var(--d-accent, #1f8a5b); }
+.d-spark { display: block; width: 100%; height: 56px; margin-top: 8px; }
+.d-stat { font: 600 28px/1 var(--font-text); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+/* chat */
+.d-chat { display: grid; gap: 10px; align-content: start; padding: 18px; font-size: 14px; }
+.d-msg { max-width: 78%; padding: 10px 14px; border-radius: 16px; background: rgb(255 255 255 / .07); line-height: 1.45; }
+.d-msg--me { justify-self: end; background: #f2f2f0; color: #121314; border-bottom-right-radius: 6px; }
+.d-msg--bot { border-bottom-left-radius: 6px; }
+.d-msg small { display: block; margin-top: 4px; font-size: 13px; opacity: .6; }
+.d-tool { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #9aa0a6; }
+.d-tool::before { content: ""; width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; }
+.d-input { margin: auto 18px 18px; height: 44px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .1); display: flex; align-items: center; padding: 0 14px; color: #7d8389; font-size: 13.5px; }

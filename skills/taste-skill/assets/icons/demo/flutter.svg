@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5.667 -5.667 240.203 294.698" width="240.2" height="294.7"><defs>
+        <linearGradient x1="19.6567737%" y1="81.4928285%" x2="69.8738139%" y2="47.6432179%" id="linearGradient-3">
+            <stop stop-color="#1A237E" stop-opacity="0.4" offset="0%"></stop>
+            <stop stop-color="#1A237E" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <radialGradient cx="2.8138422%" cy="6.81818182%" fx="2.8138422%" fy="6.81818182%" r="151.47474%" gradientTransform="translate(0.0281, 0.0682), scale(1, 0.8077), translate(-0.0281, -0.0682)" id="radialGradient-4">
+            <stop stop-color="#FFFFFF" stop-opacity="0.1" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g>
+        <polygon fill="#54C5F8" points="228.863707 130.789332 141.676694 130.789332 65.3992349 207.085067 108.98393 250.669109"></polygon>
+        <polygon fill="#54C5F8" points="43.6025795 185.283581 0 141.681263 141.681263 0 228.868276 0"></polygon>
+        <polygon fill="#01579B" points="108.987846 250.669762 141.68061 283.362526 228.867623 283.362526 152.572541 207.085719"></polygon>
+        <polygon fill="url(#linearGradient-3)" points="108.987846 250.669762 173.646244 228.286703 152.572541 207.085719"></polygon>
+        <polygon fill="#29B6F6" points="108.981972 163.477527 65.3959713 207.062874 108.981972 250.648875 152.567319 207.062874"></polygon>
+        <path d="M228.868276,130.789332 L152.590817,207.066791 L228.868276,283.362526 L141.681263,283.362526 L108.988499,250.669762 L65.3855278,207.066791 L141.681263,130.789332 L228.868276,130.789332 Z M141.681263,0 L0,141.681263 L43.6025795,185.283581 L228.868276,0 L141.681263,0 Z" fill="url(#radialGradient-4)"></path>
+    </g></svg>

@@ -1,0 +1,52 @@
+{
+  "id": "descend-through-weather",
+  "name": "Descend through the weather",
+  "family": "camera-through-space",
+  "look": "The first screen sinks through a cloud deck onto the place below: a full-bleed photograph from above the weather stands behind a flat band of the page's ground across the foot, which carries the name, one line and the action; two layers of cloud rise at different speeds and the band leaves as the cloud reaches it; a wall of mist fills the frame for a breath while one short line rises through it; then the frame clears from the bottom, under a ceiling of cloud, onto the second photograph, where a two-line statement rises on a band at the foot. The cloud is drawn once from layered noise in the page's own mist tint. No word sits straight on a photograph.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "gaming"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 2,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The picture from above, the name, the line and the action, then the statement and the picture from below.",
+  "phone": "The finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "needs": {
+    "pictures": "two photographs of the client's own site or world, one from above the cloud or high up (a launch site, a test range, a data centre on its plain, a game's world from above), one from below with a calm lower half",
+    "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines"
+  },
+  "never": "a brief with no high and low pictures of its own site; a software page whose product is a screen (the hero shows the product); a local-business or place page; stock cloud photographs pasted in. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+  "avoidWith": [
+    "fixed-hero-object",
+    "powers-of-ten-pullback",
+    "fly-into-the-shape",
+    "shaped-window-over-fixed-world"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 700
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 600
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 700
+    }
+  },
+  "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "window-parallax"
+  ]
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Object still</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../system.css">
+<style>
+  body { margin: 0; background: var(--bg); }
+  #host { width: 800px; height: 800px; }
+</style>
+</head>
+<body>
+<div id="host"></div>
+<script type="module">
+/*
+  An object render (assets/objects/print-*) drawn once at 800 x 800 and handed to shoot.mjs make as a PNG:
+  the still a scene's markup carries under the object's host (the finished composition, reduced motion, a
+  phone, a failed shader). Query: ?object=print-globe&effect=render&angle=-30&bg=f4f0e8&ink=1d1a16&accent=b5542b&surface=eae4d8&muted=6b6559
+    node assets/scenes/_demo/shoot.mjs make --html "/assets/scenes/_demo/make-still.html?object=print-globe&effect=render&angle=-30&accent=1f5f8b" --save assets/scenes/_demo/globe.png --profile <profile-dir>
+*/
+window.addEventListener('error', e => { window.__err = e.message; });
+const q = new URLSearchParams(location.search);
+const hexq = (k, d) => '#' + (q.get(k) || d).replace('#', '');
+const object = q.get('object') || 'print-globe';
+const palette = { bg: hexq('bg', 'f6f5f1'), surface: hexq('surface', 'ebe9e3'), ink: hexq('ink', '191a18'), muted: hexq('muted', '5f615c'), accent: hexq('accent', '2f6b4f'), accentInk: hexq('accentInk', 'ffffff') };
+document.documentElement.style.setProperty('--p-bg', palette.bg);
+try {
+  const m = await import(`../../objects/${object}/object.js`);
+  const params = { transparent: 1, turn: 0, interactive: 0, shadow: +(q.get('shadow') || 0.55), size: +(q.get('size') || 0.96), angle: +(q.get('angle') || 0), effect: q.get('effect') || 'render' };
+  const ctrl = m.default.mount(document.getElementById('host'), { place: 'none', params, palette });
+  await ctrl.ready();
+  if (ctrl.info.fallback) throw new Error('the object fell back: ' + ctrl.info.fallback);
+  ctrl.pose({ t: 0 });
+  await new Promise(r => setTimeout(r, 400));
+  const url = ctrl.snapshot();
+  if (!url) throw new Error('no snapshot');
+  window.__out = url;
+} catch (e) { window.__err = String(e && e.message || e); }
+</script>
+</body></html>

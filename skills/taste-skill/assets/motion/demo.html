@@ -1,0 +1,475 @@
+<!doctype html>
+<!-- taste-skill motion demo: every micro-interaction of assets/motion on one company page, light and dark.
+     Open it served from the skill folder (http://localhost:<port>/assets/motion/demo.html).
+     ?theme=dark starts dark; ?live keeps the number tick in a headless screenshot. -->
+<html lang="en" data-radius="soft" data-ground="sky" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stackline: plan and ship product work, for small software teams</title>
+<meta name="description" content="The taste-skill motion layer on one page: buttons, links, nav, tabs, cards, loops, photographs, numbers, fields, FAQ.">
+<script>
+  (() => {
+    const q = new URLSearchParams(location.search), h = document.documentElement;
+    if (q.get('theme') === 'dark') h.dataset.theme = 'dark';
+    if (q.has('live')) h.dataset.motion = 'live';
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="motion.css">
+<style>
+  :root {
+    --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #0e0e0e; --p-muted: #63635f;
+    --p-accent: #2457d6; --p-accent-ink: #ffffff; --p-action: #0e0e0e; --p-action-ink: #ffffff;
+    --p-inv-bg: #0e0e0e; --p-inv-surface: #1a1a1a; --p-inv-ink: #f3f3f1; --p-inv-muted: #a2a29d;
+    --p-inv-accent: #ffffff; --p-inv-accent-ink: #0e0e0e; --p-inv-action: #ffffff; --p-inv-action-ink: #0e0e0e;
+    --font-display: "Geist", system-ui, sans-serif; --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace;
+    --display-weight: 500; --display-tracking: -0.035em;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    --p-bg: #0a0a0b; --p-surface: #141416; --p-ink: #f2f2f0; --p-muted: #9d9d98;
+    --p-accent: #7fb0ff; --p-accent-ink: #0a0a0b; --p-action: #f2f2f0; --p-action-ink: #0a0a0b;
+    --ground-bg: #2b3e4f; --ground-surface: #3a5468; --ground-ink: #eef3f7; --ground-muted: #b7c4cf; --ground-accent: #9fb36a;
+    color-scheme: dark;
+  }
+  html[data-theme="dark"] .card { --card: #121214; }
+
+  /* the lit ground of a panel, drawn in CSS for this demo (pages use assets/effects): two soft lights
+     and a fine grain */
+  .gr { background-color: var(--ground-bg);
+        background-image:
+          radial-gradient(70% 90% at 18% 8%, color-mix(in oklab, var(--ground-surface) 85%, #fff), transparent 62%),
+          radial-gradient(60% 70% at 92% 100%, color-mix(in oklab, var(--ground-accent) 55%, var(--ground-bg)), transparent 70%),
+          radial-gradient(50% 60% at 60% 40%, color-mix(in oklab, var(--ground-bg) 70%, #fff), transparent 70%); }
+  .gr--b { background-image:
+          radial-gradient(80% 80% at 85% 0%, color-mix(in oklab, var(--ground-surface) 85%, #fff), transparent 60%),
+          radial-gradient(70% 80% at 0% 100%, color-mix(in oklab, var(--ground-accent) 50%, var(--ground-bg)), transparent 72%); }
+  .gr::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .22; mix-blend-mode: overlay;
+               background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  html[data-theme="dark"] .gr::after { opacity: .3; }
+
+  /* a small UI surface on a ground (the demo's own fragments) */
+  .mini { --m-bg: oklch(from var(--card, #fff) clamp(calc(l + 0.06), calc((l - 0.5) * 1000), 1) c h);
+          position: absolute; background: var(--m-bg); color: var(--ink); border-radius: 12px; font-size: 13px; line-height: 1.4;
+          box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 12px 32px -14px rgb(0 0 0 / .35); }
+  .mini__head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-weight: 500; }
+  .mini__head .muted { margin-left: auto; font-weight: 400; }
+  .mini__row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  .mini__row:last-child { border-bottom: 0; }
+  .mono-id { font: 500 11px/1 var(--font-mono); color: var(--muted); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 500;
+          background: color-mix(in oklab, var(--ink) 6%, transparent); white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+  .ava { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font: 600 10px/1 var(--font-text);
+         background: var(--accent); color: var(--accent-ink); flex: none; }
+  .ptr { position: absolute; left: 0; top: 0; width: 18px; height: 18px; z-index: 3; filter: drop-shadow(0 1px 1px rgb(0 0 0 / .3)); }
+  .ptr path { fill: #111; stroke: #fff; stroke-width: 1.2; }
+
+  /* a label that changes is two stacked labels: the old one is gone before the new one comes, never
+     both at once (out over 3% of the cycle, about 100ms; in after a 1% gap) */
+  /* card 1: the pointer assigns an issue (one 3.2 s cycle) */
+  .l-assign .ptr { animation: assign-ptr var(--m-cycle) var(--m-ease-io) infinite; }
+  @keyframes assign-ptr { 0%, 8% { transform: translate(250px, 150px); opacity: 0; } 14% { opacity: 1; } 34%, 44% { transform: translate(196px, 52px); opacity: 1; }
+                           38% { transform: translate(196px, 52px) scale(.86); } 70% { transform: translate(228px, 120px); opacity: 1; } 80%, 100% { transform: translate(240px, 140px); opacity: 0; } }
+  .l-assign .slot { position: relative; width: 74px; height: 22px; }
+  .l-assign .slot > * { position: absolute; right: 0; top: 0; }
+  .l-assign .who { animation: assign-who var(--m-cycle) var(--m-ease) infinite; }
+  .l-assign .who-empty { animation: assign-empty var(--m-cycle) linear infinite; }
+  @keyframes assign-who { 0%, 41% { opacity: 0; transform: scale(.8); } 47%, 90% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+  @keyframes assign-empty { 0%, 37% { opacity: 1; } 40%, 94% { opacity: 0; } 97%, 100% { opacity: 1; } }
+
+  /* card 2: an issue turns late and a note comes in; the note leaves before the label turns back */
+  .l-late .st { position: relative; width: 92px; height: 22px; }
+  .l-late .st > * { position: absolute; right: 0; top: 0; }
+  .l-late .st-late { color: #c2410c; background: color-mix(in oklab, #c2410c 12%, transparent); animation: late-on var(--m-cycle) var(--m-ease) infinite; }
+  .l-late .st-prog { animation: late-off var(--m-cycle) linear infinite; }
+  @keyframes late-on { 0%, 34% { opacity: 0; transform: translateY(4px); } 40%, 90% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+  @keyframes late-off { 0%, 30% { opacity: 1; } 33%, 94% { opacity: 0; } 97%, 100% { opacity: 1; } }
+  .l-late.toast { animation: late-toast var(--m-cycle) var(--m-ease) infinite; }
+  @keyframes late-toast { 0%, 46% { opacity: 0; transform: translateY(10px); } 56%, 84% { opacity: 1; transform: none; } 89%, 100% { opacity: 0; transform: translateY(4px); } }
+  html[data-theme="dark"] .l-late .st-late { color: #fb923c; }
+
+  /* card 3: a cycle fills and closes */
+  .l-cycle .bar { height: 8px; border-radius: 99px; background: color-mix(in oklab, var(--ink) 9%, transparent); overflow: hidden; }
+  .l-cycle .bar i { display: block; height: 100%; width: 100%; border-radius: inherit; background: var(--accent); transform-origin: left;
+                    animation: cycle-fill var(--m-cycle) var(--m-ease-io) infinite; }
+  @keyframes cycle-fill { 0%, 10% { transform: scaleX(.62); } 55%, 92% { transform: scaleX(1); } 100% { transform: scaleX(.62); } }
+  .l-cycle.done { animation: cycle-done var(--m-cycle) var(--m-ease) infinite; }
+  @keyframes cycle-done { 0%, 52% { opacity: 0; transform: scale(.9); } 60%, 85% { opacity: 1; transform: none; } 89%, 100% { opacity: 0; } }
+  .l-cycle .pct { position: relative; display: inline-block; width: 4ch; height: 1.4em; text-align: right; }
+  .l-cycle .pct > * { position: absolute; right: 0; top: 0; }
+  /* the number turns when the bar is full (55%); the closed note leaves before the bar empties */
+  .l-cycle .pct-a { animation: pct-a var(--m-cycle) linear infinite; }
+  .l-cycle .pct-b { animation: pct-b var(--m-cycle) linear infinite; }
+  @keyframes pct-a { 0%, 51% { opacity: 1; } 54%, 94% { opacity: 0; } 97%, 100% { opacity: 1; } }
+  @keyframes pct-b { 0%, 55% { opacity: 0; } 59%, 90% { opacity: 1; } 93%, 100% { opacity: 0; } }
+
+  /* the hero board: one issue moves from In progress to Done (one 4 s cycle) */
+  .board { position: absolute; inset: 40px 40px auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .col { background: color-mix(in oklab, var(--mbg, #fff) 70%, transparent); border-radius: 12px; padding: 10px; min-height: 300px;
+         box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .col__h { display: flex; align-items: center; gap: 8px; padding: 2px 4px 10px; font-size: 13px; font-weight: 500; }
+  .col__h .muted { margin-left: auto; font-weight: 400; }
+  .iss { position: relative; background: var(--mbg, #fff); border-radius: 9px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; line-height: 1.4;
+         box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 2px 6px -3px rgb(0 0 0 / .2); }
+  .iss__meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .iss__meta .ava { margin-left: auto; width: 20px; height: 20px; }
+  .board { --mbg: oklch(from var(--card, #fff) clamp(calc(l + 0.06), calc((l - 0.5) * 1000), 1) c h); }
+  .mover { position: absolute; z-index: 2; width: calc((100% - 24px) / 3 - 20px); left: calc((100% - 24px) / 3 + 12px + 10px); top: 48px;
+           animation: move-card var(--m-cycle) var(--m-ease-io) infinite; }
+  @keyframes move-card { 0%, 22% { transform: none; box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 2px 6px -3px rgb(0 0 0 / .2); }
+                         30% { transform: translateY(-4px) rotate(0deg); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 18px 30px -14px rgb(0 0 0 / .4); }
+                         58% { transform: translate(calc(100% + 32px), -4px); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 18px 30px -14px rgb(0 0 0 / .4); }
+                         66%, 100% { transform: translate(calc(100% + 32px), 0); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent), 0 2px 6px -3px rgb(0 0 0 / .2); } }
+  .spacer-slot { height: 92px; }
+  /* the four loop cards: the subject sits above the pause button's 48px band */
+  #product .card > .panel { --p-h: 384px; }
+  .hero-panel { --p-h: 440px; min-height: var(--p-h); border-radius: var(--r-lg); }
+
+  /* the tab screens */
+  .screen { position: relative; min-height: 360px; border-radius: var(--r-lg); overflow: clip; }
+  .screen .mini { left: 40px; right: 40px; top: 40px; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); border-top: 1px solid var(--line); padding-top: var(--s-6); }
+  .stats p { margin-top: var(--s-3); color: var(--muted); font-size: var(--t-small); }
+  @media (max-width: 639px) { .stats { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-6); } }
+
+  .switch-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
+  .switch-row span:first-child { display: grid; gap: 2px; }
+  .switch-row small { color: var(--muted); font-size: var(--t-small); }
+  .check-row { display: flex; align-items: center; gap: var(--s-3); font-size: var(--t-small); }
+  .theme-sw { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--t-small); color: var(--muted); margin-right: var(--s-2); }
+
+  @media (max-width: 1023px) { .board { inset: 24px 24px auto; grid-template-columns: repeat(2, minmax(0, 1fr)); } .board .col:nth-child(3), .board .mover, .board .ptr { display: none; } }
+  @media (max-width: 639px) { .board { grid-template-columns: minmax(0, 1fr); } .board .col:nth-child(2) { display: none; } .hero-panel { --p-h: 340px; } .screen .mini { left: 20px; right: 20px; top: 20px; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav__bar">
+    <a class="nav__logo" href="#top">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="2" fill="currentColor"/><rect x="3" y="10" width="12" height="4" rx="2" fill="currentColor" opacity=".6"/><rect x="3" y="16" width="7" height="4" rx="2" fill="currentColor" opacity=".35"/></svg>
+      Stackline
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#product">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="container grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Plan</p>
+              <a href="#product">Issues<span>Track every bug and task</span></a>
+              <a href="#product">Cycles<span>Two-week plans that close</span></a>
+              <a href="#product">Roadmap<span>What ships this quarter</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Connect</p>
+              <a href="#product">GitHub<span>Issues close when code merges</span></a>
+              <a href="#product">Slack<span>Updates where your team talks</span></a>
+              <a href="#product">Figma<span>Designs next to the work</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#stories">
+              <div class="panel"><img class="frame__img" src="https://picsum.photos/id/1081/720/405" alt="A stepped white building against a pale sky" loading="lazy"></div>
+              <span class="t-card">Stackline 3.0</span>
+              <span class="t-small muted">Cycles, triage and a faster board</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item">
+        <a class="nav__link" href="#stories">Customers <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="container grid">
+            <div class="menu-col span-3">
+              <p class="t-label">By team</p>
+              <a href="#stories">Startups<span>Five to fifty people</span></a>
+              <a href="#stories">Agencies<span>Many clients, one board</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Stories</p>
+              <a href="#stories">Northfield<span>Weekly releases, no standup</span></a>
+              <a href="#stories">Paperhouse<span>From three tools to one</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#numbers" aria-current="page">Pricing</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">Docs</a></div>
+    </nav>
+    <div class="nav__actions">
+      <label class="theme-sw">Dark <button class="m-switch" id="theme" type="button" role="switch" aria-checked="false" aria-label="Dark theme"></button></label>
+      <a class="btn btn--secondary btn--sm" href="#try">Log in</a>
+      <a class="btn btn--primary btn--sm" href="#try">Start free</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="section section--hero" id="hero">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <a class="pill" href="#stories">Stackline 3.0 is here <span class="muted">Read the post</span>
+          <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+        <h1>Plan and ship product work in one place</h1>
+        <p>Issues, cycles and a roadmap for software teams of five to fifty. Free for three people.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#try">Start free
+            <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+          <a class="btn btn--secondary" href="#try">Book a demo</a>
+        </div>
+      </div>
+      <div class="panel gr hero-panel" data-m-loop style="--m-cycle: 4s; --m-still: 0.8">
+        <div class="board" aria-hidden="true">
+          <div class="col"><div class="col__h"><span class="dot" style="color:#9a9a96"></span>To do <span class="muted">4</span></div>
+            <div class="iss"><span class="mono-id">STK-214</span><div>Export a cycle as CSV</div><div class="iss__meta"><span class="chip">Data</span><span class="ava">LB</span></div></div>
+            <div class="iss"><span class="mono-id">STK-219</span><div>Empty state for new teams</div><div class="iss__meta"><span class="chip">Design</span><span class="ava">AK</span></div></div>
+          </div>
+          <div class="col"><div class="col__h"><span class="dot" style="color:#d9a21b"></span>In progress <span class="muted">3</span></div>
+            <div class="spacer-slot"></div>
+            <div class="iss"><span class="mono-id">STK-207</span><div>Faster board on large projects</div><div class="iss__meta"><span class="chip">Web</span><span class="ava">TR</span></div></div>
+          </div>
+          <div class="col"><div class="col__h"><span class="dot" style="color:#2f9e5b"></span>Done <span class="muted">12</span></div>
+            <div class="spacer-slot"></div>
+            <div class="iss"><span class="mono-id">STK-198</span><div>Keyboard shortcut sheet</div><div class="iss__meta"><span class="chip">Web</span><span class="ava">MK</span></div></div>
+          </div>
+          <div class="iss mover"><span class="mono-id">STK-211</span><div>Fix sign-in on Safari 18</div><div class="iss__meta"><span class="chip">Auth</span><span class="ava">MK</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="product">
+    <div class="container">
+      <div class="section-head">
+        <h2>Everything a sprint needs. <span class="muted">Assign, track and close work without a status meeting.</span></h2>
+      </div>
+      <div class="grid">
+        <article class="card card--row span-6">
+          <h3>Assign in one click</h3>
+          <p>Pick an owner from the issue itself. They get a note in Slack with a link back.</p>
+          <div class="panel gr" data-m-loop style="--m-still: 0.9">
+            <div class="stage stage--fade-b">
+              <div class="mini l-assign" style="left:32px; top:40px; width:min(360px, calc(100% - 64px))" aria-hidden="true">
+                <div class="mini__head"><span class="mono-id">STK-211</span> Fix sign-in on Safari 18</div>
+                <div class="mini__row"><span class="muted">Owner</span><span style="margin-left:auto" class="slot"><span class="chip who-empty">Assign</span><span class="chip who"><span class="ava" style="width:16px;height:16px;font-size:8px">MK</span>Mira K.</span></span></div>
+                <div class="mini__row"><span class="muted">Cycle</span><span class="chip" style="margin-left:auto">Cycle 14</span></div>
+                <div class="mini__row"><span class="muted">Priority</span><span class="chip" style="margin-left:auto">High</span></div>
+                <svg class="ptr" viewBox="0 0 18 18"><path d="M2 1.5 15 9l-6 1.3L5.7 16z"/></svg>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row span-6">
+          <h3>See what is late</h3>
+          <p>Issues past their date turn orange and the owner hears about it, not the whole team.</p>
+          <div class="panel gr gr--b" data-m-loop>
+            <div class="stage stage--fade-b">
+              <div class="mini l-late" style="left:32px; top:40px; width:min(380px, calc(100% - 64px))" aria-hidden="true">
+                <div class="mini__head">Cycle 14 <span class="muted">Ends Friday</span></div>
+                <div class="mini__row"><span class="mono-id">STK-198</span>Shortcut sheet<span class="chip" style="margin-left:auto">Done</span></div>
+                <div class="mini__row"><span class="mono-id">STK-207</span>Faster board<span class="st" style="margin-left:auto"><span class="chip st-prog">In progress</span><span class="chip st-late">Late 1 day</span></span></div>
+                <div class="mini__row"><span class="mono-id">STK-214</span>Export as CSV<span class="chip" style="margin-left:auto">To do</span></div>
+              </div>
+              <div class="mini toast l-late" style="right:32px; top:200px; padding:10px 12px; display:flex; gap:10px; align-items:center" aria-hidden="true"><span class="ava">TR</span>STK-207 is one day late</div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row span-6">
+          <h3>Cycles that close themselves</h3>
+          <p>Unfinished work moves to the next cycle on Friday night, with a short summary.</p>
+          <div class="panel gr gr--b" data-m-loop>
+            <div class="stage stage--fade-b">
+              <div class="mini l-cycle" style="left:32px; top:40px; width:min(340px, calc(100% - 64px)); padding:14px" aria-hidden="true">
+                <div style="display:flex; justify-content:space-between; font-weight:500; margin-bottom:10px">Cycle 14 <span class="pct"><span class="pct-a">62%</span><span class="pct-b">100%</span></span></div>
+                <div class="bar"><i></i></div>
+                <div style="display:flex; gap:8px; margin-top:12px; color:var(--muted)"><span>18 issues</span><span>3 moved on</span></div>
+              </div>
+              <div class="mini l-cycle done" style="left:32px; top:168px; padding:10px 12px; display:flex; gap:8px; align-items:center" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#2f9e5b"/><path d="m4.8 8.2 2.1 2 4.3-4.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Cycle 14 closed. Summary sent to #product.
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row span-6">
+          <h3>You choose what it may do</h3>
+          <p>Automations run only where you switch them on, team by team.</p>
+          <div class="panel gr">
+            <div class="stage">
+              <div class="at-right" style="--ax:32px; --ay:32px" data-ui-loop>
+                <div class="ui ui-panel ui-toggles" data-ui="toggles">
+                  <div class="ui-head">
+                    <svg class="ui-icon ui-toggles__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 13 4v3.6c0 3-2.1 5.4-5 6.6-2.9-1.2-5-3.6-5-6.6V4z"/><path d="m5.8 8 1.6 1.6 3-3.2"/></svg>
+                    <div class="ui-title">Automations</div>
+                    <span class="ui-spacer"></span>
+                    <div class="ui-meta" data-tg-count>3 of 4 on</div>
+                  </div>
+                  <ul class="ui-toggles__list">
+                    <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Close issues when code merges</span><span class="ui-tg__sub">GitHub and GitLab</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Close issues when code merges"><i></i></button></li>
+                    <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Move unfinished work on Friday</span><span class="ui-tg__sub">To the next cycle</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Move unfinished work on Friday"><i></i></button></li>
+                    <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Post a summary in Slack</span><span class="ui-tg__sub">#product, Friday 18:00</span></span><button class="ui-switch" type="button" role="switch" aria-checked="false" aria-label="Post a summary in Slack"><i></i></button></li>
+                    <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Ask before closing a bug</span><span class="ui-tg__sub">The reporter confirms</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Ask before closing a bug"><i></i></button></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ground-surface" id="views">
+    <div class="container">
+      <div class="grid grid--middle">
+        <div class="span-5 stack-5">
+          <h2>One project, four ways to look at it</h2>
+          <p class="t-lead">Switch between a board, a list, a timeline and your own inbox. Filters stay where you left them.</p>
+          <div class="tabs" role="tablist" aria-label="Views">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="v-board" id="t-board">Board</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="v-list" id="t-list">List</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="v-time" id="t-time">Timeline</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="v-inbox" id="t-inbox">Inbox</button>
+          </div>
+          <a class="link" href="#product">See every view</a>
+        </div>
+        <div class="span-7">
+          <div class="screen gr" role="tabpanel" id="v-board" aria-labelledby="t-board">
+            <div class="mini"><div class="mini__head">Board <span class="muted">Cycle 14</span></div>
+              <div class="mini__row"><span class="dot" style="color:#9a9a96"></span>To do<span class="muted" style="margin-left:auto">4</span></div>
+              <div class="mini__row"><span class="dot" style="color:#d9a21b"></span>In progress<span class="muted" style="margin-left:auto">3</span></div>
+              <div class="mini__row"><span class="dot" style="color:#2f9e5b"></span>Done<span class="muted" style="margin-left:auto">12</span></div></div>
+          </div>
+          <div class="screen gr gr--b" role="tabpanel" id="v-list" aria-labelledby="t-list" hidden>
+            <div class="mini"><div class="mini__head">All issues <span class="muted">19</span></div>
+              <div class="mini__row"><span class="mono-id">STK-219</span>Empty state for new teams<span class="chip" style="margin-left:auto">To do</span></div>
+              <div class="mini__row"><span class="mono-id">STK-211</span>Fix sign-in on Safari 18<span class="chip" style="margin-left:auto">In progress</span></div>
+              <div class="mini__row"><span class="mono-id">STK-198</span>Keyboard shortcut sheet<span class="chip" style="margin-left:auto">Done</span></div></div>
+          </div>
+          <div class="screen gr" role="tabpanel" id="v-time" aria-labelledby="t-time" hidden>
+            <div class="mini"><div class="mini__head">Timeline <span class="muted">November</span></div>
+              <div class="mini__row">Cycle 14<span class="chip" style="margin-left:auto">3 to 14 Nov</span></div>
+              <div class="mini__row">Cycle 15<span class="chip" style="margin-left:auto">17 to 28 Nov</span></div>
+              <div class="mini__row">Release 3.1<span class="chip" style="margin-left:auto">1 Dec</span></div></div>
+          </div>
+          <div class="screen gr gr--b" role="tabpanel" id="v-inbox" aria-labelledby="t-inbox" hidden>
+            <div class="mini"><div class="mini__head">Inbox <span class="muted">3 new</span></div>
+              <div class="mini__row"><span class="ava">TR</span>Assigned you STK-214</div>
+              <div class="mini__row"><span class="ava">AK</span>Commented on STK-219</div>
+              <div class="mini__row"><span class="ava">LB</span>Closed STK-198</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="stories">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div><h2>How teams run on Stackline</h2></div>
+        <a class="link" href="#stories">All stories</a>
+      </div>
+      <div class="grid">
+        <a class="tile span-4" href="#stories">
+          <div class="tile__media"><img src="https://picsum.photos/id/1081/960/720" alt="A stepped white building against a pale blue sky" loading="lazy"></div>
+          <div class="tile__head"><h3>Northfield ships every week</h3></div>
+          <p>A 14-person team dropped its daily standup.</p>
+        </a>
+        <a class="tile span-4" href="#stories">
+          <div class="tile__media"><img src="https://picsum.photos/id/954/960/720" alt="A white staircase seen through a narrow opening in a white wall" loading="lazy"></div>
+          <div class="tile__head"><h3>Paperhouse went from three tools to one</h3></div>
+          <p>Issues, docs and the roadmap in one place.</p>
+        </a>
+        <a class="tile span-4" href="#stories">
+          <div class="tile__media"><img src="https://picsum.photos/id/743/960/720" alt="A narrow building corner against a teal sky" loading="lazy"></div>
+          <div class="tile__head"><h3>Oro moved 40,000 issues in a day</h3></div>
+          <p>The import kept every comment and link.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="numbers">
+    <div class="container">
+      <div class="section-head"><h2>What changes in the first month</h2></div>
+      <div class="stats">
+        <div><div class="t-stat" data-m-count>8,402</div><p>teams on Stackline</p></div>
+        <div><div class="t-stat" data-m-count>4.5 h</div><p>saved per person each week</p></div>
+        <div><div class="t-stat" data-m-count>64%</div><p>fewer status meetings</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ground-surface" id="try">
+    <div class="container">
+      <div class="grid">
+        <div class="span-5 stack-5">
+          <h2>Start with your team</h2>
+          <p class="t-lead">Free for three people. Bring your issues from GitHub or Jira in a few minutes, as our <a href="#faq">import guide</a> shows.</p>
+        </div>
+        <form class="form span-6 start-7" onsubmit="return false">
+          <label class="field">Work email <input type="email" placeholder="you@company.com" autocomplete="off"></label>
+          <label class="field">Team size <select><option>2 to 5</option><option>6 to 20</option><option>21 to 50</option></select></label>
+          <div class="field--full">
+            <div class="switch-row"><span>Import from GitHub<small>Issues, labels and comments</small></span><button class="m-switch" type="button" role="switch" aria-checked="true" aria-label="Import from GitHub"></button></div>
+            <div class="switch-row"><span>Weekly summary by email<small>Friday at 18:00</small></span><button class="m-switch" type="button" role="switch" aria-checked="false" aria-label="Weekly summary by email"></button></div>
+          </div>
+          <label class="check-row field--full"><input class="m-check" type="checkbox" checked> Send me the product changelog once a month</label>
+          <div class="btn-row"><button class="btn btn--primary btn--arrow" type="submit">Create workspace</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="grid">
+        <div class="span-4"><h2>Questions</h2></div>
+        <div class="span-8 faq">
+          <details><summary>Is it free for small teams?</summary><p>Yes. Up to three people use every feature for free, with no time limit.</p></details>
+          <details><summary>Can we import from Jira?</summary><p>Yes. The import keeps issues, comments, labels and links, and takes a few minutes for most projects.</p></details>
+          <details><summary>Where is our data stored?</summary><p>In Frankfurt, on servers we run with an EU provider. You can export everything at any time.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="grid">
+      <div class="span-4 stack-4">
+        <a class="nav__logo" href="#top">Stackline</a>
+        <p class="t-small measure">Issues, cycles and a roadmap for software teams.</p>
+      </div>
+      <div class="span-2 footer__col"><h4>Product</h4><ul><li><a href="#product">Issues</a></li><li><a href="#product">Cycles</a></li><li><a href="#product">Roadmap</a></li></ul></div>
+      <div class="span-2 footer__col"><h4>Company</h4><ul><li><a href="#stories">Customers</a></li><li><a href="#numbers">Pricing</a></li><li><a href="#try">Contact</a></li></ul></div>
+      <div class="span-2 footer__col"><h4>Help</h4><ul><li><a href="#faq">Docs</a></li><li><a href="#faq">Import</a></li></ul></div>
+    </div>
+    <div class="footer__legal"><span>Stackline is a demo company.</span><span>Photographs: Julien Moreau, Todd Quackenbush, Anthony Delanoix (Unsplash License).</span></div>
+  </div>
+</footer>
+
+<script type="module" src="../system.js"></script>
+<script type="module" src="motion.js"></script>
+<script>
+  const sw = document.getElementById('theme'), h = document.documentElement;
+  sw.setAttribute('aria-checked', String(h.dataset.theme === 'dark'));
+  sw.addEventListener('click', e => {
+    e.preventDefault();
+    const dark = h.dataset.theme !== 'dark';
+    if (dark) h.dataset.theme = 'dark'; else delete h.dataset.theme;
+    sw.setAttribute('aria-checked', String(dark));
+  });
+</script>
+</body>
+</html>

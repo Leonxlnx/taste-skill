@@ -1,0 +1,42 @@
+/* fx-avatar: the speaker's avatar ring is the effect, with its own soft glow; it moves to whoever speaks */
+.cx-call { --ava: 64px; --pad: 16px; display: grid; gap: var(--s-6); padding: var(--s-6); width: min(100%, 460px); isolation: isolate; }
+.cx-call__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); }
+.cx-call__title { font: 500 var(--t-body)/1.3 var(--font-text); margin: 0; }
+.cx-call__meta { font-size: var(--t-label); color: var(--muted); margin: 4px 0 0; }
+.cx-call__live {
+  display: inline-flex; align-items: center; gap: 7px; height: 26px; padding: 0 10px; border-radius: 999px;
+  border: 1px solid var(--cx-line-2); font-size: 12px; font-weight: 500;
+}
+.cx-call__live span { width: 6px; height: 6px; border-radius: 9px; background: var(--accent); animation: cx-call-blink 2.4s ease-in-out infinite; }
+@keyframes cx-call-blink { 50% { opacity: .35; } }
+.cx-call__people { display: flex; justify-content: space-between; gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+.cx-call__person { position: relative; display: grid; justify-items: center; gap: 10px; }
+.cx-call__ava {
+  position: relative; z-index: 2; display: grid; place-items: center; width: var(--ava); height: var(--ava); border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) var(--a), var(--cx-raise)); color: var(--ink);
+  font: 500 15px/1 var(--font-text); letter-spacing: .02em;
+  box-shadow: inset 0 0 0 1px var(--cx-line);
+}
+.cx-call__name { font-size: var(--t-label); color: var(--muted); transition: color .3s var(--cx-ease); }
+.cx-call__person.is-speaking .cx-call__name { color: var(--ink); }
+.cx-call__fx {
+  position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; border-radius: 999px;
+  width: calc(var(--ava) + 2 * var(--pad)); height: calc(var(--ava) + 2 * var(--pad));
+  transform: translate(var(--fx-x, -999px), var(--fx-y, 0));
+  transition: transform .55s cubic-bezier(.3, .9, .3, 1);
+  /* a 2.5px ring 2px off the avatar, then a soft glow fading out */
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - var(--pad) + 1.5px), #000 calc(100% - var(--pad) + 2.5px), #000 calc(100% - var(--pad) + 4.5px), rgb(0 0 0 / .32) calc(100% - var(--pad) + 5.5px), transparent 100%);
+  mask: radial-gradient(closest-side, transparent calc(100% - var(--pad) + 1.5px), #000 calc(100% - var(--pad) + 2.5px), #000 calc(100% - var(--pad) + 4.5px), rgb(0 0 0 / .32) calc(100% - var(--pad) + 5.5px), transparent 100%);
+}
+.cx-call__status { display: flex; align-items: center; gap: 10px; margin: 0; font-size: var(--t-small); color: var(--muted); }
+.cx-call__status [data-speaker] { color: var(--ink); font-weight: 500; margin-right: -4px; }
+.cx-call__eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+.cx-call__eq i { width: 3px; height: 100%; border-radius: 2px; background: var(--accent); transform-origin: bottom; animation: cx-call-eq 1.1s ease-in-out infinite; }
+.cx-call__eq i:nth-child(2) { animation-delay: -.35s; }
+.cx-call__eq i:nth-child(3) { animation-delay: -.7s; }
+@keyframes cx-call-eq { 0%, 100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .cx-call__live span, .cx-call__eq i { animation: none; }
+  .cx-call__fx { transition: none; }
+}
+@media (max-width: 459px) { .cx-call { --ava: 52px; --pad: 14px; padding: var(--s-5); } }

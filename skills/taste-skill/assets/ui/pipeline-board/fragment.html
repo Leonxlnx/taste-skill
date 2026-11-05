@@ -1,0 +1,40 @@
+<div class="ui ui-panel ui-pipe" data-ui="pipeline-board">
+  <div class="ui-pipe__head">
+    <svg class="ui-icon ui-pipe__branch" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.5"/><circle cx="4.5" cy="12.5" r="1.5"/><circle cx="11.5" cy="5" r="1.5"/><path d="M4.5 5v6M11.5 6.5c0 2.6-2.2 3.6-5.6 4.6"/></svg>
+    <span class="ui-pipe__repo">harbor/api</span><i class="ui-pipe__slash">/</i><code class="ui-pipe__ref">main</code>
+    <span class="ui-pipe__run">#1284</span>
+    <span class="ui-spacer"></span>
+    <span class="ui-pipe__total"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.5v3l2 1.25M6.5 1.75h3"/></svg><span data-pipe-total>1m 22s</span></span>
+    <span class="ui-chip ui-chip--ink ui-chip--live ui-pipe__chip" data-pipe-chip data-done="Passed">Running</span>
+  </div>
+  <div class="ui-pipe__commit">
+    <span class="ui-avatar" data-tone="4">MO</span>
+    <span class="ui-pipe__msg">Retry with backoff</span>
+    <code class="ui-pipe__sha">a3f9c1e</code>
+    <button class="ui-btn ui-btn--ghost ui-btn--sm ui-pipe__btn" type="button" tabindex="-1" data-pipe-btn data-done="Re-run">Cancel</button>
+  </div>
+  <ol class="ui-pipe__steps">
+    <li class="ui-pipe__step is-done" data-step="checkout"><span class="ui-pipe__ico"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-pipe__name"><span class="ui-pipe__tool" aria-hidden="true"><img src="assets/ui/icons/git.svg" alt=""></span><span class="ui-pipe__nm">Checkout</span></span><code class="ui-pipe__cmd">git fetch --depth 1</code><span class="ui-pipe__time" data-time>4s</span><span class="ui-pipe__bar"><i></i></span></li>
+    <li class="ui-pipe__step is-done" data-step="install"><span class="ui-pipe__ico"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-pipe__name"><span class="ui-pipe__tool" aria-hidden="true"><img src="assets/ui/icons/npm.svg" alt=""></span><span class="ui-pipe__nm">Install</span></span><code class="ui-pipe__cmd">npm ci</code><span class="ui-pipe__time" data-time>38s</span><span class="ui-pipe__bar"><i></i></span></li>
+    <li class="ui-pipe__step is-run" data-step="test" style="--k:0.6"><span class="ui-pipe__ico"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-pipe__name"><span class="ui-pipe__tool" aria-hidden="true"><img src="assets/ui/icons/nodejs.svg" alt=""></span><span class="ui-pipe__nm">Test</span></span><code class="ui-pipe__cmd">npm test</code><span class="ui-pipe__time" data-time="1m 06s">40s</span><span class="ui-pipe__bar"><i></i></span></li>
+    <li class="ui-pipe__step" data-step="build"><span class="ui-pipe__ico"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-pipe__name"><span class="ui-pipe__tool" aria-hidden="true"><img src="assets/ui/icons/docker.svg" alt=""></span><span class="ui-pipe__nm">Build</span></span><code class="ui-pipe__cmd">docker build .</code><span class="ui-pipe__time" data-time="1m 12s">Queued</span><span class="ui-pipe__bar"><i></i></span></li>
+    <li class="ui-pipe__step" data-step="deploy"><span class="ui-pipe__ico"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-pipe__name"><span class="ui-pipe__tool" aria-hidden="true"><img src="assets/ui/icons/kubernetes.svg" alt=""></span><span class="ui-pipe__nm">Deploy</span></span><code class="ui-pipe__cmd">kubectl apply</code><span class="ui-pipe__time" data-time="41s">Queued</span><span class="ui-pipe__bar"><i></i></span></li>
+  </ol>
+  <div class="ui-pipe__log" aria-hidden="true">
+    <span class="ui-pipe__line" data-step="checkout"><b>$</b>git fetch --depth 1 origin main</span>
+    <span class="ui-pipe__line" data-step="checkout">From harbor/api: branch main -&gt; FETCH_HEAD</span>
+    <span class="ui-pipe__line" data-step="checkout">HEAD is now at a3f9c1e Retry with backoff</span>
+    <span class="ui-pipe__line" data-step="install"><b>$</b>npm ci</span>
+    <span class="ui-pipe__line" data-step="install">added 812 packages in 6s</span>
+    <span class="ui-pipe__line" data-step="install">found 0 vulnerabilities</span>
+    <span class="ui-pipe__line is-on" data-step="test"><b>$</b>npm test</span>
+    <span class="ui-pipe__line is-on" data-step="test">webhooks/retry.test: 14 passed</span>
+    <span class="ui-pipe__line is-on" data-step="test">queue/backoff.test: 9 passed</span>
+    <span class="ui-pipe__line" data-step="build"><b>$</b>docker build -t api:a3f9c1e .</span>
+    <span class="ui-pipe__line" data-step="build">#7 [3/6] COPY src/ (412 files)</span>
+    <span class="ui-pipe__line" data-step="build">#8 [4/6] RUN npm run build</span>
+    <span class="ui-pipe__line" data-step="deploy"><b>$</b>kubectl apply -f deploy.yaml</span>
+    <span class="ui-pipe__line" data-step="deploy">deployment/api rolled out to 3 pods</span>
+    <span class="ui-pipe__line" data-step="deploy">health check passed on 3 of 3</span>
+  </div>
+</div>

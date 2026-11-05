@@ -1,0 +1,10 @@
+{
+  "id": "ruled-grounds",
+  "name": "Ruled dot ground",
+  "family": "pattern",
+  "look": "A fine dot ruling with a small cross on every fourth node over a grainy ground; a wide soft light drifts across it. A quiet ground for a UI card on top.",
+  "bestOn": ["card", "band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"]
+}

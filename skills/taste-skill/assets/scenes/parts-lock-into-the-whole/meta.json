@@ -1,0 +1,47 @@
+{
+  "id": "parts-lock-into-the-whole",
+  "name": "Parts lock into the whole",
+  "family": "grid-reassembly",
+  "look": "The stage opens on one huge word alone (a year, a figure, a name). It steps back into its place in the product's own interface while the interface's panels fly in from the four edges and lock into one whole screen; then layers of detail ink in one by one (the data, the team's comments, an agent's edit), and the finished screen steps aside into a column at least 580px wide beside the heading and a short spec list. No caption under the screen.",
+  "fits": [
+   "product"
+  ],
+  "types": [
+   "software"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The finished screen beside the heading and spec list.",
+  "phone": "The finished composition: the screen with its toolbar and main pane, the spec under it.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+   "ui": "the product's real screen as HTML cut along its own panels (a toolbar, a sidebar, a main pane, an inspector), 2 to 4 detail layers marked data-layer",
+   "words": "one word that sits in the screen's title, a heading and 3-4 spec rows"
+  },
+  "never": "an illustration drawn for the page or a screenshot cut into tiles; a screen that cannot be cut into meaningful parts; a caption under the screen; a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
+  "avoidWith": [
+   "powers-of-ten-pullback",
+   "product-assembles-into-its-action"
+  ],
+  "states": {
+   "start": {
+    "p": 0.02,
+    "wait": 500
+   },
+   "middle": {
+    "p": 0.55,
+    "wait": 500
+   },
+   "end": {
+    "p": 0.98,
+    "wait": 600
+   }
+  },
+  "avoidMoments": [
+   "lines-rise"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "line-carries-colour",
+  "name": "Line carries the colour",
+  "kind": "transition",
+  "fits": [
+    "section"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) is cleared by a one-pixel accent line that climbs through it from its foot to its top: below the line the section's own ground and words, above it the old ground. Each heading, paragraph, button and picture stays hidden until the line has passed above all of it, then fades in whole, so no word is ever cut.",
+  "reduced": "The section stands on its own ground, no panel, no line.",
+  "phone": "The section stands on its own ground, no panel, no line.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "grounds": "the section sits on another ground than the one before it (ground-inverse, ground-surface)",
+    "words": "a section of one or two screens with its h2 first"
+  },
+  "avoidWith": [
+    "pinned-chapters",
+    "closing-lift",
+    "iris-opens"
+  ],
+  "states": {
+    "start": {
+      "view": 0.3,
+      "wait": 300
+    },
+    "middle": {
+      "view": 0.34,
+      "wait": 300
+    },
+    "end": {
+      "view": 0.5,
+      "wait": 300
+    }
+  }
+}

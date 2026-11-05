@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<title>Backgrounds contrast check</title>
+<!-- Every ground in a 800px box, for check.mjs: it sets a palette, screenshots the boxes and measures
+     the ink and muted contrast on every pixel of each ground's text zone (index.json). The photograph
+     grounds sit on a flat grey picture: #7c7c7c for the dark scrim, #d4d4d4 for the light one; and the worst case of the dark scrim: a white
+     picture (white words on it). The light scrim is for pale photographs only. -->
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="backgrounds.css">
+<style>body { margin: 0; width: 800px; } .box { width: 800px; margin: 0 0 8px; padding: 24px; font-size: 20px; } .pi, .pm { visibility: hidden; } .pi { color: var(--ink); } .pm { color: var(--muted); }  /* the liquid blobs held at the start, the middle and the end of their drift (the keyframes in backgrounds.css), so the text zone is measured where they stand under it */
+  .at-start::before { animation: none; transform: translate3d(-7%, 0, 0) skewX(-7deg) scaleY(.94); } .at-start::after { animation: none; transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.04); }
+  .at-mid::before { animation: none; transform: translate3d(.5%, 0, 0) skewX(-.5deg) scaleY(.995); } .at-mid::after { animation: none; transform: translate3d(-.5%, 0, 0) scaleY(.98); }
+  .at-end::before { animation: none; transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.05); } .at-end::after { animation: none; transform: translate3d(-9%, 0, 0) skewX(-6deg) scaleY(.92); }
+</style>
+<script src="backgrounds.js" defer></script>
+</head>
+<body>
+<div class="bg-mist box" data-g="mist" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-halo box" data-g="halo" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-grain box" data-g="grain" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-paper box" data-g="paper" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-dusk box" data-g="dusk" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-topglow box" data-g="topglow" style="height:560px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-ruled box" data-g="ruled" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-dots box" data-g="dots" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-arcs box" data-g="arcs" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-band box" data-g="band" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-field box" data-g="field" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-band bg-tint box" data-g="band-tint" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-field bg-tint box" data-g="field-tint" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-photo box" data-g="photo" style="height:520px;--g-photo:linear-gradient(#7c7c7c,#7c7c7c)"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-photo bg-photo--left box" data-g="photo-left" style="height:520px;--g-photo:linear-gradient(#7c7c7c,#7c7c7c)"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-photo bg-photo--light box" data-g="photo-light" style="height:520px;--g-photo:linear-gradient(#d4d4d4,#d4d4d4)"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-photo box" data-g="photo-white" style="height:520px;--g-photo:linear-gradient(#fff,#fff)"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-photo bg-photo--left box" data-g="photo-left-white" style="height:520px;--g-photo:linear-gradient(#fff,#fff)"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-horizon box" data-g="horizon" style="height:640px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-deep box" data-g="deep" style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-liquid box at-start" data-g="liquid" data-no-pause style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-liquid box at-mid" data-g="liquid-mid" data-no-pause style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+<div class="bg-liquid box at-end" data-g="liquid-end" data-no-pause style="height:420px"><span class="pi">Ink</span> <span class="pm">Muted</span></div>
+
+</body>
+</html>

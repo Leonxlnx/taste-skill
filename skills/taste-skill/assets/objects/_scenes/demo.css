@@ -1,0 +1,72 @@
+/* the demo page of a scene object: a hero with the object beside the copy, then the object as large
+   card panels. Colours come from the palette the switcher sets on :root. */
+:root {
+  --bg: #dfdedb; --surface: #d3d2ce; --ink: #26251e; --muted: #5f5d55; --accent: #2456d6; --accent-ink: #ffffff;
+  --line: color-mix(in oklab, var(--ink) 13%, transparent);
+  --line-2: color-mix(in oklab, var(--ink) 24%, transparent);
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --gut: 24px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1368px; margin: 0 auto; padding: 0 var(--gut); }
+
+.top { border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 60px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+.top b { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+.top .kind { color: var(--muted); font-size: 14px; }
+.top .controls { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line); }
+.seg button { height: 30px; border: 0; background: transparent; padding: 0 11px; border-radius: 7px; cursor: pointer; color: var(--muted); font-size: 13.5px; }
+.seg button[aria-pressed="true"] { background: color-mix(in oklab, var(--ink) 8%, var(--bg)); color: var(--ink); }
+
+.hero { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); gap: 56px; align-items: center; padding: 48px 0 24px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 22px; }
+.hero h1 { margin: 0 0 20px; font-size: clamp(40px, 3.6vw + 8px, 68px); line-height: 1.0; letter-spacing: -0.04em; font-weight: 540; text-wrap: balance; max-width: 9em; }
+.hero p.lede { margin: 0 0 30px; font-size: 18px; line-height: 28px; color: var(--muted); max-width: 40ch; text-wrap: pretty; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { height: 44px; padding: 0 18px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; font-weight: 500; font-size: 15px;
+  background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); text-decoration: none; color: var(--ink); cursor: pointer; }
+.btn--primary { background: var(--ink); color: var(--bg); box-shadow: none; }
+.panel { position: relative; border-radius: 22px; overflow: hidden; background: var(--bg); }
+.panel::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); pointer-events: none; z-index: 4; }
+.hero .panel { height: clamp(520px, 74vh, 740px); }
+.panel--surface { background: var(--surface); }
+
+.sec { padding: 72px 0 24px; }
+.sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 48px; flex-wrap: wrap; margin-bottom: 28px; }
+.sec-head h2 { margin: 0; font-size: clamp(26px, 1.2vw + 16px, 34px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 540; }
+.sec-head p { margin: 0; color: var(--muted); max-width: 52ch; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.card .panel { aspect-ratio: 4 / 3; border-radius: 18px; }
+.card figcaption { padding: 16px 2px 0; display: grid; gap: 4px; }
+.card h3 { margin: 0; font-size: 17px; font-weight: 560; letter-spacing: -0.01em; }
+.card figcaption p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 22px; max-width: 56ch; }
+.card { margin: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card.wide .panel { aspect-ratio: 21 / 9; }
+
+.credits { padding: 56px 0 64px; color: var(--muted); font-size: 13px; line-height: 20px; }
+.credits a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
+
+/* labels and chips the objects draw over their canvas */
+.obj-chip { position: absolute; z-index: 2; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 999px;
+  font: 500 12px/1 var(--mono); letter-spacing: 0.04em; color: var(--ink); background: color-mix(in oklab, var(--bg) 84%, transparent);
+  box-shadow: inset 0 0 0 1px var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); pointer-events: none; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 32px; }
+  .hero .panel { height: auto; aspect-ratio: 1 / 1.08; }
+  .cards { grid-template-columns: 1fr; }
+  .card.wide .panel { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 520px) {
+  :root { --gut: 16px; }
+  .hero h1 { font-size: 40px; }
+  .hero p.lede { font-size: 17px; line-height: 26px; }
+  .top .controls { margin-left: 0; }
+}

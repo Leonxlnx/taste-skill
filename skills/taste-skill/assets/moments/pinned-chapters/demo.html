@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pinned chapters · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #f6f1e7; --p-surface: #ece5d6; --p-ink: #1d1b18; --p-muted: #625c52; --p-accent: #b4532a; --p-accent-ink: #ffffff; --p-action: #1d1b18; --p-action-ink: #f6f1e7;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .hero-photo { position: relative; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 16 / 7; min-height: 440px; }
+  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-photo .photo-band { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: clamp(24px, 5vw, 64px); background: linear-gradient(to top, rgb(0 0 0 / .55), rgb(0 0 0 / 0) 60%); color: #fff; }
+  .hero-photo .photo-band h1 { max-width: 14ch; }
+  .hero-photo .photo-band .btn-row { margin-top: var(--s-5); }
+  @media (max-width: 639px) { .hero-photo { aspect-ratio: 4 / 5; min-height: 0; } }
+  .facts { display: grid; align-content: center; }
+  .facts div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+  .facts div:last-child { border-bottom: 1px solid var(--line); }
+  .facts span { color: var(--muted); }
+  .facts b { font-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Northbound</a>
+  <nav class="demo-nav__links"><a href="#">Rides</a><a href="#">Dates</a><a href="#">Bikes</a><a href="#">About</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a ride</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container">
+      <div class="hero-photo">
+        <img src="../_demo/photo-702.jpg" alt="A mountain road above the tree line" width="1800" height="1200">
+        <div class="photo-band"><div><h1>Three days on the north coast road</h1><div class="btn-row"><a class="btn btn--primary" href="#">See the dates</a></div></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="--h: 2" data-moment="pinned-chapters">
+    <div class="container mo-pc__grid">
+      <div class="mo-pc__text">
+        <h2>How a Northbound ride goes</h2>
+        <ol class="mo-pc__steps">
+          <li class="mo-pc__step">
+            <h3>Day one: the pass</h3>
+            <p>A van takes the bags up. You ride 48 km over the pass on a closed road, with a guide ahead and coffee at the top.</p>
+            <figure class="mo-pc__visual"><img src="../_demo/photo-702.jpg" alt="The pass road above the tree line" width="1800" height="1200"></figure>
+          </li>
+          <li class="mo-pc__step">
+            <h3>Day two: the coast</h3>
+            <p>62 km along the water on a flat road, lunch at the harbour, and the night in a guesthouse by the pier.</p>
+            <figure class="mo-pc__visual"><img src="../_demo/photo-1049.jpg" alt="A rock off the coast road at low tide" width="1800" height="1200"></figure>
+          </li>
+          <li class="mo-pc__step">
+            <h3>Day three: the dunes</h3>
+            <p>A short 30 km to the dunes, a swim if the weather holds, and the train back from the last station.</p>
+            <figure class="mo-pc__visual"><img src="../_demo/photo-640.jpg" alt="The dunes at the end of the road" width="1800" height="1200"></figure>
+          </li>
+        </ol>
+      </div>
+      <div class="mo-pc__visuals frame"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split">
+      <div class="section-head"><h2>What a ride includes. <span class="muted">From €640 a person.</span></h2><p>Two nights in guesthouses, every breakfast and lunch, the van for your bags, a guide and a mechanic. Bring your bike or hire one of ours.</p><a class="link" href="#">See the dates and prices</a></div>
+      <div class="facts">
+        <div><span>Dates</span><b>Eight rides, May to September</b></div>
+        <div><span>Group</span><b>Eight riders, one guide, one mechanic</b></div>
+        <div><span>Price</span><b>€640 a person, a single room €90 more</b></div>
+        <div><span>Bike hire</span><b>Road or gravel, €45 a day</b></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Northbound · demo page for the moment “Pinned chapters”</span><span>Photographs by Dominik Schröder, Rosan Harmens and Sarah Bürvenich on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

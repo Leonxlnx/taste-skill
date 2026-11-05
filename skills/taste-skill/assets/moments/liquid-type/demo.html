@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-radius="soft" data-ground="sage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid type · moment demo</title>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #0f1411; --p-surface: #182019; --p-ink: #ece9df; --p-muted: #9aa394; --p-accent: #d7e26b; --p-accent-ink: #0f1411; --p-action: #ece9df; --p-action-ink: #0f1411;
+          --p-inv-bg: #ece9df; --p-inv-surface: #ffffff; --p-inv-ink: #0f1411; --p-inv-muted: #555c52; --p-inv-accent: #4f6238; --p-inv-accent-ink: #ffffff; --p-inv-action: #0f1411; --p-inv-action-ink: #ffffff;
+          --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Nodeline</a>
+  <nav class="demo-nav__links"><a href="#">Platform</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Get started</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container" style="display:grid;align-content:center;gap:var(--s-6);flex:1 0 auto">
+      <div data-moment="liquid-type" class="section-head" style="max-width:none"><h1 class="mo-lt__type">Software that thinks ahead</h1><p>Nodeline plans the next run before the last one ends.</p><div class="btn-row"><a class="btn btn--primary" href="#">Get started</a><a class="btn btn--secondary" href="#">Contact sales</a></div></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split demo-split--flip">
+      <div class="section-head"><h2>Plans ahead. <span class="muted">Tells you early.</span></h2><p>Nodeline reads the schedule, the queue depth and last week's runs, and starts the long jobs first.</p><a class="link" href="#">See how it plans</a></div>
+      <img class="demo-photo" src="../_demo/photo-887.jpg" alt="A building facade in even light" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Nodeline · demo page for the moment “Liquid type”</span><span>Demo copy only</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

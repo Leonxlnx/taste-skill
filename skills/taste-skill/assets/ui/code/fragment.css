@@ -1,0 +1,28 @@
+/* code: an editor pane with one highlighted line and a short note about it. The tokens are ink tints
+   (keywords the ink, names a step lighter, numbers and comments muted); the accent is used once,
+   on the marked line (its bar and a faint wash) */
+.ui-code { width: 440px; overflow: hidden; }
+.ui-code__tabs { display: flex; align-items: center; gap: 2px; height: 40px; padding: 0 12px 0 8px; border-bottom: 1px solid var(--u-line); background: var(--u-fill); }
+.ui-code__tab { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--u-r3); font-size: 13px; line-height: 16px; color: var(--u-muted); }
+.ui-code__tab.is-on { background: var(--u-bg); color: var(--u-ink); box-shadow: 0 0 0 1px var(--u-line), 0 1px 2px rgb(0 0 0 / 0.06); }
+.ui-code__lang { font: 600 13px/1 var(--ui-mono, ui-monospace, monospace); font-style: normal; padding: 2px 4px; border-radius: 3px; background: var(--u-fill-2); color: var(--u-muted); box-shadow: inset 0 0 0 1px var(--u-line); }
+.ui-code__pre { margin: 0; padding: 12px 0; font: 13px/20px var(--ui-mono, ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace); color: var(--u-ink); white-space: pre; overflow: hidden; }
+.ui-code__pre code { display: block; font: inherit; white-space: normal; }
+.ui-code__ln { position: relative; display: block; padding: 0 16px 0 48px; white-space: pre; transition: background-color 300ms var(--u-ease); }
+.ui-code__ln::before { content: attr(data-n); position: absolute; left: 0; width: 32px; text-align: right; color: var(--u-soft); }
+.ui-code__ln::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--u-accent); opacity: 0; transition: opacity 300ms var(--u-ease); }
+.ui-code__ln.is-mark { background: color-mix(in oklab, var(--u-accent) 9%, transparent); }
+.ui-code__ln.is-mark::after { opacity: 1; }
+.ui-code__ln.is-mark::before { color: var(--u-ink); }
+.ui-code .k { color: var(--u-ink); font-weight: 500; }
+.ui-code .f { color: color-mix(in oklab, var(--u-ink) 88%, var(--u-bg)); }
+.ui-code__pre { color: color-mix(in oklab, var(--u-ink) 68%, var(--u-bg)); }
+.ui-code .n { color: var(--u-muted); }
+.ui-code .c { color: var(--u-muted); font-style: italic; }
+.ui-code__hint {
+  display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-top: 1px solid var(--u-line);
+  font-size: 13px; line-height: 16px; color: var(--u-muted); transition: opacity 240ms var(--u-ease);
+}
+.ui-code__hint .ui-dot { width: 6px; height: 6px; background: var(--u-ink); }
+.ui-code__hint.is-hidden { opacity: 0; }
+@media (max-width: 440px) { .ui-code { width: 100%; } .ui-code__pre { font-size: 13px; } }

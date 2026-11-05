@@ -1,0 +1,70 @@
+/* pinned-chapters: at rest (phones, tablets, a short screen, reduced motion, no script, a failed
+   module) each step is a title, two lines and its visual, and the section is its --h screens (two) or
+   grows past them, never over the next section. From 640px that rest is a row per step: the text at the
+   left, the visual at the right, at most 30svh tall; a phone stacks them with a 16:9 visual, so two to
+   four steps fit two screens at 390x844. Live (.is-live, from 1024px on a
+   screen 640px or taller) the section is (hold + 1) screens tall, its stage sticks for the hold,
+   the steps open one at a time and the visuals share one frame. */
+[data-moment="pinned-chapters"] { --mo-hold: 1; }
+main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid; gap: var(--s-7); align-items: center; align-content: start; height: auto; }
+[data-moment="pinned-chapters"] .mo-pc__text { display: grid; gap: var(--s-6); align-content: start; }
+[data-moment="pinned-chapters"] .mo-pc__steps { display: grid; gap: var(--s-5); }
+[data-moment="pinned-chapters"] .mo-pc__step { display: grid; gap: var(--s-2); padding-left: var(--s-5); border-left: 2px solid var(--line); }
+[data-moment="pinned-chapters"] .mo-pc__step h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
+[data-moment="pinned-chapters"] .mo-pc__step p { color: var(--ink); max-width: 46ch; }
+[data-moment="pinned-chapters"] .mo-pc__step p > .mo-pc__p-in { display: block; }
+[data-moment="pinned-chapters"] .mo-pc__visual { margin: var(--s-4) 0 0; border-radius: var(--r-md); overflow: hidden; }
+[data-moment="pinned-chapters"] .mo-pc__visual > img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+[data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visuals { display: none; }
+
+/* the static rows from 640px: the step's text left, its visual right, hairlines between the steps */
+@media (min-width: 640px) {
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__steps { gap: var(--s-6); }
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step {
+    grid-template-columns: 5fr 6fr; column-gap: var(--s-8); row-gap: var(--s-2); align-items: center;
+    border-left: 0; border-top: 1px solid var(--line); padding: var(--s-6) 0 0; }
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step h3 { grid-column: 1; align-self: end; }
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step p { grid-column: 1; align-self: start; }
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step .mo-pc__visual { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img { max-height: 30svh; }
+}
+
+/* a phone: shorter visuals, and a section that grows past its screens rather than run over the next one */
+@media (max-width: 639px) {
+  [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img { aspect-ratio: 16 / 9; max-height: 26svh; }
+  main > [data-moment="pinned-chapters"]:not(.is-live) { height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100lvh); }
+}
+
+/* live */
+[data-moment="pinned-chapters"].is-live { height: calc((var(--mo-hold) + 1) * 100svh); padding: 0; }
+main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: 5fr 6fr; gap: var(--s-8); align-items: center; align-content: center; overflow: clip; }
+[data-moment="pinned-chapters"].is-live .mo-pc__step { border-left-color: var(--line); transition: border-color 300ms ease; }
+[data-moment="pinned-chapters"].is-live .mo-pc__step h3 { color: var(--muted); transition: color 300ms ease; }
+/* a closed step's lines collapse to nothing: the grid row goes to 0fr and the inner span (min-height 0,
+   overflow hidden) lets it; the text sits in that span, never as an anonymous item with its own height */
+[data-moment="pinned-chapters"].is-live .mo-pc__step p { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 420ms cubic-bezier(.2, .7, .2, 1), opacity 300ms ease; }
+[data-moment="pinned-chapters"].is-live .mo-pc__step p > .mo-pc__p-in { min-height: 0; overflow: hidden; }
+[data-moment="pinned-chapters"].is-live .mo-pc__step.is-on { border-left-color: var(--accent); }
+[data-moment="pinned-chapters"].is-live .mo-pc__step.is-on h3 { color: var(--ink); }
+[data-moment="pinned-chapters"].is-live .mo-pc__step.is-on p { grid-template-rows: 1fr; opacity: 1; }
+[data-moment="pinned-chapters"].is-live .mo-pc__visuals { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; max-height: calc(100svh - 128px); padding: 0; }
+[data-moment="pinned-chapters"].is-live .mo-pc__visual { position: absolute; inset: 0; margin: 0; border-radius: 0; opacity: 0; transform: scale(1.03); transition: opacity 480ms ease, transform 900ms cubic-bezier(.16, 1, .3, 1); }
+[data-moment="pinned-chapters"].is-live .mo-pc__visual > img { width: 100%; height: 100%; aspect-ratio: auto; }
+[data-moment="pinned-chapters"].is-live .mo-pc__visual.is-on { opacity: 1; transform: none; z-index: 1; }
+[data-moment="pinned-chapters"].is-live .mo-pc__visual.is-past { transform: scale(1); }
+/* a drawn window inside a visual sits on the lit ground with a margin */
+[data-moment="pinned-chapters"] .mo-pc__visual.mo-pc__visual--lit { display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 40px); background: var(--ground-bg); aspect-ratio: 4 / 3; }
+@media print {
+  [data-moment="pinned-chapters"].is-live { height: auto; }
+  main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: static; height: auto; display: block; overflow: visible; }   /* same selector as the live rule, so print wins: nothing clips */
+  [data-moment="pinned-chapters"].is-live .mo-pc__step p { grid-template-rows: 1fr; opacity: 1; transition: none; }
+  [data-moment="pinned-chapters"].is-live .mo-pc__step h3 { color: var(--ink); }
+  [data-moment="pinned-chapters"].is-live .mo-pc__visuals { position: static; aspect-ratio: auto; max-height: none; display: grid; gap: var(--s-5); }
+  [data-moment="pinned-chapters"].is-live .mo-pc__visual { position: static; opacity: 1; transform: none; aspect-ratio: 4 / 3; }
+  [data-moment="pinned-chapters"].is-live .mo-pc__visual > img { height: auto; aspect-ratio: 4 / 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-moment="pinned-chapters"].is-live { height: auto; }
+  main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: static; height: auto; }
+  [data-moment="pinned-chapters"] .mo-pc__step p, [data-moment="pinned-chapters"] .mo-pc__visual { transition: none !important; }
+}

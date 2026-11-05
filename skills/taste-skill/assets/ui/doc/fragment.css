@@ -1,0 +1,36 @@
+/* doc: a page of a document (a policy, a contract, a brief) with marked words and a note beside the
+   current mark. The current mark and its note's dot are the one accent; marks already found keep a
+   quiet ink underline. In a .to-edge wrapper the page runs to the wrapper's foot (72px past the
+   panel), so the page is always cut by the panel's bottom edge, never ending a few px above it. */
+.ui-doc { position: relative; width: 440px; padding-right: 72px; display: flex; flex-direction: column; }
+.ui-doc__page {
+  position: relative; flex: 1 0 auto; padding: 28px 28px 32px; border-radius: var(--u-r2) var(--u-r2) 0 0;
+  background: var(--u-bg); border: 1px solid var(--u-border); border-bottom: 0; box-shadow: var(--u-shadow);
+}
+.ui-doc__label { font-size: 13px; line-height: 16px; color: var(--u-muted); font-weight: 500; }
+.ui-doc__title { margin: 4px 0 12px; font-size: 17px; line-height: 24px; font-weight: 500; letter-spacing: -0.01em; }
+.ui-doc__text { font-size: 13px; line-height: 21px; color: color-mix(in oklab, var(--u-ink) 82%, var(--u-bg)); }
+.ui-doc__text + .ui-doc__text { margin-top: 8px; }
+.ui-doc__mark {
+  color: inherit; padding: 1px 2px; margin: 0 -2px; border-radius: 3px; white-space: nowrap;
+  background: linear-gradient(var(--u-tint-2), var(--u-tint-2)) no-repeat left / 0% 100%;
+  box-shadow: inset 0 -1.5px 0 transparent;
+  transition: background-size 520ms cubic-bezier(0.6, 0, 0.2, 1), box-shadow 300ms var(--u-ease);
+}
+.ui-doc__mark.is-seen { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--u-ink) 45%, transparent); }
+.ui-doc__mark.is-on { background-size: 100% 100%; box-shadow: inset 0 -1.5px 0 var(--u-accent); }
+
+.ui-doc__note {
+  position: absolute; right: 0; top: 0; width: 200px; padding: 12px 14px;
+  opacity: 0; transform: translateY(6px) scale(0.98);
+  transition: opacity 260ms var(--u-ease), transform 360ms var(--u-ease), top 420ms var(--u-ease);
+}
+.ui-doc__note.is-on { opacity: 1; transform: none; }
+.ui-doc__kind { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; line-height: 16px; color: var(--u-ink); }
+.ui-doc__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--u-accent); }
+.ui-doc__msg { margin-top: 4px; font-size: 13px; font-weight: 500; line-height: 16px; }
+.ui-doc__where { margin-top: 4px; font-size: 13px; line-height: 16px; color: var(--u-muted); }
+@media (max-width: 440px) {
+  .ui-doc { width: 100%; padding-right: 32px; }
+  .ui-doc__note { width: 176px; }
+}

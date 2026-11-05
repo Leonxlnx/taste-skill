@@ -1,0 +1,19 @@
+{
+  "name": "apps",
+  "title": "Apps around the product (second choice)",
+  "shows": "Fourteen real app marks (in their own colours on light tiles) in a 5 x 3 field around the product's own mark, each joined to it by a hairline. In turn one app connects: its line lights and runs, its tile takes the accent ring and its name appears.",
+  "useFor": [
+    "ecosystem",
+    "platform"
+  ],
+  "size": [
+    456,
+    272
+  ],
+  "js": true,
+  "place": "at-corner wide with --w: 560px and .stage--fade-br: set wider than the panel and cut by its right and bottom edges, so the field reads as part of a bigger map, never centred with even ground round it; on a still soft ground (grain-gradient, gradient-mesh), never a pattern.",
+  "edit": "Tiles are HTML: every mark in its own colours on a light tile (the same on light and dark): a colour file from assets/icons (scripts/icons.mjs, references/icons.md) as an <img> from a local file (the kit ships the sample marks in assets/ui/icons; a page loads none from a CDN); one treatment for the whole set. The 8th item is the product's mark. opts.order lists the tiles that connect. Use only apps the product really works with.",
+  "loop": "about 2.8 s a cycle: three apps take the ring in turn, their lines lighting; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card",
+  "prefer": "integrations",
+  "note": "A second choice. For a card about integrations the integrations list (each app with what it does and its state) is clearer and is the default; use this field only for a platform whose point is the number of things it connects, with marks that read at 26px (glyphs, never wordmarks)."
+}

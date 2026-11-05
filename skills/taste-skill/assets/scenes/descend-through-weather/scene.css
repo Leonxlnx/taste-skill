@@ -1,0 +1,52 @@
+/* descend-through-weather - at rest: the picture from above, the name, the line and the action on the
+   page's ground, then the statement and the picture from below. Live: both pictures full-bleed on the
+   held stage, the cloud layers between them; the name's band and the statement's band are flat bands
+   of the page's ground across the foot, so no word sits straight on a photograph. */
+[data-big-scene="descend-through-weather"] { background: var(--bg); color: var(--ink); --wx-mist: color-mix(in oklab, var(--bg) 35%, #ffffff); }
+[data-big-scene="descend-through-weather"] figure { margin: 0; overflow: clip; background: var(--surface); }
+[data-big-scene="descend-through-weather"] figure img { display: block; width: 100%; height: 100%; object-fit: cover; }
+[data-big-scene="descend-through-weather"] .wx__title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1; }
+[data-big-scene="descend-through-weather"] .wx__tagline { margin: 0; font-size: var(--t-lead); line-height: 1.5; max-width: 44ch; }
+[data-big-scene="descend-through-weather"] .wx__hero .btn-row { margin-top: var(--s-5); }
+[data-big-scene="descend-through-weather"] .wx__note { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: var(--t-h2); line-height: 1.1; }
+[data-big-scene="descend-through-weather"] .wx__statement { margin: 0; font-size: var(--t-h1); line-height: 1.04; letter-spacing: var(--display-tracking); font-weight: var(--display-weight); }
+[data-big-scene="descend-through-weather"] .wx__statement span { display: block; }
+
+/* ---------- finished composition */
+[data-big-scene="descend-through-weather"]:not(.is-live) > .sc__stage { width: 100%; max-width: calc(var(--container) + 2 * var(--pad)); margin-inline: auto; padding: var(--s-6) var(--pad) var(--section); display: grid; gap: var(--s-7); }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__above { aspect-ratio: 16 / 8; border-radius: var(--r-lg); }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__hero { display: grid; gap: var(--s-4); max-width: 760px; }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__title { font-size: var(--t-h1); }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__note, [data-big-scene="descend-through-weather"]:not(.is-live) .wx__cloud { display: none; }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__below { aspect-ratio: 16 / 8; border-radius: var(--r-lg); order: 4; }
+[data-big-scene="descend-through-weather"]:not(.is-live) .wx__statement { order: 3; font-size: var(--t-h2); max-width: 24ch; }
+@media (max-width: 767px) { [data-big-scene="descend-through-weather"]:not(.is-live) .wx__above, [data-big-scene="descend-through-weather"]:not(.is-live) .wx__below { aspect-ratio: 4 / 5; } }
+
+/* ---------- the held stage */
+[data-big-scene="descend-through-weather"].is-live > .sc__stage { background: var(--bg); }
+[data-big-scene="descend-through-weather"].is-live .wx__below, [data-big-scene="descend-through-weather"].is-live .wx__above { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+[data-big-scene="descend-through-weather"].is-live .wx__below { z-index: 1; }
+[data-big-scene="descend-through-weather"].is-live .wx__above { z-index: 2; }
+[data-big-scene="descend-through-weather"].is-live .wx__cloud { position: absolute; left: 0; right: 0; top: 0; height: 100%; z-index: 3; pointer-events: none; will-change: transform; }
+[data-big-scene="descend-through-weather"].is-live .wx__billow { position: absolute; left: 0; width: 100%; height: 36svh; }
+[data-big-scene="descend-through-weather"].is-live .wx__billow--top { top: -36svh; }
+[data-big-scene="descend-through-weather"].is-live .wx__billow--foot { bottom: -36svh; transform: scaleY(-1); }
+[data-big-scene="descend-through-weather"].is-live .wx__fill { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--wx-layer, var(--wx-mist-c, var(--wx-mist))); }
+/* the name, the line and the action on a flat band of the page's ground across the foot: the name at the left, the rest at the right */
+[data-big-scene="descend-through-weather"].is-live .wx__hero {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); column-gap: var(--gutter); align-items: end;
+  padding: var(--s-6) max(var(--pad), calc((100vw - var(--container)) / 2)) var(--s-7); background: var(--bg); color: var(--ink); will-change: transform, opacity;
+}
+[data-big-scene="descend-through-weather"].is-live .wx__title { grid-row: 1 / 3; font-size: clamp(56px, 8vw, 128px); }
+[data-big-scene="descend-through-weather"].is-live .wx__tagline { grid-column: 2; }
+[data-big-scene="descend-through-weather"].is-live .wx__hero .btn-row { grid-column: 2; margin-top: var(--s-4); }
+[data-big-scene="descend-through-weather"].is-live .wx__note { position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 5; width: max-content; max-width: 90vw; text-align: center; opacity: 0; color: var(--p-ink, #111); will-change: transform, opacity; }
+/* the statement on a flat band of the page's ground at the foot of the second picture */
+[data-big-scene="descend-through-weather"].is-live .wx__statement {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; padding: var(--s-6) max(var(--pad), calc((100vw - var(--container)) / 2)) var(--s-7);
+  background: var(--bg); color: var(--ink); font-size: clamp(36px, 4.6vw, 72px); opacity: 0; will-change: opacity;
+}
+[data-big-scene="descend-through-weather"].is-live .wx__statement span { display: block; overflow: clip; transform: translate3d(0, 110%, 0); opacity: 0; will-change: transform; }
+
+/* ---------- finished composition in the page rhythm (the section is two screens: style="--h: 2"): the pictures no taller than 44% of the screen on a wide one */
+@media (min-width: 768px) { [data-big-scene="descend-through-weather"]:not(.is-live) :is(.wx__above, .wx__below) { max-height: 44svh; } }

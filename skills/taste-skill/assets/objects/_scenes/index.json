@@ -1,0 +1,67 @@
+{
+  "about": "Real things shown through a print effect, alive under the pointer: four take the client's own photographs (src), one models a generic thing in code. The one moment of a software, tech, AI or games page, on one card or one hero frame; never on a place, service, product or local-business page (those show their photographs plain, a product its object render); never animated on scroll. Contract: _scenes/README.md.",
+  "load": "assets/objects/_scenes/auto.js (mounts every [data-scene]); or import <id>/object.js and call mount(el, { src, params, palette }).",
+  "lint": "node assets/objects/_scenes/lint-glsl.mjs (every scene shader against the rules of GLSL ES 1.00 and 3.00; kit.js runs the same check before every compile).",
+  "objects": [
+    {
+      "id": "split-reveal",
+      "name": "Split reveal",
+      "line": "One photograph, half printed as a halftone; the line follows the pointer.",
+      "effect": "halftone",
+      "src": "one photograph",
+      "loops": false,
+      "suits": [
+        "software"
+      ],
+      "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: a feature card or a wide frame: a real photograph of what the product works on (a photo or design app's picture, the device a tech company makes, a game's key art)."
+    },
+    {
+      "id": "dither-sequence",
+      "name": "Dither sequence",
+      "line": "Two to six photographs that belong together, dithered and cut one to the next; the pointer scrubs.",
+      "effect": "dither",
+      "src": "2 to 6 photographs",
+      "loops": true,
+      "suits": [
+        "software"
+      ],
+      "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: two to six real photographs that belong together (a device from several sides, the stages of what the software makes, a game's scenes), never a random set."
+    },
+    {
+      "id": "dot-object",
+      "name": "Dot object",
+      "line": "An object cut out of its photograph and set in dots; under the pointer the dots show its real colour.",
+      "effect": "dots",
+      "src": "one object shot on a seamless plain ground, or a cut-out PNG",
+      "loops": false,
+      "suits": [
+        "software"
+      ],
+      "for": "In the kit's gallery only, never on a page (references/effects-objects.md): no page prints, dithers or grades a photograph. What it was made for: a feature card about a real thing the product works with: a device the app runs or controls, the hardware a developer tool ships to, a product photographed for a shop builder or a photo app. Only with a plain-ground shot or a cut-out PNG; a busy or sunlit background does not cut out."
+    },
+    {
+      "id": "exploded-layers",
+      "name": "Exploded layers",
+      "line": "A photograph as four printed sheets; hover opens them, with the client's names on leader lines.",
+      "effect": "halftone, dither, contours",
+      "src": "one photograph, or up to four (one per sheet)",
+      "loops": false,
+      "suits": [
+        "software"
+      ],
+      "for": "Software that works in layers or passes: imaging, design and print tools, maps, documents."
+    },
+    {
+      "id": "product-turntable",
+      "name": "Product turntable",
+      "line": "A generic camera, chair, speaker or cup, stepping round on a turntable.",
+      "effect": "dither",
+      "src": "none",
+      "loops": true,
+      "suits": [
+        "software"
+      ],
+      "for": "A feature card about a kind of thing the product handles (cameras in a rental platform, a chair in a furniture marketplace). Never the client's own product."
+    }
+  ]
+}

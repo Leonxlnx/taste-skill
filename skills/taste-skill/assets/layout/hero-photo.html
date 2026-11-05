@@ -1,0 +1,121 @@
+<!doctype html>
+<!-- layout v4 demo: hero-photo (references/layout-v4.md, heroes.json "photo"). type: service. fonts: garamond. nav: float. -->
+<html lang="en" data-type="service" data-radius="soft" data-ground="sky" data-buttons="arrow">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="site-kind" content="other">
+<title>Alva Guides: mountain guides in the Bergell</title>
+<meta name="description" content="Certified mountain guides in the Bergell: guided climbs and high routes for one to four people, June to October, from CHF 590 a day.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..700&family=Jost:wght@400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="layout.css">
+<style>
+:root {
+  --p-bg: #f3f4f1; --p-surface: #e7e9e4; --p-ink: #15191c; --p-muted: #566068;
+  --p-accent: #2f6150; --p-accent-ink: #ffffff; --p-action: #15191c; --p-action-ink: #f3f4f1;
+  --p-inv-bg: #15191c; --p-inv-surface: #1f2428; --p-inv-ink: #f3f4f1; --p-inv-muted: #a9b1b7;
+  --p-inv-accent: #8cc0a8; --p-inv-accent-ink: #15191c; --p-inv-action: #f3f4f1; --p-inv-action-ink: #15191c;
+  --font-display: "EB Garamond", Georgia, serif; --font-text: "Jost", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.012em; --display-tracking-xl: -0.02em; --ly-scale: 1.12; --t-body: 17px;
+}
+.way__photo { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(600px, var(--ly-fit)); }
+.way__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.legs { counter-reset: leg; }
+.legs > li { grid-template-columns: 40px minmax(0, 1fr) auto; }
+.legs > li::before { counter-increment: leg; content: counter(leg); grid-row: 1 / span 2; font: 400 var(--t-h3)/1 var(--font-display); color: var(--accent); }
+.legs .rows__value { grid-column: 3; }
+.legs > li > p { grid-column: 2; }
+@media (max-width: 1023px) { .way__photo { height: auto; aspect-ratio: 4 / 3; margin-bottom: var(--s-7); } }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#"><span class="mark" data-mark="arc" aria-hidden="true"></span>Alva Guides</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item">
+        <a class="nav__link" href="#way">Routes <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-4"><p class="t-label">Climbs</p><a href="#way">Badile north ridge<span>Two days, from CHF 1,180</span></a><a href="#way">Cengalo south face<span>One day, from CHF 590</span></a></div>
+            <div class="menu-col span-4"><p class="t-label">Walks</p><a href="#way">High route in five days<span>Hut to hut, from CHF 2,400</span></a><a href="#way">A first climb<span>For two, from CHF 690</span></a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#way">The way up</a></div>
+      <div class="nav__item"><a class="nav__link" href="#season">Season</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="#book">Book a guide</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--photo" data-calm="left" aria-labelledby="hero-h">
+    <img class="hero__bg" src="img/photo-465.jpg" alt="A dark rocky peak rising out of thick white cloud" style="--ly-pos: 50% 50%; --ly-pos-phone: 80% 50%" fetchpriority="high">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__text">
+        <h1 id="hero-h">Mountain guides for the Bergell</h1>
+        <p class="hero__lead">Six certified guides take one to four people up the granite of the Bergell, June to October. A day with a guide from CHF 590; the Badile north ridge in two days from CHF 1,180.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#book">Book a guide</a><a class="btn btn--secondary" href="#way">See a route</a></div>
+      </div>
+      <dl class="hero__facts" id="season">
+        <div><dt>Guides</dt><dd>Six, IFMGA certified</dd></div>
+        <div><dt>Season</dt><dd>20 June to 10 October</dd></div>
+        <div><dt>Group</dt><dd>One to four people</dd></div>
+        <div><dt>Meet</dt><dd>Vicosoprano, 6:00</dd></div>
+      </dl>
+    </div></div>
+  </section>
+
+  <section class="section" id="way" aria-labelledby="way-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-5">
+        <div class="way__photo"><img src="img/photo-c400.jpg" alt="A waterfall spreading over dark basalt steps above a mossy slope" loading="lazy"></div>
+      </div>
+      <div class="span-6 start-7">
+        <div class="section-head">
+          <h2 id="way-h">The way up. <span class="muted">A marked path, no glacier, about 1,250 metres of climb.</span></h2>
+        </div>
+        <ol class="rows legs">
+          <li><span class="rows__name">Vicosoprano, post bus stop</span><span class="rows__value">1,067 m</span><p>Follow the white and red marks past the church and over the bridge.</p></li>
+          <li><span class="rows__name">Alp Furcela</span><span class="rows__value">1 h 40</span><p>Water and a bench by the cheese hut; the forest ends here.</p></li>
+          <li><span class="rows__name">The waterfall steps</span><span class="rows__value">2 h 45</span><p>Chains on the wet slabs; turn back here in a thunderstorm.</p></li>
+          <li><span class="rows__name">Sasc Furä hut</span><span class="rows__value">2,340 m</span><p>The night before the ridge; dinner at 18:30, away at 4:00.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" id="book" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Book a guide</h2></div>
+      <a class="btn btn--primary btn--xl" href="#book">Book a guide<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#"><span class="mark" data-mark="arc" aria-hidden="true"></span>Alva Guides</a>
+          <p class="footer__lede">Book by email from 1 March. We answer within two days.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Book</h4><ul><li><a href="mailto:book@alva-guides.example">Write to us</a></li><li><a href="#book">Prices</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Season</h4><ul><li>20 June to 10 October</li><li>Ski tours from March on request</li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Alva Guides</span>
+        <details class="credits"><summary>Photographs: Paula Vermeulen via Unsplash, Diego Delso via Wikimedia Commons</summary><p>Peak in cloud by Paula Vermeulen (Unsplash License); waterfall by Diego Delso (CC BY-SA 4.0), via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../system.js"></script>
+<script type="module" src="layout.js"></script>
+</body>
+</html>

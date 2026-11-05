@@ -1,0 +1,29 @@
+/* closing-lift: the sheet (the last content section) scrolls over the picture, which is stuck to the
+   bottom of the screen under it; when the sheet has cleared, the picture rests at its own place as
+   the page's last section. At rest (reduced motion, no script) it is a plain closing section. */
+.mo-cl { position: relative; }
+.mo-cl .mo-cl__sheet { position: relative; z-index: 2; background: var(--bg); }
+.mo-cl .mo-cl__under { position: relative; z-index: 1; overflow: clip; min-height: min(100vh, 900px); display: flex; align-items: flex-end; isolation: isolate; }
+.mo-cl.is-live .mo-cl__under { position: sticky; bottom: 0; height: 100vh; }
+.mo-cl .mo-cl__img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; transform-origin: 50% 50%; will-change: transform; }
+.mo-cl .mo-cl__band { position: relative; z-index: 1; width: 100%; padding: clamp(96px, 16vh, 160px) 0 clamp(40px, 7vh, 72px); color: #fff;
+  background: linear-gradient(to top, rgb(0 0 0 / .62), rgb(0 0 0 / .28) 55%, rgb(0 0 0 / 0)); --ink: #fff; --muted: rgb(255 255 255 / .8); --action: #fff; --action-ink: #111; }
+/* the closing words on the page's own left edge: the container as everywhere else on the page */
+.mo-cl .mo-cl__band .container { display: grid; gap: var(--s-4); }
+.mo-cl .mo-cl__band h2 { max-width: 18ch; color: #fff; }
+.mo-cl .mo-cl__band p { max-width: 52ch; font-size: var(--t-lead); color: #fff; }
+.mo-cl .mo-cl__band .btn-row { margin-top: var(--s-2); }
+.mo-cl .mo-cl__band .btn--primary { background: #fff; color: #111; }
+.mo-cl .mo-cl__band .btn--secondary { background: transparent; color: #fff; border-color: rgb(255 255 255 / .5); }
+.mo-cl.is-live .mo-cl__band { will-change: opacity, transform; }
+@media (prefers-reduced-motion: reduce) {
+  .mo-cl.is-live .mo-cl__under { position: relative; height: auto; }
+  .mo-cl .mo-cl__img { transform: none !important; }
+  .mo-cl.is-live .mo-cl__band { opacity: 1 !important; transform: none !important; }
+}
+/* a printed page and a screen shorter than the band (a landscape phone, 400 percent zoom) show the plain closing section */
+@media print, (max-height: 560px) {
+  .mo-cl.is-live .mo-cl__under { position: relative; height: auto; }
+  .mo-cl .mo-cl__img { transform: none !important; }
+  .mo-cl.is-live .mo-cl__band { opacity: 1 !important; transform: none !important; }
+}

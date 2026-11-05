@@ -1,0 +1,39 @@
+{
+  "id": "word-rotate",
+  "name": "Word rotates",
+  "kind": "text",
+  "fits": [
+    "hero"
+  ],
+  "trigger": "loop",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "tech",
+    "gaming",
+    "software"
+  ],
+  "look": "One word of the headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests.",
+  "reduced": "The written word stands.",
+  "phone": "The written word stands; the other words are not shown.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "words": "a headline with one word that can take 2 to 4 alternatives (what the product is for)"
+  },
+  "avoidWith": [],
+  "states": {
+    "start": {
+      "see": true,
+      "wait": 200
+    },
+    "middle": {
+      "see": true,
+      "wait": 2550
+    },
+    "end": {
+      "see": true,
+      "wait": 4800
+    }
+  }
+}

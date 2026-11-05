@@ -1,0 +1,21 @@
+{
+  "name": "stat",
+  "title": "Number with a bar chart",
+  "shows": "A dashboard card: a label and a period, one big number with its change, and 14 daily bars (the last in the accent). The bars fall back to the period before and rise to this one; the number stays on this period, so it matches the copy beside it. With opts.window the bars are cut out of the card, so the effect ground shows through them.",
+  "useFor": [
+    "analytics",
+    "results",
+    "growth",
+    "reports",
+    "dashboards",
+    "KPIs"
+  ],
+  "size": [
+    420,
+    296
+  ],
+  "js": true,
+  "place": "at-corner or at-right, cut by the bottom edge; with opts.window, set the panel's vignette off (--calm-k: 0%) so the ground stays bright in the bars",
+  "edit": "The number and labels are HTML (the number stays as written). data-values and data-prev (comma lists) or opts.data and opts.prev set the bars; opts.window cuts them out of the panel; opts.fill takes the fragment's height.",
+  "loop": "about 2.9 s a cycle: the bars sink to the period before and rise to this one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+}

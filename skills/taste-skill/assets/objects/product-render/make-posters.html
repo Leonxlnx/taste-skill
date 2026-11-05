@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.__tpGlMax = 4;</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product posters</title>
+<style>
+  body { margin: 0; padding: 24px; font: 14px/1.5 system-ui, sans-serif; background: #eee; color: #111; }
+  .host { position: relative; background: transparent; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .row a { display: block; font-size: 12px; color: #111; }
+  .row img { height: 160px; background: repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0 / 16px 16px; display: block; }
+</style>
+</head>
+<body>
+<!--
+  Makes what a product spec shows when WebGL is not drawing: open ?spec=specs/city-bike.json
+  (relative to this page). make-posters.mjs opens this page in a headless browser and writes the
+  files; window.__files maps each file (relative to the spec) to its data URL, window.__manifest is
+  <poster>.stills.json, and data-ready is set to 1 (or error) when done.
+
+  &legacy=1   the turntable's posters (the old places):
+                <poster>.fallback-render.png, -render-dark.png (plates left, colour right), .fallback.png, -dark.png (a print)
+  &variants=three-quarter,side,detail-saddle,three-quarter+loaded   (default: spec.make.variants)
+              per variant and ground (spec.make.grounds, default light):
+                <poster>-<variant>.fallback-render[-dark].png      its poster (the live render's fallback)
+                stills/<poster>-<variant>-<colour>[-dark].webp     a still per colourway, transparent, cropped to the
+                                                                    product and its shadow (and -half.webp, half size)
+  &px=1100    the still's long side of the product, in pixels (spec.make.px)
+-->
+<p>The spec's posters and stills.</p>
+<div class="host" id="host"></div>
+<div class="row" id="out"></div>
+<script type="module">
+  import { FB, RENDER_REF, config, paintColor, mixColor, isDarkPaper } from '../_print-core/print3d.js';
+  import { loadProduct, variantKey, resolveView } from './build.js';
+  const q = new URLSearchParams(location.search);
+  const host = document.getElementById('host'), out = document.getElementById('out');
+  // a still is one big sharp frame: one texel a pixel, no adapting to slow frames (this is a CPU renderer)
+  Object.assign(config, { maxCanvasPx: 4e6, fineTexels: 4e6, adapt: false });
+  window.__files = {};
+  const GROUNDS = { light: { bg: '#f2f1ed', surface: '#e8e7e2', ink: '#151515' }, dark: { bg: '#121314', surface: '#1b1c1e', ink: '#f1f0ec' } };
+  const PAPER = { light: { bg: '#ffffff', surface: '#f4f4f4', ink: '#111111', accent: '#e5531c' }, dark: { bg: '#0b0b0c', surface: '#161618', ink: '#f2f2f2', accent: '#ff7a3c' } };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const load = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  function show(name, url) {
+    window.__files[name] = url;
+    const a = document.createElement('a');
+    a.href = url; a.download = name.split('/').pop();
+    a.innerHTML = `<img src="${url}" alt=""> ${name}`;
+    out.appendChild(a);
+  }
+  // one shot of a print object in the host at w x h CSS px
+  async function shoot(obj, w, h, palette, params, plate) {
+    host.innerHTML = '';
+    host.style.width = w + 'px'; host.style.height = h + 'px';
+    const ctrl = obj.mount0(host, { palette, params: { x: 0, y: 0, transparent: 1, turn: 0, interactive: 0, ...params } });
+    await ctrl.ready();
+    if (ctrl.info.fallback) throw new Error(`${obj.id}: no live picture (${ctrl.info.fallback})`);
+    ctrl.pose({ t: 0, step: params.step });
+    const url = ctrl.snapshot(plate);
+    ctrl.destroy();
+    host.innerHTML = '';
+    return url;
+  }
+  const pixels = img => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0); return x.getImageData(0, 0, c.width, c.height); };
+
+  // the render's curves (as print3d's poster does): the accent part lit again in another colour
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const hexRgb = h => { h = h.replace('#', ''); const n = parseInt(h, 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
+  const lin22 = v => Math.pow(Math.max(v, 0), 2.2), gam22 = v => Math.pow(clamp(v, 0, 1), 1 / 2.2);
+  const filmic = x => clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0, 1);
+  const filmicInv = y => { y = clamp(y, 0, 0.995); const a = 2.43 * y - 2.51, b = 0.59 * y - 0.03, c = 0.14 * y; return (-b - Math.sqrt(Math.max(0, b * b - 4 * a * c))) / (2 * a); };
+  /** the still in one colourway: the colour shot, its accent part lit in `accent`, over the floor's shadow (clear outside) */
+  function relight(plates, colour, accent, shadowHex, rect) {
+    const [X, Y, W, H] = rect, P = plates.data, C = colour.data, w0 = plates.width;
+    const ref = hexRgb(paintColor(RENDER_REF)).map(lin22), refY = Math.max(1e-4, 0.2126 * ref[0] + 0.7152 * ref[1] + 0.0722 * ref[2]);
+    const T = hexRgb(paintColor(accent)).map(lin22), SH = hexRgb(shadowHex).map(v => v * 255);
+    const o = new ImageData(W, H), D = o.data;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = ((y + Y) * w0 + (x + X)) * 4, j = (y * W + x) * 4;
+      const acc = P[i + 1] / 255, cov = P[i + 2] / 255;
+      if (cov > 0.02) {
+        let col = [C[i], C[i + 1], C[i + 2]];
+        if (acc > 0.01) {
+          const rad = col.map(v => filmicInv(lin22(v / 255)));
+          const E = (0.2126 * rad[0] + 0.7152 * rad[1] + 0.0722 * rad[2]) / refY;
+          col = col.map((v, k) => v + (255 * gam22(filmic(T[k] * E)) - v) * acc);
+        }
+        // the edge: the colour over the shadow it stands on
+        const sa = (P[i] / 255) * (1 - cov), a = cov + sa;
+        for (let k = 0; k < 3; k++) D[j + k] = (col[k] * cov + SH[k] * sa) / Math.max(a, 1e-4);
+        D[j + 3] = a * 255;
+      } else { D[j] = SH[0]; D[j + 1] = SH[1]; D[j + 2] = SH[2]; D[j + 3] = P[i]; }
+    }
+    return o;
+  }
+  const toUrl = (img, w, h, type = 'image/webp') => { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; if (img instanceof ImageData) { if (img.width === w) x.putImageData(img, 0, 0); else { const t = document.createElement('canvas'); t.width = img.width; t.height = img.height; t.getContext('2d').putImageData(img, 0, 0); x.drawImage(t, 0, 0, w, h); } } else x.drawImage(img, 0, 0, w, h); return c.toDataURL(type, 0.92); };
+
+  try {
+    const product = await loadProduct(q.get('spec'));
+    const spec = product.spec, name = spec.poster || spec.id;
+    const make = spec.make || {};
+    const report = (window.__report = []);
+    // the turntable's posters (the old places)
+    if (q.get('legacy') === '1') {
+      const obj = product.legacy();
+      const base = { size: FB.size };
+      if (q.get('only') !== 'render') {
+        show(`${name}.fallback.png`, await shoot(obj, FB.w, FB.h, PAPER.light, { ...base, effect: obj.posterPrint }, true));
+        show(`${name}.fallback-dark.png`, await shoot(obj, FB.w, FB.h, PAPER.dark, { ...base, effect: obj.posterPrint }, true));
+      }
+      for (const [file, paper] of [[`${name}.fallback-render.png`, 'light'], [`${name}.fallback-render-dark.png`, 'dark']]) {
+        const pal = { ...PAPER[paper], accent: RENDER_REF };
+        const plates = await load(await shoot(obj, FB.w, FB.h, pal, { ...base, effect: 'render' }, true));
+        const colour = await load(await shoot(obj, FB.w, FB.h, pal, { ...base, effect: 'render', shadow: 0 }, false));
+        const c = document.createElement('canvas'); c.width = plates.width * 2; c.height = plates.height;
+        const x = c.getContext('2d'); x.drawImage(plates, 0, 0); x.drawImage(colour, plates.width, 0, plates.width, plates.height);
+        show(file, c.toDataURL('image/png'));
+      }
+    }
+    // the views: a poster and a still per colourway, for each ground
+    const list = (q.get('variants') || (make.variants || []).join(',')).split(',').map(s => s.trim()).filter(Boolean);
+    const grounds = (q.get('grounds') || (make.grounds || ['light']).join(',')).split(',');
+    const L = +(q.get('px') || make.px || 1100), SIZE = 0.8;
+    const colors = spec.colors?.length ? spec.colors : [{ id: 'page', accent: make.accent || '#1a4be0' }];
+    const offs = new Set([].concat(make.off || []));
+    const manifest = (window.__manifest = { id: spec.id, made: new Date().toISOString(), px: L, grounds, colors: colors.map(c => c.id), variants: {} });
+    for (const item of list) {
+      for (const off of offs.has(item) && spec.click === 'light' ? [false, true] : [false]) {
+        const [view, scene] = item.split('+');
+        const obj = product.variant({ view, scene: scene || null });
+        const key = variantKey({ view: resolveView(spec, view).name, scene, off });
+        const ex = obj.fit.ex, exF = obj.fit.exF, mg = obj.fit.view.margin, a = ex[0] / ex[1];
+        // the host: the product's long side L px at SIZE of the frame, with room below and round it for the shadow
+        let W, H;
+        if (a >= 1) { W = Math.round(L / SIZE); H = Math.round((L / a / SIZE) * 1.12); } else { H = Math.round(L / SIZE); W = Math.round(L * a / SIZE * 1.12); }
+        // a close-up's shot is wider than its parts' margin (the shot's cover: the product runs on past the parts so a wide tile
+        // shows them centred): keep the pixels the parts get as if shot at the margin alone, within 3.4 MP (a CPU renders it slowly)
+        if (obj.fit.view.part) {
+          let ppu0 = L / (2 * Math.max(exF[0] * mg, exF[1] * mg));
+          W = 2 * ex[0] * ppu0 / SIZE; H = 2 * ex[1] * ppu0 / SIZE;   // no room for a floor shadow: a close-up runs off the frame
+          const cap = 3.4e6 / (W * H); if (cap < 1) { W *= Math.sqrt(cap); H *= Math.sqrt(cap); }
+          W = Math.round(W); H = Math.round(H);
+        }
+        const ppu = SIZE * Math.min(W / (2 * ex[0]), H / (2 * ex[1]));
+        const entry = (manifest.variants[key] = { view: resolveView(spec, view).name, scene: scene || null, off, grounds: [], stills: {} });
+        for (const g of grounds) {
+          const t0 = performance.now();
+          const pal = { ...GROUNDS[g], accent: RENDER_REF };
+          const step = off ? 0 : 1;
+          const platesImg = await load(await shoot(obj, W, H, pal, { size: SIZE, effect: 'render', step }, true));
+          const colourImg = await load(await shoot(obj, W, H, pal, { size: SIZE, effect: 'render', shadow: 0, step }, false));
+          const P = pixels(platesImg), C = pixels(colourImg);
+          // a close-up keeps only what joins the framed parts: a loose piece of the product at the shot's edge (a
+          // lamp's base under its shade, a grip beside a saddle) reads as a fragment, so it and its shadow go
+          if (obj.fit.view.part) {
+            const fx = exF[0] * ppu, fy = exF[1] * ppu;
+            const fr = [W / 2 - fx, H / 2 - fy, W / 2 + fx, H / 2 + fy];
+            const lab = new Int32Array(W * H), keep = [false], D = P.data;
+            let n = 0;
+            for (let s0 = 0; s0 < W * H; s0++) {
+              if (lab[s0] || D[s0 * 4 + 2] <= 8) continue;
+              n++; let hit = false; const st = [s0]; lab[s0] = n;
+              while (st.length) {
+                const p = st.pop(), x = p % W, y = (p / W) | 0;
+                if (x >= fr[0] && x <= fr[2] && y >= fr[1] && y <= fr[3]) hit = true;
+                for (const q of [x > 0 ? p - 1 : -1, x < W - 1 ? p + 1 : -1, y > 0 ? p - W : -1, y < H - 1 ? p + W : -1]) if (q >= 0 && !lab[q] && D[q * 4 + 2] > 8) { lab[q] = n; st.push(q); }
+              }
+              keep[n] = hit;
+            }
+            // a dropped piece: its coverage and accent, and the shadow round it (within 3% of the shot)
+            const rad = Math.round(Math.max(W, H) * 0.03), drop = new Uint8Array(W * H);
+            for (let p = 0; p < W * H; p++) if (lab[p] && !keep[lab[p]]) drop[p] = 1;
+            for (let p = 0; p < W * H; p++) {
+              if (!drop[p]) continue;
+              D[p * 4 + 1] = 0; D[p * 4 + 2] = 0; D[p * 4] = 0;
+            }
+            // the shadow that the dropped piece threw: shadow pixels near it with no kept coverage close by
+            const dist = new Float32Array(W * H).fill(1e9);
+            for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) { const p = y * W + x; if (drop[p]) dist[p] = 0; }
+            for (let it = 0; it < rad / 2; it++) for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) {
+              const p = y * W + x; let d = dist[p];
+              if (x > 1) d = Math.min(d, dist[p - 2] + 2); if (y > 1) d = Math.min(d, dist[p - 2 * W] + 2);
+              if (x < W - 2) d = Math.min(d, dist[p + 2] + 2); if (y < H - 2) d = Math.min(d, dist[p + 2 * W] + 2);
+              dist[p] = d;
+            }
+            for (let p = 0; p < W * H; p++) { const x = p % W, y = (p / W) | 0, d = dist[(y & ~1) * W + (x & ~1)]; if (d <= rad && D[p * 4 + 2] <= 8) D[p * 4] = Math.round(D[p * 4] * Math.min(1, d / rad)); }
+          }
+          // the product's box (coverage) and the picture's (coverage and shadow)
+          let b = [W, H, -1, -1], u = [W, H, -1, -1];
+          for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+            const i = (y * W + x) * 4, cov = P.data[i + 2], sh = P.data[i];
+            if (cov > 8) { b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); }
+            if (cov > 8 || sh > 6) { u[0] = Math.min(u[0], x); u[1] = Math.min(u[1], y); u[2] = Math.max(u[2], x); u[3] = Math.max(u[3], y); }
+          }
+          if (b[2] < 0) throw new Error(`${key}: the render came out empty`);
+          const m = 6;
+          let X = Math.max(0, u[0] - m), Y = Math.max(0, u[1] - m), X1 = Math.min(W, u[2] + m + 1), Y1 = Math.min(H, u[3] + m + 1);
+          // a close-up is cropped evenly round the framed parts' centre (the shot's centre), never to the product's own box: the
+          // framed parts then sit in the middle of the still whichever sides the rest of the product runs off, and a page centres
+          // them on the frame (the cut sides stay at the still's edge, so they stay at or past the frame's edge)
+          if (obj.fit.view.part) {
+            const fx = exF[0] * ppu, fy = exF[1] * ppu;
+            const hx = Math.min(W / 2, Math.max(W / 2 - X, X1 - W / 2, fx)), hy = Math.min(H / 2, Math.max(H / 2 - Y, Y1 - H / 2, fy));
+            X = Math.floor(W / 2 - hx); X1 = Math.ceil(W / 2 + hx); Y = Math.floor(H / 2 - hy); Y1 = Math.ceil(H / 2 + hy);
+          }
+          const cw = X1 - X, ch = Y1 - Y;
+          entry.box = [(b[0] - X) / cw, (b[1] - Y) / ch, (b[2] + 1 - X) / cw, (b[3] + 1 - Y) / ch].map(v => +v.toFixed(4));
+          // a close-up (a view of named parts): the framed parts' box (the framing's own, centred in the shot) and the
+          // sides where the rest of the product runs off the shot; a page keeps those sides at or past its frame's edge
+          const vw = obj.fit.view;
+          if (vw.part) {
+            const fx = exF[0] * ppu, fy = exF[1] * ppu;
+            entry.focus = [(W / 2 - fx - X) / cw, (H / 2 - fy - Y) / ch, (W / 2 + fx - X) / cw, (H / 2 + fy - Y) / ch].map(v => +Math.min(1, Math.max(0, v)).toFixed(4));
+            entry.cut = [b[0] <= 1, b[1] <= 1, b[2] >= W - 2, b[3] >= H - 2].map(Number);
+          }
+          // how well the framing fits: the product's share of the frame against what was asked (SIZE), and its centre
+          // measured: the product's box in px against the framing's own prediction (1.0 is exact; a close-up's margin makes it smaller)
+          const mw = (b[2] + 1 - b[0]) / (2 * ex[0] * ppu), mh = (b[3] + 1 - b[1]) / (2 * ex[1] * ppu);
+          report.push({ key, ground: g, frame: [W, H], measuredVsPredicted: [+mw.toFixed(3), +mh.toFixed(3)], centrePx: [Math.round((b[0] + b[2] + 1) / 2 - W / 2), Math.round((b[1] + b[3] + 1) / 2 - H / 2)], ms: Math.round(performance.now() - t0) });
+          const shadowHex = isDarkPaper(GROUNDS[g]) ? mixColor(GROUNDS[g].bg, '#000000', 0.7) : mixColor(GROUNDS[g].bg, GROUNDS[g].ink, 0.5);
+          entry.stills[g] = {};
+          for (const c of colors) {
+            const img = relight(P, C, c.accent || RENDER_REF, shadowHex, [X, Y, cw, ch]);
+            const file = `stills/${name}-${key}-${c.id}${g === 'dark' ? '-dark' : ''}.webp`, half = file.replace(/\.webp$/, '-half.webp');
+            show(file, toUrl(img, cw, ch));
+            show(half, toUrl(img, Math.round(cw / 2), Math.round(ch / 2)));
+            entry.stills[g][c.id] = { file, half, w: cw, h: ch };
+          }
+          // the live render's poster: the same shots at the poster's geometry (FB.size in an FB.w x FB.h frame)
+          if (!off) {
+            const k = (FB.size * Math.min(FB.w / (2 * ex[0]), FB.h / (2 * ex[1]))) / ppu;
+            const c = document.createElement('canvas'); c.width = FB.w * 2; c.height = FB.h;
+            const x = c.getContext('2d'); x.imageSmoothingQuality = 'high';
+            const dw = W * k, dh = H * k, dx = FB.w / 2 - dw / 2, dy = FB.h / 2 - dh / 2;
+            x.drawImage(platesImg, dx, dy, dw, dh);
+            x.drawImage(colourImg, FB.w + dx, dy, dw, dh);
+            show(`${obj.posterName}.fallback-render${g === 'dark' ? '-dark' : ''}.png`, c.toDataURL('image/png'));
+          }
+          entry.grounds.push(g);
+        }
+      }
+    }
+    document.documentElement.dataset.ready = '1';
+  } catch (e) {
+    console.error(e);
+    window.__posterError = String(e && e.message || e);
+    document.documentElement.dataset.ready = 'error';
+  }
+</script>
+</body>
+</html>

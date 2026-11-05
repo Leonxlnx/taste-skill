@@ -1,0 +1,13 @@
+{
+  "id": "ridgeline",
+  "name": "Ridgeline",
+  "family": "pattern",
+  "look": "Stacked thin lines rising into a few clean peaks, the front lines hiding the ones behind, with one line picked out in the accent.",
+  "bestOn": ["band"],
+  "motion": "slow",
+  "cost": "low",
+  "palettes": ["light", "dark", "colour"],
+  "focal": true,
+  "random": false,
+  "subjects": ["the divider band (assets/components/fx-band), lines rising on the side away from the copy"]
+}

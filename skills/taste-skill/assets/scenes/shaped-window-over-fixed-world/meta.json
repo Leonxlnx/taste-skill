@@ -1,0 +1,51 @@
+{
+  "id": "shaped-window-over-fixed-world",
+  "name": "Shaped window over a fixed world",
+  "family": "mask-and-reveal",
+  "look": "One full-bleed photograph of the client's site stays still behind a shutter painted in the page's ground. Two tall windows cut in it, level and side by side, show the site through a mullion under the title; the scroll widens them outward, closes the bar into one window, holds a beat, then scales the shutter past the screen's edges so the reader pushes through into the place; a flat band of the ground rises across the foot carrying the chapter's one word, then its lede and the action. The shutter is five flat pieces moved by transform: no mask edge, no hairline, no word on the photograph.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "gaming"
+  ],
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 2,
+  "cost": "low",
+  "webgl": 0,
+  "reduced": "The title, the photograph, the word, the lede and the action under it.",
+  "phone": "The finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "needs": {
+    "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
+    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
+  },
+  "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+  "avoidWith": [
+    "descend-through-weather",
+    "fly-into-the-shape",
+    "fixed-hero-object"
+  ],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "avoidMoments": [
+    "headline-arrives",
+    "cursor-spotlight",
+    "window-parallax"
+  ]
+}
