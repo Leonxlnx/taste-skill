@@ -242,7 +242,8 @@ move.
   `library/type.json` is the one source of every face, weight, tracking and `--ly-scale`: keep the
   `:root` block as start.mjs prints it. (`assets/layout/fonts.html` reads type.json and shows every
   pairing; a hero demo's face is a specimen, not a source.) Load from Google
-  Fonts with `display=swap`; a fallback face never shows.
+  Fonts with `display=swap`; a fallback face never shows (`font-load` warns a family that
+  never loaded).
 - One family, or a display face plus a text face with fixed jobs; never three; at most four font
   files. Never Inter, Roboto, Open Sans, Lato, Montserrat, Poppins, Space Grotesk, Plus Jakarta Sans
   or the system look.

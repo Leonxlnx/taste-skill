@@ -248,7 +248,8 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
 - **Contacts** as rule 9 [street-number, postcode, coordinates, company-number, phone-number].
 - **One system:** one button pair, one card style, one radius scale, one link look [button-styles,
   button-shape, card-family, card-layout, link-styles]; two boxes deep at most [nesting]; one
-  heading scale [heading-scale]; text contrast [text-contrast, contrast].
+  heading scale, its faces loaded [heading-scale, font-load]; text contrast [text-contrast,
+  contrast].
 - **Copy and links:** headings name things, buttons a verb and an object, at most two hero actions
   [copy-headings, copy-buttons, copy-actions, action-count]; one fact, one wording [fact-agree];
   every link lands, forms send [links, forms].
