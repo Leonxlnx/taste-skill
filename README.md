@@ -1,3 +1,5 @@
+**English** · [한국어](README.ko.md) · [简体中文](README.zh-CN.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/taste-skill-wordmark-dark.png" />
