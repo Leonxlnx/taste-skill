@@ -230,7 +230,8 @@ if (cmd === 'deal') {
       if (changed) fs.writeFileSync(marker, JSON.stringify(m, null, 1) + '\n');
     } else if (home === here) {
       fs.mkdirSync(dot, { recursive: true });
-      fs.writeFileSync(marker, JSON.stringify({ page: null, dir: process.cwd(), kind: page || null, start: new Date().toISOString(), by: 'start.mjs' }, null, 1) + '\n');
+      fs.writeFileSync(marker, JSON.stringify({ page: null, dir: process.cwd(), kind: page || null, start: new Date().toISOString(), by: 'start.mjs',
+        gate: path.join(path.dirname(fileURLToPath(import.meta.url)), 'gate.mjs') }, null, 1) + '\n'); // the gate that judges this build
       console.error(`start: the finish gate is armed in ${process.cwd()}; run start.mjs from the project folder (the one that holds the page)`);
     }
   } catch { /* the gate is optional: never stop a deal over it */ }

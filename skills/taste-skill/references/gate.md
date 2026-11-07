@@ -143,7 +143,11 @@ and `~/.agents/skills/design-taste-frontend/` (`npx skills`, `install.sh`). When
 is allowed with no hook error; when the folder has a `.taste-skill` it writes
 `.taste-skill/gate-hook-missing.txt` (the time and the variables it read), and when a build is armed
 there or one folder below it prints `tasteskill gate: gate.mjs not found (CLAUDE_PLUGIN_ROOT=...)` on
-stderr, so a hook that never reached the gate shows in the transcript. A skill installed under another
+stderr, so a hook that never reached the gate shows in the transcript. With two installs the hook may
+find another version's `gate.mjs`: `--start` and a `start.mjs deal` record the arming gate's path in
+`build.json` (`"gate"`), and any other gate hands the run over to it (same arguments and stdin, its
+output and exit code), so the gate that armed a build judges it; a marker without the field, or a gate
+that is gone, is judged by the one the hook found. A skill installed under another
 folder name, other apps, or a Claude Code without skill hooks take one of these. Each runs in every
 session of the project and finds a build in its folder or one or two below. Where none is active it
 exits at once, but once for a tasteskill page (a `page-type` meta) changed in the last day in the

@@ -77,7 +77,9 @@ those sections only, and its workshop bench and whole bikes come from a live sea
 `photos.mjs search` asks Wikimedia Commons for photographs (JPEG, 1600 px wide or more; CC0, CC BY, CC BY-SA or public
 domain; files named as paintings, drawings, maps, logos or posters left out; one file of a series) and keeps the
 results in `.taste-skill/found.json` under `--out`, so `fetch` and `credits` take their ids (`f` and a number) like
-library ids. With `--trade` and no words it runs the trade's own search words:
+library ids. `fetch` reads an entry only as `search` wrote it (an `f` id, a Commons file and its Commons page, no
+`files`): an entry made or changed by hand is skipped with a warning, and `credits` skips a credit whose links are not
+its source's own (Commons, creativecommons.org, Unsplash). With `--trade` and no words it runs the trade's own search words:
 
 | Trade | search words |
 |---|---|

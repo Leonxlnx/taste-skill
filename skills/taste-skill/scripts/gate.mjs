@@ -20,6 +20,7 @@
   A build is active while .taste-skill/build.json exists in the project folder (the hook's cwd, else the current
   folder, or one or two folders below it), or while .taste-skill/gate.json says its rounds are still open (a deleted
   build.json does not end a build). start.mjs writes the marker at a deal in a folder with no open build.
+  The marker names the gate.mjs that armed it ("gate"); another install's gate.mjs hands the run over to that one.
   No build: exit 0 at once in hook mode, but once for a tasteskill page (one with a page-type meta, changed in the
   last day, never armed or finished) in the folder or one below: it says how to arm it. A manual run says so
   (GATE: OFF) and arms nothing.
@@ -165,8 +166,8 @@ const readStdin = ms => new Promise(res => {
   process.stdin.on('data', d => { s += d; if (s.length > 1e6) done(); });
   process.stdin.on('end', done); process.stdin.on('error', done);
 });
-let input = {};
-if (HOOK) { try { const o = JSON.parse((await readStdin(2000)).replace(/^\uFEFF/, '') || '{}'); input = o && typeof o === 'object' ? o : {}; } catch { input = {}; } }
+let input = {}, rawInput = '';
+if (HOOK) { try { rawInput = await readStdin(2000); const o = JSON.parse(rawInput.replace(/^\uFEFF/, '') || '{}'); input = o && typeof o === 'object' ? o : {}; } catch { input = {}; } }
 const base = path.resolve(typeof input.cwd === 'string' && input.cwd ? input.cwd : process.cwd());
 
 // a PowerShell write puts a BOM before the JSON
@@ -605,6 +606,40 @@ const projDir = START ? (positional && !isUrl(positional) && activeIn(path.dirna
 const dot = dotOf(projDir);
 const markerFile = path.join(dot, 'build.json'), stateFile = path.join(dot, 'gate.json'), ledgerFile = path.join(dot, 'gate-blocks.json');
 const waiverFile = path.join(dot, 'waivers.json'), gateDir = path.join(dot, 'gate');
+
+// the build is judged by the gate that armed it: with two installs the hook may have found another version's gate.mjs.
+// The marker's gate (an installed skill's scripts/gate.mjs, outside the project's own files unless in its skills
+// folders) runs instead, with the same arguments and stdin, and its output and exit code are this run's. A marker
+// without one (2.5.1 and older), a gate that is gone, or a run already handed over (the env flag) runs here.
+function armingGate() {
+  if (START || process.env.TASTE_SKILL_GATE_HANDOFF) return null;
+  let m = readJson(markerFile, null);
+  // build.json gone mid-build: the open round state's copy of it
+  if (!fs.existsSync(markerFile)) { const s = readJson(stateFile, null); m = s && typeof s === 'object' && OPEN_STATES.test(s.status || '') ? s.marker : null; }
+  if (!m || typeof m !== 'object' || typeof m.gate !== 'string' || !path.isAbsolute(m.gate) || path.basename(m.gate) !== 'gate.mjs') return null;
+  const real = p => { try { return fs.realpathSync(p); } catch { return null; } };
+  const to = real(m.gate), me = real(SELF) || SELF, same = (a, b) => process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b;
+  if (!to || same(to, me) || !fs.statSync(to).isFile()) return null;
+  const skill = path.dirname(path.dirname(to));
+  try { if (!/^name:\s*design-taste-frontend\s*$/m.test(fs.readFileSync(path.join(skill, 'SKILL.md'), 'utf8').slice(0, 400))) return null; } catch { return null; }
+  // a gate inside the project is taken only from its skills folders: a page's own files never name the code that judges it
+  const under = (p, d) => { const r = path.relative(d, p); return r && !r.startsWith('..') && !path.isAbsolute(r); };
+  for (const d of new Set([base, projDir].map(x => real(x) || x))) if (under(to, d) && !['.claude', '.agents'].some(a => under(to, path.join(d, a, 'skills')))) return null;
+  return to;
+}
+{
+  const to = armingGate();
+  if (to) {
+    const r = spawnSync(process.execPath, [to, ...args], { cwd: process.cwd(), input: HOOK ? rawInput : undefined, stdio: [HOOK ? 'pipe' : 'inherit', 'inherit', 'inherit'], env: { ...process.env, TASTE_SKILL_GATE_HANDOFF: SELF }, windowsHide: true, timeout: BUDGET + 20000 });
+    if (r.status !== null) process.exit(r.status);
+    // it could not start: this gate judges; it started and was stopped (its time ran out): the run is over
+    if (r.pid) {
+      T.file = stateFile;
+      if (HOOK) allow(`the gate that armed this build (${to}) did not finish; stop allowed`);
+      console.log(`GATE: ERROR (the gate that armed this build, ${to}, did not finish)`); process.exit(2);
+    }
+  }
+}
 T.file = stateFile;
 const roundsArg = () => { const r = opt('rounds'); return typeof r === 'string' && /^\d+$/.test(r) ? Math.max(1, Math.min(10, Number(r))) : 3; };
 const kindArg = () => { const k = (str('kind') || str('page') || '').toLowerCase(); return KINDS.test(k) ? k : null; };
@@ -627,6 +662,7 @@ if (START) {
   const live = !!(old && typeof old === 'object' && typeof old.start === 'string' && !(st && st.start === old.start && /^(pass|open|done)$/.test(st.status || '')));
   const keep = live && !has('new');
   const m = applyFlags(keep ? { ...old } : { page: null, url: null, root: null, kind: null, category: null, primary: null, rounds: roundsArg(), start: new Date().toISOString(), by: 'gate.mjs --start' });
+  m.gate = SELF; // this gate judges the build, whichever install the hook finds
   if (!m.kind) { const p = findPage(projDir, m); if (p && p.file) { try { m.kind = kindOf(fs.readFileSync(p.file, 'utf8')) || null; } catch { /* unreadable */ } } }
   writeJson(markerFile, m);
   const what = m.url || m.page || '(the page, found when checked)';

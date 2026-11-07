@@ -545,10 +545,16 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 
 /* a short phone (320x640: under 700px tall): the first screen still ends whole with the hero's button on it.
    The photograph over the words takes less of it, the facts under the words go (the lead carries the hard
-   fact), and a collage keeps less height */
+   fact), and a collage keeps less height. The centred hero's window shows its bar and question on that screen:
+   the news pill and the second button go (the first button stays), and the gaps close up */
 @media (max-width: 639px) and (max-height: 700px) {
   :root { --hgap: 24px; }
   .hero--photo, .hero--place, :root[data-type="place"] .hero--photo { --photo: min(26svh, 48vw); }
   main > .hero .hero__facts { display: none; }
   .hero--triptych .ly-collage { min-height: 180px; margin-block: var(--s-5); }
+  .hero--centred .hero__c > .pill, .hero--centred .btn-row > :not(:first-child) { display: none; }
+  .hero--centred .hero__c { gap: var(--s-3); }
+  .hero--centred .btn-row { margin-top: var(--s-1); }
+  .hero--centred .hero__window { margin-top: var(--s-4); }
+  .hero--centred .hero__window > .ly-piece { top: var(--s-3); }
 }
