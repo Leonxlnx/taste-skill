@@ -158,7 +158,9 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
 ## 4. The run
 
 0. **The stack.** An empty folder builds a static page: copy `<skill>/assets` into `assets` and
-   start from `assets/starter.html`. An existing project builds in its own stack, its components
+   start from `assets/starter.html` (copy it to `index.html` and edit it in place). A small or "simple"
+   brief changes nothing: the starter is the simple path. Never write a page shell or stylesheet of
+   your own; the gate fails it on the hero entrance, the moment and the screens. An existing project builds in its own stack, its components
    taking the starter's markup and classes, with the kit copied into its public folder
    (`public/assets`) and loaded from there as plain files, by root paths (`/assets/system.js`), once
    the page has hydrated. A brief that asks for Next.js builds a static export (`output: 'export'`),
