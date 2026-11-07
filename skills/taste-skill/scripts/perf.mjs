@@ -388,6 +388,8 @@ for (const d of fs.readdirSync(profileBase)) { const m = /^run-(\d+)$/.exec(d); 
 const profile = path.join(profileBase, 'run-' + process.pid);
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
+// if the sweep could not remove run-<own pid> (a file still locked), its old port file must not be read as this Chrome's
+try { fs.rmSync(portFile); } catch { /* none */ }
 const loadBefore = await hostLoad();
 const child = spawn(findChrome(), ['--headless=new', `--user-data-dir=${profile}`, '--remote-debugging-port=0', '--no-first-run', '--no-default-browser-check', '--disable-extensions',
   '--hide-scrollbars', '--mute-audio', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--window-size=1440,900', 'about:blank'], { stdio: 'ignore', windowsHide: true });

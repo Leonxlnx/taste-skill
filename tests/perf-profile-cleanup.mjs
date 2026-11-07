@@ -1,6 +1,9 @@
+#!/usr/bin/env node
 // perf.mjs sweeps leftover run-<pid> Chrome profiles before it launches. A folder whose run is still
 // alive must survive; folders of exited runs, its own, and one left under its own reused PID are removed.
+// The same holds where a relative --profile that leads out of the project is replaced by .taste-skill/chrome-perf.
 // Runs without Chrome: a stand-in browser writes an unreachable DevTools port, so perf fails fast after the sweep.
+//   node tests/perf-profile-cleanup.mjs
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -45,9 +48,22 @@ try {
   spawnSync(process.execPath, [reusedPid, path.join(tmp, 'page.html'), '--profile', base, '--runs', '1'],
     { env: { ...process.env, CHROME_PATH: fakeChrome }, stdio: 'ignore', timeout: 60000 });
   check(!fs.existsSync(reused), 'launched Chrome on a stale profile left under its own PID');
+
+  // --profile ../outside leads out of the project, so perf uses <project>/.taste-skill/chrome-perf and sweeps there
+  const proj = path.join(tmp, 'project'), moved = path.join(proj, '.taste-skill', 'chrome-perf');
+  for (const pid of [live.pid, dead]) {
+    fs.mkdirSync(path.join(moved, `run-${pid}`), { recursive: true });
+    fs.writeFileSync(path.join(moved, `run-${pid}`, 'sentinel'), 'x');
+  }
+  spawnSync(process.execPath, [perf, path.join(tmp, 'page.html'), '--profile', '../outside', '--runs', '1'],
+    { cwd: proj, env: { ...process.env, CHROME_PATH: fakeChrome }, stdio: 'ignore', timeout: 60000 });
+  check(!fs.existsSync(path.join(tmp, 'outside')), 'used a --profile outside the project');
+  check(fs.existsSync(path.join(moved, `run-${live.pid}`, 'sentinel')), '.taste-skill/chrome-perf: deleted the profile of a run that is still alive');
+  const movedLeft = fs.readdirSync(moved).filter(d => /^run-\d+$/.test(d) && d !== `run-${live.pid}`);
+  check(movedLeft.length === 0, '.taste-skill/chrome-perf: kept a profile of an exited run or its own: ' + movedLeft.join(', '));
 } finally {
   live.kill();
   fs.rmSync(tmp, { recursive: true, force: true });
 }
 if (failed) process.exit(1);
-console.log('perf profile cleanup: live run kept, exited, own and reused-PID runs removed');
+console.log('perf profile cleanup: live run kept, exited, own and reused-PID runs removed (also in .taste-skill/chrome-perf)');
