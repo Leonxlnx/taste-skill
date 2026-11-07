@@ -1,7 +1,7 @@
 {
   "name": "taste-skill",
-  "version": "2.5.0",
-  "description": "tasteskill 2.5.0: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser consistency checker.",
+  "version": "2.5.2",
+  "description": "tasteskill 2.5.2: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser checker and finish gate.",
   "author": {
     "name": "leonxlnx",
     "email": "hello@tasteskill.dev"

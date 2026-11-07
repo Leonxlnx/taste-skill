@@ -95,7 +95,7 @@ Run these inside Claude Code. The skill is namespaced under `taste-skill:`, so i
 /plugin install taste-skill@taste-skill
 ```
 
-`/plugin update` upgrades it later. You can also upload this repository (or its zip) directly as a plugin on Claude.ai via `.claude-plugin/plugin.json`.
+`/plugin update` upgrades it later. On claude.ai, upload the repository's zip (**Code > Download ZIP** on GitHub) under **Customize > Plugins > Add > Upload plugin**.
 
 </details>
 
