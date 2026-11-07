@@ -70,6 +70,7 @@ owned_by_repo() {
 # install_name <SKILL.md> -- frontmatter `name:`, falling back to folder name
 install_name() {
   awk '
+    { sub(/\r$/, "") }
     NR==1 && $0!="---" { exit }
     NR>1 && /^---[[:space:]]*$/ { exit }
     NR>1 && /^name:/ { sub(/^name:[[:space:]]*/,""); gsub(/^["'\'']|["'\'']$/,""); print; exit }
