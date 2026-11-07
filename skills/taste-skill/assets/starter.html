@@ -4,19 +4,34 @@
      data-radius: sharp, soft or round. data-ground: the lit ground behind UI (sand, sky, sage, or
      painting with painterly-landscape). data-buttons: the dealt button look (sections.md, section 2):
      solid, pill, tonal, arrow or block; the button markup stays the same. data-motion: the
-     micro-interactions of assets/motion (references/motion.md); keep it. -->
-<html lang="en" data-type="[software]" data-radius="soft" data-ground="sand" data-buttons="solid" data-motion>
+     micro-interactions of assets/motion (references/motion.md); keep it.
+     lang: the language the page is written in, from the brief (or its market when the brief does not say): "de" for
+     a German page, "en" for an English one; screen readers read in it and system.css hyphenates headings by it. -->
+<html lang="[en]" data-type="[software]" data-radius="soft" data-ground="sand" data-buttons="solid" data-motion>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>[Name]: [what it is] for [who or where]</title>
 <meta name="description" content="[One sentence: what it is, for whom or where, the main benefit.]">
+<!-- the head of a shared link and the tab (references/system.md, Head): the title and description above, never the
+     same words; the card picture is the hero's own tile from shoot.mjs (tiles/desktop-sec-01-a.jpg) copied beside
+     the page as share.jpg; the icon is the client's logo, else the dealt mark as favicon.svg; theme-color is the
+     page ground (--p-bg as start.mjs prints it). canonical only once the client's domain is known: until then the
+     line stays a comment and the report lists it. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="[Name]: [what it is] for [who or where]">
+<meta property="og:description" content="[The description above, or a shorter line of it]">
+<meta property="og:image" content="[share.jpg]">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="[favicon.svg]" type="image/svg+xml">
+<meta name="theme-color" content="[--p-bg]">
+<!-- <link rel="canonical" href="https://[the client's domain]/"> -->
 <!-- the kind decides every effect and motion allowance (SKILL.md section 1: data-type and page-type
      carry the page type, site-kind the kind). software: an app, SaaS, AI, developer tool or fintech
      (type software, site-kind software); a game (type software, site-kind gaming); hardware or a
      tech device (type product, site-kind tech). Every other product or brand (type product), a
      service firm or studio (type service) and a place (type place) are site-kind other:
-     photographs, type and flat colour, nothing moving by itself. A place adds
+     photographs, type and flat colour; their motion is the hero's entrance, the hover layer and one dealt photo- or type-led moment. A place adds
      <meta name="page-kind" content="place">. -->
 <meta name="site-kind" content="[software]">
 <meta name="page-type" content="[software]">
@@ -39,10 +54,14 @@
 <!-- a diagram card (assets/diagrams, references/diagrams.md): its stylesheet here and mount.js after the
      other scripts; delete both lines when the page has no diagram -->
 <link rel="stylesheet" href="assets/diagrams/diagram.css">
+<!-- the hero's entrance (references/motion.md): set before the first paint, after the stylesheets, so the hero's
+     words wait for motion.js instead of flashing (its picture never waits); the 700ms mark fades them in if the
+     script is late. Keep it on every page. -->
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <!-- the grounds' page tokens before the first paint (assets/backgrounds; plain, not deferred) -->
 <script src="assets/backgrounds/backgrounds.js"></script>
-<!-- moments (only when moments.mjs dealt one; else delete these lines): the guard, then one preload
-     for the core, its lib and each dealt moment (assets/moments/<id>/moment.js). system.js mounts them.
+<!-- moments (every kind is dealt one, two on a long page: moments.mjs pick --page <kind>): the guard, then one
+     preload for the core, its lib and each dealt moment (assets/moments/<id>/moment.js). system.js mounts them.
 <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
 <link rel="modulepreload" href="assets/moments/moments.js">
 <link rel="modulepreload" href="assets/moments/lib.js">
@@ -51,6 +70,9 @@
 <!-- page CSS: only what sits inside a visual and the kit lacks, and one --p-h per card group -->
 <style>
   #features .panel { --p-h: 300px; }
+  /* a phone stacks the four tiles into the section's two screens; the chat drops its day line and fades over
+     40px, so its question and the answer's first line stand clear of the fade */
+  @media (max-width: 639px) { #features .panel { --p-h: 180px; } #features .ui-chat__day { display: none; } #features .stage { --fade-h: 40px; } }
 </style>
 </head>
 <!-- grounds (tech only; assets/backgrounds/pick.mjs deals 0 to 2 section grounds, never a page ground):
@@ -77,9 +99,12 @@
      The logo: the client's own SVG; without one, the dealt mark and the name in the display face:
      arc, ring, stack, dots: <span class="mark" data-mark="arc" aria-hidden="true"></span>
      initial: <span class="mark mark--initial" aria-hidden="true">K</span> (the name's first letter)
-     wordmark: no mark, the name alone. The footer repeats it. -->
+     wordmark: no mark, the name alone. The footer repeats it.
+     The skip link is the bar's first child and the page's first stop for the Tab key: hidden until focused, then
+     shown over the logo (system.css .skip-link); its words in the page's language ("Zum Inhalt" on a German page). -->
 <header class="nav">
   <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
     <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
     <nav class="nav__links" aria-label="Main">
       <div class="nav__item">
@@ -127,12 +152,13 @@
 <main id="top">
   <!-- HERO: exactly the first screen; the fixed header lies over its top. Paste the dealt hero from
        assets/layout/hero-<id>.html (layout/deal.mjs deals it; heroes.json has its numbers) in place of
-       this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most).
+       this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most), and give it
+       data-enter (its one entrance on load, motion.md; the head line above makes it run).
        A place's hero is never dealt: it is always assets/layout/hero-place.html (Recipe 3, the
        photograph under the header with nothing on it, the words under it on the ground).
        This default is the split: the words on span-6, the client's photograph on span-6 start-7 (the
        page's split pair, the same on every split: 6/6, 5/7 or 7/5), as tall as the hero's content box. The primary button carries the drawn arrow (svg.m-arrow). -->
-  <section class="hero hero--split" aria-labelledby="hero-h">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
     <div class="wrap">
       <div class="hero-text grid hero-split">
         <div class="hero-copy span-6">
@@ -181,7 +207,7 @@
             <h3>[Verb + object]</h3>
             <p>[One or two short sentences with one concrete detail.]</p>
             <div class="panel" data-fx="[card effect: a tech page only]" data-fx-seed="21">
-              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:400px;--ax:max(24px, 50% - 200px);--ay:48px;--ay-sm:48px" data-ui-loop>
+              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:400px;--ax:max(24px, 50% - 200px);--ay:48px;--ay-sm:16px" data-ui-loop>
                 <div class="ui ui-panel ui-chat" data-ui="chat">
                   <div class="ui-head"><span class="ui-agent" aria-hidden="true"></span><div class="ui-title">[Name]</div><span class="ui-chat__online">Online</span><span class="ui-spacer"></span></div>
                   <div class="ui-chat__body">
@@ -203,10 +229,26 @@
           </article>
           <!-- the second tile of row 1: a different fragment (notify, files with real icons, a diagram
                from assets/diagrams) or the client's photograph in the panel (<img class="frame__img">) -->
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
+          </article>
         </div>
       </div>
       <div class="grid">
-        <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match -->
+        <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match; a section
+             with only two tiles drops this row and the g2 class (one screen) -->
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
+          </article>
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
+          </article>
       </div>
     </div>
   </section>
@@ -237,7 +279,9 @@
 
   <!-- PEEK-LIST (a place's or a service's moment): rows beside one photograph that changes at once to
        the row under the pointer, the focus or a tap (system.js). Text left, the photograph on the split
-       line; every row's words on the left line (the row on show is marked by a dot after its name). -->
+       line; every row's words on the left line (the row on show is marked by a dot after its name).
+       A price, date or place the brief does not give carries data-assumed on its own element
+       (<span class="rows__value" data-assumed>3.60 €</span>): the checker lists each one for the report. -->
   <template data-part="peek-list">
     <section class="section" id="[section id]">
       <div class="wrap">
@@ -261,7 +305,12 @@
        (.visit.visit--card on span-6, the photograph on span-6 start-7: the panel on --g-alt, 1024px and up only).
        The short page adds .visit--cols (address, hours and access as three columns, no rows) and puts the menu
        as .rows under it in the same section. Street and district only; a phone only when the brief gives one;
-       at most two rows under the columns. -->
+       at most two rows under the columns.
+       The way there: "Get directions" only with a street from the brief; with a district and no street the link
+       says "See the area" (?query=district+town); with only a town, no map link at all (a search for a whole
+       city shows nobody the door).
+       Hours the brief does not give are assumed: data-assumed on the dl (the report lists them), and then no
+       open-now line (delete the <p data-open-now>): system.js never says "Open now" from assumed hours. -->
   <template data-part="visit">
     <section class="section" id="visit" data-place="visit" aria-label="Visit">
       <div class="wrap">
@@ -273,7 +322,8 @@
               <a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a>
             </div>
             <div class="visit__col">
-              <!-- data-tz: the venue's time zone; system.js marks today's row there -->
+              <!-- data-tz: the venue's time zone; system.js marks today's row there. Assumed hours:
+                   <dl class="hours" data-tz=".." data-assumed> -->
               <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
             </div>
           </div>
@@ -331,10 +381,10 @@
           <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
           <p class="footer__lede">[What the company does, in one plain line.]</p>
         </div>
-        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h4>[Nav word]</h4><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#contact">Contact</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#contact">Contact</a></li></ul></div>
       </div>
       <div class="footer__legal">
         <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="terms.html">Terms</a></span>
@@ -371,7 +421,8 @@
 
 <template data-part="links-visit">
   <!-- row 2 on a place (footer closing footer--visit): where it is, set large, with the way there;
-       the hours from the split line; one row of the nav's words. Street and district only. -->
+       the hours from the split line; one row of the nav's words. Street and district only. The link's words
+       follow the visit block's: Get directions with a street, See the area with a district only, none with a town. -->
   <div class="closing__links">
     <div class="grid">
       <div class="span-6 stack-4">
@@ -379,7 +430,7 @@
         <p><a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a></p>
       </div>
       <div class="span-6 start-7 stack-4">
-        <h4>Opening hours</h4>
+        <h3>Opening hours</h3>
         <!-- data-tz: the venue's time zone; system.js marks today's row there. Never .is-today by hand. -->
         <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
       </div>
@@ -391,8 +442,38 @@
   </div>
 </template>
 
+<template data-part="booking-form">
+  <!-- BOOKING FORM (references/system.md, Forms; sections-library.md booking-form): every field with a label you can
+       see, the type, autocomplete and inputmode that fit it, its error line kept hidden until a submit fails
+       (system.js shows it, sets aria-invalid and moves the focus to the first field to fix). data-endpoint: the
+       address the client's form service gives, the only thing that may show data-sent; without one, action is a
+       mailto: on .example (a stand-in the report lists) and no success line is shown. data-sent names what was sent
+       in the button's own words ("Request a table" -> "Your table request is in. We reply within a day."). Six fields
+       at most; never a modal. -->
+  <form class="form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Your table request is in. We reply within a day.]" novalidate>
+    <div class="field"><label for="f-name">[Name]</label>
+      <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err">
+      <p class="field__error" id="f-name-err" hidden>[Write the name the booking is under.]</p></div>
+    <div class="field"><label for="f-email">[Email]</label>
+      <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="f-email-err">
+      <p class="field__error" id="f-email-err" hidden>[Write an email address with an @, like name@example.com.]</p></div>
+    <div class="field"><label for="f-date">[Date]</label>
+      <input id="f-date" name="date" type="text" autocomplete="off" required aria-describedby="f-date-err">
+      <p class="field__error" id="f-date-err" hidden>[Write the day you want to come.]</p></div>
+    <div class="field"><label for="f-guests">[Guests]</label>
+      <input id="f-guests" name="guests" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="f-guests-err">
+      <p class="field__error" id="f-guests-err" hidden>[Write how many people, as a number.]</p></div>
+    <div class="btn-row"><button class="btn btn--primary" type="submit">[Request a table]</button></div>
+    <p class="form__status" role="status" data-form-status></p>
+    <p class="t-small muted">[We reply within a day.]</p>
+  </form>
+</template>
+
 <!-- ACTION BAR (a place: required; other types may use it): fixed at the phone's foot, the main
-     action, or Get directions and Book, as the brief allows. Delete it on other pages.
+     action, or Get directions and Book, as the brief allows. Delete it on other pages. Keep it a child of body,
+     after the footer: system.js shows it once the hero's button has scrolled away and hides it while the screen shows one of
+     its actions (the nav's button sits in the sheet), so add no script for it; never a third copy of an action in
+     a notice or a card.
 <nav class="actionbar" aria-label="Quick actions">
   <a class="btn btn--primary" href="#[section id]">[Main action]</a>
 </nav>

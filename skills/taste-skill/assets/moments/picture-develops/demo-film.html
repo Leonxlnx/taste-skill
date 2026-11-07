@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-type="place" data-radius="soft">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picture develops, the film look · moment demo</title>
+<meta name="site-kind" content="other">
+<meta name="page-type" content="place">
+<meta name="page-kind" content="place">
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #f7f4ee; --p-surface: #ece6da; --p-ink: #1f1d1a; --p-muted: #5f5a52; --p-accent: #2f5d50; --p-accent-ink: #ffffff; --p-action: #1f1d1a; --p-action-ink: #f7f4ee;
+          --font-display: "Fraunces", Georgia, serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .film-head { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-bottom: var(--s-6); }
+  @media (min-width: 1024px) { .film-head { grid-template-columns: 6fr 5fr; align-items: end; gap: var(--s-8); } }
+  .film-frame { margin: 0; border-radius: var(--r-lg); flex: 1 1 0; min-height: 0; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Harbour House</a>
+  <nav class="demo-nav__links"><a href="#">Rooms</a><a href="#">Dinner</a><a href="#">The coast</a><a href="#">Find us</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a room</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Six rooms above the harbour in Staithes</h1><p>A guesthouse by the water with dinner at eight, breakfast until ten and bikes to borrow. Rooms for two from £120 a night.</p><div class="btn-row"><a class="btn btn--primary" href="#">Book a room</a><a class="btn btn--secondary" href="#">See the rooms</a></div></div>
+      <img class="demo-photo" src="../_demo/photo-640.jpg" alt="Waves on the sand below the village" width="1800" height="1200">
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="film-head"><h2>The view from room four</h2><p>The bay at low tide, from the window seat. Four of our six rooms face the water; ask for one when you book.</p></div>
+      <figure class="film-frame" data-moment="picture-develops">
+        <img src="../_demo/photo-1049.jpg" alt="A rock in the bay at low tide, seen from the window of room four" width="1800" height="1200">
+      </figure>
+    </div>
+  </section>
+  <section class="section ground-surface">
+    <div class="container demo-split">
+      <div class="section-head"><h2>Dinner at eight. <span class="muted">Friday and Saturday.</span></h2><p>One menu of three courses from what the boats bring in, £38 a head. Tell us about allergies when you book.</p><a class="link" href="#">See this week's menu</a></div>
+      <img class="demo-photo" src="../_demo/photo-702.jpg" alt="The moor road above the village" width="1800" height="1200">
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Harbour House · demo page for the moment “Picture develops” (the film look)</span><span>Photographs by Sarah Bürvenich, Rosan Harmens and Dominik Schröder on Unsplash</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

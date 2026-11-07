@@ -62,12 +62,14 @@
   .open-cards > .card > .panel { grid-column: 2; grid-row: 1 / span 4; --p-h: 208px; margin: calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) 0; border-radius: calc(var(--c-r) - var(--c-gap)); }
 }
 @media (max-width: 639px) { .open-cards .panel { --p-h: 148px; } .stage > .at-rise { --ay-sm: 20px; } .open-cards > .card > .panel { margin-top: var(--s-5); } }
+/* a phone's 148px panel holds the receipt's first two sales */
+@media (max-width: 639px) { .d-receipt .ln:nth-of-type(n+4) { display: none; } }
 </style>
 </head>
 <body>
 <header class="nav">
   <div class="wrap nav__bar">
-    <a class="nav__logo" href="#"><span class="mark" data-mark="leaf" aria-hidden="true"></span>Pickwell</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="leaf" aria-hidden="true"></span>Pickwell</a>
     <nav class="nav__links" aria-label="Main">
       <div class="nav__item">
         <a class="nav__link" href="#how">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -90,8 +92,8 @@
   </div>
 </header>
 
-<main>
-  <section class="hero hero--collage" aria-labelledby="hero-h">
+<main id="top">
+  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
       <div class="hero__text span-5">
         <h1 id="hero-h">Stock and orders for independent grocers</h1>
@@ -187,7 +189,7 @@
     <div class="closing__links">
       <div class="grid">
         <div class="span-6 stack-5">
-          <a class="nav__logo" href="#"><span class="mark" data-mark="leaf" aria-hidden="true"></span>Pickwell</a>
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="leaf" aria-hidden="true"></span>Pickwell</a>
           <p class="footer__lede">Stock and orders for independent grocers.</p>
         </div>
         <div class="span-3 start-7 footer__col"><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#how">Pricing</a></li><li><a href="#how">Integrations</a></li></ul></div>

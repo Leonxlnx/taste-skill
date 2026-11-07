@@ -15,32 +15,34 @@ Thirteen objects in three families and one builder; each family's README is the 
 - **One strong object moment a page.** Never beside a second effect or over a moving ground.
 - **Place, service and every page of site-kind other** (cafe, guesthouse, shop, studio, clinic,
   product brand): no object, print or scene; plain photographs lead. House rule: shader
-  effects only where the trade has a technical subject. The one exception is below: a physical
-  product with no photographs shows its own render.
+  effects only where the trade has a technical subject. The one exception is below: a product
+  whose brief asks for 3D shows its own render.
 - **Product with photographs**: the photograph leads.
 - **Any physical product without photographs** (a lamp, a chair, a bike, a stroller, a robot arm),
-  of site-kind other or tech: **the product is rendered, never hidden** (in testing: a cargo bike's
-  page that never showed the bike scored 3 of 10). The client's own render or CAD view comes
-  first; else `assets/objects/product-render` composes this product from a JSON spec of its own
-  parts, sizes and materials (Product renders, below) and it leads the hero (`deal.mjs --type
-  product --has object`), then whole in at most two more sections, each a different view, big in
-  its frame, never in a grey panel; its use (a scene whose setting fills the frame), close-ups of
-  its parts and an exploded view carry the other sections (Views, below; `sections.md` section 1,
-  One object, and Product, its seven rules). It is the product's picture, not
-  an effect: on the page's flat ground or the lit ground on tech, stills by default, live only when
-  asked (`data-product-mode="live"`), at most one live context, no print,
-  no shader ground or moment beside it on site-kind other. A `print-*` object of the product's own
-  kind (a lamp maker's lamp) may stand in for the spec; never an object of another kind (a wheel is
-  not a bicycle), a drawn SVG, a model of loose primitives the helper did not compose, mood stock
-  or another maker's product. **Hardware and devices too** (a robot arm, a drone, a camera, a
-  sensor; in testing: a robot arm shown as a silk shader and an order form lost): with no photographs
-  or client renders it takes its product render, `deal.mjs --type product --kind tech --has
-  object`. A curved shell is composed of rounded boxes, cylinders and fillets at its real
-  measurements; never a `split` hero holding only an order form, never an effect in its place.
-- **A game without art files**: its key art is a product render of its hero object (the ship, the
-  crane barge, the mech) or a scene of its world composed from its own objects on one floor, on the
-  `product` stage (`deal.mjs --type software --kind gaming --has object`) and full bleed in the
-  world section; an effect may sit behind it, never replace it (`sections.md`, Gaming).
+  of site-kind other or tech: **photographs first, never a render by default.** The client's own
+  photographs, a cut-out or a CAD view the brief supplies; else stand-in photographs of the same
+  kind of thing found with `photos.mjs search` and listed in the report (`photos.md`, A product
+  without photographs; `sections.md`, Product). In testing, a cargo bike's page that never showed
+  the bike scored 3 of 10, and pages carried by a render and a fixed set of props read as random
+  3D objects: be clean, show the real kind of thing.
+- **A render only when the brief asks for 3D or a render** (a configurator, "show it in 3D", a
+  product that exists only as a model): `assets/objects/product-render` composes this product from
+  a JSON spec of its own parts, sizes and materials (Product renders, below) and it leads the hero
+  (`deal.mjs --type product --has object`, hardware adds `--kind tech`), then whole in at most two
+  more sections, each a different view, big in its frame, never in a grey panel; close-ups of its
+  parts carry the others (Views, below; `sections.md` section 1, One object, and Product). It is
+  the product's picture, not an effect: on the page's flat ground or the lit ground on tech, stills
+  by default, live only when asked (`data-product-mode="live"`), at most one live context, no
+  print, no shader ground or moment beside it on site-kind other, no props unless a headline's
+  promise needs one. Never an object of another kind (a wheel is not a bicycle), a drawn SVG, a
+  model of loose primitives the helper did not compose, mood stock or another maker's product. A
+  curved shell is composed of rounded boxes, cylinders and fillets at its real measurements; never
+  a `split` hero holding only an order form, never an effect in its place.
+- **A game without art files**: its hero is the game's name set large over a stand-in photograph of
+  its setting (`deal.mjs --type software --kind gaming --has setting`, the `photo` hero), its world
+  section the widest of those photographs full bleed; an effect may sit in a section of its own,
+  never replace the key art (`sections.md`, Gaming). A render of its hero object or world only when
+  the brief asks for 3D.
 - **Software, AI, games with art**: a print object as a print on the card it is about (a globe for
   regions); a game's own world object for `fixed-hero-object` (`scenes.md`).
 - **Photo prints and the photo scenes** print a photograph, and no page prints, dithers or grades a
@@ -75,9 +77,10 @@ only; `data-scene` here is not a big scene, which is `data-big-scene`, `scenes.m
 
 ## Product renders
 
-`assets/objects/product-render`: the picture of a physical thing that has no photographs or client
-renders: a product of site-kind other (a bike, a lamp, a chair), hardware (a robot arm, a drone, a
-device) and a game's hero object or world without art files (`sections.md`, Product and Gaming).
+`assets/objects/product-render`: the picture of a physical thing when the brief asks for 3D or a
+render: a product of site-kind other (a bike, a lamp, a chair), hardware (a robot arm, a drone, a
+device) or a game's hero object or world. Without that ask, a thing with no photographs is shown in
+photographs, the client's or stand-ins (`photos.md`, `sections.md`, Product and Gaming).
 `build.js` turns a JSON spec of the thing's own parts into a raymarched studio render (real
 materials, soft light and shadows, a softbox in glossy parts, a floor shadow, the page's accent on
 the parts that ask for it); `auto.js` mounts it; `make-posters.mjs` checks the spec and prints its
@@ -125,13 +128,13 @@ their format, never ship one as the client's product.
 ### Views (a different one in every section; the product whole in three at most)
 
 All from the one spec, with the kit's own names (`build.js`, the three worked specs show each);
-write each section's view on its plan line, no two alike (`sections.md`, Product: the six-section recipe names them: `side`, `three-quarter`, the use scene, `detail:<part>` or an `exploded` scene, a `rear-quarter` of the spec's own; whole views in three sections at most).
+write each section's view on its plan line, no two alike (`side` for the hero, `three-quarter`, `detail:<part>` close-ups or an `exploded` scene, a `rear-quarter` of the spec's own; whole views in three sections at most; `sections.md`, Product).
 
 | spec key | what it gives |
 |---|---|
 | (none needed) | the standard views `three-quarter` (the spec's `angle`), `side` (a long product's widest: its hero), `side-left`, `front`, `rear`, `top`, `low` (only those the spec's `supports` lists); `detail:<part>[,<part>]` (or `detail-<part>`) frames the named parts and runs the rest off the frame: a close-up |
 | `views` | the spec's own views, `{ "detail-saddle": { "part": ["saddle*", "seat post"], "angle": -42, "elev": 16, "margin": 1.3 } }` (`from` a standard view; a part name takes the parts it begins, `*` any) |
-| `scenes` | the product in use or loaded: `{ "loaded": { "label", "hide": [parts], "props": [{ "prop", "at", "size", … }], "parts", "lit", "pool", "click" } }`. Props: `crate`, `bag`, `child-seat`, `bench`, `parcel`, `desk`, `book`, `mug`, `sheet`, `tray`; `lit` lights the props round a lamp. A scene shows the headline's promise at a size the section can read |
+| `scenes` | the product in use or loaded: `{ "loaded": { "label", "hide": [parts], "props": [{ "prop", "at", "size", … }], "parts", "lit", "pool", "click" } }`. The props the helper can draw: `crate`, `bag`, `child-seat`, `bench`, `parcel`, `desk`, `book`, `mug`, `sheet`, `tray`; `lit` lights them round a lamp. No scene and no prop by default: one only where a headline's promise needs it (four crates for "takes four crates"), at a size the section can read; a use photograph is better |
 | `colors` | the colourways offered, `[{ "id", "name", "accent", "materials"? }]`: the accent re-lights the parts painted `"color": "accent"`, `materials` swaps others |
 | `make` | what `make-posters.mjs` prints: `{ "variants": ["three-quarter", "side", "front", "detail-saddle", "three-quarter+loaded"], "grounds": ["light", "dark"] }` (`view+scene`) |
 | a lamp's light | the spec's `click: "light"` and `pool`; `{"step":0}` off |

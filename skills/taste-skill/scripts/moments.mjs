@@ -4,30 +4,35 @@
 
     node scripts/moments.mjs index                      scan assets/moments/<id>/meta.json into index.json
     node scripts/moments.mjs list [--kind text] [--fits hero] [--page tech] [--json]
-    node scripts/moments.mjs pick --page tech|gaming|software --count 1|2 --seed S --history .taste-skill/history.json
+    node scripts/moments.mjs pick --page tech|gaming|software|place|product|service --count 1|2 --seed S --history .taste-skill/history.json
                                   [--scene <id>] [--effects a,b] [--contexts n]
                                   [--exclude a,b] [--kind text,scroll] [--fits hero,section] [--photo] [--json]
     node scripts/moments.mjs check <page.html> [--page tech] [--scene <id>] [--effects a,b] [--contexts n]
                                   audit a built page: its moments, the still rule, cards, the WebGL budget
     node scripts/moments.mjs gallery                    write assets/moments/gallery.html (every demo, one page)
     node scripts/moments.mjs serve --port 5720          static server for the taste-skill folder (5720-5729)
-    node scripts/moments.mjs shoot --out <out-dir> --profile <profile-dir>
+    node scripts/moments.mjs shoot --out <out-dir> --profile <profile-dir in the OS temp folder or .taste-skill>
                                   [--only a,b] [--widths 1440,390] [--states start,middle,end] [--port 5720] [--reduced]
                                   [--probe "<js expression>"]   (its value is printed after every state)
     node scripts/moments.mjs sheet --out <out-dir>        rebuild index.html from the shots in that folder
     (shoot --url assets/moments/_demo/in-card.html shoots one other page of the skill, e.g. a test page)
 
-  pick deals by the page's kind (the house overrides). --page is required: tech, gaming or software
-  (ai and saas are tech and software; "technical product" is software). A place, shop, cafe, service or
-  any other kind gets none: pick prints an empty deal and says why, exit 0, so the caller simply places
-  no moment. A moment lists the kinds it fits in meta.pages; a retired moment (meta.retired, weight 0)
-  is never dealt. The WebGL budget: a page holds at most 4 live contexts (perf.mjs glPeak). The deal
+  pick deals by the page's kind. --page is required: tech, gaming or software (ai and saas are tech and
+  software; "technical product" is software), or place, product or service (a cafe, shop or guesthouse is
+  a place, a studio, firm or clinic a service, a brand's goods a product). Every kind gets its moments:
+  one on a short page, two on a long one. A tech page deals from the whole kit; a place, product or
+  service page only from the photo- and type-led moments that list it in meta.pages (no WebGL, no
+  shader, nothing that reads as an effect), and there two moments may share a page although both
+  follow the scroll when one is a statement and the other a section, or when they are of two kinds
+  (a photograph that develops on entering beside a scrubbed section). A retired moment (meta.retired, weight 0) is never dealt. The WebGL budget: a page holds at most 4 live contexts (perf.mjs glPeak). The deal
   counts the contexts the page already spends - the big scene (--scene <id>: its `webgl` in
   assets/scenes/index.json; it also leaves out that scene's avoidMoments, its twins and the ones that
   fight it, so neither pick nor check needs them as --exclude), each effect (--effects a,b: one each, worst case) and any others
   (--contexts n: objects, components) - and never deals a moment whose own meta.webgl would push the
-  total over 4. Every moment has a still variant for phones and reduced motion (meta.phone,
-  meta.reduced; the loader enforces it, moments.js), and none may sit in a card (check reports it).
+  total over 4. Every moment has a still variant for reduced motion and one for phones (meta.phone,
+  meta.reduced; the loader enforces it, moments.js), but a moment light enough for a phone runs there
+  (meta.phoneRuns true, and `export const phone = true` in its moment.js: word-highlight, the film look
+  of picture-develops, photo-chapters), and none may sit in a card (check reports it).
 
   pick deals one or two moments at random, seeded. The history file's `moments` list is read as
   cycles: once every moment that fits has been dealt, the next cycle starts empty, so an id comes
@@ -60,10 +65,14 @@ const KINDS = ['text', 'scroll', 'hover', 'transition', 'liquid'];
 const FITS = ['hero', 'section', 'statement', 'closing', 'between'];
 const TRIGGERS = ['load', 'enter', 'scroll', 'hover', 'pointer', 'loop'];
 const COSTS = ['low', 'mid', 'high'];
-const PAGES = ['tech', 'gaming', 'software'];
+const TECH = ['tech', 'gaming', 'software'];
+const OTHER = ['place', 'product', 'service'];   // site-kind other: photographs, type and flat colour lead
+const PAGES = [...TECH, ...OTHER];
 const BUDGET = 4;                       // live WebGL contexts a page may hold (references/perf.md, perf.mjs glPeak)
 // page kinds as other files say them -> the three kinds a moment is dealt on
-const PAGE_ALIAS = { tech: 'tech', technology: 'tech', ai: 'tech', gaming: 'gaming', game: 'gaming', games: 'gaming', software: 'software', saas: 'software', app: 'software', 'technical-product': 'software', 'tech-product': 'software' };
+const PAGE_ALIAS = { tech: 'tech', technology: 'tech', ai: 'tech', gaming: 'gaming', game: 'gaming', games: 'gaming', software: 'software', saas: 'software', app: 'software', 'technical-product': 'software', 'tech-product': 'software',
+  place: 'place', cafe: 'place', 'café': 'place', bar: 'place', bakery: 'place', restaurant: 'place', guesthouse: 'place', hotel: 'place', shop: 'place', florist: 'place', gym: 'place',
+  product: 'product', brand: 'product', goods: 'product', service: 'service', studio: 'service', agency: 'service', firm: 'service', clinic: 'service', trade: 'service' };
 
 function parseArgs(argv) {
   const out = { _: [] };
@@ -93,7 +102,9 @@ function validate(meta, folder) {
   if (typeof meta.webgl !== 'number' || meta.webgl < 0 || meta.webgl > 1) errs.push('meta.webgl must be 0 or 1 (at most one context)');
   if (!Array.isArray(meta.pages) || meta.pages.some(p => !PAGES.includes(p))) errs.push(`meta.pages must list some of ${PAGES.join(', ')} (empty only with meta.retired)`);
   else if (!meta.pages.length && !(typeof meta.retired === 'string' && meta.retired.trim())) errs.push('meta.pages is empty: a moment that fits no page kind needs meta.retired (a reason) and weight 0');
-  if (typeof meta.phone !== 'string' || !meta.phone.trim()) errs.push('meta.phone must say what a phone shows (every moment has a static phone variant)');
+  if (typeof meta.phone !== 'string' || !meta.phone.trim()) errs.push('meta.phone must say what a phone shows (a static variant, or how it runs there with phoneRuns)');
+  if (meta.phoneRuns != null && typeof meta.phoneRuns !== 'boolean') errs.push('meta.phoneRuns must be true or false');
+  if (meta.phoneRuns && !/export const phone = true/.test(fs.existsSync(path.join(DIR, folder, 'moment.js')) ? fs.readFileSync(path.join(DIR, folder, 'moment.js'), 'utf8') : '')) errs.push('meta.phoneRuns needs `export const phone = true` in moment.js (the loader reads that)');
   if (meta.retired && (meta.weight ?? 1) !== 0) errs.push('a retired moment needs weight 0');
   if (meta.maxPerPage !== 1) errs.push('meta.maxPerPage must be 1');
   if (meta.avoidWith != null && !Array.isArray(meta.avoidWith)) errs.push('meta.avoidWith must be an array');
@@ -153,13 +164,15 @@ function readHistory(file) {
   if (!file || file === true || !fs.existsSync(file)) return {};
   try { const h = JSON.parse(fs.readFileSync(file, 'utf8')); return h && typeof h === 'object' && !Array.isArray(h) ? h : {}; } catch { return {}; }
 }
-// a page kind as a caller says it -> { page } (a kind moments are dealt on) or { none: why } (a kind that gets none)
+// a page kind as a caller says it -> { page } or { none: why } (a word that names no kind: "other" is
+// three kinds, so the caller says which)
 export function pageKind(v) {
   if (v == null || v === true) return null;
   const k = String(v).toLowerCase().trim();
   if (PAGE_ALIAS[k]) return { page: PAGE_ALIAS[k] };
-  return { none: `a "${k}" page gets no moment: moments are dealt only on tech, gaming and software pages (never a place, shop, cafe, service or other local page; they lead with photographs)` };
+  return { none: `"${k}" is not a page kind: pass the kind from SKILL.md section 1, one of ${PAGES.join(', ')} (site-kind other is place, product or service)` };
 }
+export const isOther = page => OTHER.includes(page);
 // the live WebGL contexts the page already spends besides a moment: the scene, the effects, the rest
 // and the moments that scene keeps off its page (its meta avoidMoments in assets/scenes/index.json: its twins and the ones that fight it)
 export function pageContexts({ scene, effects = [], contexts = 0 } = {}) {
@@ -206,8 +219,13 @@ export function deal(moments, { count = 1, seed, history = [], exclude = [], kin
   for (let i = history.length - 1; i >= 0 && tail.size < keep; i--) if (ids.has(history[i])) tail.add(history[i]);
   // what can share a page: hover and liquid are one group (one pointer effect a page), one of a kind,
   // one of a slot, never two that avoid each other, never two WebGL contexts
+  // on a place, product or service page nearly every moment follows the scroll, so the kind rule would
+  // allow one moment only; there the two are one statement and one section (type, then photographs), or
+  // two of different kinds (picture-develops runs once on entering, a chapters moment follows the scroll),
+  // so the one statement moment is not on every long page
   const group = m => (m.kind === 'hover' || m.kind === 'liquid' ? 'pointer' : m.kind);
-  const together = (m, p) => group(m) !== group(p)
+  const statement = m => m.fits.includes('statement');
+  const together = (m, p) => (isOther(page) ? statement(m) !== statement(p) || m.kind !== p.kind : group(m) !== group(p))
     && !(p.avoidWith || []).includes(m.id) && !(m.avoidWith || []).includes(p.id)
     && !(m.fits.length === 1 && p.fits.length === 1 && m.fits[0] === p.fits[0])
     && (m.webgl || 0) + (p.webgl || 0) <= room;
@@ -236,13 +254,8 @@ function cmdPick(a) {
   const idx = readIndex();
   const count = Math.max(1, Math.min(2, +(a.count || 1)));
   const pg = pageKind(a.page || a.type);
-  if (!pg) die('pick: pass --page tech|gaming|software (the page\'s kind). A place, shop, cafe or service page gets no moment.');
-  if (!pg.page) {
-    console.error(pg.none);
-    if (a.json) console.log(JSON.stringify({ seed: null, page: String(a.page || a.type), picks: [], reason: pg.none }));
-    else console.log('no moment: ' + pg.none);
-    return;
-  }
+  if (!pg) die(`pick: pass --page <kind>, one of ${PAGES.join(', ')} (SKILL.md section 1). Every kind gets one moment, two on a long page.`);
+  if (!pg.page) die('pick: ' + pg.none);
   const ctx = pageContexts({ scene: a.scene && a.scene !== true ? a.scene : null, effects: list(a.effects) || [], contexts: a.contexts });
   ctx.notes.forEach(n => console.error(n));
   // the scene's own avoidMoments are left out of the deal: the caller need not pass them as --exclude
@@ -295,7 +308,7 @@ function cmdGallery() {
   const rows = shown.map(m => `<li><a href="${m.id}/demo.html"><b>${m.name}</b> <span>${m.kind} · ${m.fits.join(', ')} · ${m.trigger}${m.webgl ? ' · WebGL' : ''} · ${m.pages.join(', ')}</span><p>${m.look}</p><p class="ph">Phone and reduced motion: ${m.phone}</p></a></li>`).join('\n');
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moments</title>
 <style>body{margin:0;font:16px/1.5 system-ui,sans-serif;color:#111;background:#fff;padding:48px 24px}h1{font-size:28px;font-weight:500;margin:0 0 8px}p.lead{color:#555;margin:0 0 32px;max-width:60ch}ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}li a{display:block;padding:16px 20px;border:1px solid #e5e5e5;border-radius:12px;color:inherit;text-decoration:none}li a:hover{border-color:#999}li b{font-weight:500}li span{display:block;color:#666;font-size:13px;margin:2px 0 6px}li p{margin:0;color:#333;font-size:14px}li p.ph{margin-top:6px;color:#666;font-size:13px}</style></head>
-<body><h1>Moments</h1><p class="lead">${shown.length} creative moments for tech, gaming and software pages, one or two a page, never on a place page (references/moments.md). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
+<body><h1>Moments</h1><p class="lead">${shown.length} creative moments, one or two a page on every kind; a place, product or service page is dealt only the photo- and type-led ones that list it (references/moments.md). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
   fs.writeFileSync(path.join(DIR, 'gallery.html'), html);
   console.log(`wrote ${path.join(DIR, 'gallery.html')} (${shown.length} moments)`);
 }
@@ -307,11 +320,21 @@ function findChrome() {
   if (!f) throw new Error('no Chrome found (set CHROME_PATH)');
   return f;
 }
+// a profile stays in the OS temp folder or the project: a relative --profile that leads out of this folder (or the folder
+// itself) goes to .taste-skill/chrome-<name>
+const inProject = (p, name) => {
+  const abs = path.resolve(p), rel = path.relative(process.cwd(), abs);
+  const out = !path.isAbsolute(p) && (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
+  if (rel !== '' && !out) return abs;
+  const to = path.join(process.cwd(), '.taste-skill', 'chrome-' + name);
+  console.error(`${name}: --profile ${p} ${out ? 'leads outside the project folder' : 'is the project folder itself'}; using ${to} (a profile goes in the OS temp folder or the project's .taste-skill folder)`);
+  return to;
+};
 async function cmdShoot(a) {
   const out = a.out && a.out !== true ? path.resolve(a.out) : die('shoot: pass --out <dir>');
   // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
   const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'moments-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-moments-' + process.pid);
-  const profile = a.profile && a.profile !== true ? path.resolve(a.profile) : defaultProfile();
+  const profile = a.profile && a.profile !== true ? inProject(a.profile, 'moments') : defaultProfile();
   const port = +(a.port || 5720);
   const widths = (list(a.widths) || ['1440', '390']).map(Number);
   const states = list(a.states) || ['start', 'middle', 'end'];
@@ -402,10 +425,11 @@ async function cmdShoot(a) {
           if (a.probe && a.probe !== true) { try { console.log(`  probe: ${JSON.stringify(await ev(String(a.probe)))}`); } catch (e) { console.log(`  probe failed: ${e.message}`); } }
           const failed = await ev(`[...document.querySelectorAll('[data-moment-failed]')].map(e => e.dataset.moment + ': ' + e.dataset.momentFailed).join('; ')`);
           const gl = await ev(`document.querySelectorAll('canvas').length`);
-          // the still rule: on a phone width or under reduced motion the host says so and nothing runs
+          // the still rule: under reduced motion, and on a phone width unless the moment runs there
+          // (meta.phoneRuns), the host says so and nothing runs
           const still = await ev(`(() => { const el = document.querySelector('[data-moment]'); return (el && el.dataset.momentStill) || ''; })()`);
           const running = await ev(`document.getAnimations().filter(x => x.playState === 'running' && x.effect && x.effect.target && x.effect.target.closest && x.effect.target.closest('[data-moment]')).length`);
-          const expectStill = a.reduced || W < 640;
+          const expectStill = a.reduced || (W < 640 && !m.phoneRuns);
           const note = expectStill && (still !== (a.reduced ? 'reduced' : 'phone') || running) ? `  STILL? mark "${still}", ${running} running` : '';
           report.push({ id: m.id, w: W, state: st, file: name, failed, canvases: gl, still, running, logs: [...new Set(logs)].slice(0, 6) });
           console.log(`${name}${still ? '  still:' + still : ''}${note}${failed ? '  FAILED ' + failed : ''}${logs.length ? '  ' + [...new Set(logs)].slice(0, 3).join(' | ') : ''}`);
@@ -506,7 +530,8 @@ function cmdCheck(a) {
     if (m && n && f.id < g.id) {
       if ((m.avoidWith || []).includes(n.id) || (n.avoidWith || []).includes(m.id)) faults.push(`${f.id} and ${g.id} avoid each other`);
       const grp = x => (x.kind === 'hover' || x.kind === 'liquid' ? 'pointer' : x.kind);
-      if (grp(m) === grp(n)) faults.push(`${f.id} and ${g.id} are both ${grp(m)} moments`);
+      if (pg && pg.page && isOther(pg.page)) { if (m.fits.includes('statement') === n.fits.includes('statement') && m.kind === n.kind) faults.push(`${f.id} and ${g.id} are both ${m.fits.includes('statement') ? 'statement' : 'section'} moments of one kind: on a ${pg.page} page the two are one statement and one section, or two kinds`); }
+      else if (grp(m) === grp(n)) faults.push(`${f.id} and ${g.id} are both ${grp(m)} moments`);
     }
   }
   const ctx = pageContexts({ scene: a.scene && a.scene !== true ? a.scene : null, effects: list(a.effects) || [], contexts: a.contexts });

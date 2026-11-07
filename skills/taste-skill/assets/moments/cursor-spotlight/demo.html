@@ -17,7 +17,7 @@
   .hero-centre { text-align: center; max-width: 820px; margin-inline: auto; display: grid; gap: var(--s-5); justify-items: center; }
   .hero-centre p { max-width: 54ch; font-size: var(--t-lead); }
   .hero-window { margin-top: var(--s-6); --ratio: 0px; flex: 1 1 0; min-height: 0; overflow: hidden; }
-  @media (max-width: 639px) { .hero-window { --ratio: 0px; } }
+  @media (max-width: 639px) { .hero-window { --ratio: 0px; min-height: 200px; } }   /* a short phone (320x640): the hero grows rather than leave the window a sliver */
 </style>
 </head>
 <body>

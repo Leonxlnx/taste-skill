@@ -8,8 +8,11 @@
     node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,roastery,coffee,visit --seed s1 --history .taste-skill/history.json
                                     [--count 6] [--tone light|dark] [--place "Lofoten, Norway"] [--setting coast,mountain]
                                     [--pictures 12] [--brief BRIEF.md] [--draft-lead | --no-client-photos] [--own-land] [--shop] [--mono] [--commons-only] [--json]
-    node <skill>/scripts/photos.mjs pick --product-without-photos   a physical product with no photographs: deals nothing
-    node <skill>/scripts/photos.mjs fetch 326,m61713103 --out <site folder> [--hero 326] [--big id] [--lqip] [--dir assets/img]
+    node <skill>/scripts/photos.mjs pick --product-without-photos   a physical product with no photographs: no library frame; prints the search for stand-ins
+    node <skill>/scripts/photos.mjs search "yoga studio interior" [--trade wellness] [--count 12] [--min 1600] [--orientation landscape|portrait] [--out .]
+    node <skill>/scripts/photos.mjs search --trade hotel          a live search of Wikimedia Commons (CC0, CC BY, CC BY-SA, public domain JPEGs), by
+                                                                  the trade's own search words when no words are given; writes .taste-skill/found.json
+    node <skill>/scripts/photos.mjs fetch 326,m61713103,f12345 --out <site folder> [--hero 326] [--big id] [--lqip] [--dir assets/img]
     node <skill>/scripts/photos.mjs credits --out <site folder> [--adapted c141] [--write] [--text]    the ONE footer line and the credits list for the photographs the pages use
 
   pick deals library frames as DETAIL slots: hands, tools, materials, process (the oven, the roasting drum, a hammer,
@@ -33,11 +36,20 @@
                   ("Lofoten, Norway", "Iceland; Faroe Islands"; list --places): a frame is dealt when its source
                   names the client's place exactly or a place inside it; a broader tag (Iceland for Reykjavik) is not.
                   --setting (coast, mountain, lake...) only narrows frames with no named place.
-  A physical product (a maker or brand of bikes, chairs, scooters, devices...) without photographs of its own is
-  refused: the client's own photographs, else its render from assets/objects/product-render ([data-product], one crafted
-  studio render composed from a JSON spec of its parts, sizes and materials) leads the full product page, never the short page;
+  A physical product (a maker or brand of bikes, chairs, scooters, devices...) without photographs of its own is dealt
+  no library frame: the client's own photographs lead; until they exist, stand-ins found with search (photographs of the
+  same kind of thing, in use, its parts, where it lives; no maker's name, logo or face readable), each listed in the
+  report as a stand-in to replace. A render (assets/objects/product-render) only when the brief asks for 3D or a render;
   never a drawing, never another kind's object (PH-04, PH-07). --shop (or "bike shop") is for a shop or workshop that
   sells or fixes every make: it gets parts and loads only.
+  search asks Wikimedia Commons for JPEGs under CC0, CC BY, CC BY-SA or in the public domain, at least --min pixels wide
+  (1600), and keeps them in .taste-skill/found.json under --out, so fetch and credits treat them as library frames. With
+  no words it runs the trade's own search words (TERMS below: yoga and studio interiors, bike workshop benches and whole
+  bikes, hotel buildings and rooms, weddings, a game's setting...). Every result is a candidate: look at it full size.
+  Recent photographs: with TASTE_SKILL_RECENT=<file> set, pick and fetch keep the frames of every build in that one
+  small file, and pick and search put a frame another build used lately behind the fresh ones, so two cafes built in
+  two folders do not show the same frames. Unset (the default), nothing is written outside the project; --no-recent
+  leaves the file out for one run.
   A bakery gets ovens, dough and loaves; a florist the stems and buds; a workshop only the frames of its own craft
   (--trade blacksmith, weaving, letterpress: a smithy is never a weaver's bench; a goldsmith, silversmith or locksmith
   has no trade here). A photograph marked moodOnly (its file names a business, or it is another's named room) is
@@ -47,8 +59,11 @@
   the older ones (500, 960 and 1280 wide, the --hero one 1920; WebP when ffmpeg is on the path, else JPEG), keeps every
   file inside the weight caps (a hero 400 KB, any other 250 KB: a larger one is left out of the srcset; the page's
   images together stay under 2,400 KiB at 1440, the figure perf.mjs FAILs above: fetch prints the estimate), writes
-  credits.json and prints the <img> to paste, with data-source="library-057" and data-subject. A --hero also gets a
-  780x584 crop for the phone (a <picture>, needs ffmpeg) and sizes="100vw". The hero's 2x at 1440 (2880 wide) is not
+  credits.json and prints the <img> to paste, with data-source="library-057" (a search result: data-source="stand-in")
+  and data-subject. A --hero also gets a
+  780x975 (4:5) crop for the phone (a <picture>, needs ffmpeg) and sizes="100vw"; without ffmpeg its phone sizes term
+  covers a 4:5 box instead. Either way it carries data-phone-fill, so a place hero's photograph may grow on a phone into
+  what its words leave (assets/layout/layout.css). The hero's 2x at 1440 (2880 wide) is not
   in the library. Node 22+, no packages (ffmpeg only for the crops and WebP).
   credits prints TWO things: the ONE footer line ("Photographs via Unsplash and Wikimedia Commons", a link to credits.html) and the
   credits list block (photographers, licences (the Public Domain Mark's own page for a public-domain file) and source pages),
@@ -75,29 +90,74 @@ const byId = new Map(lib.photos.map((p) => [p.id, p]));
 
 const argv = process.argv.slice(2);
 const cmd = argv[0];
-const FLAGS = ['shop', 'mono', 'json', 'product-without-photos', 'detail-only', 'draft-lead', 'no-client-photos', 'own-land', 'commons-only', 'lqip', 'text', 'places', 'write'];
+const FLAGS = ['shop', 'mono', 'json', 'product-without-photos', 'detail-only', 'draft-lead', 'no-client-photos', 'own-land', 'commons-only', 'lqip', 'text', 'places', 'write', 'no-recent'];
 const opt = (k, d) => { const i = argv.indexOf('--' + k); return i < 0 ? d : (!FLAGS.includes(k) && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : true); };
 const positional = () => { const out = []; for (let i = 1; i < argv.length; i++) { if (argv[i].startsWith('--')) { if (argv[i + 1] && !argv[i + 1].startsWith('--') && !FLAGS.includes(argv[i].slice(2))) i++; continue; } out.push(argv[i]); } return out; };
 const die = (m) => { console.error('photos: ' + m); process.exit(1); };
 
 // ------------------------------------------------------------------ a physical product without photographs
-const PRODUCT = 'A physical product without photographs of its own gets no stock photographs: no forest, road, weather, umbrella, '
-  + 'groceries or other maker\'s product stands in for it, and no other trade is dealt to fill the page. The product is still shown, never hidden '
-  + '(references/photos.md, A product without photographs; references/sections.md, Product), in this order: (1) the brief\'s own render or CAD view, if it supplies one; '
-  + '(2) else its render from assets/objects/product-render (effects-objects.md, Product renders): one crafted studio render composed from a JSON '
-  + 'spec of its own parts, sizes and materials, mounted as <div class="frame" data-product="assets/objects/product-render/specs/<name>.json" data-product-place="hero"> '
-  + 'with auto.js, drawn by make-posters.mjs --check first, on a flat ground; it is the product\'s picture, not an effect, on any physical product (hardware or not), '
-  + 'and it leads the hero (deal.mjs --type product --has object). The page is the full product page (hero with the render, the product, what it carries, how it is used, '
-  + 'specs as rows, a live order card), never the short page. Renders the brief names but does not supply count as missing and the report lists them. '
-  + 'Never a drawn SVG or a drawing of the product (PH-07), never mood stock, another maker\'s product or an object of another kind (a wheel is not a bicycle). '
-  + 'Its parts, sizes and figures also in type and as UI cards (references/cards.md). Nothing on the page says photographs are missing; the report lists the '
-  + 'photographs to shoot (the product on one plain backdrop, three angles, a detail of each part, the product in use). '
+const PRODUCT = 'A physical product without photographs of its own is dealt no library frame: the library holds other places\' details, never a product. '
+  + 'The product is still shown, never hidden, and by photographs (references/photos.md, A product without photographs; references/sections.md, Product), in this order: '
+  + '(1) the client\'s own photographs, or a picture the brief supplies (a cut-out, a CAD view, its own render); '
+  + '(2) until they exist, stand-ins found with photos.mjs search: the same kind of thing whole (a cargo bike for a cargo bike, never a wheel for a bicycle), '
+  + 'in use where it lives, close-ups of the parts the page names, one light and grade across the set, no maker\'s name, logo or face readable; '
+  + 'every one listed in the build report as a stand-in with the client\'s photograph to shoot in its place, nothing on the page saying so; '
+  + '(3) a render from assets/objects/product-render (effects-objects.md, Product renders) only when the brief asks for 3D or a render (deal.mjs --has object). '
+  + 'The page is the full product page (the product, what it carries, how it is used, specs as rows, a live order card), never the short page. '
+  + 'Never a drawn SVG or a drawing of the product (PH-07), never mood stock (a forest for "the ride", groceries for "what it carries"), never an object of another kind. '
+  + 'The report also lists the photographs to shoot (the product on one plain backdrop, three angles, a detail of each part, the product in use). '
   + 'A shop, workshop or rental that sells or fixes every make is a place: pick --trade bike --shop.';
+// what to search for a product: its own word, whole and close (add the place it lives in plain words: "cargo bicycle street")
+const productSearches = (word) => { const w = String(word || '<the product>').replace(/\b(brand|maker|company|startup|label|manufacturer)s?\b/gi, '').replace(/\s+/g, ' ').trim() || '<the product>'; return [w, `${w} detail`]; };
 function refuse(trade, why) {
-  if (opt('json')) console.log(JSON.stringify({ trade: trade || null, refused: true, why, ids: [], photos: [], next: PRODUCT }, null, 1));
-  else console.log(`NO PHOTOGRAPHS (${why}).\n\n${PRODUCT}`);
+  const qs = productSearches(trade);
+  const next = qs.map((q) => `node ${cmdPath(path.join(HERE, 'photos.mjs'))} search "${q}" --out .`);
+  if (opt('json')) console.log(JSON.stringify({ trade: trade || null, refused: true, why, ids: [], photos: [], next: PRODUCT, search: next }, null, 1));
+  else console.log(`NO LIBRARY FRAMES (${why}).\n\n${PRODUCT}\n\nthe search for stand-ins (look at each result full size; list every one you use in the report):\n${next.map((x) => '  ' + x).join('\n')}`);
   process.exit(0);
 }
+
+// ------------------------------------------------------------------ recent photographs, across builds
+// the frames every build that shares one file was dealt or fetched (shared with start.mjs, which keeps its palettes
+// there): a page in a new folder starts with an empty --history, so without it two builds of one trade show the same
+// frames. Opt-in: only a path set in TASTE_SKILL_RECENT is read or written; by default nothing leaves the project.
+const RECENT_FILE = process.env.TASTE_SKILL_RECENT || null;
+function readRecent() {
+  if (!RECENT_FILE || opt('no-recent')) return null;
+  try { const r = JSON.parse(fs.readFileSync(RECENT_FILE, 'utf8')); return r && typeof r === 'object' && !Array.isArray(r) ? r : {}; } catch { return {}; }
+}
+function writeRecent(r) {
+  if (!r) return;
+  try { fs.mkdirSync(path.dirname(RECENT_FILE), { recursive: true }); fs.writeFileSync(RECENT_FILE, JSON.stringify(r, null, 1) + '\n'); } catch { /* optional: never stop a deal over it */ }
+}
+// how lately and how often another build used each frame: the last 6 deals of this trade (the last one counts 6, the
+// oldest 1) and the last 60 frames fetched anywhere (1 each); a frame with no score is fresh
+function recentIds(r, trade) {
+  const m = new Map();
+  if (!r) return m;
+  const deals = Array.isArray(r.photos) ? r.photos.filter((d) => d && (!trade || d.trade === trade)).slice(-6) : [];
+  deals.forEach((d, i) => { for (const id of d.ids || []) m.set(id, (m.get(id) || 0) + i + 1); });
+  for (const id of Array.isArray(r.fetched) ? r.fetched.slice(-60) : []) m.set(id, (m.get(id) || 0) + 1);
+  return m;
+}
+
+// ------------------------------------------------------------------ live search words, for what the library lacks
+// (references/photos.md, Live search). A trade word in --trade, or the first rule its word matches
+const TERMS = [
+  [/yoga|pilates|wellness|\bspa\b|sauna|massage|retreat/i, ['yoga studio', 'yoga class', 'pilates studio', 'sauna interior']],
+  [/potter|ceramic|clay/i, ['pottery wheel', 'pottery studio', 'ceramics workshop']],
+  [/studio|atelier/i, ['artist studio', 'design studio', 'photography studio']],
+  [/bike|bicycle|cycl/i, ['bicycle workshop', 'bicycle repair stand', 'bicycle mechanic', 'city bicycle', 'cargo bicycle']],
+  [/hotel|guest ?house|\binn\b|lodge|b&b|bed and breakfast|hostel|cabin/i, ['hotel facade', 'guesthouse', 'hotel room', 'hotel bedroom', 'inn exterior']],
+  [/wedding|bridal|elope/i, ['wedding ceremony', 'wedding table', 'wedding bouquet', 'wedding reception', 'wedding rings']],
+  [/restaurant|bistro|brasserie|trattoria|kitchen|chef/i, ['restaurant kitchen', 'restaurant interior', 'chef plating']],
+  [/workshop|smith|forge|joiner|carpent|wood ?work|letterpress|weav/i, ['woodworking workshop', 'blacksmith forge', 'workshop tools']],
+  [/salon|barber|hair/i, ['barber shop', 'hair salon']],
+  [/bak(?:e|er|ery)|bread|patisserie/i, ['bakery bread', 'bakery counter', 'baker dough', 'bread oven']],
+  [/caf[eé]|coffee|espresso|roast/i, ['coffee shop interior', 'espresso machine', 'coffee roaster', 'cafe interior']],
+  [/florist|flower|bouquet/i, ['florist shop', 'flower bouquet', 'flower market']],
+];
+const termsFor = (word) => { const hit = TERMS.find(([re]) => re.test(String(word || ''))); return hit ? hit[1] : []; };
 
 // a brief's word for its trade
 // no trade: a business whose subject the library cannot show without passing another's work as its own
@@ -113,7 +173,7 @@ const ALIAS = [
   [/tour|guide|outdoor|hike|camp|travel/i, 'outdoors'],
   [/farm|garden|nursery|grow/i, 'farm'], [/wine|vineyard|winery/i, 'wine'], [/bar\b|taproom|brew|pub|cocktail/i, 'bar'],
 ];
-const NO_TRADE = (word) => `no trade for "${word}": the library holds ${Object.keys(lib.trades).join(', ')}, and none shows this business without passing another's work, room or goods as its own. Use the client's own photographs, else type and its real UI. A physical product: pick --product-without-photos (its own object when held, else the split hero with its live order form; never a drawing).`;
+const NO_TRADE = (word) => `no trade for "${word}": the library holds ${Object.keys(lib.trades).join(', ')}, and none shows this business without passing another's work, room or goods as its own. Use the client's own photographs; until they exist, stand-ins from a live search (photos.mjs search${termsFor(word).length ? ` --trade "${word}"` : ' "<its subject>"'}), each listed in the report, else type and its real UI. A physical product: pick --product-without-photos (stand-ins of the same kind of thing; never a drawing).`;
 function tradeOf(word) {
   if (!word || word === true) die('name a trade: --trade ' + Object.keys(lib.trades).join('|') + ' (a physical product without photographs: --product-without-photos)');
   if (lib.trades[word]) return word;
@@ -263,7 +323,7 @@ function pick() {
   if (trade === '__product' && !shop) refuse(word, `"${word}" is a product`);
   if (trade === '__product') die('--shop needs the shop\'s trade, e.g. --trade bike --shop');
   const T = lib.trades[trade];
-  if (T.shopOnly && !shop) refuse(trade, `the ${trade} trade holds photographs only for a shop, workshop or rental of every make (--shop); a maker of its own ${trade} is a product without photographs`);
+  if (T.shopOnly && !shop) refuse(typeof word === 'string' ? word : trade, `the ${trade} trade holds photographs only for a shop, workshop or rental of every make (--shop); a maker of its own ${trade} is a product without photographs`);
   const sectionsArg = opt('sections');
   const sections = sectionsArg && sectionsArg !== true ? String(sectionsArg).split(/[\s,]+/).filter(Boolean) : [];
   // PH-02: library frames are at most 1 in 3 of the page's pictures (--pictures is the page's whole count, 12 when not said)
@@ -365,11 +425,16 @@ function pick() {
   const uses = (p) => recent.filter((d) => d.ids.includes(p.id)).length;
   const last = new Set(mine.at(-1)?.ids || []);
   const leadsBack = (n) => new Set(mine.slice(-n).map((d) => d.lead));
+  // frames another build on this machine was dealt or fetched lately (the shared recent file): behind the fresh ones,
+  // ahead of a better hint, so two builds of one trade in two folders do not show the same frames
+  const recentLog = readRecent();
+  const shared = recentIds(recentLog, trade);
+  const elsewhere = (p) => shared.get(p.id) || 0;
   const jitter = new Map(pool.map((p) => [p.id, rnd()]));
   // the seed ranks: a frame rated 8 or more gets a head start of 0.3 in a 0-1 draw, not a place at the top, so one seed's deal differs from the next
   // (a small or soft frame goes behind the others of its subject; a frame dealt in an earlier build behind the fresh ones)
   const score = (p) => jitter.get(p.id) - (p.quality >= 8 ? 0.3 : 0);
-  const order = (a, b) => (named(b) - named(a)) || (((a.small || a.soft) ? 1 : 0) - ((b.small || b.soft) ? 1 : 0)) || ((last.has(a.id) ? 1 : 0) - (last.has(b.id) ? 1 : 0)) || (uses(a) - uses(b)) || (score(a) - score(b));
+  const order = (a, b) => (named(b) - named(a)) || (((a.small || a.soft) ? 1 : 0) - ((b.small || b.soft) ? 1 : 0)) || (elsewhere(a) - elsewhere(b)) || ((last.has(a.id) ? 1 : 0) - (last.has(b.id) ? 1 : 0)) || (uses(a) - uses(b)) || (score(a) - score(b));
 
   // the lead: strong, wide, of a subject that may open this trade's page, not one of its last leads
   // none when these options leave no photograph made to lead: the hero is then the client's own, type or UI, never a row picture blown up
@@ -378,6 +443,7 @@ function pick() {
     let leads = left.filter(canLead);
     if (!leads.length && tone) { leads = untoned.filter((p) => canLead(p) && !chosen.some((c) => c.p === p)); if (leads.length) notes.push(`no lead in a ${tone} tone: the lead keeps its own`); }
     for (const n of [3, 2, 1]) { const back = leadsBack(n); const fresh = leads.filter((p) => !back.has(p.id)); if (fresh.length) { leads = fresh; break; } }
+    if (leads.length) { const lo = Math.min(...leads.map(elsewhere)); leads = leads.filter((p) => elsewhere(p) === lo); }   // the one other builds used least lately
     // a sharp, well-made photograph opens the page whenever these options leave one (older soft, hazy files stay in rows)
     const strong = leads.filter((p) => p.quality >= 7); if (strong.length) leads = strong;
     if (leads.length === 1 && leadsBack(1).has(leads[0].id) && mine.length) notes.push('only one photograph can lead this trade with these options: it led last time too');
@@ -427,7 +493,7 @@ function pick() {
       // a repeated word opens the row in the orientation most of its frames have (landscape on a tie), so a row is as long as the library allows
       const nOf = (o) => avail.filter((p) => subj.includes(p.subject) && p.orientation === o && (!p.moodOnly || mood)).length;
       const rowPref = nOf('landscape') >= nOf('portrait') ? 'landscape' : 'portrait';
-      const rank = (p) => [subj.indexOf(p.subject), repeated && p.orientation !== rowPref ? 1 : 0, hint && hint.test(p.alt) ? 0 : 1, motifs.has(p.motif) ? 1 : 0, clash(p), last.has(p.id) ? 1 : 0, uses(p), p.soft ? 1 : 0, score(p)];
+      const rank = (p) => [subj.indexOf(p.subject), repeated && p.orientation !== rowPref ? 1 : 0, elsewhere(p) * 2 + (hint && hint.test(p.alt) ? 0 : 1), motifs.has(p.motif) ? 1 : 0, clash(p), last.has(p.id) ? 1 : 0, uses(p), p.soft ? 1 : 0, score(p)];
       const cands = avail.filter((p) => subj.includes(p.subject) && (!row || p.orientation === row) && (!p.moodOnly || mood)).map((p) => [rank(p), p])
         .sort((a, b) => { for (let i = 0; i < 9; i++) if (a[0][i] !== b[0][i]) return a[0][i] - b[0][i]; return 0; });
       const best = cands.find(([r]) => r[3] === 0) || null; // never the same motif twice: a section goes empty rather than repeat
@@ -450,7 +516,7 @@ function pick() {
             if (!rule) continue;
             const [, subj, hint, mood] = rule;
             const row = chosen.find((c) => c.p && norm(c.section) === w)?.p.orientation;
-            const rank = (p) => [subj.indexOf(p.subject), clash(p), hint && hint.test(p.alt) ? 0 : 1, last.has(p.id) ? 1 : 0, uses(p), p.soft ? 1 : 0, score(p)];
+            const rank = (p) => [subj.indexOf(p.subject), clash(p), elsewhere(p) * 2 + (hint && hint.test(p.alt) ? 0 : 1), last.has(p.id) ? 1 : 0, uses(p), p.soft ? 1 : 0, score(p)];
             const cands = avail.filter((p) => subj.includes(p.subject) && !motifs.has(p.motif) && (!p.moodOnly || mood) && (!strictRow || !row || p.orientation === row))
               .map((p) => [rank(p), p]).sort((a, b) => { for (let i = 0; i < 7; i++) if (a[0][i] !== b[0][i]) return a[0][i] - b[0][i]; return 0; });
             if (!cands.length) continue;
@@ -530,6 +596,11 @@ function pick() {
   const leadId = got.find((c) => c.slot === 'lead')?.p.id || null;
   const deal = { trade, ...(draftPath ? { draft: true } : {}), lead: leadId, ids: ps.map((p) => p.id), ...(sections.length ? { sections } : {}), seed, at: new Date().toISOString() };
   writeHistory(histFile, hist, deal);
+  if (recentLog && deal.ids.length) {
+    recentLog.photos = [...(Array.isArray(recentLog.photos) ? recentLog.photos : []), { trade, ids: deal.ids, at: deal.at }].slice(-40);
+    writeRecent(recentLog);
+  }
+  if (shared.size && ps.some((p) => shared.has(p.id))) notes.push(`${ps.filter((p) => shared.has(p.id)).length} of these frames another build on this machine used lately: the library has no fresher frame of their subjects with these options; a live search (photos.mjs search${termsFor(word).length ? ` --trade "${word}"` : ''}) finds others`);
   // a place page (every SLOTTED trade) has no band, tab or text on a photograph: its hints and words come from PLACE_PAGE
   const slotted = SLOTTED.has(trade);
   const where = (c) => (slotted && (PLACE_PAGE[c.slot] || PLACE_PAGE[c.p.subject])) || PLACE[c.slot] || PLACE[c.p.subject] || PLACE.landscape;
@@ -563,6 +634,103 @@ function pick() {
   }
   if (ps.length) console.log(`\nthen: node ${cmdPath(path.join(HERE, 'photos.mjs'))} fetch ${ps.map((p) => p.id).join(',')}${leadId ? ' --hero ' + leadId : ''} --out .\n  (as printed from the site folder; from elsewhere give --out the site's path. fetch writes the files to <site folder>/assets/img/, or to --dir <a folder under the site>, and prints the markup that loads them as assets/img/<file>, or <--dir>/<file>)`);
   if (!histFile) console.log('(no --history: the next deal may lead with the same photograph)');
+}
+
+// ------------------------------------------------------------------ search
+// a live search of Wikimedia Commons for what the library lacks (a yoga studio, a bike workshop's bench, a hotel's
+// building and rooms, a wedding, a product of the client's kind). Results are candidates, kept in
+// <out>/.taste-skill/found.json so fetch and credits treat them as library frames; every one is looked at full size and
+// listed in the report as a stand-in for the client's own photograph.
+const foundFile = (out) => path.join(out, '.taste-skill', 'found.json');
+function readFound(...outs) {
+  const m = new Map();
+  for (const o of outs) { try { for (const p of JSON.parse(fs.readFileSync(foundFile(o), 'utf8')).photos || []) m.set(p.id, p); } catch { /* none */ } }
+  return m;
+}
+const LICENCE_OK = /^(cc0|cc[ -]by(-sa)?[ -]\d|public domain|pd\b|pdm)/i;
+// a file of something other than a photograph of the subject, or one a builder cannot pass as a neutral stand-in
+const NOT_A_PHOTO = /\b(logo|sign(?:age|board)?|map|diagram|drawing|poster|screenshot|chart|plan|coat of arms|flag|painting|illustration|engraving|lithograph|stamp|postcard|advert|brochure|label|render(?:ing)?|3d|cgi|collage)\b/i;
+const stripHtml = (s) => String(s || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+async function searchCmd() {
+  const words = positional().join(' ').trim();
+  const tradeWord = typeof opt('trade') === 'string' ? opt('trade') : '';
+  const queries = words ? [words] : termsFor(tradeWord);
+  if (!queries.length) die(tradeWord ? `no search words for "${tradeWord}": name the subject, e.g. photos.mjs search "${tradeWord} interior" (a game: its setting in plain words, "flooded coastal town at dusk")` : 'usage: photos.mjs search "<what the photograph shows>" [--trade <trade>] [--count 12] [--min 1600] [--orientation landscape|portrait] [--out .]');
+  const out = typeof opt('out') === 'string' ? opt('out') : '.';
+  const count = Math.max(1, Math.min(60, parseInt(opt('count', 12), 10) || 12));
+  const per = Math.max(3, Math.ceil(count / queries.length));
+  const min = Math.max(800, parseInt(opt('min', 1600), 10) || 1600);
+  const orient = opt('orientation');
+  const recent = recentIds(readRecent(), '');
+  const seen = new Set(), results = [], failed = [];
+  for (const [qi, q] of queries.entries()) {
+    const u = 'https://commons.wikimedia.org/w/api.php?' + new URLSearchParams({
+      action: 'query', format: 'json', formatversion: '2', generator: 'search', gsrnamespace: '6', gsrlimit: '50',
+      // photographs only: paintings, prints and drawings of the subject are left out by their categories' words
+      gsrsearch: q + ' filetype:bitmap -painting -paintings -drawing -engraving -illustration -lithograph -poster -map',
+      prop: 'imageinfo', iiprop: 'url|size|mime|extmetadata', iiextmetadatafilter: 'LicenseShortName|LicenseUrl|Artist|ObjectName|Restrictions',
+    });
+    let data = null, err = '';
+    for (let attempt = 0; attempt < 4 && !data; attempt++) {
+      try {
+        const r = await fetch(u, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: AbortSignal.timeout(30000) });
+        if (r.status === 429 || r.status >= 500) { err = 'HTTP ' + r.status; await sleep(2000 * 2 ** attempt); continue; }
+        if (!r.ok) { err = 'HTTP ' + r.status; break; }
+        const text = await r.text();
+        try { data = JSON.parse(text); } catch { err = 'busy (' + text.slice(0, 40).trim() + ')'; await sleep(2000 * 2 ** attempt); }
+      } catch (e) { err = e.message; await sleep(1500); }
+    }
+    if (!data) { failed.push(`"${q}": ${err}`); continue; }
+    const pages = ((data.query || {}).pages || []).sort((a, b) => (a.index || 0) - (b.index || 0));
+    const mine = [];
+    for (const pg of pages) {
+      const ii = (pg.imageinfo || [])[0]; if (!ii) continue;
+      const md = ii.extmetadata || {}, val = (k) => stripHtml((md[k] || {}).value);
+      const id = 'f' + pg.pageid, title = String(pg.title || '').replace(/^File:/, '').replace(/\.[a-z0-9]+$/i, '').replace(/_/g, ' ');
+      const licence = val('LicenseShortName');
+      if (seen.has(id) || ii.mime !== 'image/jpeg' || ii.width < min || !LICENCE_OK.test(licence) || /\b(nc|nd)\b/i.test(licence)) continue;
+      if (/personality|trademark|insignia/i.test(val('Restrictions')) || NOT_A_PHOTO.test(title)) continue;
+      const ratio = Math.round((ii.width / ii.height) * 100) / 100;
+      const orientation = ratio >= 1.05 ? 'landscape' : ratio <= 0.95 ? 'portrait' : 'square';
+      if (orient && orient !== true && orientation !== orient) continue;
+      // one file of a series (the same place shot five times: "Hotel X, room (1)", "(2)"...), so the candidates differ
+      const series = title.toLowerCase().replace(/[\d()[\]_.,-]+/g, ' ').split(/\s+/).filter(Boolean).slice(0, 3).join(' ');
+      if (mine.some((m) => m.series === series)) continue;
+      seen.add(id);
+      // the plain file URL (Commons adds tracking words after "?"): fetch makes its 500, 960 and 1280 thumbnails from it
+      mine.push({ id, source: 'commons', url: String(ii.url).split('?')[0], width: ii.width, height: ii.height, ratio, orientation, by: val('Artist') || 'Unknown author', licence,
+        licenceUrl: val('LicenseUrl') || (/public domain|pd/i.test(licence) ? 'https://creativecommons.org/publicdomain/mark/1.0/' : ''), page: String(ii.descriptionurl).split('?')[0],
+        alt: val('ObjectName') || title, subject: typeof opt('subject') === 'string' ? opt('subject') : 'stand-in', tone: 'mid', calm: 'none',
+        standIn: true, query: q, series, ...(tradeWord ? { trade: tradeWord } : {}), at: new Date().toISOString() });
+    }
+    // fresh first: a file another build fetched lately goes behind the others of its query
+    mine.sort((a, b) => (recent.has(a.id) ? 1 : 0) - (recent.has(b.id) ? 1 : 0));
+    results.push(...mine.slice(0, per));
+    if (qi < queries.length - 1) await sleep(1200);   // Commons answers 429 to quick runs
+  }
+  const keep = results.slice(0, Math.max(count, queries.length * 3));
+  if (keep.length) {
+    const file = foundFile(out);
+    let store = { note: 'Live search results (photos.mjs search): candidates, each looked at full size before use and listed in the build report as a stand-in.', photos: [] };
+    try { store = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { /* new */ }
+    const ids = new Set(keep.map((p) => p.id));
+    store.photos = [...(store.photos || []).filter((p) => !ids.has(p.id)), ...keep];
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(store, null, 1) + '\n');
+  }
+  if (opt('json')) { console.log(JSON.stringify({ queries, photos: keep, failed }, null, 1)); return; }
+  console.log(`search: ${keep.length} candidate${keep.length === 1 ? '' : 's'} from Wikimedia Commons (JPEG, ${min}px wide or more, CC0, CC BY, CC BY-SA or public domain) for ${queries.map((q) => `"${q}"`).join(', ')}\n`);
+  for (const p of keep) {
+    console.log(`${p.id.padEnd(11)} ${String(p.width + 'x' + p.height).padEnd(10)} ${p.orientation.padEnd(9)} ${p.licence.padEnd(13)} ${p.by.slice(0, 40)}${recent.has(p.id) ? '  [another build used it lately]' : ''}`);
+    console.log(`            ${p.alt.slice(0, 110)}  (${p.query})`);
+    console.log(`            ${p.page}`);
+  }
+  if (failed.length) console.log('\nnot searched: ' + failed.join('; '));
+  if (!keep.length) { console.log(`nothing fits: other words (the subject plainly, "bicycle workshop", "hotel room"), --min 1200, or leave the slot to the client's own photograph or type`); return; }
+  console.log(`\n- candidates only: open each page and look at the file full size. Keep a frame only when it shows the subject sharp, in plain colour, with no readable name, logo or sign of another business, no face shown as the client's staff or guests, no landmark passed off as the client's place; one light and grade across the set (references/photos.md, Live search)
+- every frame used is a STAND-IN: list it in the build report with the client's photograph to shoot in its place; nothing on the page says so (no caption); write its alt text new, the file's title names someone else's place
+- kept in ${slash(foundFile(out))}; fetch takes the ids like library ids:
+  node ${cmdPath(path.join(HERE, 'photos.mjs'))} fetch ${keep.slice(0, 3).map((p) => p.id).join(',')} --out ${out === '.' ? '.' : cmdPath(out)}   (the ids you kept; --hero <id> for the lead)`);
 }
 
 // ------------------------------------------------------------------ list
@@ -609,8 +777,14 @@ function list() {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Commons serves thumbnails only at its standard widths (330, 500, 960, 1280, 1920, 3840); Picsum at any width
 const STEPS = [500, 960, 1280, 1920];
+// found.json sits in the project and anyone can edit it: a file is fetched only from Commons' own file host, and a
+// library frame only by its number
 function fileUrl(p, w) {
-  if (p.source !== 'commons') { const x = Math.min(w, p.width || w); return `https://picsum.photos/id/${p.id}/${x}/${Math.round(x / p.ratio)}`; }
+  if (p.source !== 'commons') {
+    if (!/^\d+$/.test(String(p.id))) throw new Error('not a library frame id');
+    const x = Math.min(w, p.width || w); return `https://picsum.photos/id/${p.id}/${x}/${Math.round(x / p.ratio)}`;
+  }
+  if (!/^https:\/\/upload\.wikimedia\.org\//.test(String(p.url || ''))) throw new Error('not a Commons file');
   if (!p.width || w >= p.width) return p.url;
   const m = /\/commons\/(\w\/\w\w)\/([^/?]+)$/.exec(p.url);
   return m ? `https://upload.wikimedia.org/wikipedia/commons/thumb/${m[1]}/${m[2]}/${w}px-${m[2]}` : p.url;
@@ -632,9 +806,10 @@ async function download(url) {
 // the width the browser should fetch for: the shown width, or for a wide photograph cropped into a taller box
 // (a hero that fills the screen, a 4:5 frame on a phone) the box's height times the photograph's ratio
 const FFMPEG = (() => { try { return spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' }).status === 0; } catch { return false; } })();
-// the hero is Recipe 3's top photograph: the full width of the screen and 480 px tall (a 4:3 box at 390), so the browser is told 100vw, never a vh term
-// (a vh term sends a tablet and a 3x phone to the largest file)
-const HERO_CROP = { w: 780, h: 584, media: '(max-width: 639px)' }; // PH-28: the phone's 4:3 crop at twice its width
+// the hero is Recipe 3's top photograph: the full width of the screen and 480 px tall, so the browser is told 100vw, never a vh term
+// (a vh term sends a tablet and a 3x phone to the largest file). On a phone a place hero's photograph grows from 4:3 to at most 4:5
+// into what its words leave, so its crop is 4:5 (a 4:3 one shown that tall is blown up 1.7x)
+const HERO_CROP = { w: 780, h: 975, media: '(max-width: 639px)' }; // PH-28: the phone's crop at twice its width
 const kb = (f) => Math.round(fs.statSync(f).size / 1024);
 // a JPEG as WebP (smaller at the same look) when ffmpeg is on the path
 function toWebp(buf) {
@@ -642,7 +817,7 @@ function toWebp(buf) {
   const r = spawnSync('ffmpeg', ['-loglevel', 'error', '-i', 'pipe:0', '-c:v', 'libwebp', '-quality', '78', '-compression_level', '6', '-f', 'webp', 'pipe:1'], { input: buf, maxBuffer: 1 << 28 });
   return r.status === 0 && r.stdout.length > 1000 && r.stdout.length < buf.length ? r.stdout : null;
 }
-// the phone crop of a hero: cover-cropped to 780x584 around the photograph's focus, from its 1200 file
+// the phone crop of a hero: cover-cropped to 780x975 around the photograph's focus, from the first file at least that tall
 function cropFile(from, to, focus) {
   if (!FFMPEG) return false;
   const [fx, fy] = (focus || '50% 50%').split(/\s+/).map((v) => Math.min(1, Math.max(0, parseFloat(v) / 100)));
@@ -653,7 +828,8 @@ function cropFile(from, to, focus) {
 }
 function sizesFor(p, hero) {
   const r = Math.max(1, Math.round(p.ratio * 100) / 100);
-  if (hero) return '100vw';
+  // a hero without its phone crop: on a phone the file must cover a 4:5 box (the place hero grows to it), so its width there is the box's height times the ratio
+  if (hero) return hero === 'crop' ? '100vw' : `(max-width: 639px) ${Math.ceil(r * 125)}vw, 100vw`;
   if (p.orientation === 'landscape' && !p.wide) return `(max-width: 639px) ${Math.round(r * 125)}vw, (max-width: 1023px) 100vw, 50vw`;
   return '(max-width: 1023px) 100vw, 50vw';
 }
@@ -686,10 +862,12 @@ async function fetchCmd() {
   const credFile = path.join(dir, 'credits.json');
   let cred = { note: 'Credits for the photographs in this folder: photos.mjs credits prints the footer block for the ones the pages use.', photos: [] };
   try { cred = JSON.parse(fs.readFileSync(credFile, 'utf8')); } catch { /* new */ }
-  const failed = [], tags = [];
+  const failed = [], tags = [], saved = [];
+  // a live search's results (photos.mjs search, .taste-skill/found.json in the site folder or here) fetch like library frames
+  const found = readFound(out, '.');
   for (const id of ids) {
-    const p = byId.get(id);
-    if (!p) { failed.push(id + ': not in the library'); continue; }
+    const p = byId.get(id) || found.get(id);
+    if (!p) { failed.push(id + (/^f\d+$/.test(id) ? ': not in .taste-skill/found.json (run photos.mjs search with the same --out first)' : ': not in the library')); continue; }
     if (p.weak) { failed.push(id + ': never dealt' + (p.why ? ' (' + p.why + ')' : '')); continue; }
     const isHero = hero.has(id);
     let files = [], names = [], srcName, srcW;
@@ -730,10 +908,10 @@ async function fetchCmd() {
     }
     const src = isHero ? (files.find((f) => f.w >= 1440) || files.at(-1)) : files.at(-1);
     srcName = src.file; srcW = src.w;
-    // the hero's phone crop (PH-28): 780x584 around the subject, for a <picture> source at 639px and under
+    // the hero's phone crop (PH-28): 780x975 around the subject, for a <picture> source at 639px and under
     let crop = null;
     if (isHero) {
-      const from = files.find((f) => f.w >= 1200) || files.at(-1), name = 'photo-' + id + '-' + HERO_CROP.w + 'x' + HERO_CROP.h + '.webp';
+      const from = files.find((f) => f.w / p.ratio >= HERO_CROP.h) || files.at(-1), name = 'photo-' + id + '-' + HERO_CROP.w + 'x' + HERO_CROP.h + '.webp';
       if (cropFile(path.join(dir, from.file), path.join(dir, name), p.focus)) crop = { file: name, kb: kb(path.join(dir, name)) };
     }
     names = [...files.map((f) => f.file), ...(crop ? [crop.file] : [])];
@@ -742,8 +920,8 @@ async function fetchCmd() {
     const h = Math.round(srcW / p.ratio);
     const srcset = files.map((f) => rel + '/' + f.file + ' ' + f.w + 'w').join(', ');
     const style = [p.focus ? 'object-position: ' + p.focus : '', lqip && p.lqip ? 'background: center / cover url(' + p.lqip + ')' : ''].filter(Boolean).join('; ');
-    tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero) + '" width="' + srcW + '" height="' + h + '" alt="' + p.alt.replace(/"/g, '&quot;') + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" data-source="library-057" data-subject="' + p.subject + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));
-    if (crop) { const i = tags.length - 1; tags[i] = '<picture><source media="' + HERO_CROP.media + '" srcset="' + rel + '/' + crop.file + ' ' + HERO_CROP.w + 'w" sizes="100vw">' + tags[i] + '</picture>'; }
+    tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero && (crop ? 'crop' : 'whole')) + '" width="' + srcW + '" height="' + h + '" alt="' + p.alt.replace(/"/g, '&quot;') + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + (isHero && !crop ? ' data-phone-fill' : '') + ' data-source="' + (p.standIn ? 'stand-in' : 'library-057') + '" data-subject="' + p.subject + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));
+    if (crop) { const i = tags.length - 1; tags[i] = '<picture data-phone-fill><source media="' + HERO_CROP.media + '" srcset="' + rel + '/' + crop.file + ' ' + HERO_CROP.w + 'w" sizes="100vw">' + tags[i] + '</picture>'; }
     // where the hero's tag goes: a full-bleed photograph (hero--place, hero--photo) is the section's one layer
     if (isHero) tags[tags.length - 1] += crop ? '  <!-- full-bleed (hero--place, hero--photo): <picture class="hero__bg">, a direct child of the section beside its .wrap; in a frame (.hero__media): as printed -->'
       : '  <!-- full-bleed (hero--place, hero--photo): <img class="hero__bg">, a direct child of the section beside its .wrap; in a frame (.hero__media): as printed -->';
@@ -752,10 +930,15 @@ async function fetchCmd() {
     const over = files.filter((f) => f.kb > capKb);
     if (over.length) console.log('  over the weight cap (' + capKb + ' KB): ' + over.map((f) => f.file + ' ' + f.kb + ' KB').join(', ') + ' (every file of this photograph is over it: pick another, or re-encode it)');
     if (isHero && srcW < 1440) console.log('  the hero is ' + srcW + ' wide: a 1440 screen at 2x would want 2880, which the library does not hold (PH-27); the page keeps the largest file within the cap');
-    if (isHero && !crop) console.log('  no phone crop: ffmpeg is not on the path (the 1200 file with its object-position covers 390 until a 780x584 crop exists)');
+    if (isHero && !crop) console.log('  no phone crop: ffmpeg is not on the path (the phone sizes term on the img fetches a file that covers a 4:5 box at 390 until a 780x975 crop exists)');
     if (!isHero && !p.files && p.source === 'commons' && !FFMPEG) console.log('  JPEG: ffmpeg is not on the path, so no WebP (PH-27 asks for WebP or AVIF)');
+    if (p.standIn) console.log('  a live search result: a STAND-IN for the client\'s own photograph; list it in the build report, write its alt text new');
+    saved.push(id);
   }
   fs.writeFileSync(credFile, JSON.stringify(cred, null, 1) + '\n');
+  // the shared recent file: the next build on this machine puts these frames behind the fresh ones
+  const recentLog = readRecent();
+  if (recentLog && saved.length) { recentLog.fetched = [...(Array.isArray(recentLog.fetched) ? recentLog.fetched.filter((x) => !saved.includes(x)) : []), ...saved].slice(-120); writeRecent(recentLog); }
   console.log('\nwrote to ' + slash(dir) + '/ (' + rel + '/ in the site folder ' + slash(out) + '; a page in that folder loads them as ' + rel + '/<file>)');
   const wt = pageWeight(dir, cred.photos), total = wt.reduce((a, r) => a + r.kb, 0), n = (v) => v.toLocaleString('en');
   if (wt.length) {
@@ -764,7 +947,7 @@ async function fetchCmd() {
     console.log('\npage images at 1440 (the file each of the ' + wt.length + ' photograph' + (wt.length === 1 ? '' : 's') + ' in this folder loads, the hero at 2x): about ' + n(total) + ' KiB of ' + n(PAGE_KIB.fail) + ' - ' + verdict);
     if (total > PAGE_KIB.warn) console.log('  heaviest: ' + [...wt].sort((a, b) => b.kb - a.kb).slice(0, 3).map((r) => r.n + ' ' + r.kb + ' KiB').join(', '));
   }
-  if (tags.length) console.log('\nthe <img> for each (the hero is sized 100vw, as Recipe 3 shows it full width, with a 780x584 phone crop in a <picture>; any other picture is sized for a half-width or full-width frame: set sizes to the shown width; the hero eager, the rest lazy, none hidden or faded in; a photograph in a nav menu, a tab, a carousel or a sideways-scrolling row drops loading="lazy", which may never fire there; data-source and data-subject stay on every picture):\n' + tags.join('\n'));
+  if (tags.length) console.log('\nthe <img> for each (the hero is sized 100vw, as Recipe 3 shows it full width, with a 780x975 phone crop in a <picture>; keep data-phone-fill on the hero picture or img; any other picture is sized for a half-width or full-width frame: set sizes to the shown width; the hero eager, the rest lazy, none hidden or faded in; a photograph in a nav menu, a tab, a carousel or a sideways-scrolling row drops loading="lazy", which may never fire there; data-source and data-subject stay on every picture):\n' + tags.join('\n'));
   console.log('\n' + slash(credFile) + '\nonce the page\'s markup uses these files (credits reads the page for them, so not before): node ' + cmdPath(path.join(HERE, 'photos.mjs')) + ' credits --out ' + cmdPath(out) + (rel !== 'assets/img' ? ' --dir ' + rel : '') + ' prints the footer credits for the photographs it uses');
   if (failed.length) { console.log('\nnot saved:\n' + failed.join('\n')); process.exitCode = 1; }
 }
@@ -837,5 +1020,6 @@ function creditsCmd() {
 if (cmd === 'pick') pick();
 else if (cmd === 'list') list();
 else if (cmd === 'fetch') await fetchCmd();
+else if (cmd === 'search') await searchCmd();
 else if (cmd === 'credits') creditsCmd();
 else { console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\n?/, '')); process.exitCode = cmd ? 1 : 0; }

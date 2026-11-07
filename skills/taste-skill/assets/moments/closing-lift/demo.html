@@ -14,13 +14,7 @@
 <style>
   :root { --p-bg: #ffffff; --p-surface: #f2f4f6; --p-ink: #14181c; --p-muted: #5f6770; --p-accent: #1f6f8b; --p-accent-ink: #ffffff; --p-action: #14181c; --p-action-ink: #ffffff;
           --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
-  .faq { display: grid; gap: 0; max-width: 760px; }
-  .faq details { border-top: 1px solid var(--line); padding: var(--s-4) 0; }
-  .faq details:last-child { border-bottom: 1px solid var(--line); }
-  .faq summary { cursor: pointer; font-weight: 500; font-size: var(--t-lead); list-style: none; display: flex; justify-content: space-between; gap: var(--s-4); }
-  .faq summary::after { content: "+"; color: var(--muted); }
-  .faq details[open] summary::after { content: "–"; }
-  .faq details p { margin-top: var(--s-3); color: var(--ink); max-width: 60ch; }
+  .faq { max-width: 760px; }
   .demo-footer--dark { background: #14181c; color: #9aa3ad; border: 0; }
 </style>
 </head>
@@ -42,10 +36,10 @@
       <div class="container">
         <div class="section-head"><h2>Questions before you book</h2></div>
         <div class="faq">
-          <details open><summary>How fit do I need to be?</summary><p>You ride 30 to 62 km a day at a conversational pace, with one climb on day one. Anyone who rides a few hours a week will be fine.</p></details>
-          <details><summary>Can I bring my own bike?</summary><p>Yes. The van carries bags only, so the bike rides every day. We also hire road and gravel bikes for €45 a day.</p></details>
-          <details><summary>What if the weather turns?</summary><p>We ride in rain. In a storm the day's stage goes by van and the guesthouse keeps the room.</p></details>
-          <details><summary>How do I get to the start?</summary><p>The ride starts at the station in Bergen at 10:00 on the first day and ends at a station on the same line.</p></details>
+          <div class="faq__item"><h3>How fit do I need to be?</h3><p>You ride 30 to 62 km a day at a conversational pace, with one climb on day one. Anyone who rides a few hours a week will be fine.</p></div>
+          <div class="faq__item"><h3>Can I bring my own bike?</h3><p>Yes. The van carries bags only, so the bike rides every day. We also hire road and gravel bikes for €45 a day.</p></div>
+          <div class="faq__item"><h3>What if the weather turns?</h3><p>We ride in rain. In a storm the day's stage goes by van and the guesthouse keeps the room.</p></div>
+          <div class="faq__item"><h3>How do I get to the start?</h3><p>The ride starts at the station in Bergen at 10:00 on the first day and ends at a station on the same line.</p></div>
         </div>
       </div>
     </section>

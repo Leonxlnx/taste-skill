@@ -291,6 +291,8 @@
 
 /* on a phone a fragment fits the panel's width (see the placements), so it is only cut at the bottom:
    the side fades go, the bottom fade stays */
+/* a phone: the card's link and the plan's button are 44px targets (the link keeps its look, its box grows round it) */
+@media (max-width: 639px) { .card__link { min-height: 44px; margin-top: 5px; } .plan__btn { height: 44px; } }
 @media (max-width: 639px) {
   .stage--fade-r { -webkit-mask: none; mask: none; }
   .stage--fade-b, .stage--fade-br {
