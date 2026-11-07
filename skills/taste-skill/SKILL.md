@@ -27,6 +27,11 @@ figma.com and x.ai are the bar (in words: `layout-v4.md` section 1).
 
 `<skill>` is this folder. It needs Node 22+ and Chrome, Edge or Chromium (ffmpeg optional).
 
+**Every page is built in a copy of `<skill>/assets/starter.html`, with the kit copied into
+`assets`, however small the brief.** "Keep it simple" or "just a quick page" means fewer sections,
+never a page or stylesheet of your own: the starter carries the hero entrance, the moments, the
+screens and the checks, and the finish gate fails a page built without it.
+
 ## House rules
 
 These nine win over everything else in this skill.
