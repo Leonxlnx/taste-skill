@@ -1,7 +1,7 @@
 ---
 name: design-taste-frontend
 description: >-
-  tasteskill 2.5.1, the anti-slop frontend skill. Builds professional company websites at the level
+  tasteskill 2.5.2, the anti-slop frontend skill. Builds professional company websites at the level
   of figma.com and x.ai: plain copy in a voice of its own, one system, one section per screen,
   equal edges, real photographs and real product UI (licensed stand-in photographs when the client
   has none; a product render only when the brief asks for 3D), a hero entrance and one or two dealt

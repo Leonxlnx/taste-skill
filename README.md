@@ -58,7 +58,7 @@
 
 <p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">Become a sponsor</a></sub></p>
 
-**Taste Skill** (`tasteskill 2.5.1`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs (licensed stand-ins when the client has none), real brand icons and real product UI, a hero entrance and one or two dealt moments on every page, quiet micro-interactions, and shader effects and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker and a finish gate that enforce the rules.
+**Taste Skill** (`tasteskill 2.5.2`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs (licensed stand-ins when the client has none), real brand icons and real product UI, a hero entrance and one or two dealt moments on every page, quiet micro-interactions, and shader effects and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker and a finish gate that enforce the rules.
 
 Pages built from a single brief in earlier v2 runs:
 

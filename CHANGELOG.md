@@ -4,6 +4,12 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
+## 2.5.2 - unreleased
+
+(in progress)
+
+---
+
 ## 2.5.1 - 2026-11-07
 
 What a 44-site test of `2.5.0` showed, fixed: builds now iterate until the checker is clean, every page moves a little, products without photographs are shown in photographs, palettes fit the trade, the copy gets a voice of its own, and nothing lies on anything else on a phone. The kit's own page models now pass the checker at 1440 and 390.
