@@ -11,8 +11,9 @@ Section and panel grounds use `--g-main`, `--g-alt` and `--g-dark` only (system.
 same order at 390. Photograph layers and the tech grounds below do not count among them.
 
 - **`--g-main`:** white, or a tint of lightness 0.80 to 0.97 with low saturation (channel spread
-  0.12 or less), taken from the client: a place's walls, paper or shopfront (warm off-white by
-  default, `#F7F3EC`; white for a shop that sells mostly online), a product's photo backdrop, warm
+  0.12 or less), taken from the client: a place's walls, paper or shopfront (the palette
+  `start.mjs deal --page place --trade <trade>` deals for its trade, never one fixed off-white for
+  every place; white for a shop that sells mostly online), a product's photo backdrop, warm
   greys for a service, blue-leaning or cool grey for software. It covers 55% of the page's height or
   more (60% on software and product). Never pure-white panels on a cream page.
 - **`--g-alt`:** the same hue (within 20 degrees), 0.06 to 0.15 darker, never under 0.70

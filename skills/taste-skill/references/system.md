@@ -14,8 +14,13 @@ and loop number: `motion.md`.
 - Spacing scale 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 (`--s-1` to `--s-10`) for every margin, gap
   and padding you write. Heading to content 48px (32 on a phone); cards 24px apart (12).
 - One height per card row and per tile kind, page-wide; sections at H or 2H.
-- The skip link is the first child of the header's `.wrap`, `position: absolute; width: 1px;
-  height: 1px; clip-path: inset(50%)` until focused, so it never pushes the logo off the left line.
+- The skip link is the first child of the header's `.wrap`, as `starter.html` has it:
+  `<a class="skip-link" href="#top">Skip to content</a>` (`main id="top"`), in the page's language.
+  `.skip-link` keeps it out of the layout until the first Tab, then shows it over the logo, so it
+  never pushes the logo off the left line [skip-link].
+- `<html lang>` is the language the page is written in, from the brief, or its market when the
+  brief does not say ("de" for a German page). Screen readers read in it and the headings hyphenate
+  by it (`hyphens: auto` for words of 10 letters or more) [lang].
 
 ## Rhythm tokens
 
@@ -29,7 +34,7 @@ On `:root`, used everywhere (desktop / under 640px):
 | `--gut` | 80 / 24 (place 120 from 1024) | the `.wrap`'s side margin: 1280 wide, 1200 on a place |
 | `--hgap` | 48 / 40 (place 40 / 24) | the header to the hero's words, under `--photo` on a place |
 | `--hpadb` | 64 / 24 | the hero's bottom padding (plus `--bar`) |
-| `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to every bottom padding; content is never cut to hide behind the bar |
+| `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to every bottom padding (the hero's only without script: the bar is never on the first screen); content is never cut to hide behind the bar |
 
 Grid: `.grid` is 12 columns with a 24px gap (12 under 640); the column numbers are in
 `layout-v4.md` section 4. A picture wall is its own grid with a gap of 0 or 2px (page CSS
@@ -120,7 +125,15 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
 - Under 640: the menu opens a full-screen sheet (56px rows, closes on any tap; a place adds the
   street and the week's hours at its foot). `nav.actionbar` (required on a place, optional
   elsewhere) is fixed at the foot, on the ground with a 1px top hairline: one 342x48 main action or
-  two 165x48 buttons; `--bar` is then its height. It never covers a label or link.
+  two 165x48 buttons; `--bar` is then its height. It never covers a label or link. With the bar
+  the nav's button moves into the sheet (system.css). system.js shows the bar only once the hero's
+  main button has scrolled off the top, and hides it again while that button, or a link or button
+  that does what one of the bar's does (the same address or the same words, such as the close's
+  booking button or the footer's directions), is on the screen: one screen never shows an action
+  twice [action-repeat]. Hidden, it is off the screen and inert, so nothing in it takes the focus;
+  it never hides while the focus is in it. The hero does not pad for it then. Without script the
+  bar is simply always at the foot and every section, the hero too, pads for it, so it covers
+  nothing. Write it as the starter does, a child of `body` after the footer, and add no script of your own.
 
 ## Footer
 
@@ -141,13 +154,76 @@ unless the brief gives the accounts.
   `data-tz="Europe/Berlin"` on the `dl.hours` itself (the venue's zone; system.js reads it only there): system.js marks today's row (weight 500) and
   fills `[data-open-now]` ("Open now, until 16:00"; "Closed, opens Tuesday at 7:30"); never
   `.is-today` by hand. Without `data-tz` the rows read as plain text, and the panel must read right
-  without the script.
-- Forms: fields 48px with 13px labels and 16px text (on the phone too), tap targets 44px, six fields
-  at most, `method="post"` to the client's address, the button repeats the main action, a line says
-  when the reply comes, fields checked on submit; never a fake success or a modal. A booking system
-  the brief names replaces the form with its link.
+  without the script. Hours the brief does not give carry `data-assumed` on the `dl` and get no
+  open-now line: system.js never fills it from them [open-now].
+- Forms: the recipe below.
 - A `[bracketed placeholder]` or "(sample)" tag left in visible text is outlined in red by
   system.js, as is a visual that fails to draw: fix both.
+
+## Forms
+
+One recipe for every form (booking, enquiry, call request, newsletter); `starter.html` has it as
+`booking-form`, system.js runs it. A booking system the brief names replaces the form with its link.
+
+- **Where it sends:** `data-endpoint` holds the address of the client's form service when the
+  brief gives one; system.js posts to it. Without one the form's `action` is a `mailto:` on
+  `.example` (`hello@brand.example`, `copy.md`): a stand-in, listed in the report as the address
+  the client must supply. Never `action="#"`, an empty action or a submit a page script swallows.
+- **Size:** fields 48px with labels at 14px and 16px text (on the phone too, so the browser never
+  enlarges the page), tap targets 44px, six fields at most, one column under 640.
+- **Labels you can see:** every field has a `<label for>` above it, in words that say what goes in
+  ("Arrival", "Guests"). A placeholder is never the label, and an `aria-label` alone is not one
+  [field-label].
+- **The right field:** `type="email"` with `autocomplete="email"`, `type="tel"` only for a phone
+  the brief asks to collect, `autocomplete="name"`, `inputmode="numeric"` for a count, text fields
+  for dates on a page not in English. A visitor may paste into any field, and the button stays live
+  until it is pressed [form-fields].
+- **Errors under their fields:** checked on submit, never while typing. Each field that fails gets
+  `aria-invalid="true"` and its reason in the `.field__error` under it, named by
+  `aria-describedby`; the reason names the field and what to type ("Write an email address with an
+  @"). The first field that failed takes the focus, and the status line says how many there are.
+- **One status line:** `<p class="form__status" role="status" data-form-status>` under the button,
+  read out as it changes: "Sending" after 300ms, then the confirmation or the failure. A failure
+  keeps everything typed.
+- **Success only after a real send:** `data-sent` shows only once `data-endpoint` answered. A
+  mailto stand-in shows no success line, and no page script writes "Thank you" on submit
+  [form-send]. Never a modal.
+- **The button names the action:** the button is the main action word for word ("Request a
+  table"), the sent line names what was sent in the button's own words ("Your table request is in.
+  We reply within a day."), and a line under the form says when the reply comes.
+
+## Access
+
+The page works by keyboard and screen reader as it ships; consistency.mjs FAILs each of these.
+
+- **Every control has a name:** a link, a button, a field, a tab, a toggle; an icon-only button gets
+  `aria-label` in the page's language [a11y-name].
+- **Pictures:** a content photograph has `alt` saying what it shows; a decorative one `alt=""`;
+  a drawn mock `role="img"` with an `aria-label` [img-alt].
+- **Headings step down one level at a time** in `main` (h1, h2, h3); a footer's column heads are
+  `h3` [heading-order].
+- **Tab order is the reading order:** no `tabindex` above 0 [tabindex].
+- **Focus shows at once:** the kit's ring (`:focus-visible`, 2px in `--action`, 3:1 on the
+  ground) never animates; a page that removes it puts a change of the same strength in its place.
+  A focused control is never hidden under the fixed header [focus-visible, focus-hidden].
+- **The menu button says its state:** `aria-expanded` on `.nav__toggle`, which system.js flips
+  [menu-toggle].
+
+## Head
+
+Every page's `<head>` holds, as `starter.html` has it:
+
+- `<title>` "Name: what it is for whom or where" and a `meta description` of one sentence; never
+  the same words [page-meta].
+- `og:title`, `og:description`, `og:type` and `og:image`, with `twitter:card`
+  `summary_large_image`. The picture is a still of the page's own hero: copy the hero's tile from
+  `shoot.mjs` (`tiles/desktop-sec-01-a.jpg`) beside the page as `share.jpg`.
+- `link rel="icon"`: the client's logo, else the dealt mark as `favicon.svg` (the mark's 24x24 path
+  from `system.css` `.mark[data-mark]`, filled with `--p-ink`; for `initial` the letter on a
+  rounded square in `--p-ink`).
+- `meta name="theme-color"`: the page ground, `--p-bg` as `start.mjs` prints it.
+- `link rel="canonical"` only with the client's domain; until then it stays a comment and the
+  report lists it [share-meta].
 
 ## Motion
 

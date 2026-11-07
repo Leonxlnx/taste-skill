@@ -19,7 +19,7 @@
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
-    "words": "2 to 4 real figures with a short caption each"
+    "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
   },
   "avoidWith": [],
   "states": {

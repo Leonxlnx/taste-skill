@@ -2,12 +2,12 @@
 
 A place (café, bakery, guesthouse, shop, studio) is its photographs: two or three on every screen, the
 client's own. Software leads with its real interface; a photograph there is a real person or the real
-product. A game leads with its own art (key art, in-engine shots, the trailer's poster), never library frames; with no art files its key art is a product render of its hero object or world (`sections.md`, Gaming), never a photograph or an effect in its place. A photograph never stands where an effect, a drawing or an empty box would.
+product. A game leads with its own art (key art, in-engine shots, the trailer's poster), never library frames; with no art files its name is set large over a stand-in photograph of its setting from a live search (`sections.md`, Gaming), never an effect or a random object in its place; a render of its world only when the brief asks for 3D. A physical product without photographs is shown in photographs too: the client's, else stand-ins (below). A photograph never stands where an effect, a drawing or an empty box would.
 
 ## Where pictures come from (PH-01, PH-02, PH-05)
 
 1. **The client's own**, shot for the page or on a phone, each file named in the brief. Every `<img>` carries
-   `data-source` (`client`, `commissioned`, `phone`, `supplier`, `illustration`, `library-057`) and
+   `data-source` (`client`, `commissioned`, `phone`, `supplier`, `illustration`, `library-057`, `stand-in`) and
    `data-subject`.
 2. **The library** (`scripts/photos.mjs`): Wikimedia Commons and Unsplash frames, vetted one by one. They are
    stock of another place, so they fill **detail slots only**: hands, tools, materials, a process (an oven, dough, a
@@ -20,8 +20,12 @@ product. A game leads with its own art (key art, in-engine shots, the trailer's 
    `weak` (kept with its credit and its why, no file on disk) and is never dealt; a rating below 7 is never dealt either (`quality`): a whole meeting room, lounge or breakfast room is the same fault. The thin trades get at most as many
    frames as they hold: wine 0, bar 0, office 3 (a notebook, stacked books, sheets of card), florist 3, farm 3, shop 3, wellness 3, bakery 4, and a
    workshop by its craft (smith 4, instrument 1, weaving 0, letterpress 0). The rest of the page is the client's own photographs, the object, the real UI or type.
-3. **Nothing**: a product's own render (`effects-objects.md`, Product renders), the real UI, or type. Never a near
-   fit, never mood in place of the subject.
+3. **A live search** (`photos.mjs search`, Live search below): licensed Wikimedia Commons photographs of what the
+   library lacks (a product's kind, a yoga studio, a bike workshop's bench, a hotel's building and rooms, a wedding, a
+   game's setting). Each one is a stand-in, looked at full size and listed in the report; `fetch` prints
+   `data-source="stand-in"`.
+4. **Nothing**: the real UI, or type; a product's own render only when the brief asks for 3D (`effects-objects.md`,
+   Product renders). Never a near fit, never mood in place of the subject.
 
 With no client photographs, say so plainly in the report: strong pages run on a half-day shoot with a local
 photographer, then a one-morning phone shoot, then products on one backdrop; the library covers details only. The
@@ -36,8 +40,9 @@ cafe's bar). A place whose trade leads with land (a guesthouse, a lodge, a remot
 names as `--place "<region>"` (or the brief itself, `--brief BRIEF.md`, which reads the region from it) and leads with that region's landscape: a place hero always carries a photograph when
 any frame fits, and the `statement` hero is left for a place the library holds no frame of (`sections.md` section 4). Every frame is listed in the report as a stand-in to replace; nothing on the page says so
 (no caption, no note). **The count decides, not the trade:** when `pick`, with each word repeated until it says "no new
-motif left", still returns under eight frames, the page is the short page (PH-07: 2,700 px at most at 1440; `sections.md`
-section 4, The short page), whatever the trade: a bakery (4), florist, wellness, office, pottery or a restaurant are examples. No drawn box, grid
+motif left", and a live search (`search --trade <trade>`, below) has added what passes the full-size look, still returns
+under eight frames, the page is the short page (PH-07: 2,700 px at most at 1440; `sections.md`
+section 4, The short page), whatever the trade: a bakery (4 in the library), florist, wellness, office, pottery or a restaurant are examples. No drawn box, grid
 or effect takes the place of a photograph.
 
 Two exceptions, both for a draft or the short page and both named in the report as stand-ins to replace:
@@ -51,20 +56,52 @@ Two exceptions, both for a draft or the short page and both named in the report 
 
 ## A product without photographs (PH-04)
 
-A maker of a physical thing (a bike, a chair, a lamp, a stroller, a device) with no photographs of its own gets **no
-stock photographs**: no forest for "the ride", no groceries for "what it carries", no other trade dealt to fill the page.
-`pick --product-without-photos` (or a maker's, brand's or company's word: "backpack brand", "electric scooter")
-deals nothing and says so. **The product is still shown, never hidden:** it is rendered with the objects kit's
-product-render helper (`assets/objects/product-render`, `effects-objects.md` Product renders), one crafted studio
-render composed from a JSON spec of its own parts, sizes and materials, and the page is the full product page
-(`sections.md`, Product: hero, the product, what it carries, how it is used, specs as rows, a live order card), never
-the short page (in testing: a cargo bike's page that never showed the bike scored 3 of 10). The render is the product's
-picture on a flat ground, not an effect, on a product of site-kind other as on hardware. Never a drawn SVG, mood
-stock, another maker's product or an object of another kind (a wheel is not a bicycle). A render or CAD view the
-brief supplies comes first; renders it names but does not supply count as missing. The report lists the shots to
+A maker of a physical thing (a bike, a chair, a lamp, a stroller, a device) with no photographs of its own is dealt
+**no library frame** and **no mood stock**: no forest for "the ride", no groceries for "what it carries", no other
+trade dealt to fill the page. `pick --product-without-photos` (or a maker's, brand's or company's word: "backpack
+brand", "electric scooter") says so and prints the search. **The product is still shown, never hidden, in
+photographs** (in testing: a cargo bike's page that never showed the bike scored 3 of 10): a picture the brief
+supplies first (a cut-out, a CAD view, its own render; one it names but does not supply counts as missing), else
+**stand-ins** from `photos.mjs search "<the thing in plain words>"`: the same kind of thing whole and in use (a cargo
+bicycle for a cargo bike brand, never a wheel for a bicycle), close-ups of the parts the page names, where it lives;
+no maker's name, logo or badge readable, no face passed off as a customer, one light and grade across the set. The
+page is the full product page (`sections.md`, Product), never the short page. Every stand-in is listed in the report
+with the client's photograph to shoot in its place, and nothing on the page says so. A render
+(`effects-objects.md`, Product renders) only when the brief asks for 3D or a render. The report lists the shots to
 take: the product on one plain backdrop, three angles, a detail of each part the page names, the product in use. A
 shop, workshop or rental for every make is a place (`--trade "bike shop"`): it is dealt parts and a basket load for
-those sections only.
+those sections only, and its workshop bench and whole bikes come from a live search.
+
+## Live search (stand-ins for what the library lacks)
+
+`photos.mjs search` asks Wikimedia Commons for photographs (JPEG, 1600 px wide or more; CC0, CC BY, CC BY-SA or public
+domain; files named as paintings, drawings, maps, logos or posters left out; one file of a series) and keeps the
+results in `.taste-skill/found.json` under `--out`, so `fetch` and `credits` take their ids (`f` and a number) like
+library ids. With `--trade` and no words it runs the trade's own search words:
+
+| Trade | search words |
+|---|---|
+| yoga, pilates, spa, wellness | yoga studio, yoga class, pilates studio, sauna interior |
+| pottery, ceramics | pottery wheel, pottery studio, ceramics workshop |
+| a studio (art, design, photography) | artist studio, design studio, photography studio |
+| bike shop or workshop | bicycle workshop, bicycle repair stand, bicycle mechanic, city bicycle, cargo bicycle |
+| hotel, guesthouse, inn | hotel facade, guesthouse, hotel room, hotel bedroom, inn exterior (the building and the rooms: never the library) |
+| wedding | wedding ceremony, wedding table, wedding bouquet, wedding reception, wedding rings |
+| restaurant | restaurant kitchen, restaurant interior, chef plating |
+| workshop by craft | woodworking workshop, blacksmith forge, workshop tools |
+| bakery, cafe, florist, salon | the trade's own: bakery bread, bakery counter, baker dough; coffee shop interior, espresso machine; florist shop, flower market; barber shop, hair salon |
+
+A product searches its own words (`"cargo bicycle"`, `"desk lamp"`, then `"... detail"` and the place it lives); a
+game its setting in plain words (`"flooded coastal town"`, `"desert mining town"`, `"city at night in rain"`); anything
+else the subject plainly, two or three words (long phrases find nothing). `--count`, `--min 1200` for a row picture,
+`--orientation portrait`.
+
+Every result is a **candidate**: open its page and look at the file full size. Keep it only when it shows the subject
+sharp, in plain colour; no readable name, sign or logo of another business (a hotel's name on its facade, a club's
+name on its wall: drop it or crop it out); no face shown as the client's staff, guests or customers; no landmark
+passed off as the client's place; one light and grade with the rest of the page. Write its alt text new (the file's
+title names someone else's place). It is a **stand-in**: the report lists it with the photograph to shoot in its
+place; nothing on the page says so; its credit goes in the one footer line like any other.
 
 ## Pick and fetch
 
@@ -77,6 +114,8 @@ node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,bar,coffee
      --history .taste-skill/history.json                                                     # no client photographs
 node <skill>/scripts/photos.mjs pick --trade guesthouse --sections hero,rooms,rooms --pictures 12 \
      --draft-lead --own-land --place "Lofoten, Norway" --history .taste-skill/history.json   # a draft only
+node <skill>/scripts/photos.mjs search --trade "yoga studio" --out .                       # what the library lacks: stand-ins
+node <skill>/scripts/photos.mjs search "cargo bicycle" --count 8 --out .                   # a product without photographs
 node <skill>/scripts/photos.mjs fetch <ids> [--hero <lead id>] --out . [--big id] [--lqip]   # run from the project root
 node <skill>/scripts/photos.mjs credits --out . --write     # the footer line and credits.html; --text for a report
 ```
@@ -89,7 +128,8 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 
 - `--trade`: cafe, bakery, hotel, bike (--shop only), food, florist, workshop, studio, office, shop, books,
   outdoors, wellness, farm, wine, bar; a brief's word works (roastery, bread, inn, bookshop, yoga studio, blacksmith). No trade for a
-  restaurant, a ceramics studio, a patisserie, a salon, a jeweller, a goldsmith, a locksmith: its own photographs, else type. A **workshop**
+  restaurant, a ceramics studio, a patisserie, a salon, a jeweller, a goldsmith, a locksmith: its own photographs, else
+  stand-ins from a live search (`search --trade restaurant`, the table above), else type. A **workshop**
   names its craft (`--trade blacksmith`, `weaving`, `letterpress`): only that craft's frames are dealt, so a smith's page
   never shows a weaver's loom; no craft named, nothing is dealt.
 - `--sections`: the page's sections in order, in plain words (bar, roastery, oven, dough, rooms, breakfast, workshop,
@@ -121,7 +161,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 - `--tone light|dark`, `--mono` (black and white, one deliberate frame), `--shop` (every make).
 - A place page's `pick` prints its hints for a place: words **under** the photograph on the ground, no band, no tab, no
   closing text. Product and service pages get the band and calm-side hints.
-- When `pick` says the library is short, search the open collections with the queries it prints (CC0, CC BY, CC BY-SA,
+- When `pick` says the library is short, run `photos.mjs search` (Live search above: CC0, CC BY, CC BY-SA, each
   looked at full size) before leaving the slot to the client's own or type. Detail frames held by default (`list` prints them live, after the full-size review that dropped 27 frames and merged 4; the 3 office rooms of the second merge were then set `weak`, as whole rooms; the third merge looked at 8 more at full size and kept none: a shopfront with its sign, two bars' counters and back bars, a breakfast room, a made-bed room, two breakfast tables rated below 7 and a half-eaten breakfast with a diner in the frame are all `weak`): cafe 19,
   bakery 4 (oven 3, dough 1), hotel 9 (7 details and 2 breakfast frames; its land only with `--own-land`), bike 6 (parts and a load, --shop only), workshop 5
   (smith 4, instrument 1, weaving 0, letterpress 0: a craft is dealt only its own), studio 5, books 5 (desk only: a pencil on a notebook, a binding, stacked books, pencils; the hands frames beside a laptop are not dealt, and the bookbinder's gilding is dealt only to a bindery, `craft: bookbinding`), food 5, shop 3, florist 3, farm 3, wellness 3, office 3 (2 desk, 1 card),
@@ -129,7 +169,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
   holds 3 or fewer gives a page at most that many; the rest is the client's own. `list` marks those trades `thin`.
 - **Sections and subjects:** `hands`, `writing`, `notebook`, `paper` deal a hands or desk frame; `detail`, `texture`, `surface`, `linen`, `material` a detail, texture or desk frame; `breakfast` a hotel's breakfast frame (never a deli's);
   `rooms` a detail of a room, never the room. When a section's frames exist but these options keep them out (no `--own-land`, another craft, a motif already dealt), `pick` says so instead of "nothing in the library shows it".
-- **Variety:** the seed ranks the deal (a frame rated 8 or more has a head start of 0.3 in a 0-1 draw, not a place at the top), so a cafe's or a bike shop's deals differ from seed to seed; a trade with only a few frames (bakery 4, office 3, the two breakfast frames) returns the same set in every seed, in a different order. `--history` is the only way to vary those: pass it every time, and a frame dealt before goes behind the fresh ones. A frame marked `soft` (the rusty chain on a cassette, bike) is dealt only when no sharper frame of its subject is left, and never leads.
+- **Variety:** the seed ranks the deal (a frame rated 8 or more has a head start of 0.3 in a 0-1 draw, not a place at the top), so a cafe's or a bike shop's deals differ from seed to seed; a trade with only a few frames (bakery 4, office 3, the two breakfast frames) returns the same set in every seed, in a different order. `--history` varies the deals of one site: pass it every time, and a frame dealt before goes behind the fresh ones. **Across folders**, set `TASTE_SKILL_RECENT=<file>` to share recent frames and palettes: `pick` and `fetch` then keep the frames of every build in that one small file (unset, the default, nothing is written outside the project; `--no-recent` leaves it out for one run), and a frame another build used lately goes behind the fresh ones of its subject, the most recent furthest back, so two cafes built in two folders show different frames where the library has them; when it has none left `pick` says so, and a live search fills the rest. A frame marked `soft` (the rusty chain on a cassette, bike) is dealt only when no sharper frame of its subject is left, and never leads.
 
 ## Place them
 
@@ -169,8 +209,12 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
   PH-27) is not in the library**: the library hero is the largest file within 400 KB (1200 to 1800) and looks soft on a
   retina desktop. Another reason to replace it with the client's own.
 - A hero (`--hero id`): `sizes="100vw"` (Recipe 3's top photograph is full width; never a vh term, which sends a tablet
-  and a 3x phone to the largest file), `fetchpriority="high"`, eager, and a 780x584 crop for the phone in a `<picture>`
-  `<source media="(max-width: 639px)">` (needs `ffmpeg`; subject inside the middle 342 px via the frame's `focus`).
+  and a 3x phone to the largest file), `fetchpriority="high"`, eager, and a 780x975 (4:5) crop for the phone in a `<picture>`
+  `<source media="(max-width: 639px)">` (needs `ffmpeg`; subject inside the middle 342 px via the frame's `focus`;
+  without `ffmpeg` the img's sizes get a phone term that covers the same 4:5 box). Both carry `data-phone-fill`: keep it,
+  so a place hero's photograph grows on a phone into what its words leave (`layout-v4.md`, the place hero). A hero
+  photograph of your own gets it only when its phone source covers 4:5 at 390 (else it stays 4:3: shown taller, a 4:3
+  file is blown up and FAILs `photo-upscale`).
   Every other picture is `loading="lazy"` and `decoding="async"`, `width` and `height` set, `sizes` set to the shown
   width. `--big id` adds the largest file to a full-bleed band only when it is within the 250 KB cap; `--lqip` puts the
   picture's 24px colours behind it.
@@ -213,4 +257,7 @@ prints the same line and list as plain text for a report. Every word on a page i
 - Mood stock (a curtain, plant shadows, a sky, grass, a forest, fog, an aurora, a waterfall), an animal or a vehicle in
   the frame, a recognisable viewpoint, AI images, composites, Street View, a sight far from the place, a gradient,
   grain, pattern or shader standing in for a photograph.
-- The library's frames repeated across builds: pass `--history` every time, so a frame dealt before is not dealt again.
+- The library's frames repeated across builds: pass `--history` every time, and when one session builds in several
+  folders set `TASTE_SKILL_RECENT` to one file, so a frame another build used lately goes behind the fresh ones.
+- A live search result used without looking at it full size, with another business's name or logo readable, or left
+  out of the report's stand-ins.

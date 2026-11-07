@@ -8,16 +8,13 @@
   "trigger": "scroll",
   "cost": "low",
   "webgl": 0,
-  "pages": [
-    "tech",
-    "gaming",
-    "software"
-  ],
+  "pages": [],
+  "retired": "Not dealt: it moves a photograph against the scroll, a parallax that reads as a template trick on every kind; a wide photograph stands still in its frame.",
   "look": "One wide photograph seen through a frame moves a little slower than the page, so the frame reads as a window onto a larger picture.",
   "reduced": "The photograph stands.",
   "phone": "The photograph stands in its frame.",
   "maxPerPage": 1,
-  "weight": 0.9,
+  "weight": 0,
   "needs": {
     "photo": true
   },

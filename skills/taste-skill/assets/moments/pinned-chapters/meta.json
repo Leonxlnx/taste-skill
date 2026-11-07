@@ -11,7 +11,9 @@
   "pages": [
     "tech",
     "gaming",
-    "software"
+    "software",
+    "product",
+    "service"
   ],
   "look": "A feature section holds on screen for two screens of scroll while its three steps open one at a time at the left and one frame at the right changes to each step's picture with a short crossfade.",
   "reduced": "Nothing is pinned: from 640px each step is a static row, its text at the left and its visual at the right (at most 30svh tall); on a phone each step stands with its 16:9 visual under it. Two to four steps fit two screens at 1440x900, 1024x768, 820x1180 and 390x844.",
@@ -24,7 +26,8 @@
   },
   "avoidWith": [
     "closing-lift",
-    "line-carries-colour"
+    "line-carries-colour",
+    "photo-chapters"
   ],
   "states": {
     "start": {

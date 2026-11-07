@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="site-kind" content="other">
-<title>Halvorsen Arkitekter: architects for schools and libraries in Oslo</title>
+<title>Halvorsen Arkitekter: schools and libraries in Oslo</title>
 <meta name="description" content="A practice of 24 architects in Oslo. 31 schools and 9 libraries in timber and brick since 2004.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="layout.css">
 <style>
 :root {
-  --p-bg: #f2f1ee; --p-surface: #e6e5e1; --p-ink: #121212; --p-muted: #5b5a56;
+  --p-bg: #f2f1ee; --p-surface: #e6e5e1; --p-ink: #121212; --p-muted: #4f4e4a;
   --p-accent: #c4441f; --p-accent-ink: #ffffff; --p-action: #121212; --p-action-ink: #f2f1ee;
   --p-inv-bg: #121212; --p-inv-surface: #1d1d1c; --p-inv-ink: #f2f1ee; --p-inv-muted: #a9a8a3;
   --p-inv-accent: #ee7a52; --p-inv-accent-ink: #121212; --p-inv-action: #f2f1ee; --p-inv-action-ink: #121212;
@@ -28,12 +28,13 @@
 .steps-n .rows__value { grid-column: 3; color: var(--muted); }
 .steps-n > li > p { grid-column: 2; }
 @media (max-width: 1023px) { .model__photo { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+@media (max-width: 479px) { .steps-n > li { grid-template-columns: 32px minmax(0, 1fr) auto; } }
 </style>
 </head>
 <body>
 <header class="nav">
   <div class="wrap nav__bar">
-    <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
     <nav class="nav__links" aria-label="Main">
       <div class="nav__item">
         <a class="nav__link" href="#model">Projects <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -56,8 +57,8 @@
   </div>
 </header>
 
-<main>
-  <section class="hero hero--editorial" aria-labelledby="hero-h">
+<main id="top">
+  <section class="hero hero--editorial" data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text hero__in">
       <h1 id="hero-h" data-ly-letters="wdth" aria-label="We design schools and libraries">We design <span class="ly-pic" style="--w: 2.1em; --ly-pos: 50% 70%" aria-hidden="true"><img src="img/photo-1081.jpg" alt="" fetchpriority="high"></span> schools and <span class="ly-pic" style="--w: 1.7em; --d: .55s; --ly-pos: 50% 78%" aria-hidden="true"><img src="img/photo-949.jpg" alt=""></span> libraries</h1>
       <div class="grid hero__foot">
@@ -96,10 +97,10 @@
     <div class="closing__links">
       <div class="grid">
         <div class="span-6 stack-5">
-          <a class="nav__logo" href="#"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="stack" aria-hidden="true"></span>Halvorsen</a>
           <p class="footer__lede">On Tøyengata in Oslo. Write to us; we reply the same week.</p>
         </div>
-        <div class="span-3 start-7 footer__col"><h4>Contact</h4><ul><li><a href="mailto:post@halvorsen.example">Write to us</a></li><li><a href="#work">New projects</a></li></ul></div>
+        <div class="span-3 start-7 footer__col"><h4>Contact</h4><ul><li><a href="mailto:post@halvorsen.example">Write to us</a></li><li><a href="mailto:post@halvorsen.example?subject=New%20project">Start a project</a></li></ul></div>
         <div class="span-3 footer__col"><h4>Practice</h4><ul><li><a href="#model">Projects</a></li><li><a href="#model">How we work</a></li><li><a href="#talk">Jobs</a></li></ul></div>
       </div>
       <div class="footer__legal">

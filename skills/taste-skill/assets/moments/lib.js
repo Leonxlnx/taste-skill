@@ -3,11 +3,14 @@
 
   reduced()            true under prefers-reduced-motion: a moment then shows its finished state only
   phone()              true on a phone: under 640px wide, or a touch screen in landscape under 500px tall
-                       (a phone turned sideways). A moment shows its finished state there too.
+                       (a phone turned sideways). A moment shows its finished state there too, unless
+                       its module says `export const phone = true` (word-highlight, picture-develops,
+                       photo-chapters: light enough to run there).
   still()              reduced() || phone(): the one question every moment asks. The loader (moments.js)
-                       hands each moment a lib whose reduced() answers still(), so a moment written
-                       against reduced() is already static on a phone, and sets data-moment-still on its
-                       host ("reduced" or "phone"). The answer is taken once, when the page loads.
+                       hands each moment a lib whose reduced() answers still() (only reduced() for a
+                       moment that runs on a phone), so a moment written against reduced() is static
+                       where it must be, and sets data-moment-still on its host ("reduced" or "phone").
+                       The answer is taken once, when the page loads.
   coarse()             true on a touch screen (no hover moments there)
   inCard(el)           true when el is, or sits in, a card, a plan, a result or a bento cell: nothing
                        on a card ever moves on scroll, so the loader leaves such a moment still
@@ -122,7 +125,11 @@ export function split(el, unit = 'words') {
           } else frag.append(wrap(part, 'mo-w'));
         });
         n.replaceWith(frag);
-      } else if (n.nodeType === 1 && !n.classList.contains('mo-w')) walk(n);
+      } else if (n.nodeType === 1 && !n.classList.contains('mo-w')) {
+        // a link or button inside keeps its name: its words are hidden with the rest, so it is named first
+        if (n.matches('a[href], button') && !n.getAttribute('aria-label') && n.textContent.trim()) n.setAttribute('aria-label', n.textContent.replace(/\s+/g, ' ').trim());
+        walk(n);
+      }
     });
   };
   walk(el);

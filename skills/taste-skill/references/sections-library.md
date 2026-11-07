@@ -176,7 +176,7 @@ pictures. What the recipes add:
   width over height), two or three dimension lines (`.dim`) with their figures as
   `span.drawing__dim`. Never the hero, never the product's only picture, never on hardware (a
   technical product shows its photographs or the client's render), never on a page without
-  photographs: that page shows its product render (`sections.md`, Product; in testing: a drawn SVG
+  photographs: that page shows stand-in photographs of its kind (`sections.md`, Product; in testing: a drawn SVG
   arm as a robot maker's hero).
 
 # Proof
@@ -261,8 +261,10 @@ the rest in `<span class="muted">`. 48px below, `.frame.frame--hero` on `span-12
 below, three facts on `span-4`: a 1px hairline, the value at 28px with its unit, a grey line. A
 technical product may show the client's render or its object of its own kind instead (`.frame--lit`
 with `<div data-print="print-…">`, its `hero` preset large and right of centre, the facts in
-`div.frame__text` at the lower left). A product or hardware with no photograph shows its product render
-(`data-product`, place `stage`) the same way, on the page's flat ground (the lit ground on hardware) (`sections.md`, Product; `effects-objects.md`, Product renders).
+`div.frame__text` at the lower left). A product or hardware with no photograph shows a stand-in
+photograph of its kind in the frame (`sections.md`, Product; `photos.md`); its product render
+(`data-product`, place `stage`, on the page's flat ground, the lit ground on hardware) only when
+the brief asks for 3D (`effects-objects.md`, Product renders).
 
 **At 390.** The h2 at 30px; the frame square, facts under it as a list.
 
@@ -720,7 +722,7 @@ the map.
 
 **At 1440.** The page's split: the text (h2, the `<address>` as street and district (no street in the brief: the district, `copy.md`), the hours as
 `dl.hours` with `data-tz`, the phone and email only when the brief gives them, the main action and
-Get directions); on the right the street map: `fx-map` baked from OpenStreetMap
+Get directions (with a street from the brief; a district only: "See the area"; a town only: no map link)); on the right the street map: `fx-map` baked from OpenStreetMap
 (`effects-creative.md`) only for a street the brief gives, the pin on the street line, still on
 other kinds; otherwise a photograph of the shopfront.
 
@@ -740,7 +742,10 @@ books through a system, its link is the button instead.
 and email only when the brief gives them); on the right the form on `--g-alt` (48px padding, never
 over a photograph, texture or glass), beside or under a photograph of the room or counter on a
 place (`sections.md`, Booking): dates, guests, name, email, at most six fields, the `.btn-row` with
-the primary. `method="post"`, `action` the client's booking address. Text fields, not
+the primary, the status line and the reply line: `starter.html` `booking-form`, run by system.js
+(`system.md`, Forms). It posts to `data-endpoint`, the client's form address, when the brief gives
+one; else its `action` is a `mailto:` on `.example`, a stand-in the report lists. Labels you can
+see, each error under its field, the type and autocomplete each field needs. Text fields, not
 `type="date"`, on a page not in English.
 
 **At 390.** Text first, the form full width, one field a row.
@@ -748,16 +753,19 @@ the primary. `method="post"`, `action` the client's booking address. Text fields
 **Copy.** Labels say what goes in ("Arrival", "Guests"); the button is the main action word for
 word; a line says when the reply comes ("We reply within a day").
 
-**Mistakes.** A form that sends nowhere; more than six fields; a fake success message; a modal.
+**Mistakes.** A form that sends nowhere; more than six fields; a success message with no send
+behind it; a placeholder as the only label; an error shown only in red or only at the top; a modal.
 
 ## client-slots
 
 **Job and use.** The client's own trailer, key art, in-engine screenshots, CAD renders, exploded
 model or motion video, when the brief says the client has them (`sections.md` section 1): each
 gets a frame that reads finished now and takes the client's file later with one line changed. Tech
-pages (software, gaming, hardware); a product page's CAD frame too. The stand-in is always from the
-kit (a product-render still or scene of the client's own spec), never stock, a drawing or an empty
-or grey frame; nothing on the page says it is a stand-in.
+pages (software, gaming, hardware); a product page's CAD frame too. The stand-in is a photograph
+kept from a live search (`photos.mjs search`, `photos.md`: the game's setting, the product's kind
+in use), or a product-render still of the client's own spec when the brief asks for 3D; never mood
+stock, a drawing or an empty or grey frame; nothing on the page says it is a stand-in, and the
+report lists it.
 
 **The comment.** Every slot opens with one comment the client's team can search for:
 `<!-- CLIENT FILE trailer: assets/client/trailer.mp4 (1920x1080, H.264, the 60 s trailer) and
@@ -770,14 +778,15 @@ the wrap is about 700px tall at 1440x900, taller than one screen with its headin
 screen leaves under the heading, 720px at most, `auto` under 1024px so a tablet and a phone keep 16:9) or a `max-height` on the
 frame keeps the section one screen; the contained poster then sits letterboxed on the dark ground)
 holding `<video class="frame__img" playsinline preload="none" poster="<the stand-in still>">`, the
-poster a kit still that already reads as the film's first frame (a game: the world's widest view;
-hardware: the use scene, the arm at the bench mid-move). The play control is real or absent, never
+poster a stand-in photograph that already reads as the film's first frame (a game: the widest
+photograph of its setting; hardware: the same kind of machine at work). The play control is real or absent, never
 dead. With the file: `controls`, `preload="metadata"`, `<source src="assets/client/trailer.mp4"
 type="video/mp4">`, the client's poster. Without it: no `<source>` and no `controls` (a missing
-file or a dead control bar is a broken frame); the stand-in still is transparent, so the video
+file or a dead control bar is a broken frame); a photograph poster covers the frame. A render
+still (only when the brief asks for 3D) is transparent, so the video
 also takes `.slot__poster` and page CSS `.frame > .frame__img.slot__poster { object-fit: contain }`
 (the kit's `cover` crops the still to a fragment of the product), the frame the world's or the
-page's dark ground, its stills made on that ground (`make-posters.mjs --grounds dark`: a light-ground still keeps a pale floor patch on dark); the play control is `<a
+page's dark ground, its stills made on that ground (`make-posters.mjs --grounds dark`: a light-ground still keeps a pale floor patch on dark). The play control is `<a
 class="ly-play" href="<the trailer's page the brief gives: the store page>"
 aria-label="Watch the trailer">` with its `.ly-play__disc`: the `.frame` is a centring flex box, but system.css's rule `.frame > :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d)` makes the
 control `position: relative`, so `.ly-play`'s `left` and `bottom` (`--s-6` each) move the disc 32px right and up of dead centre, not
@@ -789,27 +798,30 @@ button (`motion.md`), the poster alone under reduced motion and on a phone; neve
 **Screenshot strip.** The world shown as the game is played: three to five frames framed like
 captures, 16:9, the same size (a `trio` or a row of four on the `.wrap`; a phone: one column), square
 corners or the page radius, no device chrome, no shadow, no caption. With the files: each
-`<img class="frame__img">` in `figure.frame.frame--photo`. Without them: each frame holds one job
-scene of the world spec (`sections.md`, Gaming), `data-product-place="stage"`,
-the frame itself the `[data-product]` element (`div.frame.slot`, page CSS `.frame.slot[data-product]
-{ --ratio: 56.25%; background: <the world's water, fog or night colour> }`: `layout.css` clears a
-`.frame[data-product]`'s ground, so a weaker selector leaves the render on white), the scene's props spread so it spans
-the frame, a still, no two the same scene. Never `data-product-fill` over 1 (in testing the
-frame drew empty). As the "what you do" cards it is three to five open cards, each a
-verb over its capture.
+`<img class="frame__img">` in `figure.frame.frame--photo`. Without them: each frame holds one
+stand-in photograph of the game's setting from a live search (`sections.md`, Gaming; `photos.md`,
+Live search), one grade across the strip, no two of one place or one series, cropped 16:9 with
+`object-fit: cover`. When the brief asks for 3D, each frame instead holds one job scene of the
+world spec, the frame itself the `[data-product]` element (`div.frame.slot`, page CSS
+`.frame.slot[data-product] { --ratio: 56.25%; background: <the world's water, fog or night colour> }`:
+`layout.css` clears a `.frame[data-product]`'s ground, so a weaker selector leaves the render on
+white), a still, never `data-product-fill` over 1 (in testing the frame drew empty). As the "what
+you do" cards it is three to five open cards, each a verb over its capture.
 
 **CAD or render frame.** The client's CAD render of the whole product: the product section's
 split frame (`frame--split`) or a `bleed`, the render on a light flat ground, square corners. Its
-stand-in is the product-render view no other section uses (`front` or `top`), so it counts as one of
-the object's three sections. **Exploded frame:** the parts section's picture, the client's exploded
-model, else the spec's `exploded` scene (`sections.md`, Product, section 4).
+stand-in is a stand-in photograph of the product's kind no other section uses (a render view only
+when the brief asks for 3D), and it counts as one of the object's three sections. **Exploded
+frame:** the parts section's picture, the client's exploded model, else close-up photographs of the
+parts (`sections.md`, Product).
 
-**Key art.** The hero's stage (the `product` stage, or the `film` hero's poster) and the world's
-band: the stand-in render there, the comment naming `assets/client/key-art.jpg`.
+**Key art.** The hero's picture (the `photo` hero's photograph, the `film` hero's poster, or the
+`product` stage) and the world's band: the stand-in photograph of the setting there (a render only
+when the brief asks for 3D), the comment naming `assets/client/key-art.jpg`.
 
 **Mistakes.** A slot the brief names and the page leaves out; an empty, grey or black frame; a
 play button that does nothing; a `<source>` pointing at a file that is not there; a caption saying
-the file is coming; the hero object as the stand-in in every slot.
+the file is coming; one stand-in photograph in every slot.
 
 # Price and questions
 
@@ -976,7 +988,8 @@ and the hours, so a visitor needs nothing else.
 **At 1440.** `footer.closing.footer--visit` as `starter.html` (`links-visit`): on `span-7`
 `address.footer__address` (street and district on two lines, the district alone when the brief names no street, 32/40 on a place, 48px elsewhere, in the
 display face), one line on the way there (the stop, minutes on foot) and `a.link` "Get directions"
-(the OpenStreetMap search, `copy.md`); on `span-4 start-9` "Opening hours" over `dl.hours` with
+(the OpenStreetMap search, `copy.md`; "See the area" with a district only, none with a town only); on
+`span-4 start-9` "Opening hours" over `dl.hours` with
 `data-tz` (system.js marks today). Then the nav row (the logo, the nav's words, Contact), the legal
 row with the credits line last; then on a place the name set wide across the `.wrap` in the display
 face at 400, except on `colour-band`. No button.
@@ -1031,17 +1044,20 @@ height 65 to 130 cm, delivery in 3 weeks), line-up (three sizes from €1,290), 
 oak top: a photograph of the grain), photo-band ("Built to order in Porto"), split-text-left again
 (the handset with its presets: a photograph, since a product never shows UI it does not have),
 specs (`rows--spec` beside a photograph of the frame), proof (a review the brief gives, merged),
-faq (four questions), footer.closing. Flat grounds, no effect, no moment.
+faq (four questions), footer.closing. Flat grounds, no effect; the hero's entrance and one dealt moment in its own section.
 
-**With no photographs yet** (*Pellum, a desk lamp*): the lamp is rendered, never hidden. The hero
-(`deal.mjs --type product --has object`: `product` or `split`) holds its product render whole on
-the stage, switched on; product-statement shows the dial close up with three facts (parts);
-what it does as a split (the desk scene: the warm pool of light on the books and the mug across
-the frame, the lamp cut by its edge; use); how it is used as three steps; specs as `rows--spec` with the real icons of the component brands the brief names;
-ordering as a live order card (finish swatches that recolour the render, delivery, the price):
-the lamp whole twice, never in every section;
-faq; footer.closing. Flat grounds, no effect, no drawing, no line about missing photographs; the
-report lists the shots to take.
+**With no photographs yet** (*Pellum, a desk lamp*): the lamp is shown in photographs, never
+hidden and never a render by default. `photos.mjs search "desk lamp"` and `"desk lamp detail"`
+give the stand-ins: a desk lamp of the same build whole, its dial or joint close up, a lamp lit on
+a desk at dusk, no maker's name readable, one grade. The hero (`deal.mjs --type product --has
+photo`) holds the lamp whole; product-statement shows the dial close up with three facts (parts);
+what it does as a split (the warm pool of light on a desk, the lamp cut by the frame's edge; use);
+how it is used as three steps; specs as `rows--spec` with the real icons of the component brands
+the brief names; ordering as a live order card (the finishes as named swatches, delivery, the
+price): the lamp whole twice, never in every section; faq; footer.closing. Flat grounds, no
+effect, no drawing, no line about missing photographs; the report lists every stand-in and the
+shots to take. Only a brief that asks for 3D (a configurator, "show it turning") gets its product
+render (`effects-objects.md`, Product renders) on the `product` stage instead.
 
 ## Gaming
 
@@ -1060,25 +1076,20 @@ h2 on its calm sky), platforms and editions (the real Steam, PlayStation and Epi
 type, never a drawn mark; prices from), faq, footer.closing. No UI fragment, dashboard or widget
 anywhere.
 
-**With no art files** (named but not supplied, or none): the key art is rendered, never an effect
-in its place. Two product-render specs in the game's palette (`effects-objects.md`, Product
-renders): the salvage sloop (hull and deck as rounded boxes and panels, mast and boom as tubes,
-rigging as paths, a furled sail as a tube, two `light` lanterns; about 40 parts) and the world
-scene (the drowned pier and the sunken town's roofs: posts as cylinders, planks as beams, crates
-as boxes, a crane's rope as a path, the sloop small at the pier, under 90 parts; one scene per
-job: a hull cut open under a `light` lantern, a crate swung up on the crane, the harbour rebuilt). Dealt `deal.mjs --type software --kind gaming --has
-object`: hero `product`, the effect `aurora-curtains` dealt for the hero slot (dark, read as a
-dusk sky over water) as the stage's ground behind the turning sloop (`data-product-mode="live"`), h1 "Kelpmoor, a co-op sailing
-game", "Coming to Steam in spring." and "Add to Steam wishlist" in the head row. Then the
-trailer frame (client-slots: the pier scene's widest still as the poster, the play control to
-the trailer on the store page the brief gives); the world: the pier scene from above (its `top`
-view, the map of the coast), full bleed on the dark band, the h2 above it; what you do: the
-screenshot strip as three open cards, each a verb over one job scene of the world, 16:9, filled
-to the edges on the world's water (client-slots); a section holding the dealt moment; platforms
-with the real store icons and the sloop's second whole view; faq; footer.closing. The sloop whole
-twice; the world carries the rest. One render turns, the rest are stills; nothing says "render";
-each slot names the client's file in its comment. The
-report names the art to replace.
+**With no art files** (named but not supplied, or none): the hero is type over a photograph of the
+setting, never an effect or a random object in its place. `photos.mjs search "flooded village"`,
+`"harbour at dusk"`, `"fishing boat at night"` give the stand-ins, kept at full size: one grade,
+nothing readable, no faces. Dealt `deal.mjs --type software --kind gaming --has setting`: hero
+`photo`, the widest calm frame (water at dusk under a dark sky) full bleed, h1 "Kelpmoor, a co-op
+sailing game" set large in the box, "Coming to Steam in spring." and "Add to Steam wishlist" under
+it. Then the trailer frame (client-slots: the harbour frame as the poster, the play control to the
+trailer on the store page the brief gives); the world: a second frame full bleed on the dark band,
+the h2 above it; what you do: the screenshot strip as three open cards, each a verb over one
+stand-in frame, 16:9 (client-slots); a section holding the dealt moment; platforms with the real
+store icons; faq; footer.closing. The one effect, when dealt, stands in a section of its own,
+never on a photograph. Nothing says "stand-in"; each slot names the client's file in its comment.
+The report names every stand-in and the art to replace it. A rendered sloop and pier
+(`effects-objects.md`, Product renders) only when the brief asks for 3D.
 
 ## Place
 
@@ -1094,7 +1105,7 @@ two open groups beside `tall-small`: a class at the wheel tall, a glazed bowl sm
 its class), the place (`trio`: the workshop, a shelf of drying pots, a hand trimming a foot ring,
 tops on one line), booking (a photograph of the class room beside the form), footer.closing
 (`footer-visit`, the name capped at 12vw, the one credits line, `data-tz="Europe/Berlin"`).
-Fourteen photographs, all the studio's own; no effect, no moment; every linked photograph zooms
+Fourteen photographs, all the studio's own; no effect; the hero's entrance and one dealt moment; every linked photograph zooms
 1.03 under the pointer.
 
 ## Service

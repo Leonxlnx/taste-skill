@@ -1,0 +1,67 @@
+/* photo-chapters: at rest (reduced motion, no script, a failed module, a screen under 600px tall) the
+   chapters stand side by side under the h2, each photograph over its title and lines; a phone stacks
+   them. The section is then as tall as its chapters, one screen at least, at every width: a held
+   section's extra screens would stand empty. Live (.is-live, moment.js) the section is (hold + 1)
+   screens and its box sticks for the hold: the h2 and lead at the top, one stage of photographs the
+   width of the page's edges under them, each uncovered from its foot (--mo-c, the share still
+   covered) and settling (--mo-z), and on the stage's lower left a panel in the page's ground with the
+   chapter in hand. */
+[data-moment="photo-chapters"] { --mo-hold: 2; }
+main [data-moment="photo-chapters"][data-moment] > .mo-ph { display: grid; gap: var(--s-7); align-content: start; height: auto; }
+main > [data-moment="photo-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 100vh; min-height: 100svh; }
+[data-moment="photo-chapters"] .mo-ph__head { display: grid; gap: var(--s-4); max-width: 46ch; }
+[data-moment="photo-chapters"] .mo-ph__list { display: grid; gap: var(--s-6) var(--s-5); margin: 0; padding: 0; list-style: none; }
+[data-moment="photo-chapters"] .mo-ph__ch { display: grid; gap: var(--s-2); align-content: start; }
+[data-moment="photo-chapters"] .mo-ph__pic { margin: 0 0 var(--s-3); border-radius: var(--r-md); overflow: hidden; }
+[data-moment="photo-chapters"] .mo-ph__pic > img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+[data-moment="photo-chapters"] .mo-ph__ch h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
+[data-moment="photo-chapters"] .mo-ph__ch p { color: var(--ink); max-width: 44ch; }
+[data-moment="photo-chapters"] .mo-ph__words { display: grid; gap: var(--s-2); }
+@media (min-width: 640px) {
+  [data-moment="photo-chapters"]:not(.is-live) .mo-ph__list { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  [data-moment="photo-chapters"]:not(.is-live) .mo-ph__pic > img { aspect-ratio: 4 / 5; max-height: 44svh; }
+}
+@media (max-width: 639px) {
+  [data-moment="photo-chapters"]:not(.is-live) .mo-ph__pic > img { aspect-ratio: 16 / 10; }
+}
+
+/* live */
+main > [data-moment="photo-chapters"][data-moment].is-live { height: calc((var(--mo-hold) + 1) * 100vh); height: calc((var(--mo-hold) + 1) * 100svh); min-height: 0; padding: 0; display: block; }
+main [data-moment="photo-chapters"][data-moment].is-live > .mo-ph {
+  position: sticky; top: 0; height: 100vh; height: 100svh; box-sizing: border-box; overflow: clip;
+  padding-top: calc(var(--nav, var(--nav-h, 72px)) + var(--s-6)); padding-bottom: calc(var(--s-6) + var(--bar, 0px));
+  grid-template-rows: auto minmax(0, 1fr); gap: var(--s-6); align-content: stretch; }
+[data-moment="photo-chapters"].is-live .mo-ph__head { grid-row: 1; }
+/* the stage: the photographs stacked, each one above the one before, cut from its top while covered */
+[data-moment="photo-chapters"].is-live .mo-ph__stage { grid-row: 2; position: relative; min-height: 0; border-radius: var(--r-lg); overflow: clip; background: var(--surface); }
+[data-moment="photo-chapters"].is-live .mo-ph__stage > .mo-ph__pic { position: absolute; inset: 0; margin: 0; border-radius: 0;
+  clip-path: inset(var(--mo-c, 0%) 0 0 0); will-change: clip-path; }
+[data-moment="photo-chapters"].is-live .mo-ph__stage > .mo-ph__pic > img { width: 100%; height: 100%; aspect-ratio: auto; max-height: none;
+  transform: scale(var(--mo-z, 1)); transform-origin: 50% 100%; will-change: transform; }
+/* the panel: the page's ground on the photograph, an even inset from the stage's corner; the chapters
+   share one cell, so the panel is as tall as the longest and never jumps. The one in hand shows; the
+   others wait 8px lower at opacity 0, still read by a screen reader */
+[data-moment="photo-chapters"].is-live .mo-ph__panel { position: absolute; z-index: 1; left: var(--s-5); bottom: var(--s-5);
+  width: min(440px, calc(100% - 2 * var(--s-5))); box-sizing: border-box; padding: var(--s-6);
+  display: grid; gap: var(--s-4); background: var(--bg); color: var(--ink); border-radius: var(--r-md); }
+[data-moment="photo-chapters"].is-live .mo-ph__count { margin: 0; font: 500 var(--t-small)/1 var(--font-text); font-variant-numeric: tabular-nums; letter-spacing: .02em; color: var(--muted); }
+[data-moment="photo-chapters"].is-live .mo-ph__list { display: grid; gap: 0; }
+[data-moment="photo-chapters"].is-live .mo-ph__ch { grid-area: 1 / 1; align-content: start; }
+[data-moment="photo-chapters"].is-live .mo-ph__words { opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease; }
+[data-moment="photo-chapters"].is-live .mo-ph__ch.is-on .mo-ph__words { opacity: 1; transform: none; pointer-events: auto;
+  transition: opacity 420ms cubic-bezier(.22, 1, .36, 1) 60ms, transform 520ms cubic-bezier(.22, 1, .36, 1) 60ms; }
+[data-moment="photo-chapters"].is-live .mo-ph__ch h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); font-size: var(--t-h3, 28px); line-height: 1.15; letter-spacing: var(--display-tracking, -0.02em); }
+@media (max-width: 639px) {
+  [data-moment="photo-chapters"].is-live .mo-ph__panel { left: var(--s-3); right: var(--s-3); bottom: var(--s-3); width: auto; padding: var(--s-5); gap: var(--s-3); }
+}
+@media print {
+  main > [data-moment="photo-chapters"][data-moment].is-live { height: auto; }
+  main [data-moment="photo-chapters"][data-moment].is-live > .mo-ph { position: static; height: auto; display: block; overflow: visible; }
+  [data-moment="photo-chapters"].is-live .mo-ph__words { opacity: 1; transform: none; }
+  [data-moment="photo-chapters"].is-live .mo-ph__stage { display: grid; gap: var(--s-5); }
+  [data-moment="photo-chapters"].is-live .mo-ph__stage > .mo-ph__pic { position: static; clip-path: none; aspect-ratio: 4 / 3; }
+  [data-moment="photo-chapters"].is-live .mo-ph__stage > .mo-ph__pic > img { transform: none; }
+  [data-moment="photo-chapters"].is-live .mo-ph__panel { position: static; width: auto; }
+  [data-moment="photo-chapters"].is-live .mo-ph__ch { grid-area: auto; }
+}
