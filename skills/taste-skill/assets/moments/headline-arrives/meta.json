@@ -9,7 +9,7 @@
   "cost": "low",
   "webgl": 0,
   "pages": [],
-  "retired": "MO-62: the headline never hides on load, and this moment holds it back until the script runs.",
+  "retired": "Not dealt: every hero now enters on load through the motion layer (references/motion.md, The hero's entrance: data-enter on the hero), with its text visible without script, under reduced motion and after a 700ms safety mark. A moment that also moves the headline would be a second entrance.",
   "look": "The hero headline's words rise once out of their masks, 38 ms apart, and settle; the sub-line and the buttons fade up behind them.",
   "reduced": "The headline stands as written; nothing moves.",
   "phone": "The headline or button stands as written.",

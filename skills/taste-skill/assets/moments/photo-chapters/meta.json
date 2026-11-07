@@ -1,0 +1,45 @@
+{
+  "id": "photo-chapters",
+  "name": "Photo chapters",
+  "kind": "scroll",
+  "fits": [
+    "section"
+  ],
+  "trigger": "scroll",
+  "cost": "low",
+  "webgl": 0,
+  "pages": [
+    "place",
+    "product",
+    "service"
+  ],
+  "look": "A short story in three to five photographs, one large frame at a time: the section holds on screen while, under its h2, one photograph the width of the page is uncovered by the next from its foot upward, settling from a slight zoom, and a panel in the page's ground on the photograph's lower left changes to that chapter (its number, a title and two lines). Each chapter has about two thirds of a screen of scroll: the wipe takes under half of it and the photograph holds for the rest. Live at every width on a screen 600px or taller, phones included.",
+  "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
+  "phone": "It runs on a phone held upright (one photograph at a time, the panel across its foot); a phone turned sideways, under 600px tall, gets the chapters stacked, each photograph over its words.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "needs": {
+    "photo": true,
+    "words": "3 to 5 chapters, a title and two lines each, under one h2 and a short lead",
+    "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"
+  },
+  "avoidWith": [
+    "pinned-chapters"
+  ],
+  "states": {
+    "start": {
+      "p": 0.06,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.96,
+      "wait": 500
+    }
+  },
+  "phoneRuns": true,
+  "height": "(hold + 1) screens live: hold 2 for three chapters, 3 for four or five; at rest as tall as its chapters. No --h and no data-screen on the section: the checks read it live as whole screens, four at most."
+}

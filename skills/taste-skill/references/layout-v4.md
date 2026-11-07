@@ -87,11 +87,13 @@ fails a section that is not one or two screens at the tablet too (the default ru
 - **The close and the footer are one section,** `footer.closing` (one screen; `.g2m` allowed on a
   phone): `footer.closing > .wrap` holds exactly two children, row 1 the dealt close and row 2 the
   links and the legal row. No separate closing band.
-- **No scroll tricks:** no scroll-snap, scroll-jacking or smooth-scroll library. The one exception
-  is tech: the big scene and a dealt scroll moment run inside their own section (`data-big-scene`,
-  `data-moment`), which stays exactly 1H or 2H (a scene with `{"hold": 1}`: two screens live; its
-  composition at rest one or two, `scenes.md`, Its height); they may pin only with
-  `position: sticky` inside that box. Nothing else on any page is sticky.
+- **No scroll tricks:** no scroll-snap, scroll-jacking or smooth-scroll library. The one exception:
+  the big scene (tech) and a dealt scroll moment (every kind, `moments.md`) run inside their own
+  section (`data-big-scene`, `data-moment`), which stays exactly 1H or 2H (a scene with
+  `{"hold": 1}`: two screens live; its composition at rest one or two, `scenes.md`, Its height),
+  except `photo-chapters`, which is (hold + 1) whole screens live (3H for three chapters, 4H for four
+  or five, set by the moment; no `--h` on it) and as tall as its chapters at rest; they may pin only
+  with `position: sticky` inside that box. Nothing else on any page is sticky.
 
 ## 3. The hero
 
@@ -139,16 +141,21 @@ Dealt by kind and by the material the brief really has, never by taste, never th
 pages; a place never deals (the place hero below):
 
 ```bash
-node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming|tech] --has photo,ui,film,object --history .taste-skill/layout-history.json
+node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming|tech] --has photo,ui,film,object,setting --history .taste-skill/layout-history.json
 ```
 
 `--type` is the page type (`SKILL.md` section 1: a game is `software`, hardware `product`). A game
 adds `--kind gaming` (its own weights, never `ui`): `--has film,photo` when the brief supplies its
-trailer or key art, `--has object` without art files (its key art rendered with the product-render
-helper on the `product` stage; a game never deals `statement` or `word`, and always passes `--has`);
-hardware adds `--kind tech`. A product or hardware with no photographs passes `--has object`, which
-always prints the `product` hero: its render whole on the full-width stage, its widest view, never a
-`split` column or an order form alone (`sections.md`, Product). Printed, never dealt: the place hero.
+trailer or key art, `--has setting` without art files (stand-in photographs of its setting from
+`photos.mjs search`: it prints the `photo` hero, the game's name set large on the calm side; a
+game never deals `statement` or `word`, and always passes `--has`); hardware adds `--kind tech`.
+A product or hardware with no photographs of its own passes `--has photo` for its stand-ins
+(`photos.md`, A product without photographs); `--has object` only for a cut-out or when the brief
+asks for 3D or a render, and it always prints the `product` hero: the product whole on the
+full-width stage, its widest view, never a `split` column or an order form alone (`sections.md`,
+Product). A product page is dealt only the `product`, `photo` and `film` heroes: a `split`,
+`word`, `statement` or `triptych` hero cannot show the product at 80% of the content width.
+Printed, never dealt: the place hero.
 
 It prints the hero (its demo, numbers, and the moment, ground and effect ids that fit the kind; on
 other only the hero itself counts). Copy only its `<section class="hero …">` from
@@ -161,7 +168,7 @@ dealt only without a strong photograph.
 |---|---|---|---|
 | `split` | text span-5; the picture span-6 start-7, top-aligned with the h1, ending on the right line; one opaque float card on its lower left | text, then the picture (at least 240 tall) | the float card's dot (tech) |
 | `photo` | a full-bleed photograph layer, the words on its calm, dark side on six columns (h1 80, two lines), four facts at the foot | the photograph cut to the top, the words under it on the ground | none |
-| `product` | a head row (h1 cols 1-7 on two lines; the lead and the buttons stacked on cols 9-12, their foot on the h1's), then the product itself big with one to three hotspots: a render (its widest view, `data-product-place="stage"`) or a cut-out on the page's ground across the wrap, no box, gradient or radius, the stage down to 24 above the fold (1280x566 at 1440x900: the city bike's side 1046 wide, 82% of the wrap); a product photograph edge to edge down to the fold, square corners. A game names itself in the h1; a `[data-print]` or `[data-scene]` on the stage keeps the lit, rounded stage | stacked; the render 86% of the column (294 of 342), the photograph the screen width; a tap opens a hotspot | hotspots on click; a render is a still (live only when asked, `data-product-mode="live"`) |
+| `product` | a head row (h1 cols 1-7 on two lines; the lead and the buttons stacked on cols 9-12, their foot on the h1's), then the product itself big, nothing on it (hotspots only when the brief asks for them): a product photograph edge to edge down to the fold, square corners; a cut-out or a render (its widest view, `data-product-place="stage"`, only when the brief asks for 3D) on the page's ground across the wrap, no box, gradient or radius, the stage down to 24 above the fold (1280x566 at 1440x900: the city bike's side 1046 wide, 82% of the wrap). A game names itself in the h1; a `[data-print]` or `[data-scene]` on the stage keeps the lit, rounded stage | stacked; the photograph the screen width, a render 86% of the column (294 of 342) | none; a render is a still (live only when asked, `data-product-mode="live"`) |
 | `editorial` | the headline is the picture: 156px on three lines across the wrap, one or two photographs set in the line as pills | 56px on four lines | the pills open once on load (tech); still elsewhere |
 | `collage` | text span-5; a lit frame span-6 start-7 with the product window cut by its bottom, one result card that loops | the window alone | one card loop (tech) |
 | `word` | an oversized h1 (144px, two lines) with one live word last, underlined; lead and buttons span-6, four facts span-5 start-8 | 54px on three lines | the live word, two rounds then rest (tech only) |
@@ -179,8 +186,8 @@ caption under the picture.
 ### The place hero
 
 Every place page, never dealt: one still, full-bleed photograph of the place under the header with
-nothing on it (no text, scrim, gradient, fade or box), the words on the ground below. No moment, no
-move.
+nothing on it (no text, scrim, gradient, fade or box), the words on the ground below. It enters
+once on load like every hero (`motion.md`, The hero's entrance); no moment in the hero itself.
 
 - 1440: `.hero.hero--photo` on `html[data-type="place"]`, `--photo: 480px` (the photograph at y 72
   to 552, its subject in the middle 640px), `--hgap: 40px`. Under it: the h1 at 48/53 on columns 1
@@ -190,9 +197,12 @@ move.
 - A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
   header (`--photo: 528px`).
 - 640 to 1023: the photograph at most 56vw tall, the words stacked under it, the hero ending by
-  H - 24. 390: the photograph 390 x 292 (a phone crop, subject centred), `--hgap` 24, the h1 at
-  32/37 (three lines at most), the sub-line at 18/28, one 342 x 48 button; the stack ends by
-  H - 24 - bar.
+  H - 24. 390: the photograph at least 390 x 292 (a phone crop, subject centred); with
+  `data-phone-fill` on it (photos.mjs prints it with the 4:5 phone crop) it grows by whatever the
+  words leave of the screen, to 390 x 488 at most (about 390 x 480 at 390x844), so the screen ends
+  on the button and never on an empty band; `--hgap` 24, the h1 at 32/37 (three lines at most), the
+  sub-line at 18/28, one 342 x 48 button; the stack ends at H - 24 (the phone bar waits until the
+  button has scrolled away; without script, H - 24 - bar).
 - The photograph is real and of this place in daylight: the room from the door, the counter with
   the machine, bread on shelves, the shopfront with customers, the workshop stand, an arrangement in
   a real room, the best room or the house. Never a mood shot, scenery, a cut-out or a hazy file; a
@@ -236,7 +246,8 @@ move.
 ## 5. Type
 
 - **Dealt, never picked:** `start.mjs deal --page <kind>` deals three Google pairings for the
-  kind; take the one that suits the client, then `start.mjs css --page <kind>`. A `word` or
+  kind; take the first (the next only when the first clashes with the client's own logo or
+  photographs, or the hero's stress test fails `hero-lines`), then `start.mjs css --page <kind>`. A `word` or
   `editorial` hero needs a face with a weight or width axis: deal with `--axis`. Every pairing a
   kind can be dealt, with its exact Google Fonts link: `start.mjs types --page <kind>`.
   `library/type.json` is the one source of every face, weight, tracking and `--ly-scale`: keep the

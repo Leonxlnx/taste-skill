@@ -6,6 +6,14 @@
    "light-neutral",
    "mono-accent"
   ],
+  "trades": [
+   "saas",
+   "devtool",
+   "fintech",
+   "law",
+   "clinic",
+   "retail"
+  ],
   "bg": "#ffffff",
   "surface": "#f4f4f4",
   "ink": "#111111",
@@ -31,6 +39,14 @@
   "tags": [
    "light-neutral"
   ],
+  "trades": [
+   "clinic",
+   "wellness",
+   "saas",
+   "fintech",
+   "law",
+   "hardware"
+  ],
   "bg": "#f7f9fa",
   "surface": "#ecf0f2",
   "ink": "#1f3038",
@@ -49,6 +65,14 @@
   "tags": [
    "light-neutral"
   ],
+  "trades": [
+   "cafe",
+   "bakery",
+   "studio",
+   "wellness",
+   "wedding",
+   "retail"
+  ],
   "bg": "#ebe5e3",
   "surface": "#e1dad7",
   "ink": "#2b2622",
@@ -65,6 +89,13 @@
   "name": "Newsprint and brass",
   "tags": [
    "light-neutral"
+  ],
+  "trades": [
+   "agency",
+   "studio",
+   "restaurant",
+   "workshop",
+   "law"
   ],
   "bg": "#e8e8e3",
   "surface": "#dcdcd6",
@@ -89,6 +120,13 @@
   "tags": [
    "light-neutral"
   ],
+  "trades": [
+   "workshop",
+   "hardware",
+   "agency",
+   "studio",
+   "devtool"
+  ],
   "bg": "#dfdedb",
   "surface": "#d3d2ce",
   "ink": "#26251e",
@@ -106,6 +144,12 @@
   "tags": [
    "light-neutral",
    "photographic-neutral"
+  ],
+  "trades": [
+   "hotel",
+   "retail",
+   "consumer-product",
+   "clinic"
   ],
   "bg": "#ffffff",
   "surface": "#f4f4f2",
@@ -136,6 +180,14 @@
    "light-neutral",
    "photographic-neutral"
   ],
+  "trades": [
+   "hotel",
+   "wellness",
+   "wedding",
+   "studio",
+   "law",
+   "clinic"
+  ],
   "bg": "#eeecea",
   "surface": "#e4e1dd",
   "ink": "#333231",
@@ -161,6 +213,14 @@
    "light-neutral",
    "photographic-neutral"
   ],
+  "trades": [
+   "cafe",
+   "restaurant",
+   "workshop",
+   "studio",
+   "hardware",
+   "consumer-product"
+  ],
   "bg": "#dedad3",
   "surface": "#d3cec6",
   "ink": "#0a0a0a",
@@ -179,6 +239,14 @@
   "tags": [
    "light-neutral",
    "earth"
+  ],
+  "trades": [
+   "cafe",
+   "bakery",
+   "hotel",
+   "wellness",
+   "restaurant",
+   "consumer-product"
   ],
   "bg": "#ddd6c6",
   "surface": "#d2cab8",
@@ -205,6 +273,13 @@
    "light-neutral",
    "earth"
   ],
+  "trades": [
+   "cafe",
+   "bakery",
+   "restaurant",
+   "hotel",
+   "retail"
+  ],
   "bg": "#e5e1d8",
   "surface": "#dad5ca",
   "ink": "#2a1d17",
@@ -229,6 +304,12 @@
   "tags": [
    "dark-neutral"
   ],
+  "trades": [
+   "hardware",
+   "ai",
+   "fintech",
+   "game"
+  ],
   "bg": "#111111",
   "surface": "#1c1c1c",
   "ink": "#f2f2f2",
@@ -247,6 +328,13 @@
   "name": "Night and sky blue",
   "tags": [
    "dark-neutral"
+  ],
+  "trades": [
+   "ai",
+   "devtool",
+   "saas",
+   "fintech",
+   "game"
   ],
   "bg": "#0a0d14",
   "surface": "#131824",
@@ -268,6 +356,12 @@
    "dark-neutral",
    "earth"
   ],
+  "trades": [
+   "ai",
+   "devtool",
+   "hardware",
+   "game"
+  ],
   "bg": "#161c1a",
   "surface": "#1f2725",
   "ink": "#e3e2da",
@@ -286,6 +380,10 @@
   "tags": [
    "dark-neutral",
    "mono-accent"
+  ],
+  "trades": [
+   "game",
+   "hardware"
   ],
   "bg": "#0a0a0a",
   "surface": "#151515",
@@ -310,6 +408,11 @@
   "tags": [
    "dark-neutral",
    "earth"
+  ],
+  "trades": [
+   "game",
+   "devtool",
+   "ai"
   ],
   "bg": "#0f1f10",
   "surface": "#162a17",
@@ -339,6 +442,11 @@
    "dark-neutral",
    "photographic-neutral"
   ],
+  "trades": [
+   "hardware",
+   "ai",
+   "fintech"
+  ],
   "bg": "#1c1c1c",
   "surface": "#262626",
   "ink": "#f1f1ef",
@@ -364,6 +472,11 @@
    "dark-neutral",
    "photographic-neutral"
   ],
+  "trades": [
+   "game",
+   "hardware",
+   "fintech"
+  ],
   "bg": "#0c0a08",
   "surface": "#181512",
   "ink": "#ffffff",
@@ -382,6 +495,11 @@
   "tags": [
    "mono-accent",
    "dark-neutral"
+  ],
+  "trades": [
+   "hardware",
+   "devtool",
+   "game"
   ],
   "bg": "#18191b",
   "surface": "#222427",
@@ -408,6 +526,12 @@
   "tags": [
    "mono-accent",
    "dark-neutral"
+  ],
+  "trades": [
+   "devtool",
+   "ai",
+   "saas",
+   "game"
   ],
   "bg": "#0f0f0f",
   "surface": "#1a1a1a",
@@ -439,6 +563,10 @@
    "mono-accent",
    "dark-neutral"
   ],
+  "trades": [
+   "game",
+   "ai"
+  ],
   "bg": "#0d060b",
   "surface": "#1b0e17",
   "ink": "#ffffff",
@@ -466,6 +594,13 @@
   "tags": [
    "mono-accent"
   ],
+  "trades": [
+   "restaurant",
+   "retail",
+   "agency",
+   "consumer-product",
+   "hardware"
+  ],
   "bg": "#ffffff",
   "surface": "#f2f2f2",
   "ink": "#0a0a0a",
@@ -490,6 +625,12 @@
   "name": "Greys and mint",
   "tags": [
    "mono-accent"
+  ],
+  "trades": [
+   "saas",
+   "ai",
+   "fintech",
+   "consumer-product"
   ],
   "bg": "#ffffff",
   "surface": "#f3f3f3",
@@ -518,6 +659,13 @@
   "tags": [
    "mono-accent"
   ],
+  "trades": [
+   "devtool",
+   "saas",
+   "ai",
+   "fintech",
+   "hardware"
+  ],
   "bg": "#eef0f3",
   "surface": "#e2e5ea",
   "ink": "#0b0c0e",
@@ -543,6 +691,12 @@
   "tags": [
    "mono-accent"
   ],
+  "trades": [
+   "bakery",
+   "cafe",
+   "retail",
+   "consumer-product"
+  ],
   "bg": "#f7f7f7",
   "surface": "#ebebeb",
   "ink": "#0d2a1c",
@@ -566,6 +720,13 @@
   "name": "Teal on paper",
   "tags": [
    "two-tone"
+  ],
+  "trades": [
+   "clinic",
+   "law",
+   "wellness",
+   "fintech",
+   "saas"
   ],
   "bg": "#f7f9f8",
   "surface": "#ebf0ee",
@@ -591,6 +752,10 @@
    "two-tone",
    "single-field"
   ],
+  "trades": [
+   "agency",
+   "game"
+  ],
   "bg": "#1a2039",
   "surface": "#212846",
   "ink": "#f9a3c0",
@@ -607,6 +772,12 @@
   "name": "Blush and aubergine",
   "tags": [
    "two-tone"
+  ],
+  "trades": [
+   "wedding",
+   "studio",
+   "agency",
+   "consumer-product"
   ],
   "bg": "#edccbe",
   "surface": "#e8c2b2",
@@ -632,6 +803,14 @@
   "tags": [
    "two-tone"
   ],
+  "trades": [
+   "bakery",
+   "cafe",
+   "studio",
+   "retail",
+   "agency",
+   "workshop"
+  ],
   "bg": "#e6dbc7",
   "surface": "#ddd0b9",
   "ink": "#062b8a",
@@ -648,6 +827,13 @@
   "name": "Oxblood and grey",
   "tags": [
    "two-tone"
+  ],
+  "trades": [
+   "restaurant",
+   "law",
+   "agency",
+   "retail",
+   "studio"
   ],
   "bg": "#e2e2e2",
   "surface": "#d6d6d6",
@@ -673,6 +859,14 @@
    "two-tone",
    "earth"
   ],
+  "trades": [
+   "restaurant",
+   "hotel",
+   "wellness",
+   "bakery",
+   "studio",
+   "law"
+  ],
   "bg": "#ecebe7",
   "surface": "#e1dfd9",
   "ink": "#38450f",
@@ -696,6 +890,10 @@
   "tags": [
    "two-tone"
   ],
+  "trades": [
+   "agency",
+   "game"
+  ],
   "bg": "#3d0012",
   "surface": "#4d0519",
   "ink": "#ff99d3",
@@ -714,6 +912,10 @@
    "two-tone",
    "earth"
   ],
+  "trades": [
+   "restaurant",
+   "game"
+  ],
   "bg": "#133621",
   "surface": "#1a4429",
   "ink": "#f4d96c",
@@ -730,6 +932,10 @@
   "name": "Cobalt field",
   "tags": [
    "single-field"
+  ],
+  "trades": [
+   "agency",
+   "game"
   ],
   "bg": "#0034eb",
   "surface": "#002fd6",
@@ -749,6 +955,10 @@
   "tags": [
    "single-field"
   ],
+  "trades": [
+   "agency",
+   "consumer-product"
+  ],
   "bg": "#e1ac10",
   "surface": "#cd9d0f",
   "ink": "#0b0b0b",
@@ -765,6 +975,10 @@
   "name": "Carmine field",
   "tags": [
    "single-field"
+  ],
+  "trades": [
+   "agency",
+   "game"
   ],
   "bg": "#9c1220",
   "surface": "#8a101c",
@@ -790,6 +1004,10 @@
   "tags": [
    "single-field"
   ],
+  "trades": [
+   "consumer-product",
+   "agency"
+  ],
   "bg": "#ff87ab",
   "surface": "#ff739d",
   "ink": "#0a0a0a",
@@ -813,6 +1031,10 @@
   "name": "Sky and navy",
   "tags": [
    "single-field"
+  ],
+  "trades": [
+   "consumer-product",
+   "agency"
   ],
   "bg": "#6bb4ee",
   "surface": "#7dbdf0",
@@ -843,6 +1065,10 @@
    "single-field",
    "two-tone"
   ],
+  "trades": [
+   "agency",
+   "consumer-product"
+  ],
   "bg": "#ff7a1f",
   "surface": "#ff8633",
   "ink": "#050f16",
@@ -867,6 +1093,10 @@
   "tags": [
    "single-field",
    "earth"
+  ],
+  "trades": [
+   "restaurant",
+   "game"
   ],
   "bg": "#472913",
   "surface": "#55321a",
@@ -894,6 +1124,11 @@
   "name": "Poster chapters",
   "tags": [
    "flat-loud"
+  ],
+  "trades": [
+   "agency",
+   "game",
+   "consumer-product"
   ],
   "bg": "#e6e0d2",
   "surface": "#dcd5c5",
@@ -934,6 +1169,10 @@
   "tags": [
    "flat-loud"
   ],
+  "trades": [
+   "agency",
+   "devtool"
+  ],
   "bg": "#ffffff",
   "surface": "#f3f3f3",
   "ink": "#0a0a0a",
@@ -968,6 +1207,10 @@
   "name": "Charcoal and primaries",
   "tags": [
    "flat-loud"
+  ],
+  "trades": [
+   "game",
+   "agency"
   ],
   "bg": "#191919",
   "surface": "#242424",
@@ -1004,6 +1247,10 @@
   "tags": [
    "flat-loud"
   ],
+  "trades": [
+   "agency",
+   "game"
+  ],
   "bg": "#1423b8",
   "surface": "#1220a6",
   "ink": "#ffffff",
@@ -1039,6 +1286,10 @@
   "name": "Candy chapters",
   "tags": [
    "flat-loud"
+  ],
+  "trades": [
+   "consumer-product",
+   "game"
   ],
   "bg": "#ffd249",
   "surface": "#f5c63c",
@@ -1079,6 +1330,10 @@
   "tags": [
    "flat-loud"
   ],
+  "trades": [
+   "consumer-product",
+   "agency"
+  ],
   "bg": "#ff8126",
   "surface": "#ff8d3a",
   "ink": "#111111",
@@ -1114,6 +1369,10 @@
   "name": "Post red, mustard",
   "tags": [
    "flat-loud"
+  ],
+  "trades": [
+   "agency",
+   "restaurant"
   ],
   "bg": "#e2dccf",
   "surface": "#d7d0c1",
@@ -1154,6 +1413,10 @@
   "tags": [
    "flat-loud"
   ],
+  "trades": [
+   "agency",
+   "saas"
+  ],
   "bg": "#ffffff",
   "surface": "#f5f5f5",
   "ink": "#000000",
@@ -1188,6 +1451,10 @@
   "name": "Report blocks",
   "tags": [
    "flat-loud"
+  ],
+  "trades": [
+   "agency",
+   "fintech"
   ],
   "bg": "#ffffff",
   "surface": "#f6f6f6",
@@ -1224,6 +1491,12 @@
   "tags": [
    "pastel-fields"
   ],
+  "trades": [
+   "agency",
+   "saas",
+   "consumer-product",
+   "studio"
+  ],
   "bg": "#f7f7f5",
   "surface": "#ebebe8",
   "ink": "#000000",
@@ -1259,6 +1532,12 @@
   "tags": [
    "pastel-fields"
   ],
+  "trades": [
+   "fintech",
+   "saas",
+   "bakery",
+   "retail"
+  ],
   "bg": "#f8f8f8",
   "surface": "#eeeeee",
   "ink": "#0a0a0a",
@@ -1289,6 +1568,12 @@
   "name": "Swapping pastels",
   "tags": [
    "pastel-fields"
+  ],
+  "trades": [
+   "agency",
+   "studio",
+   "consumer-product",
+   "ai"
   ],
   "bg": "#c3d7e5",
   "surface": "#d0e0eb",
@@ -1330,6 +1615,12 @@
    "pastel-fields",
    "earth"
   ],
+  "trades": [
+   "studio",
+   "wedding",
+   "agency",
+   "consumer-product"
+  ],
   "bg": "#a6b3bc",
   "surface": "#b2bdc5",
   "ink": "#1c1c1c",
@@ -1365,6 +1656,10 @@
   "name": "Candy on black",
   "tags": [
    "pastel-fields"
+  ],
+  "trades": [
+   "game",
+   "ai"
   ],
   "bg": "#000000",
   "surface": "#0d0d0d",
@@ -1405,6 +1700,11 @@
   "tags": [
    "pastel-fields"
   ],
+  "trades": [
+   "consumer-product",
+   "agency",
+   "studio"
+  ],
   "bg": "#cbe4f2",
   "surface": "#bcdcee",
   "ink": "#0a0a0a",
@@ -1440,6 +1740,10 @@
   "tags": [
    "photographic-neutral"
   ],
+  "trades": [
+   "hardware",
+   "consumer-product"
+  ],
   "bg": "#a8a8aa",
   "surface": "#b4b4b6",
   "ink": "#0e0e0e",
@@ -1465,6 +1769,10 @@
    "photographic-neutral",
    "earth"
   ],
+  "trades": [
+   "hardware",
+   "game"
+  ],
   "bg": "#2b2216",
   "surface": "#382d1e",
   "ink": "#e4e2da",
@@ -1481,5 +1789,178 @@
   "seenIn": [
    "opl-the-deep-end"
   ]
+ },
+ {
+  "id": "warm-paper-walnut",
+  "name": "Warm paper and walnut",
+  "tags": [
+   "light-neutral",
+   "earth"
+  ],
+  "trades": [
+   "cafe",
+   "bakery",
+   "hotel",
+   "wedding",
+   "studio",
+   "retail"
+  ],
+  "bg": "#f7f3ec",
+  "surface": "#ede6da",
+  "ink": "#2a2622",
+  "muted": "#665e55",
+  "accent": "#7a4a2c",
+  "accentInk": "#ffffff",
+  "note": "Warm off-white holds the page with brown-black type and one darker paper step for the visit panel and the goods cards. Walnut brown is the one button, the focus ring and the links; photographs carry the rest of the colour."
+ },
+ {
+  "id": "flour-terracotta",
+  "name": "Flour and terracotta",
+  "tags": [
+   "light-neutral",
+   "earth"
+  ],
+  "trades": [
+   "bakery",
+   "cafe",
+   "restaurant",
+   "retail",
+   "workshop"
+  ],
+  "bg": "#f6f1e7",
+  "surface": "#ebe3d4",
+  "ink": "#2b241e",
+  "muted": "#6a5f54",
+  "accent": "#a3472b",
+  "accentInk": "#ffffff",
+  "note": "A flour-white ground with warm brown-black type and a sand step for panels. Terracotta red is the main button and the brand band, never a second fill; the photographs of ovens, tiles and bread bring the warmth."
+ },
+ {
+  "id": "linen-harbour",
+  "name": "Linen and harbour blue",
+  "tags": [
+   "light-neutral"
+  ],
+  "trades": [
+   "hotel",
+   "wellness",
+   "wedding",
+   "cafe",
+   "clinic"
+  ],
+  "bg": "#f3f1ec",
+  "surface": "#e6e2d9",
+  "ink": "#1d2530",
+  "muted": "#5a6270",
+  "accent": "#2c5877",
+  "accentInk": "#ffffff",
+  "note": "Linen white with blue-black type and one greyer linen step for the booking form and the room cards. A muted harbour blue is the one button and the brand band; nothing else is tinted."
+ },
+ {
+  "id": "limewash-ochre",
+  "name": "Limewash and ochre",
+  "tags": [
+   "light-neutral",
+   "earth"
+  ],
+  "trades": [
+   "bakery",
+   "hotel",
+   "studio",
+   "workshop",
+   "restaurant"
+  ],
+  "bg": "#f4efe5",
+  "surface": "#e7dfcf",
+  "ink": "#29251e",
+  "muted": "#675e51",
+  "accent": "#8c6418",
+  "accentInk": "#ffffff",
+  "note": "A limewashed off-white with near-black brown type and a straw step for panels. Ochre is the button and the focus ring, darkened so its white label reads; the ground stays quiet under warm photographs."
+ },
+ {
+  "id": "clay-pine",
+  "name": "Clay and pine",
+  "tags": [
+   "light-neutral",
+   "earth"
+  ],
+  "trades": [
+   "wellness",
+   "hotel",
+   "cafe",
+   "workshop",
+   "studio"
+  ],
+  "bg": "#efe9e0",
+  "surface": "#e2d9cb",
+  "ink": "#22261f",
+  "muted": "#5f6158",
+  "accent": "#2e5b44",
+  "accentInk": "#ffffff",
+  "note": "Pale clay holds the page with green-black type and a darker clay step for panels. Pine green is the one button and may fill the brand band at the close; wood, stone and plants in the photographs match it."
+ },
+ {
+  "id": "chalk-tomato",
+  "name": "Chalk and tomato",
+  "tags": [
+   "light-neutral",
+   "mono-accent"
+  ],
+  "trades": [
+   "restaurant",
+   "cafe",
+   "retail",
+   "bakery"
+  ],
+  "bg": "#f8f5ef",
+  "surface": "#ede7dc",
+  "ink": "#1f1b18",
+  "muted": "#645c54",
+  "accent": "#b8381f",
+  "accentInk": "#ffffff",
+  "note": "Chalk white with near-black type and one warm step for the menu panel. Tomato red is the order button and the brand band and appears nowhere else; the menu stays black type on the ground."
+ },
+ {
+  "id": "plaster-rose",
+  "name": "Plaster and rose",
+  "tags": [
+   "light-neutral"
+  ],
+  "trades": [
+   "wedding",
+   "retail",
+   "bakery",
+   "wellness",
+   "studio"
+  ],
+  "bg": "#f6f0eb",
+  "surface": "#ebe0d9",
+  "ink": "#2c2325",
+  "muted": "#6a5d5e",
+  "accent": "#9a3c4c",
+  "accentInk": "#ffffff",
+  "note": "Pale plaster with warm near-black type and a pinker plaster step for panels. A deep rose is the one button and the brand band; flowers and fabric in the photographs carry the softer colour."
+ },
+ {
+  "id": "steel-orange",
+  "name": "Steel and orange",
+  "tags": [
+   "light-neutral",
+   "mono-accent"
+  ],
+  "trades": [
+   "workshop",
+   "hardware",
+   "retail",
+   "consumer-product"
+  ],
+  "bg": "#eeeeeb",
+  "surface": "#e1e1dd",
+  "ink": "#1c1d1f",
+  "muted": "#5c5e62",
+  "accent": "#c2501b",
+  "accentInk": "#ffffff",
+  "note": "Light steel grey with graphite type and one darker grey step for panels and the price rows. Workshop orange is the one button and the focus ring; tools and bikes in the photographs bring their own colour."
  }
 ]

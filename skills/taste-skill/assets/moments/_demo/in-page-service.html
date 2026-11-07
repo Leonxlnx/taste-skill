@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- moments in a page: pinned-chapters and picture-develops (its film look, the look of a place, product or service
+     page) dealt onto a service page built like assets/starter.html (the nav, the dealt split hero, sections on
+     .wrap, footer.closing), the way a builder mounts them. A moment's own demo.html shows it alone; copy the section
+     from here. in-page.html does the same for a place with photo-chapters and word-highlight. type: service. -->
+<html lang="en" data-type="service" data-radius="soft" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Northbound: guided bike rides from Whitby</title>
+<meta name="description" content="Three-day guided bike rides over the moor and along the coast, May to September. Eight riders, a guide, a mechanic and a van for the bags. From £640 a person.">
+<meta name="site-kind" content="other"><meta name="page-type" content="service">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..500,0..100,0..1&family=Figtree:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../../ui/cards.css">
+<link rel="stylesheet" href="../../motion/motion.css">
+<link rel="stylesheet" href="../../layout/layout.css">
+<style>
+:root {
+  --p-bg: #f4f3ee; --p-surface: #e8e6dd; --p-ink: #1b1d1c; --p-muted: #575a55;
+  --p-accent: #31594a; --p-accent-ink: #ffffff; --p-action: #1b1d1c; --p-action-ink: #f4f3ee;
+  --p-inv-bg: #1b1d1c; --p-inv-surface: #262927; --p-inv-ink: #f4f3ee; --p-inv-muted: #b1b3ac;
+  --p-inv-accent: #8cc0a8; --p-inv-accent-ink: #1b1d1c; --p-inv-action: #f4f3ee; --p-inv-action-ink: #1b1d1c;
+  --font-display: "Fraunces", Georgia, serif; --font-text: "Figtree", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.02em; --display-tracking-xl: -0.03em; --display-axes: 'SOFT' 70, 'WONK' 0; --ly-scale: 1;
+}
+.rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+/* picture-develops: the section's one photograph, on the split's right column, as tall as the text beside it */
+.develop { margin: 0; border-radius: var(--r-lg); overflow: hidden; height: min(560px, var(--ly-fit)); }
+.develop > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 1023px) { .develop { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+</style>
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js">
+<link rel="modulepreload" href="../pinned-chapters/moment.js"><link rel="modulepreload" href="../picture-develops/moment.js">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="ring" aria-hidden="true"></span>Northbound</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#ride">The ride</a></div>
+      <div class="nav__item"><a class="nav__link" href="#includes">Dates and prices</a></div>
+      <div class="nav__item"><a class="nav__link" href="#contact">Contact</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="mailto:ride@northbound.example">Book a place</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <p class="hero__kicker"><span class="dot" aria-hidden="true"></span>Eight rides, May to September</p>
+        <h1 id="hero-h">Guided bike rides over the moor and the coast</h1>
+        <p class="hero__lead">Three days from Whitby, 140 km, eight riders, a guide and a mechanic. A van carries the bags. From £640 a person.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="mailto:ride@northbound.example">Book a place</a><a class="btn btn--secondary" href="#ride">See the three days</a></div>
+      </div>
+      <div class="hero__media span-6 start-7">
+        <img src="../../layout/img/photo-d534.jpg" alt="A forest lane under an arch of golden autumn beeches, with mist and leaves on the road" style="--ly-pos: 50% 60%" fetchpriority="high">
+        <div class="ly-float">
+          <div class="ly-float__row"><span>Next ride</span><span>3 places left</span></div>
+          <div class="ly-float__title">Friday 15 May, from Whitby</div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- pinned-chapters (references/moments.md): the section is the host, two screens tall (--h: 2); 2 to 4 steps,
+       a title, two lines and one picture each; moment.js holds it while the steps open one at a time -->
+  <section class="section" id="ride" style="--h: 2" data-moment="pinned-chapters" aria-labelledby="ride-h">
+    <div class="wrap mo-pc__grid">
+      <div class="mo-pc__text">
+        <h2 id="ride-h">How the three days go</h2>
+        <ol class="mo-pc__steps">
+          <li class="mo-pc__step">
+            <h3>Day one, 48 km: the moor</h3>
+            <p>The van takes the bags. You ride over the moor road with the guide ahead and coffee at the top.</p>
+            <figure class="mo-pc__visual"><img src="photo-702.jpg" alt="The moor road above the tree line" width="1800" height="1200"></figure>
+          </li>
+          <li class="mo-pc__step">
+            <h3>Day two, 62 km: the coast</h3>
+            <p>Along the water on a flat road, lunch at the harbour and the night in a guesthouse by the pier.</p>
+            <figure class="mo-pc__visual"><img src="photo-1049.jpg" alt="A rock off the coast road at low tide" width="1800" height="1200"></figure>
+          </li>
+          <li class="mo-pc__step">
+            <h3>Day three, 30 km: the dunes</h3>
+            <p>A short ride to the dunes, a swim if the weather holds, and the train back from the last station.</p>
+            <figure class="mo-pc__visual"><img src="photo-640.jpg" alt="Waves on the sand at the dunes" width="1800" height="1200"></figure>
+          </li>
+        </ol>
+      </div>
+      <div class="mo-pc__visuals frame"></div>
+    </div>
+  </section>
+
+  <section class="section" id="includes" aria-labelledby="includes-h">
+    <div class="wrap grid grid--top">
+      <div class="span-6">
+        <div class="section-head">
+          <h2 id="includes-h">What a ride includes</h2>
+          <p>Two nights in guesthouses, every breakfast and lunch, the van and a mechanic.</p>
+        </div>
+        <ul class="rows">
+          <li><span class="rows__name">Three days, two nights<small>Guesthouse rooms for two, or one at £90 more</small></span><span class="rows__value">£640</span></li>
+          <li><span class="rows__name">Bike hire<small>A steel touring bike with bags, fitted on the first morning</small></span><span class="rows__value">£120</span></li>
+          <li><span class="rows__name">Electric bike<small>Two in each group, ask when you book</small></span><span class="rows__value">£180</span></li>
+          <li><span class="rows__name">Group<small>Eight riders, one guide, one mechanic</small></span><span class="rows__value">8 places</span></li>
+        </ul>
+        <div class="btn-row"><a class="btn btn--primary" href="mailto:ride@northbound.example">Book a place</a></div>
+      </div>
+      <!-- picture-develops: one photograph with a clear subject, half the container wide or more; the film look
+           comes by itself on a place, product or service page (site-kind other) -->
+      <figure class="develop span-6 start-7" data-moment="picture-develops"><img src="../../layout/img/photo-d540.jpg" alt="A gravel road bending through an autumn forest under a grey sky" width="1280" height="880" loading="lazy"></figure>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Book a place</h2><p class="t-lead">Eight rides, May to September. Write to us and we hold your place for a week.</p></div>
+      <a class="btn btn--primary btn--xl" href="mailto:ride@northbound.example">Book a place<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5">
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="ring" aria-hidden="true"></span>Northbound</a>
+          <p class="footer__lede">Guided rides from Whitby, May to September.</p>
+        </div>
+        <div class="span-3 start-7 footer__col"><h4>Rides</h4><ul><li><a href="#ride">The three days</a></li><li><a href="#includes">Dates and prices</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Contact</h4><ul><li><a href="mailto:ride@northbound.example">Write to us</a></li><li>Replies within a day</li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Northbound Rides</span>
+        <details class="credits"><summary>Photographs by Dominik Schröder, Rosan Harmens and Sarah Bürvenich (Unsplash), Dietmar Rabich and Tony Webster (Wikimedia Commons)</summary><p>The moor road, the coast and the dunes on Unsplash (Unsplash License); the beech lane by Dietmar Rabich (CC BY-SA 4.0) and the forest road by Tony Webster (CC BY 2.0), via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="../../system.js"></script>
+<script type="module" src="../../motion/motion.js"></script>
+<script type="module" src="../../layout/layout.js"></script>
+</body>
+</html>

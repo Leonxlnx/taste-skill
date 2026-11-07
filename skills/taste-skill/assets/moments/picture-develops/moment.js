@@ -1,5 +1,13 @@
 /*
-  picture-develops - a photograph develops once as its frame comes on screen: first a two-tone
+  picture-develops - a photograph develops once as its frame comes on screen, in one of two looks.
+
+  look "film" (the default on a place, product or service page, <meta name="site-kind" content="other">
+  or <html data-type="place">): the photograph comes up out of the paper the way a print does in the
+  developer tray: pale, flat and without colour at first, its darks arriving before its light tones,
+  then its colour, while it settles from a slight zoom. About 1.6 s, once; transform and a CSS filter
+  on the one picture, no canvas, any origin.
+
+  look "print" (the default on a tech, gaming or software page): first a two-tone
   halftone print, ink dots on paper in the ground's surface tone (so the frame keeps its edges and
   radius while it develops), its darkest cells first, then the print gives way to the photograph,
   which settles from a slight zoom. A picture with a clear subject against a plain field (a rock on
@@ -12,13 +20,26 @@
     </figure>
 
   The host sets the picture's size (an aspect-ratio or a height); the photograph fills it (cover).
-  opts: cell px of the halftone (9, 6-14); duration ms (1800); focus [x, y] 0-1 of the crop (0.5, 0.5).
+  opts: look "film" | "print" (by the page's kind when left out); cell px of the halftone (9, 6-14);
+        duration ms (film 1600, print 1800); focus [x, y] 0-1 of the crop (0.5, 0.5).
+  Give it a photograph big enough to be the section's subject (half the container or more): a small
+  picture developing reads as a loading state, not a moment.
+  On a phone the film look runs too (one picture, a filter and a transform, once); the print look
+  (a canvas) shows the photograph there.
 */
+export const phone = true;
+// a place, product or service page (site-kind other): the photographic look, never the halftone print
+const otherPage = () => {
+  const m = document.querySelector('meta[name="site-kind"]');
+  return document.documentElement.dataset.type === 'place' || (!!m && m.content.trim().toLowerCase() === 'other');
+};
 export default function (root, opts, lib) {
   const img = root.querySelector('img');
   if (!img) return {};
   root.classList.add('mo-pd');
   if (lib.reduced()) { root.classList.add('is-done'); return {}; }
+  if ((opts.look || (otherPage() ? 'film' : 'print')) === 'film') return film(root, img, opts, lib);
+  if (lib.phone()) { root.dataset.momentStill = 'phone'; root.classList.add('is-done'); return {}; }
   const cell = Math.max(6, Math.min(14, +opts.cell || 9));
   const dur = Math.max(900, +opts.duration || 1800);
   const [fx, fy] = Array.isArray(opts.focus) ? opts.focus : [0.5, 0.5];
@@ -98,4 +119,39 @@ export default function (root, opts, lib) {
   const arm = lib.once(root, cover, { threshold: 0, margin: '0px 0px 25% 0px' });
   const seen = lib.once(root, () => { cover(); run(); }, { threshold: Math.min(0.4, 0.6 * innerHeight / Math.max(1, root.getBoundingClientRect().height)) });
   return { destroy() { arm.destroy(); seen.destroy(); finish(); } };
+}
+
+// the film look: the picture itself, from a pale flat grey print to the photograph (moment.css holds the
+// start under .is-armed from just before the frame scrolls in, so a frame no observer reports keeps its photograph)
+function film(root, img, opts, lib) {
+  const dur = Math.max(1000, +opts.duration || 1600);
+  let done = false, anim = null;
+  root.classList.add('mo-pd--film');
+  const finish = () => { if (done) return; done = true; anim?.cancel(); root.classList.remove('is-armed', 'is-live'); root.classList.add('is-done'); };
+  const arm = () => { if (!done) root.classList.add('is-armed'); };
+  const run = async () => {
+    if (done) return;
+    arm();
+    try { if (!img.complete) await new Promise(r => { img.addEventListener('load', r, { once: true }); img.addEventListener('error', r, { once: true }); }); } catch { /* shows anyway */ }
+    if (done) return;
+    root.classList.add('is-live');
+    // the darks come first (contrast), the colour last (saturation); the zoom settles over the whole run.
+    // The change starts on the first frame and runs evenly to a soft landing: a print that sat still for
+    // half a second would read as a picture still loading
+    anim = img.animate([
+      { filter: 'grayscale(1) contrast(.55) brightness(1.32)', transform: 'scale(1.06)' },
+      { filter: 'grayscale(.8) contrast(.82) brightness(1.14)', offset: 0.3 },
+      { filter: 'grayscale(.35) contrast(.95) brightness(1.04)', offset: 0.62 },
+      { filter: 'grayscale(0) contrast(1) brightness(1)', transform: 'none' },
+    ], { duration: dur, easing: 'cubic-bezier(.3, .2, .3, 1)', fill: 'both' });
+    root.classList.remove('is-armed');
+    anim.finished.then(finish, finish);
+  };
+  const r0 = root.getBoundingClientRect();
+  if (r0.bottom > 0 && r0.top < innerHeight * 1.25) arm();
+  const near = lib.once(root, arm, { threshold: 0, margin: '0px 0px 25% 0px' });
+  // it develops once a quarter of it is on screen (less of a frame taller than half the screen), so the
+  // faint print is seen only briefly before it starts to change
+  const seen = lib.once(root, run, { threshold: Math.min(0.25, 0.4 * innerHeight / Math.max(1, r0.height)) });
+  return { destroy() { near.destroy(); seen.destroy(); finish(); } };
 }

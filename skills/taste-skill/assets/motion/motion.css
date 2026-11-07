@@ -6,21 +6,26 @@
   shows the 2px lift and the 1.03 zoom). <html data-motion="off"> switches the whole layer off; data-motion="live"
   is the number tick in a headless shot (motion.js).
   references/motion.md says what moves and how fast. Everything here answers the pointer, the
-  keyboard or a number coming into view once; nothing moves because the page scrolled.
+  keyboard or a number coming into view once, plus the hero's one entrance on load (the end of this
+  file); nothing moves because the page scrolled (that is a dealt moment's job, assets/moments).
 
-  Hover rules sit under (hover: hover) and (pointer: fine): a phone never keeps a stuck hover.
-  Under prefers-reduced-motion colours still change; nothing moves or scales.
+  Hover moves sit under (hover: hover) and (pointer: fine): a phone never keeps a stuck hover.
+  Hover out runs 120ms against 150ms in (motion.md, tokens).
+  Under prefers-reduced-motion colours still change and a press still shows; nothing moves or scales.
 */
 
 :root {
-  --m-in: 140ms;                              /* hover in: buttons, links, nav, tabs */
-  --m-out: 200ms;                             /* hover out, panel close */
+  --m-in: 150ms;                              /* hover in: buttons, links, nav, tabs */
+  --m-out: 120ms;                             /* hover out */
   --m-press: 90ms;                            /* a press */
   --m-panel: 200ms;                           /* a menu or sheet opening */
+  --m-close: 120ms;                           /* a menu closing */
   --m-slide: 240ms;                           /* an indicator travelling between two tabs or links */
   --m-image: 600ms;                           /* a photograph scaling inside its mask */
-  --m-ease: cubic-bezier(.2, .8, .2, 1);      /* ease-out: fast start, soft landing */
+  --m-image-out: 400ms;                       /* ...and settling back */
+  --m-ease: var(--ease, cubic-bezier(.2, .8, .2, 1)); /* the one UI ease-out (system.css --ease): fast start, soft landing */
   --m-ease-io: cubic-bezier(.65, 0, .35, 1);  /* the indicator: leaves and lands softly */
+  --m-ease-enter: cubic-bezier(.22, 1, .36, 1); /* an entrance settling: long soft tail, never past its mark */
   --m-cycle: 3.2s;                            /* one cycle of a card's loop (2.5-4 s) */
   --m-lift: -2px;
 }
@@ -52,18 +57,22 @@ html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.98
 }
 
 /* the arrow: the text arrow (.btn--arrow, .link) nudges 3px; the drawn arrow (.m-arrow) grows its
-   stem and moves its head 3px, the way a good product site's "Learn more" does */
+   stem and moves its head 3px, the way a good product site's "Learn more" does. The pointer's move
+   only for a fine pointer; keyboard focus shows it anywhere */
 html:not([data-motion="off"]) :is(.btn--arrow, .link)::after { transition: transform var(--m-out) var(--m-ease); }
-html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after { transform: translateX(3px); transition-duration: var(--m-in); }
+html:not([data-motion="off"]) :is(.btn--arrow, .link):focus-visible::after { transform: translateX(3px); transition-duration: var(--m-in); }
 .m-arrow { width: 12px; height: 12px; flex: none; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.6;
            stroke-linecap: round; stroke-linejoin: round; }
 .m-arrow__stem { opacity: 0; transform: scaleX(.2); transform-origin: 1px 50%; transform-box: fill-box;
                  transition: opacity var(--m-out) var(--m-ease), transform var(--m-out) var(--m-ease); }
 .m-arrow__head { transition: transform var(--m-out) var(--m-ease); }
-:is(a, button):hover > .m-arrow .m-arrow__stem,
 :is(a, button):focus-visible > .m-arrow .m-arrow__stem { opacity: 1; transform: none; transition-duration: var(--m-in); }
-:is(a, button):hover > .m-arrow .m-arrow__head,
 :is(a, button):focus-visible > .m-arrow .m-arrow__head { transform: translateX(3px); transition-duration: var(--m-in); }
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after { transform: translateX(3px); transition-duration: var(--m-in); }
+  :is(a, button):hover > .m-arrow .m-arrow__stem { opacity: 1; transform: none; transition-duration: var(--m-in); }
+  :is(a, button):hover > .m-arrow .m-arrow__head { transform: translateX(3px); transition-duration: var(--m-in); }
+}
 
 /* a pill that is a link (the line above a hero headline) */
 html:not([data-motion="off"]) a.pill { transition: background-color var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease); }
@@ -98,11 +107,12 @@ html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
 /* the nav words take no pill (ST-08, ST-11): system.css draws the underline under a word from the left on hover and focus, and
    takes it away to the right; the page you are on keeps its still bar (system.css draws it, at the same inset) */
 @media (min-width: 1024px) {
-  /* the full-width panel: fades and settles 6px in 200ms, its columns follow 30ms apart; it closes
-     in 120ms. While one menu is open, the next word swaps the panel at once (motion.js .m-menu-open) */
+  /* the full-width panel: fades and settles 6px in 200ms with its columns together (one surface, read
+     as one); it closes in 120ms. While one menu is open, the next word swaps the panel at once
+     (motion.js .m-menu-open) */
   html:not([data-motion="off"]) .nav__menu {
     transform: translateY(-6px);
-    transition: opacity 120ms var(--m-ease), transform 120ms var(--m-ease), visibility 0s linear 120ms;
+    transition: opacity var(--m-close) var(--m-ease), transform var(--m-close) var(--m-ease), visibility 0s linear var(--m-close);
   }
   html:not([data-motion="off"]) .nav__item:is(:hover, :focus-within) > .nav__menu {
     transition: opacity var(--m-panel) var(--m-ease) 150ms, transform var(--m-panel) var(--m-ease) 150ms, visibility 0s linear 150ms;
@@ -112,16 +122,6 @@ html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
      still fading in finishes its own 200ms instead of snapping */
   html:not([data-motion="off"]) .nav.m-menu-open .nav__menu,
   html:not([data-motion="off"]) .nav.m-menu-open .nav__item:is(:hover, :focus-within) > .nav__menu { transition-duration: 0s; transition-delay: 0s; }
-  html:not([data-motion="off"]) .nav__menu .grid > * { opacity: 0; transform: translateY(4px); transition: opacity 100ms var(--m-ease), transform 100ms var(--m-ease); }
-  html:not([data-motion="off"]) .nav__item:is(:hover, :focus-within) > .nav__menu .grid > * {
-    opacity: 1; transform: none; transition: opacity 260ms var(--m-ease), transform 260ms var(--m-ease);
-    transition-delay: calc(170ms + var(--m-i, 0) * 30ms);
-  }
-  html:not([data-motion="off"]) .nav.m-menu-open .nav__item:is(:hover, :focus-within) > .nav__menu .grid > * { transition-delay: calc(var(--m-i, 0) * 30ms); }
-  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(2) { --m-i: 1; }
-  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(3) { --m-i: 2; }
-  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(4) { --m-i: 3; }
-  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(n + 5) { --m-i: 4; }
   html:not([data-motion="off"]) .menu-col a { transition: color var(--m-out) var(--m-ease); }
   html:not([data-motion="off"]) .menu-col a:hover { transition-duration: var(--m-in); }
   html:not([data-motion="off"]) .menu-card .panel { transition: border-color var(--m-out) var(--m-ease); }
@@ -136,22 +136,20 @@ html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
 html:not([data-motion="off"]) .tabs.m-has-ind { position: relative; isolation: isolate; }
 html:not([data-motion="off"]) .tabs.m-has-ind .tab { position: relative; z-index: 1; }
 html:not([data-motion="off"]) .tabs.m-has-ind .tab[aria-selected="true"] { background: transparent; border-color: transparent; }
+/* the pill takes its new size at once and travels by transform alone (motion.js: it starts scaled to
+   the old tab's size at the old place and settles to scale 1 at the new one), so nothing is laid out
+   again while it moves and its corners are true at rest */
 .m-tab-ind {
   position: absolute; left: 0; top: 0; z-index: 0; width: var(--w, 0px); height: var(--h, 0px);
   border-radius: var(--r-btn); background: var(--ink); pointer-events: none;
-  transform: translate(var(--x, 0px), var(--y, 0px));
-  transition: transform var(--m-slide) var(--m-ease-io), width var(--m-slide) var(--m-ease-io), height var(--m-slide) var(--m-ease-io);
+  transform: translate(var(--x, 0px), var(--y, 0px)) scale(var(--sx, 1), var(--sy, 1)); transform-origin: 0 0;
+  transition: transform var(--m-slide) var(--m-ease-io);
 }
 .m-tab-ind.is-jump { transition: none; }
 html:not([data-motion="off"]) .tab { transition: color var(--m-slide) var(--m-ease), border-color var(--m-out) var(--m-ease), background-color var(--m-out) var(--m-ease); }
 
-/* ---------------------------------------------------------------- focus: the ring settles in */
-/* only on the plain controls, never on a part of a loop, and not on an element that runs its own
-   animation (mark it .m-anim): an animation set here would replace that element's own */
-html:not([data-motion="off"]) :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible:not([data-m-loop] *, .m-anim, .loop-pause) {
-  animation: m-focus var(--m-out) var(--m-ease);
-}
-@keyframes m-focus { from { outline-offset: 6px; outline-color: transparent; } }
+/* ---------------------------------------------------------------- focus */
+/* the ring (system.css) is drawn in full in the frame the focus lands; no transition */
 
 /* ---------------------------------------------------------------- cards: a 2px lift */
 /* the card rises 2px, its border and shadow deepen; a card without its own box (.card--open) lifts
@@ -179,11 +177,11 @@ html:not([data-motion="off"]) .card--open > .panel { transition: transform var(-
    the mask clips it, so the box never moves. .m-zoom is the hook for any other photograph: wrap it. */
 .m-zoom { overflow: clip; }
 html:not([data-motion="off"]) :is(.frame__img, .tile__media > img, .m-zoom img, .m-zoom > video) {
-  transition: transform var(--m-image) var(--m-ease);
+  transition: transform var(--m-image-out) var(--m-ease);
 }
 @media (hover: hover) and (pointer: fine) {
   html:not([data-motion="off"]) :is(a, .card:has(a), .m-zoom):hover :is(.frame__img, .tile__media > img),
-  html:not([data-motion="off"]) .m-zoom:hover :is(img, video) { transform: scale(1.03); }
+  html:not([data-motion="off"]) .m-zoom:hover :is(img, video) { transform: scale(1.03); transition-duration: var(--m-image); }
 }
 
 /* ---------------------------------------------------------------- inputs, switches, checks */
@@ -192,13 +190,16 @@ html:not([data-motion="off"]) .field :is(input, select, textarea), .m-input {
 }
 html:not([data-motion="off"]) .field :is(input, select, textarea):hover, .m-input:hover { border-color: color-mix(in oklab, var(--ink) 48%, transparent); }
 html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-input:focus {
+  /* the field's own ring in place of the outline: a 2px line in --action (3:1 on the ground) and a soft halo,
+     there at once like every focus ring (the hover's fade does not apply to focus) */
   outline: none; border-color: var(--action);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--action) 20%, transparent); transition-duration: var(--m-in);
+  box-shadow: 0 0 0 1px var(--action), 0 0 0 4px color-mix(in oklab, var(--action) 20%, transparent); transition-duration: 0s;
 }
 /* a switch: <button class="m-switch" role="switch" aria-checked="false" aria-label="..."></button>
    (motion.js flips aria-checked on click unless the page handles it). The knob slides in 180ms and
-   stretches 4px while pressed. The off track is ink at 48% (3.3:1 or more against the knob and the
-   ground, the 3:1 a control needs) */
+   stretches 4px while pressed, both by transform (a scaleX from its left edge; on, the 12px shift
+   keeps its right edge where it rests). The off track is ink at 48% (3.3:1 or more against the knob
+   and the ground, the 3:1 a control needs) */
 .m-switch {
   position: relative; flex: none; width: 40px; height: 24px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
   background: color-mix(in oklab, var(--ink) 48%, var(--bg));
@@ -207,14 +208,14 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
 .m-switch::before {
   content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 999px;
   background: var(--bg); box-shadow: 0 1px 3px rgb(0 0 0 / .25);
-  transition: transform 180ms var(--m-ease), width var(--m-press) var(--m-ease);
+  transform-origin: 0 50%; transition: transform 180ms var(--m-ease);
 }
 .m-switch[aria-checked="true"] { background: var(--action); }
 .m-switch[aria-checked="true"]::before { transform: translateX(16px); background: var(--action-ink); }
-.m-switch:active::before { width: 22px; }
-.m-switch[aria-checked="true"]:active::before { transform: translateX(12px); }
+.m-switch:active::before { transform: scaleX(1.22); transition-duration: var(--m-press); }
+.m-switch[aria-checked="true"]:active::before { transform: translateX(12px) scaleX(1.22); }
 .m-switch:hover:not([aria-checked="true"]) { background: color-mix(in oklab, var(--ink) 58%, var(--bg)); }
-/* a check box: <input type="checkbox" class="m-check">, the tick draws in 160ms */
+/* a check box: <input type="checkbox" class="m-check">, the tick fades in as it grows from 70% to full size, 160ms */
 .m-check {
   appearance: none; -webkit-appearance: none; flex: none; margin: 0; width: 20px; height: 20px; border-radius: 6px; cursor: pointer;
   border: 1px solid color-mix(in oklab, var(--ink) 48%, var(--bg)); background: var(--bg) no-repeat center / 14px 14px;
@@ -223,11 +224,12 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
 }
 .m-check::before {
   content: ""; width: 10px; height: 6px; margin-top: -2px; border: solid var(--action-ink); border-width: 0 0 2px 2px;
-  transform: rotate(-45deg) scale(0); transform-origin: 50% 50%; transition: transform 160ms var(--m-ease);
+  opacity: 0; transform: rotate(-45deg) scale(.7); transform-origin: 50% 50%;
+  transition: transform 160ms var(--m-ease), opacity 100ms var(--m-ease);
 }
 .m-check:hover:not(:checked) { border-color: color-mix(in oklab, var(--ink) 64%, var(--bg)); }
 .m-check:checked { background-color: var(--action); border-color: var(--action); }
-.m-check:checked::before { transform: rotate(-45deg) scale(1); }
+.m-check:checked::before { opacity: 1; transform: rotate(-45deg) scale(1); }
 
 /* ---------------------------------------------------------------- FAQ
    Every answer stays open (ST-47, system.css): nothing here opens, closes or animates its height. */
@@ -252,6 +254,49 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
 }
 [data-m-loop].is-m-off *, [data-m-loop].is-m-paused * { animation-play-state: paused !important; }
 
+/* ---------------------------------------------------------------- the hero's entrance */
+/* Once on load the hero enters (motion.js enter(), motion.md): the h1 line by line out of word masks,
+   then its lead, each button and its facts 60ms apart, the picture settling; about 1.1 s.
+   Markup: data-enter on the hero <section> and the one head line that sets html.m-enter before the
+   first paint (with its 700ms safety mark, m-enter-done). Only the words wait, and only in that window
+   until motion.js takes over (.is-entering): no script, reduced motion, print and data-motion="off"
+   show the hero as written; a script later than the mark finds the words fading in here.
+   The pictures (a photograph, a window, the collage) are never hidden, so nothing blinks or flashes
+   the hero's ground: a photograph waits at 1.05 and a window or collage at .98, by the scale property
+   (it composes with any transform of their own), and they settle by transition as soon as the
+   entrance starts or the mark passes. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+    :is(h1, h1 ~ *, :has(> h1) ~ *, :has(~ h1)):not([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage,
+         :has([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage)) { opacity: 0; }
+  /* the mark passed before motion.js arrived: the words fade in instead of appearing at once */
+  html.m-enter.m-enter-done:not([data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+    :is(h1, h1 ~ *, :has(> h1) ~ *, :has(~ h1)) { transition: opacity 400ms var(--m-ease); }
+  /* the settle: a photograph from 1.05 inside its frame (the hero clips one of its own), anything else from .98 */
+  html.m-enter:not([data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-still)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
+    transition: scale 1100ms var(--m-ease-enter), clip-path 1100ms var(--m-ease-enter);
+  }
+  /* the clip's resting value, kept below the waiting rule's weight so that one wins while it applies */
+  .hero[data-enter] :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video) { clip-path: inset(0); }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-still)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):not(img, picture, video, :has(> :is(img, picture, video, .frame__img))) {
+    transition: scale 900ms var(--m-ease-enter);
+  }
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { scale: 1.05; }
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video) { clip-path: inset(2.381%); }   /* a picture that is itself the media (a band under the header, a full-bleed layer) has no frame: its own clip keeps it inside its box while larger, (1 - 1/1.05) / 2 */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):not(img, picture, video, :has(> :is(img, picture, video, .frame__img))) { scale: .98; }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entered) { overflow: clip; }
+}
+/* while it runs: each word of the h1 in its own mask (the masks go when the h1 gets its own nodes back) */
+.hero[data-enter] .m-w { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+.hero[data-enter] .m-w__in { display: inline-block; }
+
 /* ---------------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion="off"]) .card:hover, html:not([data-motion="off"]) .card--open:hover > .panel,
@@ -259,8 +304,18 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
   html:not([data-motion="off"]) .btn:is(:hover, :active), html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after,
   :is(a, button):hover > .m-arrow :is(.m-arrow__head, .m-arrow__stem) { transform: none !important; }
   .m-arrow__stem { opacity: 1; transform: none; }
-  html:not([data-motion="off"]) .nav__menu, html:not([data-motion="off"]) .nav__menu .grid > * { transform: none !important; }
-  html:not([data-motion="off"]) :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible { animation: none; }
+  html:not([data-motion="off"]) .nav__menu { transform: none !important; }
+  /* the controls keep their state and their colour change, without travel: the tab pill and the switch
+     knob jump, the tick fades in at full size, the underline is drawn at once */
+  .m-tab-ind { transition: none; }
+  .m-switch::before { transition-property: background-color; }
+  .m-switch:active::before { transform: none; }
+  .m-switch[aria-checked="true"]::before, .m-switch[aria-checked="true"]:active::before { transform: translateX(16px); }
+  .m-check::before { transform: rotate(-45deg) scale(1); transition-property: opacity; }
+  html:not([data-motion="off"]) :is(.link, .m-link, p a:not([class]), .footer ul a, .footer .link) { transition-property: color, opacity, background-color, border-color; }
+  /* a press still shows, as a deeper tone instead of a move */
+  html:not([data-motion="off"]) .btn--primary:active { background: color-mix(in oklab, var(--action) 74%, var(--bg)); }
+  html:not([data-motion="off"]) .btn--secondary:active { background: color-mix(in oklab, var(--bg) 86%, var(--ink)); }
   [data-m-loop] * { animation-duration: var(--m-cycle) !important; animation-iteration-count: infinite !important;
                     animation-delay: calc(-1 * var(--m-still) * var(--m-cycle)) !important; animation-play-state: paused !important; }
 }

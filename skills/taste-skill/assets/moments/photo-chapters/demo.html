@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-type="place" data-radius="soft">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo chapters · moment demo</title>
+<meta name="site-kind" content="other">
+<meta name="page-type" content="place">
+<meta name="page-kind" content="place">
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js"><link rel="modulepreload" href="moment.js">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Hanken+Grotesk:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="moment.css">
+<style>
+  :root { --p-bg: #f7f4ee; --p-surface: #ece6da; --p-ink: #1f1d1a; --p-muted: #5f5a52; --p-accent: #2f5d50; --p-accent-ink: #ffffff; --p-action: #1f1d1a; --p-action-ink: #f7f4ee;
+          --font-display: "Fraunces", Georgia, serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  .facts { display: grid; align-content: center; }
+  .facts div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+  .facts div:last-child { border-bottom: 1px solid var(--line); }
+  .facts span { color: var(--muted); }
+  .facts b { font-weight: 500; }
+</style>
+</head>
+<body>
+<header class="demo-nav"><div class="container">
+  <a class="demo-nav__logo" href="#">Harbour House</a>
+  <nav class="demo-nav__links"><a href="#">Rooms</a><a href="#">Dinner</a><a href="#">The coast</a><a href="#">Find us</a></nav>
+  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a room</a></div>
+</div></header>
+<main>
+  <section class="section section--hero">
+    <div class="container demo-split">
+      <div class="section-head"><h1>Six rooms above the harbour in Staithes</h1><p>A guesthouse by the water with dinner at eight, breakfast until ten and bikes to borrow. Rooms for two from £120 a night.</p><div class="btn-row"><a class="btn btn--primary" href="#">Book a room</a><a class="btn btn--secondary" href="#">See the rooms</a></div></div>
+      <img class="demo-photo" src="../../layout/img/photo-d88.jpg" alt="A cream lamp on a side table in the low evening sun of room four" width="1280" height="1757">
+    </div>
+  </section>
+  <section class="section" data-moment="photo-chapters">
+    <div class="container mo-ph">
+      <div class="mo-ph__head"><h2>A weekend from our door</h2><p>Three days that start and end at the house: the moor, the bay and the long beach, with bikes, a packed lunch and dinner waiting.</p></div>
+      <ol class="mo-ph__list">
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="../_demo/photo-702.jpg" alt="The moor road above the tree line" width="1800" height="1200"></figure>
+          <h3>Saturday: over the moor</h3>
+          <p>Borrow two bikes after breakfast and take the moor road to the pass, 40 km with a tea room at the top.</p>
+        </li>
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="../_demo/photo-1049-tall.jpg" alt="The rock off the bay at low tide" width="1200" height="1800"></figure>
+          <h3>Saturday night: the bay</h3>
+          <p>Back by five for low tide on the scar, then dinner at eight: what the boats brought in that morning.</p>
+        </li>
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="../_demo/photo-640.jpg" alt="Waves on the sand at the dunes" width="1800" height="1200"></figure>
+          <h3>Sunday: the long beach</h3>
+          <p>A slow breakfast, the cliff path to the dunes and a swim if the sea allows. Checkout is at noon, or two on request.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container demo-split">
+      <div class="section-head"><h2>What a night includes. <span class="muted">From £120 for two.</span></h2><p>A room with a view of the water, dinner on Friday and Saturday, breakfast every day and two bikes to borrow. Dogs welcome in two of the rooms.</p><a class="link" href="#">See the rooms and prices</a></div>
+      <div class="facts">
+        <div><span>Rooms</span><b>Six, four with a sea view</b></div>
+        <div><span>Dinner</span><b>At eight, Friday and Saturday</b></div>
+        <div><span>Price</span><b>£120 to £170 a night for two</b></div>
+        <div><span>Parking</span><b>At the top of the village, free</b></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="container demo-footer"><span>Harbour House · demo page for the moment “Photo chapters”</span><span>Photographs by Dominik Schröder, Rosan Harmens and Sarah Bürvenich on Unsplash; LoMit on Wikimedia Commons (CC BY-SA 4.0)</span></footer>
+<script type="module" src="../moments.js"></script>
+</body>
+</html>

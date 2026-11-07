@@ -1,0 +1,149 @@
+<!doctype html>
+<!-- moments in a page: the place moments photo-chapters and word-highlight dealt onto a page built like
+     assets/starter.html (the nav, the place hero, sections on .wrap, footer.closing), the way a builder mounts them.
+     A moment's own demo.html shows it alone; copy the section from here. in-page-service.html does the same for
+     picture-develops (the film look) and pinned-chapters. type: place. fonts: fraunces. -->
+<html lang="en" data-type="place" data-radius="sharp" data-buttons="block" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harbour House: a guesthouse in Staithes</title>
+<meta name="description" content="Six rooms above the harbour in Staithes, dinner on Friday and Saturday and bikes to borrow. Rooms for two from £120 a night.">
+<meta name="site-kind" content="other"><meta name="page-type" content="place"><meta name="page-kind" content="place">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..500,0..100,0..1&family=Figtree:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../system.css">
+<link rel="stylesheet" href="../../ui/cards.css">
+<link rel="stylesheet" href="../../motion/motion.css">
+<link rel="stylesheet" href="../../layout/layout.css">
+<style>
+:root {
+  --p-bg: #f6f3ec; --p-surface: #ebe5d8; --p-ink: #1d1f1e; --p-muted: #5a5d58;
+  --p-accent: #2f5d50; --p-accent-ink: #ffffff; --p-action: #1d1f1e; --p-action-ink: #f6f3ec;
+  --p-inv-bg: #1d1f1e; --p-inv-surface: #282b29; --p-inv-ink: #f6f3ec; --p-inv-muted: #b3b5ae;
+  --p-inv-accent: #8cc0a8; --p-inv-accent-ink: #1d1f1e; --p-inv-action: #f6f3ec; --p-inv-action-ink: #1d1f1e;
+  --font-display: "Fraunces", Georgia, serif; --font-text: "Figtree", system-ui, sans-serif;
+  --display-weight: 400; --display-tracking: -0.015em; --display-axes: 'SOFT' 70, 'WONK' 0;
+}
+.rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+</style>
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="../moments.js"><link rel="modulepreload" href="../lib.js">
+<link rel="modulepreload" href="../photo-chapters/moment.js"><link rel="modulepreload" href="../word-highlight/moment.js">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="arc" aria-hidden="true"></span>Harbour House</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#rooms">Rooms</a></div>
+      <div class="nav__item"><a class="nav__link" href="#weekend">A weekend</a></div>
+      <div class="nav__item"><a class="nav__link" href="#house">The house</a></div>
+      <div class="nav__item"><a class="nav__link" href="#contact">Find us</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="mailto:stay@harbourhouse.example">Book a room</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--place" data-enter aria-labelledby="hero-h">
+    <img class="hero__bg" data-phone-fill src="photo-1049.jpg" alt="A rock in the bay at low tide, seen from the harbour" style="--ly-pos: 50% 55%" fetchpriority="high">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__text">
+        <h1 id="hero-h">A guesthouse above the harbour in Staithes</h1>
+        <p class="hero__lead">Six rooms by the water, dinner at eight on Friday and Saturday. Rooms for two from £120 a night.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#rooms">See the rooms</a></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="rooms" aria-labelledby="rooms-h">
+    <div class="wrap grid grid--top">
+      <div class="span-6">
+        <div class="section-head">
+          <h2 id="rooms-h">Six rooms, four on the water</h2>
+          <p>Breakfast until ten is in every price.</p>
+        </div>
+        <ul class="rows">
+          <li><span class="rows__name">Room one<small>Double, on the garden side</small></span><span class="rows__value">£120</span></li>
+          <li><span class="rows__name">Room four<small>Double, a window seat over the bay</small></span><span class="rows__value">£150</span></li>
+          <li><span class="rows__name">Room five<small>Twin or double, sea view</small></span><span class="rows__value">£150</span></li>
+          <li><span class="rows__name">The loft<small>Double and a sofa bed, two windows on the water</small></span><span class="rows__value">£170</span></li>
+        </ul>
+      </div>
+      <figure class="pl-photo pl-photo--end span-6 start-7" style="--pl-r: .8"><img src="../../layout/img/photo-d88.jpg" alt="A cream lamp on a side table in the low evening sun of room four" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- photo-chapters (references/moments.md): the section is the host; its h2 and lead, then 3 to 5 chapters,
+       one photograph each, none used elsewhere on the page. moment.js makes the section (hold + 1) screens tall -->
+  <section class="section" id="weekend" data-moment="photo-chapters" aria-labelledby="weekend-h">
+    <div class="wrap mo-ph">
+      <div class="mo-ph__head"><h2 id="weekend-h">A weekend from our door</h2><p>Three days that start and end at the house, with bikes, a packed lunch and dinner waiting.</p></div>
+      <ol class="mo-ph__list">
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="photo-702.jpg" alt="The moor road above the tree line" width="1800" height="1200"></figure>
+          <h3>Saturday: over the moor</h3>
+          <p>Borrow two bikes after breakfast and take the moor road to the top, 40 km with a tea room halfway.</p>
+        </li>
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="../../layout/img/photo-d540.jpg" alt="A gravel road bending through an autumn forest under a grey sky" width="1280" height="880"></figure>
+          <h3>Sunday: the forest loop</h3>
+          <p>A packed lunch from the kitchen and 25 km of gravel through the woods behind the village.</p>
+        </li>
+        <li class="mo-ph__ch">
+          <figure class="mo-ph__pic"><img src="photo-640.jpg" alt="Waves on the sand at the dunes" width="1800" height="1200"></figure>
+          <h3>Monday: the long beach</h3>
+          <p>A slow breakfast, the cliff path to the dunes and a swim if the sea allows. Checkout is at noon.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- word-highlight: one statement of 12 to 40 words in its own section, one strong word in <strong> -->
+  <section class="section statement" id="house" data-moment="word-highlight" aria-label="The house">
+    <div class="wrap">
+      <p class="t-label">The house</p>
+      <p class="mo-wh__text">We are a family of four with six rooms, a kitchen and a shed of bikes. Dinner is one menu of what the boats bring in, and we will tell you where <strong>the tide</strong> is before you ask.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--visit" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Book a room</h2><p class="t-lead">Write to us; we answer the same day.</p></div>
+      <a class="btn btn--primary btn--xl" href="mailto:stay@harbourhouse.example">Book a room<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-4">
+          <address class="footer__address">High Street, Staithes</address>
+          <p><a class="link" href="https://www.openstreetmap.org/search?query=High%20Street%20Staithes">Get directions</a></p>
+        </div>
+        <div class="span-6 start-7 stack-4">
+          <h4>Arriving</h4>
+          <dl class="hours"><dt>Check-in</dt><dd>15:00 to 20:00</dd><dt>Checkout</dt><dd>By 12:00</dd><dt>Dinner</dt><dd>Friday and Saturday at 20:00</dd></dl>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Harbour House</span>
+        <details class="credits"><summary>Photographs by Rosan Harmens, Dominik Schröder and Sarah Bürvenich (Unsplash), LoMit and Tony Webster (Wikimedia Commons)</summary><p>The bay, the moor road and the beach on Unsplash (Unsplash License); the lamp by LoMit (CC BY-SA 4.0) and the forest road by Tony Webster (CC BY 2.0), via Wikimedia Commons.</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+<nav class="actionbar" aria-label="Quick actions">
+  <a class="btn btn--secondary" href="https://www.openstreetmap.org/search?query=High%20Street%20Staithes">Directions</a>
+  <a class="btn btn--primary" href="mailto:stay@harbourhouse.example">Book a room</a>
+</nav>
+<script type="module" src="../../system.js"></script>
+<script type="module" src="../../motion/motion.js"></script>
+<script type="module" src="../../layout/layout.js"></script>
+</body>
+</html>

@@ -13,12 +13,18 @@
                                                It deals from heroes.json's gaming weights (photo, film, and
                                                statement or word when no art is supplied), never ui, and
                                                --type gaming means the same. Also read as a game:
-                                               --type software with film or photo in --has and no ui
-         [--has photo,ui,film,object,ground]   the material the brief really has (default by type:
-                                               software ui; product object,photo; service photo; a game
+                                               --type software with film, photo or setting in --has and no ui
+         [--has photo,ui,film,object,setting,ground]   the material the brief really has (default by type:
+                                               software ui; product photo (the client's photographs, else
+                                               stand-ins from photos.mjs search); service photo; a game
                                                ground, so a game with art passes --has film,photo).
                                                word and statement are dealt only without photo or film (heroes.json avoid)
-                                               object with no photo or film always prints product (the full-width stage)
+                                               object (a cut-out, the client's render, or a product render when
+                                               the brief asks for 3D) with no photo or film always prints product
+                                               (the full-width stage)
+                                               setting (a game without art files: stand-in photographs of its
+                                               setting, photos.mjs search) always prints photo: the game's name
+                                               set large on the photograph's calm side
          [--hero <id>]                         print that one instead of dealing it
          [--history .taste-skill/layout-history.json] [--json] [--stats 1000]
 
@@ -39,12 +45,14 @@ const TYPES = ['software', 'product', 'place', 'service'];
 let type = opt('type');
 if (type === 'gaming') type = 'software';   // a game is page type software, kind gaming
 if (!TYPES.includes(type) && !opt('hero')) { console.error('deal: --type software|product|place|service (a game: --kind gaming)'); process.exit(2); }
-const HAS = { software: ['ui', 'ground'], product: ['object', 'photo', 'ground'], place: ['photo', 'ground'], service: ['photo', 'ground'] };
+// a product's default is photographs (its own, else stand-ins): a render only when the brief asks for 3D (--has object)
+const HAS = { software: ['ui', 'ground'], product: ['photo', 'ground'], place: ['photo', 'ground'], service: ['photo', 'ground'] };
 const given = opt('has') && opt('has') !== true ? String(opt('has')).split(',').map(s => s.trim()).filter(Boolean) : null;
 const gaming = type === 'software' && (opt('kind') === 'gaming' || opt('type') === 'gaming'
-  || (given && !given.includes('ui') && (given.includes('film') || given.includes('photo'))));
+  || (given && !given.includes('ui') && (given.includes('film') || given.includes('photo') || given.includes('setting'))));
 const has = new Set(given ? given.concat('ground') : (gaming ? ['ground'] : (HAS[type] || [])));
 if (gaming) has.delete('ui');                  // never a UI hero on a game
+if (!gaming && has.delete('setting')) has.add('photo');   // only a game has a setting: on any other page it is a photograph
 const weightKey = gaming ? 'gaming' : type;    // the types weights to read
 const histFile = opt('history');
 let hist = { heroes: [] };
@@ -75,6 +83,8 @@ function dealOnce(recentHeroes) {
   // the product shown by its render or a cut-out (object, no photograph or film): always the full-width
   // product stage, never the split's six columns (in testing: a render at 44% of the stage read as small)
   if (!hero && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
+  // a game without art files: its name set large over a stand-in photograph of its setting (the photo hero's calm side)
+  if (!hero && gaming && has.has('setting') && !has.has('photo') && !has.has('film') && !has.has('object')) hero = heroes.find(h => h.id === 'photo');
   if (!hero) {
     const ok = heroes.filter(h => h.id !== 'place' && (h.types[weightKey] || 0) > 0 && needsMet(h));
     if (!ok.length) { console.error(`deal: no hero for ${gaming ? 'a game' : type} with ${[...has].join(', ')}`); process.exit(1); }
@@ -112,7 +122,7 @@ if (opt('json')) {
   grid:\n${s(hero.grid)}
   at 1440:\n${s(hero.at1440)}
   at 390:\n${s(hero.at390)}
-  moment: ${hero.moment}${tech ? '' : '\n  grounds, moments, effects: none (kind other: flat colour, photographs, type; --kind tech for hardware)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
+  moment: ${hero.moment}${tech ? '' : '\n  grounds and effects: none (kind other: flat colour, photographs, type; --kind tech for hardware); moments: one or two photo- and type-led ones (moments.mjs pick --page <kind>)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
   mistakes: ${hero.mistakes.join('; ')}
 
 type: the pairing start.mjs dealt (VI-02); keep its :root lines as printed (headlines 400; 400 to 500 on tech).${axis}`);

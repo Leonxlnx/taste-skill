@@ -9,16 +9,13 @@
   "trigger": "enter",
   "cost": "low",
   "webgl": 0,
-  "pages": [
-    "tech",
-    "gaming",
-    "software"
-  ],
+  "pages": [],
+  "retired": "Not dealt: every hero now rises line by line on load (references/motion.md, The hero's entrance), so a section heading that rises the same way repeats the entrance.",
   "look": "One section's heading rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once.",
   "reduced": "The section stands as written.",
   "phone": "The heading and the lines after it stand as written.",
   "maxPerPage": 1,
-  "weight": 0.9,
+  "weight": 0,
   "needs": {
     "words": "a heading of 2 to 3 lines"
   },

@@ -58,7 +58,7 @@
 
 <p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">Become a sponsor</a></sub></p>
 
-**Taste Skill** (`tasteskill 2.5.0`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs, real brand icons and real product UI, with product renders when a product has no photographs, quiet micro-interactions, and shader effects, creative moments and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker that enforces the rules.
+**Taste Skill** (`tasteskill 2.5.2`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs (licensed stand-ins when the client has none), real brand icons and real product UI, a hero entrance and one or two dealt moments on every page, quiet micro-interactions, and shader effects and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker and a finish gate that enforce the rules.
 
 Pages built from a single brief in earlier v2 runs:
 
@@ -124,11 +124,11 @@ Already have the skill? Run the install command again; the install name did not 
 
 Use it by asking your agent to build or redesign a company site; the agent loads the skill, copies `assets/` into the project, starts from `assets/starter.html` and runs the checker before it hands the page over. Every build starts by classifying the client's business (`software`, `gaming`, `tech`, `product`, `service` or `place`) and planning the page screen by screen before writing markup:
 
-1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette and Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `word`, `film`, `statement` or `triptych`).
+1. **Deal tokens and layout.** `scripts/start.mjs` deals a palette made for the trade and a Google Fonts pairing for the page kind (`library/palettes.json`, `library/type.json`), and `assets/layout/deal.mjs` deals a hero layout (`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `word`, `film`, `statement` or `triptych`).
 2. **Start from one system.** `assets/starter.html`, `assets/system.css` and `assets/layout/layout.css` enforce one section per screen at desktop (`1440x900`), equal left and right content edges, a fixed navigation bar and a single-screen closing footer (`footer.closing`).
 3. **Show real product UI and real photographs.** Software and tech pages populate lit feature cards (`assets/ui/cards.css`) with rewritten HTML UI fragments (`assets/ui/`) and node-and-line diagrams (`assets/diagrams/`), with real brand and interface SVGs resolved locally by `scripts/icons.mjs`. Place, shop, hospitality and non-technical product pages lead with curated photographs (`scripts/photos.mjs`, `assets/photos/`), typography and flat colour, crediting sources in one expandable footer line with no captions under images.
-4. **Keep effects for tech and gaming pages.** Shader grounds (`scripts/effects.mjs`), creative scroll or pointer moments (`scripts/moments.mjs`), scroll scenes (`assets/scenes/`) and procedural 3D prints (`assets/objects/`) are dealt only on `software`, `tech` and `gaming` pages within a four-context WebGL cap, with static fallbacks for phones and reduced motion. Cafes, hotels, shops, studios and services get zero WebGL or scroll effects.
-5. **Check in a real browser over HTTP.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs` and `scripts/shoot.mjs` render the built page in headless Chrome across `1440`, `1024`, `768` and `390`, catching empty visuals, broken shaders, contrast drops, misaligned columns, section-height drift, placeholder text, invented street numbers and slow-network image gaps before the build ships.
+4. **Keep effects for tech and gaming pages.** Shader grounds (`scripts/effects.mjs`), scroll scenes (`assets/scenes/`) and procedural 3D prints (`assets/objects/`) are dealt only on `software`, `tech` and `gaming` pages within a four-context WebGL cap, with static fallbacks for phones and reduced motion. Every page gets a hero entrance and one or two moments from `scripts/moments.mjs`; cafes, hotels, shops, studios and services get only the photo- and type-led ones, and zero WebGL.
+5. **Check in a real browser over HTTP.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs` and `scripts/shoot.mjs` render the built page in headless Chrome across `1440`, `1024`, `768` and `390`, catching empty visuals, broken shaders, contrast drops, misaligned columns, section-height drift, placeholder text, invented street numbers and slow-network image gaps before the build ships. `scripts/gate.mjs` then holds the finish until no fixable FAIL is left, three rounds at most.
 
 Details of what changed from `2.1.x` are in the [changelog](CHANGELOG.md).
 
@@ -142,11 +142,12 @@ Everything is a plain Node 22+ script in the skill folder; none installs anythin
 | `assets/layout/deal.mjs` | Deals one of eleven tested hero layouts; `assets/layout/check.mjs` checks it with long-headline stress tests. |
 | `scripts/photos.mjs` | Deals vetted photographs by trade, enforces image weight and writes the one footer credit line. |
 | `scripts/icons.mjs` | Resolves real brand and interface icons into local SVG files. |
-| `scripts/effects.mjs`, `scripts/moments.mjs` | Deal shader grounds and creative moments for tech, gaming and software pages. |
-| `scripts/consistency.mjs` | The checker: renders the page in headless Chrome over HTTP at `1440`, `1024`, `768` and `390` and prints PASS, WARN or FAIL per rule. |
+| `scripts/effects.mjs`, `scripts/moments.mjs` | Deal shader grounds for tech, gaming and software pages, and the moments for every kind. |
+| `scripts/gate.mjs`, `scripts/copy-lint.mjs` | The finish gate (also a Stop hook) and the copy linter it runs. |
+| `scripts/consistency.mjs` | The checker: renders the page in headless Chrome over HTTP at `1440`, `1024`, `820`, `768` and `390` and prints PASS, WARN or FAIL per rule. |
 | `scripts/perf.mjs`, `scripts/shoot.mjs` | Page weight and speed, and full-page and per-section screenshots. |
 
-First run: `node scripts/start.mjs deal --page software` (kinds: `software`, `gaming`, `tech`, `product`, `service`, `place`). Check a built page with `node scripts/consistency.mjs <url or file> --page <kind>`.
+First run, from the project folder (a deal also arms the finish gate there): `node scripts/start.mjs deal --page software` (kinds: `software`, `gaming`, `tech`, `product`, `service`, `place`). Check a built page with `node scripts/consistency.mjs <url or file> --page <kind>`.
 
 ## Moved skills
 
@@ -174,10 +175,10 @@ Node 22 or newer and Chrome, Edge or Chromium; ffmpeg is optional (WebP photogra
 From the skill's vetted photograph library (`assets/photos/photos.json`, including bundled Wikimedia Commons WebP sets and Unsplash photographs) dealt by `scripts/photos.mjs`. Library frames are used for trade and material details (or marked explicitly as draft stand-ins when the client has no photographs yet), never passed off as the client's own room, staff or product, and credited in one expandable footer line (`photos.mjs credits`).
 
 **Does it work with React, Vue, Svelte, plain HTML?**  
-Yes. You can ship directly from `assets/starter.html` and the modular CSS/JS kits, or port the same tokens, section geometry, UI fragments and browser checks into React, Next.js, Vue, Svelte, Astro or Tailwind.
+An empty folder gets a static page from `assets/starter.html`. An existing React, Vue, Svelte, Astro or Tailwind project is built in its own stack, with the kit served from its public folder; a Next.js brief is built as a static export. The browser checks run on the served or built page.
 
 **When does a page get shaders or scroll effects?**  
-Only on `software`, `tech` (technical hardware) and `gaming` pages, and always within a four-context WebGL budget with static phone and reduced-motion fallbacks. Places, shops, cafes, hotels, studios, services and everyday physical products stay calm: photographs, sharp typography and flat colour.
+Shaders only on `software`, `tech` (technical hardware) and `gaming` pages, and always within a four-context WebGL budget with static phone and reduced-motion fallbacks. Places, shops, cafes, hotels, studios, services and everyday physical products stay calm: photographs, sharp typography and flat colour, with a hero entrance and one or two photo- or type-led moments in their own sections.
 
 ## Support the project
 
