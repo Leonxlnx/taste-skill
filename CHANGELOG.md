@@ -6,7 +6,22 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ## 2.5.2 - unreleased
 
-(in progress)
+Security, installs and the community fixes, on top of 2.5.1.
+
+### Fixes
+
+- **`photos.mjs` trusts no project file ([#198](https://github.com/Leonxlnx/taste-skill/issues/198)):** `.taste-skill/found.json` entries are only taken when they are shaped like a real search result (an `f` id, Commons, a file on `upload.wikimedia.org`, no `files` list), every file name it writes is a safe name inside its own folder, and only http(s) links on the source's own hosts reach `credits.json` and the credits markup, escaped. A planted entry can no longer copy a local file into the site, write outside it or put a `javascript:` link in the credits.
+- **The gate that armed a build judges it:** `build.json` records the gate that armed it, and with two installs (a project copy and a global one) the other install's gate hands the run over, so a build is never judged by an older or newer checker. The Stop hook's `gate-hook-missing.txt` also names `CLAUDE_SKILL_DIR`.
+- **`perf.mjs` keeps the Chrome profile of a run that is still alive ([#190](https://github.com/Leonxlnx/taste-skill/issues/190), [#191](https://github.com/Leonxlnx/taste-skill/pull/191)):** a second perf run no longer deletes a running one's profile, with a test that needs no Chrome.
+- **`install.sh` reads CRLF frontmatter ([#194](https://github.com/Leonxlnx/taste-skill/pull/194)):** a checkout with Windows line endings used from WSL, Linux or macOS installs as `design-taste-frontend` again, with an install test in CI.
+- **Claude.ai upload ([#192](https://github.com/Leonxlnx/taste-skill/pull/192)):** `.claude-plugin/plugin.json`, so the repository's zip uploads to claude.ai as a plugin; `tests/frontmatter.mjs` checks that every manifest names the same version and real skills.
+- **Building inside a framework ([#195](https://github.com/Leonxlnx/taste-skill/issues/195)):** `references/frameworks.md` covers React, Next.js, Vue and Svelte: where the kit's assets go, how `system.js` and the moments mount after hydration, and how to check the dev server or a static export with the gate.
+- **The centred hero on a short phone:** under 700px tall its window starts on the first screen.
+- **The README in five languages:** English, Korean ([#188](https://github.com/Leonxlnx/taste-skill/pull/188)), Simplified Chinese, French and German.
+
+### Thanks
+
+To @t4sh, @AbbyJL, @derek-hobden and @ChoYugyeong for their pull requests, and to @mneves75, @SSShooter and @skurzyp for their reports.
 
 ---
 

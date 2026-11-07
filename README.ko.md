@@ -97,7 +97,7 @@ Claude Code 안에서 다음 명령을 실행하세요. 스킬에는 `taste-skil
 /plugin install taste-skill@taste-skill
 ```
 
-`/plugin update`로 나중에 업데이트할 수 있습니다.
+`/plugin update`로 나중에 업데이트할 수 있습니다. claude.ai에서는 저장소의 zip 파일(GitHub의 **Code > Download ZIP**)을 **Customize > Plugins > Add > Upload plugin**에서 업로드하세요.
 
 </details>
 
