@@ -31,3 +31,5 @@ jobs:
               execFileSync(process.execPath, ["--check", f], { stdio: "inherit" });
             }
           '
+      - name: perf.mjs keeps profiles of runs still alive
+        run: node tests/perf-profile-cleanup.mjs
