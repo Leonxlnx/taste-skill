@@ -1,12 +1,12 @@
 <!doctype html>
-<!-- layout v4 demo: hero-split (references/layout-v4.md, heroes.json "split"). type: product. fonts: fraunces. -->
-<html lang="en" data-type="product" data-radius="soft" data-ground="sand" data-buttons="solid">
+<!-- layout v4 demo: hero-split (references/layout-v4.md, heroes.json "split"). type: service. fonts: fraunces. -->
+<html lang="en" data-type="service" data-radius="soft" data-ground="sand" data-buttons="solid">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="site-kind" content="other">
-<title>Saltmarsh Bakery: sourdough, buns and coffee in Leith</title>
-<meta name="description" content="A bakery and coffee bar on Henderson Street, Leith. Bread from 7:30, coffee from our own roast, cakes to order.">
+<title>Saltmarsh: coffee bar hire for events in Edinburgh</title>
+<meta name="description" content="Two baristas, an espresso machine and our own roast at your wedding, party or office in Edinburgh. Half a day from £480.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Figtree:wght@400..600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../system.css">
@@ -21,7 +21,7 @@
   --font-display: "Fraunces", Georgia, serif; --font-text: "Figtree", system-ui, sans-serif;
   --display-weight: 400; --display-tracking: -0.02em; --display-tracking-xl: -0.03em; --display-axes: 'SOFT' 70, 'WONK' 0; --ly-scale: 1;
 }
-#counter .hero__media, #counter .counter__photo { border-radius: var(--r-lg); }
+#packages .counter__photo { border-radius: var(--r-lg); }
 .counter__photo { position: relative; overflow: hidden; height: min(560px, var(--ly-fit)); background: var(--surface); }
 .counter__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% 50%; }
 .rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
@@ -31,86 +31,85 @@
 <body>
 <header class="nav">
   <div class="wrap nav__bar">
-    <a class="nav__logo" href="#"><span class="mark" data-mark="petal" aria-hidden="true"></span>Saltmarsh</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="petal" aria-hidden="true"></span>Saltmarsh</a>
     <nav class="nav__links" aria-label="Main">
       <div class="nav__item">
-        <a class="nav__link" href="#counter">Bread and buns <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="nav__link" href="#packages">Packages <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="nav__menu">
           <div class="wrap grid">
-            <div class="menu-col span-3"><p class="t-label">Every day</p><a href="#counter">Sourdough<span>Country loaf, rye, seeded</span></a><a href="#counter">Buns<span>Cardamom, cinnamon, fig</span></a></div>
-            <div class="menu-col span-3"><p class="t-label">To order</p><a href="#cakes">Cakes<span>Two days' notice</span></a><a href="#cakes">Wholesale<span>For cafes in Leith</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Events</p><a href="#packages">Weddings<span>Coffee after the meal</span></a><a href="#packages">Parties<span>Half or full day</span></a></div>
+            <div class="menu-col span-3"><p class="t-label">Work</p><a href="#packages">Office mornings<span>Weekly, two hours</span></a><a href="#book">Ask for a date<span>Two weeks' notice</span></a></div>
           </div>
         </div>
       </div>
-      <div class="nav__item"><a class="nav__link" href="#counter">Coffee</a></div>
-      <div class="nav__item"><a class="nav__link" href="#cakes">Cakes</a></div>
-      <div class="nav__item"><a class="nav__link" href="#visit">Visit</a></div>
+      <div class="nav__item"><a class="nav__link" href="#packages">Weddings</a></div>
+      <div class="nav__item"><a class="nav__link" href="#packages">Offices</a></div>
+      <div class="nav__item"><a class="nav__link" href="#book">Bookings</a></div>
     </nav>
     <div class="nav__actions">
-      <a class="nav__link" href="#visit">Henderson Street</a>
-      <a class="btn btn--primary" href="#cakes">Order a cake</a>
+      <a class="nav__link" href="#packages">Packages</a>
+      <a class="btn btn--primary" href="#book">Ask for a date</a>
     </div>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
   </div>
 </header>
 
-<main>
-  <section class="hero hero--split" aria-labelledby="hero-h">
+<main id="top">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
       <div class="hero__text span-5">
-        <p class="hero__kicker"><span class="dot" aria-hidden="true"></span>Open today, 7:30 to 16:00</p>
-        <h1 id="hero-h">Sourdough, buns and coffee in Leith</h1>
-        <p class="hero__lead">We bake through the night on Henderson Street. Bread from 7:30 until it runs out, coffee from our own roast, cakes to order with two days' notice.</p>
-        <div class="btn-row"><a class="btn btn--primary" href="#counter">See today's bake</a><a class="btn btn--secondary" href="#cakes">Order a cake</a></div>
+        <p class="hero__kicker"><span class="dot" aria-hidden="true"></span>Taking bookings for the spring</p>
+        <h1 id="hero-h">Coffee bar hire for weddings and events</h1>
+        <p class="hero__lead">Two baristas, an espresso machine and our own roast, set up in an hour anywhere in Edinburgh. Half a day from £480, up to 100 cups.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#book">Ask for a date</a><a class="btn btn--secondary" href="#packages">See the packages</a></div>
       </div>
       <div class="hero__media span-6 start-7">
         <img src="img/photo-c166.jpg" alt="A cappuccino dusted with cinnamon beside a croissant, in window light" style="--ly-pos: 50% 58%" fetchpriority="high">
         <div class="ly-float">
-          <div class="ly-float__row"><span class="ly-live">Out of the oven</span><span>10:30</span></div>
-          <div class="ly-float__title">Cardamom buns, 48 today</div>
+          <div class="ly-float__row"><span class="ly-live">Saturday</span><span>14:00</span></div>
+          <div class="ly-float__title">Wedding in Portobello, 140 cups</div>
         </div>
       </div>
     </div></div>
   </section>
 
-  <section class="section" id="counter" aria-labelledby="counter-h">
+  <section class="section" id="packages" aria-labelledby="packages-h">
     <div class="wrap grid grid--middle">
       <div class="span-6">
         <div class="section-head">
-          <h2 id="counter-h">At the counter today. <span class="muted">Baked overnight, sold from 7:30.</span></h2>
+          <h2 id="packages-h">Four packages. <span class="muted">Two baristas, the machine, cups and milk in each.</span></h2>
         </div>
         <ul class="rows">
-          <li><span class="rows__name">Country sourdough<small>Wholemeal, 36-hour ferment</small></span><span class="rows__value">£5.20</span></li>
-          <li><span class="rows__name">Cardamom bun<small>Out of the oven at 10:30</small></span><span class="rows__value">£3.10</span></li>
-          <li><span class="rows__name">Rye with sunflower seeds<small>Thursdays and Saturdays</small></span><span class="rows__value">£4.80</span></li>
-          <li><span class="rows__name">Filter coffee<small>This week: Huila, Colombia</small></span><span class="rows__value">£3.20</span></li>
-          <li><span class="rows__name">Flat white<small>Oat milk at no extra cost</small></span><span class="rows__value">£3.40</span></li>
+          <li><span class="rows__name">Half day<small>Four hours, up to 100 cups</small></span><span class="rows__value">£480</span></li>
+          <li><span class="rows__name">Full day<small>Eight hours, up to 250 cups</small></span><span class="rows__value">£860</span></li>
+          <li><span class="rows__name">Wedding<small>From the meal until midnight</small></span><span class="rows__value">£720</span></li>
+          <li><span class="rows__name">Office mornings<small>Weekly, two hours, 40 cups</small></span><span class="rows__value">£190</span></li>
         </ul>
       </div>
-      <div class="span-5 start-8">
+      <div class="span-6 start-7">
         <div class="counter__photo"><img src="img/photo-c96.jpg" alt="Hot water poured from a copper kettle into a pour-over dripper on a pale table" loading="lazy"></div>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="footer closing" id="visit" aria-labelledby="close-h">
+<footer class="footer closing" id="book" aria-labelledby="close-h">
   <div class="wrap">
     <div class="closing__cta close--type">
-      <div class="section-head"><h2 id="close-h">See today's bake</h2></div>
-      <a class="btn btn--primary btn--xl" href="#counter">See today's bake<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <div class="section-head"><h2 id="close-h">Ask for a date</h2></div>
+      <a class="btn btn--primary btn--xl" href="mailto:book@saltmarsh.example">Ask for a date<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
     </div>
     <div class="closing__links">
       <div class="grid">
         <div class="span-6 stack-5">
-          <a class="nav__logo" href="#"><span class="mark" data-mark="petal" aria-hidden="true"></span>Saltmarsh</a>
-          <p class="footer__lede">Henderson Street, Leith</p>
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="petal" aria-hidden="true"></span>Saltmarsh</a>
+          <p class="footer__lede">From Leith, anywhere in Edinburgh and the Lothians.</p>
         </div>
-        <div class="span-3 start-7 footer__col"><h4>Hours</h4><ul><li>Tuesday to Friday 7:30 to 16:00</li><li>Saturday and Sunday 8:00 to 15:00</li><li>Closed on Mondays</li></ul></div>
-        <div class="span-3 footer__col" id="cakes"><h4>Cakes to order</h4><ul><li><a href="mailto:cakes@saltmarsh.example">Write to us</a></li><li>Two days' notice</li></ul></div>
+        <div class="span-3 start-7 footer__col"><h4>Packages</h4><ul><li><a href="#packages">Weddings</a></li><li><a href="#packages">Parties</a></li><li><a href="#packages">Office mornings</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Bookings</h4><ul><li><a href="mailto:book@saltmarsh.example">Write to us</a></li><li>Two weeks' notice</li></ul></div>
       </div>
       <div class="footer__legal">
-        <span>&copy; 2026 Saltmarsh Bakery</span>
+        <span>&copy; 2026 Saltmarsh Coffee</span>
         <details class="credits"><summary>Photographs: Katerina Pavlickova and Kim Sanso, via Wikimedia Commons</summary><p>Cappuccino and croissant by Katerina Pavlickova (CC0); pour-over by Kim Sanso (CC0); both via Wikimedia Commons.</p></details>
       </div>
     </div>

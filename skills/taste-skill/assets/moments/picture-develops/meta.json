@@ -10,17 +10,18 @@
   "cost": "low",
   "webgl": 0,
   "pages": [
-    "tech",
-    "gaming",
-    "software"
+    "place",
+    "product",
+    "service"
   ],
-  "look": "One photograph develops once as it comes on screen: a two-tone halftone print in the page's ground and ink, darkest cells first, that gives way to the photograph settling from a slight zoom.",
+  "look": "One large photograph develops once as it comes on screen. On a place, product or service page (look \"film\") it comes up out of the paper like a print in the developer tray: a faint grey print at first, its darks arriving before its light tones, then its colour, while it settles from a slight zoom, about 1.6 s. The halftone look (\"print\", a two-tone dot print in the page's ground and ink giving way to the photograph) is not dealt: tech leaves this moment out, so it is kept only as opts look \"print\".",
   "reduced": "The photograph stands.",
-  "phone": "The photograph stands.",
+  "phone": "The film look runs on a phone too (one picture, a filter and a transform, once); the print look shows the photograph.",
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
-    "photo": true
+    "photo": true,
+    "picture": "one photograph with a clear subject, half the container wide or more: the section's subject, not a thumbnail"
   },
   "avoidWith": [
     "liquid-hover",
@@ -39,5 +40,6 @@
       "see": true,
       "wait": 2600
     }
-  }
+  },
+  "phoneRuns": true
 }

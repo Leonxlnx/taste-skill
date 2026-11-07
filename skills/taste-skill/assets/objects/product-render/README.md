@@ -7,9 +7,11 @@ fabric, leather, plastic, a light), soft studio light with soft shadows, a softb
 floor shadow, the page's accent on the parts that ask for it. It sways slowly as a turntable, or holds
 still; a lamp switches on and off on a click; a robot's joints move.
 
-Use it for a **product without photographs**: the render is the product's picture, in the hero and
-the statement. Never for a product that has photographs, never on a place page, never captioned,
-never a product of another kind. One product render a page.
+Use it when the **brief asks for 3D or a render** (a configurator, a product that exists only as a
+model): the render is the product's picture, in the hero and the statement. A product without
+photographs and without that ask is shown in photographs, its own or stand-ins
+(`references/photos.md`). Never for a product that has photographs, never on a place page, never
+captioned, never a product of another kind. One product render a page.
 
 ## Mount: the product at anchor scale
 

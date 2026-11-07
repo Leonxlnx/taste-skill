@@ -1,13 +1,13 @@
 {
  "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place's hero is never dealt: it is always 'place' (local-business Recipe 3, hero-place.html), and no other hero lists place. Every hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. Nothing is laid over a photograph to make words readable (no scrim, gradient or veil: PH-31). Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale.",
  "fields": {
-  "types": "business types it may be dealt to, with weights; a type missing is never dealt. place is never dealt: deal.mjs always prints the 'place' hero for it. gaming is a kind, not a page type (a game is page type software): its weights are read by deal.mjs for a game (--kind gaming, or --type software --has film,photo without ui) and never for a software brief; no hero for a game lists ui. A game without art files passes --has object (its key art is rendered with assets/objects/product-render) and is dealt the product stage; a game never deals statement or word: an effect never replaces its key art",
-  "needs": "the material it cannot do without (a|b means either): photo (a strong photograph of the real thing, at least 1920 wide for a full-bleed one), ui (the client's screens or kit fragments from assets/ui rewritten to its names), film (a real film; without one the control links to the film's page, never a dead button), object (a product photograph on a plain ground, a cut-out, the client's render, or a product render composed with assets/objects/product-render: a physical product, hardware or a game's hero object or world piece without photographs or art), ground (nothing: a CSS ground from assets/backgrounds)",
+  "types": "business types it may be dealt to, with weights; a type missing is never dealt. place is never dealt: deal.mjs always prints the 'place' hero for it. gaming is a kind, not a page type (a game is page type software): its weights are read by deal.mjs for a game (--kind gaming, or --type software --has film,photo without ui) and never for a software brief; no hero for a game lists ui. A game without art files passes --has setting (stand-in photographs of its setting, found with photos.mjs search) and is printed the photo hero, its name set large on the photograph's calm side; --has object (its key art rendered with assets/objects/product-render) only when the brief asks for 3D. A game never deals statement or word: an effect never replaces its key art",
+  "needs": "the material it cannot do without (a|b means either): photo (a strong photograph of the real thing, at least 1920 wide for a full-bleed one: the client's own, else a stand-in found with photos.mjs search and listed in the report), ui (the client's screens or kit fragments from assets/ui rewritten to its names), film (a real film; without one the control links to the film's page, never a dead button), object (a product photograph on a plain ground, a cut-out, the client's render, or a product render composed with assets/objects/product-render when the brief asks for 3D or a render), setting (a game without art files: stand-in photographs of the place its world is set in), ground (nothing: a CSS ground from assets/backgrounds)",
   "h1": "the layout.css token, its size at 1440 and 390 before --ly-scale, the leading, the most lines at each width and the longest headline that fits",
   "grid": "where each block stands on the 12 columns at 1440 (from 1024 up); below 1024 everything stacks in the order given",
   "at1440": "measured on the demo at 1440x900 (the fixed header 72 over the hero's top, the hero exactly 900, words from y 120, content ending by y 836, container x 80 to 1360)",
   "at390": "measured on the demo at 390x844 (header 56, the hero exactly 844, words from y 96, content ending by y 820, container x 24 to 366)",
-  "moment": "the hero's own small motion (layout.js), how it rests, and what reduced motion and a phone show. On kind other (site-kind other) and on a place nothing moves by itself: the live word, the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
+  "moment": "the hero's own small motion (layout.js) after the entrance every hero makes once on load (data-enter, motion.md), how it rests, and what reduced motion and a phone show; 'none' means nothing more than that entrance. The page's dealt moments are apart (moments.mjs pick). On kind other (site-kind other) and on a place nothing moves by itself: the live word, the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
   "moments": "assets/moments/index.json ids that may be dealt onto this hero (one at most; moments.mjs pick --fits hero decides), as { id, only? }: only \"tech\" means software, AI and gaming briefs only",
   "grounds": "assets/backgrounds/index.json ids the hero may stand on, as { id, only?, dark? }: only \"tech\" for software, AI and gaming briefs only; dark true for a dark page only",
   "effects": "assets/effects ids the hero's visual may carry, as { id, as? }: every effect is for tech, software, AI and gaming briefs only, never a place or a local business; 'as' says where it goes when that is not the visual itself",
@@ -58,7 +58,7 @@
     "text": "--hgap 24: h1 32/37 on at most 3 lines from y 373, sub 18/28 (the opening days and time), one full-width 48px button; ends by 844 - 24 - the bar",
     "measured": "hero 844/844, h1 32px on 2 lines from y 373"
    },
-   "moment": "none: the hero carries no move, nothing moves by itself (a place is kind other)",
+   "moment": "none: the entrance only, then nothing moves by itself (a place is kind other); the page's moments are dealt apart",
    "moments": [],
    "grounds": [
     {
@@ -83,7 +83,6 @@
    "demo": "hero-split.html",
    "job": "Text left, the real thing right, both whole on the first screen: a photograph of the product in use, the place or the people; a phone or one window for software.",
    "types": {
-    "product": 3,
     "service": 3,
     "software": 2
    },
@@ -152,7 +151,7 @@
    "name": "Full-bleed photograph, the words on its calm side",
    "from": "Aman, Ace Hotel, Le Labo, Cowboy, x.ai's film section",
    "demo": "hero-photo.html",
-   "job": "A place or a product with one strong photograph that has a calm area for the words: sky, a wall, cloud, shadow. Never for a software product (its own UI leads); a game with key art is dealt it.",
+   "job": "A place or a product with one strong photograph that has a calm area for the words: sky, a wall, cloud, shadow. Never for a software product (its own UI leads); a game with key art is dealt it, and a game without art files is printed it (--has setting): the game's name as the h1, set large in the box or straight on a dark calm part of a stand-in photograph of its setting (photos.mjs search), never an effect in its place.",
    "types": {
     "product": 2,
     "service": 2,
@@ -220,7 +219,7 @@
    "name": "Product stage with one object",
    "from": "Figma's hero row, Apple product pages, Cowboy, Teenage Engineering",
    "demo": "hero-product.html",
-   "job": "The product itself, big, under one head row: the headline left, the lead and the buttons right. A render or a cut-out stands on the page's own ground across the wrap (no box, no gradient, no radius), its widest view (a bike's side) spanning 80% or more of the wrap at 1440; a product photograph runs edge to edge down to the fold, cropped so the product spans 80% or more of the wrap. Hotspots name its parts. A product, hardware or a game without photographs or art: its product render (assets/objects/product-render), a still; a game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its hero object or a scene of its world composed from its own objects (a print or scene keeps the lit stage), an effect allowed only behind it.",
+   "job": "The product itself, big, under one head row: the headline left, the lead and the buttons right. A render or a cut-out stands on the page's own ground across the wrap (no box, no gradient, no radius), its widest view (a bike's side) spanning 80% or more of the wrap at 1440; a product photograph runs edge to edge down to the fold, cropped so the product spans 80% or more of the wrap. Nothing on the product: no hotspots by default (the parts are named in the sections below). A product or hardware without photographs of its own: a stand-in photograph of the same kind of thing (photos.mjs search), listed in the report; its product render (assets/objects/product-render), a still, only when the brief asks for 3D or a render. A game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its key art (a rendered hero object or world only when the brief asks for 3D; a print or scene keeps the lit stage), an effect allowed only behind it.",
    "types": {
     "product": 3,
     "software": 1,
@@ -250,16 +249,16 @@
     "hero": "1440x900",
     "head": "h1 72 on 2 lines from y 131; lead 20/30 on 3 lines, 411 wide; buttons 44; the head ends at y 278",
     "stage": "1280x566 at y 310, the product whole on the page ground: the city bike's side still 1046x554 (81.7% of the wrap), its three-quarter 818x554 (63.9%, under 8 columns: the hero takes the widest view)",
-    "spots": "one to three 32px discs on the object, each opening a 230px spec card on hover, focus or tap",
+    "spots": "none by default; only when the brief asks for the parts to be pointed out on the product: one to three 32px discs (layout.js .ly-spot), each opening a 230px spec card on hover, focus or tap",
     "measured": "the city bike's side still: hero 900/900, stage 1280x566 at y 310, product 1046x554 at x 197 (81.7%); 1024x768 744x394 of 864 (86.1%); 768x1024 578 of 672 (86.0%); 390x844 294 of 342 (86.0%)"
    },
    "at390": {
     "hero": "844: one screen",
     "stage": "a render: 342 wide and what the head leaves (394 at 390x844), the product 86% of the wrap (294 wide), centred in it; a photograph: the screen width at its own ratio (390x293)",
-    "spots": "a tap opens the card under its disc, centred on it and kept 16px inside the stage",
+    "spots": "none by default; when asked for, a tap opens the card under its disc, centred on it and kept 16px inside the stage",
     "measured": "hero 844/844, h1 40px on 2 lines from y 96, the stage 342x394 at y 426, the bike 294x156"
    },
-   "moment": "the hotspots (layout.js .ly-spot); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
+   "moment": "none: the product is the hero (hotspots only when the brief asks for them); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
    "moments": [
     {
      "id": "cursor-spotlight",
@@ -471,7 +470,6 @@
    "types": {
     "service": 2,
     "software": 2,
-    "product": 1,
     "gaming": 0
    },
    "needs": [
@@ -641,8 +639,7 @@
    "types": {
     "service": 3,
     "software": 2,
-    "gaming": 0,
-    "product": 2
+    "gaming": 0
    },
    "needs": [
     "ground"
@@ -755,8 +752,7 @@
    "demo": "hero-triptych.html",
    "job": "Three columns: the headline on the left, a collage of three to five pieces in the middle that changes set every 2.8 s, one large button on the right line. For a product with many outputs: a design tool, a menu or print tool, a shop with several lines.",
    "types": {
-    "software": 2,
-    "product": 1
+    "software": 2
    },
    "needs": [
     "ui|photo"
@@ -858,8 +854,8 @@
    },
    "at390": {
     "hero": "844: exactly one screen",
-    "frame": "342 x what the words leave (313 here, at least 280), fading from 82%",
-    "window": "the frame's width less 32, 16 in, its list column and the bar's right label hidden; the exchange ends about 270px in",
+    "frame": "342 x what the words leave (313 here, at least 240, so a three-line headline still ends on the first screen), fading over its last 28px",
+    "window": "the frame's width less 32, 16 in, its list column, the bar's right label and the tool line hidden; the question and the answer end about 230px in, above the fade (its last 28px)",
     "measured": "hero 844/844, h1 42px on 2 lines from y 144, the visual 342x313 at y 507"
    },
    "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
