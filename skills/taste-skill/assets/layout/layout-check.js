@@ -18,8 +18,10 @@
                              line, and the composition is not centred.
     screen-short             a section is shorter than one screen (the fixed header lies over its top).
     screen-height            a section is not exactly one or two screens tall (at 1280 and wider, and on a
-                             phone; from 640 to 1279 a section may grow, but never past two screens).
-    sparse                   a section's content fills under 50% of it (the aim is 55%).
+                             phone; from 640 to 1279 a section may grow, but never past two screens). A live
+                             photo-chapters section (.is-live) is a whole number of screens, up to four.
+    sparse                   a section's content fills under 50% of it (the aim is 55%); a dealt statement
+                             moment's own section (.statement holding a data-moment, or any section holding word-highlight) is type by design.
     neighbour                with a section framed as the judge frames it (its top at the top of the
                              screen, and again one screen down when it is two screens tall), ink of
                              another section shows.
@@ -171,16 +173,29 @@ window.lyCheck = function lyCheck(opts = {}) {
     const r = doc(s.getBoundingClientRect());
     const ink = inkOf(s);
     const cTop = ink.length ? Math.min(...ink.map(i => i.top)) : r.top, cBot = ink.length ? Math.max(...ink.map(i => i.bottom)) : r.bottom;
-    return { el: s, r, ink, cTop, cBot, bg: bgOf(s), free: s.matches('[data-screen="free"]') };
+    // a live photo-chapters section is (hold + 1) screens by design, three or four (moments.md): whole screens, up to four
+    const chapters = s.matches('[data-moment="photo-chapters"].is-live') || !!s.querySelector('[data-moment="photo-chapters"].is-live');
+    // a dealt statement moment's own section (one statement alone in its screen, sections.md) is type on its ground by
+    // design, as the checker reads it: never sparse
+    const stmt = (s.matches('.statement, [class*="section--statement"], [data-statement]') && (s.matches('[data-moment]') || !!s.querySelector('[data-moment]')))
+      || s.matches('[data-moment="word-highlight"]') || !!s.querySelector('[data-moment="word-highlight"]');
+    return { el: s, r, ink, cTop, cBot, bg: bgOf(s), free: s.matches('[data-screen="free"]'), most: chapters ? 4 : 2, stmt };
   });
   const pageBg = getComputedStyle(document.body).backgroundColor;
   const footer = document.querySelector('body > footer, footer.footer');
   info.forEach((s, i) => {
     const h = s.r.bottom - s.r.top;
     if (!s.free && h < screen - tol) add('screen-short', name(s.el), `${Math.round(h)}px tall; one screen under the nav is ${Math.round(screen)}px`);
-    const exact = vw >= 1280 || vw < 640, off = Math.min(Math.abs(h - screen), Math.abs(h - 2 * screen));
-    if (!s.free && i > 0 && ((exact && off > tol) || h > 2 * screen + tol)) add('screen-height', name(s.el), `${Math.round(h)}px, ${(h / screen).toFixed(2)} screens; a section is exactly one or two (--h)`);
-    if (!s.free && i > 0 && s.ink.length && (s.cBot - s.cTop) / h < 0.5) add('sparse', name(s.el), `its content fills ${Math.round(100 * (s.cBot - s.cTop) / h)}% of its screen; merge it or give it its visual (0.55 is the aim)`);
+    // a phone section is at least its screens and grows with what it holds (system.css): taller than a screen and
+    // filled by its content (0.7 of it or more, the rest is its padding) it is not off its count; one that grows
+    // past two screens still is (--hm: 2 and two groups, or less content)
+    const grown = vw < 640 && h > screen + tol && h <= 2 * screen + tol && (s.cBot - s.cTop) / h >= 0.7;
+    // a live photo-chapters section is sized in whole viewports by its own CSS, whatever the nav, so it is counted in
+    // viewports too (under a sticky nav a screen is the viewport less the nav)
+    const u = s.most > 2 ? vh : screen;
+    const exact = (vw >= 1280 || vw < 640) && !grown, off = Math.min(...Array.from({ length: s.most }, (_, k) => Math.abs(h - (k + 1) * u)));
+    if (!s.free && i > 0 && ((exact && off > tol) || h > s.most * u + tol)) add('screen-height', name(s.el), `${Math.round(h)}px, ${(h / u).toFixed(2)} screens; ${s.most > 2 ? 'a live photo-chapters section is a whole number of screens, four at most' : `a section is exactly one or two (--h)${vw < 640 ? ', or on a phone at least one that its content fills' : ''}`}`);
+    if (!s.free && !s.stmt && i > 0 && s.ink.length && (s.cBot - s.cTop) / h < 0.5) add('sparse', name(s.el), `its content fills ${Math.round(100 * (s.cBot - s.cTop) / h)}% of its screen; merge it or give it its visual (0.55 is the aim)`);
     const ch = s.cBot - s.cTop;
     // frame the section as the judge does: its top at the top of the screen (the hero at scroll 0), and a
     // second frame one screen down when it is two screens tall; with a header that is not fixed, its top

@@ -86,8 +86,8 @@
   --nav-h: var(--nav);  /* the older name, kept for the kit's files */
   --icon: 16px;         /* small icons: socials, menu chevrons, mono brand marks */
 
-  /* motion */
-  --ease: cubic-bezier(.2, .7, .2, 1);
+  /* motion: the one UI ease-out (motion.css --m-ease and ui/base.css --u-ease read it; references/motion.md) */
+  --ease: cubic-bezier(.2, .8, .2, 1);
   --dur: 180ms;
 }
 html[data-radius="sharp"] { --r-sm: 4px; --r-md: 6px;  --r-lg: 8px;  --r-btn: 4px; }
@@ -179,6 +179,9 @@ ul, ol { padding: 0; list-style: none; }
 h1, h2, h3, h4 {
   font-family: var(--font-display); font-weight: var(--display-weight);
   letter-spacing: var(--display-tracking); text-wrap: balance; overflow-wrap: break-word;
+  /* a long word (a German compound at 390) breaks at a syllable with a hyphen, in the language of <html lang>;
+     only words of 10 letters or more, 4 at least on each side, so a short English heading never breaks */
+  hyphens: auto; -webkit-hyphens: auto; hyphenate-limit-chars: 10 4 4;
 }
 h1, .t-h1 { font-size: var(--t-h1); line-height: 1.04; }
 h2, .t-h2 { font-size: var(--t-h2); line-height: 1.1; }
@@ -247,18 +250,33 @@ main > :is(section, .section).g2 > :is(.wrap, .container) > :is(.group, .fill) {
   }
   /* the section is a column and its .wrap takes all of it, so a .fill (a photograph, a frame) still
      grows to the section's foot (a min-height percentage would not resolve, leaving it at its least) */
-  main > :is(section, .section):not(.hero, .section--hero), footer.closing { display: flex; flex-direction: column; }
+  /* :where() keeps it at no weight, so a page's own phone- or tablet-only hiding (section.desk-only { display: none }) wins */
+  :where(main > :is(section, .section):not(.hero, .section--hero), footer.closing) { display: flex; flex-direction: column; }
   main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
 }
 /* a phone: lvh (the screen with its bars hidden) for every section but the hero; --hm when stacking
    makes the content taller than the desktop count */
 @media (max-width: 639px) {
+  /* at least its screens, never less: content a screen cannot hold makes the section taller (the rhythm
+     check then asks for --hm: 2 or less content); a fixed height would lay its last rows over the next
+     section, the fault the phone shots showed most (a list under the closing heading and its button) */
   main > :is(section, .section):not(.hero, .section--hero), footer.closing {
-    height: calc(var(--hm, var(--h, 1)) * 100vh); height: calc(var(--hm, var(--h, 1)) * 100lvh);
+    height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100vh); min-height: calc(var(--hm, var(--h, 1)) * 100lvh);
   }
+  /* one grid row at least the screens tall that grows with the .wrap's content: the .wrap is stretched to
+     it, so its .fill and its two groups still share a definite height */
+  /* (at no weight, as on the tablet: a page's own section.desk-only { display: none } still hides it) */
+  :where(main > :is(section, .section):not(.hero, .section--hero):has(> :is(.wrap, .container)), footer.closing) {
+    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr; grid-auto-rows: auto;
+  }
+  main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { height: auto; }
   main > :is(section, .section).g2m, footer.closing.g2m { --hm: 2; }
   main > :is(section, .section).g2m > :is(.wrap, .container), footer.closing.g2m > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
-  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) { display: flex; row-gap: 0; }
+  /* stacked in one, the two groups keep the open cards' 32px, so the first group's last panel never meets
+     the next card's title */
+  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) { display: flex; row-gap: var(--s-6); }
+  /* what the two screens leave goes around the second group, so it opens below the header, not on the fold */
+  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) > :last-child { margin-block: auto; }
   main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) > * { align-self: stretch; }
 }
 /* a layer: the photograph or ground of a whole section, under its words, edge to edge */
@@ -280,6 +298,13 @@ main > :is(.hero, .section--hero) {
 }
 :is(.hero, .section--hero) > .wrap { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-7); }
 :is(.hero, .section--hero) > .wrap > .hero-text { min-height: 0; }
+/* a phone: the hero is at least the first screen and grows when a short phone (320x640) cannot hold its
+   words, buttons and picture, so nothing of it lies over the next section or under the header */
+@media (max-width: 639px) {
+  main > :is(.hero, .section--hero) { height: auto; min-height: 100vh; min-height: 100svh; }
+  main > :is(.hero, .section--hero):has(> :is(.wrap, .container)) { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr; grid-auto-rows: auto; }
+  main > :is(.hero, .section--hero) > :is(.wrap, .container) { height: auto; }
+}
 :is(.hero, .section--hero) > .wrap > .hero-strip { grid-row: 2; max-height: 96px; }
 @media (max-width: 639px) { :is(.hero, .section--hero) > .wrap > .hero-strip { display: none; } }
 .section--hero .section-head { max-width: 860px; }
@@ -325,6 +350,11 @@ main > :is(.hero, .section--hero) {
 /* a phone: open cards (words on the ground, the panel under them) stacked one under another keep 32px
    between a panel's foot and the next card's title, so a title never reads as the panel's caption */
 @media (max-width: 639px) { .grid:has(> .card--open) { row-gap: var(--s-6); } }
+/* a phone stacks a two-screen section's four open tiles into its two screens: their panels take 180px (a wide
+   crop), so the h2 and the first two tiles of two lines each end on the first screen and the four inside both,
+   not a third of a screen past. A page that sets its group's own --p-h (#features .panel) sets its phone value
+   too, as the starter does */
+@media (max-width: 639px) { main > :is(section, .section).g2 .card--open > .panel { --p-h: 180px; } }
 /* spans: desktop >= 1024. Tablet 640-1023: text cards on span-3 and span-6 go two-up; cards with a
    panel (a visual needs the width; the one exception is a span-6 pair, below)
    and everything else (split text and visuals, span-4 cards, span-5/7/8 blocks) take the full row, so a split stacks and no row is left half empty. Phone < 640: one column. */
@@ -427,10 +457,10 @@ html[data-buttons="arrow"] :is(.btn--primary, .btn--secondary)::after {
 }
 html[data-buttons="pill"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4.5 2.5 8 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { transform: translateX(3px); }
+@media (hover: hover) and (pointer: fine) { html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { transform: translateX(3px); } }
 .btn:active { transform: translateY(1px) scale(.985); }
 .btn--arrow::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
-.btn--arrow:hover::after { transform: translateX(3px); }
+@media (hover: hover) and (pointer: fine) { .btn--arrow:hover::after { transform: translateX(3px); } }
 /* the drawn arrow (assets/motion: its stem grows and its head moves 3px on hover), the last child of
    a primary button, a pill or a link: <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
    <path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>.
@@ -454,7 +484,7 @@ html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { trans
         transition: text-decoration-color var(--dur) var(--ease); }
 .link:hover { text-decoration-color: currentColor; }
 .link::after { content: "\2192"; display: inline-block; text-decoration: none; transition: transform var(--dur) var(--ease); }
-.link:hover::after { transform: translateX(3px); }
+@media (hover: hover) and (pointer: fine) { .link:hover::after { transform: translateX(3px); } }
 .pill { display: inline-flex; align-items: center; gap: var(--s-2); height: 32px; padding: 0 var(--s-3);
         border-radius: 999px; border: 1px solid var(--line); background: var(--card);
         font-size: var(--t-label); color: var(--ink); }
@@ -737,12 +767,20 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   .nav__logo { font-size: clamp(16px, 4.6vw, 20px); gap: 6px; white-space: nowrap; }
   .nav__logo .mark:not(.mark--initial) { width: 20px; height: 20px; }
   .nav:not(.is-open) .nav__actions .btn { height: 44px; padding-inline: var(--s-3); font-size: var(--t-small); }
+  /* with the phone action bar the bar's button is the action's copy at the foot: the nav's goes into the sheet, so
+     the first screen shows it once, the hero's (the bar waits until that has scrolled away; without script, twice
+     at most, the hero's and the bar's; copy.md rule 5, action-repeat) */
+  :root:has(> body > nav.actionbar) .nav:not(.is-open) .nav__actions { display: none; }
+  :root:has(> body > nav.actionbar) .nav:not(.is-open) .nav__toggle { margin-left: auto; }
 }
 /* no script: the sheet cannot open, so the words stay in the bar (it scrolls sideways) and the dead menu button goes */
 @media (scripting: none) and (max-width: 1023px) {
   .nav__links { display: flex; overflow-x: auto; scrollbar-width: none; margin-right: var(--s-3); padding-right: var(--s-2); border-right: 1px solid var(--line); }   /* stops short of the button, and a hairline marks where the row is cut (it scrolls) */
   .nav__toggle { display: none; }
 }
+/* a phone leaves the words under 80px of bar ("Bre" at 320): they stay in the footer's columns, the bar keeps the name
+   and the main button */
+@media (scripting: none) and (max-width: 639px) { .nav__links { display: none; } }
 
 /* nav types (dealt, sections.md). Every one is the same fixed bar on the page's .wrap; the full-width
    hover panel on a desktop and the full-screen sheet on a phone are shared, so only the bar's order
@@ -846,7 +884,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 /* ---------------------------------------------------------------- footer */
 .footer { padding-block: var(--section) var(--s-6); border-top: 1px solid var(--line); }   /* an older footer after the last section; footer.closing (below) replaces it */
 .footer .grid { row-gap: var(--s-7); }
-.footer h4 { font: 500 var(--t-small)/1.4 var(--font-text); letter-spacing: 0; color: var(--muted); margin-bottom: var(--s-4); }
+.footer :is(h3, h4):not(.closing__cta *) { font: 500 var(--t-small)/1.4 var(--font-text); letter-spacing: 0; color: var(--muted); margin-bottom: var(--s-4); }
 .footer ul { display: grid; gap: var(--s-3); font-size: var(--t-small); }
 .footer ul a:hover { color: var(--action); }
 .footer__legal { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); justify-content: space-between;
@@ -974,6 +1012,9 @@ footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
 .closing__cta > .close__media { flex: 1 1 0; min-height: clamp(120px, 18svh, 160px); position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
 .close__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%); }
 .closing__cta.close--type > .btn--xl { align-self: stretch; }
+/* the 640px button (product, service, place) stays within half the .wrap, so it never stands over half of it off its
+   right line: on a place's 1200px column it is 600 (SR-6) */
+@media (min-width: 640px) { .closing__cta.close--type > .btn--xl:not(.btn--wide) { width: min(50%, 640px); } }
 /* the name across the .wrap: sized in layout.js-free CSS from the container (8 letters fill 1280) */
 .close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/.86 var(--font-display); letter-spacing: -0.045em;
                white-space: nowrap; overflow: clip; color: var(--ink); }
@@ -994,6 +1035,21 @@ footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
   .closing__links .footer__col { grid-column: auto / span 6; }
   .closing__cta > .close__media { min-height: 140px; }
   .close__word { font-size: clamp(56px, 19vw, 96px); }
+}
+/* a phone: every link and control outside a line of running text is a 44px target (the bar's name, the
+   footer's links, its legal row and credits line, a text link, the pill, a small button, the socials);
+   a footer list of links loses its gap, since each row is now its own 44px (a plain row in it, "Two days'
+   notice", is 44px too, so the rows keep one rhythm); a pill that is only a label keeps its 32px */
+@media (max-width: 639px) {
+  :root { --btn-h-sm: 44px; }
+  .nav__logo, .footer__mark, .link, :is(a, button).pill { min-height: 44px; }
+  :is(a, button).pill { height: auto; }
+  .footer ul:has(> li > a) { gap: 0; }
+  .footer ul:has(> li > a) > li:not(:has(> a)) { display: flex; align-items: center; min-height: 44px; }
+  :is(.footer ul, .footer__legal, .footer__nav) a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+  /* a block, not a flex row: "Credits" stays on the line after the sources instead of wrapping alone */
+  .credits > summary { display: block; min-height: 44px; padding-block: 12px; line-height: 20px; }
+  .socials a, .footer__legal .socials a { width: 44px; height: 44px; }
 }
 
 /* ---------------------------------------------------------------- the big close (closing-type) */
@@ -1069,13 +1125,25 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 }
 .pl-photo--end > img, .pl-photo--end > picture > img { margin-left: auto; }
 @media (max-width: 1023px) { .pl-photo > img, .pl-photo > picture > img { width: 100%; height: auto; } }
+/* the visit screen on a phone ends in its photograph: the .pl-photo after the words (the last in its row of the
+   split) takes what they leave of the screen, from its own ratio to 4:5 at most, so the screen never ends in an
+   empty band (the row becomes a column, its gaps kept) */
+@media (max-width: 639px) {
+  [data-place="visit"] > .wrap:not(.grid) > .grid:has(> .pl-photo:last-child) { flex: 1 0 auto; }
+  [data-place="visit"] > .wrap.grid:has(> .pl-photo:last-child),
+  [data-place="visit"] > .wrap > .grid:has(> .pl-photo:last-child) { display: flex; flex-direction: column; }
+  [data-place="visit"] .grid > .pl-photo:last-child,
+  [data-place="visit"] .grid > .pl-photo:last-child > picture { display: flex; flex-direction: column; flex: 1 0 auto; }
+  [data-place="visit"] .grid > .pl-photo:last-child > img,
+  [data-place="visit"] .grid > .pl-photo:last-child > picture > img { flex: 1 0 auto; max-height: calc(100cqw * 1.25); }
+}
 
 /* .tile: an open tile, the picture on top and its words on the page ground under it, no box
    (a room, a model, a person, a case). One --tile-ratio per row so the pictures line up. */
 .tile { display: grid; gap: var(--s-4); align-content: start; color: inherit; }
 .tile__media { position: relative; overflow: clip; aspect-ratio: var(--tile-ratio, 4 / 3); border-radius: var(--r-lg); background: var(--surface); }
 .tile__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
-a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask; the tile never grows (motion.css has the same) */
+@media (hover: hover) and (pointer: fine) { a.tile:hover .tile__media > img { transform: scale(1.03); } }   /* inside its mask; the tile never grows (motion.css has the same) */
 .tile--portrait { --tile-ratio: 4 / 5; }
 .tile--wide { --tile-ratio: 16 / 9; }
 .tile__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); }
@@ -1161,6 +1229,8 @@ a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask
 .rows > li:first-child { padding-top: 0; }
 .rows__name { font-weight: 500; }
 .rows__value { grid-column: 2; grid-row: 1; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* a narrow phone: a long value ("14 to 22 months") wraps in its own column instead of squeezing the name to a word a line */
+@media (max-width: 479px) { .rows__value { white-space: normal; max-width: 11ch; text-wrap: balance; } }
 .rows > li > p { grid-column: 1; color: var(--ink); max-width: 56ch; }
 .rows--spec .rows__name { font-weight: 400; color: var(--muted); }
 
@@ -1174,11 +1244,27 @@ a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask
 }
 .field textarea { height: auto; min-height: 120px; padding-block: var(--s-3); resize: vertical; }
 @media (max-width: 639px) { .form { grid-template-columns: minmax(0, 1fr); } }
+/* a field that fails on submit (system.js, references/system.md Forms): a 2px border and the reason under it in words,
+   so colour is never the only sign; the error colour is a red pulled towards the ink, 4.5:1 on a light or a dark ground */
+.form { --error: color-mix(in oklab, #d92d20 72%, var(--ink)); }
+.field :is(input, select, textarea)[aria-invalid="true"] { border: 2px solid var(--error); }
+.field__error { font: 500 var(--t-small)/1.4 var(--font-text); color: var(--error); }
+.field__error[hidden] { display: none; }
+.field__error::before { content: "!"; display: inline-grid; place-items: center; width: 16px; height: 16px; margin-right: var(--s-2);
+  border-radius: 50%; background: var(--error); color: var(--bg); font-size: 12px; line-height: 1; vertical-align: -2px; }
+/* the status line under the button (role="status"): sending, sent or not sent, in words */
+.form__status { grid-column: 1 / -1; min-height: 1.5em; font-size: var(--t-small); color: var(--ink); }
+.form__status:empty { min-height: 0; }
 
 /* sections part by a change of ground or by space only: no rule between them (.section--rule is plain) */
 
 /* the phone action bar (a place's directions and booking; other types may use it): fixed at the foot
-   under 640px, one 342x48 button or two of 165, and every section's foot pads for it (--bar) */
+   under 640px, one 342x48 button or two of 165, and every section's foot pads for it (--bar).
+   system.js shows it (data-bar="shown") once the hero's main button has scrolled off the top, and hides it
+   (data-bar="hidden", inert) while that button, or a control that does what one of the bar's does, is on the
+   screen: the bar never repeats an action the screen already shows. The hero never pads for it then (the bar
+   is not on the first screen). Without script it is simply always there at the foot, under every section's
+   padding, covering nothing. */
 .actionbar { display: none; }
 @media (max-width: 639px) {
   :root:has(> body > nav.actionbar) { --bar: calc(64px + env(safe-area-inset-bottom)); }
@@ -1186,8 +1272,21 @@ a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
     gap: var(--s-3); align-items: center; height: calc(64px + env(safe-area-inset-bottom));
     padding: var(--s-2) var(--gut) env(safe-area-inset-bottom); background: var(--bg); border-top: 1px solid var(--line);
+    transition: transform 240ms var(--ease), visibility 0s;
   }
   .actionbar .btn { width: 100%; height: 48px; }
+  /* hidden: below the screen's edge and out of the focus order (visibility; system.js adds inert) */
+  .actionbar[data-bar="hidden"] { transform: translateY(100%); visibility: hidden; transition: transform 240ms var(--ease), visibility 0s 240ms; }
+  :root:has(> body > nav.actionbar:is([data-bar="shown"], [data-bar="hidden"])) main > :is(.hero, .section--hero) { --bar: 0px; }
+}
+/* with script on, hidden from the first frame until system.js has read the screen, so it never shows over the hero
+   (data-bar="always": system.js could not wire it, so it stays, as without script, and the hero pads for it) */
+@media (max-width: 639px) and (scripting: enabled) {
+  .actionbar:not([data-bar="shown"], [data-bar="always"]) { transform: translateY(100%); visibility: hidden; }
+  :root:not(:has(> body > nav.actionbar[data-bar="always"])) main > :is(.hero, .section--hero) { --bar: 0px; }
+}
+@media (max-width: 639px) and (prefers-reduced-motion: reduce) {
+  .actionbar, .actionbar[data-bar="hidden"] { transition: none; }
 }
 
 /* a brand-colour band (product and place may add one, in the page's second half): the accent as the
@@ -1215,6 +1314,14 @@ a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask
 
 /* ---------------------------------------------------------------- helpers */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* the skip link: the first child of the header's .wrap (starter.html), out of the layout until the first Tab, then
+   a plain button over the logo on the page's ground, on the .wrap's left line of the fixed header, so it never
+   moves the logo off that line */
+.skip-link { position: absolute; left: max(var(--gut), (100% - var(--container)) / 2); top: 50%; z-index: 2; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+.skip-link:focus { width: auto; height: var(--btn-h); padding: 0 var(--s-5); clip-path: none; transform: translateY(-50%);
+  display: inline-flex; align-items: center; background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn); font: 500 var(--t-body)/1 var(--font-text); }
 .stack-2 > * + * { margin-top: var(--s-2); }
 .stack-4 > * + * { margin-top: var(--s-4); }
 .stack-5 > * + * { margin-top: var(--s-5); }

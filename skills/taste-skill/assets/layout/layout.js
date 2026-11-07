@@ -192,7 +192,7 @@ function collage(box) {
   if (sets.length < 2 || phone() || other()) return;
   box.setAttribute('data-ui-pause-host', '');
   ui.loop(box, async api => {
-    for (let n = 1; n <= sets.length; n++) { await api.wait(2800); show(n % sets.length); await api.wait(700); }
+    for (let n = 1; n <= sets.length; n++) { await api.wait(2800); box.classList.add('is-cycling'); show(n % sets.length); await api.wait(700); }
   }, { still: () => show(0), rest: 600 });
 }
 

@@ -1,6 +1,6 @@
 /* pinned-chapters: at rest (phones, tablets, a short screen, reduced motion, no script, a failed
-   module) each step is a title, two lines and its visual, and the section is its --h screens (two) or
-   grows past them, never over the next section. From 640px that rest is a row per step: the text at the
+   module) each step is a title, two lines and its visual, and the section is as tall as its steps,
+   one screen at least, at every width: the second screen it holds when live would stand empty. From 640px that rest is a row per step: the text at the
    left, the visual at the right, at most 30svh tall; a phone stacks them with a 16:9 visual, so two to
    four steps fit two screens at 390x844. Live (.is-live, from 1024px on a
    screen 640px or taller) the section is (hold + 1) screens tall, its stage sticks for the hold,
@@ -21,7 +21,7 @@ main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid
 @media (min-width: 640px) {
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__steps { gap: var(--s-6); }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step {
-    grid-template-columns: 5fr 6fr; column-gap: var(--s-8); row-gap: var(--s-2); align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); row-gap: var(--s-2); align-items: center;
     border-left: 0; border-top: 1px solid var(--line); padding: var(--s-6) 0 0; }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step h3 { grid-column: 1; align-self: end; }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step p { grid-column: 1; align-self: start; }
@@ -29,15 +29,17 @@ main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img { max-height: 30svh; }
 }
 
-/* a phone: shorter visuals, and a section that grows past its screens rather than run over the next one */
+/* at rest the section is as tall as its steps (one screen at least) and never runs over the next one */
+main > [data-moment="pinned-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 100vh; min-height: 100svh; }
+/* a phone: shorter visuals */
 @media (max-width: 639px) {
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img { aspect-ratio: 16 / 9; max-height: 26svh; }
-  main > [data-moment="pinned-chapters"]:not(.is-live) { height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100lvh); }
 }
 
 /* live */
 [data-moment="pinned-chapters"].is-live { height: calc((var(--mo-hold) + 1) * 100svh); padding: 0; }
-main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: 5fr 6fr; gap: var(--s-8); align-items: center; align-content: center; overflow: clip; }
+main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: start; align-content: center; overflow: clip; }
+/* (the text and the frame on the page's 6/6 split pair, x 732 at 1440, top-aligned like every split of the page) */
 [data-moment="pinned-chapters"].is-live .mo-pc__step { border-left-color: var(--line); transition: border-color 300ms ease; }
 [data-moment="pinned-chapters"].is-live .mo-pc__step h3 { color: var(--muted); transition: color 300ms ease; }
 /* a closed step's lines collapse to nothing: the grid row goes to 0fr and the inner span (min-height 0,

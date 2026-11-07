@@ -14,12 +14,20 @@
     venue's time zone (each dt names its days, "Mon to Fri", "Sat and Sun", "Daily", or carries
     data-days="mon-fri" / "sat,sun"). Without data-tz no row is marked: never the visitor's clock,
     and an .is-today written in the markup is taken out (it would be wrong six days a week). A
-    [data-open-now] line reads "Open now, until 16:00" or "Closed, opens Tuesday at 7:30" from them.
+    [data-open-now] line reads "Open now, until 16:00" or "Closed, opens Tuesday at 7:30" from them, never from
+    hours marked data-assumed (the brief did not give them).
+  - forms: form.form is checked on submit: aria-invalid and the reason under each field to fix, a status line, the
+    focus on the first; sent by fetch only to its data-endpoint, and data-sent shown only once that answers
+    (references/system.md, Forms).
   - moments: a page with [data-moment] loads assets/moments/moments.js (references/moments.md), which
     mounts the dealt moments once; data-ready waits for them.
   - peek: [data-peek] holds rows [data-peek-to="key"] and photographs [data-peek-for="key"] (all but
     the first hidden); the photograph changes at once (MO-07) to the row under the pointer, the
     keyboard focus or a tap. A place's or a service's one moment (references/sections.md).
+  - phone action bar: body > nav.actionbar shows (data-bar="shown") once the hero's main button has
+    scrolled off the top, and hides (data-bar="hidden", inert) while that button, or a link or button
+    that does what one of the bar's does (the same address, or the same words), is on the screen;
+    never while the focus is in it (references/system.md, Nav).
   - visuals (assets/effects/fx.js and assets/ui/ui.js are loaded only when the page has any):
     * mounts every [data-fx] ground; only a ground inside the hero (.hero) moves, and not when its frame
       holds an object or a scene ([data-print], [data-scene], assets/objects). Every other one is
@@ -196,6 +204,9 @@ function openNow() {
   const outs = document.querySelectorAll('[data-open-now]');
   const dl = document.querySelector('dl.hours[data-tz]');
   if (!outs.length || !dl) return;
+  // hours the brief does not give (data-assumed on the dl or a row) never say "Open now": a visitor would walk to a
+  // door that may be shut; the line keeps its own text (empty: nothing shows)
+  if (dl.matches('[data-assumed]') || dl.querySelector('[data-assumed]')) return;
   let parts;
   try {
     parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: dl.dataset.tz })
@@ -226,6 +237,75 @@ function openNow() {
   if (text) outs.forEach(o => { o.textContent = text; });
 }
 
+/* ------------------------------------------------------------------ forms
+   form.form (references/system.md, Forms): checked on submit only, never while typing and never by a button held
+   disabled before. A field that fails gets aria-invalid="true" and its reason under it (its .field__error, named by
+   aria-describedby; without one, data-error on the field, else the browser's own words), the status line
+   ([data-form-status], role="status") says how many to fix, and the focus moves to the first. A fixed field clears
+   as it is typed in. With data-endpoint (the client's form address) the form is sent by fetch: "Sending" shows after
+   300ms, then data-sent once the address answers 2xx, else data-failed; the button is held only while it sends.
+   Without data-endpoint the browser sends it its own way (a mailto: stand-in opens the mail app) and no success line
+   is ever shown. Paste is never blocked. */
+function forms() {
+  document.querySelectorAll('form.form').forEach(form => {
+    form.noValidate = true;
+    const status = form.querySelector('[data-form-status]');
+    if (status && !status.hasAttribute('role') && !status.hasAttribute('aria-live')) status.setAttribute('role', 'status');
+    const say = text => { if (status) status.textContent = text || ''; };
+    const fields = [...form.elements].filter(el => el.matches('input, select, textarea') && !/^(hidden|submit|button|reset|image)$/.test(el.type));
+    const errOf = el => {
+      const ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+      let err = ids.map(id => document.getElementById(id)).find(e => e && e.classList.contains('field__error'));
+      if (!err) {
+        err = document.createElement('p');
+        err.className = 'field__error'; err.hidden = true;
+        err.id = `${el.id || el.name || 'field'}-err-${Math.random().toString(36).slice(2, 7)}`;
+        (el.closest('.field') || el.parentElement).append(err);
+        el.setAttribute('aria-describedby', [...ids, err.id].join(' '));
+      }
+      // the written reason is kept once, the first time; an empty one stays empty, so a later failure shows the
+      // browser's message of that moment, never the one an earlier failure left in the line
+      if (!('text' in err.dataset)) err.dataset.text = err.textContent.trim();
+      return err;
+    };
+    const check = el => {
+      const ok = el.checkValidity();
+      const err = errOf(el);
+      if (ok) { el.removeAttribute('aria-invalid'); err.hidden = true; return true; }
+      el.setAttribute('aria-invalid', 'true');
+      err.textContent = err.dataset.text || el.dataset.error || el.validationMessage;
+      err.hidden = false;
+      return false;
+    };
+    fields.forEach(el => el.addEventListener(el.matches('select') ? 'change' : 'input', () => { if (el.getAttribute('aria-invalid') === 'true') check(el); }));
+    form.addEventListener('submit', async e => {
+      const bad = fields.filter(el => !check(el));
+      if (bad.length) {
+        e.preventDefault();
+        say(form.dataset.fix ? form.dataset.fix.replace('{n}', bad.length) : bad.length === 1 ? '1 field to fix.' : `${bad.length} fields to fix.`);
+        bad[0].focus();
+        return;
+      }
+      say('');
+      const endpoint = (form.dataset.endpoint || '').trim();
+      if (!/^https?:\/\//.test(endpoint) && !endpoint.startsWith('/')) return;
+      e.preventDefault();
+      const button = form.querySelector('[type="submit"]');
+      const wait = setTimeout(() => say(form.dataset.sending || 'Sending'), 300);
+      if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
+      try {
+        const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        clearTimeout(wait); form.reset(); say(form.dataset.sent || 'Sent.');
+      } catch {
+        clearTimeout(wait); say(form.dataset.failed || 'Not sent: the connection failed. Your words are still here; try again.');
+      } finally {
+        if (button) { button.disabled = false; button.removeAttribute('aria-busy'); }
+      }
+    });
+  });
+}
+
 /* ------------------------------------------------------------------ peek
    a list beside one photograph that changes to the row under the pointer, the focus or a tap */
 function peek() {
@@ -253,6 +333,53 @@ function peek() {
       r.addEventListener('click', e => { if (!e.target.closest('a, button, input, select, textarea')) show(r); });
     });
   });
+}
+
+/* ------------------------------------------------------------------ phone action bar
+   The bar repeats the page's main actions at a phone's foot, so it waits until the hero's main button has
+   scrolled off the top, and steps away while a link or button on the screen does what one of its own does (the
+   same address, or the same words): one screen never shows one action twice. Hidden it is inert (nothing in it
+   takes the focus or is read), and it never hides while the focus is in it. Without script it is always there,
+   and every section pads for it (system.css, --bar). */
+function actionbar() {
+  const bar = document.querySelector('body > nav.actionbar');
+  if (!bar) return;
+  const set = shown => {
+    const v = shown ? 'shown' : 'hidden';
+    if (bar.dataset.bar === v) return;
+    bar.dataset.bar = v;
+    bar.inert = !shown;
+  };
+  if (!('IntersectionObserver' in window)) { set(true); return; }
+  set(false);
+  const words = el => (el.textContent || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const own = [...bar.querySelectorAll('a[href], button')];
+  const hrefs = new Set(own.filter(a => a.tagName === 'A').map(a => a.href));
+  const labels = new Set(own.map(words).filter(Boolean));
+  const twins = [...document.querySelectorAll('a[href], button')].filter(el => !bar.contains(el) && ((el.tagName === 'A' && hrefs.has(el.href)) || labels.has(words(el))));
+  const hero = document.querySelector('main > :is(.hero, .section--hero)');
+  const lead = hero ? hero.querySelector('.btn--primary') || hero.querySelector('.btn') || hero : null;
+  let past = !lead; // no hero: only the twins on the screen decide
+  const onScreen = new Set();
+  const update = () => {
+    const show = past && !onScreen.size;
+    if (!show && bar.contains(document.activeElement)) return;
+    set(show);
+  };
+  if (lead) new IntersectionObserver(es => {
+    for (const e of es) past = !e.isIntersecting && e.boundingClientRect.top < 0;
+    update();
+  }).observe(lead);
+  // a twin under the bar's own strip is hidden by it, so it counts once it is above the strip
+  if (twins.length) {
+    const io = new IntersectionObserver(es => {
+      for (const e of es) { if (e.isIntersecting) onScreen.add(e.target); else onScreen.delete(e.target); }
+      update();
+    }, { rootMargin: '0px 0px -64px 0px' });
+    twins.forEach(t => io.observe(t));
+  }
+  bar.addEventListener('focusout', () => setTimeout(update));
+  update();
 }
 
 /* ------------------------------------------------------------------ visuals */
@@ -460,7 +587,10 @@ function init() {
   tabs();
   try { faq(); } catch (e) { console.warn('system.js: faq', e); }
   try { hours(); } catch (e) { console.warn('system.js: hours', e); }
+  try { forms(); } catch (e) { console.warn('system.js: forms', e); }
   try { peek(); } catch (e) { console.warn('system.js: peek', e); }
+  // a bar that could not be wired stays shown, as without script, and the hero pads for it again
+  try { actionbar(); } catch (e) { console.warn('system.js: actionbar', e); const b = document.querySelector('body > nav.actionbar'); if (b) { b.dataset.bar = 'always'; b.inert = false; } }
   try { pictures(); } catch (e) { console.warn('system.js: pictures', e); }
   try { guards(); } catch (e) { console.warn('system.js: guards', e); }
   Promise.all([

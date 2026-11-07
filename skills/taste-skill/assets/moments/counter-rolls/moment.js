@@ -1,12 +1,13 @@
 /*
   counter-rolls - the digits of one to four proof figures roll once, like an odometer, when the row
-  first comes on screen, and stop on the real figure. The figure is written in the HTML as its final
+  first comes on screen, and stop on the real figure (a price, a count, a time the brief gives; never an
+  invented outcome like "98% satisfied"). The figure is written in the HTML as its final
   value (without script it stands); the script builds a strip for every digit that starts and ends on
   that digit, so at rest (before the row enters, in a full-page shot, after the roll) the row reads as
   written, never as zeros. The right-most column turns the most (one turn more per column).
 
     <div class="grid" data-moment="counter-rolls">
-      <div class="span-3"><p class="t-stat">64%</p><p class="t-small muted">of the Fortune 500 use it</p></div>
+      <div class="span-3"><p class="t-stat">€12</p><p class="t-small muted">a month for unlimited invoices</p></div>
       …
     </div>
 

@@ -177,7 +177,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 
 /* 0. hero--place: the only place hero, never dealt (local-business Recipe 3; ST-53, PH-47, PH-81).
       The client's photograph full-bleed under the header (--photo: 480 at 1440x900, y 72-552, at most
-      53% of the screen; a phone's 4:3 crop, 390x292), nothing on it. On the ground below, --hgap
+      53% of the screen; on a phone a 4:3 crop, 390x292, or with data-phone-fill grown to what the words leave, up to
+      4:5), nothing on it. On the ground below, --hgap
       (40, 24 on a phone) under it: the h1 on columns 1-6 (48/53, 32/37 on a phone), and from the
       split line the sub-line (the kind of place, where, today's hours) and one filled 48px button.
       html[data-type="place"] .hero--photo is drawn the same way (the older markup).
@@ -229,6 +230,19 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 { line-height: 1.156; }
   :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: 18px; line-height: 1.556; }
   :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: 0; }
+  /* a photograph whose phone source is tall enough (data-phone-fill: photos.mjs prints it with its 4:5 phone crop,
+     or with a phone sizes term that covers a 4:5 box) takes what the words leave of the first screen, from --photo
+     (390x292 at 390) to 4:5 (390x488), so the screen ends on the button, never on an empty band under it (a 390x844
+     screen: about 390x480). Without the attribute it keeps --photo: a 4:3 crop shown taller is blown up. The section's
+     grid has two rows, the photograph's (it is placed in that row, still out of the flow: both its lines named, as an
+     absolute box's auto line is the section's edge) and the words' */
+  main > :is(.hero--place, :root[data-type="place"] .hero--photo):has(> .hero__bg[data-phone-fill]):has(> .wrap) {
+    padding-top: var(--nav); grid-template-rows: minmax(calc(var(--photo) + var(--hgap)), 1fr) auto;
+  }
+  main > :is(.hero--place, :root[data-type="place"] .hero--photo):has(> .wrap) > .hero__bg[data-phone-fill] {
+    grid-row: 1 / 2; grid-column: 1 / -1; top: 0; bottom: auto; height: min(calc(100% - var(--hgap)), 125vw);
+  }
+  main > :is(.hero--place, :root[data-type="place"] .hero--photo):has(> .hero__bg[data-phone-fill]):has(> .wrap) > .wrap { grid-row: 2; }
 }
 
 /* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
@@ -254,7 +268,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
       - a product photograph (any other img): edge to edge across the screen, square corners, no ground;
         crop it (--ly-pos) so the product spans 80% or more of the wrap.
       <div class="hero__stage"><div class="frame" data-product="…/specs/<id>.json" data-product-place="stage"
-        data-product-view="side"></div> one to three .ly-spot </div> */
+        data-product-view="side"></div></div> (.ly-spot hotspots only when the brief asks for them) */
 .hero--product .hero__stage:is(:has(> [data-product]), :has(> img.is-cutout)) {
   margin-top: var(--s-6); margin-bottom: calc(var(--s-5) - var(--hpadb, 64px));
   border-radius: 0; background: none; overflow: visible;
@@ -468,7 +482,10 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
   .hero--triptych .hero__cta .btn { height: 56px; font-size: var(--t-body); }
 }
 .ly-collage { position: relative; height: 100%; min-height: 0; }
-.ly-collage__set { position: absolute; inset: 0; transition: opacity .7s var(--ease, ease); }
+/* the crossfade only once the sets start to cycle (.is-cycling, layout.js): a set that changes as the
+   page's styles arrive takes its place at once, never fades across the first paint */
+.ly-collage__set { position: absolute; inset: 0; }
+.ly-collage.is-cycling > .ly-collage__set { transition: opacity .7s var(--ease, ease); }
 .ly-collage__set:not(.is-on) { opacity: 0; pointer-events: none; }
 /* a copy of the markup that lost its .is-on: the first set shows rather than an empty hole */
 .ly-collage:not(:has(> .ly-collage__set.is-on)) > .ly-collage__set:first-child { opacity: 1; pointer-events: auto; }
@@ -503,7 +520,9 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .ly-mark::before { left: 31%; } .ly-mark::after { left: 56%; }
 @media (max-width: 639px) {
   .hero--centred .btn-row { width: 100%; }
-  .hero--centred .hero__window { margin-top: var(--s-6); min-height: 280px; }
+  /* the frame can be 240 to 300px tall here, so its fade is the last 28px, not the last 18% */
+  .hero--centred .hero__window { margin-top: var(--s-6); min-height: 240px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); }
   .hero--centred .hero__window > .ly-piece { top: var(--s-4); width: calc(100% - 2 * var(--s-4)); left: var(--s-4); transform: none; }
 }
 
@@ -521,5 +540,15 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
    the hero is set on its first frame on every kind: no entrance fade, rise or opening (MO-62) */
 @media (prefers-reduced-motion: reduce) {
   .ly-live::before { animation: none; }
-  .ly-word > span, .ly-collage__set, .ly-letters .ly-l { transition: none; }
+  .ly-word > span, .ly-collage__set, .ly-collage.is-cycling > .ly-collage__set, .ly-letters .ly-l { transition: none; }
+}
+
+/* a short phone (320x640: under 700px tall): the first screen still ends whole with the hero's button on it.
+   The photograph over the words takes less of it, the facts under the words go (the lead carries the hard
+   fact), and a collage keeps less height */
+@media (max-width: 639px) and (max-height: 700px) {
+  :root { --hgap: 24px; }
+  .hero--photo, .hero--place, :root[data-type="place"] .hero--photo { --photo: min(26svh, 48vw); }
+  main > .hero .hero__facts { display: none; }
+  .hero--triptych .ly-collage { min-height: 180px; margin-block: var(--s-5); }
 }

@@ -51,11 +51,16 @@ export function mount(el) {
   el.__momentP = (async () => {
     let opts = {};
     try { opts = JSON.parse(el.dataset.momentOpts || '{}'); } catch { console.warn(`moments: bad data-moment-opts on ${id}`); }
-    const why = lib.stillWhy(), card = lib.inCard(el);
+    const card = lib.inCard(el);
+    const [, mod] = await Promise.all([css(new URL(`${id}/moment.css`, BASE).href), import(new URL(`${id}/moment.js`, BASE).href)]);
+    // a moment light enough for a phone says so in its module (export const phone = true: one picture
+    // or one line of words, transform, filter or colour, nothing pinned that a phone cannot hold): it runs
+    // there too, and only reduced motion and a card keep it still. Every other moment is still on a phone
+    const onPhone = mod.phone === true;
+    const why = onPhone ? (lib.reduced() ? 'reduced' : '') : lib.stillWhy();
     if (card) { el.dataset.momentStill = 'card'; html.dataset.momentsCard = [html.dataset.momentsCard, id].filter(Boolean).join(' '); console.warn(`moments: ${id} sits in a card; it stays still`); }
     else if (why) el.dataset.momentStill = why;
-    const mlib = { ...lib, reduced: () => card || lib.still() };
-    const [, mod] = await Promise.all([css(new URL(`${id}/moment.css`, BASE).href), import(new URL(`${id}/moment.js`, BASE).href)]);
+    const mlib = { ...lib, reduced: () => card || (onPhone ? lib.reduced() : lib.still()) };
     const api = mod.default(el, opts, mlib) || {};
     el.__moment = api;
     el.dataset.momentMounted = '1';

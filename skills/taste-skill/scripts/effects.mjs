@@ -15,6 +15,9 @@
     node scripts/effects.mjs shot --url URL --out file.png --profile DIR [--w 1440 --h 900 --dpr 1
                                   --wait 1500 --full --reduced --gpu]
     node scripts/effects.mjs perf --url URL --profile DIR [--seconds 5 --w 1440 --h 900 --gpu]
+                                  (DIR: a folder of its own in the OS temp folder or the project's .taste-skill
+                                  folder, never outside the project; a relative one that leads out of the current
+                                  folder is replaced, with a warning, by .taste-skill/chrome-fx)
 
   pick: one effect per slot (card = a card group, hero = the hero frame or a large split frame, band =
   a full-width band or the closing call to action), at random, weighted against the history file's last
@@ -408,10 +411,20 @@ class CDP {
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// a profile stays in the OS temp folder or the project: a relative --profile that leads out of this folder (or the folder
+// itself) goes to .taste-skill/chrome-<name>
+const inProject = (p, name) => {
+  const abs = path.resolve(p), rel = path.relative(process.cwd(), abs);
+  const out = !path.isAbsolute(p) && (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
+  if (rel !== '' && !out) return abs;
+  const to = path.join(process.cwd(), '.taste-skill', 'chrome-' + name);
+  console.error(`${name}: --profile ${p} ${out ? 'leads outside the project folder' : 'is the project folder itself'}; using ${to} (a profile goes in the OS temp folder or the project's .taste-skill folder)`);
+  return to;
+};
 async function launch(a) {
   // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
   const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'fx-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-fx-' + process.pid);
-  const profile = path.resolve(a.profile && a.profile !== true ? a.profile : defaultProfile());
+  const profile = a.profile && a.profile !== true ? inProject(a.profile, 'fx') : path.resolve(defaultProfile());
   fs.mkdirSync(profile, { recursive: true });
   const portFile = path.join(profile, 'DevToolsActivePort');
   try { fs.rmSync(portFile); } catch (_) { /* none */ }

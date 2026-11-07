@@ -10,9 +10,14 @@
   frames it (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
   h1.maxChars, with words from the lead) and checks again: the hero must still be one screen
-  (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). --no-stress skips it.
+  (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). On a page in a language that
+  builds long compounds (lang de, nl, da, sv, nb, nn, no, fi) the added words start with one
+  (Wochenendöffnungszeiten), which must break inside the column. --no-stress skips it.
   A file (or its folder, for index.html) is served from its folder over http on 127.0.0.1 (5770-5779),
   or from --root, a built site's folder, so its root-relative links (/style.css) resolve.
+  --profile: the Chrome profile, a folder of its own in the OS temp folder or the project's .taste-skill folder, never
+  outside the project; a relative one that leads out of the current folder (../prof) is replaced, with a warning, by
+  .taste-skill/chrome-layout-check.
   Exit code 1 when there is a finding.
 */
 import fs from 'node:fs';
@@ -28,8 +33,18 @@ const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (ar
 // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
 const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'layout-check-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-layout-check-' + process.pid);
 const target = opt('url'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), shots = opt('shots'), rootArg = opt('root');
+// a profile stays in the OS temp folder or the project: a relative --profile that leads out of this folder (or the folder
+// itself) goes to .taste-skill/chrome-<name>
+const inProject = (p, name) => {
+  const abs = path.resolve(p), rel = path.relative(process.cwd(), abs);
+  const out = !path.isAbsolute(p) && (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
+  if (rel !== '' && !out) return abs;
+  const to = path.join(process.cwd(), '.taste-skill', 'chrome-' + name);
+  console.error(`${name}: --profile ${p} ${out ? 'leads outside the project folder' : 'is the project folder itself'}; using ${to} (a profile goes in the OS temp folder or the project's .taste-skill folder)`);
+  return to;
+};
 const sizes = String(opt('sizes', '1440x900,1024x768,820x1180,768x1024,390x844')).split(',').map(s => s.split('x').map(Number));
-if (!target || target === true || rootArg === true) { console.error('usage: check.mjs --url <url or file> [--profile <dir>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--root dir] [--json]'); process.exit(2); }
+if (!target || target === true || rootArg === true) { console.error('usage: check.mjs --url <url or file> [--profile <dir in the OS temp folder or .taste-skill>] [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots dir] [--root dir] [--json]'); process.exit(2); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
@@ -75,6 +90,10 @@ const STRESS = String.raw`(async (maxChars) => {
   const tw = doc.createTreeWalker(src, NodeFilter.SHOW_TEXT); let last = null;
   for (let n = tw.nextNode(); n; n = tw.nextNode()) if (n.textContent.trim() && !n.parentElement.closest('.ly-word, .ly-pic, .ly-mark')) last = n;
   if (!last || !words.length) return null;
+  // one long compound first on a page whose language builds them (a German heading holds words of 20 letters and
+  // more): it must break with a hyphen inside its column at 390 (system.css hyphens: auto, in the page's lang).
+  // An English page never holds one, and hyphens: auto in English does not break it, so it is left out there.
+  if (/^(de|nl|da|sv|nb|nn|no|fi)\b/i.test(document.documentElement.lang || '')) words.unshift('Wochenendöffnungszeiten');
   for (let i = 0; len() < maxChars && i < 80; i++) {
     const w = words[i % words.length], room = maxChars - len() - 1;
     if (room < 2) break;
@@ -86,7 +105,7 @@ const STRESS = String.raw`(async (maxChars) => {
   return { chars: len(), text: h1.textContent.replace(/\s+/g, ' ').trim() };
 })`;
 
-const profile = path.resolve(profileArg);
+const profile = inProject(profileArg, 'layout-check');
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
 try { fs.rmSync(portFile); } catch { /* none */ }
@@ -148,7 +167,7 @@ try {
           const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? h.h1.lines[0] : W <= 420 ? h.h1.lines[1] : null;
           res.stress = { hero: id, maxChars: h.h1.maxChars, chars: st.chars, lines, height: again.hero?.height };
           for (const f of again.findings.filter(f => f.rule === 'hero-fold')) res.findings.push({ rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (heroes.json maxChars): ${f.detail}` });
-          if (allowed && lines > allowed) res.findings.push({ rule: 'hero-lines', where: 'h1', detail: `a ${st.chars}-character h1 takes ${lines} lines; heroes.json allows ${allowed} at ${W}: lower maxChars` });
+          if (allowed && lines > allowed) res.findings.push({ rule: 'hero-lines', where: 'section.hero h1', detail: `the check fills the h1 to ${st.chars} characters (this hero's maxChars in heroes.json), not the page's own: it takes ${lines} lines at ${W}, ${allowed} at most` });
           if (await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
         }
       }

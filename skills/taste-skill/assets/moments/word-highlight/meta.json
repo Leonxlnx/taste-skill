@@ -11,11 +11,14 @@
   "pages": [
     "tech",
     "gaming",
-    "software"
+    "software",
+    "place",
+    "product",
+    "service"
   ],
   "look": "One large statement rests at half ink (readable, about 4 to 1) and turns to ink word by word as it crosses the middle of the screen, a strong word to the accent; it runs back on the way up.",
   "reduced": "The statement in ink.",
-  "phone": "The whole statement in ink, the accent word in the accent.",
+  "phone": "It runs on a phone as on a desktop (one paragraph's colours); under reduced motion the whole statement is in ink, the accent word in the accent.",
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
@@ -37,5 +40,6 @@
       "view": 0.72,
       "wait": 350
     }
-  }
+  },
+  "phoneRuns": true
 }
