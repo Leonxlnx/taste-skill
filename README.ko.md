@@ -1,4 +1,4 @@
-[English](README.md) · **한국어**
+[English](README.md) · **한국어** · [简体中文](README.zh-CN.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
 <p align="center">
   <picture>
@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://tasteskill.dev" title="tasteskill.dev 방문"><img src="https://img.shields.io/badge/website-tasteskill.dev-24292f?style=flat" alt="tasteskill.dev 방문" /></a>
   &nbsp;
-  <a href="https://tastecode.dev" title="Visit tastecode.dev"><img src="https://img.shields.io/badge/new-TasteCode-ff6b00?style=flat" alt="신규: TasteCode" /></a>
+  <a href="https://tastecode.dev" title="tastecode.dev 방문"><img src="https://img.shields.io/badge/new-TasteCode-ff6b00?style=flat" alt="신규: TasteCode" /></a>
   &nbsp;
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-24292f?style=flat&amp;logo=github&amp;logoColor=white" alt="MIT License" /></a>
   &nbsp;
@@ -60,7 +60,7 @@
 
 <p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">후원하기</a></sub></p>
 
-**Taste Skill** (`tasteskill 2.5.0`)은 코딩 에이전트가 흔한 랜딩 페이지 대신 `figma.com`, `x.ai` 수준의 전문적인 기업 웹사이트를 만들도록 돕는 에이전트 스킬입니다. 모든 작업에 쉬운 문구, 하나의 디자인 시스템, 화면당 하나의 섹션, 좌우가 맞춰진 콘텐츠 경계, 실제 사진과 브랜드 아이콘, 실제 제품 UI를 사용합니다. 제품 사진이 없으면 제품 렌더링 이미지를 사용하고, 미세한 인터랙션은 절제합니다. 셰이더 효과, 독창적인 인터랙션과 스크롤 장면은 기술·게임·소프트웨어 페이지에만 적용합니다. 검사 도구가 실제 브라우저에서 이 규칙들을 확인합니다.
+**Taste Skill** (`tasteskill 2.5.2`)은 코딩 에이전트가 흔한 랜딩 페이지 대신 `figma.com`, `x.ai` 수준의 전문적인 기업 웹사이트를 만들도록 돕는 에이전트 스킬입니다. 모든 작업에 쉬운 문구, 하나의 디자인 시스템, 화면당 하나의 섹션, 좌우가 맞춰진 콘텐츠 경계, 실제 사진(고객에게 사진이 없으면 사용 허가를 받은 대체 사진), 실제 브랜드 아이콘, 실제 제품 UI를 사용합니다. 모든 페이지에 히어로 진입 연출과 한두 개의 모먼트를 배정하고, 미세한 인터랙션은 절제합니다. 셰이더 효과와 스크롤 장면은 기술·게임·소프트웨어 페이지에만 사용합니다. 검사 도구와 마무리 게이트가 이 규칙들을 실제 브라우저에서 확인하고 강제합니다.
 
 이전 v2 실행에서 하나의 작업 요청서로 만든 페이지입니다.
 
@@ -129,8 +129,8 @@ codex plugin add taste-skill@taste-skill
 1. **디자인 토큰과 레이아웃을 무작위로 선택합니다.** `scripts/start.mjs`가 페이지 유형에 맞는 팔레트와 Google Fonts 글꼴 조합을 선택합니다(`library/palettes.json`, `library/type.json`). `assets/layout/deal.mjs`는 히어로 레이아웃을 선택합니다(`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `word`, `film`, `statement`, `triptych`).
 2. **하나의 디자인 시스템에서 시작합니다.** `assets/starter.html`, `assets/system.css`, `assets/layout/layout.css`가 데스크톱(`1440x900`)에서 화면당 하나의 섹션, 좌우가 맞춰진 콘텐츠 경계, 고정 내비게이션 바, 한 화면을 차지하는 마무리 푸터(`footer.closing`)를 적용합니다.
 3. **실제 제품 UI와 실제 사진을 보여 줍니다.** 소프트웨어·기술 페이지는 조명 효과가 있는 기능 소개 카드(`assets/ui/cards.css`)에 수정한 HTML UI 조각(`assets/ui/`)과 노드·연결선 다이어그램(`assets/diagrams/`)을 넣습니다. 실제 브랜드·인터페이스 SVG는 `scripts/icons.mjs`로 찾아 로컬 파일로 저장합니다. 장소·상점·숙박 및 접객업·비기술 제품 페이지는 선별한 사진(`scripts/photos.mjs`, `assets/photos/`), 타이포그래피, 단색을 중심으로 구성합니다. 이미지 아래에 캡션을 붙이지 않고, 푸터의 펼칠 수 있는 한 줄에 출처를 모아 표기합니다.
-4. **시각 효과는 기술·게임 페이지에만 사용합니다.** 셰이더 배경(`scripts/effects.mjs`), 독창적인 스크롤·포인터 인터랙션(`scripts/moments.mjs`), 스크롤 장면(`assets/scenes/`), 절차적으로 생성한 3D 출력물(`assets/objects/`)은 `software`, `tech`, `gaming` 페이지에만 배정합니다. WebGL 컨텍스트는 최대 네 개로 제한하며, 모바일과 모션 줄이기 설정에서는 정적인 대체 화면을 제공합니다. 카페·호텔·상점·스튜디오·서비스 페이지에는 WebGL이나 스크롤 효과를 사용하지 않습니다.
-5. **실제 브라우저에서 HTTP로 검사합니다.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs`, `scripts/shoot.mjs`가 완성된 페이지를 헤드리스 Chrome에서 `1440`, `1024`, `768`, `390` 너비로 렌더링합니다. 공개 전에 비어 있는 시각 요소, 작동하지 않는 셰이더, 낮아진 대비, 열 정렬 오류, 섹션 높이 불일치, 임시 문구, 지어낸 번지, 느린 네트워크에서 이미지가 빠지는 문제를 찾아냅니다.
+4. **시각 효과는 기술·게임 페이지에만 사용합니다.** 셰이더 배경(`scripts/effects.mjs`), 스크롤 장면(`assets/scenes/`), 절차적으로 생성한 3D 출력물(`assets/objects/`)은 `software`, `tech`, `gaming` 페이지에만 배정합니다. WebGL 컨텍스트는 최대 네 개로 제한하며, 모바일과 모션 줄이기 설정에서는 정적인 대체 화면을 제공합니다. 모든 페이지에는 히어로 진입 연출과 `scripts/moments.mjs`의 모먼트 한두 개가 배정됩니다. 카페·호텔·상점·스튜디오·서비스 페이지는 사진과 타이포그래피 중심의 모먼트만 받고, WebGL은 전혀 사용하지 않습니다.
+5. **실제 브라우저에서 HTTP로 검사합니다.** `scripts/consistency.mjs`, `assets/layout/check.mjs`, `scripts/perf.mjs`, `scripts/shoot.mjs`가 완성된 페이지를 헤드리스 Chrome에서 `1440`, `1024`, `768`, `390` 너비로 렌더링합니다. 공개 전에 비어 있는 시각 요소, 작동하지 않는 셰이더, 낮아진 대비, 열 정렬 오류, 섹션 높이 불일치, 임시 문구, 지어낸 번지, 느린 네트워크에서 이미지가 빠지는 문제를 찾아냅니다. 이어서 `scripts/gate.mjs`가 수정할 수 있는 FAIL이 하나도 남지 않을 때까지 마무리를 보류하며, 최대 세 차례 반복합니다.
 
 `2.1.x`에서 달라진 내용은 [변경 기록](CHANGELOG.md)을 확인하세요.
 
@@ -144,11 +144,12 @@ codex plugin add taste-skill@taste-skill
 | `assets/layout/deal.mjs` | 검증된 히어로 레이아웃 열한 개 중 하나를 무작위로 선택합니다. `assets/layout/check.mjs`는 긴 제목으로 레이아웃을 점검합니다. |
 | `scripts/photos.mjs` | 업종에 맞게 검토된 사진을 무작위로 선택하고, 이미지 용량 제한을 적용하며, 푸터에 넣을 출처 한 줄을 작성합니다. |
 | `scripts/icons.mjs` | 실제 브랜드·인터페이스 아이콘을 찾아 로컬 SVG 파일로 저장합니다. |
-| `scripts/effects.mjs`, `scripts/moments.mjs` | 기술·게임·소프트웨어 페이지에 쓸 셰이더 배경과 독창적인 인터랙션을 무작위로 선택합니다. |
-| `scripts/consistency.mjs` | 검사 도구입니다. HTTP로 페이지를 열어 헤드리스 Chrome에서 `1440`, `1024`, `768`, `390` 너비로 렌더링하고, 규칙별로 PASS, WARN, FAIL을 출력합니다. |
+| `scripts/effects.mjs`, `scripts/moments.mjs` | 기술·게임·소프트웨어 페이지에 쓸 셰이더 배경과, 모든 유형에 쓸 모먼트를 무작위로 선택합니다. |
+| `scripts/gate.mjs`, `scripts/copy-lint.mjs` | 마무리 게이트(Stop 훅으로도 동작)와, 게이트가 실행하는 문구 검사기입니다. |
+| `scripts/consistency.mjs` | 검사 도구입니다. HTTP로 페이지를 열어 헤드리스 Chrome에서 `1440`, `1024`, `820`, `768`, `390` 너비로 렌더링하고, 규칙별로 PASS, WARN, FAIL을 출력합니다. |
 | `scripts/perf.mjs`, `scripts/shoot.mjs` | 페이지 용량과 속도를 측정하고, 전체 페이지와 섹션별 스크린샷을 촬영합니다. |
 
-먼저 `node scripts/start.mjs deal --page software`를 실행하세요. 유형은 `software`, `gaming`, `tech`, `product`, `service`, `place`입니다. 완성된 페이지는 `node scripts/consistency.mjs <url or file> --page <kind>`로 검사합니다.
+프로젝트 폴더에서 먼저 `node scripts/start.mjs deal --page software`를 실행하세요(deal을 실행하면 해당 폴더에서 마무리 게이트도 활성화됩니다). 유형은 `software`, `gaming`, `tech`, `product`, `service`, `place`입니다. 완성된 페이지는 `node scripts/consistency.mjs <url or file> --page <kind>`로 검사합니다.
 
 <a id="moved-skills"></a>
 
@@ -178,10 +179,10 @@ Node 22 이상과 Chrome, Edge 또는 Chromium이 필요합니다. ffmpeg는 선
 검토를 거친 스킬의 사진 라이브러리(`assets/photos/photos.json`)에서 `scripts/photos.mjs`가 선택합니다. 라이브러리에는 함께 제공되는 Wikimedia Commons WebP 사진 모음과 Unsplash 사진이 포함됩니다. 이 사진은 업종이나 소재의 세부 모습을 보여 주는 데 사용하며, 고객 사진이 아직 없을 때는 초안용 대체 사진임을 명확히 표시합니다. 고객의 실제 공간·직원·제품 사진인 것처럼 제시하지 않습니다. 출처는 푸터의 펼칠 수 있는 한 줄에 표기합니다(`photos.mjs credits`).
 
 **React, Vue, Svelte, 일반 HTML에서도 사용할 수 있나요?**  
-네. `assets/starter.html`과 모듈식 CSS/JS 도구를 그대로 사용해 배포할 수 있습니다. 같은 디자인 토큰, 섹션의 크기와 배치, UI 조각, 브라우저 검사를 React, Next.js, Vue, Svelte, Astro, Tailwind로 옮겨 사용할 수도 있습니다.
+빈 폴더에서는 `assets/starter.html`로 정적 페이지를 만듭니다. 기존 React, Vue, Svelte, Astro, Tailwind 프로젝트는 해당 프로젝트의 스택으로 만들고, 키트는 public 폴더에서 제공합니다. Next.js 요청은 정적 내보내기(static export)로 만듭니다. 브라우저 검사는 서빙되거나 빌드된 페이지에서 실행합니다.
 
 **어떤 페이지에 셰이더나 스크롤 효과를 사용하나요?**  
-`software`, `tech`(기술 하드웨어), `gaming` 페이지에만 사용합니다. 항상 WebGL 컨텍스트 네 개 이내로 제한하며, 모바일과 모션 줄이기 설정에서는 정적인 대체 화면을 제공합니다. 장소·상점·카페·호텔·스튜디오·서비스·일반 실물 제품 페이지는 사진, 선명한 타이포그래피, 단색으로 차분하게 구성합니다.
+`software`, `tech`(기술 하드웨어), `gaming` 페이지에만 사용합니다. 항상 WebGL 컨텍스트 네 개 이내로 제한하며, 모바일과 모션 줄이기 설정에서는 정적인 대체 화면을 제공합니다. 장소·상점·카페·호텔·스튜디오·서비스·일반 실물 제품 페이지는 사진, 선명한 타이포그래피, 단색으로 차분하게 구성하고, 각 섹션에 히어로 진입 연출과 사진 또는 타이포그래피 중심의 모먼트 한두 개를 넣습니다.
 
 ## 프로젝트 후원
 
