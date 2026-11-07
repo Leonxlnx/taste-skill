@@ -13,9 +13,9 @@ object render for the two object scenes.
   `software`, `tech` and `gaming`.
 - **At most one a page,** and only when the brief has what the scene `needs` (its own photographs,
   its own screen, its own words; a game's key art and in-engine shots are its photographs). No need
-  met, no scene: never a stand-in for the client's pictures. A game without art files renders its
-  key art with the product-render helper (its hero object or a scene of its own objects) on the
-  `product` stage and in its world section, never an effect in its place (`sections.md`, Gaming).
+  met, no scene: never a stand-in for the client's pictures. A game without art files sets its name
+  large over stand-in photographs of its setting (the `photo` hero and its world section; a render
+  only when the brief asks for 3D), never an effect in its place (`sections.md`, Gaming).
 - **Deal at random** among the scenes whose `fits` has the section, whose `types` has the page's
   type and whose `needs` the brief meets, weighted by `weight`, away from the last three in
   `.taste-skill/scenes-history.json` (the command is in `effects-usage.md`). Name the scene and its

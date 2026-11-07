@@ -1,19 +1,22 @@
 {
  "version": 2,
- "generated": "2026-11-03T17:12:06.364Z",
- "count": 17,
- "dealt": 15,
+ "generated": "2026-11-07T06:04:58.498Z",
+ "count": 18,
+ "dealt": 13,
  "kinds": {
   "transition": 4,
   "text": 4,
   "hover": 1,
-  "scroll": 6,
+  "scroll": 7,
   "liquid": 2
  },
  "pages": [
   "tech",
   "gaming",
-  "software"
+  "software",
+  "place",
+  "product",
+  "service"
  ],
  "budget": 4,
  "moments": [
@@ -78,7 +81,7 @@
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
-    "words": "2 to 4 real figures with a short caption each"
+    "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
    },
    "avoidWith": [],
    "states": {
@@ -215,7 +218,7 @@
    "cost": "low",
    "webgl": 0,
    "pages": [],
-   "retired": "MO-62: the headline never hides on load, and this moment holds it back until the script runs.",
+   "retired": "Not dealt: every hero now enters on load through the motion layer (references/motion.md, The hero's entrance: data-enter on the hero), with its text visible without script, under reduced motion and after a 700ms safety mark. A moment that also moves the headline would be a second entrance.",
    "look": "The hero headline's words rise once out of their masks, 38 ms apart, and settle; the sub-line and the buttons fade up behind them.",
    "reduced": "The headline stands as written; nothing moves.",
    "phone": "The headline or button stands as written.",
@@ -385,16 +388,13 @@
    "trigger": "enter",
    "cost": "low",
    "webgl": 0,
-   "pages": [
-    "tech",
-    "gaming",
-    "software"
-   ],
+   "pages": [],
+   "retired": "Not dealt: every hero now rises line by line on load (references/motion.md, The hero's entrance), so a section heading that rises the same way repeats the entrance.",
    "look": "One section's heading rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once.",
    "reduced": "The section stands as written.",
    "phone": "The heading and the lines after it stand as written.",
    "maxPerPage": 1,
-   "weight": 0.9,
+   "weight": 0,
    "needs": {
     "words": "a heading of 2 to 3 lines"
    },
@@ -594,6 +594,51 @@
    }
   },
   {
+   "id": "photo-chapters",
+   "name": "Photo chapters",
+   "kind": "scroll",
+   "fits": [
+    "section"
+   ],
+   "trigger": "scroll",
+   "cost": "low",
+   "webgl": 0,
+   "pages": [
+    "place",
+    "product",
+    "service"
+   ],
+   "look": "A short story in three to five photographs, one large frame at a time: the section holds on screen while, under its h2, one photograph the width of the page is uncovered by the next from its foot upward, settling from a slight zoom, and a panel in the page's ground on the photograph's lower left changes to that chapter (its number, a title and two lines). Each chapter has about two thirds of a screen of scroll: the wipe takes under half of it and the photograph holds for the rest. Live at every width on a screen 600px or taller, phones included.",
+   "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
+   "phone": "It runs on a phone held upright (one photograph at a time, the panel across its foot); a phone turned sideways, under 600px tall, gets the chapters stacked, each photograph over its words.",
+   "maxPerPage": 1,
+   "weight": 1,
+   "needs": {
+    "photo": true,
+    "words": "3 to 5 chapters, a title and two lines each, under one h2 and a short lead",
+    "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"
+   },
+   "avoidWith": [
+    "pinned-chapters"
+   ],
+   "states": {
+    "start": {
+     "p": 0.06,
+     "wait": 500
+    },
+    "middle": {
+     "p": 0.5,
+     "wait": 500
+    },
+    "end": {
+     "p": 0.96,
+     "wait": 500
+    }
+   },
+   "phoneRuns": true,
+   "height": "(hold + 1) screens live: hold 2 for three chapters, 3 for four or five; at rest as tall as its chapters. No --h on the section."
+  },
+  {
    "id": "picture-develops",
    "name": "Picture develops",
    "kind": "transition",
@@ -605,17 +650,18 @@
    "cost": "low",
    "webgl": 0,
    "pages": [
-    "tech",
-    "gaming",
-    "software"
+    "place",
+    "product",
+    "service"
    ],
-   "look": "One photograph develops once as it comes on screen: a two-tone halftone print in the page's ground and ink, darkest cells first, that gives way to the photograph settling from a slight zoom.",
+   "look": "One large photograph develops once as it comes on screen. On a place, product or service page (look \"film\") it comes up out of the paper like a print in the developer tray: a faint grey print at first, its darks arriving before its light tones, then its colour, while it settles from a slight zoom, about 1.6 s. The halftone look (\"print\", a two-tone dot print in the page's ground and ink giving way to the photograph) is not dealt: tech leaves this moment out, so it is kept only as opts look \"print\".",
    "reduced": "The photograph stands.",
-   "phone": "The photograph stands.",
+   "phone": "The film look runs on a phone too (one picture, a filter and a transform, once); the print look shows the photograph.",
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
-    "photo": true
+    "photo": true,
+    "picture": "one photograph with a clear subject, half the container wide or more: the section's subject, not a thumbnail"
    },
    "avoidWith": [
     "liquid-hover",
@@ -634,7 +680,8 @@
      "see": true,
      "wait": 2600
     }
-   }
+   },
+   "phoneRuns": true
   },
   {
    "id": "pinned-chapters",
@@ -649,7 +696,9 @@
    "pages": [
     "tech",
     "gaming",
-    "software"
+    "software",
+    "product",
+    "service"
    ],
    "look": "A feature section holds on screen for two screens of scroll while its three steps open one at a time at the left and one frame at the right changes to each step's picture with a short crossfade.",
    "reduced": "Nothing is pinned: from 640px each step is a static row, its text at the left and its visual at the right (at most 30svh tall); on a phone each step stands with its 16:9 visual under it. Two to four steps fit two screens at 1440x900, 1024x768, 820x1180 and 390x844.",
@@ -662,7 +711,8 @@
    },
    "avoidWith": [
     "closing-lift",
-    "line-carries-colour"
+    "line-carries-colour",
+    "photo-chapters"
    ],
    "states": {
     "start": {
@@ -689,16 +739,13 @@
    "trigger": "scroll",
    "cost": "low",
    "webgl": 0,
-   "pages": [
-    "tech",
-    "gaming",
-    "software"
-   ],
+   "pages": [],
+   "retired": "Not dealt: it moves a photograph against the scroll, a parallax that reads as a template trick on every kind; a wide photograph stands still in its frame.",
    "look": "One wide photograph seen through a frame moves a little slower than the page, so the frame reads as a window onto a larger picture.",
    "reduced": "The photograph stands.",
    "phone": "The photograph stands in its frame.",
    "maxPerPage": 1,
-   "weight": 0.9,
+   "weight": 0,
    "needs": {
     "photo": true
    },
@@ -734,11 +781,14 @@
    "pages": [
     "tech",
     "gaming",
-    "software"
+    "software",
+    "place",
+    "product",
+    "service"
    ],
    "look": "One large statement rests at half ink (readable, about 4 to 1) and turns to ink word by word as it crosses the middle of the screen, a strong word to the accent; it runs back on the way up.",
    "reduced": "The statement in ink.",
-   "phone": "The whole statement in ink, the accent word in the accent.",
+   "phone": "It runs on a phone as on a desktop (one paragraph's colours); under reduced motion the whole statement is in ink, the accent word in the accent.",
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -760,7 +810,8 @@
      "view": 0.72,
      "wait": 350
     }
-   }
+   },
+   "phoneRuns": true
   },
   {
    "id": "word-rotate",
@@ -772,16 +823,13 @@
    "trigger": "loop",
    "cost": "low",
    "webgl": 0,
-   "pages": [
-    "tech",
-    "gaming",
-    "software"
-   ],
+   "pages": [],
+   "retired": "Not dealt: the word hero carries its own live word (layout-v4.md), and a second rotating word in a headline repeats it.",
    "look": "One word of the headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests.",
    "reduced": "The written word stands.",
    "phone": "The written word stands; the other words are not shown.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a headline with one word that can take 2 to 4 alternatives (what the product is for)"
    },

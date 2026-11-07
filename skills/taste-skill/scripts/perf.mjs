@@ -21,6 +21,9 @@
   FCP and LCP are CPU-rendered: compare pages with each other, never with field data. With WebGL on, SwiftShader runs
   the shaders on the CPU: the timing verdicts come from loads where every WebGL piece shows its still fallback, which
   is a proxy (it does not measure shader compile or link on a real GPU).
+  --profile: the Chrome profile, a folder of its own in the OS temp folder or the project's .taste-skill folder, never
+  outside the project; a relative one that leads out of the current folder (../prof) is replaced, with a warning, by
+  .taste-skill/chrome-perf.
   Exit code 1 when any check FAILs, 2 when the run timed out (partial results are printed).
 */
 import fs from 'node:fs';
@@ -45,7 +48,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i].startsWith('--')) die('unknown option ' + args[i]);
   else pos.push(args[i]);
 }
-if (!pos.length) die('usage: perf.mjs <page.html | folder | url> [--profile <dir>] [--json file] [--w 1440 --w 390] [--runs 3] [--port 5740] [--root <dir>]');
+if (!pos.length) die('usage: perf.mjs <page.html | folder | url> [--profile <dir in the OS temp folder or .taste-skill>] [--json file] [--w 1440 --w 390] [--runs 3] [--port 5740] [--root <dir>]');
 if (typeof WebSocket === 'undefined' || typeof fetch === 'undefined') die('Node 22 or later is needed (global WebSocket and fetch)');
 if (!widths.length) widths.push(1440, 390);
 const target = pos[0];
@@ -364,9 +367,19 @@ if (!/^https?:/.test(target)) {
   srvObj = await serve(dir);
   url = `http://127.0.0.1:${srvObj.port}/` + rel.split(path.sep).map(encodeURIComponent).join('/') + (isDir && rel ? '/' : '');
 }
+// a profile stays in the OS temp folder or the project: a relative --profile that leads out of this folder (or the folder
+// itself) goes to .taste-skill/chrome-<name>
+const inProject = (p, name) => {
+  const abs = path.resolve(p), rel = path.relative(process.cwd(), abs);
+  const out = !path.isAbsolute(p) && (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
+  if (rel !== '' && !out) return abs;
+  const to = path.join(process.cwd(), '.taste-skill', 'chrome-' + name);
+  console.error(`${name}: --profile ${p} ${out ? 'leads outside the project folder' : 'is the project folder itself'}; using ${to} (a profile goes in the OS temp folder or the project's .taste-skill folder)`);
+  return to;
+};
 // a fresh profile folder per run (a reused one can still be locked by the Chrome just closed); removed once Chrome has exited
 // default profile folder: --profile, else $TASTE_SKILL_TMP/chrome/perf, else a folder under the system temp dir
-const profileBase = path.resolve(profileArg || (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
+const profileBase = path.resolve(profileArg ? inProject(profileArg, 'perf') : (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
 fs.mkdirSync(profileBase, { recursive: true });
 for (const d of fs.readdirSync(profileBase)) if (/^run-\d+$/.test(d)) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* another run, or locked */ } }
 const profile = path.join(profileBase, 'run-' + process.pid);

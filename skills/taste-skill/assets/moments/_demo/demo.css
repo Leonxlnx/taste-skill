@@ -3,7 +3,7 @@
 .demo-nav { position: sticky; top: 0; z-index: 40; height: var(--nav-h); border-bottom: 1px solid var(--line);
   background: color-mix(in oklab, var(--bg) 96%, transparent); }
 .demo-nav .container { height: 100%; display: flex; align-items: center; gap: var(--s-6); }
-.demo-nav__logo { font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.02em; flex: none; }
+.demo-nav__logo { display: inline-flex; align-items: center; min-height: 44px; font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.02em; flex: none; }
 .demo-nav__links { display: flex; gap: var(--s-1); flex: 1; }
 .demo-nav__links a { font-size: var(--t-small); font-weight: 500; padding: 0 var(--s-3); height: 36px; display: inline-flex; align-items: center; border-radius: var(--r-sm); transition: background-color var(--dur) var(--ease); }
 .demo-nav__links a:hover { background: color-mix(in oklab, var(--ink) 6%, transparent); }
@@ -51,6 +51,19 @@ main > .section--hero > .container.demo-split { align-content: center; }
 .demo-split > .demo-photo { aspect-ratio: auto !important; width: 100%; height: 100%; max-height: min(100%, 62svh); min-height: 0; }
 .demo-split > .frame { max-height: 100%; min-height: 0; }
 .demo-statement { align-content: start; }
+/* a phone: the section grows with its split (system.css), so the split keeps its content height as its least */
+@media (max-width: 639px) { main > :is(.section, .section--hero) > .container.demo-split { min-height: auto; } }
+/* a phone hero: its picture or window takes what the first screen leaves under the words (size containment keeps
+   its own height out of the hero's, so it never pushes the hero past the screen), and at least 220px, so on a short
+   phone the hero grows by what the words need and no more */
+@media (max-width: 639px) {
+  main > .section--hero > .container.demo-split { grid-template-rows: auto minmax(0, 1fr); align-content: stretch; }
+  main > .section--hero > .container.demo-split > .demo-photo { height: 100%; max-height: none; min-height: 220px; contain: size; }
+  main > .section--hero > .container:not(.demo-split) > :is(.hero-photo, .frame) { flex: 1 1 0; aspect-ratio: auto; min-height: 220px; contain: size; }
+  main > .section--hero > .container:not(.demo-split) > .frame { align-items: flex-start; }
+  /* the window keeps the rows that fit whole: one, under its title (a row cut by the frame reads as a fault) */
+  main > .section--hero > .container:not(.demo-split) > .frame .dw__row:nth-of-type(n+2) { display: none; }
+}
 
 /* a drawn window in a hero frame beside the text (1024-1279): the side list goes, so the rows keep one line
    each and the window stays shorter than its frame (it was cut at the frame's top and foot at 1024x768) */

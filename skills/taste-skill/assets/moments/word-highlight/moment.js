@@ -10,8 +10,10 @@
 
   opts: from 0.85 (the statement's top at this share of the screen's height turns the first word),
         to 0.45 (its bottom at this share turns the last).
-  Reduced motion, no script: the whole statement in ink.
+  Reduced motion, no script: the whole statement in ink. It runs on a phone too (one paragraph's
+  colours, no layout, no pin).
 */
+export const phone = true;
 export default function (root, opts, lib) {
   const text = root.matches('p, h2, h3, blockquote') ? root : (root.querySelector('.mo-wh__text') || [...root.querySelectorAll('p, h2, h3, blockquote')].find(p => !p.matches('.t-label, .t-small, .muted')));
   if (!text) return {};

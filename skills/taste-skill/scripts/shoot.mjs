@@ -30,7 +30,9 @@
   fixed bar or button is left out; a ground fixed behind the whole page stays. So the nav shows on
   the first screen only and nothing leaves an empty gap. A held stage (a sticky panel as wide and
   nearly as tall as the screen) stays held, as the visitor sees it. --dark emulates
-  prefers-color-scheme: dark. Uses its own Chrome profile and closes Chrome by its own PID.
+  prefers-color-scheme: dark. Uses its own Chrome profile and closes Chrome by its own PID. The profile (--profile) is a
+  folder of its own in the OS temp folder or the project's .taste-skill folder, never outside the project; a relative one
+  that leads out of the current folder (../prof) is replaced, with a warning, by .taste-skill/chrome-shoot.
 
   No empty bands: smooth scrolling and scroll snapping are switched off while it shoots (a snap or
   a smooth scroll that has not arrived leaves rows no screen covered), each screen is placed where
@@ -60,12 +62,22 @@ const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (ar
 // default Chrome profile folder: --profile, else $TASTE_SKILL_TMP/chrome/<tool>-<pid>, else a fresh folder under the system temp dir
 const defaultProfile = () => process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'shoot-' + process.pid) : path.join(os.tmpdir(), 'taste-skill-shoot-' + process.pid);
 const target = opt('url'), out = opt('out'), profileArg = (p => (p && p !== true ? p : defaultProfile()))(opt('profile')), rootArg = opt('root');
+// a profile stays in the OS temp folder or the project: a relative --profile that leads out of this folder (or the folder
+// itself) goes to .taste-skill/chrome-<name>
+const inProject = (p, name) => {
+  const abs = path.resolve(p), rel = path.relative(process.cwd(), abs);
+  const out = !path.isAbsolute(p) && (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
+  if (rel !== '' && !out) return abs;
+  const to = path.join(process.cwd(), '.taste-skill', 'chrome-' + name);
+  console.error(`${name}: --profile ${p} ${out ? 'leads outside the project folder' : 'is the project folder itself'}; using ${to} (a profile goes in the OS temp folder or the project's .taste-skill folder)`);
+  return to;
+};
 // the screen's height, as consistency.mjs has it: a tablet is held upright (820x1180, 768x1024), so a hero sized
 // to the screen (100svh) is shot at the height a tablet shows it
 const HEIGHTS = { 1440: 900, 1366: 768, 1280: 800, 1152: 864, 1024: 768, 896: 800, 834: 1194, 820: 1180, 810: 1080, 800: 1280, 768: 1024, 430: 932, 414: 896, 390: 844, 375: 812, 360: 780 };
 const W = +opt('w', 1440), VH = +opt('h', HEIGHTS[+opt('w', 1440)] || (W < 600 ? 844 : 900)), settle = +opt('wait', 450);
 if (!target || target === true || !out || out === true || rootArg === true) {
-  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png [--profile <dir>] [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--root <dir>] [--tiles <dir>] [--no-tiles]');
+  console.error('usage: shoot.mjs --url <url or file> --w 1440 --out file.png [--profile <dir in the OS temp folder or .taste-skill>] [--h 900] [--reduced] [--dark] [--wait 450] [--port 5300] [--root <dir>] [--tiles <dir>] [--no-tiles]');
   process.exit(1);
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -302,7 +314,7 @@ async function tilesOf(page, outDir, o) {
   return { view, ...v, line: `${view}: ${v.sections.length} sections, ${v.screens} screens, navH ${v.navH}, tiles ${v.sections.reduce((a, s) => a + s.tiles.length, 0)}; heights ${v.sections.map((s) => s.hScreens).join(' ')}` };
 }
 /* ---------------------------------------------------------------- Chrome */
-const profile = path.resolve(profileArg);
+const profile = inProject(profileArg, 'shoot');
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
 try { fs.rmSync(portFile); } catch { /* none */ }

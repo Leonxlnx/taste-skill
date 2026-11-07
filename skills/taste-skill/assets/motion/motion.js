@@ -4,6 +4,11 @@
     <script type="module" src="assets/motion/motion.js"></script>
   It starts by itself. references/motion.md says what moves and how fast.
 
+  - the hero's entrance: .hero[data-enter] enters once on load (the h1 line by line, then the lead,
+    the buttons and the facts, the picture settling), about 1.1 s, when the head line set html.m-enter
+    before the first paint:
+    <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+
   - nav: .m-menu-open from the moment a menu starts to show (150ms of intent), so the next word swaps the panel at once
     instead of waiting 150ms again; it stays while the pointer is on the word or its panel.
   - tabs: every .tabs[role=tablist] gets one indicator that slides to the selected tab (system.js
@@ -19,7 +24,7 @@
     system's pause button (one per panel, shared with ui.js). ui.js restarts its own fragments.
   - switches: a click on .m-switch flips aria-checked unless a handler before it called
     preventDefault().
-  Under prefers-reduced-motion: no indicator travel, no tick, no loops, no restart.
+  Under prefers-reduced-motion: no entrance, no indicator travel, no tick, no loops, no restart.
 */
 const html = document.documentElement;
 const reducedQ = matchMedia('(prefers-reduced-motion: reduce)');
@@ -57,18 +62,28 @@ function tabs() {
     ind.setAttribute('aria-hidden', 'true');
     list.prepend(ind);
     list.classList.add('m-has-ind');
-    let instant = true;
+    let instant = true, at = null;
+    const set = (b, sx = 1, sy = 1) => {
+      ind.style.setProperty('--x', `${b.x}px`); ind.style.setProperty('--y', `${b.y}px`);
+      ind.style.setProperty('--w', `${b.w}px`); ind.style.setProperty('--h', `${b.h}px`);
+      ind.style.setProperty('--sx', String(sx)); ind.style.setProperty('--sy', String(sy));
+    };
+    // the pill travels by transform only: it takes the new tab's size at once, is drawn scaled to the
+    // old tab's size at the old place, and settles to scale 1 at the new place (motion.css)
     const place = () => {
       const sel = list.querySelector('[role="tab"][aria-selected="true"]');
       if (!sel) { ind.style.opacity = '0'; return; }
       ind.style.opacity = '';
-      const now = instant || reduced();
-      jump(ind, now);
-      ind.style.setProperty('--x', `${sel.offsetLeft}px`);
-      ind.style.setProperty('--y', `${sel.offsetTop}px`);
-      ind.style.setProperty('--w', `${sel.offsetWidth}px`);
-      ind.style.setProperty('--h', `${sel.offsetHeight}px`);
-      if (now) { ind.getBoundingClientRect(); jump(ind, false); }
+      const to = { x: sel.offsetLeft, y: sel.offsetTop, w: sel.offsetWidth, h: sel.offsetHeight };
+      if (instant || reduced() || !at || !to.w || !to.h) { jump(ind, true); set(to); ind.getBoundingClientRect(); jump(ind, false); }
+      else {
+        jump(ind, true);
+        set({ ...to, x: at.x, y: at.y }, at.w / to.w, at.h / to.h);
+        ind.getBoundingClientRect();
+        jump(ind, false);
+        set(to);
+      }
+      at = to;
       instant = false;
     };
     place();
@@ -252,10 +267,132 @@ document.addEventListener('click', e => {
   sw.setAttribute('aria-checked', String(sw.getAttribute('aria-checked') !== 'true'));
 });
 
+/* ---------------------------------------------------------------- the hero's entrance */
+// Once, on load (motion.md, The hero's entrance): the h1 rises line by line out of its masks, then what
+// follows it (the lead, each button, the facts) fades up 60ms apart, while the picture settles from a
+// slight scale; about 1.1 s in all, ease-out, transform and opacity only. motion.css hides the words
+// (never the picture) only while the head line's html.m-enter is on and its 700ms safety mark
+// (m-enter-done) is not; the picture waits at its start scale and settles by a CSS transition, so it
+// never blinks however late this file is. Without script, under reduced motion and in print the hero
+// simply stands; when this file is later than the mark, the words fade in by CSS and the hero stands.
+// The h1 gets its word masks for the length of the entrance and its own nodes back afterwards.
+const ENTER_MEDIA = '[data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage';
+const ENTER_TEXT = 'h1 ~ *, :has(> h1) ~ *, :has(~ h1)';
+const ENTER_LEAF = 'p, dl, ul, ol, a, button, img, picture, video, figure, blockquote, h2, h3, .pill, .btn';
+function maskWords(h1) {
+  // an h1 another script reworks (layout.js: a live word, letters, a picture in the line) rises whole
+  if (h1.matches('[data-ly-letters], [data-enter-whole]') || h1.querySelector('.ly-word, .ly-pic, .ly-mark, svg, img')) return null;
+  const own = document.createDocumentFragment();
+  own.append(...h1.childNodes);
+  const copy = own.cloneNode(true);
+  const words = [];
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 1) return walk(n);
+    if (n.nodeType !== 3) return;
+    const frag = document.createDocumentFragment();
+    n.textContent.split(/(\s+)/).forEach(part => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.append(part); return; }
+      const w = document.createElement('span'), i = document.createElement('span');
+      w.className = 'm-w'; i.className = 'm-w__in'; i.textContent = part;
+      w.append(i); frag.append(w); words.push(w);
+    });
+    n.replaceWith(frag);
+  });
+  walk(copy);
+  const label = h1.hasAttribute('aria-label');
+  if (!label) h1.setAttribute('aria-label', own.textContent.replace(/\s+/g, ' ').trim());
+  h1.append(copy);
+  h1.querySelectorAll('.m-w').forEach(w => w.setAttribute('aria-hidden', 'true'));
+  // words grouped into the lines the browser set them on
+  const lines = [];
+  let top = null;
+  words.forEach(w => { const t = w.getBoundingClientRect().top; if (top === null || Math.abs(t - top) > 3) { lines.push([]); top = t; } lines[lines.length - 1].push(w.firstChild); });
+  return { lines, restore() { h1.replaceChildren(own); if (!label) h1.removeAttribute('aria-label'); } };
+}
+function enterSteps(hero, h1, media) {
+  // what follows (and precedes) the h1 in its column, as whole blocks in reading order; a box of
+  // layout (a div with no words of its own) is opened, a button row gives one step a button.
+  // A picture, window or collage (or a box round one) is never opened: it stands as one block and
+  // settles by itself (motion.css), even when it carries words of its own (a menu card, a note)
+  const out = [];
+  const take = el => {
+    if (el === h1 || el.contains(h1) || out.includes(el) || el.matches('img, picture, video, canvas, .frame__img')) return;
+    if (media.includes(el) || media.some(m => el.contains(m))) return;
+    if (el.matches('.btn-row')) { [...el.children].forEach(take); return; }
+    const own = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+    if (own || !el.children.length || el.matches(ENTER_LEAF)) out.push(el);
+    else [...el.children].forEach(take);
+  };
+  hero.querySelectorAll(ENTER_TEXT).forEach(take);
+  return out.filter(el => !el.closest('[aria-hidden="true"]') && !out.some(o => o !== el && o.contains(el)))
+    .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+}
+function enter() {
+  const hero = document.querySelector('.hero[data-enter]:not([data-enter="off"])');
+  if (!hero || hero.classList.contains('is-entered') || hero.classList.contains('is-entering')) return;
+  // still: the picture takes its place at once (no settle); otherwise the CSS settle and fade run out first
+  const done = (still = false) => { if (still) hero.classList.add('is-still'); hero.classList.add('is-entered'); };
+  const late = () => setTimeout(done, 1150);
+  // the head line did not run, reduced motion, a headless shot (it sees the hero at rest, as it sees the
+  // final number, unless data-motion="live") or the visitor is already below the hero (a reload half way
+  // down): the hero stands as written. The safety mark has passed: motion.css is fading the words in and
+  // settling the picture; the hero is marked done once they are through
+  if (!html.classList.contains('m-enter') || reduced() || shot() || hero.getBoundingClientRect().bottom < 0) return done(true);
+  if (html.classList.contains('m-enter-done')) return late();
+  const h1 = hero.querySelector('h1');
+  if (!h1) return done(true);
+  const media = [...hero.querySelectorAll(ENTER_MEDIA)].filter((m, i, all) => !all.some(o => o !== m && o.contains(m)));
+  const steps = enterSteps(hero, h1, media);
+  const EASE = 'cubic-bezier(.22, 1, .36, 1)';
+  const anims = [];
+  let masks = null, over = false;
+  const finish = () => {
+    if (over) return;
+    over = true;
+    anims.forEach(a => { try { a.cancel(); } catch { /* gone */ } });
+    masks?.restore();
+    hero.classList.remove('is-entering');
+    done();
+  };
+  // the fonts first (a line set in the fallback face breaks elsewhere), 250ms at most: the words are
+  // hidden meanwhile, so nothing is seen twice
+  Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise(r => setTimeout(r, 250))]).then(() => {
+    if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) { over = true; return late(); }   // the safety mark won: CSS shows it
+    masks = maskWords(h1);
+    // .is-entering ends the CSS hold: the words are held by their animations from here, and the
+    // picture starts its CSS settle in the same frame
+    hero.classList.add('is-entering');
+    const lines = masks ? masks.lines : [[h1]];
+    const lineStep = Math.min(80, 240 / Math.max(1, lines.length - 1));
+    // a word starts wholly below its mask, which reaches .12em under the line: no tops show before it rises
+    lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
+      ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
+      : [{ transform: 'translateY(.35em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+      { duration: 700, delay: 80 + k * lineStep, easing: EASE, fill: 'both' }))));
+    // a line above the h1 (a notice, a pill) comes with its first line; what follows starts as its
+    // last line is half way up
+    const after = 80 + (lines.length - 1) * lineStep + 220;
+    let k = 0;
+    steps.forEach(el => {
+      const above = !!(el.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING);
+      // the rise is added to whatever transform the part has of its own; the fade replaces its opacity
+      const t = { duration: 520, delay: above ? 40 : after + Math.min(k++, 6) * 60, easing: EASE, fill: 'both' };
+      anims.push(el.animate([{ opacity: 0 }, { opacity: 1 }], t), el.animate([{ transform: 'translateY(12px)' }, { transform: 'none' }], { ...t, composite: 'add' }));
+    });
+    // a panel the words sit on stands from the first paint (it was never hidden, so it never blinks);
+    // the pictures settle by CSS over 1.1 s: the hero is done when both are through
+    anims.push({ finished: new Promise(r => setTimeout(r, 1150)), cancel() {} });
+    Promise.all(anims.map(a => a.finished)).then(finish, finish);
+  }).catch(finish);
+  setTimeout(finish, 2400);   // whatever stalls (a hidden tab), the hero stands after 2.4 s
+}
+
 /* ---------------------------------------------------------------- start */
 export function init() {
-  if (html.dataset.motion === 'off') return;
+  if (html.dataset.motion === 'off') { html.classList.add('m-enter-done'); return; }
   if (!html.hasAttribute('data-motion')) html.setAttribute('data-motion', '');
+  try { enter(); } catch (e) { console.warn('motion.js: enter', e); document.querySelector('.hero[data-enter]')?.classList.add('is-entered'); }
   try { nav(); } catch (e) { console.warn('motion.js: nav', e); }
   try { tabs(); } catch (e) { console.warn('motion.js: tabs', e); }
   try { counts(); } catch (e) { console.warn('motion.js: counts', e); }

@@ -13,35 +13,35 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
 - **Every section shows the real thing:** a photograph, a portrait, real icons, the client's UI, a
   diagram card or (tech only) the effect. A section without a picture is allowed only for a price
   list, an FAQ, a specs table, a booking form or a dealt statement moment's own section, once each,
-  and two picture-less sections are never neighbours (the short page's statement hero and its one
-  section are the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
+  and two picture-less sections are never neighbours (the short page with no photograph, its
+  statement hero, its statement moment and its one section, is the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
   half a tile or more, 50/50 in a split, a whole screen as a layer. The close is its own picture (a
   photograph, the big button or the name set wide).
 - **One object never carries the page** (in testing: a robot arm in six sections and a game's
   salvage rig in six, each "one object six times", both capped at 4 to 4.5). The object shown whole
-  (the product, its photograph or render, a game's hero object) leads the hero and **at most two
+  (the product's photograph, a game's key art) leads the hero and **at most two
   more sections**; every other picture section is carried by another kind of visual the brief
-  supports, from its row below, no kind more than twice. A new angle, a recolour, a crop of the
-  whole, or the object on its floor with one prop beside it, is the object again; a use scene counts
-  as use only when its setting fills the frame (a `desk` as the bench across the frame, trays,
-  parcels and sheets on it, half the picture or more; the object one thing among them). The check counts a declared scene as use, so whether one prop makes it the object again is the builder's call. Write each plan line's kind; three object
-  lines at most.
+  supports, from its row below, no kind more than twice. A new angle, a recolour or a crop of the
+  whole is the object again; a use photograph counts as use only when its setting fills the frame
+  (the bench, the street, the room, half the picture or more; the object one thing in it). Write
+  each plan line's kind; three object lines at most.
 
   | Kind | the object whole: hero + 2 | carries the other sections |
   |---|---|---|
   | Software | the `app-frame` | UI fragments of its subject on cards, a diagram card, real tool icons, a type moment, a named quote with its face, the effect or scene |
-  | Gaming | the hero object (ship, rig, mech) or the client's key art | the world (a scene of the world's own objects, the hero object small or absent; its `top` view as a map), the crew at work (the client's screenshots, else one scene a job), the trailer frame, the screenshot strip, a type moment, the real platform marks |
-  | Tech hardware | the product (photograph, CAD render or its render) | its use (the arm at a bench among trays and parts, the device in its place), an exploded or parts view, the motion video frame, a diagram card held still, a type moment (one figure set large), a context photograph of the trade (a workshop, a lab) |
-  | Product | the product (photograph or render) | its use (loaded, carried, at home), people with it, close-ups of its parts, a diagram card held still, a type moment, a context photograph of where it lives |
+  | Gaming | the client's key art (none: the setting's photograph under the game's name) | the world (in-engine shots, else photographs of its setting), the crew at work (the client's screenshots), the trailer frame, the screenshot strip, a type moment, the real platform marks |
+  | Tech hardware | the product (photograph, the client's CAD render; a render only when the brief asks for 3D) | its use (the device at a bench or in its place), parts close up, the motion video frame, a diagram card held still, a type moment (one figure set large), a context photograph of the trade (a workshop, a lab) |
+  | Product | the product (photograph; a render only when the brief asks for 3D) | its use (loaded, carried, at home), people with it, close-ups of its parts, a diagram card held still, a type moment, a context photograph of where it lives |
 
 - **The client's own assets get designed slots.** When the brief says the client has a trailer,
   key art, in-engine screenshots, CAD renders, an exploded model or a motion video, each gets a slot
-  that reads finished now: the frame at the file's final ratio, holding a stand-in from the kit
-  (a still of the world or the product in use), named in a comment for the client's file, never an
+  that reads finished now: the frame at the file's final ratio, holding a stand-in photograph (a
+  kept live-search frame of the game's setting or of the product's kind in use, `photos.md`; a kit
+  render still only when the brief asks for 3D), named in a comment for the client's file, never an
   empty, grey or broken frame and never a line saying the file is missing. The slots
   (`sections-library.md`, client-slots): the **trailer or motion video frame** (a real `<video>`
-  with a kit poster, and a play control only when there is a page or file to play), the **screenshot strip** (three to five frames of the
-  world composed from the kit, framed like captures), the **CAD or render frame**, the **exploded
+  with a stand-in poster, and a play control only when there is a page or file to play), the **screenshot strip** (three to five
+  stand-in photographs of the setting, framed like captures), the **CAD or render frame**, the **exploded
   frame**; key art fills the hero's stage. The report lists every slot, its file and its stand-in.
 - **One idea per section,** one h2, one action at most besides the main one (a pair only in the
   hero, or where a product needs "compare" beside "buy"). A two-screen section holds one list, table
@@ -90,7 +90,7 @@ comment at the top of `<body>`, and build exactly those. Deal one part again onl
 again from its own list without them, never drawn: `nav-cards` (and any nav panel of photograph
 cards) to `nav-split` with no panel, or `nav-centre`; `close-photo` to the head row of `close-word`
 without the name (the h2 and one line on the left, the main button on the right, both on the
-`.wrap` lines); `media-band` to `space` (a game without art keeps it: its world render is the layer); a place's hero to the `statement` hero on `.ground-brand`.
+`.wrap` lines); `media-band` to `space` (a game without art keeps it: a photograph of its setting is the layer); a place's hero to the `statement` hero on `.ground-brand`.
 Write the change and its reason on plan line 2.
 
 - **Nav** (one fixed, opaque bar on the `.wrap`; `system.md`): `nav-mega` (link columns and one
@@ -142,7 +142,7 @@ the main action (Add to Steam wishlist, Pre-order). In testing, a game page that
 and showed an abstract effect for key art lost 3.5 to 5.5 to one with a launch date, a scene of the
 game's world, feature cards and real platform icons. So:
 - **The hero names the game:** the h1 is its name and genre ("Northline, a co-op survival game",
-  40 characters at most on the `product` stage), or its wordmark (the client's logo file) over an
+  40 characters at most on the `product` stage, 32 on the `photo` hero), or its wordmark (the client's logo file) over an
   h1 naming the genre. The lead or a line under it carries the launch date or status the brief
   gives ("Out 12 March on Steam", "Early access now"); with no date, the status ("Coming to PC"),
   never an invented date.
@@ -154,29 +154,19 @@ game's world, feature cards and real platform icons. So:
   the trailer frame and the screenshot strip carry the rest. Art the brief names gets its slot
   either way (section 1, client slots): a trailer frame, the screenshot strip, key art on the
   stage.
-- **No art files** (the brief names art it does not supply, or none): the key art is **rendered**,
-  never replaced by an effect. Write a product-render spec (`effects-objects.md`, Product renders)
-  of the game's hero object (its ship, crane barge, mech, car) or a scene of its world composed from
-  its own objects on one floor (the barge at the quay with its crates, lanterns and cables; under 90
-  parts), in the game's palette, `light` material for its fires, lamps and screens; make its
-  posters. Write two: the hero object and the world (its quay, wrecks with hulls cut open, cranes,
-  crates, lanterns, the hero object small in it or left out), the world with one scene per job
-  (`"scenes"`: the torch's `light` in a cut hull, the winch over a crate stack, the helm lanterns
-  by night). Deal `deal.mjs --type software --kind gaming --has object` (the `product` stage): the
-  render whole on the stage, turning slowly (`data-product-mode="live"`: the page's one live render;
-  every other frame a still). The one effect (`effects.mjs pick --page gaming
-  --palette dark --slots hero --exclude ruled-grounds,grid-pulse,contour-lines,dot-terrain,dotted-globe,ridgeline,bayer-dither,halftone-screen,ascii-shade,line-engraving,duotone-grade`,
-  again until it reads as water, fog, embers or light, or the product hero's `spotlight-cone`,
-  `edge-glow`) may sit behind it as the stage's ground, the
-  render drawn over it (every placement is transparent over its frame's ground), never instead of it. The world
-  section: the world spec's widest view (or its `top` view as the map), `data-product-place="stage"` in a
-  full-bleed `media-band` or `dark-band` frame, the h2 above the render, never on it. The feature
-  cards are the screenshot strip: each card one job scene of the world spec, 16:9, its props
-  spread so the scene spans the frame, on the world's own ground, never the hero object alone
-  again (a `data-product-fill` over 1 drew an empty frame in testing: widen the scene instead). The trailer frame's poster is the world's widest still. One
-  render turns; the rest are stills. The helper cannot model characters, faces, creatures, cloth
-  or glass: compose the world's machines, buildings and props, never a character. The report
-  names the art to replace.
+- **No art files** (the brief names art it does not supply, or none): the hero is **type-led over
+  a photograph of the game's setting**, never an effect or a random object in its place. Search the
+  place its world is set in, in plain words (`photos.mjs search "flooded coastal town at dusk"`, a
+  harbour at night, a desert mining town, a city in rain), keep three to five frames of one light
+  and grade with nothing readable on them, and deal `deal.mjs --type software --kind gaming --has
+  setting`: it prints the `photo` hero, the game's name as the h1 set large in the box (or straight
+  on a dark, empty part of the frame, `data-box="none"`), the status line under it. The world
+  section takes the widest of the frames full bleed in a `media-band` or `dark-band`, the h2 above
+  it; the trailer frame's poster and the screenshot strip are client slots holding the other
+  frames (section 1, client slots), each named in a comment for the client's file. One shader
+  effect may sit behind the words in a section of its own, never on the photographs. Every frame
+  is a stand-in: the report lists each one and the art to replace it. A rendered hero object or
+  world (`effects-objects.md`, Product renders) only when the brief asks for 3D or a render.
 - **Platforms:** the real Steam, PlayStation and Epic Games marks (`icons.mjs apps --tag gaming`);
   Xbox and Nintendo named in type, never a drawn mark.
 Nav `nav-mega|nav-centre|nav-cards` · footer `footer-dark|footer-statement` · close
@@ -193,8 +183,10 @@ comparison-table), proof (a review or press line the brief gives), [visit-map fo
 product's world, two or three photographs a screen (one per feature section of the part it names;
 a grid of 4 to 8 cut-outs on one backdrop): the product whole in three at most (section 1, One
 object), its use, its parts and the people with it in the rest. Prices are "from" prices on cards or in a table, never a plan
-table or a monthly switch. A technical product (site-kind tech) may take its render or the effect;
-any other product takes no effect, and its render only when it has no photographs (below).
+table or a monthly switch; only prices the brief gives (none given: "Price on request" or no price, `copy.md`, What may
+be assumed). Photographs first: the client's, else stand-ins (below). A technical
+product (site-kind tech) may take the effect; any other product takes no effect; a render on
+either only when the brief asks for 3D or a render (below).
 - **The product is the hero, not every frame.** The bar is Figure and 1X: where the product is
   shown whole it fills the frame at large scale, and its use, parts and place carry the rest. In testing, a rendered product page scored 5.5,
   creativity 4.5 ("a safe grey template"), because every visual was a mid-size product in a grey
@@ -224,7 +216,7 @@ any other product takes no effect, and its render only when it has no photograph
      the promise.
   4. **Dealt compositions, one contrasting ground.** Each picture section deals its composition
      from section 4's five (`bleed`, `pair`, `trio`, `strip`, `tall-small`), plus `split` (text
-     beside one big picture, once a page: on the full product page below, section 2) and the order
+     beside one big picture, once a page, never right after a `bleed`) and the order
      section (the order card beside the product, last, a form, never counted as the split);
      neighbours never the same, no structure (heading,
      panel, picture) twice. For the product: `bleed` the product at anchor scale across the
@@ -246,70 +238,39 @@ any other product takes no effect, and its render only when it has no photograph
   7. **Buttons step on hover and press on click.** The motion layer does it (`motion.md`,
      Button); no page CSS sets a `.btn`'s `transform` or `transition`. A feature card that leads
      somewhere is a linked card (it lifts 2px, its picture zooms 1.03).
-- **No photographs: the product is shown, never hidden** (in testing: a cargo bike's page that never
-  showed the bike scored 3 of 10). A picture the brief gives (a render, a CAD view, a cut-out) goes
-  on the hero's stage. Else the product is **rendered**: one crafted studio render of this product,
-  composed from its parts with the objects kit's product-render helper (`assets/objects/
-  product-render`; `effects-objects.md`, Product renders): write a short JSON spec of its frame,
-  wheels, box, arm or shade, sized from the brief's figures, in its own materials and colours (the
-  kit's `specs/` show the format; never ship a kit spec as the client's product), make its posters
-  with `make-posters.mjs`, and mount it as `<div class="frame" id="<name>-<view>" data-product="assets/objects/product-render/specs/<name>.json"
-  data-product-place="stage" data-product-view="<view>">` with `product-render/auto.js`. A place
-  is only the share of its frame the product's bounds fill, centred in it (`build.js`): `stage`
-  0.86, `hero` 0.88, `tile` 0.84, `card` 0.9; the page's CSS gives the frame its size and the
-  words always stand outside the frame. In the hero the frame goes straight inside the `product`
-  hero's `.hero__stage` (`layout.css` 3b sizes it); `stage` in a `split` frame or a full-width
-  one, `tile` in a square or portrait tile. The render is the product's picture, not an effect:
-  **stills by default, live only when asked (`data-product-mode="live"`), at most one live
-  context**, on the page's flat ground, no print, shader ground, moment or scene beside it; the same
-  on a product of site-kind other and on hardware. The pictures of rule 2 come from the one spec
-  (`effects-objects.md`, Views): the views its `supports` lists of `three-quarter`, `side`,
-  `front`, `rear`, `top`, `low`, views of its own (`views`) and `detail:<part>` (a close-up), the
-  spec's `scenes` (loaded or in use, from the props `crate`, `bag`, `child-seat`, `bench`,
-  `parcel`, `desk`, `book`, `mug`, `sheet`, `tray`) and its `colors`; `make-posters.mjs` prints
-  every `make.variants` entry as a still per colour. `deal.mjs --type product --has object`
-  (hardware adds `--kind tech`) always prints the `product` hero: its full-width stage, never a
-  `split` column. Then the **full product page**, never the short page, one picture a section,
-  the product whole in sections 1, 2 and 6 only (put every view and scene in `make.variants`):
-  1. hero, view **`side`** (the widest view; a tall product, a lamp or an arm: `three-quarter`)
-     whole on the `product` stage, the h1 naming the product and its buyer, the order action;
-  2. the product, view **`three-quarter`** (a tall product: `side`), the page's one `split`:
-     the frame on 8 columns, the three selling figures on the other 4 (rule 6; `bleed` is never
-     right after the hero);
-  3. what it does or carries, its **use**: a scene (`three-quarter+loaded`, `work`) whose
-     setting fills the frame (a `desk` as the bench across it, `tray`s, `parcel`s, `sheet`s,
-     crates; the kit's arm with one tray reads as the arm again), the headline's promise
-     readable (rule 3): `bleed` across the wrap with the uses in a row of three under it, or
-     `tall-small` with a close-up; a motion video the brief names: its frame here, the poster this
-     scene (client slots);
-  4. the **parts**, views **`detail:<part>`**: a `strip` or `trio` of close-ups, one per part the
-     section names (the box, the motor, the gripper, the stand), the part filling its frame; or an
-     exploded view (a scene `exploded` that hides the assembled parts and adds them again as
-     plain `parts` spaced along their axis, shot as `three-quarter+exploded`: a close-up view
-     frames only the spec's own parts, so the spaced ones fall out of it; an exploded model the
-     brief names: its slot); or how
-     it is used: three steps or a lanes diagram card held still (charge, ride, park);
-  5. specs as `rows--spec` (only the facts the strip does not hold) beside a diagram card held
-     still or one figure set large (a type moment), and the real colour icons of the component
-     brands the brief names; this or section 2 is the contrasting ground;
-  6. ordering, view **`rear-quarter`**, a view of the spec's own (`"views": { "rear-quarter":
-     { "from": "three-quarter", "angle": <the spec's angle + 180> } }`, listed in `supports`): a
-     live order card (model or size, colour as swatches, delivery slot or town, the price that
-     updates, the main action) beside the product whole in the chosen colour, which the swatch
-     changes (rule 5); the order composition, not the split; [faq, five questions at most];
-     footer.closing.
-  Every view is a still. The heading and the text
-  say what the thing is; no line calls it a render, model or illustration (house rule 1). The report lists the
-  photographs to shoot (`photos.md`). Never a drawn SVG, a model of loose primitives the helper did
-  not compose, mood stock, a photograph of another maker's product or an object of another kind (a
-  wheel is not a bicycle). **Hardware without photographs or renders goes here too** (in testing: a
-  robot arm's page with a silk shader and an order form lost; CAD renders or a film the brief names
-  but does not supply count as missing, and each gets its slot: the CAD frame is section 2's
-  picture, the motion video section 3's, the exploded model section 4's): a robot arm follows the kit's worked
-  `robot-arm` spec, rebuilt to the client's own sizes, joints and colours; a drone is a rounded box body, beam arms, cylinder motors and disc rotors; a camera a
-  rounded box and a cylinder lens; a curved shell is rounded boxes and fillets (`round`, `blend`,
-  `seams`) at its real measurements. Never a `split` hero holding only an order form or the
-  effect in place of the product; the order card is its own section (6).
+- **No photographs: the product is shown, never hidden, in photographs** (in testing: a cargo
+  bike's page that never showed the bike scored 3 of 10, and pages carried by renders and their
+  props read as random 3D objects). A picture the brief gives (a cut-out, a CAD view, its own
+  render) goes on the hero's stage. Else **stand-ins**: `photos.mjs pick --product-without-photos`
+  prints the search, and `photos.mjs search "<the thing in plain words>"` (a cargo bicycle, a desk
+  lamp, a robot arm), then its parts and the places it is used, finds licensed photographs. Keep a
+  frame only when it shows the same kind of thing whole or in use (a cargo bike for a cargo bike,
+  never a wheel for a bicycle), with no maker's name, logo or badge readable (crop it out or drop
+  the frame), no face passed off as a customer, and one light and grade across the set. Deal the
+  hero with `deal.mjs --type product --has photo` (hardware adds `--kind tech`). The page is the
+  **full product page**, never the short page: the plan gives each section one picture of its own
+  kind (the product whole, its use, parts close up, people with it, where it lives), the product
+  whole in three sections at most (rule 2), the hero first and the order card last, no other fixed
+  order. A colour the stand-ins cannot show stays a named swatch in the order card and goes on the
+  report's shot list (rule 5 waits for the client's photographs). Every frame is a stand-in: the
+  report lists each one with the photograph to shoot in its place (`photos.md`); nothing on the page
+  says so. **Hardware without photographs goes here too** (in testing: a robot arm's page with a
+  silk shader and an order form lost): stand-ins of the same kind of machine at work; CAD renders,
+  an exploded model or a film the brief names but does not supply each get their slot (section 1,
+  client slots). Never a `split` hero holding only an order form or the effect in place of the
+  product; the order card is its own section, last.
+- **A render only when the brief asks for 3D or a render** (a configurator, "show it in 3D", a
+  product that exists only as a model): one crafted studio render of this product with the objects
+  kit's product-render helper (`effects-objects.md`, Product renders): a short JSON spec of its own
+  parts, sized from the brief's figures, in its own materials and colours (never a kit spec shipped
+  as the client's), its posters made with `make-posters.mjs`, mounted on the `product` stage
+  (`deal.mjs --type product --has object`), each section a different view (`effects-objects.md`,
+  Views). Stills by default, live only when asked, at most one live context, on the page's flat
+  ground; props only where a headline's promise needs them (the four crates of "takes four
+  crates"), never a set added for mood. The heading and the text say what the thing is; no line
+  calls it a render, model or illustration (house rule 1). Never a drawn SVG, a model of loose
+  primitives the helper did not compose, mood stock, a photograph of another maker's product
+  passed off as the client's, or an object of another kind.
 Nav `nav-cards|nav-split|nav-mega` · footer `footer-columns|footer-dark` · close
 `close-photo|close-type|close-word` · rhythm `dark-band|brand-band` (one contrasting ground,
 rule 4) · buttons `arrow|solid|block|pill`.
@@ -319,7 +280,7 @@ product whole in more than three sections; one
 view twice; a promise not shown; a colour offered and never shown; a fact twice.
 
 **Service** (clinics, firms, agencies, studios, trades). nav, hero, services-list (each with one line
-and a price from; a peek-list when each service has its own photograph), work (a grid of 3 to 6
+and a price from when the brief gives one; a peek-list when each service has its own photograph), work (a grid of 3 to 6
 project photographs, or photo-pair, one per case), steps, people-row, proof (a quote the brief
 gives), [pricing-two or a `rows` price list], [faq], booking-form with the address, footer.closing.
 Pictures: photographs of the work, the team at work and the rooms, one or two a screen; real icons
@@ -340,8 +301,9 @@ hairlines and one button style. Where a recipe and this section differ on a plac
 wins. Open these references first for the feel (never copy one): Daunt Books, Prufrock, Bourke
 Street Bakery, Gail's, Tartine, Bonanza (a still where Bonanza has film).
 
-**Never on a place:** an effect, WebGL, canvas, CSS gradient, grain, glass, print, scene, moment,
-loop, count, UI fragment or diagram; feature or plan cards, tabs, accordions, switches, logo rows,
+**Never on a place:** an effect, WebGL, canvas, CSS gradient, grain, glass, print, scene, a moment
+other than the one (two on a long page) `moments.mjs pick --page place` deals into its own section,
+a loop, count, UI fragment or diagram; feature or plan cards, tabs, accordions, switches, logo rows,
 timelines, fact strips (address or hours as labels), a calendar card, a map of a street the brief
 does not give; a rating, review, figure or quote the brief does not give; words on a photograph, a
 rounded or filtered photograph, a see-through or blurred nav; outline, pale, blurred or rotated
@@ -372,9 +334,11 @@ The nav is not a screen; `footer.closing` is one; a 2-screen section counts two.
   guesthouse shown as a type band scored 3.5). The `statement` hero on `.ground-brand` only when
   the library holds no frame of the region and no lead. Every frame is listed in the report as a
   stand-in to replace; nothing on the page says so. **The count decides, not the trade:** after
-  the words are repeated until `pick` answers "no new motif left", under 8 frames in all (the
-  client's own included) is the short page, whatever the trade (a bakery holds 4, a florist 3,
-  pottery or a restaurant none: examples, not a list); 8 to 12 is the compact page, 12 or more the full page.
+  the words are repeated until `pick` answers "no new motif left" and a live search
+  (`photos.mjs search --trade <trade>`, `photos.md`) has added the frames it finds that pass the
+  full-size look, under 8 frames in all (the client's own included) is the short page, whatever
+  the trade (the library holds a bakery 4, a florist 3, pottery or a restaurant none: examples,
+  not a list); 8 to 12 is the compact page, 12 or more the full page.
 
 These three names mean only these lengths everywhere in the skill.
 - **Photographs by section,** all distinct: hero 1; visit 1 (0 with a map); menu or prices 1; rooms
@@ -437,7 +401,8 @@ to 4.5 because every section was text beside one picture and nothing answered th
   (`motion.md`). Each section after the hero holds at least one such link.
 - **One main action a screen:** a transaction (Book a room, Order a cake) is the nav's button and
   the hero's, as on any page, and nowhere else but the booking or close and the phone bar. Get
-  directions is never repeated: the hero's one button and the phone bar's; the nav says "Visit"
+  directions is never repeated: the hero's one button and the phone bar's (and the nav's button on a desktop: two on a
+  screen at most, `action-repeat`); the nav says "Visit"
   as a word to `#visit`, the visit block adds no second button for it, and the footer gives the
   address linked to the map, never a button (in testing: Get directions in the bar, the hero and the
   footer read as clutter).
@@ -457,15 +422,19 @@ to 4.5 because every section was text beside one picture and nothing answered th
   room from the door, 6/6, the panel left. With the `address` type moment the h2 and the street
   set large run across the `.wrap` above the split (the photograph then 4:3) and the panel opens
   with the open-now line; else the panel's top line is the h2 "Visit", the open-now line
-  (`[data-open-now]`) at its right, never a 13px eyebrow. 16px below, two columns 24 apart: the address on two lines at
+  (`[data-open-now]`) at its right, never a 13px eyebrow; the open-now line only with hours the brief gives (assumed
+  hours carry `data-assumed` and no such line, `copy.md`). 16px below, two columns 24 apart: the address on two lines at
   20/30, linked to the map search, the phone as a `tel:` link only when the brief gives one, then
-  one secondary button: "Get directions" when the main action is something else, "Call" only when
+  one secondary button: "Get directions" when the main action is something else and the brief gives the street ("See
+  the area" with a district only; no map link with only a town), "Call" only when
   the brief gives a phone, else none; and
   the week's hours (days left, times right in tabular figures, one line per day or range, one size;
   a holiday change as one line above). Under both, at most two 44px rows: access, a florist's
   delivery (area, price, cut-off), a guesthouse's check-in and check-out, a bike shop's repair
   turnaround, or "By appointment" for a studio. At 390 the panel first (24px padding, address
-  18/28), then the photograph at 342. Hours, address and directions are never only in the footer.
+  18/28), then the photograph at 342, which grows from its ratio to 4:5 at most into what the
+  panel leaves of the screen (system.css), so the screen ends in the photograph, not an empty band:
+  keep it a `.pl-photo`, the last child of the split. Hours, address and directions are never only in the footer.
 - **Map** only when the brief gives the street: `fx-map` baked still (`effects-creative.md`) in the
   photograph's frame, the pin on the street line; never an embed, a contour or a dot pattern.
 - **The offer** opens with a head row: the h2 on the left line, one line, 40 characters at most
@@ -522,7 +491,9 @@ to 4.5 because every section was text beside one picture and nothing answered th
   `footer-columns` (Visit, Contact as given, the nav's words, delivery or check-in or the
   newsletter; the legal row).
 - **Phone bar** (`nav.actionbar`, required): the order or booking as one full-width button; without
-  either, Get directions (primary) and Call (secondary, only with a phone the brief gives).
+  either, Get directions (primary; "See the area" when the brief gives no street) and Call (secondary, only with a
+  phone the brief gives). system.js keeps it off the phone's first screen until the hero's button has scrolled away,
+  and away from any screen that already shows one of its actions (`system.md`, Nav; `copy.md` rule 5).
 - **Notice line** (a florist's delivery cut-off, changed or holiday hours): one still 14px line with
   a number above the h1 (`layout-v4.md`), repeated where the fact belongs; never rotating.
 - **Splits** 6/6, text left, top-aligned, never mirrored; on a phone the text first.
@@ -549,26 +520,37 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
 
 ### Look
 
-- **Grounds:** the page ground from the place's walls, paper or shopfront: warm off-white by default
-  (`#F7F3EC`; white for a shop that sells mostly online), the surface one step darker (`#EDE6DA`),
-  ink `#2A2622`, muted `#665E55` (5.8:1 on the ground), hairline `#DAD3C8`; then
-  `start.mjs brand --bg "#F7F3EC" --surface "#EDE6DA" --ink "#2A2622" --muted "#665E55" --accent "#<hex>" --type <pairing>` (colours quoted: a bare `#` starts a shell comment).
-  One full surface band at most; one brand band (`backgrounds.md`); no dark section except that
-  band (the nav bar may take the dark ink). Flat colour only (`backgrounds.md`).
-- **Accent:** one, from the place (the shopfront paint, the tiles, a bag label) on the primary
-  button, the focus ring and the `colour-band` close; darken it in steps until its label passes
-  4.5:1 and it passes 3:1 on both grounds.
-- **Type:** a pairing from `start.mjs deal --page place`, display 400, text 400 and 500: a serif head
-  with a plain sans for a bakery, roaster, guesthouse or bookshop; one plain sans in two weights for
-  a shop, bike shop, florist or studio; a soft sans for a cafe. Sizes in `layout-v4.md` section 5.
+- **Palette, dealt by trade:** `start.mjs deal --page place --trade <trade>` deals three palettes
+  made for the trade (`library/palettes.json`, `trades`: a cafe, a bakery, a guesthouse, a yoga
+  studio and a bike shop each have their own), away from the last builds, so two cafes never share
+  a ground and an accent. Only grounds that fit a place come (light, low saturation: the `--g-main`
+  rule in `backgrounds.md`). Take the first, then `start.mjs css --page place --palette <id> --type
+  <pairing>`; the next only when the first clashes with the client's own logo or photographs.
+  Plan line 2 names it with one sentence on why it fits the trade, from what the palette answers
+  in it ("flour-terracotta: a flour-white ground and the terracotta of a bread oven's tiles"),
+  never a fact the brief does not give. The client's own colours (a painted shopfront, a logo, a
+  bag label the brief gives) replace the deal: `start.mjs brand --bg "#.." --ink "#.." --accent
+  "#.." --type <pairing>`, the ground from its walls, paper or shopfront (colours quoted: a bare `#`
+  starts a shell comment).
+- **Grounds:** the palette's ground and surface, one full surface band at most; one brand band
+  (`backgrounds.md`); no dark section except that band (the nav bar may take the dark ink). Flat
+  colour only (`backgrounds.md`).
+- **Accent:** the palette's one accent on the primary button, the focus ring and the `colour-band`
+  close, as `start.mjs` prints it (`--p-action` and its label). A client's own colour through
+  `brand`: darken it in steps until its label passes 4.5:1 and it passes 3:1 on both grounds.
+- **Type:** the first pairing `start.mjs deal --page place --trade <trade>` prints (it puts the
+  trade's group first), display 400, text 400 and 500: a serif head with a plain sans for a bakery,
+  restaurant or guesthouse; one plain sans in two weights for a shop, bike shop, florist or studio;
+  a soft sans for a cafe or a yoga studio. Sizes in `layout-v4.md` section 5.
 - **Motion:** the hover layer only (`motion.md`), and it must show: the nav words and links draw
   their underline, a linked photograph zooms 1.03 inside its frame while its card lifts 2px,
-  buttons step and press, arrows move 3px. Nothing moves by itself, on load or on scroll.
+  buttons step and press, arrows move 3px. On load the hero enters once (`motion.md`); on scroll only
+  the dealt moment's own section moves (`moments.md`); nothing else moves by itself.
 
 ### The short page (under 8 photographs)
 
 Under 8 usable, whatever the trade (the count in Plan and length): three screens, 2,700px at most at 1440 (the tablet
-runs longer, below): hero, one `--h: 1` section holding the
+runs longer, below; four with no photograph, Its one moment below): hero, one `--h: 1` section holding the
 visit and the offer, footer.closing. With one or two good photographs, the best is the hero's and
 the other is the section's, in one row with the groups (With its photograph, below). With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
 h1, the sub-line, the inverted button) and the section has no picture on purpose (the one
@@ -597,7 +579,14 @@ exception to "two picture-less sections are never neighbours").
 - **Re-dealt without pictures** (section 2): `nav-split` with no panel, the close as the head row
   of `close-word` without the name. Either the brand band (the close on `colour-band`) or the name
   set wide in the footer, not both.
-- **What the deal drops.** The page has no place section, no second offer and no room for a moment:
+- **Its one moment** (the gate holds `moment-none` on every page). With a photograph in the section,
+  it is `picture-develops` on that photograph: `data-moment="picture-develops"` on its
+  `<figure>` (the moment wants half the wrap or more: two groups and the `span-6` photograph), dealt with `moments.mjs pick --page place --count 1 --fits section --photo`, and dealt
+  again with `--exclude photo-chapters` when it gives `photo-chapters` (three or four screens of its
+  own, past the short page). With no photograph, add one statement section of one screen
+  (`--h: 1`) after the hero for `word-highlight` (`--fits statement`): one statement of 12 to 40
+  words from the brief, so the page is four screens, 3,600px at 1440.
+- **What the deal drops.** The page has no place section and no second offer:
   of the printed deal build the nav, footer, rhythm (`space`), buttons, mark and the offer's
   groups, and skip the place's composition, the type moment and the rooms layout (the `address`
   moment is not built; the visit block's three columns are the address). Write "not used" beside
@@ -624,9 +613,8 @@ exception to "two picture-less sections are never neighbours").
 
 No mood stock, code ground, drawing, empty box or note. The report lists the shots to take
 (`photos.md`). At 8 good photographs it grows to the compact page, at 12 to the full page. A place
-with no photographs of its own takes the draft path first (Plan and length); the short page is for
-a trade the library cannot fill (`photos.mjs` names no trade for it: pottery, a restaurant, a salon)
-or whose frames, counted as in Plan and length, total under 8.
+with no photographs of its own takes the draft path and a live search first (Plan and length); the
+short page is for a place whose frames, counted as in Plan and length, total under 8.
 
 ## 5. Visuals
 

@@ -39,7 +39,9 @@ Motion: `assets/ui/ui.js`. Objects instead of photographs: `assets/ui/_lab/objec
   is 16/24 in that ink: points, the line under a stat, plan lines and lists, a quote's name and role, a
   result's bar labels. Muted small text is for labels only (a price's "/ month", a section tag).
   `.card--row` holds the lines at 2 from 1024px so titles and panels line up across a row.
-- 32px from the last line to the panel. One `--p-h` per card group (page CSS).
+- 32px from the last line to the panel. One `--p-h` per card group (page CSS), and a phone value beside it when
+  the group's tiles stack into a two-screen section (`@media (max-width: 639px) { #features .panel { --p-h: 180px } }`
+  holds four tiles of two lines each in two phone screens).
 
 ## Two levels, never three
 

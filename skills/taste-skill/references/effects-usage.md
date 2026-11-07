@@ -3,7 +3,8 @@
 Who gets effects, how many, how they are dealt and where they sit. An effect is anything a shader,
 canvas, WebGL, a print pass or a scroll drive makes: effect grounds (`data-fx`, `assets/effects`),
 the WebGL creative parts (`effects-creative.md`), objects and prints (`effects-objects.md`), big
-scenes (`scenes.md`), moments (`moments.md`), a film or 3D hero and timed loops. `cards.md` wins on
+scenes (`scenes.md`), the tech moments (`moments.md`; the photo- and type-led ones every kind deals
+are not effects), a film or 3D hero and timed loops. `cards.md` wins on
 any card detail; `motion.md` holds every timing.
 
 ## The gate (house rule 8)
@@ -16,21 +17,24 @@ On other, photographs, type and flat colour carry the page. Banned there: canvas
 video, any CSS gradient (grounds, panels, glows, scrims), SVG pattern or texture grounds,
 `backdrop-filter` (the nav too), `filter`, `mix-blend-mode`, `mask-image`, glass, grain, halftone,
 dither, duotone, print, `[data-fx]`, `[data-print]`, `[data-scene]`, `[data-big-scene]`,
-`[data-moment]`, `[data-ui-loop]`, `[data-m-loop]`, `[data-m-count]`, SVG animation, GIFs, Lottie, a
-custom cursor and any scroll or animation library. Allowed: `fx-map` baked still, `fx-photo` as a
-plain photograph, real icons, a still diagram (not on a place), and on a physical product with no
-photographs its own product render (`[data-product]`, `effects-objects.md`): the product's
+`[data-ui-loop]`, `[data-m-loop]`, `[data-m-count]`, SVG animation, GIFs, Lottie, a
+custom cursor and any scroll or animation library. Allowed: the hero's entrance and the one or two
+dealt photo- or type-led moments (`photo-chapters`, `pinned-chapters`, `picture-develops` in its
+film look, `word-highlight`: `moments.md`), `fx-map` baked still, `fx-photo` as a
+plain photograph, real icons, a still diagram (not on a place), and on a physical product whose
+brief asks for 3D its own product render (`[data-product]`, `effects-objects.md`): the product's
 picture, not an effect: stills by default, live only when asked (`data-product-mode="live"`), at
-most one live context, on the flat ground, its poster beneath.
+most one live context, on the flat ground, its poster beneath. Without that ask a product with no
+photographs is shown in stand-in photographs (`photos.md`).
 
 ## What each kind gets
 
 | | tech | product, service (other) | place |
 |---|---|---|---|
-| Lead picture | the client's UI (hardware: its photographs or render, else its product render, never an effect or an order form alone; a game: its name and its art, else its key art rendered with the product-render helper, an effect at most behind it) | its photographs; a product without them: its product render | its photographs (a remote place: its region's landscape) |
+| Lead picture | the client's UI (hardware: its photographs or CAD render, else stand-in photographs of its kind, never an effect or an order form alone; a game: its name and its art, else its name over a stand-in photograph of its setting; a render only when the brief asks for 3D) | its photographs; a product without them: stand-in photographs of its kind (a render only when the brief asks for 3D) | its photographs (a remote place: its region's landscape) |
 | The one effect | a live ground, a WebGL part, an object or a big scene | none | none |
 | Card panel grounds | one card group, still, from the effect's family; with a big scene the lit ground (`data-ground`), no `data-fx` | the client's photograph | none |
-| Moments | up to 2 in sections, at most 1 in the hero | none | none |
+| Moments | 1 or 2 a page, two at most in all: in sections, one of them may sit in the hero | 1 or 2 in sections, photo- or type-led (`moments.md`) | 1 or 2 in sections, photo- or type-led (`moments.md`) |
 | Big scene | 0 or 1 (it is the effect) | none | none |
 | Diagram cards | 0 to 2, pulsing | 0 or 1, still | none |
 | Loops | one timed loop, one per card group | none | none |
@@ -39,12 +43,13 @@ most one live context, on the flat ground, its poster beneath.
 **The subject before the effect** (in testing: a robot arm shown as a silk shader and an order form,
 and an unnamed game shown as an abstract effect, both lost to pages that showed the thing). An
 effect never stands where the product, the device or the game's world should be. Hardware with no
-photographs or client renders, and a game with no art files, take a product render
-(`effects-objects.md`, Product renders) as their picture: the hardware itself, the game's hero
-object or a scene of its own objects, whole on the stage and full bleed in the world section. The
-render is the picture, not the effect: the page's one effect may sit behind it as the stage's
-ground (every render placement is transparent over its frame), counts as the beat and shares the
-four contexts with it; it never replaces it and never sits beside it as a second focal visual.
+photographs or client renders takes stand-in photographs of the same kind of machine at work, and
+a game with no art files its name set large over stand-in photographs of its setting (`photos.md`,
+Live search; `sections.md`, Product and Gaming), full bleed in the world section. When the brief
+asks for 3D, a product render (`effects-objects.md`, Product renders) is the picture instead, not
+the effect: the page's one effect may sit behind it as the stage's ground (every render placement
+is transparent over its frame), counts as the beat and shares the four contexts with it; it never
+replaces the picture and never sits beside it as a second focal visual.
 
 Every visual that is not the effect, a card ground, a moment, the scene or a product render is a
 real UI capture or a real photograph. A photograph is never filtered, printed, dithered or graded on any page.
@@ -106,7 +111,7 @@ fragment, a card group), add the patterns and prints to `--exclude`; `<NOUI>` is
 
 ## Deal the moments and the scene
 
-**Moments** (0 to 2): dealt with `moments.mjs pick --page <kind>`, the excludes and the hero rule
+**Moments** (1 or 2, on every kind): dealt with `moments.mjs pick --page <kind>`, the excludes and the hero rule
 exactly as `moments.md` (Deal them) says; pass the scene and the effect so the WebGL total stays
 within four. Never a moment in the scene's section or beside it.
 
