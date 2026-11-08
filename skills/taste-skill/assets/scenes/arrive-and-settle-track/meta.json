@@ -1,0 +1,70 @@
+{
+  "id": "arrive-and-settle-track",
+  "name": "Arrive and settle on a sideways track",
+  "family": "horizontal-travel",
+  "classic": 1,
+  "look": "A held row slides sideways with the scroll and each item's height and tilt come from where it is on screen, so the letters of one giant closing line enter scattered at the right edge, swoop through their line and settle by the middle (the letters already on screen when the section arrives swoop within under half the letter size, so the line reads at once); then the camera pulls back until the whole line fits, ending on a calm frame with the line whole and a button. Its default is the page's last word and its action; the stair preset makes it a staircase of testimonials and the rise preset a short track of projects.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "No pin and no sideways travel: the line stands stacked as in the finished composition, and once half of it is on screen its letters swoop onto their lines in reading order on a clock of 0.9s, never with the scroll, so the line is whole wherever the reader stops; the support line and button rise in after them; while the line is still wholly below the screen they all wait at their place; cards rise 16vh each.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "At the end of the page, as the call to action before the footer. With a preset it can carry the testimonials (stair, real quotes only) or the work (rise) instead. A quiet section comes before it.",
+  "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action.",
+  "options": "preset 'type' | 'stair' | 'rise' (the data-settle attribute); speed 0.7-1.3, px of sideways travel per px of scroll (1 type, 1 stair, 1.2 rise; the hold is measured from it, 1-4 screens); rest 0.2-0.6 screens of still end frame (0.2); maxHold 1 type, 3 stair, 2.5 rise: a longer line swoops faster instead of holding longer; amp 0.6-1.5 letter offset in letter heights (1.5; the letters on screen when the section arrives take at most 0.45 of the font size, so the page measured from the top reads one line); tilt 0-20 degrees (18; cards 0); lift 20-60 vh card offset (36 stair, 60 rise); curve 'swoop' | 'calm' | 'linear' (swoop type, linear stair, calm rise); settle 0.30-0.60 share of the width by which an item has settled (0.45, 0.30, 0.50); enter 1.00-1.25 where the move begins (1.04, 1.20, 1.20); inset px of a fixed header to keep the letters clear of (0); scrub true with Lenis, else 0.5.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/arrive-and-settle-track/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"arrive-and-settle-track\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

@@ -12,6 +12,13 @@
     "tech",
     "gaming"
   ],
+  "tones": [
+    "tech",
+    "editorial",
+    "playful",
+    "product"
+  ],
+  "intensity": "lively",
   "trigger": "scroll",
   "hold": 1,
   "restH": 1,

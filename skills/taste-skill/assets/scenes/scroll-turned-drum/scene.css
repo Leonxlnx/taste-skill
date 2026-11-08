@@ -1,0 +1,444 @@
+/* assets/scenes/scroll-turned-drum/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / scroll-turned-drum.css — a list of names on a scroll-turned drum.
+   Default (no .is-live: no script, a failed CDN, reduced motion, a phone set to 'rest'): the finished
+   composition, a centred statement over the list with every name in full ink. Names with details read like
+   a timetable (names end and details start on the centre line); names with pictures form an index of
+   captioned photographs.
+   Under .scene.is-live: the held stage, the names on a 3D drum, the count and detail on the front line, and
+   the picture reel when there is one. The script picks a layout per screen in [data-layout]:
+   side (count and detail on the drum face beside the front name) | bottom (on a line at the foot) |
+   reel (names left, the picture drum on the right half running off the edge, the caption in a notch at
+   the front picture's foot) | stack (a full-width picture window above the names, phones and portrait
+   screens). Without the script, pictures are keyed on the <img>.
+   Page tokens: --ground, --ink, --accent (count number, accent highlight), --font-display.
+   Weights follow the page: --display-weight (the title, the names and the closing line; 500 and 650
+   here when the page sets none), --strong-weight (the button; 600 here when the page sets none) and
+   --text-weight (the meta line and the captions; 400 and 500 here when the page sets none). A weight
+   the page has not loaded is never faked: the nearest loaded one shows. */
+
+[data-big-scene="scroll-turned-drum"] { font-synthesis-weight: none; }
+
+/* What the script changes every frame: the drums' turn, each face's opacity, each caption's lit state. Not
+   inherited, so writing one restyles that one element and not everything inside it. */
+@property --drum-turn { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --drum-o { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --drum-lit { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --drum-cap { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --drum-no { syntax: '<number>'; inherits: false; initial-value: 1; }
+
+[data-big-scene="scroll-turned-drum"] {
+  --drum-ground: var(--ground, #f3f2ee);
+  --drum-ink: var(--ink, #121212);
+  --drum-accent: var(--accent, var(--drum-ink));
+  --drum-gutter: clamp(16px, 3.9vw, 56px);
+  background: var(--drum-ground);
+  color: var(--drum-ink);
+}
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="scroll-turned-drum"]:not(.is-live) > .scene-stage { padding: 14vh 16px; }
+
+[data-big-scene="scroll-turned-drum"] .drum-head {
+  margin: 0 auto 56px;
+  text-align: center;
+}
+[data-big-scene="scroll-turned-drum"] .drum-title {
+  max-width: 22ch;
+  margin: 0 auto;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  font-size: clamp(28px, 4vw, 64px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+[data-big-scene="scroll-turned-drum"] .drum {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+[data-big-scene="scroll-turned-drum"] .drum-item,
+[data-big-scene="scroll-turned-drum"] .drum-measure-name {
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 650);
+  letter-spacing: -0.02em;
+  font-kerning: normal;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item {
+  font-size: clamp(30px, 3.4vw, 52px);
+  line-height: 1.12;
+  padding-block: 0.1em;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-name {
+  display: inline-block;
+  max-width: 100%;
+  text-wrap: balance;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-meta {
+  display: inline-block;
+  margin-left: 0.7em;
+  font-size: clamp(15px, 1.15vw, 18px);
+  font-weight: var(--text-weight, 400);
+  letter-spacing: 0;
+  color: color-mix(in srgb, var(--drum-ink) 66%, transparent);
+}
+/* with details, the list reads like a timetable: names end and details start on the centre line */
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(.drum-meta):not(:has(img)) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.4em;
+  align-items: baseline;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(.drum-meta):not(:has(img)) .drum-name { justify-self: end; text-align: right; }
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(.drum-meta):not(:has(img)) .drum-meta { justify-self: start; margin-left: 0; text-align: left; }
+
+/* with pictures, an index of captioned photographs */
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum:has(.drum-item img) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 156px), 1fr));
+  gap: 36px 16px;
+  max-width: 1360px;
+  text-align: left;
+}
+@media (min-width: 768px) {
+  [data-big-scene="scroll-turned-drum"]:not(.is-live) .drum:has(.drum-item img) { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 48px 24px; padding-inline: clamp(0px, 2vw, 40px); }
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(img) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  font-size: clamp(22px, 2.1vw, 32px);
+  line-height: 1.1;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(img) .drum-name { text-align: left; }
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item:has(img) .drum-meta { margin: 0; }
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-item img {
+  order: -1;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+/* the closing: a line and a proper button (a lone link is set as the button) */
+[data-big-scene="scroll-turned-drum"] .drum-close-line {
+  max-width: 22ch;
+  margin: 0 0 28px;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  font-size: clamp(26px, 2.8vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+[data-big-scene="scroll-turned-drum"] a.drum-close,
+[data-big-scene="scroll-turned-drum"] .drum-button {
+  display: inline-block;
+  padding: 18px 28px;
+  background: var(--drum-ink);
+  color: var(--drum-ground);
+  font-size: clamp(17px, 1.3vw, 20px);
+  font-weight: var(--strong-weight, 600);
+  line-height: 1.2;
+  text-decoration: none;
+}
+[data-big-scene="scroll-turned-drum"] a.drum-close:hover,
+[data-big-scene="scroll-turned-drum"] .drum-button:hover { background: color-mix(in srgb, var(--drum-ink) 86%, var(--drum-ground)); }
+[data-big-scene="scroll-turned-drum"] a.drum-close:focus-visible,
+[data-big-scene="scroll-turned-drum"] .drum-button:focus-visible { outline: 2px solid var(--drum-ink); outline-offset: 4px; }
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-close {
+  display: block;
+  width: fit-content;
+  margin: 72px auto 0;
+  text-align: center;
+}
+[data-big-scene="scroll-turned-drum"]:not(.is-live) .drum-close-line { margin-inline: auto; }
+
+/* the captions, the line at the foot, the picture reel and the ruler exist only for the live drum */
+[data-big-scene="scroll-turned-drum"] .drum-cap,
+[data-big-scene="scroll-turned-drum"] .drum-count,
+[data-big-scene="scroll-turned-drum"] .drum-detail,
+[data-big-scene="scroll-turned-drum"] .drum-pics { display: none; }
+[data-big-scene="scroll-turned-drum"] .drum-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+[data-big-scene="scroll-turned-drum"] .drum-measure > span {
+  display: block;
+  width: max-content;
+  font-size: 100px;
+  line-height: 1;
+  white-space: nowrap;
+}
+[data-big-scene="scroll-turned-drum"] .drum-measure-cap { font-family: var(--font-display, inherit); font-weight: var(--text-weight, 500); font-variant-numeric: tabular-nums; }
+
+/* ---------- the live drum ---------- */
+
+.scene.is-live[data-big-scene="scroll-turned-drum"] > .scene-stage {
+  background: var(--drum-ground);
+  /* The shared stage writes the scroll progress (--p) on the section on every frame. Nothing in this scene
+     reads it (the script writes every moving value itself), and a custom property that changes restyles
+     every element that inherits it, so it stops here: a frame restyles only what moved. */
+  --p: initial;
+}
+
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-head {
+  position: absolute;
+  top: 15svh;
+  left: var(--drum-gutter);
+  right: var(--drum-gutter);
+  margin: 0 auto;
+  z-index: 3;
+}
+/* reel: the statement, the names and the closing share one centred column left of the pictures */
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-head { right: auto; width: var(--drum-names-w, 46vw); margin: 0; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-title { max-width: min(20ch, var(--drum-names-w, 50vw)); }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="stack"] .drum-head { top: 4svh; }
+
+/* perspective lives here, not on the sticky stage (Safari flickers otherwise) */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-view,
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-pics {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-view {
+  perspective: var(--drum-persp, 1350px);
+  perspective-origin: var(--drum-ox, 50%) var(--drum-y, 50%);
+}
+/* the names' layer never lies over the pictures (a page checker looking for what is on top would find the
+   names' empty box there, not the picture): beside the pictures it ends where the picture drum starts, and
+   over the phone's window the window is drawn on top (it is clipped to the window, so it never covers a name) */
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-view { right: auto; width: calc(var(--drum-names-w, 46vw) + 2 * var(--drum-gutter)); }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="stack"] .drum-pics { z-index: 1; }
+
+/* the drum sits back by its radius so the front face lands on z = 0 and renders 1:1, crisp. Its centre is
+   the front line (--drum-y). Nothing on .drum may flatten it: no opacity, filter, clip-path, mask or overflow. */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--drum-y, 50svh) * 2);
+  margin: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--drum-r, 450px) * -1)) rotateX(var(--drum-turn, 0deg));
+  will-change: transform;
+}
+
+/* each name is centred on the drum axis by top/margin (not by translate), then set on the face; each face
+   fades on its own (--drum-o, written by the script; the face is its own layer, so a fade never repaints
+   the name); the drum itself never fades */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.1em;
+  margin-top: -0.55em;
+  padding: 0 var(--drum-gutter);
+  font-size: var(--drum-fs, 139px);
+  line-height: 1.1;
+  white-space: nowrap;
+  text-align: center;
+  transform: rotateX(calc(var(--i, 0) * var(--drum-step, 18deg) * -1)) translateZ(var(--drum-r, 450px));
+  opacity: var(--drum-o, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+/* a faint name carries part of its fade on its own text (--drum-no, 0.29 or 1), the rest on its face */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-name { opacity: var(--drum-no, 1); }
+/* reel: each name is centred in the column (the drum is seen from over the column's middle, so a name above
+   or below the front narrows evenly to both sides, never leaning like a slanted face) */
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-item { padding-right: calc(100% - var(--drum-names-w, 46vw) - var(--drum-gutter)); }
+/* the accent highlight: the front name turns to the accent while it is lit */
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-highlight="accent"] .drum-name {
+  color: color-mix(in srgb, var(--drum-accent) calc(var(--drum-lit, 0) * 100%), var(--drum-ink));
+}
+
+/* the detail and the picture stay in the list for screen readers; the front line shows them */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-meta,
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-item :is(img, picture) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* (never painted, so a face coming into view never decodes its hidden picture) */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-item :is(img, picture) { opacity: 0; }
+
+/* side: the count and detail sit on the face beside the front name, a fixed gap from the widest name,
+   on its baseline, and show only while it is lit, so they ride and change with it */
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="side"] .drum-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--drum-band, 56vw)) minmax(0, 1fr);
+  column-gap: var(--drum-gap, 32px);
+  align-items: baseline;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="side"] .drum-name { grid-column: 2; grid-row: 1; justify-self: center; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="side"] .drum-cap {
+  display: block;
+  grid-row: 1;
+  font-size: var(--drum-cap-fs, 22px);
+  font-weight: var(--text-weight, 500);
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  opacity: var(--drum-lit, 0);
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="side"] .drum-cap--count { grid-column: 1; justify-self: end; font-variant-numeric: tabular-nums; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="side"] .drum-cap--detail { grid-column: 3; justify-self: start; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-cap-now { color: var(--drum-accent); }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-cap-of { color: color-mix(in srgb, var(--drum-ink) 62%, transparent); }
+
+/* bottom and stack: one count and one detail on a line at the foot of the screen */
+.scene.is-live[data-big-scene="scroll-turned-drum"]:is([data-layout="bottom"], [data-layout="stack"]) .drum-count,
+.scene.is-live[data-big-scene="scroll-turned-drum"]:is([data-layout="bottom"], [data-layout="stack"]) .drum-detail {
+  display: block;
+  position: absolute;
+  bottom: 8svh;
+  z-index: 2;
+  max-width: calc(50% - 24px);
+  margin: 0;
+  font-size: var(--drum-cap-fs, 15px);
+  font-weight: var(--text-weight, 500);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-count { left: var(--drum-gutter); font-variant-numeric: tabular-nums; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-detail { right: var(--drum-gutter); text-align: right; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-count-now { color: var(--drum-accent); }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-count-of { color: color-mix(in srgb, var(--drum-ink) 62%, transparent); }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-roll {
+  display: inline-block;
+  vertical-align: top;
+  overflow: clip;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-count-now,
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-detail-text { display: inline-block; }
+
+/* the picture drum: its own drum, geared to the names (by default against them), with its own radius and
+   step; --pic-step carries the gear's sign */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-pics {
+  perspective: var(--pic-persp, 1800px);
+  perspective-origin: var(--pic-x, 75%) var(--pic-y, 50%);
+}
+/* stack: the drum turns behind a full-width window, one picture tall, that starts under the statement and
+   opens up to the top of the screen as the statement leaves (a clip-path the script writes) */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-reel {
+  position: absolute;
+  left: var(--pic-x, 75%);
+  top: var(--pic-y, 50%);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--pic-r, 600px) * -1)) rotateX(var(--drum-turn, 0deg));
+  will-change: transform;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card {
+  position: absolute;
+  left: calc(var(--pic-w, 480px) / -2);
+  top: calc(var(--pic-h, 320px) / -2);
+  width: var(--pic-w, 480px);
+  height: var(--pic-h, 320px);
+  margin: 0;
+  opacity: var(--drum-o, 0);
+  transform: rotateX(calc(var(--i, 0) * var(--pic-step, 36deg) * -1)) translateZ(var(--pic-r, 600px));
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* the picture slides inside its face as the face turns away (the script holds the slide to the part past
+     the edge of view); the face is a leaf of the drum, so clipping it flattens nothing */
+  overflow: clip;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card:not(.is-ready),
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card.is-away { visibility: hidden; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+/* reel: the count and detail sit in a notch cut from each picture's lower-left corner, in the ground colour,
+   so they read on a flat ground and their foot lines up with the picture's foot. The notch is part of its
+   picture and shows while the picture faces the front (--drum-cap, written by the script): it goes as its
+   picture turns away, so only the front picture carries one. */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card-cap { display: none; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-card-cap {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.7em 1.2em 0 0;
+  background: var(--drum-ground);
+  color: var(--drum-ink);
+  font-size: var(--drum-cap-fs, 22px);
+  font-weight: var(--text-weight, 500);
+  line-height: 1.15;
+  white-space: nowrap;
+  opacity: var(--drum-cap, 1);
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-card-count { font-variant-numeric: tabular-nums; }
+
+/* the two ends (picture drum beside the names): the first and the last picture again, shown while open and
+   while their picture sits still at the front (where, closed, they cover it exactly). The script opens each
+   to the full height of the screen with a clip-path, its picture easing up to its full size inside. */
+[data-big-scene="scroll-turned-drum"] .drum-end { display: none; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-end {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-end.is-on { visibility: visible; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-end-window { position: absolute; inset: 0; }
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-end-pic {
+  position: absolute;
+  display: block;
+  max-width: none;
+  margin: 0;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* the closing takes the lower half: centred under a centred drum, at the left edge beside the pictures */
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-close {
+  position: absolute;
+  top: 66svh;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  width: fit-content;
+  max-width: calc(100% - 2 * var(--drum-gutter));
+  margin: 0 auto;
+  text-align: center;
+}
+.scene.is-live[data-big-scene="scroll-turned-drum"] .drum-close-line { margin-inline: auto; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="reel"] .drum-close { left: var(--drum-gutter); right: auto; width: var(--drum-names-w, 46vw); max-width: none; margin: 0; }
+.scene.is-live[data-big-scene="scroll-turned-drum"][data-layout="stack"] .drum-close { top: calc(var(--drum-y, 66svh) + var(--drum-fs, 58px) * 0.95); }
+
+@media (max-width: 767px) {
+  .scene.is-live[data-big-scene="scroll-turned-drum"] .drum-head { top: 13svh; }
+  .scene.is-live[data-big-scene="scroll-turned-drum"] .drum-title { font-size: clamp(26px, 7.2vw, 32px); }
+  .scene.is-live[data-big-scene="scroll-turned-drum"] .drum-close-line { font-size: 24px; margin-bottom: 20px; }
+}

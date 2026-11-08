@@ -1,0 +1,78 @@
+{
+  "id": "twin-image-scanner",
+  "name": "Twin-image scanner",
+  "family": "mask-and-reveal",
+  "classic": 1,
+  "look": "Two registered pictures of one subject are stacked, its surface (a photograph on the light ground) and its structure (a line drawing on the dark ground), and a scan line rising with the scroll rewrites everything it passes, headline included, from the first into the second, then names the parts it found. It is the look under the hood: a machine, a product, a building, a before and after.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "product",
+    "editorial",
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.5,
+  "restH": 1,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same scan in one column, the words above and the subject below, the outro taking the headline's place at the end; hold 2. Under 360px wide or 640px tall, the finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.5,
+  "place": "In the middle, on the features or how it works: the moment the page shows what is inside. The section after it starts on the dark ground.",
+  "content": "Two pictures of the same thing on the same 4:5 canvas, 1600x2000 or more, registered pixel for pixel: a cut-out photograph or render of the client's own product, machine or building, and a line drawing of the same framing (two passes from one 3D camera, or traced over the photograph at 1:1; dashed lines for the hidden parts, the accent only on the core). With only a photograph shot on white, data-trace=\"lines\" draws the structure from its edges, which shows nothing hidden. A headline of 4-8 words on two lines, two tags of 1-2 words naming the two materials, 1-12 callouts of 3 words or fewer naming real parts (three read best, one marked is-focus), an outro of 18-30 words and a 2-3 word action. Without the subject's own photograph or render, redraw.",
+  "options": "hold 2.5 (1.5-3); phoneHold 2 (1.5-3); park 92 (80-96) where the line waits at the start, % of the stage from the top; phonePark 88; focus null (the is-focus callout's dot) or 30-70, the centre of the slow band; band 16 (12-24) its height; slow 0.56 (0.4-1) speed inside the band; scale 1.12 (1-1.16) the subject's start scale, phoneScale 1.08; wake 5 (0-10) the accent band under the line; detail 1 (0.6-1.6) trace sensitivity; scrub 0.6, true with Lenis; debug true, to check the registration. Framing on the section: --ts-zoom (1-2.4), --ts-fx, --ts-fy, --ts-phone-zoom, --ts-edge.",
+  "roles": [
+    "features",
+    "showcase",
+    "how-it-works",
+    "about"
+  ],
+  "position": "middle",
+  "sectors": [
+    "physical-product",
+    "ecommerce",
+    "architecture",
+    "real-estate",
+    "culture",
+    "education",
+    "dev-tool",
+    "consumer-app",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "product-photo"
+    ],
+    "content": "Two pictures of the same thing on the same 4:5 canvas, 1600x2000 or more, registered pixel for pixel: a cut-out photograph or render of the client's own product, machine or building, and a line drawing of the same framing (two passes from one 3D camera, or traced over the photograph at 1:1; dashed lines for the hidden parts, the accent only on the core). With only a photograph shot on white, data-trace=\"lines\" draws the structure from its edges, which shows nothing hidden. A headline of 4-8 words on two lines, two tags of 1-2 words naming the two materials, 1-12 callouts of 3 words or fewer naming real parts (three read best, one marked is-focus), an outro of 18-30 words and a 2-3 word action. Without the subject's own photograph or render, redraw."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/twin-image-scanner/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"twin-image-scanner\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

@@ -1,0 +1,77 @@
+{
+  "id": "lens-over-thumbnail-stream",
+  "name": "Lens over a thumbnail stream",
+  "family": "media-sequence",
+  "classic": 1,
+  "look": "A held strip of colour thumbnails grouped by project slides left under an unseen lens, and every picture near it swells and heaps into a collage of its project before sinking back, project one already open on the first frame, while a masthead caption relays letter by letter to name the project under the lens, with its year and category beside it. It turns a whole archive or portfolio into one scrubbable index with the detail view built in.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 3,
+  "restH": 3,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same index with a fixed lens in the centre and the strip doing the travel, six pictures a project; hold about 4.4 for eight projects.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, on the work, the archive or the catalogue, where a grid of project cards would otherwise go.",
+  "content": "Five or six projects of five to ten pictures each, 25-60 in all (five hold about three screens: set {\"hold\":3}, since the file's own clamp starts at four; each project more adds about 0.6): one landscape key picture a project (about 960px wide) and the rest in mixed orientations (480-640px on the long side), each with its real width and height, never cropped. They are the client's own: its work, its collection, its products. Per project a name of 1-2 words, a year (shown in the caption's meta row), a category of 2-3 words and a link; a section title of 2-3 words and a line with the range of years. With fewer than five projects, use a plain index instead.",
+  "options": "hold clamp(0.62 a project, 4, 7.5) (2-10); phoneHold clamp(0.55 a project, 3.5, 6.5) (2-10); phone 'same' (a fixed lens in the centre) | 'rest' (the contact sheet); sweep 0.5 (0-0.6) share of the width the line travels, 0 a fixed lens; bloom 10 (4-10) the key picture's height in bloom units; phoneBloom 9 (4-10); reach 0.45 (0.15-0.8; phone 0.7) the lens radius; gate 0.35 (0.15-1): 0.15 one collage at a time, 1 two always mix; push 0.35 (-0.55 dense to 0.35 roomy; phone -0.55); dwell 0.7 (0-0.9) how much the strip slows at each project; seed 0, reshuffles the collages; scrub 0.6, locked with Lenis.",
+  "roles": [
+    "work",
+    "gallery",
+    "list"
+  ],
+  "position": "middle",
+  "sectors": [
+    "studio-portfolio",
+    "personal-portfolio",
+    "agency",
+    "architecture",
+    "fashion",
+    "culture",
+    "music",
+    "ecommerce"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:25"
+    ],
+    "content": "Five or six projects of five to ten pictures each, 25-60 in all (five hold about three screens: set {\"hold\":3}, since the file's own clamp starts at four; each project more adds about 0.6): one landscape key picture a project (about 960px wide) and the rest in mixed orientations (480-640px on the long side), each with its real width and height, never cropped. They are the client's own: its work, its collection, its products. Per project a name of 1-2 words, a year (shown in the caption's meta row), a category of 2-3 words and a link; a section title of 2-3 words and a line with the range of years. With fewer than five projects, use a plain index instead."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/lens-over-thumbnail-stream/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"lens-over-thumbnail-stream\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

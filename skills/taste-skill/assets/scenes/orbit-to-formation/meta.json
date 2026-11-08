@@ -1,0 +1,85 @@
+{
+  "id": "orbit-to-formation",
+  "name": "Orbit to formation",
+  "family": "grid-reassembly",
+  "classic": 1,
+  "look": "One set of square photographs rides a single invisible wheel that changes shape as the page scrolls: a huge arch turning over the opening statement, then a ring closing round one big figure, then a half-wheel at the edge of the screen beside a column of figures that light one by one. It is one continuous set piece for a team, a culture, a gallery or an archive, in place of three separate galleries.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "playful"
+  ],
+  "intensity": "bold",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 4,
+  "restH": 1,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same wheel with phone numbers: a tall ten-card ring, then the wheel sinks to the bottom edge instead of rolling aside and the figures rise out from behind it; hold 4.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, on the about, the gallery or the figures: the stretch that says who the people are or how long the place has been there. Hold 4, the lowest the scene file allows (it raises a lower hold to 4 and still defaults to 5): where the sheet gives less, set {\"hold\":4}. Not on the work: its cards are small, so the work is shown at size elsewhere.",
+  "content": "Twelve to sixteen distinct square photographs (14 by default; phones use the first ten), 560px or more, in one grade, the subject inside the central 60% so a tilted or upside-down card still reads. Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding). People, hands and studio moments only when they are the client's own; otherwise real pictures of its world (the place, its materials, its work in use: modern, well-lit photographs, never archive or documentary ones), never stand-ins for its team. A statement of 6-10 words that holds two lines (about 45 characters keeps the full size). One figure of 4 glyphs or fewer (a year, a count) with an optional second line of 3 words or fewer, and a caption of 12 words or fewer. Four rows of figures (2-6 work), each of 4 glyphs or fewer with a label of 4 words or fewer: real facts about the subject from the brief (a year, a height, a number of rooms or days), never invented business numbers, never a constant of the medium (25 frames a second) or a figure worked out from another on the list; count true only with such real figures.",
+  "options": "hold 4 (4-7); phoneHold 4 (3-6); scrub 0.6, locked with Lenis; radius 1 (0.7-1.6) the arch's radius as a share of the width, 0.7 steep, 1.6 flat; crest 0.24 (0.18-0.30) height of the arch's top card; phoneCrest 'auto' or 0.14-0.44; ring 0.46 (0.36-0.48) the ring's width, spilling past the frame from 0.44; stagger 0.2 (0-0.5) how far the cards peel off one after another; wind 'close' | 'spring'; tilt 1 (the faces follow the wheel) or 0.2-0.9 (the faces stay near upright); dim 0.4 (0.4-0.8) opacity of a figure row off the reading line; count false (true counts each figure up as it lights); phone 'same' | 'rest'; phoneCards 10 (6-14).",
+  "roles": [
+    "about",
+    "gallery",
+    "stats",
+    "intro",
+    "work"
+  ],
+  "position": "middle",
+  "sectors": [
+    "agency",
+    "studio-portfolio",
+    "personal-portfolio",
+    "ecommerce",
+    "physical-product",
+    "fashion",
+    "hospitality",
+    "restaurant",
+    "real-estate",
+    "architecture",
+    "event",
+    "health",
+    "education",
+    "nonprofit",
+    "culture",
+    "music",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:12"
+    ],
+    "content": "Twelve to sixteen distinct square photographs (14 by default; phones use the first ten), 560px or more, in one grade, the subject inside the central 60% so a tilted or upside-down card still reads. Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding). People, hands and studio moments only when they are the client's own; otherwise real pictures of its world (the place, its materials, its work in use: modern, well-lit photographs, never archive or documentary ones), never stand-ins for its team. A statement of 6-10 words that holds two lines (about 45 characters keeps the full size). One figure of 4 glyphs or fewer (a year, a count) with an optional second line of 3 words or fewer, and a caption of 12 words or fewer. Four rows of figures (2-6 work), each of 4 glyphs or fewer with a label of 4 words or fewer: real facts about the subject from the brief (a year, a height, a number of rooms or days), never invented business numbers, never a constant of the medium (25 frames a second) or a figure worked out from another on the list; count true only with such real figures."
+  },
+  "never": "Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding).",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/orbit-to-formation/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"orbit-to-formation\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

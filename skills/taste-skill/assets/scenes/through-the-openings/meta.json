@@ -1,0 +1,74 @@
+{
+  "id": "through-the-openings",
+  "name": "Through the openings",
+  "family": "camera-through-space",
+  "classic": 1,
+  "look": "Five to eight full-screen sheets of the page's own ground, each with one opening cut into it (round arches, square doorways or pointed arches, one family a page), stand at uneven depths on the camera's axis, alternating the ground and a slightly deeper tone of it. The visitor starts already in the nearest doorway: its jambs are outside the screen, its head frames the top with one line in display type above it, and through it two more openings show the next section's photograph. Deeper sheets wait hidden behind those and come out one by one in the tone of the sheet in front, so only two or three arches are ever on the screen, never a target of rings. The scrubbed scroll eases in, then accelerates: the arches pass faster and faster through the middle of the hold, the last one sweeps past the edges in a short burst, and by about 65% the photograph is the whole page while its headline sets in at the same display size. The change of section is an arrival through a doorway, never a cut.",
+  "fits": [
+    "between"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "editorial",
+    "warm"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.5,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same rush with four sheets: the nearest doorway's jambs just outside the screen, two tall doorways inside it and the portrait crop filling half the width from the first frame; the photograph is full-bleed by 65%; hold 1.2. The display line takes two rows; it and the headline leave and land on clocks, never half drawn where a phone stops. Reduced motion and no script: the line on the ground over the photograph, one screen high, with its headline; with reduced motion one sheet with one opening crossfades away as the photograph scrolls in.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "Between two sections: the hand-over from a quiet section on the page ground into a section that opens on one photograph of a place (a courtyard, a hall, a room, a valley), whose headline the scene carries. The section before ends on the ground, which the nearest sheet continues. Once per page.",
+  "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink.",
+  "options": "hold 1.5 (1-1.5); phoneHold 1.2 (0.9-1.5); layers 6 (5-8); phoneLayers 4 (3-6); shape 'arch' | 'door' | 'lancet'; width 1.1 (1-1.4) the nearest opening as a share of the width, so its jambs start outside the screen; phoneWidth 1.12; crown 0.27 (0.12-0.4) its crown's height, the display line stands above it; phoneCrown 0.25; legs 0.5 (0-3); phoneLegs 1.6; vp 0.6 / phoneVp 0.55 the vanishing point's height; near 0.64 and far 0.42 the second and third openings against the nearest at the first frame (phoneNear 0.7, phoneFar 0.5); arrive 0.65 (0.5-0.8) when the last opening has swept past; rush 2 (1.4-3) the power of the camera's ease-in; grow 0.14 how much nearer the photograph comes; scrub 0.5, true with Lenis; phone 'same' | 'rest'. Tokens: --tto-deep, --tto-display (the line and the headline), --tto-title-ink, --tto-title-top, --tto-focus.",
+  "roles": [
+    "intro",
+    "about",
+    "gallery",
+    "showcase",
+    "features"
+  ],
+  "position": "transition",
+  "sectors": [
+    "agency",
+    "studio-portfolio",
+    "hospitality",
+    "architecture",
+    "event",
+    "culture"
+  ],
+  "needs": {
+    "list": [
+      "pictures:1"
+    ],
+    "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/through-the-openings/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"through-the-openings\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

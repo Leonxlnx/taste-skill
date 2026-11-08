@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated": "2026-10-31T23:04:46.185Z",
+ "generated": "2026-11-08T16:08:46.915Z",
  "count": 25,
  "families": {
   "dither": 4,
@@ -30,6 +30,13 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "tech",
+    "playful"
+   ],
+   "intensity": "lively",
+   "webgl": 0,
+   "treatment": false,
    "params": {
     "cell": {
      "default": 12,
@@ -110,6 +117,14 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "tech",
+    "playful",
+    "product"
+   ],
+   "intensity": "bold",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "speed": {
      "default": 0.05,
@@ -191,6 +206,13 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "playful"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "speed": {
      "default": 0.4,
@@ -284,6 +306,14 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "tech",
+    "playful",
+    "product"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "scale": {
      "default": 5,
@@ -359,6 +389,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "editorial",
+    "product"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "levels": {
      "default": 24,
@@ -457,6 +495,13 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "playful"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "spacing": {
      "default": 14,
@@ -575,6 +620,12 @@
     "orb-sphere",
     "dot-terrain"
    ],
+   "tones": [
+    "tech"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "speed": {
      "default": 3.5,
@@ -681,6 +732,14 @@
    ],
    "random": false,
    "usesImg": true,
+   "tones": [
+    "warm",
+    "editorial",
+    "product"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": true,
    "params": {
     "tones": {
      "default": 3,
@@ -763,6 +822,13 @@
    "subjects": [
     "the one key object of a page: the prompt box or the featured plan"
    ],
+   "tones": [
+    "tech",
+    "playful"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "radius": {
      "default": 14,
@@ -849,6 +915,15 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "warm",
+    "editorial",
+    "playful",
+    "product"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": true,
    "params": {
     "edge": {
      "default": -1,
@@ -941,6 +1016,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "editorial",
+    "product",
+    "tech"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "ribWidth": {
      "default": 28,
@@ -1032,6 +1115,14 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "playful",
+    "tech",
+    "product"
+   ],
+   "intensity": "bold",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "originX": {
      "default": 0.3,
@@ -1130,6 +1221,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "product",
+    "playful"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "speed": {
      "default": 0.06,
@@ -1217,6 +1316,15 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": true,
    "params": {
     "speed": {
      "default": 0.5,
@@ -1303,6 +1411,12 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech"
+   ],
+   "intensity": "lively",
+   "webgl": 0,
+   "treatment": false,
    "params": {
     "cell": {
      "default": 48,
@@ -1394,6 +1508,15 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "editorial",
+    "playful",
+    "tech",
+    "product"
+   ],
+   "intensity": "lively",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "cell": {
      "default": 10,
@@ -1480,6 +1603,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "editorial",
+    "product",
+    "tech"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": true,
    "params": {
     "pitch": {
      "default": 6,
@@ -1585,6 +1716,13 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "tech",
+    "playful"
+   ],
+   "intensity": "bold",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "size": {
      "default": 0.36,
@@ -1676,6 +1814,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "product",
+    "editorial"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "horizon": {
      "default": 0.45,
@@ -1761,6 +1907,14 @@
     "dark"
    ],
    "focal": true,
+   "tones": [
+    "tech",
+    "playful",
+    "product"
+   ],
+   "intensity": "bold",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "splitX": {
      "default": 0.28,
@@ -1856,6 +2010,14 @@
    "subjects": [
     "the divider band (assets/components/fx-band), lines rising on the side away from the copy"
    ],
+   "tones": [
+    "tech",
+    "product",
+    "editorial"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "lines": {
      "default": 36,
@@ -1947,6 +2109,13 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "tech",
+    "product"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "cell": {
      "default": 16,
@@ -2027,6 +2196,14 @@
     "dark",
     "colour"
    ],
+   "tones": [
+    "product",
+    "editorial",
+    "tech"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "tone": {
      "default": 0,
@@ -2109,6 +2286,15 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech"
+   ],
+   "intensity": "quiet",
+   "webgl": 1,
+   "treatment": true,
    "params": {
     "speed": {
      "default": 0.5,
@@ -2200,6 +2386,14 @@
     "colour"
    ],
    "focal": true,
+   "tones": [
+    "product",
+    "tech",
+    "playful"
+   ],
+   "intensity": "bold",
+   "webgl": 1,
+   "treatment": false,
    "params": {
     "x": {
      "default": 0.5,

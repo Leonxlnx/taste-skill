@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haar, issue nine: nine stories from the sea fog</title>
+<meta name="description" content="Haar is a quarterly of writing and photographs from the North Sea coast. Issue nine is out now.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&display=swap">
+<link rel="preconnect" href="https://picsum.photos">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* One ground (newsprint grey), one ink, one accent (sea-rescue orange): the scene prints in the same
+     three. Ink on ground 16.4:1; ink on the accent 5.4:1. One family, Newsreader, display and text. */
+  :root {
+    --ground: #e8e8e3;
+    --ink: #161513;
+    --accent: #ff4a1f;
+    --on-accent: #161513;
+    --font-display: "Newsreader", Georgia, serif;
+    --font-text: "Newsreader", Georgia, serif;
+    --display-weight: 600;
+    --strong-weight: 600;
+    --text-weight: 400;
+    --gutter: max(16px, 4vw);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 400 19px/1.55 var(--font-text); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img { display: block; width: 100%; height: auto; }
+  h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight); }
+
+  /* the bar sits over the opener; the scene keeps its words clear of the dots (option "nav") */
+  .bar { position: absolute; z-index: 10; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 24px; min-height: 76px; padding: 14px var(--gutter); }
+  .bar__name { margin-right: auto; font: 600 30px/1 var(--font-display); letter-spacing: -0.02em; text-decoration: none; }
+  .bar nav { display: flex; gap: clamp(18px, 2.4vw, 36px); font-size: 18px; }
+  .bar nav a { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.22em; text-decoration-thickness: 0.07em; transition: text-decoration-color 180ms ease; }
+
+  .section { padding: clamp(96px, 16svh, 176px) var(--gutter) 0; }
+  .section h2 { margin: 0; font-size: clamp(36px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.02em; }
+
+  /* in this issue: the lead story large on the left, two more stacked on the right */
+  .inside__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 56px 24px; margin-top: clamp(40px, 6svh, 64px); }
+  .story h3 { margin: 22px 0 0; font-size: clamp(26px, 2.3vw, 34px); line-height: 1.08; letter-spacing: -0.01em; }
+  .story .by { margin: 10px 0 0; font-size: 17px; }
+  .story p:last-child { margin: 12px 0 0; max-width: 44ch; }
+  .story--lead { grid-column: 1 / 8; grid-row: 1 / 3; }
+  .story--lead h3 { font-size: clamp(30px, 3vw, 44px); }
+  .story--side { grid-column: 9 / 13; }
+  .story figure { margin: 0; overflow: clip; background: #cfcfca; }
+  .story--lead figure img { aspect-ratio: 16 / 10; object-fit: cover; }
+  .story--side figure img { aspect-ratio: 3 / 2; object-fit: cover; }
+
+  /* order: the cover on the left, the heading, price and details beside it */
+  .order { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px 24px; align-items: end; padding-bottom: clamp(96px, 16svh, 176px); }
+  .order__cover { grid-column: 1 / 7; margin: 0; overflow: clip; }
+  .order__cover img { aspect-ratio: 3 / 2; object-fit: cover; background: #cfcfca; }
+  .order__cover figcaption { margin-top: 12px; font-size: 17px; }
+  .order__body { grid-column: 8 / 13; padding-bottom: 36px; }
+  .order__body p { margin: 24px 0 0; max-width: 42ch; }
+  .order dl { display: grid; grid-template-columns: max-content 1fr; gap: 10px 28px; margin: 28px 0 0; }
+  .order dt { font-weight: 600; }
+  .order dd { margin: 0; }
+  .order__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 36px; }
+  .button { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; transition: transform 140ms var(--ease-out); }
+  .button:active { transform: scale(0.97); }
+  .link { text-decoration: underline; text-underline-offset: 0.22em; text-decoration-thickness: 0.07em; }
+
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 32px; padding: 28px var(--gutter) 36px; font-size: 17px; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .bar nav a:hover { text-decoration-color: currentColor; }
+    .link:hover { text-decoration-thickness: 0.12em; }
+  }
+
+  /* the quiet layer: each part of a section arrives once, in reading order; pictures settle from a slight
+     scale inside their frame as they fade up */
+  @media (prefers-reduced-motion: no-preference) {
+    .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out); transition-delay: var(--d, 0ms); }
+    .js [data-reveal].is-in { opacity: 1; transform: none; }
+    .js [data-open] { opacity: 0; transition: opacity 900ms var(--ease-out); transition-delay: var(--d, 0ms); }
+    .js [data-open] img { transform: scale(1.08); transition: transform 1500ms var(--ease-expo); transition-delay: var(--d, 0ms); }
+    .js [data-open].is-in { opacity: 1; }
+    .js [data-open].is-in img { transform: none; }
+  }
+
+  @media (max-width: 1023px) {
+    .order__cover { grid-column: 1 / 13; }
+    .order__body { grid-column: 1 / 11; padding-bottom: 0; }
+  }
+  @media (max-width: 767px) {
+    .bar { min-height: 64px; gap: 16px; padding: 12px var(--gutter); }
+    .bar__name { font-size: 26px; }
+    .bar nav { gap: 16px; font-size: 16px; }
+    .inside__grid, .order { display: block; }
+    .story + .story { margin-top: 56px; }
+    .order__body { margin-top: 40px; padding-bottom: 0; }
+    .order dl { grid-template-columns: 1fr; gap: 2px; }
+    .order dd { margin-bottom: 12px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="bar__name" href="#top">Haar</a>
+  <nav aria-label="Main">
+    <a href="#inside">This issue</a>
+    <a href="#order">Stockists</a>
+    <a href="#order">Subscribe</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="sc scene" data-big-scene="dither-field-opener" aria-label="Haar, issue nine"
+           data-big-scene-opts='{"mark": "9", "dot": 4, "speed": 1, "nav": ".bar a"}'>
+    <div class="scene-stage">
+      <div class="df-mark" aria-hidden="true">9</div>
+      <div class="df-copy">
+        <h1 class="df-title">Nine stories from the sea fog</h1>
+        <p class="df-text">Haar is a quarterly of writing and photographs from the North Sea coast, where a cold mist comes in off the water from April to July. Issue nine is out now.</p>
+        <a class="df-action" href="#order">Order issue nine</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section inside" id="inside" aria-labelledby="inside-title">
+    <h2 id="inside-title" data-reveal>In this issue</h2>
+    <div class="inside__grid">
+      <article class="story story--lead">
+        <figure data-open><img src="https://picsum.photos/id/457/1600/1000" width="1600" height="1000" decoding="async" alt="Faint ships on a pale, foggy sea with almost no horizon"></figure>
+        <div data-reveal style="--d:120ms">
+          <h3>The ships that wait</h3>
+          <p class="by">Morag Innes, photographs by Ewan Reid</p>
+          <p>Off Peterhead, tankers lie at anchor for days until the haar lifts. A week aboard one of them, waiting with the crew.</p>
+        </div>
+      </article>
+      <article class="story story--side">
+        <figure data-open style="--d:80ms"><img src="https://picsum.photos/id/47/1200/800" width="1200" height="800" decoding="async" alt="A long wooden pier over misty surf, in black and white"></figure>
+        <div data-reveal style="--d:180ms">
+          <h3>The pier at first light</h3>
+          <p class="by">Tom Aldous</p>
+          <p>The fog signal at the end of the pier still sounds every thirty seconds. The man who keeps it, and why.</p>
+        </div>
+      </article>
+      <article class="story story--side">
+        <figure data-open style="--d:140ms"><img src="https://picsum.photos/id/130/1200/810" width="1200" height="810" decoding="async" alt="A single gull gliding over a grey sea under pale cloud"></figure>
+        <div data-reveal style="--d:240ms">
+          <h3>What the gulls follow</h3>
+          <p class="by">Iona Grant</p>
+          <p>How seabirds find the harbour when nothing on the water can be seen.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section order" id="order" aria-labelledby="order-title">
+    <figure class="order__cover" data-open>
+      <img src="https://picsum.photos/id/552/1400/933" width="1400" height="933" decoding="async" alt="A small sailing boat on a calm sea below distant hills, in black and white">
+      <figcaption>On the cover: a yacht off Stonehaven in the June haar.</figcaption>
+    </figure>
+    <div class="order__body" data-reveal style="--d:120ms">
+      <h2 id="order-title">Order issue nine</h2>
+      <p>Printed in two colours on uncoated paper in Aberdeen, and posted the week it is ordered.</p>
+      <dl>
+        <dt>Issue nine</dt><dd>112 pages, £14 posted in the UK</dd>
+        <dt>A year</dt><dd>Four issues, £48</dd>
+        <dt>Stockists</dt><dd>Twelve independent shops on the east coast, from Wick to Whitby</dd>
+      </dl>
+      <div class="order__actions">
+        <a class="button" href="#order">Order for £14</a>
+        <a class="link" href="#order">Subscribe for a year</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Haar, a quarterly from the North Sea coast</span>
+  <span>Published in Aberdeen</span>
+</footer>
+
+<script type="module" src="../scenes.js"></script>
+<script>
+   
+  // the quiet layer: each part arrives once when it comes into view
+  (() => {
+    const els = document.querySelectorAll('[data-reveal], [data-open]');
+    if (!('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('is-in')); return; }
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
+    els.forEach((el) => io.observe(el));
+  })();
+</script>
+</body>
+</html>

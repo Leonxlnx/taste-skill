@@ -30,6 +30,25 @@
                              screen), or the next section shows on it.
   Elements inside a visual (cards, frames, panels, stages, UI fragments, a collage) are not page edges.
   data-edge-free on an element skips it; data-screen="free" on a section skips the screen rules.
+
+  window.lyFinish({ reveal, wide }) (async: it scrolls) - the finish checks, the faults the 2.5.2 test builds
+  shipped. Each finding: { rule, where, detail, fix, sev } (sev 'WARN' never blocks; no sev is a FAIL).
+    empty-band       the empty strip under a section's lowest content (text, picture, control, a box with its own
+                     ground) is over 25% of the section's height (FAIL), over 15% (WARN). A section that holds a
+                     pinned moment or a scene is left out: it holds its screens on purpose.
+    blank-screen     one screen of a section (its first, or its second when it is two screens tall) shows
+                     nothing, after the check scrolled to it and waited for what reveals there.
+    placeholder      a [data-placeholder] element, or an .example address or domain printed in the page's words.
+    moment-target    a [data-moment] root that lacks what its moment needs (picture-develops: one <img> as its
+                     direct child), so the moment does nothing or hides what it holds.
+    moment-hidden    a dealt moment that shows nothing once it is scrolled into view.
+    moment-idle      (WARN) a moment whose root the page left exactly as written after it came into view.
+    motion-visible   at 1280 and wider: no dealt moment, scene or effect starts within the first three screens.
+    reveal-none      the kit reveals sections (reveal: true) and this page has no revealed section.
+    subject-repeat   (WARN) different photographs with one data-subject in two sections or more (the same file
+                     twice is the checker's photo-repeat, which the gate holds as a FAIL).
+    number-repeat    (WARN) one UI number ("2,412 ms", "$48") printed in three sections or more.
+    heading-repeat   (WARN) two headings with the same words, or one holding the whole of the other.
 */
 window.lyCheck = function lyCheck(opts = {}) {
   const tol = opts.tol ?? 1.5;
@@ -266,4 +285,177 @@ window.lyCheck = function lyCheck(opts = {}) {
     sections: info.map(s => ({ where: name(s.el), top: Math.round(s.r.top), height: Math.round(s.r.bottom - s.r.top), content: Math.round(s.cBot - s.cTop), frame: s.frame })),
     findings: out,
   };
+};
+
+window.lyFinish = async function lyFinish(opts = {}) {
+  const vw = document.documentElement.clientWidth, vh = innerHeight, sy0 = scrollY;
+  const out = [], add = (rule, where, detail, fix, sev) => out.push(sev ? { rule, where, detail, fix, sev } : { rule, where, detail, fix });
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const go = async (y, ms) => { scrollTo(0, Math.max(0, y)); await wait(ms); };
+  const pct = x => Math.round(100 * x) + '%';
+  const secs = [...document.querySelectorAll('main > section, main > div.section')].filter(s => { const c = getComputedStyle(s); return c.display !== 'none' && s.getBoundingClientRect().height > 40; });
+  const secName = s => {
+    if (!s) return 'page';
+    if (s.id) return 'section#' + s.id;
+    const cls = typeof s.className === 'string' && s.className.trim() ? '.' + s.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+    return `section${cls} (section ${secs.indexOf(s) + 1})`;
+  };
+  const secOf = el => el.closest('main > section, main > div.section');
+  const opaque = el => { for (let e = el; e && e !== document.documentElement; e = e.parentElement) if (parseFloat(getComputedStyle(e).opacity) < 0.05) return false; return true; };
+  const ownText = e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+  const INK = 'h1, h2, h3, h4, h5, h6, p, li, dt, dd, blockquote, figcaption, img, video, canvas, svg, iframe, button, input, select, textarea, .btn, .card, .frame, .panel, .tile, table, hr, [role="img"]';
+  const filled = c => c.backgroundImage !== 'none' || !/rgba\([^)]*,\s*0\)$|transparent/.test(c.backgroundColor);
+  // the boxes that show in a section, clipped by every frame above them and by the section itself; seen: only what is
+  // not faded out (opacity) at this moment, else what takes its place (a piece waiting for its reveal still counts)
+  const inkOf = (sec, seen) => {
+    const sr = sec.getBoundingClientRect(), sa = sr.width * sr.height, list = [];
+    for (const e of sec.querySelectorAll('*')) {
+      if (e.closest('script, style, template, noscript')) continue;   // data-edge-free frees edges, its content still counts
+      const c = getComputedStyle(e);
+      if (c.display === 'none' || c.visibility === 'hidden') continue;
+      const r0 = e.getBoundingClientRect(); if (r0.width < 2 || r0.height < 2) continue;
+      if (!(e.matches(INK) || ownText(e) || (filled(c) && r0.width * r0.height < 0.9 * sa))) continue;
+      let t = r0.top, b = r0.bottom, l = r0.left, rr = r0.right;
+      for (let p = e.parentElement; p && p !== sec.parentElement; p = p.parentElement) {
+        const o = getComputedStyle(p); if (o.overflow === 'visible' && o.overflowX === 'visible' && o.overflowY === 'visible' && p !== sec) continue;
+        const q = p.getBoundingClientRect(); t = Math.max(t, q.top); b = Math.min(b, q.bottom); l = Math.max(l, q.left); rr = Math.min(rr, q.right);
+      }
+      t = Math.max(t, sr.top); b = Math.min(b, sr.bottom);
+      if (b - t < 2 || rr - l < 2 || rr <= 0 || l >= vw) continue;
+      if (seen && !opaque(e)) continue;
+      list.push({ e, top: t + scrollY, bottom: b + scrollY });
+    }
+    return list;
+  };
+  // a section that holds its screens on purpose: a scene, or a moment that pins (sticky) while it plays
+  const PINNED = new Set(['photo-chapters', 'pinned-chapters', 'closing-lift', 'giant-type-pass', 'iris-opens', 'line-carries-colour']);
+  const pins = s => !!(s.matches('[data-big-scene], [data-scene]') || s.querySelector('[data-big-scene], [data-scene]')
+    || [s, ...s.querySelectorAll('[data-moment]')].some(m => m.matches('[data-moment]') && (PINNED.has(m.dataset.moment) || getComputedStyle(m).position === 'sticky' || !!m.querySelector('.is-pinned, [data-pin]'))));
+  const ground = s => getComputedStyle(s).backgroundImage !== 'none';
+
+  /* empty-band and blank-screen, section by section */
+  for (const s of secs) {
+    const r = s.getBoundingClientRect(), top = r.top + scrollY, h = r.height, bot = top + h;
+    if (ground(s)) continue;   // a photograph or a drawn ground fills the section
+    const ink = inkOf(s, false), pinned = pins(s);
+    // the hero is judged by its own fold and fill checks (hero-fill, hero-fold): its air is designed per form
+    if (ink.length && !pinned && !s.matches('.hero')) {
+      // the empty strips: under the lowest content, and between two pieces of it (a split that space-between pulled
+      // apart: a 550px hole between the h2 and the cards on a phone); the strip above the first piece is the
+      // section's top padding under the header, never counted
+      const iv = ink.map(i => [Math.max(top, i.top), Math.min(bot, i.bottom)]).sort((x, y) => x[0] - y[0]);
+      let end = iv[0][1], gap = { px: 0 };
+      for (const [a, z] of iv.slice(1)) { if (a - end > gap.px) gap = { px: a - end, from: end, to: a }; end = Math.max(end, z); }
+      const band = bot - end, f = Math.max(band, gap.px) / h, inner = gap.px > band;
+      if (f > 0.15) add('empty-band', secName(s), inner
+        ? `a strip of ${Math.round(gap.px)}px (${pct(f)} of its ${Math.round(h)}px) between two pieces of its content is empty (y ${Math.round(gap.from - top)} to ${Math.round(gap.to - top)} in the section)`
+        : `the last ${Math.round(band)}px (${pct(f)} of its ${Math.round(h)}px) under its lowest content are empty`,
+      inner ? 'close the hole: keep the heading and what follows together (no justify-content: space-between across a tall section), or make the section a screen shorter (--h / --hm)'
+        : 'fill the section: let the picture or the card grow to the foot of the longer column (align-self: stretch), add the visual it lacks, or make the section a screen shorter (--h) and merge it with its neighbour', f > 0.25 ? undefined : 'WARN');
+    }
+    // its screens, one by one (a short last piece under 40% of a screen is padding). A pinned moment or a scene moves
+    // its content with the scroll, so its screens are read only on screen
+    const n = Math.max(1, Math.floor(h / vh + 0.6));
+    for (let k = 0; k < n && k < 4; k++) {
+      const a = top + k * vh, z = Math.min(bot, a + vh), need = Math.min(40, (z - a) * 0.08), nth = ['first', 'second', 'third', 'fourth'][k];
+      const over = list => list.filter(i => Math.min(i.bottom, z) - Math.max(i.top, a) >= need);
+      if (!pinned && !over(ink).length) { add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) holds nothing at all`, 'put the section\'s content back in that screen (a moment on the wrong element can hide it: see moment-target), or make the section one screen shorter'); continue; }
+      if (!pinned && over(inkOf(s, true)).length) continue;
+      await go(a, 900);   // what reveals there gets its time, then it is read again
+      const seen = inkOf(s, true).filter(i => i.bottom > scrollY + 2 && i.top < scrollY + vh - 2);
+      if (!(pinned ? seen : over(seen)).length) add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) shows nothing after 0.9 s on screen`, 'make what is in that screen show: a reveal or a moment that never ends hides it, or a moment sits on the wrong element (moment-target); data-still on the section keeps it standing');
+    }
+  }
+
+  /* placeholders */
+  for (const e of document.querySelectorAll('[data-placeholder]')) add('placeholder', `${secName(secOf(e))} ${e.tagName.toLowerCase()}[data-placeholder]`, 'a stand-in marked data-placeholder is on the page; every visitor sees its dashed outline', 'replace it with the real thing (the brief\'s address, the photograph), or take the element out; never ship data-placeholder');
+  {
+    const EX = /[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.example\b|\b[\w-]+\.example(?:\.\w+)?\b|\bexample\.(?:com|org|net)\b/i;
+    const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); const seen = new Set();
+    for (let t = tw.nextNode(); t; t = tw.nextNode()) {
+      const m = t.textContent.match(EX), p = t.parentElement;
+      if (!m || !p || p.closest('script, style, template, noscript, code, pre') || seen.has(m[0])) continue;
+      const c = getComputedStyle(p); if (c.display === 'none' || c.visibility === 'hidden' || p.getBoundingClientRect().width < 2) continue;
+      seen.add(m[0]);
+      add('placeholder', `${secName(secOf(p)) === 'page' ? (p.closest('footer') ? 'footer' : 'page') : secName(secOf(p))} "${m[0]}"`, `a stand-in address is printed on the page ("${m[0]}"): no visitor can use it`, 'never print the address: a button that names the action ("Email an order") whose mailto: is on .example, which the report lists (copy.md)');
+    }
+  }
+
+  /* the moments: what each needs on its root, and that each shows once it is on screen */
+  const NEEDS = {
+    'picture-develops': [el => !!el.querySelector(':scope > img') && el.querySelectorAll('img').length === 1, 'one <img> as its direct child, and no other picture', '<figure data-moment="picture-develops"><img src=... alt=...></figure> on the one photograph; three pictures want no moment, or each its own figure'],
+    'window-parallax': [el => el.querySelectorAll('img').length === 1, 'exactly one <img>', '<figure data-moment="window-parallax"><img ...></figure> on one photograph'],
+    'liquid-hover': [el => el.querySelectorAll('img').length === 1, 'exactly one <img>', '<figure data-moment="liquid-hover"><img ...></figure> on one photograph'],
+    'photo-chapters': [el => !!el.querySelector('.mo-ph__list') && [...el.querySelectorAll('.mo-ph__ch')].length >= 2 && [...el.querySelectorAll('.mo-ph__ch')].every(c => c.querySelector('.mo-ph__pic')), '.mo-ph__list with two or more .mo-ph__ch, each holding a .mo-ph__pic', 'copy the markup of assets/moments/photo-chapters/demo.html'],
+    'pinned-chapters': [el => !!el.querySelector('.mo-pc__visuals') && [...el.querySelectorAll('.mo-pc__step')].length >= 2 && [...el.querySelectorAll('.mo-pc__step')].every(st => st.querySelector('.mo-pc__visual')), '.mo-pc__visuals and two or more .mo-pc__step, each holding a .mo-pc__visual', 'copy the markup of assets/moments/pinned-chapters/demo.html'],
+    'closing-lift': [el => ['.mo-cl__sheet', '.mo-cl__under', '.mo-cl__img', '.mo-cl__band'].every(q => el.querySelector(q)), '.mo-cl__sheet, .mo-cl__under, .mo-cl__img and .mo-cl__band', 'copy the markup of assets/moments/closing-lift/demo.html'],
+    'counter-rolls': [el => el.matches('[data-count], .t-stat') || !!el.querySelector('[data-count], .t-stat'), 'a number marked data-count or .t-stat', 'mark each figure: <strong class="t-stat" data-count>48</strong>'],
+    'marquee-row': [el => { const t = el.querySelector('.mo-mq__track') || el.firstElementChild; return !!t && t.children.length >= 2; }, 'a .mo-mq__track with two or more items', 'copy the markup of assets/moments/marquee-row/demo.html'],
+    'word-highlight': [el => el.matches('p, h2, h3, blockquote') || !!el.querySelector('.mo-wh__text, p, h2, h3, blockquote'), 'a paragraph, h2, h3 or blockquote of words', 'put it on the statement section that holds the words'],
+  };
+  for (const id of ['headline-arrives', 'lines-rise', 'letters-assemble', 'giant-type-pass', 'liquid-type']) NEEDS[id] = [el => el.matches('h1, h2') || !!el.querySelector('h1, h2'), 'an h1 or h2', 'put it on the section (or heading) whose h1 or h2 it moves'];
+  const moms = [...document.querySelectorAll('[data-moment]')].filter(el => !el.parentElement?.closest('[data-moment]'));
+  let srcDoc = null;
+  try { srcDoc = new DOMParser().parseFromString(await (await fetch(location.href, { cache: 'force-cache' })).text(), 'text/html'); } catch { /* a dev server that will not serve it twice */ }
+  const srcMoms = srcDoc ? [...srcDoc.querySelectorAll('[data-moment]')].filter(el => !el.parentElement?.closest('[data-moment]')) : [];
+  const shape = el => { const c = el.cloneNode(true); for (const x of [c, ...c.querySelectorAll('*')]) { for (const a of ['data-moment-mounted', 'data-moment-still', 'data-moment-failed']) x.removeAttribute(a); } return c.outerHTML.replace(/\s+/g, ' '); };
+  for (const [k, el] of moms.entries()) {
+    const id = el.dataset.moment, where = `${secName(secOf(el) || el)} [data-moment="${id}"]`;
+    // read as written (a mounted moment rebuilds its root: photo-chapters moves its list into a stage)
+    const need = NEEDS[id], as = srcMoms[k] && srcMoms[k].dataset.moment === id ? srcMoms[k] : el;
+    if (need && !need[0](as)) { add('moment-target', where, `${id} needs ${need[1]}; this ${as.tagName.toLowerCase()} holds ${as.querySelectorAll('img').length} img in ${as.children.length} children`, need[2]); continue; }
+    const r = el.getBoundingClientRect(), top = r.top + scrollY;
+    await go(top - Math.max(0, (vh - Math.min(r.height, vh)) / 2), 1300);
+    const vis = getComputedStyle(el).visibility !== 'hidden' && opaque(el) && r.width > 2 && r.height > 2;
+    const now = inkOf(el, true).filter(i => i.bottom > scrollY && i.top < scrollY + vh);
+    if (!vis || (!now.length && !el.matches(INK) && !ownText(el))) add('moment-hidden', where, `${id} shows nothing once it is on screen (1.3 s after it came in)`, `give it what assets/moments/${id}/demo.html gives it, or take data-moment off and deal another`);
+    else if (vw >= 1024 && !el.dataset.momentStill && !el.dataset.momentFailed && srcMoms[k] && srcMoms[k].dataset.moment === id && shape(el) === shape(srcMoms[k]))
+      add('moment-idle', where, `${id} left its root exactly as written once it was on screen: it found nothing to move`, `compare the markup with assets/moments/${id}/demo.html`, 'WARN');
+  }
+
+  /* motion in the first three screens, and the section reveals */
+  if (vw >= 1280) {
+    const MOVE = '[data-moment]:not([data-moment-failed]), [data-big-scene], [data-scene], [data-effect], [data-fx]';
+    const early = [...document.querySelectorAll(MOVE)].filter(e => { const r = e.getBoundingClientRect(); return r.height > 2 && r.top + scrollY < 3 * vh; });
+    // a page with no moment, scene or effect at all is moment-none's (the checker's, held as a FAIL by the gate); the
+    // hero demos are heroes only. Here: the page has its motion, but all of it past the third screen
+    const later = early.length ? [] : [...document.querySelectorAll(MOVE)].map(e => `${e.dataset.moment || e.dataset.bigScene || e.dataset.scene || e.dataset.effect || e.dataset.fx || '?'} at screen ${Math.floor((e.getBoundingClientRect().top + scrollY) / vh) + 1}`);
+    if (later.length) add('motion-visible', 'page', `after the hero's entrance nothing moves in the first three screens (the page's motion: ${later.join(', ')})`, 'move the first dealt moment (start.mjs plan names it) into the second or third section, on the element its demo.html names');
+  }
+  if (opts.reveal && secs.length > 2) {
+    const R = '[data-reveal], [data-revealed], [data-m-reveal], .m-reveal, .is-revealed';
+    if (!document.querySelector(R) && !secs.every(s => s.matches('[data-still]'))) add('reveal-none', 'page', 'no section reveals: the kit reveals each section\'s h2 and its lead photograph once as it comes in, and this page has none', 'load assets/motion/motion.js as the starter does (<script type="module" src="assets/motion/motion.js"></script>) and keep data-still for the few sections that must stand');
+  }
+
+  /* repeats: one subject twice, one UI number in three sections, one heading twice */
+  {
+    const stem = u => String(u || '').split(/[?#]/)[0].split('/').pop().replace(/[-_@](\d{2,4}w?|\d+x\d+|\dx)(?=\.\w+$)/i, '').replace(/\.\w+$/, '');
+    const by = new Map();
+    for (const i of document.images) {
+      const sub = (i.getAttribute('data-subject') || '').trim().toLowerCase(); if (!sub || /^(product|stand-in|detail|client|photo|picture|image|illustration|person|people)$/.test(sub)) continue;
+      const r = i.getBoundingClientRect(); if (r.width < 120 || r.height < 80) continue;
+      if (!by.has(sub)) by.set(sub, new Map());
+      const m = by.get(sub), f = stem(i.currentSrc || i.getAttribute('src')); if (!m.has(f)) m.set(f, i);
+    }
+    // data-subject is often a broad word ("bar", "part"): two pictures of it may be two views, so this only WARNs
+    for (const [sub, m] of by) if (m.size > 1 && new Set([...m.values()].map(secOf)).size > 1) add('subject-repeat', `data-subject "${sub}"`, `${m.size} different photographs show "${sub}" in ${new Set([...m.values()].map(secOf)).size} sections (${[...new Set([...m.values()].map(i => secName(secOf(i))))].join(', ')})`, 'one photograph per subject a page: when two show the same thing (the oven twice), give the second section a picture of what it says', 'WARN');
+    const NUM = /(?:[$€£¥]\s?\d[\d.,]*|\b\d{1,3}(?:[,.]\d{3})+(?:[.,]\d+)?|\b\d+(?:[.,]\d+)?\s?(?:ms|µs|s|min|h|%|kb|mb|gb|tb|k|m|x|fps|rpm|kg|g|km|mm|cm)\b|\b\d{3,}\b)/gi;
+    const nums = new Map();
+    for (const s of secs) {
+      const set = new Set((s.innerText || '').match(NUM) || []);
+      for (const n of set) { const k = n.replace(/\s+/g, ' ').toLowerCase(); if (/^(19|20)\d\d$/.test(k)) continue; if (!nums.has(k)) nums.set(k, new Set()); nums.get(k).add(s); }
+    }
+    // one finding per set of sections: five figures of one mock shown three times are one repeat
+    const groups = new Map();
+    for (const [n, set] of nums) if (set.size >= 3) { const key = [...set].map(s => secs.indexOf(s)).join(','); if (!groups.has(key)) groups.set(key, { set, list: [] }); groups.get(key).list.push(n); }
+    for (const { set, list } of groups.values()) add('number-repeat', list.slice(0, 3).map(n => `"${n}"`).join(', ') + (list.length > 3 ? ` +${list.length - 3}` : ''), `${list.length > 1 ? 'these figures are' : 'this figure is'} printed in ${set.size} sections (${[...set].map(secName).slice(0, 4).join(', ')})`, 'each section shows its own state or view: change the figures in the repeats, or let one section carry them', 'WARN');
+    const norm = t => t.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+    const hs = [...document.querySelectorAll('main :is(h1, h2, h3)')].filter(h => h.getBoundingClientRect().width > 2 && !h.closest('[aria-hidden="true"], .card, .tile, li')).map(h => ({ h, t: norm(h.innerText || h.textContent) })).filter(x => x.t.split(' ').length >= 2);
+    for (let a = 0; a < hs.length; a++) for (let b = a + 1; b < hs.length; b++) {
+      const A = hs[a].t, B = hs[b].t, short = A.length <= B.length ? A : B, long = short === A ? B : A;
+      if (A === B || (short.split(' ').length >= 3 && (' ' + long + ' ').includes(' ' + short + ' '))) add('heading-repeat', `${secName(secOf(hs[b].h))} ${hs[b].h.tagName.toLowerCase()}`, `"${hs[b].t.slice(0, 50)}" repeats the ${hs[a].h.tagName.toLowerCase()} "${hs[a].t.slice(0, 50)}"`, 'say the next thing in the second heading, not the first one again (references/copy.md)', 'WARN');
+    }
+  }
+  scrollTo(0, sy0);
+  return out;
 };

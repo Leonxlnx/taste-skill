@@ -38,7 +38,27 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   assumed, the form's `.example` stand-in) never do. The quick run leaves out what only step 6's full
   run checks: `forms`, `reduced-motion`, `hover-move`, `hover-spill`, `loop-pause`, `hidden-visual`, the scroll walks. The 390 width brings the phone checks (`collide`,
   `tap-size`) and a walk at 320 for anything past the screen (`off-viewport`); `hidden-content` also
-  loads the page with scripts off. Plus two read from the files:
+  loads the page with scripts off. The layout check then runs the **finish checks**, at 1440 and 390
+  (the faults the 2.5.2 test builds shipped). Each FAIL names its fix:
+
+  | id | FAILs when | the fix |
+  |---|---|---|
+  | `empty-band` | an empty strip in a section, under its lowest content or between two pieces of it, is over 25% of the section's height (over 15% WARNs). The hero (its own fold checks), a section with a pinned moment or a scene are left out | let the picture or card grow to the foot of the longer column, add the visual it lacks, keep the heading and what follows together, or make the section a screen shorter |
+  | `blank-screen` | one screen of a section shows nothing, even after 0.9 s on screen | put the content back in that screen; a moment on the wrong element hides it (see `moment-target`) |
+  | `placeholder` | a `[data-placeholder]` element, or an `.example` address printed in the words | the real thing, or a button whose `mailto:` is on `.example`; never print the address |
+  | `console-error` | an error, a `console.error` or a file that failed to load | load `assets/system.js` once, as `<script type="module">`; every file named must exist |
+  | `moment-target` | a `[data-moment]` root lacks what its moment needs | `<figure data-moment="picture-develops"><img ...></figure>`: one photograph as its direct child; the others as their `demo.html` writes them |
+  | `moment-hidden` | a dealt moment shows nothing once it is on screen | give it what its `demo.html` gives it, or deal another |
+  | `motion-visible` | at 1440, the page mounts moments, a scene or an effect, but none starts in the first three screens (a page with none at all is `moment-none`) | move the first dealt moment into the second or third section |
+  | `reveal-none` | the kit reveals sections and the page has none | load `assets/motion/motion.js` as the starter does |
+
+  They WARN only: `subject-repeat` (different photographs with one `data-subject` in two sections),
+  `number-repeat` (one UI figure such as "2,412 ms" in three sections or more), `heading-repeat` (two
+  headings with the same words), `moment-idle` (a moment left its root as written). The checker's
+  `photo-repeat` (one photograph twice) the gate holds as a FAIL. Plus these, read from the files:
+  - **script-twice / script-module**: a script loaded twice, or a module (`import`, `export`,
+    `import.meta`, as `assets/system.js`) loaded without `type="module"`. Keep one
+    `<script type="module" src="assets/system.js"></script>`, as the starter writes it.
   - **kit-edited**: a file the page loads from `assets/` differs from the skill's copy (whitespace,
     quotes, semicolons and commas aside, so a formatter is not an edit). A kit copy from an older skill version
     counts too: copy the current one.
@@ -63,9 +83,12 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   A file whose text is a kit file's is the kit's, wherever it sits. The two checkers' ids for one fault of
   one section (section-height / screen-height / screen-short, one-section / neighbour) are one finding.
   A full run takes a few minutes on a CPU Chrome.
-- **WARNs never block,** but for two house rules the checker only WARNs and the gate holds as FAILs:
-  `hero-enter` (the hero has no `data-enter`, or the head line that sets `html.m-enter` is missing) and
-  `moment-none` (the page deals no moment). The first few WARNs are listed.
+- **WARNs never block,** but for three house rules the checker only WARNs and the gate holds as FAILs:
+  `hero-enter` (the hero has no `data-enter`, or the head line that sets `html.m-enter` is missing),
+  `moment-none` (the page deals no moment) and `photo-repeat` (one photograph shown twice). The first few WARNs are listed.
+- **The motion:** `scripts/motion-lint.mjs --json --kind <kind>`, once it ships, runs exactly as the copy
+  does (the page's file, else the page as the browser built it): its FAILs block, its WARNs are listed
+  (`motion.md`).
 - **Waivers.** A FAIL you judge false goes in `.taste-skill/waivers.json`:
 
   ```json

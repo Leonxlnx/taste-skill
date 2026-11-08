@@ -105,6 +105,34 @@ passed off as the client's place; one light and grade with the rest of the page.
 title names someone else's place). It is a **stand-in**: the report lists it with the photograph to shoot in its
 place; nothing on the page says so; its credit goes in the one footer line like any other.
 
+## Against the claim, not the keyword
+
+Each photograph is picked for what its section's heading says, never for a word in it. In testing
+the pictures matched their keyword and contradicted the page: five other headphone models (two
+with cables) on a wireless page, latte art for "roasted on Tuesdays", 40 people in a "small-class"
+studio, pillows and a lamp for "the rooms", a sauna "by the water" with no water, a coffee sack as
+a design studio's "work", the same oven twice in a row.
+
+- **The plan writes one line per photograph:** `heading says X, picture shows Y`. Y must show X:
+  "Rooms from €95 / the double room with its bed and window" passes; "Rooms from €95 / a pillow"
+  fails. Change the picture, never the heading to fit it.
+- **A product page:** never another model of the product, never the opposite of a feature (a cable
+  on a wireless page, a full-size bike on a folding-bike page), never a colour the brief does not
+  sell. Every colour the swatches offer is a picture the swatch shows.
+- **The thing itself:** rooms show the whole room (bed, window, floor); the work shows finished work
+  of the client's discipline (packaging for a packaging studio, a building for an architect); a
+  workshop shows hands at work on the trade's object; a menu shows the dish the row names.
+- **One motif once:** never two photographs of one subject or one shoot next to each other, never
+  the hero's photograph again; a page of a place shows at least four different subjects.
+- **When the right picture does not exist** (a studio's own work, a game's art, a guesthouse's own
+  rooms, the product in the asked colours), build a **designed client slot** that reads finished
+  instead of an unrelated photograph (`sections-library.md`, client-slots): a packaging mockup frame
+  (a box or bag on the page's surface, the client's name set on it in the display face), a screenshot
+  frame (the game's or app's window at its ratio over a stand-in of its setting), a room card (the
+  room's name, bed, size and view set as type on a tinted card with a line drawing of the bed and the
+  window), a swatch card (the colour as a flat field with its name). The report lists each slot with
+  the file to put in it; nothing on the page says the file is missing.
+
 ## Pick and fetch
 
 ```bash

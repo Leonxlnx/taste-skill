@@ -5,6 +5,8 @@
   "look": "The stage opens on the product's own interface filling the whole screen. The camera pulls back at a steady rate (the scale eased in log space, so it never seems to stop) until the interface is the screen of a device standing on the page's lit ground; the device settles into its slot at the right and the heading, copy and action arrive at the left. A product section under the hero, never the hero itself: its first screen carries no heading and no action.",
   "fits": ["product"],
   "types": ["software", "tech"],
+  "tones": ["tech", "product"],
+  "intensity": "bold",
   "trigger": "scroll",
   "hold": 1,
   "restH": 1,
@@ -20,6 +22,19 @@
   },
   "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",
   "avoidWith": ["product-assembles-into-its-action", "parts-lock-into-the-whole"],
-  "states": { "start": { "p": 0.02, "wait": 500 }, "middle": { "p": 0.5, "wait": 500 }, "end": { "p": 0.98, "wait": 600 } },
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
   "avoidMoments": ["headline-arrives", "cursor-spotlight"]
 }

@@ -1,0 +1,73 @@
+{
+  "id": "thumbnail-becomes-the-stage",
+  "name": "Thumbnail becomes the stage",
+  "family": "picture-transform",
+  "classic": 1,
+  "look": "A statement of one or two lines at display size sits over a row of large thumbnails on the layout's columns, whose middle one is a keyhole onto a full-screen chapter; from the first step of the scroll the keyhole grows over its neighbours as they slide in under it, rises and opens to full bleed, and the statement passes through its edge, ink outside and paper inside, sliding from centred to flush left to become the chapter's heading word for word. It opens a product, a place or a film chapter from one strong muted loop or one strong picture.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2,
+  "restH": 2,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same opening with the keyhole starting at 64% of the width, 3:5, its neighbours running off the edges; hold 1.6. From 600px all four notes show two by two on the band; below 600px wide or under 540px tall they leave the stage and follow the picture in the page's flow, every one shown.",
+  "maxPerPage": 1,
+  "weight": 0.5,
+  "place": "In the middle, as the door from the intro into the showcase or the work; the opened picture carries the chapter's feature notes on a solid band at its foot, and below 600px they follow it in the page's flow.",
+  "content": "One chapter picture or muted loop of 8-15 s (16:9, 1920x1080 or more, 8MB at most, with a poster; for software, a screen recording of the product), its subject in the centre: the keyhole opens on about the central half of its width and three quarters of its height on desktop (that crop is the thumbnail); its upper left calm and dark for the white heading; a 4:5 cut for phones. One or two satellite stills a side of neighbouring chapters in the same grade, 960px wide or more with the subject in the centre (the row crops them close to square on desktop, 3:4 on tablets, 3:5 on phones). No text burned into the pictures. A statement of up to two lines of 20 characters or fewer that names the chapter and becomes its heading word for word; an optional note under the heading; three or four feature items of a 2-3 word label and 16 words or fewer.",
+  "options": "hold 2 (1.4-2.6); phoneHold 1.6 (1.4-2.6); phone 'same' | 'rest'; scrub 0.5, true with Lenis (0-0.8); thumb, the layout's columns by default (0.12-0.5; a share under the columns is lifted to them, a larger one runs the neighbours off the edges); radius, the page's --radius or 0 (0-16 px), always 0 at full bleed; shade 0.3 (0-0.6) flat scrim over the picture under the heading; band 1 (0-1) the band under the notes, solid by default; heading 0.15 (0.1-0.25) where the heading settles, the statement starting at the same height; nav '', the selector of a fixed nav that gets is-on-dark over the picture.",
+  "roles": [
+    "showcase",
+    "features",
+    "work",
+    "intro",
+    "gallery"
+  ],
+  "position": "middle",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:3"
+    ],
+    "content": "One chapter picture or muted loop of 8-15 s (16:9, 1920x1080 or more, 8MB at most, with a poster; for software, a screen recording of the product), its subject in the centre: the keyhole opens on about the central half of its width and three quarters of its height on desktop (that crop is the thumbnail); its upper left calm and dark for the white heading; a 4:5 cut for phones. One or two satellite stills a side of neighbouring chapters in the same grade, 960px wide or more with the subject in the centre (the row crops them close to square on desktop, 3:4 on tablets, 3:5 on phones). No text burned into the pictures. A statement of up to two lines of 20 characters or fewer that names the chapter and becomes its heading word for word; an optional note under the heading; three or four feature items of a 2-3 word label and 16 words or fewer."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/thumbnail-becomes-the-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"thumbnail-becomes-the-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

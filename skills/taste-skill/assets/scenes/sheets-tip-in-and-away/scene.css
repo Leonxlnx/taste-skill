@@ -1,0 +1,190 @@
+/* assets/scenes/sheets-tip-in-and-away/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / sheets-tip-in-and-away.css
+   Default: the finished composition. The section's heading, then every sheet as a plain block on the
+   page ground, one under the other: the name large along its top edge, the line and the link beside it,
+   the photograph under them across the width. This is what reduced motion, no script, a failed CDN and a
+   phone set to 'rest' show; each sheet reads whole, nothing is hidden waiting for a script.
+   Under .is-live: one held stage. Every sheet is a full-screen layer of the stage's own ground, stacked
+   in markup order (the later one on top); the photograph fills the sheet under its name, and its box runs
+   5% past every edge of its window, so the trail the script gives it never shows an edge.
+   Tokens: --ground, --ink, --accent, --font-display, --font-text; weights --display-weight (700 when the
+   page sets none), --strong-weight (600), --text-weight (400). Scene tokens: --st-name-case (none),
+   --st-name-size, --st-gutter; per sheet --st-pos and --st-pos-phone (object-position). */
+
+[data-big-scene="sheets-tip-in-and-away"] { font-synthesis-weight: none; }
+[data-big-scene="sheets-tip-in-and-away"] {
+  --st-ground: var(--ground, #ecede8);
+  --st-ink: var(--ink, #15201c);
+  --st-accent: var(--accent, #c4291c);
+  --st-gutter: clamp(16px, 1.8vw, 28px);
+  /* the name: as large as the width allows, and never more than about a fifth of the screen's height */
+  --st-name-size: clamp(54px, min(13.5vw, 22svh), 240px);
+  background: var(--st-ground);
+  color: var(--st-ink);
+  font-family: var(--font-text, inherit);
+  font-weight: var(--text-weight, 400);
+}
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="sheets-tip-in-and-away"] > .scene-stage { padding: clamp(72px, 9vw, 136px) 0 clamp(40px, 5vw, 80px); }
+[data-big-scene="sheets-tip-in-and-away"] .st-heading {
+  margin: 0 var(--st-gutter) clamp(28px, 3.5vw, 56px);
+  max-width: 18ch;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(36px, 4.4vw, 68px);
+  font-weight: var(--display-weight, 700);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-sheet {
+  position: relative;
+  margin: 0;
+  background: var(--st-ground);
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-sheet + .st-sheet { margin-top: clamp(56px, 7vw, 112px); }
+[data-big-scene="sheets-tip-in-and-away"] .st-paper { display: flex; flex-direction: column; }
+
+/* the top edge: the name at the left, the line and the link at the right on its foot */
+[data-big-scene="sheets-tip-in-and-away"] .st-words {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 48px;
+  padding: 0 var(--st-gutter);
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-name {
+  margin: 0;
+  /* room above the capitals for an accent or a ring (Å, Ø) at the tight leading */
+  padding-top: 0.08em;
+  font-family: var(--font-display, inherit);
+  font-size: var(--st-name-size);
+  font-weight: var(--display-weight, 700);
+  line-height: 0.86;
+  letter-spacing: -0.005em;
+  text-transform: var(--st-name-case, none);
+  overflow-wrap: break-word;
+}
+/* the script measures each name on one line, then sizes them all so the longest stays on one line */
+[data-big-scene="sheets-tip-in-and-away"].st-measuring .st-name { white-space: nowrap; }
+[data-big-scene="sheets-tip-in-and-away"].st-beside .st-name,
+[data-big-scene="sheets-tip-in-and-away"].st-under .st-name { white-space: nowrap; }
+[data-big-scene="sheets-tip-in-and-away"] .st-meta {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  max-width: 32ch;
+  padding-bottom: calc(var(--st-name-size) * 0.04);
+}
+/* beside the name (the script found room): set to the right edge, on the name's foot */
+[data-big-scene="sheets-tip-in-and-away"].st-beside .st-words { flex-wrap: nowrap; }
+[data-big-scene="sheets-tip-in-and-away"].st-beside .st-meta { justify-items: end; text-align: right; }
+/* over the photograph, under the name (no room beside it, and on every phone) */
+[data-big-scene="sheets-tip-in-and-away"].st-under .st-words { flex-direction: column; align-items: flex-start; }
+[data-big-scene="sheets-tip-in-and-away"].st-under .st-meta { padding-bottom: 0; }
+[data-big-scene="sheets-tip-in-and-away"] .st-line {
+  margin: 0;
+  font-size: clamp(16px, 1.15vw, 19px);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-link {
+  color: var(--st-accent);
+  font-size: clamp(16px, 1.15vw, 19px);
+  font-weight: var(--strong-weight, 600);
+  line-height: 1.4;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: text-underline-offset 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-link:hover { text-underline-offset: 7px; }
+[data-big-scene="sheets-tip-in-and-away"] .st-link:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 4px; }
+
+/* the window: the photograph across the sheet, framed in the ground */
+[data-big-scene="sheets-tip-in-and-away"] .st-window {
+  position: relative;
+  margin: clamp(14px, 1.6vw, 24px) var(--st-gutter) 0;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--st-ink) 14%, var(--st-ground));
+}
+[data-big-scene="sheets-tip-in-and-away"] .st-pan { position: absolute; inset: 0; }
+[data-big-scene="sheets-tip-in-and-away"] .st-window img,
+[data-big-scene="sheets-tip-in-and-away"] .st-window video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--st-pos, 50% 50%);
+}
+
+@media (max-width: 767px) {
+  [data-big-scene="sheets-tip-in-and-away"] { --st-gutter: 16px; --st-name-size: clamp(44px, 14.5vw, 76px); }
+  [data-big-scene="sheets-tip-in-and-away"] > .scene-stage { padding-top: 72px; }
+  [data-big-scene="sheets-tip-in-and-away"] .st-heading { font-size: 36px; }
+  [data-big-scene="sheets-tip-in-and-away"] .st-meta { padding-bottom: 0; }
+  [data-big-scene="sheets-tip-in-and-away"] .st-window { aspect-ratio: 4 / 5; }
+  [data-big-scene="sheets-tip-in-and-away"] .st-window img,
+  [data-big-scene="sheets-tip-in-and-away"] .st-window video { object-position: var(--st-pos-phone, var(--st-pos, 50% 50%)); }
+}
+
+/* ---------- live: one held stage ---------- */
+
+html.sc-js [data-big-scene="sheets-tip-in-and-away"].is-live > .scene-stage {
+  padding: 0;
+  background: var(--st-ground);
+}
+/* the stage writes --p on the section on every scroll step; nothing inside reads it, so it stops here */
+[data-big-scene="sheets-tip-in-and-away"].is-live > .scene-stage > * { --p: 0; }
+/* the heading stays in the document for screen readers; the sheets carry the names on screen */
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--i, 0) + 1);
+  margin: 0;
+  background: var(--st-ground);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-sheet + .st-sheet { margin-top: 0; }
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-paper {
+  position: absolute;
+  inset: 0;
+  padding: clamp(14px, 2.2svh, 28px) 0 var(--st-gutter);
+  background: var(--st-ground);
+}
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-sheet:first-of-type .st-paper { will-change: transform; }
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-window {
+  flex: 1 1 auto;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+/* the photograph's box runs 5% past every edge of its window: the room its trail moves in */
+[data-big-scene="sheets-tip-in-and-away"].is-live .st-pan { inset: -5%; will-change: transform; }
+
+/* a tablet or a narrow window: a little less height for the name, so the photograph keeps the sheet */
+@media (min-width: 768px) and (max-width: 1099px) {
+  [data-big-scene="sheets-tip-in-and-away"] { --st-name-size: clamp(64px, min(14vw, 16svh), 160px); }
+  [data-big-scene="sheets-tip-in-and-away"] .st-words { gap: 10px 32px; }
+}
+
+@media (max-width: 767px) {
+  [data-big-scene="sheets-tip-in-and-away"].is-live .st-paper { padding-top: max(16px, env(safe-area-inset-top, 0px)); }
+  [data-big-scene="sheets-tip-in-and-away"].is-live .st-window { margin-top: 14px; }
+}

@@ -1,0 +1,76 @@
+{
+  "id": "one-figure-reforms",
+  "name": "Re-forming window",
+  "family": "object-scrub",
+  "classic": 1,
+  "look": "One held stage carries three to five chapters on a single large window in the accent that re-forms under the scroll instead of cutting: a tall bar rounds into a disc, the disc rises into an arch, the arch draws in to a pill. Its shapes are one family of rounded rectangles (clip-path inset() with round), so every in-between frame is again a clean rounded rectangle: no free polygons, no lumps. Each stop rests for a third of its chapter's scroll, and the window always carries a chapter's content (the product's own interface for that job): as it re-forms that interface rides it whole and hands over to the next chapter's when the window is half re-formed, whose late parts land one by one on a clock right behind it while the window draws into its shape, so the window lands on a finished composition, every rest holds it whole and no frame shows an empty window or a half-built interface. Beside it the chapter's name is set huge with one or two lines and one key figure; they swap at that same moment, out then in. One colour, one window, no counter, index, progress mark or snap: the services, steps or parts read as one object changing identity.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "tech",
+    "editorial"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2,
+  "restH": 3,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same scene and timeline, one chapter at a time: the heading, the window smaller above the words (it fills the height the tallest chapter leaves, each pane in the part of its shape a rectangle can fill, fragments dropping rows by container width), then the key figure, the name fitted to the width and its lines. A tablet held upright stacks the same way with the key figure and lines in a column beside the name. Reduced motion, no script or a failed CDN show the finished composition: every chapter as a row, its key figure, name and lines beside its own window, the shape drawn with border-radius and its content whole.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "place": "In the middle, on the services, the steps of how it works, the parts of a product or the jobs of an account: three to five parallel things. The window shows the page's own product, one screen a chapter. Once per page, with a quiet section before it (something large low on its screen, so the eye holds it while the stage scrolls in) and after it; its last frame is the last chapter whole, so the next section simply follows.",
+  "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most.",
+  "options": "hold 2 (1.5-3; 2.5 by default with five chapters); phoneHold = hold; dwell 0.33 (0.2-0.5) share of each chapter's scroll the window rests on its shape; swap 0.5 (0.35-0.65) how far the window has re-formed when the names change; fit 'each' (every name as large as its column allows) | 'one'; scrub true with Lenis, else 0.5 (0-1); phone 'same' | 'rest'. Per pane data-shape and data-build (\"1\", \"2\" group late parts into steps; they land on a clock just after their pane arrives at the swap, the first chapter's are there from the start). CSS tokens: --ofr-ground, --ofr-ink, --ofr-muted, --ofr-accent, --ofr-on-accent (the fragment's words on the window: white, or the page's ink on a light accent), --ofr-gx, --ofr-top, --ofr-floor, --ofr-split (where the window's zone begins, 40vw), --ofr-head, --ofr-word-max, --ofr-fig-h, --ofr-card-max (440px), and the page-scale sizes --ofr-text-size, --ofr-small, --ofr-figure-size, --ofr-figure-size-phone.",
+  "roles": [
+    "features",
+    "how-it-works",
+    "list",
+    "showcase"
+  ],
+  "position": "middle",
+  "sectors": [
+    "agency",
+    "finance",
+    "saas",
+    "studio-portfolio",
+    "education",
+    "health",
+    "architecture",
+    "ai-product"
+  ],
+  "needs": {
+    "list": [
+      "product-ui"
+    ],
+    "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/one-figure-reforms/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"one-figure-reforms\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

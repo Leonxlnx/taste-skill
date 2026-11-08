@@ -9,5 +9,9 @@
   "palettes": ["light", "dark", "colour"],
   "focal": true,
   "random": false,
-  "subjects": ["the divider band (assets/components/fx-band), lines rising on the side away from the copy"]
+  "subjects": ["the divider band (assets/components/fx-band), lines rising on the side away from the copy"],
+  "tones": ["tech", "product", "editorial"],
+  "intensity": "quiet",
+  "webgl": 1,
+  "treatment": false
 }

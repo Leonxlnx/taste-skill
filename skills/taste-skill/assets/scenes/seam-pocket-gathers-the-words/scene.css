@@ -1,0 +1,227 @@
+/* assets/scenes/seam-pocket-gathers-the-words/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / seam-pocket-gathers-the-words.css — the seam between two grounds bends: the next
+   ground rises into the pale one as a wide, shallow cup and gathers a scatter of short words, which settle in
+   it at display size in the next ground's light ink.
+
+   Without .is-live (no script, a failed CDN, reduced motion, a phone set to 'rest', a screen under 600px
+   tall) this file draws the finished composition: the heading and the sentence on the upper ground, then the
+   next ground with the cup risen at its top (one clip-path, its sides smootherstep curves, no corner) and
+   the words resting in it in two columns (one on a phone). With .is-live the stage holds while the words are
+   carried into it (seam-pocket-gathers-the-words.js).
+
+   Tokens it reads: --ground, --ink, --font-display, --font-text, --display-weight (the heading and the
+   words, 600 when the page sets none), --text-weight (the sentence, 400).
+   Tokens it owns (set them on the section to tune it):
+     --spg-next        the next section's ground (default the ink: the next section is the inverted one)
+     --spg-next-ink    type on it (default the ground)
+     --spg-title-size  the heading; two lines at most (set it to the page's section-heading size)
+     --spg-lede-size   the sentence
+     --spg-word-size   the landed words (48px or more on desktop); the script sets them smaller (to 76%) only
+                       when the screen is too short for them
+     --spg-word-lh     the columns' line pitch, as a multiple of the word size
+     --spg-col-gap     between the two columns
+     --spg-gutter      side margins
+     --spg-foot        next ground under the words in the finished composition
+     --spg-at          where the cup stands, its middle as a share of the width
+     --spg-rise        finished composition: how far the cup's top stands above its feet
+     --spg-a           finished composition: half the cup's top (the script fits it to the words)
+     --spg-sw          the width of each curved side
+   Flat colour only: the edge is the boundary of a ground, never a line; no outline, no shadow, no box round
+   the words. Weights a page has not loaded are never faked: the nearest loaded one shows. */
+
+[data-big-scene="seam-pocket-gathers-the-words"] {
+  --spg-ground: var(--ground, #e7ebe4);
+  --spg-ink: var(--ink, #16211b);
+  --spg-next: var(--ink, #16211b);
+  --spg-next-ink: var(--ground, #e7ebe4);
+  --spg-gutter: clamp(16px, 6vw, 96px);
+  --spg-title-size: clamp(40px, 5.4vw, 92px);
+  --spg-lede-size: clamp(17px, 1.4vw, 20px);
+  --spg-word-size: clamp(48px, 4.4vw, 76px);
+  --spg-word-lh: 1.08;
+  --spg-col-gap: 0.9em;
+  --spg-foot: clamp(56px, 12svh, 128px);
+  --spg-at: 50%;
+  --spg-rise: clamp(88px, 11vw, 168px);
+  --spg-a: 6.6em;
+  --spg-sw: clamp(80px, 20vw, 300px);
+  position: relative;
+  background: var(--spg-ground);
+  color: var(--spg-ink);
+  font-synthesis-weight: none;
+}
+
+/* ---------------------------------------------------------------- finished composition */
+
+[data-big-scene="seam-pocket-gathers-the-words"] > .scene-stage { position: relative; background: var(--spg-ground); }
+
+/* the heading block: across the top, heading and sentence side by side on a wide screen */
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-top {
+  box-sizing: border-box;
+  padding: clamp(56px, 10svh, 120px) var(--spg-gutter) clamp(32px, 5svh, 56px);
+}
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-title {
+  margin: 0;
+  max-width: 11em;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 600);
+  font-size: var(--spg-title-size);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-lede {
+  margin: clamp(16px, 2.6svh, 28px) 0 0;
+  max-width: 32rem;
+  font-family: var(--font-text, inherit);
+  font-weight: var(--text-weight, 400);
+  font-size: var(--spg-lede-size);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+@media (min-width: 1100px) {
+  [data-big-scene="seam-pocket-gathers-the-words"] .spg-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+    align-items: end;
+    gap: 24px 48px;
+  }
+  [data-big-scene="seam-pocket-gathers-the-words"] .spg-lede { margin: 0; }
+}
+
+/* The next ground. Its top edge is the cup: flat feet, two smootherstep sides --spg-sw wide, a top 2 x --spg-a
+   wide standing --spg-rise above the feet. The words rest in it, in its own light ink. */
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-next {
+  position: relative;
+  box-sizing: border-box;
+  padding: calc(var(--spg-rise) + 0.5em) var(--spg-gutter) var(--spg-foot);
+  background: var(--spg-next);
+  color: var(--spg-next-ink);
+  font-size: calc(var(--spg-word-size) * var(--spg-fit, 1));
+  clip-path: polygon(
+    0% var(--spg-rise),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw)) var(--spg-rise),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.91667) calc(var(--spg-rise) * 0.99491),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.83333) calc(var(--spg-rise) * 0.96451),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.75) calc(var(--spg-rise) * 0.89648),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.66667) calc(var(--spg-rise) * 0.79012),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.58333) calc(var(--spg-rise) * 0.65338),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.5) calc(var(--spg-rise) * 0.5),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.41667) calc(var(--spg-rise) * 0.34662),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.33333) calc(var(--spg-rise) * 0.20988),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.25) calc(var(--spg-rise) * 0.10352),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.16667) calc(var(--spg-rise) * 0.03549),
+    calc(var(--spg-at) - var(--spg-a) - var(--spg-sw) * 0.08333) calc(var(--spg-rise) * 0.00509),
+    calc(var(--spg-at) - var(--spg-a)) 0px,
+    calc(var(--spg-at) + var(--spg-a)) 0px,
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.08333) calc(var(--spg-rise) * 0.00509),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.16667) calc(var(--spg-rise) * 0.03549),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.25) calc(var(--spg-rise) * 0.10352),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.33333) calc(var(--spg-rise) * 0.20988),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.41667) calc(var(--spg-rise) * 0.34662),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.5) calc(var(--spg-rise) * 0.5),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.58333) calc(var(--spg-rise) * 0.65338),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.66667) calc(var(--spg-rise) * 0.79012),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.75) calc(var(--spg-rise) * 0.89648),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.83333) calc(var(--spg-rise) * 0.96451),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw) * 0.91667) calc(var(--spg-rise) * 0.99491),
+    calc(var(--spg-at) + var(--spg-a) + var(--spg-sw)) var(--spg-rise),
+    100% var(--spg-rise),
+    100% calc(100% + 2px),
+    0% calc(100% + 2px)
+  );
+}
+/* the words: plain display type in two columns (the first half down the left), no boxes, no pills */
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-words {
+  --spg-rows: 4;
+  position: relative;
+  left: var(--spg-at);
+  translate: -50% 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--spg-rows), auto);
+  justify-content: start;
+  column-gap: var(--spg-col-gap);
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 600);
+  line-height: var(--spg-word-lh);
+  letter-spacing: -0.02em;
+}
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-words:has(> :nth-child(9)) { --spg-rows: 5; }
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-words:has(> :nth-child(11)) { --spg-rows: 6; }
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-word { position: relative; display: block; width: max-content; white-space: nowrap; }
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-word--off { display: none; }
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-rise,
+[data-big-scene="seam-pocket-gathers-the-words"] .spg-paper { display: none; }
+
+/* a tablet holds the desktop plan with the heading block stacked and smaller words */
+@media (min-width: 768px) and (max-width: 1099px) {
+  [data-big-scene="seam-pocket-gathers-the-words"] { --spg-word-size: clamp(40px, 6vw, 56px); }
+}
+/* a phone: one column in the middle, the first seven words */
+@media (max-width: 767px) {
+  [data-big-scene="seam-pocket-gathers-the-words"] {
+    --spg-title-size: clamp(32px, 9.6vw, 42px);
+    --spg-lede-size: 17px;
+    --spg-word-size: clamp(32px, 9.4vw, 40px);
+    --spg-gutter: 16px;
+    --spg-rise: 72px;
+    --spg-a: 3.3em;
+    --spg-sw: 36vw;
+  }
+  [data-big-scene="seam-pocket-gathers-the-words"] .spg-top { padding: 44px 16px 28px; }
+  [data-big-scene="seam-pocket-gathers-the-words"] .spg-words { grid-auto-flow: row; grid-template-rows: none; }
+  /* no script: the phone keeps the first seven words (the script's phoneCount does the same) */
+  html:not(.js) [data-big-scene="seam-pocket-gathers-the-words"] .spg-word:nth-child(n + 8) { display: none; }
+}
+
+/* ---------------------------------------------------------------- live (scrubbed) */
+
+/* stage.js writes the progress as --p on the section every frame; nothing in this scene reads it, so it
+   stops at the stage instead of restyling every word each frame */
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] > .scene-stage { --p: initial; }
+
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-top {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+/* the next ground's layer covers the stage; its ground (.spg-rise) is clipped to the edge by the script,
+   and the words lie on top of it */
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-next {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  padding: 0;
+  background: none;
+  clip-path: none;
+}
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-rise {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--spg-next);
+  clip-path: polygon(0px 100%, 100% 100%, 100% 100%, 0px 100%);
+}
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-words {
+  position: absolute;
+  top: var(--spg-list-top, 42%);
+  color: var(--spg-ink);
+}
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-word { will-change: transform; }
+/* each word's light copy, nested in it: the script clips it to the risen ground */
+.scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-paper {
+  display: block;
+  position: absolute;
+  inset: 0;
+  color: var(--spg-next-ink);
+  visibility: hidden;
+  pointer-events: none;
+}

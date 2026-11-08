@@ -31,8 +31,11 @@
   The checks, one at a time, each in its own headless Chrome with its own temp profile:
     consistency.mjs --quick --widths 1440,390 --json   (with the marker's --page kind, --category, --primary, --root;
                                                         it walks the page at 320x640 too: overflow, collide, tap-size)
-    assets/layout/check.mjs --sizes 1440x900,390x844 --json
-  and two static ones: kit-edited (a file the page loads from assets/ differs from the skill's copy, whitespace,
+    assets/layout/check.mjs --sizes 1440x900,390x844 --json   (the layout rules, then the finish checks of
+        layout-check.js lyFinish: empty-band, blank-screen, placeholder, moment-target, moment-hidden, motion-visible,
+        reveal-none, and console-error for every error or failed file on load; its WARNs (empty-band 15-25%,
+        subject-repeat, number-repeat, heading-repeat, moment-idle) never block)
+  and static ones: script-twice / script-module (a script loaded twice, a module loaded as a classic script), kit-edited (a file the page loads from assets/ differs from the skill's copy, whitespace,
   quotes and semicolons aside) and checker-gaming (the page's own code looks for a headless browser or an automation
   tool). gaming-suspect, waivable: a user-agent test for headless, or aria-hidden stripped from many pictures.
   And the copy: scripts/copy-lint.mjs --json on the page's file, or, when the file holds no sections (a built app, a
@@ -41,8 +44,9 @@
   block (the old slop words, stock phrases, residue, a device used as a tic), its WARNs do not. A file whose text is a
   kit file's, wherever it sits, is the kit's and is skipped. The two checkers' ids for the
   same fault on the same section (section-height / screen-height / screen-short, one-section / neighbour) are one
-  finding. WARNs never block, except two the checker WARNs and the gate holds as FAILs: hero-enter (the hero does not
-  enter on load) and moment-none (the page deals no moment).
+  finding. And the motion: scripts/motion-lint.mjs, once it exists, run exactly as copy-lint (its FAILs block).
+  WARNs never block, except three the checker WARNs and the gate holds as FAILs: hero-enter (the hero does not
+  enter on load), moment-none (the page deals no moment) and photo-repeat (one photograph shown twice).
   Only a local page is checked: a file, or a URL on localhost, 127.0.0.1, [::1], *.localhost or *.test.
 
   Waivers: a FAIL judged false is waived in .taste-skill/waivers.json, an array of
@@ -226,6 +230,8 @@ function unarmedPage() {
 const attrs = tag => Object.fromEntries([...tag.matchAll(/([\w:-]+)\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/g)].map(m => [m[1].toLowerCase(), m[3] ?? m[4] ?? m[5]]));
 function metas(html) {
   const o = {};
+  // the starter's comments name a <meta> as an example ("A place adds <meta name="page-kind" ...>"): never read those
+  html = html.replace(/<!--[\s\S]*?-->/g, '');
   for (const m of html.matchAll(/<meta\b[^>]*>/gi)) { const a = attrs(m[0]); if (a.name) o[a.name.toLowerCase()] = (a.content || '').trim().toLowerCase(); }
   o.dataType = ((html.match(/<html\b[^>]*>/i) || [''])[0].match(/data-type\s*=\s*["']?([\w-]+)/i) || [])[1]?.toLowerCase() || '';
   return o;
@@ -370,6 +376,24 @@ function staticChecks(page, html, proj, files) {
     if (/\.(m?js|cjs|jsx|tsx?|vue|svelte|astro)$/i.test(f) && !VENDOR.test(f) && text.length < 400000) own.push({ where: rel(f), text });
   }
   if (html) for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) if (!/\bsrc\s*=/.test(m[1]) && !/json|template|text\/(?!javascript)/i.test(m[1])) own.push({ where: rel(page) + ' (inline script)', text: m[2] });
+  // a script loaded twice, or a module loaded as a classic script (the bakery's second <script src="assets/system.js"
+  // defer>: an import.meta SyntaxError on every load)
+  if (html && page) {
+    const tags = [...html.matchAll(/<script\b([^>]*)>/gi)].map(m => ({ src: (m[1].match(/\bsrc\s*=\s*["']([^"']+)["']/i) || [])[1], mod: /\btype\s*=\s*["']?module/i.test(m[1]) }))
+      .filter(t => t.src && !/^(https?:)?\/\//i.test(t.src)).map(t => ({ ...t, key: t.src.replace(/^\.\//, '').split(/[?#]/)[0] }));
+    const told = new Set();
+    for (const { src, key } of tags) {
+      const all = tags.filter(t => t.key === key);
+      if (all.length < 2 || told.has(key)) continue;
+      told.add(key);
+      F.push({ check: 'script-twice', where: `<script src="${src}">`, msg: `${src} is loaded ${all.length} times${all.some(t => t.mod) && all.some(t => !t.mod) ? ', once as a module and once as a classic script (it throws there)' : ''}: its code runs twice, or fails`, fix: `keep one <script${all.some(t => t.mod) ? ' type="module"' : ''} src="${src}"></script> (the starter's last lines) and delete the other` });
+    }
+    for (const { src, key, mod } of tags) {
+      if (mod || told.has(key)) continue;
+      let text = ''; try { text = fs.readFileSync(path.resolve(path.dirname(page), key), 'utf8'); } catch { continue; }
+      if (/^\s*(import|export)\s[^(]|import\.meta/m.test(codeOnly(text))) F.push({ check: 'script-module', where: `<script src="${src}">`, msg: `${src} is a module (import/export) loaded as a classic script: it throws on load and does nothing`, fix: `<script type="module" src="${src}"></script>, once, as the starter loads it` });
+    }
+  }
   for (const s of own) {
     const code = codeOnly(s.text), m = code.match(HOOKS) || s.text.match(HOOKS_RAW);
     if (m) F.push({ check: 'checker-gaming', where: s.where, msg: `the page's own code tests for ${m[0].replace(/\s+/g, '')}: the page must behave the same for the checker as for a visitor`, fix: 'delete that branch; fix what the check found instead', hard: true });
@@ -389,33 +413,44 @@ function staticChecks(page, html, proj, files) {
 // app whose file is a shell, is linted as the browser built it (rendered.html, saved by consistency.mjs); with neither
 // the copy is listed as not checked, so the run cannot PASS.
 const HAS_COPY = /<(main|section|h1)\b/i;
-function copyChecks(P, kind, html, rendered) {
+// the two linters share one CLI and one report (copy-lint.mjs, motion-lint.mjs: <file> --json --kind <kind> ->
+// { files: [{ findings: [{ id, sev, msg, fix, hits, count, examples }] }] }); motion-lint runs only once it exists
+const LINTS = {
+  copy: { script: 'copy-lint.mjs', ref: 'references/copy-tells.md', what: 'the copy', perHit: /^copy-(slop-word|stock-phrase|residue|unread)$/ },
+  motion: { script: 'motion-lint.mjs', ref: 'references/motion.md', what: 'the motion', perHit: null },
+};
+const copyChecks = (P, kind, html, rendered) => lintChecks(LINTS.copy, P, kind, html, rendered);
+const motionChecks = (P, kind, html, rendered) => fs.existsSync(path.join(here, LINTS.motion.script)) ? lintChecks(LINTS.motion, P, kind, html, rendered) : { fails: [], warns: [], crashed: [] };
+function lintChecks(L, P, kind, html, rendered) {
   const res = { fails: [], warns: [], crashed: [] };
   let file = P.file && HAS_COPY.test(html) ? P.file : null;
   if (!file) {
     let t = ''; try { t = fs.readFileSync(rendered, 'utf8'); } catch { /* the checker did not save it */ }
-    if (!HAS_COPY.test(t)) { res.crashed.push('the copy (the page showed no <main>, <section> or <h1> to lint)'); return res; }
+    if (!HAS_COPY.test(t)) { res.crashed.push(`${L.what} (the page showed no <main>, <section> or <h1> to lint)`); return res; }
     file = rendered;
   }
-  const r = spawnSync(process.execPath, [path.join(here, 'copy-lint.mjs'), file, '--json', ...(kind ? ['--kind', kind] : [])], { encoding: 'utf8', timeout: 30000, windowsHide: true, maxBuffer: 1 << 24 });
+  const k = L === LINTS.copy ? kind : /^(tech|software|gaming|product|place|service)$/.test(kind || '') ? kind : '';   // motion-lint takes the six kinds only
+  // copy-lint also takes the marker's category (copy-h1-category reads it; runs after opts is set, line ~802)
+  const cat = L === LINTS.copy && opts && opts.category ? ['--category', opts.category] : [];
+  const r = spawnSync(process.execPath, [path.join(here, L.script), file, '--json', ...(k ? ['--kind', k] : []), ...cat], { encoding: 'utf8', timeout: 30000, windowsHide: true, maxBuffer: 1 << 24 });
   const rep = parseJson(r.stdout || '');
-  if (r.error || !rep || !Array.isArray(rep.files) || !rep.files[0]) { res.crashed.push(`copy-lint.mjs could not run (exit ${r.status}${errLine(r.stderr || (r.error && r.error.message))})`); return res; }
+  if (r.error || !rep || !Array.isArray(rep.files) || !rep.files[0]) { res.crashed.push(`${L.script} could not run (exit ${r.status}${errLine(r.stderr || (r.error && r.error.message))})`); return res; }
   // a word or a phrase is one finding per hit, named by the word and its sentence, so a waiver covers that one hit and
   // never a word added later; a device used as a tic is one finding whose where carries its count and its hits, and a
   // waiver must give that whole where (a new hit changes it, and the waiver no longer matches)
-  const PER_HIT = /^copy-(slop-word|stock-phrase|residue|unread)$/;
   const q = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 3) + '...' : s; };
+  const tag = L === LINTS.copy ? 'copy' : 'motion';
   for (const f of rep.files[0].findings || []) {
     if (f.sev !== 'FAIL' && f.sev !== 'WARN') continue;
-    const base = { check: f.id, msg: f.msg || '', fix: (f.fix || '') + ' (references/copy-tells.md)', widths: [], from: 'copy' };
+    const base = { check: f.id, msg: f.msg || '', fix: (f.fix || '') + ` (${L.ref})`, widths: [], from: tag };
     const list = f.sev === 'FAIL' ? res.fails : res.warns;
     const hits = Array.isArray(f.hits) ? f.hits.filter((h) => h && (h.match || h.sentence)) : [];
-    if (PER_HIT.test(f.id) && hits.length) {
-      for (const h of hits) { const m = q(h.match, 28); list.push({ ...base, where: `copy "${m}" in "${q(h.sentence, Math.max(24, 66 - m.length))}"` }); }
+    if (L.perHit && L.perHit.test(f.id) && hits.length) {
+      for (const h of hits) { const m = q(h.match, 28); list.push({ ...base, where: `${tag} "${m}" in "${q(h.sentence, Math.max(24, 66 - m.length))}"` }); }
       continue;
     }
     const ex = hits.length ? [...new Set(hits.map((h) => q(h.match === h.sentence ? h.sentence : h.match, 24)))] : (f.examples || []).filter((x) => typeof x === 'string' && x.trim()).map((x) => q(x, 24));
-    const where = ex.length ? q(`copy x${f.count || ex.length}: ${ex.map((x) => `"${x}"`).join(', ')}`, 80) : '(the copy)';
+    const where = tag === 'motion' && f.where ? q(`${tag} ${f.where}`, 80) : ex.length ? q(`${tag} x${f.count || ex.length}: ${ex.map((x) => `"${x}"`).join(', ')}`, 80) : `(${L.what})`;
     list.push({ ...base, where, exact: f.sev === 'FAIL' && ex.length > 0 });
   }
   return res;
@@ -480,7 +515,8 @@ const LAYOUT_FIX = {
 
 // two house rules the checker only WARNs (its own kit demos carry neither) and the gate holds: every hero enters
 // once on load, and every page deals a moment (SKILL.md house rules 5 and 8)
-const HELD = new Set(['hero-enter', 'moment-none']);
+// photo-repeat too: one photograph shown twice on a page (the 2.5.2 builds showed the oven, the bread twice)
+const HELD = new Set(['hero-enter', 'moment-none', 'photo-repeat']);
 async function browserChecks(target, proj, opts, gateDir) {
   const res = { fails: [], warns: [], crashed: [], seconds: {} };
   // 390 always, the quick look too (the phone is where sections run into each other); the 320 pass (overflow, collide, tap-size) comes with it
@@ -514,7 +550,8 @@ async function browserChecks(target, proj, opts, gateDir) {
     const rep = parseJson(r.out);
     if (r.timedOut) res.crashed.push('check.mjs timed out');
     else if (r.code === 2 || !Array.isArray(rep)) res.crashed.push(`check.mjs could not run (exit ${r.code}${errLine(r.err)})`);
-    else for (const s of rep) for (const f of s.findings || []) res.fails.push({ check: f.rule, where: f.where, msg: f.detail || '', fix: LAYOUT_FIX[f.rule] || 'layout-v4.md', widths: [Number(String(s.size).split('x')[0])], from: 'layout' });
+    // every finding fails but the finish checks' WARNs (empty-band under 25%, the repeats, moment-idle)
+    else for (const s of rep) for (const f of s.findings || []) (f.sev === 'WARN' ? res.warns : res.fails).push({ check: f.rule, where: f.where, msg: f.detail || '', fix: f.fix || LAYOUT_FIX[f.rule] || 'layout-v4.md', widths: [Number(String(s.size).split('x')[0])], from: 'layout' });
   } else res.crashed.push('no time left for check.mjs');
   return res;
 }
@@ -529,7 +566,8 @@ function merge(list) {
   return [...m.values()];
 }
 // the two checkers name one fault of one section twice: one finding, one waiver
-const FAMILY = { 'section-height': 'height', 'screen-height': 'height', 'screen-short': 'height', 'one-section': 'neighbour', neighbour: 'neighbour' };
+const FAMILY = { 'section-height': 'height', 'screen-height': 'height', 'screen-short': 'height', 'one-section': 'neighbour', neighbour: 'neighbour',
+  'empty-band': 'empty', sparse: 'empty', 'empty-area': 'empty', 'section-air': 'empty' };
 const sectionId = w => (String(w).split('"')[0].match(/#([\w-]+)/) || [])[1];
 function mergeFamilies(list) {
   const out = [], by = new Map();
@@ -805,7 +843,8 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     const stat = staticChecks(P.file, html, projDir, files);
     const b = await browserChecks(target, projDir, opts, gateDir);
     const c = copyChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
-    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails])), warns: merge([...b.warns, ...c.warns]), crashed: [...c.crashed, ...b.crashed], seconds: b.seconds };
+    const mo = motionChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
+    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed], seconds: b.seconds };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };

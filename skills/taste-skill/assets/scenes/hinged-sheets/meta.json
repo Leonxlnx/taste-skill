@@ -1,0 +1,78 @@
+{
+  "id": "hinged-sheets",
+  "name": "Hinged sheets",
+  "family": "layer-stack",
+  "classic": 1,
+  "look": "Two to four tickets lie face-down in one row under the section's headline, ink-coloured backs with one large word each, and turn over one by one as the page scrolls, left to right on a shared vanishing point, to their paper fronts. Each turn runs on a clock of 0.8s once the scroll passes its moment, never with the scroll, so wherever the visitor stops every ticket lies flat, face-down or face-up, and the row fills the screen from the first frame. It is for prices, passes, letters or figures on a page with a real paper, ticket or print idea; without that idea the turn is a trick.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "No held stage: the tickets stand face-down in a column, and each turns over on its clock once its top is three quarters up the screen, face-up before it is read; the fine print comes in after the last. Tablets, short windows and more than four tickets get the same; with phone 'rest' all of them show the finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.6,
+  "place": "In the middle, on the pricing, the tickets or the figures. The headline and the line over the row stand over the row from the first frame, never a headline alone on a screen, and the backs are what the row shows first, so their words count.",
+  "content": "Two to four tickets (three reads best; five or more run as the flow version), every front with the same amount of copy: a name of 1-2 words, a pitch of up to 20 words (10-16 with a photograph), 2-3 points of 2-5 words, a price with what it buys, an optional action; every back one or two short words set very large, the brand and a small line. A headline of 4-7 words on two lines, an optional sentence under it (the held stage leaves it out), a line over the row of 3-8 words, and fine print of 10-20 words. About 120 words for the whole section, the backs not counted. At rest the row reads as printed tickets, not pricing cards: type set to the edges of the stub, the copy filling the sheet, the page's own corners (square when its buttons are). A photograph on the top 29% of a ticket only when it is the ticket's own picture (a show's poster), never one already used on the page. One ink (--accent) for the backs and every word, a paper colour that stands clearly off both tints of the ground (a paper the colour of the ground reads as empty boxes), and two tints of a ground.",
+  "options": "hold 1.2-4 (0.6 + 0.5 a ticket: 2.1 for three); scrub true with Lenis, else 0.5 (0.2-0.6), for the ground's brightening; turn 0.5-1.2 s (0.8), one ticket's turn; lift 0-60 px towards the viewer at mid-turn (48); phone 'flip' | 'rest' ('rest' gives tablets and short windows the finished composition too). The tickets turn at (i + 0.5) / (tickets + 0.3) of the hold; two tickets make only two beats.",
+  "roles": [
+    "pricing",
+    "stats",
+    "list",
+    "features"
+  ],
+  "position": "middle",
+  "sectors": [
+    "event",
+    "culture",
+    "music",
+    "hospitality",
+    "restaurant",
+    "education",
+    "nonprofit",
+    "studio-portfolio",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "Two to four tickets (three reads best; five or more run as the flow version), every front with the same amount of copy: a name of 1-2 words, a pitch of up to 20 words (10-16 with a photograph), 2-3 points of 2-5 words, a price with what it buys, an optional action; every back one or two short words set very large, the brand and a small line. A headline of 4-7 words on two lines, an optional sentence under it (the held stage leaves it out), a line over the row of 3-8 words, and fine print of 10-20 words. About 120 words for the whole section, the backs not counted. At rest the row reads as printed tickets, not pricing cards: type set to the edges of the stub, the copy filling the sheet, the page's own corners (square when its buttons are). A photograph on the top 29% of a ticket only when it is the ticket's own picture (a show's poster), never one already used on the page. One ink (--accent) for the backs and every word, a paper colour that stands clearly off both tints of the ground (a paper the colour of the ground reads as empty boxes), and two tints of a ground."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/hinged-sheets/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"hinged-sheets\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

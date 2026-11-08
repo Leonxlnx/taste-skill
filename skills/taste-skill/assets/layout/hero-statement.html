@@ -24,7 +24,7 @@
   --display-weight: 400; --display-tracking: -0.018em; --display-tracking-xl: -0.026em; --ly-scale: 1.06;
 }
 .hero--statement .pill { margin-bottom: var(--s-6); }
-.funds { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(520px, var(--ly-fit)); display: grid; place-items: center;
+.funds { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(700px, var(--ly-fit)); display: grid; place-items: center;
   background: radial-gradient(70% 70% at 30% 20%, color-mix(in oklab, var(--ground-surface) 80%, white), transparent 70%), var(--ground-bg); }
 .funds .d-card { width: min(420px, calc(100% - 48px)); padding: 20px 22px; }
 .fund { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 0; border-top: 1px solid rgb(0 0 0 / .07); font-size: 13.5px; }
@@ -89,16 +89,19 @@
           <li>Bank lines matched to the right grant as they arrive</li>
           <li>A report for each funder in their own format</li>
           <li>Your examiner signs off in the same place</li>
+          <li>Gift Aid claims drafted from the same ledger</li>
         </ul>
       </div>
       <div class="span-6 start-7">
-        <div class="funds" role="img" aria-label="A Fundbook card listing three restricted funds with what is left of each">
+        <div class="funds" role="img" aria-label="A Fundbook card listing four restricted funds and the reserves, with what is left of each">
           <div class="d-card" aria-hidden="true">
             <div class="d-card__row"><h5>Restricted funds</h5><span class="d-chip">Reconciled</span></div>
             <p>Year to 31 March 2027</p>
             <div class="fund"><b>Lottery Community Fund</b><span>£18,400 of £42,000 left</span><div class="d-bar" style="--v: 56%; --d-accent: #1f6f8b"><i></i></div></div>
             <div class="fund"><b>City Council, youth work</b><span>£6,150 of £12,500 left</span><div class="d-bar" style="--v: 51%; --d-accent: #1f6f8b"><i></i></div></div>
             <div class="fund"><b>Henley Trust, minibus</b><span>£0 of £24,000 left</span><div class="d-bar" style="--v: 100%; --d-accent: #1f6f8b"><i></i></div></div>
+            <div class="fund"><b>Arts Council, summer club</b><span>£3,900 of £9,000 left</span><div class="d-bar" style="--v: 57%; --d-accent: #1f6f8b"><i></i></div></div>
+            <div class="fund"><b>Unrestricted reserves</b><span>£11,240</span><div class="d-bar" style="--v: 30%; --d-accent: #1f6f8b"><i></i></div></div>
           </div>
         </div>
       </div>

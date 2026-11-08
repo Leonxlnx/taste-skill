@@ -904,10 +904,11 @@ its own. It asks for the main action once more, word for word.
 **Job and use.** One big line and one big primary button. Any kind; no picture: the button is the
 picture.
 
-**At 1440.** `.closing__cta.close--type`: the h2 (at most eight words, on the left line), an optional
-`.t-small.muted` line (the trial terms, the opening hours), then `a.btn.btn--primary.btn--xl`
-across the `.wrap` (88px tall, its label in the display face at 32px) on software, 640 wide and 72
-tall on product and service (a slab that wide reads blunt on a clinic).
+**At 1440.** `.closing__cta.close--type`: the h2 (at most eight words, on the left line), set
+large from the screen's height by system.css (up to 120px), an optional `.t-small.muted` line (the
+trial terms, the opening hours), then `a.btn.btn--primary.btn--xl` at the row's foot, at most half
+the `.wrap` (640 wide, 72 tall). Never across the `.wrap`: in testing that button was the most
+templated part of every page. `.btn--wide` is no longer a width, only the larger label.
 
 **At 390.** The button full width, 48px tall with an 18px label.
 
@@ -919,7 +920,7 @@ tall on product and service (a slab that wide reads blunt on a clinic).
 ## close-photo
 
 **Job and use.** The close for a place, a product or a service: the main action beside a photograph
-of the place or the product in use. Always the close on a place.
+of the place or the product in use. One of the closes `start.mjs deal` deals.
 
 **At 1440.** `.closing__cta.close--photo`: a head row (the h2 of at most eight words, one line such
 as "Open today 7:30 to 16:00", the main action), then the client's photograph down to the links,
@@ -945,6 +946,80 @@ one line from line to line (hand-set size per breakpoint, never scaled by transf
 
 **Mistakes.** The name larger than the page can hold at 1024; the name repeated in a footer
 wordmark.
+
+## close-split
+
+**Job and use.** Any kind with a photograph left to show: the main action on a tinted panel with
+the facts that decide it, beside a photograph.
+
+```html
+<div class="closing__cta close--split">          <!-- data-side="end": the panel on the right -->
+  <div class="close__panel">
+    <h2 id="close-h">Order a cake</h2>
+    <p class="t-lead">Two days' notice, collected from the counter.</p>
+    <dl class="close__facts"><div><dt>Notice</dt><dd>2 days</dd></div><div><dt>From</dt><dd>£28</dd></div><div><dt>Reply</dt><dd>Same day</dd></div></dl>
+    <a class="btn btn--primary" href="#order">Order a cake</a>
+  </div>
+  <div class="close__media"><img src=".." alt=".." loading="lazy"></div>
+</div>
+```
+
+**At 1440.** The panel on span-6 (the tinted ground, 48px inside, the button at its foot), the
+photograph on the other six, both down to the links. **At 390.** The panel, then the photograph
+(200px at least), the facts one under another.
+
+**Mistakes.** Facts the brief does not give; the hero's photograph; a fourth fact.
+
+## close-form
+
+**Job and use.** A page whose last section would be a booking or order form: the form is the close,
+so the page never asks twice in a row (in testing: "Book your repair slot" right under "Book a
+repair slot").
+
+```html
+<div class="closing__cta close--form">
+  <div class="section-head"><h2 id="close-h">Book a room</h2><p>We reply within a day.</p></div>
+  <form class="form close__form" ..> the booking-form fields (starter.html, booking-form) </form>
+</div>
+```
+
+**At 1440.** The head on five columns (the h2 up to 88px), the form on the tinted ground on the
+right six, as tall as the row. **At 390.** The head, then the form full width. Add `.g2m` on the
+footer when the form and the links need two screens.
+
+**Mistakes.** A booking section above it as well; a photograph under the form.
+
+# Compositions
+
+The section layouts `start.mjs deal` deals per section (sections.md section 2). All are the
+system's grid; `system.css` (fill, compositions) makes every picture grow to the section's foot.
+On a phone each stacks: the words first, then the picture. Pick the photograph for each against
+its heading (`photos.md`).
+
+- **split-7-5, split-5-7, split-6-6**: the words and one picture.
+  `<div class="wrap grid grid--top"><div class="span-7"> h2, lines, rows or a link </div><figure class="pl-photo span-5"><img ..></figure></div>`
+  (5/7: `span-5` and `span-7`; 6/6: `span-6 start-7`). The picture runs to the foot by itself.
+- **mirrored**: a split with `.grid--mirror` on the grid: the picture on the left at 1024 and up,
+  the words still first in the markup. Once a page.
+- **list-tall**: a list (menu rows, prices, hours, services) on span-6 or span-7 beside one tall
+  photograph: the split markup with `.rows` in the words' column.
+- **bleed-panel**: the photograph is the section's layer, the words on a solid panel of the page
+  ground in its lower corner. Once a page, never right after the hero.
+  `<section class="section comp-bleed" [data-corner="end"]><img class="layer" src=".." alt=".."><div class="wrap"><div class="comp-panel"><h2>..</h2><p>..</p><a class="link" href="#..">..</a></div></div></section>`
+- **offset-pair**: two photographs of one subject, the second smaller and lower.
+  `<div class="grid comp-offset"><figure class="media span-7"><img ..></figure><figure class="media span-4 start-9"><img ..></figure></div>` after the head.
+- **three-up**: three photographs on span-4, one height, filling the row.
+  `<div class="grid comp-three"><figure class="media span-4"><img ..></figure> x3</div>` after the head.
+- **strip, wall, story, row, side**: sections.md section 4 (the five shapes, rooms).
+- **street-large**: the visit's h2, then the street set large (`.type-moment`, sections.md section
+  4), then the split of the panel and the photograph.
+- **form-photo, form-band**: the booking form beside a photograph (booking-form), or on a tinted
+  band across the section with the head on the left five columns; **close-form**: above.
+- **statement-type, statement-short**: `<section class="section statement [statement--short]">`
+  with a `.t-label` and one `.statement__text` (system.css sizes it from the screen's height;
+  `--short` for 12 to 20 words). A moment's statement takes the moment's own class on the same `p`.
+- **Bands** (`tint`, `dark`, `brand`): the section's class `ground-surface`, `ground-inverse` or
+  `ground-brand`; nothing else changes.
 
 # Footers
 
@@ -1044,7 +1119,7 @@ height 65 to 130 cm, delivery in 3 weeks), line-up (three sizes from €1,290), 
 oak top: a photograph of the grain), photo-band ("Built to order in Porto"), split-text-left again
 (the handset with its presets: a photograph, since a product never shows UI it does not have),
 specs (`rows--spec` beside a photograph of the frame), proof (a review the brief gives, merged),
-faq (four questions), footer.closing. Flat grounds, no effect; the hero's entrance and one dealt moment in its own section.
+faq (four questions), footer.closing. Flat grounds, no shader ground; the hero's dealt entrance, the section reveals and two dealt moments, each in its own section, and the scene when one is dealt.
 
 **With no photographs yet** (*Pellum, a desk lamp*): the lamp is shown in photographs, never
 hidden and never a render by default. `photos.mjs search "desk lamp"` and `"desk lamp detail"`
@@ -1105,7 +1180,7 @@ two open groups beside `tall-small`: a class at the wheel tall, a glazed bowl sm
 its class), the place (`trio`: the workshop, a shelf of drying pots, a hand trimming a foot ring,
 tops on one line), booking (a photograph of the class room beside the form), footer.closing
 (`footer-visit`, the name capped at 12vw, the one credits line, `data-tz="Europe/Berlin"`).
-Fourteen photographs, all the studio's own; no effect; the hero's entrance and one dealt moment; every linked photograph zooms
+Fourteen photographs, all the studio's own; no shader ground; the hero's dealt entrance and two dealt moments; every linked photograph zooms
 1.03 under the pointer.
 
 ## Service

@@ -1,0 +1,66 @@
+{
+  "id": "dither-field-opener",
+  "name": "Dither field opener",
+  "family": "colour-and-ground",
+  "classic": 1,
+  "look": "The first screen is printed, not pictured: one huge numeral, year or initial in the page's display face turns slowly inside a drifting noise field, and the whole field, mark and all, is a strict one-bit dither of 3-4px square dots in the ink on the ground. A fast scroll sends horizontal bands of accent dots across the mark, each slipping its row sideways by whole dots, and they settle back to ink about half a second after the page stops, so a phone's flick disturbs it as much as a wheel. The headline, its sentence and the action sit on a clear run of ground where the dots are masked out. It suits an issue, an edition, a release or an annual: anything that has a number or a letter worth printing large.",
+  "fits": [
+    "hero"
+  ],
+  "types": [
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "tech",
+    "playful"
+  ],
+  "intensity": "bold",
+  "webgl": 1,
+  "trigger": "scroll",
+  "hold": 0,
+  "restH": 1,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same scene with a phone plan: one column with the mark filling the space above the copy, 4px dots (phoneDot), a smaller swing (16 degrees), the field drawn at 30 frames a second, the disturbance tuned to touch flicks (full at 3000 px/s, from 750), no pointer trail. phone 'rest' shows one still dithered frame instead.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "The first screen, as the hero, with the headline as the h1, one sentence and the one action on the clear run of ground; the header bar sits over the stage and is kept clear of the dots too (option nav). It scrolls away like an ordinary section (hold 0) onto a quiet section on the same ground, which the field melts into at its foot. Once per page, and only as the opener: the field is never spread behind other sections.",
+  "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots.",
+  "options": "mark '' (the text of .df-mark); dot 4 (3-6) CSS px per dot, rounded to whole device pixels; phoneDot 4 (3-6); speed 1 (0-3) the field's drift; turn 24 (0-40) degrees the mark swings either way; phoneTurn 16 (0-30); period 20 (8-60) seconds a swing; field 0.4 (0.1-0.6) the field's densest share of dots; ink 0.86 (0.6-1) the mark's share of dots; grain 1 (0.5-2) the size of the field's clouds; sensitivity 1800 (600-8000) px/s of scroll for the full disturbance, starting at 25% of it; phoneSensitivity 3000; clear '.df-copy' boxes kept clear of dots; nav '' the header bar's selector, kept clear too; pad 28 (0-96) px of clear ground around each box; feather 64 (0-200) px over which the dots dissolve back in (ragged); foot 0.16 (0-0.5) share of the height over which the field dissolves at its foot; trail false, true adds a short accent trail behind a fine pointer on desktop; still -16 (-40-40) the mark's turn in the still frame; intro 1.1 (0-3) seconds the dots take to print in; seed 7; phone 'same' | 'rest'.",
+  "roles": [
+    "hero"
+  ],
+  "position": "opening",
+  "sectors": [
+    "culture",
+    "studio-portfolio",
+    "agency"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots."
+  },
+  "never": "never a decorative glyph or a stand-in.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/dither-field-opener/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"dither-field-opener\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

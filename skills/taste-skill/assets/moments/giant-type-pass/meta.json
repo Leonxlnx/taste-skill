@@ -8,11 +8,14 @@
   "trigger": "scroll",
   "cost": "low",
   "webgl": 0,
-  "pages": [
-    "tech",
-    "gaming",
-    "software"
+  "tones": [
+    "editorial",
+    "warm",
+    "product",
+    "playful",
+    "tech"
   ],
+  "intensity": "lively",
   "look": "Two to four words set at 12vw with a photograph showing through the letters under a 35% ink tint; the photograph passes upward through the type as the section crosses the screen.",
   "reduced": "The photograph stands still inside the letters.",
   "phone": "The photograph stands still in the letters, the type smaller (19vw).",

@@ -1,0 +1,302 @@
+/* assets/scenes/one-figure-reforms/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / one-figure-reforms.css — see one-figure-reforms.js for the DOM and the options.
+   By default (no script, reduced motion, a failed CDN, a phone set to 'rest', fewer than three chapters)
+   this is the finished composition: the heading, then every chapter as one row in the page's flow, its key
+   figure, huge name and lines beside its own window (the shape drawn with border-radius in the accent, its
+   interface or photograph whole inside). Under .is-live the stage is held: the heading top left, the one
+   window on the right re-forming between chapters (the script sets its clip-path, an inset() with round),
+   its panes placed in the part of each shape a rectangle can fill, and one chapter at a time in the left
+   column, its name and lines standing on the same floor as the window and its key figure under the heading.
+   Tablets held upright and small windows (under 1024px, upright) and phones stack it: the heading, the
+   window, then the name (the key figure and lines beside it on a tablet, the key figure above it on a phone).
+
+   Tokens it takes from the page: --ground, --ink, --muted, --accent, --font-display, --font-text, and the
+   weights --display-weight (the heading, the names and the key figures; 700 here when the page sets none)
+   and --text-weight (400). A weight the page has not loaded is never faked: the nearest loaded one shows.
+   Its own, all optional:
+     --ofr-ground      stage ground (the page's ground)
+     --ofr-ink         heading, names and key figures (the page's ink)
+     --ofr-muted       the chapters' lines and captions (the page's muted ink; keep 4.5:1 on the ground)
+     --ofr-accent      the window (the page's accent), the only colour on the stage
+     --ofr-on-accent   the words of an interface fragment, set straight on the window (#fff; the page's ink
+                       on a light accent)
+     --ofr-gx          side margin (clamp(16px, 5vw, 80px))
+     --ofr-top         live: where the heading starts (6svh; 4.5svh tablet; 5svh phone)
+     --ofr-floor       live: the floor the window and the words stand on, from the stage's foot (6svh)
+     --ofr-split       live, wide: where the window's zone begins (40vw)
+     --ofr-head        the heading's size (clamp(32px, 3.4vw, 52px))
+     --ofr-word-max    live: the largest a name is set; the script fits each name to its column under it
+                       (min(30svh, 18vw) wide; min(19svh, 25vw) tablet; 26vw phone)
+     --ofr-fig-h       live, stacked: the window's height until the script has measured (53svh; 46svh phone)
+     --ofr-card-max    the widest an interface fragment is set inside a pane (440px)
+   Sizes a page may set to its own scale (on :root or the section; unset, each layout uses its own):
+     --ofr-text-size   the chapters' lines (clamp(18px, 1.5vw, 22px) wide, up to 21px stacked, 18px phone)
+     --ofr-small       the key figures' captions (17px; 16px tablet; 15px phone)
+     --ofr-figure-size the key figures (clamp(44px, 4.4vw, 68px); up to 56px tablet);
+                       --ofr-figure-size-phone (34px live, 40px in the finished composition) */
+
+[data-big-scene="one-figure-reforms"] {
+  font-synthesis-weight: none;
+  --ofr-ground: var(--ground, #e6e7e1);
+  --ofr-ink: var(--ink, #121412);
+  --ofr-muted: var(--muted, #4b4f49);
+  --ofr-accent: var(--accent, #2440e0);
+  --ofr-on-accent: #fff;
+  --ofr-gx: clamp(16px, 5vw, 80px);
+  --ofr-top: 6svh;
+  --ofr-floor: 6svh;
+  --ofr-split: 40vw;
+  --ofr-head: clamp(32px, 3.4vw, 52px);
+  --ofr-word-max: min(30svh, 18vw);
+  --ofr-fig-h: 53svh;
+}
+
+/* ---- the finished composition (default): rows of name and window ---- */
+[data-big-scene="one-figure-reforms"] > .scene-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  column-gap: 6vw;
+  row-gap: clamp(56px, 9vh, 112px);
+  align-items: center;
+  padding: clamp(80px, 12vh, 140px) var(--ofr-gx);
+  background: var(--ofr-ground);
+  color: var(--ofr-ink);
+}
+[data-big-scene="one-figure-reforms"] :is(.ofr-chapters, .ofr-figure) { display: contents; }
+[data-big-scene="one-figure-reforms"] .ofr-heading {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: 13em;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 700);
+  font-size: var(--ofr-head);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+[data-big-scene="one-figure-reforms"] .ofr-ch { grid-column: 1; display: grid; grid-template-areas: "aside" "word" "text"; align-content: center; }
+[data-big-scene="one-figure-reforms"] .ofr-pane { grid-column: 2; }
+[data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(1), [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(1) { grid-row: 2; }
+[data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(2), [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(2) { grid-row: 3; }
+[data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(3), [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(3) { grid-row: 4; }
+[data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(4), [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(4) { grid-row: 5; }
+[data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(5), [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5) { grid-row: 6; }
+[data-big-scene="one-figure-reforms"] .ofr-word {
+  grid-area: word;
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 700);
+  font-size: clamp(64px, 10vw, 168px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+[data-big-scene="one-figure-reforms"] .ofr-text {
+  grid-area: text;
+  margin: 0.8em 0 0;
+  max-width: 24em;
+  font-family: var(--font-text, inherit);
+  font-weight: var(--text-weight, 400);
+  font-size: var(--ofr-text-size, clamp(18px, 1.5vw, 22px));
+  line-height: 1.42;
+  color: var(--ofr-muted);
+  text-wrap: pretty;
+}
+/* the key figure: one figure and what it counts */
+[data-big-scene="one-figure-reforms"] .ofr-aside {
+  grid-area: aside;
+  margin: 0 0 32px;
+  max-width: 17em;
+  font-family: var(--font-text, inherit);
+  font-weight: var(--text-weight, 400);
+  font-size: var(--ofr-small, 17px);
+  line-height: 1.35;
+  color: var(--ofr-muted);
+}
+[data-big-scene="one-figure-reforms"] .ofr-aside b {
+  display: block;
+  margin-bottom: 0.12em;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 700);
+  font-size: var(--ofr-figure-size, clamp(44px, 4.4vw, 68px));
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--ofr-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* each chapter's window at rest: the same family of shapes, drawn with border-radius, its content inside
+   the part a rectangle can fill (the padding) */
+[data-big-scene="one-figure-reforms"] .ofr-pane {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--ofr-accent);
+}
+[data-big-scene="one-figure-reforms"] .ofr-pane > :is(img, picture) { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* an interface fragment sits straight on the window (the pane, data-ui, is the product's window): no card of
+   its own (a card on the accent is a box in a box), its parts set apart by space and type, its words in
+   --ofr-on-accent */
+[data-big-scene="one-figure-reforms"] .ofr-pane > :not(img, picture) { width: 100%; max-width: var(--ofr-card-max, 440px); max-height: 100%; overflow: hidden; background: none; box-shadow: none; color: var(--ofr-on-accent); }
+[data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5n + 1), [data-big-scene="one-figure-reforms"] .ofr-pane[data-shape="bar"] { width: min(100%, 400px); aspect-ratio: 0.6; border-radius: 14px; padding: 28px; }
+[data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5n + 2), [data-big-scene="one-figure-reforms"] .ofr-pane[data-shape="disc"] { width: min(100%, 460px); aspect-ratio: 1; border-radius: 50%; padding: 14.6%; }
+[data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5n + 3), [data-big-scene="one-figure-reforms"] .ofr-pane[data-shape="arch"] { width: min(100%, 420px); aspect-ratio: 0.82; border-radius: 50% 50% 0 0 / 41% 41% 0 0; padding: 14.6% 14.6% 28px; }
+[data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5n + 4), [data-big-scene="one-figure-reforms"] .ofr-pane[data-shape="pill"] { width: min(100%, 400px); aspect-ratio: 0.64; border-radius: 999px; padding: 14.6%; }
+[data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5n + 5), [data-big-scene="one-figure-reforms"] .ofr-pane[data-shape="slab"] { width: min(100%, 520px); aspect-ratio: 1.6; border-radius: 28px; padding: 28px; }
+[data-big-scene="one-figure-reforms"] .ofr-pane:has(> img, > picture) { padding: 0; }
+
+/* Until the script has decided (live, or the finished composition), keep the chapters and panes back, so
+   the stage never shows the finished composition and then drops it. After 800ms without a decision (a slow
+   or failed CDN), the finished composition shows. */
+@media (prefers-reduced-motion: no-preference) {
+  html.sc-js [data-big-scene="one-figure-reforms"].scene:not(.is-live):not(.is-rest) :is(.ofr-ch, .ofr-pane) {
+    visibility: hidden;
+    animation: ofr-undecided 0s linear 0.8s forwards;
+  }
+}
+@keyframes ofr-undecided { to { visibility: visible; } }
+
+/* ---- live: the held stage ---- */
+html.sc-js [data-big-scene="one-figure-reforms"].is-live > .scene-stage { display: block; padding: 0; }
+[data-big-scene="one-figure-reforms"].is-live .ofr-heading {
+  position: absolute;
+  z-index: 2;
+  left: var(--ofr-gx);
+  top: var(--ofr-top);
+  width: calc(var(--ofr-split) - var(--ofr-gx) - 4vw);
+  max-width: 11em;
+}
+[data-big-scene="one-figure-reforms"].is-live .ofr-figure {
+  display: block;
+  position: absolute;
+  left: var(--ofr-split);
+  right: var(--ofr-gx);
+  top: var(--ofr-top);
+  bottom: var(--ofr-floor);
+  background: var(--ofr-accent);
+  clip-path: inset(0 25% round 14px);
+  will-change: clip-path;
+}
+/* a pane sits in the part of its own shape a rectangle can fill (measured into --ofr-px …); a photograph
+   fills the whole window */
+[data-big-scene="one-figure-reforms"].is-live .ofr-pane {
+  position: absolute;
+  left: var(--ofr-px, 25%);
+  top: var(--ofr-py, 4%);
+  width: var(--ofr-pw, 50%);
+  height: var(--ofr-ph, 92%);
+  aspect-ratio: auto;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  overflow: visible;
+  will-change: transform, opacity;
+}
+[data-big-scene="one-figure-reforms"].is-live .ofr-pane:has(> img, > picture) { inset: 0; width: auto; height: auto; }
+[data-big-scene="one-figure-reforms"].is-live .ofr-pane + .ofr-pane { visibility: hidden; }
+/* the column: from under the heading (measured into --ofr-head-b; until then two of its lines, the
+   column's font size being the heading's) down to the floor */
+[data-big-scene="one-figure-reforms"].is-live .ofr-chapters {
+  position: absolute;
+  z-index: 1;
+  left: var(--ofr-gx);
+  width: calc(var(--ofr-split) - var(--ofr-gx) - 3.5vw);
+  top: calc(var(--ofr-head-b, calc(var(--ofr-top) + 2.2em)) + 5svh);
+  bottom: var(--ofr-floor);
+  display: block;
+  font-size: var(--ofr-head);
+}
+[data-big-scene="one-figure-reforms"].is-live .ofr-ch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  will-change: transform, opacity;
+}
+[data-big-scene="one-figure-reforms"].is-live .ofr-ch + .ofr-ch { visibility: hidden; }
+[data-big-scene="one-figure-reforms"].is-live .ofr-word {
+  font-size: var(--ofr-fit, var(--ofr-word-max));
+  line-height: 0.92;
+  margin-bottom: 0.06em;
+}
+[data-big-scene="one-figure-reforms"].is-live .ofr-text { margin-top: 0.7em; max-width: 22em; }
+[data-big-scene="one-figure-reforms"].is-live .ofr-aside { order: -1; margin: 0 0 auto; }
+
+/* ---- the finished composition on narrow screens: one column, each window above its words ---- */
+@media (max-width: 900px) {
+  [data-big-scene="one-figure-reforms"] > .scene-stage { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  [data-big-scene="one-figure-reforms"] :is(.ofr-ch, .ofr-pane) { grid-column: 1; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane { justify-self: start; }
+  [data-big-scene="one-figure-reforms"]:not(.is-live) .ofr-ch { margin-bottom: 40px; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(1) { grid-row: 2; }
+  [data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(1) { grid-row: 3; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(2) { grid-row: 4; }
+  [data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(2) { grid-row: 5; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(3) { grid-row: 6; }
+  [data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(3) { grid-row: 7; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(4) { grid-row: 8; }
+  [data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(4) { grid-row: 9; }
+  [data-big-scene="one-figure-reforms"] .ofr-pane:nth-child(5) { grid-row: 10; }
+  [data-big-scene="one-figure-reforms"] .ofr-ch:nth-child(5) { grid-row: 11; }
+}
+
+/* ---- live, stacked: tablets held upright and small windows, then phones: the window above the words ---- */
+@media (max-width: 1023px) and (max-aspect-ratio: 1/1), (max-width: 767px) {
+  [data-big-scene="one-figure-reforms"] { --ofr-head: clamp(28px, 6.6vw, 52px); --ofr-word-max: min(17svh, 24vw); --ofr-gap: 4svh; }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-heading { right: var(--ofr-gx); width: auto; max-width: 15em; }
+  /* the window fills the height between the heading and the tallest chapter (the script measures both
+     into --ofr-head-b and --ofr-block-h; until then one heading line and --ofr-fig-h) */
+  [data-big-scene="one-figure-reforms"].is-live .ofr-figure {
+    left: var(--ofr-gx);
+    right: var(--ofr-gx);
+    top: calc(var(--ofr-head-b, calc(var(--ofr-top) + 1.1em)) + 3.5svh);
+    bottom: auto;
+    height: var(--ofr-fig-h);
+    height: max(30svh, calc(100svh - var(--ofr-head-b, 14svh) - 3.5svh - var(--ofr-block-h, 30svh) - var(--ofr-gap) - var(--ofr-floor)));
+    font-size: var(--ofr-head);
+  }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-chapters {
+    left: var(--ofr-gx);
+    right: var(--ofr-gx);
+    width: auto;
+    top: auto;
+    height: 44svh;
+  }
+}
+
+/* live, tablets held upright: the name, and beside it a column with its key figure over its lines */
+@media (min-width: 768px) and (max-width: 1023px) and (max-aspect-ratio: 1/1) {
+  [data-big-scene="one-figure-reforms"] { --ofr-top: 4.5svh; --ofr-floor: 5svh; --ofr-word-max: min(19svh, 25vw); }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-ch {
+    --ofr-beside: 300px;
+    display: grid;
+    grid-template-columns: auto minmax(var(--ofr-beside), 1fr);
+    grid-template-areas: "word aside" "word text";
+    grid-template-rows: auto auto;
+    align-content: end;
+    align-items: end;
+    column-gap: 24px;
+  }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-aside { order: 0; margin: 0 0 14px; max-width: 18em; font-size: var(--ofr-small, 16px); }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-aside b { font-size: var(--ofr-figure-size, clamp(40px, 6.4vw, 56px)); }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-text { margin: 0 0 0.3em; max-width: 22em; font-size: var(--ofr-text-size, clamp(18px, 2.75vw, 21px)); }
+}
+
+/* ---- phone ---- */
+@media (max-width: 767px) {
+  [data-big-scene="one-figure-reforms"] { --ofr-top: 5svh; --ofr-head: clamp(26px, 7.4vw, 32px); --ofr-word-max: 26vw; --ofr-fig-h: 46svh; --ofr-gap: 3.5svh; }
+  [data-big-scene="one-figure-reforms"] > .scene-stage { padding: 80px var(--ofr-gx); }
+  [data-big-scene="one-figure-reforms"]:not(.is-live) .ofr-pane:is(:nth-child(5n + 2), [data-shape="disc"]) { padding: 12%; }
+  [data-big-scene="one-figure-reforms"] .ofr-word { font-size: clamp(56px, 19vw, 88px); }
+  [data-big-scene="one-figure-reforms"] .ofr-text { font-size: var(--ofr-text-size, 18px); }
+  [data-big-scene="one-figure-reforms"] .ofr-aside { margin: 0 0 16px; }
+  [data-big-scene="one-figure-reforms"] .ofr-aside b { font-size: var(--ofr-figure-size-phone, 40px); }
+  /* one chapter at a time: its key figure, its name, its lines, under the window */
+  [data-big-scene="one-figure-reforms"].is-live .ofr-aside { margin: 0 0 16px; font-size: var(--ofr-small, 15px); }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-aside b { font-size: var(--ofr-figure-size-phone, 34px); }
+  [data-big-scene="one-figure-reforms"].is-live .ofr-text { font-size: var(--ofr-text-size, 18px); margin-top: 0.6em; }
+}

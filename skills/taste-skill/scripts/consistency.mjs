@@ -353,16 +353,16 @@ const phase = 'width';
 const checks = [
   { id: 'visual-caption', sev: 'FAIL', what: 'a caption, description or caption-like line under, over or on an image, render or visual of 120x80px or more' },
   { id: 'visual-empty', sev: 'FAIL', what: 'a visual of 120x80px or more showing under 6 colours or only a smooth gradient at this width (blank FAILs), or a broken picture' },
-  { id: 'effect-kind', sev: 'FAIL', what: 'an effect on a place, service or plain product page; past 4 live WebGL contexts, one scene or two scroll moments on a tech page' },
+  { id: 'effect-kind', sev: 'FAIL', what: 'an effect on a place, service or plain product page beyond one quiet treatment, or a scene that does not fit its kind; past 4 live WebGL contexts, one scene or three scroll moments on a tech page' },
   { id: 'hero-enter', sev: 'WARN', what: 'a hero that does not enter on load: no data-enter on it, or no head line setting html.m-enter (data-enter="off" on a hero holding a big scene is its entrance)' },
-  { id: 'moment-none', sev: 'WARN', what: 'a page with no dealt moment (every kind carries one, two on a long page); the gate holds it as a FAIL' },
+  { id: 'moment-none', sev: 'WARN', what: 'a page with no dealt moment (every kind carries two, three on a long page); the gate holds it as a FAIL' },
 ];
 const fixes = {
   'visual-caption': 'take the line away: no caption or description under, over or on any image, render or visual; a licence credit goes in one footer line',
   'visual-empty': 'make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame',
   'hero-enter': 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter (motion.md: the entrance)',
-  'moment-none': 'deal one (moments.mjs pick --page <kind>) and mount it in its own section (moments.md)',
-  'effect-kind': 'take the effect off: a place, shop or service page leads with its photographs, flat colour and type, no effect and no pattern or glow ground (effects fit tech, gaming and software pages, and a product with a technical subject)',
+  'moment-none': 'deal them (start.mjs plan, or moments.mjs pick --page <kind> --scene deal) and mount each in its own section (moments.md)',
+  'effect-kind': 'take the effect off or deal one that fits: a place, shop or service page takes one quiet treatment at most (effects.mjs pick --page <kind> --slots band) and a scene dealt by fit (moments.mjs pick --page <kind> --scene deal), never a tech-looking shader ground',
 };
 const summary = [
   '  visuals    visual-caption (a caption, description or caption-like line under, over or on an image, render or visual',
@@ -387,7 +387,7 @@ const quick = true;
 const KIND_ALIAS = { game: 'gaming', games: 'gaming', ai: 'software', saas: 'software', app: 'software', other: null };
 const NO_EFFECT = new Set(['place', 'product', 'service']);
 const EFFECT_OK = new Set(['tech', 'gaming', 'software']);
-const KIND_RULE = 'effects fit tech, gaming and software pages and a product with a technical subject, never a place, shop or service page (house rule)';
+const KIND_RULE = 'shader grounds fit tech, gaming and software pages and a product with a technical subject; a place, shop or service page takes one quiet treatment at most and a scene dealt by fit (house rule 8, effects-usage.md)';
 // the dealt moments and the kinds each is dealt to (assets/moments/index.json, "pages"): since 2.5.1 every kind deals one,
 // a place, product or service page its photo- and type-led ones; a moment off its kind, retired, or the halftone look of
 // picture-develops (not dealt) is an effect there
@@ -397,6 +397,19 @@ const MOMENT_PAGES = (() => {
   return o;
 })();
 const momentFits = (m, kind) => { const x = MOMENT_PAGES[m.id]; return !!x && x.pages.includes(kind) && !(m.id === 'picture-develops' && /print/i.test(m.look || '')); };
+// 2.5.2, the fit rule (moments.md): a place, service or product page may hold one quiet treatment (an effect whose
+// meta.json says "treatment": true) and a big scene whose tones, intensity and webgl fit its kind; the kit's own scene
+// files are no scroll library of the page's
+const KIT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets');
+const readMeta = (dir, id) => { try { return /^[a-z0-9-]+$/.test(id || '') ? JSON.parse(readFileSync(join(KIT_DIR, dir, id, 'meta.json'), 'utf8')) : null; } catch { return null; } };
+const FIT_KIND = { place: { tones: ['warm', 'editorial'], intensity: ['quiet', 'lively'] }, service: { tones: ['editorial', 'warm', 'product'], intensity: ['quiet', 'lively'] },
+  product: { tones: ['product', 'editorial', 'warm'], intensity: ['quiet', 'lively', 'bold'] } };
+const isTreatment = (id) => { const m = readMeta('effects', id); return !!(m && m.treatment); };
+const sceneFitsKind = (id, kind) => {
+  const m = readMeta('scenes', id), f = FIT_KIND[kind];
+  if (!m || !f || m.retired || (m.webgl || 0) > 0) return false;
+  return (m.tones || []).some((t) => f.tones.includes(t)) && f.intensity.includes(m.intensity || 'lively');
+};
 // 6 colours or more with detail under 0.2%: a smooth gradient with nothing on it (lines, text, halftone and
 // photographs score about 0.5% and up)
 const SMOOTH_MAX = 0.002;
@@ -619,7 +632,7 @@ async function staticScan(pageUrl, fetched) {
   return out;
 }
 
-const KIT_MOMENT_FILE = /\/assets\/moments\/(?:[a-z0-9-]+\/moment\.(?:js|css)|lib\.js|moments\.js)$/;
+const KIT_MOMENT_FILE = /\/assets\/(?:moments\/(?:[a-z0-9-]+\/moment\.(?:js|css)|lib\.js|moments\.js)|scenes\/(?:[a-z0-9-]+\/(?:scene|classic|stage)\.(?:js|css)|scenes\.(?:js|css)|lib\.js|print\.js))$/;
 const urlPath = (u) => { try { return new URL(u).pathname; } catch { return String(u || ''); } };
 // the effect signs in what the page loads (effectSignals)
 function effectSignals(scan) {
@@ -890,6 +903,8 @@ function kindProbe() {
   const fetched = [...new Set([...performance.getEntriesByType('resource').map((e) => e.name), ...[...document.scripts].map((s) => s.src).filter(Boolean)])].filter((u) => { try { return new URL(u).origin === origin; } catch (e) { return false; } });
   return {
     taste: meta('taste-kind'), siteKind: meta('site-kind'), pageKind: meta('page-kind'), pageType: meta('page-type'), dataType: String(document.documentElement.getAttribute('data-type') || '').trim().toLowerCase(),
+    fxIds: [...document.querySelectorAll('[data-fx]')].map((e) => String(e.getAttribute('data-fx') || '').trim().split(/[\s:]/)[0]),
+    bigIds: [...document.querySelectorAll('[data-big-scene]')].map((e) => String(e.getAttribute('data-big-scene') || '').trim()),
     dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: q('[data-print]'), dataMoment: q('[data-scroll-moment], [data-moment]'),
     bigScene: q('[data-big-scene]'), fxBeside: [...document.querySelectorAll('[data-fx]')].filter((e) => !e.closest('[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]')).length,
     mount: first('[data-fx], [data-scene], [data-big-scene], [data-print]'), moment: first('[data-scroll-moment], [data-moment]'),
@@ -964,8 +979,9 @@ async function driftProbe(o) {
     const frames = [...main.querySelectorAll('img,canvas,svg,video')].filter((e) => { const r = e.getBoundingClientRect(); return r.width >= 120 && r.height >= 80 && vis(e) && !(e.parentElement && e.parentElement.closest('svg')); }).slice(0, 40);
     // a dealt moment's section ([data-moment], or a section holding one) follows the scroll by design: the moment itself is
     // judged by its id against the page's kind
-    const momentSecs = secs.filter((s) => s.matches('[data-moment][data-moment-mounted]') || s.querySelector('[data-moment][data-moment-mounted]'));
-    const inMoment = (e) => !!e.closest('[data-moment][data-moment-mounted]') || momentSecs.some((s) => s.contains(e));
+    // (2.5.2: a dealt big scene's section too, on every kind it fits)
+    const momentSecs = secs.filter((s) => s.matches('[data-moment][data-moment-mounted], [data-big-scene]') || s.querySelector('[data-moment][data-moment-mounted], [data-big-scene]'));
+    const inMoment = (e) => !!e.closest('[data-moment][data-moment-mounted], [data-big-scene]') || momentSecs.some((s) => s.contains(e));
     const linked = [...secs, ...cards, ...frames].filter((e) => !fixedLike(e) && !inMoment(e));
     const dev = new Map(), docs = new Map();
     const maxY = Math.max(0, document.scrollingElement.scrollHeight - H), step = Math.round(H * 0.7);
@@ -1174,7 +1190,7 @@ function effectFindings(ctx, K) {
     const all = K.moments || [], top = all.filter((m) => !m.nested);
     const dead = all.filter((m) => m.nested || m.failed || !m.mounted || !m.loaded);
     if (dead.length) add('moment-dead', 'FAIL', `${dead.length} [data-moment] mark${dead.length > 1 ? 's' : ''} that never run${dead.length > 1 ? '' : 's'}: ${dead.slice(0, 3).map((m) => `${m.id || '(no id)'} on ${m.sel} (${m.nested ? 'inside another moment' : m.failed ? `failed: ${m.failed}` : !m.loaded ? `assets/moments/${m.id}/moment.js was never loaded` : 'moments.js never mounted it'})`).join('; ')}; a moment is judged as one only when it runs`, 'load assets/moments/moments.js (system.js does it for a page with [data-moment]) and keep the dealt id, or take the data-moment mark off the section', { sel: dead[0].sel, doc: null });
-    if (top.length > 2) add('moment-count', 'FAIL', `${top.length} moments on one page (${top.map((m) => m.id).slice(0, 5).join(', ')}): two at most on every kind (moments.md)`, 'keep the one or two moments the deal gave and let the other sections scroll plainly', { sel: top[2].sel, doc: null });
+    if (top.length > 3) add('moment-count', 'FAIL', `${top.length} moments on one page (${top.map((m) => m.id).slice(0, 5).join(', ')}): three at most on every kind (moments.md)`, 'keep the two or three moments the deal gave and let the other sections scroll plainly', { sel: top[3].sel, doc: null });
     // a retired moment, or one dealt to none of the effect kinds, is off on a tech, gaming or software page as well
     if (!noEffect) {
       const fitsTech = (m) => momentFits(m, kind) || (kind === 'product' && ['tech', 'software'].some((x) => momentFits(m, x)));
@@ -1193,15 +1209,21 @@ function effectFindings(ctx, K) {
   // its own id (not effect-kind, which reads as "take an effect off"); a WARN here, a FAIL at the gate
   if (ctx.first && !(K.moments || []).length && !momentsTag && !S.told.has('moment-none')) {
     S.told.add('moment-none');
-    const f = { check: 'moment-none', sev: 'WARN', id: 0, sel: '(the page)', text: '', msg: `${page} deals no moment: every kind carries one, two on a long page (moments.md)`, fix: `deal one (moments.mjs pick --page ${kind}${noEffect ? ' --photo' : ''}) and mount it in its own section` };
+    const f = { check: 'moment-none', sev: 'WARN', id: 0, sel: '(the page)', text: '', msg: `${page} deals no moment: every kind carries two, three on a long page (moments.md)`, fix: `deal them (start.mjs plan, or moments.mjs pick --page ${kind} --scene deal) and mount each in its own section` };
     put(ctx, f);
     F.push(f);
   }
   if (noEffect) {
     const why = `${kind === 'product' ? ' (a product with a technical subject: pass --tech-subject or mark <meta name="site-kind" content="tech">)' : ''}: ${KIND_RULE}`;
     if (objRender) ctx.log(`the product's own render (${[...own.map((p) => p.id), ...(productFrames.length ? [`${productFrames.length} [data-product] frame${productFrames.length > 1 ? 's' : ''}`] : [])].join(', ')}) is its picture`);
-    if (gl > 0) add('gl', 'FAIL', `${page} ${M.guard ? `asks for ${gl} WebGL context${gl > 1 ? 's' : ''}${objRender ? ' outside its object render' : ''}${M.at.length ? ` (${[...new Set(M.at)].slice(0, 4).join(', ')})` : ''}` : 'loads shader code'}${sig.shaderStrings ? ` and ships ${sig.shaderStrings} shader source${sig.shaderStrings > 1 ? 's' : ''}` : ''}${why}`, null, K.canvas);
-    if (fxMounts || scenesNo || prints) add('parts', 'FAIL', `${page} has effect parts: ${[fxMounts && `${fxMounts} data-fx`, scenesNo && `${scenesNo} scene${scenesNo > 1 ? 's' : ''}`, prints && (sig.photoObjects.length ? `the photo print object${sig.photoObjects.length > 1 ? 's' : ''} ${sig.photoObjects.join(', ')}` : `${prints} data-print`)].filter(Boolean).join(', ')}${why}`, null, K.mount);
+    // 2.5.2: one quiet treatment (one WebGL context) and a big scene that fits the kind are allowed here
+    const fxIds = K.fxIds || [], treat = fxIds.length === 1 && isTreatment(fxIds[0]) ? 1 : 0;
+    const fitScenes = (K.bigIds || []).filter((id) => sceneFitsKind(id, kind)).length;
+    if (treat) ctx.log(`the quiet treatment ${fxIds[0]} is allowed on ${page}`);
+    if (fitScenes) ctx.log(`${fitScenes} big scene${fitScenes > 1 ? 's' : ''} that fit${fitScenes > 1 ? '' : 's'} ${page} (${(K.bigIds || []).join(', ')})`);
+    const glOver = gl - treat, fxOver = fxMounts - treat, scenesOver = Math.max(0, scenesNo - fitScenes);
+    if (glOver > 0) add('gl', 'FAIL', `${page} ${M.guard ? `asks for ${gl} WebGL context${gl > 1 ? 's' : ''}${objRender ? ' outside its object render' : ''}${M.at.length ? ` (${[...new Set(M.at)].slice(0, 4).join(', ')})` : ''}` : 'loads shader code'}${sig.shaderStrings ? ` and ships ${sig.shaderStrings} shader source${sig.shaderStrings > 1 ? 's' : ''}` : ''}${treat ? ' beyond its one quiet treatment' : ''}${why}`, null, K.canvas);
+    if (fxOver > 0 || scenesOver || prints) add('parts', 'FAIL', `${page} has effect parts: ${[fxOver > 0 && `${fxMounts} data-fx${fxIds.length ? ` (${fxIds.slice(0, 3).join(', ')})` : ''}`, scenesOver && `${scenesOver} scene${scenesOver > 1 ? 's' : ''} that do${scenesOver > 1 ? '' : 'es'} not fit the kind (${(K.bigIds || []).join(', ') || 'data-scene'})`, prints && (sig.photoObjects.length ? `the photo print object${sig.photoObjects.length > 1 ? 's' : ''} ${sig.photoObjects.join(', ')}` : `${prints} data-print`)].filter(Boolean).join(', ')}${why}`, null, K.mount);
     // a dealt moment of this kind (photo-chapters, pinned-chapters, picture-develops in its film look, word-highlight on a
     // place, product or service) is the page's one or two moments; one off its kind, and a data-scroll-moment, are effects
     const offKind = (K.moments || []).filter((m) => !momentFits(m, kind)), scrollTags = Math.max(0, momentsTag - (K.moments || []).length);
@@ -1220,7 +1242,7 @@ function effectFindings(ctx, K) {
     if (bigTags > 1) add('scenes', 'FAIL', `${bigTags} big scenes ([data-big-scene]) on ${k}: one at most (house rule; MO-23)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
     else if (bigTags === 1 && (M.fxBeside || 0) > 0) add('scenes', 'FAIL', `a big scene and ${M.fxBeside} effect ground${M.fxBeside > 1 ? 's' : ''} (data-fx) beside it on ${k}: the big scene is the page's one effect (MO-16, MO-23); only the one or two scroll moments may hold their own`, 'drop the data-fx ground (a plain or photographed ground in its place), or drop the big scene and keep the ground', K.mount);
     else if (scenes > 1) add('scenes', 'WARN', `${scenes} big scenes on ${k} (data-big-scene or photo data-scene ${sceneTags}, data-print ${printTags}, large WebGL canvases that are no data-fx ground ${M.guard ? M.big : 0}): one is allowed (house rule)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
-    if (scrollMoments > 2) add('moments', 'WARN', `${scrollMoments} scroll-driven section moments on ${k} (data-scroll-moment or data-moment ${momentsTag}, sections moving with the scroll ${linkedSections.length}): one or two are allowed (house rule)`, 'keep one or two section moments and let the other sections scroll plainly', linkedSections[0] || K.moment);
+    if (scrollMoments > 3) add('moments', 'WARN', `${scrollMoments} scroll-driven section moments on ${k} (data-scroll-moment or data-moment ${momentsTag}, sections moving with the scroll ${linkedSections.length}): two or three are allowed (house rule)`, 'keep the two or three dealt moments and let the other sections scroll plainly', linkedSections[0] || K.moment);
     if (any && !sig.reducedMotion) add('reduced', 'WARN', 'the page has effects but no prefers-reduced-motion branch in its scripts or styles: reduced motion must show the finished still', 'under prefers-reduced-motion: reduce, show each effect\'s finished still and stop its motion');
     if (any && !sig.phoneHint) add('phone', 'WARN', 'the page has effects but no phone, touch or max-width branch in its scripts: a phone needs the still or a light version', 'give phones (max-width or pointer: coarse) the still or a lighter version of each effect');
     if (particles) add('particles', 'WARN', `particle code or heavy canvas 2D drawing on ${k}${rate >= 300 ? ` (${rate} shapes a second)` : ''}: check it is a deliberate scene`, 'keep particles to the one big scene, or take them off', K.canvas);
@@ -2326,6 +2348,9 @@ function measure(opt) {
     const el = it.el, tag = TU(el);
     if (tag === 'H1' || tag === 'H2') { heads.push({ z: it.z, el, r: it.r, tag: tag.toLowerCase() }); continue; }
     if (/^H[3-6]$/.test(tag) || el.closest('h1,h2,h3,h4,h5,h6,nav.actionbar') || (header && header.contains(el))) continue;
+    // a statement's sentence is set large on purpose and sits at its section's foot (system.css, 2.5.2): a sentence, not
+    // a section heading beside the next one
+    if (el.closest('main > section.statement')) continue;
     if (!hasDirectText(el) || parseFloat(cs(el).fontSize) < headTh) continue;
     if (anyRowItem(el, it.z) || rowExempt(el, it.z) || splitCard(el, it.z) || inFooterLinks(el, it.z)) continue;
     const tr = textUnion.get(el); if (!tr) continue;
@@ -2695,13 +2720,15 @@ function measure(opt) {
     }
     for (const s of S) {
       const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k));
-      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k));
+      // (2.5.2: the place hero's photograph is in the flow in its band, split and name forms: layout.css 0b)
+      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k) && !(k.matches('.hero__bg') && s.el.matches('.hero--place')));
       const wraps = inflow.filter((k) => k.classList.contains('wrap'));
       if (wraps.length !== 1 || inflow.length !== 1) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `the section needs exactly one in-flow child .wrap (it has ${inflow.length} in-flow child${inflow.length === 1 ? '' : 'ren'}, ${wraps.length} .wrap)`));
       let heroLayers = 0;
       for (const k of kids) {
         if (inflow.includes(k)) continue;
         if (s.isHero) heroLayers++;
+        if (k.matches('.hero__bg') && s.el.matches('.hero--place') && cs(k).position === 'relative') continue;   // its photograph in the flow (layout.css 0b)
         const probs = layerProblems(k, s);
         if (probs.length) sOff.push(off(k, null, `a child of section ${s.i + 1} beside its .wrap is no valid background layer: ${probs.join('; ')}`, { ref: [box(secR(s))] }));
       }
@@ -9268,7 +9295,7 @@ const FIX = {
   'dark-ground': 'light the ground behind the UI (a daylight data-fx-palette): at least 3:1 against the card',
   'loop-pause': 'add a pause button to the visual, or stop the loop on its finished picture within 5 s',
   webgl: 'at most 4 live WebGL contexts: mount each effect when it comes on screen and destroy it when it leaves',
-  'copy-headline': 'put the category noun in the h1 (and who it is for, or where), in 2 to 8 words',
+  'copy-headline': 'say what is sold, and for whom or where, in the hero: the h1 in the form on the voice card (2 to 9 words), the category plain in the lead or the eyebrow',
   'copy-fact': 'put one hard fact from the brief on the first screen: a number, a price, a date, the place, the platforms it runs on or a game\'s genre; take it from the brief or remove the claim',
   'copy-headings': 'name the thing in every heading: the product, a part, the place or a section noun',
   'copy-buttons': 'label buttons with a verb and what the visitor gets ("Book a room", "Start free trial")',
@@ -9293,7 +9320,7 @@ const FIX = {
   flush: 'give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)',
   'credit-wall': 'one short credit line in the footer (or the credits on an imprint page): never a block of names',
   'unit-break': 'keep a number with its unit: a no-break space (&nbsp;) between them',
-  'effects-fit': 'take the WebGL effects off this page: lead with its photographs, flat colour and type (effects are for tech, software, AI and gaming pages)',
+  'effects-fit': 'take the WebGL effects off this page, or keep one quiet treatment dealt by effects.mjs pick --page <kind> (grain-gradient, soft-light-bars, line-engraving, film-light-leak, duotone-grade); shader grounds are for tech, software, AI and gaming pages',
   'tab-wrap': 'fit the tabs on one line at this width (shorter labels, a scrolling row), or let them stack evenly',
   'fade-cut': 'fit the mock\'s rows inside its panel (fewer rows, a taller panel), or end the fade below the last whole row: no row half-erased',
   'photo-weight': 'give each photograph srcset and sizes (an 800px and a 1600px file), or a smaller file',
@@ -9397,18 +9424,20 @@ function copyTerms(P) {
 function copyChecks(P) {
   const F = [], T = copyTerms(P);
   const f = (check, sev, x, msg) => F.push({ check, sev, id: x && x.id || 0, sel: x && x.sel || '(the page)', text: x && (x.text || x.label) ? String(x.text || x.label).slice(0, 48) : '', msg, doc: x && x.doc || null });
-  // 1. the headline names the category (and, for a brand nobody knows, the buyer or the place), in 2 to 8 words
+  // 1. the hero (h1, eyebrow and lead) names the category (and, for a brand nobody knows, the buyer or the place); the h1
+  //    takes the hero form on the voice card (copy.md, rule 1), in 2 to 9 words
   if (!P.h1) f('copy-headline', 'FAIL', null, 'the page has no visible h1');
   else {
     const n = norm(P.h1.text).split(' ').filter(Boolean).length;
     if (!T.category.length) f('copy-headline', 'WARN', P.h1, `"${P.h1.text.slice(0, 60)}": no category known to check it against (pass --category, or write the <title> as "Name: what it is for whom")`);
     else {
-      const inH1 = holdsAny(P.h1.text, T.category), inAfter = holdsAny(P.after, T.category);
-      if (!inH1) f('copy-headline', inAfter && KNOWN ? 'WARN' : 'FAIL', P.h1, `"${P.h1.text.slice(0, 60)}" does not name what is sold (${T.category.slice(0, 4).join(', ')}, from ${T.from})${inAfter ? '; only the line under it does' : ''}`);
+      const heroAll = `${P.h1.text} ${P.after || ''} ${P.heroText || ''}`;
+      const inHero = holdsAny(heroAll, T.category);
+      if (!inHero) f('copy-headline', 'FAIL', P.h1, `"${P.h1.text.slice(0, 60)}": neither the h1, the eyebrow nor the lead names what is sold (${T.category.slice(0, 4).join(', ')}, from ${T.from})`);
       const who = [...T.audience, ...T.place];
-      if (inH1 && !KNOWN && who.length && !holdsAny(P.h1.text + ' ' + P.after, who)) f('copy-headline', 'FAIL', P.h1, `the headline and the line under it name neither the buyer nor the place (${who.slice(0, 4).join(', ')})`);
+      if (inHero && !KNOWN && who.length && !holdsAny(heroAll, who)) f('copy-headline', 'FAIL', P.h1, `the hero (h1, eyebrow and lead) names neither the buyer nor the place (${who.slice(0, 4).join(', ')})`);
     }
-    if (n < 2 || n > 8) f('copy-headline', 'WARN', P.h1, `the h1 has ${n} word${n === 1 ? '' : 's'} (2 to 8 read at a glance)`);
+    if (n < 2 || n > 9) f('copy-headline', 'WARN', P.h1, `the h1 has ${n} word${n === 1 ? '' : 's'} (2 to 9 read at a glance)`);
   }
   // 2. one hard fact on the first screen
   // (the platforms a product runs on, a game's genre, or a place named after in, at, near or from count as the fact too)
@@ -11130,7 +11159,10 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         const fx = [...new Set([...glMax.items.map((i) => i.name), ...((G && G.at) || [])])].slice(0, 5);
         const grounds = (await tab.eval(`[...document.querySelectorAll('[data-fx], [data-fx-mounted], [data-scene], [data-big-scene]')].map((e) => e.getAttribute('data-fx') || e.getAttribute('data-scene') || e.getAttribute('data-big-scene') || 'an effect').slice(0, 4)`).catch(() => [])) || [];
         const pr = (await tab.eval('window.__cc.moreChecks().prints.length').catch(() => 0)) || 0;
-        if (TYPE !== 'product' || grounds.length || pr) F.push({ check: 'effects-fit', sev: 'FAIL', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `a ${KIND || TYPE} page${KIND_FROM && KIND_FROM !== '--type' ? ` (${KIND_FROM})` : ''} asks for ${G.asked - (G.prodAsked || 0)} WebGL context${G.asked - (G.prodAsked || 0) > 1 ? 's' : ''}${fx.length ? ` (${fx.join(', ')})` : ''}${TYPE === 'product' ? `: ${grounds.length ? `effect grounds (${[...new Set(grounds)].join(', ')})` : ''}${grounds.length && pr ? ' and ' : ''}${pr ? 'a print over its photographs' : ''}` : ''}: shader effects are for tech, software, AI and gaming pages${TYPE === 'product' ? ' (a product may show a render of itself)' : ''}` });
+        // 2.5.2: one quiet treatment (meta "treatment": true) in one context, beside a scene that fits, is allowed
+        const asked1 = G.asked - (G.prodAsked || 0), notScene = grounds.filter((g) => !sceneFitsKind(g, TYPE));
+        const treatOnly = !pr && asked1 <= 1 && notScene.length === 1 && isTreatment(notScene[0]);
+        if (!treatOnly && (TYPE !== 'product' || grounds.length || pr)) F.push({ check: 'effects-fit', sev: 'FAIL', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `a ${KIND || TYPE} page${KIND_FROM && KIND_FROM !== '--type' ? ` (${KIND_FROM})` : ''} asks for ${G.asked - (G.prodAsked || 0)} WebGL context${G.asked - (G.prodAsked || 0) > 1 ? 's' : ''}${fx.length ? ` (${fx.join(', ')})` : ''}${TYPE === 'product' ? `: ${grounds.length ? `effect grounds (${[...new Set(grounds)].join(', ')})` : ''}${grounds.length && pr ? ' and ' : ''}${pr ? 'a print over its photographs' : ''}` : ''}: shader effects are for tech, software, AI and gaming pages${TYPE === 'product' ? ' (a product may show a render of itself)' : ''}` });
       }
     }
 

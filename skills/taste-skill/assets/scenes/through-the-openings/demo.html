@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casa Brolo, rooms around a cloister garden</title>
+<meta name="description" content="A guesthouse of twelve rooms in a former convent, built around a walled cloister garden.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  /* One ground (a cool stone), one ink, one accent (the cypress green). The scene's deeper sheets are the
+     ground mixed with a little ink, not a third colour. */
+  :root {
+    --ground: #e3e4de;
+    --ink: #17201a;
+    --accent: #2c5a3b;
+    --font-display: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
+    --font-text: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --display-weight: 600;
+    --gutter: clamp(16px, 4vw, 64px);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-text);
+    font-size: 18px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  .display { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: -0.015em; }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px var(--gutter);
+  }
+  .bar .mark { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1; text-decoration: none; }
+  .bar nav { display: flex; align-items: center; gap: clamp(16px, 2.6vw, 36px); }
+  .bar nav a { text-decoration: none; }
+  .book, .action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 22px;
+    background: var(--accent);
+    color: #f3f4ef;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* first screen: the house in one sentence, beside its arcade */
+  .opening {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 32px clamp(32px, 5vw, 96px);
+    min-height: min(calc(100svh - 78px), 700px);
+    padding: clamp(24px, 4svh, 48px) var(--gutter) clamp(40px, 7svh, 80px);
+  }
+  .opening-text { display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+  .opening h1 {
+    margin: 0;
+    font-size: clamp(52px, 8.4vw, 148px);
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+  .opening p { margin: 0 0 28px; max-width: 30rem; font-size: 20px; line-height: 1.45; text-wrap: pretty; }
+  .opening h1 .ln { display: block; overflow: clip; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .opening h1 .ln > span { display: inline-block; }
+  .opening figure { margin: 0; min-height: 420px; overflow: clip; }
+  .opening figure img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; }
+
+  /* the scene: the headline stands on the grey sky of the courtyard */
+  #garden { --tto-title-top: clamp(40px, 10svh, 112px); --tto-focus: 50% 50%; }
+
+  /* the garden, after the passage */
+  .garden {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 40px clamp(40px, 7vw, 128px);
+    align-items: end;
+    padding: clamp(64px, 12svh, 140px) var(--gutter) clamp(64px, 11svh, 128px);
+  }
+  .garden figure { margin: 0; overflow: clip; order: -1; }
+  .garden figure img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+  .garden h3 { margin: 0 0 20px; font-size: clamp(30px, 2.4vw + 18px, 60px); line-height: 1; }
+  .garden .lede { margin: 0 0 40px; max-width: 34rem; font-size: 20px; line-height: 1.45; text-wrap: pretty; }
+  .garden ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+  .garden li { display: grid; gap: 2px; }
+  .garden li strong { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1.1; }
+  .garden li span { max-width: 30rem; }
+
+  .stay {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 32px clamp(40px, 7vw, 128px);
+    align-items: end;
+    padding: 0 var(--gutter) clamp(72px, 13svh, 150px);
+  }
+  .stay h2 { margin: 0; font-size: clamp(44px, 6.6vw, 116px); line-height: 0.94; text-wrap: balance; }
+  .stay p { margin: 0 0 24px; max-width: 32rem; text-wrap: pretty; }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 32px;
+    padding: 0 var(--gutter) 36px;
+    font-size: 16px;
+  }
+  .foot p { margin: 0; }
+  .credits-link { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .credits { max-width: min(560px, calc(100vw - 32px)); padding: 28px; border: 0; background: var(--ground); color: var(--ink); font-size: 16px; }
+  .credits::backdrop { background: rgb(23 32 26 / 0.5); }
+  .credits h2 { margin: 0 0 12px; font: 600 26px/1.1 var(--font-display); }
+  .credits p { margin: 0 0 18px; }
+  .credits button { min-height: 44px; padding: 0 18px; border: 0; background: var(--ink); color: var(--ground); font: 600 16px/1 var(--font-text); cursor: pointer; }
+
+  @media (max-width: 900px) {
+    .opening, .garden, .stay { grid-template-columns: 1fr; }
+    .opening { min-height: 0; }
+    .opening figure { min-height: 0; }
+    .opening figure img { height: auto; aspect-ratio: 4 / 5; }
+    .garden figure { max-width: 34rem; order: 0; }
+  }
+  @media (max-width: 767px) {
+    .bar nav { gap: 14px; }
+    .bar .mark { font-size: 22px; }
+    .bar .book { padding: 0 14px; }
+    .bar .long { display: none; }
+    .opening { padding-top: 24px; padding-bottom: 48px; }
+    .opening h1 { font-size: 15vw; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="mark" href="#top">Casa Brolo</a>
+  <nav aria-label="Main">
+    <a href="#garden">Garden</a>
+    <a href="#stay">Rooms</a>
+    <a class="book" href="#stay">Book<span class="long"> a room</span></a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="opening" aria-labelledby="title">
+    <div class="opening-text">
+      <h1 class="display" id="title"><span class="ln"><span>Twelve rooms,</span></span> <span class="ln"><span>one garden</span></span></h1>
+      <div>
+        <p>Casa Brolo is a guesthouse in a former convent at the edge of the old town. The street stays outside the wall; the rooms look in, over the arcade and the lawn.</p>
+        <a class="action" href="#stay">Book a room</a>
+      </div>
+    </div>
+    <figure>
+      <img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/arcade-walk-1200.jpg" width="1200" height="1617" alt="A covered walk under a timber roof, its arches on pink marble columns open to the cloister.">
+    </figure>
+  </section>
+
+  <section class="sc scene tto" data-big-scene="through-the-openings" data-big-scene-opts='{"layers": 6, "shape": "arch"}' id="garden" aria-labelledby="tto-title">
+    <div class="scene-stage tto-stage">
+      <div class="tto-sheet">
+        <p class="tto-line">Leave the street at the gate</p>
+      </div>
+      <div class="tto-view">
+        <div class="tto-world">
+          <picture>
+            <source media="(max-width: 767px)" srcset="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/cloister-portrait-1080.jpg" width="1080" height="1920">
+            <img class="tto-media" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/cloister-1600.jpg" srcset="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/cloister-1600.jpg 1600w, https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/cloister-2000.jpg 2000w" sizes="150vw" width="2000" height="1207" alt="A brick cloister of round arches on paired stone columns around a mown lawn, under a grey sky.">
+          </picture>
+        </div>
+        <h2 class="tto-title display" id="tto-title"><span class="tto-title-line"><span>The garden</span></span> <span class="tto-title-line"><span>inside the walls</span></span></h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="garden" aria-labelledby="garden-title">
+   <div>
+    <h3 class="display" id="garden-title">Days under the arcade</h3>
+    <p class="lede">The arcade runs on all four sides, so there is always a dry seat and always a patch of sun. Breakfast is laid under the arches; after dinner the lawn is yours.</p>
+    <ul>
+      <li><strong>Breakfast at eight</strong><span>Bread from the bakery across the square, eggs from the convent's old orchard.</span></li>
+      <li><strong>A quiet gate</strong><span>The door to the street closes at ten. Guests have a key.</span></li>
+      <li><strong>Friday music</strong><span>A string quartet on the lawn, June to September.</span></li>
+    </ul>
+    </div>
+    <figure>
+      <img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/through-the-openings/colonnade-1000.jpg" width="1000" height="1333" loading="lazy" alt="Paired marble columns under brick arches, a tiled roof beyond them.">
+    </figure>
+  </section>
+
+  <section class="stay" id="stay" aria-labelledby="stay-title">
+    <h2 class="display" id="stay-title">Stay a few nights</h2>
+    <div>
+      <p>Every room is on the upper floor, with a window over the garden and thick walls that keep the summer out. From 140 euros a night, breakfast included.</p>
+      <a class="action" href="#stay">Book a room</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Casa Brolo, a guesthouse in a former convent.</p>
+    <p>Open March to November.</p>
+    <button type="button" class="credits-link" onclick="document.getElementById('credits').showModal()">Image credits</button>
+  </footer>
+</main>
+
+<dialog class="credits" id="credits" aria-labelledby="credits-title">
+  <h2 id="credits-title">Image credits</h2>
+  <p>The garden and the arcade: <a href="https://commons.wikimedia.org/wiki/File:San_Zeno_Maggiore_-_Verona_-_Cloister_courtyard_-_2026_-_11.jpg">“San Zeno Maggiore, Verona, cloister courtyard”</a> with <a href="https://commons.wikimedia.org/wiki/File:San_Zeno_Maggiore_-_Verona_-_Cloister_arcades_and_memorials_-_2026_-_10.jpg">“Cloister arcades”</a> and <a href="https://commons.wikimedia.org/wiki/File:San_Zeno_Maggiore_-_Verona_-_Cloister_gallery_and_tombs_-_2026_-_07.jpg">“Cloister gallery”</a>, all by Norbert Nagel, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>, via Wikimedia Commons, resized and cropped by us. Casa Brolo is invented for this demo.</p>
+  <form method="dialog"><button>Close</button></form>
+</dialog>
+
+<script type="module" src="../scenes.js"></script>
+<script>
+window.addEventListener('sc-classic-ready', () => {
+   
+  // the quiet layer outside the scene: the first screen sets in once, the garden picture drifts a little
+  if (window.gsap && window.ScrollTrigger && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.from('.opening h1 .ln > span', { yPercent: 105, duration: 0.9, ease: 'power3.out', stagger: 0.1 });
+    gsap.from('.opening p, .opening .action', { y: 18, autoAlpha: 0, duration: 0.7, ease: 'power2.out', stagger: 0.08, delay: 0.25 });
+    gsap.from('.opening figure', { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.1, ease: 'power3.inOut', clearProps: 'clipPath' });
+    gsap.from('.opening figure img', { scale: 1.12, duration: 1.4, ease: 'power2.out', clearProps: 'transform' });
+    gsap.fromTo('.garden figure img', { yPercent: -4, scale: 1.1 }, { yPercent: 4, scale: 1.1, ease: 'none', scrollTrigger: { trigger: '.garden figure', start: 'top bottom', end: 'bottom top', scrub: true } });
+  }
+}, { once: true });
+</script>
+</body>
+</html>

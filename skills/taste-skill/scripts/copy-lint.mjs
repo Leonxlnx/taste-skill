@@ -3,7 +3,7 @@
   taste-skill copy-lint.mjs - counts the countable tells of model-written website copy. Node 22, no packages.
   The rules it counts are in references/copy-tells.md.
 
-    node <skill>/scripts/copy-lint.mjs <page.html | folder | .md | .txt> [more files] [--kind <kind>] [--json] [--year 2026]
+    node <skill>/scripts/copy-lint.mjs <page.html | folder | .md | .txt> [more files] [--kind <kind>] [--category "<what is sold>"] [--json] [--year 2026]
 
   It reads the copy a visitor reads: headings, text, buttons, the footer, the <title> and the meta description. It
   skips scripts, styles, svg, code, <template>, <noscript>, hidden and aria-hidden parts, and the UI mocks (ui-*
@@ -28,24 +28,41 @@
   With several files it also prints the first headings side by side and the heading phrases they share.
   --json prints {files: [...], cross: {...}} and nothing else. --year sets the year the copyright line should
   carry (default: this year).
+
+  The page's structure (an .html page; references/copy.md, The copy notes, and copy-moves.md):
+    copy-notes          FAIL: no .taste-skill/copy.md beside the page or one or two folders up (or the folder the
+                        page sits in, when it is inside .taste-skill), or its voice card lacks Register, Hero form,
+                        Admission, Enemy or Customer words. WARN: no fact sheet or no draft in it, or an admission or
+                        an enemy written as "none". A .md named copy.md is checked the same way. The skill's own
+                        files (the starter) are never asked for notes.
+    copy-h1-category    WARN: the h1 is only a category label ("Yoga studio in Brooklyn", "Observability tool for
+                        developers"): a noun phrase with a category noun (or the --category words, or the notes'
+                        Category: line), no verb, no person, no figure. INFO when the voice card's hero form chose it.
+    copy-close-repeat   FAIL: the close's heading repeats the heading or a button of the section before it.
+    copy-close-ask      WARN: the close's heading only restates its own button (the ask as a heading).
+    copy-heading-echo   WARN: two headings (h1, h2) share three content words or more.
+  [NEED: ...] in a .md draft is INFO (copy-need: list it under "Client must supply"); on a page it is residue.
   Exit 0 no FAIL, 1 a FAIL in any file, 2 usage or an unreadable file.
 */
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const args = process.argv.slice(2);
 const die = (m) => { console.error('copy-lint: ' + m); process.exit(2); };
 const files = [];
-let asJson = false, KIND = '', YEAR = new Date().getFullYear();
+const SKILL_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+let asJson = false, KIND = '', YEAR = new Date().getFullYear(), CATEGORY = '';
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === '--json') asJson = true;
+  else if (a === '--category') { CATEGORY = String(args[++i] || ''); if (!CATEGORY.trim()) die('--category needs the words for what is sold'); }
   else if (a === '--kind' || a === '--page') { KIND = String(args[++i] || '').toLowerCase(); if (!/^(tech|software|gaming|product|place|service)$/.test(KIND)) die('--kind takes tech, software, gaming, product, place or service'); }
   else if (a === '--year') { YEAR = parseInt(args[++i], 10); if (!(YEAR > 1990 && YEAR < 2200)) die('--year needs a year'); }
   else if (a.startsWith('--')) die('unknown option ' + a);
   else files.push(a);
 }
-if (!files.length) die('usage: copy-lint.mjs <page.html | folder | .md | .txt> [more] [--kind <kind>] [--json] [--year 2026]');
+if (!files.length) die('usage: copy-lint.mjs <page.html | folder | .md | .txt> [more] [--kind <kind>] [--category "<what is sold>"] [--json] [--year 2026]');
 
 // ---------------------------------------------------------------- reading the copy
 const ENT = { nbsp: ' ', amp: '&', mdash: '—', ndash: '–', rsquo: "'", lsquo: "'", ldquo: '"', rdquo: '"', bdquo: '"', middot: '·', hellip: '…', quot: '"', apos: "'", lt: '<', gt: '>', times: '×', deg: '°', euro: '€', pound: '£', copy: '©', shy: '', thinsp: ' ', ensp: ' ', emsp: ' ', bull: '•', rarr: '→', larr: '←', trade: '™', reg: '®', hairsp: '', zwj: '', zwnj: '' };
@@ -155,6 +172,7 @@ function brandsOf(raw, title) {
 }
 // the kind the page declares, read as gate.mjs and the checker read it (site-kind, page-kind, page-type, <html data-type>)
 function declaredKind(raw) {
+  raw = raw.replace(/<!--[\s\S]*?-->/g, '');   // a <meta> named as an example in a comment (the starter's) is no declaration
   const meta = (n) => { const t = [...raw.matchAll(/<meta\b[^>]*>/gi)].map((m) => m[0]).find((x) => new RegExp(`name\\s*=\\s*["']?${n}["'\\s>]`, 'i').test(x)); return t ? String(attrOf(t.slice(5), 'content') || '').trim().toLowerCase() : ''; };
   const site = meta('site-kind');
   if (/^(software|gaming|tech)$/.test(site)) return site;
@@ -165,10 +183,19 @@ function declaredKind(raw) {
 // a draft in a .md or .txt file: the voice card (copy-voice.md section 2: Voice:, Pairs:, Person:, Never: ...) and
 // fenced blocks are notes, not copy; the footer is what stands under a heading named Footer
 const DRAFT_LABEL = /^((the )?(hero|footer|prices?|faq|about|story|close|closing|nav|header|buttons|microcopy|meta)|(copy )?draft\b.*)$/i;
-const CARD = /^(voice|register|pairs|person|sentences|humou?r|house words|never|tone|reader|notes?)\s*:/i;
+const CARD = /^(voice|register|pairs|person|sentences|humou?r|house words|never|tone|reader|notes?|hero form|admission|enemy|customer words|category|five seconds)\s*:/i;
+// the copy notes (.taste-skill/copy.md): only what stands under "## Draft" is copy, up to "## Client must supply"
+const DRAFT_START = /^#{1,3}\s*(the\s+)?(copy\s+)?draft\b/i;
+const DRAFT_END = /^#{1,3}\s*(client must supply|report|checks?|open)\b/i;
+// a draft line with its part named first: "H1: ...", "Lead: ...", "Button: ..."
+const PART = /^(h[1-4]|eyebrow|lead|sub-?line|body|line|text|button|card|label|error|sent|empty|404|newsletter|cookie|footer|nav|quote|faq|q|a)\s*:\s*(.*)$/i;
 function readText(raw) {
+  let src = tidy(raw).split(/\r?\n/);
+  const d = src.findIndex((l) => DRAFT_START.test(l.trim()));
+  if (d >= 0) { src = src.slice(d + 1); const e = src.findIndex((l) => DRAFT_END.test(l.trim())); if (e >= 0) src = src.slice(0, e); }
+  const parted = src.some((l) => /^([-*]\s+)?h1\s*:/i.test(l.trim()));
   const ls = []; let fence = false;
-  for (const l0 of tidy(raw).split(/\r?\n/)) {
+  for (const l0 of src) {
     const l = l0.trim();
     if (/^(```|~~~)/.test(l)) { fence = !fence; continue; }
     if (fence || !l || CARD.test(l.replace(/^[-*]\s+/, ''))) continue;
@@ -178,6 +205,15 @@ function readText(raw) {
   for (const l of ls) {
     const lv = (l.match(/^#{1,6}(?=\s)/) || [''])[0].length;
     if (lv) foot = /^#+\s*(the\s+)?footer\b/i.test(l);
+    if (parted) {
+      // a draft whose lines name their part: a markdown heading is only a label for the part below it
+      if (lv) continue;
+      const p = l.replace(/^[-*]\s+/, '').match(PART);
+      if (p) { const k = p[1].toLowerCase(); blocks.push({ text: p[2].trim(), heading: /^h[1-4]$/.test(k) ? +k[1] : 0, footer: foot || k === 'footer' }); }
+      else blocks.push({ text: l.replace(/^[-*]\s+/, ''), heading: 0, footer: foot });
+      if (!blocks[blocks.length - 1].text) blocks.pop();
+      continue;
+    }
     blocks.push({ text: l.replace(/^#+\s*/, '').replace(/^[-*]\s+/, ''), heading: lv <= 4 ? lv : 0, footer: foot && !lv });
   }
   // a heading that only labels a part of the draft (## Hero, ## Footer, # Copy draft: ...) is not copy
@@ -245,6 +281,129 @@ const REVEAL = [/\b(the result|the best part|the catch|the secret|the difference
 const ABBR = /\b(St|Ste|Dr|Mt|Mr|Mrs|Ms|Co|No|Nos|Nr|Ave|Rd|Ln|Ltd|Inc|Jr|Sr|Ft|Pt|Prof|Rev|Capt|Sgt|Lt|vs|approx|est|incl|excl|dept|tel|fig|vol|ca|cf|e\.g|i\.e|a\.m|p\.m)\./gi;
 const unabbr = (s) => s.replace(ABBR, (m) => m.replace(/\./g, '․'));
 
+// copy-taste's capped words: a tell when they carry a claim (an innovative app, curated picks, high-quality beans)
+const CAP_WORDS = [/\binnovat(ive|ion|ions)\b/i, /\bstreamline[sd]?\b/i, /\bcurated\b(?!\s+by\b)/i, /\bhigh-quality\b/i, /\bpremium quality\b/i, /\bhassle-free\b/i, /\bunforgettable\b/i, /\bimmersive experience\b/i];
+// abstract nouns used as metaphors (a landscape, an ecosystem, a journey that is not a trip, "the X space")
+const METAPHOR = [/\b(digital|business|tech|startup|modern|competitive|marketing|media|retail|data|creative|product|developer|financial|healthcare) (landscape|ecosystem)\b/i, /\bin the [a-z]+ space\b/i,
+  /\b(your|the|our|their) (fitness|wellness|learning|growth|career|coffee|skincare|health|healing|creative|design|brand|customer|buying|hiring|data|ai|digital|financial|yoga) journey\b/i,
+  /\b(an?|the|your) (unique|elevated|premium|luxury|personali[sz]ed|tailored|one-of-a-kind) experience\b/i];
+// the false range of copy-taste's stock lines: "from startups to enterprises"
+const FALSE_RANGE = /\bfrom (startups?|beginners?|small businesses|solo(ists)?|freelancers?|individuals|first-timers|hobbyists) to (enterprises?|experts?|pros?|professionals|large (teams|companies)|global brands|teams)\b/i;
+
+// ---------------------------------------------------------------- the copy notes and the page's structure
+// the voice card's fields (references/copy.md, The copy notes): each must hold a value, not a placeholder
+const NOTE_FIELDS = [['Register', /^(register|voice)$/], ['Hero form', /^hero form$/], ['Admission', /^admission$/], ['Enemy', /^enemy$/], ['Customer words', /^customer words$/]];
+const noValue = (v) => !v || /^(<[^>]*>|\[[^\]]*\]|tbd|todo|\?+|-+|…|\.\.\.|x)$/i.test(v.trim());
+function readNotes(t) {
+  const f = {};
+  for (const l of tidy(t).split(/\r?\n/)) {
+    const m = l.trim().replace(/^([-*>]|\d+\.)\s+/, '').replace(/\*\*|__/g, '').match(/^([a-z][a-z ]{1,30}?)\s*:\s*(.*)$/i);
+    if (m) { const k = m[1].toLowerCase().trim(); if (!(k in f) || noValue(f[k])) f[k] = m[2].trim(); }
+  }
+  return f;
+}
+function notesFindings(t, where) {
+  const f = readNotes(t), out = [];
+  const val = (re) => { const k = Object.keys(f).find((x) => re.test(x)); return k === undefined ? '' : f[k]; };
+  const missing = NOTE_FIELDS.filter(([, re]) => noValue(val(re))).map(([n]) => n);
+  if (missing.length) out.push(['FAIL', missing, `${where}: the voice card lacks ${missing.join(', ')}`, 'fill every field from the brief before the page (references/copy.md, The copy notes): a gap goes to "Client must supply", never onto the page']);
+  const weak = ['Admission', 'Enemy'].filter((n) => /^(none|n\/a|nothing|no)\b/i.test(val(new RegExp(`^${n.toLowerCase()}$`))));
+  if (weak.length) out.push(['WARN', weak, `${where}: ${weak.join(' and ')} written as none`, 'take a limit and an enemy from the brief or from a plain fact of the trade (closed Mondays, iPhone only, re-typing invoices)']);
+  const lines = tidy(t).split(/\r?\n/).map((l) => l.trim());
+  const nope = [];
+  if (!lines.some((l) => /^#{1,3}\s*(the\s+)?fact sheet\b/i.test(l))) nope.push('"## Fact sheet"');
+  if (!lines.some((l) => DRAFT_START.test(l))) nope.push('"## Draft"');
+  if (nope.length) out.push(['WARN', nope, `${where}: the ${nope.join(' and the ')} part${nope.length > 1 ? 's are' : ' is'} missing`,'the notes hold the fact sheet, the voice card, then the draft (copy the block in references/copy.md)']);
+  return { out, f, val };
+}
+// .taste-skill/copy.md beside the page, one or two folders up, or the .taste-skill folder the page sits in (the gate
+// lints rendered.html from inside it)
+function findNotes(file) {
+  const abs = path.resolve(file), tries = [];
+  let d = path.dirname(abs);
+  for (let i = 0; i < 3; i++) {
+    if (path.basename(d) === '.taste-skill') tries.push(path.join(d, 'copy.md'));
+    tries.push(path.join(d, '.taste-skill', 'copy.md'));
+    const up = path.dirname(d); if (up === d) break; d = up;
+  }
+  const parts = abs.split(path.sep), k = parts.lastIndexOf('.taste-skill');
+  if (k > 0) tries.push(path.join(parts.slice(0, k + 1).join(path.sep), 'copy.md'));
+  return tries.find((p) => { try { return fs.statSync(p).isFile(); } catch { return false; } }) || null;
+}
+// content words of a heading or a label: no articles, pronouns or small words; plural s dropped
+const STOP = new Set("a an the and or but of for to in on at by with from into your you you're our we we're us my me i it it's its this that these those is are be was will can here now today just all every more very so as up out off".split(' '));
+const normWords = (s) => tidy(s).toLowerCase().replace(/[^a-z0-9à-öø-ÿ'\s-]/g, ' ').split(/[\s-]+/).filter(Boolean);
+const stem = (w) => w.replace(/'s$/, '').replace(/ies$/, 'y').replace(/(?<=[a-z]{3})s$/, '');
+const contentWords = (s) => [...new Set(normWords(s).filter((w) => !STOP.has(w)).map(stem))];
+// one says what the other says: the same content words, one inside the other, or most of them shared
+function echoes(a, b) {
+  const A = contentWords(a), B = contentWords(b);
+  if (!A.length || !B.length) return false;
+  const shared = A.filter((w) => B.includes(w)).length, all = new Set([...A, ...B]).size;
+  return (shared === A.length && (A.length >= 2 || B.length === 1)) || (shared === B.length && B.length >= 2) || shared / all >= 0.6;
+}
+// the heads of a category label: what a page sells, said as a noun ("yoga studio", "observability tool", "architects")
+const CATEGORY_NOUN = /^(apps?|tools?|platforms?|software|services?|agency|agencies|studios?|shops?|stores?|boutique|cafe|café|coffee|roasters?|roastery|bakery|bakeries|restaurants?|bistro|kitchen|bar|pub|brewery|winery|distillery|guesthouse|hotels?|inn|hostel|cabins?|gym|clinic|practice|dentists?|dental|physio(therapy)?|therapy|therapists?|lawyers?|firm|architects?|architecture|consultancy|consultants?|advisers?|advisors?|accountants?|bookkeeping|accounting|payroll|invoicing|branding|packaging|design|designers?|photographers?|photography|florists?|salon|barbers?|spa|yoga|pilates|school|courses?|classes|academy|workshops?|repairs?|garage|rental|hire|delivery|marketplace|api|sdk|database|observability|monitoring|analytics|crm|editor|assistant|game|games|camera|headphones|speakers?|desks?|chairs?|furniture|skincare|tea|chocolate|wine|beer|bikes?|bicycles?|infrastructure|hosting|tracker|planner|scheduler|maker|makers|supplies|ceramics|pottery|jewellery|jewelry|tailors?|printers?|printing|catering|tutoring|nursery|kindergarten|veterinary|vets?|framing|joinery|carpentry|plumbing|plumbers?|electricians?|cleaning|movers|removals|storage|food|cuisine|meals?|bread|pastry|pastries|cakes?|flowers|clothing|clothes|shoes|goods|groceries|produce|deli|bagels?|pizza|tacos|ramen|sushi|beans|stays?|tours?|trips|holidays|retreats?|camps?|events|weddings|venue|gallery|museum|label|brand|collective|co-op|cooperative|club)$/i;
+const LABEL_STOP = /\b(you|your|you're|you'll|we|we're|we'll|our|us|i|i'm|my|me|it|it's|they|their|is|are|was|were|be|will|can|could|don't|doesn't|won't|isn't|never|not|no|every|just|only|still|again|hello|hi|welcome|ever|really)\b/i;
+const NUMBERISH = /\d|\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|hundred|thousand|first|second|third|half)\b/i;
+function categoryLabel(h1, cat) {
+  const t = tidy(h1).replace(/[.]+$/, '').trim();
+  if (!t || /[?!:;]/.test(t) || NUMBERISH.test(t) || LABEL_STOP.test(t)) return false;
+  const words = normWords(t);
+  if (words.length < 1 || words.length > 10) return false;
+  const p = words.findIndex((w) => /^(for|in|on|at|near|by|from|across|around|beside|off|with|of|since)$/.test(w));
+  const headWords = p > 0 ? words.slice(0, p) : p === 0 ? [] : words;
+  if (!headWords.length) return false;
+  const last = headWords[headWords.length - 1];
+  const catWords = contentWords(cat || '');
+  return CATEGORY_NOUN.test(last) || CATEGORY_NOUN.test(stem(last) + 's') || (catWords.length > 0 && catWords.includes(stem(last)));
+}
+// a hero form that is a label on purpose (copy-moves.md: 9 category and scope, 12 place and year)
+const LABEL_FORM = /^\s*(9|12)\b|\b(scope|infrastructure|category (and|\+) (buyer|place)|name and genre|place and year)\b/i;
+// the page's sections, headings and buttons, in document order, from the HTML as written
+function structureOf(raw) {
+  const html = raw.replace(/<!--[\s\S]*?-->/g, ' ').replace(/<(script|style|svg|template|noscript|code|pre)\b[\s\S]*?<\/\1>/gi, ' ');
+  const txt = (s) => squash(tidy(decode(s.replace(/<[^>]+>/g, ' '))));
+  const heads = [...html.matchAll(/<h([1-3])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)].map((m) => ({ level: +m[1], id: attrOf(m[2], 'id') || '', text: txt(m[3]), at: m.index })).filter((h) => h.text);
+  const buttons = [];
+  for (const m of html.matchAll(/<(a|button)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
+    const cls = attrOf(m[2], 'class') || '', t = txt(m[3]);
+    if (!t) continue;
+    if (/^button$/i.test(m[1]) ? !/(toggle|menu|close|burger|tab|accordion|faq)/i.test(cls) : /(^|\s)(btn|button|cta)(\s|$|--|__)/i.test(cls)) buttons.push({ text: t, at: m.index });
+  }
+  const sections = [...html.matchAll(/<section\b([^>]*)>/gi)].map((m) => ({ at: m.index, attrs: m[1] }));
+  // the close: the element marked as the closing call (the starter's .closing__cta, a close--* row, a #close section)
+  let mark = -1;
+  for (const m of html.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi)) {
+    const cls = (attrOf(m[2], 'class') || '').split(/\s+/), id = attrOf(m[2], 'id') || '';
+    if (cls.some((c) => /^(closing__cta|close|close--[\w-]+|final-cta|cta-final|cta-close)$/.test(c)) || /^(close|closing|final-cta)$/.test(id)) { mark = m.index; break; }
+  }
+  const byId = heads.find((h) => h.level === 2 && /^clos(e|ing)\b/i.test(h.id));
+  const closeHead = byId || (mark >= 0 ? heads.find((h) => h.level === 2 && h.at > mark) : null);
+  if (byId && (mark < 0 || mark > byId.at)) mark = byId.at;
+  const h1 = heads.find((h) => h.level === 1) || null;
+  let close = null;
+  if (closeHead) {
+    const nextHead = heads.find((h) => h.at > closeHead.at);
+    const own = buttons.filter((b) => b.at > closeHead.at && (!nextHead || b.at < nextHead.at));
+    // the section before the close: the last <section> that starts before it and is not the close's own
+    let before = sections.filter((s) => s.at < mark);
+    let prev = before[before.length - 1];
+    if (prev) {
+      const h = heads.find((x) => x.at > prev.at && x.level <= 2);
+      if (h === closeHead) prev = before[before.length - 2];
+    }
+    let prevHead = null, prevButtons = [];
+    if (prev) {
+      const end = Math.min(...[...sections.filter((s) => s.at > prev.at).map((s) => s.at), mark, closeHead.at].filter((x) => x > prev.at));
+      prevHead = heads.find((x) => x.at > prev.at && x.at < end && x.level <= 2) || null;
+      prevButtons = buttons.filter((b) => b.at > prev.at && b.at < end);
+    }
+    close = { head: closeHead, own, prevHead, prevButtons };
+  }
+  return { h1, heads: heads.filter((h) => h.level <= 2), buttons, close };
+}
+
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const wordRe = (w) => new RegExp(`\\b${esc(w).replace(/ /g, '\\s')}\\b`, 'gi');
 const sentencesOf = (text) => unabbr(text).split(/(?<=[.!?])\s+(?=[A-Z"'(])/).map((s) => s.trim().replace(/․/g, '.')).filter((s) => /[a-z]/i.test(s));
@@ -262,6 +421,7 @@ function lint(file) {
   const raw = fs.readFileSync(file, 'utf8');
   const isHtml = /\.html?$/i.test(file);
   const R = isHtml ? readHtml(raw) : readText(raw);
+  R.raw = raw; R.file = file;
   // --kind wins; else the kind the page declares (as the gate reads it), so a game linted by hand keeps its nouns
   const kindNow = KIND || R.kind || '';
   const saved = KIND; KIND = kindNow;
@@ -285,8 +445,10 @@ function lintRead(R, isHtml) {
   const withMeta = [...body, R.title, R.meta].filter(Boolean);
 
   // ---- FAIL: residue, the old slop, stock phrases
-  const residue = [...RESIDUE, ...(isHtml ? MARKDOWN : [])].flatMap((re) => hitsIn(re, withMeta));
+  // a [NEED: ...] in a draft marks a gap for the client's list; on a page it is residue
+  const residue = [...(isHtml ? RESIDUE : RESIDUE.filter((re) => !/NEED/.test(re.source))), ...(isHtml ? MARKDOWN : [])].flatMap((re) => hitsIn(re, withMeta));
   if (residue.length) add('FAIL', 'copy-residue', residue, 'chatbot residue, a template token, markdown or a [NEED] left on the page', 'write the real words from the brief, or leave the element out and list what is missing in the report');
+  if (!isHtml) { const need = hitsIn(/\[NEED\b[^\]]*\]?/i, withMeta); if (need.length) add('INFO', 'copy-need', need, `${need.length} open [NEED] gap${need.length > 1 ? 's' : ''} in the draft`, 'list each under "Client must supply"; on the page the element is left out'); }
   // a listed word inside the client's name (Elevate Pilates, Beacon Dental) is the name, not copy: the name as the
   // page writes it (same case, whole words) is left out and counted once below
   const brandRes = (R.brands || []).filter((n) => SLOP.some((w) => wordRe(w).test(n))).map((n) => new RegExp(`(?<![\\w-])${esc(n).replace(/ /g, '\\s+')}(?![\\w-])`, 'g'));
@@ -305,7 +467,7 @@ function lintRead(R, isHtml) {
   const slop = slopIn(withMeta, true);
   if (slop.length) add('FAIL', 'copy-slop-word', slop, `old slop words (${[...new Set(slop.map((s) => s.m))].slice(0, 6).join(', ')})`, 'replace each word with the fact it stands in for: the step count, the figure, the material, the place (a word in the client\'s own name is not counted when the logo, the title before its ":" or og:site_name writes the name)');
   if (branded.length) add('WARN', 'copy-brand-word', branded, `the brand name holds a listed word (${[...new Set(branded.map((s) => s.m))].join(', ')}): read as the name, not counted`, 'keep it when the brief gives this name and say so in the report; a name you coined gets another (copy.md, names.json)');
-  const stock = STOCK.flatMap((re) => hitsIn(re, withMeta));
+  const stock = [...STOCK, FALSE_RANGE].flatMap((re) => hitsIn(re, withMeta));
   if (stock.length) add('FAIL', 'copy-stock-phrase', stock, 'stock phrases that fit any business', 'say what this business does, for whom, with one fact from the brief');
   // words in a part the lint skips (a UI mock, a hidden or aria-hidden part): a product's own screen may hold them,
   // but copy moved into such a part to get past the lint is still copy
@@ -340,8 +502,10 @@ function lintRead(R, isHtml) {
   const phrases = (re) => [...new Set(body.flatMap((b) => [...b.matchAll(new RegExp(re.source, 'gi'))].map((m) => m[0].toLowerCase())))];
   budget('copy-since', phrases(/\bsince (19|20)\d\d\b/), 1, '"since [year]"', 'say it once, where it matters', 99);
   budget('copy-response-time', phrases(/\b(within|in under) (one|two|three|24|48|\d+) (working |business )?(days?|hours?)\b/), 1, 'response-time promises', 'keep one, only if the brief gives it', 99);
-  const puff = PUFF.flatMap((re) => hitsIn(re));
-  budget('copy-puffery', puff, 0, 'puffery and dead metaphors (serves as, pivotal, in the heart of, where X meets Y, as seen in)', 'name the street, the figure or the outlet; plain "is" and "has" read as a person', 99);
+  const puff = [...PUFF, ...METAPHOR].flatMap((re) => hitsIn(re));
+  budget('copy-puffery', puff, 0, 'puffery and dead metaphors (serves as, pivotal, in the heart of, where X meets Y, the digital landscape, your wellness journey, a unique experience)', 'name the street, the figure or the outlet; plain "is" and "has" read as a person', 99);
+  const capped = CAP_WORDS.flatMap((re) => hitsIn(re));
+  if (capped.length) add('WARN', 'copy-cap-word', capped, `${capped.length} word${capped.length > 1 ? 's' : ''} that stand in for a claim (innovative, streamlined, curated, high-quality, hassle-free)`, 'say what is new, how many steps it saves, who chose it and how, what it is made of');
   budget('copy-reveal', REVEAL.flatMap((re) => hitsIn(re)), 0, 'staged reveals and process talk ("The result?", "One thing changed: X", "this section")', 'make the point directly; the page never talks about itself', 99);
   const proofy = hitsIn(/\b\d+(\.\d+)?\s?x (faster|more|better|cheaper|quicker)\b|\b\d[\d,.]*\s?(k|m)?\+ (teams|customers|users|companies|businesses|clients|people|members|creators|developers|happy)\b|\b(9\d|100)% (of )?(customers|clients|users|satisfaction|satisfied)\b/i);
   if (proofy.length) add('WARN', 'copy-proof-figure', proofy, `${proofy.length} proof figure${proofy.length > 1 ? 's' : ''} ("3x faster", "10,000+ teams", "98% satisfied")`, 'keep a figure only when the brief gives it, with its unit and in a sentence; never round, never invented');
@@ -351,6 +515,10 @@ function lintRead(R, isHtml) {
   if (emd > 2) add('WARN', 'copy-em-dash', emd, `${emd} em dashes in the body (budget 2)`, 'use a comma, a colon, parentheses or a full stop where each is natural');
   const bang = [...body.filter((b) => b.includes('!') && /[a-z]/i.test(b))];
   if (bang.length) add('WARN', 'copy-exclaim', bang, `${bang.length} line${bang.length > 1 ? 's' : ''} with an exclamation mark`, 'end on a full stop: copy.md bans exclamation marks');
+  const arrows = R.lines.filter((l) => /(→|->|⟶|↗|»)\s*$/.test(l.text)).map((l) => l.text);
+  if (arrows.length >= 3) add('WARN', 'copy-arrows', arrows, `${arrows.length} links or lines ending on a typed arrow`, 'the label says where it goes; the kit draws the one arrow on the main button (svg.m-arrow)');
+  const emoji = R.lines.filter((l) => /^\p{Extended_Pictographic}/u.test(l.text)).map((l) => l.text);
+  if (emoji.length >= 2) add('WARN', 'copy-emoji', emoji, `${emoji.length} lines that start with an emoji`, 'a list needs no pictures for bullets; an icon from icons.mjs where a mark helps');
 
   // ---- numbers in strips, markers, labels
   // a run of short number lines with no sentence between: a stat strip. Prices and times are a menu or a timetable,
@@ -408,6 +576,45 @@ function lintRead(R, isHtml) {
     if (sd < 4) add('WARN', 'copy-rhythm', 0, `every sentence about ${mean.toFixed(0)} words long (spread ${sd.toFixed(1)})`, 'let length follow meaning: one sentence a section may run long');
     if (frag > 0.3) add('WARN', 'copy-rhythm', 0, `${(frag * 100).toFixed(0)}% of sentences are 4 words or fewer`, 'join the fragments that carry one thought');
   }
+  // ---- the copy notes: the fact sheet, the voice card and the draft come before the page
+  const insideSkill = R.file && (path.resolve(R.file) + path.sep).startsWith(SKILL_DIR + path.sep);
+  let notes = null;
+  if (!isHtml && /^copy\.md$/i.test(path.basename(R.file || ''))) notes = notesFindings(R.raw, path.basename(R.file));
+  else if (isHtml && !insideSkill) {
+    const nf = findNotes(R.file);
+    if (!nf) add('FAIL', 'copy-notes', ['.taste-skill/copy.md'], 'no copy notes: .taste-skill/copy.md is missing beside the page (or one or two folders up)', 'before the page, copy the block in references/copy.md (The copy notes) to .taste-skill/copy.md and fill the fact sheet, the voice card and the draft');
+    else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf); }
+  }
+  if (notes) for (const [sev, hits, msg, fix] of notes.out) add(sev, 'copy-notes', hits, msg, fix);
+
+  // ---- the page's structure: the hero's h1, the close, headings that say the same thing
+  if (isHtml) {
+    const S = structureOf(R.raw);
+    const cat = CATEGORY || (notes ? notes.val(/^category$/) : '');
+    if (S.h1 && categoryLabel(S.h1.text, cat)) {
+      const form = notes ? notes.val(/^hero form$/) : '';
+      const chosen = form && LABEL_FORM.test(form);
+      add(chosen ? 'INFO' : 'WARN', 'copy-h1-category', [S.h1.text], `the h1 is only a category label: "${clip(S.h1.text, 70)}"${chosen ? ' (the voice card chose this form)' : ''}`,
+        'choose a hero form on purpose (copy-moves.md, The hero) and write it on the voice card; let the lead or the eyebrow carry the category and the place or buyer, so a stranger still knows in five seconds what is sold');
+    }
+    const C = S.close;
+    if (C) {
+      const rep = [];
+      if (C.prevHead && echoes(C.head.text, C.prevHead.text)) rep.push({ m: C.prevHead.text, s: `close "${C.head.text}" / heading above "${C.prevHead.text}"` });
+      for (const b of C.prevButtons) if (echoes(C.head.text, b.text)) rep.push({ m: b.text, s: `close "${C.head.text}" / button above "${b.text}"` });
+      if (rep.length) add('FAIL', 'copy-close-repeat', rep, 'the close\'s heading repeats the section above it', 'the close says something new: the hero\'s promise with one fact from the brief, the admission turned into a reason, or the low-pressure exit; the button keeps the main action\'s words');
+      else if (C.own.some((b) => echoes(C.head.text, b.text))) add('WARN', 'copy-close-ask', [C.head.text], `the close's heading only restates its button ("${clip(C.head.text, 60)}")`, 'the button already asks; the heading gives the reason to click now (a fact from the brief, a time, a price, the risk taken away)');
+    }
+    const echo = [];
+    for (let i = 0; i < S.heads.length; i++) for (let j = i + 1; j < S.heads.length; j++) {
+      const a = S.heads[i], b = S.heads[j];
+      if (C && ((a === C.head && b === C.prevHead) || (b === C.head && a === C.prevHead))) continue;
+      const shared = contentWords(a.text).filter((w) => contentWords(b.text).includes(w));
+      if (shared.length >= 3) echo.push({ m: shared.join(' '), s: `"${a.text}" / "${b.text}"` });
+    }
+    if (echo.length) add('WARN', 'copy-heading-echo', echo, `${echo.length} pair${echo.length > 1 ? 's' : ''} of headings share a key phrase`, 'each heading says its own thing: name the part, then let the line under it carry the claim; one phrase belongs to one heading');
+  }
+
   const order = { FAIL: 0, WARN: 1, INFO: 2 };
   out.sort((a, b) => order[a.sev] - order[b.sev]);
   return { words, headings: hText, findings: out };

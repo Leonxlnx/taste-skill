@@ -1,0 +1,334 @@
+/* assets/scenes/panels-reproportion-on-arrival/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / panels-reproportion-on-arrival.css
+   Default: the finished composition. The statement and its sentence, then the panels side by side (one
+   under the other on a phone), each settled: its picture over its name in large type and its short line,
+   then the action as a plain button under them. This is what reduced motion, no script, a failed CDN and
+   a phone set to 'rest' show; nothing is hidden waiting for a script.
+   Under .is-live (768px and wider): one held stage. .pr-side (wide screens): the statement holds at
+   display size in a column of the page's ground on the left, its sentence and the action at its foot; the
+   rail runs right of it, clipped at the column, so a panel that leaves slides whole behind it. .pr-stack
+   (narrower): the statement holds across the top and the rail runs under it. Every panel is laid out once
+   at its main-slot size (picture box at --pr-grow of its height, band under it); the script grows the
+   picture by its clip, moves the band and the panels by transforms and narrows a panel by its clip.
+   Phone (.pr-phone): no pin, the panels stacked.
+   Tokens: --ground, --ink, --muted, --accent, --accent-ink, --font-display, --font-text, --radius; the
+   weights --display-weight (500 when the page sets none), --strong-weight (600), --text-weight (400).
+   Per panel: --pr-pos and --pr-pos-phone (object-position). */
+
+[data-big-scene="panels-reproportion-on-arrival"] {
+  --pr-ground: var(--ground, #e6e7e2);
+  --pr-ink: var(--ink, #1b1e1c);
+  --pr-muted: var(--muted, #474c48);
+  --pr-accent: var(--accent, #1450b8);
+  --pr-accent-ink: var(--accent-ink, #ffffff);
+  --pr-gutter: clamp(16px, 2vw, 32px);
+  font-synthesis-weight: none;
+  background: var(--pr-ground);
+  color: var(--pr-ink);
+  font-family: var(--font-text, inherit);
+  font-weight: var(--text-weight, 400);
+}
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="panels-reproportion-on-arrival"] > .scene-stage {
+  padding: clamp(72px, 9vw, 140px) var(--pr-gutter) clamp(56px, 7vw, 112px);
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-held {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30ch);
+  align-items: end;
+  gap: 20px 6vw;
+  margin-bottom: clamp(32px, 4vw, 64px);
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-statement {
+  margin: 0;
+  max-width: 9ch;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(48px, 7.4vw, 128px);
+  font-weight: var(--display-weight, 500);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-sub {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--pr-muted);
+  font-size: clamp(18px, 1.53vw, 22px);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-action {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  min-height: 50px;
+  margin-top: clamp(32px, 4vw, 56px);
+  padding: 0 24px;
+  border-radius: var(--radius, 0);
+  background: var(--pr-accent);
+  color: var(--pr-accent-ink);
+  font-family: var(--font-text, inherit);
+  font-size: 18px;
+  font-weight: var(--strong-weight, 600);
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-action:hover { background: color-mix(in srgb, var(--pr-accent) 84%, var(--pr-ink)); }
+[data-big-scene="panels-reproportion-on-arrival"] .pr-action:active { transform: scale(0.98); }
+[data-big-scene="panels-reproportion-on-arrival"] .pr-action:focus-visible { outline: 2px solid var(--pr-ink); outline-offset: 3px; }
+
+[data-big-scene="panels-reproportion-on-arrival"] .pr-rail {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: clamp(28px, 3vw, 44px) clamp(10px, 1.2vw, 18px);
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-panel {
+  position: relative;
+  display: block;
+  margin: 0;
+  color: inherit;
+  text-decoration: none;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-picture {
+  margin: 0;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--pr-ink) 12%, var(--pr-ground));
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pr-pos, 50% 50%);
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-band { padding-top: clamp(12px, 1.2vw, 18px); }
+[data-big-scene="panels-reproportion-on-arrival"] .pr-name {
+  margin: 0;
+  max-width: 9ch;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(30px, 2.5vw, 44px);
+  font-weight: var(--display-weight, 500);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-name__one,
+[data-big-scene="panels-reproportion-on-arrival"] .pr-name__two { display: none; }
+[data-big-scene="panels-reproportion-on-arrival"] .pr-line {
+  margin: 10px 0 0;
+  max-width: 26ch;
+  color: var(--pr-muted);
+  font-size: 16px;
+  line-height: 1.4;
+}
+/* the hidden ruler the script fits the names with: a 1px box, so it never widens the page */
+[data-big-scene="panels-reproportion-on-arrival"] .pr-meter-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-meter {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-display, inherit);
+  font-size: 100px;
+  font-weight: var(--display-weight, 500);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 767px) {
+  [data-big-scene="panels-reproportion-on-arrival"] > .scene-stage { padding: 64px var(--pr-gutter) 56px; }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-held { grid-template-columns: minmax(0, 1fr); margin-bottom: 28px; }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-statement { font-size: clamp(44px, 14vw, 64px); }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-rail { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-picture { aspect-ratio: 4 / 5; }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-picture img { object-position: var(--pr-pos-phone, var(--pr-pos, 50% 50%)); }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-name { font-size: 36px; }
+  [data-big-scene="panels-reproportion-on-arrival"] .pr-action { margin-top: 28px; min-height: 48px; }
+}
+
+/* ---------- live: the held stage ---------- */
+
+html.sc-js [data-big-scene="panels-reproportion-on-arrival"].is-live > .scene-stage {
+  padding: 0;
+  background: var(--pr-ground);
+}
+/* the stage writes --p on the section on every scroll step; nothing inside reads it, so it stops here */
+[data-big-scene="panels-reproportion-on-arrival"].is-live > .scene-stage > * { --p: 0; }
+
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-held { position: absolute; z-index: 2; margin: 0; }
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-action { position: absolute; z-index: 2; margin: 0; }
+/* wide: the statement at the top of its column, its sentence above the action at the foot */
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-side .pr-held {
+  left: var(--pr-gutter);
+  top: var(--pr-gutter);
+  bottom: calc(var(--pr-gutter) + var(--pr-pad, 16px) + var(--pr-foot, 0px));
+  width: calc(var(--pr-col, 33vw) - 2 * var(--pr-gutter));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-side .pr-statement {
+  max-width: none;
+  width: 100%;
+  margin-top: -0.1em;
+  font-size: clamp(56px, min(7vw, 12svh), 150px);
+  line-height: 0.94;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-side .pr-sub {
+  max-width: 24ch;
+  font-size: clamp(18px, min(1.53vw, 2.7svh), 22px);
+}
+/* the action's foot sits on the line the panels' short lines stand on */
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-side .pr-action {
+  left: var(--pr-gutter);
+  bottom: calc(var(--pr-gutter) + var(--pr-pad, 16px) - 2px);
+}
+/* narrower: the statement across the top, the sentence beside it, the action under the sentence */
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-stack .pr-held {
+  left: var(--pr-gutter);
+  right: var(--pr-gutter);
+  top: clamp(28px, 3.5svh, 48px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22ch);
+  align-items: start;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-stack .pr-statement { max-width: none; font-size: clamp(56px, 11vw, 120px); line-height: 0.94; }
+[data-big-scene="panels-reproportion-on-arrival"].is-live.pr-stack .pr-sub { padding-top: 0.6em; }
+
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-rail {
+  position: absolute;
+  inset: 0;
+  display: block;
+  margin: 0;
+  /* a panel that leaves slides whole behind the statement's column */
+  clip-path: inset(0 0 0 var(--pr-cut, 0px));
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-panel {
+  position: absolute;
+  left: 0;
+  top: var(--pr-top, 0px);
+  width: var(--pr-w, 42vw);
+  height: var(--pr-h, 80svh);
+  margin: 0;
+  will-change: transform, clip-path;
+  backface-visibility: hidden;
+}
+/* the first panel arrives across the whole window, then narrows like the others */
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-panel.pr-first { width: var(--pr-w0, var(--pr-w, 42vw)); }
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-picture {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(var(--pr-grow, 0.7) * 100%);
+  aspect-ratio: auto;
+  will-change: clip-path;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-picture img { transform-origin: 50% 38%; will-change: transform; }
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--pr-grow, 0.7) * 100%);
+  bottom: 0;
+  padding: var(--pr-pad, 16px) 0 0;
+  will-change: transform;
+}
+/* the heading is what readers hear; the two drawn versions beside it are what the screen shows */
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-name__one,
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-name__two {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--pr-pad, 16px);
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-name__one { font-size: var(--pr-one, 26px); }
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-name__two { font-size: var(--pr-two, 40px); }
+/* each line rises in its own mask; the padding leaves room for accents and descenders */
+[data-big-scene="panels-reproportion-on-arrival"] .pr-mask {
+  display: block;
+  overflow: clip;
+  padding: 0.08em 0 0.18em;
+  margin: -0.08em 0 -0.18em;
+}
+[data-big-scene="panels-reproportion-on-arrival"] .pr-ln { display: block; white-space: nowrap; }
+[data-big-scene="panels-reproportion-on-arrival"].is-live .pr-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--pr-pad, 16px);
+  margin: 0;
+  /* it stays inside the narrow slot too */
+  max-width: min(28ch, calc(var(--pr-n, 300px) - 8px));
+}
+
+/* phone: no pin; the statement over the stacked panels, each re-proportioning as it crosses the middle,
+   the action after the last one */
+@media (max-width: 767px) {
+  html.sc-js [data-big-scene="panels-reproportion-on-arrival"].is-live { height: auto; }
+  html.sc-js [data-big-scene="panels-reproportion-on-arrival"].is-live > .scene-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    contain: none;
+    padding: 56px var(--pr-gutter) 48px;
+  }
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-held {
+    position: static;
+    display: grid;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-rail {
+    position: static;
+    display: grid;
+    gap: 16px;
+    clip-path: none;
+  }
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-panel,
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-panel.pr-first {
+    position: relative;
+    top: auto;
+    width: auto;
+    /* short enough that a settled panel is whole on screen wherever the reader stops */
+    height: min(47svh, 116vw);
+  }
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-picture img { object-position: var(--pr-pos-phone, var(--pr-pos, 50% 50%)); }
+  /* the short line beside the name, at the band's foot on the right */
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-line {
+    left: auto;
+    right: 0;
+    max-width: 40%;
+    font-size: 16px;
+    line-height: 1.3;
+    text-align: right;
+  }
+  [data-big-scene="panels-reproportion-on-arrival"].is-live .pr-action { position: static; margin-top: 24px; }
+}

@@ -6,6 +6,10 @@
     node <skill>/assets/layout/check.mjs --url <url or file> --profile <own chrome dir>
          [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--root <dir>] [--json]
 
+  After the layout rules it runs the finish checks (layout-check.js lyFinish: empty-band, blank-screen,
+  placeholder, moment-target, moment-hidden, motion-visible, reveal-none, the repeats; --no-finish skips them)
+  and lists every console error and every file that failed to load as console-error. A finding with
+  sev "WARN" is listed and never counts.
   --shots writes, per size, the first screen (first-<w>.png) and every section framed as the check
   frames it (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
@@ -132,9 +136,17 @@ try {
   const { result: { sessionId } } = await send('Target.attachToTarget', { targetId, flatten: true });
   const S = async (m, p) => { const r = await send(m, p, sessionId); if (r.error) throw new Error(`${m}: ${r.error.message}`); return r.result; };
   const ev = async x => { const r = await S('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text); return r.result.value; };
+  // console-error: an uncaught error, a console.error, or a file that failed to load (a script, a module, a picture)
   const errors = [];
-  subs.push(m => { if (m.method === 'Runtime.exceptionThrown') errors.push((m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text).split('\n')[0]); });
-  await S('Page.enable'); await S('Runtime.enable');
+  const IGNORE = /favicon\.ico|apple-touch-icon/i;
+  subs.push(m => {
+    if (m.method === 'Runtime.exceptionThrown') errors.push((m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text).split('\n')[0]);
+    else if (m.method === 'Runtime.consoleAPICalled' && m.params.type === 'error') errors.push('console.error: ' + (m.params.args || []).map(a => a.value ?? a.description ?? '').join(' ').split('\n')[0]);
+    else if (m.method === 'Log.entryAdded' && m.params.entry.level === 'error' && !IGNORE.test(m.params.entry.url || '')) errors.push(`${m.params.entry.text.split('\n')[0]}${m.params.entry.url ? ' (' + m.params.entry.url.replace(/^https?:\/\/127\.0\.0\.1:\d+\//, '') + ')' : ''}`);
+  });
+  await S('Page.enable'); await S('Runtime.enable'); await S('Log.enable');
+  // the section reveals are required once the kit's motion.js reveals sections
+  let reveal = false; try { reveal = /data-(m-)?reveal|\bm-reveal\b|is-revealed/.test(fs.readFileSync(path.join(here, '..', 'motion', 'motion.js'), 'utf8')); } catch { /* no kit beside it */ }
   const snap = async file => { const { data } = await S('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(file, Buffer.from(data, 'base64')); };
   for (const [W, H] of sizes) {
     await S('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: W < 600 });
@@ -148,6 +160,17 @@ try {
     res.size = `${W}x${H}`;
     res.overflowX = await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth');
     if (res.overflowX) res.findings.push({ rule: 'overflow-x', where: 'page', detail: 'the page scrolls sideways' });
+    // the finish checks (layout-check.js lyFinish): they scroll, so they run before the shots and the stress
+    if (!opt('no-finish')) {
+      await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.momentsReady || !document.querySelector('[data-moment]') || performance.now() - t > 4000) r(); else setTimeout(w, 50); })(); })`);
+      try { res.findings.push(...await ev(`window.lyFinish(${JSON.stringify({ reveal })})`)); } catch (e) { res.findings.push({ rule: 'finish-check', where: 'page', detail: `the finish checks could not run: ${e.message.split('\n')[0]}`, fix: 'fix the page error it names' }); }
+      await ev('scrollTo(0, 0)'); await sleep(300);
+    }
+    const errFix = e => /import\.meta|import statement|export|Unexpected token/i.test(e) ? 'a module loaded as a classic script: load it once, as <script type="module" src="assets/system.js"></script> (the starter\'s last lines), and delete the other <script> for it'
+      : /Failed to load resource|404|ERR_/i.test(e) ? 'the page names a file that does not load: fix the path, or take the reference out'
+      : 'fix the error in the page\'s own script (the kit\'s files load clean on the starter)';
+    for (const e of errors) res.findings.push({ rule: 'console-error', where: e.slice(0, 110), detail: 'an error on load', fix: errFix(e) });
+    errors.length = 0;
     report.push(res);
     if (shots && shots !== true) {
       fs.mkdirSync(shots, { recursive: true });
@@ -192,8 +215,8 @@ else for (const r of report) {
   if (r.stress) console.log(`  stress: ${r.stress.hero} h1 at ${r.stress.chars} of ${r.stress.maxChars} characters takes ${r.stress.lines} lines, hero ${r.stress.height} tall`);
   for (const s of r.sections) console.log(`  section ${s.where.slice(0, 60).padEnd(60)} y ${String(s.top).padStart(5)}  h ${String(s.height).padStart(5)}  content ${s.content}`);
   if (!r.findings.length) console.log('  no findings');
-  for (const f of r.findings) console.log(`  ${f.rule.padEnd(16)} ${f.where.slice(0, 70)}: ${f.detail}`);
+  for (const f of r.findings) console.log(`  ${(f.sev === 'WARN' ? 'WARN ' : '') + f.rule.padEnd(16)} ${f.where.slice(0, 70)}: ${f.detail}${f.fix ? `\n  ${''.padEnd(16)} fix: ${f.fix}` : ''}`);
   if (r.errors) for (const e of r.errors) console.log(`  page error: ${e}`);
 }
-const n = report.reduce((a, r) => a + r.findings.length, 0);
+const n = report.reduce((a, r) => a + r.findings.filter(f => f.sev !== 'WARN').length, 0);
 process.exit(failed ? 2 : n ? 1 : 0);

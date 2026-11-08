@@ -8,11 +8,14 @@
   "trigger": "scroll",
   "cost": "low",
   "webgl": 0,
-  "pages": [
+  "tones": [
+    "playful",
     "tech",
-    "gaming",
-    "software"
+    "editorial",
+    "warm",
+    "product"
   ],
+  "intensity": "lively",
   "look": "A statement of two to five words, set very large: its letters start scattered, shifted and turned, and fly into the line one after the other as the statement rises through the screen, whole before it reaches the middle.",
   "reduced": "The statement stands as written.",
   "phone": "The statement stands as written, in a smaller size.",
