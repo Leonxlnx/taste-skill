@@ -70,6 +70,13 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
     unless the page sets `data-motion="live"`). An unchanged kit copy is skipped by its text; a build that bundles or ports it
     (a framework's `src/lib/motion.js`, a `dist/assets/index-*.js`) gets this finding for the kit's
     line: waive it with "the kit's motion.js shot() test, ported unchanged" as the reason.
+  - **deal-drift**: the page against what `start.mjs plan` dealt (`.taste-skill/history.json`: the
+    last deal's moments and the scene dealt with them, the close and the compositions;
+    `layout-history.json`: the place hero's form; else the plan comment at the top of `<body>`). FAIL:
+    a dealt moment without its `[data-moment]`, a dealt scene without its `[data-big-scene]`, a place
+    hero dealt bleed, split or name built as band. WARN: another hero form, close or composition. The
+    fix names the file whose section to copy. A dealt part the brief cannot fill: deal again
+    (`start.mjs plan --has ...`), never a quiet swap.
   - **the copy** (waivable): `scripts/copy-lint.mjs --json --kind <kind>` on the page's file, or, when
     the file holds no sections (a built app, a dev server), on the page as the checker's browser built
     it; with neither the copy is listed as not checked, never passed. Its FAILs block (`copy-residue`,

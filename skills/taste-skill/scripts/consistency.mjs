@@ -7245,7 +7245,7 @@ function lib() {
       if (!mx) mx = parseFloat(CS(h).fontSize) || 16;
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: inMoment(h) });
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: inMoment(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -9445,7 +9445,11 @@ function copyChecks(P) {
   if (!/\d/.test(P.heroText) && !holdsAny(P.heroText, T.place) && !platform && !(/^(gaming|game|games)$/.test(KIND) && GENRES.test(P.heroText)) && !placeAt(P.heroText)) f('copy-fact', 'FAIL', P.h1 || null, 'the first screen holds no number, price, date, place, platform or genre');
   // 3. every section heading names a thing (card titles are feature titles, read by the judge)
   const gloss = [...T.category, ...T.products, ...T.place, ...T.audience, ...T.names, ...SECTION_NOUNS, ...(T.brand ? [T.brand] : [])];
-  const bare = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && !holdsAny(h.full, gloss));
+  const bareAll = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && !holdsAny(h.full, gloss));
+  // an h3 in a step or chapter list ("Baked in the morning", "Finished by hand") names a step of what the h2 names:
+  // a WARN at most and never counted toward the FAIL, so good step headings are not flattened into noun labels
+  const bare = bareAll.filter((h) => !h.step);
+  for (const h of bareAll.filter((x) => x.step)) f('copy-headings', 'WARN', h, `the step heading "${h.full.slice(0, 60)}" names no product, part or place: fine for a step when the section's h2 names the product`);
   if (bare.length) {
     const sev = bare.length >= 2 && T.category.length ? 'FAIL' : 'WARN';
     for (const h of bare) f('copy-headings', sev, h, `"${h.full.slice(0, 60)}" names no product, part, place or section${bare.length >= 2 ? ` (${bare.length} headings like it; at most one brand line per page)` : ' (the one brand line a page may have)'}`);

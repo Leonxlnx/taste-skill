@@ -6,9 +6,10 @@
     node scripts/moments.mjs list [--kind text] [--fits hero] [--page tech] [--json]
     node scripts/moments.mjs pick --page tech|gaming|software|place|product|service --history .taste-skill/history.json
                                   [--long] [--tone warm|editorial|product|tech|playful] [--scene deal|<id>]
+                                  [--has photo,ui,film,product,figures,archive,route]
                                   [--count 1|2|3] [--seed S] [--effects a,b] [--contexts n]
                                   [--exclude a,b] [--kind text,scroll] [--fits hero,section] [--photo|--no-photo] [--json]
-    node scripts/moments.mjs scene --page <kind> --history .taste-skill/history.json [--tone t] [--seed S] [--json]
+    node scripts/moments.mjs scene --page <kind> --history .taste-skill/history.json [--tone t] [--has ...] [--seed S] [--json]
                                   deal 0 or 1 scene by fit (about one page in two gets one)
     node scripts/moments.mjs check <page.html> [--page tech] [--scene <id>] [--effects a,b] [--contexts n]
                                   audit a built page: its moments, the still rule, cards, the WebGL budget
@@ -44,6 +45,13 @@
   `types`; on tech, software and gaming its `types` still name which of the three it suits), leaves
   out retired ones and every scene the history's `scenes` list holds (never one scene twice), and
   deals one about half the time when one fits; "none" is an answer, not a fault.
+
+  --has names what the brief can fill (default by kind: place and service photo; product photo,product;
+  tech photo,product,figures; software ui,figures; gaming setting). A moment or scene whose meta.needs.list
+  asks for more is never dealt: pictures:N over 8 needs archive (the client's own body of pictures),
+  product-photo needs product, product-ui needs ui, video needs film, figures needs two proof figures in
+  the fact sheet (counter-rolls; opening hours are not proof), route a real route. Add figures to --has
+  when the fact sheet's Numbers line holds two counts, times or prices.
 
   pick deals two or three moments at random, seeded. The history file's `moments` list is read as
   cycles: once every moment that fits has been dealt, the next cycle starts empty, so an id comes
@@ -109,6 +117,50 @@ export function fitsKind(x, kind, { tone, webglOk = false } = {}) {
   return true;
 }
 const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k)));
+// what a page can fill: meta.needs.list on a moment or scene names the material its content demands, and
+// --has names what the brief really has (default: what the kind normally has). photo: photographs (the
+// client's or stand-ins, up to eight); archive: the client's own body of pictures (more than eight: a project
+// archive, a room-by-room shoot); product: a photograph or cut-out of the client's own product; ui: its
+// screens; film: footage or a frame sequence; figures: two or more proof figures the brief gives (counts,
+// times, prices; opening hours are not proof); route: a real route to draw. pictures:0, names:N and series:N
+// are words the copy writes, always met.
+export const HAS_BY_KIND = { place: ['photo'], service: ['photo'], product: ['photo', 'product'], tech: ['photo', 'product', 'figures'], software: ['ui', 'figures'], gaming: ['setting'] };
+export function hasFor(page, given) {
+  const s = new Set(given && given !== true ? String(given).split(',').map(x => x.trim()).filter(Boolean) : HAS_BY_KIND[page] || []);
+  if (s.has('setting')) s.add('photo');        // a game's stand-in photographs of its setting
+  if (s.has('archive')) s.add('photo');
+  if (s.has('object')) s.add('product');
+  return s;
+}
+// the exact file whose section a page copies for a dealt moment or scene (start.mjs plan prints it, the gate's
+// deal-drift fix names it): the in-page demo that already holds the moment in a page section, else its own demo
+export function momentSource(id, ref = '<skill>') {
+  for (const f of ['in-page.html', 'in-page-service.html']) {
+    let src = '';
+    try { src = fs.readFileSync(path.join(DIR, '_demo', f), 'utf8'); } catch { continue; }
+    const sec = [...src.matchAll(/<section[^>]*>/g)].find(x => x[0].includes('data-moment="' + id + '"'));
+    if (sec) return 'copy the <section' + ((sec[0].match(/ id="[^"]+"/) || [''])[0]) + ' data-moment="' + id + '"> of ' + ref + '/assets/moments/_demo/' + f;
+  }
+  return 'copy the [data-moment="' + id + '"] element and its section from ' + ref + '/assets/moments/' + id + '/demo.html (section shape: ' + ref + '/assets/moments/_demo/in-page.html)';
+}
+export const sceneSource = (id, ref = '<skill>') => 'copy the whole <section data-big-scene="' + id + '"> of ' + ref + '/assets/scenes/' + id + '/demo.html, link ' + ref + '/assets/scenes/scenes.css and ' + id + '/scene.css, load assets/scenes/scenes.js once';
+export function needsMet(x, has) {
+  const unmet = [], nd = x.needs && typeof x.needs === 'object' ? x.needs : {};
+  // a scene written without a list says its needs as keys: its screen (ui) and a photograph that is not optional count
+  const list = Array.isArray(nd.list) ? nd.list
+    : [...(nd.ui ? ['product-ui'] : []), ...(typeof nd.photo === 'string' && !/^\s*optional/i.test(nd.photo) ? ['pictures:1'] : [])];
+  for (const n of list) {
+    const [k, v] = String(n).split(':'), num = +v || 0;
+    const ok = k === 'pictures' ? (num === 0 || ((has.has('photo') || has.has('film')) && (num <= 8 || has.has('archive'))))
+      : k === 'product-photo' ? has.has('product')
+      : k === 'product-ui' ? has.has('ui')
+      : k === 'video' ? has.has('film')
+      : k === 'figures' || k === 'route' ? has.has(k)
+      : true;                                  // names:N, series:N and the rest: words the copy writes
+    if (!ok) unmet.push(n);
+  }
+  return unmet;
+}
 function toneArg(a, page) {
   if (a.tone == null) return undefined;
   const t = String(a.tone).toLowerCase();
@@ -261,15 +313,18 @@ export function readScenes() {
 }
 // 0 or 1 scene by fit: never a retired one, never one dealt in this cycle of the history's scenes,
 // and about one page in two (chance) gets one when any fits
-export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5, exclude = [] } = {}) {
+export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5, exclude = [], has } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed + ':scene');
   const notes = [];
+  has = has instanceof Set ? has : hasFor(page, has);
   // on tech, software and gaming a scene's `types` still say which of the three it was made for (a
   // software screen is not a game's); on the other kinds its tones decide
   const madeFor = s => !TECH.includes(page) || !Array.isArray(s.types) || !s.types.length || s.types.includes(page);
-  const pool = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s));
-  if (!pool.length) return { seed, scene: null, notes: [`scene: none fits a ${page} page${tone ? ` in the ${tone} tone` : ''}`] };
+  const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s));
+  // only what the page can fill (meta.needs.list against --has): never a picture archive on a page without one
+  const pool = fit.filter(s => !needsMet(s, has).length);
+  if (!pool.length) return { seed, scene: null, notes: [`scene: none fits a ${page} page${tone ? ` in the ${tone} tone` : ''} with ${[...has].join(', ') || 'nothing'}`] };
   // never a scene the history already holds, so no two sites share one
   const seen = new Set(history);
   const cands = pool.filter(s => !seen.has(s.id));
@@ -280,7 +335,7 @@ export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5
   for (const s of cands) { r -= (s.weight ?? 1); if (r <= 0) { chosen = s; break; } }
   return { seed, scene: chosen, notes };
 }
-export function deal(moments, { count = 2, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, used: spent = 0 } = {}) {
+export function deal(moments, { count = 2, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, used: spent = 0, has } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed);
   const notes = [];
@@ -293,6 +348,11 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
   if (kinds) pool = pool.filter(m => kinds.includes(m.kind));
   if (fits) pool = pool.filter(m => m.fits.some(f => fits.includes(f)));
   if (!photo) pool = pool.filter(m => !m.needs?.photo);
+  // what the page cannot fill (meta.needs.list against --has): counter-rolls only with two proof figures
+  if (has) {
+    const cant = pool.filter(m => needsMet(m, has).length);
+    if (cant.length) { notes.push(`pick: left out, the page cannot fill them (--has ${[...has].join(',')}): ${cant.map(m => `${m.id} (${needsMet(m, has).join(', ')})`).join(', ')}`); pool = pool.filter(m => !cant.includes(m)); }
+  }
   if (!pool.length) throw new Error('pick: no moment fits these filters');
   const ids = new Set(pool.map(m => m.id));
   // the history as cycles: walking it forward, each time every id in the pool has been dealt a cycle
@@ -350,7 +410,7 @@ function pageArg(a, cmd) {
 }
 // the scene deal, shared by `scene` and `pick --scene deal`; it appends the scene to the history
 function sceneFor(a, page, tone, hist) {
-  const out = dealScene(readScenes(), { page, tone, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [] });
+  const out = dealScene(readScenes(), { page, tone, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has) });
   out.notes.forEach(n => console.error(n));
   if (out.scene) hist.scenes = [...(hist.scenes || []), { id: out.scene.id, at: new Date().toISOString(), seed: out.seed }].slice(-200);
   return out;
@@ -381,12 +441,13 @@ function cmdPick(a) {
   if (ctx.avoid.length) console.error(`pick: scene ${scene} keeps off its page: ${ctx.avoid.join(', ')} (its avoidMoments, left out of the deal)`);
   const history = (hist.moments || []).map(p => p.id);
   // photographs: every place, product and service page has them; elsewhere --photo says so
-  const photo = a['no-photo'] ? false : (!!a.photo || isOther(page));
+  const has = hasFor(page, a.has);
+  const photo = a['no-photo'] ? false : (!!a.photo || isOther(page) || has.has('photo') || has.has('film'));
   // the slots a page deals by default: sections, statements, the close; a hero moment only with --fits hero
   const fits = list(a.fits) || ['section', 'statement', 'closing', 'between'];
   let out;
   try {
-    out = deal(idx.moments, { count, seed: seedArg(a), history, exclude, kinds: list(a.kind), fits, photo, page, tone, used: ctx.n });
+    out = deal(idx.moments, { count, seed: seedArg(a), history, exclude, kinds: list(a.kind), fits, photo, page, tone, used: ctx.n, has });
   } catch (e) { die(e.message); }
   out.notes.forEach(n => console.error(n));
   if (a.history && a.history !== true) {

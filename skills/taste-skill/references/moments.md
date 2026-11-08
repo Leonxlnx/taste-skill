@@ -206,6 +206,10 @@ model.
   own photographs (or library ones that pass `photos.md`), each used once on the page, and its
   words are the page's real copy; never a stand-in picture to give the moment something to move.
 - **One count a page:** `counter-rolls` or `data-m-count` (`motion.md`), never both.
+- **Only what the page can fill:** a moment's `needs.list` is read against `--has` as a scene's is
+  (`scenes.md`): `counter-rolls` needs `figures`, two proof figures on the fact sheet's Numbers line
+  (counts, times, prices; opening hours are not proof), so a cafe without them is never dealt it;
+  `photo-chapters` needs three photographs. Pass `--has photo,figures` when the brief has both.
 - **Nothing blinks, bounces or overshoots.** Ease-outs (cubic-bezier(.22,1,.36,1) for a settle),
   600-1,000 ms for a reveal, 1.6-1.8 s for a photograph developing; a scrubbed wipe or change takes
   about half of its chapter's share of the scroll and holds for the rest; a loop runs its rounds and

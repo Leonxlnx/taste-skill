@@ -239,9 +239,9 @@ svg.ui-brand { fill: currentColor; color: var(--u-ink); }
 
 /* the pause button ui.loop puts by a looping fragment (and an object from assets/objects, as
    .loop-pause): a solid disc in the page colours (never a see-through blur), 32px in a 44px hit area,
-   the same as components' .cx-pause and system.css. In a card it sits beside the title (ui.js sets its
-   top and right; the title keeps 44px clear), in a panel outside a card 12px in from the bottom-right
-   corner, and with no panel under the fragment, in 44px kept free below it. */
+   the same as components' .cx-pause and system.css. In a panel (a card's or not) it sits 12px in from the
+   bottom-right corner, as in the hero; in a card with no panel beside the title (ui.js sets its top and
+   right; the title keeps 44px clear), and with no panel under the fragment, in 44px kept free below it. */
 button.ui-pause.ui-pause, button.loop-pause {
   position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center;
   width: 32px; height: 32px; margin: 0; padding: 0; border-radius: 50%; cursor: pointer;

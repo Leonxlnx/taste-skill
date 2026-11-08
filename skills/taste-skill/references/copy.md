@@ -60,6 +60,7 @@ Numbers: <each figure the brief gives, with where it came from; none invented>
 People: <names and roles the brief gives, or none>
 Odd true details: <history, an object, a ritual, a house word, the awkward bit, from the brief>
 Offer: <price, trial, booking terms, the one action>
+Products: <each thing sold a visitor wants to see, plain nouns: cake, espresso, filter coffee; each gets a photograph of it (photos.md)>
 
 ## Six questions, answered from the brief
 1. Who switched to them from what, and why? <answer, or: not in the brief>

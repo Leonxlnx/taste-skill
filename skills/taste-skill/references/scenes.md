@@ -28,7 +28,12 @@ object render for the two object scenes.
   "scene: none" is an answer: the page carries its moments. Name the dealt scene and its section in
   the plan.
 - **Only when the brief has what the scene `needs`** (its own photographs, its own screen, its own
-  words; a game's key art and in-engine shots are its photographs). A need the brief cannot meet:
+  words; a game's key art and in-engine shots are its photographs). The deal reads `needs.list`
+  against `--has` (start.mjs plan and moments.mjs pick/scene; default by kind: a place or service
+  `photo`, a product `photo,product`, software `ui,figures`): `pictures:N` over 8 needs `archive`
+  (the client's own body of pictures), `product-photo` needs `product`, `product-ui` needs `ui`,
+  `video` needs `film`, `route` a real route, so a software page is never dealt a project archive
+  of photographs. A need the brief cannot meet:
   deal again with the scene in `--exclude`; never a stand-in for the client's pictures. A game
   without art files sets its name large over stand-in photographs of its setting (the `photo` hero
   and its world section; a render only when the brief asks for 3D), never an effect in its place

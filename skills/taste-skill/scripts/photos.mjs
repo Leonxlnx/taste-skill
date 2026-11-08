@@ -203,8 +203,13 @@ const DETAIL_SUBJECTS = new Set(['hands', 'detail', 'part', 'load', 'oven', 'dou
 const isDetailIn = (p, trade) => DETAIL_SUBJECTS.has(p.subject) && !(trade === 'bakery' && p.subject === 'food') && !(p.subject === 'breakfast' && trade !== 'hotel');
 const PD = (p) => /public domain/i.test(p.licence || '');
 
+// a Commons file whose author field is empty, "Unknown", or a link to a category ("Category:Government of ...") has no
+// author to name: it is credited as an unknown author on Wikimedia Commons, never by the category's name
+const UNKNOWN_BY = 'unknown author, Wikimedia Commons';
+const noAuthor = (by) => !String(by || '').trim() || /^\s*(category|user talk|template)\s*:/i.test(by) || /^\s*unknown(\s+author)?\b/i.test(by) || /^\s*(anonymous|anonyme?|n\/a)\s*$/i.test(by);
+const commonsBy = (by) => (noAuthor(by) ? UNKNOWN_BY : String(by).trim());
 function credit(p) {
-  return p.source === 'commons' ? `Photo by ${p.by}, ${p.licence}, via Wikimedia Commons (${p.page})` : `Photo by ${p.by} on Unsplash (${p.page})`;
+  return p.source === 'commons' ? `Photo by ${commonsBy(p.by)}, ${p.licence}, via Wikimedia Commons (${p.page})` : `Photo by ${p.by} on Unsplash (${p.page})`;
 }
 const PLACE = {
   lead: 'hero: full-bleed, or the large first picture beside the headline, plain (no print, grade or reveal over it); text only on its calm side',
@@ -668,7 +673,7 @@ function foundEntry(p) {
   if (!(width > 0 && height > 0 && width <= 1e5 && height <= 1e5)) return 'its width or height is not a number';
   const ratio = Math.round((width / height) * 100) / 100;
   return { id: p.id, source: 'commons', url: p.url, width, height, ratio, orientation: ratio >= 1.05 ? 'landscape' : ratio <= 0.95 ? 'portrait' : 'square',
-    by: plain(p.by, 200) || 'Unknown author', licence, licenceUrl: p.licenceUrl || '', page: p.page, alt: plain(p.alt, 300) || p.id,
+    by: commonsBy(plain(p.by, 200)), licence, licenceUrl: p.licenceUrl || '', page: p.page, alt: plain(p.alt, 300) || p.id,
     subject: /^[a-z][a-z -]{0,30}$/.test(p.subject) ? p.subject : 'stand-in', tone: 'mid', calm: 'none', standIn: true,
     ...(plain(p.query, 120) ? { query: plain(p.query, 120) } : {}), ...(plain(p.trade, 60) ? { trade: plain(p.trade, 60) } : {}) };
 }
@@ -739,7 +744,7 @@ async function searchCmd() {
       if (mine.some((m) => m.series === series)) continue;
       seen.add(id);
       // the plain file URL (Commons adds tracking words after "?"): fetch makes its 500, 960 and 1280 thumbnails from it
-      mine.push({ id, source: 'commons', url: String(ii.url).split('?')[0], width: ii.width, height: ii.height, ratio, orientation, by: val('Artist') || 'Unknown author', licence,
+      mine.push({ id, source: 'commons', url: String(ii.url).split('?')[0], width: ii.width, height: ii.height, ratio, orientation, by: commonsBy(val('Artist')), licence,
         licenceUrl: okUrl(val('LicenseUrl'), LINK_HOSTS.commons.licence) ? val('LicenseUrl') : (/public domain|pd/i.test(licence) ? 'https://creativecommons.org/publicdomain/mark/1.0/' : ''), page: String(ii.descriptionurl).split('?')[0],
         alt: val('ObjectName') || title, subject: typeof opt('subject') === 'string' ? opt('subject') : 'stand-in', tone: 'mid', calm: 'none',
         standIn: true, query: q, series, ...(tradeWord ? { trade: tradeWord } : {}), at: new Date().toISOString() });
@@ -1030,16 +1035,16 @@ const goodCredits = (cred, file) => (Array.isArray(cred && cred.photos) ? cred.p
 });
 function creditList(list) {
   const set = [...new Set(list.map((c) => c.source))];
-  const via = (c) => (set.length > 1 ? (c.source === 'Unsplash' ? ' on Unsplash' : ', via Wikimedia Commons') : '');
+  const via = (c) => (set.length > 1 && !(c.source === 'Wikimedia Commons' && noAuthor(c.by)) ? (c.source === 'Unsplash' ? ' on Unsplash' : ', via Wikimedia Commons') : '');
   const items = list.map((c) => c.source === 'Wikimedia Commons'
-    ? '<li><a href="' + escH(c.page) + '">' + escH(c.by) + '</a>, ' + (c.licenceUrl ? '<a href="' + escH(c.licenceUrl) + '">' + escH(c.licence) + '</a>' : escH(c.licence)) + (c.adapted ? ', adapted' : '') + via(c) + '</li>'
+    ? '<li><a href="' + escH(c.page) + '">' + escH(commonsBy(c.by)) + '</a>, ' + (c.licenceUrl ? '<a href="' + escH(c.licenceUrl) + '">' + escH(c.licence) + '</a>' : escH(c.licence)) + (c.adapted ? ', adapted' : '') + via(c) + '</li>'
     : '<li><a href="' + escH(c.page) + '">' + escH(c.by) + '</a>' + (c.adapted ? ', adapted' : '') + via(c) + '</li>');
   return '<section class="credits-list" id="credits" aria-labelledby="credits-h">\n  <h1 id="credits-h">Photograph credits</h1>\n  <ul>\n    ' + items.join('\n    ') + '\n  </ul>\n</section>';
 }
 // the same list as plain text (a report, a README): the one footer line, then every photograph
 function creditText(list) {
   const line = 'Photographs via ' + creditSources(list);
-  return [line, ...list.map((c) => '- ' + c.by + (c.source === 'Wikimedia Commons' ? ', ' + c.licence + (c.licenceUrl ? ' (' + c.licenceUrl + ')' : '') : '') + (c.adapted ? ', adapted' : '') + ', ' + c.page + (c.where ? ' [' + c.where + ']' : ''))].join('\n');
+  return [line, ...list.map((c) => '- ' + (c.source === 'Wikimedia Commons' ? commonsBy(c.by) : c.by) + (c.source === 'Wikimedia Commons' ? ', ' + c.licence + (c.licenceUrl ? ' (' + c.licenceUrl + ')' : '') : '') + (c.adapted ? ', adapted' : '') + ', ' + c.page + (c.where ? ' [' + c.where + ']' : ''))].join('\n');
 }
 // the credits page: the site's own legal-page shell (privacy.html, terms.html, else the first other page) with its main replaced by the list
 function creditsPage(out, name, list, brand) {
@@ -1086,6 +1091,12 @@ function creditsCmd() {
   }
   if (text.length > 110) console.log('WARNING: the footer line is ' + text.length + ' characters (110 at most): name the sources only');
   if (unused.length) console.log('not on the page, so not credited (delete their files): ' + unused.join(', '));
+  // every photograph the pages use has its credit: one entry each, counted against the files the markup loads
+  const onPage = [...new Set([...html.matchAll(/photo-([a-z]?\d+)(?![0-9A-Za-z])/g)].map((m) => m[1]))];
+  const bare = onPage.filter((id) => !fine.some((c) => c.id === id));
+  console.log(onPage.length + ' photographs on the page, ' + used.length + ' credited' + (bare.length ? '; NOT CREDITED (no entry in credits.json: fetch them with photos.mjs fetch, or credit them by hand): ' + bare.map((id) => 'photo-' + id).join(', ') : ''));
+  const unknown = used.filter((c) => c.source === 'Wikimedia Commons' && noAuthor(c.by));
+  if (unknown.length) console.log('no author on Commons, credited as "' + UNKNOWN_BY + '": ' + unknown.map((c) => c.id).join(', '));
 }
 
 if (cmd === 'pick') pick();

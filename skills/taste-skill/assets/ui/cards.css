@@ -33,9 +33,11 @@
 }
 /* the two lines under a title: 16px in the ink (a touch softer than the title), never small grey text */
 .card > p, .card__text {
-  margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--c-text);
+  margin: 8px 0 0; color: var(--c-text);
   max-width: 46ch; text-wrap: pretty;
 }
+/* (a type utility on the line, <p class="t-stat"> a plan's price, keeps its own size) */
+.card > p:not([class^="t-"], [class*=" t-"]), .card__text { font-size: 16px; line-height: 24px; }
 /* two muted lines keep one height in a row so the panels line up; only where cards sit side by side
    (below 1024px a row is one column, and the held line would be an empty gap) */
 @media (min-width: 1024px) { .card--row > p { min-height: 2lh; } }
@@ -168,6 +170,8 @@
 }
 /* anchored at the top-left inset, cut by the right and bottom edges (19 of 41 sites) */
 .at-corner { left: var(--ax, 32px); top: var(--ay, 32px); }
+/* a small one in a panel 1.6 times its height or more stands in the middle of it (ui.js sets .is-mid) */
+.stage > .at-corner.is-mid { top: 50%; translate: 0 -50%; }
 /* anchored at the top-right inset, cut by the bottom only: on a narrow panel it narrows to the panel
    minus both insets rather than run out of the left edge through its text */
 .at-right { right: var(--ax, 32px); top: var(--ay, 32px); max-width: calc(100% - 2 * var(--ax, 32px)); }

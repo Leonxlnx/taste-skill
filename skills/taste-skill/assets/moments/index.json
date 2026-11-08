@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generated": "2026-11-08T19:20:19.081Z",
+ "generated": "2026-11-08T21:18:34.120Z",
  "count": 18,
  "dealt": 17,
  "kinds": {
@@ -172,6 +172,9 @@
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
+    "list": [
+     "figures"
+    ],
     "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
    },
    "avoidWith": [],
@@ -812,6 +815,9 @@
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
+    "list": [
+     "pictures:3"
+    ],
     "photo": true,
     "words": "3 to 5 chapters, a title and two lines each, under one h2 and a short lead",
     "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"

@@ -36,7 +36,10 @@
     empty-band       the empty strip under a section's lowest content (text, picture, control, a box with its own
                      ground) is over 25% of the section's height (FAIL), over 15% (WARN). A section that holds a
                      pinned moment or a scene is left out: it holds its screens on purpose.
-    blank-screen     one screen of a section (its first, or its second when it is two screens tall) shows
+    uneven-columns   a split (.grid columns side by side, at any width where they still stand side by side) whose
+                     shorter column's lowest content ends above the taller one's by over 30% of the section's
+                     height (FAIL), over 20% (WARN). Sticky columns, moments, scenes and the hero are left out.
+    blank-screen    one screen of a section (its first, or its second when it is two screens tall) shows
                      nothing, after the check scrolled to it and waited for what reveals there.
     placeholder      a [data-placeholder] element, or an .example address or domain printed in the page's words.
     moment-target    a [data-moment] root that lacks what its moment needs (picture-develops: one <img> as its
@@ -352,6 +355,31 @@ window.lyFinish = async function lyFinish(opts = {}) {
         : `the last ${Math.round(band)}px (${pct(f)} of its ${Math.round(h)}px) under its lowest content are empty`,
       inner ? 'close the hole: keep the heading and what follows together (no justify-content: space-between across a tall section), or make the section a screen shorter (--h / --hm)'
         : 'fill the section: let the picture or the card grow to the foot of the longer column (align-self: stretch), add the visual it lacks, or make the section a screen shorter (--h) and merge it with its neighbour', f > 0.25 ? undefined : 'WARN');
+    }
+    // uneven columns: in a split that still stands side by side, the shorter column's lowest content against the
+    // taller's, relative to the section (empty-band measures the whole section, so a tall photograph hid a text
+    // column that ended 200-400px earlier). A sticky column moves with the scroll and is left out.
+    if (ink.length && !pinned && !s.matches('.hero')) {
+      let worst = null;
+      for (const g of s.querySelectorAll('.grid')) {
+        if (g.closest('[data-moment], [data-big-scene], .card, .frame, .panel')) continue;
+        const cols = [...g.children].filter(c => { const r0 = c.getBoundingClientRect(); return r0.width > 0.15 * r.width && r0.height > 40 && getComputedStyle(c).position !== 'sticky'; });
+        if (cols.length < 2) continue;
+        const rs = cols.map(c => c.getBoundingClientRect()), t0 = Math.min(...rs.map(q => q.top));
+        const row = cols.filter((c, i) => rs[i].top - t0 < 48);   // the first row of the grid: the columns that start together
+        if (row.length < 2) continue;
+        const rr = row.map(c => c.getBoundingClientRect());
+        if (rr.some((q, i) => rr.some((p, j) => j !== i && Math.min(q.right, p.right) - Math.max(q.left, p.left) > 4))) continue;   // stacked, not side by side
+        const bots = row.map(c => Math.max(-Infinity, ...ink.filter(i => c.contains(i.e)).map(i => i.bottom))).filter(Number.isFinite);
+        if (bots.length < 2) continue;
+        const px = Math.max(...bots) - Math.min(...bots), f = px / h;
+        if (!worst || f > worst.f) worst = { f, px, short: row[bots.indexOf(Math.min(...bots))] };
+      }
+      if (worst && worst.f > 0.2) {
+        const c = worst.short, what = c.matches('figure, picture, img') || (c.querySelector('img') && !c.querySelector('h2, h3, p')) ? 'the picture column' : 'the text column';
+        add('uneven-columns', secName(s), `${what} of a split ends ${Math.round(worst.px)}px (${pct(worst.f)} of the section's ${Math.round(h)}px) above the other column's lowest content: an empty area beside the taller column`,
+          'stretch the shorter column (align-self: stretch, its picture or card grown to the foot with height: 100% and object-fit: cover) or move content into it (the hours, a fact list, the link row), or let the taller column lose a picture', worst.f > 0.3 ? undefined : 'WARN');
+      }
     }
     // its screens, one by one (a short last piece under 40% of a screen is padding). A pinned moment or a scene moves
     // its content with the scroll, so its screens are read only on screen

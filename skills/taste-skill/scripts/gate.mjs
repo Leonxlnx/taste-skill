@@ -38,6 +38,13 @@
   and static ones: script-twice / script-module (a script loaded twice, a module loaded as a classic script), kit-edited (a file the page loads from assets/ differs from the skill's copy, whitespace,
   quotes and semicolons aside) and checker-gaming (the page's own code looks for a headless browser or an automation
   tool). gaming-suspect, waivable: a user-agent test for headless, or aria-hidden stripped from many pictures.
+  deal-drift: the page against what start.mjs plan dealt (.taste-skill/history.json, layout-history.json, else the plan
+  comment): a dealt moment or scene missing, or a place hero dealt bleed, split or name built as band, FAILs; another
+  hero form, close or composition WARNs; the fix names the file to copy from.
+  photo-credit: every photograph of assets/img/credits.json the page uses has its line on the credits page the
+  footer's credits link opens, that line names every source, and no author is a Commons category.
+  photo-product (WARN): a heading names a product of the fact sheet (copy.md Products, else What it is) and its
+  section's photographs (alt, data-subject) show none of it.
   And the copy: scripts/copy-lint.mjs --json on the page's file, or, when the file holds no sections (a built app, a
   dev server), on the page as the browser built it (consistency.mjs saves it as rendered.html); copy-lint's ids (copy-slop-word,
   copy-virtue, ...; the checker's copy-headline, copy-fact and the rest are its own); its FAILs
@@ -405,6 +412,141 @@ function staticChecks(page, html, proj, files) {
     }
   }
   return F;
+}
+
+// ---------------------------------------------------------------- photo credits: counted against the photographs used
+// assets/img/credits.json (photos.mjs fetch) lists every stand-in and library photograph; each one the page loads
+// (photo-<id> in its markup) has its line on the credits page the footer's one credits link opens, the footer line
+// names every source those photographs come from, and no author is a Commons category name. FAIL: rerun
+// photos.mjs credits --out . --write and paste its footer line.
+function creditChecks(page, html) {
+  const F = [];
+  if (!page || !html) return F;
+  const dir = path.dirname(page);
+  let cred; try { cred = JSON.parse(fs.readFileSync(path.join(dir, 'assets', 'img', 'credits.json'), 'utf8')); } catch { return F; }
+  const list = Array.isArray(cred && cred.photos) ? cred.photos.filter(c => c && typeof c.id === 'string' && c.id) : [];
+  const ids = new Set([...html.matchAll(/photo-([a-z]?\d+)(?![0-9A-Za-z])/g)].map(m => m[1]));
+  const used = list.filter(c => ids.has(c.id));
+  if (!used.length) return F;
+  const fix = `node ${slash(path.join(SKILL, 'scripts', 'photos.mjs'))} credits --out . --write (it writes credits.html for the photographs the page uses) and paste its one footer line`;
+  const link = html.match(/<a\b[^>]*\bclass\s*=\s*["'][^"']*\bcredits\b[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+  if (!link) { F.push({ check: 'photo-credit', where: 'footer credits line', msg: `${used.length} credited photographs are on the page and the footer has no credits line (<a class="credits">)`, fix }); return F; }
+  const text = link[1].replace(/<[^>]+>/g, ' ');
+  const missingSrc = [...new Set(used.map(c => c.source))].filter(s => s && !text.toLowerCase().includes(String(s).toLowerCase()));
+  if (missingSrc.length) F.push({ check: 'photo-credit', where: 'footer credits line', msg: `the footer line "${text.trim().slice(0, 60)}" leaves out ${missingSrc.join(' and ')}, a source of photographs the page uses`, fix });
+  const href = (attrs(link[0].match(/<a\b[^>]*>/i)[0]).href || '').split(/[?#]/)[0];
+  let cp = ''; if (href && !/^[a-z]+:/i.test(href)) try { cp = fs.readFileSync(path.resolve(dir, href), 'utf8'); } catch { /* none */ }
+  if (!cp) { if (href && !/^[a-z]+:|^#/i.test(href)) F.push({ check: 'photo-credit', where: `credits page ${href}`, msg: `the footer's credits link goes to ${href}, which does not exist`, fix }); return F; }
+  const esc = s => String(s).replace(/&/g, '&amp;');
+  const bare = used.filter(c => !(c.page && (cp.includes(c.page) || cp.includes(esc(c.page)))));
+  if (bare.length) F.push({ check: 'photo-credit', where: `credits page ${href}`, msg: `${used.length} credited photographs are on the page, ${used.length - bare.length} of them on ${href}; not credited: ${bare.map(c => c.id).join(', ')}`, fix });
+  const cat = cp.match(/>\s*(Category:[^<]{1,60})</i);
+  if (cat) F.push({ check: 'photo-credit', where: `credits page ${href} author "${cat[1].trim().slice(0, 30)}"`, msg: `an author on ${href} is a Commons category ("${cat[1].trim()}"), not a person`, fix: `credit it as "unknown author, Wikimedia Commons": ${fix}` });
+  return F;
+}
+
+// ---------------------------------------------------------------- photo-product: a heading's product against its photograph
+// The products of the fact sheet (.taste-skill/copy.md: its Products line, else the nouns after "serves", "sells",
+// "makes" or "bakes" in What it is): a section whose h2 or h3 names one and whose photographs' alt and data-subject show
+// none of it WARNs (a cafe's cake chapter over beans in a cooling tray). A few words stand for one another (a slice is
+// cake, an espresso is coffee). WARN only: photos.md, Every product on the fact sheet gets its picture.
+const SAME = { coffee: 'espresso|latte|cappuccino|flat white|cortado|filter|pour-over|cup|beans|roast', cake: 'slice|tart|torte|gateau|pastry|pastries|bake|baking|sponge|cheesecake', bread: 'loaf|loaves|sourdough|baguette|roll|crust',
+  room: 'bedroom|bed|suite', bike: 'bicycle|cycle', bicycle: 'bike|cycle', flower: 'bouquet|rose|tulip|bloom|stems', bouquet: 'flower|rose|tulip|bloom', tea: 'teapot|cup', breakfast: 'bread|egg|jam|table', pizza: 'pie|oven', beer: 'glass|tap|pint', wine: 'glass|bottle' };
+function productChecks(html, dot) {
+  const W = [];
+  if (!html) return W;
+  let notes = '';
+  for (const d of [dot, path.join(dot, '..', '..', '.taste-skill'), path.join(dot, '..', '..', '..', '.taste-skill')]) { try { notes = fs.readFileSync(path.join(d, 'copy.md'), 'utf8'); break; } catch { /* next */ } }
+  if (!notes) return W;
+  const line = k => ((notes.match(new RegExp(`^\\s*${k}\\s*:\\s*(.+)$`, 'im')) || [])[1] || '').replace(/<[^>]*>/g, '').trim();
+  let phrases = line('Products').split(/,|;|\band\b/i);
+  if (!phrases.join('').trim()) phrases = ((line('What it is').match(/\b(?:serves|sells|makes|bakes|roasts|brews|offers|rents|repairs)\s+(.+)$/i) || [])[1] || '').split(/,|;|\band\b/i);
+  const stem = w => w.toLowerCase().replace(/ies$/, 'y').replace(/(s|x|sh|ch)es$/, '$1').replace(/([^s])s$/, '$1');
+  const nouns = [...new Set(phrases.map(p => p.replace(/\([^)]*\)|[.!?]/g, '').trim().split(/\s+/).pop()).filter(w => w && w.length > 2).map(stem))];
+  if (!nouns.length) return W;
+  const word = s => new RegExp(`(^|[^\\p{L}])(${s})(e?s)?(?![\\p{L}])`, 'iu');
+  const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
+  for (const m of live.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/gi)) {
+    const body = m[2], id = (attrs('<x ' + m[1] + '>').id || '');
+    const imgs = [...body.matchAll(/<img\b[^>]*>/gi)].map(t => attrs(t[0])).filter(a => !/^\s*$/.test(a.alt || '') || a['data-subject']);
+    if (!imgs.length) continue;
+    const heads = [...body.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)].map(h => h[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+    const shows = imgs.map(a => `${a.alt || ''} ${a['data-subject'] || ''}`).join(' ');
+    for (const n of nouns) {
+      const h = heads.find(x => word(n).test(x));
+      if (!h || word(n + (SAME[n] ? '|' + SAME[n] : '')).test(shows)) continue;
+      W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's photograph shows "${shows.trim().slice(0, 70)}"`, fix: `a photograph of the ${n} itself: photos.mjs pick for the trade, else photos.mjs search --out . "${n} ..." (photos.md, Every product on the fact sheet gets its picture), its alt naming it` });
+    }
+  }
+  return W;
+}
+
+// ---------------------------------------------------------------- deal drift: the page against what was dealt
+// What start.mjs plan dealt for this page: .taste-skill/history.json (the moments of the last deal, the scene dealt
+// with them, the layout's close and compositions) and layout-history.json (the place hero's form), else the plan
+// comment at the top of <body>. A dealt moment or scene the page lacks, or a place hero dealt bleed, split or name
+// and built as band (data-form missing is band), FAILs; another hero form, close or composition WARNs. The fix names
+// the file to copy from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it with why.
+const COMP_MARK = {
+  mirrored: [/\bgrid--mirror\b/, 'class="grid grid--mirror" on the split (sections-library.md, Compositions)'],
+  'bleed-panel': [/\bcomp-bleed\b/, '<section class="section comp-bleed"> with the photograph as its layer and the words on .comp-panel (sections-library.md, Compositions)'],
+  'offset-pair': [/\bcomp-offset\b/, '<div class="grid comp-offset"> with two figures of one subject (sections-library.md, Compositions)'],
+  'three-up': [/\bcomp-three\b/, '<div class="grid comp-three"> with three figures on span-4 (sections-library.md, Compositions)'],
+  'street-large': [/\btype-moment\b/, 'the street set large as .type-moment under the visit\'s h2 (sections.md section 4)'],
+  'statement-short': [/\bstatement--short\b/, '<section class="section statement statement--short"> (sections-library.md, Compositions)'],
+  'close-form': [/\bclose--form\b/, 'the <template data-part="close-form"> of <skill>/assets/starter.html as the close'],
+};
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
+async function dealDrift(html, dot, kind) {
+  const fails = [], warns = [];
+  if (!html) return { fails, warns };
+  const read = f => { try { return JSON.parse(fs.readFileSync(path.join(dot, f), 'utf8')); } catch { return null; } };
+  const h = read('history.json') || {}, lh = read('layout-history.json') || {};
+  const plan = ((html.split(/<body\b/i)[1] || '').match(/<!--([\s\S]*?)-->/) || [])[1] || '';
+  const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
+  const has = (attr, id) => new RegExp(`\\b${attr}\\s*=\\s*["']?${reEsc(id)}(?![\\w-])`).test(live);
+  const named = (text, id) => new RegExp(`(^|[^\\w-])${reEsc(id)}(?![\\w-])`).test(text);
+  let mo;
+  try { mo = await import('./moments.mjs'); } catch { return { fails, warns }; }
+  const ids = d => { try { return fs.readdirSync(path.join(SKILL, 'assets', d), { withFileTypes: true }).filter(x => x.isDirectory() && !x.name.startsWith('_')).map(x => x.name); } catch { return []; } };
+  // the moments and the scene of the last deal (one pick run: one seed, one time; its scene within a few seconds of it)
+  const ms = Array.isArray(h.moments) ? h.moments : [], last = ms[ms.length - 1];
+  let moments = last ? ms.filter(m => m.seed === last.seed && m.at === last.at).map(m => m.id) : [];
+  let scene = null, from = '.taste-skill/history.json';
+  if (last) {
+    const t = Date.parse(last.at), sc = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => Math.abs(t - Date.parse(s.at)) < 10000).pop();
+    scene = sc ? sc.id : null;
+  } else if (plan) {
+    from = 'the plan comment';
+    moments = ids('moments').filter(id => named(plan, id));
+    scene = ids('scenes').find(id => named(plan, id)) || null;
+  }
+  for (const id of moments) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the deal (${from}) dealt the moment ${id}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
+  if (scene && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `the deal (${from}) dealt the scene ${scene}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
+  // the place hero's form
+  const heroTag = (live.match(/<(?:section|header)\b[^>]*\bclass\s*=\s*["'][^"']*\bhero--place\b[^>]*>/i) || [])[0];
+  const pf = Array.isArray(lh.placeForms) && lh.placeForms.length ? lh.placeForms[lh.placeForms.length - 1] : (plan.match(/\bform\s*[:=]?\s*["']?(band|bleed|split|name)\b/i) || [])[1];
+  if (heroTag && pf) {
+    const built = (attrs(heroTag)['data-form'] || 'band').toLowerCase();
+    if (built !== pf) (built === 'band' ? fails : warns).push({ check: 'deal-drift', where: `hero data-form="${built}"`, msg: `the place hero was dealt the form ${pf} (layout-history.json); the page builds ${built}${built === 'band' ? ', the band hero the deal moves away from' : ''}`, fix: `data-form="${pf}" on <section class="hero hero--place">, built as <skill>/assets/layout/hero-place.html and layout.css 0b show it (deal.mjs --type place --form ${pf} prints its markup)` });
+  }
+  // the close and the compositions: the last value dealt per part for this kind
+  const L = h.layout && typeof h.layout === 'object' ? h.layout : {};
+  const prefixes = [...new Set(Object.keys(L).filter(k => /:close$/.test(k)).map(k => k.split(':')[0]))];
+  const k = prefixes.includes(kind) ? kind : prefixes.length === 1 ? prefixes[0] : null;
+  if (k) {
+    const lastOf = key => (Array.isArray(L[`${k}:${key}`]) ? L[`${k}:${key}`].slice(-1)[0] : null);
+    const close = lastOf('close');
+    if (close && !new RegExp(`\\bclose--${reEsc(close.replace(/^close-/, ''))}\\b`).test(live)) {
+      const builtClose = (live.match(/\bclose--(\w+)/) || [])[1];
+      warns.push({ check: 'deal-drift', where: `close ${builtClose ? 'close-' + builtClose : 'none'}`, msg: `the deal dealt the close ${close}; the page builds ${builtClose ? 'close-' + builtClose : 'no dealt close'}${builtClose === 'form' ? ' (close-form only when the last section is the booking form)' : ''}`, fix: close === 'close-type' ? 'the footer\'s default <div class="closing__cta close--type"> of <skill>/assets/starter.html' : `the <template data-part="${close}"> of <skill>/assets/starter.html in the footer` });
+    }
+    for (const key of ['visit', 'offer', 'showcase', 'rooms', 'feature', 'form', 'statement']) {
+      const c = lastOf(key);
+      if (c && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) warns.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key}; the page has none`, fix: COMP_MARK[c][1] });
+    }
+  }
+  return { fails, warns };
 }
 
 // ---------------------------------------------------------------- the copy: copy-lint.mjs on the words the page shows
@@ -840,11 +982,14 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
 } else {
   print(`gate: checking ${relPage}${kind ? ` (${kind})` : ''}; this takes a few minutes on a CPU Chrome`);
   try {
-    const stat = staticChecks(P.file, html, projDir, files);
+    const stat = [...staticChecks(P.file, html, projDir, files), ...creditChecks(P.file, html)];
     const b = await browserChecks(target, projDir, opts, gateDir);
     const c = copyChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
     const mo = motionChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
-    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed], seconds: b.seconds };
+    let renderedHtml = ''; if (!html) try { renderedHtml = fs.readFileSync(path.join(gateDir, 'consistency', 'rendered.html'), 'utf8'); } catch { /* none */ }
+    const dd = await dealDrift(html || renderedHtml, dot, kind);
+    dd.warns.push(...productChecks(html || renderedHtml, dot));
+    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed], seconds: b.seconds };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };

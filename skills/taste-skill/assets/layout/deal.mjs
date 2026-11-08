@@ -108,10 +108,11 @@ if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 
 // a place's hero has four forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.
 // A place with no photograph keeps the statement hero (sections.md section 2), so no form is dealt.
+// band is the old place hero the rework moves away from: it stays in the deck at the lowest weight (about one place in nine)
 const PLACE_FORMS = [
-  { id: 'band', w: 3, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
+  { id: 'band', w: 1, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
   { id: 'bleed', w: 3, how: 'the photograph over the whole first screen; the h1, the line and the button on a solid panel of the page ground in its lower left corner (data-corner="end" when the calm side is right). data-form="bleed"' },
-  { id: 'split', w: 2, how: 'the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven down to the fold. data-form="split"' },
+  { id: 'split', w: 3, how: 'the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven down to the fold. data-form="split"' },
   { id: 'name', w: 2, how: 'band, with the name or the street set large across the .wrap first in .hero__text: <p class="hero__name">Henderson Street</p>. It is the page\'s one type moment (the address|name moment is then this). data-form="name"' },
 ];
 let placeForm = null;

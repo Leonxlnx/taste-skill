@@ -122,6 +122,15 @@ a design studio's "work", the same oven twice in a row.
 - **The thing itself:** rooms show the whole room (bed, window, floor); the work shows finished work
   of the client's discipline (packaging for a packaging studio, a building for an architect); a
   workshop shows hands at work on the trade's object; a menu shows the dish the row names.
+- **Every product on the fact sheet gets its picture.** Each thing the fact sheet's `Products:` line
+  (or its What it is and Offer lines) names is shown once, in the section that sells it: a cafe that
+  sells cakes shows cake (a whole cake, a slice, the counter), a florist shows its bouquets, a bike
+  shop the bikes it sells. When `photos.mjs pick` deals no frame of that subject (the library holds
+  none; pick prints the sections it dealt), the live search is required, not optional:
+  `photos.mjs search --out . "<product> <one plain word>"` (`"layer cake slice"`, `"cake counter"`),
+  and the plan names it: `product cake: search (the library has none)`. A heading that names a
+  product sits over a photograph whose `alt` or `data-subject` names it too; the gate WARNs
+  `photo-product` when it does not.
 - **One motif once:** never two photographs of one subject or one shoot next to each other, never
   the hero's photograph again; a page of a place shows at least four different subjects.
 - **When the right picture does not exist** (a studio's own work, a game's art, a guesthouse's own

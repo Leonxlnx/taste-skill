@@ -278,7 +278,7 @@ story, on a place a route that draws (`<path class="m-draw" pathLength="1">` ins
   inside the `[data-visual]` frame (a visual assembling, 600 to 1200ms), settled by 1.5 s; a click
   swap 400 to 600ms. No gate, loader or intro.
 - **Pause:** anything still moving 5 s after it is seen has one round pause button per panel: a
-  solid 32px disc, 12px in from the bottom-right (in a card beside its title), always shown or
+  solid 32px disc, 12px in from the bottom-right (in a card with no panel, beside its title), always shown or
   fading in on hover and focus, the same size and place on every card, never over copy, never on a
   still. A click freezes the frame and swaps to a play glyph (`ui.pausable(panel, ctrl)` for your
   own movers). Scroll-driven moments need none.

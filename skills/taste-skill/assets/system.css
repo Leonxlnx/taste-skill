@@ -272,6 +272,10 @@ main > :is(section, .section).g2 > :is(.wrap, .container) > :is(.group, .fill) {
   main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { height: auto; }
   main > :is(section, .section).g2m, footer.closing.g2m { --hm: 2; }
   main > :is(section, .section).g2m > :is(.wrap, .container), footer.closing.g2m > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
+  /* the close's links are a few rows: their row is their own height and they sit at its top, so two equal
+     rows never spread three links over a screen (the close above takes what is left) */
+  footer.closing.g2m > .wrap { grid-template-rows: minmax(0, 1fr) auto; }
+  footer.closing.g2m .closing__links { align-self: start; }
   /* stacked in one, the two groups keep the open cards' 32px, so the first group's last panel never meets
      the next card's title */
   main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) { display: flex; row-gap: var(--s-6); }
@@ -613,7 +617,8 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 .card > h3, .card > h4, .card--plan h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: -0.01em; }
 /* the type floor (system.md): text people read is 16px or more in ink; cards.css sets it for its
    card text, this for a plain card's lines */
-.card > p { color: var(--ink); font-size: var(--t-body); max-width: 52ch; }
+.card > p { color: var(--ink); max-width: 52ch; }
+.card > p:not([class^="t-"], [class*=" t-"]) { font-size: var(--t-body); }
 /* at most two boxes one inside the other (sections.md): a card whose panel holds UI drops its own
    box, so its title and lines sit on the page ground over the panel (Figma's tiles), or runs the
    panel flush to its sides and bottom (cards.css .panel--flush) */
@@ -953,7 +958,11 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 @media (max-width: 1023px) { .stat-aside { margin-top: var(--s-7); } }
 /* a stats row: two to four short facts, the number above its label (data-m-count on a count) */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--s-5) var(--gutter); margin: 0; }
-.stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: var(--s-2); }
+/* (the figure takes the first row whichever comes first in the markup, so every figure of the row stands on
+   one line, however many lines a label wraps to) */
+.stats > div { display: grid; grid-template-rows: auto 1fr; align-content: start; gap: var(--s-2); }
+.stats > div > :is(.t-stat, [data-count], [data-m-count]),
+.stats > div:not(:has(> :is(.t-stat, [data-count], [data-m-count]))) > dd { grid-row: 1; }
 .stats dd { margin: 0; }
 .stats .t-stat { font-size: clamp(26px, 1vw + 22px, 36px); }
 @media (max-width: 639px) { .stats .t-stat { font-size: 26px; } }
@@ -1136,6 +1145,8 @@ footer.closing > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) auto;
 footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
 .closing__cta { min-height: 0; display: flex; flex-direction: column; gap: var(--s-6); }
 .closing__cta > .section-head--split, .closing__cta > .section-head { margin-bottom: 0; }
+/* any button straight in the close keeps its own width (the column would stretch it across the .wrap) */
+.closing__cta > .btn { align-self: flex-start; justify-self: start; flex-shrink: 0; }
 .closing__cta h2 { max-width: 20ch; }
 .closing__cta > .close__media { flex: 1 1 0; min-height: clamp(120px, 18svh, 160px); position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
 .close__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%); }
@@ -1380,6 +1391,10 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 @media (max-width: 1023px) { [data-peek-to] .rows__name::after { display: none; } }
 /* a tablet shows the photograph under the list, full width: 5:4, not a portrait taller than the screen */
 @media (min-width: 640px) and (max-width: 1023px) { [data-peek] .frame--portrait { --ratio: 80%; } }
+/* a phone: system.js moves the photograph under the words of the row on show, across the row, so a tap
+   shows it where the visitor looks (4:3 unless the frame names its own ratio) */
+:where([data-peek-to] > .frame) { --ratio: 75%; }
+[data-peek] [data-peek-to] > .frame { grid-column: 1 / -1; grid-row: auto; flex: none; height: auto; min-height: 0; margin-top: var(--s-3); }
 
 /* .rows: a list read across, a name (and a line) left, a value right, hairlines between: a menu, a
    price list, services with prices, specs, hours. Never cards for these. */

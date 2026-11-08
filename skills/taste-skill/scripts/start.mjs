@@ -32,6 +32,10 @@
       every pairing the kind can be dealt, with its exact Google Fonts link
   node scripts/start.mjs plan --page <kind> --trade <trade> [--type <page type>] [--has photo,ui,film,object,setting]
                               [--long] [--tone warm|editorial|product|tech|playful] [--axis] --history .taste-skill/history.json
+      --has names what the brief can fill (default: software ui,figures; tech photo,product,figures; product
+      photo,product; place and service photo; gaming setting): add figures when the fact sheet holds two proof
+      figures (counter-rolls), archive for the client's own body of pictures, film, route; moments and scenes
+      that need more are not dealt.
       the whole deal in one block, for any model: it runs the dealers themselves (start.mjs deal for the palettes,
       the type and the LAYOUT block; assets/layout/deal.mjs for the hero; moments.mjs pick --scene deal for 2-3
       moments and 0-1 scene; effects.mjs pick for 0-1 effect) and deals the hero's entrance from
@@ -510,7 +514,7 @@ if (cmd === 'deal') {
   // one command for the whole deal: the dealers run as they are (never copied here), their output kept in full under
   // each heading, then PLAN sums it up one line a part with the file to copy from
   const { spawnSync } = await import('node:child_process');
-  const { FIT, fitsKind } = await import('./moments.mjs');
+  const { FIT, fitsKind, momentSource } = await import('./moments.mjs');
   const skill = path.join(here, '..');
   const rel = p => p.split(path.sep).join('/');
   const run = (file, list) => {
@@ -524,8 +528,10 @@ if (cmd === 'deal') {
   const layoutHist = path.join(histDir, 'layout-history.json');
   const pageType = typeof opt('type') === 'string' ? opt('type')
     : ({ software: 'software', gaming: 'software', tech: 'product', product: 'product', service: 'service', place: 'place' })[page];
+  // what the brief can fill (--has; default what the kind normally has: a place photographs, software its ui):
+  // the hero deal reads it, and the moment and scene deal leaves out what the page cannot fill (meta.needs.list)
   const has = typeof opt('has') === 'string' ? opt('has')
-    : ({ software: 'ui', gaming: 'setting', tech: 'photo', product: 'photo', service: 'photo', place: 'photo' })[page];
+    : ({ software: 'ui,figures', gaming: 'setting', tech: 'photo,product,figures', product: 'photo,product', service: 'photo', place: 'photo' })[page];
 
   // 1. palettes, type and the LAYOUT block (also arms the finish gate, as a deal always does)
   const dealOut = run(fileURLToPath(import.meta.url), ['deal', '--page', page, ...val('trade'), '--history', histFile, ...flag('axis'), ...flag('dark'), ...flag('light'), ...flag('no-recent')]);
@@ -533,7 +539,7 @@ if (cmd === 'deal') {
   const heroOut = run(path.join(skill, 'assets', 'layout', 'deal.mjs'), ['--type', pageType, '--has', has, '--history', layoutHist,
     ...(page === 'gaming' ? ['--kind', 'gaming'] : page === 'tech' ? ['--kind', 'tech'] : [])]);
   // 3. moments and the scene, by fit
-  const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--history', histFile, ...flag('long'), ...val('tone')]);
+  const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--has', has, '--history', histFile, ...flag('long'), ...val('tone')]);
   // 4. the effect: tech kinds always deal one for the hero; a place, service or product page one quiet treatment
   //    about one page in three, on a band (effects-usage.md, The fit rule)
   const bg = (dealOut.match(/\bbg (#[0-9a-f]{6})/i) || [])[1];
@@ -597,12 +603,15 @@ if (cmd === 'deal') {
   L.push(`rhythm       ${bands}; every other section on the page ground`);
   L.push(`grounds      ${techPage ? `data-ground="${litGround}" on <html>; section grounds from references/backgrounds.md` : 'flat tokens and the bands above; no data-ground on <html>'}`);
   for (const c of comps) L.push(`composition  ${c}  (references/sections-library.md, Compositions)`);
+  if (!techPage || hasSet.has('photo')) L.push(`photos       every product on copy.md's Products line gets a photograph of it in the section that sells it: photos.mjs pick${trade ? ` --trade ${trade}` : ''}, then photos.mjs search --out . "<product> ..." for each product pick dealt no frame of (required, not optional); name each here: "product cake: library c12" or "product cake: search" (references/photos.md)`);
   L.push(`reveals      automatic: each section's h2 and lead photograph rise once (motion.js); nothing to add, data-still on a section to keep it still`);
   const SLOT = { section: 'a content section', statement: 'a statement section', closing: 'the last section', hero: 'the hero', between: 'a section between two others' };
   const slotOf = f => { const s = f.split('/'); return SLOT[s.find(x => x !== 'hero') || s[0]] || 'a section'; };
-  moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: its [data-moment] element from ${skillRef}/assets/moments/${m.id}/demo.html inside a section built like assets/moments/_demo/in-page.html; references/moments.md`));
+  // the exact file whose section to copy (moments.mjs momentSource): the in-page demo that holds the moment, else its own demo;
+  // the gate's deal-drift check FAILs a page without a dealt moment or scene
+  moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: ${momentSource(m.id, skillRef)}, link ${m.id}/moment.css; references/moments.md`));
   if (!moments.length) L.push('moments      none dealt: run moments.mjs pick again (every page takes two)');
-  L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the <section data-big-scene> of ${skillRef}/assets/scenes/${scene}/demo.html, link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
+  L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the whole <section data-big-scene="${scene}"> of ${skillRef}/assets/scenes/${scene}/demo.html (the gate's deal-drift check FAILs a page without it), link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
   L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands`} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : 'none'}`);
   L.push(`hover layer  automatic (motion.js): buttons, links, linked cards and photos; loops inside every card visual (references/motion.md)`);
   L.push(`then         build in a copy of starter.html, then: node ${skillRef}/scripts/gate.mjs index.html`);
