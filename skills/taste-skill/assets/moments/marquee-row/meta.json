@@ -8,11 +8,14 @@
   "trigger": "loop",
   "cost": "low",
   "webgl": 0,
-  "pages": [
+  "tones": [
+    "playful",
     "tech",
-    "gaming",
-    "software"
+    "warm",
+    "editorial",
+    "product"
   ],
+  "intensity": "lively",
   "look": "One row of client words, trades, cities or formats moves slowly sideways in a loop, fading at both edges; it pauses under the pointer and has a pause button.",
   "reduced": "The words stand in a wrapped row.",
   "phone": "The words stand in a wrapped row; nothing runs.",

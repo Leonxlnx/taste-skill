@@ -77,8 +77,16 @@ fails a section that is not one or two screens at the tablet too (the default ru
 - **Top-aligned:** the one h2 is the first content, `--padt` (120, 96 on a phone) under the section
   top, 48 under the header in the tile, like the hero's h1. Never centre content vertically; never a
   second h2.
-- **Fill** 0.55 or more; the gap to the next content is then 2 x padding at least (192px; 144 + bar
-  on a phone). A short block is merged or given its picture, never centred alone in an empty screen.
+- **Fill: the content reaches the section's foot.** In testing, sections had their content at the
+  top and 130 to 330px of empty ground under it, statements 55 to 70% empty. `system.css` (fill)
+  now grows the last block of a one-screen section down to the foot by itself: a split's picture
+  (`.pl-photo`, `figure.media`, `.frame--fill`) takes the row's full height, a row of tiles gives
+  the rest to their photographs, open cards to their panels; a statement (`section.statement`)
+  sets its words from the screen's height at the foot. So build a split as words beside a picture
+  and let the picture grow; never put a short block in a section on its own. No section leaves more
+  than about 15% of its height empty under its content at 1440 or at 390. `.pl-photo--keep` keeps
+  one picture at its ratio (a product cut-out). A short block is merged or given its picture, never
+  centred alone in an empty screen.
   A quote, logo row, stat row or FAQ that alone holds under 495px (464 at 390) merges into the
   section above as its last element, with no heading or ground of its own. No strip sections.
 - **Separation** by a full-width ground change or space only: no rules, shadows or inner hairlines
@@ -138,13 +146,14 @@ fails a section that is not one or two screens at the tablet too (the default ru
 ### The eleven heroes
 
 Dealt by kind and by the material the brief really has, never by taste, never the same within three
-pages; a place never deals (the place hero below):
+pages; a place gets the place hero in a dealt form (below):
 
 ```bash
 node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming|tech] --has photo,ui,film,object,setting --history .taste-skill/layout-history.json
 ```
 
-`--type` is the page type (`SKILL.md` section 1: a game is `software`, hardware `product`). A game
+`--type` is the page type (`SKILL.md` section 1: a game is `software`, hardware `product`; a place
+prints the place hero and deals its form). A game
 adds `--kind gaming` (its own weights, never `ui`): `--has film,photo` when the brief supplies its
 trailer or key art, `--has setting` without art files (stand-in photographs of its setting from
 `photos.mjs search`: it prints the `photo` hero, the game's name set large on the calm side; a
@@ -155,7 +164,7 @@ asks for 3D or a render, and it always prints the `product` hero: the product wh
 full-width stage, its widest view, never a `split` column or an order form alone (`sections.md`,
 Product). A product page is dealt only the `product`, `photo` and `film` heroes: a `split`,
 `word`, `statement` or `triptych` hero cannot show the product at 80% of the content width.
-Printed, never dealt: the place hero.
+The place hero is printed, its form dealt (The place hero, below).
 
 It prints the hero (its demo, numbers, and the moment, ground and effect ids that fit the kind; on
 other only the hero itself counts). Copy only its `<section class="hero …">` from
@@ -185,15 +194,23 @@ caption under the picture.
 
 ### The place hero
 
-Every place page, never dealt: one still, full-bleed photograph of the place under the header with
-nothing on it (no text, scrim, gradient, fade or box), the words on the ground below. It enters
-once on load like every hero (`motion.md`, The hero's entrance); no moment in the hero itself.
+Every place page: one still photograph of the place leads the first screen, in the form `deal.mjs
+--type place` deals (`data-form` on `<section class="hero hero--place">`, layout.css 0b; the
+markup is the same for all four, so only the attribute changes). In testing every place had the
+same band hero with 120 to 200px of empty ground under its words; two cafes could not be told apart.
+It enters once on load like every hero (`motion.md`, The hero's entrance).
 
-- 1440: `.hero.hero--photo` on `html[data-type="place"]`, `--photo: 480px` (the photograph at y 72
-  to 552, its subject in the middle 640px), `--hgap: 40px`. Under it: the h1 at 48/53 on columns 1
-  to 6 (x 120 to 708, y 592, at most three lines); from the split line (x 732) the sub-line at 20/30
-  (the kind of place and where, with today's hours; at most two lines, 80 characters) and one filled
-  48px main-action button 24px under it. The row ends by about y 760, never past 836.
+| form | at 1440 | at 390 |
+|---|---|---|
+| `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1-6, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
+| `bleed` | the photograph over the whole screen; the h1, the line and the button on a solid panel of the page ground (580 wide, 48 inside) in its lower left corner, `data-corner="end"` for the right one when the calm side is right | the photograph, then the words on the ground |
+| `split` | the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven, from 40px under the header to the hero's foot | as band |
+| `name` | band, with the name or the street set large across the `.wrap` first in `.hero__text` (`<p class="hero__name">Henderson Street</p>`, up to 160px): the page's one type moment | the name at 44 to 72px |
+
+- 1440, `band` and `name`: the photograph takes what the words leave (at least 340px), so the words
+  always end on the fold, never over an empty band. `--hgap: 40px`; the h1 at 48/53 on columns 1 to
+  6, at most three lines; from the split line (x 732) the sub-line at 20/30 (the kind of place and
+  where, with today's hours; at most two lines, 80 characters) and one filled 48px button 24px under it.
 - A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
   header (`--photo: 528px`).
 - 640 to 1023: the photograph at most 56vw tall, the words stacked under it, the hero ending by

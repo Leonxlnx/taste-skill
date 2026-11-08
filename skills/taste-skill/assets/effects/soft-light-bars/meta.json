@@ -7,5 +7,9 @@
   "motion": "slow",
   "cost": "low",
   "palettes": ["light", "dark", "colour"],
-  "focal": true
+  "focal": true,
+  "tones": ["warm", "editorial", "product", "tech"],
+  "intensity": "quiet",
+  "webgl": 1,
+  "treatment": true
 }

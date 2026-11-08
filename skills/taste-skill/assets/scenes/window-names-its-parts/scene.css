@@ -1,0 +1,244 @@
+/* assets/scenes/window-names-its-parts/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / window-names-its-parts.css — see window-names-its-parts.js for the DOM and the options.
+   By default (no script, reduced motion, a failed CDN, a phone set to 'rest') this is the finished composition: the
+   product's window flat, every part in place, beside the heading and the complete list of names, in normal flow on
+   the page's ground. Under .is-live the stage is held: the window steps back and tips in 3D while its parts lift
+   apart, a band in the accent crosses it behind every part's words, each part it reaches turns to the accent for a
+   beat while its name drops into the list, and the parts settle flat again.
+
+   Three layouts:
+     wide (1100px and up)   the window on the left (--wn-win, about 62% of the content width), the heading, the
+                            lead and the list beside it on the right, both centred on the stage's height. The tipped
+                            window keeps clear of the list by the column gap.
+     narrow (768-1099px)    the heading and the lead across the top, the window under them at the full width, the
+                            list under it in two columns. Screens under 1100px tall drop the lead from the live
+                            stage (the finished composition keeps it).
+     phone (under 768px)    the same stack on 16px margins, the window cropped to its central parts (every part
+                            marked data-crop leaves, with its slot in the list), the list in one column, no tilt and
+                            no lift. Phones under 820px tall drop the lead from the live stage (the finished
+                            composition keeps it).
+
+   The window's inside (its grid, the parts' places and their type) is the page's own CSS: the scene gives each part
+   its fill, corners and the band, and the frame its place under them. Set the parts apart by their fills and the
+   grid's gaps only: no borders, outlines, hairlines or shadows.
+
+   Tokens it takes from the page: --ground, --ink, --accent, --font-display, --font-text, and the weights
+   --display-weight (the heading; 600 when the page sets none) and --text-weight (the lead and the names; 400). A
+   weight the page has not loaded is never faked: the nearest loaded one shows. Its own, all optional:
+     --wn-bg            stage ground (the page's ground)
+     --wn-ink           heading, lead, names and the window's type (the page's ink)
+     --wn-accent        the band and the beat (the page's accent). The window's words sit on it during a beat and
+                        while the band passes behind them: pick an accent the ink reads on at 4.5:1 or more
+     --wn-frame         the window's own ground, seen in the gaps (36% ink in the ground: a clear step darker than
+                        the parts, so they read as surfaces on it and the opened gaps read as depth)
+     --wn-fill          a part's fill (7% ink in the ground); set it per part for the steps between parts, mixed from
+                        the ground and the ink. Keep the large parts within about 6-12% of ink, so they read as
+                        parts of one surface and not as a wall of tiles
+     --wn-radius        a part's corners (8px); --wn-frame-radius the window's (14px). Match the page's buttons
+     --wn-gx            side margin of the stage (clamp(16px, 4.6vw, 72px))
+     --wn-gap           room between the window and the list (5vw)
+     --wn-win, --wn-side  the window's and the list's shares of the row on wide screens (66fr and 34fr: the window
+                        about 62% of the content width, the list about 400px at 1440)
+     --wn-persp         the perspective the window tips in (1300px)
+     --wn-persp-origin  where it is seen from (50% -30%: above the window, so the lifted parts slide down and away
+                        from the ones under them; 50% 0% on the stacked layout)
+     --wn-name-size     the names in the list (20px; 18px narrow; 17px on phones): body size or larger */
+
+[data-big-scene="window-names-its-parts"] {
+  font-synthesis-weight: none;
+  --wn-bg: var(--ground, #e7e7e2);
+  --wn-ink: var(--ink, #151614);
+  --wn-accent: var(--accent, #ff6b1f);
+  --wn-frame: color-mix(in srgb, var(--wn-ink) 36%, var(--wn-bg));
+  --wn-fill: color-mix(in srgb, var(--wn-ink) 7%, var(--wn-bg));
+  --wn-radius: 8px;
+  --wn-frame-radius: 14px;
+  --wn-gx: clamp(16px, 4.6vw, 72px);
+  --wn-gap: 5vw;
+  --wn-win: 66fr;
+  --wn-side: 34fr;
+  --wn-persp: 1300px;
+  --wn-persp-origin: 50% -30%;
+  --wn-name-size: 20px;
+}
+
+/* ---- the finished composition (default) ---- */
+[data-big-scene="window-names-its-parts"] > .scene-stage {
+  display: grid;
+  grid-template-columns: minmax(0, var(--wn-win)) minmax(0, var(--wn-side));
+  align-items: center;
+  column-gap: var(--wn-gap);
+  padding: clamp(88px, 12vh, 140px) var(--wn-gx);
+  background: var(--wn-bg);
+  color: var(--wn-ink);
+}
+[data-big-scene="window-names-its-parts"] .wn-view { grid-column: 1; grid-row: 1; min-width: 0; }
+[data-big-scene="window-names-its-parts"] .wn-copy {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  gap: 20px;
+  align-content: center;
+  min-width: 0;
+  font-family: var(--font-text, inherit);
+}
+[data-big-scene="window-names-its-parts"] .wn-heading {
+  margin: 0;
+  max-width: 12em;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 600);
+  font-size: clamp(34px, 3.4vw, 50px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+[data-big-scene="window-names-its-parts"] .wn-lead {
+  margin: 0;
+  max-width: 26em;
+  font-weight: var(--text-weight, 400);
+  font-size: 20px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+[data-big-scene="window-names-its-parts"] .wn-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+  font-weight: var(--text-weight, 400);
+  font-size: var(--wn-name-size);
+  line-height: 1.3;
+}
+[data-big-scene="window-names-its-parts"] .wn-slot { margin: 0; padding: 0; }
+[data-big-scene="window-names-its-parts"] .wn-slot[hidden] { display: none; }
+[data-big-scene="window-names-its-parts"] .wn-name { display: block; }
+
+/* the window: the page's grid of parts; every part a flat fill on the frame */
+[data-big-scene="window-names-its-parts"] .wn-window { position: relative; color: var(--wn-ink); }
+[data-big-scene="window-names-its-parts"] .wn-part {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-width: 0;
+  background-color: var(--wn-fill);
+  border-radius: var(--wn-radius);
+}
+[data-big-scene="window-names-its-parts"] .wn-part.wn-frame {
+  position: absolute;
+  inset: 0;
+  background-color: var(--wn-frame);
+  border-radius: var(--wn-frame-radius);
+}
+
+/* Until the script has decided (live, or the finished composition), keep the names back, so the list never shows
+   complete and then empties. After 800ms without a decision (a slow or failed CDN) the finished list shows. */
+@media (prefers-reduced-motion: no-preference) {
+  html.sc-js [data-big-scene="window-names-its-parts"].scene:not(.is-live):not(.is-rest) .wn-list {
+    visibility: hidden;
+    animation: wn-undecided 0s linear 0.8s forwards;
+  }
+}
+@keyframes wn-undecided { to { visibility: visible; } }
+
+/* ---- live: the held stage ---- */
+html.sc-js [data-big-scene="window-names-its-parts"].is-live > .scene-stage { padding-block: 0; align-content: center; }
+[data-big-scene="window-names-its-parts"].is-live .wn-view { perspective: var(--wn-persp); perspective-origin: var(--wn-persp-origin); }
+/* the stacked layouts start lowered by half the list's room (--wn-rise, from the script) and rise as it fills */
+[data-big-scene="window-names-its-parts"].is-live :is(.wn-heading, .wn-lead, .wn-view, .wn-list) { translate: 0 var(--wn-rise, 0px); }
+[data-big-scene="window-names-its-parts"].is-live .wn-window { transform-style: preserve-3d; will-change: transform; }
+[data-big-scene="window-names-its-parts"].is-live .wn-part {
+  will-change: transform;
+  transition: background-color 0.3s ease;
+}
+/* the band: one variable on the window (--wn-band-l, its left edge, and --wn-band-w), drawn by each part as its own
+   stretch, behind its words. A part the band has reached takes the accent for a beat (a fill, never an outline). */
+[data-big-scene="window-names-its-parts"].is-live .wn-part::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--wn-band-w, 0px);
+  background: var(--wn-accent);
+  transform: translateX(calc(var(--wn-band-l, -100000px) - var(--wn-x, 0px)));
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+/* the band is shown only while it stands wholly inside the window, and on a part only where it covers 24px or more of
+   it (the script sets .is-cut below that); it comes and goes on a short clock. The frame carries none, so the gaps
+   between the parts never show it. */
+[data-big-scene="window-names-its-parts"].is-live .wn-window.is-band .wn-part:not(.is-cut)::before { opacity: 1; transition-duration: 0.16s; }
+[data-big-scene="window-names-its-parts"].is-live .wn-part.wn-frame::before { display: none; }
+[data-big-scene="window-names-its-parts"].is-live .wn-part.is-lit { background-color: var(--wn-accent); transition-duration: 0.16s; }
+/* the names wait above their own slots and drop into them (a timed clock the band starts and reverses) */
+[data-big-scene="window-names-its-parts"].is-live .wn-slot { overflow: clip; }
+[data-big-scene="window-names-its-parts"].is-live .wn-name {
+  transform: translateY(-110%);
+  visibility: hidden;
+  transition: transform 0.36s cubic-bezier(0.4, 0, 0.6, 1), visibility 0s linear 0.36s;
+}
+[data-big-scene="window-names-its-parts"].is-live .wn-slot.is-in .wn-name {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
+/* short desktop screens: the copy column sits a little tighter */
+@media (min-width: 1100px) and (max-height: 780px) {
+  [data-big-scene="window-names-its-parts"] { --wn-name-size: 19px; }
+  [data-big-scene="window-names-its-parts"] .wn-copy { gap: 14px; }
+  [data-big-scene="window-names-its-parts"] .wn-list { gap: 6px; }
+}
+
+/* ---- narrow: tablets and small windows (768-1099px) ---- */
+@media (max-width: 1099px) {
+  [data-big-scene="window-names-its-parts"] { --wn-gx: 32px; --wn-name-size: 18px; }
+  [data-big-scene="window-names-its-parts"] > .scene-stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "head" "lead" "view" "list";
+    align-items: start;
+  }
+  [data-big-scene="window-names-its-parts"] .wn-copy { display: contents; }
+  [data-big-scene="window-names-its-parts"] .wn-heading { grid-area: head; max-width: 18em; }
+  [data-big-scene="window-names-its-parts"] .wn-lead { grid-area: lead; margin-top: 14px; max-width: 34em; font-size: 18px; }
+  [data-big-scene="window-names-its-parts"] .wn-view { grid-area: view; grid-column: auto; grid-row: auto; margin-top: 36px; }
+  [data-big-scene="window-names-its-parts"] .wn-list {
+    grid-area: list;
+    margin-top: 36px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 32px;
+  }
+  [data-big-scene="window-names-its-parts"] { --wn-persp-origin: 50% 0%; }
+  [data-big-scene="window-names-its-parts"].is-live .wn-view { margin-top: 30px; }
+  [data-big-scene="window-names-its-parts"].is-live .wn-list { margin-top: 48px; }
+}
+/* narrow screens under 1100px tall keep the heading, the window and the list on the live stage; the lead stays in
+   the finished composition */
+@media (min-width: 768px) and (max-width: 1099px) and (max-height: 1099px) {
+  [data-big-scene="window-names-its-parts"].is-live .wn-lead { display: none; }
+}
+
+/* ---- phone: the window cropped to its central parts, the list under it, no tilt ---- */
+@media (max-width: 767px) {
+  [data-big-scene="window-names-its-parts"] { --wn-gx: 16px; --wn-name-size: 17px; --wn-frame-radius: 12px; }
+  [data-big-scene="window-names-its-parts"] [data-crop] { display: none !important; }
+  [data-big-scene="window-names-its-parts"] > .scene-stage { padding: 72px var(--wn-gx); }
+  [data-big-scene="window-names-its-parts"] .wn-heading { font-size: clamp(28px, 7.6vw, 32px); }
+  [data-big-scene="window-names-its-parts"] .wn-lead { font-size: 17px; margin-top: 12px; }
+  [data-big-scene="window-names-its-parts"] .wn-view { margin-top: 26px; }
+  [data-big-scene="window-names-its-parts"] .wn-list {
+    margin-top: 26px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  [data-big-scene="window-names-its-parts"].is-live > .scene-stage { padding-block: 0; }
+  [data-big-scene="window-names-its-parts"].is-live .wn-view { margin-top: 20px; perspective: none; }
+  [data-big-scene="window-names-its-parts"].is-live .wn-window { transform-style: flat; }
+  [data-big-scene="window-names-its-parts"].is-live .wn-list { margin-top: 20px; }
+}
+@media (max-width: 767px) and (max-height: 819px) {
+  [data-big-scene="window-names-its-parts"].is-live .wn-lead { display: none; }
+}

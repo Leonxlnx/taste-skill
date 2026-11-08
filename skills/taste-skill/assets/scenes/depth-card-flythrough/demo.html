@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Varrick Sound Pilots</title>
+  <meta name="description" content="Eleven harbour pilots who take ships through the narrowest sound on the north coast, on every tide, day and night.">
+  <script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+  <link rel="stylesheet" href="scene.css">
+  <style>
+    :root {
+      --ground: #101217;
+      --ink: #eceeea;
+      --dim: #a9adb1;
+      --font-display: "Schibsted Grotesk", system-ui, sans-serif;
+      --pad: clamp(16px, 2.2vw, 32px);
+      /* the weights every scene takes from the page: only ones the page loads (400, 500, 600) */
+      --display-weight: 600;
+      --strong-weight: 500;
+      --text-weight: 400;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--ground); }
+    body { margin: 0; background: var(--ground); color: var(--ink); font: var(--text-weight) 18px/1.5 var(--font-display); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+
+    .bar { position: absolute; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: baseline; padding: 22px var(--pad); font-size: 16px; }
+    .bar .mark { font-weight: var(--display-weight); text-decoration: none; letter-spacing: -.01em; }
+    .bar nav { display: flex; gap: 28px; }
+    .bar nav a { text-decoration: none; }
+    .bar nav a:last-child { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+
+    .intro { min-height: min(74svh, 62vw); display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); align-content: end; padding: 120px var(--pad) 7vh; }
+    .intro h1 { grid-column: 1 / 9; margin: 0; font-weight: var(--display-weight); font-size: clamp(3.4rem, 10.4vw, 10.5rem); line-height: .9; letter-spacing: -.045em; }
+    .intro .side { grid-column: 9 / 13; align-self: end; margin-bottom: .6rem; }
+    .intro p { margin: 0; font-size: 20px; line-height: 1.4; max-width: 30ch; color: var(--dim); }
+    .intro .act { margin-top: 28px; }
+
+    /* The scene, set to its backdrop: a jetty running out to a lit boathouse at night, and the camera
+       walks the jetty to its door. The picture's lines meet on the horizon at 72% of its height, so the
+       vanishing point sits there; the boathouse stands on the water below it, so the streaming ground
+       starts at its base (78%). The boathouse, eaves included, is 18% of the picture's width, so its
+       half-width with a little air is .1 of the picture: the cards keep outside it. With the cards that
+       low, the cards and the statement can be larger than the scene's defaults. The flat scrim cools the
+       night sky toward blue-black. */
+    .fly {
+      --fly-stage: #14161c;
+      --fly-fog: #1b1e26;
+      --fly-ink: #f3f2ee;
+      --fly-shade: 4 14 22;
+      --fly-scrim: .36;
+      --fly-vp: 72svh;
+      --fly-focus: 72%;
+      --fly-ground: 78svh;
+      --fly-focus-w: .1;
+      --fly-rest-vp: 72svh;
+      --fly-card-w: min(40vw, 62vh);
+      --fly-size: clamp(2.5rem, min(1rem + 4vw, 9.5svh), 6rem);
+      --fly-copy-w: min(50vw, 17ch);
+    }
+    /* held upright (a phone, a tablet): the picture lifted 42.9svh puts its vanishing point at 60svh
+       (-42.9 + 72% of 142.9) and the boathouse's foot at 68.6svh, so the statement, the boathouse and the
+       cards flying low over the jetty share the height with no empty band of sky */
+    @media (min-width: 768px) and (orientation: portrait) {
+      .fly { --fly-lift: 42.9svh; --fly-vp: 60svh; --fly-ground: 68.6svh; --fly-card-w: min(56vw, 36svh); --fly-copy-top: 11svh; --fly-copy-w: min(64vw, 17ch); }
+    }
+    /* the phone's finished opening (80svh) shows the picture unlifted: vanishing point 57.6svh, foot 62.4svh */
+    @media (max-width: 767px) {
+      .fly { --fly-lift: 42.9svh; --fly-vp: 60svh; --fly-ground: 68.6svh; --fly-rest-vp: 57.6svh; --fly-rest-ground: 62.4svh; --fly-card-w: min(78vw, 36svh); --fly-copy-top: 11svh; --fly-size: 2.25rem; --fly-copy-w: calc(100vw - 32px); }
+    }
+
+    .close { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--pad); row-gap: 48px; padding: 200px var(--pad) 160px; }
+    .close h2 { grid-column: 1 / 7; margin: 0; font-weight: var(--display-weight); font-size: clamp(2.6rem, 6vw, 6rem); line-height: .95; letter-spacing: -.04em; }
+    .close .lede { grid-column: 7 / 12; margin: 0; font-size: 20px; line-height: 1.45; max-width: 36ch; }
+    .close dl { grid-column: 7 / 13; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px var(--pad); margin: 0; }
+    .close dt { font-weight: var(--strong-weight); font-size: 16px; margin-bottom: 6px; }
+    .close dd { margin: 0; font-size: 16px; line-height: 1.45; color: var(--dim); }
+    .act { display: inline-block; padding: 16px 26px; background: var(--ink); color: var(--ground); text-decoration: none; font-weight: var(--strong-weight); font-size: 16px; }
+    .close .act { grid-column: 7 / 13; justify-self: start; }
+
+    .foot { padding: 0 var(--pad) 28px; }
+    .foot .name { margin: 0; font-weight: var(--display-weight); font-size: 10.4vw; line-height: .85; letter-spacing: -.05em; white-space: nowrap; }
+    .foot .credit { margin: 28px 0 0; max-width: 72ch; font-size: 16px; line-height: 1.5; color: var(--dim); }
+
+    @media (max-width: 767px) {
+      .bar nav a:first-child { display: none; }
+      .intro { min-height: min(72svh, 150vw); display: block; padding-bottom: 6vh; }
+      .intro h1 { font-size: 15.4vw; }
+      .intro .side { margin-top: 22px; }
+      .close { display: block; padding: 120px var(--pad) 96px; }
+      .close .lede { margin-top: 28px; }
+      .close dl { grid-template-columns: 1fr; gap: 20px; margin-top: 40px; }
+      .close .act { margin-top: 40px; }
+      .foot .name { font-size: 9.4vw; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="#top">Varrick Sound Pilots</a>
+    <nav><a href="#approach">The approach</a><a href="#request">Request a pilot</a></nav>
+  </header>
+
+  <main>
+    <section class="intro" id="top">
+      <h1>Varrick Sound Pilots</h1>
+      <div class="side">
+        <p>Eleven harbour pilots who take ships through the narrowest sound on the north coast, on every tide, day and night.</p>
+        <a class="act" href="#request">Request a pilot</a>
+      </div>
+    </section>
+
+    <section class="sc scene fly" id="approach" data-big-scene="depth-card-flythrough" data-big-scene-opts='{"inAir":3,"sideX":0.35}' aria-label="The approach to Varrick Sound">
+      <div class="scene-stage fly__stage">
+        <div class="fly__backdrop"><img class="fly__backdrop-img" src="https://picsum.photos/id/594/2600/1625" alt="" width="2600" height="1625" fetchpriority="high"></div>
+        <div class="fly__scrim" aria-hidden="true"></div>
+        <div class="fly__field">
+          <figure class="fly__card" style="--dy:2">
+            <img class="fly__img" src="https://picsum.photos/id/1038/1200/800" alt="A small red launch alone on a wide, dark blue sea" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">Pilot launch Tern</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:0">
+            <img class="fly__img" src="https://picsum.photos/id/473/1200/800" alt="A man in dark clothes stands on wet planks, facing mist on the water and dark hills beyond" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">On the quay at five</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:4">
+            <img class="fly__img" src="https://picsum.photos/id/483/1200/800" alt="Dark sea cliffs and broken rocks with white surf below, seen from above" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">Below Gull Head</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:1">
+            <img class="fly__img" src="https://picsum.photos/id/377/1200/800" alt="Snow-capped fells under a dark blue evening sky" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">Fells above the Neck</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:5">
+            <img class="fly__img" src="https://picsum.photos/id/171/1200/800" alt="Rain on a window at night, with red and amber lights blurred beyond it" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">From the wheelhouse</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:0">
+            <img class="fly__img" src="https://picsum.photos/id/765/1200/800" alt="A dark sea under a night sky with a last band of orange light along the horizon" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">The roads at dusk</figcaption>
+          </figure>
+          <figure class="fly__card" style="--dy:3">
+            <img class="fly__img" src="https://picsum.photos/id/614/1200/800" alt="White surf washing over dark rocks, seen from above" width="1200" height="800" decoding="async">
+            <span class="fly__fog" aria-hidden="true"></span>
+            <figcaption class="fly__cap">The Skerries</figcaption>
+          </figure>
+        </div>
+        <div class="fly__copy">
+          <ol class="fly__lines">
+            <li class="fly__line">We bring ships in, day and night.</li>
+            <li class="fly__line">We board in any sea, at any hour.</li>
+            <li class="fly__line">Every rock learnt by heart.</li>
+            <li class="fly__line">Ninety metres wide at the Neck.</li>
+            <li class="fly__line">In fog, we steer by radar alone.</li>
+            <li class="fly__line">Ships wait here for the tide.</li>
+            <li class="fly__line">No keel on rock since 1987.</li>
+          </ol>
+          <p class="fly__count" aria-hidden="true"><span class="fly__count-now">1</span> of <span class="fly__count-all">7</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="close" id="request">
+      <h2>Request a pilot</h2>
+      <p class="lede">Send the vessel's name, draught and arrival time to the station six hours before you reach the outer roads. We answer on channel 14 at any hour, and the launch meets you two miles east of the Skerries.</p>
+      <dl>
+        <div><dt>Station</dt><dd>North Quay, Varrick</dd></div>
+        <div><dt>Boarding</dt><dd>Outer roads, two miles east of the Skerries</dd></div>
+        <div><dt>Notice</dt><dd>Six hours, or two in an emergency</dd></div>
+      </dl>
+      <a class="act" href="#request">Book a pilot</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="name">Varrick Sound Pilots</p>
+    <p class="credit">An invented pilot station, made to show a scroll scene. Photographs from Unsplash through Lorem Picsum, by Aurélien Bellanger, Marcelo Quinan, Todd Quackenbush, Paulo Simões Mendes, Martin Staněk, Riley Briggs, Grant McIver and Josefa Holland-Merten.</p>
+  </footer>
+
+  <script type="module" src="../scenes.js"></script>
+  
+</body>
+</html>

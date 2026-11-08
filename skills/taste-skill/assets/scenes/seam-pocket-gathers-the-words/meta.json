@@ -1,0 +1,87 @@
+{
+  "id": "seam-pocket-gathers-the-words",
+  "name": "Section seam bends into a cup that gathers the scattered words",
+  "family": "section-transition",
+  "classic": 1,
+  "look": "The stage holds a section's heading and sentence across the top, with eight to twelve short words (what the section was about, one or two words each) lying scattered under them as small plain type, each at its own tilt, over a band of the next section's dark ground with a low swell in its middle. The scroll carries the words one by one, in staggered windows, to their places in two short columns; as each row is about to be filled, the middle of the seam rises in a wide, shallow, round-shouldered cup (at least half the stage, smootherstep sides, no corner anywhere) just far enough to take it, and each word straightens, grows to display size (48px or more on desktop) and turns to the next ground's light ink exactly where it crosses the edge. The edge's feet lift through the hold, so by the end the dark ground holds most of the screen and the gathered words rest in it as the next section's opening; the stage lets go onto that section on the same ground. The first frame already moves. Fully scrubbed: scrolling back scatters the words exactly as they were. No pictures, no physics, flat colour, no box round the words.",
+  "fits": [
+    "between"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.4,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same scene with phone numbers: the first seven words (phoneCount) in one centred column at about 37px, the heading block across the width with the words scattered under it, the cup in the middle and never moving sideways (its curved sides run out past the screen, so they stay soft), flights of 0.17 and a 1.2-screen hold. Screens under 600px tall, reduced motion, no script and a failed CDN get the finished composition: heading and sentence, then the next ground with the cup risen at its top and the words resting in it in the light ink.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "Between two sections, on the section whose subject is a set of short names (what a farm grows, what a studio makes, the services, the rooms, the subjects of a course), handing over to the next section, which starts on the inverted ground (the page's ink) with no margin: an order or booking section, the offer, the contact. Once per page; a quiet section before it.",
+  "content": "A section heading of 2-5 words (two lines at most at every width) and one sentence of 30 words at most. Eight to twelve real names that sum the section up, one or two words each, 14 characters at most (longer labels make the columns too wide for the cup), in reading order: the first half reads down the left column, the rest down the right; the first six to eight are the ones a phone keeps. Nothing else in the scene: no pictures, no pills, no boxes, no icons. The next section continues on --spg-next (the ink by default).",
+  "options": "hold 1.4 (1-1.5); phoneHold 1.2 (1-1.5); maxWords 12 (8-12) words used on desktop and tablet; phoneCount 7 (6-8) the first items kept on a phone, the rest hidden there in the finished composition too; columns 2 (1-2) on desktop and tablet, a phone takes one; at 0.5 (0.3-0.7) where the cup stands, its middle as a share of the width (a phone keeps it centred); feet 0.6 (0-0.85) how far the edge's feet rise by the end, as a share of the way to the cup's final top, phoneFeet 0.72; scale 0.6 (0.45-0.85) a scattered word's size as a share of its landed size, phoneScale 0.64; tilt 9 (0-14) the largest tilt of a scattered word; flight 0.2 (0.15-0.3, 0.17 at most on a phone) share of the hold each word takes to its slot; seed 3 the scatter's seed (the script tries the next seeds until the whole flight is clear); scrub 0.5, true with Lenis or on touch; phone 'same' | 'rest'. CSS tokens on the section: --spg-next, --spg-next-ink, --spg-title-size, --spg-lede-size, --spg-word-size, --spg-word-lh, --spg-col-gap, --spg-gutter, --spg-foot, --spg-at, and for the finished composition --spg-rise, --spg-a, --spg-sw.",
+  "roles": [
+    "list",
+    "features",
+    "showcase",
+    "how-it-works",
+    "about",
+    "intro"
+  ],
+  "position": "transition",
+  "sectors": [
+    "hospitality",
+    "restaurant",
+    "event",
+    "culture",
+    "music",
+    "agency",
+    "studio-portfolio",
+    "personal-portfolio",
+    "architecture",
+    "real-estate",
+    "education",
+    "nonprofit",
+    "physical-product",
+    "ecommerce",
+    "fashion",
+    "health",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "names:8"
+    ],
+    "content": "A section heading of 2-5 words (two lines at most at every width) and one sentence of 30 words at most. Eight to twelve real names that sum the section up, one or two words each, 14 characters at most (longer labels make the columns too wide for the cup), in reading order: the first half reads down the left column, the rest down the right; the first six to eight are the ones a phone keeps. Nothing else in the scene: no pictures, no pills, no boxes, no icons. The next section continues on --spg-next (the ink by default)."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/seam-pocket-gathers-the-words/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"seam-pocket-gathers-the-words\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

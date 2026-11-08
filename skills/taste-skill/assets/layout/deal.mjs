@@ -2,8 +2,9 @@
 /*
   taste-skill layout deal - deals the hero (heroes.json) for a page at random, weighted by the business
   type, away from the last pages' deals (references/layout-v4.md). It deals the hero only: the type
-  pairing comes from start.mjs (VI-02), and its :root lines stay as start.mjs prints them. A place's
-  hero is never dealt: --type place always prints hero-place (local-business Recipe 3; ST-53, ST-55).
+  pairing comes from start.mjs (VI-02), and its :root lines stay as start.mjs prints them. A place
+  always gets hero-place, in one of four forms dealt here (band, bleed, split, name: layout.css 0b),
+  away from the last two places' forms; --form <id> prints that one. No photograph: the statement hero.
 
     node <skill>/assets/layout/deal.mjs --type software|product|place|service
          [--kind tech]                         hardware or a tech device (page type product, kind tech): the grounds, moments
@@ -79,7 +80,8 @@ const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x
 
 function dealOnce(recentHeroes) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
-  if (!hero && type === 'place') hero = heroes.find(h => h.id === 'place');   // never dealt: Recipe 3
+  // a place: the place hero in one of its four forms (dealt below); with no photograph, the statement hero on .ground-brand
+  if (!hero && type === 'place') hero = heroes.find(h => h.id === (has.has('photo') ? 'place' : 'statement'));
   // the product shown by its render or a cut-out (object, no photograph or film): always the full-width
   // product stage, never the split's six columns (in testing: a render at 44% of the stage read as small)
   if (!hero && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
@@ -104,25 +106,41 @@ heroes: ${show(H)}`);
 const hero = dealOnce(hist.heroes.slice(-3));
 if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 
-if (histFile && !opt('hero') && type !== 'place') {
-  hist.heroes.push(hero.id);
-  hist.heroes = hist.heroes.slice(-20);
+// a place's hero has four forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.
+// A place with no photograph keeps the statement hero (sections.md section 2), so no form is dealt.
+// band is the old place hero the rework moves away from: it stays in the deck at the lowest weight (about one place in nine)
+const PLACE_FORMS = [
+  { id: 'band', w: 1, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
+  { id: 'bleed', w: 3, how: 'the photograph over the whole first screen; the h1, the line and the button on a solid panel of the page ground in its lower left corner (data-corner="end" when the calm side is right). data-form="bleed"' },
+  { id: 'split', w: 3, how: 'the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven down to the fold. data-form="split"' },
+  { id: 'name', w: 2, how: 'band, with the name or the street set large across the .wrap first in .hero__text: <p class="hero__name">Henderson Street</p>. It is the page\'s one type moment (the address|name moment is then this). data-form="name"' },
+];
+let placeForm = null;
+if (hero.id === 'place') {
+  const forced = opt('form') && opt('form') !== true ? PLACE_FORMS.find(f => f.id === opt('form')) : null;
+  const recent = (hist.placeForms || []).slice(-2);
+  placeForm = forced || draw(PLACE_FORMS, f => f.w, recent);
+}
+
+if (histFile && !opt('hero')) {
+  if (type !== 'place') { hist.heroes.push(hero.id); hist.heroes = hist.heroes.slice(-20); }
+  if (placeForm && !opt('form')) hist.placeForms = [...(hist.placeForms || []), placeForm.id].slice(-12);
   fs.mkdirSync(path.dirname(path.resolve(histFile)), { recursive: true });
   fs.writeFileSync(histFile, JSON.stringify(hist, null, 1));
 }
 
 if (opt('json')) {
-  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero }, null, 1));
+  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero, form: placeForm ? placeForm.id : undefined }, null, 1));
 } else {
   const s = h => (typeof h === 'object' ? Object.entries(h).map(([k, v]) => `    ${k}: ${v}`).join('\n') : h);
   const axis = hero.id === 'word' || hero.id === 'editorial' ? ' This hero needs a face with a wght or wdth axis.' : '';
-  console.log(`hero: ${hero.id} (${hero.name})  demo: <skill>/assets/layout/${hero.demo}
+  console.log(`hero: ${hero.id} (${hero.name})  demo: <skill>/assets/layout/${hero.demo}${placeForm ? `\n  form: ${placeForm.id}: ${placeForm.how}` : ''}
   ${hero.job}
   h1: ${hero.h1.token} ${hero.h1.size.join(' / ')}px, leading ${hero.h1.leading}, at most ${hero.h1.lines.join(' / ')} lines, ${hero.h1.maxChars} characters
   grid:\n${s(hero.grid)}
   at 1440:\n${s(hero.at1440)}
   at 390:\n${s(hero.at390)}
-  moment: ${hero.moment}${tech ? '' : '\n  grounds and effects: none (kind other: flat colour, photographs, type; --kind tech for hardware); moments: one or two photo- and type-led ones (moments.mjs pick --page <kind>)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
+  moment: ${hero.moment}${tech ? '' : '\n  grounds: flat (kind other: flat colour, photographs, type; --kind tech for hardware); the two or three moments of the page, 0-1 scene and 0-1 quiet treatment are dealt by fit (start.mjs plan, or moments.mjs pick --page <kind> --scene deal)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
   mistakes: ${hero.mistakes.join('; ')}
 
 type: the pairing start.mjs dealt (VI-02); keep its :root lines as printed (headlines 400; 400 to 500 on tech).${axis}`);

@@ -1,0 +1,87 @@
+{
+  "id": "instrument-dial-stage",
+  "name": "Instrument dial stage",
+  "family": "media-sequence",
+  "classic": 1,
+  "look": "A stage drawn like an instrument reads off three to six items one at a time: a wide dial arc lights tick by tick to each item's own number, a bezel clicks round to it, the item's name stands huge on the horizon and its picture rises to stand under the name on a ground that surges up and settles. It gives a few products, materials, places or stages, each with one number, an engineered reveal.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "warm"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 4,
+  "restH": 2,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same dial with phone numbers: the ring fitted under the heading, the list of items hidden, the value full width at the foot; hold 0.9 of the desktop's.",
+  "maxPerPage": 1,
+  "weight": 0.5,
+  "place": "In the middle, on the features, the range, the figures, a few projects with one number each, or the stages of a climb or a process.",
+  "content": "Three to six items (up to twelve work; the hold grows), each with a name of one word, 8 letters or fewer (it becomes the huge word); one 4:5 picture, 840x1050 or more, all from the same angle and in the same light (photographs of the products when the items are products; otherwise real pictures of each item's world, as the demo's four heights of one climb); a line of a few words; one value with its unit (9 characters or fewer) and a caption of 4 words or fewer. Each picture shows its own item, and its caption names only what the picture shows. Optional data-at (the reading on the dial) and data-tone (the item's ground); give range and data-at when the items are readings on one scale, so the dial reads as an instrument. A heading of 6-10 words on two lines. Not for long copy or items with more than one number.",
+  "options": "hold 0.85 an item + 0.6, at most 7 (the phone holds 0.9 of it); scrub 0.8 or true; grow 0.28 (0.18-0.40) start scale of the first name; ticks about one every 12px of arc (16-200); range [low, high] of the scale; turn 1.2 (0-3) degrees each picture rolls; tilt true, the pictures lean toward a fine pointer; field true (each item's own ground below the horizon) | false; wash true (the incoming ground washes over the name before it settles); snap false; phone 'same' | 'rest'.",
+  "roles": [
+    "features",
+    "showcase",
+    "stats",
+    "list",
+    "how-it-works",
+    "work"
+  ],
+  "position": "middle",
+  "sectors": [
+    "agency",
+    "studio-portfolio",
+    "personal-portfolio",
+    "ecommerce",
+    "physical-product",
+    "fashion",
+    "hospitality",
+    "restaurant",
+    "real-estate",
+    "architecture",
+    "event",
+    "health",
+    "education",
+    "nonprofit",
+    "culture",
+    "music",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "series:3"
+    ],
+    "content": "Three to six items (up to twelve work; the hold grows), each with a name of one word, 8 letters or fewer (it becomes the huge word); one 4:5 picture, 840x1050 or more, all from the same angle and in the same light (photographs of the products when the items are products; otherwise real pictures of each item's world, as the demo's four heights of one climb); a line of a few words; one value with its unit (9 characters or fewer) and a caption of 4 words or fewer. Each picture shows its own item, and its caption names only what the picture shows. Optional data-at (the reading on the dial) and data-tone (the item's ground); give range and data-at when the items are readings on one scale, so the dial reads as an instrument. A heading of 6-10 words on two lines. Not for long copy or items with more than one number."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/instrument-dial-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"instrument-dial-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

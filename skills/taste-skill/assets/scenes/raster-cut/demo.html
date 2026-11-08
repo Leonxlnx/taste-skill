@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel Night Line</title>
+<meta name="description" content="A sleeper train from the city to the northern coast. Scene demo: the raster cut between chapters.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --night: #0e100f;
+    --bone: #eaebe6;
+    --ground: #dfe3e3;
+    --ink: #121614;
+    --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+    --gutter: 6vw;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--night); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 18px/1.5 var(--font-display);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  figure { margin: 0; }
+  figcaption { margin-top: 12px; font-size: 15px; }
+
+  /* a plain bar; the scene tells it which ink to use and when a filled bar would not show as a band */
+  .bar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--gutter);
+    color: var(--rc-nav-ink, var(--bone));
+    font-size: 16px;
+    transition: background-color .35s;
+  }
+  /* once the pin releases it takes the B ground, so text never scrolls under text */
+  .bar[data-rc-fill] { background: var(--rc-nav-ground); }
+  .bar .mark { font-weight: 700; text-decoration: none; letter-spacing: -.01em; }
+  .bar nav { display: flex; gap: 32px; }
+  .bar nav a { text-decoration: none; }
+  .bar nav a:last-child { font-weight: 500; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  /* without the live scene the bar stays with the first screen */
+  html:not(.js) .bar, body:has(.scene.is-rest) .bar { position: absolute; }
+  @media (prefers-reduced-motion: reduce) { .bar { position: absolute; } }
+
+  .button {
+    display: inline-block;
+    padding: 16px 28px;
+    font-weight: 500;
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--ground);
+    transition: background-color .2s, color .2s;
+  }
+  .button:hover { background: #2b332f; }
+
+  .hero {
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 4vw;
+    padding: 104px var(--gutter) 8svh;
+    background: var(--night);
+    color: var(--bone);
+  }
+  .hero-copy { display: flex; flex-direction: column; justify-content: flex-end; }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(52px, 8.4vw, 150px);
+    font-weight: 700;
+    line-height: .9;
+    letter-spacing: -.045em;
+    text-wrap: balance;
+  }
+  .hero p { margin: 32px 0 0; max-width: 30ch; font-size: clamp(18px, 1.6vw, 24px); line-height: 1.4; }
+  .hero .button { align-self: flex-start; margin-top: 40px; background: var(--bone); color: var(--night); }
+  .hero .button:hover { background: #ffffff; }
+  .hero-pic { position: relative; overflow: hidden; min-height: 320px; }
+  .hero-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
+
+  .arrive {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6vw;
+    align-items: start;
+    /* the scene leaves a flat band of this ground above; 48px or more keeps the heading off the picture's
+       edge even where a short screen leaves the band thin */
+    padding: max(4svh, 48px) var(--gutter) 12svh;
+    background: var(--ground);
+  }
+  .arrive h2, .dining h2 {
+    margin: 0;
+    max-width: 14ch;
+    font-size: clamp(36px, 4.4vw, 72px);
+    font-weight: 700;
+    line-height: .98;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  .arrive-copy > p { margin: 28px 0 0; max-width: 40ch; }
+  .times { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 40px; margin: 44px 0 0; padding: 0; list-style: none; }
+  .times strong { display: block; font-size: clamp(28px, 2.6vw, 40px); line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .times span { display: block; margin-top: 6px; font-size: 16px; }
+  .arrive .button { margin-top: 48px; }
+  .arrive-pic { overflow: hidden; }
+  .arrive-pic img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+
+  .dining { padding: 0 var(--gutter) 12svh; background: var(--ground); }
+  .dining-head { display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: end; margin-bottom: 40px; }
+  .dining-head p { margin: 0; max-width: 40ch; }
+  .dining figure { overflow: hidden; }
+  .dining img { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; }
+
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 40px var(--gutter) 56px;
+    background: var(--ground);
+    font-size: 15px;
+  }
+  .foot p { margin: 0; max-width: 52ch; }
+
+  /* The page around the scene has no arrivals of its own: a built page takes the entrance its sheet deals
+     (base.css, "the entrance") and only that entrance's rule below the fold. */
+
+  @media (max-width: 767px) {
+    :root { --gutter: 24px; }
+    .bar nav a:not(:last-child) { display: none; }
+    .hero { grid-template-columns: 1fr; grid-template-rows: auto 40svh; gap: 32px; padding: 104px var(--gutter) 32px; }
+    .hero h1 { font-size: 15vw; }
+    .hero p { margin-top: 20px; }
+    .hero .button { margin-top: 28px; }
+    .arrive { grid-template-columns: 1fr; gap: 48px; padding: 2svh var(--gutter) 10svh; }
+    .times { grid-template-columns: 1fr 1fr; gap: 24px 32px; }
+    .dining-head { grid-template-columns: 1fr; gap: 20px; }
+    .dining img { aspect-ratio: 4 / 3; }
+    .foot { flex-direction: column; }
+    /* the phone's narrow crop of the sea keeps the marker post out from behind the words */
+    #morning .rc-b .rc-media img { object-position: 28% 50%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="mark" href="#top">Kestrel Night Line</a>
+  <nav aria-label="Main">
+    <a href="#morning">The route</a>
+    <a href="#cabins">Cabins</a>
+    <a href="#cabins">Book a cabin</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Kestrel Night Line</h1>
+      <p>A sleeper train that leaves the city at 22:40 and wakes you on the northern coast, 640 kilometres later.</p>
+      <a class="button" href="#cabins">Book a cabin</a>
+    </div>
+    <figure class="hero-pic">
+      <img src="https://picsum.photos/id/232/1000/1300" alt="A twin street lamp in falling snow at night" width="1000" height="1300" decoding="async">
+    </figure>
+  </section>
+
+  <!-- the night forest (A) cut into the morning sea (B); --b-scrim washes the pale picture with its own
+       ground so the dark title keeps 7:1 -->
+  <section class="sc scene" id="morning" data-big-scene="raster-cut" data-big-scene-opts='{"nav":".bar"}'
+           style="--a-ground:#0e100f; --a-ink:#eaebe6; --b-ground:#dfe3e3; --b-ink:#121614; --a-scrim:.55; --b-scrim:.3; --b-scrim-color:#e6e9e9">
+    <div class="scene-stage">
+      <div class="rc-layer rc-a" aria-hidden="true">
+        <div class="rc-media">
+          <img src="https://picsum.photos/id/227/1600/1000"
+               srcset="https://picsum.photos/id/227/1600/1000 1600w, https://picsum.photos/id/227/2400/1500 2400w"
+               sizes="(orientation: portrait) 160vh, 100vw"
+               alt="" width="2400" height="1500" decoding="async">
+        </div>
+        <div class="rc-copy"><p class="rc-title">Awake by the sea</p></div>
+      </div>
+      <div class="rc-layer rc-b">
+        <div class="rc-media">
+          <img src="https://picsum.photos/id/302/1600/1000"
+               srcset="https://picsum.photos/id/302/1600/1000 1600w, https://picsum.photos/id/302/2400/1500 2400w"
+               sizes="(orientation: portrait) 160vh, 100vw"
+               alt="A marker post standing in a still, pale sea at first light" width="2400" height="1500" decoding="async">
+        </div>
+        <div class="rc-copy">
+          <h2 class="rc-title">Awake by the sea</h2>
+          <p class="rc-deck">The blinds rise at 06:40, when the line meets the shore, and breakfast is served until the last stop at Halvik.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="arrive" id="cabins">
+    <div class="arrive-copy">
+      <h2>Three nights a week, all year</h2>
+      <p>Kestrel leaves the city on Tuesdays, Fridays and Sundays. Cabins sleep one, two or four, with fresh linen, a washbasin and a window on the sea side for the last two hours of the line.</p>
+      <ul class="times">
+        <li><strong>22:40</strong><span>leaves the city</span></li>
+        <li><strong>07:55</strong><span>arrives in Halvik</span></li>
+        <li><strong>€180</strong><span>a cabin for two</span></li>
+      </ul>
+      <a class="button" href="#cabins">Book a cabin</a>
+    </div>
+    <figure class="arrive-pic">
+      <img class="pic" src="https://picsum.photos/id/1052/1000/1250" alt="A black sea stack off a dark beach, white surf under a pale sky" width="1000" height="1250" loading="lazy" decoding="async">
+      <figcaption>The black beach below Halvik station, a few minutes after arrival.</figcaption>
+    </figure>
+  </section>
+
+  <section class="dining">
+    <div class="dining-head">
+      <h2>Breakfast in the dining car</h2>
+      <p>Coffee from 06:30, rye bread from the bakery at the halfway stop, and a table by the window for as long as the coast lasts.</p>
+    </div>
+    <figure>
+      <img class="pic" src="https://picsum.photos/id/42/1800/790" alt="A coffee cup on a long wooden table by the window" width="1800" height="790" loading="lazy" decoding="async">
+    </figure>
+  </section>
+
+  <footer class="foot">
+    <p>Kestrel Night Line runs between the city and Halvik. Tickets open ninety days before departure, and dogs travel free in cabins for one.</p>
+    <p>Photographs from picsum.photos.</p>
+  </footer>
+</main>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

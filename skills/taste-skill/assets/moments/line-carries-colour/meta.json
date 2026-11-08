@@ -8,11 +8,13 @@
   "trigger": "scroll",
   "cost": "low",
   "webgl": 0,
-  "pages": [
-    "tech",
-    "gaming",
-    "software"
+  "tones": [
+    "editorial",
+    "warm",
+    "product",
+    "tech"
   ],
+  "intensity": "lively",
   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) is cleared by a one-pixel accent line that climbs through it from its foot to its top: below the line the section's own ground and words, above it the old ground. Each heading, paragraph, button and picture stays hidden until the line has passed above all of it, then fades in whole, so no word is ever cut.",
   "reduced": "The section stands on its own ground, no panel, no line.",
   "phone": "The section stands on its own ground, no panel, no line.",

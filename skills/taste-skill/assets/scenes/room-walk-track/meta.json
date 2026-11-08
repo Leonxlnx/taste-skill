@@ -1,0 +1,75 @@
+{
+  "id": "room-walk-track",
+  "name": "Sideways walk through rooms",
+  "family": "horizontal-travel",
+  "classic": 1,
+  "look": "A full-height row of flat-coloured rooms is walked sideways at one screen of width per screen of scroll, each room with its own moment (a photograph that swaps in a frame, portraits that open while a statement brightens, a word that climbs, three value words that shear apart, project strips that open one after another), until a last room slides over a held column and the whole row pulls away, and the closing headline fades in once the last room is clear of it. It is a guided tour of a studio, a building or a body of work that ends on the contact.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "editorial",
+    "warm"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 8.6,
+  "restH": 8,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "Below 900px wide or on a portrait screen: no pin and no sideways travel; the rooms stand as a vertical column in the same colour order, each with its own small scrubbed move, except the letters: the card names and the question rise on a clock of under a second once half of them is on screen, so no name stands half-drawn.",
+  "maxPerPage": 1,
+  "weight": 0.4,
+  "place": "From the middle to the end of the page: the work, the projects or the tour of the building, handing over to the contact, whose ground it ends on. About ten screens: it is a whole page on its own (the work, the about and the contact in one), over the six screens the draw gives all of a page's scenes, so it is never dealt beside another scene. Build it only when the client's own photographs carry the whole page, with the hero and at most one short section around it, and nothing loud after it.",
+  "content": "Fourteen photographs of the client's own work or building, from one shoot or in one grade: a wide interior (2200px or more) and two views of one room, close and wide, for the photo room; two 3:4 portraits; five landscape project pictures with the subject centred; two more for the held column; two at 16:9 for the last room. Words, about 280: a threshold headline of two lines and a lede of 25-35 words; a two-line heading and about 30 words for the photo room; a statement of 35-45 words in five lines; one chapter word; three value words of 13 characters or fewer with a note; five projects (a name of 14 characters or fewer, a year, a place, a link); a question of two lines with 40-60 words; two captions; a closing headline of 2-4 words. Rooms can be left out; the photographs cannot: without the client's own pictures, redraw. No counter, no progress bar, no filler band: the rooms carry the walk. Words show only while wholly on screen.",
+  "options": "rate 0.8-1.25 screen widths walked per screen of scroll (1.25); ramp 0.15-0.35 screens the walk takes to start and stop (0.25); open 50-66 vw, an open project card (60); closed 12-18 vw, a waiting strip (15); stack 0.5-1.2 screens held on the column while its photos stack (0.7); swap 0.5-1 screens held on the last room's photo swap (0.5); rest 0.2-0.6 screens of still closing headline (0.2); scrub 0.3 with Lenis, else 0.6 (0.1-1.5); intro true, the threshold title rises once when the walk is on screen at load. The hold is measured from the rooms: about 8.6 screens for the full set with five cards, about 0.5 more a card.",
+  "roles": [
+    "work",
+    "gallery",
+    "about",
+    "how-it-works"
+  ],
+  "position": "middle",
+  "sectors": [
+    "studio-portfolio",
+    "personal-portfolio",
+    "agency",
+    "architecture",
+    "real-estate",
+    "hospitality",
+    "culture"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:14"
+    ],
+    "content": "Fourteen photographs of the client's own work or building, from one shoot or in one grade: a wide interior (2200px or more) and two views of one room, close and wide, for the photo room; two 3:4 portraits; five landscape project pictures with the subject centred; two more for the held column; two at 16:9 for the last room. Words, about 280: a threshold headline of two lines and a lede of 25-35 words; a two-line heading and about 30 words for the photo room; a statement of 35-45 words in five lines; one chapter word; three value words of 13 characters or fewer with a note; five projects (a name of 14 characters or fewer, a year, a place, a link); a question of two lines with 40-60 words; two captions; a closing headline of 2-4 words. Rooms can be left out; the photographs cannot: without the client's own pictures, redraw. No counter, no progress bar, no filler band: the rooms carry the walk. Words show only while wholly on screen."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/room-walk-track/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"room-walk-track\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

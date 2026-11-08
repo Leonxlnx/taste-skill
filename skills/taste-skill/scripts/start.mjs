@@ -30,6 +30,17 @@
       the same block from a client's own colours
   node scripts/start.mjs types --page <kind>
       every pairing the kind can be dealt, with its exact Google Fonts link
+  node scripts/start.mjs plan --page <kind> --trade <trade> [--type <page type>] [--has photo,ui,film,object,setting]
+                              [--long] [--tone warm|editorial|product|tech|playful] [--axis] --history .taste-skill/history.json
+      --has names what the brief can fill (default: software ui,figures; tech photo,product,figures; product
+      photo,product; place and service photo; gaming setting): add figures when the fact sheet holds two proof
+      figures (counter-rolls), archive for the client's own body of pictures, film, route; moments and scenes
+      that need more are not dealt.
+      the whole deal in one block, for any model: it runs the dealers themselves (start.mjs deal for the palettes,
+      the type and the LAYOUT block; assets/layout/deal.mjs for the hero; moments.mjs pick --scene deal for 2-3
+      moments and 0-1 scene; effects.mjs pick for 0-1 effect) and deals the hero's entrance from
+      assets/motion/meta.json by fit. It ends with PLAN: one line per part, each naming the file or recipe to copy.
+      The hero's history goes to layout-history.json beside the --history file.
 
   --page, the SKILL.md kinds as start.mjs names them:
       Tech (software, an app, AI, developer tools, fintech) ......... software
@@ -197,7 +208,7 @@ let page = typeof pageArg === 'string' ? pageArg.toLowerCase() : '';
 page = ALIAS[page] || page;
 if (!page && trade) page = TRADE_PAGE[trade];   // --trade alone names the kind
 if (page && !PAGES.includes(page)) { console.error(`start: --page must be one of ${PAGES.join(', ')} (got "${pageArg}")`); process.exit(2); }
-if (cmd === 'deal' && !page) {
+if ((cmd === 'deal' || cmd === 'plan') && !page) {
   console.error(`start: deal needs --page <${PAGES.join('|')}> (or --trade <trade>): the kind decides which faces are dealt, the display weight and the mono.\n  Tech (software, apps, AI, fintech) = software; technical product (hardware) = tech; add --axis for a word or editorial hero.\n  node scripts/start.mjs deal --page <kind> --trade <trade> [--axis] --history .taste-skill/history.json`);
   process.exit(2);
 }
@@ -230,7 +241,8 @@ if (cmd === 'deal') {
       if (changed) fs.writeFileSync(marker, JSON.stringify(m, null, 1) + '\n');
     } else if (home === here) {
       fs.mkdirSync(dot, { recursive: true });
-      fs.writeFileSync(marker, JSON.stringify({ page: null, dir: process.cwd(), kind: page || null, start: new Date().toISOString(), by: 'start.mjs' }, null, 1) + '\n');
+      fs.writeFileSync(marker, JSON.stringify({ page: null, dir: process.cwd(), kind: page || null, start: new Date().toISOString(), by: 'start.mjs',
+        gate: path.join(path.dirname(fileURLToPath(import.meta.url)), 'gate.mjs') }, null, 1) + '\n'); // the gate that judges this build
       console.error(`start: the finish gate is armed in ${process.cwd()}; run start.mjs from the project folder (the one that holds the page)`);
     }
   } catch { /* the gate is optional: never stop a deal over it */ }
@@ -385,6 +397,71 @@ function describe(t, withLink) {
   return s;
 }
 
+// ---------------------------------------------------------------- the layout deal (sections.md section 2)
+// In testing every page of one kind had the same parts in the same order: one place hero, one close (a big
+// button across the .wrap), the same visit split. So the parts a template fixes are dealt here with the
+// palette and the pairing, each away from the last pages' (h.layout keeps the last ids per part).
+const LISTS = {
+  nav: { software: 'nav-mega|nav-cards|nav-centre', gaming: 'nav-mega|nav-centre|nav-cards', tech: 'nav-cards|nav-split|nav-mega',
+    product: 'nav-cards|nav-split|nav-mega', service: 'nav-mega|nav-split|nav-centre', place: 'nav-split|nav-cards|nav-centre' },
+  footer: { software: 'footer-dark|footer-statement|footer-columns', gaming: 'footer-dark|footer-statement', tech: 'footer-columns|footer-dark',
+    product: 'footer-columns|footer-dark', service: 'footer-visit|footer-dark|footer-columns', place: 'footer-visit|footer-columns' },
+  close: { software: 'close-type|close-word|close-split', gaming: 'close-word|close-type|close-split', tech: 'close-photo|close-type|close-word|close-split',
+    product: 'close-photo|close-type|close-word|close-split', service: 'close-type|close-photo|close-split|close-word', place: 'close-photo|close-split|close-word|close-type' },
+  buttons: { software: 'solid|pill|tonal|arrow', gaming: 'solid|pill|block', tech: 'arrow|solid|block|pill', product: 'arrow|solid|block|pill',
+    service: 'solid|tonal|block|arrow', place: 'block|solid|arrow' },
+  mark: { place: 'dots|arc|ring|petal|leaf|stack', '*': 'wordmark|initial|arc|ring|stack|dots' },
+  // grounds: one or two bands from the palette on every page (tint: .ground-surface; dark: .ground-inverse; brand: .ground-brand)
+  bands: { software: 'dark|tint|dark+tint', gaming: 'dark|dark+brand', tech: 'dark|brand|tint+dark', product: 'brand|dark|tint+brand|tint+dark',
+    service: 'tint|dark|tint+dark|brand', place: 'tint|brand|tint+brand|tint+dark' },
+};
+// section compositions (system.css, compositions; sections-library.md, Compositions), a pool per section type
+const COMPS = {
+  offer: 'list-tall|split-7-5|split-5-7|strip|offset-pair',            // a menu, prices, services, repairs
+  showcase: 'bleed-panel|offset-pair|three-up|mirrored|wall|story',      // the place, the work, the house, the product in use
+  rooms: 'row|side|list-tall',                                           // rooms, goods, bouquets, models
+  feature: 'split-7-5|split-5-7|mirrored|bleed-panel|offset-pair|three-up', // a product's or a service's point
+  visit: 'split-6-6|mirrored|street-large|bleed-panel',
+  form: 'form-photo|form-band|close-form',
+  statement: 'statement-type|statement-short',
+};
+const KIND_COMPS = { software: ['feature', 'statement', 'form'], gaming: ['showcase', 'statement', 'form'], tech: ['feature', 'showcase', 'statement'],
+  product: ['feature', 'showcase', 'rooms', 'statement'], service: ['offer', 'showcase', 'feature', 'visit', 'form'],
+  place: ['visit', 'offer', 'showcase', 'rooms', 'form'] };
+const COMP_WHAT = { offer: 'the offer (menu, prices, services)', showcase: 'the showcase (the place, the work, the house, in use)',
+  rooms: 'rooms or goods', feature: 'each feature section', visit: 'the visit', form: 'the booking or order form', statement: 'a statement section' };
+function dealLayout(h) {
+  const L = (h.layout && typeof h.layout === 'object' && !Array.isArray(h.layout)) ? h.layout : (h.layout = {});
+  const pick = (key, line, avoidLast = 1) => {
+    const opts = line.split('|'), recent = (L[key] || []).slice(-avoidLast);
+    const fresh = opts.filter(o => !recent.includes(o)), pool = fresh.length ? fresh : opts;
+    const v = pool[Math.floor(Math.random() * pool.length)];
+    L[key] = [...(L[key] || []), v].slice(-8);
+    return v;
+  };
+  const k = page;
+  const get = key => LISTS[key][k] || LISTS[key]['*'];
+  const out = {};
+  for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, get(key), key === 'close' ? 2 : 1);
+  out.bands = pick(`${k}:bands`, get('bands'));
+  console.log(`\nLAYOUT for ${k} (dealt away from the last pages; build exactly these, write them on plan line 2):`);
+  console.log(`  nav ${out.nav} · footer ${out.footer} · close ${out.close} · buttons ${out.buttons} · mark ${out.mark}`);
+  console.log(`  bands: ${out.bands.split('+').map(b => ({ tint: 'one tinted band (.ground-surface)', dark: 'one dark band (.ground-inverse, the palette\'s dark)', brand: 'one band in the accent (.ground-brand)' })[b]).join(' and ')}; never two bands side by side, never the hero`);
+  const lines = [];
+  for (const sec of KIND_COMPS[k] || []) {
+    if (sec === 'feature') {
+      const a = pick(`${k}:feature`, COMPS.feature, 2); let b = pick(`${k}:feature`, COMPS.feature, 2);
+      for (let i = 0; b === a && i < 6; i++) b = pick(`${k}:feature`, COMPS.feature, 1);
+      lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
+    } else lines.push(`${COMP_WHAT[sec]}: ${pick(`${k}:${sec}`, COMPS[sec], 2)}`);
+  }
+  if (lines.length) {
+    console.log('  compositions (markup: sections-library.md, Compositions; use only the sections the page has):');
+    for (const l of lines) console.log('    ' + l);
+  }
+  console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)' : out.close}; a page whose last section is a form ends on close-form instead; the footer never repeats hours or a form printed above`);
+}
+
 const histFile = opt('history', '.taste-skill/history.json');
 
 if (cmd === 'deal') {
@@ -427,11 +504,118 @@ if (cmd === 'deal') {
   console.log(`TYPE for ${page}${placePage && PLACE_GROUP[trade] ? ` (${TRADE_NAME[trade]}: ${GROUPS[PLACE_GROUP[trade]]} first)` : ''} (take the first; all Google Fonts; headlines ${techPage ? '400 or 500' : '400'}, text 400, 500 for buttons and labels; sentence case, sizes come from system.css):`);
   for (const t of tys) console.log(describe(t, false));
   if (!tys.length) console.log('  (no pairing matches; drop --axis)');
+  dealLayout(h);
   h.dealt = [...(h.dealt || []), ...tys.map(t => t.id)].slice(-30);
   if (!opt('no-record')) writeHistory(histFile, h);
   if (!opt('axis') && !placePage) console.log('  (a word or editorial hero needs a weight or width axis: deal again with --axis)');
   const self = fileURLToPath(import.meta.url).split(path.sep).join('/');
   console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
+} else if (cmd === 'plan') {
+  // one command for the whole deal: the dealers run as they are (never copied here), their output kept in full under
+  // each heading, then PLAN sums it up one line a part with the file to copy from
+  const { spawnSync } = await import('node:child_process');
+  const { FIT, fitsKind, momentSource } = await import('./moments.mjs');
+  const skill = path.join(here, '..');
+  const rel = p => p.split(path.sep).join('/');
+  const run = (file, list) => {
+    const r = spawnSync(process.execPath, [file, ...list], { encoding: 'utf8', cwd: process.cwd() });
+    if (r.stderr && r.stderr.trim()) process.stderr.write(r.stderr);
+    return (r.stdout || '').replace(/\s+$/, '');
+  };
+  const flag = k => (opt(k) === true ? ['--' + k] : []);
+  const val = k => (typeof opt(k) === 'string' ? ['--' + k, opt(k)] : []);
+  const histDir = path.dirname(histFile);
+  const layoutHist = path.join(histDir, 'layout-history.json');
+  const pageType = typeof opt('type') === 'string' ? opt('type')
+    : ({ software: 'software', gaming: 'software', tech: 'product', product: 'product', service: 'service', place: 'place' })[page];
+  // what the brief can fill (--has; default what the kind normally has: a place photographs, software its ui):
+  // the hero deal reads it, and the moment and scene deal leaves out what the page cannot fill (meta.needs.list)
+  const has = typeof opt('has') === 'string' ? opt('has')
+    : ({ software: 'ui,figures', gaming: 'setting', tech: 'photo,product,figures', product: 'photo,product', service: 'photo', place: 'photo' })[page];
+
+  // 1. palettes, type and the LAYOUT block (also arms the finish gate, as a deal always does)
+  const dealOut = run(fileURLToPath(import.meta.url), ['deal', '--page', page, ...val('trade'), '--history', histFile, ...flag('axis'), ...flag('dark'), ...flag('light'), ...flag('no-recent')]);
+  // 2. the hero
+  const heroOut = run(path.join(skill, 'assets', 'layout', 'deal.mjs'), ['--type', pageType, '--has', has, '--history', layoutHist,
+    ...(page === 'gaming' ? ['--kind', 'gaming'] : page === 'tech' ? ['--kind', 'tech'] : [])]);
+  // 3. moments and the scene, by fit
+  const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--has', has, '--history', histFile, ...flag('long'), ...val('tone')]);
+  // 4. the effect: tech kinds always deal one for the hero; a place, service or product page one quiet treatment
+  //    about one page in three, on a band (effects-usage.md, The fit rule)
+  const bg = (dealOut.match(/\bbg (#[0-9a-f]{6})/i) || [])[1];
+  const ground = bg && color.isDark(bg) ? 'dark' : 'light';
+  const fxRoll = techPage || Math.random() < 1 / 3;
+  const fxOut = fxRoll ? run(path.join(here, 'effects.mjs'), ['pick', '--page', page, '--palette', ground, '--slots', techPage ? 'hero' : 'band',
+    '--history', histFile, ...val('tone'), ...flag('tech-subject')]) : '';
+  // 5. the hero's entrance from the deck (assets/motion/meta.json), by fit, what the hero has, away from the last two
+  const deck = JSON.parse(fs.readFileSync(path.join(skill, 'assets', 'motion', 'meta.json'), 'utf8')).entrances || [];
+  const heroId = (heroOut.match(/^hero: (\S+)/m) || [])[1] || '';
+  const heroForm = (heroOut.match(/^\s*form: (\w+)/m) || [])[1] || '';
+  const hasSet = new Set(has.split(','));
+  const picture = hasSet.has('photo') || hasSet.has('film') || hasSet.has('object') || hasSet.has('setting') || /place|photo|film|product|editorial/.test(heroId);
+  const meets = need => /window|ui/i.test(need) ? (hasSet.has('ui') || heroId === 'ui')
+    : /moving|scene/i.test(need) ? (hasSet.has('film') || heroId === 'film')
+    : /70%|half/i.test(need) ? picture && !/split/.test(heroForm || heroId)
+    : /picture|photograph/i.test(need) ? picture : true;
+  const h = readHistory(histFile);
+  const lastEnter = Array.isArray(h.entrances) ? h.entrances.slice(-2) : [];
+  const fitE = deck.filter(e => fitsKind(e, page, { tone: typeof opt('tone') === 'string' ? opt('tone') : undefined }) && (e.needs || []).every(meets) && e.id !== 'still');
+  const freshE = fitE.filter(e => !lastEnter.includes(e.id));
+  const poolE = freshE.length ? freshE : fitE.length ? fitE : deck.filter(e => e.default);
+  const enter = poolE[Math.floor(Math.random() * poolE.length)] || { id: 'rise', sees: 'the h1 rises line by line', markup: 'data-enter' };
+  h.entrances = [...(h.entrances || []), enter.id].slice(-8);
+  if (!opt('no-record')) writeHistory(histFile, h);
+  // grounds: a lit ground for tech (the old one-liner, now here); flat tokens and the dealt bands elsewhere
+  const litGround = techPage ? ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] : '';
+
+  const head = t => console.log(`\n==== ${t} ${'='.repeat(Math.max(4, 72 - t.length))}`);
+  head('PALETTES, TYPE, LAYOUT (start.mjs deal)'); console.log(dealOut);
+  head('HERO (assets/layout/deal.mjs)'); console.log(heroOut);
+  head('MOMENTS AND SCENE (moments.mjs pick --scene deal)'); console.log(momOut);
+  head('EFFECT (effects.mjs pick)'); console.log(fxOut || '  none this page (a place, service or product page takes a quiet treatment about one page in three)');
+
+  // the summary, read from the dealers' own lines
+  const pal = (dealOut.match(/^ {2}([a-z0-9-]+) {2,}/m) || [])[1] || '?';
+  const typ = (dealOut.match(/^TYPE[^\n]*\n {2}([a-z0-9-]+)/m) || [])[1] || '?';
+  const lay = (dealOut.match(/nav (\S+) · footer (\S+) · close (\S+) · buttons (\S+) · mark (\S+)/) || []);
+  const bands = (dealOut.match(/^ {2}bands: ([^;\n]+)/m) || [])[1] || 'flat';
+  const compBlock = (dealOut.split(/^ {2}compositions \(.*$/m)[1] || '').split(/\n(?! {4})/)[0];
+  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${m[2]}`);
+  const [, scene = '', sceneAt = ''] = momOut.match(/^scene (\S+) · ([^·\n]+?) ·/m) || [];
+  const SCENE_AT = { hero: 'as the hero (the entrance becomes data-enter="still")', close: 'as the last section before the footer (the close row stays)', between: 'between two sections', statement: 'as a statement section' };
+  const moments = [...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) · (\w+)/gm)].map(m => ({ id: m[1], fits: m[2].trim(), intensity: m[3] }));
+  const fx = (fxOut.match(/^\s*\d+\. (\w+)\s+(\S+)/m) || []);
+  const skillRef = '<skill>';
+  head('PLAN (write it on plan line 2 and in the comment at the top of <body>; build exactly this)');
+  const L = [];
+  L.push(`kind ${page} · page type ${pageType}${trade ? ` · trade ${trade}` : ''} · ${FIT[page] ? `fits tones ${FIT[page].tones.join('/')}, ${FIT[page].intensity.join('/')}${FIT[page].webgl ? ', WebGL' : ', no WebGL'}` : ''}`);
+  L.push(`copy first   .taste-skill/copy.md from the block in references/copy.md (The copy notes); lint it: node ${skillRef}/scripts/copy-lint.mjs .taste-skill/copy.md`);
+  L.push(`palette      ${pal}, type ${typ}: node ${skillRef}/scripts/start.mjs css --page ${page} --palette ${pal} --type ${typ} --radius ${page === 'place' ? 'sharp' : 'soft'} --history ${rel(histFile)}  (paste its block into the starter's head)`);
+  L.push(`hero         ${heroId || '?'}${heroForm ? ` data-form="${heroForm}"` : ''}: copy only the <section class="hero ..."> of ${skillRef}/assets/layout/hero-${heroId || '<id>'}.html`);
+  const enterMore = String(enter.markup || '').replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1').trim();
+  L.push(`entrance     data-enter="${enter.id}" on that hero section${enterMore ? `, ${enterMore}` : ''}: ${enter.sees}; references/motion.md, The entrance deck`);
+  if (lay.length) {
+    L.push(`nav          ${lay[1]} (starter.html NAV comment for its class)`);
+    L.push(`close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
+    L.push(`footer       ${lay[2]}${page === 'place' ? ' (links-visit template on a place)' : ''}`);
+    L.push(`buttons      data-buttons="${lay[4]}" on <html> · mark data-mark="${lay[5]}" (or the client's logo)`);
+  }
+  L.push(`rhythm       ${bands}; every other section on the page ground`);
+  L.push(`grounds      ${techPage ? `data-ground="${litGround}" on <html>; section grounds from references/backgrounds.md` : 'flat tokens and the bands above; no data-ground on <html>'}`);
+  for (const c of comps) L.push(`composition  ${c}  (references/sections-library.md, Compositions)`);
+  if (!techPage || hasSet.has('photo')) L.push(`photos       every product on copy.md's Products line gets a photograph of it in the section that sells it: photos.mjs pick${trade ? ` --trade ${trade}` : ''}, then photos.mjs search --out . "<product> ..." for each product pick dealt no frame of (required, not optional); name each here: "product cake: library c12" or "product cake: search" (references/photos.md)`);
+  L.push(`reveals      automatic: each section's h2 and lead photograph rise once (motion.js); nothing to add, data-still on a section to keep it still`);
+  const SLOT = { section: 'a content section', statement: 'a statement section', closing: 'the last section', hero: 'the hero', between: 'a section between two others' };
+  const slotOf = f => { const s = f.split('/'); return SLOT[s.find(x => x !== 'hero') || s[0]] || 'a section'; };
+  // the exact file whose section to copy (moments.mjs momentSource): the in-page demo that holds the moment, else its own demo;
+  // the gate's deal-drift check FAILs a page without a dealt moment or scene
+  moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: ${momentSource(m.id, skillRef)}, link ${m.id}/moment.css; references/moments.md`));
+  if (!moments.length) L.push('moments      none dealt: run moments.mjs pick again (every page takes two)');
+  L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the whole <section data-big-scene="${scene}"> of ${skillRef}/assets/scenes/${scene}/demo.html (the gate's deal-drift check FAILs a page without it), link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
+  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands`} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : 'none'}`);
+  L.push(`hover layer  automatic (motion.js): buttons, links, linked cards and photos; loops inside every card visual (references/motion.md)`);
+  L.push(`then         build in a copy of starter.html, then: node ${skillRef}/scripts/gate.mjs index.html`);
+  for (const l of L) console.log('  ' + l);
 } else if (cmd === 'types') {
   for (const t of allTypes.filter(t => suits(t, page))) console.log(describe(t, true));
 } else if (cmd === 'css' || cmd === 'brand') {

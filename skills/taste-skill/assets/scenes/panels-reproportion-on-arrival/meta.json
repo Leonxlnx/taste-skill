@@ -1,0 +1,79 @@
+{
+  "id": "panels-reproportion-on-arrival",
+  "name": "Panels re-proportion as they arrive",
+  "family": "horizontal-travel",
+  "classic": 1,
+  "look": "A short statement holds at display size in a solid column of the page's ground on the left, as tall as the stage, while four to six large panels arrive one at a time beside it, about 0.4 screens of scroll each. Every panel is one picture over a band of the page's own ground. A panel arrives in the main slot (about 42% of the width) split half and half with its name on one line; as the reader scrolls, the picture grows by its clip to 70% and pushes the band down, and the name re-sets onto two lines in large type, so each item visibly comes into focus at full size. When the next panel comes, a hand-over runs on a clock: the settled panel steps left into a narrower slot beside the column, still whole and named, the one before it slides away whole behind the column, and the next slides in from the right. So the screen holds at most two panels, never a strip of one, and every frame after the first settle shows one panel settled whole. The first panel, with nothing settled beside it, arrives across the whole window and narrows into the slot when the second comes. The last frame is the last panel settled; the column's foot holds the sentence and the one action as a plain button on the page ground. All panels share one ground and one ink; only the pictures tell them apart. For a school's programmes, a developer's buildings, a publisher's imprints, a studio's services: four or five parallel places or offers with one strong picture each.",
+  "fits": [
+    "hero"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "editorial",
+    "warm"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.2,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "No pin and no sideways travel. The statement and its sentence stand at the top and the panels stack full width, each about half a screen tall, arriving split half and half with the one-line name; as a panel's top edge crosses the middle of the screen it re-proportions on a clock of 0.7s (the picture grows to 70%, the band moves down, the name re-sets onto two lines, its short line beside it on the right), and scrolling back above the middle plays it back. A settled panel is whole on screen wherever the reader stops, no name is ever caught half re-set, and the action follows the last panel, under its name. phone 'rest' shows the finished composition.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "The first screen, as the hero: the statement is the h1 and the panels are the programmes, buildings or imprints, so the first screen is that section, told as a scene; the first panel stands half and half at load and changes on the first scroll. A quiet section follows it. (The demo runs it under a short intro to show the page around it.)",
+  "content": "A statement of 4-7 words whose two lines are short (eight to ten characters a line: 'A year / by hand.'), since it is set as large as two lines in a column a third of the width allow (about 100px at 1440x900) and never takes a third line; one sentence of 8-18 words for the column's foot; the one action as a plain link-button. Four or five panels (three runs, six is the most), each one place or offer: one photograph, never repeated, all five graded as one set (same light and colour treatment: grade the files together), at least 1300px wide, its subject in the middle so one picture serves the square main slot, the tall narrow slot (its middle third) and a 4:3 window on a phone; the first picture landscape, since it also fills the whole window as it arrives (about 1.6:1). Frame each with --pr-pos and --pr-pos-phone. A name of two or three words, 8-20 characters, no word over 10 (set on two lines in large type; a one-word name stays on one line and loses the re-set); an optional short line of 3-6 words. No numbers or counts on the panels, no colour per panel. The weights come from --display-weight (500 when the page sets none).",
+  "options": "pace 0.42 (0.3-0.7) screens of scroll per panel: a still moment after it arrives, the change, a rest settled; from 0.5 (0.4-0.56) share of the panel the picture fills as it arrives; grow 0.7 (0.62-0.78) share once settled; column 0.33 (0.26-0.4) share of the width the statement's column keeps on wide screens; panel 0.42 (0.36-0.46) share of the width a panel takes in the main slot (the narrow slot takes the rest, at least 16%); zoom 1.06 (1-1.15) picture scale as it arrives, settling to 1; rest 0.1 (0-0.5) screens of still end frame; hand 0.8 (0.5-1.2) seconds of the hand-over between two panels; hold auto, panels x pace + rest, 2.2 screens for five and never over 2.5; scrub true with Lenis, else 0.4; phone 'same' | 'rest'. Per panel --pr-pos and --pr-pos-phone (object-position).",
+  "roles": [
+    "hero",
+    "intro",
+    "list",
+    "features",
+    "showcase"
+  ],
+  "position": "opening",
+  "sectors": [
+    "education",
+    "real-estate",
+    "architecture",
+    "culture",
+    "hospitality",
+    "agency",
+    "studio-portfolio",
+    "event",
+    "nonprofit",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:4",
+      "names:4"
+    ],
+    "content": "A statement of 4-7 words whose two lines are short (eight to ten characters a line: 'A year / by hand.'), since it is set as large as two lines in a column a third of the width allow (about 100px at 1440x900) and never takes a third line; one sentence of 8-18 words for the column's foot; the one action as a plain link-button. Four or five panels (three runs, six is the most), each one place or offer: one photograph, never repeated, all five graded as one set (same light and colour treatment: grade the files together), at least 1300px wide, its subject in the middle so one picture serves the square main slot, the tall narrow slot (its middle third) and a 4:3 window on a phone; the first picture landscape, since it also fills the whole window as it arrives (about 1.6:1). Frame each with --pr-pos and --pr-pos-phone. A name of two or three words, 8-20 characters, no word over 10 (set on two lines in large type; a one-word name stays on one line and loses the re-set); an optional short line of 3-6 words. No numbers or counts on the panels, no colour per panel. The weights come from --display-weight (500 when the page sets none)."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/panels-reproportion-on-arrival/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"panels-reproportion-on-arrival\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

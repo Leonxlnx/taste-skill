@@ -17,6 +17,24 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
   statement hero, its statement moment and its one section, is the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
   half a tile or more, 50/50 in a split, a whole screen as a layer. The close is its own picture (a
   photograph, the big button or the name set wide).
+- **What the brief asks for is built, never a mailto in its place.** Under the section lines the
+  plan lists each ask as `brief asks -> element`, and the page has every element (in testing: "book
+  a repair slot" was a free text box, "see the rooms" had no room choice, "sell beans online" was a
+  mailto, a product had no price):
+
+  | Brief asks | Element on the page |
+  |---|---|
+  | book a slot, a class, a table, a repair | the day and the time as choices (`<fieldset>` of radio pills or two `<select>`s), then name and email |
+  | a stay (rooms, a guesthouse, a hotel) | arrival and departure as `type="date"` (text fields on a page not in English), guests, and the room as a `<select>` or radio cards with each room's name and price |
+  | sell online (beans, bread, goods) | an order form: each item with a quantity (`type="number" min="1"`), the total line, collection or delivery, then name and email |
+  | a product | its price (or "from"), the colours as swatches that change the picture |
+  | a place | its street and district (the town alone only when the brief gives no more), its hours |
+  | a quote, a project enquiry | the type of work as a `<select>`, the budget or size, a textarea across the form |
+
+  The form's markup and errors: `system.md`, Forms; `sections-library.md`, booking-form. Without a
+  form service the action stays a `mailto:` on `.example`, but the fields are still the real ones.
+- **Each photograph is picked against its heading's claim, not its keyword** (`photos.md`): the plan
+  writes one line per photograph, `heading says X, picture shows Y`, and X and Y must agree.
 - **One object never carries the page** (in testing: a robot arm in six sections and a game's
   salvage rig in six, each "one object six times", both capped at 4 to 4.5). The object shown whole
   (the product's photograph, a game's key art) leads the hero and **at most two
@@ -77,15 +95,27 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
 
 ## 2. The deal
 
-Deal the parts a template fixes from your kind's lists, never by taste:
+Deal the parts a template fixes, never by taste. `start.mjs deal` prints them under LAYOUT, after
+the palettes and the pairings, each away from the last pages' (the `--history` file keeps them), so
+two pages from one brief differ:
 
-```bash
-node -e "for(const l of process.argv.slice(1)){const o=l.split('|');console.log(o[Math.floor(Math.random()*o.length)])}" "<nav>" "<footer>" "<close>" "<rhythm>" "<buttons>" "wordmark|initial|arc|ring|stack|dots"
+```
+LAYOUT for place (dealt away from the last pages; build exactly these, write them on plan line 2):
+  nav nav-cards · footer footer-visit · close close-photo · buttons solid · mark petal
+  bands: one tinted band (.ground-surface); never two bands side by side, never the hero
+  compositions (markup: sections-library.md, Compositions; use only the sections the page has):
+    the visit: street-large
+    the offer (menu, prices, services): strip
+    the showcase (the place, the work, the house, in use): bleed-panel
+    rooms or goods: row
+    the booking or order form: form-band
 ```
 
-The hero comes from `assets/layout/deal.mjs` and the pairing from `start.mjs` (`layout-v4.md`),
-never from this line; a place takes the place hero. Write the results on plan line 2 and in the
-comment at the top of `<body>`, and build exactly those. Deal one part again only when its recipe's
+In testing, pages of one kind had the same parts in the same order (one place hero, one close,
+the same visit split): only the palette told them apart. The hero comes from `assets/layout/deal.mjs`
+(a place: one of its four forms, `layout-v4.md` section 3). Write the results on plan line 2 and in the
+comment at the top of `<body>`, and build exactly those. A composition the page has no section for
+is skipped ("not used" on plan line 2); one composition never on two neighbouring sections. Deal one part again only when its recipe's
 "use" does not fit. With no photograph to show, these dealt parts do not fit, and each is dealt
 again from its own list without them, never drawn: `nav-cards` (and any nav panel of photograph
 cards) to `nav-split` with no panel, or `nav-centre`; `close-photo` to the head row of `close-word`
@@ -99,14 +129,20 @@ Write the change and its reason on plan line 2.
   inverse ground (tech only).
 - **Footer** (`footer.closing` row 2): `footer-columns`, `footer-dark`, `footer-statement` (the lit
   ground, tech only), `footer-visit` (a place or a service with a door).
-- **Close** (`footer.closing` row 1): `close-type` (the h2, a line, the big button across the
-  `.wrap`), `close-photo` (the head row, then the client's photograph down to the links),
-  `close-word` (the h2 and the button, then the name set across the `.wrap`).
-- **Rhythm:** `dark-band` (one `.ground-inverse` section at the page's middle or later, holding the
-  strongest visual), `media-band` (one full-width photograph layer section mid-page, never on a
-  place), `surface-pairs` (one `.ground-surface` band of one or two sections), `space` (one ground,
-  sections parted by space only), `brand-band` (product: one section in the brand's own colour,
-  `.ground-brand`, in the second half). No hairline rhythm.
+- **Close** (`footer.closing` row 1, `system.css` footer.closing): `close-type` (the h2 large, a
+  line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
+  client's photograph down to the links), `close-word` (the h2 and the button, then the name set
+  across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
+  and the button, beside a photograph), `close-form` (the booking or order form is the close).
+  Never a button across the whole `.wrap`. The close never repeats the section above it: a page
+  whose last section is a form ends on `close-form` instead (the form moves into the close). The
+  footer never prints again what a section above printed (the hours under a visit section, a
+  second form): `footer-visit` then holds the address, the way there and the nav row.
+- **Bands** (every kind, not only tech): one or two sections on a dealt ground from the palette,
+  `tint` (`.ground-surface`), `dark` (`.ground-inverse`, the palette's own dark) or `brand`
+  (`.ground-brand`), at the page's middle or later, holding a strong picture; never two bands side
+  by side, never the hero, never the visit. The older rhythm words read the same: `dark-band` is
+  dark, `surface-pairs` tint, `brand-band` and `colour-band` brand, `space` none.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
 
@@ -302,13 +338,13 @@ wins. Open these references first for the feel (never copy one): Daunt Books, Pr
 Street Bakery, Gail's, Tartine, Bonanza (a still where Bonanza has film).
 
 **Never on a place:** an effect, WebGL, canvas, CSS gradient, grain, glass, print, scene, a moment
-other than the one (two on a long page) `moments.mjs pick --page place` deals into its own section,
+other than the two (three on a long page) `moments.mjs pick --page place` deals, each into its own section,
 a loop, count, UI fragment or diagram; feature or plan cards, tabs, accordions, switches, logo rows,
 timelines, fact strips (address or hours as labels), a calendar card, a map of a street the brief
-does not give; a rating, review, figure or quote the brief does not give; words on a photograph, a
-rounded or filtered photograph, a see-through or blurred nav; outline, pale, blurred or rotated
+does not give; a rating, review, figure or quote the brief does not give; words on a photograph (a
+bleed panel is a solid ground the words stand on, not words on the photograph), a rounded or filtered photograph, a see-through or blurred nav; outline, pale, blurred or rotated
 display type; SaaS furniture (a two-tone headline, a filled-plus-outline pair, a dotted timeline
-rail, a carousel); a dark section except the one brand band.
+rail, a carousel); a dark section other than the dealt band.
 
 ### Plan and length
 
@@ -347,19 +383,15 @@ These three names mean only these lengths everywhere in the skill.
 
 ### The deal
 
-Never by taste; the hero and the splits are never dealt, the close is `close-photo` while a
-photograph is left to show (else the re-deal of section 2):
-
-```bash
-node -e "for(const l of process.argv.slice(1)){const o=l.split('|');console.log(o[Math.floor(Math.random()*o.length)])}" "nav-split|nav-cards" "footer-visit|footer-columns" "surface-pairs|space|colour-band" "block|solid|arrow" "dots|arc|ring|petal|leaf|stack" "pair|strip|tall-small" "bleed|trio|strip|pair|wall|story" "address|name" "row|side"
-```
-
-Read them in order: nav, footer, rhythm, buttons, mark, the offer's composition, the place's
-composition (deal it again while it equals the offer's), the type moment, the rooms layout. Rhythm:
-`surface-pairs` (the offer on one full `--g-alt` band; the visit section on the page ground with its
-panel on `--g-alt`), `space` (one ground throughout, sections parted by space), `colour-band` (the
-close on `.ground-brand`, a flat fill in the place's own colour; then the footer has no name across
-it).
+Never by taste: `deal.mjs --type place` deals the hero's form (band, bleed, split, name) and
+`start.mjs deal --page place --trade <trade>` prints the LAYOUT block (section 2): nav, footer,
+close, buttons, mark, the bands and a composition for the visit, the offer, the showcase (the
+place), rooms or goods and the form. With no photograph left for the close, `close-photo` and
+`close-split` become `close-type` (section 2). One type moment a page: the hero's `name` form, the
+visit's `street-large` (the `address` moment below) or `close-word`; when two are dealt, the first
+on the page stays and the others take their pool's next entry. Bands: a tinted band is the offer
+or the showcase on `.ground-surface`; a brand band the showcase or the close on `.ground-brand`; a
+dark band (`.ground-inverse`, the palette's dark ink) the showcase, its photograph whole.
 
 ### Designed variety without effects
 
@@ -367,10 +399,10 @@ A place earns its creativity from photographs, their arrangement and one moment 
 from an effect (in testing: correct cafe and guesthouse pages scored creativity 2.5 to 4 and motion 3
 to 4.5 because every section was text beside one picture and nothing answered the pointer).
 
-- **Never two sections built round one picture.** The visit keeps its 6/6 split with one
-  photograph; every other photographed section takes a composition, the offer and the place each a
-  different one, neighbours never the same. Text beside a single photograph happens once a page
-  besides the visit (`story`, or the booking form).
+- **Never two sections built round one picture the same way.** Each section takes the composition
+  the deal printed (`sections-library.md`, Compositions: split 7/5, 5/7, 6/6, mirrored, bleed-panel,
+  offset-pair, three-up, list-tall, strip, wall, story, street-large), neighbours never the same.
+  Every picture grows to its section's foot (`system.css`, fill): no empty band under a section.
 - **The five compositions** (1200 column, gap 24; grid widths span-3 282, span-4 384, span-5 486,
   span-6 588; square corners, one grade, no words on any photograph):
 
@@ -382,10 +414,11 @@ to 4.5 because every section was text beside one picture and nothing answered th
   | `strip` | the detail strip: four 1:1 details on span-3 (282x282) or six on span-2 (180x180) from line to line, hands, tools and materials of one trade, under the section's text or groups | two-up at 165, four at most |
   | `tall-small` | a tall 4:5 photograph on span-6 (588x735) at the left line; on span-5 at the right the h2, its lines and link at the top and a 1:1 on span-3 (282x282) at the bottom, its foot level with the tall one's | text, the tall one at 342, the small one at 165 |
 
-  The offer deals `pair`, `strip` or `tall-small`: `strip` runs under the menu's groups, `pair`
-  and `tall-small` take the photograph slot beside them (the groups narrow to span-6). The place
-  deals `bleed`, `trio`, `strip`, `pair`, `wall` or `story` (below). Rooms keep their own grid.
-- **One display-type moment** (dealt `address|name`): `address` sets the street and district large (no street in the brief: the
+  These five stay as the shapes inside a composition: `strip` runs under the menu's groups, `pair`
+  and `tall-small` take the photograph slot beside them (the groups narrow to span-6), `trio` is
+  three-up in three sizes, `bleed` is a bleed-panel without its panel. At 390 a photograph is never
+  under 200px tall: a strip goes two-up at 4:5 (165x206), four at most. Rooms keep their own grid.
+- **One display-type moment** (the visit's `street-large`, the hero's `name` form or `close-word`, as dealt): `address` (street-large) sets the street and district large (no street in the brief: the
   district alone, never an invented street, `copy.md`) right under the visit section's h2 ("Find us" at the page's h2 size, so the heading scale holds):
   `<p class="type-moment"><a href="<map search>">Mill Street, Leith</a></p>`, page CSS
   `.type-moment { font: var(--display-weight) clamp(48px, 7vw, 104px)/1.02 var(--font-display);
@@ -413,8 +446,9 @@ to 4.5 because every section was text beside one picture and nothing answered th
 
 ### The sections (1200 column, x 120 to 1320)
 
-- **Hero:** the place hero (`layout-v4.md` section 3). What, where and one fact: h1 "Bakery on Mill
-  Street, Leith" (40 characters at most); sub-line "Sourdough, rye and cardamom buns from 7:30,
+- **Hero:** the place hero in its dealt form (`layout-v4.md` section 3). What, where and one fact: an
+  h1 with the place's own voice, never the brief's category ("Bread out of the oven before the
+  street wakes up", not "Bakery in Leith"; the kind and the street go in the sub-line), 48 characters at most; sub-line "Sourdough, rye and cardamom buns from 7:30,
   Tuesday to Sunday." (80 at most); one button, the main action.
 - **Visit, always screen 2,** marked `data-place="visit"` and `id="visit"`, directly after the hero:
   a panel on `--g-alt` (page CSS: `.visit { background: var(--g-alt); padding: 48px }`, on span-6
@@ -478,14 +512,19 @@ to 4.5 because every section was text beside one picture and nothing answered th
   kind says what to send: date, venue, guests, budget.
 - **Booking** (rooms, or classes with dates): the head row ("Book a room"; "We reply within a
   day."), then a 4:3 photograph on span-6 (588x441) and beside it the form on `--g-alt`, the same
-  height, 48px padding: arrival and departure on one row, guests and name on the next, email, the
-  main action, the reply line at 14px. Text fields, not `type=date`, on a page not in English. Never
-  a photograph, texture or glass under the form. A booking system the brief names replaces the form.
-- **Close:** `close-photo`: the h2 (eight words at most), one line ("Open today 7:30 to 16:00"), the
-  main action, a 1:1 photograph never used above and never with words on it. On `colour-band` it
-  sits on `.ground-brand`, every word at 7:1 (`backgrounds.md`), the button inverted.
+  height, 48px padding: arrival and departure as `type="date"` on one row, the room (a `<select>`
+  with each room's name and price) and guests on the next, name, email, the main action, the reply
+  line at 14px; a class or a repair takes the day and the time as choices instead of the dates.
+  Text fields, not `type=date`, on a page not in English. Never a photograph, texture or glass
+  under the form. A booking system the brief names replaces the form. As the dealt `form-band` the
+  form sits on a tinted band across the section with the head left; as `close-form` it is the close.
+- **Close:** as dealt (section 2). `close-photo`: the h2 (eight words at most), one line ("Open today
+  7:30 to 16:00"), the main action, a photograph never used above and never with words on it;
+  `close-split` the same words on the tinted panel with up to three facts beside the photograph. On
+  a brand band it sits on `.ground-brand`, every word at 7:1 (`backgrounds.md`), the button inverted.
 - **Footer:** `footer-visit` (the address at 32/40 on span-7, linked to the map search, with one
-  line on the way there and no button, the hours from the split line with today marked, the nav
+  line on the way there and no button, the hours from the split line with today marked only when no
+  section above prints them (a page with a visit section: the nav's words there instead), the nav
   row, the legal row with the one credits line; then the name set wide across the `.wrap` in the
   display face at 400, at most `12vw`, except on `colour-band` or with the `name` moment) or
   `footer-columns` (Visit, Contact as given, the nav's words, delivery or check-in or the
@@ -496,7 +535,10 @@ to 4.5 because every section was text beside one picture and nothing answered th
   and away from any screen that already shows one of its actions (`system.md`, Nav; `copy.md` rule 5).
 - **Notice line** (a florist's delivery cut-off, changed or holiday hours): one still 14px line with
   a number above the h1 (`layout-v4.md`), repeated where the fact belongs; never rotating.
-- **Splits** 6/6, text left, top-aligned, never mirrored; on a phone the text first.
+- **Splits** as dealt (7/5, 5/7, 6/6, mirrored once a page at most), top-aligned, the picture down to
+  the section's foot; on a phone the text first.
+- **Phone:** the hours a ruled list (days left, times right on one line; system.css does it), at
+  most two footer columns, no photograph under 200px tall.
 
 ### Order by trade
 
@@ -581,7 +623,7 @@ exception to "two picture-less sections are never neighbours").
   set wide in the footer, not both.
 - **Its one moment** (the gate holds `moment-none` on every page). With a photograph in the section,
   it is `picture-develops` on that photograph: `data-moment="picture-develops"` on its
-  `<figure>` (the moment wants half the wrap or more: two groups and the `span-6` photograph), dealt with `moments.mjs pick --page place --count 1 --fits section --photo`, and dealt
+  `<figure>` (the moment wants half the wrap or more: two groups and the `span-6` photograph), dealt with `moments.mjs pick --page place` (two, by fit; `start.mjs plan` runs it), and dealt
   again with `--exclude photo-chapters` when it gives `photo-chapters` (three or four screens of its
   own, past the short page). With no photograph, add one statement section of one screen
   (`--h: 1`) after the hero for `word-highlight` (`--fits statement`): one statement of 12 to 40

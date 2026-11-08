@@ -8,11 +8,14 @@
   "trigger": "scroll",
   "cost": "low",
   "webgl": 0,
-  "pages": [
+  "tones": [
+    "editorial",
+    "product",
     "tech",
-    "gaming",
-    "software"
+    "playful",
+    "warm"
   ],
+  "intensity": "lively",
   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut.",
   "reduced": "The section stands on its own ground, no panel, no ring.",
   "phone": "The section stands on its own ground, no panel, no ring.",

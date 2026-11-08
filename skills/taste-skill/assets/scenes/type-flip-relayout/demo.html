@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hollis Press, letterpress printing in Ghent</title>
+<meta name="description" content="Hollis Press is a letterpress shop of four in a former tram depot in Ghent, printing books, labels and posters from wood and metal type set by hand.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..900&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #ecebe7;
+    --ink: #161616;
+    --font-display: "Schibsted Grotesk", system-ui, sans-serif;
+    --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+    --gutter: 40px;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 400 18px/1.55 var(--font-text); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img { display: block; width: 100%; height: auto; }
+  figure { margin: 0; }
+
+  .bar { display: flex; align-items: center; gap: 40px; padding: 24px var(--gutter); }
+  .bar__name { font: 800 24px/1 var(--font-display); letter-spacing: -.02em; text-decoration: none; margin-right: auto; }
+  .bar nav { display: flex; gap: 28px; }
+  .bar nav a { text-decoration: none; }
+  .bar__action { padding: 12px 20px; background: var(--ink); color: var(--ground); text-decoration: none; font-weight: 600; }
+
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 24px; padding-inline: var(--gutter); }
+
+  .hero { padding-top: 120px; }
+  .hero h1 { grid-column: 1 / 11; margin: 0; font: 800 clamp(44px, 7.2vw, 120px)/.94 var(--font-display); letter-spacing: -.04em; }
+  .hero p { grid-column: 1 / 6; margin: 56px 0 0; font-size: 21px; line-height: 1.5; }
+  .hero dl { grid-column: 8 / 13; margin: 56px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 24px; align-self: end; font-size: 18px; }
+  .hero dt { font-weight: 700; }
+  .hero dd { margin: 0; }
+  .hero__book { grid-column: 1 / 9; margin-top: 96px; }
+  .hero__book img { aspect-ratio: 4 / 3; object-fit: cover; height: 100%; }
+  .hero__prints { grid-column: 9 / 13; margin-top: 96px; display: flex; flex-direction: column; }
+  .hero__prints img { aspect-ratio: 3 / 4; object-fit: cover; flex: 1; }
+  .hero figcaption { margin-top: 14px; font-size: 16px; line-height: 1.4; }
+
+  /* the scene takes the page's tokens; here it reverses them for one dark, picture-free stage */
+  .scene.press { --ground: #161616; --ink: #ecebe7; }
+
+  .close { gap: 32px 24px; padding-top: 160px; padding-bottom: 48px; }
+  .close h2 { grid-column: 1 / 8; margin: 0; font: 800 clamp(40px, 5vw, 76px)/.98 var(--font-display); letter-spacing: -.035em; }
+  .close .close__visit { grid-column: 1 / 6; margin: 0; }
+  .close .close__hours { grid-column: 8 / 13; grid-row: 2; margin: 0; }
+  .close__street { grid-column: 1 / 9; margin-top: 48px; }
+  .close__street img { aspect-ratio: 16 / 10; object-fit: cover; }
+  .close__door { grid-column: 9 / 13; margin-top: 48px; }
+  .close__door img { aspect-ratio: 4 / 5; object-fit: cover; height: 100%; }
+  .close .close__mail { grid-column: 1 / 13; margin: 48px 0 0; font: 700 clamp(28px, 3vw, 44px)/1.1 var(--font-display); letter-spacing: -.02em; }
+  .close .close__mail a { text-decoration-thickness: 3px; text-underline-offset: 8px; }
+  .close footer { grid-column: 1 / 13; margin-top: 96px; display: flex; justify-content: space-between; gap: 24px; font-size: 16px; }
+
+  @media (max-width: 767px) {
+    :root { --gutter: 16px; }
+    .bar { gap: 16px; padding: 18px var(--gutter); }
+    .bar nav { display: none; }
+    .bar__action { padding: 10px 14px; font-size: 16px; }
+    .grid { display: block; }
+    .hero { padding-top: 56px; }
+    .hero p { margin-top: 28px; font-size: 18px; }
+    .hero dl { margin-top: 28px; font-size: 16px; }
+    .hero__book { margin: 48px calc(-1 * var(--gutter)) 0; }
+    .hero__prints { margin-top: 16px; width: 62%; margin-left: auto; }
+    .hero__prints figcaption { padding-right: 0; }
+    .close { padding-top: 120px; }
+    .close .close__visit, .close .close__hours { margin-top: 24px; }
+    .close__street { margin: 40px calc(-1 * var(--gutter)) 0; }
+    .close__door { margin-top: 16px; width: 62%; }
+    .close .close__mail { margin-top: 40px; }
+    .close footer { margin-top: 64px; flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="bar__name" href="#">Hollis Press</a>
+  <nav aria-label="Main"><a href="#work">Work</a><a href="#visit">Visit</a></nav>
+  <a class="bar__action" href="#visit">Ask for a quote</a>
+</header>
+
+<main>
+  <section class="hero grid" aria-labelledby="hero-title">
+    <h1 id="hero-title">Letterpress, set by hand in Ghent</h1>
+    <p>Hollis Press is a print shop of four in a former tram depot, printing from wood and lead type that came out of closed shops across Flanders.</p>
+    <dl>
+      <dt>Presses</dt><dd>Two Heidelberg platens and a 1962 Vandercook</dd>
+      <dt>Runs</dt><dd>From forty invitations to six thousand labels</dd>
+      <dt>Since</dt><dd>2011</dd>
+    </dl>
+    <figure class="hero__book">
+      <img src="https://picsum.photos/id/24/1200/900" width="1200" height="900" alt="An open book lying on a wooden table in soft window light">
+    </figure>
+    <figure class="hero__prints">
+      <img src="https://picsum.photos/id/834/600/800" width="600" height="800" alt="Three framed prints on a pale wall above a dark tufted bench">
+      <figcaption>Three of last winter's posters, framed for a café on the Kouter.</figcaption>
+    </figure>
+  </section>
+
+  <section class="sc scene press" id="work" data-big-scene="type-flip-relayout" data-big-scene-opts='{"hold": 3}' aria-labelledby="work-title">
+    <div class="scene-stage">
+      <h2 class="rl-label" id="work-title">Work</h2>
+      <ul class="rl-block">
+        <li class="rl-line">Books and zines</li>
+        <li class="rl-line">Labels for beer</li>
+        <li class="rl-line">Menus and maps</li>
+        <li class="rl-line">Wedding cards</li>
+        <li class="rl-line">Posters</li>
+      </ul>
+      <p class="rl-body">Each job starts at the type cases, four hundred drawers of wood and lead. We set it by hand and print it deep enough to feel.</p>
+    </div>
+  </section>
+
+  <section class="close grid" id="visit" aria-labelledby="visit-title">
+    <h2 id="visit-title">Come and see the presses run</h2>
+    <p class="close__visit">Tramstraat 14, 9000 Ghent. Bring the paper you want to print on and we will tell you what it can take and what a run of it costs.</p>
+    <p class="close__hours">Open Thursday to Saturday, ten to five. Printing days are Monday to Wednesday, when the shop is closed and the presses are loud.</p>
+    <figure class="close__street">
+      <img src="https://picsum.photos/id/826/1200/750" width="1200" height="750" loading="lazy" alt="A boat on a canal between tall brick warehouses in hazy morning light">
+    </figure>
+    <figure class="close__door">
+      <img src="https://picsum.photos/id/859/600/750" width="600" height="750" loading="lazy" alt="A red brick house front with a cream door, red shutters and a parked bicycle">
+    </figure>
+    <p class="close__mail"><a href="#visit">Ask for a quote</a></p>
+    <footer><span>Hollis Press, letterpress and bindery, Ghent.</span><span>Tramstraat 14, ten minutes from Gent-Sint-Pieters.</span></footer>
+  </section>
+</main>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

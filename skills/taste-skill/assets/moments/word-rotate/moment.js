@@ -13,7 +13,9 @@
 export default function (root, opts, lib) {
   const first = root.textContent.trim();
   const words = Array.isArray(opts.words) ? opts.words.map(w => String(w).trim()).filter(Boolean) : [];
-  if (!words.includes(first)) words.unshift(first);
+  // the written word leads (and is where the list comes to rest), wherever the list names it
+  const k = words.indexOf(first);
+  if (k < 0) words.unshift(first); else words.push(...words.splice(0, k));
   root.setAttribute('aria-label', first);
   root.textContent = '';
   root.classList.add('mo-wr');
@@ -25,9 +27,15 @@ export default function (root, opts, lib) {
     root.append(s);
     return s;
   });
-  if (lib.reduced() || cells.length < 2) return {};
+  // the slot is as wide as the word on view, not the longest one, so no gap opens before a full stop after it
+  let i = 0;
+  const fit = () => { root.style.width = Math.ceil(cells[i].getBoundingClientRect().width) + 'px'; };
+  fit();
+  if (document.fonts) document.fonts.ready.then(fit, () => {});
+  addEventListener('resize', fit);
+  if (lib.reduced() || cells.length < 2) return { destroy() { removeEventListener('resize', fit); } };
   const every = Math.max(1200, opts.every || 2200), cycles = opts.cycles ?? 3;
-  let i = 0, timer = 0, visible = false, shown = 0;
+  let timer = 0, visible = false, shown = 0;
   const rests = () => cycles && shown >= cycles * cells.length;
   const step = () => {
     if (!visible || rests()) return;
@@ -36,6 +44,7 @@ export default function (root, opts, lib) {
     const inn = cells[i];
     out.classList.remove('is-on'); out.classList.add('is-out');
     inn.classList.remove('is-out'); inn.classList.add('is-on');
+    fit();
     setTimeout(() => out.classList.remove('is-out'), 700);
     shown++;
     if (!rests()) timer = setTimeout(step, every);
@@ -46,5 +55,5 @@ export default function (root, opts, lib) {
     if (visible && !rests()) timer = setTimeout(step, every);
   });
   io.observe(root);
-  return { destroy() { clearTimeout(timer); io.disconnect(); } };
+  return { destroy() { clearTimeout(timer); io.disconnect(); removeEventListener('resize', fit); } };
 }

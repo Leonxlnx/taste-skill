@@ -8,17 +8,23 @@
   "trigger": "enter",
   "cost": "low",
   "webgl": 0,
-  "pages": [
+  "tones": [
     "tech",
-    "gaming",
-    "software"
+    "product",
+    "editorial",
+    "warm",
+    "playful"
   ],
+  "intensity": "lively",
   "look": "The digits of two to four proof figures roll once like an odometer when the row comes on screen, the right-most digit turning most; the strips rest on the real figures before and after, so the row never reads as zeros.",
   "reduced": "The figures stand.",
   "phone": "The figures stand.",
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
+    "list": [
+      "figures"
+    ],
     "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
   },
   "avoidWith": [],

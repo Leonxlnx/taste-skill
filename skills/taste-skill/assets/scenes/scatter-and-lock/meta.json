@@ -1,0 +1,87 @@
+{
+  "id": "scatter-and-lock",
+  "name": "Scatter and lock",
+  "family": "grid-reassembly",
+  "classic": 1,
+  "look": "One photograph is cut into a grid of big live pieces scattered through real 3D space; the scroll flies them home from the centre out into a gapped contact sheet, snaps them shut, lets the poster's word arrive whole and grows the finished picture to full bleed. It opens a showreel, a body of work, a brand mark or a chapter on how a thing is made, from one strong picture.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.8,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same assembly on a 3x4 grid over the 4:5 crop, the headline held at the top until the hand-off; hold 1.8.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, as the door to the work or the showcase. Its last frame is the picture at full bleed, so the next section can carry on from it: a reel that opens on the same frame, or the picture held while the next section rises over it. Once per page.",
+  "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw.",
+  "options": "mode 'assemble' | 'explode' (the poster shatters at the end; never as the first section); hold 1.8 (1.5-4); phoneHold 1.8 (1.5-3); scrub 0.6 (0-0.8); cols 5 and rows 3, at most 40 cells (8x5 a swarm); phoneCols 3 and phoneRows 4, at most 20; heroes 'auto' (the most detailed cells in front) | 'fixed' | a list of [col, row] nearest first; phoneHeroes 'auto'; perspective 1200 (700-2000), phonePerspective 900; depth 800 (600-3000), phoneDepth 600; near 280 (0-300), phoneNear 160; size 1.3 (0.6-1.8) the pieces' size in the cloud, phoneSize 1.5; twist 24 (0-45), 0 a flat glide like dealt cards; drift 0.06 (0-0.15); order 'centre' | 'sweep' | 'random'; blur false; flash 0 (0-0.3); handoff true (the poster grows to full bleed) | false (it rests framed); seed 11; phone 'same' | 'rest'.",
+  "roles": [
+    "work",
+    "showcase",
+    "intro",
+    "gallery",
+    "about"
+  ],
+  "position": "middle",
+  "sectors": [
+    "agency",
+    "studio-portfolio",
+    "personal-portfolio",
+    "ecommerce",
+    "physical-product",
+    "fashion",
+    "hospitality",
+    "restaurant",
+    "real-estate",
+    "architecture",
+    "event",
+    "health",
+    "education",
+    "nonprofit",
+    "culture",
+    "music",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:1"
+    ],
+    "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scatter-and-lock/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scatter-and-lock\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

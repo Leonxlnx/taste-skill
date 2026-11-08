@@ -8,5 +8,9 @@
   "cost": "low",
   "palettes": ["light", "dark", "colour"],
   "random": false,
-  "usesImg": true
+  "usesImg": true,
+  "tones": ["warm", "editorial", "product"],
+  "intensity": "quiet",
+  "webgl": 1,
+  "treatment": true
 }

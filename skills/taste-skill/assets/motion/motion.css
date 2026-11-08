@@ -6,8 +6,9 @@
   shows the 2px lift and the 1.03 zoom). <html data-motion="off"> switches the whole layer off; data-motion="live"
   is the number tick in a headless shot (motion.js).
   references/motion.md says what moves and how fast. Everything here answers the pointer, the
-  keyboard or a number coming into view once, plus the hero's one entrance on load (the end of this
-  file); nothing moves because the page scrolled (that is a dealt moment's job, assets/moments).
+  keyboard or a number coming into view once, plus the hero's one entrance on load (the entrance deck),
+  and each section's heading and lead photograph arriving once below the first screen (section reveals).
+  Cards, rows, tiles and lists never arrive on scroll; a moment that follows the scroll is assets/moments.
 
   Hover moves sit under (hover: hover) and (pointer: fine): a phone never keeps a stuck hover.
   Hover out runs 120ms against 150ms in (motion.md, tokens).
@@ -27,6 +28,8 @@
   --m-ease-io: cubic-bezier(.65, 0, .35, 1);  /* the indicator: leaves and lands softly */
   --m-ease-enter: cubic-bezier(.22, 1, .36, 1); /* an entrance settling: long soft tail, never past its mark */
   --m-cycle: 3.2s;                            /* one cycle of a card's loop (2.5-4 s) */
+  --m-reveal: 620ms;                          /* a section's heading rising out of its masks */
+  --m-reveal-img: 700ms;                      /* a section's lead photograph settling */
   --m-lift: -2px;
 }
 
@@ -266,7 +269,7 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
    (it composes with any transform of their own), and they settle by transition as soon as the
    entrance starts or the mark passes. */
 @media screen and (prefers-reduced-motion: no-preference) {
-  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], [data-enter="still"], [data-enter="focus"], [data-enter="exposure"], [data-enter="aperture"], [data-enter="doors"], .is-entering, .is-entered)
     :is(h1, h1 ~ *, :has(> h1) ~ *, :has(~ h1)):not([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage,
          :has([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage)) { opacity: 0; }
   /* the mark passed before motion.js arrived: the words fade in instead of appearing at once */
@@ -284,18 +287,189 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
     :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):not(img, picture, video, :has(> :is(img, picture, video, .frame__img))) {
     transition: scale 900ms var(--m-ease-enter);
   }
-  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], [data-enter="still"], .is-entering, .is-entered)
     :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
         :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { scale: 1.05; }
-  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], [data-enter="still"], .is-entering, .is-entered)
     :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video) { clip-path: inset(2.381%); }   /* a picture that is itself the media (a band under the header, a full-bleed layer) has no frame: its own clip keeps it inside its box while larger, (1 - 1/1.05) / 2 */
-  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entering, .is-entered)
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter]:not([data-enter="off"], [data-enter="still"], .is-entering, .is-entered)
     :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):not(img, picture, video, :has(> :is(img, picture, video, .frame__img))) { scale: .98; }
   html.m-enter:not([data-motion="off"]) .hero[data-enter]:not([data-enter="off"], .is-entered) { overflow: clip; }
 }
-/* while it runs: each word of the h1 in its own mask (the masks go when the h1 gets its own nodes back) */
-.hero[data-enter] .m-w { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
-.hero[data-enter] .m-w__in { display: inline-block; }
+/* while it runs: each word of the h1 (or a revealed h2) in its own mask; the masks go when the heading gets its own
+   nodes back */
+:is(.hero[data-enter], .m-rv-run) .m-w { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+:is(.hero[data-enter], .m-rv-run) .m-w__in { display: inline-block; }
+
+/* ---------------------------------------------------------------- the entrance deck
+   data-enter="<variant>" on the hero picks one of the collected entrances (meta.json, entrances; motion.md, The
+   entrance deck). Each starts from the same hold as the rise (html.m-enter, before the 700ms mark) and settles by
+   1.4 s at the latest. The CSS here is each variant's first frame (its hold) and its way to rest; motion.js only says
+   when to start (.is-entering) and when it is over (.is-entered). Under reduced motion, in print, without script and
+   with data-motion="off" none of these rules apply: the hero stands as written. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* focus: the picture racks into focus from soft and a touch large, the headline from half strength; nothing travels */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="focus"]:not(.is-entering, .is-entered) h1 { opacity: .4; filter: blur(6px); }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="focus"]:not(.is-still) h1 { transition: opacity 900ms var(--m-ease-enter), filter 900ms var(--m-ease-enter); }
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="focus"]:not(.is-entering, .is-entered)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { filter: blur(12px); scale: 1.04; }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="focus"]:not(.is-still)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
+    transition: filter 1000ms var(--m-ease-enter), scale 1100ms var(--m-ease-enter), clip-path 1100ms var(--m-ease-enter);
+  }
+
+  /* exposure: the type stands; the photograph starts pale, as if over-exposed, and its light and colour come up */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="exposure"]:not(.is-entering, .is-entered)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { filter: brightness(1.5) saturate(.15) contrast(.8); scale: 1.02; }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="exposure"]:not(.is-still)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
+    transition: filter 1200ms var(--m-ease-enter), scale 1200ms var(--m-ease-enter), clip-path 1200ms var(--m-ease-enter);
+  }
+
+  /* aperture: the type stands; the picture opens from a window in its middle out past its edges, pulling back from a
+     detail to the whole view (--m-window on the hero centres the window on the subject: top right bottom left) */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="aperture"]:not(.is-entering, .is-entered)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) { clip-path: inset(var(--m-window, 30% 32%)); }
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="aperture"]:not(.is-entering, .is-entered)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { scale: 1.12; }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="aperture"]:not(.is-still)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) {
+    transition: clip-path 1150ms var(--m-ease-io), scale 900ms var(--m-ease-enter);
+  }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="aperture"]:not(.is-still)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
+    transition: scale 1300ms var(--m-ease-enter), clip-path 1150ms var(--m-ease-io);
+  }
+
+  /* set type: the headline's lines rise (motion.js, as the rise) while the picture opens downward like a blind */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="set-type"]:not(.is-entering, .is-entered)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) { clip-path: inset(0 0 100% 0); }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="set-type"]:not(.is-still)
+    :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) {
+    transition: clip-path 1000ms var(--m-ease-io) 100ms, scale 900ms var(--m-ease-enter);
+  }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="set-type"]:not(.is-still)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
+    transition: scale 1200ms var(--m-ease-enter) 100ms, clip-path 1000ms var(--m-ease-io) 100ms;
+  }
+
+  /* doors: a cover in one palette colour lies over the hero, parts along one line and slides off both ways; the page
+     is in place under it and only the picture eases back. --m-door (the ink; the accent on a bold page) and
+     --m-door-at (where it parts, 50%; the column edge of a split hero) on the hero. One pseudo-element, two halves of
+     one polygon, so a ground's own ::before stays */
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="doors"]:not(.is-entered) { position: relative; }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="doors"]:not(.is-entered)::after {
+    content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; background: var(--m-door, var(--ink));
+    clip-path: polygon(0 0, 100% 0, 100% var(--m-door-at, 50%), 0 var(--m-door-at, 50%), 0 var(--m-door-at, 50%), 100% var(--m-door-at, 50%), 100% 100%, 0 100%);
+  }
+  html.m-enter:not([data-motion="off"]) .hero[data-enter="doors"].is-entering::after,
+  html.m-enter.m-enter-done:not([data-motion="off"]) .hero[data-enter="doors"]:not(.is-entered)::after { animation: m-doors 850ms var(--m-ease-io) 60ms both; }
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="doors"]:not(.is-entering, .is-entered)
+    :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { scale: 1.06; }
+
+  /* product at work: the headline rises; inside the window the parts marked data-enter-step (four at most: a row
+     that lands, a figure, a selected item) appear one after another, the product showing it is live */
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="product-at-work"]:not(.is-entering, .is-entered) [data-enter-step] { opacity: 0; }
+}
+@keyframes m-doors {
+  to { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0, 0 100%, 100% 100%, 100% 100%, 0 100%); }
+}
+/* line blocks: each line of the headline starts under a block of one palette colour as long as its words, and the
+   blocks slide off toward the line ends one after another; the words never move (motion.js draws the blocks) */
+.hero[data-enter="line-blocks"] h1 { position: relative; }
+.m-block { position: absolute; z-index: 1; pointer-events: none; background: var(--m-block, var(--accent, var(--ink))); transform-origin: 100% 50%; }
+
+/* ---------------------------------------------------------------- section reveals (automatic)
+   Below the first screen each section's h2 rises out of its line masks and its lead photograph settles from a
+   slight window, once, as they come on screen (motion.js reveals()). Never a card, row, tile or list. Only what
+   motion.js marked waits (.m-rv-wait), so without script, under reduced motion and in a headless shot nothing is
+   hidden; data-still on a section keeps it still. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .m-rv-wait:not(img) { opacity: 0; }
+  html:not([data-motion="off"]) img.m-rv-wait { clip-path: inset(7% 6%); scale: 1.06; }
+}
+
+/* ---------------------------------------------------------------- rows that answer the pointer (any kind)
+   a menu, price or service row (.rows > li): a hairline in ink draws under the row from the left while the pointer
+   reads it and leaves to the right; a row's arrow slides 3px. The row on show in a peek list keeps its line */
+html:not([data-motion="off"]) .rows > li { position: relative; }
+html:not([data-motion="off"]) .rows > li::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--ink); pointer-events: none;
+  transform: scaleX(0); transform-origin: 100% 50%; transition: transform 180ms var(--m-ease);
+}
+html:not([data-motion="off"]) .rows > li.is-on::after { transform: none; transform-origin: 0 50%; transition-duration: var(--m-slide); }
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) .rows > li:hover::after { transform: none; transform-origin: 0 50%; transition-duration: 320ms; }
+  .rows > li:hover .m-arrow .m-arrow__stem { opacity: 1; transform: none; transition-duration: var(--m-in); }
+  .rows > li:hover .m-arrow .m-arrow__head { transform: translateX(3px); transition-duration: var(--m-in); }
+}
+
+/* ---------------------------------------------------------------- a label that rolls (opt-in: .m-swap)
+   <a class="btn btn--primary m-swap" href="#book">Book a table</a>: on hover and focus the words roll up and the
+   same words come up from below (motion.js copies them, the copy is aria-hidden). For a nav word or a button on an
+   editorial, product, tech or playful page; one look a page */
+.m-swap__w { display: inline-grid; overflow: clip; padding-block: .12em; margin-block: -.12em; }
+.m-swap__w > span { grid-area: 1 / 1; transition: transform var(--m-out) var(--m-ease); }
+.m-swap__b { transform: translateY(115%); }
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) .m-swap:hover .m-swap__a { transform: translateY(-115%); transition-duration: 280ms; }
+  html:not([data-motion="off"]) .m-swap:hover .m-swap__b { transform: none; transition-duration: 280ms; }
+}
+html:not([data-motion="off"]) .m-swap:focus-visible .m-swap__a { transform: translateY(-115%); }
+html:not([data-motion="off"]) .m-swap:focus-visible .m-swap__b { transform: none; }
+
+/* ---------------------------------------------------------------- a number that rolls once ([data-m-roll])
+   a price, a year count, a table count: each digit rolls up three places into its own figure once, when the number
+   is first seen (motion.js); the written number is the HTML, shown at rest, without script and in a shot */
+[data-m-roll] { font-variant-numeric: tabular-nums; }
+.m-roll__d { display: inline-block; overflow: clip; vertical-align: top; }
+.m-roll__col { display: inline-block; position: relative; }
+.m-roll__stack { position: absolute; left: 0; bottom: 100%; display: grid; }
+
+/* ---------------------------------------------------------------- swatches that change the photograph
+   <div class="m-swatches" data-m-swatches="#jacket-photo" role="group" aria-label="Colour">
+     <button type="button" class="m-swatch" style="--sw:#2f3a2c" data-src="olive.jpg" data-alt="..." aria-pressed="true" aria-label="Olive"></button> ...
+   a click or tap crossfades the photograph (260ms, motion.js); the pressed swatch wears a ring */
+.m-swatches { display: flex; flex-wrap: wrap; gap: var(--s-2, 8px); }
+.m-swatch { width: 28px; height: 28px; border-radius: 999px; border: 0; padding: 0; cursor: pointer; background: var(--sw, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px transparent;
+  transition: box-shadow var(--m-out) var(--m-ease), transform var(--m-press) var(--m-ease); }
+.m-swatch[aria-pressed="true"] { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px var(--ink); }
+.m-swatch:active { transform: scale(.94); }
+@media (hover: hover) and (pointer: fine) {
+  .m-swatch:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px var(--line-strong); transition-duration: var(--m-in); }
+}
+
+/* ---------------------------------------------------------------- open now: a dot that breathes twice
+   system.js writes "Open now, until 16:00" into [data-open-now]; motion.js marks it .m-open, and the first time it is
+   seen its green dot sends out a soft ring twice (2 x 2.4 s), then rests. Closed: no dot */
+[data-open-now].m-open::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; margin-right: .5em; vertical-align: .06em; border-radius: 999px;
+  background: var(--ok, #2f8a57); box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok, #2f8a57) 40%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) [data-open-now].m-open.is-seen::before { animation: m-open-ring 2.4s var(--m-ease) 2; }
+}
+@keyframes m-open-ring { 70%, 100% { box-shadow: 0 0 0 7px color-mix(in oklab, var(--ok, #2f8a57) 0%, transparent); } }
+
+/* ---------------------------------------------------------------- a line that draws inside a card's picture
+   inside a [data-m-loop] panel, any kind: a route on a map, a signature, steam over a cup, a delivery path.
+   <path class="m-draw" pathLength="1" d="..."/>: it draws in the first 55% of the cycle, holds, dims and draws
+   again; the finished line is the still (--m-still .6) */
+[data-m-loop] .m-draw { fill: none; stroke-dasharray: 1; animation: m-draw var(--m-cycle) var(--m-ease-io) infinite; }
+@keyframes m-draw {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  55%, 86% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: .3; }
+}
 
 /* ---------------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -318,4 +492,8 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
   html:not([data-motion="off"]) .btn--secondary:active { background: color-mix(in oklab, var(--bg) 86%, var(--ink)); }
   [data-m-loop] * { animation-duration: var(--m-cycle) !important; animation-iteration-count: infinite !important;
                     animation-delay: calc(-1 * var(--m-still) * var(--m-cycle)) !important; animation-play-state: paused !important; }
+  /* the row's line and the rolling label appear at once; the swatch keeps its ring and only crossfades */
+  html:not([data-motion="off"]) .rows > li::after, .m-swap__w > span { transition: none; }
+  .m-swatch:active { transform: none; }
 }
+@media print { .m-rv-wait { opacity: 1 !important; clip-path: none !important; scale: none !important; } }

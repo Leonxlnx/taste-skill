@@ -225,7 +225,7 @@ Every page must run on an integrated laptop GPU (2 GB shared), so:
 
 ## Motion
 
-Card loops are for tech pages; every number (cycle, restart, pause disc, life signs) is in
+Card loops run inside every card visual, on any kind of page that has one; every number (cycle, restart, pause disc, life signs) is in
 `motion.md`. The same rule as system.js, in one line: **put `data-ui-loop` on the group's one loop;
 every other fragment holds its finished picture.**
 
@@ -239,10 +239,10 @@ every other fragment holds its finished picture.**
   seen, then rests on the finished picture, with no button.
 - Below the hero, two loops are never on one screen: a group next to a looping one holds still.
 - ui.js puts a pause button on every loop when it starts to move: a solid 32px disc in the page
-  colours. In a `.card` it sits beside the card's title, at the right of the text column (the
-  title keeps 44px clear for it), so it never covers a cropped panel's UI, which runs into every
-  corner. In `[data-ui-pause-host]`, or a `.panel`/`.frame` outside a card, it sits 12px in from
-  the bottom-right corner (keep that corner clear); a fragment with no panel gets it under its
+  colours. In `[data-ui-pause-host]`, or a `.panel`/`.frame` (a card's too, as in the hero), it
+  sits 12px in from the bottom-right corner (keep that corner clear); in a `.card` with no panel it
+  sits beside the card's title, at the right of the text column (the title keeps 44px clear for
+  it); a fragment with no panel gets it under its
   bottom-right corner, in 44px kept free. A place that already holds a `.loop-pause` gets no
   second one. Keyboard focus in a card plays a held fragment's cycle once; only a pointer resting
   on the card repeats it (a held fragment has no button).

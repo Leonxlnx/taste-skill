@@ -1,0 +1,68 @@
+{
+  "id": "object-lowered-onto-the-last-line",
+  "name": "Object lowered onto the last line",
+  "family": "object-scrub",
+  "classic": 1,
+  "look": "The type is the table. One sentence-case closing line in the page's ink runs on one line across nearly the full width at display size (about 17vw at 1440), the action and the price under it, and the product, one cut-out photograph about 30% of the screen tall, hangs whole at the top of the stage. Over the hold it is lowered with uneven pacing, whole in frame at every frame: a slow creep for the first half (a third of its travel, drifting in from the side over the empty ground), gathering pace, most of the travel in the last part, about 40-45% of the screen in all, then it slows and rests with its foot on the x-height line, on the ink top of one lowercase letter without an ascender, like a jug on a shelf, its body clear of every glyph: every letter whole, nothing overlapping. The script fits the line to the row and, after the fonts load and on every resize, measures the letter's ink top from the loaded font, the taller letters beside it and the object's own outline near its foot (from the picture's alpha), and stands it clear of them, smaller only if it must; without script, anchor positioning and the font's tokens stand it there. Flat ground and solid type: no floor line, no shadow, no glow, no frame sequence. The scene ends on the product arriving.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "product"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 0.8,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The line breaks at .olo-br into two lines, the longer across nearly the full width; the object, narrower than the line (about 15% of the screen tall at 390px, sized so its foot stays on the letter and its body clear of the l and on screen), comes down onto the shelf letter of the last line, clear of the first, whole from the start, over a shorter travel (34svh), no drift. phone: 'rest' gives the finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "place": "The end of the page: the order or the booking, straight after one quiet section. The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, never right after another scene. Pages that sell or show one physical thing: a jug, a lamp, a bottle, a bag, a shoe, a stool.",
+  "content": "One cut-out photograph of the client's own product (a transparent PNG or WebP, never another maker's), upright, cut to its own edges with no ground or shadow baked in, its lowest opaque row the image's bottom edge (that row stands on the letter), 0.5-1 wide to 1 tall, 1000px tall or more, width and height set on the img. One closing line of 2-5 words in sentence case, 10-16 characters, with one lowercase x-height letter of its last word wrapped in .olo-shelf (one with no tall letter on at least one side, like the e of \"table\" beside the full stop) and a <br class=\"olo-br\"> where it breaks on a phone, placed so the last line runs on past the first under that letter. The action of 2-4 words (an order, a booking; never an email address or a phone number) and the price beside it. Never an outline wordmark. Without a real photograph of the product, redraw.",
+  "options": "hold 0.8 (0.6-1.6) screens held; under 0.6 (a section under 1.6 screens) the creep and the drop squash into one jump; creep 0.33 (0.1-0.36) share of the travel over the first half of the hold; drop 0.55 (0.45-0.8) share over the last third; enter 0.6 (0-20) svh of clear ground over the object as the hold starts (it starts whole); travel 'auto' | 20-90 svh, a cap on the auto travel (from the top of the stage down to the letter); phoneTravel 34 (20-80) the cap on a phone; fill 0.97 (0.8-1) share of the row the line runs across; phoneFill 0.88 (0.7-1) for the longer phone line; footX 0.49 (0.2-0.8) where the foot's middle is across the picture; drift 11 (0-16) vw it starts off to one side, home before its foot reaches the tallest letters; phoneDrift 0; side 'auto' | 'left' | 'right'; nav a selector for a fixed bar; foot unset by default (the designed footer follows the scene); a selector pulls that element up over the stage's foot, only for a page that ends on the scene with one plain line; scrub true | 0.1-1; phone 'same' | 'rest'. Scene tokens: --olo-size (0.3 of the screen; 0.26 on a tablet; 0.2 on a phone; the script shrinks it only to keep its foot on the letter and its body clear and on screen), --olo-line-em and --olo-line-em-2 (the line's width in ems, for the no-script size), --olo-xh and --olo-desc (for the no-script placement), --olo-footx, --olo-btn-radius; it reads --display-stretch.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "physical-product",
+    "ecommerce",
+    "studio-portfolio",
+    "fashion"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:1"
+    ],
+    "content": "One cut-out photograph of the client's own product (a transparent PNG or WebP, never another maker's), upright, cut to its own edges with no ground or shadow baked in, its lowest opaque row the image's bottom edge (that row stands on the letter), 0.5-1 wide to 1 tall, 1000px tall or more, width and height set on the img. One closing line of 2-5 words in sentence case, 10-16 characters, with one lowercase x-height letter of its last word wrapped in .olo-shelf (one with no tall letter on at least one side, like the e of \"table\" beside the full stop) and a <br class=\"olo-br\"> where it breaks on a phone, placed so the last line runs on past the first under that letter. The action of 2-4 words (an order, a booking; never an email address or a phone number) and the price beside it. Never an outline wordmark. Without a real photograph of the product, redraw."
+  },
+  "never": "never an email address or a phone number) and the price beside it.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/object-lowered-onto-the-last-line/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"object-lowered-onto-the-last-line\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

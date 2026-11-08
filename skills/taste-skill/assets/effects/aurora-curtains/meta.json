@@ -7,5 +7,9 @@
   "motion": "slow",
   "cost": "mid",
   "palettes": ["dark", "colour"],
-  "focal": true
+  "focal": true,
+  "tones": ["tech", "playful", "product"],
+  "intensity": "bold",
+  "webgl": 1,
+  "treatment": false
 }

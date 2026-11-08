@@ -1,0 +1,181 @@
+/* assets/scenes/object-lowered-onto-the-last-line/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / object-lowered-onto-the-last-line.css — "Object lowered onto the last line".
+   Default rules are the finished composition (no script, reduced motion, a failed CDN, a phone set to
+   rest): an ordinary section on the page's ground, the closing line across nearly the full width, the
+   product already standing on its shelf letter, the action and the price under the line, nothing hidden.
+   With .is-live the stage is held for the hold and the product is lowered onto the letter from above the
+   top edge (object-lowered-onto-the-last-line.js).
+
+   The type is the table: the object's foot stands on the ink top of the .olo-shelf letter. The script
+   measures it (after the fonts load and on resize) and writes --olo-x / --olo-y; without script, anchor
+   positioning and the font tokens below stand it there. The letters are drawn in front of the object.
+
+   Tokens it reads: --ground --ink --muted --accent --accent-ink --font-display --font-text
+   --display-weight (the closing line, 700 when the page sets none) --display-stretch (normal)
+   --strong-weight (the action, 600) --text-weight (400) --pad (the page's side margin). A weight the page
+   has not loaded is never faked: the nearest loaded one shows.
+   Tokens it owns (set them on the section):
+     --olo-size        the object's height, share of the screen (0.3; 0.26 on a tablet; 0.2 on a phone;
+                       the script makes it smaller only if it must, to keep its foot on the letter)
+     --olo-line-em     the line's width in ems on one line, for the no-script size (5); the script measures
+     --olo-line-em-2   the longer of its two phone lines in ems, for the no-script size (3.3)
+     --olo-xh          the shelf letter's ink height in ems (0.54) and --olo-desc the font's descent in
+                       ems (0.21), for the no-script placement
+     --olo-footx       where the foot's middle is across the picture, 0-1 (0.49)
+     --olo-btn-radius  the action's corners (default 4px: match the page's buttons)
+   The script writes --olo-fs, --olo-x, --olo-y and --olo-tail; leave them alone. */
+
+.scene[data-big-scene="object-lowered-onto-the-last-line"] {
+  --olo-size: 0.3;
+  --olo-line-em: 5;
+  --olo-line-em-2: 3.3;
+  --olo-xh: 0.54;
+  --olo-desc: 0.21;
+  --olo-footx: 0.49;
+  --olo-btn-radius: 4px;
+  --olo-pad: var(--pad, clamp(16px, 4vw, 64px));
+  position: relative;
+  background: var(--ground, #e1e5e6);
+  color: var(--ink, #12181b);
+  font-family: var(--font-text, inherit);
+  font-synthesis-weight: none;
+}
+
+/* ── the finished composition ──────────────────────────────────────────────────────────────────── */
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo {
+  box-sizing: border-box;
+  /* room over the line for the object standing on it */
+  padding: calc(var(--olo-size) * 100svh + clamp(32px, 6svh, 72px)) var(--olo-pad) clamp(56px, 10svh, 120px);
+}
+/* the row: the line across it, the object standing on one of its letters */
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-set {
+  container-type: inline-size;
+  position: relative;
+  /* the line's size: the row's width over the line's width in ems (the script measures it) */
+  --olo-fs: calc(97cqi / var(--olo-line-em));
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-line {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 700);
+  font-stretch: var(--display-stretch, normal);
+  font-size: var(--olo-fs);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-shelf { anchor-name: --olo-shelf; }
+/* the phone's line break, set by the copy so the shelf letter has nothing over it on the last line */
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-br { display: none; }
+/* the object: behind the letters, its foot on the shelf letter's ink top */
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-drop {
+  position: absolute;
+  z-index: 1;
+  left: 70%;
+  top: calc(var(--olo-fs) * 0.2);
+  translate: calc(-100% * var(--olo-footx)) -100%;
+  line-height: 0;
+  pointer-events: none;
+}
+@supports (anchor-name: --a) {
+  /* its left edge at the shelf letter's left edge: the foot lands on the letter, the body clear of the
+     taller letter before it */
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-drop {
+    position-anchor: --olo-shelf;
+    left: anchor(left);
+    translate: 0 -100%;
+    top: calc(anchor(bottom) - (var(--olo-desc) + var(--olo-xh)) * var(--olo-fs));
+  }
+}
+/* measured: the script's numbers, exact for the loaded font at this width */
+.scene[data-big-scene="object-lowered-onto-the-last-line"][data-olo-placed] .olo-drop {
+  left: var(--olo-x);
+  top: var(--olo-y);
+  translate: none;
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-object {
+  display: block;
+  height: calc(var(--olo-size) * 100svh);
+  width: auto;
+  max-width: none;
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+  margin-top: clamp(14px, 2.4svh, 28px);
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-action {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 54px;
+  padding: 0 28px;
+  border-radius: var(--olo-btn-radius);
+  background: var(--accent, #1d4c8c);
+  color: var(--accent-ink, #fff);
+  font-family: var(--font-text, inherit);
+  font-weight: var(--strong-weight, 600);
+  font-size: 18px;
+  line-height: 1.1;
+  text-decoration: none;
+  transition: background-color 180ms ease;
+}
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-action:hover { background: color-mix(in srgb, var(--accent, #1d4c8c) 84%, var(--ink, #12181b)); }
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-action:focus-visible { outline: 3px solid var(--ink, #12181b); outline-offset: 3px; }
+.scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-note {
+  margin: 0;
+  max-width: 36ch;
+  color: var(--ink, #12181b);
+  font-weight: var(--strong-weight, 600);
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* a tablet: a little less of the screen, so the object keeps air at the screen's edge */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] { --olo-size: 0.26; }
+}
+
+/* ── phone: the line on two lines across nearly the full width, the object on the last one ──────── */
+@media (max-width: 767px) {
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] { --olo-size: 0.2; --olo-pad: 16px; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo { padding: calc(var(--olo-size) * 100svh + 40px) 16px 64px; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-set { --olo-fs: calc(88cqi / var(--olo-line-em-2)); }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-line { line-height: 0.9; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-br { display: inline; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-act { gap: 12px 20px; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-action { min-height: 52px; padding: 0 24px; font-size: 17px; }
+  .scene[data-big-scene="object-lowered-onto-the-last-line"] .olo-note { font-size: 18px; }
+}
+
+/* ── live: the line and the action at the foot of the held stage, the object lowered onto it ────── */
+/* stage.js writes the progress on the section every frame; nothing here reads it below the section */
+html.sc-js .scene.is-live[data-big-scene="object-lowered-onto-the-last-line"] > .scene-stage { --p: initial; background: var(--ground, #e1e5e6); }
+.scene.is-live[data-big-scene="object-lowered-onto-the-last-line"] .olo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 var(--olo-pad) calc(var(--olo-tail, 0px) + clamp(12px, 2svh, 24px));
+}
+.scene.is-live[data-big-scene="object-lowered-onto-the-last-line"] .olo-drop { will-change: transform; }
+/* the line sits low (its box hugs its letters: the copy has no descenders) and the action close under it,
+   so the object has room to come down */
+.scene.is-live[data-big-scene="object-lowered-onto-the-last-line"] .olo-line { line-height: 0.8; }
+.scene.is-live[data-big-scene="object-lowered-onto-the-last-line"] .olo-act { margin-top: clamp(12px, 2svh, 22px); }
+
+/* the footer line, pulled up over the stage's foot so the scroll ends on the landed object; it lies on
+   the page's ground under the action */
+html.sc-js [data-olo-foot] {
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--olo-tail, 0px));
+}
+@media (prefers-reduced-motion: reduce) {
+  html.sc-js [data-olo-foot] { margin-top: 0; }
+}

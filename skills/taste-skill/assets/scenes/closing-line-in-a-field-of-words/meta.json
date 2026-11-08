@@ -1,0 +1,81 @@
+{
+  "id": "closing-line-in-a-field-of-words",
+  "name": "A still closing line in a field of words",
+  "family": "section-transition",
+  "classic": 1,
+  "look": "The closing section holds one line still at the lower left of a calm ground, at display size in two lines with the page's one action after its last word, while a stream of single short words (the places, dishes, materials or services the page is about) comes out of a vanishing point above it: each word appears at a readable size, grows quickly in one flat ink as it travels out along one of six to eight fixed lanes, and fades to nothing while it is still whole on screen, so no word is ever cut by the edge and at most six are drawn at once. The last word grows out of the same point while a last wave is still passing; it stops at its full size over the closing line and stays as the section's heading. Each lane is a wedge round the vanishing point and every word grows about that point, so no word ever touches another, the line, the action or the heading, and nothing is searched. Opacity and scale only: no blur, no 3D layers; the field is hidden from screen readers. For a page with no pictures, or none to spare for its close.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same stream with at most four words at once from the first 16, at 12.5vw, on five lanes round a vanishing point above the closing block (which is the full width there, so no word ever passes over the line; the down-left lane is closed by the heading's flight), the heading landing beside the button over the line, and the line itself still at display size (7.6vw) in two lines of about 22 characters each; hold 1. Reduced motion, no script and a failed CDN show the finished composition: the words as one still list in the display face at the top, the heading, the line and the button at the lower left.",
+  "maxPerPage": 1,
+  "weight": 0.8,
+  "place": "The end of the page: the call to action or the contact, straight after a quiet content section, before a short visit section and the footer. Once per page, never right after another scene, and not on a software page (its big moment is the product replay). The section's heading is the last word, so write the closing around it.",
+  "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face).",
+  "options": "hold 1 (1-2) screens, phoneHold 1 (1-2); on 6 (5-8) the most words drawn at once, never more than the lanes left, phoneOn 4 (3-6); life 0.26 (0.18-0.34) share of the hold one word is drawn for, phoneLife 0.3; phoneWords 16 (8-30); land 0.86 (0.75-0.9) where the last word stops as the heading (the stream runs on, the last starts with shorter lives, and is gone by 100%); vary 0.4 (0-0.6) spread of the words' sizes; vp [0.52, 0.42] and phoneVp [0.5, 0.38] the vanishing point as shares of the stage (kept 0.14 of the screen above the closing block); gap 28 (8-64) and phoneGap 16 px kept clear round the closing block; inset 0 (0-200) px of a fixed header no word enters; seed 7 (the dice for the words' sizes); scrub true with Lenis, else 0.5; phone 'same' | 'rest'. Tokens: --clf-word (the words' largest size, clamp(44px, max(8vw, 7.5svh), 136px), 12.5vw on a phone), --clf-last (the heading, clamp(64px, 10vw, 168px)), --clf-line (the closing line, clamp(30px, 5.5vw, 92px), clamp(26px, 7.6vw, 34px) on a phone: still display size, still two lines), --clf-radius (the button's corners).",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "restaurant",
+    "hospitality",
+    "culture",
+    "event",
+    "education",
+    "nonprofit",
+    "architecture",
+    "real-estate",
+    "physical-product",
+    "fashion",
+    "ecommerce",
+    "health",
+    "agency",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0",
+      "names:16"
+    ],
+    "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face)."
+  },
+  "never": "never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-line-in-a-field-of-words/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-line-in-a-field-of-words\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

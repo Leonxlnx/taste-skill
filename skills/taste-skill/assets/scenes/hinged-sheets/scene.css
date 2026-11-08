@@ -1,0 +1,370 @@
+/* assets/scenes/hinged-sheets/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / hinged-sheets.css — paper with two printed sides, turned over one by one.
+   By default (no script, reduced motion, a failed CDN, a phone or tablet set to 'rest') this is the
+   finished composition: headline, the line over the row, the tickets face-up, the fine print. Under
+   .is-live the face-down row is held on the stage under the headline and turns over ticket by ticket;
+   under .is-live.hs-flow (phones, tablets, short windows, more than four tickets) the finished layout
+   stays in the page and each ticket turns over as it comes into view.
+   Weights come from the page: --display-weight (headline, ticket names, prices, the big word on the back),
+   --strong-weight (the line over the row, the points, the button, the name on the back) and
+   --text-weight; set them to weights the page loads, or the browser draws the nearest weight it has (fake bold is
+   off). Corners take the
+   page's --radius (0 without one). */
+
+[data-big-scene="hinged-sheets"] { font-synthesis-weight: none; }
+[data-big-scene="hinged-sheets"] {
+  --hs-ink: var(--accent, #b62118);
+  --hs-paper: var(--paper, #fafaf9);
+  --hs-ground-a: #a9cbe8;                  /* the ground as the deal starts */
+  --hs-ground-b: #d5e6f4;                  /* clearly lighter: the stage brightens as the tickets land */
+  --hs-radius: min(var(--radius, 0px), 24px);   /* the page's corner, at most 24px on a ticket */
+  /* small words that sit on ground-a: the ink a step deeper, so they keep 4.5:1 there */
+  --hs-ink-deep: color-mix(in srgb, var(--hs-ink) 80%, #000);
+  /* the turn shade: the back darkens in its own ink; the paper front greys, cool, like a sheet tipping
+     out of the light (an ink-tinted shade on white reads as dusty rose) */
+  --hs-shade: color-mix(in srgb, var(--hs-ink) 40%, #000);
+  --hs-shade-paper: color-mix(in oklch, var(--hs-ground-a) 30%, #000);
+  --hs-gap: 28px;
+  --n: 3;                                   /* tickets in the row (2-4), from the markup */
+  --max-cols: 4;                            /* what the width allows: every ticket at least 296px */
+  --cols: min(var(--n), var(--max-cols));
+  --hs-w: min(400px, calc((92vw - (var(--cols) - 1) * var(--hs-gap)) / var(--cols)));
+  --hs-h: calc(var(--hs-w) * 1.414);
+  /* The held row's layout, top to bottom: a band for the headline and the line over the row, the row,
+     the fine print. The tickets take the height that is left (the script reads --hs-deal-w to decide
+     whether the held row runs at all: every ticket 296px or wider). --hs-title-lines is measured. */
+  --hs-lead-size: clamp(18px, 1.5vw, 22px);
+  --hs-title-end: clamp(36px, min(4.2vw, 7svh), 72px);   /* the headline over the held row */
+  --hs-top: calc(max(24px, 4svh) + var(--hs-title-lines, 2) * 0.92 * var(--hs-title-end) + 12px + 1.4 * var(--hs-lead-size) + 24px);
+  --hs-foot: 104px;                         /* 28px of air, two lines of fine print, 32px to the edge */
+  --hs-deal-w: min(400px, calc((92vw - (var(--n) - 1) * var(--hs-gap)) / var(--n)), calc((100svh - var(--hs-top) - var(--hs-foot)) / 1.414));
+  /* the perforation: a row of punched holes and two notches at 70% of the ticket, cut by a mask */
+  --hs-perf: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1414' preserveAspectRatio='none'%3E%3Cpath fill-rule='evenodd' d='M0 0H1000V1414H0zM-26 990a26 26 0 1 0 52 0a26 26 0 1 0 -52 0zM974 990a26 26 0 1 0 52 0a26 26 0 1 0 -52 0zM67 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM101 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM135 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM169 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM203 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM237 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM271 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM305 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM339 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM373 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM407 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM441 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM475 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM509 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM543 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM577 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM611 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM645 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM679 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM713 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM747 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM781 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM815 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM849 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM883 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0zM917 990a8 8 0 1 0 16 0a8 8 0 1 0 -16 0z'/%3E%3C/svg%3E");
+  color: var(--hs-ink);
+  font-family: var(--font-text, inherit);
+}
+/* the column count without script: two, three or four across; five and more wrap */
+[data-big-scene="hinged-sheets"]:has(.hs-slot:nth-child(4)) { --n: 4; }
+[data-big-scene="hinged-sheets"]:has(.hs-slot:nth-child(5):last-child),
+[data-big-scene="hinged-sheets"]:has(.hs-slot:nth-child(6):last-child),
+[data-big-scene="hinged-sheets"]:has(.hs-slot:nth-child(9):last-child) { --n: 3; }
+[data-big-scene="hinged-sheets"]:not(:has(.hs-slot:nth-child(3))) { --n: 2; }
+[data-big-scene="hinged-sheets"]:not(:has(.hs-slot:nth-child(2))) { --n: 1; }
+@media (max-width: 1395px) { [data-big-scene="hinged-sheets"] { --max-cols: 3; } }
+@media (max-width: 1038px) { [data-big-scene="hinged-sheets"] { --max-cols: 2; } }
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="hinged-sheets"] > .scene-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 4vw;
+  background: var(--hs-ground-b);
+  text-align: center;
+}
+[data-big-scene="hinged-sheets"] .hs-wash { display: none; }
+/* measures the held row's ticket width for the script */
+[data-big-scene="hinged-sheets"] .hs-gauge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--hs-deal-w);
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+[data-big-scene="hinged-sheets"] .hs-head { max-width: 100%; }
+[data-big-scene="hinged-sheets"] .hs-title {
+  margin: 0 auto;
+  max-width: 15ch;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(44px, 5.6vw, 84px);
+  font-weight: var(--display-weight, 500);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+[data-big-scene="hinged-sheets"] .hs-sub,
+[data-big-scene="hinged-sheets"] .hs-lead {
+  font-size: var(--hs-lead-size);
+  font-weight: var(--text-weight, 400);
+  line-height: 1.4;
+}
+[data-big-scene="hinged-sheets"] .hs-sub { margin: 24px auto 0; max-width: 32em; text-wrap: pretty; }
+/* the line over the row belongs to the headline: closer to it than to the tickets, so it never reads as a
+   label over the first ticket */
+[data-big-scene="hinged-sheets"] .hs-lead { margin: 20px 0 0; font-weight: var(--strong-weight, 600); letter-spacing: -0.01em; }
+/* a wrapping row, so a last ticket on its own sits in the middle */
+[data-big-scene="hinged-sheets"] .hs-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--hs-gap);
+  width: calc(var(--cols) * var(--hs-w) + (var(--cols) - 1) * var(--hs-gap));
+  max-width: 100%;
+  margin: 48px 0 0;
+  padding: 0;
+  list-style: none;
+}
+[data-big-scene="hinged-sheets"] .hs-slot { position: relative; flex: 0 0 var(--hs-w); }
+[data-big-scene="hinged-sheets"] .hs-sheet {
+  position: relative;
+  width: var(--hs-w);
+  aspect-ratio: 1 / 1.414;
+}
+[data-big-scene="hinged-sheets"] .hs-note {
+  margin: 32px auto 0;
+  max-width: 38em;
+  font-size: 16px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* The ticket. Everything inside sizes in cqi (1cqi = 1% of the ticket's width), so a ticket keeps its
+   proportions at any width; text never drops under 14px. Nothing on a face may use cq units on the face
+   itself: those would read the viewport. */
+[data-big-scene="hinged-sheets"] .hs-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--hs-radius);
+  container-type: inline-size;
+  -webkit-mask: var(--hs-perf) 0 0 / 100% 100% no-repeat;
+  mask: var(--hs-perf) 0 0 / 100% 100% no-repeat;
+  text-align: left;
+}
+[data-big-scene="hinged-sheets"] .hs-face--front { background: var(--hs-paper); color: var(--hs-ink); }
+[data-big-scene="hinged-sheets"] .hs-face--back { display: none; background: var(--hs-ink); color: var(--hs-paper); }
+[data-big-scene="hinged-sheets"] .hs-shade { display: none; }
+
+[data-big-scene="hinged-sheets"] .hs-photo {
+  display: block;
+  flex: 0 0 25%;
+  width: 100%;
+  min-height: 0;
+  object-fit: cover;
+}
+[data-big-scene="hinged-sheets"] .hs-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 5.5cqi 6.5cqi 0;
+}
+[data-big-scene="hinged-sheets"] .hs-name {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 10.5cqi;
+  font-weight: var(--display-weight, 500);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+[data-big-scene="hinged-sheets"] .hs-pitch,
+[data-big-scene="hinged-sheets"] .hs-points,
+[data-big-scene="hinged-sheets"] .hs-per,
+[data-big-scene="hinged-sheets"] .hs-cta,
+[data-big-scene="hinged-sheets"] .hs-small,
+[data-big-scene="hinged-sheets"] .hs-brand {
+  font-size: max(15px, 4.2cqi);
+  font-weight: var(--text-weight, 400);
+  line-height: 1.34;
+}
+[data-big-scene="hinged-sheets"] .hs-pitch { margin: 2.6cqi 0 0; text-wrap: pretty; }
+/* a printed ticket (no photograph, as in the demo): the name large at the top and the points set down on
+   the perforation, so the type fills the sheet instead of leaving a pricing card's empty middle */
+[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-body {
+  display: flex;
+  flex-direction: column;
+  padding-top: 7cqi;
+  padding-bottom: 5cqi;
+}
+[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-name { font-size: 15cqi; line-height: 0.92; text-wrap: balance; }
+[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-pitch { margin-top: 4.5cqi; font-size: max(15px, 4.8cqi); }
+[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-points { margin-top: auto; padding-top: 4cqi; }
+@container (min-width: 380px) {
+  [data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-pitch { font-size: 5.4cqi; }
+}
+[data-big-scene="hinged-sheets"] .hs-points { margin: 3.2cqi 0 0; padding: 0; list-style: none; font-weight: var(--strong-weight, 600); }
+[data-big-scene="hinged-sheets"] .hs-points li { position: relative; padding-left: 4.4cqi; }
+[data-big-scene="hinged-sheets"] .hs-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 1.7cqi;
+  height: 1.7cqi;
+  border-radius: 50%;
+  background: currentColor;
+}
+/* the stub, below the perforation: the price, what it buys, and the action */
+[data-big-scene="hinged-sheets"] .hs-stub {
+  flex: 0 0 30%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4cqi;
+  padding: 0 6.5cqi 5cqi;
+}
+[data-big-scene="hinged-sheets"] .hs-price { margin: 0; display: grid; }
+[data-big-scene="hinged-sheets"] .hs-amount {
+  font-family: var(--font-display, inherit);
+  font-size: 14cqi;
+  font-weight: var(--display-weight, 500);
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+[data-big-scene="hinged-sheets"] .hs-per { margin-top: 2cqi; }
+[data-big-scene="hinged-sheets"] .hs-cta {
+  flex: 0 0 auto;
+  margin-bottom: 1.2cqi;
+  padding: 3cqi 4.6cqi;
+  border-radius: var(--radius, 0px);
+  background: var(--hs-ink);
+  color: var(--hs-paper);
+  font-weight: var(--strong-weight, 600);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+[data-big-scene="hinged-sheets"] .hs-cta:hover { background: color-mix(in srgb, var(--hs-ink) 82%, #000); }
+[data-big-scene="hinged-sheets"] .hs-cta:focus-visible { outline: 3px solid var(--hs-ink); outline-offset: 3px; }
+
+/* the back: one ink, one very large word at the top, the name and a line of detail on the stub */
+[data-big-scene="hinged-sheets"] .hs-big {
+  margin: 6cqi 6.5cqi 0;
+  font-family: var(--font-display, inherit);
+  font-size: 27cqi;
+  font-weight: var(--display-weight, 500);
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+}
+[data-big-scene="hinged-sheets"] .hs-brand,
+[data-big-scene="hinged-sheets"] .hs-small { position: absolute; left: 6.5cqi; right: 6.5cqi; }
+[data-big-scene="hinged-sheets"] .hs-brand { bottom: calc(6.5cqi + 1.34em); font-weight: var(--strong-weight, 600); }
+[data-big-scene="hinged-sheets"] .hs-small { bottom: 6.5cqi; }
+/* while live the script moves the back's words into data-print: each back lies over its own front, and
+   as generated content they are drawn as print, never read or measured as text */
+[data-big-scene="hinged-sheets"] .hs-face--back [data-print]::before { content: attr(data-print); content: attr(data-print) / ""; }
+
+/* ---------- live: both versions ---------- */
+
+[data-big-scene="hinged-sheets"].is-live .hs-sheet { transform-style: preserve-3d; will-change: transform; }
+/* While live a face has no mask and no clip-path: a moving 3D layer with either is drawn through a mask
+   texture the size of its projection on every frame. The script punches the perforation into each
+   surface's own background instead (a bitmap in the page's colours, set on the face and its shade), so
+   the holes are still real; until it has, the faces are solid. */
+[data-big-scene="hinged-sheets"].is-live .hs-face {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-mask: none;
+  mask: none;
+}
+[data-big-scene="hinged-sheets"].is-live .hs-face--front { transform: translateZ(0.1px); }
+[data-big-scene="hinged-sheets"].is-live .hs-face--back { display: flex; flex-direction: column; transform: rotateY(180deg) translateZ(0.1px); }
+/* backface-visibility alone decides which face shows; the face turned away is also taken off the pointer.
+   A face-down front only goes transparent: its names, prices and button stay in the accessibility tree and
+   the tab order (focusing the button turns the row over: the keyboard guard in the script). The back is
+   print (aria-hidden), so it is hidden outright while face-up. */
+[data-big-scene="hinged-sheets"].is-live .hs-sheet[data-face="back"] > .hs-face--front { opacity: 0; pointer-events: none; }
+[data-big-scene="hinged-sheets"].is-live .hs-sheet[data-face="front"] > .hs-face--back { visibility: hidden; pointer-events: none; }
+[data-big-scene="hinged-sheets"].is-live .hs-shade {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--hs-shade);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-big-scene="hinged-sheets"].is-live .hs-face--front > .hs-shade { background: var(--hs-shade-paper); }
+
+/* ---------- live: the face-down row on the held stage ---------- */
+
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) {
+  --cols: var(--n);
+  --hs-w: var(--hs-deal-w);
+  /* the headline, the line over the row, the row and the fine print stand together in the middle of the
+     screen: the spare height (never negative, --hs-deal-w is capped by it) goes half above the headline
+     and half under the fine print, so the line over the row stays 12px under the headline at any size */
+  --hs-slack: calc((100svh - var(--hs-top) - var(--hs-foot) - var(--hs-h)) / 2);
+  --hs-row-top: calc(var(--hs-top) + var(--hs-slack));
+}
+html.sc-js [data-big-scene="hinged-sheets"].is-live:not(.hs-flow) > .scene-stage {
+  display: grid;
+  grid-template: 100% / 100%;
+  place-items: stretch;
+  padding: 0;
+  background: var(--hs-ground-a);
+}
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) > .scene-stage > * { grid-area: 1 / 1; }
+/* under everything on the stage: while it fades in, its opacity makes it a layer of its own, and at z-index
+   auto that layer would paint over the headline and the line over the row */
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-wash {
+  display: block;
+  position: relative;
+  z-index: -1;
+  background: var(--hs-ground-b);
+  opacity: 0;
+}
+/* the headline stands in the band over the row from the first frame, at --hs-title-end */
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-head {
+  align-self: start;
+  justify-self: center;
+  width: min(92vw, 1400px);
+  margin-top: calc(max(24px, 4svh) + var(--hs-slack, 0px));
+}
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-title {
+  max-width: 15ch;
+  font-size: var(--hs-title-end);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+}
+/* the band has no room for the sentence under the headline: the finished composition and the flow keep it */
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-sub { display: none; }
+/* reserved bands: the line over the row ends 24px above it, the fine print starts 28px below it; both sit
+   on ground-a at first, so they take the deeper ink */
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-lead {
+  align-self: end;
+  justify-self: center;
+  margin: 0 0 calc(100svh - var(--hs-row-top) + 24px);
+}
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) :is(.hs-lead, .hs-note) { color: var(--hs-ink-deep); }
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-row {
+  align-self: start;
+  justify-self: center;
+  margin: var(--hs-row-top) 0 0;
+}
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-row[data-shut] { pointer-events: none; }
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-slot {
+  z-index: calc(var(--n) - var(--i, 0));
+  perspective: 1500px;
+  /* one vanishing point for the whole row: the row's centre, seen from each slot */
+  perspective-origin: calc(50% + ((var(--n) - 1) / 2 - var(--i, 0)) * (var(--hs-w) + var(--hs-gap))) 50%;
+}
+[data-big-scene="hinged-sheets"].is-live:not(.hs-flow) .hs-note {
+  align-self: start;
+  justify-self: center;
+  margin: calc(var(--hs-row-top) + var(--hs-h) + 28px) 0 0;
+}
+
+/* ---------- live: the flow (phones, tablets, short windows, many tickets) ---------- */
+
+html.sc-js [data-big-scene="hinged-sheets"].is-live.hs-flow { height: auto; }
+html.sc-js [data-big-scene="hinged-sheets"].is-live.hs-flow > .scene-stage {
+  position: relative;
+  height: auto;
+}
+[data-big-scene="hinged-sheets"].is-live.hs-flow .hs-slot {
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
+}
+
+/* ---------- phone ---------- */
+
+@media (max-width: 767px) {
+  [data-big-scene="hinged-sheets"] { --max-cols: 1; --hs-w: min(86vw, 340px); }
+  [data-big-scene="hinged-sheets"] > .scene-stage { padding: 96px 16px; }
+  [data-big-scene="hinged-sheets"] .hs-title { font-size: clamp(40px, 11vw, 56px); max-width: 12ch; }
+  [data-big-scene="hinged-sheets"] .hs-row { margin-top: 40px; }
+}

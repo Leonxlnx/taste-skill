@@ -11,5 +11,9 @@
   "random": false,
   "literal": true,
   "subjects": ["global", "network", "infrastructure", "payments", "logistics"],
-  "avoidWith": ["orb-sphere", "dot-terrain"]
+  "avoidWith": ["orb-sphere", "dot-terrain"],
+  "tones": ["tech"],
+  "intensity": "lively",
+  "webgl": 1,
+  "treatment": false
 }

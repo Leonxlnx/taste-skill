@@ -1,0 +1,67 @@
+{
+  "id": "peel-tear-and-drag",
+  "name": "Peel, tear and drag",
+  "family": "section-transition",
+  "classic": 1,
+  "look": "A physical thing brings in the next section: a cloud deck closes over the old chapter, a huge photographed plane breaks out of it, slows as it pulls the next page in behind it through a seam that stays under its wings, and speeds away, and the new page's words land in its wake. It is a change of section with a character, for a brand that flies things or people (an air freight or courier line, an airline, a flying school), once or twice a page. Only the drag is dealt; the peel and the tear paint a shaded, shadowed paper tube and are kept for old pages only.",
+  "fits": [
+    "between"
+  ],
+  "types": [
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "playful",
+    "product"
+  ],
+  "intensity": "bold",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 3,
+  "restH": 2,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "Drag turns vertical: the plane flies bottom to top, nose up, on the same two clocks and at the same surging pace over 0.12-0.88 of a 2.2-screen hold, and drags the page in from below; the closing line lifts as the plane climbs in, and each block of words lands as soon as the tail has passed it. Under 360px wide or 560px tall, the finished composition.",
+  "maxPerPage": 1,
+  "weight": 0.5,
+  "place": "Between two sections, in the middle of the page, bringing in two quotes or a short list. The new page has exactly the ground of the section that follows.",
+  "content": "A top-down landscape photograph for the old chapter (sea, coast, fields from the air) with a closing line of 4-10 words; a cut-out photograph of a plane seen straight from above or below, nose to the right, about 2400px long, its wingspan about its length (the client's own aircraft, or one of its kind with no maker's or airline's marks); up to seven soft-edged cut-outs of cloud for the deck, each at least 1.5 times the width it is shown (the scene shows them at 40-60% of a 1440 screen, so 1000-1300px pieces there; about 2000px for a tablet held upright); a new page with a heading of 3-8 words, two short real quotes with credits or 3-12 rows, an optional aside of 20 words or fewer, and a wide photograph along its foot. The new page must fit one screen. A page without a real top-down cut-out of a plane and real cloud cut-outs takes another scene: never the drawn jet, never the demo's plane or cloud.",
+  "options": "mode 'drag' (the only mode dealt; 'peel' and 'tear' still run for old pages). Drag: dir 'ltr' | 'rtl' (for a second use on one page); hold 3 (1.5-4; 2 without the cloud); phoneHold 2.2 (1.5-3.5); phone 'vertical' | 'rest'; scrub 0.6, true with Lenis; pace 'surge' (the closing line stands with the first two clouds until 0.085; then, on a clock of about half a second, the line lifts, the deck closes and the plane breaks out until three fifths of it is on screen; the scroll carries it across, slower over the middle and never more than three times faster in one place than in another, and at 0.90, with three fifths still on screen, it speeds away on a second clock, so no frame the reader stops on shows a sliver of nose or of tail; the phone's climb 0.12-0.88) | 'even' (a linear crossing between the same clocks); object 'none' | 'jet', what to paint with no cut-out (nothing, a bare wipe; or a drawn jet for a sketch, never shipped); len 0.8 (0.3-0.9) length as a share of the width; phoneLen 0.62 (0.4-0.8); grow 1.25 (1-1.35), phoneGrow 1.15, tallGrow 1.12 (the cap on a stage taller than wide); apex and sweep (measured from the cut-out); bleed true; shadow false (true casts a soft shadow on the new page: old pages only); veil true (false skips the cloud); tint 0.35 (0-0.7). The closing line and the new page's blocks land on a clock, never half faded. Peel and tear (old pages): hold and phoneHold 1.5 (1-3); angle -34 peel, 163 tear (phoneAngle -58 / 163); band 0.09 (0.05-0.15); from and to (0.12-0.86 peel, 0.04-0.85 tear); lift true (peel); tilt 11.25, at 0.55 and phoneAt 0.5 (0.3-0.7), seed 11 (tear).",
+  "roles": [
+    "testimonial",
+    "list",
+    "features",
+    "proof"
+  ],
+  "position": "transition",
+  "sectors": [
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:2"
+    ],
+    "content": "A top-down landscape photograph for the old chapter (sea, coast, fields from the air) with a closing line of 4-10 words; a cut-out photograph of a plane seen straight from above or below, nose to the right, about 2400px long, its wingspan about its length (the client's own aircraft, or one of its kind with no maker's or airline's marks); up to seven soft-edged cut-outs of cloud for the deck, each at least 1.5 times the width it is shown (the scene shows them at 40-60% of a 1440 screen, so 1000-1300px pieces there; about 2000px for a tablet held upright); a new page with a heading of 3-8 words, two short real quotes with credits or 3-12 rows, an optional aside of 20 words or fewer, and a wide photograph along its foot. The new page must fit one screen. A page without a real top-down cut-out of a plane and real cloud cut-outs takes another scene: never the drawn jet, never the demo's plane or cloud."
+  },
+  "never": "never the drawn jet, never the demo's plane or cloud.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/peel-tear-and-drag/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"peel-tear-and-drag\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

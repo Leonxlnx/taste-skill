@@ -1,0 +1,72 @@
+{
+  "id": "light-flood",
+  "name": "Light flood",
+  "family": "colour-and-ground",
+  "classic": 1,
+  "look": "One sentence on a held stage plays out a day: a soft dome of colour rises behind it like a sun, swells until the whole screen is lit, then night falls from the top and the last light sinks and goes out on the next section's dark ground, while the setup words go out of focus and the key phrase, lit by the dome, stays sharp. It gives one statement its weight in about one screen: a brand chapter, a turn from day to night for a hotel or a spa, a promise on a finance page.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.2,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same day with phone numbers: a broad, low dome, smaller blur steps; hold 1.2.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "place": "In the middle, between the hero and the detail, as the intro or the about; or as the last word before the booking or the action. The section after it starts on the night colour. Once per page.",
+  "content": "No pictures. One sentence in two lines of 18 characters or fewer each, spaces and punctuation counted: a lead of 2-4 setup words, which must read alone as the title for the first quarter, and a key phrase of 2-3 words. Nothing else on the stage: no body copy, buttons, labels or logos. Six colours (day, halo, core, night, ink, key) or a checked preset; the core needs a relative luminance of 0.15-0.25.",
+  "options": "palette '' | 'dusk' | 'sky' | 'sage' (sets all six colours); direction 'dusk' (day, light, night) | 'dawn' (night, light, day; add class lf--dawn); ending 'night' | 'flood' (holds on the full flood; add class lf--flood); focus 'rack' (the lead goes soft, the key comes sharp) | 'flat' (opacity only); hold 1.2 (1-1.5); phoneHold 1.2 (1-1.5); flood 3 (2.4-3.6) end scale of the dome; phoneFlood 3.6 (2.4-4.2); scrub 0.6; header '', the selector of a fixed header, and headerClass 'is-dark', the class it gets while the night is under it; phone 'same' | 'rest'.",
+  "roles": [
+    "intro",
+    "about",
+    "cta",
+    "contact"
+  ],
+  "position": "middle",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "No pictures. One sentence in two lines of 18 characters or fewer each, spaces and punctuation counted: a lead of 2-4 setup words, which must read alone as the title for the first quarter, and a key phrase of 2-3 words. Nothing else on the stage: no body copy, buttons, labels or logos. Six colours (day, halo, core, night, ink, key) or a checked preset; the core needs a relative luminance of 0.15-0.25."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/light-flood/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"light-flood\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

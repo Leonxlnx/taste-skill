@@ -24,7 +24,14 @@
     system's pause button (one per panel, shared with ui.js). ui.js restarts its own fragments.
   - switches: a click on .m-switch flips aria-checked unless a handler before it called
     preventDefault().
-  Under prefers-reduced-motion: no entrance, no indicator travel, no tick, no loops, no restart.
+  - the entrance deck: data-enter="<id>" picks rise (default), set-type, focus, exposure, aperture,
+    line-blocks, doors, product-at-work or still (meta.json, entrances); each settles by 1.4 s.
+  - section reveals: below the first screen each main section's h2 and lead photograph arrive once
+    (never a card, row, tile or list; data-still on a section opts out).
+  - [data-m-roll] digits roll once; [data-m-swatches] crossfade a photograph; [data-open-now] gets
+    its open dot; .m-swap labels roll on hover.
+  Under prefers-reduced-motion: no entrance, no reveal, no roll, no indicator travel, no tick, no
+  loops, no restart.
 */
 const html = document.documentElement;
 const reducedQ = matchMedia('(prefers-reduced-motion: reduce)');
@@ -328,12 +335,21 @@ function enterSteps(hero, h1, media) {
   return out.filter(el => !el.closest('[aria-hidden="true"]') && !out.some(o => o !== el && o.contains(el)))
     .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
 }
+// The deck (meta.json, entrances): data-enter="" or "rise" is the line rise; set-type, line-blocks and product-at-work
+// start from it; focus, exposure, aperture and doors are CSS from a hold (motion.css) and only need their start and end;
+// still stands. Each is settled by 1.4 s
+const DECK = { rise: 1150, 'set-type': 1320, 'line-blocks': 1250, 'product-at-work': 1320, focus: 1100, exposure: 1200, aperture: 1300, doors: 1200, still: 0 };
+const EASE_ENTER = 'cubic-bezier(.22, 1, .36, 1)', EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
 function enter() {
   const hero = document.querySelector('.hero[data-enter]:not([data-enter="off"])');
   if (!hero || hero.classList.contains('is-entered') || hero.classList.contains('is-entering')) return;
+  let v = hero.dataset.enter || 'rise';
+  if (!(v in DECK)) { console.warn(`motion.js: data-enter="${v}" is not in the deck; the rise runs`); v = 'rise'; }
+  const total = DECK[v];
   // still: the picture takes its place at once (no settle); otherwise the CSS settle and fade run out first
   const done = (still = false) => { if (still) hero.classList.add('is-still'); hero.classList.add('is-entered'); };
-  const late = () => setTimeout(done, 1150);
+  const late = () => setTimeout(done, total || 1150);
+  if (v === 'still') return done(true);
   // the head line did not run, reduced motion, a headless shot (it sees the hero at rest, as it sees the
   // final number, unless data-motion="live") or the visitor is already below the hero (a reload half way
   // down): the hero stands as written. The safety mark has passed: motion.css is fading the words in and
@@ -343,8 +359,22 @@ function enter() {
   const h1 = hero.querySelector('h1');
   if (!h1) return done(true);
   const media = [...hero.querySelectorAll(ENTER_MEDIA)].filter((m, i, all) => !all.some(o => o !== m && o.contains(m)));
+  const pic = media.find(m => m.matches('img, picture, video') || m.querySelector('img, picture, video'));
+  const css = v === 'focus' || v === 'exposure' || v === 'aperture' || v === 'doors';
+  // a picture-led variant with no picture: the type is already in place, so the hero simply stands
+  if ((v === 'exposure' || v === 'aperture') && !pic) return done(true);
+  if (css) {
+    // the fonts and the picture first (250ms at most), then the CSS runs from its hold to rest
+    const img = pic && (pic.matches('img') ? pic : pic.querySelector('img'));
+    Promise.race([Promise.all([document.fonts?.ready, img?.decode?.().catch(() => {})]), new Promise(r => setTimeout(r, 250))]).then(() => {
+      if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) return late();
+      hero.classList.add('is-entering');
+      setTimeout(() => { hero.classList.remove('is-entering'); done(); }, total);
+    });
+    return;
+  }
   const steps = enterSteps(hero, h1, media);
-  const EASE = 'cubic-bezier(.22, 1, .36, 1)';
+  const EASE = EASE_ENTER;
   const anims = [];
   let masks = null, over = false;
   const finish = () => {
@@ -365,11 +395,31 @@ function enter() {
     hero.classList.add('is-entering');
     const lines = masks ? masks.lines : [[h1]];
     const lineStep = Math.min(80, 240 / Math.max(1, lines.length - 1));
-    // a word starts wholly below its mask, which reaches .12em under the line: no tops show before it rises
-    lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
-      ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
-      : [{ transform: 'translateY(.35em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
-      { duration: 700, delay: 80 + k * lineStep, easing: EASE, fill: 'both' }))));
+    if (v === 'line-blocks' && masks) {
+      // a block of one palette colour over each line, as long as its words; the words stand under it, and the
+      // blocks slide off toward the line ends, 90ms apart
+      const box = h1.getBoundingClientRect();
+      lines.forEach((ws, k) => {
+        const rs = ws.map(w => w.parentElement.getBoundingClientRect());
+        const l = Math.min(...rs.map(r => r.left)), t = Math.min(...rs.map(r => r.top)), rr = Math.max(...rs.map(r => r.right)), b = Math.max(...rs.map(r => r.bottom));
+        const blk = document.createElement('span');
+        blk.className = 'm-block';
+        blk.setAttribute('aria-hidden', 'true');
+        Object.assign(blk.style, { left: `${l - box.left - h1.clientLeft}px`, top: `${t - box.top - h1.clientTop}px`, width: `${rr - l}px`, height: `${b - t}px` });
+        h1.append(blk);
+        anims.push(blk.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 650, delay: 120 + k * 90, easing: EASE_IO, fill: 'both' }));
+      });
+    } else {
+      // a word starts wholly below its mask, which reaches .12em under the line: no tops show before it rises
+      lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
+        ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
+        : [{ transform: 'translateY(.35em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+        { duration: 700, delay: 80 + k * lineStep, easing: EASE, fill: 'both' }))));
+    }
+    // product at work: the window's marked parts appear one after another while the headline rises (four at most)
+    if (v === 'product-at-work') [...hero.querySelectorAll('[data-enter-step]')].slice(0, 4).forEach((el, i) => {
+      anims.push(el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: 380 + i * 200, easing: EASE, fill: 'both' }));
+    });
     // a line above the h1 (a notice, a pill) comes with its first line; what follows starts as its
     // last line is half way up
     const after = 80 + (lines.length - 1) * lineStep + 220;
@@ -382,10 +432,166 @@ function enter() {
     });
     // a panel the words sit on stands from the first paint (it was never hidden, so it never blinks);
     // the pictures settle by CSS over 1.1 s: the hero is done when both are through
-    anims.push({ finished: new Promise(r => setTimeout(r, 1150)), cancel() {} });
+    anims.push({ finished: new Promise(r => setTimeout(r, total)), cancel() {} });
     Promise.all(anims.map(a => a.finished)).then(finish, finish);
   }).catch(finish);
   setTimeout(finish, 2400);   // whatever stalls (a hidden tab), the hero stands after 2.4 s
+}
+
+/* ---------------------------------------------------------------- section reveals */
+// Below the first screen, each section's h2 rises out of its line masks and its lead photograph settles from a slight
+// window, once, as each comes on screen (motion.md, Section reveals). One heading and one photograph a section, never
+// a card, row, tile or list, nothing in the first screen, nothing in a section with its own moment or scene or
+// data-still. Only what is marked here waits (.m-rv-wait), so without script, under reduced motion and in a headless
+// shot nothing is hidden. A heading whose masks would set it on other lines rises whole instead (no layout shift).
+const RV_SKIP = '.hero, [data-still], [data-moment], [data-big-scene], [data-scene], [data-enter]';
+const RV_NOT = '.card, .tile, li, table, .panel, [data-ui], [data-m-loop], [data-peek] .rows, a.card, [hidden]';
+function reveals() {
+  if (reduced() || shot() || !('IntersectionObserver' in window)) return;
+  const main = document.querySelector('main') || document.body;
+  const secs = [...main.querySelectorAll('section')].filter(s => !s.parentElement.closest('section') && !s.matches(RV_SKIP) && !s.querySelector('[data-moment], [data-big-scene], [data-scene]'));
+  const fold = innerHeight, items = [];
+  const below = el => el.getBoundingClientRect().top > fold;
+  secs.forEach(s => {
+    if (s.dataset.mRvDone) return;
+    s.dataset.mRvDone = '1';
+    const h = [...s.querySelectorAll('h2')].find(x => !x.closest(RV_NOT));
+    if (h && below(h)) items.push(h);
+    const img = [...s.querySelectorAll('img')].find(i => { if (i.closest(RV_NOT)) return false; const r = i.getBoundingClientRect(); return r.width >= 280 && r.height >= 160; });
+    if (img && below(img)) items.push(img);
+  });
+  if (!items.length) return;
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); reveal(e.target); } }), { rootMargin: '100000px 0px -12% 0px' });
+  items.forEach(el => { el.dataset.mRv = el.tagName === 'IMG' ? 'photo' : 'heading'; el.classList.add('m-rv-wait'); io.observe(el); });
+  addEventListener('beforeprint', () => items.forEach(el => el.classList.remove('m-rv-wait')));
+}
+function reveal(el) {
+  if (!el.classList.contains('m-rv-wait')) return;
+  // passed by a jump (an anchor, a reload half way down) or in a hidden tab: it simply shows
+  if (el.getBoundingClientRect().bottom < 0 || document.visibilityState !== 'visible') { el.classList.remove('m-rv-wait'); return; }
+  if (el.tagName === 'IMG') {
+    el.animate([{ clipPath: 'inset(7% 6%)', scale: '1.06' }, { clipPath: 'inset(0% 0%)', scale: '1' }], { duration: 700, easing: EASE_ENTER, fill: 'backwards' });
+    el.classList.remove('m-rv-wait');
+    return;
+  }
+  const h0 = el.offsetHeight;
+  el.classList.add('m-rv-run');
+  let masks = maskWords(el);
+  if (masks && Math.abs(el.offsetHeight - h0) > 1) { masks.restore(); masks = null; }
+  const lines = masks ? masks.lines : [[el]];
+  const step = Math.min(70, 210 / Math.max(1, lines.length - 1));
+  const anims = [];
+  lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
+    ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
+    : [{ transform: 'translateY(.4em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+    { duration: 620, delay: k * step, easing: EASE_ENTER, fill: 'both' }))));
+  el.classList.remove('m-rv-wait');
+  const end = () => { anims.forEach(a => { try { a.cancel(); } catch { /* gone */ } }); masks?.restore(); el.classList.remove('m-rv-run'); };
+  Promise.all(anims.map(a => a.finished)).then(end, end);
+}
+
+/* ---------------------------------------------------------------- numbers that roll once */
+// [data-m-roll] (a price, a count of years or tables): each digit rolls up three places into its own figure, 40ms
+// apart, once, when 60% of it is first seen; the written number comes back as the HTML had it
+function rolls() {
+  const els = [...document.querySelectorAll('[data-m-roll]')].filter(el => !el.__mRoll);
+  if (!els.length || reduced() || shot()) return;
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); roll(e.target); } }), { threshold: 0.6 });
+  els.forEach(el => { el.__mRoll = 1; io.observe(el); });
+}
+function roll(el) {
+  const own = document.createDocumentFragment();
+  own.append(...el.childNodes);
+  const copy = own.cloneNode(true), cols = [];
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 1) return walk(n);
+    if (n.nodeType !== 3 || !/\d/.test(n.data)) return;
+    const frag = document.createDocumentFragment();
+    n.data.split(/(\d)/).forEach(part => {
+      if (!/^\d$/.test(part)) { if (part) frag.append(part); return; }
+      const d = document.createElement('span'), col = document.createElement('span'), stack = document.createElement('span');
+      d.className = 'm-roll__d'; col.className = 'm-roll__col'; stack.className = 'm-roll__stack';
+      stack.setAttribute('aria-hidden', 'true');
+      [7, 8, 9].forEach(k => { const s = document.createElement('span'); s.textContent = String((+part + k) % 10); stack.append(s); });
+      col.append(part, stack); d.append(col); frag.append(d); cols.push(col);
+    });
+    n.replaceWith(frag);
+  });
+  walk(copy);
+  if (!cols.length) { el.append(own); return; }
+  const label = el.hasAttribute('aria-label');
+  if (!label) el.setAttribute('aria-label', own.textContent.replace(/\s+/g, ' ').trim());
+  el.append(copy);
+  const anims = cols.map((c, i) => c.animate([{ transform: 'translateY(300%)' }, { transform: 'none' }], { duration: 700, delay: Math.min(i, 6) * 40, easing: EASE_ENTER, fill: 'both' }));
+  const end = () => { anims.forEach(a => a.cancel()); el.replaceChildren(own); if (!label) el.removeAttribute('aria-label'); };
+  Promise.all(anims.map(a => a.finished)).then(end, end);
+}
+
+/* ---------------------------------------------------------------- swatches that change the photograph */
+// [data-m-swatches="<selector of the img>"] holding buttons with data-src (and data-alt): a click or tap crossfades the
+// photograph to that source in 260ms; the pressed swatch is aria-pressed="true"
+function swatches() {
+  document.querySelectorAll('[data-m-swatches]').forEach(group => {
+    if (group.__mSw) return;
+    group.__mSw = 1;
+    group.addEventListener('click', e => {
+      const b = e.target.closest('[data-src]');
+      const img = document.querySelector(group.dataset.mSwatches || '') || group.closest('section, article, .card')?.querySelector('img');
+      if (!b || !img || !group.contains(b)) return;
+      group.querySelectorAll('[data-src]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      swapPhoto(img, b.dataset.src, b.dataset.alt);
+    });
+  });
+}
+function swapPhoto(img, src, alt) {
+  if (!src || img.getAttribute('src') === src) return;
+  const set = () => { img.removeAttribute('srcset'); img.src = src; if (alt) img.alt = alt; };
+  const pre = new Image();
+  pre.src = src;
+  (pre.decode ? pre.decode() : Promise.resolve()).catch(() => {}).then(() => {
+    const box = img.parentElement;
+    if (reduced() || !box) return set();
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    const over = img.cloneNode();
+    over.removeAttribute('id'); over.removeAttribute('srcset'); over.src = src; over.alt = ''; over.setAttribute('aria-hidden', 'true');
+    Object.assign(over.style, { position: 'absolute', left: `${img.offsetLeft}px`, top: `${img.offsetTop}px`, width: `${img.offsetWidth}px`, height: `${img.offsetHeight}px`, margin: '0', pointerEvents: 'none' });
+    box.append(over);
+    over.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2, .8, .2, 1)' }).finished
+      .then(() => { set(); return img.decode ? img.decode().catch(() => {}) : null; }).then(() => over.remove(), () => over.remove());
+  });
+}
+
+/* ---------------------------------------------------------------- open now */
+// system.js writes the open-now line; while it says "Open now" the line wears a dot that sends out a soft ring twice
+// the first time it is seen (motion.css)
+function openNow() {
+  document.querySelectorAll('[data-open-now]').forEach(el => {
+    if (el.__mOpen) return;
+    el.__mOpen = 1;
+    const set = () => el.classList.toggle('m-open', /^open\b/i.test(el.textContent.trim()));
+    set();
+    new MutationObserver(set).observe(el, { childList: true, characterData: true, subtree: true });
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { el.classList.add('is-seen'); io.disconnect(); } }, { threshold: 1 });
+    io.observe(el);
+  });
+}
+
+/* ---------------------------------------------------------------- labels that roll */
+// .m-swap on a button or link: its words get a copy under them (aria-hidden), and motion.css rolls one up as the
+// other comes in, on hover and focus
+function swapLabels() {
+  document.querySelectorAll('.m-swap').forEach(el => {
+    if (el.querySelector('.m-swap__w')) return;
+    const t = [...el.childNodes].filter(n => n.nodeType === 3 && n.data.trim());
+    if (t.length !== 1) return;
+    const n = t[0], text = n.data.trim();
+    const w = document.createElement('span'), a = document.createElement('span'), b = document.createElement('span');
+    w.className = 'm-swap__w'; a.className = 'm-swap__a'; b.className = 'm-swap__b';
+    a.textContent = b.textContent = text;
+    b.setAttribute('aria-hidden', 'true');
+    w.append(a, b);
+    n.replaceWith(n.data.match(/^\s*/)[0], w, n.data.match(/\s*$/)[0]);
+  });
 }
 
 /* ---------------------------------------------------------------- start */
@@ -397,6 +603,11 @@ export function init() {
   try { tabs(); } catch (e) { console.warn('motion.js: tabs', e); }
   try { counts(); } catch (e) { console.warn('motion.js: counts', e); }
   try { loops(); } catch (e) { console.warn('motion.js: loops', e); }
+  try { reveals(); } catch (e) { console.warn('motion.js: reveals', e); document.querySelectorAll('.m-rv-wait').forEach(el => el.classList.remove('m-rv-wait')); }
+  try { rolls(); } catch (e) { console.warn('motion.js: rolls', e); }
+  try { swatches(); } catch (e) { console.warn('motion.js: swatches', e); }
+  try { openNow(); } catch (e) { console.warn('motion.js: open now', e); }
+  try { swapLabels(); } catch (e) { console.warn('motion.js: labels', e); }
 }
 /** call again after the page adds markup (a tab list, a stat, a loop) */
 export const refresh = init;

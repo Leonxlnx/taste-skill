@@ -55,7 +55,8 @@ export default function (root, opts, lib) {
   const run = () => built.forEach(({ el, cols }, n) => {
     el.classList.add('is-on');
     cols.forEach(({ strip, turns }, c) => {
-      const a = strip.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${-turns * 10}em)` }], { duration: dur + c * 140, delay: n * stagger, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'forwards' });
+      // (in the strip's own height: `turns` whole turns of ten cells of the strip's turns * 10 + 1)
+      const a = strip.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${(-100 * turns * 10) / (turns * 10 + 1)}%)` }], { duration: dur + c * 140, delay: n * stagger, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'forwards' });
       // the last cell is the same digit as the first: cancelling at the end leaves the strip at rest, no change on screen
       a.finished.then(() => { try { a.cancel(); } catch { /* gone */ } }, () => {});
       anims.push(a);
