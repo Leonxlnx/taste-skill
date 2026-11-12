@@ -111,7 +111,7 @@ A software product's page builds every interface fragment it shows (the hero's l
 ### Fixes
 
 - The inspector's throwaway Chrome profiles are removed reliably (Chrome is stopped before its profile is deleted, the profile cache is capped, profiles left by killed runs are swept); a long test session had left tens of GB in the temp folder. `TASTE_SKILL_TMP` moves them off the system drive.
-- `motion.md` and `research.md`: a claim that smooth-scroll pages showed empty frames mid-scroll was a capture artefact and is gone.
+- `motion.md` and `research.md`: a claim that smooth-scroll pages showed empty frames mid-scroll was a capture artefact and is gone. (research.md was later removed with the rest of the v2 references; it is in the `archive/taste-skill-v2` tag.)
 
 ### App screens: dashboards, admin, settings, inboxes
 
@@ -193,7 +193,7 @@ Node 22+ and an installed Chrome, Edge or Chromium for the inspector (nothing is
 
 ### How it was tested
 
-Five rounds of blind comparisons on six briefs: a fresh agent built each page with no skill, with v2, and on three briefs with another design skill; a separate agent judged anonymous screenshots on the Awwwards weighting. Final round, three briefs: v2 7.7, no skill 7.8, other skill 7.2, with v2 ranked first on two of three. Under the inspector the v2 pages measured 0 failures each and the no-skill pages 8 to 13. Limits: one juror per brief per round (about half a point of noise), model jurors, and the final round's briefs had been used in the round before. The full record is in `skills/taste-skill/references/research.md` §11.
+Five rounds of blind comparisons on six briefs: a fresh agent built each page with no skill, with v2, and on three briefs with another design skill; a separate agent judged anonymous screenshots on the Awwwards weighting. Final round, three briefs: v2 7.7, no skill 7.8, other skill 7.2, with v2 ranked first on two of three. Under the inspector the v2 pages measured 0 failures each and the no-skill pages 8 to 13. Limits: one juror per brief per round (about half a point of noise), model jurors, and the final round's briefs had been used in the round before. The full record is in research.md §11, in the `archive/taste-skill-v2` tag.
 
 ### Cost
 
