@@ -19,6 +19,8 @@ jobs:
           node tests/frontmatter.mjs
       - name: Text files are clean UTF-8 (no double encoding)
         run: node tests/text-encoding.mjs
+      - name: Every file path the docs point at exists
+        run: node tests/doc-links.mjs
       - name: Scripts parse
         run: |
           node -e '
@@ -31,3 +33,19 @@ jobs:
               execFileSync(process.execPath, ["--check", f], { stdio: "inherit" });
             }
           '
+
+  # install.sh is the one script a user runs before anything else, and it is the one script
+  # nothing else exercises. It has to work on the bash a machine actually ships: macOS still
+  # carries bash 3.2 as /bin/bash, and a bash 4 construct there fails at the user's desk, not
+  # in CI. So it is run on both, with the real paths it takes: list, install, uninstall.
+  installer:
+    name: install.sh (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: install.sh lists, installs and uninstalls
+        run: ./tests/installer_test.sh
