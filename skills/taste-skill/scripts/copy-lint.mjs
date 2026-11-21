@@ -252,7 +252,7 @@ const ARABIC_SLOP_AND_CALQUES = [
   /نقلة نوعية/u,
   /حلول متكاملة/u,
   /ليس مجرد [^\n.؟!]{1,40} بل/u,
-  /ارتقِ بـ/u,
+  /ارتقِ?\s+ب(?:ـ|\S)/u,
   /بوابتك نحو/u,
 ];
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -263,8 +263,8 @@ const wc = (s) => s.split(/\s+/).filter(Boolean).length;
 // the sentence of a block that holds the character at i
 function sentenceAt(b, i) {
   const t = unabbr(b);
-  let s = 0; for (const m of t.matchAll(/[.!?](?=\s+[A-Z"'(])/g)) { if (m.index >= i) break; s = m.index + 1; }
-  const e = t.slice(i).search(/[.!?](\s+[A-Z"'(]|\s*$)/);
+  let s = 0; for (const m of t.matchAll(/[.!?؟](?=\s+[A-Z\u0600-\u06FF"'(«])/gu)) { if (m.index >= i) break; s = m.index + 1; }
+  const e = t.slice(i).search(/[.!?؟](\s+[A-Z\u0600-\u06FF"'(«]|\s*$)/u);
   return b.slice(s, e < 0 ? b.length : i + e + 1).trim();
 }
 
