@@ -19,6 +19,8 @@ jobs:
           node tests/frontmatter.mjs
       - name: Text files are clean UTF-8 (no double encoding)
         run: node tests/text-encoding.mjs
+      - name: Bowtie diagrams pulse every destination
+        run: node tests/diagram-bowtie.mjs
       - name: Scripts parse
         run: |
           node -e '
