@@ -1,6 +1,6 @@
 /*
   giant-type-pass - a statement of two to four words set very large, with a photograph showing through
-  the letters under a 35% ink tint; as the section crosses the screen the photograph passes upward
+  the letters under a 65% ink tint, dark enough to read over any photograph; as the section crosses the screen the photograph passes upward
   through the type, a little faster than the page, so the words read as a window onto the picture.
   Scrubbed to the scrollbar, no pin. The picture's lower half is what shows (the sky of most
   photographs is too pale for a letter). Under reduced motion and without script the photograph
@@ -13,7 +13,7 @@
       </div>
     </section>
 
-  opts: image (the photograph's URL; or set data-image on the h2), travel (how far the picture moves,
+  opts: image (the photograph's URL, relative to the page; or set data-image on the h2), travel (how far the picture moves,
         % of its spare height, default 60), focus (the x position of the picture in %, default 50),
         focusY (the y position the travel is centred on, default 62: the lower half).
   It runs on a phone too, with the type at 19vw and two thirds of the travel (one background position on
@@ -24,9 +24,12 @@ export const phone = true;
 export default function (root, opts, lib) {
   const type = root.querySelector('.mo-gt__type') || root.querySelector('h1, h2');
   if (!type) return {};
-  const src = opts.image || type.dataset.image;
-  if (!src) return {};
-  type.style.setProperty('--mo-img', `url("${src}")`);
+  const given = opts.image || type.dataset.image;
+  if (!given) return {};
+  // a url() in a custom property resolves against the stylesheet that uses it (the kit's moment.css), not the page:
+  // the page's own path is made whole against the page first (2.5.3: assets/img/... 404ed under the moment's folder)
+  let src = given; try { src = new URL(given, document.baseURI).href; } catch { /* left as given */ }
+  type.style.setProperty('--mo-img', `url("${src.replace(/"/g, '%22')}")`);
   type.style.setProperty('--mo-x', `${lib.clamp(+(opts.focus ?? 50), 0, 100)}%`);
   const fy = lib.clamp(+(opts.focusY ?? 62), 0, 100);
   type.style.setProperty('--mo-y', `${fy}%`);

@@ -57,8 +57,11 @@
   tech photo,product,figures; software ui,figures; gaming setting). A moment or scene whose meta.needs.list
   asks for more is never dealt: pictures:N over 8 needs archive (the client's own body of pictures),
   product-photo needs product, product-ui needs ui, video needs film, figures needs two proof figures in
-  the fact sheet (counter-rolls; opening hours are not proof), route a real route. Add figures to --has
-  when the fact sheet's Numbers line holds two counts, times or prices.
+  the fact sheet (counter-rolls; opening hours are not proof), route a real route, site the client's own
+  site or world seen from high up and from below (a launch site, a plant, a test range, a game's world:
+  setting brings it; a pocket device has none). Add figures to --has when the fact sheet's Numbers line
+  holds two counts, times or prices. A scene that writes its needs as keys, not a list: ui needs ui, a
+  photo that is not optional one picture.
 
   pick deals two or three moments at random, seeded. The history file's `moments` list is read as
   cycles: once every moment that fits has been dealt, the next cycle starts empty, so an id comes
@@ -139,7 +142,7 @@ const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k) || FIT[
 export const HAS_BY_KIND = { place: ['photo'], service: ['photo'], product: ['photo', 'product'], tech: ['photo', 'product', 'figures'], software: ['ui', 'figures'], gaming: ['setting'] };
 export function hasFor(page, given) {
   const s = new Set(given && given !== true ? String(given).split(',').map(x => x.trim()).filter(Boolean) : HAS_BY_KIND[page] || []);
-  if (s.has('setting')) s.add('photo');        // a game's stand-in photographs of its setting
+  if (s.has('setting')) { s.add('photo'); s.add('site'); }   // a game's stand-in photographs of its setting, its world from above
   if (s.has('archive')) s.add('photo');
   if (s.has('object')) s.add('product');
   return s;
@@ -159,6 +162,8 @@ export const sceneSource = (id, ref = '<skill>') => 'copy the whole <section dat
 export function needsMet(x, has) {
   const unmet = [], nd = x.needs && typeof x.needs === 'object' ? x.needs : {};
   // a scene written without a list says its needs as keys: its screen (ui) and a photograph that is not optional count
+  // (2.5.3: descend-through-weather wrote its pictures as a key, unread, and reached a pocket camera's page; it and
+  // shaped-window-over-fixed-world now list site)
   const list = Array.isArray(nd.list) ? nd.list
     : [...(nd.ui ? ['product-ui'] : []), ...(typeof nd.photo === 'string' && !/^\s*optional/i.test(nd.photo) ? ['pictures:1'] : [])];
   for (const n of list) {
@@ -167,7 +172,7 @@ export function needsMet(x, has) {
       : k === 'product-photo' ? has.has('product')
       : k === 'product-ui' ? has.has('ui')
       : k === 'video' ? has.has('film')
-      : k === 'figures' || k === 'route' ? has.has(k)
+      : k === 'figures' || k === 'route' || k === 'site' ? has.has(k)
       : true;                                  // names:N, series:N and the rest: words the copy writes
     if (!ok) unmet.push(n);
   }

@@ -26,6 +26,7 @@
   "maxPerPage": 1,
   "weight": 0.7,
   "needs": {
+    "list": ["site", "pictures:2"],
     "pictures": "two photographs of the client's own site or world, one from above the cloud or high up (a launch site, a test range, a data centre on its plain, a game's world from above), one from below with a calm lower half",
     "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines"
   },

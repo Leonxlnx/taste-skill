@@ -26,6 +26,7 @@
   "maxPerPage": 1,
   "weight": 0.7,
   "needs": {
+    "list": ["site", "pictures:1"],
     "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
     "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
   },

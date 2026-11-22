@@ -473,6 +473,19 @@ function staticChecks(page, html, proj, files) {
       let text = ''; try { text = fs.readFileSync(path.resolve(path.dirname(page), key), 'utf8'); } catch { continue; }
       if (/^\s*(import|export)\s[^(]|import\.meta/m.test(codeOnly(text))) F.push({ check: 'script-module', where: `<script src="${src}">`, msg: `${src} is a module (import/export) loaded as a classic script: it throws on load and does nothing`, fix: `<script type="module" src="${src}"></script>, once, as the starter loads it` });
     }
+    // a play control with no film behind it (2.5.3: a trailer poster's play disc opened a store search): it plays a
+    // video file the page has, or opens the trailer's own page the brief gives (a store page, a video page), or is not
+    // there (sections-library.md, the trailer slot); a search, "#" or no target is a dead control
+    const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
+    const film = /<video\b[^>]*\ssrc\s*=\s*["'][^"']+|<source\b[^>]*\ssrc\s*=\s*["'][^"']+\.(mp4|webm|mov|m4v|ogv)\b|<iframe\b[^>]*\ssrc\s*=\s*["'][^"']*(youtube|youtu\.be|vimeo|player\.)/i.test(live);
+    for (const m of live.matchAll(/<(a|button)\b([^>]*)>/gi)) {
+      const at = attrs(m[0]), cls = at.class || '', label = at['aria-label'] || '';
+      if (!/(^|\s)(ly-play|play|play-button|btn--play)(\s|$)|__play\b/.test(cls) && !/^(play|watch)\b[^"]*\b(trailer|film|video|teaser)\b/i.test(label)) continue;
+      const href = m[1].toLowerCase() === 'a' ? String(at.href || '').trim() : '';
+      const search = /[?&](q|query|term|search|s|k|keywords?)=|\/search\b|\/results\b/i.test(href);
+      const dead = m[1].toLowerCase() === 'a' ? (!href || href === '#' || /^javascript:/i.test(href) || search || (href.startsWith('#') && !film)) : !film;
+      if (dead) F.push({ check: 'play-dead', where: `${m[1].toLowerCase()}${cls ? '.' + cls.trim().split(/\s+/)[0] : ''}${label ? ` "${label.slice(0, 40)}"` : ''}`, msg: `a play control with no film behind it: ${search ? `it opens a search (${href.slice(0, 70)})` : href ? `it goes to ${href.slice(0, 40)}, and the page has no video file` : 'the page has no video file for it to play'}`, fix: 'link the trailer\'s own page the brief gives (its store or video page), or the video file with controls; with neither, no play control: the poster stands as the still (sections-library.md, the trailer slot)' });
+    }
   }
   for (const s of own) {
     const code = codeOnly(s.text), m = code.match(HOOKS) || s.text.match(HOOKS_RAW);
@@ -577,8 +590,10 @@ function productChecks(html, dot) {
 // history.json line of the deal and the page line of the plan that decided it (2.5.3: a builder that dealt again to
 // escape a FAIL was then asked for the two moments the new deal brought along, and ran out of rounds).
 // A dealt moment or scene the page lacks with nothing dealt later in its place, or a place hero dealt bleed, split
-// or name and built as band (data-form missing is band), FAILs; another hero form, close or composition WARNs. The
-// fix names the file to copy from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it.
+// or name and built as band (data-form missing is band), or a dealt composition the page lacks (2.5.3: two shops built
+// neither bleed-panel nor statement-short, and a WARN let both pass), FAILs; another hero form or close WARNs. A form
+// built as close__form is the close-form, in the footer or in a section of its own. The fix names the file to copy
+// from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it.
 const COMP_MARK = {
   mirrored: [/\bgrid--mirror\b/, 'class="grid grid--mirror" on the split (sections-library.md, Compositions)'],
   'bleed-panel': [/\bcomp-bleed\b/, '<section class="section comp-bleed"> with the photograph as its layer and the words on .comp-panel (sections-library.md, Compositions)'],
@@ -586,7 +601,7 @@ const COMP_MARK = {
   'three-up': [/\bcomp-three\b/, '<div class="grid comp-three"> with three figures on span-4 (sections-library.md, Compositions)'],
   'street-large': [/\btype-moment\b/, 'the street set large as .type-moment under the visit\'s h2 (sections.md section 4)'],
   'statement-short': [/\bstatement--short\b/, '<section class="section statement statement--short"> (sections-library.md, Compositions)'],
-  'close-form': [/\bclose--form\b/, 'the <template data-part="close-form"> of <skill>/assets/starter.html as the close'],
+  'close-form': [/\bclose--form\b|\bclose__form\b/,'the <template data-part="close-form"> of <skill>/assets/starter.html as the close'],
 };
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 // the plan's words for one part (its moments): from the part's name at the start of a line or after a "·"
@@ -606,6 +621,31 @@ function planPart(text, key) {
     const end = rest.search(new RegExp(`·|\\n[ \\t]*(?:${PLAN_KEYS})(?![\\w-])`, 'i'));
     out.push({ words: end < 0 ? rest : rest.slice(0, end), at: from });
   }
+  return out;
+}
+// ---------------------------------------------------------------- perf.mjs's last run (.taste-skill/perf.json)
+// The gate does not run perf.mjs; perf.mjs records its last run beside the page. Each FAIL of a run on this page, made
+// after the page and every file it loads last changed, is a FAIL here; a run older than a change is a WARN to run it
+// again (2.5.3: perf.mjs measured a layout shift of 0.569 at 390px and the gate, which never read it, said PASS).
+function perfFindings(dot, file, files) {
+  const out = { fails: [], warns: [] };
+  let r = null; try { r = JSON.parse(fs.readFileSync(path.join(dot, 'perf.json'), 'utf8')); } catch { return out; }
+  if (!r || !file || !Array.isArray(r.fails) || !r.fails.length || typeof r.page !== 'string') return out;
+  const same = (a, b) => { const x = path.resolve(a), y = path.resolve(b); return process.platform === 'win32' ? x.toLowerCase() === y.toLowerCase() : x === y; };
+  if (!same(r.page, file)) return out;
+  const changed = [file, ...(files || [])].filter(f => { try { return fs.statSync(f).mtimeMs > (+r.at || 0); } catch { return false; } });
+  const when = new Date(+r.at || 0).toISOString().slice(0, 16).replace('T', ' ');
+  if (changed.length) {
+    out.warns.push({ check: 'perf', where: '.taste-skill/perf.json', msg: `perf.mjs FAILed ${r.fails.length} check${r.fails.length > 1 ? 's' : ''} (${r.fails.slice(0, 3).map(x => `${x.name} ${x.value} at ${x.w}px`).join('; ')}) at ${when}, before ${path.basename(changed[0])} changed`, fix: 'run perf.mjs on the page again: the gate reads its last run', widths: [], from: 'perf' });
+    return out;
+  }
+  const by = new Map();
+  for (const x of r.fails) {
+    const k = x.name; if (!by.has(k)) by.set(k, { ...x, ws: [] });
+    const g = by.get(k); if (!g.ws.includes(x.w)) g.ws.push(x.w);
+    if (x.w < g.w) Object.assign(g, { w: x.w, value: x.value, note: x.note });
+  }
+  for (const x of by.values()) out.fails.push({ check: 'perf', where: `perf ${x.name}`, msg: `perf.mjs (${when}) FAILs ${x.name}: ${x.value}${x.note ? ` (${x.note})` : ''}`, fix: 'fix it as references/perf.md says (a layout shift: reserve the space the moving part takes), then run perf.mjs again: the gate reads its last run', widths: x.ws, from: 'perf' });
   return out;
 }
 async function dealDrift(html, dot, kind, page) {
@@ -698,13 +738,13 @@ async function dealDrift(html, dot, kind, page) {
   if (k) {
     const lastOf = key => (Array.isArray(L[`${k}:${key}`]) ? L[`${k}:${key}`].slice(-1)[0] : null);
     const close = lastOf('close');
-    if (close && !new RegExp(`\\bclose--${reEsc(close.replace(/^close-/, ''))}\\b`).test(live)) {
+    if (close && !new RegExp(`\\bclose--${reEsc(close.replace(/^close-/, ''))}\\b`).test(live) && !(close === 'close-form' && COMP_MARK['close-form'][0].test(live))) {
       const builtClose = (live.match(/\bclose--(\w+)/) || [])[1];
       warns.push({ check: 'deal-drift', where: `close ${builtClose ? 'close-' + builtClose : 'none'}`, msg: `the deal dealt the close ${close}; the page builds ${builtClose ? 'close-' + builtClose : 'no dealt close'}${builtClose === 'form' ? ' (close-form only when the last section is the booking form)' : ''}`, fix: close === 'close-type' ? 'the footer\'s default <div class="closing__cta close--type"> of <skill>/assets/starter.html' : `the <template data-part="${close}"> of <skill>/assets/starter.html in the footer` });
     }
     for (const key of ['visit', 'offer', 'showcase', 'rooms', 'feature', 'form', 'statement']) {
       const c = lastOf(key);
-      if (c && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) warns.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key}; the page has none`, fix: COMP_MARK[c][1] });
+      if (c && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) fails.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key} (${SRC}, "layout"); the page has none`, fix: `build it: ${COMP_MARK[c][1]}; a part the brief cannot fill: deal again (start.mjs plan --has), or waive it with the reason` });
     }
   }
   return { fails, warns };
@@ -897,13 +937,17 @@ function applyWaivers(fails, file) {
     out.problems.push({ check: 'waivers', where: '.taste-skill/waivers.json', msg: 'waivers.json is not a JSON array', fix: 'write it as [{"check": "<id>", "target": "<part of where>", "reason": "<why it is false>"}]', hard: true });
     out.open = fails; return out;
   }
-  out.waivers = raw.map(w => ({ check: String(w && w.check || ''), target: String(w && w.target || ''), reason: String(w && w.reason || '').trim() }));
+  // a target copied whole from the printed FAIL line is read as its where: the "FAIL <id>" before it, the widths
+  // after it ("  [390]") and runs of spaces drop (2.5.3: a waiver ending " [390]" matched no open finding)
+  const sp = t => String(t).replace(/\s+/g, ' ').trim();
+  const bare = (t, check) => { let s = sp(t).replace(/^FAIL\s+/, ''); if (check && s.startsWith(check + ' ')) s = s.slice(check.length + 1); return s.replace(/\s+\[\d+(?:\s*,\s*\d+)*\]$/, '').trim(); };
+  out.waivers = raw.map(w => ({ check: String(w && w.check || ''), target: bare(String(w && w.target || ''), String(w && w.check || '')), reason: String(w && w.reason || '').trim() }));
   if (out.waivers.length > MAX_WAIVERS) {
     out.problems.push({ check: 'waivers', where: '.taste-skill/waivers.json', msg: `too many waivers: fix instead (${out.waivers.length}, ${MAX_WAIVERS} at most)`, fix: `fix the findings and keep ${MAX_WAIVERS} waivers at most`, hard: true });
     out.open = fails; return out;
   }
   const taken = new Map();
-  const ids = f => f.ids || [f.check], wheres = f => f.wheres || [f.where];
+  const ids = f => f.ids || [f.check], wheres = f => (f.wheres || [f.where]).map(sp);
   for (const w of out.waivers) {
     if (!w.check) { w.invalid = 'no check id'; continue; }
     // a short target is taken only when it is the whole of a finding's where (a layout finding at "h1")
@@ -1195,6 +1239,11 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
   }
 }
 clearTimeout(guard);
+// perf.mjs's last run on this page, read fresh on every run (a reused result keeps none of an older one)
+{
+  const pf = P.file ? perfFindings(dot, P.file, files) : { fails: [], warns: [] };
+  found = { ...found, fails: [...found.fails.filter(f => f.from !== 'perf'), ...pf.fails], warns: [...found.warns.filter(f => f.from !== 'perf'), ...pf.warns] };
+}
 
 const W = applyWaivers(found.fails, waiverFile);
 const open = [...W.problems, ...W.open];

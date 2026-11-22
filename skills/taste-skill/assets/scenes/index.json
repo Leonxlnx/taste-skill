@@ -1,6 +1,6 @@
 {
  "version": 2,
- "generated": "2026-11-22T01:51:46.257Z",
+ "generated": "2026-11-22T09:31:58.342Z",
  "count": 46,
  "dealt": 40,
  "retired": [
@@ -448,6 +448,10 @@
    "maxPerPage": 1,
    "weight": 0.7,
    "needs": {
+    "list": [
+     "site",
+     "pictures:2"
+    ],
     "pictures": "two photographs of the client's own site or world, one from above the cloud or high up (a launch site, a test range, a data centre on its plain, a game's world from above), one from below with a calm lower half",
     "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines"
    },
@@ -2466,6 +2470,10 @@
    "maxPerPage": 1,
    "weight": 0.7,
    "needs": {
+    "list": [
+     "site",
+     "pictures:1"
+    ],
     "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
     "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
    },

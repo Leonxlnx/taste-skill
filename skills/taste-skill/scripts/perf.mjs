@@ -12,7 +12,9 @@
 
   Timing (long tasks, blocking time, FCP, LCP, layout shift) is the MEDIAN of --runs loads (default 3), with the spread
   printed, because one CPU sample is noise. Host CPU load is sampled before and after; a busy host (over 50%) is reported
-  and caps the timing verdicts at WARN. --json writes the result to the file named and nothing else.
+  and caps the timing verdicts at WARN. --json writes the result to the file named and nothing else. A local page with
+  a .taste-skill folder beside it (or one or two folders up) also gets .taste-skill/perf.json: the finish gate reads it,
+  and each FAIL there is a FAIL of the gate while the page and the files it loads are unchanged since the run.
 
   Reports PASS / WARN / FAIL per check against the budget in references/perf.md:
     bytes by type + total, requests, fonts (families, files), JS parsed, images (size attrs, lazy below the fold,
@@ -52,6 +54,7 @@ if (!pos.length) die('usage: perf.mjs <page.html | folder | url> [--profile <dir
 if (typeof WebSocket === 'undefined' || typeof fetch === 'undefined') die('Node 22 or later is needed (global WebSocket and fetch)');
 if (!widths.length) widths.push(1440, 390);
 const target = pos[0];
+const STARTED = Date.now();   // perf.json's time: a file changed after the run began makes the run stale
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------------------------------------------------------------- budget */
@@ -354,7 +357,22 @@ function report(partial) {
   }
   console.log(`\nSUMMARY ${label}: ${fails} FAIL, ${warns} WARN` + (partial ? '  (PARTIAL: timed out)' : '') + (fails ? '  -> FAIL' : warns ? '  -> WARN' : '  -> PASS'));
   if (jsonOut) { try { fs.writeFileSync(jsonOut, JSON.stringify({ page: target, partial: !!partial, results }, null, 1)); } catch (e) { console.error('perf: could not write ' + jsonOut + ': ' + e.message); } }
+  remember(partial);
   return fails;
+}
+// the last run for the finish gate: .taste-skill/perf.json beside a local page (2.5.3: a layout shift of 0.569 FAILed
+// here, and the gate, which never read perf, said PASS)
+function remember(partial) {
+  if (/^https?:/.test(target) || !results.length) return;
+  try {
+    let page = path.resolve(target); if (fs.statSync(page).isDirectory()) page = path.join(page, 'index.html');
+    let d = path.dirname(page), dot = null;
+    for (let i = 0; i < 3 && !dot; i++) { const t = path.join(d, '.taste-skill'); if (fs.existsSync(t) && fs.statSync(t).isDirectory()) dot = t; const up = path.dirname(d); if (up === d) break; d = up; }
+    if (!dot) return;
+    const fails = results.flatMap(r => r.rows.filter(x => x.verdict === 'FAIL').map(x => ({ w: r.w, name: x.name, value: String(x.value), note: x.note || '' })));
+    const warns = results.reduce((a, r) => a + r.rows.filter(x => x.verdict === 'WARN').length, 0);
+    fs.writeFileSync(path.join(dot, 'perf.json'), JSON.stringify({ page, at: STARTED, widths: results.map(r => r.w), partial: !!partial, fails, warns }, null, 1));
+  } catch (e) { console.error('perf: could not write .taste-skill/perf.json: ' + e.message); }
 }
 
 /* ---------------------------------------------------------------- run */

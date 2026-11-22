@@ -75,7 +75,7 @@ These nine win over everything else in this skill.
    takes what fits (`moments.md`, The fit rule): a cafe, bakery, guesthouse or shop gets warm,
    quiet to lively moments and scenes beside its photographs, never anything too wild; tech, gaming
    and software keep the shader grounds and the bold ones. A place, service or product page takes
-   at most one quiet treatment (`effects-usage.md`).
+   no shader effect at all (`effects-usage.md`); a product with a technical subject is dealt as tech.
 9. **Addresses:** street and district only (no street given: the district), no house number, postcode or coordinates; no register
    or VAT numbers; no phone in a real format; contacts on `.example`.
 
@@ -102,8 +102,8 @@ A maker that also opens its door or teaches (a ceramics studio, a bakery with a 
 "Tech" below means site-kind software, gaming or tech; "other" is everything else. Shader effect
 grounds, CSS grounds, dark pages and dark heroes are tech only. An other page is photographs, flat
 colour, type, real icons, the hero's dealt entrance, the section reveals, its two or three dealt
-moments and 0 or 1 scene (by fit, `moments.md`), loops inside card visuals, at most one quiet
-treatment and the hover layer.
+moments and 0 or 1 scene (by fit, `moments.md`), loops inside card visuals and the hover layer;
+no shader effect.
 
 ## 2. The page plan by kind
 
@@ -119,13 +119,12 @@ The full plans, deal lists and section order: `references/sections.md`.
   picture; one type moment (the address or name set large); one main action a screen; list text
   16px. Flat grounds with one or two dealt bands, square photographs, one button style, the phone
   bar, the dealt moments and scene, loops inside card visuals; no shader ground, fragment, diagram
-  or tab (one quiet treatment at most).
+  or tab.
 - **Product and service** (site-kind other). Photographs lead: the product, the people, the rooms,
   the work, two or more a screen on a product page. Real icons for the tools a studio uses; one
   still diagram at most; flat grounds and the dealt bands. No tech-looking shader ground, print or
-  gradient; the dealt moments, a scene where one fits, loops inside card visuals and at most one
-  quiet treatment (`effects-usage.md`); WebGL only for that treatment or a product render the brief
-  asks for. **A
+  gradient; the dealt moments, a scene where one fits and loops inside card visuals; no shader
+  effect (`effects-usage.md`), WebGL only for a product render the brief asks for. **A
   physical product with no photographs is shown in photographs:** stand-ins of the same kind of
   thing from `photos.mjs search`, each listed in the report, on the full product page; a render
   (`assets/objects/product-render`, stills) only when the brief asks for 3D or a render; never a
@@ -176,7 +175,7 @@ Open the reference of every asset family the page uses first. A dash means never
 | Feature cards, UI fragments | `assets/ui` | lead (gaming: none) | its app | an app the client runs | - | `cards.md` |
 | Diagram cards (hub, lanes, pulses) | `assets/diagrams` | 0-2, pulsing | 0-2, pulsing | 0-1, still | - | `diagrams.md` |
 | CSS grounds | `assets/backgrounds` | 0-2 dealt | 0-2 dealt | flat tokens | flat tokens | `backgrounds.md` |
-| Shader grounds and treatments | `assets/effects` | the one effect | the one effect | one quiet treatment at most | one quiet treatment at most | `effects-usage.md` |
+| Shader grounds and treatments | `assets/effects` | the one effect | the one effect | - (a technical product: as tech) | - | `effects-usage.md` |
 | Creative parts (`fx-*`) | `assets/components` | yes | yes | `fx-photo` plain, `fx-map` still | `fx-map` still | `effects-creative.md` |
 | Objects and prints | `assets/objects` | one, as the effect; a render when the brief asks for 3D | its render when the brief asks for 3D | its render when the brief asks for 3D | - | `effects-objects.md` |
 | Award-site moments | `assets/moments` | 2-3, any intensity | 2-3, any intensity | 2-3 by fit (bold on product) | 2-3, warm, quiet or lively | `moments.md` |
@@ -259,7 +258,7 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
    node <skill>/scripts/start.mjs deal --page <kind> --trade <trade> --history .taste-skill/history.json    # palettes, pairings and the LAYOUT block (nav, footer, close, buttons, mark, bands, compositions); add --axis after a word or editorial hero
    node <skill>/assets/layout/deal.mjs --type <page type> --has <photo,ui,film,object,setting> --history .taste-skill/layout-history.json   # the hero; a game adds --kind gaming, hardware --kind tech
    node <skill>/scripts/moments.mjs pick --page <kind> --scene deal --history .taste-skill/history.json   # every kind: 0-1 scene, two moments (--long: three)
-   node <skill>/scripts/effects.mjs pick --page <kind> --palette light|dark --slots hero --history .taste-skill/history.json   # tech; a place, service or product: --slots band, quiet treatments only
+   node <skill>/scripts/effects.mjs pick --page <kind> --palette light|dark --slots hero --history .taste-skill/history.json   # tech only (a product with a technical subject: --tech-subject); a place, service or product gets none
    node <skill>/scripts/start.mjs css --page <kind> --palette <id> --type <id> --radius soft --history .taste-skill/history.json
    node <skill>/scripts/start.mjs brand --page place --bg "#.." --ink "#.." --accent "#.." [--surface "#.."] [--muted "#.."] --type <id> --radius soft   # the client's own colours (a logo, a painted shopfront), in place of css
    ```
@@ -382,8 +381,8 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
   moment on the element its demo.html names and visible on screen {console-error, script-twice,
   script-module, moment-target, moment-hidden}.
 - **The right things for the kind:** outside tech no tech-looking effect ground or print; the
-  moments and scene dealt by fit, one quiet treatment at most (WebGL only for that treatment or a
-  product render the brief asked for) [effect-kind, effects-fit, photo-print]; the subject itself
+  moments and scene dealt by fit, no shader effect (WebGL only for a product render the brief
+  asked for) [effect-kind, effects-fit, photo-print]; the subject itself
   shows: the product big, whole in three sections at most, a new picture each [product-shown,
   same-object, photo-repeat]; each asset the brief names in its slot; a game's name and its world as key art,
   the diff of a code-review tool, software's `app-frame`;

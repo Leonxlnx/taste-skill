@@ -16,10 +16,13 @@ only what the page's kind takes. Nothing is locked to tech, but a cafe gets noth
 | page kind | effects it is dealt |
 |---|---|
 | tech (hardware), software, gaming | any effect whose tones the kind takes (tech: product, tech, editorial; software: tech, editorial, product; gaming: playful, tech), any intensity |
-| place, service | one quiet treatment at most, in one slot (the hero or one band), never a tech-looking shader ground |
-| product (site-kind other) | the same treatments; a technical subject (hardware, devices) is passed as `--tech-subject` and dealt as tech |
+| place, service | none: the plan says "no WebGL" there, and every effect is a shader, the quiet treatments too |
+| product (site-kind other) | none the same; a technical subject (hardware, devices) is passed as `--tech-subject` and dealt as tech |
 
-The treatments (`"treatment": true`), and why each may sit on a cafe, a guesthouse or a studio:
+The quiet treatments (`"treatment": true`) are the calm ones a tech page or a product with a technical
+subject may take on a band. They are WebGL like the rest, so `effects.mjs pick` deals none of them to a
+place, service or product page and stops when one is named there (2.5.3: a guesthouse and a linen shop
+were dealt `soft-light-bars` beside "no WebGL" and FAILed effects-fit). What each looks like:
 
 - `grain-gradient`: soft page colours under still-looking film grain; it reads as printed paper, not
   as a screen.
@@ -42,8 +45,7 @@ window; `edge-glow` lights a prompt box. A product page with a technical subject
 On place, service and product pages photographs, type and flat colour still carry the page. Banned
 there: autoplay video, any CSS gradient (grounds, panels, glows, scrims), SVG pattern or texture
 grounds, `backdrop-filter` (the nav too), `mix-blend-mode`, glass, a custom cursor and any scroll or
-animation library; canvas and WebGL only for the one dealt treatment and a product render the brief
-asks for. Dealt on every kind: the hero's entrance, the section reveals, the two or three dealt
+animation library; canvas and WebGL only for a product render the brief asks for. Dealt on every kind: the hero's entrance, the section reveals, the two or three dealt
 moments, a dealt scene (`scenes.md`), the hover layer, loops inside a card's visual, `fx-map` baked
 still, `fx-photo` as a plain photograph, real icons, a diagram, and on a physical product whose
 brief asks for 3D its own product render (`[data-product]`, `effects-objects.md`): the product's
@@ -56,7 +58,7 @@ photographs is shown in stand-in photographs (`photos.md`).
 | | tech | product, service (other) | place |
 |---|---|---|---|
 | Lead picture | the client's UI (hardware: its photographs or CAD render, else stand-in photographs of its kind, never an effect or an order form alone; a game: its name and its art, else its name over a stand-in photograph of its setting; a render only when the brief asks for 3D) | its photographs; a product without them: stand-in photographs of its kind (a render only when the brief asks for 3D) | its photographs (a remote place: its region's landscape) |
-| The one effect | a live ground, a WebGL part, an object | 0 or 1 quiet treatment (above) | 0 or 1 quiet treatment (above) |
+| The one effect | a live ground, a WebGL part, an object | none (no WebGL; a technical subject: as tech) | none (no WebGL) |
 | Card panel grounds | one card group, still, from the effect's family; with a big scene the lit ground (`data-ground`), no `data-fx` | the client's photograph | the client's photograph |
 | Moments | 2, 3 on a long page, dealt by fit (`moments.md`) | 2, 3 on a long page, dealt by fit | 2, 3 on a long page, dealt by fit |
 | Big scene | 0 or 1, dealt by fit (`scenes.md`) | 0 or 1, dealt by fit | 0 or 1, dealt by fit |

@@ -356,6 +356,29 @@ function findNotes(file) {
   if (k > 0) tries.push(path.join(parts.slice(0, k + 1).join(path.sep), 'copy.md'));
   return tries.find((p) => { try { return fs.statSync(p).isFile(); } catch { return false; } }) || null;
 }
+// the names names.json beside the page (or one or two folders up, or above the .taste-skill folder the page sits in)
+// marks as given by the brief: "coined": false, "given": true, or a source naming the brief or the client
+function givenNames(file) {
+  const out = new Set(); if (!file) return out;
+  const abs = path.resolve(file), tries = [];
+  let d = path.dirname(abs);
+  for (let i = 0; i < 3; i++) {
+    tries.push(path.join(d, 'names.json'));
+    if (path.basename(d) === '.taste-skill') tries.push(path.join(path.dirname(d), 'names.json'));
+    const up = path.dirname(d); if (up === d) break; d = up;
+  }
+  const parts = abs.split(path.sep), k = parts.lastIndexOf('.taste-skill');
+  if (k > 0) tries.push(path.join(parts.slice(0, k).join(path.sep), 'names.json'));
+  const nf = tries.find((p) => { try { return fs.statSync(p).isFile(); } catch { return false; } });
+  if (!nf) return out;
+  let j = null; try { j = JSON.parse(fs.readFileSync(nf, 'utf8').replace(/^﻿/, '')); } catch { return out; }
+  const list = Array.isArray(j) ? j : j && Array.isArray(j.names) ? j.names : [j];
+  for (const e of list) {
+    if (!e || typeof e !== 'object' || typeof e.name !== 'string') continue;
+    if (e.coined === false || e.given === true || /\b(brief|client)\b/i.test(String(e.source || ''))) out.add(e.name.trim().toLowerCase());
+  }
+  return out;
+}
 // content words of a heading or a label: no articles, pronouns or small words; plural s dropped
 const STOP = new Set("a an the and or but of for to in on at by with from into your you you're our we we're us my me i it it's its this that these those is are be was will can here now today just all every more very so as up out off".split(' '));
 const normWords = (s) => tidy(s).toLowerCase().replace(/[^a-z0-9à-öø-ÿ'\s-]/g, ' ').split(/[\s-]+/).filter(Boolean);
@@ -583,9 +606,14 @@ function lintRead(R, isHtml) {
   if (people.length) add('WARN', 'copy-cast', people, `default-cast names: ${people.join(', ')}`, 'person names come only from the brief; a mock\'s names fit its locale and are not the names every model picks');
   const brandText = [R.title, ...R.headings.filter((h) => h.level === 1).map((h) => h.text)].join(' ');
   const cos = CAST_CO.filter((n) => new RegExp(`\\b${esc(n)}\\b`).test(R.all));
-  const brandCos = cos.filter((n) => COINED.has(n) && new RegExp(`\\b${esc(n)}\\b`).test(brandText));
-  if (brandCos.length) add('FAIL', 'copy-cast-company', brandCos, `the brand is a name every model coins: ${brandCos.join(', ')}`, 'coin another name and search it (copy.md, names.json); if the brief gives this name, waive it with the brief as the reason');
-  const otherCos = cos.filter((n) => !brandCos.includes(n));
+  const brandAll = cos.filter((n) => COINED.has(n) && new RegExp(`\\b${esc(n)}\\b`).test(brandText));
+  // a name the brief gives is the client's, not coined: names.json beside the page says so (2.5.3: "Kestrel" FAILed
+  // twice although the brief named it and names.json said "given by the brief")
+  const given = isHtml ? givenNames(R.file) : new Set();
+  const brandCos = brandAll.filter((n) => ![...given].some((g) => new RegExp(`\\b${esc(n.toLowerCase())}\\b`).test(g)));
+  if (brandAll.length > brandCos.length) add('INFO', 'copy-cast-company', brandAll.filter((n) => !brandCos.includes(n)), `the brand is a name models coin, given by the brief (names.json): ${brandAll.filter((n) => !brandCos.includes(n)).join(', ')}`, 'keep it; say in the report that the brief gives it');
+  if (brandCos.length) add('FAIL', 'copy-cast-company', brandCos, `the brand is a name every model coins: ${brandCos.join(', ')}`, 'coin another name and search it (copy.md, names.json); if the brief gives this name, write it in names.json beside the page as {"name": "<it>", "coined": false, "source": "the brief"}');
+  const otherCos = cos.filter((n) => !brandAll.includes(n));
   if (otherCos.length) add('WARN', 'copy-cast-company', otherCos, `default fictional company names: ${otherCos.join(', ')}`, 'coin another name (copy.md, names.json)');
   const quotes = body.filter((b) => /^["“][^\n]{20,}["”]$/.test(b)).length;
   if (quotes >= 3) add('INFO', 'copy-quotes', quotes, `${quotes} quoted testimonials`, 'only quotes the brief gives, with name and role or town; none is fine');

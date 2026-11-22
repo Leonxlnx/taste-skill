@@ -12,7 +12,11 @@
 //     round, and the hook does the same but lets the session stop in the end, however often the page changes;
 //  5. after --done the hook never reopens the build, a run by hand on a changed page does;
 //  6. copy-lint's copy-withheld FAILs a price or an address held back and a note about the build, and passes the
-//     lines that only look like them.
+//     lines that only look like them;
+//  7. deal-drift after a deal made again;
+//  8. a waiver copied whole from the printed FAIL line (its widths, "FAIL <id>") waives that finding;
+//  9. perf.mjs's last run (.taste-skill/perf.json): its FAIL is a gate FAIL on the unchanged page, a WARN once the page
+//     changed after it.
 //   node tests/gate-flow.mjs        (scratch in $TASTE_SKILL_TMP when set, else the OS temp folder)
 import fs from 'node:fs';
 import os from 'node:os';
@@ -239,6 +243,74 @@ ${secs}
   check(t.r.last === 'GATE: PASS' && !t.dd.length, `one slot dealt again (pick --count 1): its moment stands in for the one it replaced (${t.r.last})`, JSON.stringify(t.dd));
   t = site(built3, '     moments: iris-opens, word-highlight, word-rotate', [...deal(['iris-opens', 'word-highlight', 'word-rotate'], A, 'aaa'), ...deal(['photo-chapters'], R, 'ccc')]);
   check(t.dd.length === 1 && t.dd[0].where === 'moment iris-opens' && /plan's moments part \(index\.html line \d+\)/.test(t.dd[0].msg), `a moment the plan names and the page lacks FAILs, naming the plan's line (${t.dd.map(f => f.where).join(', ')})`, JSON.stringify(t.dd));
+}
+
+// ---------------------------------------------------------------- 8. a waiver copied whole from the FAIL line
+// (2.5.3: a target ending in the printed widths, " [390]", matched no open finding)
+for (const whole of [false, true]) {
+  const dir = project('the keyboard', 'The keyboard', 'a keyboard');
+  gate(dir, ['--start', 'index.html']);
+  stub(dir, 'fail');
+  let r = gate(dir, []);
+  const line = (r.out.split('\n').find(l => /^\s+FAIL contrast/.test(l)) || '').trim();
+  if (!whole) check(/\[1440\]$/.test(line), `the FAIL line ends in its widths (${line})`, r.out);
+  fs.writeFileSync(path.join(dir, '.taste-skill', 'waivers.json'), JSON.stringify([{ check: 'contrast', target: whole ? line : line.replace(/^FAIL contrast\s+/, ''), reason: 'a stand-in reason, long enough' }]));
+  r = gate(dir, []);
+  check(r.last === 'GATE: PASS' && /WAIVED contrast/.test(r.out) && !/waiver ignored/.test(r.out), `${whole ? 'the whole line, "FAIL contrast" and all,' : 'a target ending in the widths "  [1440]"'} waives it (${r.last})`, r.out);
+}
+
+// ---------------------------------------------------------------- 9. perf.mjs's last run reaches the gate
+// (2.5.3: perf.mjs FAILed a layout shift and the gate said PASS): a FAIL of a run made after the page last changed is a
+// FAIL; a run older than a change is a WARN to run it again; a PASSing run adds nothing
+{
+  const dir = project('the keyboard', 'The keyboard', 'a keyboard');
+  gate(dir, ['--start', 'index.html']);
+  const perf = (fails, at) => fs.writeFileSync(path.join(dir, '.taste-skill', 'perf.json'), JSON.stringify({ page: path.join(dir, 'index.html'), at, widths: [1440, 390], partial: false, fails, warns: 0 }));
+  const cls = [{ w: 390, name: 'layout shift (CLS)', value: '0.569', note: 'shift at 765: mo-io__ring' }];
+  perf(cls, Date.now() + 5000);
+  let r = gate(dir, []);
+  const pf = ((state(dir).found || {}).fails || []).filter(f => f.check === 'perf');
+  check(/^GATE: FAIL/.test(r.last) && pf.length === 1 && /0\.569/.test(pf[0].msg) && /FAIL perf/.test(r.out), `a perf FAIL on the unchanged page is a gate FAIL (${r.last})`, r.out);
+  perf(cls, Date.now() - 60000); touch(dir, 1);
+  r = gate(dir, []);
+  const pw = ((state(dir).found || {}).warns || []).filter(w => w.check === 'perf');
+  check(r.last === 'GATE: PASS' && pw.length === 1 && /run perf\.mjs on the page again/.test(pw[0].fix), `a perf FAIL older than the page's last change is a WARN to run it again (${r.last})`, r.out);
+  perf([], Date.now() + 5000); touch(dir, 2);
+  r = gate(dir, []);
+  check(r.last === 'GATE: PASS' && !((state(dir).found || {}).warns || []).some(w => w.check === 'perf'), `a passing perf run adds nothing (${r.last})`, r.out);
+}
+
+// ---------------------------------------------------------------- 10. a play control with no film behind it
+// (2.5.3: a trailer poster's play disc opened a store search); a link to the trailer's own page passes
+{
+  const trailer = href => `<section id="trailer"><h2>The trailer</h2><figure class="frame"><video class="frame__img" playsinline preload="none" poster="p.jpg"></video><a class="ly-play" href="${href}" aria-label="Watch the trailer"><span class="ly-play__disc"></span></a></figure></section>`;
+  for (const [href, dead] of [['https://store.steampowered.com/search/?term=Saltmarsh', true], ['#', true], ['https://store.steampowered.com/app/123450/Saltmarsh/', false]]) {
+    const dir = project('the game', 'The game', 'a boat');
+    fs.writeFileSync(path.join(dir, 'index.html'), PAGE('The game', 'a boat', trailer(href)));
+    gate(dir, ['--start', 'index.html']);
+    const r = gate(dir, []);
+    const pd = ((state(dir).found || {}).fails || []).filter(f => f.check === 'play-dead');
+    check(dead ? pd.length === 1 : !pd.length, `a play control to ${href}: ${dead ? 'play-dead FAILs' : 'no play-dead'} (${r.last})`, r.out);
+  }
+}
+
+// ---------------------------------------------------------------- 11. a dealt composition the page lacks FAILs; a form
+// built as close__form in a section of its own is the dealt close-form (2.5.3: "the page has none" beside its form)
+{
+  const site = (body, layout) => {
+    const dir = project('none', 'A part', 'a lamp');
+    fs.writeFileSync(path.join(dir, 'index.html'), `<!doctype html><html lang="en"><head><meta name="page-type" content="service"><title>Test</title></head><body><main><section id="hero"><h1>A test page</h1></section>${body}</main></body></html>\n`);
+    gate(dir, ['--start', 'index.html']);
+    fs.writeFileSync(path.join(dir, '.taste-skill', 'history.json'), JSON.stringify({ layout }));
+    gate(dir, []);
+    const s = state(dir).found || {};
+    return [...(s.fails || []), ...(s.warns || [])].filter(f => f.check === 'deal-drift');
+  };
+  let dd = site('<section id="intro-call"><h2>Book a call</h2><form class="form close__form"><input name="email"></form></section>', { 'service:close': ['close-form'], 'service:form': ['close-form'] });
+  check(!dd.length, `close-form dealt, the form built as close__form in its own section: no deal-drift (${dd.map(f => f.where).join(', ')})`, JSON.stringify(dd));
+  dd = site('<section id="work"><h2>Work</h2><p>Words.</p></section><footer><div class="closing__cta close--type"></div></footer>', { 'service:close': ['close-type'], 'service:showcase': ['bleed-panel'] });
+  const comp = ((dd.find(f => /bleed-panel/.test(f.where))) || {});
+  check(comp.where === 'composition showcase bleed-panel' && /comp-bleed/.test(comp.fix || ''), `a dealt bleed-panel the page lacks is a deal-drift finding (${comp.where})`, JSON.stringify(dd));
 }
 
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* a profile still held: left in the temp folder */ }

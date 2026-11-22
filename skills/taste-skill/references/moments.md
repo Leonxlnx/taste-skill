@@ -33,7 +33,7 @@ The deal reads them against the page's kind:
 |---|---|---|---|
 | place | warm, editorial | quiet, lively | no |
 | service | editorial, warm, product | quiet, lively | no |
-| product (site-kind other) | product, editorial, warm | quiet, lively, bold | only a photo treatment or a render the brief asks for |
+| product (site-kind other) | product, editorial, warm | quiet, lively, bold | no effect; only a render the brief asks for |
 | tech (hardware) | product, tech, editorial | any | yes |
 | software | tech, editorial, product | any | yes |
 | gaming | playful, tech | any | yes |

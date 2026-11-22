@@ -11,7 +11,7 @@ while it is near the screen.
 and the tech tone (software, gaming, tech: hardware, and a product passed as `--tech-subject`);
 `fx-photo` (every kind, as a plain photograph) and `fx-map` (every kind with a door, a place
 included, baked still, and only for a street the brief gives) go on every kind. A place, service or
-product page takes its motion from the dealt moments, the scene and its one quiet treatment instead. `fx-band` is out: a
+product page takes its motion from the dealt moments and the scene instead (no WebGL there). `fx-band` is out: a
 drawn band between sections is not a section. `fx-logos` is out: real logos show in their full
 colours and never move (rule 7, MO-57; `sections-library.md` logo-row).
 

@@ -375,7 +375,7 @@ const fixes = {
   'visual-empty': 'make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame',
   'hero-enter': 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter (motion.md: the entrance)',
   'moment-none': 'deal them (start.mjs plan, or moments.mjs pick --page <kind> --scene deal) and mount each in its own section (moments.md)',
-  'effect-kind': 'take the effect off or deal one that fits: a place, shop or service page takes one quiet treatment at most (effects.mjs pick --page <kind> --slots band) and a scene dealt by fit (moments.mjs pick --page <kind> --scene deal), never a tech-looking shader ground',
+  'effect-kind': 'take the effect off or deal one that fits: a place, shop or service page takes no shader effect (effects.mjs pick deals none there) and a scene dealt by fit (moments.mjs pick --page <kind> --scene deal), never a tech-looking shader ground',
 };
 const summary = [
   '  visuals    visual-caption (a caption, description or caption-like line under, over or on an image, render or visual',
@@ -952,6 +952,9 @@ function kindProbe() {
     return parts.join(' > ');
   };
   const first = (s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return r.width >= 1 && r.height >= 1 ? { sel: sel(e), doc: { left: Math.round(Math.max(0, r.left)), top: Math.round(r.top + scrollY), width: Math.round(Math.min(W, r.right) - Math.max(0, r.left)), height: Math.round(r.height) } } : { sel: sel(e), doc: null }; };
+  // the page's own prints: a [data-print] inside a scene is that scene's part (2.5.3: hinged-sheets marks its nine
+  // lines of fine print data-print, and a gaming page was told of "10 big scenes")
+  const ownPrints = () => [...document.querySelectorAll('[data-print]')].filter((e) => !(e.parentElement && e.parentElement.closest('[data-scene], [data-big-scene]')));
   // the canvases holding a live context now (the guard's list, lost and dropped ones left out)
   const live = [];
   try { for (const x of (G && G.list) || []) { const c = x.c && x.c.deref && x.c.deref(), g = x.g && x.g.deref && x.g.deref(); if (!c || !g || !c.isConnected) continue; try { if (g.isContextLost()) continue; } catch (e) { continue; } live.push(c); } } catch (e) { /* guard changed */ }
@@ -963,14 +966,14 @@ function kindProbe() {
     taste: meta('taste-kind'), siteKind: meta('site-kind'), pageKind: meta('page-kind'), pageType: meta('page-type'), dataType: String(document.documentElement.getAttribute('data-type') || '').trim().toLowerCase(),
     fxIds: [...document.querySelectorAll('[data-fx]')].map((e) => String(e.getAttribute('data-fx') || '').trim().split(/[\s:]/)[0]),
     bigIds: [...document.querySelectorAll('[data-big-scene]')].map((e) => String(e.getAttribute('data-big-scene') || '').trim()),
-    dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: q('[data-print]'), dataMoment: q('[data-scroll-moment], [data-moment]'),
+    dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: ownPrints().length, dataMoment: q('[data-scroll-moment], [data-moment]'),
     bigScene: q('[data-big-scene]'), fxBeside: [...document.querySelectorAll('[data-fx]')].filter((e) => !e.closest('[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]')).length,
     mount: first('[data-fx], [data-scene], [data-big-scene], [data-print]'), moment: first('[data-scroll-moment], [data-moment]'),
     // the hero's entrance (motion.md): data-enter on the hero section and the head line that sets html.m-enter; a hero
     // that holds a big scene with its own load motion writes data-enter="off" (motion.md), and the scene is its entrance
     enter: { hero: first('main > section.hero, section.hero, .hero'), data: !!document.querySelector('.hero[data-enter]:not([data-enter="off"])'), head: document.documentElement.classList.contains('m-enter'), scene: !!document.querySelector('.hero[data-enter="off"][data-big-scene], .hero[data-enter="off"] [data-big-scene]') },
     moments: [...document.querySelectorAll('[data-moment]')].map((e) => { let look = ''; try { look = String((JSON.parse(e.getAttribute('data-moment-opts') || '{}') || {}).look || ''); } catch (x) { /* bad json */ } const id = String(e.getAttribute('data-moment') || '').trim(); return { id, look, sel: sel(e), nested: !!(e.parentElement && e.parentElement.closest('[data-moment]')), mounted: e.hasAttribute('data-moment-mounted'), failed: String(e.getAttribute('data-moment-failed') || '').slice(0, 120), loaded: performance.getEntriesByType('resource').some((r) => { try { return new URL(r.name).pathname.endsWith(`/moments/${id}/moment.js`); } catch (x) { return false; } }) }; }),
-    printObjects: [...[...document.querySelectorAll('[data-print]')].map((e) => { let fx = 'render'; try { fx = String((JSON.parse(e.getAttribute('data-print-params') || '{}') || {}).effect || 'render').toLowerCase(); } catch (x) { /* bad json */ } return { id: String(e.getAttribute('data-print') || '').trim(), effect: fx }; }), ...[...document.querySelectorAll('[data-product]')].map(() => ({ id: 'print-product', effect: 'render' }))],
+    printObjects: [...ownPrints().map((e) => { let fx = 'render'; try { fx = String((JSON.parse(e.getAttribute('data-print-params') || '{}') || {}).effect || 'render').toLowerCase(); } catch (x) { /* bad json */ } return { id: String(e.getAttribute('data-print') || '').trim(), effect: fx }; }), ...[...document.querySelectorAll('[data-product]')].map(() => ({ id: 'print-product', effect: 'render' }))],
     // created: the contexts the page got (an ask the guard refused is no context, and a canvas asked again after a
     // refusal is counted once more by the guard); big: a large live canvas that is no data-fx ground and no part of a
     // scene (bigGlNonFx)
@@ -6857,7 +6860,9 @@ function lib() {
   async function noVisual(type) {
     const vw = vwNow(), vh = innerHeight, S = sectionsList(), out = [], hl = [];
     const placeLike = type === 'place' || type === 'product';
-    const VIS = 'img, video, canvas, iframe, picture, object, embed, svg, [data-ui], .ui[class*=ui-], [role="img"], [data-fx], [data-fx-mounted]';
+    // a kit .frame holding a hand-built mock (a timeline, a channel, a code window: 2.5.3 told three of them "no
+    // picture, effect or mock") and a code block are visuals; an empty frame is visual-empty's to tell
+    const VIS = 'img, video, canvas, iframe, picture, object, embed, svg, [data-ui], .ui[class*=ui-], [role="img"], [data-fx], [data-fx-mounted], .frame, pre';
     const lastMain = S.filter((s) => s.tagName !== 'FOOTER').slice(-1)[0];
     for (const s of S) {
       if (s.tagName === 'FOOTER' || s.tagName === 'NAV' || !s.isConnected) continue;
@@ -8358,7 +8363,12 @@ function lib() {
     fresh();
     const vw = vwNow(), vh = innerHeight, out = [];
     const hosts = new Set();
-    for (const cv of document.querySelectorAll('canvas')) { const h = cv.closest('[data-fx], [data-fx-mounted], [data-object], [data-scene]') || cv.parentElement; if (h) hosts.add(h); }
+    // a canvas is a WebGL host only when it asked for a WebGL context (the guard's list); a 2D canvas has no shader
+    // to reject (2.5.3: light-flood's 2D canvases were told to need a WebGL fallback)
+    const GG = window.__ccgl, glCv = new Set();
+    try { for (const x of (GG && GG.list) || []) { const c = x.c && x.c.deref && x.c.deref(); if (c) glCv.add(c); } } catch (e) { /* guard changed */ }
+    const isGl = (cv) => !GG || !Array.isArray(GG.list) || glCv.has(cv) || !!(GG.refusedEls && GG.refusedEls.has(cv));
+    for (const cv of document.querySelectorAll('canvas')) { if (!isGl(cv)) continue; const h = cv.closest('[data-fx], [data-fx-mounted], [data-object], [data-scene]') || cv.parentElement; if (h) hosts.add(h); }
     for (const h of document.querySelectorAll('[data-fx], [data-fx-mounted]')) hosts.add(h);
     for (const h of hosts) {
       if (inFixed(h) || h.closest('dialog, [role="menu"], .nav__menu, [hidden]')) continue;
@@ -9043,7 +9053,7 @@ const FIX = {
   flush: 'give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)',
   'credit-wall': 'one short credit line in the footer (or the credits on an imprint page): never a block of names',
   'unit-break': 'keep a number with its unit: a no-break space (&nbsp;) between them',
-  'effects-fit': 'take the WebGL effects off this page, or keep one quiet treatment dealt by effects.mjs pick --page <kind> (grain-gradient, soft-light-bars, line-engraving, film-light-leak, duotone-grade); shader grounds are for tech, software, AI and gaming pages',
+  'effects-fit': 'take the WebGL effects off this page: a place, shop, service or plain product page takes none (effects.mjs pick deals none there, the quiet treatments are WebGL too); its motion is the entrance, the reveals, the dealt moments and a scene dealt by fit; shader grounds are for tech, software, AI and gaming pages',
   'tab-wrap': 'fit the tabs on one line at this width (shorter labels, a scrolling row), or let them stack evenly',
   'fade-cut': 'fit the mock\'s rows inside its panel (fewer rows, a taller panel), or end the fade below the last whole row: no row half-erased',
   'photo-weight': 'give each photograph srcset and sizes (an 800px and a 1600px file), or a smaller file',
@@ -10230,7 +10240,9 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
             if (ks.length < 4) return;
             const kk = (ks[1] + ks[2]) / 2; // the median side
             if (process.env.CC_DEBUG_BUSY) console.error(`  [btn ${width} stop ${k}] ${b.fill} sides ${ks.map((v) => v.toFixed(2)).join(' ')} median ${kk.toFixed(2)} "${b.text.slice(0, 30)}"`);
-            if (kk < 1.3) F.push({ check: 'button-contrast', sev: 'WARN', id: b.id, sel: b.sel, text: b.text, stop: k, rects: [b.rect], msg: `the button "${b.text.slice(0, 30)}" (${b.fill}) stands only ${kk.toFixed(2)}:1 off the ground around it: it reads as part of the ground, or as switched off` });
+            // a primary or lone button lost in its ground FAILs; the tonal secondary beside a primary (the kit's
+            // pill and tonal looks: 8% ink on the ground) WARNs, its label still reads
+            if (kk < 1.3) F.push({ check: 'button-contrast', sev: /\bbtn--(secondary|ghost|tertiary)\b/.test(b.sel) ? 'WARN' : 'FAIL', id: b.id, sel: b.sel, text: b.text, stop: k, rects: [b.rect], msg: `the button "${b.text.slice(0, 30)}" (${b.fill}) stands only ${kk.toFixed(2)}:1 off the ground around it: it reads as part of the ground, or as switched off` });
           });
         } }
       // buttons: the page's family, and what one screen shows together (judged at the end, against the family)
@@ -10258,7 +10270,9 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
           const worst = Math.min(...mine.map((x) => x.p10)), sd = Math.max(...mine.map((x) => x.sd)), edge = Math.max(...mine.map((x) => x.edge || 0)), rng = Math.max(...mine.map((x) => x.rng || 0));
           const need = c.large ? 3 : 4.5;
           if (process.env.CC_DEBUG_BUSY) console.error(`  [busy ${width} stop ${k}] ${c.kind} sd ${sd.toFixed(3)} edge ${edge.toFixed(2)} rng ${rng.toFixed(2)} p10 ${worst.toFixed(2)} fs ${c.fs} "${c.text.slice(0, 40)}"`);
-          if (worst < need) F.push({ check: 'contrast', sev: c.large ? 'WARN' : 'FAIL', id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `${c.large ? 'large' : 'body'} text over a ${c.kind} reads at ${worst.toFixed(1)}:1 at its worst tenth (needs ${need}:1)${sd > 0.04 ? ', on a busy ground' : ''}` });
+          // text under 3:1 is a FAIL, large or not (2.5.3: a link at 1.2:1 only WARNed); large text on a busy ground
+          // that still reads at 2:1 at its worst tenth WARNs (the tenth is the photograph's worst patch, not the line's)
+          if (worst < need) F.push({ check: 'contrast', sev: c.large && sd > 0.04 && worst >= 2 ? 'WARN' : 'FAIL', ratio: +worst.toFixed(2), id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `${c.large ? 'large' : 'body'} text over a ${c.kind} reads at ${worst.toFixed(1)}:1 at its worst tenth (needs ${need}:1)${sd > 0.04 ? ', on a busy ground' : ''}` });
           // busy-ground: the picture under the words changes a lot even where the contrast holds
           else if (sd > 0.12) F.push({ check: 'busy-ground', sev: sd > 0.2 && c.fs >= 24 ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `text over a busy part of a ${c.kind} (its luminance varies by ${sd.toFixed(2)} under the words)` });
           // detail under the words (leaves, a weave, shadow bars): the spread may hold under a scrim, the texture stays
@@ -10961,7 +10975,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     F.forEach((f, i) => { if (inside[i]) { f.msg += ' (caught mid-way through a scroll-linked animation)'; f.sev = 'WARN'; } });
     if (quick) {
       const scene = (await safe('scene', () => tab.eval(`window.__cc.insideScene(${JSON.stringify(ids)})`))) || [];
-      F.forEach((f, i) => { if (scene[i] && !inside[i]) { f.msg += ' (inside a held section or scroll scene, whose motion --quick does not check)'; f.sev = 'WARN'; } });
+      // (text a visitor must read at under 3:1 stays a FAIL: the words sit on that ground, caught where they stand)
+      F.forEach((f, i) => { if (scene[i] && !inside[i] && !(f.check === 'contrast' && f.sev === 'FAIL' && f.ratio < 3)) { f.msg += ' (inside a held section or scroll scene, whose motion --quick does not check)'; f.sev = 'WARN'; } });
     }
     groupSame(F);
   } catch (e) {

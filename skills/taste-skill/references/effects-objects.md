@@ -17,7 +17,7 @@ Thirteen objects in three families and one builder; each family's README is the 
   product brand): no object or print; plain photographs lead. Objects and prints carry the tech
   tone and WebGL, so the fit rule (`effects-usage.md`, The fit rule) keeps them on tech, software
   and gaming; a place or service page takes its motion from its dealt moments, a scene dealt by fit
-  (`scenes.md`) and at most one quiet treatment. The one exception is below: a product whose brief
+  (`scenes.md`), never a shader. The one exception is below: a product whose brief
   asks for 3D shows its own render.
 - **Product with photographs**: the photograph leads.
 - **Any physical product without photographs** (a lamp, a chair, a bike, a stroller, a robot arm),

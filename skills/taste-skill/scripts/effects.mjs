@@ -30,9 +30,10 @@
   meta.avoidWith never share a page. --page is required (like moments.mjs) and deals by fit: each effect
   carries meta.tones, meta.intensity and meta.webgl, and the kind takes what moments.mjs FIT lists
   (--tone narrows it to one tone of the brief). Tech, software and gaming take any effect that fits; a
-  place, service or product page (no WebGL there) only the quiet treatments, meta.treatment true:
-  grain-gradient, soft-light-bars, line-engraving, film-light-leak and the named duotone-grade, never a
-  tech-looking ground; one slot at most there. A product with a technical subject: --page product
+  place, service or product page takes no WebGL, so no effect is dealt there: the quiet treatments
+  (meta.treatment true: grain-gradient, soft-light-bars, line-engraving, film-light-leak, duotone-grade)
+  are shaders too, and naming one there stops. Only a treatment drawn without WebGL could reach those
+  kinds (one slot at most); none is in the kit yet. A product with a technical subject: --page product
   --tech-subject. When none fits, the deal is empty (exit 0) and the caller places no effect. --quiet leaves out the focal grounds (meta "focal": true: a sphere,
   a beam, peaks), for slots that carry a big UI window, a screenshot or text.
 */
@@ -206,9 +207,8 @@ async function pick(a) {
   // dealing itself is assets/effects/pick.js, which the gallery runs in the browser too.
   if (!a.palette || a.palette === true) die('pick: pass --palette light, dark or colour (the kind of the page\'s ground)');
   // the page's kind deals by fit (moments.mjs FIT, references/effects-usage.md): every effect carries
-  // tones, an intensity and webgl; a kind without WebGL (place, service, product) is dealt only the
-  // quiet treatments (meta.treatment: a photo grade, a print or film texture, window light), never a
-  // tech-looking shader ground. A product with a technical subject: --page product --tech-subject.
+  // tones, an intensity and webgl; a kind without WebGL (place, service, product) is dealt no WebGL
+  // effect, the quiet treatments included. A product with a technical subject: --page product --tech-subject.
   const pgWord = a.page != null && a.page !== true ? a.page : a.type;
   if (pgWord == null || pgWord === true) die('pick: pass --page <kind> (tech, gaming, software, place, product or service). A product with a technical subject: --page product --tech-subject.');
   const pg = pageKind(pgWord);
@@ -216,9 +216,14 @@ async function pick(a) {
   const kind = pg.page === 'product' && a['tech-subject'] ? 'tech' : pg.page;
   const tone = a.tone != null && a.tone !== true ? String(a.tone).toLowerCase() : undefined;
   if (tone && !FIT[kind].tones.includes(tone)) die(`pick: --tone ${tone} is not a tone a ${kind} page takes (${FIT[kind].tones.join(', ')})`);
-  const fitting = idx.effects.filter(e => fitsKind(e, kind, { tone, webglOk: e.treatment === true }) && (FIT[kind].webgl || e.treatment === true));
+  // 2.5.3: a kind without WebGL is dealt no WebGL at all, the quiet treatments included (they are shaders too): the
+  // plan's first line says "no WebGL" there, and a guesthouse and a linen shop dealt soft-light-bars FAILed effects-fit.
+  // Only a treatment drawn without WebGL (meta.webgl 0) could reach them; none is in the kit yet
+  const fitting = idx.effects.filter(e => fitsKind(e, kind, { tone }) && (FIT[kind].webgl || (e.treatment === true && !e.webgl)));
+  const namedGl = !FIT[kind].webgl && a.slots && a.slots !== true ? String(a.slots).split(',').map(s => s.split(':')[1]).filter(Boolean).find(id => (idx.effects.find(e => e.id === id) || {}).webgl) : null;
+  if (namedGl) die(`pick: ${namedGl} is a WebGL shader and a ${kind} page takes no WebGL (shader grounds and treatments are for tech, software and gaming; a product with a technical subject: --tech-subject)`);
   if (!fitting.length) {
-    const why = `no effect fits a ${kind} page${tone ? ` in the ${tone} tone` : ''}: the page carries its photographs and moments`;
+    const why = `no effect fits a ${kind} page${tone ? ` in the ${tone} tone` : ''}${FIT[kind].webgl ? '' : ' (no WebGL there)'}: the page carries its photographs and moments`;
     console.error(why);
     if (a.json) console.log(JSON.stringify({ seed: null, page: kind, picks: [], reason: why })); else console.log('no effect: ' + why);
     return;

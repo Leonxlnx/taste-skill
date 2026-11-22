@@ -34,8 +34,9 @@ object render for the two object scenes.
   against `--has` (start.mjs plan and moments.mjs pick/scene; default by kind: a place or service
   `photo`, a product `photo,product`, software `ui,figures`): `pictures:N` over 8 needs `archive`
   (the client's own body of pictures), `product-photo` needs `product`, `product-ui` needs `ui`,
-  `video` needs `film`, `route` a real route, so a software page is never dealt a project archive
-  of photographs. A need the brief cannot meet:
+  `video` needs `film`, `route` a real route, `site` the client's own site or world in wide pictures,
+  from high up too (a launch site, a plant, a test range; a game's `setting` brings it; a pocket device
+  has none), so a software page is never dealt a project archive of photographs. A need the brief cannot meet:
   deal again with the scene in `--exclude`; never a stand-in for the client's pictures. A game
   without art files sets its name large over stand-in photographs of its setting (the `photo` hero
   and its world section; a render only when the brief asks for 3D), never an effect in its place
@@ -60,8 +61,8 @@ object render for the two object scenes.
 
 | id | fits | tones | intensity | needs | WebGL | restH | phone |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `descend-through-weather` | hero (below it only) | tech, playful, editorial | bold | two photographs of the client's world, high and low | - | 2 | still |
-| `shaped-window-over-fixed-world` | hero (below it only) | tech, playful, product | bold | one wide photograph of the client's world | - | 2 | still |
+| `descend-through-weather` | hero (below it only) | tech, playful, editorial | bold | two photographs of the client's world, high and low (site, pictures:2) | - | 2 | still |
+| `shaped-window-over-fixed-world` | hero (below it only) | tech, playful, product | bold | one wide photograph of the client's world (site, pictures:1) | - | 2 | still |
 | `fixed-hero-object` | hero (below it only) | tech, product, playful | bold | an object render or cut-out, 1-4 chapters | 1 | 2 | still |
 | `powers-of-ten-pullback` | product | tech, product | bold | the product's UI at true size | - | 1 | still |
 | `product-assembles-into-its-action` | product | tech | lively | the screen as HTML, 4-6 steps | - | 1 | still |

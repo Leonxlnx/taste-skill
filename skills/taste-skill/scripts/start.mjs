@@ -34,7 +34,8 @@
                               [--long] [--tone warm|editorial|product|tech|playful] [--axis] --history .taste-skill/history.json
       --has names what the brief can fill (default: software ui,figures; tech photo,product,figures; product
       photo,product; place and service photo; gaming setting): add figures when the fact sheet holds two proof
-      figures (counter-rolls), archive for the client's own body of pictures, film, route; moments and scenes
+      figures (counter-rolls), archive for the client's own body of pictures, film, route, site (the client's own
+      site or world in wide pictures, from high up too: a launch site, a plant, a test range); moments and scenes
       that need more are not dealt.
       the whole deal in one block, for any model: it runs the dealers themselves (start.mjs deal for the palettes,
       the type and the LAYOUT block; assets/layout/deal.mjs for the hero; moments.mjs pick --scene deal for 2-3
@@ -43,8 +44,11 @@
       The hero's history goes to layout-history.json beside the --history file. The parts never contradict each
       other or the checker: a closing scene or closing-lift is the page's close (the plan writes "close none", the
       footer keeps its links row, a form dealt as close-form becomes form-band or form-photo, and the history's
-      close is null so the gate asks for no close row); a game's effect goes on a band (its key art is the hero);
-      a scene dealt as the hero takes no effect beside it.
+      close is null so the gate asks for no close row); a form dealt as close-form is the close itself (the plan's
+      close is close-form, never a second close row beside it); bleed-panel and mirrored come once a page and
+      bleed-panel never on the visit (the section right after a place's hero); a game's effect goes on a band (its
+      key art is the hero); a scene dealt as the hero takes no effect beside it; a kind without WebGL (place,
+      service, product without --tech-subject) is dealt no effect, as its plan line says.
 
   --page, the SKILL.md kinds as start.mjs names them:
       Tech (software, an app, AI, developer tools, fintech) ......... software
@@ -425,7 +429,7 @@ const COMPS = {
   showcase: 'bleed-panel|offset-pair|three-up|mirrored|wall|story',      // the place, the work, the house, the product in use
   rooms: 'row|side|list-tall',                                           // rooms, goods, bouquets, models
   feature: 'split-7-5|split-5-7|mirrored|bleed-panel|offset-pair|three-up', // a product's or a service's point
-  visit: 'split-6-6|mirrored|street-large|bleed-panel',
+  visit: 'split-6-6|mirrored|street-large',    // never bleed-panel: the visit comes right after a place's hero (sections-library.md)
   form: 'form-photo|form-band|close-form',
   statement: 'statement-type|statement-short',
 };
@@ -434,11 +438,15 @@ const KIND_COMPS = { software: ['feature', 'statement', 'form'], gaming: ['showc
   place: ['visit', 'offer', 'showcase', 'rooms', 'form'] };
 const COMP_WHAT = { offer: 'the offer (menu, prices, services)', showcase: 'the showcase (the place, the work, the house, in use)',
   rooms: 'rooms or goods', feature: 'each feature section', visit: 'the visit', form: 'the booking or order form', statement: 'a statement section' };
+// compositions sections-library.md allows once a page (2.5.3: a showcase and a feature were both dealt bleed-panel)
+const ONCE_A_PAGE = ['bleed-panel', 'mirrored'];
 function dealLayout(h) {
   const L = (h.layout && typeof h.layout === 'object' && !Array.isArray(h.layout)) ? h.layout : (h.layout = {});
-  const pick = (key, line, avoidLast = 1) => {
-    const opts = line.split('|'), recent = (L[key] || []).slice(-avoidLast);
-    const fresh = opts.filter(o => !recent.includes(o)), pool = fresh.length ? fresh : opts;
+  // not: options this page cannot take (a once-a-page composition already dealt, the feature's first one)
+  const pick = (key, line, avoidLast = 1, not = []) => {
+    const all = line.split('|'), opts = all.filter(o => !not.includes(o)), list = opts.length ? opts : all;
+    const recent = (L[key] || []).slice(-avoidLast);
+    const fresh = list.filter(o => !recent.includes(o)), pool = fresh.length ? fresh : list;
     const v = pool[Math.floor(Math.random() * pool.length)];
     L[key] = [...(L[key] || []), v].slice(-8);
     return v;
@@ -448,22 +456,31 @@ function dealLayout(h) {
   const out = {};
   for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, get(key), key === 'close' ? 2 : 1);
   out.bands = pick(`${k}:bands`, get('bands'));
+  const lines = [], used = [];
+  const dealt = v => { if (ONCE_A_PAGE.includes(v)) used.push(v); return v; };
+  for (const sec of KIND_COMPS[k] || []) {
+    if (sec === 'feature') {
+      const a = dealt(pick(`${k}:feature`, COMPS.feature, 2, used));
+      const b = dealt(pick(`${k}:feature`, COMPS.feature, 2, [...used, a]));
+      lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
+    } else {
+      const v = dealt(pick(`${k}:${sec}`, COMPS[sec], 2, used));
+      // a form dealt as close-form is the page's close: no other close row beside it (2.5.3: close-photo and
+      // close-form were both dealt, and one build made both, one after the other)
+      if (sec === 'form' && v === 'close-form') { out.close = 'close-form'; L[`${k}:close`][L[`${k}:close`].length - 1] = 'close-form'; }
+      lines.push(`${COMP_WHAT[sec]}: ${v}${v === 'close-form' ? ' (the form is the close)' : ''}`);
+    }
+  }
   console.log(`\nLAYOUT for ${k} (dealt away from the last pages; build exactly these, write them on plan line 2):`);
   console.log(`  nav ${out.nav} · footer ${out.footer} · close ${out.close} · buttons ${out.buttons} · mark ${out.mark}`);
   console.log(`  bands: ${out.bands.split('+').map(b => ({ tint: 'one tinted band (.ground-surface)', dark: 'one dark band (.ground-inverse, the palette\'s dark)', brand: 'one band in the accent (.ground-brand)' })[b]).join(' and ')}; never two bands side by side, never the hero`);
-  const lines = [];
-  for (const sec of KIND_COMPS[k] || []) {
-    if (sec === 'feature') {
-      const a = pick(`${k}:feature`, COMPS.feature, 2); let b = pick(`${k}:feature`, COMPS.feature, 2);
-      for (let i = 0; b === a && i < 6; i++) b = pick(`${k}:feature`, COMPS.feature, 1);
-      lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
-    } else lines.push(`${COMP_WHAT[sec]}: ${pick(`${k}:${sec}`, COMPS[sec], 2)}`);
-  }
   if (lines.length) {
     console.log('  compositions (markup: sections-library.md, Compositions; use only the sections the page has):');
     for (const l of lines) console.log('    ' + l);
   }
-  console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)' : out.close}; a page whose last section is a form ends on close-form instead; the footer never repeats hours or a form printed above`);
+  console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)'
+    : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the footer\'s close row; no other close and no booking section above it'
+    : `${out.close}; a page whose last section is a form ends on close-form instead`}; the footer never repeats hours or a form printed above`);
 }
 
 const histFile = opt('history', '.taste-skill/history.json');
@@ -544,15 +561,18 @@ if (cmd === 'deal') {
     ...(page === 'gaming' ? ['--kind', 'gaming'] : page === 'tech' ? ['--kind', 'tech'] : [])]);
   // 3. moments and the scene, by fit
   const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--has', has, '--history', histFile, ...flag('long'), ...val('tone')]);
-  // 4. the effect: tech kinds always deal one for the hero; a place, service or product page one quiet treatment
-  //    about one page in three, on a band (effects-usage.md, The fit rule). A game's hero is its key art, so its
-  //    effect goes on a band; a scene dealt as the hero is the hero's motion, so no effect then. One effect beside
-  //    a scene elsewhere is allowed (consistency.mjs scenes, MO-16)
+  // 4. the effect: tech kinds always deal one for the hero; a game's hero is its key art, so its effect goes on a
+  //    band; a scene dealt as the hero is the hero's motion, so no effect then. One effect beside a scene elsewhere
+  //    is allowed (consistency.mjs scenes, MO-16). A kind without WebGL (place, service, product; the plan's first
+  //    line says "no WebGL") is dealt none: every effect is a shader, even the quiet treatments (2.5.3: a guesthouse
+  //    and a linen shop were dealt soft-light-bars beside "no WebGL", then FAILed effects-fit). A product with a
+  //    technical subject (--tech-subject) is dealt as tech, about one page in three, on a band
   const bg = (dealOut.match(/\bbg (#[0-9a-f]{6})/i) || [])[1];
   const ground = bg && color.isDark(bg) ? 'dark' : 'light';
   const sceneFits0 = (momOut.match(/^scene \S+ · ([^·\n]+?) ·/m) || [])[1] || '';
   const sceneIsHero = sceneFits0.trim().split('/').every(f => f === 'hero') && !!sceneFits0.trim();
-  const fxRoll = techPage ? !sceneIsHero : Math.random() < 1 / 3;
+  const glKind = !!(FIT[page] && FIT[page].webgl) || (page === 'product' && opt('tech-subject') === true);
+  const fxRoll = techPage ? !sceneIsHero : glKind && Math.random() < 1 / 3;
   const fxSlot = techPage && page !== 'gaming' ? 'hero' : 'band';
   const fxOut = fxRoll ? run(path.join(here, 'effects.mjs'), ['pick', '--page', page, '--palette', ground, '--slots', fxSlot,
     '--history', histFile, ...val('tone'), ...flag('tech-subject')]) : '';
@@ -592,7 +612,8 @@ if (cmd === 'deal') {
   head('PALETTES, TYPE, LAYOUT (start.mjs deal)'); console.log(dealOut);
   head('HERO (assets/layout/deal.mjs)'); console.log(heroOut);
   head('MOMENTS AND SCENE (moments.mjs pick --scene deal)'); console.log(momOut);
-  head('EFFECT (effects.mjs pick)'); console.log(fxOut || '  none this page (a place, service or product page takes a quiet treatment about one page in three)');
+  const noFx = `none: a ${page} page takes no WebGL (shader grounds and treatments are for tech, software and gaming); its motion is the entrance, the reveals, the moments${sceneFits0 ? ' and the scene' : ''}`;
+  head('EFFECT (effects.mjs pick)'); console.log(fxOut || (glKind ? '  none this page' : '  ' + noFx));
 
   // the summary, read from the dealers' own lines
   const pal = (dealOut.match(/^ {2}([a-z0-9-]+) {2,}/m) || [])[1] || '?';
@@ -600,7 +621,7 @@ if (cmd === 'deal') {
   const lay = (dealOut.match(/nav (\S+) · footer (\S+) · close (\S+) · buttons (\S+) · mark (\S+)/) || []);
   const bands = (dealOut.match(/^ {2}bands: ([^;\n]+)/m) || [])[1] || 'flat';
   const compBlock = (dealOut.split(/^ {2}compositions \(.*$/m)[1] || '').split(/\n(?! {4})/)[0];
-  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${formSwap && m[1] === COMP_WHAT.form && m[2] === 'close-form' ? `${formSwap} (not close-form: ${closeTaken} is the close)` : m[2]}`);
+  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${formSwap && m[1] === COMP_WHAT.form && /^close-form\b/.test(m[2]) ? `${formSwap} (not close-form: ${closeTaken} is the close)` : m[2]}`);
   const [, scene = '', sceneAt = ''] = momOut.match(/^scene (\S+) · ([^·\n]+?) ·/m) || [];
   const SCENE_AT = { hero: 'as the hero (the entrance becomes data-enter="still")', close: 'as the last section before the footer: it is the page\'s close, with the one action (the footer keeps its links row only)', between: 'between two sections', statement: 'as a statement section' };
   const moments = [...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) · (\w+)/gm)].map(m => ({ id: m[1], fits: m[2].trim(), intensity: m[3] }));
@@ -618,7 +639,9 @@ if (cmd === 'deal') {
     L.push(`nav          ${lay[1]} (starter.html NAV comment for its class)`);
     L.push(closeTaken
       ? `close        none: ${closeTaken} is the page's close (its last section, the one action once); drop the starter's .closing__cta row so the footer holds its links row only (never two closes in a row)`
-      : `close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
+      : lay[3] === 'close-form'
+        ? `close        close-form: the booking or order form is the page's close (starter.html: <template data-part="close-form"> in the footer); no other close row, no booking section above it`
+        : `close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
     L.push(`footer       ${lay[2]}${page === 'place' ? ' (links-visit template on a place)' : ''}`);
     L.push(`buttons      data-buttons="${lay[4]}" on <html> · mark data-mark="${lay[5]}" (or the client's logo)`);
   }
@@ -634,7 +657,7 @@ if (cmd === 'deal') {
   moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: ${momentSource(m.id, skillRef)}, link ${m.id}/moment.css; references/moments.md`));
   if (!moments.length) L.push('moments      none dealt: run moments.mjs pick again (every page takes two)');
   L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the whole <section data-big-scene="${scene}"> of ${skillRef}/assets/scenes/${scene}/demo.html (the gate's deal-drift check FAILs a page without it), link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
-  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands${page === 'gaming' ? ' (never over the key art)' : ''}`}${scene ? `, outside the scene's section (one effect beside the scene)` : ''} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : sceneIsHero && techPage ? 'none: the scene is the hero\'s motion' : 'none'}`);
+  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands${page === 'gaming' ? ' (never over the key art)' : ''}`}${scene ? `, outside the scene's section (one effect beside the scene)` : ''} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : sceneIsHero && techPage ? 'none: the scene is the hero\'s motion' : glKind ? 'none' : noFx}`);
   L.push(`hover layer  automatic (motion.js): buttons, links, linked cards and photos; loops inside every card visual (references/motion.md)`);
   L.push(`then         build in a copy of starter.html, then: node ${skillRef}/scripts/gate.mjs index.html`);
   for (const l of L) console.log('  ' + l);

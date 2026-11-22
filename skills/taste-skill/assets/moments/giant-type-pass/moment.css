@@ -1,8 +1,9 @@
-/* giant-type-pass: the statement at 12vw with the photograph clipped to its glyphs under a 35% ink
-   tint (the letters stay readable on a pale patch); --mo-y (0-100%) is the picture's vertical
+/* giant-type-pass: the statement at 12vw with the photograph clipped to its glyphs under a 65% ink
+   tint, so the words read about 3:1 over any photograph, a white or a ground-coloured one too (2.5.3: a grey
+   stucco photograph under 35% vanished into a grey-blue ground); --mo-y (0-100%) is the picture's vertical
    position, moved by the script with the scroll, resting on the lower half. Without the picture
    (no script, no image) the words are plain ink. */
-.mo-gt__type { --mo-y: 62%; --mo-x: 50%; --mo-tint: color-mix(in oklab, var(--ink) 35%, transparent);
+.mo-gt__type { --mo-y: 62%; --mo-x: 50%; --mo-tint: color-mix(in oklab, var(--ink) 65%, transparent);
   font-size: clamp(64px, 12vw, 200px); line-height: 0.98; letter-spacing: -0.03em; font-weight: var(--display-weight); margin: 0; color: var(--ink);
   background-image: linear-gradient(var(--mo-tint), var(--mo-tint)), var(--mo-img, none); background-size: cover, cover; background-position: var(--mo-x) var(--mo-y); background-repeat: no-repeat;
   -webkit-background-clip: text; background-clip: text; text-wrap: balance; width: fit-content; max-width: 100%; }

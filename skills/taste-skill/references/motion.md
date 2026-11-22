@@ -39,13 +39,13 @@ has these layers:
 |---|---|---|---|
 | place (cafe, bakery, restaurant, guesthouse, shop, gym) | warm, editorial | quiet, lively | 0 |
 | service (studio, agency, clinic, law, architect) | editorial, warm, product | quiet, lively | 0 |
-| product (physical goods) | product, editorial, warm | quiet, lively, bold | a photo treatment or a render the brief asks for |
+| product (physical goods) | product, editorial, warm | quiet, lively, bold | no effect; only a render the brief asks for |
 | tech (hardware) | product, tech, editorial | any | yes |
 | software | tech, editorial, product | any | yes |
 | gaming | playful, tech | any | yes |
 
-Tech-looking shader grounds stay off place and service pages (a cafe gets nothing too wild); a quiet
-photo treatment tagged warm or editorial may be dealt there. Some motion fits tech and not a bakery
+Shader grounds stay off place, service and product pages (a cafe gets nothing too wild), the quiet
+treatments too: they are WebGL, and those kinds take none. Some motion fits tech and not a bakery
 (a lit border, a pointer demo), some fits a bakery and not a devtool (a crust that comes into focus,
 an open-now dot): fit is the rule, not the kind alone.
 

@@ -289,7 +289,8 @@ phone number still gets the address, email and imprint rules.
   anywhere else, a logo wall or a mock); person names come only from the brief. Search a coined name with its trade ("name
   coffee") and as a domain; if a business of that trade or a famous person has that exact name in
   the first 10 results, coin another. Write each query and result in `names.json` beside the page
-  (`"searched": false` with no search tool).
+  (`"searched": false` with no search tool). A name the brief gives goes there too, as
+  `{"name": "Kestrel", "coined": false, "source": "the brief"}`: copy-lint then keeps it, no waiver.
 - **Links** go where their label says: a part of the page (`#rooms`) or a page that exists; never
   "here", never two different labels to one target, never a link to a closed answer.
 - **Newsletter:** asked once, in or just above the footer, "Subscribe" or "Sign up", an email field

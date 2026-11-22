@@ -134,7 +134,8 @@ Write the change and its reason on plan line 2.
   across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
   and the button, beside a photograph), `close-form` (the booking or order form is the close).
   Never a button across the whole `.wrap`. The close never repeats the section above it: a page
-  whose last section is a form ends on `close-form` instead (the form moves into the close). The
+  whose last section is a form ends on `close-form` instead (the form moves into the close; dealt as the
+  form's composition, `close-form` is the plan's close, never a second close row beside it). The
   footer never prints again what a section above printed (the hours under a visit section, a
   second form): `footer-visit` then holds the address, the way there and the nav row.
 - **Bands** (every kind, not only tech): one or two sections on a dealt ground from the palette,
