@@ -127,7 +127,7 @@ codex plugin add taste-skill@taste-skill
 使用方式是让你的智能体构建或重新设计一个公司网站；智能体会加载该 skill，把 `assets/` 复制到项目中，从 `assets/starter.html` 开始，并在交付页面之前运行检查器。每次构建都先对客户的业务分类（`software`、`gaming`、`tech`、`product`、`service` 或 `place`），并在编写标记之前按屏规划页面：
 
 1. **分配设计变量与布局。** `scripts/start.mjs` 会分配一套适合该行业的配色，以及一组适合该页面类型的 Google Fonts 字体搭配（`library/palettes.json`、`library/type.json`），`assets/layout/deal.mjs` 则分配一种首屏布局（`split`, `centred`, `product`, `photo`, `place`, `collage`, `editorial`, `word`, `film`, `statement` 或 `triptych`）。
-2. **从一套系统起步。** `assets/starter.html`、`assets/system.css` 和 `assets/layout/layout.css` 让首屏完整留给主视觉，其余每个板块按内容定高、板块之间留出同样宽裕的间距（`1440x900` 下为 320px），内容左右边距对等、固定导航栏，以及收尾页脚（`footer.closing`）。
+2. **从一套系统起步。** `assets/starter.html`、`assets/system.css` 和 `assets/layout/layout.css` 让首屏完整留给主视觉，其余每个板块按内容定高、板块之间留出同样宽裕的间距（`1440x900` 下为 256px），内容左右边距对等、固定导航栏，以及收尾页脚（`footer.closing`）。
 3. **展示真实的产品界面和真实的照片。** 软件和科技页面用重写过的 HTML 界面片段（`assets/ui/`）和节点连线图（`assets/diagrams/`）填充带光效的功能卡片（`assets/ui/cards.css`），真实的品牌和界面 SVG 由 `scripts/icons.mjs` 在本地解析。场所、商店、酒店餐饮和非技术类产品页面以精选照片（`scripts/photos.mjs`、`assets/photos/`）、字体排印和纯色为主，出处统一写在一行可展开的页脚里，图片下方不加说明文字。
 4. **效果只留给科技和游戏页面。** 着色器背景（`scripts/effects.mjs`）、滚动场景（`assets/scenes/`）和程序化 3D 物件（`assets/objects/`）只会分配给 `software`、`tech` 和 `gaming` 页面，且不超过四个 WebGL 上下文，手机端和减少动态效果的设置下使用静态替代。每个页面都有一段首屏入场动画，以及来自 `scripts/moments.mjs` 的一两个动效时刻；咖啡馆、酒店、商店、工作室和服务类页面只分到以照片和字体为主的那些，完全不使用 WebGL。
 5. **通过 HTTP 在真实浏览器中检查。** `scripts/consistency.mjs`、`assets/layout/check.mjs`、`scripts/perf.mjs` 和 `scripts/shoot.mjs` 会在无头 Chrome 中以 `1440`、`1024`、`768` 和 `390` 的宽度渲染构建好的页面，在交付之前找出空白的视觉元素、损坏的着色器、对比度下降、列没有对齐、板块高度漂移、占位文字、编造的街道门牌号，以及慢速网络下的图片缺口。随后 `scripts/gate.mjs` 会一直拦住收尾，直到不再有可修复的 FAIL，最多三轮。

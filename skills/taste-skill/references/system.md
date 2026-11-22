@@ -30,8 +30,8 @@ On `:root`, used everywhere (desktop / under 640px):
 | Token | Value | Use |
 |---|---|---|
 | `--nav` | 72 / 56 | the fixed header |
-| `--padt` | 160 / 96 (128 on a tablet) | a section's top padding: the h2 sits here |
-| `--padb` | 160 / 96 (128 on a tablet) | a section's bottom padding (`footer.closing` adds `--bar`); with `--padt` the air between two sections, 320px at 1440 |
+| `--padt` | 128 / 88 (104 on a tablet) | a section's top padding: the h2 sits here |
+| `--padb` | 128 / 88 (104 on a tablet) | a section's bottom padding (`footer.closing` adds `--bar`); with `--padt` the air between two sections, 256px at 1440 |
 | `--gut` | 80 / 24 (place 120 from 1024) | the `.wrap`'s side margin: 1280 wide, 1200 on a place |
 | `--hgap` | 48 / 40 (place 40 / 24) | the header to the hero's words, under `--photo` on a place |
 | `--hpadb` | 64 / 24 | the hero's bottom padding (plus `--bar`) |

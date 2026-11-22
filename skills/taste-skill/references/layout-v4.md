@@ -32,10 +32,10 @@ so an anchor jump lands on a section's top (the fixed header covers part of its 
 pills, back-to-top squares, badges, award strips or asks in a modal; nothing else is fixed.
 
 **The section box.** `main > section` and `footer.closing` are as tall as their content: `--padt`
-above the h2 and `--padb` under the last block (160 and 160 from 1024, 128 on a tablet, 96 on a
+above the h2 and `--padb` under the last block (128 and 128 from 1024, 104 on a tablet, 88 on a
 phone; `footer.closing` adds `--bar`, the phone action bar). So the content of two sections always
-sits `--padb + --padt` apart, 320px at 1440, 256 on a tablet, 192 on a phone: the same air
-everywhere, and a lot of it. `.wrap` is a section's only in-flow child (`z-index: 1`); a layer sits
+sits `--padb + --padt` apart, 256px at 1440, 208 on a tablet, 176 on a phone: the same air
+everywhere, generous but never an empty band. `.wrap` is a section's only in-flow child (`z-index: 1`); a layer sits
 beside it, and from 640 a section with a layer is at least 80% of the screen. Never a height,
 min-height or padding of your own on a section, never `dvh`, never a height set by script. `--h`,
 `--hm`, `.g2`, `.g2m` and `.fill` (the old screen counts) are read nowhere: they change nothing.

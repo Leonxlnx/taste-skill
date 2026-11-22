@@ -23,7 +23,7 @@
                              The hero, a scene, a moment that holds its stage and a section its layer fills are
                              left out.
     section-air              the content of two neighbouring sections under 128px apart (96 on a phone): the
-                             system's air is --padb under one and --padt over the next, 320px at 1440.
+                             system's air is --padb under one and --padt over the next, 256px at 1440.
     hero-fold                the hero does not fill the first screen, runs past it (taller than one
                              screen), or the next section shows on it.
   Elements inside a visual (cards, frames, panels, stages, UI fragments, a collage) are not page edges.
@@ -225,14 +225,14 @@ window.lyCheck = function lyCheck(opts = {}) {
       : `stretched past its content: ${Math.round(band)}px of its ${Math.round(h)}px (${Math.round(100 * most / h)}%) empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
     'let the section be as tall as its content and its air (no height, min-height or padding of its own) and close a hole between its parts; merge a short block into the section above, or give it the picture it lacks');
   });
-  // the air between two sections' content: --padb under one and --padt over the next (320px at 1440, 192 on a phone);
+  // the air between two sections' content: --padb under one and --padt over the next (256px at 1440, 176 on a phone);
   // under 128px (96 on a phone) the two run together. The hero's foot is hero-fold's
   const least = vw < 640 ? 96 : 128;
   for (let i = 1; i + 1 < info.length; i++) {
     const a = info[i], b = info[i + 1];
     if (a.free || b.free || a.held || b.held || !a.ink.length || !b.ink.length) continue;
     const gap = b.cTop - a.cBot;
-    if (gap < least) add('section-air', `${name(a.el)} / ${name(b.el)}`, `${Math.round(gap)}px between the content of the two sections: ${least}px at least (the system's air is ${vw < 640 ? 192 : 320}px)`,
+    if (gap < least) add('section-air', `${name(a.el)} / ${name(b.el)}`, `${Math.round(gap)}px between the content of the two sections: ${least}px at least (the system's air is ${vw < 640 ? 176 : 256}px)`,
       "keep the system's padding on both sections (--padb under one, --padt over the next): no padding, margin or height of their own");
   }
   if (info.length) {

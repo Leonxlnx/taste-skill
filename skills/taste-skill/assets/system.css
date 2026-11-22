@@ -38,12 +38,12 @@
 
   /* the page rhythm (references/layout-v4.md): the hero alone on the first screen, then sections as
      tall as their content with the same air round each. The header is fixed and --nav tall; every
-     section is padded --padt above and --padb below (160 and 160 at 1024 and up, 128 on a tablet, 96
+     section is padded --padt above and --padb below (128 and 128 at 1024 and up, 104 on a tablet, 88
      on a phone), so two sections' content sits --padb + --padt apart. The hero's words start --hgap
      under the header and its content ends --hpadb above the fold. */
   --nav: 72px;
-  --padt: 160px;
-  --padb: 160px;
+  --padt: 128px;
+  --padb: 128px;
   --hgap: 48px;
   --hpadb: 64px;
   --bar: 0px;
@@ -106,14 +106,14 @@ html[data-radius] .panel { --p-r: var(--r-md); }
 /* a phone: the header 56, the sections padded 96 / 96, the hero's words 40 under the header and its
    content ending 24 above the fold, 24 at both sides, 12 between columns */
 @media (max-width: 639px) {
-  :root { --nav: 56px; --padt: 96px; --padb: 96px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
+  :root { --nav: 56px; --padt: 88px; --padb: 88px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
 }
 @media (min-width: 640px) {
   :root { --gut: 48px; --section: 48px; --section-band: 72px; --card-pad: 24px; }
 }
-/* a tablet: the sections padded 128 / 128 */
+/* a tablet: the sections padded 104 / 104 */
 @media (min-width: 640px) and (max-width: 1023px) {
-  :root { --padt: 128px; --padb: 128px; }
+  :root { --padt: 104px; --padb: 104px; }
 }
 @media (min-width: 1024px) {
   :root { --gut: 80px; --section: 56px; --section-band: 96px; --card-gap: 24px;
@@ -214,8 +214,8 @@ p { text-wrap: pretty; }
 /* ---------------------------------------------------------------- sections: as tall as their content
    The hero alone fills the first screen (below). Every other section, and footer.closing (the close and
    the footer in one), is as tall as its content plus the same air above and below it: --padt over its
-   h2, --padb under its last block, so the content of two sections sits --padb + --padt apart (320 at
-   1440, 256 on a tablet, 192 on a phone). Short content is never stretched to a screen, and long content
+   h2, --padb under its last block, so the content of two sections sits --padb + --padt apart (256 at
+   1440, 208 on a tablet, 176 on a phone). Short content is never stretched to a screen, and long content
    is never cut or hidden to fit one. A moment or a scene that holds its stage (photo-chapters,
    pinned-chapters, a pinned scene) keeps the height its own module sets.
      <section class="section" id="..">

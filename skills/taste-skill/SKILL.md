@@ -56,7 +56,7 @@ These nine win over everything else in this skill.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390.
 3. **The hero alone on the first screen, then big, even air:** nothing of the next section shows
    at load; every other section is as tall as its content with the same generous padding round it
-   (`--padt` and `--padb`, 320px between two sections at 1440), never stretched to a screen and
+   (`--padt` and `--padb`, 256px between two sections at 1440), never stretched to a screen and
    never cut or hidden to fit one. Moments and scenes keep the heights their modules set.
 4. **Equal left and right content edges.**
 5. **Hover micro-animations:** a linked card lifts 2px, a photo zooms 1.02-1.03 inside its frame,

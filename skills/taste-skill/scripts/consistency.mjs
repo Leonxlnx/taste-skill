@@ -2450,7 +2450,7 @@ function measure(opt) {
     try { for (const t of fn()) tests.push(Object.assign({ rule: rid }, t)); } catch (e) { tests.push({ rule: rid, id: 'error', verdict: 'ERROR', msg: 'checker error: ' + (e && e.message), offenders: [], more: 0 }); }
   };
   const outside = (i) => rendered.filter((it) => it.z === i && (it.r.t < S[i].top - 1 || it.r.b > S[i].bottom + 1));
-  const padbTok = cssVar('--padb', phone ? 96 : 160);
+  const padbTok = cssVar('--padb', phone ? 88 : 128);
   // a section whose own layer (a photograph or ground edge to edge behind its words) passes SR-6 T1 is filled by it
   const layered = (s) => [...s.el.children].some((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && layerOf(TU(k) === 'PICTURE' && k.querySelector('img') ? k.querySelector('img') : k) && !layerProblems(k, s).length);
   // a section's content: its boxes in its .wrap (lines of text, pictures, controls) and every box with its own fill
