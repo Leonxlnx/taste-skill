@@ -235,6 +235,11 @@
 //              a [data-product] frame is the box split-pair and T6 measure; a hero's text column may end on a column
 //              end before the split line (span-5); a line's top is its block's top when the block trims its leading;
 //              stagger leaves drawn mocks (a chat, a diff) alone; heading-scale leaves a dealt moment's display type alone
+//   kit parts  the kit's own big scene (scenes.js mounted it) is a stage of its own: its section needs no .wrap and is
+//              not held to the container, its gaps and its display line are its own, its full-width layers bleed to
+//              the section's edges (flush) and its words caught mid-fade are read at rest; a dealt moment's split
+//              statement (its letters flying home) is one part to scroll-reveal and never a tilt; a diagram card's
+//              pulse, started by its own observer, is no reveal
 //   copy       copy-fact also takes the platforms, a game's genre or a place after in, at, near or from
 //   basics     (its own block, --no-basics: the professional basics the 44-site test found missing)
 //              access: a11y-name, img-alt, field-label, heading-order, tabindex, focus-ring, menu-toggle FAIL,
@@ -2163,6 +2168,10 @@ function measure(opt) {
   // the kit's dealt parts that are uneven on purpose: the offset pair (.comp-offset) and marquee-row's running track
   const KIT_UNEVEN = '.comp-offset, [data-moment="marquee-row"]';
   const sceneSec = (s) => s.el.matches(SCENEQ) || !!s.el.querySelector(SCENEQ);
+  // the kit's own big scene (scenes.js mounted it: data-big-scene-mounted): a full-screen stage of its own, no .wrap, its
+  // words centred on the stage by its module; its section is not held to the container (SR-6 T1)
+  const KIT_SCENE = '[data-big-scene][data-big-scene-mounted]';
+  const kitSceneSec = (s) => s.el.matches(KIT_SCENE) || !!s.el.querySelector(KIT_SCENE);
   const movingOf = (el) => {
     if (!el || el.nodeType !== 1 || el === body || el === de) return null;
     if (moveMemo.has(el)) return moveMemo.get(el);
@@ -2703,7 +2712,7 @@ function measure(opt) {
         if (Math.abs(headerEdges.l - hw.l) > 2 || Math.abs(headerEdges.r - hw.r) > 2) mOff.push(off(header, { l: headerEdges.l, r: headerEdges.r, t: hr.t, b: hr.b }, `the nav's first box starts at ${px(headerEdges.l - SX)}px and its last ends at ${px(headerEdges.r - SX)}px, not on its .wrap at ${px(hw.l - SX)}-${px(hw.r - SX)}px`, { ref: [cbox(hw, hr.t, hr.b)], at: 0 }));
       }
     }
-    S.forEach((s, i) => checkEdge(`the content of section ${i + 1}`, ctns[i], s.el, s.top, s.bottom));
+    S.forEach((s, i) => { if (!kitSceneSec(s)) checkEdge(`the content of section ${i + 1}`, ctns[i], s.el, s.top, s.bottom); });
     T.push(test('T1-margins', mOff.length ? 'FAIL' : 'PASS', mOff));
     // T1-structure: the page shell, one in-flow .wrap a section, every other child a valid layer, the hero's and the
     // closing's .wrap children
@@ -2718,7 +2727,7 @@ function measure(opt) {
       // (2.5.2: the place hero's photograph is in the flow in its band, split and name forms: layout.css 0b)
       const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k) && !(k.matches('.hero__bg') && s.el.matches('.hero--place')));
       const wraps = inflow.filter((k) => k.classList.contains('wrap'));
-      if (wraps.length !== 1 || inflow.length !== 1) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `the section needs exactly one in-flow child .wrap (it has ${inflow.length} in-flow child${inflow.length === 1 ? '' : 'ren'}, ${wraps.length} .wrap)`));
+      if ((wraps.length !== 1 || inflow.length !== 1) && !kitSceneSec(s)) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `the section needs exactly one in-flow child .wrap (it has ${inflow.length} in-flow child${inflow.length === 1 ? '' : 'ren'}, ${wraps.length} .wrap)`));
       let heroLayers = 0;
       for (const k of kids) {
         if (inflow.includes(k)) continue;
@@ -5090,6 +5099,9 @@ function lib() {
       const t = tiltC(el); if (!tilted(t)) continue;
       let up = false; for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (tilted(tiltC(a))) { up = true; break; }
       if (up) continue;
+      // a letter or word of a dealt moment's split statement turned on its way into the line (letters-assemble) is the
+      // moment's own motion, wherever a stop caught it; its still is judged under reduced motion
+      if (el.closest('[data-moment][data-moment-mounted] .mo-w')) continue;
       // letters of a word set one by one (aria-hidden copies of a heading count: they are what shows)
       if (r.width < 48 && r.height < 48 && ownText(el) && !el.closest('[data-ui], .ui[class*=ui-], [data-fx], [data-fx-mounted], [role="img"]')) { const b = el.closest(HEADS + ', p') || el.parentElement; if (!bent.has(b)) bent.set(b, []); bent.get(b).push(r); continue; }
       if (r.width < 48 && r.height < 48) continue; // an icon or an arrow
@@ -5673,6 +5685,12 @@ function lib() {
     return s && (s.matches('[data-moment][data-moment-mounted]') || s.querySelector('[data-moment][data-moment-mounted]')) ? s : null;
   };
   const inMoment = (el) => !!momentSec(el);
+  // the kit's own big scene (scenes.js mounted it from assets/scenes: data-big-scene-mounted; a builder's own id fails to
+  // load and is never marked): its stage is a composition of its own, painted to its edges, its display line set at the
+  // scene's own size and its height the one its module sets
+  const KIT_SCENE = '[data-big-scene][data-big-scene-mounted]';
+  const inKitScene = (el) => !!(el && el.closest && el.closest(KIT_SCENE));
+  const kitSceneSec = (sec) => !!(sec && (sec.matches(KIT_SCENE) || sec.querySelector(KIT_SCENE)));
   // a film's play control (heroes.json film: a disc and its label, "Play the film"): the film's own control, only the
   // kit's marked control (.ly-play, [data-play]) in a film hero (the first section, .hero--film or holding a video or
   // a data-film control); a "Watch …" or "Play …" link elsewhere is an action like any other
@@ -6688,6 +6706,10 @@ function lib() {
       // starts on view: the card stays still, its picture plays (allowed; loop-pause times it)
       { const me = els.get(id); const lp = me && me.closest && me.closest('[data-m-loop], [data-ui-loop]'); if (lp && lp !== me) continue; }
       let s = id; for (const a of x.anc) if (V.has(a) || K.has(a)) s = a;
+      // a dealt moment's statement split into words or letters (lib.split: .mo-w > .mo-c > .mo-i; letters-assemble's
+      // letters flying home) is one part, the statement, wherever the walk's stops caught them
+      { const w = els.get(s) && els.get(s).closest && els.get(s).closest('[data-moment][data-moment-mounted] .mo-w');
+        if (w) s = idOf(w.parentElement.closest(HEADS + ', p') || w.parentElement); }
       const el = els.get(s); if (!el || !el.isConnected || holdOf(el) || heldScopeOf(el)) continue;
       let mv = false; for (let a = els.get(id); a && !mv; a = a.parentElement) if (moving.has(a)) mv = true;
       for (let a = el; a && !mv; a = a.parentElement) if (moving.has(a)) mv = true;
@@ -6721,6 +6743,10 @@ function lib() {
       // micro-animation of the picture, not a box revealed by the scroll
       { const tq = x.target.getBoundingClientRect(); if (tq.width <= 96 && tq.height <= 96 && x.target !== x.host && x.target.closest('svg, figure, .frame, .panel, [class*="map"], [role="img"], [class*="cx-"]')) continue; }
       if ((x.target.matches('canvas, [data-fx], [data-fx-mounted]') || x.target.closest('[data-fx], [data-fx-mounted]')) && x.dur <= 600) continue;
+      // a part of the kit's diagram card ([data-diagram], diagrams.md): its pulse is a loop of its own that plays while the
+      // card is on screen (its observer starts and stops it, loop-pause times it), not a box revealed by the scroll; a
+      // fade on the card itself is still told
+      if (x.target.parentElement && x.target.parentElement.closest('[data-diagram].dg')) continue;
       // the hero's entrance (motion.md: [data-enter], once on load, about 1.1 s) is no reveal on scroll, on every kind:
       // only in the hero (the first section) and only for what stands on the first screen; [data-enter] lower down
       // excuses nothing
@@ -6893,9 +6919,10 @@ function lib() {
   }
   // a gap between two sections never seen whole at the screen stops: brought to the middle of the screen and measured
   // (twice, since a held section ends where it is let go)
-  // the top-level sections that are a mounted statement moment's own section (its host, or the section holding it)
+  // the top-level sections that are a mounted statement moment's own section (its host, or the section holding it), or
+  // hold the kit's big scene (its stage is as tall as its module sets: one screen at rest, the hold when live)
   function stmtSecs(ids) {
-    return sectionsList().map((sec, i) => { const h = sec.matches('[data-moment][data-moment-mounted]') ? sec : sec.querySelector('[data-moment][data-moment-mounted]'); return h && ids.includes(h.dataset.moment) ? i : -1; }).filter((i) => i >= 0);
+    return sectionsList().map((sec, i) => { const h = sec.matches('[data-moment][data-moment-mounted]') ? sec : sec.querySelector('[data-moment][data-moment-mounted]'); return (h && ids.includes(h.dataset.moment)) || kitSceneSec(sec) ? i : -1; }).filter((i) => i >= 0);
   }
   async function seam(i) {
     const S = sectionsList(), vw = vwNow(), vh = innerHeight; if (!S[i] || !S[i + 1]) return null;
@@ -6945,7 +6972,7 @@ function lib() {
       if (!mx) mx = parseFloat(CS(h).fontSize) || 16;
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: inMoment(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: inMoment(h) || inKitScene(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -6954,7 +6981,7 @@ function lib() {
       const fs = parseFloat(CS(e).fontSize) || 16; if (fs < 26) continue;
       const t = full(e); if (!/\p{L}{3}/u.test(t) || PRICE.test(t) || !visible(e) || inMarquee(e)) continue;
       let run = false; for (let a = e; a && a !== document.body && !run; a = a.parentElement) run = endless(a); if (run) continue; // a running line
-      if (inMoment(e)) continue; // a dealt moment's display type is the moment's own size
+      if (inMoment(e) || inKitScene(e)) continue; // a dealt moment's or the kit scene's display type is its own size
       big.push({ id: idOf(e), sel: sel(e), text: t.slice(0, 48), fs: Math.round(fs * 10) / 10, doc: doc(e) });
     }
     // the hero, the headline, the line after it
@@ -7570,6 +7597,8 @@ function lib() {
       if (c.webkitTextFillColor && rgba(c.webkitTextFillColor).a < 0.05) continue;
       const ls = lines(el).filter((l) => l.top >= 0 && l.bottom <= vh && l.left >= 0 && l.right <= vw && l.width >= 4 && l.height >= 6).slice(0, 3);
       if (!ls.length) continue;
+      // words of the kit's big scene caught mid-fade (the scene's own scroll motion) are read at a later stop, at rest
+      if (inKitScene(el) && effOpacity(el) < 0.98) continue;
       ink.seen.add(el);
       let bg = null;
       for (const L of ls) { const u = under((L.left + L.right) / 2, (L.top + L.bottom) / 2, el); if (u.kind !== 'solid') { bg = null; break; } if (!bg) bg = u.col; }
@@ -7622,7 +7651,9 @@ function lib() {
   function hideText(on) {
     let s = document.getElementById('__cc_hide');
     if (on && !s) { s = document.createElement('style'); s.id = '__cc_hide'; s.textContent = '*,*::before,*::after{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;text-decoration-color:transparent!important;caret-color:transparent!important;transition:none!important}'; document.head.appendChild(s); }
-    if (!on && s) s.remove();
+    // the colours come back with transitions still off: a page's own colour transition (a diagram card's nodes, 900 ms)
+    // would otherwise start here and be read as a reveal by the next screen's observer
+    if (!on && s) { s.textContent = '*,*::before,*::after{transition:none!important}'; void document.documentElement.offsetHeight; s.remove(); }
     return new Promise((r) => { let done = false; const fin = () => { if (!done) { done = true; r(true); } }; requestAnimationFrame(() => requestAnimationFrame(fin)); setTimeout(fin, 150); });
   }
   // ------------------------------------------------ checks added in the second pass, later (two readers): the faults
@@ -7875,14 +7906,17 @@ function lib() {
       const ruleAt = rule(B, 'Top') ? rb.top : rule(A, 'Bottom') ? ra.bottom - (parseFloat(CS(A).borderBottomWidth) || 0) : null;
       const edgeA = !same(gA, rb.top - ra.bottom > 4 ? gGap : gB) || ruleAt != null, edgeB = !same(gB, rb.top - ra.bottom > 4 ? gGap : gA);
       const it = (e, sec) => ({ id: idOf(e || sec), sel: sel(e || sec), text: label(e || sec) });
+      // (a layer of the kit's own big scene the width of the page, its ground or its light, bleeds like a picture: the
+      // scene paints its stage to its edges, so it meets the section before and after with no seam)
+      const bleeds = (e) => e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e)) || (inKitScene(e) && !ownText(e))) && e.getBoundingClientRect().width >= vw * 0.9;
       if (edgeA) {
         const d = (ruleAt != null && same(gA, rb.top - ra.bottom > 4 ? gGap : gB) ? Math.min(ra.bottom, ruleAt) : ra.bottom) - ea.bottom, e = lastItem(A, ea, 'bottom');
-        const bleed = e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e))) && e.getBoundingClientRect().width >= vw * 0.9;
+        const bleed = bleeds(e);
         if (e && !bleed && d < 32) out.push(Object.assign(it(e, A), { side: 'bottom', d: Math.round(d), rule: ruleAt != null && same(gA, rb.top - ra.bottom > 4 ? gGap : gB), a: sel(A), b: sel(B), foot: B.tagName === 'FOOTER' || !!B.closest('footer'), btn: !!(e && (e.matches(INTER) || e.closest(INTER))), doc: D({ left: 0, top: ea.bottom - 40, width: vw, height: Math.max(0, d) + 60 }) }));
       }
       if (edgeB) {
         const d = eb.top - rb.top, e = lastItem(B, eb, 'top');
-        const bleed = e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e))) && e.getBoundingClientRect().width >= vw * 0.9;
+        const bleed = bleeds(e);
         if (e && !bleed && d < 32) out.push(Object.assign(it(e, B), { side: 'top', d: Math.round(d), a: sel(A), b: sel(B), foot: B.tagName === 'FOOTER', btn: false, doc: D({ left: 0, top: rb.top - 20, width: vw, height: Math.max(0, d) + 60 }) }));
       }
       if (!edgeA && !edgeB) {
@@ -8902,10 +8936,11 @@ function helperLib() {
 }
 
 // a page built on the kit's system.js sets <html data-ready="1"> once its effects and fragments are drawn; a page that
-// loads moments.js on its own sets <html data-moments-ready> once its moments are mounted (the checks count a moment
-// only when it is mounted, so they wait for it)
+// loads moments.js on its own sets <html data-moments-ready> once its moments are mounted, and scenes.js sets
+// <html data-scenes-ready> once its big scene is (the checks count a moment or a scene as the kit's own only when it is
+// mounted, so they wait for it)
 async function waitReady(tab) {
-  await tab.eval(`new Promise((res) => { const t0 = performance.now(); const sys = [...document.scripts].some((s) => /system\\.js/.test(s.src)) || !!document.querySelector('[data-fx], [data-ui-load]'); const mo = !!document.querySelector('[data-moment]') && [...document.querySelectorAll('script[src], link[rel="modulepreload"]')].some((s) => /moments\\/moments\\.js/.test(s.src || s.href)); const tick = () => { const d = document.documentElement.dataset; if (((d.ready || !sys) && (!mo || d.momentsReady)) || performance.now() - t0 > 12000) res(1); else setTimeout(tick, 150); }; tick(); })`, 20000).catch(() => {});
+  await tab.eval(`new Promise((res) => { const t0 = performance.now(); const sys = [...document.scripts].some((s) => /system\\.js/.test(s.src)) || !!document.querySelector('[data-fx], [data-ui-load]'); const mo = !!document.querySelector('[data-moment]') && [...document.querySelectorAll('script[src], link[rel="modulepreload"]')].some((s) => /moments\\/moments\\.js/.test(s.src || s.href)); const sc = !!document.querySelector('[data-big-scene]') && [...document.querySelectorAll('script[src], link[rel="modulepreload"]')].some((s) => /scenes\\/scenes\\.js/.test(s.src || s.href)); const tick = () => { const d = document.documentElement.dataset; if (((d.ready || !sys) && (!mo || d.momentsReady) && (!sc || d.scenesReady)) || performance.now() - t0 > 12000) res(1); else setTimeout(tick, 150); }; tick(); })`, 20000).catch(() => {});
 }
 
 const relLum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
@@ -9970,7 +10005,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     PG = await safe('page', () => tab.eval('window.__cc.pageInfo()', 60000));
     if (PG) {
       // heading-scale: the h1 largest, every h2 one size, every h3 one size below the h2; display type inside a dealt
-      // moment's section (letters-assemble, liquid-type, a statement) is set at the moment's own size and not ranked
+      // moment's section (letters-assemble, liquid-type, a statement) or the kit's big scene (light-flood's statement) is
+      // set at its own size and not ranked
       const hs = PG.heads.filter((x) => !x.foot && !(x.moment && x.level > 1));
       const lv = (n) => hs.filter((x) => x.level === n);
       const h1 = lv(1), h2 = lv(2), h3 = lv(3).filter((x) => !x.card), h3all = lv(3);
@@ -10561,7 +10597,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     const heldSecs = new Set(held.map((H) => H.sec));
     // a dealt statement moment's own section (one large statement, sections.md) has the air of its design on both sides:
     // its gaps are left out, as empty-area and section-height read the moment's host as filled
-    // (the moments that fit a statement: assets/moments/index.json "fits")
+    // (the moments that fit a statement: assets/moments/index.json "fits"); so has the section of the kit's big scene,
+    // whose stage is as tall as its module sets (section-height leaves it out too)
     const stmtIds = (() => { try { return (JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []).filter((m) => (m.fits || []).includes('statement')).map((m) => m.id); } catch { return []; } })();
     const stmt = new Set((await safe('stmt', () => tab.eval(`window.__cc.stmtSecs(${JSON.stringify(stmtIds)})`))) || []);
     const P = [...pairs.values()].filter((p) => !stmt.has(p.i) && !stmt.has(p.i + 1)).sort((a, b) => a.i - b.i).map((p) => Object.assign(p, { est: !p.on, stop: p.on ? p.stop : null }));

@@ -216,5 +216,8 @@ One headless Chrome with WebGL on the CPU, closed by its own PID: start, middle 
 
 `consistency.mjs` leaves a dealt kit scene's own scroll and hold untold on every kind it fits (one
 scene a page; its still is judged under reduced motion); a scene of the builder's own WARNs, and a
-scene off its kind keeps its FAIL. The classic stage keeps every word clear of the fixed nav
-(`Stage.navInset`) at every width.
+scene off its kind keeps its FAIL. The kit's scene section is a stage of its own, so it needs no
+`.wrap` and no waiver: the checker does not hold it to the container, does not rank its display line
+among the headings, leaves its gaps out, lets its full-width ground meet the next section with no
+padding, and reads its words at rest, not mid-fade. Keep the markup as `demo.html` has it. The classic
+stage keeps every word clear of the fixed nav (`Stage.navInset`) at every width.

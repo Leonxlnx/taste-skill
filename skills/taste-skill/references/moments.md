@@ -257,7 +257,9 @@ model.
   loader. Exit 1 on a fault. `consistency.mjs` (the gate) measures the copy's count (`moment-text`)
   and leaves the kit moment's own scroll, pin and reveal untold in its section (the first three
   moments; a builder's own scroll moment WARNs), its still judged under reduced motion; the kit's
-  marquee track and the offset pair are no card row, split or stagger to it.
+  marquee track and the offset pair are no card row, split or stagger to it, and a statement the
+  moment split into letters (`letters-assemble`) is one part to the reveal check at every width and
+  no tilt while its letters fly home.
 - `node <skill>/scripts/moments.mjs shoot --out shots/moments --profile <own chrome dir> --port 5720 --only <id> [--reduced]`
   shoots the demo's start, middle and end states at 1440 and 390 in the skill's headless Chrome (WebGL
   on the CPU); the end must be the finished section. Under `--reduced`, and at 390 for a moment

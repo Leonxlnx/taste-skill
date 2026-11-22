@@ -77,7 +77,8 @@ moves the folder.
 - It restarts from its first beat when the pointer enters the card (mouse and pen) or focus moves into it by keyboard.
 - It runs only on screen. On a phone (under 640px) and under reduced motion it holds one still, the busiest moment; `"pulse": "none"`
   holds it too. `data-dg-still` holds it by hand and plays it while the pointer is on the card. `data-ui-still` does not hold a
-  diagram. A loop that runs gets the pause disc.
+  diagram. A loop that runs gets the pause disc. Its own observer starts the loop as the card comes on screen: the checker
+  reads that as the card's loop, not a scroll reveal (a fade you put on the card or its panel is still a reveal).
 - The light is a gradient comet with a glow and a bright head (`"pulse": "dot"` is the head alone). The accent is only the light
   and what it reaches; lines are hairlines; the core is an ink tile. The card never moves, nothing starts on scroll.
 - Grounds vary by default (`rings` round a hub, `none` under an orbit, a timeline or a sync, `dots` for flows; the diagram that leads
