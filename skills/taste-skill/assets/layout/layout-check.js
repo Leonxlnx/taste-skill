@@ -16,30 +16,30 @@
     spill                    a block runs past L or R without reaching the viewport edge.
     one-sided                a section's visuals stop short of R (or of L) while the text holds the other
                              line, and the composition is not centred.
-    screen-short             a section is shorter than one screen (the fixed header lies over its top).
-    screen-height            a section is not exactly one or two screens tall (at 1280 and wider, and on a
-                             phone; from 640 to 1279 a section may grow, but never past two screens). A live
-                             photo-chapters section (.is-live) is a whole number of screens, up to four.
-    sparse                   a section's content fills under 50% of it (the aim is 55%); a dealt statement
-                             moment's own section (.statement holding a data-moment, or any section holding word-highlight) is type by design.
-    neighbour                with a section framed as the judge frames it (its top at the top of the
-                             screen, and again one screen down when it is two screens tall), ink of
-                             another section shows.
-    neighbour-ground         ... or another section's own ground (a colour band) shows.
+    section-height           a section is stretched past its content: the empty band beyond its own padding
+                             (each side's padding counted as air up to 240px, 144 on a phone), or the largest
+                             empty strip between two pieces of its content, is a third of its height or more. A
+                             section is as tall as its content and its air (system.css pads it --padt and --padb).
+                             The hero, a scene, a moment that holds its stage and a section its layer fills are
+                             left out.
+    section-air              the content of two neighbouring sections under 128px apart (96 on a phone): the
+                             system's air is --padb under one and --padt over the next, 320px at 1440.
     hero-fold                the hero does not fill the first screen, runs past it (taller than one
                              screen), or the next section shows on it.
   Elements inside a visual (cards, frames, panels, stages, UI fragments, a collage) are not page edges.
-  data-edge-free on an element skips it; data-screen="free" on a section skips the screen rules.
+  data-edge-free on an element skips it; data-screen="free" on a section skips the section rules.
 
   window.lyFinish({ reveal, wide }) (async: it scrolls) - the finish checks, the faults the 2.5.2 test builds
   shipped. Each finding: { rule, where, detail, fix, sev } (sev 'WARN' never blocks; no sev is a FAIL).
-    empty-band       the empty strip under a section's lowest content (text, picture, control, a box with its own
-                     ground) is over 25% of the section's height (FAIL), over 15% (WARN). A section that holds a
-                     pinned moment or a scene is left out: it holds its screens on purpose.
+    empty-band       the empty strip above a section's first content and under its lowest (text, picture, control,
+                     a box with its own ground) beyond its own padding (240px a side at most, 144 on a phone), or
+                     a strip between two pieces of it, a third of the section's height or more (FAIL), a sixth
+                     and 96px or more (WARN). A section that holds a pinned moment or a scene is left out: it
+                     holds its stage on purpose.
     uneven-columns   a split (.grid columns side by side, at any width where they still stand side by side) whose
                      shorter column's lowest content ends above the taller one's by over 30% of the section's
                      height (FAIL), over 20% (WARN). Sticky columns, moments, scenes and the hero are left out.
-    blank-screen    one screen of a section (its first, or its second when it is two screens tall) shows
+    blank-screen    one screen of a section (its first, or a later one when it is taller than a screen) shows
                      nothing, after the check scrolled to it and waited for what reveals there.
     placeholder      a [data-placeholder] element, or an .example address or domain printed in the page's words.
     moment-target    a [data-moment] root that lacks what its moment needs (picture-develops: one <img> as its
@@ -56,7 +56,7 @@
 window.lyCheck = function lyCheck(opts = {}) {
   const tol = opts.tol ?? 1.5;
   const vw = document.documentElement.clientWidth, vh = innerHeight, sy = scrollY;
-  const out = [], add = (rule, where, detail) => out.push({ rule, where, detail });
+  const out = [], add = (rule, where, detail, fix) => out.push(fix ? { rule, where, detail, fix } : { rule, where, detail });
   const R1 = n => Math.round(n * 10) / 10;
   const name = el => {
     if (!el) return '?';
@@ -190,60 +190,51 @@ window.lyCheck = function lyCheck(opts = {}) {
     return { top: t, bottom: b, left: l, right: rr };
   };
   const inkOf = sec => [...sec.querySelectorAll('*')].filter(e => (e.matches(INK) || ownText(e)) && shown(e) && !e.closest('[data-edge-free]')).map(e => doc(clipped(e, sec))).filter(r => r.bottom - r.top > 1 && r.right > 0 && r.left < vw && r.right - r.left > 1);
-  const bgOf = el => { const c = getComputedStyle(el); return c.backgroundImage !== 'none' ? 'image' : (/rgba\(.*,\s*0\)$|transparent/.test(c.backgroundColor) ? null : c.backgroundColor); };
+  // a section that holds its stage at the height its own module sets (a scene, or a moment that pins while it plays),
+  // and a section its own layer (a photograph or ground behind its words) fills
+  const PINNED = ['photo-chapters', 'pinned-chapters', 'closing-lift', 'giant-type-pass', 'iris-opens', 'line-carries-colour'];
+  const holds = s => s.matches('[data-big-scene], [data-scene], .sc') || !!s.querySelector('[data-big-scene], [data-scene]')
+    || [s, ...s.querySelectorAll('[data-moment]')].some(m => m.matches('[data-moment]') && (PINNED.includes(m.dataset.moment) || getComputedStyle(m).position === 'sticky'));
+  const layered = s => !!s.querySelector(':scope > :is(img, picture, video, canvas).layer') || getComputedStyle(s).backgroundImage !== 'none';
   const info = secs.map(s => {
     const r = doc(s.getBoundingClientRect());
     const ink = inkOf(s);
     const cTop = ink.length ? Math.min(...ink.map(i => i.top)) : r.top, cBot = ink.length ? Math.max(...ink.map(i => i.bottom)) : r.bottom;
-    // a live photo-chapters section is (hold + 1) screens by design, three or four (moments.md): whole screens, up to four
-    const chapters = s.matches('[data-moment="photo-chapters"].is-live') || !!s.querySelector('[data-moment="photo-chapters"].is-live');
-    // a dealt statement moment's own section (one statement alone in its screen, sections.md) is type on its ground by
-    // design, as the checker reads it: never sparse
-    const stmt = (s.matches('.statement, [class*="section--statement"], [data-statement]') && (s.matches('[data-moment]') || !!s.querySelector('[data-moment]')))
-      || s.matches('[data-moment="word-highlight"]') || !!s.querySelector('[data-moment="word-highlight"]');
-    return { el: s, r, ink, cTop, cBot, bg: bgOf(s), free: s.matches('[data-screen="free"]'), most: chapters ? 4 : 2, stmt };
+    return { el: s, r, ink, cTop, cBot, free: s.matches('[data-screen="free"]'), held: holds(s), layer: layered(s) };
   });
-  const pageBg = getComputedStyle(document.body).backgroundColor;
-  const footer = document.querySelector('body > footer, footer.footer');
+  // a section is as tall as its content and its air (system.css pads it --padt and --padb): the empty band beyond its
+  // padding (each side's padding counted as air up to 240px, 144 on a phone) or the largest empty strip between two
+  // pieces of its content, a third of its height or more, is a section stretched past its content
+  const cap = vw < 640 ? 144 : 240;
   info.forEach((s, i) => {
     const h = s.r.bottom - s.r.top;
-    if (!s.free && h < screen - tol) add('screen-short', name(s.el), `${Math.round(h)}px tall; one screen under the nav is ${Math.round(screen)}px`);
-    // a phone section is at least its screens and grows with what it holds (system.css): taller than a screen and
-    // filled by its content (0.7 of it or more, the rest is its padding) it is not off its count; one that grows
-    // past two screens still is (--hm: 2 and two groups, or less content)
-    const grown = vw < 640 && h > screen + tol && h <= 2 * screen + tol && (s.cBot - s.cTop) / h >= 0.7;
-    // a live photo-chapters section is sized in whole viewports by its own CSS, whatever the nav, so it is counted in
-    // viewports too (under a sticky nav a screen is the viewport less the nav)
-    const u = s.most > 2 ? vh : screen;
-    const exact = (vw >= 1280 || vw < 640) && !grown, off = Math.min(...Array.from({ length: s.most }, (_, k) => Math.abs(h - (k + 1) * u)));
-    if (!s.free && i > 0 && ((exact && off > tol) || h > s.most * u + tol)) add('screen-height', name(s.el), `${Math.round(h)}px, ${(h / u).toFixed(2)} screens; ${s.most > 2 ? 'a live photo-chapters section is a whole number of screens, four at most' : `a section is exactly one or two (--h)${vw < 640 ? ', or on a phone at least one that its content fills' : ''}`}`);
-    if (!s.free && !s.stmt && i > 0 && s.ink.length && (s.cBot - s.cTop) / h < 0.5) add('sparse', name(s.el), `its content fills ${Math.round(100 * (s.cBot - s.cTop) / h)}% of its screen; merge it or give it its visual (0.55 is the aim)`);
-    const ch = s.cBot - s.cTop;
-    // frame the section as the judge does: its top at the top of the screen (the hero at scroll 0), and a
-    // second frame one screen down when it is two screens tall; with a header that is not fixed, its top
-    // under the nav
+    // the view a reviewer frames the section in (check.mjs --shots): its top at the top of the screen, the hero at 0;
+    // with a header that is not fixed, its top under the nav
     const y0 = i === 0 ? 0 : (navPos === 'fixed' ? s.r.top : s.r.top - navH);
     s.frame = Math.max(0, Math.round(y0));
-    const ys = [y0]; if (h > screen * 1.5 && i > 0) ys.push(y0 + screen);
-    for (const y of ys) {
-    const top = y + navH, bot = y + vh;
-    info.forEach((o, j) => {
-      if (j === i) return;
-      const hit = o.ink.filter(k => k.bottom > top + 2 && k.top < bot - 2);
-      if (hit.length) {
-        const px = Math.max(...hit.map(k => Math.min(k.bottom, bot) - Math.max(k.top, top)));
-        add('neighbour', name(s.el), `framed, ${Math.round(px)}px of ${name(o.el)} shows`);
-      } else if (o.bg && o.bg !== s.bg && o.bg !== pageBg && o.r.bottom > top + 2 && o.r.top < bot - 2) {
-        const px = Math.min(o.r.bottom, bot) - Math.max(o.r.top, top);
-        add('neighbour-ground', name(s.el), `framed, ${Math.round(px)}px of ${name(o.el)}'s ground shows`);
-      }
-    });
-    if (footer && !s.free) {
-      const fr = doc(footer.getBoundingClientRect());
-      if (fr.top < bot - 2 && fr.bottom > top) add('neighbour', name(s.el), `framed, ${Math.round(Math.min(fr.bottom, bot) - Math.max(fr.top, top))}px of the footer shows`);
-    }
-    }
+    if (i === 0 || s.free || s.held || s.layer) return;
+    if (!s.ink.length) { add('section-height', name(s.el), `${Math.round(h)}px tall with no content in it`, 'give the section its content or take it out'); return; }
+    const c = getComputedStyle(s.el), airT = Math.min(parseFloat(c.paddingTop) || 0, cap), airB = Math.min(parseFloat(c.paddingBottom) || 0, cap);
+    const above = Math.max(0, s.cTop - s.r.top - airT), below = Math.max(0, s.r.bottom - airB - s.cBot);
+    const iv = s.ink.map(k => [k.top, k.bottom]).sort((a, b) => a[0] - b[0]);
+    let end = iv[0][1], hole = 0;
+    for (const [a, z] of iv.slice(1)) { if (a - end > hole) hole = a - end; end = Math.max(end, z); }
+    const band = above + below, most = Math.max(band, hole);
+    if (most >= h / 3) add('section-height', name(s.el), hole > band
+      ? `an empty strip of ${Math.round(hole)}px between two pieces of its content, ${Math.round(100 * most / h)}% of its ${Math.round(h)}px`
+      : `stretched past its content: ${Math.round(band)}px of its ${Math.round(h)}px (${Math.round(100 * most / h)}%) empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
+    'let the section be as tall as its content and its air (no height, min-height or padding of its own) and close a hole between its parts; merge a short block into the section above, or give it the picture it lacks');
   });
+  // the air between two sections' content: --padb under one and --padt over the next (320px at 1440, 192 on a phone);
+  // under 128px (96 on a phone) the two run together. The hero's foot is hero-fold's
+  const least = vw < 640 ? 96 : 128;
+  for (let i = 1; i + 1 < info.length; i++) {
+    const a = info[i], b = info[i + 1];
+    if (a.free || b.free || a.held || b.held || !a.ink.length || !b.ink.length) continue;
+    const gap = b.cTop - a.cBot;
+    if (gap < least) add('section-air', `${name(a.el)} / ${name(b.el)}`, `${Math.round(gap)}px between the content of the two sections: ${least}px at least (the system's air is ${vw < 640 ? 192 : 320}px)`,
+      "keep the system's padding on both sections (--padb under one, --padt over the next): no padding, margin or height of their own");
+  }
   if (info.length) {
     const hero = info[0];
     if (hero.r.top > navH + tol + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0)) add('hero-fold', name(hero.el), `starts at y ${Math.round(hero.r.top)}, not under the nav`);
@@ -343,18 +334,21 @@ window.lyFinish = async function lyFinish(opts = {}) {
     const ink = inkOf(s, false), pinned = pins(s);
     // the hero is judged by its own fold and fill checks (hero-fill, hero-fold): its air is designed per form
     if (ink.length && !pinned && !s.matches('.hero')) {
-      // the empty strips: under the lowest content, and between two pieces of it (a split that space-between pulled
-      // apart: a 550px hole between the h2 and the cards on a phone); the strip above the first piece is the
-      // section's top padding under the header, never counted
+      // the empty strips: above the first piece and under the lowest beyond the section's own padding (each side's
+      // padding counted as air up to 240px, 144 on a phone: more is a stretched section), and between two pieces of it
+      // (a split that space-between pulled apart: a 550px hole between the h2 and the cards on a phone)
+      const sc = getComputedStyle(s), cap = vw < 640 ? 144 : 240;
+      const airT = Math.min(parseFloat(sc.paddingTop) || 0, cap), airB = Math.min(parseFloat(sc.paddingBottom) || 0, cap);
       const iv = ink.map(i => [Math.max(top, i.top), Math.min(bot, i.bottom)]).sort((x, y) => x[0] - y[0]);
       let end = iv[0][1], gap = { px: 0 };
       for (const [a, z] of iv.slice(1)) { if (a - end > gap.px) gap = { px: a - end, from: end, to: a }; end = Math.max(end, z); }
-      const band = bot - end, f = Math.max(band, gap.px) / h, inner = gap.px > band;
-      if (f > 0.15) add('empty-band', secName(s), inner
+      const above = Math.max(0, iv[0][0] - top - airT), below = Math.max(0, bot - airB - end);
+      const band = above + below, most = Math.max(band, gap.px), f = most / h, inner = gap.px > band;
+      if (f >= 1 / 3 || (f >= 1 / 6 && most >= 96)) add('empty-band', secName(s), inner
         ? `a strip of ${Math.round(gap.px)}px (${pct(f)} of its ${Math.round(h)}px) between two pieces of its content is empty (y ${Math.round(gap.from - top)} to ${Math.round(gap.to - top)} in the section)`
-        : `the last ${Math.round(band)}px (${pct(f)} of its ${Math.round(h)}px) under its lowest content are empty`,
-      inner ? 'close the hole: keep the heading and what follows together (no justify-content: space-between across a tall section), or make the section a screen shorter (--h / --hm)'
-        : 'fill the section: let the picture or the card grow to the foot of the longer column (align-self: stretch), add the visual it lacks, or make the section a screen shorter (--h) and merge it with its neighbour', f > 0.25 ? undefined : 'WARN');
+        : `${[above >= 1 && `${Math.round(above)}px above its first content`, below >= 1 && `${Math.round(below)}px under its lowest`].filter(Boolean).join(' and ')} (${pct(f)} of its ${Math.round(h)}px) are empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
+      inner ? 'close the hole: keep the heading and what follows together (no justify-content: space-between, no height of its own)'
+        : 'let the section be as tall as its content and its air: take out the height, min-height or padding that stretches it, or give it the picture it lacks', f >= 1 / 3 ? undefined : 'WARN');
     }
     // uneven columns: in a split that still stands side by side, the shorter column's lowest content against the
     // taller's, relative to the section (empty-band measures the whole section, so a tall photograph hid a text
@@ -386,8 +380,12 @@ window.lyFinish = async function lyFinish(opts = {}) {
     const n = Math.max(1, Math.floor(h / vh + 0.6));
     for (let k = 0; k < n && k < 4; k++) {
       const a = top + k * vh, z = Math.min(bot, a + vh), need = Math.min(40, (z - a) * 0.08), nth = ['first', 'second', 'third', 'fourth'][k];
-      const over = list => list.filter(i => Math.min(i.bottom, z) - Math.max(i.top, a) >= need);
-      if (!pinned && !over(ink).length) { add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) holds nothing at all`, 'put the section\'s content back in that screen (a moment on the wrong element can hide it: see moment-target), or make the section one screen shorter'); continue; }
+      // what shows in that screen: the pieces in it, when together they cover need px of its height (a short section of
+      // text lines, each under 40px, is not blank)
+      const over = list => { const iv = list.map(i => [Math.max(a, i.top), Math.min(z, i.bottom)]).filter(([p, q]) => q > p).sort((x, y) => x[0] - y[0]);
+        let n = 0, e = -Infinity; for (const [p, q] of iv) { if (q > e) { n += q - Math.max(p, e); e = q; } }
+        return n >= need ? list.filter(i => Math.min(i.bottom, z) > Math.max(i.top, a)) : []; };
+      if (!pinned && !over(ink).length) { add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) holds nothing at all`, 'put the section\'s content back in that screen (a moment on the wrong element can hide it: see moment-target), or take out the height that makes it'); continue; }
       if (!pinned && over(inkOf(s, true)).length) continue;
       await go(a, 900);   // what reveals there gets its time, then it is read again
       const seen = inkOf(s, true).filter(i => i.bottom > scrollY + 2 && i.top < scrollY + vh - 2);

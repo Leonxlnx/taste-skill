@@ -38,6 +38,12 @@ main > [data-moment="pinned-chapters"][data-moment]:not(.is-live) { height: auto
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img, [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > picture > img { aspect-ratio: 16 / 9; max-height: 26svh; }
 }
 
+/* the phone version (.is-phone): the step in hand takes the accent rule, each picture settles from a close crop */
+[data-moment="pinned-chapters"].is-phone .mo-pc__step { transition: border-color 300ms ease; }
+[data-moment="pinned-chapters"].is-phone .mo-pc__step.is-on { border-left-color: var(--accent); }
+[data-moment="pinned-chapters"].is-phone .mo-pc__visual > img, [data-moment="pinned-chapters"].is-phone .mo-pc__visual > picture > img { will-change: transform; }
+@media (prefers-reduced-motion: reduce) { [data-moment="pinned-chapters"].is-phone .mo-pc__visual img { transform: none !important; } }
+
 /* live */
 [data-moment="pinned-chapters"].is-live { height: calc((var(--mo-hold) + 1) * 100svh); padding: 0; }
 main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: start; align-content: center; overflow: clip; }

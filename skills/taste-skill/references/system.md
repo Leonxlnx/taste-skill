@@ -13,7 +13,8 @@ and loop number: `motion.md`.
   initial-scale=1, viewport-fit=cover">` (without the reset the hero ends at 908 and `.wrap` at x 88).
 - Spacing scale 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 (`--s-1` to `--s-10`) for every margin, gap
   and padding you write. Heading to content 48px (32 on a phone); cards 24px apart (12).
-- One height per card row and per tile kind, page-wide; sections at H or 2H.
+- One height per card row and per tile kind, page-wide; every section as tall as its content,
+  the same air round each (`--padt`, `--padb`), never stretched to a screen.
 - The skip link is the first child of the header's `.wrap`, as `starter.html` has it:
   `<a class="skip-link" href="#top">Skip to content</a>` (`main id="top"`), in the page's language.
   `.skip-link` keeps it out of the layout until the first Tab, then shows it over the logo, so it
@@ -29,12 +30,12 @@ On `:root`, used everywhere (desktop / under 640px):
 | Token | Value | Use |
 |---|---|---|
 | `--nav` | 72 / 56 | the fixed header |
-| `--padt` | 120 / 96 | a section's top padding: the h2 sits here |
-| `--padb` | 72 / 48 | a section's bottom padding (plus `--bar`) |
+| `--padt` | 160 / 96 (128 on a tablet) | a section's top padding: the h2 sits here |
+| `--padb` | 160 / 96 (128 on a tablet) | a section's bottom padding (`footer.closing` adds `--bar`); with `--padt` the air between two sections, 320px at 1440 |
 | `--gut` | 80 / 24 (place 120 from 1024) | the `.wrap`'s side margin: 1280 wide, 1200 on a place |
 | `--hgap` | 48 / 40 (place 40 / 24) | the header to the hero's words, under `--photo` on a place |
 | `--hpadb` | 64 / 24 | the hero's bottom padding (plus `--bar`) |
-| `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to every bottom padding (the hero's only without script: the bar is never on the first screen); content is never cut to hide behind the bar |
+| `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to the footer's bottom padding (the hero's only without script: the bar is never on the first screen), so the page's end clears it; content is never cut to hide behind the bar |
 
 Grid: `.grid` is 12 columns with a 24px gap (12 under 640); the column numbers are in
 `layout-v4.md` section 4. A picture wall is its own grid with a gap of 0 or 2px (page CSS
@@ -132,8 +133,8 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
   booking button or the footer's directions), is on the screen: one screen never shows an action
   twice [action-repeat]. Hidden, it is off the screen and inert, so nothing in it takes the focus;
   it never hides while the focus is in it. The hero does not pad for it then. Without script the
-  bar is simply always at the foot and every section, the hero too, pads for it, so it covers
-  nothing. Write it as the starter does, a child of `body` after the footer, and add no script of your own.
+  bar is simply always at the foot, over the page as it scrolls by; the hero and the footer pad for
+  it, so it covers neither the first screen's button nor the page's end. Write it as the starter does, a child of `body` after the footer, and add no script of your own.
 
 ## Footer
 
@@ -150,7 +151,8 @@ unless the brief gives the accounts.
 
 - `.card` as `cards.md` builds it; one height per row; never text in a box in a box. Open tiles
   (`.tile`) for rooms, models and people; `.rows` for menus, prices and specs (a 1px rule closing
-  each row); FAQs open in full (`.faq`, no accordion).
+  each row); FAQs open in full (`.faq`, no accordion), except a long one of ten questions or more
+  from a brief with many: `.faq.faq--fold`, each answer opening on a click, nothing animated.
 - Opening hours: `<dl class="hours">` of `dt`/`dd` pairs with `data-days="tue-sun"` or `data-days="sat,sun"` on each `dt` (the row's label; the `dd` takes none) and
   `data-tz="Europe/Berlin"` on the `dl.hours` itself (the venue's zone; system.js reads it only there): system.js marks today's row (weight 500) and
   fills `[data-open-now]` ("Open now, until 16:00"; "Closed, opens Tuesday at 7:30"); never
@@ -165,13 +167,16 @@ unless the brief gives the accounts.
 - On a phone the hours are a ruled list (days left, times right, one line each) and the footer has at
   most two columns; system.css does both, so never set a footer's spans for the phone yourself.
 
-## Fill, statements and compositions
+## Pictures, statements and compositions
 
-- The last block of a one-screen section grows to the section's foot: a split's picture
-  (`.pl-photo`, `figure.media`, `.frame--fill`) takes the row's height, tiles give the rest to their
-  photographs, open cards to their panels (`layout-v4.md`, Fill). `.pl-photo--keep` opts one out.
+- Nothing grows to fill a screen: a split's picture (`.pl-photo`, `figure.media`, a `.frame`) keeps
+  its own ratio beside the words, top-aligned (a `.frame--fill` also grows with its row when the
+  words run taller), tiles keep `--tile-ratio`, open cards their panel's `--p-h` (`layout-v4.md`
+  section 2). A `.frame` names its ratio (`.frame--portrait`, `--square`, `--split` or `--ratio`);
+  one that names none and holds only a picture laid over it (`.frame__img`) is 4:3, never 0px.
 - A statement is `<section class="section statement">` with a `.t-label` and one
-  `.statement__text`; `.statement--short` for 12 to 20 words. Its size comes from the screen's height.
+  `.statement__text`; `.statement--short` for 12 to 20 words. Only the sentence is set large: a
+  line after it keeps the lead's size.
 - The compositions `start.mjs deal` deals per section (`.grid--mirror`, `.comp-bleed` with
   `.comp-panel`, `.comp-offset`, `.comp-three`) and the five closes (`.close--photo`, `--type`,
   `--word`, `--split`, `--form`): markup in `sections-library.md`, Compositions and Closes.

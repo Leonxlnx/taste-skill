@@ -80,7 +80,8 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   - **the copy** (waivable): `scripts/copy-lint.mjs --json --kind <kind>` on the page's file, or, when
     the file holds no sections (a built app, a dev server), on the page as the checker's browser built
     it; with neither the copy is listed as not checked, never passed. Its FAILs block (`copy-residue`,
-    `copy-slop-word`, `copy-stock-phrase`, a device used twice its budget plus one times or more (two-fragment and number-pair headings, contrast
+    `copy-slop-word`, `copy-stock-phrase`, `copy-withheld` (a price or an address held back, a note about the
+    build on the page), a device used twice its budget plus one times or more (two-fragment and number-pair headings, contrast
     frames, negation runs, virtue words; riders, puffery, reveals and repeated promises only WARN), a
     brand coined as Kestrel or Halcyon); its WARNs are listed and never block (`copy.md`,
     `copy-tells.md`; `copy-brand-word` is a listed word inside the client's own name). These are
@@ -90,6 +91,10 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   A file whose text is a kit file's is the kit's, wherever it sits. The two checkers' ids for one fault of
   one section (section-height / screen-height / screen-short, one-section / neighbour) are one finding.
   A full run takes a few minutes on a CPU Chrome.
+- **One check that throws never ends the run.** A fault in the gate itself (in 2.5.2 a bracket in copy.md's
+  Products line broke photo-product and took five builds' whole runs with it) is a WARN, `gate-check`,
+  naming the check, and the run goes on to its verdict. The checks the verdict rests on (the static ones,
+  the browser checks, the copy, the motion) are then also listed as not checked, so it is never a PASS.
 - **WARNs never block,** but for three house rules the checker only WARNs and the gate holds as FAILs:
   `hero-enter` (the hero has no `data-enter`, or the head line that sets `html.m-enter` is missing),
   `moment-none` (the page deals no moment) and `photo-repeat` (one photograph shown twice). The first few WARNs are listed.
@@ -121,6 +126,15 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   round: FAIL, fix, finish again. At the last round the gate says once "rounds used up": stop fixing,
   put the open FAILs in the report, finish. Every later finish is allowed. A PASS, and the last
   round's OPEN, rename `build.json` to `build.done.json`, so a later deal starts a build of its own.
+  An ERROR (the checks could not all run and found no FAIL) counts rounds the same way: fix what it
+  names and run again; at the last round it closes the build as OPEN does.
+- **After the close.** The gate keeps the page's fingerprint (the page, every file it loads, what the
+  checks are told) as it closed. A run on a page that changed since then reopens the build for one
+  more round (`build.done.json` back to `build.json`): an edit after the PASS is checked like any other.
+  A run on the unchanged page is `GATE: OFF`. The hook reopens it too, but never after `--done`, never
+  for a close idle over 24 hours and never in another session, and its block cap stays the build's
+  first one. `--quick` and `--done` never reopen. Never re-arm a closed build with `--start` to get its
+  rounds back; just run the gate.
 - **When the user ends it.** Only when the user tells you to stop, or to ship the page as it is:
   `gate.mjs --done "<what they said>"` (12+ characters) closes the build with their words: status
   `done` in `gate.json`, `build.json` renamed to `build.done.json`, every later finish allowed. Its
@@ -128,10 +142,11 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   your own call that the page is good enough: that is what the rounds are for.
 - **It never traps an agent.** Every block is counted in `.taste-skill/gate-blocks.json`, which `--start`
   never clears; past the rounds plus 4 blocks for one build (the blocks before the first run by hand
-  have that many of their own), or 30 in 6 hours in the folder, every finish is allowed. No page, a framework shell, or checks that crashed or ran past 9.5 minutes block once with
-  what to do, then allow. A crashed or timed-out run is stored for its page: a later finish on the
-  unchanged page reuses it instead of running the checks again (once more at most, when the agent was
-  not yet told). Each check runs with a watchdog that kills it, and its Chrome, if the gate is
+  have that many of their own), or 30 in 6 hours in the folder, every finish is allowed. No page or a
+  framework shell blocks once with what to do, then allows. Checks that crashed or ran past 9.5 minutes
+  block once for that page with what to fix (a round when the page changed), then allow. A crashed or
+  timed-out run is stored for its page: a later finish on the unchanged page reuses it instead of
+  running the checks again (once more at most, when the agent was not yet told). Each check runs with a watchdog that kills it, and its Chrome, if the gate is
   killed; nothing else is ever killed.
 
 ## The manual gate
@@ -149,15 +164,20 @@ GATE: OPEN <n> (rounds used up)
 GATE: QUICK <n> (not a round; run without --quick to finish)
 GATE: SETUP (...)
 GATE: ERROR (...)
-GATE: OFF (no build active)
+GATE: OFF (...)
 GATE: DONE (<the user's words>)      after --done
 ```
 
 PASS: finish. FAIL: fix what it lists and run it again. OPEN: stop fixing; the open FAILs and the waivers
 go in the report. QUICK: a look between rounds, never the last line of a build. SETUP (no page yet, a
 framework's source shell, a page that is not local): arm what a browser can open (`--start`, above) and
-run it again. ERROR (the checks themselves could not run) or OFF (no build armed here): put the line in
-the report and finish; do not rerun. Above the line: every open FAIL with where it is and the fix, every
+run it again. ERROR (the checks could not all run): fix what it names (a page or a file that does not
+load, a script that throws or hangs, a page with no `<main>`) and run it again, a round like a FAIL; the
+same crash on an unchanged page is retried once, then reused. An ERROR that names nothing on the page
+(Chrome would not start, a fault in the gate), or one that ends "rounds used up", goes in the report
+with what was not checked. OFF: no build is armed here, or the build closed and the page has not changed
+since; a page changed after the close is checked by the next run (one more round), never by re-arming
+it. Above the line: every open FAIL with where it is and the fix, every
 waiver, the first WARNs. `--quick` (the checker at 1440 and 390, the layout check at 1440) is never a round. The crops are in
 `.taste-skill/gate/consistency`.
 
@@ -179,7 +199,8 @@ find another version's `gate.mjs`: `--start` and a `start.mjs deal` record the a
 output and exit code), so the gate that armed a build judges it; a marker without the field, or a gate
 that is gone, is judged by the one the hook found. A skill installed under another
 folder name, other apps, or a Claude Code without skill hooks take one of these. Each runs in every
-session of the project and finds a build in its folder or one or two below. Where none is active it
+session of the project and finds a build in its folder or one or two below. A closed build whose page
+changed since its close is checked again (After the close, above). Where none is active it
 exits at once, but once for a tasteskill page (a `page-type` meta) changed in the last day in the
 folder or one below that was never armed: it says how to arm it (`.taste-skill/unarmed.json` records
 that it told). It holds only the first session it blocks, lets an orchestrator

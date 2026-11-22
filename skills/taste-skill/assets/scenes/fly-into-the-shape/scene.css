@@ -33,10 +33,16 @@
 [data-big-scene="fly-into-the-shape"].is-live .fis__mark { display: none; }
 [data-big-scene="fly-into-the-shape"].is-live .fis__world { position: absolute; inset: 0; z-index: 2; transform-origin: 50% 50%; will-change: transform, clip-path; }
 [data-big-scene="fly-into-the-shape"].is-live .fis__media { position: absolute; inset: 0; }
+[data-big-scene="fly-into-the-shape"] .fis__faces { display: none; }
+/* the title on the face, twice: under the world on the page's ground in the section's ink (it turns and grows with
+   the world), and inside the world, clipped to the mark, in the light ink on its dark photograph; a word that runs
+   past a stroke of the mark goes on in the other colour, never in the colour of what stands behind it */
+[data-big-scene="fly-into-the-shape"].is-live .fis__faces { display: block; position: absolute; inset: 0; z-index: 1; transform-origin: 50% 50%; pointer-events: none; will-change: transform; }
 [data-big-scene="fly-into-the-shape"].is-live .fis__face {
   display: block; position: absolute; left: 50%; top: 50%; z-index: 3; width: min(92vw, 16ch); font-size: clamp(40px, 6.2vw, 96px); text-align: center; transform-origin: 50% 50%;
   will-change: transform, opacity; color: var(--p-inv-ink, #fff);
 }
+[data-big-scene="fly-into-the-shape"].is-live .fis__face--ground { color: var(--ink); }
 /* the title and the sentence land on a flat band of the section's ground across the foot of the stage: readable on any photograph */
 [data-big-scene="fly-into-the-shape"].is-live .fis__band {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;

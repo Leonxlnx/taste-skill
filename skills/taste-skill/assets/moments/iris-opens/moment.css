@@ -15,5 +15,9 @@
   border-radius: 50%; border: 1px solid var(--accent); will-change: width, height; }
 .mo-io--surface { --mo-from: var(--p-surface, var(--surface)); }
 .mo-io--inverse { --mo-from: var(--p-inv-bg, var(--bg)); }
+/* two close grounds: the script has moved the panel's colour apart; the ring is drawn at 2px with a soft shade outside it */
+.mo-io--close .mo-io__stage > .mo-io__ring { border-width: 2px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent), 0 0 28px color-mix(in oklab, var(--ink) 14%, transparent); }
 .mo-io.is-open > .mo-io__stage { display: none; }
+/* a phone: a wider gutter, so the panel never reads as content flush on the edge where the ground changes */
+@media (max-width: 639px) { .mo-io { --mo-gap: 20px; } }
 @media (prefers-reduced-motion: reduce) { .mo-io > .mo-io__stage { display: none; } }

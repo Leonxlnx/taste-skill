@@ -83,14 +83,16 @@ real UI capture or a real photograph. A photograph is never filtered, printed, d
 - **One effect:** one live ground (the hero ground, or a ground inside the one framed
   `[data-visual]` window under an h2), or one WebGL part (an `fx-*` that holds a context: the button
   fill, a search or prompt glow, the edge-glow plan, spotlight, globe, avatar, logos, progress,
-  dither object, filled headline or stat), or one object, or one big scene. A grain, dither or
+  dither object, filled headline or stat), or one object. A dealt big scene is a beat of its own
+  beside it, in another section; a scene dealt as the hero takes the effect's place (the plan deals
+  none then), and a game's effect goes on a band, never over its key art. A grain, dither or
   texture CSS ground counts as it. Never in a fixed layer, never behind body copy, never a
   page-long canvas; a 3D world lives in the hero only.
 - **Card grounds** (house rule: "gradients and effects ... as a card's background with a smaller
   card of text or UI on top"): one card group may hold quiet grounds from the effect's family,
   drawn once and held as pictures (system.js frees their contexts); not a second live effect. With
-  a big scene there is no `data-fx` outside a moment (the checker FAILs it, MO-16, MO-23): the card
-  panels take the lit ground (`data-ground`).
+  a big scene the one dealt effect is the only `data-fx` outside a moment (a second FAILs, MO-16,
+  MO-23): the card panels take the lit ground (`data-ground`).
 - **Moments** (house rule): two section moments, three on a long page, dealt by fit
   (`moments.md`), each in its own section; a hero moment only when the dealt hero lists it; never in
   or beside the scene's section. A moment built as an `fx` part carries its own `data-fx` id on its
@@ -110,7 +112,8 @@ real UI capture or a real photograph. A photograph is never filtered, printed, d
 slots. `<kind>` is the page's ground: `light`, `dark` or `colour`; `<site-kind>` is the page's kind (on place, service and product one slot, `--slots hero` or `--slots band`).
 
 ```bash
-# the effect: an effect hero takes --slots hero; a photograph or UI hero puts it in the one [data-visual] frame: --slots band
+# the effect: an effect hero takes --slots hero; a photograph or UI hero puts it in the one [data-visual] frame: --slots band;
+# a game always --slots band (its key art is the hero); start.mjs plan does all of this
 node <skill>/scripts/effects.mjs pick --page <site-kind> --palette <kind> --slots hero --quiet --seed <S> --history .taste-skill/effects-history.json
 # one card group's still grounds, same family (a pattern or dither effect: --family mesh)
 node <skill>/scripts/effects.mjs pick --page <site-kind> --palette <kind> --slots card --family <the effect's family> --exclude <the effect>,<NOUI> --quiet --seed <S> --history .taste-skill/effects-history.json

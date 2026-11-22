@@ -16,7 +16,11 @@
   opts: image (the photograph's URL; or set data-image on the h2), travel (how far the picture moves,
         % of its spare height, default 60), focus (the x position of the picture in %, default 50),
         focusY (the y position the travel is centred on, default 62: the lower half).
+  It runs on a phone too, with the type at 19vw and two thirds of the travel (one background position on
+  one heading).
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const type = root.querySelector('.mo-gt__type') || root.querySelector('h1, h2');
   if (!type) return {};
@@ -28,7 +32,7 @@ export default function (root, opts, lib) {
   type.style.setProperty('--mo-y', `${fy}%`);
   root.classList.add('is-live');
   if (lib.reduced()) return {};
-  const travel = Math.max(0, Math.min(100, +opts.travel || 60));
+  const travel = Math.max(0, Math.min(100, +opts.travel || 60)) * (lib.phone() ? 2 / 3 : 1);
   const lo = lib.clamp(fy - travel / 2, 0, 100), hi = lib.clamp(fy + travel / 2, 0, 100);
   const s = lib.scrub(root, p => { type.style.setProperty('--mo-y', `${lib.lerp(hi, lo, p).toFixed(2)}%`); }, { mode: 'view' });
   return { destroy() { s.destroy(); type.style.removeProperty('--mo-y'); } };

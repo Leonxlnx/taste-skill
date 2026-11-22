@@ -19,17 +19,31 @@
       <div class="pl__spec"><h2 id="pl-h">Two lines at most</h2><dl><div><dt>…</dt><dd>…</dd></div> … 3-4 rows</dl></div>
     </div>
   </section>
+  The opening word is a word the screen shows: it lands on .pl__title-word when that holds it, else on the first
+  element of the screen holding exactly it (the name in the toolbar); a word the screen never shows is replaced by
+  the title word's text, so it never lands on another word.
   Detail layers: data-layer="1" … "4" on elements inside the panels; data-ink="x" grows a bar from its left edge.
   Phones show the finished composition (the screen with its toolbar and main pane, the spec under it).
 */
 import { scene, seg, ease } from '../lib.js';
 
 export default function mount(root, opts = {}) {
-  const word = root.querySelector('.pl__word'), ui = root.querySelector('.pl__ui'), titleWord = root.querySelector('.pl__title-word');
+  const word = root.querySelector('.pl__word'), ui = root.querySelector('.pl__ui');
   const panels = { bar: root.querySelector('.pl__bar'), side: root.querySelector('.pl__side'), main: root.querySelector('.pl__main'), insp: root.querySelector('.pl__insp') };
   const spec = root.querySelector('.pl__spec');
   root.querySelectorAll('.pl__caption').forEach(c => c.remove());     // an older markup's caption under the screen: never shown
   if (!ui) { root.classList.add('sc', 'is-rest'); return { destroy() {} }; }
+  // the opening word lands on the same word in the screen, never on another one (seen on a test page: "Murmur" flew
+  // onto "sync"): .pl__title-word when it holds that word, else the first element of the screen that holds exactly it
+  // (the name in the toolbar); with neither, the opening word takes the title word's text
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  let titleWord = root.querySelector('.pl__title-word');
+  if (word && norm(word.textContent) && (!titleWord || norm(titleWord.textContent) !== norm(word.textContent))) {
+    const hit = [...ui.querySelectorAll('*')].find(el => !el.children.length && norm(el.textContent) === norm(word.textContent));
+    if (hit) titleWord = hit;
+    else if (titleWord) word.textContent = titleWord.textContent.trim();
+  }
+  if (titleWord) titleWord.setAttribute('data-pl-land', '');
   const layers = [...root.querySelectorAll('[data-layer]')];
   const L = Math.max(...layers.map(el => +el.dataset.layer), 1);
   let geo = null;
@@ -105,5 +119,5 @@ export default function mount(root, opts = {}) {
       ui.style.cssText = ''; ui.style.removeProperty('--pl-box'); root.style.removeProperty('--pl-spec-x'); if (spec) spec.style.cssText = '';
     },
   });
-  return { destroy() { ctrl && ctrl.destroy(); } };
+  return { destroy() { ctrl && ctrl.destroy(); if (titleWord) titleWord.removeAttribute('data-pl-land'); } };
 }

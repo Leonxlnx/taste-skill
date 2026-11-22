@@ -5,7 +5,7 @@ The move for each part of the page, distilled from a study of 53 professional si
 clients: learn the move, never the line. Where a real brand made the move famous, its name stands
 beside it with at most five of its words, so you can recognise the move, never to copy it. The rules
 of `copy.md` hold throughout: the hero passes the five-second test, every heading has its noun,
-buttons are a verb and an object, nothing is invented.
+buttons are a verb and an object, nothing is invented beyond the facts it lets you assume.
 
 ## The hero: 14 forms
 
@@ -46,9 +46,12 @@ in five seconds. A form that needs a fact gets it in the very next line.
 | Mission-led brand | 3, 10 |
 | Game | 4 (the launch), 6, 13, or the name with the genre beside it |
 
-When the brief does not decide between them, deal it: count the letters of the brand name, divide by
-the number of forms in the row, and take the form at the remainder's place (remainder 0 is the
-first). Write the form and the reason on the voice card. A bare category label ("Card payments for
+The brief decides which forms can stand: real news for 4, a mission with a number for 3, a year for 12,
+a customer it names for 8, a checkable superlative for 14, an enemy the reader already resents for 10.
+The reader's state decides between those (a browsing reader: 5; one who arrives with a known pain: 2
+or 11). Write the form and the brief's reason on the voice card. Only when two forms fit the brief
+equally does the brand name's letter count break the tie: an even count takes the first of the two,
+an odd count the second; it never picks a form on its own. A bare category label ("Card payments for
 market stalls") is form 9 only when you chose it there; otherwise copy-lint WARNs it.
 
 **The lead (the sub-line):** software and services: how it works and the main benefit, 15 to 30 words,
@@ -134,6 +137,10 @@ date. Or none of that: pure facts in the third person, the way Paul Graham write
 ## Prices, FAQ, booking: the plain zone
 
 - **The tone drops to facts:** the reader is anxious here.
+- **A price is shown, never held back:** the brief's, else a plausible one for the trade marked
+  `data-assumed` (`copy.md`, What may be assumed); a custom job gets a "from" price and what moves it
+  ("from 2,400 € for the day; travel past Florence is extra"). Never "Price on request" or "we reply
+  with the price" on a page that shows none [copy-withheld].
 - **Perks priced and literal:** "Late checkout until 14:00 for 15 euro", "Bike hire 12 euro a day".
   (The Hoxton priced late checkout by the hour; Pinboard wrote its yearly price into the button.)
 - **A risk reversal beside the button, only when true:** "Cancel up to two days before, free".

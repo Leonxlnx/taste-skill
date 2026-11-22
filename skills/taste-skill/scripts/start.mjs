@@ -40,7 +40,11 @@
       the type and the LAYOUT block; assets/layout/deal.mjs for the hero; moments.mjs pick --scene deal for 2-3
       moments and 0-1 scene; effects.mjs pick for 0-1 effect) and deals the hero's entrance from
       assets/motion/meta.json by fit. It ends with PLAN: one line per part, each naming the file or recipe to copy.
-      The hero's history goes to layout-history.json beside the --history file.
+      The hero's history goes to layout-history.json beside the --history file. The parts never contradict each
+      other or the checker: a closing scene or closing-lift is the page's close (the plan writes "close none", the
+      footer keeps its links row, a form dealt as close-form becomes form-band or form-photo, and the history's
+      close is null so the gate asks for no close row); a game's effect goes on a band (its key art is the hero);
+      a scene dealt as the hero takes no effect beside it.
 
   --page, the SKILL.md kinds as start.mjs names them:
       Tech (software, an app, AI, developer tools, fintech) ......... software
@@ -541,11 +545,16 @@ if (cmd === 'deal') {
   // 3. moments and the scene, by fit
   const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--has', has, '--history', histFile, ...flag('long'), ...val('tone')]);
   // 4. the effect: tech kinds always deal one for the hero; a place, service or product page one quiet treatment
-  //    about one page in three, on a band (effects-usage.md, The fit rule)
+  //    about one page in three, on a band (effects-usage.md, The fit rule). A game's hero is its key art, so its
+  //    effect goes on a band; a scene dealt as the hero is the hero's motion, so no effect then. One effect beside
+  //    a scene elsewhere is allowed (consistency.mjs scenes, MO-16)
   const bg = (dealOut.match(/\bbg (#[0-9a-f]{6})/i) || [])[1];
   const ground = bg && color.isDark(bg) ? 'dark' : 'light';
-  const fxRoll = techPage || Math.random() < 1 / 3;
-  const fxOut = fxRoll ? run(path.join(here, 'effects.mjs'), ['pick', '--page', page, '--palette', ground, '--slots', techPage ? 'hero' : 'band',
+  const sceneFits0 = (momOut.match(/^scene \S+ · ([^·\n]+?) ·/m) || [])[1] || '';
+  const sceneIsHero = sceneFits0.trim().split('/').every(f => f === 'hero') && !!sceneFits0.trim();
+  const fxRoll = techPage ? !sceneIsHero : Math.random() < 1 / 3;
+  const fxSlot = techPage && page !== 'gaming' ? 'hero' : 'band';
+  const fxOut = fxRoll ? run(path.join(here, 'effects.mjs'), ['pick', '--page', page, '--palette', ground, '--slots', fxSlot,
     '--history', histFile, ...val('tone'), ...flag('tech-subject')]) : '';
   // 5. the hero's entrance from the deck (assets/motion/meta.json), by fit, what the hero has, away from the last two
   const deck = JSON.parse(fs.readFileSync(path.join(skill, 'assets', 'motion', 'meta.json'), 'utf8')).entrances || [];
@@ -564,6 +573,17 @@ if (cmd === 'deal') {
   const poolE = freshE.length ? freshE : fitE.length ? fitE : deck.filter(e => e.default);
   const enter = poolE[Math.floor(Math.random() * poolE.length)] || { id: 'rise', sees: 'the h1 rises line by line', markup: 'data-enter' };
   h.entrances = [...(h.entrances || []), enter.id].slice(-8);
+  // one close a page: a scene that is the close (fits close) or a closing moment (closing-lift) is the page's last
+  // section with its one action, so the footer drops the dealt close row and keeps its links. The dealt close is
+  // written into the history as null, so the gate's deal-drift asks for no close row
+  const sceneCloseId = /(^|\/)close(\/|$)/.test(sceneFits0.trim()) ? (momOut.match(/^scene (\S+)/m) || [])[1] : '';
+  const momentCloseId = ([...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) ·/gm)].find(m => m[2].trim() === 'closing') || [])[1] || '';
+  const closeTaken = sceneCloseId ? `the scene ${sceneCloseId}` : momentCloseId ? `the moment ${momentCloseId}` : '';
+  if (closeTaken && h.layout && Array.isArray(h.layout[`${page}:close`]) && h.layout[`${page}:close`].length) h.layout[`${page}:close`][h.layout[`${page}:close`].length - 1] = null;
+  // the form dealt as close-form would be a second close: it becomes a form section of its own (form-band or form-photo)
+  const formKey = `${page}:form`, formList = h.layout && Array.isArray(h.layout[formKey]) ? h.layout[formKey] : null;
+  const formSwap = closeTaken && formList && formList[formList.length - 1] === 'close-form' ? (Math.random() < 0.5 ? 'form-band' : 'form-photo') : '';
+  if (formSwap) formList[formList.length - 1] = formSwap;
   if (!opt('no-record')) writeHistory(histFile, h);
   // grounds: a lit ground for tech (the old one-liner, now here); flat tokens and the dealt bands elsewhere
   const litGround = techPage ? ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] : '';
@@ -580,9 +600,9 @@ if (cmd === 'deal') {
   const lay = (dealOut.match(/nav (\S+) · footer (\S+) · close (\S+) · buttons (\S+) · mark (\S+)/) || []);
   const bands = (dealOut.match(/^ {2}bands: ([^;\n]+)/m) || [])[1] || 'flat';
   const compBlock = (dealOut.split(/^ {2}compositions \(.*$/m)[1] || '').split(/\n(?! {4})/)[0];
-  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${m[2]}`);
+  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${formSwap && m[1] === COMP_WHAT.form && m[2] === 'close-form' ? `${formSwap} (not close-form: ${closeTaken} is the close)` : m[2]}`);
   const [, scene = '', sceneAt = ''] = momOut.match(/^scene (\S+) · ([^·\n]+?) ·/m) || [];
-  const SCENE_AT = { hero: 'as the hero (the entrance becomes data-enter="still")', close: 'as the last section before the footer (the close row stays)', between: 'between two sections', statement: 'as a statement section' };
+  const SCENE_AT = { hero: 'as the hero (the entrance becomes data-enter="still")', close: 'as the last section before the footer: it is the page\'s close, with the one action (the footer keeps its links row only)', between: 'between two sections', statement: 'as a statement section' };
   const moments = [...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) · (\w+)/gm)].map(m => ({ id: m[1], fits: m[2].trim(), intensity: m[3] }));
   const fx = (fxOut.match(/^\s*\d+\. (\w+)\s+(\S+)/m) || []);
   const skillRef = '<skill>';
@@ -596,7 +616,9 @@ if (cmd === 'deal') {
   L.push(`entrance     data-enter="${enter.id}" on that hero section${enterMore ? `, ${enterMore}` : ''}: ${enter.sees}; references/motion.md, The entrance deck`);
   if (lay.length) {
     L.push(`nav          ${lay[1]} (starter.html NAV comment for its class)`);
-    L.push(`close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
+    L.push(closeTaken
+      ? `close        none: ${closeTaken} is the page's close (its last section, the one action once); drop the starter's .closing__cta row so the footer holds its links row only (never two closes in a row)`
+      : `close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
     L.push(`footer       ${lay[2]}${page === 'place' ? ' (links-visit template on a place)' : ''}`);
     L.push(`buttons      data-buttons="${lay[4]}" on <html> · mark data-mark="${lay[5]}" (or the client's logo)`);
   }
@@ -612,7 +634,7 @@ if (cmd === 'deal') {
   moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: ${momentSource(m.id, skillRef)}, link ${m.id}/moment.css; references/moments.md`));
   if (!moments.length) L.push('moments      none dealt: run moments.mjs pick again (every page takes two)');
   L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the whole <section data-big-scene="${scene}"> of ${skillRef}/assets/scenes/${scene}/demo.html (the gate's deal-drift check FAILs a page without it), link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
-  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands`} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : 'none'}`);
+  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands${page === 'gaming' ? ' (never over the key art)' : ''}`}${scene ? `, outside the scene's section (one effect beside the scene)` : ''} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : sceneIsHero && techPage ? 'none: the scene is the hero\'s motion' : 'none'}`);
   L.push(`hover layer  automatic (motion.js): buttons, links, linked cards and photos; loops inside every card visual (references/motion.md)`);
   L.push(`then         build in a copy of starter.html, then: node ${skillRef}/scripts/gate.mjs index.html`);
   for (const l of L) console.log('  ' + l);

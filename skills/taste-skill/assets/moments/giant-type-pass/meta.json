@@ -18,7 +18,8 @@
   "intensity": "lively",
   "look": "Two to four words set at 12vw with a photograph showing through the letters under a 35% ink tint; the photograph passes upward through the type as the section crosses the screen.",
   "reduced": "The photograph stands still inside the letters.",
-  "phone": "The photograph stands still in the letters, the type smaller (19vw).",
+  "phone": "It runs on a phone with the type smaller (19vw) and two thirds of the travel: the photograph still passes up through the letters.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
@@ -26,6 +27,7 @@
     "picture": "mid to dark tones with detail, no pale sky; the lower half of the picture is what shows",
     "words": "a statement of 2 to 4 words and one line under it"
   },
+  "text": { "words": [2,4], "sel": ".mo-gt__type, h2, h1" },
   "avoidWith": [
     "word-highlight"
   ],

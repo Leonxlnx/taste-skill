@@ -22,13 +22,15 @@ before the first sentence:
 - `copy-tells.md`: what gives model copy away and the fix for each, what over-correction breeds, and
   what is not a tell.
 
-Where they differ, this file wins: nothing invented, nothing bracketed or left open on the page, no
-captions, the hero tells a stranger in five seconds what is sold, buttons are a verb and an object.
+Where they differ, this file wins: nothing invented beyond what may be assumed (below), nothing
+bracketed, held back or left open on the page, no captions, the hero tells a stranger in five seconds
+what is sold, buttons are a verb and an object.
 
 **copy-lint.** `node <skill>/scripts/copy-lint.mjs index.html --kind <kind> --category "<what is sold>"`
 counts the countable tells in well under a second a page (no browser). FAIL: no copy notes, or a
 voice card with a field left empty [copy-notes]; residue (a `[NEED]`, a template token, markdown,
-chatbot lines); the old slop words and stock lines; a close whose heading repeats the section above
+chatbot lines); a fact held back ("Price on request", an address that "comes with your confirmation
+email", a note about the client or the build) [copy-withheld]; the old slop words and stock lines; a close whose heading repeats the section above
 it [copy-close-repeat]; a device used more than twice its budget plus one (three two-fragment
 headings, five contrast frames, five virtue words): fix every one. WARN: an h1 that is only a
 category label [copy-h1-category], a close heading that only restates its button [copy-close-ask],
@@ -43,9 +45,10 @@ WARNs do not.
 ## The copy notes
 
 Before the page, write `.taste-skill/copy.md` in the project folder (beside `index.html`). Copy this
-block, fill every line from the brief, then write the page from the draft. A field the brief cannot
-fill gets the plainest true answer you have, and what the client must supply goes to the last list,
-never onto the page. copy-lint checks that the five voice card fields hold a value.
+block, fill every line from the brief, then write the page from the draft. A fact the page needs to
+work and the brief leaves out is assumed and written under `Assumed:` (What may be assumed, below);
+proof the brief lacks (a quote, a result figure, a customer) goes to the last list, never onto the
+page. copy-lint checks that the five voice card fields hold a value.
 
 ```markdown
 # Copy notes: <brand>
@@ -61,6 +64,7 @@ People: <names and roles the brief gives, or none>
 Odd true details: <history, an object, a ritual, a house word, the awkward bit, from the brief>
 Offer: <price, trial, booking terms, the one action>
 Products: <each thing sold a visitor wants to see, plain nouns: cake, espresso, filter coffee; each gets a photograph of it (photos.md)>
+Assumed: <each fact the page needs that the brief leaves out, with the value chosen: day pass 14.50 €, Mon to Fri 7:30 to 18:00, district Kirkstall; each data-assumed on the page and listed in the report>
 
 ## Six questions, answered from the brief
 1. Who switched to them from what, and why? <answer, or: not in the brief>
@@ -97,7 +101,7 @@ Sent: <the sent line in the button's words>
 Footer: <the facts line>
 
 ## Client must supply
-- <each fact the brief lacks, as [NEED: what]; it never reaches the page>
+- <each fact the client must send or confirm (every assumed one, the street, the photographs, any proof), as [NEED: what]; a [NEED] never reaches the page>
 ```
 
 The draft lints on its own: `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md` reads only
@@ -118,7 +122,8 @@ up.
    it; the launch date or status the brief gives is the hard fact. A bare category label as the h1
    ("Yoga studio in Brooklyn") is the default this replaces: copy-lint WARNs it unless the voice card
    chose that form (9 or 12).
-2. **The first screen holds one hard fact:** a number, a place, a price or a date.
+2. **The first screen holds one hard fact:** a number, a place, a price or a date; the brief's, else an
+   assumed one marked `data-assumed` (a "from" price, the district).
 3. **Every heading has a noun that names a thing:** the product, a part of it, the place, a section
    noun (prices, rooms, menu, opening hours, questions, getting here, visit) or a digit. One brand
    line a page at most: the page's one figure of speech, pun or mantra, with a fact in the line under
@@ -198,32 +203,41 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
 
 ## What may be assumed
 
-- **Prices, address, hours and dates come from the brief;** the report lists any you assumed. Only
-  two things may be assumed when the brief lacks them: a coined brand name (below), and on a place
-  plausible hours and prices for the trade, uneven and in the local currency (3.60, not 4.00).
-  Nothing else is invented: a product or service with no price in the brief says "Price on
-  request" or shows none. Each assumed price, hour, date or place carries `data-assumed` on its own
-  element (`<span class="rows__value" data-assumed>3.60 €</span>`, `<dl class="hours"
-  data-assumed>`); the checker lists every one for the report [assumed], and assumed hours never
-  drive an open-now line [open-now].
-- **No invented proof:** no invented reviews, ratings, review counts, quotes, testimonials,
-  statistics, customer counts, customer names, portraits, clients, awards, press lines or products.
-  Customer logos only for real customers the brief names and that may be shown; a real tool the
-  product works with keeps its real icon in its own colours (`icons.md`), never a drawn imitation.
-  Without proof, a strip of plain facts from the brief, or nothing.
+- **What the brief gives is printed as given.** A plausible fact the page needs to work and the brief
+  leaves out is assumed, on every kind of page: a price or a "from" price, a plan's limits, the
+  opening hours, the dishes on a menu, the room types, the delivery terms and times, a district, a
+  coined brand name (below). Assume it as the trade sets it, uneven and in the local currency (3.60,
+  not 4.00; a day pass 14.50 €, a room from 118 € a night), never rounder or better than the trade.
+  Each assumed fact carries `data-assumed` on its own element (`<span class="rows__value"
+  data-assumed>3.60 €</span>`, `<dl class="hours" data-assumed>`), stands under `Assumed:` in the
+  notes and goes in the report; the checker lists every one [assumed], and assumed hours never drive
+  an open-now line [open-now]. A thin brief makes a page with its working facts assumed and marked,
+  never a page with its core left out.
+- **Never held back instead:** no "Price on request" or "Pricing on request", no "we reply with the
+  price" on a page that shows none, no "the street address comes with your confirmation email" or
+  "street and district are on the way", no note about the client, the brief or the build ("hours are
+  confirmed with the shop", "client to confirm"), no `[NEED]` on the page [copy-withheld,
+  copy-residue]. When the brief itself says its prices are on request, keep its words and waive the
+  hit with the brief as the reason.
+- **Never assumed: proof and people.** No invented reviews, ratings, review counts, quotes,
+  testimonials, customers or customer counts, clients, awards, certifications, press lines, named
+  people or portraits, result figures ("38% fewer re-runs", "3x faster", a saving), house numbers,
+  postcodes or phone numbers in a real format. Customer logos only for real customers the brief
+  names and that may be shown; a real tool the product works with keeps its real icon in its own
+  colours (`icons.md`), never a drawn imitation. Without proof, a strip of plain facts, or nothing.
 - **No pressure and no missing caveats:** never invented urgency or scarcity ("only 3 left", a
   countdown, "book now before it's gone") unless the brief gives the real stock or date, and never a
   caveat the business needs (legal, medical, financial) cut for rhythm.
 - **A made-up client** (the brief says the business is fictional, a demo or a test): beyond the
-  coined name, hours and prices, a few odd details may be invented the way a novelist would: fewer
+  facts above, a few odd details may be invented the way a novelist would: fewer
   than feel natural, stranger, true only of this one place, one of them a little unflattering, each
   listed in the report as assumed. Still never a figure, a quote, a review, a customer or an award:
   the demo shows the voice, never fake proof.
 - **No sample notes:** no "sample", "(sample)", "examples", "illustrative" tag, note or asterisk
   footnote anywhere. A target value the brief itself gives is worded inside it ("target 2 days").
 - **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
-  kit sample text, and no link to `#` or an empty href. Write the real words, or leave the element
-  out. "Coming soon" only for what the brief says is coming.
+  kit sample text, and no link to `#` or an empty href. Write the real words, an assumed fact
+  (above), or leave the element out. "Coming soon" only for what the brief says is coming.
 - **No caption, label or description under or on any visual** (house rule): not "A drawing made in code",
   "Photographs follow", "Representative image", not a name, price or link line under a bare picture,
   no hashtags. A heading names the set; a sold item's name and price sit inside its card's padding.
@@ -249,9 +263,10 @@ phone number still gets the address, email and imprint rules.
   a postcode or map coordinates. One street address a page (the visit block and the footer, at 390
   too), never readable only on a sign in a photograph. Several shops: each name, then its street. A
   studio by appointment says so.
-- **A brief with no street:** print the district only ("Eimsbüttel, Hamburg"), the town when no district is named,
-  and never an invented street or number; the type moment `address` sets that district. List the missing street in the report
-  as the client's to supply.
+- **A brief with no street:** print the district ("Eimsbüttel, Hamburg") with "See the area" (Maps,
+  below); with only a town, a plausible district of it marked `data-assumed` and listed in the report.
+  Never an invented street or number, never "the address comes later"; the type moment `address` sets
+  that district. List the missing street in the report as the client's to supply.
 - **Maps:** no map loads with the page. Get directions opens
   `https://www.openstreetmap.org/search?query=<street>+<district>`, with no coordinates and no
   route; on the phone the address opens the same search. No street given: the link says "See the

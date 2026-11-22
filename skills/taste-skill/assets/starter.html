@@ -70,8 +70,8 @@
 <!-- page CSS: only what sits inside a visual and the kit lacks, and one --p-h per card group -->
 <style>
   #features .panel { --p-h: 300px; }
-  /* a phone stacks the four tiles into the section's two screens; the chat drops its day line and fades over
-     40px, so its question and the answer's first line stand clear of the fade */
+  /* a phone stacks the four tiles one under another on shorter panels; the chat drops its day line and fades
+     over 40px, so its question and the answer's first line stand clear of the fade */
   @media (max-width: 639px) { #features .panel { --p-h: 180px; } #features .ui-chat__day { display: none; } #features .stage { --fade-h: 40px; } }
 </style>
 </head>
@@ -85,9 +85,10 @@
      nav [..], close [..], footer [..], buttons [..], mark [..], bands [..], compositions [section: id, ..], grounds [..]
      moments: [dealt ids and their sections] · scene: [id and its section, or none] · effect: [id or none]
      copy: .taste-skill/copy.md written and linted before this page (references/copy.md, The copy notes)
-     The page is a stack of screens (layout-v4.md): the hero alone on the first, every other section
-     and the footer exactly one or two (style="--h: 2" or class="g2"), its h2 first. Plan the content
-     of each before building: one screen holds 708px of content at 1440x900.
+     The hero fills the first screen alone; every other section and the footer is as tall as its content,
+     its h2 first, with the same air above and below it (system.css pads each one --padt and --padb:
+     layout-v4.md section 2). Never a height, min-height or padding of your own on a section, and never
+     content cut or hidden to make a section shorter.
      Every [bracket] in this file is replaced before the page ships: system.js outlines any left in red.
      One page: every link goes to an #id on it (a section's id, #contact, #top for the logo); Privacy,
      Terms and Imprint go to small pages you write (privacy.html ...) or are deleted (sections.md). -->
@@ -195,18 +196,14 @@
     </div>
   </section>
 
-  <!-- SECTIONS: the type's plan (references/sections.md), each built to its recipe and planned to its
-       screens. One example: the 2x2 of feature tiles, two boxes deep (.card--open: the words on the
-       page ground, the panel under them), as two screens (.g2): row 1 the h2 and the first two tiles,
-       row 2 the next two, starting --padt under the second screen's top. On a phone a section keeps
-       its desktop count unless it says otherwise: style="--hm: 2" or class="g2m" when its stacked
-       content needs two phone screens (check at 390x844: nothing may run into the next section).
+  <!-- SECTIONS: the type's plan (references/sections.md), each built to its recipe. One example: the 2x2
+       of feature tiles, two boxes deep (.card--open: the words on the page ground, the panel under them),
+       the h2 and then the four tiles in one grid; the section is as tall as they are.
        Each fragment is pasted from
        assets/ui/<name>/fragment.html and rewritten, at its recipe's place; one loop in the group
        (data-ui-loop); the others hold their finished picture and play while the pointer is on them. -->
-  <section class="section g2" id="features" aria-labelledby="features-h">
+  <section class="section" id="features" aria-labelledby="features-h">
     <div class="wrap">
-      <div class="group">
         <div class="section-head">
           <h2 id="features-h">[What it does.] <span class="muted">[One sentence that sums up the four.]</span></h2>
         </div>
@@ -242,36 +239,33 @@
             <p>[One or two short sentences with one concrete detail.]</p>
             <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
           </article>
+          <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match; a section
+               with only two tiles drops them -->
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
+          </article>
+          <article class="card card--row card--open span-6">
+            <h3>[Verb + object]</h3>
+            <p>[One or two short sentences with one concrete detail.]</p>
+            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
+          </article>
         </div>
-      </div>
-      <div class="grid">
-        <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match; a section
-             with only two tiles drops this row and the g2 class (one screen) -->
-          <article class="card card--row card--open span-6">
-            <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
-            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
-          </article>
-          <article class="card card--row card--open span-6">
-            <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
-            <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
-          </article>
-      </div>
     </div>
   </section>
 
   <!-- FAQ: every answer open, always (no accordion): <div class="faq"><div class="faq__item"><h3>[Question]</h3>
        <p>[Answer in one or two sentences.]</p></div> ...</div>, the questions people really ask.
-       QUOTE-STAT: a quote with the speaker's face beside one big number, still. One screen; merge it into
-       the section above when alone it holds under 495px. A number that counts up (data-m-count,
+       QUOTE-STAT: a quote with the speaker's face beside one big number, still. A quote alone is no section:
+       it goes into the section above as its last block. A number that counts up (data-m-count,
        motion.js) is a tech page's one count, in its hero only (a fact in .hero-facts), never in a card,
        a panel or a section further down; a count, never a year or a price. -->
   <template data-part="quote-stat">
     <section class="section" id="[section id]" aria-labelledby="[quote id]">
       <div class="wrap">
         <div class="section-head"><h2 id="[quote id]">[Who uses it, plainly]</h2></div>
-        <div class="grid fill">
+        <div class="grid">
           <figure class="quote span-8">
             <blockquote>[What the customer said, in their words, at most 40 words.]</blockquote>
             <div class="person"><img src="[portrait]" alt="[Full name]" width="40" height="40"><span><span class="person__name">[Full name]</span><span class="person__role">[Role], [Company]</span></span></div>
@@ -294,7 +288,7 @@
     <section class="section" id="[section id]">
       <div class="wrap">
         <div class="section-head"><h2>[What the rows are: rooms, the house, services]</h2><p>[One line.]</p></div>
-        <div class="grid grid--top fill" data-peek>
+        <div class="grid grid--top" data-peek>
           <ul class="rows span-6">
             <li data-peek-to="[key 1]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
             <li data-peek-to="[key 2]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
@@ -308,7 +302,7 @@
     </section>
   </template>
 
-  <!-- VISIT (a place, screen 2, directly after the hero; sections.md): system.css's .visit, on the container's lines.
+  <!-- VISIT (a place, the section directly after the hero; sections.md): system.css's .visit, on the container's lines.
        Open type by default (no box). The full page puts it in a split column beside the client's photograph
        (.visit.visit--card on span-6, the photograph on span-6 start-7: the panel on --g-alt, 1024px and up only).
        The short page adds .visit--cols (address, hours and access as three columns, no rows) and puts the menu
@@ -363,7 +357,7 @@
   </template>
 </main>
 
-<!-- FOOTER.CLOSING: the close and the footer in one last screen (system.css). Its .wrap holds exactly
+<!-- FOOTER.CLOSING: the close and the footer in one last section (system.css). Its .wrap holds exactly
      two children: the dealt close (row 1) and the links (row 2). The ground is dealt too: the page's
      ground (this one), "footer closing footer--dark ground-inverse", or "footer closing
      footer--statement" (the lit ground, full bleed). A place swaps row 2 for links-visit below.
@@ -455,8 +449,8 @@
 </template>
 
 <template data-part="statement">
-  <!-- STATEMENT: one sentence set large, its label at the top and the words at the foot of the screen (system.css
-       sizes them from the screen height); .statement--short for 12 to 20 words. A dealt lines-rise, letters-assemble
+  <!-- STATEMENT: one sentence set large, its label just above it, in a section of its own as tall as the words
+       and their air (system.css sizes them); .statement--short for 12 to 20 words. A dealt lines-rise, letters-assemble
        or word-rotate moment may carry it (moments.md). -->
   <section class="section statement" id="[section id]">
     <div class="wrap">

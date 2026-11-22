@@ -1,10 +1,10 @@
 /*
-  taste-skill layout.css - layout v4 (references/layout-v4.md): one section per screen, equal left and
-  right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
+  taste-skill layout.css - layout v4 (references/layout-v4.md): the hero alone on the first screen, equal
+  left and right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
   Link it after system.css, ui/cards.css and backgrounds/backgrounds.css; load layout.js after system.js.
 
-  Section   system.css sets the rhythm: every main > section exactly one or two screens (--h), its h2
-            first, --padt under its top; this file adds the heroes and the display tokens.
+  Section   system.css sets the rhythm: every main > section as tall as its content, its h2 first,
+            --padt over it and --padb under its last block; this file adds the heroes and the display tokens.
   Hero      <section class="hero hero--<type>"><div class="wrap"><div class="hero-text ..">..</div></div>
             first in main: exactly the first screen, the fixed header over its top.
   Edges     one container; no one-sided bleed (a block stands on the lines or runs edge to edge).
@@ -22,11 +22,12 @@
 :root {
   --ly-nav: var(--nav, 72px);
   --ly-screen: calc(100svh - var(--ly-nav));      /* one screen under the fixed header: 828 at 1440x900, 788 at 390x844 */
-  --ly-pad: var(--padt, 120px);
+  --ly-pad: var(--padt, 160px);
   --ly-hero-pad: var(--hgap, 48px);
   --ly-head-gap: var(--head-gap, 48px);            /* a section's heading block to its visual (system.css) */
-  /* the content box of one screen (708 at 1440x900) and of the hero (716 = 900 - 72 - 48 - 64) */
-  --ly-fit: calc(100svh - var(--padt, 120px) - var(--padb, 72px) - var(--bar, 0px));
+  /* the tallest a picture in a section gets, the screen under the header less 128px (700 at 1440x900), and the
+     hero's content box (716 = 900 - 72 - 48 - 64) */
+  --ly-fit: calc(100svh - var(--nav, 72px) - 128px);
   --ly-hero-h: calc(100svh - var(--nav, 72px) - var(--hgap, 48px) - var(--hpadb, 64px) - var(--bar, 0px));
   --ly-scale: 1;
   /* hero sizes: straight lines from 390 to 1440, times the pairing's --ly-scale (layout-v4.md, section 3) */
@@ -44,12 +45,11 @@
 h1, h2, h3, .ly-display { font-stretch: var(--display-stretch, 100%); font-variation-settings: var(--display-axes, normal); }
 .card h3, .card h4, .tile h3 { font-stretch: 100%; font-variation-settings: normal; }
 
-/* ---------------------------------------------------------------- one section per screen
-   system.css makes every main > section exactly one or two screens (--h) with its h2 first; nothing
-   here centres a section's content (a short block centred in a tall screen hides that it is short) */
+/* ---------------------------------------------------------------- sections
+   system.css makes every main > section as tall as its content with its h2 first; nothing here centres a
+   section's content or stretches it */
 main > .section .section-head { margin-bottom: var(--ly-head-gap); }
-/* a visual sized to what one screen leaves after its heading (--ly-head, about 160px for a two-line
-   h2 and a sub-line): or put .fill on it inside the section's .wrap */
+/* a visual about a screen tall with its heading (--ly-head, about 160px for a two-line h2 and a sub-line) */
 .fit-screen { height: clamp(280px, calc(var(--ly-fit) - var(--ly-head, 160px) - var(--ly-head-gap)), 720px); }
 @media (max-width: 1023px) { .fit-screen { height: auto; } }
 

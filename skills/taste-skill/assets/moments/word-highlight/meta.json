@@ -24,6 +24,7 @@
   "needs": {
     "words": "one statement of 12 to 40 words"
   },
+  "text": { "words": [12,40], "sel": ".mo-wh__text, p, h2, h3, blockquote" },
   "avoidWith": [
     "giant-type-pass"
   ],

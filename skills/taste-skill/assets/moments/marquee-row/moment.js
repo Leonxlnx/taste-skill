@@ -1,34 +1,42 @@
 /*
-  marquee-row - one row of client words, trades, cities or logos moves slowly sideways in a loop,
+  marquee-row - one row of client words, trades, cities or formats moves slowly sideways in a loop,
   fading out at both edges; it pauses while pointed at, runs only while on screen, and carries a
-  pause button (it runs on its own for longer than 5 s). Under reduced motion and without script the
-  words stand in a wrapped row.
+  pause button (it runs on its own for longer than 5 s). The button stands after the moving rail, in
+  the row, never over a word; the first word starts whole, inside the fade. On a phone it runs
+  slower, with a narrower fade. Under reduced motion and without script the words stand in a wrapped
+  row.
 
     <div data-moment="marquee-row" data-moment-opts='{"speed": 36}'>
-      <ul class="mo-mq__track"><li>Studios</li><li>Agencies</li>…</ul>      6 to 14 items; logos as <img>
+      <ul class="mo-mq__track"><li>Studios</li><li>Agencies</li>…</ul>      6 to 14 items, words only
     </div>
 
-  opts: speed px/s (36, 16-80), gap px between items (64).
+  opts: speed px/s (36, 16-80; a phone takes six tenths of it), gap px between items (64; 40 on a phone).
+  The rail is marked data-edge-free: its track is wider than the page and moves, so the layout check
+  does not read it as a block running out to one edge.
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const track = root.querySelector('.mo-mq__track') || root.firstElementChild;
   if (!track) return {};
   root.classList.add('mo-mq');
-  root.style.setProperty('--mo-gap', `${Math.max(24, +opts.gap || 64)}px`);
+  const small = lib.phone();
+  root.style.setProperty('--mo-gap', `${Math.max(24, +opts.gap || (small ? 40 : 64))}px`);
   if (lib.reduced() || track.children.length < 2) { root.classList.add('is-still'); return {}; }
-  const speed = lib.clamp(+opts.speed || 36, 16, 80);
+  const speed = lib.clamp((+opts.speed || 36) * (small ? 0.6 : 1), 16, 80);
   const clone = track.cloneNode(true);
   clone.setAttribute('aria-hidden', 'true');
   clone.classList.add('mo-mq__clone');
   const rail = document.createElement('div');       // the masked part: the track and its copy
   rail.className = 'mo-mq__rail';
+  rail.setAttribute('data-edge-free', '');
   track.replaceWith(rail);
   rail.append(track, clone);
   const pause = document.createElement('button');
   pause.type = 'button';
   pause.className = 'loop-pause mo-mq__pause';
   const icon = on => `<svg viewBox="0 0 14 14" aria-hidden="true">${on ? '<path d="M3 2h3v10H3zM8 2h3v10H8z"/>' : '<path d="M4 2l8 5-8 5z"/>'}</svg>`;
-  const setPaused = p => { root.classList.toggle('is-paused', p); pause.setAttribute('aria-label', p ? 'Play' : 'Pause'); pause.innerHTML = icon(!p); };
+  const setPaused = p => { root.classList.toggle('is-paused', p); pause.setAttribute('aria-label', p ? 'Play' : 'Pause'); pause.setAttribute('aria-pressed', String(p)); pause.innerHTML = icon(!p); };
   setPaused(false);
   pause.addEventListener('click', () => setPaused(!root.classList.contains('is-paused')));
   root.append(pause);

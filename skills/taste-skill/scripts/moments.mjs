@@ -25,8 +25,10 @@
   "technical product" is software), or place, product or service (a cafe, shop or guesthouse is a place,
   a studio, firm or clinic a service, a brand's goods a product). Every moment, scene and effect carries
   meta.tones (warm, editorial, product, tech, playful), meta.intensity (quiet, lively, bold) and
-  meta.webgl (0 or 1), and FIT below says what each kind takes; nothing is locked to one kind. --tone
-  narrows the deal to one tone of the brief (a cafe: warm; a hotel brand or an architect: editorial).
+  meta.webgl (0 or 1), and FIT below says what each kind takes; nothing is locked to one kind. A place,
+  service or product page also wants the kind's own tone on the part (warm, editorial, product), or the
+  brief's --tone in its place: --tone narrows the deal to one tone of the brief (a cafe: warm; a hotel
+  brand or an architect: editorial).
   Every page gets two moments, three on a long page (--long: eight sections or more), in different
   sections, and the first one dealt is lively or bold: it goes in the first three screens. Two may
   share a kind when one is a statement and the other a section. A retired moment (meta.retired,
@@ -36,15 +38,20 @@
   assets/scenes/<id>/meta.json; it also leaves out that scene's avoidMoments, its twins and the ones that
   fight it, so neither pick nor check needs them as --exclude), each effect (--effects a,b: one each, worst case) and any others
   (--contexts n: objects, components) - and never deals a moment whose own meta.webgl would push the
-  total over 4. Every moment has a still variant for reduced motion and one for phones (meta.phone,
-  meta.reduced; the loader enforces it, moments.js), but a moment light enough for a phone runs there
-  (meta.phoneRuns true, and `export const phone = true` in its moment.js: word-highlight, the film look
-  of picture-develops, photo-chapters), and none may sit in a card (check reports it).
+  total over 4. Every moment has a still variant for reduced motion (meta.reduced) and says what a phone
+  shows (meta.phone; the loader enforces it, moments.js); every moment but the two mouse ones runs on a
+  phone in a lighter version (meta.phoneRuns true, and `export const phone = true` in its moment.js), and
+  the deal makes sure at least one of the page's moments does. A moment that only answers a mouse
+  (meta.pointerOnly: liquid-hover, cursor-spotlight) is never one of the page's two: it comes only as the
+  extra third on a long page. None may sit in a card (check reports it). meta.text gives the counts the
+  checker measures on the built page (words or lines of its heading, items of its row); pick prints them.
 
   scene reads every assets/scenes/<id>/meta.json at run time (a scene without tones is read by its
   `types`; on tech, software and gaming its `types` still name which of the three it suits), leaves
-  out retired ones and every scene the history's `scenes` list holds (never one scene twice), and
-  deals one about half the time when one fits; "none" is an answer, not a fault.
+  out retired ones and every scene the history's `scenes` list holds (never one scene twice), never
+  deals a game a scene that takes the hero (its key art is the hero), and deals one about half the
+  time when one fits; "none" is an answer, not a fault. A scene that is the close leaves out the
+  closing moments (closing-lift): one close a page.
 
   --has names what the brief can fill (default by kind: place and service photo; product photo,product;
   tech photo,product,figures; software ui,figures; gaming setting). A moment or scene whose meta.needs.list
@@ -92,11 +99,14 @@ export const TONES = ['warm', 'editorial', 'product', 'tech', 'playful'];
 export const INTENSITIES = ['quiet', 'lively', 'bold'];
 // the fit rule (references/moments.md, The fit rule): what each kind takes. A moment, scene or effect
 // fits a kind when one of its tones is in the kind's tones, its intensity is in the kind's list and,
-// with webgl 1, the kind takes WebGL. A cafe gets nothing too wild; a tech page may take anything.
+// with webgl 1, the kind takes WebGL. A place, service or product page is strict: the part must also
+// carry the kind's own tone (`lead`: warm, editorial, product), or the brief's --tone when one is given,
+// so a part made for games and software never reaches a florist through a shared "editorial".
+// A cafe gets nothing too wild; a tech page may take anything.
 export const FIT = {
-  place:    { tones: ['warm', 'editorial'], intensity: ['quiet', 'lively'], webgl: false },
-  service:  { tones: ['editorial', 'warm', 'product'], intensity: ['quiet', 'lively'], webgl: false },
-  product:  { tones: ['product', 'editorial', 'warm'], intensity: ['quiet', 'lively', 'bold'], webgl: false }, // WebGL only as a photo treatment or a render the brief asks for
+  place:    { tones: ['warm', 'editorial'], lead: 'warm', intensity: ['quiet', 'lively'], webgl: false },
+  service:  { tones: ['editorial', 'warm', 'product'], lead: 'editorial', intensity: ['quiet', 'lively'], webgl: false },
+  product:  { tones: ['product', 'editorial', 'warm'], lead: 'product', intensity: ['quiet', 'lively', 'bold'], webgl: false }, // WebGL only as a photo treatment or a render the brief asks for
   tech:     { tones: ['product', 'tech', 'editorial'], intensity: INTENSITIES, webgl: true },
   software: { tones: ['tech', 'editorial', 'product'], intensity: INTENSITIES, webgl: true },
   gaming:   { tones: ['playful', 'tech'], intensity: INTENSITIES, webgl: true },
@@ -112,11 +122,13 @@ export function fitsKind(x, kind, { tone, webglOk = false } = {}) {
   const tones = tonesOf(x);
   if (!tones.some(t => f.tones.includes(t))) return false;
   if (tone && !tones.includes(tone)) return false;
+  if (!tone && f.lead && !tones.includes(f.lead)) return false;
   if (!f.intensity.includes(x.intensity || 'lively')) return false;
   if ((x.webgl || 0) > 0 && !f.webgl && !webglOk) return false;
   return true;
 }
-const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k)));
+// every kind the deal can reach, with or without a --tone (the checker reads this list as "pages")
+const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k) || FIT[k].tones.some(t => fitsKind(x, k, { tone: t }))));
 // what a page can fill: meta.needs.list on a moment or scene names the material its content demands, and
 // --has names what the brief really has (default: what the kind normally has). photo: photographs (the
 // client's or stand-ins, up to eight); archive: the client's own body of pictures (more than eight: a project
@@ -161,6 +173,13 @@ export function needsMet(x, has) {
   }
   return unmet;
 }
+// meta.text: the counts the checker measures on the built page (consistency.mjs moment-text): words or
+// lines of its heading, or items of its row
+export const textRule = t => {
+  if (!t || typeof t !== 'object') return '';
+  const [k] = ['words', 'lines', 'items'].filter(x => Array.isArray(t[x]));
+  return k ? ` (measured: ${t[k][0]} to ${t[k][1]} ${k})` : '';
+};
 function toneArg(a, page) {
   if (a.tone == null) return undefined;
   const t = String(a.tone).toLowerCase();
@@ -206,6 +225,13 @@ function validate(meta, folder) {
   if (typeof meta.phone !== 'string' || !meta.phone.trim()) errs.push('meta.phone must say what a phone shows (a static variant, or how it runs there with phoneRuns)');
   if (meta.phoneRuns != null && typeof meta.phoneRuns !== 'boolean') errs.push('meta.phoneRuns must be true or false');
   if (meta.phoneRuns && !/export const phone = true/.test(fs.existsSync(path.join(DIR, folder, 'moment.js')) ? fs.readFileSync(path.join(DIR, folder, 'moment.js'), 'utf8') : '')) errs.push('meta.phoneRuns needs `export const phone = true` in moment.js (the loader reads that)');
+  if (meta.pointerOnly != null && typeof meta.pointerOnly !== 'boolean') errs.push('meta.pointerOnly must be true or false');
+  if (meta.pointerOnly && meta.phoneRuns) errs.push('meta.pointerOnly and meta.phoneRuns cannot both hold: a phone has no mouse');
+  if (meta.text != null) {
+    const t = meta.text, keys = ['words', 'lines', 'items'].filter(k => t && t[k] != null);
+    if (!t || typeof t !== 'object' || typeof t.sel !== 'string' || !t.sel.trim()) errs.push('meta.text needs sel (a selector inside the host, or "self")');
+    else if (keys.length !== 1 || !Array.isArray(t[keys[0]]) || t[keys[0]].length !== 2 || !(t[keys[0]][0] <= t[keys[0]][1])) errs.push('meta.text needs one of words, lines or items as [min, max]');
+  }
   if (meta.retired && (meta.weight ?? 1) !== 0) errs.push('a retired moment needs weight 0');
   if (meta.maxPerPage !== 1) errs.push('meta.maxPerPage must be 1');
   if (meta.avoidWith != null && !Array.isArray(meta.avoidWith)) errs.push('meta.avoidWith must be an array');
@@ -321,7 +347,9 @@ export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5
   // on tech, software and gaming a scene's `types` still say which of the three it was made for (a
   // software screen is not a game's); on the other kinds its tones decide
   const madeFor = s => !TECH.includes(page) || !Array.isArray(s.types) || !s.types.length || s.types.includes(page);
-  const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s));
+  // a game's hero is its key art (sections.md, Gaming): never a scene that takes the hero's place there
+  const heroOnly = s => Array.isArray(s.fits) && s.fits.length > 0 && s.fits.every(f => f === 'hero');
+  const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s) && !(page === 'gaming' && heroOnly(s)));
   // only what the page can fill (meta.needs.list against --has): never a picture archive on a page without one
   const pool = fit.filter(s => !needsMet(s, has).length);
   if (!pool.length) return { seed, scene: null, notes: [`scene: none fits a ${page} page${tone ? ` in the ${tone} tone` : ''} with ${[...has].join(', ') || 'nothing'}`] };
@@ -371,12 +399,15 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
   // kind only when one is a statement and the other a section (type, then photographs); one of a
   // slot, never two that avoid each other, never two WebGL contexts
   const together = (m, p) => canShare(m, p) && (m.webgl || 0) + (p.webgl || 0) <= room;
+  // the first one dealt is lively or bold, so something clearly moves in the first three screens
+  // (a moment that fits only the close cannot be early)
+  const early = m => m.intensity !== 'quiet' && m.fits.some(f => f !== 'closing');
   const picks = [];
   for (let n = 0; n < count; n++) {
     let open = pool.filter(m => !picks.includes(m) && picks.every(p => together(m, p)));
-    // the first one dealt is lively or bold, so something clearly moves in the first three screens
-    // (a moment that fits only the close cannot be early)
-    const early = m => m.intensity !== 'quiet' && m.fits.some(f => f !== 'closing');
+    // a moment that only answers a mouse (meta.pointerOnly: no touch or idle mode) is never one of the
+    // page's two: it comes only as the extra third on a long page
+    if (n < 2) open = open.filter(m => !m.pointerOnly);
     if (n === 0 && open.some(early)) open = open.filter(early);
     if (!open.length) { notes.push(`pick: only ${picks.length} moment(s) fit together`); break; }
     let cands = open.filter(m => !used.has(m.id) && !tail.has(m.id));
@@ -393,6 +424,23 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
     for (const m of cands) { r -= (m.weight ?? 1); if (r <= 0) { chosen = m; break; } }
     picks.push(chosen);
     used.add(chosen.id);
+  }
+  // phones: at least one of the page's moments runs there (meta.phoneRuns); when none does, the last one
+  // that can be swapped is dealt again from the moments that run on a phone and share the page
+  if (picks.length && !picks.some(m => m.phoneRuns)) {
+    for (let i = picks.length - 1; i >= 0; i--) {
+      const others = picks.filter((_, j) => j !== i);
+      let alt = pool.filter(m => m.phoneRuns && !m.pointerOnly && !picks.includes(m) && others.every(p => together(m, p)) && (i > 0 || early(m)));
+      if (!alt.length) continue;
+      const fresh = alt.filter(m => !used.has(m.id) && !tail.has(m.id));
+      if (fresh.length) alt = fresh;
+      const was = picks[i];
+      picks[i] = alt[Math.floor(rand() * alt.length)];
+      used.add(picks[i].id);
+      notes.push(`pick: ${was.id} gave way to ${picks[i].id}, so one moment runs on a phone`);
+      break;
+    }
+    if (!picks.some(m => m.phoneRuns)) notes.push('pick: no moment that runs on a phone fits beside these; the phone shows the hero entrance and the reveals');
   }
   return { seed, picks, notes };
 }
@@ -439,6 +487,13 @@ function cmdPick(a) {
   // the scene's own avoidMoments are left out of the deal: the caller need not pass them as --exclude
   const exclude = [...new Set([...(list(a.exclude) || []), ...ctx.avoid])];
   if (ctx.avoid.length) console.error(`pick: scene ${scene} keeps off its page: ${ctx.avoid.join(', ')} (its avoidMoments, left out of the deal)`);
+  // a scene that is the close takes the close's place: no closing moment beside it (two closes in a row)
+  const sceneMeta = scene ? readScenes().find(x => x.id === scene) : null;
+  if (sceneMeta && (sceneMeta.fits || []).includes('close')) {
+    const closers = idx.moments.filter(m => m.fits.length === 1 && m.fits[0] === 'closing').map(m => m.id);
+    exclude.push(...closers.filter(id => !exclude.includes(id)));
+    if (closers.length) console.error(`pick: scene ${scene} is the close; left out: ${closers.join(', ')}`);
+  }
   const history = (hist.moments || []).map(p => p.id);
   // photographs: every place, product and service page has them; elsewhere --photo says so
   const has = hasFor(page, a.has);
@@ -456,12 +511,12 @@ function cmdPick(a) {
     writeHistory(a.history, hist);
   }
   const gl = ctx.n + out.picks.reduce((t, p) => t + (p.webgl || 0), 0);
-  if (a.json) console.log(JSON.stringify({ seed: out.seed, page, tone: tone || null, scene: dealtScene ? (dealtScene.scene ? dealtScene.scene.id : null) : scene, contexts: { page: ctx.n, moments: gl - ctx.n, budget: BUDGET }, picks: out.picks.map((p, i) => ({ id: p.id, kind: p.kind, fits: p.fits, intensity: p.intensity, early: i === 0 && p.intensity !== 'quiet', trigger: p.trigger, webgl: p.webgl, phone: p.phone, needs: p.needs })) }));
+  if (a.json) console.log(JSON.stringify({ seed: out.seed, page, tone: tone || null, scene: dealtScene ? (dealtScene.scene ? dealtScene.scene.id : null) : scene, contexts: { page: ctx.n, moments: gl - ctx.n, budget: BUDGET }, picks: out.picks.map((p, i) => ({ id: p.id, kind: p.kind, fits: p.fits, intensity: p.intensity, early: i === 0 && p.intensity !== 'quiet', trigger: p.trigger, webgl: p.webgl, phone: p.phone, phoneRuns: !!p.phoneRuns, pointerOnly: !!p.pointerOnly, needs: p.needs, text: p.text || null })) }));
   else {
     console.log(`seed ${out.seed} · page ${page}${tone ? ' · tone ' + tone : ''} · live WebGL contexts ${gl} of ${BUDGET}`);
     if (dealtScene) console.log(sceneLine(dealtScene.scene));
-    out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}\n   ${p.look}`));
-    console.log('Each in a section of its own, never two in one section; write each id, its section and its purpose in the plan.');
+    out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close: the footer keeps its links row only' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}${p.phoneRuns ? ' · runs on a phone' : ''}${p.pointerOnly ? ' · the extra: it answers a mouse only' : ''}\n   ${p.look}${p.needs?.words ? `\n   the copy: ${p.needs.words}${textRule(p.text)}` : ''}`));
+    console.log('Each in a section of its own, never two in one section; write each id, its section and its purpose in the plan. Write the copy to each one\'s count (the checker measures it: moment-text).');
   }
 }
 
@@ -704,7 +759,8 @@ function cmdCheck(a) {
     const m = byId.get(f.id);
     if (!m) { faults.push(`${f.id} is not a moment (assets/moments/index.json)`); continue; }
     if (m.retired) faults.push(`${f.id} is retired (${m.retired})`);
-    if (pg && pg.page && !m.retired && !fitsKind(m, pg.page)) faults.push(`${f.id} does not fit a ${pg.page} page (its tones ${(m.tones || []).join(', ')}, ${m.intensity}${m.webgl ? ', WebGL' : ''}; a ${pg.page} page takes ${FIT[pg.page].tones.join(', ')}, ${FIT[pg.page].intensity.join(', ')})`);
+    // m.pages: every kind the deal can reach, with or without a --tone (kindsFor)
+    if (pg && pg.page && !m.retired && !(m.pages || []).includes(pg.page)) faults.push(`${f.id} does not fit a ${pg.page} page (its tones ${(m.tones || []).join(', ')}, ${m.intensity}${m.webgl ? ', WebGL' : ''}; a ${pg.page} page takes ${FIT[pg.page].tones.join(', ')}, ${FIT[pg.page].intensity.join(', ')})`);
     if (f.inCard) faults.push(`${f.id} sits in a card: nothing on a card moves on scroll`);
     if (f.captions) faults.push(`${f.id} holds a figcaption: no caption under a visual`);
     gl += m.webgl || 0;
@@ -717,6 +773,9 @@ function cmdCheck(a) {
       else if (!canShare(m, n)) faults.push(`${f.id} and ${g.id} do not share a page: two of one kind are one statement and one section, one pointer moment a page, one WebGL moment a page`);
     }
   }
+  const known = found.map(f => byId.get(f.id)).filter(Boolean);
+  if (known.length && !known.some(m => m.phoneRuns)) warns.push('no moment on the page runs on a phone: deal again (every moment but liquid-hover and cursor-spotlight runs there)');
+  if (known.length >= 2 && known.filter(m => !m.pointerOnly).length < 2) warns.push(`${known.filter(m => m.pointerOnly).map(m => m.id).join(', ')} answers a mouse only: it is never one of the page's two (deal again; it comes only as a long page's third)`);
   const ctx = pageContexts({ scene: a.scene && a.scene !== true ? a.scene : null, effects: list(a.effects) || [], contexts: a.contexts });
   for (const f of found) if (ctx.avoid.includes(f.id)) faults.push(`${f.id} is in the avoidMoments of the scene ${a.scene} (assets/scenes/${a.scene}/meta.json)`);
   if (ctx.n + gl > BUDGET) faults.push(`${ctx.n + gl} live WebGL contexts (${ctx.n} on the page, ${gl} in moments), the cap is ${BUDGET}`);

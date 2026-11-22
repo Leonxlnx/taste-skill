@@ -18,12 +18,14 @@
   "intensity": "quiet",
   "look": "One statement heading of two or three lines rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once. Slower and larger than the automatic section reveal, so it reads as the statement arriving.",
   "reduced": "The section stands as written.",
-  "phone": "The heading and the lines after it stand as written.",
+  "phone": "It runs on a phone as on a desktop: the heading rises line by line once, the lines after it fade up.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 0.7,
   "needs": {
     "words": "a heading of 2 to 3 lines"
   },
+  "text": { "lines": [2,3], "sel": "h2, h1, h3" },
   "avoidWith": [
     "headline-arrives"
   ],

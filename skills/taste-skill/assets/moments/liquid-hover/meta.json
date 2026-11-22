@@ -17,6 +17,7 @@
   "look": "The pointer pushes a photograph like the surface of water: the picture bends along the pointer's path with a wet shine and a hair of colour split, and the ripple diffuses away in a second or two, back to the plain picture.",
   "reduced": "The photograph stands; also on touch screens and without WebGL.",
   "phone": "The plain photograph, no canvas, no WebGL context.",
+  "pointerOnly": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {

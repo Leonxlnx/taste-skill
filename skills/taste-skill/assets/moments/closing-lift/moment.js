@@ -19,15 +19,35 @@
 
   opts: settle (the picture's scale while covered, 1.1-1.3; default 1.18), focus (object-position of
         the picture, default "50% 50%").
+  A phone gets the light version: nothing is held under the sheet; the closing picture is a plain section
+  after it that settles from the close crop as it rises into the screen, and the closing line fades up on
+  it once the picture fills the screen (one transform on the picture, one on the band).
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const sheet = root.querySelector('.mo-cl__sheet'), under = root.querySelector('.mo-cl__under'), img = root.querySelector('.mo-cl__img'), band = root.querySelector('.mo-cl__band');
   if (!sheet || !under || !img || !band) return {};
   root.classList.add('mo-cl');
   if (opts.focus) img.style.objectPosition = opts.focus;
   if (lib.reduced()) { root.classList.add('is-done'); return {}; }
-  root.classList.add('is-live');
   const settle = Math.max(1.05, Math.min(1.3, +opts.settle || 1.18));
+  if (lib.phone()) {
+    root.classList.add('is-phone');
+    // view mode on the picture's own section: 0.5 when its top reaches the screen's top
+    const sp = lib.scrub(under, p => {
+      const q = lib.clamp(p / 0.5);
+      img.style.transform = `scale(${lib.lerp(settle, 1, lib.ease.out(q)).toFixed(4)})`;
+      const k = lib.ease.smooth(0.45, 0.9, q);
+      band.style.opacity = String(k);
+      band.style.transform = `translateY(${((1 - k) * 20).toFixed(1)}px)`;
+    }, { mode: 'view' });
+    // (a keyboard user who tabs to the action gets it whole at once)
+    const show = () => { band.style.opacity = ''; band.style.transform = ''; };
+    band.addEventListener('focusin', show);
+    return { destroy() { band.removeEventListener('focusin', show); sp.destroy(); root.classList.remove('is-phone'); img.style.transform = ''; band.style.opacity = ''; band.style.transform = ''; } };
+  }
+  root.classList.add('is-live');
   const s = lib.scrub(root, () => {
     const vh = innerHeight, r = sheet.getBoundingClientRect();
     const q = document.documentElement.scrollHeight <= vh * 1.05 ? 1 : lib.clamp((vh - r.bottom) / vh);           // 0: the sheet still covers the picture; 1: it has cleared

@@ -10,8 +10,8 @@
   placeholder, moment-target, moment-hidden, motion-visible, reveal-none, the repeats; --no-finish skips them)
   and lists every console error and every file that failed to load as console-error. A finding with
   sev "WARN" is listed and never counts.
-  --shots writes, per size, the first screen (first-<w>.png) and every section framed as the check
-  frames it (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
+  --shots writes, per size, the first screen (first-<w>.png) and a screen from each section's top
+  (screen-<w>-<n>.png): the shot a reviewer takes of one section, to look at.
   Then, once per size, it lengthens the hero's h1 to its type's longest headline (heroes.json
   h1.maxChars, with words from the lead) and checks again: the hero must still be one screen
   (hero-maxchars) and the h1 within its lines at 1440 and 390 (hero-lines). On a page in a language that

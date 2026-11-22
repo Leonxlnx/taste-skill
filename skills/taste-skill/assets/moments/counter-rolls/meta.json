@@ -18,7 +18,8 @@
   "intensity": "lively",
   "look": "The digits of two to four proof figures roll once like an odometer when the row comes on screen, the right-most digit turning most; the strips rest on the real figures before and after, so the row never reads as zeros.",
   "reduced": "The figures stand.",
-  "phone": "The figures stand.",
+  "phone": "It runs on a phone as on a desktop: the figures roll once as the row comes on screen.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
@@ -27,6 +28,7 @@
     ],
     "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
   },
+  "text": { "items": [2,4], "sel": "[data-count], .t-stat" },
   "avoidWith": [],
   "states": {
     "start": {

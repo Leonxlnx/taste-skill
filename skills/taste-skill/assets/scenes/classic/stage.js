@@ -10,6 +10,9 @@
 //   Stage.scene(root, { hold, scrub, build, phone, rest })
 //   Stage.split(el, 'lines' | 'words' | 'chars')   masked split text, SplitText when loaded
 //   Stage.ready()                          resolves when fonts and the scenes' pictures are ready
+//   Stage.navInset(root)                   px the page's fixed or sticky header covers at the top of the screen
+//                                          (its real height now, read again on every plan): a held stage sits
+//                                          under it, so no word may fly, land or rest above this line
 (() => {
   const html = document.documentElement;
   const mq = (q) => window.matchMedia(q).matches;
@@ -24,6 +27,20 @@
     get touch() { return mq('(pointer: coarse)'); },
     lenis: null,
     scenes: [],
+  };
+
+  // The fixed (or stuck) header over the top of the screen: a bar at least half the screen wide whose top is at
+  // the screen's top; its bottom edge, at most 200px (seen on test pages: words under the nav at 1440 and 390)
+  Stage.navInset = (root) => {
+    let h = 0;
+    for (const el of document.querySelectorAll('header, nav, .nav, [data-nav]')) {
+      if (root && root.contains(el)) continue;
+      const cs = getComputedStyle(el);
+      if ((cs.position !== 'fixed' && cs.position !== 'sticky') || cs.display === 'none' || cs.visibility === 'hidden') continue;
+      const r = el.getBoundingClientRect();
+      if (r.top <= 1 && r.bottom > 0 && r.width >= innerWidth * 0.5) h = Math.max(h, r.bottom);
+    }
+    return Math.min(200, Math.ceil(h));
   };
 
   // Weighted wheel scrolling. lerp 0.1-0.14 feels heavy without lagging behind the hand; touch keeps the

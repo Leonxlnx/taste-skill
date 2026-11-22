@@ -14,8 +14,11 @@
   opts: heading selector (default h2, h1, h3), follow selector (what fades up after the heading;
         default the heading's siblings in .section-head and every .mo-lr__follow), threshold (0.3).
   When the module mounts late (after the 2.5 s safety mark, html.mo-safe) the section is already on
-  screen and stays as written: nothing is hidden again and replayed.
+  screen and stays as written: nothing is hidden again and replayed. It runs on a phone too (one
+  transform a word, one fade a block).
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const heading = root.querySelector(opts.heading || 'h2, h1, h3');
   if (!heading || lib.reduced() || document.documentElement.classList.contains('mo-safe')) { root.classList.add('is-done'); return {}; }

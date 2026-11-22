@@ -9,7 +9,8 @@
     several ids (the tab's text and its screen in a frame); they are shown and hidden together.
   - text highlight: none. <p data-hl> (older markup) stays plain ink from the first frame; nothing
     changes colour on load (MO-62).
-  - FAQ: every .faq answer is open (ST-47): a <details> in .faq is opened and stays open.
+  - FAQ: every .faq answer is open (ST-47): a <details> in .faq is opened and stays open; a long one
+    written as .faq--fold (ten questions or more) opens each answer on a click instead.
   - opening hours: <dl class="hours" data-tz="Europe/Berlin"> marks today's dt and dd .is-today in the
     venue's time zone (each dt names its days, "Mon to Fri", "Sat and Sun", "Daily", or carries
     data-days="mon-fri" / "sat,sun"). Without data-tz no row is marked: never the visitor's clock,
@@ -148,9 +149,10 @@ function tabs() {
   });
 }
 
-/* every FAQ answer open, for good: a <details> in .faq is opened and its summary no longer closes it */
+/* every FAQ answer open, for good: a <details> in .faq is opened and its summary no longer closes it.
+   A long FAQ written as .faq--fold (ten questions or more) keeps its answers closed until a click */
 function faq() {
-  document.querySelectorAll('.faq details').forEach(d => {
+  document.querySelectorAll('.faq:not(.faq--fold) details').forEach(d => {
     d.open = true;
     d.addEventListener('toggle', () => { if (!d.open) d.open = true; });
     const s = d.querySelector(':scope > summary');

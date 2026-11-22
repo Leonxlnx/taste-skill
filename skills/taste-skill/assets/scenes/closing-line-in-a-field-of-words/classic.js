@@ -62,7 +62,9 @@
 //   phoneVp      [0.5, 0.38]
 //   gap          28    (8-64)      px kept clear around the closing block
 //   phoneGap     16    (8-40)
-//   inset        0     (0-200)     px of a fixed header at the top of the screen that no word enters
+//   inset        0     (0-200)     px of a fixed header at the top of the screen that no word enters; the
+//                                  page's fixed or sticky nav is measured on every plan (Stage.navInset) and
+//                                  the larger of the two is kept clear
 //   seed         7                 the dice for the words' sizes
 //   scrub        true with Lenis, else 0.5 (seconds of catch-up)
 //   phone        'same' (default: the phone plan below) | 'rest' (the finished composition)
@@ -174,7 +176,8 @@
       const rel = (r) => [r.left - sr.left, r.top - sr.top, r.right - sr.left, r.bottom - sr.top];
       const gap = phone ? o.phoneGap : o.gap;
       const margin = Math.max(12, 0.025 * Math.min(W, H));
-      const top = o.inset + margin;
+      // the fixed nav over the held stage, measured now (it differs at 1440 and 390): no word flies or ends under it
+      const top = Math.max(o.inset, Stage.navInset ? Stage.navInset(root) : 0) + margin;
       const fontPx = parseFloat(getComputedStyle(field).fontSize) || 100;
 
       // the closing block

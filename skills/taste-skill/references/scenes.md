@@ -9,12 +9,14 @@ object render for the two object scenes.
 
 - **Every kind, by fit.** Each scene's `meta.json` carries `tones` (warm, editorial, product, tech,
   playful), `intensity` (quiet, lively, bold) and `webgl`, read against the page's kind by the fit
-  rule (`moments.md`, The fit rule): a place takes warm and editorial scenes that are quiet or lively
-  and draw no WebGL (a room, a route, the hospitality scenes; a type scene such as
-  `dot-becomes-the-full-stop`); a service the same plus product; a product any intensity, WebGL only
-  for a render the brief asks for; tech, software and gaming anything that fits their tones. On
-  those three a scene's `types` still say which of them it was made for (a software screen is not a
-  game's). A cafe gets nothing loud: no burst of letters, no camera through the clouds.
+  rule (`moments.md`, The fit rule): a place takes warm scenes that are quiet or lively and draw no
+  WebGL (a room, a route, the hospitality scenes; a type scene such as `dot-becomes-the-full-stop`),
+  editorial ones with `--tone editorial` (a hotel brand); a service the editorial ones, quiet or
+  lively; a product the product ones at any intensity, WebGL only for a render the brief asks for;
+  tech, software and gaming anything that fits their tones. On those three a scene's `types` still
+  say which of them it was made for (a software screen is not a game's), and a game is never dealt
+  a scene that takes the hero: its key art is the hero. A cafe gets nothing loud: no burst of
+  letters, no camera through the clouds.
 - **Dealt, 0 or 1 a page, about one page in two.** The deal reads every `assets/scenes/*/meta.json`
   when it runs (a scene added later is dealt without a rebuilt index), leaves out a retired one
   (`"retired": "<why>"`) and every scene the history already holds, so no two sites share a scene:
@@ -39,8 +41,13 @@ object render for the two object scenes.
   and its world section; a render only when the brief asks for 3D), never an effect in its place
   (`sections.md`, Gaming). A scene's `never` line is a rule too.
 - **A scene is a beat of its own,** beside the page's two or three moments. On tech, software and
-  gaming it shares the page with at most one shader ground (`effects-usage.md`, Big scene), and
-  never with a WebGL part that pushes the page over 4 live contexts.
+  gaming it shares the page with at most one shader ground, the one `start.mjs plan` deals for the
+  hero (a game's on a band), outside the scene's section (`effects-usage.md`, Big scene); a scene
+  dealt as the hero gets no effect beside it. Never a WebGL part that pushes the page over 4 live
+  contexts.
+- **A closing scene is the page's close** (`fits` close): the last section, with the page's one
+  action; the footer keeps its links row only (the plan says `close none`), and the deal leaves the
+  closing moment (`closing-lift`) out. Never two closes in a row.
 - **The hero holds one screen at rest,** so a scene is dealt as the hero only when its `restH` is 1.
   A scene whose `restH` is 2 goes below the hero only, as a two-screen section (`--h: 2`) whose
   heading is an h2; the hero is then dealt as usual.
@@ -100,7 +107,7 @@ The section is a direct child of `main`. `<html data-scenes-ready>` says it is m
 
 ### Its height (rule 3)
 
-The scene's section stays in the page rhythm like every other: exactly one or two screens, its
+The scene's section keeps the height its stage sets (sections round it are as tall as their content), its
 words under the nav. Live it is (hold + 1) screens; `lib.js` and every scene default `hold` to 1,
 so the live section is two screens (1800px at 1440x900). At rest (a phone, reduced motion, no
 script) `scenes.css` keeps the section's `--h` and padding as a minimum height, so give it `--h` =
@@ -206,3 +213,8 @@ is not a page's work. A page needs it only after a scene's `meta.json` changes, 
 
 One headless Chrome with WebGL on the CPU, closed by its own PID: start, middle and end at 1440 and
 390, a contact sheet a scene. Read every sheet; shoot `--reduced` once.
+
+`consistency.mjs` leaves a dealt kit scene's own scroll and hold untold on every kind it fits (one
+scene a page; its still is judged under reduced motion); a scene of the builder's own WARNs, and a
+scene off its kind keeps its FAIL. The classic stage keeps every word clear of the fixed nav
+(`Stage.navInset`) at every width.

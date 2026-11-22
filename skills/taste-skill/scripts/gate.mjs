@@ -45,10 +45,13 @@
   footer's credits link opens, that line names every source, and no author is a Commons category.
   photo-product (WARN): a heading names a product of the fact sheet (copy.md Products, else What it is) and its
   section's photographs (alt, data-subject) show none of it.
+  One check that throws (a fault in the gate, as a Products line with a bracket once broke a regular expression and
+  with it the whole run) never ends the run: it is a WARN, gate-check, naming the check, and the run goes on to a
+  verdict. The static, browser, copy and motion checks carry the verdict, so a throw there is also "not checked".
   And the copy: scripts/copy-lint.mjs --json on the page's file, or, when the file holds no sections (a built app, a
   dev server), on the page as the browser built it (consistency.mjs saves it as rendered.html); copy-lint's ids (copy-slop-word,
   copy-virtue, ...; the checker's copy-headline, copy-fact and the rest are its own); its FAILs
-  block (the old slop words, stock phrases, residue, a device used as a tic), its WARNs do not. A file whose text is a
+  block (the old slop words, stock phrases, residue, a fact held back, a device used as a tic), its WARNs do not. A file whose text is a
   kit file's, wherever it sits, is the kit's and is skipped. The two checkers' ids for the
   same fault on the same section (section-height / screen-height / screen-short, one-section / neighbour) are one
   finding. And the motion: scripts/motion-lint.mjs, once it exists, run exactly as copy-lint (its FAILs block).
@@ -59,7 +62,7 @@
   Waivers: a FAIL judged false is waived in .taste-skill/waivers.json, an array of
   {"check": "<id>", "target": "<part of where it is>", "reason": "<12+ characters>"}. A waiver covers exactly one
   finding: a target that matches several is ignored and says so. A target is 3+ characters, or the whole of a
-  short where. Each copy word, stock phrase or residue hit is its own finding (where: the word and its sentence); a
+  short where. Each copy word, stock phrase, residue or withheld hit is its own finding (where: the word and its sentence); a
   copy device used as a tic is one finding, waived only by its whole where (its count and hits), so a word added
   later is never covered. kit-edited and checker-gaming cannot be waived;
   more than 5 waivers is itself a FAIL. Waivers are printed so the report can list them.
@@ -71,12 +74,20 @@
   (nothing was fixed), then each counts as one. A changed page starts that count again.
   Below --rounds (3, set with --start): FAIL, fix and finish again. At the last round: OPEN, told once; every
   later stop is allowed and the open FAILs go in the report. PASS and OPEN rename build.json to build.done.json.
+  A run whose checks could not all run and found no FAIL is ERROR: it counts rounds as a FAIL does (a run on a changed
+  page is a round; at the last round it closes the build); fix what it names and run again. The same crash on an
+  unchanged page is retried once, then reused, never run a third time.
+  After a close (PASS, OPEN or --done) the page is fingerprinted as it was. A run on a page that changed since the
+  close (the page or a file it loads) reopens the build for one more round (build.done.json back to build.json); a run
+  on the unchanged page stays GATE: OFF. The hook reopens it too, but never after --done (the user's word), never
+  for a close idle over 24 hours, and never in a session other than the one the build held.
   The last line of a manual run is exactly one of:
     GATE: PASS | GATE: FAIL <n> (round <k> of <max>) | GATE: OPEN <n> (rounds used up) | GATE: QUICK <n> (...)
     | GATE: DONE (<the user's words>), after --done
   or GATE: SETUP (...) when the armed target cannot be checked yet (no page, a framework's source shell, a URL that
-  is not local): arm the right one and run again; GATE: ERROR (...) when the checks themselves could not run;
-  GATE: OFF when no build is active.
+  is not local): arm the right one and run again; GATE: ERROR (...) when the checks themselves could not run: fix
+  what it names and run again (with "rounds used up" in it, the build is closed: report it);
+  GATE: OFF when no build is active, or the build closed and the page has not changed since.
   Exit 0 PASS, OFF or DONE, 1 FAIL or OPEN, 2 ERROR, 3 SETUP.
   --quick is a look between rounds: the checker at 1440 and 390 (and the 320 pass), the layout check at 1440, not a round, never closes the build (GATE: QUICK <n>).
 
@@ -85,8 +96,10 @@
   - every block is counted in .taste-skill/gate-blocks.json, which --start never clears; past rounds + 4 blocks
     for one build (the blocks before the first run by hand have as many of their own), or 30 in 6 hours in the
     folder, every stop is allowed;
-  - no page, a framework shell, or crashed checks block once each with what to do, then allow; a crashed or
-    timed-out run is stored for its page, so a stop on the unchanged page reuses it (one retry at most);
+  - no page or a framework shell blocks once with what to do, then allows; crashed checks block once per page
+    (a round when the page changed), then allow; a crashed or timed-out run is stored for its page, so a stop on
+    the unchanged page reuses it (one retry at most);
+  - a reopened build (a page changed after its close) has one round, so it blocks once at most before it closes again;
   - after --done (the user ended the build) every stop is allowed;
   - it allows when builds are active in two or more folders below (an orchestrator, not a builder), when the
     build has been idle for 24 hours, in a session other than the one it first held, and when it cannot record;
@@ -206,6 +219,47 @@ function findProject() {
   found.sort((a, b) => lastTouch(b) - lastTouch(a));
   return { dir: found[0] || null, others: Math.max(0, found.length - 1) };
 }
+// a closed build (PASS, rounds used up, --done): its gate.json and the marker it closed with (build.done.json, else
+// gate.json's copy of it)
+const CLOSED_STATES = /^(pass|open|done)$/;
+function closedIn(d) {
+  if (fs.existsSync(path.join(dotOf(d), 'build.json'))) return null;
+  const s = readJson(path.join(dotOf(d), 'gate.json'), null);
+  if (!s || typeof s !== 'object' || Array.isArray(s) || typeof s.start !== 'string' || !CLOSED_STATES.test(s.status || '')) return null;
+  let m = readJson(path.join(dotOf(d), 'build.done.json'), null);
+  if (!m || typeof m !== 'object' || m.start !== s.start) m = s.marker && typeof s.marker === 'object' ? { ...s.marker, start: s.start } : null;
+  return m ? { dir: d, marker: m, state: s } : null;
+}
+// the closed build of the named page's folder or this one, else the only one a folder below, else two below
+function findClosed() {
+  for (const d of [...(positional && !isUrl(positional) ? [path.dirname(path.resolve(base, positional))] : []), base]) { const c = closedIn(d); if (c) return c; }
+  for (const depth of [1, 2]) { const c = below(depth).map(closedIn).filter(Boolean); if (c.length) return c.length === 1 ? c[0] : null; }
+  return null;
+}
+// its page changed since the close: the fingerprint (the page, what it loads, what the checks are told) against the
+// one stored at the close (a gate.json from before 2.5.3: the last run's); none stored, nothing to compare: unchanged
+function changedSinceClose(c) {
+  const was = String(('closedFp' in c.state ? c.state.closedFp : c.state.fp) || '').replace(/-quick$/, '');
+  if (!was) return false;
+  const P = findPage(c.dir, c.marker);
+  if (!P || (P.url && !isLocalUrl(P.url))) return false;
+  let html = ''; if (P.file) { try { html = fs.readFileSync(P.file, 'utf8'); } catch { return false; } }
+  return fingerprint(c.dir, c.marker, P, html).fp !== was;
+}
+// one more round for a closed build whose page changed: build.json back, the rounds one past the last one used. The
+// hook's block cap stays the build's first one (baseMax), so reopening never buys a session more blocks
+function reopen(c) {
+  const d = dotOf(c.dir), s = c.state, from = s.status;
+  s.baseMax = Number(s.baseMax) || Number(s.max) || Number(c.marker.rounds) || 3;
+  writeJson(path.join(d, 'build.json'), { ...c.marker, rounds: Math.max(1, (Number(s.round) || 0) + 1) });
+  try { fs.rmSync(path.join(d, 'build.done.json'), { force: true }); } catch { /* build.json is what counts */ }
+  s.history = [...(Array.isArray(s.history) ? s.history : []), { at: new Date().toISOString(), mode: 'reopen', from, round: s.round || 0 }].slice(-20);
+  // a reopened build counts its round on the first run, hook or manual: it checks edits made after a close
+  Object.assign(s, { status: 'active', reopened: (Number(s.reopened) || 0) + 1, manual: true, idle: 0, idleFree: false, blockKey: null, openTold: false, errorTold: null, setupTold: false });
+  delete s.doneReason;
+  writeJson(path.join(d, 'gate.json'), s);
+  return from;
+}
 // the folders one or two levels below the session's folder, at most 400, never node_modules, .git or a hidden one
 function below(depth) {
   let level = [base];
@@ -314,6 +368,23 @@ function sourceFiles(proj) {
   for (const d of ['src', 'app', 'pages', 'components', 'lib', 'public']) go(path.join(proj, d), 0);
   try { for (const n of fs.readdirSync(proj)) if (/\.(html?|m?[jt]s|json)$/i.test(n) && !/lock/i.test(n)) out.push(path.join(proj, n)); } catch { /* none */ }
   return out;
+}
+// what a run checks and its fingerprint: the target, what the checks are told (kind, root, category, primary) and
+// every file the page loads (a dev server's or a framework's source too). A changed fingerprint is a changed page:
+// a new round, and after a close a reopened build
+function fingerprint(dir, m, P, html) {
+  const target = P.url || P.file;
+  const root = typeof m.root === 'string' && m.root ? path.resolve(dir, m.root) : null;
+  const kind = (html && kindOf(html)) || (KINDS.test(m.kind || '') ? m.kind : '') || '';
+  const opts = { kind, root, category: typeof m.category === 'string' ? m.category : '', primary: typeof m.primary === 'string' ? m.primary : '' };
+  const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
+  const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(dir, 'package.json')) ? sourceFiles(dir) : [])])];
+  const h = crypto.createHash('sha1');
+  h.update(JSON.stringify({ target, opts }));
+  for (const f of files) {
+    try { const st = fs.statSync(f); h.update(f + '\0' + (/\.(html?|m?js|css|jsx|tsx?|vue|svelte|astro)$/i.test(f) && st.size < 2e6 ? fs.readFileSync(f) : `${st.size}:${st.mtimeMs}`)); } catch { /* gone */ }
+  }
+  return { target, root, kind, opts, files, fp: h.digest('hex').slice(0, 16) };
 }
 
 // ---------------------------------------------------------------- the kit, by content
@@ -459,11 +530,19 @@ function productChecks(html, dot) {
   for (const d of [dot, path.join(dot, '..', '..', '.taste-skill'), path.join(dot, '..', '..', '..', '.taste-skill')]) { try { notes = fs.readFileSync(path.join(d, 'copy.md'), 'utf8'); break; } catch { /* next */ } }
   if (!notes) return W;
   const line = k => ((notes.match(new RegExp(`^\\s*${k}\\s*:\\s*(.+)$`, 'im')) || [])[1] || '').replace(/<[^>]*>/g, '').trim();
-  let phrases = line('Products').split(/,|;|\band\b/i);
-  if (!phrases.join('').trim()) phrases = ((line('What it is').match(/\b(?:serves|sells|makes|bakes|roasts|brews|offers|rents|repairs)\s+(.+)$/i) || [])[1] || '').split(/,|;|\band\b/i);
+  // brackets go before the split, so "the keyboard (one model, three colours)" is one product and never leaves
+  // "colours)" behind (2.5.3: that ")" went into a regular expression and ended the whole run)
+  const unbracket = s => { let t = s, o; do { o = t; t = t.replace(/\([^()]*\)|\[[^[\]]*\]|\{[^{}]*\}/g, ' '); } while (t !== o); return t.replace(/[()[\]{}]/g, ' '); };
+  const split = s => unbracket(s).split(/,|;|\band\b/i);
+  let phrases = /^\s*(none|n\/a|-)(?![\p{L}])/iu.test(line('Products')) ? [] : split(line('Products'));
+  if (!phrases.join('').trim()) phrases = split((line('What it is').match(/\b(?:serves|sells|makes|bakes|roasts|brews|offers|rents|repairs)\s+(.+)$/i) || [])[1] || '');
   const stem = w => w.toLowerCase().replace(/ies$/, 'y').replace(/(s|x|sh|ch)es$/, '$1').replace(/([^s])s$/, '$1');
-  const nouns = [...new Set(phrases.map(p => p.replace(/\([^)]*\)|[.!?]/g, '').trim().split(/\s+/).pop()).filter(w => w && w.length > 2).map(stem))];
+  // a noun is letters (an apostrophe or a hyphen inside), escaped all the same: nothing from the notes is read as pattern
+  const nouns = [...new Set(phrases.map(p => (p.replace(/[.!?]/g, ' ').trim().split(/\s+/).pop() || '').replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ''))
+    .filter(w => w.length > 2 && /^\p{L}[\p{L}'’-]*$/u.test(w)).map(stem))];
   if (!nouns.length) return W;
+  // the u flag takes no "\-": escape the syntax characters only
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
   const word = s => new RegExp(`(^|[^\\p{L}])(${s})(e?s)?(?![\\p{L}])`, 'iu');
   const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
   for (const m of live.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/gi)) {
@@ -473,8 +552,8 @@ function productChecks(html, dot) {
     const heads = [...body.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)].map(h => h[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
     const shows = imgs.map(a => `${a.alt || ''} ${a['data-subject'] || ''}`).join(' ');
     for (const n of nouns) {
-      const h = heads.find(x => word(n).test(x));
-      if (!h || word(n + (SAME[n] ? '|' + SAME[n] : '')).test(shows)) continue;
+      const h = heads.find(x => word(esc(n)).test(x));
+      if (!h || word(esc(n) + (Object.hasOwn(SAME, n) ? '|' + SAME[n] : '')).test(shows)) continue;
       W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's photograph shows "${shows.trim().slice(0, 70)}"`, fix: `a photograph of the ${n} itself: photos.mjs pick for the trade, else photos.mjs search --out . "${n} ..." (photos.md, Every product on the fact sheet gets its picture), its alt naming it` });
     }
   }
@@ -550,7 +629,7 @@ async function dealDrift(html, dot, kind) {
 }
 
 // ---------------------------------------------------------------- the copy: copy-lint.mjs on the words the page shows
-// a FAIL blocks like any other (copy-slop-word, copy-stock-phrase, copy-residue, a device past twice its budget);
+// a FAIL blocks like any other (copy-slop-word, copy-stock-phrase, copy-residue, copy-withheld, a device past twice its budget);
 // a WARN is listed and never blocks. A page file with sections is linted as written; a dev server's page, or a built
 // app whose file is a shell, is linted as the browser built it (rendered.html, saved by consistency.mjs); with neither
 // the copy is listed as not checked, so the run cannot PASS.
@@ -558,7 +637,7 @@ const HAS_COPY = /<(main|section|h1)\b/i;
 // the two linters share one CLI and one report (copy-lint.mjs, motion-lint.mjs: <file> --json --kind <kind> ->
 // { files: [{ findings: [{ id, sev, msg, fix, hits, count, examples }] }] }); motion-lint runs only once it exists
 const LINTS = {
-  copy: { script: 'copy-lint.mjs', ref: 'references/copy-tells.md', what: 'the copy', perHit: /^copy-(slop-word|stock-phrase|residue|unread)$/ },
+  copy: { script: 'copy-lint.mjs', ref: 'references/copy-tells.md', what: 'the copy', perHit: /^copy-(slop-word|stock-phrase|residue|unread|withheld)$/ },
   motion: { script: 'motion-lint.mjs', ref: 'references/motion.md', what: 'the motion', perHit: null },
 };
 const copyChecks = (P, kind, html, rendered) => lintChecks(LINTS.copy, P, kind, html, rendered);
@@ -648,8 +727,8 @@ const errLine = t => { const l = String(t || '').split('\n').map(x => x.trim()).
 const LAYOUT_FIX = {
   'bleed-one-side': 'bleed the visual to both edges or keep it on the .wrap lines', spill: 'keep it inside the .wrap; nothing past the right edge',
   'edge-left': 'start it on the .wrap left line', 'edge-right': 'end it on the .wrap right line', 'one-sided': 'let the row reach both .wrap edges',
-  lines: 'put the block on the .wrap lines or the grid columns', 'screen-short': 'make the section one full screen (--h: 1, layout-v4.md section 2)',
-  'screen-height': 'make the section exactly one or two screens (--h: 1 or 2)', sparse: 'fill the section or make it a screen shorter',
+  lines: 'put the block on the .wrap lines or the grid columns', 'section-height': 'let the section be as tall as its content: drop any fixed or min height you set; never cut or hide content to fit (layout-v4.md section 2)',
+  'section-air': 'keep the kit padding (--padt, --padb) on the section; never zero it or add your own', sparse: 'give the section the content its heading promises, or merge it into the section next to it',
   neighbour: "keep the next section's heading and picture out of this screen", 'neighbour-ground': 'end the ground with the section',
   'hero-fold': 'the hero fills the first screen alone, its button inside it', 'hero-maxchars': 'shorten the h1 or give the hero room for the longest headline',
   'hero-lines': "the check fills the h1 to this hero's maxChars, not your own: take the next type pairing the deal printed (start.mjs); when the h1 is final and fits, waive it (target: section.hero h1)", 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
@@ -764,6 +843,18 @@ function applyWaivers(fails, file) {
 
 // ---------------------------------------------------------------- run
 const proj = START ? null : findProject();
+// a closed build whose page changed since the close: the run checks it again, one more round. The hook does so only
+// for a PASS or rounds-used-up close (never after --done, the user's word), within a day of it and in the session
+// the build held; --quick and --done never reopen
+let reopened = null, closedHere = null;
+if (!START && !proj.dir) {
+  const c = findClosed();
+  const mayHook = c && (c.state.status !== 'done' && Date.now() - lastTouch(c.dir) <= DAY && !(c.state.session && typeof input.session_id === 'string' && input.session_id !== c.state.session));
+  if (c && (HOOK ? mayHook : true) && changedSinceClose(c)) {
+    if (!HOOK && (QUICK || has('done'))) closedHere = { ...c, changed: true };
+    else { reopened = reopen(c); proj.dir = c.dir; }
+  } else if (c) closedHere = c;
+}
 if (!START && !proj.dir) {
   if (HOOK) {
     const u = input.stop_hook_active ? null : unarmedPage();
@@ -774,6 +865,14 @@ if (!START && !proj.dir) {
     T.file = path.join(dotOf(u.dir), 'gate.json'); trace('block', `${rel} is a tasteskill page with no build armed: told how to arm it`);
     process.stdout.write(JSON.stringify({ decision: MODES[HOOK], reason: `tasteskill gate: ${rel} is a tasteskill page, but no build is armed, so it was never checked. Run ${GATE} --start ${rel}, then ${GATE}, and fix what it lists. If you are stopping to ask the user something, or this page is not one you are building, just stop again.` }));
     process.exit(0);
+  }
+  // a closed build: nothing changed since its close (or a --quick or --done run, which never reopens one)
+  if (closedHere) {
+    const how = { pass: 'with a PASS', open: 'with its rounds used up', done: "at the user's word" }[closedHere.state.status] || '';
+    const where = slash(path.relative(base, closedHere.dir)) || '.';
+    if (closedHere.changed) console.log(`gate: the build in ${where} closed ${how}, and its page changed since: run ${GATE} without --quick or --done to check it again (one more round)`);
+    else console.log(`gate: the build in ${where} closed ${how}, and its page has not changed since: nothing to check. A change to the page is checked again by the next run, one more round; never re-arm it with --start to get rounds back`);
+    console.log(`GATE: OFF (${closedHere.changed ? 'the build closed; run without --quick to check the changes' : 'the build closed and the page has not changed since'})`); process.exit(0);
   }
   // never arm a folder by accident: only --start (or start.mjs) begins a build
   console.log(`gate: no build is active in ${base} (no .taste-skill/build.json); begin one with: ${GATE} --start index.html`);
@@ -878,6 +977,7 @@ state.marker = marker;
 // a hook stop before the gate's first run by hand in this build: never a round, and its blocks have a ledger of their own
 const early = !!HOOK && !state.manual;
 if (recovered && !HOOK) console.log('gate: build.json is missing or broken, but the rounds in gate.json are still open: the build goes on');
+if (reopened && !HOOK) console.log(`gate: the page changed after the build closed (${{ pass: 'PASS', open: 'rounds used up', done: "the user's word" }[reopened] || reopened}): this run checks it again, round ${(state.round || 0) + 1} of ${MAX}, the last`);
 
 // --done: the user ended the build (stop now, or ship it as it is). Their words are recorded, the marker is renamed and
 // every later stop is allowed. Never the agent's own call: an agent that wants to stop fixing has its rounds
@@ -885,7 +985,10 @@ if (has('done') && !HOOK) {
   const why = str('done');
   if (!why || why.length < 12) { console.error(`gate: --done needs the user's words, 12+ characters: ${GATE} --done "<what they said>"`); process.exit(2); }
   const left = Array.isArray(state.open) ? state.open.length : null;
-  Object.assign(state, { status: 'done', doneReason: why });
+  // the page as it is now: a later run on a changed page checks it again (never the hook, after the user's word)
+  let closedFp = null;
+  try { const p = findPage(projDir, marker); if (p && !(p.url && !isLocalUrl(p.url))) closedFp = fingerprint(projDir, marker, p, p.file ? fs.readFileSync(p.file, 'utf8') : '').fp; } catch { /* none: a later run stays OFF */ }
+  Object.assign(state, { status: 'done', doneReason: why, closedFp });
   state.history = [...(state.history || []), { at: new Date().toISOString(), mode: 'done', status: 'done', reason: why.slice(0, 160), round: state.round || 0 }].slice(-20);
   try { save(); } catch (e) { console.error(`gate: could not write ${stateFile}: ${e.message}`); process.exit(2); }
   try { fs.renameSync(markerFile, path.join(dot, 'build.done.json')); } catch { try { fs.copyFileSync(markerFile, path.join(dot, 'build.done.json')); fs.rmSync(markerFile, { force: true }); } catch { /* gate.json's status ends it */ } }
@@ -913,7 +1016,8 @@ if (HOOK) {
   const L = readLedger(), now = Date.now();
   // the blocks before the first run by hand count apart, so questions mid-build never use up the finish's blocks
   const mine = L.filter(b => b.start === marker.start && !!b.early === early).length, recent = L.filter(b => now - Date.parse(b.at) < 6 * 3600e3).length;
-  if (mine >= MAX + EXTRA || recent >= RECENT) allow(`blocked ${mine} times for this build${early ? ' before the gate was run by hand' : ''} (${recent} in 6 hours here); stop allowed`);
+  // a reopened build keeps the cap of its first rounds: one more round never buys more blocks
+  if (mine >= (Number(state.baseMax) || MAX) + EXTRA || recent >= RECENT) allow(`blocked ${mine} times for this build${early ? ' before the gate was run by hand' : ''} (${recent} in 6 hours here); stop allowed`);
 }
 
 const print = HOOK ? () => {} : (...a) => console.log(...a);
@@ -941,55 +1045,68 @@ if (setup) {
   console.log(`GATE: SETUP (${!P ? 'no page' : P.url ? 'not a local page' : 'the page cannot be checked as a file'}; arm the right target and run again)`); process.exit(3);
 }
 
-const target = P.url || P.file;
 const relPage = P.url || slash(path.relative(projDir, P.file));
-const root = typeof marker.root === 'string' && marker.root ? path.resolve(projDir, marker.root) : null;
-const kind = (html && kindOf(html)) || (KINDS.test(marker.kind || '') ? marker.kind : '') || '';
-const opts = { kind, root, category: typeof marker.category === 'string' ? marker.category : '', primary: typeof marker.primary === 'string' ? marker.primary : '' };
-const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
-const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(projDir, 'package.json')) ? sourceFiles(projDir) : [])])];
 // the page, what it loads and what the checks are told; waivers are applied after the checks, so a new waiver needs no new run
-const fp = crypto.createHash('sha1');
-fp.update(JSON.stringify({ target, opts }));
-for (const f of files) {
-  try { const st = fs.statSync(f); fp.update(f + '\0' + (/\.(html?|m?js|css|jsx|tsx?|vue|svelte|astro)$/i.test(f) && st.size < 2e6 ? fs.readFileSync(f) : `${st.size}:${st.mtimeMs}`)); } catch { /* gone */ }
-}
-const FP = fp.digest('hex').slice(0, 16) + (QUICK ? '-quick' : '');
+const { target, root, kind, opts, files, fp: PAGE_FP } = fingerprint(projDir, marker, P, html);
+const FP = PAGE_FP + (QUICK ? '-quick' : '');
 let waiverText = ''; try { waiverText = fs.readFileSync(waiverFile, 'utf8'); } catch { /* none */ }
 const ROUND_KEY = FP + ':' + crypto.createHash('sha1').update(waiverText).digest('hex').slice(0, 8);
 
-const errorReason = what => `tasteskill gate: the checks could not run (${what}), so the page was not fully checked. Do not rerun them: put "GATE: ERROR (${what})" and what was not checked in your report, then finish.`;
-// the whole run has a budget: past it, our children die; the first time the agent is told to report it
+// an ERROR is fixed and run again like a FAIL: what it names is often the page's (a page that does not load, a
+// script that hangs the browser, no <main>); one that names nothing of the page is reported
+const errorReason = (what, k) => `tasteskill gate: the checks could not run (${what}), so the page was not fully checked${k ? ` (round ${k} of ${MAX})` : ''}. Fix what that names (a page or a file that does not load, a script that throws or hangs, a page with no <main>), then finish again. If it names nothing on the page (Chrome would not start, a fault in the gate), put "GATE: ERROR (${what})" and what was not checked in your report, then finish.`;
+// the whole run has a budget: past it, our children die; the agent is told once for this page, and a changed page's
+// timeout counts its round as any other run does
 const guard = setTimeout(() => {
   for (const c of children) killTree(c);
   state.errors = (state.errors || 0) + 1; state.note = 'the checks ran past 9.5 minutes';
   // stored as this page's crashed result, so a stop on the same page counts it toward "crashed twice" and is not run again
   state.fp = FP; state.found = { fails: [], warns: [], crashed: ['the checks ran past 9.5 minutes'], seconds: {} };
-  if (HOOK && !state.errorTold) { state.errorTold = true; block(errorReason('the checks ran past 9.5 minutes')); }
+  if (!QUICK && state.status !== 'open' && state.roundKey !== ROUND_KEY) {
+    if (!early) state.round = (state.round || 0) + 1;
+    Object.assign(state, { roundKey: ROUND_KEY, roundFree: early, idle: 0, idleFree: false, blockKey: null });
+  }
+  if (!QUICK) state.status = 'error';
+  if (HOOK && state.errorTold !== FP) { state.errorTold = FP; block(errorReason('the checks ran past 9.5 minutes', early ? 0 : state.round)); }
   try { save(); } catch { /* best effort */ }
   if (HOOK) allow('checks timed out; stop allowed');
+  console.log(`gate: the checks ran past 9.5 minutes (round ${state.round || 0} of ${MAX}): make the page lighter where it hangs (a heavy script, a huge image, a loop that never ends), then run it again`);
   console.log('GATE: ERROR (the checks ran past 9.5 minutes)'); process.exit(2);
 }, BUDGET);
 
+// one check that throws never ends the run (2.5.3: a bracket in copy.md's Products line broke photo-product's regular
+// expression, and five builds lost every finding of minutes of browser checks to one GATE: ERROR). It is listed as a
+// WARN naming the check and the run goes on to its verdict; the checks the verdict rests on (static, browser, copy,
+// motion) are also listed as not checked, so a throw there is never a PASS
+const thrown = [], skipped = [];
+async function safely(name, fn, empty, core) {
+  try { return await fn(); } catch (e) {
+    const why = String((e && e.message) || e).split('\n')[0].slice(0, 160);
+    thrown.push({ check: 'gate-check', where: `the ${name} check`, msg: `the gate's own ${name} check threw (${why}) and was skipped`, fix: 'nothing on the page: a fault in the gate; name it in your report', widths: [], from: 'gate' });
+    if (core) skipped.push(`the ${name} check threw: ${why}`);
+    return empty;
+  }
+}
 let found, reused = false;
 if (state.fp === FP && state.found && Array.isArray(state.found.crashed) && !state.found.crashed.length) { found = state.found; reused = true; }
-else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) && (state.errors >= 2 || (HOOK && state.errorTold))) {
-  // the checks crashed twice on this very page, or crashed on it and the agent was told to report it: do not spend
-  // minutes on another try (a crashed run that found FAILs still lists them)
+else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) && (state.errors >= 2 || (HOOK && state.errorTold === FP))) {
+  // the checks crashed twice on this very page, or crashed on it and the agent was told: do not spend minutes on
+  // another try (a crashed run that found FAILs still lists them)
   clearTimeout(guard);
-  if (HOOK && state.errorTold && !(state.found.fails || []).length) allow('the checks crashed on this unchanged page and the agent was told; stop allowed');
+  if (HOOK && state.errorTold === FP && !(state.found.fails || []).length) allow('the checks crashed on this unchanged page and the agent was told; stop allowed');
   found = state.found; reused = true;
 } else {
   print(`gate: checking ${relPage}${kind ? ` (${kind})` : ''}; this takes a few minutes on a CPU Chrome`);
   try {
-    const stat = [...staticChecks(P.file, html, projDir, files), ...creditChecks(P.file, html)];
-    const b = await browserChecks(target, projDir, opts, gateDir);
-    const c = copyChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
-    const mo = motionChecks(P, kind, html, path.join(gateDir, 'consistency', 'rendered.html'));
-    let renderedHtml = ''; if (!html) try { renderedHtml = fs.readFileSync(path.join(gateDir, 'consistency', 'rendered.html'), 'utf8'); } catch { /* none */ }
-    const dd = await dealDrift(html || renderedHtml, dot, kind);
-    dd.warns.push(...productChecks(html || renderedHtml, dot));
-    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed], seconds: b.seconds };
+    const rendered = path.join(gateDir, 'consistency', 'rendered.html'), none = { fails: [], warns: [], crashed: [] };
+    const stat = [...await safely('static', () => staticChecks(P.file, html, projDir, files), [], true), ...await safely('photo-credit', () => creditChecks(P.file, html), [])];
+    const b = await safely('browser', () => browserChecks(target, projDir, opts, gateDir), { ...none, seconds: {} }, true);
+    const c = await safely('copy', () => copyChecks(P, kind, html, rendered), none, true);
+    const mo = await safely('motion', () => motionChecks(P, kind, html, rendered), none, true);
+    let renderedHtml = ''; if (!html) try { renderedHtml = fs.readFileSync(rendered, 'utf8'); } catch { /* none */ }
+    const dd = await safely('deal-drift', () => dealDrift(html || renderedHtml, dot, kind), { fails: [], warns: [] });
+    const pp = await safely('photo-product', () => productChecks(html || renderedHtml, dot), []);
+    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };
@@ -1035,29 +1152,22 @@ if (QUICK) {
   allow('a --quick run never blocks');
 }
 
-if (n === 0 && crashed) {
-  // no FAIL found, but not everything ran: never a PASS; the agent is told once to report it
-  const what = found.crashed.join('; ');
-  if (!record('error', { note: what })) { if (HOOK) allow('could not record the run; stop allowed'); }
-  if (HOOK) { if (state.errorTold) allow('checks crashed (' + what + '); told once, stop allowed'); state.errorTold = true; block(errorReason(what)); }
-  printAll('gate: no FAIL in what ran, but not everything ran');
-  print('Do not rerun it: put the GATE line and what was not checked in your report, then finish.');
-  console.log(`GATE: ERROR (${what})`); process.exit(2);
-}
-
-if (n === 0) {
-  record('pass');
+if (n === 0 && !crashed) {
+  // the page as it passed: a later run on a changed page checks it again (one more round)
+  record('pass', { closedFp: PAGE_FP });
   try { fs.renameSync(markerFile, path.join(dot, 'build.done.json')); } catch { try { fs.copyFileSync(markerFile, path.join(dot, 'build.done.json')); fs.rmSync(markerFile, { force: true }); } catch { /* left armed */ } }
   if (HOOK) allow('GATE: PASS', true);
   printAll('gate: no open FAIL');
   console.log('GATE: PASS'); process.exit(0);
 }
 
-// FAILs remain. A run on a changed page (or changed waivers) is a round; a manual rerun of an unchanged one is not.
+// FAILs remain, or the checks could not all run and found none (ERROR): both count rounds alike. A run on a changed
+// page (or changed waivers) is a round; a manual rerun of an unchanged one is not.
 // Before the gate's first run by hand in this build, a hook stop is not a round (a question to the user mid-build must
 // not spend one): it lists the FAILs and blocks, and the first run by hand counts that page's round. After a hook block,
 // the next stop on the unchanged page is allowed once without a round (a question to the user: "just stop again");
 // other stops on it block twice without a round (nothing was fixed), then each counts as one; a change starts again
+const status = n ? 'fail' : 'error', what = found.crashed.join('; ');
 const already = state.status === 'open';
 let idle = false;
 if (!already) {
@@ -1068,26 +1178,47 @@ if (!already) {
     // the round a hook stop before this first run by hand did not count
     if (state.roundFree) Object.assign(state, { roundFree: false, round: (state.round || 0) + 1, idle: 0, idleFree: false, blockKey: null });
   } else if (state.blockKey === ROUND_KEY && !state.idleFree) {
-    state.idleFree = true; record('fail'); allow('nothing changed since the last block; this stop is allowed once without a round (a question to the user)');
+    state.idleFree = true; record(status, n ? {} : { note: what }); allow('nothing changed since the last block; this stop is allowed once without a round (a question to the user)');
   } else if ((state.idle || 0) < IDLE) { state.idle = (state.idle || 0) + 1; idle = true; }
   else if (!early) state.round = (state.round || 0) + 1;
 }
 const k = state.round || 1, last = already || (state.round || 0) >= MAX;
 const top = open.slice(0, TOP).map(f => '- ' + line(f)).join('\n') + (n > TOP ? `\n(${n - TOP} more in ${slash(path.relative(base, stateFile)) || stateFile}; crops in .taste-skill/gate/consistency)` : '');
-const notChecked = crashed ? ` (not checked: ${found.crashed.join('; ')})` : '';
+const notChecked = crashed ? ` (not checked: ${what})` : '';
 
 if (last && !idle) {
   const told = !!state.openTold;
-  if (!record('open', { openTold: true })) { if (HOOK) allow('could not record the round; stop allowed'); }
+  // the page as it closed: a later run on a changed page checks it again (one more round)
+  if (!record('open', { openTold: true, closedFp: PAGE_FP, ...(n ? {} : { note: what }) })) { if (HOOK) allow('could not record the round; stop allowed'); }
   // a used-up build is closed like a passed one, so a later deal or a build one folder down is not tied to it
   try { fs.renameSync(markerFile, path.join(dot, 'build.done.json')); } catch { try { fs.copyFileSync(markerFile, path.join(dot, 'build.done.json')); fs.rmSync(markerFile, { force: true }); } catch { /* gate.json's status ends it */ } }
   if (HOOK) {
     if (told) allow('rounds used up, told before', true);
-    block([`tasteskill gate: rounds used up (${MAX} of ${MAX}), ${n} FAIL${n > 1 ? 's' : ''} open${notChecked}:`, top, waivedText(), 'Rounds used up: stop fixing. Put "GATE: OPEN" and these open FAILs in your report (with any waivers and their reasons), then finish.'].filter(Boolean).join('\n'));
+    block(n
+      ? [`tasteskill gate: rounds used up (${MAX} of ${MAX}), ${n} FAIL${n > 1 ? 's' : ''} open${notChecked}:`, top, waivedText(), 'Rounds used up: stop fixing. Put "GATE: OPEN" and these open FAILs in your report (with any waivers and their reasons), then finish.'].filter(Boolean).join('\n')
+      : `tasteskill gate: rounds used up (${MAX} of ${MAX}), and the checks could not run (${what}), so the page was not fully checked. Stop fixing: put "GATE: ERROR (${what}; rounds used up)" and what was not checked in your report, then finish.`);
+  }
+  if (!n) {
+    printAll('gate: rounds used up; no FAIL in what ran, but not everything ran');
+    print('Stop fixing: put the GATE line and what was not checked in your report, then finish.');
+    console.log(`GATE: ERROR (${what}; rounds used up)`); process.exit(2);
   }
   printAll(`gate: rounds used up; ${n} FAIL open${reused ? ' (page unchanged since the last run)' : ''}`);
   print('Stop fixing: put these open FAILs and the waivers in your report, then finish.');
   console.log(`GATE: OPEN ${n} (rounds used up)`); process.exit(1);
+}
+
+if (!n) {
+  // no FAIL in what ran, but not everything ran: never a PASS. Fix what it names and run again, a round like a FAIL;
+  // the hook blocks once for this page and then lets the session stop
+  if (HOOK) state.blockKey = ROUND_KEY;
+  if (!record('error', { note: what })) { if (HOOK) allow('could not record the run; stop allowed'); }
+  if (HOOK) { if (state.errorTold === FP) allow('checks crashed (' + what + '); told once for this page, stop allowed'); state.errorTold = FP; block(errorReason(what, early ? 0 : k)); }
+  printAll(`gate: no FAIL in what ran, but not everything ran (round ${k} of ${MAX})`);
+  print(reused
+    ? 'The checks crashed twice on this unchanged page, so they were not run a third time. Change what the line names and run the gate again; if it names nothing on the page (Chrome would not start, a fault in the gate), put the GATE line and what was not checked in your report, then finish.'
+    : `Fix what the line names (a page or a file that does not load, a script that throws or hangs, a page with no <main>), then run the gate again (round ${k} of ${MAX}). If it names nothing on the page (Chrome would not start, a fault in the gate), put the GATE line and what was not checked in your report, then finish.`);
+  console.log(`GATE: ERROR (${what})`); process.exit(2);
 }
 
 if (HOOK) state.blockKey = ROUND_KEY;

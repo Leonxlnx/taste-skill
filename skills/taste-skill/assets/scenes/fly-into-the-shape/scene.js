@@ -59,11 +59,23 @@ export default function mount(root, opts = {}) {
   const [ax, ay] = opts.centre || [50, 50];
   const rin = opts.rin ?? 40;
   const turn0 = opts.turn ?? 34;
-  let face = null, g = null;
+  // the title on the face is drawn twice: once inside the world, clipped with it to the mark, in the light ink that
+  // reads on its dark photograph, and once under the world on the page's ground in the section's own ink, turned and
+  // grown with the world. Where a stroke of the mark ends, the words go on in the other colour, so none of them is
+  // ever painted in the colour of the ground it stands on (seen on a test page: a light title half on a light ground)
+  let face = null, faceOut = null, layer = null, g = null;
+  const copy = cls => { const d = document.createElement('div'); d.className = cls; d.setAttribute('aria-hidden', 'true'); d.innerHTML = title.innerHTML; d.querySelectorAll('[id]').forEach(x => x.removeAttribute('id')); return d; };
   const ctrl = scene(root, {
     hold: opts.hold ?? 1,
     phone: 'rest',
-    start() { face = title.cloneNode(true); face.className = 'fis__face'; face.removeAttribute('id'); face.setAttribute('aria-hidden', 'true'); stage.append(face); },
+    start() {
+      face = copy('fis__face');
+      world.append(face);
+      layer = document.createElement('div'); layer.className = 'fis__faces'; layer.setAttribute('aria-hidden', 'true');
+      faceOut = copy('fis__face fis__face--ground');
+      layer.append(faceOut);
+      stage.insertBefore(layer, world);
+    },
     measure(ctx) {
       const W = ctx.vw, H = ctx.vh;
       const S0 = Math.min(W, H) * 0.5;                              // the mark's size at the start (its 100-box)
@@ -81,12 +93,17 @@ export default function mount(root, opts = {}) {
       const covered = S >= S1 * 0.995;
       const k = S / 100;
       world.style.clipPath = covered ? 'none' : `path("${placePath(d, k, cx - ax * k, cy + rise - ay * k)}")`;
-      world.style.transform = `perspective(1400px) rotateY(${turn.toFixed(2)}deg) scale(${(1 + 0.08 * seg(p, 0.84, 1, ease.out)).toFixed(4)})`;
+      const wt = `perspective(1400px) rotateY(${turn.toFixed(2)}deg) scale(${(1 + 0.08 * seg(p, 0.84, 1, ease.out)).toFixed(4)})`;
+      world.style.transform = wt;
+      layer.style.transform = wt;
+      layer.style.visibility = covered ? 'hidden' : '';
       // the title on the face: it grows with the mark to its full size and no further, and goes as the band rises
       const tScale = Math.min(1, (S / S0) * 0.42);
       const kf = 1 - seg(p, 0.84, 0.9, ease.inOut);
-      face.style.transform = `translate(-50%, -50%) translate3d(0, ${rise.toFixed(1)}px, 0) scale(${tScale.toFixed(4)})`;
-      face.style.opacity = kf.toFixed(3); face.style.visibility = kf <= 0 ? 'hidden' : '';
+      for (const f of [face, faceOut]) {
+        f.style.transform = `translate(-50%, -50%) translate3d(0, ${rise.toFixed(1)}px, 0) scale(${tScale.toFixed(4)})`;
+        f.style.opacity = kf.toFixed(3); f.style.visibility = kf <= 0 ? 'hidden' : '';
+      }
       const kb = seg(p, 0.86, 1, ease.out);
       band.style.opacity = kb.toFixed(3); band.style.visibility = kb <= 0 ? 'hidden' : ''; band.style.transform = `translate3d(0, ${((1 - kb) * 24).toFixed(1)}px, 0)`;
       if (aside) { const ka = 1 - seg(p, 0.2, 0.34, ease.inOut); aside.style.opacity = ka.toFixed(3); aside.style.visibility = ka <= 0 ? 'hidden' : ''; }
@@ -95,7 +112,9 @@ export default function mount(root, opts = {}) {
     rest() {
       world.style.cssText = ''; band.style.cssText = ''; if (aside) aside.style.cssText = ''; if (outside) outside.style.cssText = '';
       if (face) face.style.cssText = '';
+      if (faceOut) faceOut.style.cssText = '';
+      if (layer) layer.style.cssText = '';
     },
   });
-  return { destroy() { ctrl && ctrl.destroy(); if (face) face.remove(); } };
+  return { destroy() { ctrl && ctrl.destroy(); if (face) face.remove(); if (layer) layer.remove(); } };
 }

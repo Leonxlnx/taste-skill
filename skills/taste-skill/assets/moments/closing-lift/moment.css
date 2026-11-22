@@ -15,15 +15,15 @@
 .mo-cl .mo-cl__band .btn-row { margin-top: var(--s-2); }
 .mo-cl .mo-cl__band .btn--primary { background: #fff; color: #111; }
 .mo-cl .mo-cl__band .btn--secondary { background: transparent; color: #fff; border-color: rgb(255 255 255 / .5); }
-.mo-cl.is-live .mo-cl__band { will-change: opacity, transform; }
+.mo-cl:is(.is-live, .is-phone) .mo-cl__band { will-change: opacity, transform; }
 @media (prefers-reduced-motion: reduce) {
   .mo-cl.is-live .mo-cl__under { position: relative; height: auto; }
   .mo-cl .mo-cl__img { transform: none !important; }
-  .mo-cl.is-live .mo-cl__band { opacity: 1 !important; transform: none !important; }
+  .mo-cl:is(.is-live, .is-phone) .mo-cl__band { opacity: 1 !important; transform: none !important; }
 }
 /* a printed page and a screen shorter than the band (a landscape phone, 400 percent zoom) show the plain closing section */
 @media print, (max-height: 560px) {
   .mo-cl.is-live .mo-cl__under { position: relative; height: auto; }
   .mo-cl .mo-cl__img { transform: none !important; }
-  .mo-cl.is-live .mo-cl__band { opacity: 1 !important; transform: none !important; }
+  .mo-cl:is(.is-live, .is-phone) .mo-cl__band { opacity: 1 !important; transform: none !important; }
 }

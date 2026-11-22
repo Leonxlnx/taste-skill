@@ -7,8 +7,10 @@ checker or a reviewer catches. A place page follows `sections.md` section 4 wher
 ## What every recipe assumes
 
 - **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80 (a place 1200 at x 120), gutter 24, h1 72,
-  h2 48; at 390: 342 at x 24. Every section is one or two screens, its h2 first, `--padt` under its
-  top (`layout-v4.md`). Never add a number the system lacks; a missing value becomes a token.
+  h2 48; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
+  it and `--padb` under its last block (`layout-v4.md` section 2); the "At 1440" sizes below are what
+  the content takes, never a screen to fill. Never add a number the system lacks; a missing value
+  becomes a token.
 - **Splits** are the page's one split pair, text left and the visual right, top-aligned
   (`.grid`, never `.grid--middle` on a split), never mirrored; on a phone text first.
 - **Cards.** `cards.md` builds the card, its panel, the ground and the UI on it, and wins over
@@ -411,7 +413,7 @@ tabs; tabs on a product, service or place page.
 
 **Job and use.** One feature area in depth: a paragraph, a link, a wide frame of the product doing
 it, four feature names. Two to four in a row for a platform: a chapter series is the one place
-where neighbours share a layout. Usually a two-screen section (`.g2`).
+where neighbours share a layout.
 
 **At 1440.** `.grid`, top-aligned: the h2 on `span-5`, and on `span-6 start-7` a grey paragraph
 (about 25 words) with a `.link`. 64px below, `.frame.frame--hero` with a `.stage` (16:7): the area's
@@ -456,12 +458,12 @@ and its detail ("Retry settle jobs · +4 −3"), the status chip the product's o
 the open item (24 or more for a diff) that both panes run past the frame's bottom: the frame cuts
 them under its fade, never an empty strip of pane under the last row.
 
-**At 1440.** One screen. `.grid`, top-aligned: the h2 on `span-5`, a grey paragraph (about 25
-words) with one `.link` on `span-6 start-7`. 48px below, the frame takes the rest of the screen as
-`.fill` (about 1280 x 550):
+**At 1440.** `.grid`, top-aligned: the h2 on `span-5`, a grey paragraph (about 25 words) with one
+`.link` on `span-6 start-7`. 48px below, the frame across the wrap, 560px tall (640 on a tablet,
+480 on a phone: the panes run past its foot and it cuts them):
 
 ```html
-<div class="ui app fill" role="img" aria-label="[what the window shows]" data-ui-pause-host>
+<div class="ui app" role="img" aria-label="[what the window shows]" data-ui-pause-host>
   <div class="app__pane app__pane--list"> [window fragment] </div>
   <div class="app__pane app__pane--open" data-ui-loop> [the open item's fragment] </div>
 </div>
@@ -471,14 +473,14 @@ words) with one `.link` on `span-6 start-7`. 48px below, the frame takes the res
 CSS (the whole recipe):
 
 ```css
-.app.ui { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); }
+.app.ui { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); height: 560px; margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); }
 .app > .app__pane { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
 .app > .app__pane + .app__pane { border-left: 1px solid var(--u-line); }
 .app > .app__pane > .ui-panel { width: 100%; border: 0; border-radius: 0; box-shadow: none; }
 .app > .app__pane::after { content: ""; position: absolute; inset: auto 0 0 0; height: 64px; background: linear-gradient(transparent, var(--u-bg)); pointer-events: none; }
 @media (min-width: 1024px) and (max-width: 1279px) { .app.ui { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
 @media (max-width: 1023px) {
-  .app.ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .app.ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: 640px; }
   .app > .app__pane--list { max-height: 252px; }
   .app > .app__pane--list::after { display: none; }
   .app .ui-win__side { display: none; }
@@ -486,7 +488,7 @@ CSS (the whole recipe):
   .app > .app__pane + .app__pane { border-left: 0; border-top: 1px solid var(--u-line); }
 }
 @media (max-width: 639px) {
-  .app.ui { grid-template-rows: minmax(0, 1fr); }
+  .app.ui { grid-template-rows: minmax(0, 1fr); height: 480px; }
   .app > .app__pane--list { display: none; }
   .app > .app__pane + .app__pane { border-top: 0; }
 }
@@ -540,7 +542,8 @@ unsure about."
 **Job and use.** The page's media section (rhythm `media-band`, product and service, never a place):
 one photograph across the screen as the section's layer, a headline on its calm, dark part.
 
-**At 1440.** `section.photo-band.photo-band--bleed` in `main`, one screen: the `img` as the layer,
+**At 1440.** `section.photo-band.photo-band--bleed` in `main`, at least 80% of the screen (a section
+with a layer, `system.css`): the `img` as the layer,
 then `div.photo-band__text` in a `.wrap`: an h2 of at most eight words, one line, an optional
 `.link`, on the photograph's calm side (`--left`, or `--light` with dark words on a pale crop). No
 scrim, gradient or box. A muted film (tech only) plays with a pause button.
@@ -774,9 +777,9 @@ each slot: its name, file, ratio and stand-in.
 
 **Trailer or motion video frame.** Its own section after the hero (or the world's section), the
 h2 above it, the frame across the wrap: `figure.frame.frame--photo.fit-screen` (page CSS `--ratio: 56.25%`; at 16:9 the frame across
-the wrap is about 700px tall at 1440x900, taller than one screen with its heading, so `fit-screen` (`layout.css`: the height one
-screen leaves under the heading, 720px at most, `auto` under 1024px so a tablet and a phone keep 16:9) or a `max-height` on the
-frame keeps the section one screen; the contained poster then sits letterboxed on the dark ground)
+the wrap is about 720px tall at 1440x900, so `fit-screen` (`layout.css`: about a screen with its heading, 720px at most, `auto`
+under 1024px so a tablet and a phone keep 16:9) keeps the frame and its heading on one screen; the contained poster then sits
+letterboxed on the dark ground)
 holding `<video class="frame__img" playsinline preload="none" poster="<the stand-in still>">`, the
 poster a stand-in photograph that already reads as the film's first frame (a game: the widest
 photograph of its setting; hardware: the same kind of machine at work). The play control is real or absent, never
@@ -905,8 +908,8 @@ its own. It asks for the main action once more, word for word.
 picture.
 
 **At 1440.** `.closing__cta.close--type`: the h2 (at most eight words, on the left line), set
-large from the screen's height by system.css (up to 120px), an optional `.t-small.muted` line (the
-trial terms, the opening hours), then `a.btn.btn--primary.btn--xl` at the row's foot, at most half
+large by system.css (up to 120px), an optional `.t-small.muted` line (the trial terms, the opening
+hours), then `a.btn.btn--primary.btn--xl` under them, at most half
 the `.wrap` (640 wide, 72 tall). Never across the `.wrap`: in testing that button was the most
 templated part of every page. `.btn--wide` is no longer a width, only the larger label.
 
@@ -984,8 +987,8 @@ repair slot").
 ```
 
 **At 1440.** The head on five columns (the h2 up to 88px), the form on the tinted ground on the
-right six, as tall as the row. **At 390.** The head, then the form full width. Add `.g2m` on the
-footer when the form and the links need two screens.
+right six, as tall as the row; the links row starts 128px under the form. **At 390.** The head,
+then the form full width, then the links.
 
 **Mistakes.** A booking section above it as well; a photograph under the form.
 
@@ -1016,8 +1019,8 @@ its heading (`photos.md`).
 - **form-photo, form-band**: the booking form beside a photograph (booking-form), or on a tinted
   band across the section with the head on the left five columns; **close-form**: above.
 - **statement-type, statement-short**: `<section class="section statement [statement--short]">`
-  with a `.t-label` and one `.statement__text` (system.css sizes it from the screen's height;
-  `--short` for 12 to 20 words). A moment's statement takes the moment's own class on the same `p`.
+  with a `.t-label` and one `.statement__text` (system.css sizes it; `--short` for 12 to 20
+  words; a line after it stays the lead's size). A moment's statement takes the moment's own class on the same `p`.
 - **Bands** (`tint`, `dark`, `brand`): the section's class `ground-surface`, `ground-inverse` or
   `ground-brand`; nothing else changes.
 
@@ -1104,7 +1107,7 @@ Order: hero (the open invoice as a `doc`, `notify` "Invoice 2041 paid" over its 
 app-frame (the invoice list in `window` beside the open invoice's thread with its client as `chat`),
 features-2x2 (the card ground; `notify` payments matched, `toggles` reminder rules, a lanes
 diagram for one invoice split to three ledgers, `chat` a client's question), the statement with
-`word-highlight` (its own one-screen section), split-text-left (`files` with real receipts, the lit
+`word-highlight` (its own section), split-text-left (`files` with real receipts, the lit
 ground plain), tabs-tour on the dark band, integrations (a `fanin-warehouse` diagram card with the real icons on its spokes, beside its text),
 pricing-three, faq, footer.closing. No logo row: the brief names no
 customers; no quote either.
@@ -1174,7 +1177,7 @@ The report names every stand-in and the art to replace it. A rendered sloop and 
 
 Order: the place hero (the workshop in morning light; "Pottery classes in Leipzig-Plagwitz";
 "Wheel classes on Saturdays, open studio Tuesday to Sunday from 10."; "Book a class"), visit
-(screen 2: "Karl-Heine-Straße, Plagwitz" set large across the `.wrap`, linked to the map; the week's
+(the section after the hero: "Karl-Heine-Straße, Plagwitz" set large across the `.wrap`, linked to the map; the week's
 hours; step-free entrance; the shopfront 4:3), the offer on the surface band (classes and prices as
 two open groups beside `tall-small`: a class at the wheel tall, a glazed bowl small, each linking to
 its class), the place (`trio`: the workshop, a shelf of drying pots, a hand trimming a foot ring,

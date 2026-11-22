@@ -5,9 +5,9 @@
 //   node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] --profile <dir>
 //     [--category "kettle"] [--audience "small offices"] [--place "Porto,Ribeira"]
 //     [--products "Kettle One,Kettle Two"] [--primary "Order a kettle"] [--known-brand] [--page tech|gaming|software|product|place|service]
-//     [--tech-subject] [--address-allow "Weserstraße 58|+354 555 0142"] [--rhythm-widths 1440,768,390] [--tiles-tol 24]
+//     [--tech-subject] [--address-allow "Weserstraße 58|+354 555 0142"] [--rhythm-widths 1440,768,390]
 //     [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback]
-//     [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks] [--no-tiles]
+//     [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks]
 // --profile: the Chrome profile, a folder of its own in the OS temp folder or the project's .taste-skill folder, never
 // outside the project; a relative one that leads out of the current folder (../prof) is replaced, with a warning, by
 // .taste-skill/chrome-consistency.
@@ -117,8 +117,7 @@
 //   layout     split-align (the splits set their text against their visual two ways, top and middle; a picture centred
 //              on a text column 120px+ taller, its edges lining up with nothing: WARN), grounds (more than three flat
 //              grounds across the page: base, surface, inverse; a lit ground or a photograph is no ground: WARN)
-//   screens    fold-action (the hero's main button below the first screen FAILs, a second one WARNs), one-screen (house rule,
-//              at a desktop width a section shorter than the screen shows its neighbour's heading or picture, WARN)
+//   screens    fold-action (the hero's main button below the first screen FAILs, a second one WARNs)
 //   copy       fact-agree (one day given two opening hours: two ranges FAIL, a range against "from 8 every morning" WARNs; it reads opening
 //              hours ONLY, never a product's figures: a unit alone (kg, km/h) is stated for several things on a product page, so two values
 //              of it are no disagreement, and no rule may cite fact-agree for a product figure),
@@ -167,11 +166,11 @@
 //   contact    street-number, postcode, coordinates, company-number, phone-number (a house number, a postcode beside
 //              its town, map coordinates, a register, VAT or tax number, a real-format phone or a tel: link in the
 //              text, links or JSON-LD, FAIL; --address-allow passes what the brief gives)
-//   rhythm     at 1440x900, 768x1024 and 390x844 in its own tab (one screen is exactly 900, 1024 and 844 px, the height shoot.mjs cuts its tiles at: k x 900,
-//              the fixed header over the section's top): hero-screen (SR-1: the hero alone on the first screen),
-//              section-height (SR-2: one screen or two, 2px either way, also with every answer and tab open),
-//              section-air (SR-3), one-section (SR-4: no second section peeking in), one-heading (SR-5: one heading
-//              per screen), container-edges (SR-6: equal left and right margins), row-lines (SR-7: card rows on the
+//   rhythm     at 1440x900, 768x1024 and 390x844 in its own tab: hero-screen (SR-1: the hero alone on the first screen),
+//              section-height (SR-2: a section as tall as its content and its air, never stretched into an empty band,
+//              also with every answer and tab open), section-air (SR-3: the air between two sections), one-section
+//              (SR-4: every block of <main> a section), one-heading (SR-5: one h2 a section), container-edges (SR-6:
+//              equal left and right margins), row-lines (SR-7: card rows on the
 //              container lines), split-pair (SR-8: splits top-aligned, text left, one right line), each FAIL
 //   motion     motion-layer, count-text, loop-cycle (the motion layer's marks: data-motion without motion.css, a count
 //              of no number, a year or a price, a card loop outside 2.5-4 s), hidden-content (text in view that stays
@@ -217,12 +216,7 @@
 //   added      section-height T-snap (scroll-snap-type anywhere FAILs, ST-02); a scene's section keeps its 1H/2H FAIL
 //              with the hold fix, and section-air leaves its held stage out of the gap and the fill; loop-cycle reads
 //              [data-ui-loop] fragments and [data-diagram] pulses (CSS, Web Animations and SVG <animate>); effect-kind
-//              FAILs a second [data-big-scene] and a data-fx ground beside the big scene (MO-16, MO-23)
-//   added later (the tiles block: section-tile)
-//   screens    section-tile (a section tile showing two sections: at 1440x900 a section not one or two screens tall,
-//              24px either way, whose tile or the screen a whole screen on from its top shows another section's
-//              heading, text or picture, FAIL; only its ground, 24px or more, WARN; at 390x844 only a section
-//              shorter than the screen; not told again when hero-screen, section-height or one-section tells it)
+//              FAILs a second [data-big-scene] and a second data-fx ground beside the big scene (MO-16, MO-23)
 //   added later (a font the page asks for that never loads)
 //   type       font-load (the first family of each stack the type tokens, the h1, the h2s and the body text ask for: a web
 //              font no loaded face answers once the fonts are ready, a missing or misspelt font link or a family nothing
@@ -264,6 +258,17 @@
 //              walked to its foot, collide and tap-size on every screen, the first screen's fold (fold-card, a WARN at
 //              320), and every block that runs past the screen's edge (a body clip hides the sideways scroll, never the
 //              cut) told as off-viewport with its crop
+//   changed in 2.5.3 (a 30-site test: sections held to one or two screens stretched short content into empty bands,
+//              and builders cut or hid content to fit; three pages lost every section photograph to a frame with no ratio)
+//   screens    a section is as tall as its content and its air: section-height (SR-2) FAILs a section stretched past
+//              its content, an empty band beyond its padding or inside it a third of its height or more (a sixth WARN),
+//              and keeps its fit, snap and click tests; section-air (SR-3) FAILs too little air between two sections'
+//              content (under 128px, 96 on a phone) and too much (over 600, 560); one-section (SR-4) keeps only its
+//              <main> test and one-heading (SR-5) only one h2 a section; the screen grid, the screen views, the share
+//              of screens with two headings, the fill share, the place page's length, one-screen and the tiles block
+//              (section-tile) are gone; empty-area counts a section's padding as air up to a quarter of a screen a side
+//   visual     visual-empty also FAILs a picture that renders under 40px tall where its own ratio at its width would be
+//              120px or more (a .frame with no ratio and its photograph laid over it: 0px)
 // Then the first screen at 1280, 1152, 1024, 896 and 768 for cut text, spills, overflow and nav faults (--no-sweep
 // skips it). Chrome runs headless on the CPU (--disable-gpu --use-angle=swiftshader), one Chrome at a time, and never
 // lets a page hold more than 4 live WebGL contexts: past 4 it frees the oldest one far off screen, or refuses the new
@@ -312,7 +317,7 @@ const visualMod = (() => {
 //              diagram mount that never drew, FAIL)
 //   effects    effect-kind (by the page's kind: --type, data-type, page-type, page-kind=place, site-kind, taste-kind
 //              (alias), title; any effect on a place, a service or a product without a technical subject FAILs; tech,
-//              gaming and software: a second big scene or a data-fx ground beside it FAILs (MO-16, MO-23); WARN above
+//              gaming and software: a second big scene or two data-fx grounds beside it FAIL (MO-16, MO-23); WARN above
 //              4 live WebGL contexts, 8 created, one big scene, two scroll moments, or no reduced-motion or phone branch)
 // Captions: a figcaption in a figure that holds a visual (told once, at the first width); under a visual (top within 32px
 // of its bottom, overlapping 40% of the narrower width): a line whose class names it a caption, a line of 2 rows and 180
@@ -343,8 +348,9 @@ const visualMod = (() => {
 // particle rate and the drift walk are read at the first width; the WebGL and mount counts at every width, the largest
 // kept, so a fault that only comes at a later width is told there.
 // Big scenes are [data-big-scene] ([data-scene] is the objects kit's photo scene); a scroll moment is [data-scroll-moment] or
-// [data-moment]. MO-16 and MO-23: a second [data-big-scene] FAILs, and so does a data-fx ground beside the big scene
-// (outside the scroll moments); more big scenes or large WebGL canvases without those marks stay a WARN.
+// [data-moment]. MO-16 and MO-23: a second [data-big-scene] FAILs, and so does a second data-fx ground beside the big
+// scene (outside the scroll moments; the one effect the plan deals is allowed); more big scenes or large WebGL canvases
+// without those marks stay a WARN.
 // Not ported (consistency.mjs has them): the shader lint (shader-lint), webgl-fallback (its gl-fallback pass), and the
 // cards and sections that animate in on scroll (its scroll-reveal: on the walked tab they have already been revealed).
 
@@ -356,8 +362,10 @@ const checks = [
   { id: 'effect-kind', sev: 'FAIL', what: 'an effect on a place, service or plain product page beyond one quiet treatment, or a scene that does not fit its kind; past 4 live WebGL contexts, one scene or three scroll moments on a tech page' },
   { id: 'hero-enter', sev: 'WARN', what: 'a hero that does not enter on load: no data-enter on it, or no head line setting html.m-enter (data-enter="off" on a hero holding a big scene is its entrance)' },
   { id: 'moment-none', sev: 'WARN', what: 'a page with no dealt moment (every kind carries two, three on a long page); the gate holds it as a FAIL' },
+  { id: 'moment-text', sev: 'FAIL', what: 'a dealt moment whose copy misses the count its meta.json "text" gives (liquid-type 2-6 words, letters-assemble 2-5, marquee-row 6-14 items...); lines-rise\'s 2-3 lines at a desktop width WARN' },
 ];
 const fixes = {
+  'moment-text': 'write the copy to the moment\'s count (moments.mjs pick prints it; assets/moments/<id>/meta.json "needs" and "text"), or deal again for a moment that fits the copy',
   'visual-caption': 'take the line away: no caption or description under, over or on any image, render or visual; a licence credit goes in one footer line',
   'visual-empty': 'make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame',
   'hero-enter': 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter (motion.md: the entrance)',
@@ -374,9 +382,10 @@ const summary = [
   '             diagram mount that never drew, FAIL)',
   '  effects    effect-kind (by the page\'s kind: --type, data-type, page-type, page-kind=place, site-kind, taste-kind (alias), title;',
   '             any effect on a place, a service or a product without a technical subject FAILs; tech, gaming and',
-  '             software: a second big scene ([data-big-scene]) or a data-fx ground beside it FAILs (MO-16, MO-23); WARN',
+  '             software: a second big scene ([data-big-scene]) or two data-fx grounds beside it FAIL (MO-16, MO-23); WARN',
   '             above 4 live WebGL contexts, 8 created, one big scene, two scroll moments, or no reduced-motion or phone branch;',
-  '             every kind: moment-none, a page with no dealt moment, WARNs)',
+  '             every kind: moment-none, a page with no dealt moment, WARNs; moment-text, a kit moment whose copy misses',
+  '             the count in its meta.json "text", FAILs, lines-rise\'s lines at a desktop width WARN)',
   '  motion     hero-enter (every kind: a hero without data-enter, or a page without the head line that sets html.m-enter, WARN;',
   '             gate.mjs holds hero-enter and moment-none as FAILs)',
 ].join('\n');
@@ -393,7 +402,7 @@ const KIND_RULE = 'shader grounds fit tech, gaming and software pages and a prod
 // picture-develops (not dealt) is an effect there
 const MOMENT_PAGES = (() => {
   const o = {};
-  try { for (const m of JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []) o[m.id] = { pages: m.retired ? [] : m.pages || [] }; } catch {}
+  try { for (const m of JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []) o[m.id] = { pages: m.retired ? [] : m.pages || [], text: m.text && typeof m.text === 'object' ? m.text : null }; } catch {}
   return o;
 })();
 const momentFits = (m, kind) => { const x = MOMENT_PAGES[m.id]; return !!x && x.pages.includes(kind) && !(m.id === 'picture-develops' && /print/i.test(m.look || '')); };
@@ -837,8 +846,14 @@ function visualProbe(o) {
     if (!vis(img)) continue;
     const src = img.currentSrc || img.getAttribute('src') || '';
     const r = img.getBoundingClientRect(), d = r.width >= 2 && r.height >= 2 ? doc(r) : img.parentElement ? doc(img.parentElement.getBoundingClientRect()) : null;
-    const why = !src ? 'no source' : img.complete && img.naturalWidth === 0 ? 'broken' : !img.complete ? 'loading' : '';
-    if (why) out.broken.push({ sel: sel(img), src: src.slice(0, 120), file: file(src), why, doc: d });
+    let why = !src ? 'no source' : img.complete && img.naturalWidth === 0 ? 'broken' : !img.complete ? 'loading' : '';
+    // folded flat: under 40px tall where its own ratio at its width (its box's, or its parent's when it has none) would
+    // be 120px or more (a .frame with no ratio and its photograph laid over it is 0px tall); a logo or an icon drawn
+    // small at its own ratio is not
+    const nw = img.naturalWidth || +img.getAttribute('width') || 0, nh = img.naturalHeight || +img.getAttribute('height') || 0;
+    const ow = r.width >= 2 ? r.width : img.parentElement ? img.parentElement.getBoundingClientRect().width : 0;
+    if (!why && nw && nh && r.height < 40 && ow >= 80 && (ow * nh) / nw >= 120) why = 'flat';
+    if (why) out.broken.push({ sel: sel(img), src: src.slice(0, 120), file: file(src), why, doc: d, h: Math.round(r.height), w: Math.round(ow) });
   }
   const urls = new Map();
   for (const el of document.body.querySelectorAll('*')) {
@@ -876,6 +891,44 @@ function cleanupProbe() {
   return 1;
 }
 // the page's kind marks, the effect parts on the page, the WebGL guard's counts and the scripts the browser fetched
+// moment-text: for each kit moment on the page, the count its meta.json "text" names, read on the built page: the words of
+// its heading (the aria-label a split moment keeps, else the text), its rendered lines (a desktop width only), or its items
+function momentTextProbe(rules) {
+  const out = [], wide = (document.documentElement.clientWidth || innerWidth) >= 1000;
+  const words = (s) => String(s || '').split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  const lineCount = (el) => {
+    const tops = [], rg = document.createRange(), lh = parseFloat(getComputedStyle(el).lineHeight) || parseFloat(getComputedStyle(el).fontSize) * 1.2 || 20;
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+      if (!/\S/.test(n.data) || (n.parentElement && n.parentElement.closest('[aria-hidden="true"]') && !n.parentElement.closest('.mo-w, .mo-c'))) continue;
+      rg.selectNodeContents(n);
+      for (const r of rg.getClientRects()) if (r.width >= 1 && r.height >= 1 && !tops.some((t) => Math.abs(t - r.top) < lh * 0.5)) tops.push(r.top);
+    }
+    return tops.length;
+  };
+  for (const rule of rules || []) {
+    for (const host of document.querySelectorAll(`[data-moment="${rule.id}"]`)) {
+      if (host.parentElement && host.parentElement.closest('[data-moment]')) continue;
+      const key = ['words', 'lines', 'items'].find((k) => Array.isArray(rule[k]));
+      if (!key) continue;
+      let n = 0, el = host, what = '';
+      if (key === 'items') { const all = [...host.querySelectorAll(rule.sel)].filter((x) => !x.closest('[aria-hidden="true"]') || x.closest('.mo-mq__track:not(.mo-mq__clone)')); n = all.length; what = `its items (${rule.sel})`; }
+      else {
+        // the selectors in the order meta.text lists them (the moment's own class first, then a plain heading)
+        el = null;
+        if (rule.sel === 'self') el = host;
+        else for (const s of rule.sel.split(',').map((x) => x.trim()).filter(Boolean)) { el = host.matches(s) ? host : host.querySelector(s); if (el) break; }
+        if (!el) continue;
+        what = `its ${el.tagName.toLowerCase()}`;
+        n = key === 'words' ? words(el.getAttribute('aria-label') || el.textContent) : lineCount(el);
+      }
+      const r = el.getBoundingClientRect();
+      out.push({ id: rule.id, key, range: rule[key], n, what, wide, sel: (el.id ? '#' + el.id : el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/)[0] : '')) + ` in [data-moment="${rule.id}"]`, text: String(el.getAttribute('aria-label') || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60), doc: r.width >= 1 && r.height >= 1 ? { left: Math.round(r.left), top: Math.round(r.top + scrollY), width: Math.round(r.width), height: Math.round(r.height) } : null });
+    }
+  }
+  return out;
+}
+
 function kindProbe() {
   const meta = (n) => { const m = document.querySelector(`meta[name="${n}"]`); return m ? String(m.getAttribute('content') || '').trim().toLowerCase() : ''; };
   const q = (s) => document.querySelectorAll(s).length;
@@ -1100,7 +1153,7 @@ async function emptyFindings(ctx, P, broken) {
     }
   }
   ctx.log(`${P.cands.length} visuals, ${todo.length - want.length} rich at the first width not shot again, ${screens.length} screens, ${sampled} shot, ${F.length} flagged`);
-  const B = broken.map((b) => put(ctx, { check: 'visual-empty', sev: 'FAIL', id: 0, sel: b.sel, text: b.file || '', msg: b.bg ? `the background picture ${b.file || b.src} failed to load: the frame shows only its ground` : b.why === 'no source' ? 'the picture has no source: its frame shows empty' : b.why === 'loading' ? `the picture ${b.file} has still not loaded after the page was walked: its frame shows empty` : `the picture ${b.file || b.src} is broken (it loaded nothing): its frame shows empty` }, b.doc));
+  const B = broken.map((b) => put(ctx, { check: 'visual-empty', sev: 'FAIL', id: 0, sel: b.sel, text: b.file || '', msg: b.bg ? `the background picture ${b.file || b.src} failed to load: the frame shows only its ground` : b.why === 'no source' ? 'the picture has no source: its frame shows empty' : b.why === 'loading' ? `the picture ${b.file} has still not loaded after the page was walked: its frame shows empty` : b.why === 'flat' ? `the picture ${b.file || b.src} renders ${b.h}px tall on a ${b.w}px width, so it does not show: its frame has no height (a .frame needs a ratio, or a picture laid over it needs a box that is tall)` : `the picture ${b.file || b.src} is broken (it loaded nothing): its frame shows empty` }, b.doc));
   return capped([...B, ...F], (f) => f.text || f.sel);
 }
 
@@ -1236,11 +1289,12 @@ function effectFindings(ctx, K) {
     if (M.guard && M.peak > 4) add('peak', 'WARN', `the page asks for ${M.peak} WebGL contexts live at once (${[...new Set(M.at)].slice(0, 5).join(', ')}): at most 4 on ${k} (house rule)`, 'mount each effect when it comes on screen and destroy it off screen: at most 4 live WebGL contexts');
     // the threshold is 16
     if (M.guard && M.created > 8) add('created', 'WARN', `the page creates ${M.created} WebGL contexts in all (released ones count too): the browser's limit is about 16`, 'reuse one context per effect instead of making a new one each time it mounts');
-    // MO-16, MO-23: the big scene is the page's one effect: a second [data-big-scene], or a data-fx ground beside it (outside
-    // the one or two scroll moments), FAILs; more big scenes or large WebGL canvases without those marks stay a WARN
+    // MO-16, MO-23 (2.5.3): a second [data-big-scene] FAILs, and so do two or more data-fx grounds beside the big scene
+    // (outside the scroll moments): start.mjs plan deals one effect for the hero (a game's on a band) beside a scene that
+    // is not the hero, and that one is allowed; more big scenes or large WebGL canvases without those marks stay a WARN
     const bigTags = Math.max(sig.dataBigScene || 0, M.bigScene || 0);
     if (bigTags > 1) add('scenes', 'FAIL', `${bigTags} big scenes ([data-big-scene]) on ${k}: one at most (house rule; MO-23)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
-    else if (bigTags === 1 && (M.fxBeside || 0) > 0) add('scenes', 'FAIL', `a big scene and ${M.fxBeside} effect ground${M.fxBeside > 1 ? 's' : ''} (data-fx) beside it on ${k}: the big scene is the page's one effect (MO-16, MO-23); only the one or two scroll moments may hold their own`, 'drop the data-fx ground (a plain or photographed ground in its place), or drop the big scene and keep the ground', K.mount);
+    else if (bigTags === 1 && (M.fxBeside || 0) > 1) add('scenes', 'FAIL', `a big scene and ${M.fxBeside} effect grounds (data-fx) beside it on ${k}: one dealt effect beside the scene at most (MO-16, MO-23); only the scroll moments may hold their own`, 'keep the one dealt effect (start.mjs plan) and give the other grounds a plain or photographed ground', K.mount);
     else if (scenes > 1) add('scenes', 'WARN', `${scenes} big scenes on ${k} (data-big-scene or photo data-scene ${sceneTags}, data-print ${printTags}, large WebGL canvases that are no data-fx ground ${M.guard ? M.big : 0}): one is allowed (house rule)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
     if (scrollMoments > 3) add('moments', 'WARN', `${scrollMoments} scroll-driven section moments on ${k} (data-scroll-moment or data-moment ${momentsTag}, sections moving with the scroll ${linkedSections.length}): two or three are allowed (house rule)`, 'keep the two or three dealt moments and let the other sections scroll plainly', linkedSections[0] || K.moment);
     if (any && !sig.reducedMotion) add('reduced', 'WARN', 'the page has effects but no prefers-reduced-motion branch in its scripts or styles: reduced motion must show the finished still', 'under prefers-reduced-motion: reduce, show each effect\'s finished still and stop its motion');
@@ -1276,6 +1330,19 @@ async function run(ctx) {
       }
     }
     if (K && pageFx && pageFx.url === ctx.url && pageFx.kind) F.push(...((await ctx.safe('effect-kind', () => effectFindings(ctx, K))) || []));
+    // moment-text, once a page: each kit moment's copy against the counts its meta.json "text" gives
+    if (K && ctx.first) {
+      const rules = [...new Set((K.moments || []).filter((m) => !m.nested && MOMENT_PAGES[m.id] && MOMENT_PAGES[m.id].text).map((m) => m.id))].map((id) => ({ id, ...MOMENT_PAGES[id].text }));
+      const got = rules.length ? (await ctx.safe('moment-text', () => tab.eval(call(momentTextProbe, rules), 15000))) || [] : [];
+      for (const g of got) {
+        const [lo, hi] = g.range;
+        if (g.n >= lo && g.n <= hi) continue;
+        if (g.key === 'lines' && !g.wide) continue;
+        const f = { check: 'moment-text', sev: g.key === 'lines' ? 'WARN' : 'FAIL', id: 0, sel: g.sel, text: g.text, msg: `${g.id} wants ${lo} to ${hi} ${g.key}${g.key === 'lines' ? ' at a desktop width' : ''} in ${g.what}; the page has ${g.n}${g.n > hi ? ': too many for the moment to read' : ': too few for the moment to show'} (assets/moments/${g.id}/meta.json)`, fix: fixes['moment-text'] };
+        put(ctx, f, g.doc);
+        F.push(f);
+      }
+    }
   } finally {
     // the page as the walk left it: bars shown, the kept elements dropped, scrolled back
     await tab.eval(call(cleanupProbe)).catch(() => {});
@@ -1310,7 +1377,9 @@ function selfTest(log = () => {}) {
   for (const [name, pass] of v2) { if (!pass) ok = false; log(`${pass ? 'ok  ' : 'FAIL'} ${name}`); }
   return ok;
 }
-  return { id, phase, checks, fixes, summary, flags, quick, run };
+  // the kit's own parts, read by the runner's motion block (dealt moments and scenes) and effects-fit
+  const kit = { MOMENT_PAGES, readMeta, sceneFitsKind, isTreatment };
+  return { id, phase, checks, fixes, summary, flags, quick, run, kit };
 })();
 
 // ---------------------------------------------------------------- address: kept as one block
@@ -1773,18 +1842,19 @@ async function run(ctx) {
 
 // ---------------------------------------------------------------- rhythm: kept as one block
 const rhythmMod = (() => {
-// rhythm.mjs: one section per screen and the same left and right edges all the way down (house rule), as the
+// rhythm.mjs: the section rhythm (the hero alone on the first screen, then sections as tall as their content with the
+// same air round each) and the same left and right edges all the way down (house rule), as the
 // section-rhythm rules SR-1 to SR-8 read them (references/layout-v4.md and SKILL.md, house rules CK-15 to CK-33): every rule,
 // threshold and exemption of the original rhythm check is kept, with the departures listed at the end of this comment.
 //   screens    hero-screen (SR-1: the hero ends at the fold, 1px either way, its content between the nav and 24px above
 //              the fold, nothing of the next section on the first screen, FAIL), section-height (SR-2: every other
-//              section one screen or two, 2px, 3-8px WARN; tops on the screen grid; content above the bottom padding,
-//              again with every answer and tab open; a place page 3 to 6 screens, FAIL), section-air (SR-3: 128-480px
-//              between the content of two sections, 112-420 on a phone, 64-600 and 56-560 WARN; fill 55%, 40% WARN; no
-//              divider rules, FAIL), one-section (SR-4: at every stride and section top another section peeks 8px at
-//              most, 24px WARN, no whole heading of it; only sections in <main>, no bands, FAIL), one-heading (SR-5:
-//              one h2 per section, none in the hero; two sections' headings whole on one screen at 3% of positions,
-//              5% on a phone, FAIL); at 1440x900, 768x1024 and 390x844 (--rhythm-widths), --no-rhythm-expand
+//              section as tall as its content and its air: the empty band beyond its padding, each side's padding
+//              counted as air up to 240px (144 on a phone), or the largest empty strip inside it, a third of its
+//              height or more FAIL, a sixth and 96px or more WARN; its content above the bottom padding, again with
+//              every answer and tab open; no scroll snapping, FAIL), section-air (SR-3: 192-480px between the content
+//              of two sections, 128-420 on a phone, 128-600 and 96-560 WARN, else FAIL; no divider rules, FAIL),
+//              one-section (SR-4: only sections in <main>, no bands, FAIL), one-heading (SR-5: one h2 per section,
+//              none in the hero, FAIL); at 1440x900, 768x1024 and 390x844 (--rhythm-widths), --no-rhythm-expand
 //   layout     container-edges (SR-6: one container, equal margins 64-120px, 16-24px on a phone, the page's own --gut up to 120px on a tablet under 1024px; the page shell;
 //              nothing past its lines; text on its left line or one split line; no sideways scroll; wide pictures edge
 //              to edge; a page with no viewport meta tag, FAIL), row-lines (SR-7: card rows on the container lines at
@@ -1803,14 +1873,14 @@ const rhythmMod = (() => {
 // before it decides the status at its own width and says so as a probe error.
 // Then, when the page has something to open, the expansion pass: SR-2 read again at the top as the baseline, every details
 // opened and every [aria-expanded=false] and [role=tab] in main clicked once (element.click(), links and submits held),
-// SR-2's fit and grid read again, and every height a click changed against that baseline told (CK-06). Each finding is
+// SR-2's fit read again, and every height a click changed against that baseline told (CK-06; a .faq--fold answer is
+// left closed: it opens on a click by design). Each finding is
 // cropped from a screen the module shoots itself (red: the element; dashed blue: the line or box it is measured against).
 // What is told: a test's offenders worst first (furthest outside the band), three a test with the others named; a check's
 // 8 places a width go round its failing tests (FAIL tests first, one each, then a second each), and a test left out is
 // named with its count. A part that moves as it is measured (a running finite animation, a [data-scene], a sticky held
-// stage) is told as a WARN only where the test reads a position (SR-1 T2 and T4, SR-4's screens, SR-5 T2, SR-6 T2, T3, T4
-// and T6, SR-7's rows and right line, SR-8); a section's height, its grid top, the page shell, sideways scroll and a
-// place page's length stay FAIL. A finding carries rule (its SR test, as 'SR-2 T-fit'); its msg ends in the SR number.
+// stage) is told as a WARN only where the test reads a position (SR-1 T2 and T4, SR-6 T2, T3, T4 and T6, SR-7's rows
+// and right line, SR-8); a section's height, the page shell and sideways scroll stay FAIL. A finding carries rule (its SR test, as 'SR-2 T-fit'); its msg ends in the SR number.
 // Not measured: a width that cannot be read (the page did not load, the read failed or ran out of time, a rule broke)
 // gives one WARN a check it could not read, on body: 'not measured at <w>px: <why>', and calls ctx.notChecked(ids, why)
 // when the host gives one (the hook the pass block adds: each id pushed onto report.notChecked with its why). A page
@@ -1827,7 +1897,7 @@ const rhythmMod = (() => {
 // columns repeated in three or more sibling rows of one class are a table's rows, not splits; a text block on a card laid
 // over a picture (a boxed, absolute ancestor) and a list item whose words follow its icon are not held to the left lines.
 // Not checked (as in rhythm-check.mjs): SR-9 and SR-10's units; the --lang flags of CK-04; clip-path, mask and
-// transforms in clip-aware boxes, and box-shadow in the SR-4 peek; an li ::marker (only an svg or img icon first);
+// transforms in clip-aware boxes; an li ::marker (only an svg or img icon first);
 // the SR-4 intro paragraph is the section's first p outside a row item or split column; stacked phone columns are no
 // split, and the CK-30 600px closing-button exemption; SR-1's three-line h1, notice line and place positions; a flex
 // or grid box half the container wide with 2+ items each 15% of it is read as a row (an approximation).
@@ -1836,20 +1906,20 @@ const id = 'rhythm';
 const phase = 'pass';
 const checks = [
   { id: 'hero-screen', sev: 'FAIL', what: 'SR-1: the hero ends at the fold (1px either way), its content between the nav and 24px above the fold, nothing below it on the first screen' },
-  { id: 'section-height', sev: 'FAIL', what: 'SR-2: every other section one screen or two (2px; 3-8px WARN), tops on the screen grid, content above the bottom padding, also with every answer and tab open' },
-  { id: 'section-air', sev: 'FAIL', what: 'SR-3: 128-480px between the content of two sections (112-420 on a phone; WARN 64-600, 56-560), content filling 55% (40% WARN), no divider rules' },
-  { id: 'one-section', sev: 'FAIL', what: 'SR-4: a screen shows one section: another peeks 8px at most (24px WARN) and shows no whole heading; only sections in <main>, no bands' },
-  { id: 'one-heading', sev: 'FAIL', what: "SR-5: one h2 per section, none in the hero; two sections' headings whole on one screen at 3% of scroll positions at most (5% on a phone)" },
+  { id: 'section-height', sev: 'FAIL', what: 'SR-2: every other section as tall as its content and its air: an empty band beyond its padding, or inside it, a third of its height or more (a sixth WARN); content above the bottom padding, also with every answer and tab open; no scroll snapping' },
+  { id: 'section-air', sev: 'FAIL', what: 'SR-3: 192-480px between the content of two sections (128-420 on a phone; WARN 128-600, 96-560), no divider rules' },
+  { id: 'one-section', sev: 'FAIL', what: 'SR-4: every block of <main> a <section>, no bands inside one' },
+  { id: 'one-heading', sev: 'FAIL', what: 'SR-5: one h2 per section, none in the hero' },
   { id: 'container-edges', sev: 'FAIL', what: 'SR-6: one container, equal margins (64-120px, 16-24px on a phone), the page shell, nothing past its lines, one or two left lines, no sideways scroll, wide pictures edge to edge; a viewport meta tag' },
   { id: 'row-lines', sev: 'FAIL', what: 'SR-7: card rows on the container lines at one height, no sideways scroller or cut carousel, no cut row item, nothing past the right line' },
   { id: 'split-pair', sev: 'FAIL', what: 'SR-8: splits top-aligned, text left, every right column on one line (k 5, 6 or 7; 6 on a place page), edge to edge' },
 ];
 const fixes = {
   'hero-screen': 'make the hero exactly one screen (height: 100svh) with its content between the nav and 24px above the fold',
-  'section-height': 'set every section after the hero to one screen or two (height: calc(var(--h,1) * 100vh)) and fit its content above --padb',
-  'section-air': 'keep 128-480px of air between sections (--padt, --padb), fill each section to 55% or merge it into the one above, and drop divider rules',
-  'one-section': 'make each section exactly one or two screens so a screen shows one section; every block of <main> a <section>, no bands inside one',
-  'one-heading': 'give each section one h2, first in its .wrap, and the hero only its h1, so headings sit a screen apart',
+  'section-height': 'let every section after the hero be as tall as its content and its air (system.css pads it --padt and --padb; no height, min-height or padding of its own) and keep its content inside it',
+  'section-air': "keep the system's air between sections (--padb under one, --padt over the next) and drop divider rules",
+  'one-section': 'put every block of <main> in a <section>, and give a band its own section instead of a ground inside one',
+  'one-heading': 'give each section one h2, first in its .wrap, and the hero only its h1',
   'container-edges': 'put everything on one .wrap: the same margin left and right (64-120px, 16-24px on a phone), text on its left line or the one split line',
   'row-lines': "start a row's first item on the container's left line and end its last on the right line, all one height, nothing scrolling sideways",
   'split-pair': 'top-align every split, text left and visual right, the right column on one shared line, edge to edge on the container',
@@ -1857,13 +1927,13 @@ const fixes = {
 const summary = [
   '  screens    hero-screen (SR-1: the hero ends at the fold, 1px either way, its content between the nav and 24px above',
   '             the fold, nothing of the next section on the first screen, FAIL), section-height (SR-2: every other',
-  '             section one screen or two, 2px, 3-8px WARN; tops on the screen grid; content above the bottom padding,',
-  '             again with every answer and tab open; a place page 3 to 6 screens, FAIL), section-air (SR-3: 128-480px',
-  '             between the content of two sections, 112-420 on a phone, 64-600 and 56-560 WARN; fill 55%, 40% WARN; no',
-  '             divider rules, FAIL), one-section (SR-4: at every stride and section top another section peeks 8px at',
-  '             most, 24px WARN, no whole heading of it; only sections in <main>, no bands, FAIL), one-heading (SR-5:',
-  '             one h2 per section, none in the hero; two sections\' headings whole on one screen at 3% of positions,',
-  '             5% on a phone, FAIL); at 1440x900, 768x1024 and 390x844 (--rhythm-widths), --no-rhythm-expand',
+  '             section as tall as its content and its air: an empty band beyond its padding (240px a side counted as',
+  '             air, 144 on a phone) or inside it, a third of its height or more FAIL, a sixth WARN; content above the',
+  '             bottom padding, again with every answer and tab open; no scroll snapping, FAIL), section-air (SR-3:',
+  '             192-480px between the content of two sections, 128-420 on a phone, 128-600 and 96-560 WARN; no',
+  '             divider rules, FAIL), one-section (SR-4: only sections in <main>, no bands, FAIL), one-heading (SR-5:',
+  '             one h2 per section, none in the hero, FAIL); at 1440x900, 768x1024 and 390x844 (--rhythm-widths),',
+  '             --no-rhythm-expand',
   '  layout     container-edges (SR-6: one container, equal margins 64-120px, 16-24px on a phone, the own --gut up to 120px under 1024px; the page shell;',
   '             nothing past its lines; text on its left line or one split line; no sideways scroll; wide pictures edge',
   '             to edge; a page with no viewport meta tag, FAIL), row-lines (SR-7: card rows on the container lines at',
@@ -2090,6 +2160,8 @@ function measure(opt) {
   const moveMemo = new Map();
   // a big scene ([data-big-scene]; [data-scene] is the objects kit's photo scene, no big scene) or a dealt scroll moment ([data-scroll-moment], [data-moment])
   const SCENEQ = '[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]';
+  // the kit's dealt parts that are uneven on purpose: the offset pair (.comp-offset) and marquee-row's running track
+  const KIT_UNEVEN = '.comp-offset, [data-moment="marquee-row"]';
   const sceneSec = (s) => s.el.matches(SCENEQ) || !!s.el.querySelector(SCENEQ);
   const movingOf = (el) => {
     if (!el || el.nodeType !== 1 || el === body || el === de) return null;
@@ -2283,6 +2355,9 @@ function measure(opt) {
     // the rows and columns inside a drawn mock (a file list, a window's rows) are the mock's own layout, not the page's
     // card rows or splits: its frame is judged, not them (seen on a test page)
     if (G.el.closest('[data-ui], .ui, [data-ui-loop], [data-m-loop], [data-diagram]')) continue;
+    // the kit's own dealt parts that are uneven by design: the offset pair (start.mjs deals it; its second figure sits
+    // lower and smaller) and the running row of marquee-row (its track runs past its rail on purpose)
+    if (G.el.closest(KIT_UNEVEN)) continue;
     const items = G.kids.filter((k) => !isCtl(k)).map((k) => ({ el: k, r: rectOf(k) }));
     const nest = nestAnc(G.el, G.z);
     const Cz = C(G.z), cw = Cz.r - Cz.l;
@@ -2363,8 +2438,26 @@ function measure(opt) {
     try { for (const t of fn()) tests.push(Object.assign({ rule: rid }, t)); } catch (e) { tests.push({ rule: rid, id: 'error', verdict: 'ERROR', msg: 'checker error: ' + (e && e.message), offenders: [], more: 0 }); }
   };
   const outside = (i) => rendered.filter((it) => it.z === i && (it.r.t < S[i].top - 1 || it.r.b > S[i].bottom + 1));
-  const padbTok = cssVar('--padb', phone ? 48 : 72);
-  const isG2 = (s) => (s.el.classList.contains('g2') || (phone && s.el.classList.contains('g2m'))) && s.h > 1.5 * H;
+  const padbTok = cssVar('--padb', phone ? 96 : 160);
+  // a section whose own layer (a photograph or ground edge to edge behind its words) passes SR-6 T1 is filled by it
+  const layered = (s) => [...s.el.children].some((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && layerOf(TU(k) === 'PICTURE' && k.querySelector('img') ? k.querySelector('img') : k) && !layerProblems(k, s).length);
+  // a section's content: its boxes in its .wrap (lines of text, pictures, controls) and every box with its own fill
+  // or shadow there (a tinted panel or a card shows to its edges; one over 60% of the section's area is ground), with
+  // the vertical runs they cover merged (iv)
+  const extentOf = (s) => {
+    let bx = boxesBySec[s.i]; if (s.wrap) bx = bx.filter((x) => s.wrap.contains(x.el));
+    if (!bx.length) return null;
+    const runs = bx.map((x) => [x.r.t, x.r.b]);
+    for (const d of decoBySec[s.i]) {
+      if (d.el === s.el || d.el === s.wrap || (s.wrap && !s.wrap.contains(d.el))) continue;
+      const ds = cs(d.el);
+      if (!(alpha(ds.backgroundColor) > 0.03 || (ds.backgroundImage && ds.backgroundImage !== 'none') || (ds.boxShadow && ds.boxShadow !== 'none'))) continue;
+      if ((d.r.b - d.r.t) * (d.r.r - d.r.l) > 0.6 * s.h * (s.r - s.l)) continue;
+      runs.push([d.r.t, d.r.b]);
+    }
+    const iv = merge(runs);
+    return { t: iv[0][0], b: iv[iv.length - 1][1], iv, bx };
+  };
   const firstLeft = (el) => {
     if (TU(el) === 'LI') { const ic = el.querySelector(':scope > svg, :scope > img, :scope > span > svg, :scope > i'); if (ic && visible(ic) && wd(rectOf(ic)) >= 2) return rectOf(ic).l; }
     const r2 = document.createRange(); r2.selectNodeContents(el);
@@ -2417,85 +2510,78 @@ function measure(opt) {
     return T;
   });
 
-  // ---- SR-2 every other section is exactly 1H or 2H, on the H grid, its content fits
+  // ---- SR-2 every other section is as tall as its content and its air: never stretched into an empty band
   run('SR-2', () => {
-    const T = [], hOff = [], gOff = [], fOff = [];
-    let hv = 'PASS', gv = 'PASS';
-    // T-height: within 2px of H or 2H PASS, 3-8px WARN, else FAIL (the hero aside, the closing counted)
+    const T = [], hOff = [], fOff = [];
+    let hv = 'PASS';
+    // T-height: the empty band beyond the section's own padding (each side's padding counted as air up to cap: padding
+    // past it, a --padb of 480px under four words, is empty band) and the largest empty strip between two pieces of
+    // its content, as a share of its height: a third or more FAIL, a sixth and 96px or more WARN. The hero (SR-1), a
+    // scene or a dealt moment (they hold their stage at the heights their own modules set) and a section its layer
+    // fills are left out
+    const cap = phone ? 144 : 240;
     for (const s of S) {
-      if (s.isHero) continue;
-      // photo-chapters is (hold + 1) screens live: three for three chapters, four for four or five (moments.md)
-      const ks = s.el.matches('[data-moment="photo-chapters"][data-moment-mounted]') || s.el.querySelector('[data-moment="photo-chapters"][data-moment-mounted]') ? [1, 2, 3, 4] : [1, 2];
-      const k0 = ks.reduce((a, k) => (Math.abs(s.h - k * H) < Math.abs(s.h - a * H) ? k : a), ks[0]);
-      const d = Math.abs(s.h - k0 * H);
-      const v = d <= 2 ? 'PASS' : d <= 8 ? 'WARN' : 'FAIL';
-      const target = k0 * H, end = s.top + target;
-      // a scene's section is held to 1H or 2H too (ST-02, MO-10): its height is the fault, so it stays a FAIL with the
-      // scene's own fix, never softened as a moving part
-      const sc = sceneSec(s);
-      if (v !== 'PASS') hOff.push(off(s.el, { l: SX, r: SX + W, t: Math.min(s.bottom, end), b: Math.max(s.bottom, end) }, `the ${sc ? 'scene\'s ' : ''}section is ${px(s.h)}px tall (${rnd(s.h / H)} screens), ${px(d)}px ${s.h > target ? 'over' : 'short of'} ${['one screen', 'two screens', 'three screens', 'four screens'][k0 - 1]} (${target}px): every section after the hero is one screen or two, 2px either way${sc ? '; a pinned scene is (hold + 1) screens tall, so write data-big-scene-opts=\'{"hold": 1}\' (two screens) and keep --h on the section' : ''}`, { sev: v, d, ref: [lineY(end)], at: Math.round((s.bottom + end) / 2 - H / 2), ...(sc ? { moving: null } : {}) }));
+      if (s.isHero || sceneSec(s) || layered(s)) continue;
+      const E = extentOf(s);
+      if (!E) { hOff.push(off(s.el, secR(s), `the section shows no content: ${px(s.h)}px of ground`, { sev: 'FAIL', d: 100 })); hv = 'FAIL'; continue; }
+      const st = cs(s.el), airT = Math.min(parseFloat(st.paddingTop) || 0, cap), airB = Math.min(parseFloat(st.paddingBottom) || 0, cap + (s.isClosing ? barH : 0));
+      const above = Math.max(0, E.t - s.top - airT), below = Math.max(0, s.bottom - airB - E.b);
+      let hole = { px: 0 };
+      for (let k = 1; k < E.iv.length; k++) { const g = E.iv[k][0] - E.iv[k - 1][1]; if (g > hole.px) hole = { px: g, t: E.iv[k - 1][1], b: E.iv[k][0] }; }
+      const band = above + below, most = Math.max(band, hole.px), f = most / Math.max(1, s.h);
+      const v = f >= 1 / 3 ? 'FAIL' : f >= 1 / 6 && most >= 96 ? 'WARN' : 'PASS';
+      if (v === 'PASS') continue;
+      const inner = hole.px > band;
+      const r = inner ? { l: s.l, r: s.r, t: hole.t, b: hole.b } : below >= above ? { l: s.l, r: s.r, t: E.b, b: s.bottom - airB } : { l: s.l, r: s.r, t: s.top + airT, b: E.t };
+      const where = [above >= 1 && `${px(above)}px above its content`, below >= 1 && `${px(below)}px under it`].filter(Boolean).join(' and ');
+      hOff.push(off(s.el, r, inner
+        ? `the section holds an empty strip of ${px(hole.px)}px between two pieces of its content, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL, a sixth WARN)`
+        : `the section is stretched past its content: ${where} is empty beyond its ${px(airT)}px and ${px(airB)}px of air, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL, a sixth WARN)`,
+        { sev: v, d: f * 100, ref: [cbox(C(s.i), E.t, E.b)], at: Math.round(r.t - H / 3) }));
       hv = worst([hv, v]);
     }
     T.push(test('T-height', hv, hOff));
-    // T-grid: each section's page top within 2px of k*H PASS, 3-8px WARN, else FAIL
-    for (const s of S) {
-      const g = Math.round(s.top / H) * H, dt = s.top - g;
-      const v = Math.abs(dt) <= 2 ? 'PASS' : Math.abs(dt) <= 8 ? 'WARN' : 'FAIL';
-      if (v !== 'PASS') gOff.push(off(s.el, { l: SX, r: SX + W, t: Math.min(s.top, g), b: Math.max(s.top, g) }, `the section starts at ${px(s.top)}px, ${px(Math.abs(dt))}px ${dt > 0 ? 'below' : 'above'} the screen grid (${Math.round(s.top / H)} x ${H}px): sections start on whole screens`, { sev: v, d: Math.abs(dt), ref: [lineY(g)], at: Math.round(s.top - H / 2) }));
-      gv = worst([gv, v]);
-    }
-    T.push(test('T-grid', gv, gOff));
-    // T-fit: no inner scroll, the lowest content box at or above bottom - padb - barH, nothing outside the box; a .g2
-    // section's first screen group ends by H - padb - barH
+    // T-fit: no inner scroll, the lowest content box at or above the section's foot less --padb (and the action bar,
+    // under footer.closing), nothing outside the box; a scene's or a moment's held stage places its own parts
     for (const s of S) {
       if (s.isHero) continue;
       const sc = cs(s.el).overflowY === 'clip' ? s.el.clientHeight : s.el.scrollHeight, ch = s.el.clientHeight; // (overflow: clip as in SR-1 T3)
       const bx = boxesBySec[s.i];
       const low = bx.length ? Math.max(...bx.map((x) => x.r.b)) : null;
-      const limit = s.bottom - padbTok - barH;
+      const limit = s.bottom - padbTok - (s.isClosing ? barH : 0);
       const probs = [];
       if (sc > ch + 1) probs.push(`its content is ${sc - ch}px taller than the section (scrollHeight ${sc}, clientHeight ${ch})`);
-      const lowOver = low != null && low > limit + 0.5;
-      if (lowOver) probs.push(`its lowest content ends ${px(low - s.top)}px below its top, past ${px(limit - s.top)}px (the section less ${px(padbTok)}px of bottom padding${andBar})`);
+      const lowOver = !sceneSec(s) && low != null && low > limit + 0.5;
+      if (lowOver) probs.push(`its lowest content ends ${px(low - s.top)}px below its top, past ${px(limit - s.top)}px (the section less ${px(padbTok)}px of bottom padding${s.isClosing ? andBar : ''})`);
       // (a dealt moment's parts at their start state, letters waiting to fly into the line, are the moment's own)
       const out = outside(s.i).filter((it) => !it.el.closest('[data-moment][data-moment-mounted]'));
       if (out.length) probs.push(`${out.length} part${out.length > 1 ? 's lie' : ' lies'} outside the section's box`);
-      if (isG2(s)) {
-        const g1 = bx.filter((x) => x.r.t < s.top + H);
-        const g1b = g1.length ? Math.max(...g1.map((x) => x.r.b)) : null;
-        if (g1b != null && g1b > s.top + H - padbTok - barH + 0.5) probs.push(`its first screen group ends ${px(g1b - s.top)}px below its top, past ${px(H - padbTok - barH)}px`);
-      }
       if (!probs.length) continue;
       const c = C(s.i);
       fOff.push(off(s.el, lowOver ? { l: c.l, r: c.r, t: limit, b: low } : secR(s), `the section's content does not fit it: ${probs.join('; ')}`, lowOver ? { d: low - limit, ref: [lineY(limit)], at: Math.round(Math.max(low, limit) - H + 80) } : {}));
       for (const it of out.slice(0, 3)) fOff.push(off(it.el, it.r, `${q(it.el)} lies outside section ${s.i + 1} (${px(it.r.t - s.top)} to ${px(it.r.b - s.top)}px from its top; the section is ${px(s.h)}px tall)`, { ref: [box(secR(s))] }));
     }
     T.push(test('T-fit', fOff.length ? 'FAIL' : 'PASS', fOff));
-    // T-total, place pages (merged CK-18): 3.0-6.05 screens PASS, 6.05-7 WARN, under 3 WARN unless
-    // data-page-mode="short" (CK-56), over 7 FAIL
-    if (pageKind === 'place') {
-      const ratio = sh / H, short = !!document.querySelector('[data-page-mode="short"]');
-      const tv = ratio > 7 ? 'FAIL' : ratio > 6.05 ? 'WARN' : (ratio < 3 && !short) ? 'WARN' : 'PASS';
-      T.push(test('T-total', tv, tv === 'PASS' ? [] : [off(main || body, null, `the page is ${rnd(ratio)} screens long (${sh}px on a ${H}px screen): a place page runs 3 to 6 screens (over 7 FAIL)`, { sev: tv, doc: null, text: '' })]));
-    }
-    // T-snap (ST-02, SR-9 T1): the one-section look comes from heights and padding only, never from scroll-snap
+    // T-snap (ST-02, SR-9 T1): the rhythm comes from heights and padding only, never from scroll-snap
     { const sn = [de, body, ...allEls].filter((e) => { const v = cs(e).scrollSnapType; return v && v !== 'none'; });
-      T.push(test('T-snap', sn.length ? 'FAIL' : 'PASS', sn.slice(0, 3).map((e) => off(e === de || e === body ? null : e, null, `scroll-snap-type: ${cs(e).scrollSnapType} on ${e === de ? 'the html element' : e === body ? 'the body' : q(e)}: sections are one or two screens by their height and padding, the scroll is the browser's own`, { moving: null, doc: null })))); }
+      T.push(test('T-snap', sn.length ? 'FAIL' : 'PASS', sn.slice(0, 3).map((e) => off(e === de || e === body ? null : e, null, `scroll-snap-type: ${cs(e).scrollSnapType} on ${e === de ? 'the html element' : e === body ? 'the body' : q(e)}: the scroll is the browser's own`, { moving: null, doc: null })))); }
     return T;
   });
 
-  // ---- SR-3 air between sections, sections not mostly empty, no dividers
+  // ---- SR-3 air between sections, no dividers
   run('SR-3', () => {
     const T = [];
     const block = (s) => { let bx = boxesBySec[s.i]; if (s.wrap) bx = bx.filter((x) => s.wrap.contains(x.el)); if (!bx.length) return null; return { t: Math.min(...bx.map((x) => x.r.t)), b: Math.max(...bx.map((x) => x.r.b)), bx }; };
-    const band = phone ? { p: [112, 420], w: [56, 560] } : { p: [128, 480], w: [64, 600] };
+    // the system's air is --padb + --padt: 320px at 1440, 256 on a tablet, 192 on a phone
+    const band = phone ? { p: [128, 420], w: [96, 560] } : { p: [192, 480], w: [128, 600] };
     const gOff = [];
     let gv = 'PASS';
-    // T-gap: the next section's content top less this one's content bottom, the hero and the closing aside
+    // T-gap: the next section's content top less this one's content bottom (the closing's too), the hero aside: too
+    // little air FAILs, and so does a gap past the band (a section padded or stretched past its content)
     for (let i = 0; i + 1 < S.length; i++) {
       const a = S[i], b = S[i + 1];
       // a scene's stage is held on screen while its section scrolls by: its content's page position is not where it shows
-      if (a.isHero || a.isClosing || b.isHero || b.isClosing || sceneSec(a) || sceneSec(b)) continue;
+      if (a.isHero || a.isClosing || b.isHero || sceneSec(a) || sceneSec(b)) continue;
       const A = block(a), B = block(b); if (!A || !B) continue;
       const g = B.t - A.b;
       const v = g >= band.p[0] && g <= band.p[1] ? 'PASS' : g > 0 && g >= band.w[0] && g <= band.w[1] ? 'WARN' : 'FAIL';
@@ -2504,41 +2590,6 @@ function measure(opt) {
       gv = worst([gv, v]);
     }
     T.push(test('T-gap', gv, gOff));
-    // T-fill: content height over section height, PASS 0.55, WARN 0.40-0.55; a .g2 section per group over H, PASS
-    // 0.40, WARN 0.25-0.40; a section whose layer passes SR-6 T1 fills 1.0
-    const fOff = [];
-    let fv = 'PASS';
-    for (const s of S) {
-      if (s.isHero || s.isClosing || sceneSec(s)) continue; // (a big scene or a scroll moment fills its held screen itself)
-      const lay = [...s.el.children].some((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && layerOf(TU(k) === 'PICTURE' && k.querySelector('img') ? k.querySelector('img') : k) && !layerProblems(k, s).length);
-      const A = block(s), c = C(s.i);
-      if (isG2(s) && A) {
-        for (const [gi, pick] of [[1, (x) => x.r.t < s.top + H], [2, (x) => x.r.t >= s.top + H]]) {
-          const g = A.bx.filter(pick); const gt = g.length ? Math.min(...g.map((x) => x.r.t)) : null, gb = g.length ? Math.max(...g.map((x) => x.r.b)) : null;
-          const f = g.length ? (gb - gt) / H : 0;
-          const v = lay ? 'PASS' : f >= 0.4 ? 'PASS' : f >= 0.25 ? 'WARN' : 'FAIL';
-          if (v !== 'PASS') fOff.push(off(s.el, { l: s.l, r: s.r, t: s.top + (gi - 1) * H, b: s.top + gi * H }, `screen group ${gi} of this two-screen section fills ${pct(f)}% of a screen: 40% or more (25% WARN)`, { sev: v, d: (0.4 - f) * 100, ref: g.length ? [cbox(c, gt, gb)] : [] }));
-          fv = worst([fv, v]);
-        }
-        continue;
-      }
-      // a frame with its own fill round content (a tinted panel holding a card or a mock) shows to its edges, as
-      // empty-area reads it: it stretches the content's extent; a frame with nothing inside, a border alone, or one over
-      // 60% of the section's area (a stretched ground) does not
-      const E = A ? { t: A.t, b: A.b } : null;
-      if (E) for (const d of decoBySec[s.i]) {
-        if (d.el === s.el || d.el === s.wrap || (s.wrap && !s.wrap.contains(d.el))) continue;
-        const ds = cs(d.el);
-        if (!(alpha(ds.backgroundColor) > 0.03 || (ds.backgroundImage && ds.backgroundImage !== 'none') || (ds.boxShadow && ds.boxShadow !== 'none'))) continue;
-        if ((d.r.b - d.r.t) * (d.r.r - d.r.l) > 0.6 * s.h * (s.r - s.l) || !A.bx.some((x) => d.el.contains(x.el))) continue;
-        E.t = Math.min(E.t, d.r.t); E.b = Math.max(E.b, d.r.b);
-      }
-      const f = lay ? 1 : E ? (E.b - E.t) / s.h : 0;
-      const v = f >= 0.55 ? 'PASS' : f >= 0.4 ? 'WARN' : 'FAIL';
-      if (v !== 'PASS') fOff.push(off(s.el, secR(s), E ? `the content fills ${pct(f)}% of the section's height (${px(E.b - E.t)} of ${px(s.h)}px): 55% or more (40% WARN)` : `the section shows no content: its content fills 0% of its ${px(s.h)}px (55% or more)`, { sev: v, d: (0.55 - f) * 100, ref: E ? [cbox(c, E.t, E.b)] : [] }));
-      fv = worst([fv, v]);
-    }
-    T.push(test('T-fill', fv, fOff));
     // T-dividers, over every element (a 1px rule is under 2x2 and never reaches the rendered list): no <hr>, and no
     // border-top or border-bottom of 1px or more on an element 90% of the container wide with content boxes above and
     // below it in its section; repeated same-tag-and-class siblings are exempt, and so is the one rule above
@@ -2581,52 +2632,9 @@ function measure(opt) {
     return T;
   });
 
-  // ---- SR-4 the views test: a screen shows one section
+  // ---- SR-4 every block of <main> a section, no bands inside one
   run('SR-4', () => {
     const T = [];
-    const peekIv = S.map((s) => [[s.top, s.bottom]]), contIv = S.map(() => []);
-    for (const b of boxes) if (typeof b.z === 'number') { peekIv[b.z].push([b.r.t, b.r.b]); contIv[b.z].push([b.r.t, b.r.b]); }
-    for (const d of decorated) if (typeof d.z === 'number') peekIv[d.z].push([d.r.t, d.r.b]);
-    for (const it of rendered) if (typeof it.z === 'number' && it.layer) peekIv[it.z].push([it.r.t, it.r.b]);
-    const peekM = peekIv.map(merge), contM = contIv.map(merge);
-    // the part of section i's peek intervals inside [a, b], as a full-width band
-    const bandIn = (i, a, b) => { const iv = peekM[i].filter(([p, q2]) => q2 > a && p < b); if (!iv.length) return null; return { l: SX, r: SX + W, t: Math.max(a, Math.min(...iv.map((x) => x[0]))), b: Math.min(b, Math.max(...iv.map((x) => x[1]))) }; };
-    const views = new Map();
-    const addView = (y, kind) => { y = Math.round(Math.min(maxY, Math.max(0, y))); const v = views.get(y); if (v) v.kinds.push(kind); else views.set(y, { y, kinds: [kind] }); };
-    for (let k = 0; k <= Math.max(0, Math.floor((sh - H) / H)); k++) addView(k * H, 'stride ' + k);
-    S.forEach((s, i) => { addView(s.top, 'the top of section ' + (i + 1)); if (s.h > H + 8) addView(s.bottom - H + barH, 'the bottom of section ' + (i + 1)); });
-    const vOff = [];
-    let nWarn = 0, nFail = 0, nViews = 0;
-    for (const v of [...views.values()].sort((a, b) => a.y - b.y)) {
-      nViews++;
-      const a = v.y + V[0], b = v.y + V[1];
-      const peeks = peekM.map((m) => lenIn(m, a, b));
-      let owner = 0; peeks.forEach((p, i) => { if (p > peeks[owner]) owner = i; });
-      let maxOther = 0, maxSec = -1;
-      peeks.forEach((p, i) => { if (i !== owner && p > maxOther) { maxOther = p; maxSec = i; } });
-      const headIn = heads.filter((h) => h.z !== owner && h.r.t >= a - 0.5 && h.r.b <= b + 0.5);
-      const contShow = contM.map((m, i) => ({ i, px: lenIn(m, a, b) })).filter((x) => x.px > 24);
-      // other sections peek 8px at most PASS, 9-24 WARN, over 24 FAIL; another section's heading whole inside V, or
-      // the content of two sections over 24px each, FAIL
-      let verdict = maxOther <= 8 ? 'PASS' : maxOther <= 24 ? 'WARN' : 'FAIL';
-      const why = [];
-      if (maxOther > 8) why.push(`${px(maxOther)}px of section ${maxSec + 1}`);
-      if (headIn.length) { verdict = 'FAIL'; why.push(`the heading of section ${headIn[0].z + 1} whole`); }
-      if (contShow.length >= 2) { verdict = 'FAIL'; why.push(`the content of ${contShow.length} sections, over 24px each`); }
-      if (verdict === 'WARN') nWarn++;
-      if (verdict === 'FAIL') nFail++;
-      if (verdict === 'PASS') continue;
-      const who = headIn.length ? headIn[0].z : maxSec >= 0 ? maxSec : contShow.find((x) => x.i !== owner)?.i ?? owner;
-      const red = headIn.length ? headIn[0].r : (bandIn(who, a, b) || { l: SX, r: SX + W, t: a, b });
-      const mine = bandIn(owner, a, b);
-      vOff.push(off(headIn.length ? headIn[0].el : S[who].el, red, `the screen at scroll ${v.y}px (${v.kinds[0]}) shows ${why.join(' and ')} beside section ${owner + 1}: a screen shows one section (another may peek 8px, 24px WARN)`, { sev: verdict, d: maxOther, at: v.y, ref: mine ? [box(mine)] : [], name: `scroll ${v.y}px` }));
-    }
-    // a page of 8 sections or fewer counts its WARN screens: two or more FAIL; a longer page FAILs over 10% of them
-    let pv = 'PASS';
-    if (nFail) pv = 'FAIL';
-    else if (nWarn) pv = S.length <= 8 ? (nWarn >= 2 ? 'FAIL' : 'WARN') : (nWarn / nViews <= 0.1 ? 'WARN' : 'FAIL');
-    if (pv === 'FAIL') for (const o of vOff) if (o.sev === 'WARN') { o.sev = 'FAIL'; o.msg += ` (${nWarn} of ${nViews} screens show a peek: ${S.length <= 8 ? 'two or more on a page of 8 sections or fewer' : 'over 10% of them'} FAIL)`; }
-    T.push(test('T-views', pv, vOff));
     // T-dom: no non-section in <main>; no band (80% of the section wide or more, 48px tall, a ground of its own,
     // holding the h2 or intro, or at a desktop width only text and controls); pre, .frame and [data-visual] never are
     const dOff = [];
@@ -2656,7 +2664,7 @@ function measure(opt) {
     return T;
   });
 
-  // ---- SR-5 one heading per screen
+  // ---- SR-5 one heading per section
   run('SR-5', () => {
     const T = [], off1 = [];
     // T1: at most one h2 a section, none in the hero
@@ -2665,19 +2673,6 @@ function measure(opt) {
       if ((s.isHero && h2s.length) || h2s.length > 1) off1.push(off(s.isHero ? h2s[0] : h2s[1], null, s.isHero ? `the hero holds an h2 (${h2s.length}): its heading is the h1, and an h2 opens the next section` : `the section holds ${h2s.length} h2 headings: one per section, first in its .wrap`, { ref: s.isHero ? [] : [box(rectOf(h2s[0]))] }));
     }
     T.push(test('T1', off1.length ? 'FAIL' : 'PASS', off1));
-    // T2: the share of 50px scroll positions with section headings of two sections whole inside V; the hero's h1 aside
-    const counted = heads.filter((h) => !(h.z === 0 && h.tag === 'h1'));
-    let n = 0, hits = 0, first = null;
-    const at = [];
-    for (let y = 0; y <= maxY + 0.01; y += 50) {
-      n++;
-      const a = y + V[0], b = y + V[1];
-      const inV = counted.filter((h) => h.r.t >= a - 0.5 && h.r.b <= b + 0.5);
-      const secs = [...new Set(inV.map((h) => h.z))];
-      if (secs.length >= 2) { hits++; if (at.length < 4) at.push(y); if (!first) { const h1 = inV[0], h2 = inV.find((h) => h.z !== h1.z); first = { y, h1, h2 }; } }
-    }
-    const share = n ? hits / n : 0, lim = phone ? 0.05 : 0.03;
-    T.push(test('T2', share <= lim + 1e-9 ? 'PASS' : 'FAIL', share <= lim + 1e-9 || !first ? [] : [off(first.h2.el, first.h2.r, `headings of two sections show whole on one screen at ${hits} of ${n} scroll positions (${rnd(share * 100)}%; at scroll ${at.join(', ')}px), here with ${q(first.h1.el)}: at most ${lim * 100}% on a ${phone ? 'phone' : 'desktop'}`, { ref: [box(first.h1.r)], at: first.y })]));
     return T;
   });
 
@@ -2878,7 +2873,7 @@ function measure(opt) {
       const prod = el.closest('[data-product]');
       if (prod && prod !== el) continue;
       if (!(/^(IMG|VIDEO|CANVAS|SVG)$/.test(TU(el)) || boxed(el) || prod === el)) continue;
-      if (wd(it.r) <= 0.5 * cw || inRowOrSplit(el, z)) continue;
+      if (wd(it.r) <= 0.5 * cw || inRowOrSplit(el, z) || el.closest(KIT_UNEVEN)) continue;
       if (t6seen.some((p) => p.contains(el))) continue;
       t6seen.push(el);
       if (Math.abs(it.r.l - c.l) > 2 || Math.abs(it.r.r - c.r) > 2) eOff.push(off(el, it.r, `${/^(IMG|VIDEO|CANVAS|SVG)$/.test(TU(el)) ? `a <${el.tagName.toLowerCase()}>` : 'a box'} over half the container wide runs ${px(it.r.l - SX)}-${px(it.r.r - SX)}px, not on the container's lines at ${px(c.l - SX)}-${px(c.r - SX)}px`, { d: Math.max(Math.abs(it.r.l - c.l), Math.abs(it.r.r - c.r)), ref: [cbox(c, it.r.t, it.r.b)] }));
@@ -2914,7 +2909,7 @@ function measure(opt) {
     // container and shows whole cards only
     const oOff = [];
     for (const el of allEls) {
-      if (!visible(el)) continue;
+      if (!visible(el) || el.closest('[data-moment="marquee-row"]')) continue;   // the kit's running row clips its track on purpose
       const s = cs(el), extra = el.scrollWidth - el.clientWidth;
       if (extra <= 2) continue;
       if (/auto|scroll/.test(s.overflowX)) {
@@ -3038,6 +3033,8 @@ async function expandAll() {
     }
     return parts.join(' > ') || (el && el.tagName ? el.tagName.toLowerCase() : 'main');
   };
+  // a .faq--fold answer stays closed: the long FAQ opens one question on a click by design (system.css)
+  const fold = (e) => !!e.closest('.faq--fold');
   const kids = () => [...root.children].filter((e) => !/^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT|LINK|META)$/i.test(e.tagName));
   const heights = () => kids().map((e) => Math.round(e.getBoundingClientRect().height * 10) / 10);
   const box = (e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), top: Math.round(r.top + scrollY), width: Math.max(2, Math.round(r.width)), height: Math.max(2, Math.round(r.height)) }; };
@@ -3057,9 +3054,9 @@ async function expandAll() {
   document.addEventListener('click', (e) => { const a = e.target && e.target.closest && e.target.closest('a[href]'); if (a && !/^#/.test(a.getAttribute('href'))) e.preventDefault(); }, true);
   document.addEventListener('submit', (e) => e.preventDefault(), true);
   let opened = 0, clicked = 0;
-  for (const d of [...root.querySelectorAll('details')]) if (!d.open) { d.open = true; opened++; check(d.querySelector('summary') || d); }
+  for (const d of [...root.querySelectorAll('details')]) if (!d.open && !fold(d)) { d.open = true; opened++; check(d.querySelector('summary') || d); }
   for (const c of [...root.querySelectorAll('[aria-expanded="false"], [role="tab"]')]) {
-    if (c.disabled || c.getAttribute('aria-disabled') === 'true') continue;
+    if (c.disabled || c.getAttribute('aria-disabled') === 'true' || fold(c)) continue;
     c.click(); clicked++;
     await new Promise((r) => setTimeout(r, 120));
     check(c);
@@ -3080,21 +3077,15 @@ const TEST_FIX = {
   'SR-1 T3': "fit the hero's content inside the hero's box: shorten the text or the picture, never let it spill",
   'SR-1 T4': "keep the hero's content between the nav and 24px above the fold (and the action bar): shorten the picture or the text; a docked strip 96px at most",
   'SR-1 T5': "keep the hero's background layer inside the hero (position: absolute; inset: 0 in the section)",
-  'SR-2 T-height': 'set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit',
-  'SR-2 T-grid': 'make every section above it exactly one or two screens tall, so this one starts on a whole screen',
-  'SR-2 T-fit': "fit the content above the section's bottom padding (--padb), or make it two screens (.g2) in two groups",
-  'SR-2 T-total': 'keep a place page at 3 to 6 screens: merge a short block into the section above, or cut a section',
-  'SR-2 T-fit-expanded': 'show answers and panels open and size the section for its open content, or make it two screens (.g2)',
-  'SR-2 T-grid-expanded': 'size each section for its content with every answer and tab open, so the tops below stay on whole screens',
-  'SR-2 T-snap': 'take scroll-snap-type off (html, body and every scroller): sections are one or two screens by height and padding, never snapped',
-  'SR-2 T-height-change': "show every answer and panel open from the start (no accordion, no tabs that resize), so nothing changes a section's height after load",
-  'SR-3 T-gap': "keep 128-480px of air between the content of neighbouring sections (112-420px on a phone): the sections' padding (--padt, --padb)",
-  'SR-3 T-fill': 'fill the section to 55%: more content, a picture or a background layer, or merge it into the section above as its last block',
+  'SR-2 T-height': 'let the section be as tall as its content (no height, min-height or padding of its own): merge a short block into the section above, or give it the picture it lacks; a hole between its parts closes (no space-between)',
+  'SR-2 T-fit': "keep the content inside the section, --padb above its foot: no fixed height, negative margin or absolute part past it",
+  'SR-2 T-fit-expanded': 'show answers and panels open and let the section grow with them: no fixed height',
+  'SR-2 T-snap': "take scroll-snap-type off (html, body and every scroller): the scroll is the browser's own",
+  'SR-2 T-height-change': 'show every answer and panel open from the start (ten questions or more: .faq--fold), so a click never resizes a section',
+  'SR-3 T-gap': "keep the system's air between sections (--padb under one, --padt over the next: 320px at 1440, 192 on a phone): no padding, margin or height of your own on a section",
   'SR-3 T-dividers': 'take the rule out: sections and their parts are parted by their ground and the air between them',
-  'SR-4 T-views': 'make each section exactly one screen or two, so a screen shows one section and no neighbour peeks',
   'SR-4 T-dom': 'put every block of <main> in a <section>, and give a band its own section instead of a ground inside one',
   'SR-5 T1': 'give each section one h2, first in its .wrap, and the hero only its h1',
-  'SR-5 T2': 'make the sections one screen tall so their headings sit a screen apart and two never share one',
   'SR-6 T1-margins': 'use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone',
   'SR-6 T1-structure': 'build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing',
   'SR-6 T2-containment': 'keep it inside the container lines (.wrap): full width is for background layers and grounds only',
@@ -3115,12 +3106,12 @@ const TEST_FIX = {
 const TEST_NAME = {
   'SR-1 T1': 'the hero off the fold', 'SR-1 T2': 'the next section on the first screen', 'SR-1 T3': "content outside the hero's box",
   'SR-1 T4': "hero content past its content line", 'SR-1 T5': "the hero's layer outside the hero",
-  'SR-2 T-height': 'sections not one screen or two', 'SR-2 T-grid': 'section tops off the screen grid', 'SR-2 T-fit': 'content past the bottom padding',
-  'SR-2 T-total': "the place page's length", 'SR-2 T-snap': 'scroll snapping', 'SR-2 T-fit-expanded': 'open answers and tabs past the bottom padding',
-  'SR-2 T-grid-expanded': 'tops off the grid with every answer open', 'SR-2 T-height-change': 'heights that change on a click',
-  'SR-3 T-gap': 'air between sections', 'SR-3 T-fill': 'sections mostly empty', 'SR-3 T-dividers': 'divider rules',
-  'SR-4 T-views': 'screens showing two sections', 'SR-4 T-dom': 'blocks of <main> that are no section, and bands',
-  'SR-5 T1': 'extra h2 headings', 'SR-5 T2': 'two headings on one screen',
+  'SR-2 T-height': 'sections stretched past their content', 'SR-2 T-fit': 'content past the bottom padding',
+  'SR-2 T-snap': 'scroll snapping', 'SR-2 T-fit-expanded': 'open answers and tabs past the bottom padding',
+  'SR-2 T-height-change': 'heights that change on a click',
+  'SR-3 T-gap': 'air between sections', 'SR-3 T-dividers': 'divider rules',
+  'SR-4 T-dom': 'blocks of <main> that are no section, and bands',
+  'SR-5 T1': 'extra h2 headings',
   'SR-6 T1-margins': 'unequal or wrong margins', 'SR-6 T1-structure': 'the page shell', 'SR-6 T2-containment': 'parts past the container lines',
   'SR-6 T3-left-lines': 'text off the left lines', 'SR-6 T4-alignment': 'wide text centred', 'SR-6 T5-overflow': 'sideways scroll',
   'SR-6 T6-right-edges': 'wide pictures and boxes off the container lines',
@@ -3130,9 +3121,9 @@ const TEST_NAME = {
   'SR-8 T-edges': 'splits not edge to edge',
 };
 // the tests that read where a part sits on the screen: a part moving as it is read is told there as a WARN. A section's
-// height, its grid top, the page shell, sideways scroll and a place page's length are facts of the layout and stay FAIL
+// height, the page shell and sideways scroll are facts of the layout and stay FAIL
 // (as rhythm-check.mjs tells them)
-const MOVABLE = new Set(['SR-1 T2', 'SR-1 T4', 'SR-4 T-views', 'SR-5 T2', 'SR-6 T2-containment', 'SR-6 T3-left-lines', 'SR-6 T4-alignment', 'SR-6 T6-right-edges', 'SR-7 T-rows', 'SR-7 T-right', 'SR-8 T-mode', 'SR-8 T-orientation', 'SR-8 T-pair', 'SR-8 T-edges']);
+const MOVABLE = new Set(['SR-1 T2', 'SR-1 T4', 'SR-6 T2-containment', 'SR-6 T3-left-lines', 'SR-6 T4-alignment', 'SR-6 T6-right-edges', 'SR-7 T-rows', 'SR-7 T-right', 'SR-8 T-mode', 'SR-8 T-orientation', 'SR-8 T-pair', 'SR-8 T-edges']);
 const MOVES = {
   moving: ' (it was moving as it was read: told as a WARN, look at it at rest)',
   held: ' (it sits in a part held on screen as the page scrolls: told as a WARN)',
@@ -3269,7 +3260,7 @@ const readExpr = (ctx, desktop, only) => `(${measure.toString()})(${JSON.stringi
 
 // the expansion pass on the same tab, after the first read was cropped: SR-2 read again at the top as the baseline (so
 // a height the crops' scrolling changed, a reveal, a counter or a lazy block, is not taken for one a click changed),
-// then everything opened, SR-2's fit and grid read again, and every height a click changed (CK-06: FAIL any section
+// then everything opened (a .faq--fold answer aside), SR-2's fit read again, and every height a click changed (CK-06: FAIL any section
 // height change)
 async function expansion(ctx, tab) {
   await tab.eval(scrollExpr(0));
@@ -3280,7 +3271,7 @@ async function expansion(ctx, tab) {
   const r2 = await tab.eval(readExpr(ctx, null, ['SR-2']), 90000);
   if (!r2 || r2.abort) throw new Error(`the read after opening failed${r2 && r2.abort ? ': ' + r2.abort : ''}`);
   const tests = [];
-  for (const tid of ['T-fit', 'T-grid']) {
+  for (const tid of ['T-fit']) {
     const t = r2.tests.find((x) => x.rule === 'SR-2' && x.id === tid);
     if (!t || t.verdict === 'ERROR') { ctx.errors.push(`rhythm SR-2 ${tid}: not read after the answers and tabs were opened${t ? ` (${t.msg})` : ''}`); continue; }
     tests.push({ ...t, id: tid + '-expanded', offenders: t.offenders.map((o) => ({ ...o, msg: `with every answer and tab open, ${o.msg}` })) });
@@ -3471,306 +3462,10 @@ async function run(ctx) {
   return { id, phase, checks, fixes, summary, flags, quick, when, run };
 })();
 
-// ---------------------------------------------------------------- tiles: kept as one block
-const tilesMod = (() => {
-// tiles.mjs: a section tile that shows two sections (the judges' "two sections in one tile").
-//   screens    section-tile (a section tile showing two sections: at 1440x900 a section not one or two screens tall,
-//              24px either way, whose tile or the screen a whole screen on from its top shows another section's
-//              heading, text or picture, FAIL; only its ground, 24px or more, WARN; at 390x844 only a section
-//              shorter than the screen)
-//
-// The tiles themselves are shot by shoot.mjs (its own copy of section-tiles.mjs's shooter, with the CK-16 tops): one
-// screen from each top-level section's top, the fixed header over its top padding as a visitor sees it, and one with its
-// bottom on the screen's bottom for a section taller than one screen. The judges read those tiles and the k x 900 screens
-// of the page (the judge rule: "each judge tile at scrollY = k x 900 (844 phone) shows one section"; CK-16: every
-// section after the hero, footer.closing too, one screen or two). This file holds only the check on them.
-//
-// Rules (H is the screen: 900 at 1440x900, 844 at 390x844):
-//   - the sections are the children of main (or of main's one wrapper when it holds two or more sections), a body >
-//     section, a footer.closing and the footer, as section-tiles.mjs reads them; a plain site footer is no section: it is
-//     never judged and never counts as the other section (a closing section and the footer under it may share a screen)
-//   - one screen is H and two screens 2H, each within --tiles-tol px (24); the first section is counted from the page's
-//     top, so the header rows above it belong to it
-//   - a section shorter than one screen is judged on its tile, the screen from its top (the first section on the first
-//     screen); at the page's end that screen is held at the bottom, so it shows the section above instead
-//   - at 1440x900 a section between the screens (1.31, 2.4) is judged on the screen a whole screen on from its top where
-//     its end comes into view, as the k x 900 screens read a page on the grid; shoot.mjs's bottom tile never shows it
-//   - the verdict is what that screen shows of the other sections, under the header: one's heading, text or picture
-//     (h1-h3, p, img, picture, video, canvas, svg, [data-ui], .frame) 8px or more on screen is two sections, FAIL; only
-//     its ground, 24px or more, WARN (a sliver of the next band's padding: six false FAILs on five test pages had 36-85px)
-//   - at 390x844 only a section shorter than the screen is judged; heights on the grid are left to rhythm there
-//   - passed over: a section holding a held stage (a sticky panel 60% of the screen each way, a GSAP pin) or a
-//     [data-scene], and a section whose top or height moves 8px or more in 0.9s (a reveal growing it, a scene)
-// The crop is that screen: red is what shows of the section, dashed blue what shows of the other one and its heading or
-// picture. At most 8 findings a width, the rest named in the eighth. Told once: rhythm's section-height, hero-screen and
-// one-section tell most of these from the heights, so dupOf(f, list) is true when the report already holds one of those
-// on the same section (or one-section's on the section the tile shows), for consistency's sameFault to drop this one.
-//
-// Flags: --tiles-tol <px> (24, how far a section may sit off one or two screens), --no-tiles.
-
-const id = 'tiles';
-const phase = 'width';
-const checks = [{ id: 'section-tile', sev: 'FAIL', what: "a section not one or two screens tall at 1440x900 (shorter than the screen at 390x844) whose tile, or the screen a whole screen on from its top, shows another section's heading, text or picture (only its ground: WARN)" }];
-const fixes = { 'section-tile': 'set every section after the hero to one screen or two (height: calc(var(--h,1) * 100vh)) and fit its content above --padb' };
-const summary = [
-  '  screens    section-tile (a section tile showing two sections: at 1440x900 a section not one or two screens tall,',
-  '             24px either way, whose tile or the screen a whole screen on from its top shows another section\'s',
-  '             heading, text or picture, FAIL; only its ground, 24px or more, WARN; at 390x844 only a section',
-  '             shorter than the screen)',
-].join('\n');
-const flags = [{ name: 'tiles-tol', kind: 'value', default: '24', help: 'px a section may sit off one or two screens' }];
-
-// ---------------------------------------------------------------- in the page (serialised: nothing from this module's scope)
-// the page's top-level sections, as section-tiles.mjs reads them, and the fixed or sticky header over them; a main whose
-// one child holds two or more sections gives that child's children; the elements are kept on window.__tilesSecs for
-// viewOf() and removed by the caller
-function sectionsProbe(o) {
-  const H = innerHeight, vw = document.documentElement.clientWidth || innerWidth;
-  const sel = (el) => {
-    const parts = [];
-    for (let e = el; e && e.nodeType === 1 && e !== document.body && e !== document.documentElement && parts.length < 4; e = e.parentElement) {
-      const tag = e.tagName.toLowerCase();
-      if (e.id && /^[A-Za-z][\w-]*$/.test(e.id)) { parts.unshift(tag + '#' + e.id); break; }
-      const cls = [...e.classList].filter((c) => /^[A-Za-z_][\w-]*$/.test(c) && !/^(is|js|has)-/.test(c)).slice(0, 2);
-      let s = tag + cls.map((c) => '.' + c).join('');
-      const p = e.parentElement;
-      if (p) { const same = [...p.children].filter((x) => x.tagName === e.tagName); if (same.length > 1 && (!cls.length || same.filter((x) => cls.every((c) => x.classList.contains(c))).length > 1)) s += `:nth-of-type(${same.indexOf(e) + 1})`; }
-      parts.unshift(s);
-    }
-    return parts.join(' > ');
-  };
-  let navH = 0;
-  for (const el of document.querySelectorAll('body > header, header.nav, body > nav, [role=banner]')) {
-    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
-    if ((cs.position === 'fixed' || cs.position === 'sticky') && r.top <= 1 && r.height < H / 3) navH = Math.max(navH, Math.round(r.bottom));
-  }
-  const main = document.querySelector('main');
-  const real = (e) => !/^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT|LINK|META)$/.test(e.tagName);
-  let top = main ? [...main.children].filter(real) : [];
-  // main > div.page > section...: the wrapper is no section, its sections are
-  for (let n = 0; n < 3 && top.length === 1 && top[0].querySelectorAll(':scope > section').length >= 2; n++) top = [...top[0].children].filter(real);
-  const cands = [...top, ...document.querySelectorAll('body > section, footer.closing, body > footer, main ~ footer')];
-  const seen = new Set();
-  const secs = cands.filter((e) => {
-    if (seen.has(e) || !real(e)) return false;
-    seen.add(e);
-    const r = e.getBoundingClientRect();
-    return r.height > 40 && getComputedStyle(e).display !== 'none';
-  }).filter((e, _, a) => !a.some((x) => x !== e && x.contains(e)));
-  secs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-  window.__tilesSecs = secs;
-  // a held stage: a sticky panel 60% of the screen each way, a GSAP pin, or a scroll scene (its height is its runway)
-  // a held stage: the photo scene ([data-scene]), a big scene ([data-big-scene]) or a dealt scroll moment ([data-scroll-moment], [data-moment]), as rhythm's SCENEQ reads them
-  const held = (e) => e.matches('[data-scene], [data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted], .pin-spacer') || !!e.closest('[data-scene], [data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]') || !!e.querySelector('.pin-spacer, [data-scene], [data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]') ||
-    [...e.querySelectorAll('*')].some((x) => { if (getComputedStyle(x).position !== 'sticky') return false; const q = x.getBoundingClientRect(); return q.width >= vw * 0.6 && q.height >= H * 0.6; });
-  const label = (e) => (e ? e.innerText || e.textContent || '' : '').replace(/\s+/g, ' ').trim().slice(0, 40);
-  const sections = secs.map((e) => {
-    const r = e.getBoundingClientRect();
-    const row = { tag: e.tagName.toLowerCase(), id: e.id || '', cls: typeof e.className === 'string' ? e.className.slice(0, 60) : '', top: Math.round(r.top + scrollY), h: Math.round(r.height) };
-    if (o && o.full) {
-      const foot = e.tagName === 'FOOTER' || e.getAttribute('role') === 'contentinfo';
-      // a plain site footer (links and the small print) is no section; footer.closing is one (CK-16)
-      Object.assign(row, { sel: sel(e), text: label(e.querySelector('h1, h2, h3') || e), foot, plain: foot && !e.matches('.closing'), held: held(e) });
-    }
-    return row;
-  });
-  return { H, vw, navH, scrollY: Math.round(scrollY), scrollHeight: document.scrollingElement.scrollHeight, sections };
-}
-// what this screen shows, under the header as it stands at this scroll (a header that hides going down is gone): the
-// judged section, and of every other section (the plain footer left out) its part on screen and its first heading,
-// text or picture 8px or more on screen (viewport boxes)
-function viewOf(o) {
-  const secs = window.__tilesSecs || [], H = innerHeight, vw = document.documentElement.clientWidth || innerWidth;
-  let navH = 0;
-  for (const el of document.querySelectorAll('body > header, header.nav, body > nav, [role=banner]')) {
-    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
-    if ((cs.position === 'fixed' || cs.position === 'sticky') && r.top <= 1 && r.height < H / 3) navH = Math.max(navH, Math.round(r.bottom));
-  }
-  const box = (r) => {
-    const top = Math.max(navH, r.top), bottom = Math.min(H, r.bottom), left = Math.max(0, r.left), right = Math.min(vw, r.right);
-    return bottom - top >= 2 && right - left >= 2 ? { left: Math.round(left), top: Math.round(top), width: Math.round(right - left), height: Math.round(bottom - top) } : null;
-  };
-  const shown = (e) => {
-    for (let p = e; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.visibility === 'hidden' || Number(cs.opacity) < 0.05) return false; }
-    return true;
-  };
-  const words = (e) => (e.innerText || e.getAttribute('alt') || e.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 40);
-  const others = [];
-  secs.forEach((e, j) => {
-    if (j === o.i || (o.skip || []).includes(j)) return;
-    const r = e.getBoundingClientRect(), b = box(r);
-    if (!b) return;
-    let el = null;
-    for (const c of e.querySelectorAll('h1, h2, h3, p, img, picture, video, canvas, svg, [data-ui], .frame')) {
-      const q = c.getBoundingClientRect();
-      if (q.width < 2 || q.height < 2 || q.right <= 0 || q.left >= vw) continue;
-      const t = Math.max(q.top, navH, r.top), btm = Math.min(q.bottom, H, r.bottom);
-      if (btm - t < 8 || !shown(c)) continue;
-      const kind = /^H[1-3]$/.test(c.tagName) ? 'heading' : c.tagName === 'P' ? 'text' : 'picture';
-      // a heading names the section best, then text, then a picture
-      const rank = { heading: 0, text: 1, picture: 2 }[kind];
-      if (!el || rank < el.rank) el = { rank, kind, text: kind === 'picture' ? '' : words(c), box: box(q) };
-      if (rank === 0) break;
-    }
-    others.push({ j, above: r.top < (secs[o.i] ? secs[o.i].getBoundingClientRect().top : 0), px: b.height, box: b, el });
-  });
-  return { y: Math.round(scrollY), navH, a: secs[o.i] ? box(secs[o.i].getBoundingClientRect()) : null, others };
-}
-// a jump, not a glide: a smooth-scroll library is told to jump too, or it eases the page back
-function jumpTo(y) {
-  const L = window.lenis || window.__lenis;
-  try { if (L && L.scrollTo) L.scrollTo(y, { immediate: true, force: true }); } catch (e) { /* not ours */ }
-  scrollTo({ top: y, left: 0, behavior: 'instant' });
-  return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(Math.round(scrollY)))));
-}
-// the screen settled: fonts ready, no picture on the page loading, and the boxes on screen and the stylesheets the same
-// over three reads 300ms apart (at most o.max), then o.tail more for canvases and shaders (section-tiles.mjs's settle)
-function settleProbe(o) {
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-  return (async () => {
-    try { if (document.fonts && document.fonts.ready) await Promise.race([document.fonts.ready, wait(3000)]); } catch (e) { /* no fonts api */ }
-    const t0 = performance.now();
-    let last = '', same = 0;
-    while (performance.now() - t0 < o.max) {
-      let n = 0, a = 0;
-      for (const e of document.querySelectorAll('body *')) {
-        const r = e.getBoundingClientRect();
-        if (r.width && r.height && r.bottom > 0 && r.top < innerHeight) { n++; a += Math.round((r.width * r.height) / 100); }
-      }
-      const sig = `${n}:${a}:${document.styleSheets.length}:${[...document.images].filter((i) => !i.complete).length}`;
-      if (sig === last) { if (++same >= 3) break; } else { same = 0; last = sig; }
-      await wait(300);
-    }
-    await wait(o.tail);
-    return 1;
-  })();
-}
-// every screen lands where it is asked to: no smooth scrolling and no snapping while the screens are read (as shoot.mjs)
-function noSnap(on) {
-  const old = document.getElementById('__tiles-scroll');
-  if (!on) { if (old) old.remove(); return 0; }
-  if (!old) { const s = document.createElement('style'); s.id = '__tiles-scroll'; s.textContent = 'html, body, html * { scroll-behavior: auto !important; scroll-snap-type: none !important; }'; document.head.appendChild(s); }
-  return 1;
-}
-const call = (fn, arg) => `(${fn.toString()})(${JSON.stringify(arg ?? null)})`;
-
-// ---------------------------------------------------------------- section-tile: which sections a screen is read for
-// len is the section's height, or for the first section the rows from the page's top to its end. A section shorter than
-// the screen is read on its tile (k 0); at a desktop width one between the screens is read k whole screens on from its
-// top, on the screen where its end comes into view (k 1 for 1.31 screens, 2 for 2.4)
-function candidates(S, H, tol, phone) {
-  const out = [];
-  for (const [i, s] of S.entries()) {
-    if (s.plain || s.held || s.moved) continue;
-    const first = i === 0 && s.top < H / 3, len = first ? s.top + s.h : s.h;
-    if (len < H - tol) { out.push({ i, len, first, k: 0 }); continue; }
-    // a hero taller than the screen is hero-screen's; on a phone the strides are one-section's
-    if (first || phone) continue;
-    if (Math.abs(s.h - H) <= tol || Math.abs(s.h - 2 * H) <= tol) continue;
-    const k = Math.max(1, Math.floor((s.h - 1) / H));
-    // 8px of it on that screen or less: that screen is the next section's own tile, and the height is section-height's
-    if (s.h - k * H > 8) out.push({ i, len, first, k });
-  }
-  return out;
-}
-
-// told once: rhythm's section-height, hero-screen or one-section on the same section (or one-section's on the section the
-// tile shows) already tells this; consistency's sameFault, where the widths and the passes are joined, drops it then
-function dupOf(f, L) {
-  if (!f || f.check !== 'section-tile') return false;
-  return L.some((g) => g !== f && (g.check === 'section-height' || g.check === 'hero-screen' || g.check === 'one-section') &&
-    (g.sel === f.sel || (g.check === 'one-section' && f.shows && g.sel === f.shows)) && (g.sev === 'FAIL' || f.sev === 'WARN'));
-}
-
-// the screens the tiles are judged at: shoot.mjs's desktop (1440) and its phone (under 600, 844 tall)
-function when(ctx) { return (ctx.width === 1440 && ctx.height === 900) || (ctx.width < 600 && ctx.height === 844); }
-
-async function run(ctx) {
-  const tolIn = Number(ctx.flags && ctx.flags['tiles-tol']), tol = Number.isFinite(tolIn) && tolIn >= 0 ? tolIn : 24;
-  const tab = ctx.tab, phone = ctx.width < 600, at = `${ctx.width}x${ctx.height}`;
-  const go = (y) => tab.eval(`window.__cc && window.__cc.scrollTo ? window.__cc.scrollTo(${Math.round(y)}) : ${call(jumpTo, Math.round(y))}`);
-  const y0 = await ctx.safe('section-tile', () => tab.eval('Math.round(scrollY)'));
-  if (y0 == null) return [];
-  const F = [], extra = [];
-  try {
-    await tab.eval(call(noSnap, true)).catch(() => {});
-    // read at the page's top (a header that hides as the page scrolls is there) once it has settled, twice 0.9s apart:
-    // a section whose top or height moves (a reveal growing it, a scene) is not judged on a number it will not keep
-    await go(0);
-    await tab.eval(call(settleProbe, { max: 3000, tail: 300 }), 20000).catch(() => {});
-    const A = await ctx.safe('section-tile', () => tab.eval(call(sectionsProbe, { full: true }), 60000));
-    await ctx.sleep(900);
-    const B = await ctx.safe('section-tile', () => tab.eval(call(sectionsProbe, { full: true }), 60000));
-    if (!A || !B) return [];
-    if (!B.sections.length) { ctx.errors.push('section-tile: no top-level sections (no main > *, no body > section)'); return []; }
-    if (A.sections.length !== B.sections.length) { ctx.errors.push(`section-tile: the page's sections changed while they were read (${A.sections.length}, then ${B.sections.length})`); return []; }
-    const { H, scrollHeight } = B, maxY = Math.max(0, scrollHeight - H);
-    // the two reads paired by the section's sel (by place when a sel repeats or is missing)
-    const bySel = new Map(), dup = new Set();
-    for (const s of A.sections) { if (bySel.has(s.sel)) dup.add(s.sel); bySel.set(s.sel, s); }
-    const S = B.sections.map((s, i) => {
-      const a = !dup.has(s.sel) && bySel.get(s.sel) || A.sections[i];
-      return { ...s, moved: Math.abs(s.top - a.top) >= 8 || Math.abs(s.h - a.h) >= 8 };
-    });
-    const skip = S.flatMap((s, j) => (s.plain ? [j] : []));
-    const C = candidates(S, H, tol, phone);
-    for (const [i, s] of S.entries()) ctx.log(`#${i + 1} ${s.sel} top ${s.top} h ${s.h}${s.held ? ' held' : ''}${s.moved ? ' moved' : ''}${s.plain ? ' footer' : ''}${C.some((c) => c.i === i) ? ' read' : ''}`);
-    ctx.log(`${S.length} sections, header ${B.navH}px, ${C.length} off one or two screens`);
-    for (const c of C.slice(0, 16)) {
-      const s = S[c.i];
-      try {
-        const target = c.first ? 0 : s.top + c.k * H, y = Math.round(Math.min(maxY, Math.max(0, target))), end = target > maxY + 1;
-        await go(y);
-        await tab.eval(call(settleProbe, { max: 1500, tail: 300 }), 20000).catch(() => {});
-        const v = await tab.eval(call(viewOf, { i: c.i, skip }), 30000);
-        // the other section nearest it (then the most of it) with a heading, text or picture on screen; else the most of
-        // another's ground
-        const near = (a, b) => Math.abs(a.j - c.i) - Math.abs(b.j - c.i) || b.px - a.px;
-        const withEl = v.others.filter((o) => o.el).sort(near), bare = [...v.others].sort((a, b) => b.px - a.px);
-        const o = withEl[0] || bare[0];
-        if (!o || (!o.el && o.px < tol)) { ctx.log(`${s.sel}: screen at ${v.y} shows ${o ? `${o.px}px of ground` : 'nothing else'}, passed`); continue; }
-        const sev = o.el ? 'FAIL' : 'WARN';
-        if (F.length >= 8) { extra.push(s); continue; }
-        const shot = await ctx.safe('section-tile', () => tab.shot());
-        const lenTxt = c.first
-          ? (s.top > 0 ? `the header and the first section fill ${c.len}px (${(c.len / H).toFixed(2)} screens at ${at}; the section is ${s.h}px)` : `the first section is ${s.h}px tall (${(s.h / H).toFixed(2)} screens at ${at})`)
-          : `the section is ${s.h}px tall (${(s.h / H).toFixed(2)} screens at ${at})`;
-        const whereTxt = c.first ? 'the first screen'
-          : c.k === 0 ? (end ? `its tile, held at the page's end (scroll ${v.y}px)` : 'its tile (the screen from its top)')
-          : `the screen ${c.k === 1 ? 'one screen' : c.k + ' screens'} on from its top (scroll ${v.y}px${end ? ", held at the page's end" : ''})`;
-        const nx = S[o.j], who = o.above ? 'the section above' : o.j === c.i + 1 ? 'the next section' : 'a section further down';
-        const name = nx.text ? ` ("${nx.text.slice(0, 30)}")` : '';
-        const otherTxt = o.el
-          ? (o.el.kind === 'heading' && o.el.text ? `${o.px}px of ${who}, its heading "${o.el.text.slice(0, 30)}" on screen` : `${o.px}px of ${who}${name}, its ${o.el.kind}${o.el.text ? ` "${o.el.text.slice(0, 30)}"` : ''} on screen`)
-          : `only ${o.px}px of ${who}'s ground${name}, none of its content`;
-        const off = Math.abs(v.y - y) > 2 ? ` (the page stopped at ${v.y}px, not ${y}px)` : '';
-        const f = {
-          check: 'section-tile', sev, id: 0, sel: s.sel, text: s.text, shows: nx.sel,
-          msg: `${lenTxt}, ${c.k === 0 ? 'shorter than the screen' : 'not one screen or two'}: ${whereTxt} shows ${v.a ? `${v.a.height}px of it` : 'none of it'} and ${otherTxt}${off}`,
-        };
-        if (c.first) f.fix = 'make the hero exactly one screen (height: 100svh) with its content between the nav and 24px above the fold';
-        if (shot && v.a) Object.assign(f, { stop: ctx.addShot(shot), rects: [v.a, { ...o.box, ref: true }, ...(o.el && o.el.box ? [{ ...o.el.box, ref: true }] : [])] });
-        else Object.assign(f, ctx.place({ left: 0, top: s.top, width: B.vw, height: s.h }));
-        F.push(f);
-      } catch (e) { ctx.errors.push(`section-tile: ${s.sel}: ${e.message}`); }
-    }
-    if (C.length > 16) ctx.errors.push(`section-tile: ${C.length - 16} more sections off one or two screens were not read (16 at most a width)`);
-    if (extra.length && F.length) F[F.length - 1].msg += ` (and ${extra.length} more like it: ${extra.slice(0, 4).map((x) => `"${(x.text || x.sel).slice(0, 20)}"`).join(', ')})`;
-  } finally {
-    // the page as the walk left it
-    await tab.eval('delete window.__tilesSecs').catch(() => {});
-    await tab.eval(call(noSnap, false)).catch(() => {});
-    await go(y0).catch(() => {});
-  }
-  return F;
-}
-  return { id, phase, checks, fixes, summary, flags, when, run, dupOf };
-})();
-
 // ---------------------------------------------------------------- area: kept as one block
 const areaMod = (() => {
-// empty-area: a section whose content leaves a large part of its screen empty (on most test sites the last third of a
-// section showed only its ground), or holds its words on one side with nothing beside them.
+// empty-area: a section whose content leaves a large part of it empty (on most test sites the last third of a section
+// showed only its ground), or holds its words on one side with nothing beside them.
 //   screens    empty-area (per section at every width, the hero included: the rows of the section with no content at all,
 //              above its first content as well as under its last, and the rows where content covers under half the
 //              container across a block of 25% of a screen or taller, counted by the width no content covers; together
@@ -3783,7 +3478,7 @@ const areaMod = (() => {
 // as most of the section (a tinted inset panel, a column stretched to the foot with a rule beside it) is no content:
 // what it holds is measured. A column of a row of columns (grid or flex items side by side) covers its width down the
 // height of its own content, and a row ruled above or below (a question, a line of a list) its width. A row whose
-// content covers half the container or more is full (a column beside a taller picture, a heading beside its questions). The section's padding counts as air up to 12% of a screen each side.
+// content covers half the container or more is full (a column beside a taller picture, a heading beside its questions). The section's padding counts as air up to a quarter of a screen each side (the system's is 160, 96 on a phone).
 // A picture as large as the section, a background photograph, or a mounted moment's host fills it. The container is
 // the section's .wrap, else its padding box. A plain site footer is never judged (a footer.closing is), nor a
 // statement hero with no picture in it (type on its ground by design). Read at rest on
@@ -3791,7 +3486,7 @@ const areaMod = (() => {
 const id = 'area';
 const phase = 'width';
 const checks = [{ id: 'empty-area', sev: 'FAIL', what: "a section whose empty rows (above and under its content) and empty half beside one-sided content are over 35% of its area (WARN), over 50% (FAIL)" }];
-const fixes = { 'empty-area': 'fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)' };
+const fixes = { 'empty-area': 'fill the section: a picture or a second column beside the words, or more of its own content; never a height or padding of its own to stretch it' };
 const summary = [
   '  screens    empty-area (per section at every width, the hero included: the empty rows above and under its content and',
   '             the empty half beside one-sided content, over 35% of the section\'s area WARN, over 50% FAIL; a picture, a',
@@ -3849,8 +3544,8 @@ function areaProbe() {
     const wr = wrap && shownCss(wrap) ? wrap.getBoundingClientRect() : null;
     const cl = wr ? wr.left : sr.left + (parseFloat(s0.paddingLeft) || 0), cr = wr ? wr.right : sr.right - (parseFloat(s0.paddingRight) || 0), cw = cr - cl;
     if (cw < 120) continue;
-    // the rows measured: the section less its padding, at most 12% of a screen each side
-    const T0 = S.t + Math.min(parseFloat(s0.paddingTop) || 0, 0.12 * H), T1 = S.b - Math.min(parseFloat(s0.paddingBottom) || 0, 0.12 * H);
+    // the rows measured: the section less its padding, at most a quarter of a screen each side (more is empty)
+    const T0 = S.t + Math.min(parseFloat(s0.paddingTop) || 0, 0.24 * H), T1 = S.b - Math.min(parseFloat(s0.paddingBottom) || 0, 0.24 * H);
     if (T1 - T0 < 80) continue;
     const boxes = [], colItems = [], sideBy = new Map(); let full = false;
     const add = (r, el) => {
@@ -4523,7 +4218,7 @@ async function run(ctx) {
 
 // the checks kept as blocks of their own: each runs on the walked tab at every width it names (phase 'width') or opens
 // its own tab (phase 'pass'); --no-<id> skips one
-const MODULES = [visualMod, addressMod, rhythmMod, motionMod, tilesMod, areaMod, basicsMod];
+const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod];
 
 const OUT = opt('out', null);
 // --root: a built site's folder, served instead of the page's own so its root-relative links (/style.css) resolve
@@ -4566,7 +4261,7 @@ const KNOWN = has('known-brand');
 const PAGE_FLAG = opt('page', ''), TYPE_ONLY = opt('type', ''), TYPE_FLAG = PAGE_FLAG || TYPE_ONLY;
 const target = argv[0];
 if (!target) {
-  console.error('usage: node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] [--profile dir in the OS temp folder or .taste-skill] [--category ..] [--audience ..] [--place ..] [--products ..] [--primary ..] [--known-brand] [--page tech|gaming|software|product|place|service] [--tech-subject] [--address-allow "a|b"] [--rhythm-widths 1440,768,390] [--tiles-tol 24] [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback] [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks] [--no-tiles]');
+  console.error('usage: node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] [--profile dir in the OS temp folder or .taste-skill] [--category ..] [--audience ..] [--place ..] [--products ..] [--primary ..] [--known-brand] [--page tech|gaming|software|product|place|service] [--tech-subject] [--address-allow "a|b"] [--rhythm-widths 1440,768,390] [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback] [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks]');
   process.exit(2);
 }
 // a tablet is held upright: 820 (an iPad Air) is 1180 tall, 834 is 1194, 768 is 1024 (the judge's tablet: a full walk, not only the sweep's first screen)
@@ -5526,6 +5221,7 @@ function lib() {
     for (const [el, r] of view) {
       if (!ownText(el) || !first(seen.cut, el, r)) continue;
       if (el.matches('input, textarea, select, option') || inMarquee(el)) continue; // a running line is told under marquee
+      if (el.closest('[data-moment="marquee-row"] .mo-mq__rail')) continue; // the kit's running row: its rail clips the words at its faded ends
       const c = CS(el); const fs = parseFloat(c.fontSize) || 16;
       const all = lines(el); const ls = all.filter((l) => l.bottom > 0 && l.top < vh);
       if (!ls.length) continue;
@@ -6086,6 +5782,8 @@ function lib() {
   function checkOverlap(view, first, out, vw, vh) {
     for (const [el, r] of view) {
       if (!ownText(el) || !first(seen.overlap, el, r) || inDrawn(el) || inFixed(el) || inMarquee(el)) continue;
+      // the kit's marquee-row: words its rail clips run on past the rail's end, beside its own pause button
+      if (el.closest('[data-moment="marquee-row"] .mo-mq__rail')) continue;
       const ls = lines(el).filter((l) => l.top >= 0 && l.bottom <= vh && l.left >= 0 && l.right <= vw && l.width >= 8 && l.height >= 6).slice(0, 6);
       let hit = null;
       for (const L of ls) {
@@ -6294,6 +5992,8 @@ function lib() {
     for (const [p, r] of view) {
       if (p.children.length < 2 || !first(seen.tops, p, r)) continue;
       if (inFixed(p) || inDrawn(p) || inScroller(p) || inChrome(p)) continue;
+      // the kit's offset pair (start.mjs deals it): its second figure sits lower on purpose
+      if (p.matches('.comp-offset')) continue;
       if (/masonry/.test(CS(p).gridTemplateRows || '') || /masonry/i.test(typeof p.className === 'string' ? p.className : '')) continue;
       const kids = [];
       for (const k of p.children) {
@@ -7218,7 +6918,7 @@ function lib() {
     const hosts = [...document.querySelectorAll('[data-big-scene], [data-moment][data-moment-mounted], [data-scroll-moment]')];
     // (a part of a section that holds a dealt moment, its sticky stage beside the moment's host, is the moment's too)
     const secHost = (el) => { const m = momentSec(el); return m ? (m.matches('[data-moment][data-moment-mounted]') ? m : m.querySelector('[data-moment][data-moment-mounted]')) : null; };
-    return list.map((id) => { const el = els.get(id); if (!el) return null; const h = el.closest('[data-big-scene], [data-moment][data-moment-mounted], [data-scroll-moment]') || hosts.find((x) => el.contains(x)) || secHost(el); return h ? { kind: h.matches('[data-moment][data-moment-mounted], [data-scroll-moment]') ? 'moment' : 'scene', key: hosts.indexOf(h) } : null; });
+    return list.map((id) => { const el = els.get(id); if (!el) return null; const h = el.closest('[data-big-scene], [data-moment][data-moment-mounted], [data-scroll-moment]') || hosts.find((x) => el.contains(x)) || secHost(el); return h ? { kind: h.matches('[data-moment][data-moment-mounted], [data-scroll-moment]') ? 'moment' : 'scene', key: hosts.indexOf(h), id: String(h.getAttribute('data-moment') || h.getAttribute('data-big-scene') || '').trim() } : null; });
   }
   // (--quick) inside a held section or a scroll scene, whose motion was not checked
   function insideScene(list) {
@@ -8746,7 +8446,7 @@ function lib() {
     fresh(); notePrints();
     const vw = vwNow(), vh = innerHeight, S = sectionsList();
     const visible = (e) => { const r = e.getBoundingClientRect(); return r.width >= 1 && r.height >= 1 && shown(e, r); };
-    const out = { prints: [...prints.values()], grounds: [], splits: [], hours: [], toggle: null, short: [] };
+    const out = { prints: [...prints.values()], grounds: [], splits: [], hours: [], toggle: null };
     // grounds: the flat grounds the page lays across its width (a section, a band, a footer); a picture, a gradient or an
     // effect is the lit ground of its visual, not one more ground
     { const seen = [];
@@ -8969,18 +8669,6 @@ function lib() {
     { const head = [...document.querySelectorAll('header, [role="banner"], body > nav, [data-nav]')].find((h) => { const r = h.getBoundingClientRect(); return r.top < 120 && r.width >= vw * 0.5 && r.height > 0 && r.height < 200; });
       const tg = head && [...head.querySelectorAll(INTER)].find((e) => visible(e) && (e.matches('[aria-expanded], [aria-controls]') || /menu|burger|toggle/i.test(((typeof e.className === 'string' ? e.className : '') + ' ' + (e.getAttribute('aria-label') || '')))) && e.getBoundingClientRect().width <= 64);
       if (tg) { const b = rgba(CS(tg).backgroundColor), bd = backdrop(tg); if (b.a >= 0.3 && !(bd && cdist(b, bd) < 10)) out.toggle = { id: idOf(tg), sel: sel(tg), text: '', fill: hex(b), doc: D(tg.getBoundingClientRect()) }; } }
-    // one-screen (house rule: "you only see one section at a time"): a section shorter than the screen shows its
-    // neighbour's heading or picture with it
-    { const navH = (() => { const h = [...document.querySelectorAll('header, [role="banner"], body > nav')].find((x) => /fixed|sticky/.test(CS(x).position)); return h ? Math.min(140, h.getBoundingClientRect().height) : 0; })();
-      const main = S.filter((s) => s.tagName !== 'FOOTER');
-      for (let i = 1; i < main.length; i++) {
-        const s = main[i], r = s.getBoundingClientRect(), room = vh - navH;
-        if (r.height >= room - 24 || r.height < vh * 0.45) continue; // a screen or more, or a strip (logos, figures)
-        const nx = S[i + 1]; if (!nx) continue;
-        const h = nx.querySelector('h1, h2, h3, img, canvas, [data-ui], .frame'); if (!h) continue;
-        const nh = h.getBoundingClientRect(), shows = nh.top - r.top < room - 8;
-        if (shows) out.short.push({ id: idOf(s), sel: sel(s), text: label(s.querySelector('h1, h2, h3') || s).slice(0, 40), h: Math.round(r.height), room: Math.round(room), next: label(nx.querySelector('h1, h2, h3') || nx).slice(0, 30), doc: D(r) });
-      } }
     return out;
   }
   // hover: what a button or a link does under the pointer (house rule: micro-animations, button hovers); its look
@@ -9252,7 +8940,7 @@ const FIX = {
   'row-gap': 'fill the row at this width: span the columns, or stack the split',
   'fold-card': 'end the card inside the first screen, or start it lower, so its whole edge shows',
   'hover-spill': 'keep the hover state inside its column: no growth past the container',
-  'collide': 'on a phone nothing lies on anything else: let the section grow with its content (min-height for its screens, never a fixed height; --hm: 2 when it needs two) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar\'s height (top: the first section; end: the footer)',
+  'collide': 'on a phone nothing lies on anything else: let the section grow with its content (never a fixed height) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar\'s height (top: the first section; end: the footer)',
   'tap-size': 'make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box',
   'overlap-text': 'move the box off the text (or the text off the box)',
   'cut-text': 'give the text room: no overflow clipping a line, no line past its box',
@@ -9296,7 +8984,7 @@ const FIX = {
   'loop-pause': 'add a pause button to the visual, or stop the loop on its finished picture within 5 s',
   webgl: 'at most 4 live WebGL contexts: mount each effect when it comes on screen and destroy it when it leaves',
   'copy-headline': 'say what is sold, and for whom or where, in the hero: the h1 in the form on the voice card (2 to 9 words), the category plain in the lead or the eyebrow',
-  'copy-fact': 'put one hard fact from the brief on the first screen: a number, a price, a date, the place, the platforms it runs on or a game\'s genre; take it from the brief or remove the claim',
+  'copy-fact': 'put one hard fact on the first screen: a number, a price, a date, the place, the platforms it runs on or a game\'s genre; take it from the brief, or when the brief has none, a plausible one marked data-assumed and listed in the report (a price, the district)',
   'copy-headings': 'name the thing in every heading: the product, a part, the place or a section noun',
   'copy-buttons': 'label buttons with a verb and what the visitor gets ("Book a room", "Start free trial")',
   'copy-actions': 'few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close',
@@ -9337,7 +9025,6 @@ const FIX = {
   'font-load': 'load every family the type asks for: name it in the font link as start.mjs prints it, spelt as Google Fonts spells it, or ask for a family the page loads',
   'fold-action': 'bring the hero\'s buttons onto the first screen: a shorter headline or line, the picture under the buttons',
   'action-count': 'the main action in the nav, the hero and the closing call; give the other sections their own action',
-  'one-screen': 'give each section the screen (min-height: 100svh less the nav, its content centred), or join two short ones',
   'product-shown': 'show the product itself: the client\'s photographs of it; a physical product with no photographs: stand-in photographs of its kind (photos.mjs search), a render (assets/objects/product-render, [data-product]) only when the brief asks for 3D, never mood stock in its place; drawn at 80% of the content width or more (60% FAILs), each view of it shown once',
   hover: 'give buttons and links a small answer to the pointer (the motion layer: a fill change, a drawn underline, an arrow that moves)',
 };
@@ -9621,7 +9308,7 @@ function extrasFindings(X, PG, AU, first, later, vw) {
   for (const f of X.formNest) push('nesting', 'WARN', f, `the form sits ${f.chain.length} boxes deep: ${f.chain.join(' > ')}`, { fix: 'set the form on the section or on one card: its fields are the second box' });
 }
 // ---------------------------------------------------------------- v4: what the readers still counted
-// photo-print, grounds, split-align, fact-agree, the menu button's fill, one-screen (read in the page by moreChecks),
+// photo-print, grounds, split-align, fact-agree, the menu button's fill (read in the page by moreChecks),
 // fold-action and action-count (read from the page's actions)
 function moreFindings(M, PG, first, later, vw, vh, T) {
   const push = (check, sev, x, msg, extra) => later.push(Object.assign({ check, sev, id: x ? x.id || 0 : 0, sel: x ? x.sel : '(the page)', text: x ? String(x.text || '').slice(0, 48) : '', msg, doc: x ? x.doc || null : null }, extra || {}));
@@ -9706,11 +9393,6 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
   if (first) for (const l of (M.thisLinks || []).slice(0, 2)) push('links', 'WARN', l, `${l.n} "${l.text}" links in ${l.n} cards all go to ${l.href}: none says which one was chosen`, { more: l.more, fix: 'let each link carry its choice (#booking?room=fjara, a preset the form reads), or name the shared target ("Book a room")' });
   // fact-agree: one day, two opening hours
   if (first) for (const h of M.hours.slice(0, 2)) push('fact-agree', h.two ? 'FAIL' : 'WARN', h, `the opening hours disagree for ${h.days.map((d) => d[0].toUpperCase() + d.slice(1)).join(', ')}: ${h.say[0]} against ${h.say.slice(1).join(', ')}`, { more: h.more, fix: 'say each opening time once, or the same everywhere (a table of the week, and the same figures in the hero and the visit block)' });
-  // one-screen: a section shorter than the screen, its neighbour's heading or picture in view with it (at a desktop width)
-  if (vw >= 1000 && M.short.length) {
-    const s = M.short[0];
-    push('one-screen', 'WARN', s, `${M.short.length} section${M.short.length > 1 ? 's are' : ' is'} shorter than the screen, so the next one's heading or picture shows with ${M.short.length > 1 ? 'them' : 'it'}: "${s.text}" is ${s.h}px of the ${s.room}px under the nav, and "${s.next}" shows below it${M.short.length > 1 ? ` (${M.short.slice(1, 4).map((x) => `"${x.text.slice(0, 20)}"`).join(', ')})` : ''}`, { more: M.short.slice(1, 4).map((x) => x.doc), fix: 'give each section the screen (min-height: 100svh less the nav, its content centred), or join two short ones into one' });
-  }
 }
 // shader-lint: GLSL ES reserved words used as names. SwiftShader (the checker's CPU WebGL) compiles some of them; a strict
 // GPU driver rejects the whole shader and the visual stays empty (a struct field named flat left a hero blank)
@@ -10138,7 +9820,7 @@ const LOST_CHECKS = {
   orphan: [['orphan'], 'orphan words'], contrast: [['contrast'], 'contrast'], 'top-stagger': [['top-stagger'], 'the top edges'],
   extras: [['same-object', 'photo-repeat', 'photo-weight', 'button-styles', 'caption', 'credit-wall', 'heading-scale', 'nav-labels', 'nesting', 'placeholder', 'progress-bar', 'proximity', 'sample-label', 'tab-wrap', 'ui-centre', 'unit-break'], 'the page-wide reads (repeated objects and photographs, picture weight, buttons, captions, credits, headings, nav labels, nesting, stand-in text, progress bars, tabs, units)'],
   audit: [['caption', 'card-layout', 'col-edge', 'effect-repeat', 'nesting', 'placeholder', 'pricing-tiers', 'proximity', 'sample-label'], 'the page audit (captions, card layouts, column edges, repeated effects, nesting, stand-in text, price tiers, spacing)'],
-  more: [['action-count', 'button-styles', 'copy-length', 'fact-agree', 'fold-action', 'grounds', 'links', 'one-screen', 'photo-print', 'product-shown', 'split-align'], 'the page-wide reads (the main action, buttons, copy length, facts, the first fold, grounds, links, prints on photographs, the product shown, split alignment)'],
+  more: [['action-count', 'button-styles', 'copy-length', 'fact-agree', 'fold-action', 'grounds', 'links', 'photo-print', 'product-shown', 'split-align'], 'the page-wide reads (the main action, buttons, copy length, facts, the first fold, grounds, links, prints on photographs, the product shown, split alignment)'],
 };
 function lose(errors, name, e, msg) {
   const why = msg ?? (e && e.message) ?? String(e);
@@ -10222,7 +9904,7 @@ function groupSame(F) {
   }
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
-const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object', 'font-load'];
+const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
 ORDER.splice(ORDER.indexOf('overlap-text') + 1, 0, 'collide', 'tap-size');
@@ -10245,8 +9927,6 @@ const sameFault = (f, L) => {
   // one cause, one finding: effects-fit already tells the WebGL, the shader code and the effect parts on a no-effect page
   if (f.check === 'effect-kind' && /contexts live at once/.test(f.msg) && L.some((g) => g.check === 'webgl')) return true; // (the host's webgl FAIL tells it)
   if (f.check === 'effect-kind') return /WebGL context|shader code|shader source|effect parts/.test(f.msg) && L.some((g) => g.check === 'effects-fit');
-  // a section tile showing two sections that hero-screen, section-height or one-section already tells on that section
-  if (f.check === 'section-tile') return tilesMod.dupOf(f, L);
   return false;
 };
 async function runWidth(cdp, helper, { w: width, h }, first) {
@@ -10879,14 +10559,17 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       if (q && q.on) { shots.push(await tab.shot()); Object.assign(p, { gap: q.gap, top: q.top, bottom: q.bottom, band: q.band, on: true, stop: shots.length - 1 }); }
     }
     const heldSecs = new Set(held.map((H) => H.sec));
-    // a dealt statement moment's own section (one large statement in its screen, sections.md) has the air of its design on
-    // both sides: its gaps are left out, as empty-area and T-fill read the moment's host as filled
+    // a dealt statement moment's own section (one large statement, sections.md) has the air of its design on both sides:
+    // its gaps are left out, as empty-area and section-height read the moment's host as filled
     // (the moments that fit a statement: assets/moments/index.json "fits")
     const stmtIds = (() => { try { return (JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []).filter((m) => (m.fits || []).includes('statement')).map((m) => m.id); } catch { return []; } })();
     const stmt = new Set((await safe('stmt', () => tab.eval(`window.__cc.stmtSecs(${JSON.stringify(stmtIds)})`))) || []);
     const P = [...pairs.values()].filter((p) => !stmt.has(p.i) && !stmt.has(p.i + 1)).sort((a, b) => a.i - b.i).map((p) => Object.assign(p, { est: !p.on, stop: p.on ? p.stop : null }));
-    const gaps = P.filter((p) => p.gap >= 0);
+    // the hero's foot is its own (it fills the first screen, its content ends --hpadb above the fold): the gap after it
+    // is no measure of the page's air between sections
+    const gaps = P.filter((p) => p.gap >= 0 && p.i > 0);
     for (const p of P) {
+      if (p.gap >= 0 && p.i === 0) continue;
       if (p.gap < 0) { F.push({ check: 'section-gaps', sev: 'WARN', id: 0, sel: `${p.a} / ${p.b}`, text: '', stop: p.stop, rects: p.stop == null ? [] : [{ left: 0, top: p.bottom, width: vw, height: p.top - p.bottom }], msg: `the sections overlap by ${-p.gap}px${heldSecs.has(p.i) || heldSecs.has(p.i + 1) ? ' (one is held on screen while the other slides over it)' : ''}` }); continue; }
       const kind = gaps.filter((q) => q.band === p.band);
       const pool = kind.length >= 3 ? kind : gaps;
@@ -11164,8 +10847,9 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         const grounds = (await tab.eval(`[...document.querySelectorAll('[data-fx], [data-fx-mounted], [data-scene], [data-big-scene]')].map((e) => e.getAttribute('data-fx') || e.getAttribute('data-scene') || e.getAttribute('data-big-scene') || 'an effect').slice(0, 4)`).catch(() => [])) || [];
         const pr = (await tab.eval('window.__cc.moreChecks().prints.length').catch(() => 0)) || 0;
         // 2.5.2: one quiet treatment (meta "treatment": true) in one context, beside a scene that fits, is allowed
-        const asked1 = G.asked - (G.prodAsked || 0), notScene = grounds.filter((g) => !sceneFitsKind(g, TYPE));
-        const treatOnly = !pr && asked1 <= 1 && notScene.length === 1 && isTreatment(notScene[0]);
+        // (the helpers live in the visuals module: visualMod.kit; named bare here they were never defined)
+        const asked1 = G.asked - (G.prodAsked || 0), notScene = grounds.filter((g) => !visualMod.kit.sceneFitsKind(g, TYPE));
+        const treatOnly = !pr && asked1 <= 1 && notScene.length === 1 && visualMod.kit.isTreatment(notScene[0]);
         if (!treatOnly && (TYPE !== 'product' || grounds.length || pr)) F.push({ check: 'effects-fit', sev: 'FAIL', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `a ${KIND || TYPE} page${KIND_FROM && KIND_FROM !== '--type' ? ` (${KIND_FROM})` : ''} asks for ${G.asked - (G.prodAsked || 0)} WebGL context${G.asked - (G.prodAsked || 0) > 1 ? 's' : ''}${fx.length ? ` (${fx.join(', ')})` : ''}${TYPE === 'product' ? `: ${grounds.length ? `effect grounds (${[...new Set(grounds)].join(', ')})` : ''}${grounds.length && pr ? ' and ' : ''}${pr ? 'a print over its photographs' : ''}` : ''}: shader effects are for tech, software, AI and gaming pages${TYPE === 'product' ? ' (a product may show a render of itself)' : ''}` });
       }
     }
@@ -11184,23 +10868,32 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         for (const x of rest) F.splice(F.indexOf(x), 1);
       }
     }
-    // House rule (motion.md, The rule): every kind deals one or two moments, each in a section of its own
-    // ([data-moment]) that may follow the scroll or hold itself with position: sticky; a tech, gaming or software page may
-    // also hold one big scene. What moves with the scroll inside the first two moments (and the first scene) is a WARN,
-    // the moment's own motion, not a FAIL (the reduced-motion pass still wants its still, and effect-kind counts past the
-    // allowance); anything else that follows the scroll stays a FAIL
+    // House rule (motion.md, The rule): every kind deals two moments (three on a long page), each in a section of its own
+    // ([data-moment]) that may follow the scroll or hold itself with position: sticky, and about one page in two one big
+    // scene by fit (a place or service page a warm, quiet or lively one; scenes.md). What moves with the scroll inside
+    // the first three moments and the first scene is their own motion: for the kit's own dealt part (its id in
+    // assets/moments or assets/scenes, a scene that fits the kind) it is not told at all, since the deal put it there and
+    // the reduced-motion pass still judges its still; for a part of the builder's own (data-scroll-moment, an unknown id)
+    // a WARN. Anything else that follows the scroll stays a FAIL
     {
+      const { MOMENT_PAGES: KIT_MOMENTS, sceneFitsKind: fitsScene, readMeta: kitMeta } = visualMod.kit;
+      const kitMoment = (m) => !!(m.id && KIT_MOMENTS[m.id]);
+      const sceneOk = (m) => TYPE === 'software' || TECH || fitsScene(m.id, TYPE);
+      const kitScene = (m) => !!(m.id && kitMeta('scenes', m.id));
+      const drop = new Set();
       const sl = F.filter((f) => (f.check === 'scroll-linked' || f.check === 'pinned') && f.id);
       const mo = sl.length ? (await safe('moments', () => tab.eval(`window.__cc.momentOf(${JSON.stringify(sl.map((f) => f.id))})`))) || [] : [];
       const keep = { scene: [], moment: [] };
       sl.forEach((f, i) => {
-        const m = mo[i]; if (!m || (m.kind === 'scene' && TYPE !== 'software')) return;
+        const m = mo[i]; if (!m || (m.kind === 'scene' && !sceneOk(m))) return;
         const k = keep[m.kind]; if (!k.includes(m.key)) k.push(m.key);
-        if (k.indexOf(m.key) < (m.kind === 'scene' ? 1 : 2)) { f.sev = 'WARN'; f.msg += m.kind === 'scene' ? ` (a big scene on a ${KIND} page: allowed, one scene at most, house rule; its still is judged under reduced motion)` : ' (inside a dealt moment\'s section, [data-moment]: expected on every kind, two moments at most, house rule; its still is judged under reduced motion)'; }
+        if (k.indexOf(m.key) >= (m.kind === 'scene' ? 1 : 3)) return;
+        if (m.kind === 'scene' ? kitScene(m) : kitMoment(m)) { drop.add(f); return; }
+        f.sev = 'WARN'; f.msg += m.kind === 'scene' ? ` (a big scene on a ${KIND} page: allowed, one scene at most, house rule; its still is judged under reduced motion)` : ' (inside a moment\'s section, [data-moment]: expected on every kind, three moments at most, house rule; its still is judged under reduced motion)';
       });
-      // an enter moment (picture-develops runs once as it comes on screen) reveals as it is scrolled to: inside the
-      // first two moments' sections a WARN; three or more parts of one moment revealed one by one are cards, rows or
-      // tiles entering on scroll, which no moment does: they stay a FAIL
+      // an enter moment (picture-develops, lines-rise) reveals as it is scrolled to: inside the first three moments'
+      // sections the kit's own is not told (a builder's own a WARN); three or more parts of one moment revealed one by
+      // one are cards, rows or tiles entering on scroll, which no moment does: they stay a FAIL
       const rv = F.filter((f) => f.check === 'scroll-reveal' && f.id);
       const rm = rv.length ? (await safe('moments', () => tab.eval(`window.__cc.momentOf(${JSON.stringify(rv.map((f) => f.id))})`))) || [] : [];
       const per = new Map();
@@ -11209,8 +10902,11 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         const m = rm[i]; if (!m || m.kind !== 'moment') return;
         const k = keep.moment; if (!k.includes(m.key)) k.push(m.key);
         const parts = Math.max(per.get(m.key), (f.msg.match(/^(\d+) parts/) || [0, 1])[1] | 0);
-        if (k.indexOf(m.key) < 2 && parts < 3) { f.sev = 'WARN'; f.msg += ' (inside a dealt moment\'s section, [data-moment]: an enter moment is expected on every kind; its still is judged under reduced motion)'; }
+        if (k.indexOf(m.key) >= 3 || parts >= 3) return;
+        if (kitMoment(m)) { drop.add(f); return; }
+        f.sev = 'WARN'; f.msg += ' (inside a moment\'s section, [data-moment]: an enter moment is expected on every kind; its still is judged under reduced motion)';
       });
+      for (const f of drop) F.splice(F.indexOf(f), 1);
     }
     // one fault under one id: what empty-visual, caption or effects-fit tells is not told again by the visuals block
     // (only when that check tells it as gravely: a figcaption caption WARNs as a credit stays a visual-caption FAIL)
@@ -11221,7 +10917,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // a fault inside a scroll-linked animation is caught mid-way: a WARN (the animation is the FAIL, told on its own);
     // with --quick, the same for anything in a held section or a scroll scene, whose motion was not checked
     // (what does not depend on where a moving part was caught keeps its severity: sizes, words, links, pictures, loops)
-    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'font-load', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object']);
+    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'font-load', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object']);
     for (const M of MODULES) for (const c of M.checks) told.add(c.id);
     const ids = F.map((f) => (told.has(f.check) ? 0 : f.id || 0));
     const inside = (await safe('inside', () => tab.eval(`window.__cc.insideMoving(${JSON.stringify(ids)})`))) || [];

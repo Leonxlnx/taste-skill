@@ -16,9 +16,10 @@
     "warm"
   ],
   "intensity": "lively",
-  "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut.",
+  "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut. When the two grounds are too close to tell apart, the panel is moved lighter or darker until the disc reads, and the ring is 2px with a soft shade.",
   "reduced": "The section stands on its own ground, no panel, no ring.",
-  "phone": "The section stands on its own ground, no panel, no ring.",
+  "phone": "It runs on a phone as on a desktop: the inset panel in the old ground opens its disc as the section rises, each block fading in whole.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {

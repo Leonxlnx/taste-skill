@@ -25,7 +25,13 @@
 
   The stage holds for one screen of scroll, so the live section is exactly two screens (layout-v4.md);
   with 2 to 4 steps each step gets a quarter to a half of a screen of scroll.
+  A phone gets the light version, nothing pinned: the steps stand with their visuals under them, the step
+  in hand (the one crossing the middle of the screen) takes the accent rule at its left, and each visual's
+  picture settles from a close crop (scale 1.08) to its framing as it rises through the screen. One
+  transform a picture, one colour a rule; nothing is hidden.
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const steps = [...root.querySelectorAll('.mo-pc__step')];
   const frame = root.querySelector('.mo-pc__visuals');
@@ -74,12 +80,44 @@ export default function (root, opts, lib) {
     steps.forEach(s => s.classList.remove('is-on'));
     k = -1;
   };
-  const sync = () => { const f = fits(); if (f) go(); else rest(); root.classList.toggle('is-static', !f && wide()); };
+  // the phone version: no pin; the step in hand and each picture's settle follow the scroll
+  let pscrub = null;
+  const pics = figures.map(f => f.querySelector('img'));
+  const phoneGo = () => {
+    if (pscrub) return;
+    root.classList.add('is-phone');
+    pscrub = lib.scrub(root, () => {
+      const vh = innerHeight;
+      let on = 0;
+      steps.forEach((s, n) => { if (s.getBoundingClientRect().top < vh * 0.55) on = n; });
+      // (the last step, once it stands whole on screen: a section at the foot of the page can never bring it to the middle)
+      if (steps[steps.length - 1].getBoundingClientRect().bottom <= vh - 8) on = steps.length - 1;
+      steps.forEach((s, n) => s.classList.toggle('is-on', n === on));
+      pics.forEach(img => {
+        if (!img) return;
+        const r = img.parentElement.getBoundingClientRect();
+        const q = lib.ease.out(lib.clamp((vh - r.top) / (vh * 0.75)));
+        img.style.transform = q >= 0.999 ? '' : `scale(${(1.08 - 0.08 * q).toFixed(4)})`;
+      });
+    }, { mode: 'view' });
+  };
+  const phoneRest = () => {
+    if (!pscrub) return;
+    pscrub.destroy(); pscrub = null;
+    root.classList.remove('is-phone');
+    steps.forEach(s => s.classList.remove('is-on'));
+    pics.forEach(img => { if (img) img.style.transform = ''; });
+  };
+  const sync = () => {
+    const f = fits();
+    if (f) { phoneRest(); go(); } else { rest(); if (!lib.reduced() && lib.phone()) phoneGo(); else phoneRest(); }
+    root.classList.toggle('is-static', !f && wide());
+  };
   sync();
   let t = 0;
   const onResize = () => { clearTimeout(t); t = setTimeout(sync, 120); };
   addEventListener('resize', onResize);
   const rq = matchMedia('(prefers-reduced-motion: reduce)');
   rq.addEventListener('change', sync);   // a preference changed after load: go static (or live) at once
-  return { destroy() { removeEventListener('resize', onResize); rq.removeEventListener('change', sync); rest(); root.classList.remove('is-static'); } };
+  return { destroy() { removeEventListener('resize', onResize); rq.removeEventListener('change', sync); rest(); phoneRest(); root.classList.remove('is-static'); } };
 }

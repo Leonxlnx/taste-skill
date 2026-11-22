@@ -1,4 +1,4 @@
-# Layout: one section per screen, equal edges, heroes, type
+# Layout: the first screen, sections and their air, equal edges, heroes, type
 
 The layout spec for every page (house rules 3, 4 and 6). `system.css` implements the tokens, the
 section box, the grid and the hero frame; `assets/layout/` holds the heroes (`layout.css`,
@@ -11,101 +11,79 @@ section box, the grid and the hero frame; `assets/layout/` holds the heroes (`la
 
 - figma.com and x.ai (the reference recording): the hero fills the first screen and nothing of the next
   section shows at load; sections hold 0.45 to 1.25 screens of content with about a quarter screen
-  between them. Both still show a neighbour in a shot of one section: the look the house asks us to go
-  past.
+  between them, and a shot of one section often shows the next: the air between them does the parting.
 - A study of 327 sites at 1440x900 and 390x844: the hero is alone on the first screen on 78% of
   company sites; a section shows alone more often the taller it is (0.29 under 0.6 screens, 0.80
   at 0.95 to 1.1) and the wider the gap (0.42 under 60px, 0.82 at 220px and more). Its place sample
   holds no local shops, so the place numbers below are the house's own ask and taste, not measurements.
-- So the look comes from heights and padding only: every section is exactly one or two screens.
+- So the look comes from the first screen and the air: the hero alone on it, then every section as
+  tall as its content with the same generous padding round it (a third of a screen between two
+  sections' content at 1440). A section held to a whole screen stretched short content into empty
+  bands on every test page and made builders cut content to fit; that model is gone.
 
-## 2. One section per screen
+## 2. Sections as tall as their content
 
-**The judge tile.** The "shot" is the screen at scrollY = k x H (k x 900 at 1440x900, k x 844
-at 390x844). Every tile shows exactly one section, the hero included. Plan the page as a list of
-screens before building. `html { scroll-padding-top: 0; scroll-behavior: auto }`, so an anchor jump
-lands on a tile (the fixed header covers the top of the section's padding).
+**The first screen.** The hero fills it alone and nothing of the next section shows at load (section
+3). It is the one screen the page is cut to. `html { scroll-padding-top: 0; scroll-behavior: auto }`,
+so an anchor jump lands on a section's top (the fixed header covers part of its top padding).
 
 **The shell.** `body` renders only `header.nav`, `main`, `footer.closing` and, on a phone,
 `nav.actionbar` (plus script, style, template). No popups, newsletter modals, chat bubbles, help
 pills, back-to-top squares, badges, award strips or asks in a modal; nothing else is fixed.
 
-**The section box.** `main > section` and `footer.closing` are `height: calc(var(--h,1) * 100svh)`,
-padded `--padt` above and `--padb + --bar` below; `--h` is 1 or 2. Under 640px non-hero sections use
-`100lvh` and `--hm` (set it when stacking makes the content taller). `.wrap` is a section's only
-in-flow child (`z-index: 1`); a layer sits beside it. Never `min-height` alone, never `dvh`, never a
-third screen, never a height set by script.
+**The section box.** `main > section` and `footer.closing` are as tall as their content: `--padt`
+above the h2 and `--padb` under the last block (160 and 160 from 1024, 128 on a tablet, 96 on a
+phone; `footer.closing` adds `--bar`, the phone action bar). So the content of two sections always
+sits `--padb + --padt` apart, 320px at 1440, 256 on a tablet, 192 on a phone: the same air
+everywhere, and a lot of it. `.wrap` is a section's only in-flow child (`z-index: 1`); a layer sits
+beside it, and from 640 a section with a layer is at least 80% of the screen. Never a height,
+min-height or padding of your own on a section, never `dvh`, never a height set by script. `--h`,
+`--hm`, `.g2`, `.g2m` and `.fill` (the old screen counts) are read nowhere: they change nothing.
 
 ```html
-<section class="section" id="features" style="--h: 2"><div class="wrap"> the h2 first, then the content </div></section>
+<section class="section" id="features"><div class="wrap"> the h2 first, then the content </div></section>
 ```
 
-**Content windows** (content height c, the h2's top to the last content's bottom; one screen holds
-708px at 1440x900, y 120 to 828):
-
-| c at 1440x900 | Screens |
-|---|---|
-| under 360 | merge into the section above, or add the picture it lacks |
-| 360 to 495 | one screen, a warning: give it its picture |
-| 495 to 708 | one screen |
-| 708 to 1,320 | no height fits: cut to 708, split into two sections (each 495+ with its own h2), or `.g2` |
-| 1,320 to 1,608 | two screens (1,200 to 1,320 warns) |
-| over 1,608 | split |
-
-At 390 (`--padt` 96, `--padb` 48 plus the bar): one screen holds 464 to 700 - bar, two hold 1,268
-to 1,544 - bar; between, use `.g2m` or cut the phone copy. Split or cut a long feature grid; never
-shrink it.
-
-**The tablet (640 to 1023; the judges hold it upright at 768x1024 and 820x1180).** There the box
-grows past its screens rather than overlap, so a section a little too tall pushes every later
-section off the screen grid and each tile shows one section's tail and the next one's head, cards
-cut by the tile's edge (seen at 768). Stacked content c at 768x1024 (the stricter):
-
-| c at 768x1024 | Do |
-|---|---|
-| up to 832 | one screen |
-| 832 to 1,130 | cut to one screen: a lower `--p-h` for the group at tablet, the split's frame as `.fill` (it takes what is left), the grey line or a fourth card out |
-| 1,130 to 1,856 | two screens there, `@media (min-width: 640px) and (max-width: 1023px) { #<id> { --h: 2 } }` (the one page-CSS rule on a section), no card row across the screen line at 1024 |
-
-Run `consistency.mjs` with `--rhythm-widths 1440,820,768,390`: its SR-2 `section-height` then
-fails a section that is not one or two screens at the tablet too (the default runs 1440, 768 and 390; this adds 820). The system's 48px tablet gutter is right: never widen it.
-
-- **Two screens as two groups:** `.g2` (or `.g2m`, phone only) makes the `.wrap` two rows, each at
-  most 708px; row 1 holds the h2 and the first group (360 to 708), row 2 the rest (420 to 708) with
-  no second h2, starting `--padt` under the second screen's top, so the second tile looks like any
-  other section. A total of 708 to 780 has no legal height: add or cut up to 72px.
-- **Top-aligned:** the one h2 is the first content, `--padt` (120, 96 on a phone) under the section
-  top, 48 under the header in the tile, like the hero's h1. Never centre content vertically; never a
-  second h2.
-- **Fill: the content reaches the section's foot.** In testing, sections had their content at the
-  top and 130 to 330px of empty ground under it, statements 55 to 70% empty. `system.css` (fill)
-  now grows the last block of a one-screen section down to the foot by itself: a split's picture
-  (`.pl-photo`, `figure.media`, `.frame--fill`) takes the row's full height, a row of tiles gives
-  the rest to their photographs, open cards to their panels; a statement (`section.statement`)
-  sets its words from the screen's height at the foot. So build a split as words beside a picture
-  and let the picture grow; never put a short block in a section on its own. No section leaves more
-  than about 15% of its height empty under its content at 1440 or at 390. `.pl-photo--keep` keeps
-  one picture at its ratio (a product cut-out). A short block is merged or given its picture, never
-  centred alone in an empty screen.
-  A quote, logo row, stat row or FAQ that alone holds under 495px (464 at 390) merges into the
+- **Content decides the length.** Never cut content to fit a screen, and never hide it on a phone
+  to make a section shorter. In testing, builders dropped a wine bar's menu, a hotel's location and
+  an FAQ question, and hid six blocks with `display: none` at 390, to meet a screen count. A long
+  menu, six rooms, ten questions: the section grows. Split a section only where the subject
+  changes, each part with its own h2.
+- **Air, never an empty band.** A section ends where its content ends, `--padb` under it; nothing
+  is stretched to fill a screen. Pictures keep their own ratio: a split's photograph stands beside
+  the words at its ratio, top-aligned with them (a `.frame--fill` also grows with its row when the
+  words run taller); tiles keep `--tile-ratio`, a card's panel its `--p-h`. A frame names its ratio
+  (`.frame--portrait`, `--square`, `--split`, or `--ratio`); one that names none and holds only a
+  photograph laid over it is 4:3, never 0px. Nothing is pulled apart with `space-between`.
+- **Short blocks merge.** A quote, a logo row or a stat row that alone is a few lines goes into the
   section above as its last element, with no heading or ground of its own. No strip sections.
+- **Top-aligned:** the one h2 is the first content, `--padt` (160, 96 on a phone) under the section
+  top, about 88px under the header when an anchor lands on it. Without a `.section-head` round them,
+  the h2 and its lead keep the head's spacing (16px, then `--head-gap` before the content). Never
+  centre content vertically; never a second h2.
 - **Separation** by a full-width ground change or space only: no rules, shadows or inner hairlines
   between or inside sections, and no inset coloured box standing in for a ground. A list may close
   each row with a 1px rule inside the content edges.
-- **The close and the footer are one section,** `footer.closing` (one screen; `.g2m` allowed on a
-  phone): `footer.closing > .wrap` holds exactly two children, row 1 the dealt close and row 2 the
-  links and the legal row. No separate closing band.
+- **The close and the footer are one section,** `footer.closing`, as tall as what it holds:
+  `footer.closing > .wrap` holds exactly two children, row 1 the dealt close and row 2 the links and
+  the legal row, 128px apart (64 on a phone), so a form or a photograph never runs under the
+  columns. No separate closing band.
 - **No scroll tricks:** no scroll-snap, scroll-jacking or smooth-scroll library. The one exception:
-  the big scene (tech) and a dealt scroll moment (every kind, `moments.md`) run inside their own
-  section (`data-big-scene`, `data-moment`), which stays exactly 1H or 2H (a scene with
-  `{"hold": 1}`: two screens live; its composition at rest one or two, `scenes.md`, Its height),
-  except `photo-chapters`, which is (hold + 1) whole screens live (3H for three chapters, 4H for four
-  or five, set by the moment; no `--h` on it) and as tall as its chapters at rest; they may pin only
-  with `position: sticky` inside that box. Nothing else on any page is sticky.
+  the big scene and a dealt scroll moment (every kind, `moments.md`) run inside their own section
+  (`data-big-scene`, `data-moment`) at the heights their own modules set: a scene's section keeps
+  the `--h` it writes (its composition at rest one or two screens, (hold + 1) live: `scenes.md`, Its
+  height); `photo-chapters` and `pinned-chapters` are (hold + 1) whole screens live, set by the
+  moment, and as tall as their chapters at rest. They may pin only with `position: sticky` inside
+  that box. Nothing else on any page is sticky.
+
+`consistency.mjs` reads it (SR-2 `section-height`: an empty band beyond a section's padding, or a hole
+inside it, a third of its height or more FAILs, a sixth WARNs; SR-3 `section-air`: two sections'
+content under 128px apart, 96 on a phone, or over 600 FAILs), at 1440, 768 and 390 by default;
+`--rhythm-widths 1440,820,768,390` adds the tablet held upright.
 
 ## 3. The hero
 
-- **Exactly the first screen,** `100svh`, `--h: 1; --hm: 1`, the fixed header over its top:
+- **Exactly the first screen,** `100svh`, the fixed header over its top:
   padding-top `--nav + --photo + --hgap` (120 at 1440, 96 on a phone), padding-bottom `--hpadb +
   --bar` (64, 24 + bar on a phone). Content ends by y 836 at 1440x900. Nothing of the next section
   shows at 1440, 1280, 1024, 820, 768 and 390.
@@ -223,7 +201,8 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 - The photograph is real and of this place in daylight: the room from the door, the counter with
   the machine, bread on shelves, the shopfront with customers, the workshop stand, an arrangement in
   a real room, the best room or the house. Never a mood shot, scenery, a cut-out or a hazy file; a
-  florist never opens without flowers. The visit block is screen two, never inside the first.
+  florist never opens without flowers. The visit block is the section after the hero, never inside
+  the first screen.
 
 ## 4. Equal edges and the grid
 
@@ -249,7 +228,8 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
   visual, both 342.
 - **Pictures:** a photograph spans 0 to the viewport as a layer, or starts and ends on the column
   lines (628, 410, 302 wide; place 588, 384, 282), one ratio per row (4:5, 4:3, 3:2 or 1:1; a place
-  4:5, 4:3, 1:1). No photograph taller than 708px outside the hero.
+  4:5, 4:3, 1:1). No photograph taller than the screen under the header less 128px (700 at
+  1440x900) outside the hero.
 - **Bleed:** full width only for layers: a section's photograph or ground behind its words
   (`img.layer`, `aria-hidden`, covering 90% or more of the section; the hero holds one layer).
   Never out to one side only: a cut window is cut by its frame inside the `.wrap`. A picture wall
@@ -291,8 +271,8 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 
 ## 6. The check
 
-`layout-check.js` frames every section as a reviewer frames a shot; `check.mjs` runs it in one headless
-Chrome (WebGL on the CPU, closed by its own PID) and writes the framed shots:
+`layout-check.js` reads every section; `check.mjs` runs it in one headless Chrome (WebGL on the CPU,
+closed by its own PID) and writes a shot from each section's top:
 
 ```bash
 node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
@@ -303,9 +283,8 @@ node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
 |---|---|
 | `hero-fold` | the hero does not fill the first screen, runs past it, or the next section shows |
 | `hero-maxchars`, `hero-lines` | with the h1 lengthened to its `maxChars`, the hero runs past the screen or the h1 takes too many lines |
-| `screen-short`, `screen-height` | a section shorter than one screen, or not exactly one or two |
-| `sparse` | content fills under half the section (a picture's own frame counts whole) |
-| `neighbour`, `neighbour-ground` | another section's ink or ground shows in a section's tile |
+| `section-height` | a section stretched past its content: an empty band beyond its padding, or a hole between its parts, a third of its height or more |
+| `section-air` | the content of two sections under 128px apart (96 on a phone) |
 | `edge-left`, `edge-right`, `spill`, `bleed-one-side`, `one-sided` | a block off the lines, past them, out to one viewport edge, or visuals stopping short of the right line |
 | `lines` | text starts on more than two left lines |
 | `overflow-x` | the page scrolls sideways |

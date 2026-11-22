@@ -17,9 +17,10 @@
     "warm"
   ],
   "intensity": "lively",
-  "look": "One word of a headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests on the written word. In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word.",
+  "look": "One word of a headline keeps changing every two seconds while it is on screen, sliding up out of its mask as the next rises in, underlined in the accent, with a small pause button under the headline (it also pauses under the pointer). In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word. A comma or full stop after the word stays on its line.",
   "reduced": "The written word stands.",
-  "phone": "The written word stands; the other words are not shown.",
+  "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {

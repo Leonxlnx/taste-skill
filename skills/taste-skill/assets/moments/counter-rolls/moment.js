@@ -14,8 +14,10 @@
   Every .t-stat or [data-count] inside the host rolls (or the host itself when it is one). Whole
   numbers read best: tabular figures make a decimal point or a thousands comma as wide as a digit.
   opts: duration ms (1400), stagger ms between figures (90).
-  Reduced motion, no script: the figures stand.
+  It runs on a phone too (one transform a digit). Reduced motion, no script: the figures stand.
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   const nums = root.matches('[data-count], .t-stat') ? [root] : [...root.querySelectorAll('[data-count], .t-stat')];
   if (!nums.length || lib.reduced()) return {};

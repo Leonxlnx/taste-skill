@@ -18,13 +18,15 @@
   (## Hero, ## Footer) are notes, not copy; the footer is what stands under a heading named Footer.
 
   Levels:
-    FAIL  fix it: chatbot residue, a left [NEED] or markdown, the old slop words and stock phrases, and any device
-          used twice its budget plus one times or more (a tic, not a device). The gate blocks on these.
+    FAIL  fix it: chatbot residue, a left [NEED] or markdown, the old slop words and stock phrases, a fact held
+          back (copy-withheld: "Price on request", an address that "comes with your confirmation email", a note
+          about the client or the build), and any device used twice its budget plus one times or more (a tic,
+          not a device). The gate blocks on these.
     WARN  over budget, or a weak spot: fix it, or keep it on purpose and say why in the report.
     INFO  look at it.
   Each finding has an id (copy-slop-word, copy-two-fragment, ...; the checker's copy-headline, copy-fact and the
   rest are its own), a count, examples, a fix and, in --json, every hit with its sentence (the gate makes one
-  finding of each slop word, stock phrase and residue hit).
+  finding of each slop word, stock phrase, residue and withheld hit).
   With several files it also prints the first headings side by side and the heading phrases they share.
   --json prints {files: [...], cross: {...}} and nothing else. --year sets the year the copyright line should
   carry (default: this year).
@@ -254,6 +256,30 @@ const STOCK = [/in today'?s (fast-paced|digital|modern|ever-changing|busy)/i, /u
   /\bit'?s (important|worth) (to note|noting)\b/i, /\b(in|with) just a few clicks\b/i, /\bwe'?ve got you covered\b/i, /\bthe possibilities are endless\b/i, /\bat your fingertips\b/i, /\b[a-z]+ made (simple|easy)\b/i];
 const RESIDUE = [/lorem ipsum/i, /\[(your |company |brand |business )?(company|brand|business|product) name\]/i, /\bcertainly!/i, /\bi hope this helps\b/i, /\bas an ai\b/i, /\[insert\b/i, /\[NEED\b[^\]]*\]?/i,
   /\{\{\s*[\w.]+\s*\}\}/, /\bgreat question!/i];
+// a fact the page holds back from the visitor, or a note about the build left as copy (in the 2.5.3 test builds:
+// "Price on request" on five pages, "The street address comes with your confirmation email", "Street and district
+// are on the way in", "Hours are confirmed with the shop"). The checker's placeholder already FAILs "to be
+// confirmed", "to follow", "until the client sends" and TBD; these are the rest. Each kind says what to write instead
+const WITHHELD = [
+  { msg: 'a price held back ("Price on request", "we reply with the price"): the visitor came for it', res: [
+    /\b(prices?|pricing|fees?|rates?|costs?)\b[^.!?\n]{0,24}\b(on|upon|by) (request|application|enquiry|inquiry)\b/i,
+    /\b(ask|contact us|email us|write to us|call us|get in touch|enquire|inquire) (for|about) (a |the |our )?(prices?|pricing|rates|fees)\b/i,
+  ], // a price sent in the reply holds it back only on a page that shows none ("from 118 € a night", then the price for your dates)
+  bare: [/\b(reply|replies|write back|get back to you|answer|send you|email you|tell you)\b[^.!?\n]{0,30}\bwith (the|a|our|your) (prices?|pricing)\b/i], fix: 'write a plausible price for this trade and place, uneven and in the local currency (a custom job: a "from" price), on its own element with data-assumed, and list it in the report (copy.md, What may be assumed)' },
+  { msg: 'an address held back ("comes with your confirmation email", "on the way"): the visitor cannot find the door', res: [
+    /\b(street|address|location|district)\b[^.!?\n]{0,30}\b(is|are) on (the|its|their) way\b(?!\s+(to|from|up|down|between|back|home|into|towards?|out)\b)/i,
+    /\b(street|address|location)\b[^.!?\n]{0,30}\b(comes?|is sent|are sent|will be sent|follows?|arrives?|is shared|is given)\b[^.!?\n]{0,40}\b(confirmation|booking|once you book|after you book|by e-?mail|in the e-?mail|with your)\b/i,
+    /\b(address|location)\b[^.!?\n]{0,20}\b(on|upon|after) (request|booking|confirmation)\b/i,
+  ], fix: 'print the street and district the brief gives; with no street, the district (the brief\'s, else a plausible one with data-assumed, listed in the report) and a "See the area" link to its map search (copy.md, Contacts the brief does not give); never a house number' },
+  { msg: 'a note about the client, the brief or the build on the page ("Hours are confirmed with the shop", "client to confirm")', res: [
+    /\bclient (must|to) (supply|confirm|send)\b/i,
+    /\bthe brief (gives|has|names|says) no\b|\bthe brief (does not|doesn'?t|did not) (give|say|name)\b/i,
+    /\b(are|is|being) confirmed with (the )?(shop|client|owners?|studio|practice|team|venue|hotel|bar|caf[eé]|restaurant|bakery|office|firm)\b/i,
+    /\b(hours|prices?|address|street|dates?|menu|details|times|fees)\b[^.!?\n]{0,20}\b(are|is) (still )?(being|to be) (checked|set|decided|agreed|finali[sz]ed)\b/i,
+  ], fix: 'write the fact (a plausible one with data-assumed, listed in the report, when the brief leaves it out) or leave the line out; what the client must supply goes in the report, never onto the page' },
+];
+// a price on the page: a figure with its currency (118 €, £14, CHF 95, 9 EUR)
+const PRICE_FIGURE = /[€£$¥₹]\s?\d|\d[\d.,']*\s?(€|£|\$|EUR|USD|GBP|CHF|SEK|NOK|DKK|PLN|CZK|kr|zł|Kč|Fr\.?)(?![\p{L}])|\b(EUR|USD|GBP|CHF|SEK|NOK|DKK|kr|Fr\.?)\s?\d/iu;
 // markdown that leaked into a rendered page (a .md draft keeps its own); "** 4242" on a card mask is not bold
 const MARKDOWN = [/\*\*(?=[^\s*])[^*\n]{1,60}(?<=[^\s*])\*\*/, /(^|\s)#{2,3} [A-Z]/];
 const VIRTUE = ['honest', 'honestly', 'calm', 'calmly', 'quiet', 'quietly', 'actually', 'genuine', 'genuinely', 'truly', 'simply', 'thoughtful', 'thoughtfully', 'carefully', 'intentional', 'intentionally', 'steady', 'dependable'];
@@ -447,8 +473,15 @@ function lintRead(R, isHtml) {
   // ---- FAIL: residue, the old slop, stock phrases
   // a [NEED: ...] in a draft marks a gap for the client's list; on a page it is residue
   const residue = [...(isHtml ? RESIDUE : RESIDUE.filter((re) => !/NEED/.test(re.source))), ...(isHtml ? MARKDOWN : [])].flatMap((re) => hitsIn(re, withMeta));
-  if (residue.length) add('FAIL', 'copy-residue', residue, 'chatbot residue, a template token, markdown or a [NEED] left on the page', 'write the real words from the brief, or leave the element out and list what is missing in the report');
-  if (!isHtml) { const need = hitsIn(/\[NEED\b[^\]]*\]?/i, withMeta); if (need.length) add('INFO', 'copy-need', need, `${need.length} open [NEED] gap${need.length > 1 ? 's' : ''} in the draft`, 'list each under "Client must supply"; on the page the element is left out'); }
+  if (residue.length) add('FAIL', 'copy-residue', residue, 'chatbot residue, a template token, markdown or a [NEED] left on the page', 'write the real words from the brief; a fact the page needs and the brief leaves out is a plausible one with data-assumed, listed in the report (copy.md, What may be assumed); else leave the element out');
+  if (!isHtml) { const need = hitsIn(/\[NEED\b[^\]]*\]?/i, withMeta); if (need.length) add('INFO', 'copy-need', need, `${need.length} open [NEED] gap${need.length > 1 ? 's' : ''} in the draft`, 'list each under "Client must supply"; on the page, a fact the page needs to work is assumed (data-assumed, copy.md, What may be assumed), proof is left out'); }
+  // a fact held back, or a note about the build: one finding per kind, one hit per sentence
+  const pricedPage = PRICE_FIGURE.test(text);
+  for (const w of WITHHELD) {
+    const res = [...w.res, ...(w.bare && !pricedPage ? w.bare : [])];
+    const seen = new Set(), hits = res.flatMap((re) => hitsIn(re, withMeta)).filter((h) => !seen.has(h.s) && seen.add(h.s));
+    if (hits.length) add('FAIL', 'copy-withheld', hits, `${w.msg}${hits.length > 1 ? ` (${hits.length} lines)` : ''}`, w.fix);
+  }
   // a listed word inside the client's name (Elevate Pilates, Beacon Dental) is the name, not copy: the name as the
   // page writes it (same case, whole words) is left out and counted once below
   const brandRes = (R.brands || []).filter((n) => SLOP.some((w) => wordRe(w).test(n))).map((n) => new RegExp(`(?<![\\w-])${esc(n).replace(/ /g, '\\s+')}(?![\\w-])`, 'g'));

@@ -7,8 +7,8 @@ never bends the rules of `copy.md` (the five-second hero, the headings' nouns, t
 The brands named under "Learn from" made the register famous; their words are quoted five at most,
 to recognise the move, never to reuse.
 
-**None is the default.** Choose by the buyer, the price and the client's real character; when the brief
-does not settle it, take the register least like the last page this session wrote.
+**None is the default.** Choose by the buyer, the price and the client's real character, as the brief
+shows them; the register of the last page this session wrote counts against it.
 
 ## 0. The model's default (the one to avoid)
 
@@ -146,10 +146,15 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## Matching voice to the trade (starting points only)
 
-The brief decides first. When it does not, deal the register so two pages of one trade do not share
-a voice: count the letters of the brand name; an even count takes the first register in the row, an
-odd count the second, and a name of more than ten letters the third when the row has one. Write the
-register and the reason on the voice card.
+The brief decides, on purpose. Read it for who buys and how (a ward manager who distrusts promises, a
+couple planning one day, a developer at a terminal), what it costs, what the occasion is, and how the
+owner talks (their own lines, what they stress: speed, care, craft, price). Take the register in the
+row that serves that reader; one outside the row is fine when the brief points there. Write the
+register and the brief's reason on the voice card ("2 technical-dry: the buyers are ward managers who
+distrust promises"). A register the last page this session used counts against it, so two pages of
+one trade do not share a voice. Only when two registers fit the brief equally and nothing in it tips
+one does the brand name's letter count break the tie: an even count takes the first of the two, an
+odd count the second. The letter count never picks a register on its own.
 
 | Trade | Try first | Avoid |
 | --- | --- | --- |

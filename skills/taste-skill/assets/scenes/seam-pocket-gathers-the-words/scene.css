@@ -163,7 +163,7 @@
 @media (min-width: 768px) and (max-width: 1099px) {
   [data-big-scene="seam-pocket-gathers-the-words"] { --spg-word-size: clamp(40px, 6vw, 56px); }
 }
-/* a phone: one column in the middle, the first seven words */
+/* a phone: every word, in one column in the middle, or two when the script finds the longest fit side by side */
 @media (max-width: 767px) {
   [data-big-scene="seam-pocket-gathers-the-words"] {
     --spg-title-size: clamp(32px, 9.6vw, 42px);
@@ -176,8 +176,7 @@
   }
   [data-big-scene="seam-pocket-gathers-the-words"] .spg-top { padding: 44px 16px 28px; }
   [data-big-scene="seam-pocket-gathers-the-words"] .spg-words { grid-auto-flow: row; grid-template-rows: none; }
-  /* no script: the phone keeps the first seven words (the script's phoneCount does the same) */
-  html:not(.js) [data-big-scene="seam-pocket-gathers-the-words"] .spg-word:nth-child(n + 8) { display: none; }
+  [data-big-scene="seam-pocket-gathers-the-words"] .spg-words.spg-two { grid-auto-flow: column; grid-template-rows: repeat(var(--spg-rows), auto); }
 }
 
 /* ---------------------------------------------------------------- live (scrubbed) */
@@ -192,6 +191,11 @@
   top: 0;
   left: 0;
   right: 0;
+  /* the held stage sits under the page's fixed nav: the heading starts below it (the script writes --spg-nav) */
+  padding-top: max(clamp(56px, 10svh, 120px), calc(var(--spg-nav, 0px) + 24px));
+}
+@media (max-width: 767px) {
+  .scene.is-live[data-big-scene="seam-pocket-gathers-the-words"] .spg-top { padding-top: max(44px, calc(var(--spg-nav, 0px) + 20px)); }
 }
 /* the next ground's layer covers the stage; its ground (.spg-rise) is clipped to the edge by the script,
    and the words lie on top of it */

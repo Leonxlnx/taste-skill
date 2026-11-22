@@ -4,6 +4,30 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
+## 2.5.3 - unreleased
+
+What a 30-site test round of 2.5.2 (Haiku, Sonnet and Opus, low to xhigh, each beside a build without the skill) showed, fixed: empty screens, a gate that crashed on its own notes, photos that folded to nothing, moments that never moved on a phone, and a dealer that dealt what its own checker failed.
+
+### What's new
+
+- **Sections as tall as their content (`system.css`, `layout-v4.md` section 2, house rule 3):** the hero keeps the whole first screen; every other section is as tall as what it holds, with the same generous air round it (160px top and bottom at 1440, 128 on a tablet, 96 on a phone), never stretched to a screen and never cut or hidden to fit one. Moments and scenes keep the heights their modules set. The place page's screen cap is gone, so a menu or a location is never dropped to fit. `--h`, `.g2` stretching and `.fill` now do nothing; the footer is as tall as its content, so a closing form no longer runs under its columns.
+- **Moments on phones (`assets/moments`):** every moment but `liquid-hover` and `cursor-spotlight` now runs at 390 in a lighter form of the same idea; the dealer makes sure one of the page's moments always does. `liquid-type` ripples on entry and on touch. `word-rotate` keeps its comma on the line, loops and has a pause button; `iris-opens` and `line-carries-colour` stay visible on close grounds; `marquee-row` keeps its first word whole with the pause button beside the row.
+- **Dealing by fit, and only what the checker passes (`moments.mjs`, `start.mjs`, `consistency.mjs`):** place, service and product pages take only parts in their own tones (warm, editorial, product) or the brief's `--tone`; a mouse-only moment is never one of the required two; a closing scene is the page's close (the footer keeps its links row); a game gets no hero scene and its effect on a band; a hero scene gets no effect. The checker no longer fails the kit's own dealt parts (the offset pair, the marquee track, a moment's or scene's own scroll and hold, one effect beside a scene). New `moment-text` check: each moment's copy to the count `moments.mjs pick` prints. Place pages get a scene about one page in two.
+- **What may be assumed, on every kind (`copy.md`, house rules, `copy-lint.mjs`):** the plausible facts a page needs and the brief leaves out (prices, plan limits, hours, menu items, room types, delivery terms, a district) are written, marked `data-assumed` and listed in the report, instead of left out; still never reviews, quotes, customers, awards, named people, result figures, house numbers or phone numbers. New copy-lint FAIL `copy-withheld`: "Price on request", an address "to come", notes to the client on the page. `copy-fact` accepts an assumed fact. Register and hero form are chosen from the brief; the brand name's letter count only breaks a tie.
+- **Long FAQs may fold (`.faq--fold`):** ten questions or more, native details, nothing animated. Booking calendars and accordions are allowed on place pages where the brief asks for them.
+
+### Fixes
+
+- **The gate no longer crashes on its own notes:** `productChecks()` split copy.md's "Products:" line before stripping brackets, so "(one model, three colours)" ended the whole gate in `GATE: ERROR ... Unmatched ')'` (5 of 18 builds). Brackets go first, every term is escaped, and one check that throws now becomes a WARN naming it, never the end of the gate (`tests/gate-flow.mjs`).
+- **ERROR and OFF:** after `GATE: ERROR` the builder fixes what it names and runs again (a round, like a FAIL). A closed build keeps a fingerprint of its page: an edit after the close reopens it for one more round instead of printing `OFF` over an unchecked page; an unchanged page stays OFF. The Stop hook still lets a session stop.
+- **Photos never fold to 0px:** a `.frame` with no ratio class defaults to 4:3, and the checker FAILs a picture under 40px tall (`visual-empty`).
+- **Kit CSS that broke on other markup:** an h2 and lead without `.section-head` get their spacing; a `<small>` in `.rows` sits on its own line; the statement rule no longer enlarges the paragraph after it; a page's own rule can hide the phone nav button.
+- **Scenes:** words no longer land under the fixed nav (`closing-line-in-a-field-of-words`, `seam-pocket-gathers-the-words`, which also shows all its words on a phone), `fly-into-the-shape`'s title no longer takes the ground colour, `parts-lock-into-the-whole`'s start word no longer lands on another word.
+- **Section reveals** now reach moment sections, video posters and the close in the footer.
+- **`effects-fit`** called two helpers that were never in its scope.
+
+---
+
 ## 2.5.2 - unreleased
 
 What twelve example sites built with 2.5.2 showed, fixed: animations by fit on every kind (a cafe too, nothing too wild), the collected scenes back, all of copy-taste, less empty space, more dealt variety, and checks that catch what the builds shipped. Plus security, installs and the community fixes, on top of 2.5.1.

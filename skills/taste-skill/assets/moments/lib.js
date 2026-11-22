@@ -4,8 +4,8 @@
   reduced()            true under prefers-reduced-motion: a moment then shows its finished state only
   phone()              true on a phone: under 640px wide, or a touch screen in landscape under 500px tall
                        (a phone turned sideways). A moment shows its finished state there too, unless
-                       its module says `export const phone = true` (word-highlight, picture-develops,
-                       photo-chapters: light enough to run there).
+                       its module says `export const phone = true`: every moment but liquid-hover and
+                       cursor-spotlight does, and asks phone() itself to run its lighter phone version.
   still()              reduced() || phone(): the one question every moment asks. The loader (moments.js)
                        hands each moment a lib whose reduced() answers still() (only reduced() for a
                        moment that runs on a phone), so a moment written against reduced() is static
@@ -146,6 +146,50 @@ export function lines(words) {
     out[out.length - 1].push(w);
   }
   return out;
+}
+
+/*
+  rgb(css)             [r, g, b, a] (0-255, a 0-1) from a computed colour: rgb(), rgba() or color(srgb ...); null when unread
+  groundOf(el)         the colour painted behind el: its own background or its nearest painted ancestor's, else white
+  ratio(a, b)          the contrast ratio of two rgb colours, 1 to 21
+  apart(c, from, min)  c moved toward white or toward black, away from `from`, until the two reach the ratio min (at most
+                       eight tenths of the way); returns { css, ratio }. A transition moment (iris-opens, line-carries-colour)
+                       uses it when the old and the new ground are so close that the change would not read.
+*/
+export function rgb(css) {
+  const s = String(css || '').trim();
+  let m = s.match(/^rgba?\(([^)]+)\)$/i);
+  if (m) {
+    const p = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat);
+    return p.length >= 3 && p.slice(0, 3).every(Number.isFinite) ? [p[0], p[1], p[2], Number.isFinite(p[3]) ? p[3] : 1] : null;
+  }
+  m = s.match(/^color\(srgb\s+([^)]+)\)$/i);
+  if (m) {
+    const p = m[1].split(/[\s/]+/).filter(Boolean).map(parseFloat);
+    return p.length >= 3 && p.slice(0, 3).every(Number.isFinite) ? [p[0] * 255, p[1] * 255, p[2] * 255, Number.isFinite(p[3]) ? p[3] : 1] : null;
+  }
+  return null;
+}
+export function groundOf(el) {
+  for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
+    const c = rgb(getComputedStyle(e).backgroundColor);
+    if (c && c[3] > 0.5) return c;
+  }
+  return [255, 255, 255, 1];
+}
+const lum = c => { const f = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+export const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+export function apart(c, from, min = 1.3) {
+  const walk = to => {
+    let best = c, r = ratio(c, from);
+    for (let t = 0.04; r < min && t <= 0.8001; t += 0.04) { best = [0, 1, 2].map(i => c[i] + (to[i] - c[i]) * t); r = ratio(best, from); }
+    return { best, r };
+  };
+  const W = [255, 255, 255], K = [0, 0, 0];
+  // away from the new ground first; near black or white that is not far enough, so then past it to the other side
+  let o = walk(lum(c) >= lum(from) ? W : K);
+  if (o.r < min) { const p = walk(lum(c) >= lum(from) ? K : W); if (p.r > o.r) o = p; }
+  return { css: `rgb(${o.best.map(v => Math.round(v)).join(' ')})`, ratio: o.r };
 }
 
 export const fontsReady = (ms = 900) => Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, ms))]);

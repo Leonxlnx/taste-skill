@@ -4,18 +4,19 @@ A page is built from its kind's plan; a deal changes the parts a template would 
 recipe in `sections-library.md`. The kind and what it may carry: `SKILL.md` sections 1 to 3 and
 `effects-usage.md`. Heights and edges: `layout-v4.md`.
 
-## 1. Plan in screens
+## 1. Plan the sections
 
 Write the plan before building: line 1 the kind, line 2 the deal, then one line per section: its
-id, its one idea, its picture, its screens (1 or 2, from the content height: `layout-v4.md`
-section 2) and, on tech, the section that holds the effect, the scene or a moment.
+id, its one idea, its picture, what it holds (every item the brief gives: the whole menu, every
+room, every question; a section is as tall as its content, `layout-v4.md` section 2, and nothing is
+cut to fit a screen) and, on tech, the section that holds the effect, the scene or a moment.
 
 - **Every section shows the real thing:** a photograph, a portrait, real icons, the client's UI, a
   diagram card or (tech only) the effect. A section without a picture is allowed only for a price
   list, an FAQ, a specs table, a booking form or a dealt statement moment's own section, once each,
   and two picture-less sections are never neighbours (the short page with no photograph, its
   statement hero, its statement moment and its one section, is the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
-  half a tile or more, 50/50 in a split, a whole screen as a layer. The close is its own picture (a
+  half a tile or more, 50/50 in a split, the whole section as a layer. The close is its own picture (a
   photograph, the big button or the name set wide).
 - **What the brief asks for is built, never a mailto in its place.** Under the section lines the
   plan lists each ask as `brief asks -> element`, and the page has every element (in testing: "book
@@ -62,14 +63,14 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
   stand-in photographs of the setting, framed like captures), the **CAD or render frame**, the **exploded
   frame**; key art fills the hero's stage. The report lists every slot, its file and its stand-in.
 - **One idea per section,** one h2, one action at most besides the main one (a pair only in the
-  hero, or where a product needs "compare" beside "buy"). A two-screen section holds one list, table
-  or form, or one idea in two groups, never two ideas.
+  hero, or where a product needs "compare" beside "buy"). A long section holds one list, table or
+  form, or one idea in two groups, never two ideas.
 - **The main action** reads the same, word for word, in the nav, the hero, the close (or the
   booking) and the phone bar, and nowhere else as a filled button (a place whose action is Get
   directions keeps it out of the nav, section 4).
-- **Merge short blocks:** a quote, logo row, stat row or FAQ that alone would hold under 495px (464
-  at 390) goes into the section above as its last element, 64 to 96px under its content, with no
-  heading or ground of its own. An FAQ that reaches 495px with its answers open is its own section.
+- **Merge short blocks:** a quote, logo row or stat row that alone is a few lines, or an FAQ of two
+  or three questions, goes into the section above as its last element, 64 to 96px under its
+  content, with no heading or ground of its own. A longer FAQ is its own section.
 - **Repeats:** a card layout (2x2, bento, three cards, split card, open tiles) at most twice a page;
   neighbours never share a layout; on software, product and service a calmer section (quote, prices,
   FAQ) after at most two visual ones, and the back third of the page calm before the close. Repeat
@@ -88,10 +89,8 @@ section 2) and, on tech, the section that holds the effect, the scene or a momen
   or are left out. Never `/contact`, `/[page]` or a bare `#`.
 - **At 390** the page keeps the desktop's grounds, photographs and order, each photograph after
   its text.
-- **At 768 and 820** (the judges' tablet, held upright) plan the screens again: each section's
-  stacked content within its screens (832px a screen at 768x1024), else two screens there or less
-  that stacks; the first screen ends on a whole picture or a clear bleed (`layout-v4.md` sections 2
-  and 3). Write the tablet count on the plan line when it differs ("2 at 768").
+- **At 768 and 820** (the judges' tablet, held upright) the sections stack and grow; the first
+  screen ends on a whole picture or a clear bleed (`layout-v4.md` section 3).
 
 ## 2. The deal
 
@@ -337,27 +336,31 @@ hairlines and one button style. Where a recipe and this section differ on a plac
 wins. Open these references first for the feel (never copy one): Daunt Books, Prufrock, Bourke
 Street Bakery, Gail's, Tartine, Bonanza (a still where Bonanza has film).
 
-**Never on a place:** an effect, WebGL, canvas, CSS gradient, grain, glass, print, scene, a moment
-other than the two (three on a long page) `moments.mjs pick --page place` deals, each into its own section,
-a loop, count, UI fragment or diagram; feature or plan cards, tabs, accordions, switches, logo rows,
-timelines, fact strips (address or hours as labels), a calendar card, a map of a street the brief
-does not give; a rating, review, figure or quote the brief does not give; words on a photograph (a
+**Motion on a place** is dealt by fit, as on every kind (`moments.md`, The fit rule): the two
+moments (three on a long page) and the 0 or 1 scene `moments.mjs pick --page place` deals, each in its
+own section, warm and quiet to lively. **What the brief asks for is built:** a booking calendar (the
+days and times as choices, section 1's table) where it asks for booking or a stay, and a
+`.faq--fold` (`system.css`) where it gives ten questions or more.
+
+**Never on a place:** an effect or shader ground, WebGL or canvas outside the dealt scene, a CSS
+gradient, grain, glass, print, a moment or scene the deal did not give, a loop, count, UI fragment or
+diagram; feature or plan cards, tabs, switches, logo rows, timelines, fact strips (address or hours
+as labels: the visit block holds them), a map of a street the brief does not give; a rating, review, figure or quote the brief does not give; words on a photograph (a
 bleed panel is a solid ground the words stand on, not words on the photograph), a rounded or filtered photograph, a see-through or blurred nav; outline, pale, blurred or rotated
 display type; SaaS furniture (a two-tone headline, a filled-plus-outline pair, a dotted timeline
 rail, a carousel); a dark section other than the dealt band.
 
 ### Plan and length
 
-The nav is not a screen; `footer.closing` is one; a 2-screen section counts two.
+The length follows the content: every section as tall as what the brief gives it (the whole menu,
+every room, the location), never a section dropped or cut to make the page shorter.
 
-- **Full page,** 12 to 20 photographs, 2 to 3 a screen, at most 6 screens: hero, visit, the offer
-  (a second offer may follow: a roaster's beans after the menu), the place, then orders or booking
-  when taken (last before the footer, its cards or form in place of the close), footer.closing.
-  Over 6 screens drop the place, never the booking.
-- **Compact page,** 8 to 12 photographs, 4 or 5 screens: hero, visit, the offer, [the place],
-  footer.closing.
-- **Short page,** under 8 usable photographs (below): 3 screens, 2,700px at most at 1440,
-  `<html data-page-mode="short">`.
+- **Full page,** 12 to 20 photographs, about 2 to 3 a screen of scroll: hero, visit, the offer (a
+  second offer may follow: a roaster's beans after the menu), the place, then orders or booking when
+  taken (last before the footer, its cards or form in place of the close), footer.closing.
+- **Compact page,** 8 to 12 photographs: hero, visit, the offer, [the place], footer.closing.
+- **Short page,** under 8 usable photographs (below): hero, one section holding the visit and the
+  offer, footer.closing, `<html data-page-mode="short">`.
 - **No client photographs (the draft path):** `photos.mjs pick --trade <trade> --sections <words>
   --draft-lead --pictures 12` lifts the 1-in-3 cap, and the page is a whole place page that leads
   with photographs when it reaches 8 frames. `pick` deals one frame per word: repeat a word for each
@@ -409,7 +412,7 @@ to 4.5 because every section was text beside one picture and nothing answered th
   | id | at 1440 | at 390 |
   |---|---|---|
   | `bleed` | the head row on the `.wrap` (its line at the right), then one photograph across the whole viewport, 1440x560, nothing on it; once a page, never right after the hero | 390x488 (4:5 crop) |
-  | `pair` | two photographs on span-6, the same ratio (4:3 at 588x441 or 4:5 at 588x735 in a 2-screen section), tops level; the head row above | stacked, 342 wide, 24 apart |
+  | `pair` | two photographs on span-6, the same ratio (4:3 at 588x441 or 4:5 at 588x735), tops level; the head row above | stacked, 342 wide, 24 apart |
   | `trio` | the offset trio: three photographs on span-5 (4:5, 486x607), span-4 (1:1, 384x384) and span-3 (4:3, 282x212), tops on one line, three sizes of one subject family (the room, its table, a cup) | the first 342 wide, the other two two-up at 165 |
   | `strip` | the detail strip: four 1:1 details on span-3 (282x282) or six on span-2 (180x180) from line to line, hands, tools and materials of one trade, under the section's text or groups | two-up at 165, four at most |
   | `tall-small` | a tall 4:5 photograph on span-6 (588x735) at the left line; on span-5 at the right the h2, its lines and link at the top and a 1:1 on span-3 (282x282) at the bottom, its foot level with the tall one's | text, the tall one at 342, the small one at 165 |
@@ -450,7 +453,7 @@ to 4.5 because every section was text beside one picture and nothing answered th
   h1 with the place's own voice, never the brief's category ("Bread out of the oven before the
   street wakes up", not "Bakery in Leith"; the kind and the street go in the sub-line), 48 characters at most; sub-line "Sourdough, rye and cardamom buns from 7:30,
   Tuesday to Sunday." (80 at most); one button, the main action.
-- **Visit, always screen 2,** marked `data-place="visit"` and `id="visit"`, directly after the hero:
+- **Visit, always the section after the hero,** marked `data-place="visit"` and `id="visit"`, directly after the hero:
   a panel on `--g-alt` (page CSS: `.visit { background: var(--g-alt); padding: 48px }`, on span-6
   only: a ground box 80% of the section or wider is a band and FAILs `one-section`) and a 1:1 or 4:3 photograph of the shopfront straight-on or the
   room from the door, 6/6, the panel left. With the `address` type moment the h2 and the street
@@ -466,9 +469,8 @@ to 4.5 because every section was text beside one picture and nothing answered th
   a holiday change as one line above). Under both, at most two 44px rows: access, a florist's
   delivery (area, price, cut-off), a guesthouse's check-in and check-out, a bike shop's repair
   turnaround, or "By appointment" for a studio. At 390 the panel first (24px padding, address
-  18/28), then the photograph at 342, which grows from its ratio to 4:5 at most into what the
-  panel leaves of the screen (system.css), so the screen ends in the photograph, not an empty band:
-  keep it a `.pl-photo`, the last child of the split. Hours, address and directions are never only in the footer.
+  18/28), then the photograph at 342 at its own ratio (a `.pl-photo`, the last child of the
+  split). Hours, address and directions are never only in the footer.
 - **Map** only when the brief gives the street: `fx-map` baked still (`effects-creative.md`) in the
   photograph's frame, the pin on the street line; never an embed, a contour or a dot pattern.
 - **The offer** opens with a head row: the h2 on the left line, one line, 40 characters at most
@@ -482,17 +484,17 @@ to 4.5 because every section was text beside one picture and nothing answered th
     (`.t-label`, weight 500, ink), 12px of air under it and no rule (a rule under a label fails
     `section-air`, SR-3: parts are told apart by air and weight), then `.rows` (each row closes
     with its own 1px rule, none above the first): the name at 16/24/500 left, the price right in tabular
-    figures, an optional description at 16/24 muted; rows 44px (64 with a description), at most 6
-    with descriptions or 8 without, the rest behind the head row's link. Always text, whole, prices
-    visible: never an image, a PDF, tabs or an accordion. At 390 one column, the photographs after
-    the first group.
+    figures, an optional description at 16/24 muted; rows 44px (64 with a description); every item
+    the brief gives, a long menu in more groups (the section grows; the head row's link only for a
+    menu that also lives on a page of its own). Always text, whole, prices visible: never an image,
+    a PDF, tabs or an accordion. At 390 one column, the photographs after the first group.
   - **Rooms:** h2 "Rooms and prices", the side line "Breakfast 8 to 10. Check-in from 15, check-out
     by 11." Each room: a 4:3 photograph of the whole room, straight-on, window light; 20px; the name
     (`h3.t-card`, 20/28); the facts at 16/24 muted ("2 guests · 18 m² · garden side"); the price
     from with its season at 16/24; a "Book this room" link. `row`: three rooms on span-4 (384x288)
     or four on span-3 (282x212); two rooms always `side`. `side`: the head as the first cell at the
     left line, top-aligned with the tiles (two rooms span-4; three span-3; four: rooms 2x2 on span-4,
-    `--h: 2`). Five or six rooms: rows of three on span-4 in a two-screen section. At 390 one column,
+    beside the head). Five or six rooms: rows of three on span-4. At 390 one column,
     342x256, 48px apart.
   - **Goods** (beans, bread, books, parts, bouquets): four linked cards on span-3, 1:1 at 282x282
     (bouquets 4:5 at 282x352), one ratio per grid, one backdrop, angle and light. Each card a flat
@@ -542,11 +544,11 @@ to 4.5 because every section was text beside one picture and nothing answered th
 
 ### Order by trade
 
-Each starts hero, visit; the rest in this order, 4 to 6 screens:
+Each starts hero, visit; the rest in this order:
 - **Cafe:** menu as text with its composition; the place (its composition or a story row); beans
   or goods only if sold.
 - **Bakery:** what it bakes (goods with prices); orders (one card per kind); the process (its
-  composition, a `strip` or `trio`, one screen at most). Several shops: a ruled list, each with its street.
+  composition, a `strip` or `trio`). Several shops: a ruled list, each with its street.
   Under 8 frames (the library deals a bakery 4) it is the short page (section 4, The short page).
 - **Guesthouse or small hotel:** the hero is the landscape of its region when the brief names one
   (a remote house is sold by where it stands, as Fogo Island Inn is); location as the visit (how to
@@ -556,7 +558,7 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
   footer with each shop's address and hours and the newsletter. Nav: four to six category words (`system.md` Nav; four on nav-split).
 - **Bike shop:** visit and workshop (usual repair turnaround); workshop prices as ruled rows with
   "Book a service"; new in (cut-outs on white, name and price); brands as a plain text list; story.
-- **Florist:** a notice line with delivery area, cut-off and price; delivery and visit as screen 2;
+- **Florist:** a notice line with delivery area, cut-off and price; delivery and visit as the section after the hero;
   bouquets (four 4:5 tiles, each with a price from); weddings and events (three photographs of real
   installations, what to send); workshops as ruled rows.
 
@@ -587,13 +589,13 @@ Each starts hero, visit; the rest in this order, 4 to 6 screens:
 - **Motion:** the hover layer only (`motion.md`), and it must show: the nav words and links draw
   their underline, a linked photograph zooms 1.03 inside its frame while its card lifts 2px,
   buttons step and press, arrows move 3px. On load the hero enters once (`motion.md`); on scroll only
-  the dealt moment's own section moves (`moments.md`); nothing else moves by itself.
+  the dealt moments' and the dealt scene's own sections move (`moments.md`); nothing else moves by itself.
 
 ### The short page (under 8 photographs)
 
-Under 8 usable, whatever the trade (the count in Plan and length): three screens, 2,700px at most at 1440 (the tablet
-runs longer, below; four with no photograph, Its one moment below): hero, one `--h: 1` section holding the
-visit and the offer, footer.closing. With one or two good photographs, the best is the hero's and
+Under 8 usable, whatever the trade (the count in Plan and length): hero, one section holding the
+visit and the offer, footer.closing (with no photograph a statement section after the hero too, Its
+one moment below). With one or two good photographs, the best is the hero's and
 the other is the section's, in one row with the groups (With its photograph, below). With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
 h1, the sub-line, the inverted button) and the section has no picture on purpose (the one
 exception to "two picture-less sections are never neighbours").
@@ -607,14 +609,10 @@ exception to "two picture-less sections are never neighbours").
   `<img>` as `photos.mjs fetch` prints it), its top level with the group
   labels; the visit block across under the row at `margin-top: var(--s-7)`. Three groups: each on
   `span-3` and `<figure class="pl-photo span-3" style="--pl-r: 1">` (1:1, 282x282). Two groups: each
-  on `span-3` and `<figure class="pl-photo span-6" style="--pl-r: 1.5">` (3:2, 588x392). Content
-  about 560px at 1440, the page 2,700. A 4:3 `span-6` beside the groups runs to 852px, past 828
-  (`section-height`). Every group holds the same number of rows and every name fits one line
-  beside its price on `span-3` (about 24 characters: "Rye chocolate cake, 10 slices" wraps,
-  245/270px, `row-lines`; shorten it, "Rye cake, 10 slices"). Under 640, `--hm: 2` on the section
-  (`style="--h: 1; --hm: 2"`) and the photograph after the groups at 16:9, a
-  second page-CSS rule: `@media (max-width: 639px) { #shop .pl-photo > img { aspect-ratio: 16 / 9;
-  } }` (at 1:1 the section runs 119px past its two screens).
+  on `span-3` and `<figure class="pl-photo span-6" style="--pl-r: 1.5">` (3:2, 588x392). Every group
+  holds the same number of rows and every name fits one line beside its price on `span-3` (about 24
+  characters: "Rye chocolate cake, 10 slices" wraps, 245/270px, `row-lines`; shorten it, "Rye cake,
+  10 slices"). At 390 the photograph comes after the groups.
 - **Nav and the main action:** three or four words, one per group, each pointing at an `id` on that
   group (`#tableware`, `#classes`, `#visit`); the main action points at the group that does it
   (section 1, One page). One section has no scroll-marked word: leave `aria-current` off.
@@ -625,33 +623,15 @@ exception to "two picture-less sections are never neighbours").
   it is `picture-develops` on that photograph: `data-moment="picture-develops"` on its
   `<figure>` (the moment wants half the wrap or more: two groups and the `span-6` photograph), dealt with `moments.mjs pick --page place` (two, by fit; `start.mjs plan` runs it), and dealt
   again with `--exclude photo-chapters` when it gives `photo-chapters` (three or four screens of its
-  own, past the short page). With no photograph, add one statement section of one screen
-  (`--h: 1`) after the hero for `word-highlight` (`--fits statement`): one statement of 12 to 40
-  words from the brief, so the page is four screens, 3,600px at 1440.
+  own, longer than the whole short page). With no photograph, add one statement section after the
+  hero for `word-highlight` (`--fits statement`): one statement of 12 to 40 words from the brief.
 - **What the deal drops.** The page has no place section and no second offer:
   of the printed deal build the nav, footer, rhythm (`space`), buttons, mark and the offer's
   groups, and skip the place's composition, the type moment and the rooms layout (the `address`
   moment is not built; the visit block's three columns are the address). Write "not used" beside
   each skipped part on plan line 2.
-- **At the tablet (640 to 1023) the section stays one screen,** content 600 to 830px at 768x1024.
-  Stacked, the groups and the visit block run to about 1,600px: `section-height` and `one-section`
-  FAIL, and `--h: 2` on that stack leaves a `hole` (768) and a `section-air` WARN, 48% (820). So keep
-  the three groups and the three visit columns across, one page-CSS rule (use the ids as built):
-  `@media (min-width: 640px) and (max-width: 1023px) { #shop .grid { grid-template-columns:
-  repeat(3, minmax(0, 1fr)); } #shop .grid > .span-4 { grid-column: auto; } #shop .visit__cols {
-  grid-template-columns: repeat(3, minmax(0, 1fr)); } }`, which makes the content about 700px, and
-  `--hm` under 640. With a photograph in the section, `--h: 2` at the tablet, read as two screens:
-  screen 1 the h2 and the photograph full width down to the screen's bottom padding, screen 2 the
-  groups across and the three visit columns, `--padt` under its top (no `hole`; content 1,640 of
-  2,048 at 768). This rule replaces the one above (with two groups `repeat(2, minmax(0, 1fr))` on
-  `#shop .grid`): `@media (min-width: 640px) and (max-width: 1023px) { #shop { --h: 2; } #shop .grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr)); } #shop .grid > :not(.pl-photo) { grid-column:
-  auto; } #shop .grid > .pl-photo { grid-column: 1 / -1; order: -1; } #shop .pl-photo > img {
-  aspect-ratio: auto; height: calc(var(--pl-room) - 1.25 * var(--t-h2) - var(--head-gap));
-  margin-bottom: calc(var(--padt) + var(--padb) + var(--bar) - var(--card-gap)); } #shop .visit__cols
-  { grid-template-columns: repeat(3, minmax(0, 1fr)); } }` (the photograph's height leaves room for
-  an h2 of one line: keep the h2 to one line at the tablet). The page is 3
-  screens at 1440 and 3 or 4 at the tablet.
+- **At the tablet (640 to 1023)** the groups and the visit block stack and the section grows with
+  them; nothing is cut or hidden to keep it short.
 
 No mood stock, code ground, drawing, empty box or note. The report lists the shots to take
 (`photos.md`). At 8 good photographs it grows to the compact page, at 12 to the full page. A place

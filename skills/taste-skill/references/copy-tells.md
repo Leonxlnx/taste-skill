@@ -42,6 +42,13 @@ habit needs a positive move beside it, or the model reaches for the nearest subs
   row, "Sarah J., Marketing Manager", "© 2024" on a page of a later year [copy-stale-year]. The
   strongest single tell: a conversation or a template pasted into the page. (In the notes' draft a
   `[NEED]` is only listed [copy-need]; it goes to "Client must supply".)
+- **A fact held back** [copy-withheld]: "Price on request", "Pricing on request", "we reply by email
+  with the price" on a page that shows none, "The street address comes with your confirmation email",
+  "Street and district are on the way", "Hours are confirmed with the shop", "client to confirm". The
+  page withholds what the visitor came for, or talks about the build. In the 2.5.3 test builds five
+  pages said "Price on request", once as a heading. Fix: the brief's fact, else a plausible one marked
+  `data-assumed` and listed in the report; with no street, the district and "See the area" (`copy.md`,
+  What may be assumed).
 - **Shapes:** the -ing rider tacked onto a fact (", ensuring a smooth start") [copy-ing-rider]; the
   question answered at once ("The result? Three hours back.") and the colon reveal ("One thing changed:
   X") [copy-reveal]; "serves as", "stands as", "plays a key role" where "is" or "has" would do
@@ -61,7 +68,8 @@ These look like good copy, which is why they survive review.
   a register from `copy-registers.md`, chosen per client.
 - **Invented specifics** (ban). "6:12 a.m., from the window of Room 9", "Batch No. 047", "38% fewer
   re-runs": detail produced as decoration because detail persuades. Fix: the brief's details only;
-  without them, a plainer line.
+  without them, a plainer line. (A working fact the page needs, a price or the hours, is assumed and
+  marked `data-assumed` instead, `copy.md`, What may be assumed; decoration and proof never are.)
 - **The strip of figures** [copy-stat-strip]. A row of three or four figures, each over a one-word
   label, under the hero or the story, on nearly every model page. Fix: each number in the sentence it proves; a strip only
   of plain facts the brief gives (a price, the hours, a count). A menu's prices, a timetable and a column

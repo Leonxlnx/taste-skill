@@ -16,7 +16,8 @@
   "intensity": "quiet",
   "look": "One wide photograph seen through a frame moves a little slower than the page, so the frame reads as a window onto a larger picture.",
   "reduced": "The photograph stands.",
-  "phone": "The photograph stands in its frame.",
+  "phone": "It runs on a phone with two thirds of the travel: the photograph still moves a little slower than the page in its frame.",
+  "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {

@@ -10,8 +10,10 @@
   invisible until the line has passed above the whole of it, then fades in whole, so the line never slices a
   word. The line has reached the top by the time the section's top is a fifth of the screen from the top of the
   page, so a tile framed at the section's top shows the whole section. Scrubbed to the scrollbar, no pin, and
-  it climbs back down when the visitor scrolls back up. Phones, reduced motion, no script, a failed module: no
-  stage, every block as it is.
+  it climbs back down when the visitor scrolls back up. When the two grounds are too close to tell apart (a
+  contrast ratio under 1.3), the panel is moved away from the new ground, lighter or darker, until the change
+  reads, and the line is drawn at 2px. It runs on a phone too (one clip, one line, the blocks' opacity).
+  Reduced motion, no script, a failed module: no stage, every block as it is.
 
     <section class="section ground-inverse" data-moment="line-carries-colour" data-moment-opts='{"from": "base"}'>
       <div class="wrap">…the section's h2 and content…</div>
@@ -20,6 +22,8 @@
   opts: from 'base' (default) | 'surface' | 'inverse' (the ground of the section before it),
         start 0.45 (the share of the section's rise at which the line comes up from under the screen).
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   root.classList.add('mo-lc');
   if (lib.reduced()) { root.classList.add('is-done'); return {}; }
@@ -35,6 +39,9 @@ export default function (root, opts, lib) {
   stage.append(cover, line);
   root.append(stage);
   root.classList.add('is-live', `mo-lc--${from}`);
+  // two grounds too close to tell apart: the panel moves away from the section's own ground until the change reads
+  const was = lib.rgb && lib.rgb(getComputedStyle(cover).backgroundColor), now = lib.groundOf ? lib.groundOf(root) : null;
+  if (was && now && lib.ratio(was, now) < 1.3) { cover.style.background = lib.apart(was, now, 1.3).css; root.classList.add('mo-lc--close'); }
   // the section's words and pictures as whole blocks (lib.blocks): each stays invisible until the line is above all of it
   const bl = lib.blocks(root, [stage]);
   const remeasure = () => { bl.measure(); s.update(); };
@@ -57,5 +64,5 @@ export default function (root, opts, lib) {
     const soft = Math.max(48, h * 0.12);
     bl.set(b => lib.ease.smooth(0, 1, ((b.t - gy) - cut) / soft));
   }, { mode: 'view' });
-  return { destroy() { s.destroy(); if (ro) ro.disconnect(); bl.release(); stage.remove(); root.classList.remove('is-live', 'is-open', `mo-lc--${from}`); } };
+  return { destroy() { s.destroy(); if (ro) ro.disconnect(); bl.release(); stage.remove(); root.classList.remove('is-live', 'is-open', 'mo-lc--close', `mo-lc--${from}`); } };
 }

@@ -1,9 +1,9 @@
 ---
 name: design-taste-frontend
 description: >-
-  tasteskill 2.5.2, the anti-slop frontend skill. Builds professional company websites at the level
+  tasteskill 2.5.3, the anti-slop frontend skill. Builds professional company websites at the level
   of figma.com and x.ai: plain copy in a voice of its own, written from a fact sheet and a voice
-  card first, one system, one section per screen, equal edges, real photographs and real product UI
+  card first, one system, a clean first screen, even air, equal edges, real photographs and real product UI
   (licensed stand-in photographs when the client has none), and motion on every page dealt by fit:
   a hero entrance from a deck, section reveals, two or three award-site moments and a scene where
   one fits (a cafe gets warm, quiet to lively ones; shader grounds stay on tech, gaming and
@@ -31,15 +31,15 @@ figma.com and x.ai are the bar (in words: `layout-v4.md` section 1).
 **Every page is built in a copy of `<skill>/assets/starter.html`, with the kit copied into
 `assets`, however small the brief.** "Keep it simple" or "just a quick page" means fewer sections,
 never a page or stylesheet of your own: the starter carries the hero entrance, the moments, the
-screens and the checks, and the finish gate fails a page built without it.
+section spacing and the checks, and the finish gate fails a page built without it.
 
 **Every page gets**, whatever its kind, and one command deals all of it (step 4):
 
 - `.taste-skill/copy.md` first: the fact sheet, the voice card and the draft (step 2);
 - a hero entrance dealt from the deck (`data-enter="<id>"`, `motion.md`, The entrance deck);
 - the section reveals: each section's h2 and lead photograph rise once, automatically (`data-still` opts out);
-- two dealt moments, three on a long page (eight sections or more), the first lively one in the first three screens;
-- a scene where one fits the kind, about one page in two (a cafe: a warm, quiet or lively one; never a shader ground);
+- two dealt moments, three on a long page (eight sections or more), the first lively one in the first three screens, at least one that runs on a phone, each with copy written to the count `moments.mjs pick` prints;
+- a scene where one fits the kind, about one page in two (a cafe: a warm, quiet or lively one; never a shader ground); a closing scene is the page's close, so the footer keeps its links row only;
 - the hover and press layer, and loops inside every card visual;
 - the finish gate (`gate.mjs`).
 
@@ -54,9 +54,10 @@ These nine win over everything else in this skill.
 1. **No caption or description under any image, render or visual.** Licence credits go in one
    footer line.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390.
-3. **One section per screen:** the hero alone on the first screen, every section exactly one or
-   two screens tall at 1440x900, no second section heading peeking in. The one exception is a
-   live `photo-chapters` section, three or four screens, set by the moment.
+3. **The hero alone on the first screen, then big, even air:** nothing of the next section shows
+   at load; every other section is as tall as its content with the same generous padding round it
+   (`--padt` and `--padb`, 320px between two sections at 1440), never stretched to a screen and
+   never cut or hidden to fit one. Moments and scenes keep the heights their modules set.
 4. **Equal left and right content edges.**
 5. **Hover micro-animations:** a linked card lifts 2px, a photo zooms 1.02-1.03 inside its frame,
    buttons step on hover and press on click, underlines draw, card loops cycle in 2.5-4 s, repeat
@@ -143,8 +144,8 @@ The full plans, deal lists and section order: `references/sections.md`.
   an order form or a drawn SVG. A game: its name in the h1, a launch line, its world as full-bleed
   key art (else its name set large over stand-in photographs of its setting), an effect never in
   its place (`sections.md`, Gaming). **60 to 80 words a screen** outside UI mocks (`copy.md`). By
-  deal: **one effect** (a shader ground in the hero or the one `[data-visual]` frame, a WebGL
-  part, an object or one big scene) and **two or three moments** in their own sections; four live
+  deal: **one effect** (a shader ground in the hero or the one `[data-visual]` frame, a game's on a band, a WebGL
+  part or an object), **0 or 1 big scene** beside it (none when the scene is the hero) and **two or three moments** in their own sections; four live
   WebGL contexts at most; no card moves with the scroll (`effects-usage.md`).
 - **One object never carries the page.** The product or hero object whole leads the hero and **two more sections at
   most**; another kind of visual the brief supports carries the rest (`sections.md` section 1,
@@ -189,7 +190,7 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
 0. **The stack.** An empty folder builds a static page: copy `<skill>/assets` into `assets` and
    start from `assets/starter.html` (copy it to `index.html` and edit it in place). A small or "simple"
    brief changes nothing: the starter is the simple path. Never write a page shell or stylesheet of
-   your own; the gate fails it on the hero entrance, the moment and the screens. An existing project builds in its own stack, its components
+   your own; the gate fails it on the hero entrance, the moment and the spacing. An existing project builds in its own stack, its components
    taking the starter's markup and classes, with the kit copied into its public folder
    (`public/assets`) and loaded from there as plain files, by root paths (`/assets/system.js`), once
    the page has hydrated. A brief that asks for Next.js builds a static export (`output: 'export'`),
@@ -212,24 +213,29 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
 2. **Write the copy notes, then all the copy,** before the page. Copy the block in `copy.md` (The
    copy notes) to `.taste-skill/copy.md` and fill it from the brief: the fact sheet; the six
    questions, answered by you (what the brief cannot answer goes to "Client must supply", never onto
-   the page); the voice card (Register from `copy-registers.md`; Hero form, one of the 14 in
-   `copy-moves.md`, chosen on purpose or dealt by the brand name's letters, never the last page's;
-   Admission; Enemy; Customer words; Five seconds); then the draft, one line per part (`H1:`,
+   the page); the voice card (Register from `copy-registers.md` and Hero form, one of the 14 in
+   `copy-moves.md`, each chosen from the brief with its reason, never the last page's; the brand
+   name's letter count only breaks a tie; Admission; Enemy; Customer words; Five seconds); then the
+   draft, one line per part (`H1:`,
    `Lead:`, `H2:`, `Button:`). Lint it: `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`.
    The rules of `copy.md` hold: the hero (h1, eyebrow and lead) tells a stranger in five seconds what
    is sold and where or for whom, the h1 in the form on the card and the category plain in the lead
    or the eyebrow (a game: its name in the h1); one hard fact on the first screen; a noun in every
    heading, no two headings sharing a phrase; buttons as a verb and an object; the close's heading
    says something new, never the ask of the section above it. Nothing is invented but a coined brand
-   name (searched first, the result kept in `names.json` beside the page) and, on a place, plausible
-   hours and prices, each marked `data-assumed` (`copy.md`, What may be assumed). copy-lint FAILs a
-   page with no notes or a voice card with an empty field.
+   name (searched first, the result kept in `names.json` beside the page) and the facts the page
+   needs that the brief leaves out (prices, plan limits, hours, menu items, room types, delivery
+   terms, a district), each marked `data-assumed` and listed in the report (`copy.md`, What may be
+   assumed); never reviews, quotes, customers, awards, named people, result figures, house numbers
+   or phone numbers. A page says the thing, never that it will come: copy-lint FAILs "Price on
+   request", an address "to come" or a note to the client [copy-withheld], and a page with no
+   notes or a voice card with an empty field.
 
-3. **Plan the page as screens.** Line 1: the kind. Line 2: the deal (step 4), with one sentence on
+3. **Plan the page as sections.** Line 1: the kind. Line 2: the deal (step 4), with one sentence on
    why the palette fits the trade. Then one line per
-   section: its id, its one idea, its picture and its kind (object, use, parts, world, slot, diagram, type; three object lines at most), its
-   screens (1 or 2, from its content height, `layout-v4.md` section 2), which section holds a
-   moment or the scene and why it moves (on tech also the effect). Pick the photographs now
+   section: its id, its one idea, its picture and its kind (object, use, parts, world, slot, diagram, type; three object lines at most), what
+   it holds (each section as tall as its content, `layout-v4.md` section 2: never cut or hidden to
+   fit a screen), which section holds a moment or the scene and why it moves (on tech also the effect). Pick the photographs now
    (`photos.md`), one line each: "heading says X, picture shows Y", against the claim, not the
    keyword; their count, stand-ins included, sets a place's length (section 2). What the brief asks
    for becomes an element (slot times, a date range with a room choice, an order with quantity:
@@ -283,7 +289,7 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
    `assets/layout/hero-<id>.html` (never its nav, other sections, footer or credit line; every word
    and picture becomes the client's) and set `data-enter="<the dealt entrance>"`; move the dealt close and footer out of their `<template>`s
    and delete the rest. Every section is `main > section` with
-   one `.wrap`, its h2 first, `--h: 1` or `2`. Build each to its recipe with the system's classes
+   one `.wrap`, its h2 first. Build each to its recipe with the system's classes
    and tokens; write page CSS only where a reference says page CSS (inside a visual, `--p-h`,
    `.wall`, `.rail`, `.device`). Paste UI from `assets/ui/<name>/fragment.html` and rewrite every
    name, number and logo to the client's (kit icons become `data-icon`, `cards.md`); a diagram card is `data-diagram="<preset>"`
@@ -332,8 +338,10 @@ Read `copy.md`, `copy-voice.md`, `system.md`, `layout-v4.md` and `sections.md` i
    to stop, or to ship the page as it is, run `gate.mjs --done "<what they said>"` (`GATE: DONE`)
    and report the open FAILs.
    `GATE: SETUP` (no page yet, a framework's source shell, a page that is not local): arm what a
-   browser can open (step 1) and run it again. `GATE: ERROR` (the checks could not run) or
-   `GATE: OFF`: put the line in the report and finish; do not rerun. Never edit
+   browser can open (step 1) and run it again. `GATE: ERROR`: fix what it names and run it again
+   (a round, like a FAIL); report it only when it names nothing on the page or ends "rounds used
+   up". `GATE: OFF`: after any edit to a closed page run the gate again (one more round); never
+   re-arm a closed build with `--start`. Never edit
    the kit's files or hide anything from the checker. A FAIL you judge false is waived in
    `.taste-skill/waivers.json` with its reason, never fixed by gaming the check (`references/gate.md`);
    a word from the client's own copy that copy-lint FAILs is waived hit by hit, the brief as the reason
@@ -355,11 +363,12 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
   seconds, with one hard fact; the h1 in the form the voice card chose [copy-headline, copy-fact,
   copy-h1-category]; the hero fills it alone at every width, its main button inside it [hero-screen,
   hero-fill, fold-action, fold-cut] {hero-fold}.
-- **One section per screen:** every section 1 or 2 screens, its h2 first and top-aligned, no
-  neighbour's heading or picture in its tile, nothing sparse, no section half empty [section-height, one-section,
-  one-heading, section-air, one-screen, section-gaps, empty-area] {screen-short, screen-height, sparse,
-  neighbour, neighbour-ground}; no empty strip under or inside a section, no blank phone screen
-  {empty-band, blank-screen}.
+- **Sections and their air:** every section as tall as its content, its h2 first and top-aligned,
+  the same air between every two sections, no section stretched past its content or holding a
+  hole, no content cut or hidden to fit [section-height, section-air, one-section, one-heading,
+  section-gaps, empty-area] {section-height, section-air}; no empty strip under or inside a
+  section, no blank phone screen {empty-band, blank-screen}; every picture shows, never folded to
+  0px by a frame with no ratio [visual-empty].
 - **Equal edges:** every block on the `.wrap` lines or the grid's columns, nothing out to one side,
   no sideways scroll [container-edges, row-lines, split-pair, off-grid, right-edge, col-edge,
   spill, off-viewport, stagger, top-stagger] {edge-left, edge-right, spill, bleed-one-side,
@@ -384,10 +393,10 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
 - **Motion:** every button, link, linked card and linked photograph visibly answers the pointer,
   nothing tilts [motion-layer, hover, hover-move, tilt]; the hero enters once on load in its dealt
   variant [hero-enter]; the section reveals run (h2 and lead photograph, once) {reveal-none}; two
-  or three dealt moments, one of them moving in the first three screens [moment-none]
+  or three dealt moments, one of them moving in the first three screens and one on a phone, copy to each moment's count [moment-none, moment-text]
   {motion-visible}; card loops cycle in 2.5-4 s [loop-cycle]; nothing moves because the page
   scrolled except a dealt moment inside its own section or the dealt scene (every kind, by fit)
-  [scroll-linked, scroll-reveal, pinned: expected only there]; motion-lint passes (no
+  [scroll-linked, scroll-reveal, pinned: the kit's own dealt moment or scene is not told; anywhere else they fail]; motion-lint passes (no
   `transition: all`, no ease-in on an entrance, nothing from scale 0, no layout property animated);
   anything
   moving past 5 s has a pause button [loop-pause]; under reduced motion everything rests and nothing
@@ -414,8 +423,8 @@ Each line names its checks: `consistency.mjs` ids in brackets, `check.mjs` findi
   leftover or device used as a tic, a voice of its own (copy-lint's ids: copy-notes, copy-residue,
   copy-slop-word, copy-stock-phrase, copy-two-fragment, copy-virtue, ...; `copy-voice.md`).
 - **Fast:** no FAIL row in `perf.mjs` (image weight, contexts, layout shift).
-- **820, 768, 390 and 320:** sections on their screens [section-height]; on a phone a section is at
-  least its screens and grows with what it holds, so nothing lies on anything else or under a fixed
+- **820, 768, 390 and 320:** sections as tall as their content [section-height]; on a phone a section
+  grows with what it holds, so nothing lies on anything else or under a fixed
   bar [collide]; every link and control outside running text 44px tall [tap-size] (a FAIL when
   another target is under 8px away); nothing past the screen at 320 [off-viewport], and nothing
   lies on anything else there either [collide]; the first screen ending whole or on a clear bleed [fold-card]

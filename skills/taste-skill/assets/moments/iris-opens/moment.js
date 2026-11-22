@@ -14,7 +14,11 @@
   The circle is done by the time the section's top is a fifth of the screen from the top of the page,
   so a tile framed at the section's top shows the whole section. Scrubbed to the scrollbar, no pin, and
   it closes again the other way when the visitor scrolls back up. Nothing in the section moves.
-  Phones, reduced motion, no script, a failed module: no stage, every block as it is.
+  When the two grounds are too close to tell apart (a contrast ratio under 1.3, such as #e8e8e3 after
+  #dcdcd6), the panel is moved away from the new ground, lighter or darker, until the disc reads, and the
+  ring is drawn at 2px with a soft shade.
+  It runs on a phone too (one mask, one ring, the blocks' opacity). Reduced motion, no script, a failed
+  module: no stage, every block as it is.
 
     <section class="section ground-inverse" data-moment="iris-opens" data-moment-opts='{"from": "base"}'>
       <div class="wrap">…the section's h2 and content…</div>
@@ -23,6 +27,8 @@
   opts: from 'base' (default) | 'surface' | 'inverse' (the ground of the section before it: the colour
         of the stage), at [x, y] 0-1 (the centre of the circle in the visible part, default [0.5, 0.5]).
 */
+export const phone = true;
+
 export default function (root, opts, lib) {
   root.classList.add('mo-io');
   if (lib.reduced()) { root.classList.add('is-done'); return {}; }
@@ -38,6 +44,9 @@ export default function (root, opts, lib) {
   stage.append(cover, ring);
   root.append(stage);
   root.classList.add('is-live', `mo-io--${from}`);
+  // two grounds too close to tell apart: the panel moves away from the section's own ground until the disc reads
+  const was = lib.rgb && lib.rgb(getComputedStyle(cover).backgroundColor), now = lib.groundOf ? lib.groundOf(root) : null;
+  if (was && now && lib.ratio(was, now) < 1.3) { cover.style.background = lib.apart(was, now, 1.3).css; root.classList.add('mo-io--close'); }
 
   // the section's words and pictures as whole blocks (lib.blocks): each stays invisible until the disc holds all of it
   const bl = lib.blocks(root, [stage]);
@@ -72,5 +81,5 @@ export default function (root, opts, lib) {
       return lib.ease.smooth(0, 1, (rad - d) / soft);
     });
   }, { mode: 'view' });
-  return { destroy() { s.destroy(); if (ro) ro.disconnect(); bl.release(); stage.remove(); root.classList.remove('is-live', 'is-open', `mo-io--${from}`); } };
+  return { destroy() { s.destroy(); if (ro) ro.disconnect(); bl.release(); stage.remove(); root.classList.remove('is-live', 'is-open', 'mo-io--close', `mo-io--${from}`); } };
 }

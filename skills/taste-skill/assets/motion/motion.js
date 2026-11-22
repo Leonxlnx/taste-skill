@@ -26,8 +26,9 @@
     preventDefault().
   - the entrance deck: data-enter="<id>" picks rise (default), set-type, focus, exposure, aperture,
     line-blocks, doors, product-at-work or still (meta.json, entrances); each settles by 1.4 s.
-  - section reveals: below the first screen each main section's h2 and lead photograph arrive once
-    (never a card, row, tile or list; data-still on a section opts out).
+  - section reveals: below the first screen each main section's h2 and lead picture (a photograph or a
+    video's poster) arrive once, the close in the footer too; in a section with a moment, those outside
+    the moment's host (never a card, row, tile or list; data-still on a section opts out).
   - [data-m-roll] digits roll once; [data-m-swatches] crossfade a photograph; [data-open-now] gets
     its open dot; .m-swap labels roll on hover.
   Under prefers-reduced-motion: no entrance, no reveal, no roll, no indicator travel, no tick, no
@@ -439,37 +440,50 @@ function enter() {
 }
 
 /* ---------------------------------------------------------------- section reveals */
-// Below the first screen, each section's h2 rises out of its line masks and its lead photograph settles from a slight
-// window, once, as each comes on screen (motion.md, Section reveals). One heading and one photograph a section, never
-// a card, row, tile or list, nothing in the first screen, nothing in a section with its own moment or scene or
-// data-still. Only what is marked here waits (.m-rv-wait), so without script, under reduced motion and in a headless
-// shot nothing is hidden. A heading whose masks would set it on other lines rises whole instead (no layout shift).
+// Below the first screen, each section's h2 rises out of its line masks and its lead picture (a photograph, or a
+// video's poster) settles from a slight window, once, as each comes on screen (motion.md, Section reveals). One heading
+// and one picture a section, never a card, row, tile or list, nothing in the first screen, nothing inside a moment's
+// host or a scene, nothing in a section with data-still. A section that holds a moment still reveals its h2 and lead
+// picture when they sit outside the moment's host; a section that is a moment's host, a transition moment's section
+// (iris-opens, line-carries-colour, closing-lift: the moment moves the whole section) or a scene's section is left to
+// it. The close in the footer (footer .closing__cta) reveals its h2 and picture like a section. Only what is marked
+// here waits (.m-rv-wait), so without script, under reduced motion and in a headless shot nothing is hidden. A heading
+// whose masks would set it on other lines rises whole instead (no layout shift).
 const RV_SKIP = '.hero, [data-still], [data-moment], [data-big-scene], [data-scene], [data-enter]';
 const RV_NOT = '.card, .tile, li, table, .panel, [data-ui], [data-m-loop], [data-peek] .rows, a.card, [hidden]';
+const RV_OWN = '[data-moment], [data-big-scene], [data-scene]';
+const RV_WHOLE = '[data-moment="iris-opens"], [data-moment="line-carries-colour"], [data-moment="closing-lift"], [data-big-scene], [data-scene]';
+const RV_PIC = el => el.tagName === 'IMG' || el.tagName === 'VIDEO';
 function reveals() {
   if (reduced() || shot() || !('IntersectionObserver' in window)) return;
   const main = document.querySelector('main') || document.body;
-  const secs = [...main.querySelectorAll('section')].filter(s => !s.parentElement.closest('section') && !s.matches(RV_SKIP) && !s.querySelector('[data-moment], [data-big-scene], [data-scene]'));
+  const secs = [...main.querySelectorAll('section')].filter(s => !s.parentElement.closest('section') && !s.matches(RV_SKIP) && !s.querySelector(RV_WHOLE));
+  // the close in the footer, after the sections (the starter's footer.closing: row 1 is the dealt close)
+  secs.push(...[...document.querySelectorAll('footer .closing__cta')].filter(c => !c.closest('[data-still], [data-moment], [data-big-scene], [data-scene]')));
   const fold = innerHeight, items = [];
   const below = el => el.getBoundingClientRect().top > fold;
+  // the first h2 and the first large picture of a block; one inside a moment's host belongs to the moment and is
+  // left to it (no other one is taken in its place)
+  const firstOf = (s, sel, ok = () => true) => [...s.querySelectorAll(sel)].find(x => !x.closest(RV_NOT) && ok(x));
+  const big = i => { const r = i.getBoundingClientRect(); return r.width >= 280 && r.height >= 160; };
   secs.forEach(s => {
     if (s.dataset.mRvDone) return;
     s.dataset.mRvDone = '1';
-    const h = [...s.querySelectorAll('h2')].find(x => !x.closest(RV_NOT));
-    if (h && below(h)) items.push(h);
-    const img = [...s.querySelectorAll('img')].find(i => { if (i.closest(RV_NOT)) return false; const r = i.getBoundingClientRect(); return r.width >= 280 && r.height >= 160; });
-    if (img && below(img)) items.push(img);
+    const h = firstOf(s, 'h2');
+    if (h && !h.closest(RV_OWN) && below(h)) items.push(h);
+    const pic = firstOf(s, 'img, video', big);
+    if (pic && !pic.closest(RV_OWN) && below(pic)) items.push(pic);
   });
   if (!items.length) return;
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); reveal(e.target); } }), { rootMargin: '100000px 0px -12% 0px' });
-  items.forEach(el => { el.dataset.mRv = el.tagName === 'IMG' ? 'photo' : 'heading'; el.classList.add('m-rv-wait'); io.observe(el); });
+  items.forEach(el => { el.dataset.mRv = RV_PIC(el) ? 'photo' : 'heading'; el.classList.add('m-rv-wait'); io.observe(el); });
   addEventListener('beforeprint', () => items.forEach(el => el.classList.remove('m-rv-wait')));
 }
 function reveal(el) {
   if (!el.classList.contains('m-rv-wait')) return;
   // passed by a jump (an anchor, a reload half way down) or in a hidden tab: it simply shows
   if (el.getBoundingClientRect().bottom < 0 || document.visibilityState !== 'visible') { el.classList.remove('m-rv-wait'); return; }
-  if (el.tagName === 'IMG') {
+  if (RV_PIC(el)) {
     el.animate([{ clipPath: 'inset(7% 6%)', scale: '1.06' }, { clipPath: 'inset(0% 0%)', scale: '1' }], { duration: 700, easing: EASE_ENTER, fill: 'backwards' });
     el.classList.remove('m-rv-wait');
     return;

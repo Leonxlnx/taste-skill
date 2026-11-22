@@ -45,9 +45,12 @@
 //   hold          1.4    1-1.5     screens the stage is held for on desktop and tablet
 //   phoneHold     1.2    1-1.5     the same on a phone
 //   maxWords      12     8-12      words used on desktop and tablet (the rest of the list is hidden)
-//   phoneCount    7      6-8       words used on a phone: the first items of the list; the rest are hidden
+//   phoneCount    12     6-12      words used on a phone: the first items of the list (all of them by
+//                                  default, as many as the heading promises); a lower number hides the rest
 //                                  there, in the finished composition too
-//   columns       2      1-2       columns the words settle in on desktop and tablet (a phone takes one)
+//   columns       2      1-2       columns the words settle in on desktop and tablet (a phone with more than
+//                                  six words takes two, set smaller, to 0.66 at the least, when the longest do
+//                                  not fit side by side; else one)
 //   at            0.5    0.3-0.7   where the cup stands on desktop and tablet, its middle as a share of the
 //                                  width (sets --spg-at); a phone keeps it in the middle
 //   feet          0.6    0-0.85    how far the edge's feet rise by the end, as a share of the way from where
@@ -73,10 +76,11 @@
 // (it is never deeper than the words it holds, and never a frame ahead of them by more than a row). The
 // feet rise from the first frame to the end. Settled 0.9-1.
 //
-// Phone plan: the same scene with phone numbers: the first seven words in one column in the middle (the cup
-// never moves sideways; its curved sides run out past the screen's edges so they stay soft), the heading block
-// across the width with the words scattered under it at 64% of their landed size, shorter flights (0.17), a
-// 1.2-screen hold. Screens under 600px tall get the finished composition. Reduced motion, no script and a failed CDN get
+// Phone plan: the same scene with phone numbers: every word, in two columns in the middle (more than six words;
+// set smaller when the longest do not fit side by side, one column below 0.66) (the cup never moves sideways; its curved sides run out past the screen's edges so they
+// stay soft), the heading block across the width with the words scattered under it at 64% of their landed
+// size, shorter flights (0.17), a 1.2-screen hold. On every width the held heading block starts under the
+// page's fixed nav (Stage.navInset, written as --spg-nav). Screens under 600px tall get the finished composition. Reduced motion, no script and a failed CDN get
 // the finished composition: the heading and sentence, then the next ground with the cup risen at its top and
 // the words resting in it in the light ink.
 (() => {
@@ -121,7 +125,7 @@
       hold: num(opts.hold, 1.4, 1, 1.5),
       phoneHold: num(opts.phoneHold, 1.2, 1, 1.5),
       maxWords: Math.round(num(opts.maxWords, 12, 8, 12)),
-      phoneCount: Math.round(num(opts.phoneCount, 7, 6, 8)),
+      phoneCount: Math.round(num(opts.phoneCount, 12, 6, 12)),
       columns: Math.round(num(opts.columns, 2, 1, 2)),
       at: num(opts.at, 0.5, 0.3, 0.7),
       feet: num(opts.feet, 0.6, 0, 0.85),
@@ -165,10 +169,27 @@
 
     // which words this width keeps: the first items of the list
     const pick = (phone) => {
-      const n = Math.min(all.length, phone ? o.phoneCount : o.maxWords);
+      const n = Math.min(all.length, o.maxWords, phone ? o.phoneCount : o.maxWords);
       all.forEach((w, i) => w.classList.toggle('spg-word--off', i >= n));
       return all.slice(0, n);
     };
+    // the columns the words settle in, and the size they start from: desktop and tablet `columns` at full size; a
+    // phone with more than six words two columns, set smaller (down to 0.66) when the longest do not fit side by side
+    // inside the gutters, else one. Every word stays on the phone (seen on a test page: a heading saying "ten" over
+    // seven words), and two short columns leave the scatter room above the rising ground that one tall one takes
+    const columnsFor = (phone, N) => {
+      const set = (c) => { list.classList.toggle('spg-two', phone && c === 2); list.style.setProperty('--spg-rows', String(c === 1 ? N : Math.ceil(N / 2))); return c; };
+      if (!phone) return { cols: set(o.columns), fit: 1 };
+      if (N <= 6) return { cols: set(1), fit: 1 };
+      set(2);
+      const room = (stage.clientWidth || window.innerWidth) - 2 * (parseFloat(getComputedStyle(top).paddingLeft) || 16);
+      const f = Math.min(1, (0.98 * room) / Math.max(1, list.offsetWidth));
+      if (f < 0.66) return { cols: set(1), fit: 1 };
+      if (f < 1) root.style.setProperty('--spg-fit', f.toFixed(3));
+      return { cols: 2, fit: f };
+    };
+    // the fixed nav over the held stage: the heading block starts under it (seen on a phone: the heading under the nav)
+    const navInset = () => root.style.setProperty('--spg-nav', (Stage.navInset ? Stage.navInset(root) : 0) + 'px');
     let words = [];
     let geo = null;
     let phoneNow = false;
@@ -178,8 +199,9 @@
       for (const p of papers) { p.style.removeProperty('clip-path'); p.style.removeProperty('visibility'); p.__spg = {}; }
       rise.style.removeProperty('clip-path');
       rise.__spg = {};
-      for (const k of ['--spg-list-top', '--spg-fit', '--spg-a', '--spg-at']) root.style.removeProperty(k);
+      for (const k of ['--spg-list-top', '--spg-fit', '--spg-a', '--spg-at', '--spg-nav']) root.style.removeProperty(k);
       list.style.removeProperty('--spg-rows');
+      list.classList.remove('spg-two');
       geo = null;
     };
 
@@ -370,17 +392,17 @@
       clear();
       words = pick(phone);
       const N = words.length;
-      const cols = phone ? 1 : o.columns;
-      list.style.setProperty('--spg-rows', String(cols === 1 ? N : Math.ceil(N / 2)));
+      navInset();
       root.style.setProperty('--spg-at', (phone ? 50 : o.at * 100) + '%');
+      const { cols, fit: fit0 } = columnsFor(phone, N);
       const H = stage.clientHeight || window.innerHeight, W = stage.clientWidth || window.innerWidth;
       const keep = [...top.querySelectorAll('h1, h2, h3, h4, p, a, button, img, figure')].filter((e) => e.offsetWidth && e.offsetHeight);
       let s = stage.getBoundingClientRect();
       const hb = Math.max(0, ...keep.map((e) => e.getBoundingClientRect().bottom - s.top));
       // the words, the room above the cup and the ground under them must fit under the heading block;
       // otherwise the words are set smaller (desktop keeps them at display size: 76% at the least)
-      const minFit = phone ? 0.8 : 0.76;
-      let fit = 1, fs = 40, Lh = 0, padT = 0, gapMin = 0, footMin = 0;
+      const minFit = Math.min(phone ? 0.8 : 0.76, fit0);
+      let fit = fit0, fs = 40, Lh = 0, padT = 0, gapMin = 0, footMin = 0;
       for (let i = 0; i < 10; i++) {
         fs = parseFloat(getComputedStyle(list).fontSize) || 40;
         Lh = list.offsetHeight;
@@ -468,8 +490,7 @@
     function rest(ctx) {
       clear();
       words = pick(ctx.phone);
-      const cols = ctx.phone ? 1 : o.columns;
-      list.style.setProperty('--spg-rows', String(cols === 1 ? words.length : Math.ceil(words.length / 2)));
+      columnsFor(ctx.phone, words.length);
       const fitTop = () => {
         if (root.classList.contains('is-live')) return;
         const r = list.getBoundingClientRect(), fs = parseFloat(getComputedStyle(list).fontSize) || 40;

@@ -1,5 +1,5 @@
 /*
-  moments.js - the loader for the page's one or two creative moments (taste-skill, references/moments.md).
+  moments.js - the loader for the page's two creative moments (three on a long page) (taste-skill, references/moments.md).
 
     <section data-moment="pinned-chapters" data-moment-opts='{"hold": 2.4}'>…</section>
 
@@ -18,7 +18,7 @@
   Marks on <html>: .mo-js as soon as this runs (a moment's CSS may hide what it will reveal only under
   .mo-js, and .mo-safe arrives 2.5 s later as a fallback that shows everything); data-moments-ready="n"
   when every moment is mounted (shoot scripts wait for it); data-moments-over="n" when a page holds
-  more than two, and data-moments-repeat when an id is used twice (both are faults: one or two a page,
+  more than three, and data-moments-repeat when an id is used twice (both are faults: two a page, three on a long one,
   an id once). A moment whose module fails gets data-moment-failed and the class mo-safe on its own
   element (its CSS shows the finished state at once). The 2.5 s timer and .mo-js can also be set
   earlier by one line in <head>, with modulepreload links for this file, lib.js and the dealt moment:
@@ -53,9 +53,10 @@ export function mount(el) {
     try { opts = JSON.parse(el.dataset.momentOpts || '{}'); } catch { console.warn(`moments: bad data-moment-opts on ${id}`); }
     const card = lib.inCard(el);
     const [, mod] = await Promise.all([css(new URL(`${id}/moment.css`, BASE).href), import(new URL(`${id}/moment.js`, BASE).href)]);
-    // a moment light enough for a phone says so in its module (export const phone = true: one picture
-    // or one line of words, transform, filter or colour, nothing pinned that a phone cannot hold): it runs
-    // there too, and only reduced motion and a card keep it still. Every other moment is still on a phone
+    // a moment with a phone version says so in its module (export const phone = true: one picture or one
+    // line of words at a time, transform, clip, filter or colour, nothing pinned that a phone cannot hold;
+    // it asks lib.phone() for its lighter version): it runs there too, and only reduced motion and a card
+    // keep it still. Every other moment (liquid-hover, cursor-spotlight) is still on a phone
     const onPhone = mod.phone === true;
     const why = onPhone ? (lib.reduced() ? 'reduced' : '') : lib.stillWhy();
     if (card) { el.dataset.momentStill = 'card'; html.dataset.momentsCard = [html.dataset.momentsCard, id].filter(Boolean).join(' '); console.warn(`moments: ${id} sits in a card; it stays still`); }
@@ -80,7 +81,7 @@ export function mountAll(root = document) {
     const ids = els.map(el => el.dataset.moment);
     const repeat = ids.filter((id, i) => ids.indexOf(id) !== i);
     if (repeat.length) { html.dataset.momentsRepeat = [...new Set(repeat)].join(' '); console.warn(`moments: an id twice on one page: ${repeat.join(', ')}`); }
-    if (ids.length > 2) { html.dataset.momentsOver = String(ids.length); console.warn(`moments: ${ids.length} moments on one page (one or two)`); }
+    if (ids.length > 3) { html.dataset.momentsOver = String(ids.length); console.warn(`moments: ${ids.length} moments on one page (two, three on a long page)`); }
     await Promise.all(els.map(el => mount(el).catch(e => {
       if (!el.dataset.momentFailed) console.warn(`moments: ${el.dataset.moment} failed: ${e.message}`);
       el.dataset.momentFailed = e.message;

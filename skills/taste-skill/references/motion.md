@@ -25,10 +25,11 @@ has these layers:
 2. **Section reveals**, automatic: below the first screen each section's h2 rises out of its masks
    and its lead photograph settles, once. Never a card, row, tile or list.
 3. **Two dealt moments** in different sections (three on a long page of eight sections or more),
-   at least one lively, bold or clearly moving within the first three screens:
-   `moments.mjs pick --page <kind>` deals them (`moments.md`).
-4. **A scene** where one fits the kind (0 or 1; a hospitality, route or room scene on a place):
-   `scenes.md`.
+   at least one lively, bold or clearly moving within the first three screens, and at least one
+   that runs on a phone: `moments.mjs pick --page <kind>` deals them (`moments.md`). A moment that
+   only answers a mouse is never one of the two.
+4. **A scene** where one fits the kind (0 or 1, about one page in two; a warm, quiet or lively one
+   without WebGL on a place or service: a room, a route, a closing line): `scenes.md`.
 5. **The hover and press layer** below, on every link, button, linked card, linked photograph and
    row, and the swaps a click or a tap makes (a tab, a peek list's photograph, a swatch).
 6. **Loops inside card visuals** wherever the page has card visuals, on any kind (a route that draws,
@@ -147,7 +148,7 @@ Markup to copy:
 </div>
 ```
 
-FAQs show every answer open (`system.css`): no accordion, and nothing ever animates height,
+A short FAQ shows every answer open; a long one (ten questions or more) may fold with `.faq--fold` (`system.css`, native details). Nothing ever animates height,
 max-height or padding. Hooks: `[data-m-loop]` (your own CSS loop, any kind), `data-ui-loop` (a card
 group's one fragment loop), `data-m-count` (a hero fact, once a page), `data-m-roll`, `.m-swap`,
 `[data-m-swatches]`, `data-still`, `.m-link`, `.m-zoom`, `.m-nolift`.
@@ -219,9 +220,12 @@ product and playful pages.
 first h2 (outside cards, rows and lists) rises out of its line masks in 620ms, lines 70ms apart, and
 its lead photograph (the first image at least 280 by 160 outside cards, tiles and lists) settles
 from a slight window and 1.06 in 700ms, once, as each comes 12% into the screen. Never in the first
-screen, never a card, row, tile, list or paragraph, nothing staggered. A section holding a dealt
-moment or a scene keeps its own motion and gets no reveal; `data-still` on a section keeps it
-still. Only what `motion.js` marked waits (`.m-rv-wait`, `data-m-rv`), so without script, under
+screen, never a card, row, tile, list or paragraph, nothing staggered. In a section with a moment,
+the h2 and lead picture outside the moment's host still reveal; a section that is the moment's
+host, a transition moment's section (`iris-opens`, `line-carries-colour`, `closing-lift`) and a
+scene keep their own motion and get no reveal. A video's poster counts as the lead picture, and the
+close in the footer (`.closing__cta`: its h2, and its picture on `close--photo` and `close--split`)
+reveals like a section. `data-still` on a section keeps it still. Only what `motion.js` marked waits (`.m-rv-wait`, `data-m-rv`), so without script, under
 reduced motion, in print and in a headless shot (unless `data-motion="live"`) nothing is hidden; a
 heading passed by a jump simply shows; a heading whose masks would set it on other lines rises whole
 (no layout shift).
@@ -298,9 +302,10 @@ story, on a place a route that draws (`<path class="m-draw" pathLength="1">` ins
   chapter, `moments.md`), pinned only with `position: sticky` inside that box. A scroll
   moment is scrubbed to the scrollbar (it runs back on the way up) and shows a finished state at both
   ends; an enter moment (`picture-develops`) runs once, 1.6 to 1.8 s. Its text is live and visible without the motion (opacity 1,
-  4.5:1 at every step); reduced motion and no script show the finished still; phones run the light
-  ones (`word-highlight`, the film develop, `photo-chapters`: transform, clip, filter or colour, no
-  WebGL) and get the still of the rest; `perf.mjs` passes. It never moves a card, a
+  4.5:1 at every step); reduced motion and no script show the finished still; phones run every
+  moment but the two mouse ones in a lighter version (no pin, no scrub where a phone cannot hold
+  one: transform, clip, filter or colour on one element, no WebGL) and get the still of
+  `liquid-hover` and `cursor-spotlight`; `perf.mjs` passes. It never moves a card, a
   photograph, pricing, an FAQ, a quote block or the footer. Driven by native `animation-timeline`, a
   passive scroll read written to a custom property once a frame, or GSAP ScrollTrigger scoped to that
   section (a classic scene's loader brings it once, on any kind it fits). No smooth-scroll library
@@ -320,8 +325,9 @@ opacity and colours on links, `.m-tab-ind`, `.m-switch::before`, `.m-check::befo
 stands as written, whatever its variant; no section reveals; a row's line appears at once; numbers
 do not roll; a swatch swaps its photograph at once. Every loop, effect, moment and scene shows its finished frame, marquees stand as a still row, numbers show their final text, pause buttons are hidden. On a
 phone card loops and effects hold their finished picture or poster, heavy canvases become stills,
-there are no hover states and no pointer simulations; the hero still enters, and the moments light
-enough for a phone run there (`moments.md`, The still rule), so a phone page moves in two places too.
+there are no hover states and no pointer simulations; the hero still enters, and every dealt moment
+but the two mouse ones runs there in its phone version (`moments.md`, The still rule; the deal makes
+sure one of the page's moments does), so a phone page moves in three places too.
 
 ## Never
 

@@ -36,13 +36,14 @@
   --display-weight: 400;    /* headlines 400; 500 on a tech page (software, gaming, hardware) */
   --display-tracking: -0.025em;
 
-  /* the page rhythm (references/layout-v4.md): one section per screen. The header is fixed and
-     --nav tall; every section is padded --padt above and --padb (plus the phone action bar, --bar)
-     below, and is exactly one or two screens tall (--h: 1 or 2; --hm on a phone). The hero's words
-     start --hgap under the header and its content ends --hpadb above the fold. */
+  /* the page rhythm (references/layout-v4.md): the hero alone on the first screen, then sections as
+     tall as their content with the same air round each. The header is fixed and --nav tall; every
+     section is padded --padt above and --padb below (160 and 160 at 1024 and up, 128 on a tablet, 96
+     on a phone), so two sections' content sits --padb + --padt apart. The hero's words start --hgap
+     under the header and its content ends --hpadb above the fold. */
   --nav: 72px;
-  --padt: 120px;
-  --padb: 72px;
+  --padt: 160px;
+  --padb: 160px;
   --hgap: 48px;
   --hpadb: 64px;
   --bar: 0px;
@@ -102,13 +103,17 @@ html[data-ground="painting"] { --ground-bg: #79a8d6; --ground-surface: #a6c4e2; 
 html[data-radius] .card { --c-r: var(--r-lg); }
 html[data-radius] .panel { --p-r: var(--r-md); }
 
-/* a phone: the header 56, the sections padded 96 / 48, the hero's words 40 under the header and its
+/* a phone: the header 56, the sections padded 96 / 96, the hero's words 40 under the header and its
    content ending 24 above the fold, 24 at both sides, 12 between columns */
 @media (max-width: 639px) {
-  :root { --nav: 56px; --padt: 96px; --padb: 48px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
+  :root { --nav: 56px; --padt: 96px; --padb: 96px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
 }
 @media (min-width: 640px) {
   :root { --gut: 48px; --section: 48px; --section-band: 72px; --card-pad: 24px; }
+}
+/* a tablet: the sections padded 128 / 128 */
+@media (min-width: 640px) and (max-width: 1023px) {
+  :root { --padt: 128px; --padb: 128px; }
 }
 @media (min-width: 1024px) {
   :root { --gut: 80px; --section: 56px; --section-band: 96px; --card-gap: 24px;
@@ -206,83 +211,46 @@ p { text-wrap: pretty; }
 .grid > * { min-width: 0; grid-column: 1 / -1; }
 .section { padding-block: var(--section); }
 
-/* ---------------------------------------------------------------- one section per screen
-   The page is a stack of screens. Framed at scrollY = k x the screen height, a shot shows exactly one
-   section: the hero alone on the first screen, every other section (and footer.closing, the close and
-   the footer in one) exactly one or two screens tall, its h2 first, --padt under its top. Heights
-   and padding do it: no pinning, snapping or script.
-     <section class="section" id=".." style="--h: 2">     (2 screens; --hm sets a phone's count alone)
+/* ---------------------------------------------------------------- sections: as tall as their content
+   The hero alone fills the first screen (below). Every other section, and footer.closing (the close and
+   the footer in one), is as tall as its content plus the same air above and below it: --padt over its
+   h2, --padb under its last block, so the content of two sections sits --padb + --padt apart (320 at
+   1440, 256 on a tablet, 192 on a phone). Short content is never stretched to a screen, and long content
+   is never cut or hidden to fit one. A moment or a scene that holds its stage (photo-chapters,
+   pinned-chapters, a pinned scene) keeps the height its own module sets.
+     <section class="section" id="..">
        <div class="wrap"> the h2 first, then the content </div>     (the one in-flow child)
      </section>
    A layer (a full-bleed photograph or ground behind the words) is an <img class="layer" aria-hidden="true">
-   beside the .wrap. Content must fit: one screen holds 708px of content at 1440x900 (900 - 120 - 72),
-   two hold 1,608 (the second screen's part starts --padt under its top with .g2). From 640 to 1279 a
-   section keeps at least its screens and grows past them rather than overlap the next. */
+   beside the .wrap; from 640 a section with a layer is at least 80% of the screen, so the photograph has
+   room. Pictures keep their own ratio: a split's photograph stands beside the words at its ratio,
+   top-aligned with them (a .frame--fill also grows with its row when the words run taller); tiles keep
+   --tile-ratio, a card's panel its --p-h. --h, --hm, .g2, .g2m and .fill (the old screen counts) are
+   read nowhere here: they change nothing. */
 main > :is(section, .section), footer.closing {
   position: relative; box-sizing: border-box;
-  height: calc(var(--h, 1) * 100vh); height: calc(var(--h, 1) * 100svh);
-  padding: var(--padt) 0 calc(var(--padb) + var(--bar));
+  padding: var(--padt) 0 var(--padb);
 }
-main > :is(section, .section) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; height: 100%; }
+/* the phone action bar covers the foot of the screen, not of a section: the page's last block pads for it */
+footer.closing { padding-bottom: calc(var(--padb) + var(--bar)); }
+main > :is(section, .section) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; }
 main > :is(section, .section) > :is(.wrap, .container):not(.grid) { display: flex; flex-direction: column; }
 /* a .wrap that is the section's grid too (class="wrap grid"): its rows start at the top */
 main > :is(section, .section) > :is(.wrap, .container).grid { align-content: start; }
-/* .fill: the block that takes what the screen leaves under the heading (a photograph, a frame) */
-main > :is(section, .section) > .wrap > .fill { flex: 1 1 0; min-height: 0; }
-/* two screens as two groups: row 1 the h2 and the first group, row 2 the rest (no second h2), starting
-   --padt under the second screen's top, so the second shot looks like any other section */
-main > :is(section, .section).g2, footer.closing.g2 { --h: 2; }
-main > :is(section, .section).g2 > :is(.wrap, .container), footer.closing.g2 > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
-main > :is(section, .section).g2 > :is(.wrap, .container) > *, footer.closing.g2 > .wrap > * { min-height: 0; align-self: start; }
-main > :is(section, .section).g2 > :is(.wrap, .container) > :is(.group, .fill) { align-self: stretch; }
-/* a group: one screen's part of a .g2 section (its h2 and first rows, or the rest) */
-.group { display: flex; flex-direction: column; min-height: 0; }
-/* each screen's card row runs down to that screen's foot (the cards stretch, their panels grow), so
-   the second screen of a .g2 is never a short row over an empty ground; both rows end on the same line */
-@media (min-width: 1024px) {
-  main > :is(section, .section).g2 > .wrap > .grid:last-child,
-  main > :is(section, .section).g2 > .wrap > .group > .grid:last-child { align-self: stretch; flex: 1 1 auto; min-height: 0; }
+/* a group (older markup: the h2 and the first rows, then the rest): one block under the other, a card
+   row's gap between them */
+.group { display: flex; flex-direction: column; min-width: 0; }
+.group + .group { margin-top: var(--card-gap); }
+@media (min-width: 640px) {
+  main > :is(section, .section):has(> :is(img, video, canvas, picture).layer) { min-height: 80vh; min-height: 80svh; }
 }
-.group > .fill { flex: 1 1 0; min-height: 0; }
-@media (min-width: 640px) and (max-width: 1279px) {
-  main > :is(section, .section):not(.hero, .section--hero), footer.closing {
-    height: auto; min-height: calc(var(--h, 1) * 100vh); min-height: calc(var(--h, 1) * 100svh);
-  }
-  /* the section is a column and its .wrap takes all of it, so a .fill (a photograph, a frame) still
-     grows to the section's foot (a min-height percentage would not resolve, leaving it at its least) */
-  /* :where() keeps it at no weight, so a page's own phone- or tablet-only hiding (section.desk-only { display: none }) wins */
-  :where(main > :is(section, .section):not(.hero, .section--hero), footer.closing) { display: flex; flex-direction: column; }
-  main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
-}
-/* a phone: lvh (the screen with its bars hidden) for every section but the hero; --hm when stacking
-   makes the content taller than the desktop count */
-@media (max-width: 639px) {
-  /* at least its screens, never less: content a screen cannot hold makes the section taller (the rhythm
-     check then asks for --hm: 2 or less content); a fixed height would lay its last rows over the next
-     section, the fault the phone shots showed most (a list under the closing heading and its button) */
-  main > :is(section, .section):not(.hero, .section--hero), footer.closing {
-    height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100vh); min-height: calc(var(--hm, var(--h, 1)) * 100lvh);
-  }
-  /* one grid row at least the screens tall that grows with the .wrap's content: the .wrap is stretched to
-     it, so its .fill and its two groups still share a definite height */
-  /* (at no weight, as on the tablet: a page's own section.desk-only { display: none } still hides it) */
-  :where(main > :is(section, .section):not(.hero, .section--hero):has(> :is(.wrap, .container)), footer.closing) {
-    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr; grid-auto-rows: auto;
-  }
-  main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { height: auto; }
-  main > :is(section, .section).g2m, footer.closing.g2m { --hm: 2; }
-  main > :is(section, .section).g2m > :is(.wrap, .container), footer.closing.g2m > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
-  /* the close's links are a few rows: their row is their own height and they sit at its top, so two equal
-     rows never spread three links over a screen (the close above takes what is left) */
-  footer.closing.g2m > .wrap { grid-template-rows: minmax(0, 1fr) auto; }
-  footer.closing.g2m .closing__links { align-self: start; }
-  /* stacked in one, the two groups keep the open cards' 32px, so the first group's last panel never meets
-     the next card's title */
-  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) { display: flex; row-gap: var(--s-6); }
-  /* what the two screens leave goes around the second group, so it opens below the header, not on the fold */
-  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) > :last-child { margin-block: auto; }
-  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) > * { align-self: stretch; }
-}
+/* a heading and its line with no .section-head round them (straight in the .wrap, or in a split's
+   column): the head's own spacing, 16px under the h2 and between its lines, then --head-gap before the
+   content (in testing the h2, its lead and the list under them touched). At the weight of one or two
+   tags, so a moment's or a card's own class still sets its own margins. */
+:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > :where(h2, p) + :is(p, h2) { margin-top: var(--s-4); }
+:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + :where(:not(p, h2, h3, br)) { margin-top: var(--head-gap); }
+:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + p + :where(:not(p, h2, h3, address, br)) { margin-top: var(--head-gap); }
 /* a layer: the photograph or ground of a whole section, under its words, edge to edge */
 main > :is(section, .section) > :is(img, video, canvas, picture).layer,
 footer.closing > :is(img, video, canvas, picture).layer {
@@ -290,77 +258,30 @@ footer.closing > :is(img, video, canvas, picture).layer {
 }
 main > :is(section, .section) > picture.layer > img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ---------------------------------------------------------------- fill: the content fills its screen
-   In testing, sections were one screen tall with their content at the top: 130 to 330px of empty ground
-   under nearly every section, statements 55 to 70% empty. So the last block of a one-screen section
-   grows to the section's foot, and the picture in it grows with it (cropped, never stretched):
-     a split (words beside a .pl-photo, a .media figure or a .frame--fill): the picture takes the row's
-       full height, as tall as the taller column and down to the section's foot (at least 280px);
-     a row of tiles (rooms, goods, work): each tile's photograph takes what the words under it leave;
-     a row of open cards with panels: the panels grow.
-   Automatic, no class to add. Opt out on one picture with .pl-photo--keep (it keeps its ratio). A section
-   with a moment (data-moment), a .g2 section and the hero keep their own rules. On a phone the picture
-   after the words grows the same way (at most 5:4 tall) so the screen ends in the photograph. */
-@media (min-width: 1024px) {
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap:not(.grid) > .grid:last-child:has(> :is(.pl-photo, .media, .tile, .frame--fill, .card > .panel)) {
-    flex: 1 0 auto; align-content: stretch;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap.grid:has(> :is(.pl-photo, .media, .frame--fill)):not(:has(> :nth-child(4))) {
-    align-content: stretch;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > :is(.pl-photo, figure.media):not(.pl-photo--keep) {
-    align-self: stretch; position: relative; min-height: 280px; overflow: clip;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > :is(.pl-photo, figure.media):not(.pl-photo--keep) > :is(img, picture, video) {
-    position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; object-fit: cover; object-position: var(--pos, 50% 50%);
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > :is(.pl-photo, figure.media) > picture > img { width: 100%; height: 100%; object-fit: cover; }
-  /* tiles: the photograph row takes the rest (at least 200px), the name and price stay under it */
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap > .grid:last-child > .tile {
-    grid-template-rows: minmax(200px, 1fr); grid-auto-rows: auto; align-content: stretch; align-self: stretch;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap > .grid:last-child > .tile > .tile__media { aspect-ratio: auto; min-height: 200px; }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap > .grid:last-child > .tile > .tile__media > img { position: absolute; inset: 0; }
-  /* open cards: the panel grows to the row's foot */
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap > .grid:last-child > .card:has(> .panel) { align-self: stretch; }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap > .grid:last-child > .card > .panel:last-child { flex: 1 0 auto; }
-}
-@media (max-width: 639px) {
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap:not(.grid) > .grid:last-child:has(> .pl-photo:last-child:not(.pl-photo--keep)),
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) > .wrap.grid:has(> .pl-photo:last-child:not(.pl-photo--keep)) {
-    display: flex; flex-direction: column; flex: 1 0 auto;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > .pl-photo:last-child:not(.pl-photo--keep) {
-    flex: 1 0 auto; position: relative; min-height: 240px; max-height: 125vw; overflow: clip;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > .pl-photo:last-child:not(.pl-photo--keep) > :is(img, picture) {
-    position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; object-fit: cover;
-  }
-  main > :is(section, .section):not(.hero, .section--hero, .g2, [data-moment]) .grid > .pl-photo:last-child > picture > img { width: 100%; height: 100%; object-fit: cover; }
-}
-
-/* the statement: one sentence of 12 to 40 words in a section of its own (a moment's host or plain type).
-   The label and the words sit together at the foot (never pulled apart: empty-band FAILs a hole between
-   them), the words sized from the screen's height as well as its width, so a statement fills its screen
-   instead of leaving its lower half empty. 12 to 20 words: add
-   .statement--short (larger still). Two statements never follow each other.
+/* the statement: one sentence of 12 to 40 words in a section of its own (a moment's host or plain type),
+   set large, the label just above it: a section as tall as the words and the air round them. 12 to 20
+   words: add .statement--short (larger still). Two statements never follow each other. A line under it
+   (a .t-lead) stays the lead's size: only the sentence is set large, never the paragraph after it.
      <section class="section statement" id=".."><div class="wrap">
        <p class="t-label">The house</p>
        <p class="statement__text">We are a family of four with six rooms and a shed of bikes.</p>
      </div></section> */
-main > section.statement > .wrap:not(.grid) { justify-content: flex-end; gap: var(--s-5); }
-main > section.statement > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text, p:last-child:not(.t-label)) {
+main > section.statement > .wrap:not(.grid) { gap: var(--s-5); }
+main > section.statement > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text),
+main > section.statement > .wrap:not(:has(> :is(.statement__text, .mo-wh__text, .mo-la__text, h2))) > p:last-child:not(.t-label) {
   font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking);
   font-size: clamp(var(--t-h2), min(4.4vw, 6.2svh), 100px); line-height: 1.06; max-width: 28ch; text-wrap: pretty; margin: 0 0 var(--s-4);   /* the last line's descenders stay inside the padding */
 }
-main > section.statement.statement--short > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text, p:last-child:not(.t-label)) {
+main > section.statement.statement--short > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text),
+main > section.statement.statement--short > .wrap:not(:has(> :is(.statement__text, .mo-wh__text, .mo-la__text, h2))) > p:last-child:not(.t-label) {
   font-size: clamp(var(--t-h1), min(8vw, 11.5svh), 168px); line-height: 1; max-width: 16ch;
 }
 @media (max-width: 639px) {
-  main > section.statement > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text, p:last-child:not(.t-label)) { font-size: clamp(30px, 10vw, 44px); max-width: none; }
-  main > section.statement.statement--short > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text, p:last-child:not(.t-label)) { font-size: clamp(40px, 14vw, 60px); }
+  main > section.statement > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text),
+  main > section.statement > .wrap:not(:has(> :is(.statement__text, .mo-wh__text, .mo-la__text, h2))) > p:last-child:not(.t-label) { font-size: clamp(30px, 10vw, 44px); max-width: none; }
+  main > section.statement.statement--short > .wrap > :is(.statement__text, .mo-wh__text, .mo-la__text),
+  main > section.statement.statement--short > .wrap:not(:has(> :is(.statement__text, .mo-wh__text, .mo-la__text, h2))) > p:last-child:not(.t-label) { font-size: clamp(40px, 14vw, 60px); }
 }
-
 /* ---------------------------------------------------------------- compositions (dealt by start.mjs deal)
    The parts a section is laid out with, so two pages from one brief differ. Every one is the system's grid
    and spans; these classes only add what spans cannot say. Recipes: sections-library.md, Compositions.
@@ -379,9 +300,9 @@ main > section.statement.statement--short > .wrap > :is(.statement__text, .mo-wh
   .grid--mirror > :is(.pl-photo, .media, .frame, figure) { order: -1; }
 }
 /* bleed-panel: <section class="section comp-bleed"><img class="layer" src=".." alt=".."><div class="wrap">
-     <div class="comp-panel"> h2, two or three lines, one link </div></div></section>  (data-corner="end" puts it right) */
-main > section.comp-bleed { padding-bottom: calc(var(--padb) + var(--bar)); }
-main > section.comp-bleed > .wrap { justify-content: flex-end; }
+     <div class="comp-panel"> h2, two or three lines, one link </div></div></section>  (data-corner="end" puts it right)
+   The photograph makes the section at least 80% of the screen (a layer, above); the panel stands at its foot */
+main > section.comp-bleed { display: flex; flex-direction: column; justify-content: flex-end; }
 .comp-panel { position: relative; z-index: 1; width: min(100%, 520px); padding: var(--s-7); background: var(--bg); color: var(--ink); display: grid; gap: var(--s-4); }
 .comp-panel > h2 { margin: 0; }
 section.comp-bleed[data-corner="end"] .comp-panel { margin-left: auto; }
@@ -458,7 +379,7 @@ main > :is(.hero, .section--hero) {
 .hero-copy > .hero-notice + h1 { margin-top: var(--s-5); }
 
 /* a phone: open tiles from a row of three or four (rooms, goods, beans) go two-up, an odd last one
-   across the row, so a row of three fits one 844px screen (stacked one under another they need two) */
+   across the row (stacked one under another they read as a long list of photographs) */
 @media (max-width: 639px) {
   .grid > .tile:is(.span-3, .span-4) { grid-column: auto / span 6; }
   .grid > .tile:is(.span-3, .span-4):nth-child(odd of .tile):nth-last-child(1 of .tile) { grid-column: 1 / -1; }
@@ -467,11 +388,6 @@ main > :is(.hero, .section--hero) {
 /* a phone: open cards (words on the ground, the panel under them) stacked one under another keep 32px
    between a panel's foot and the next card's title, so a title never reads as the panel's caption */
 @media (max-width: 639px) { .grid:has(> .card--open) { row-gap: var(--s-6); } }
-/* a phone stacks a two-screen section's four open tiles into its two screens: their panels take 180px (a wide
-   crop), so the h2 and the first two tiles of two lines each end on the first screen and the four inside both,
-   not a third of a screen past. A page that sets its group's own --p-h (#features .panel) sets its phone value
-   too, as the starter does */
-@media (max-width: 639px) { main > :is(section, .section).g2 .card--open > .panel { --p-h: 180px; } }
 /* spans: desktop >= 1024. Tablet 640-1023: text cards on span-3 and span-6 go two-up; cards with a
    panel (a visual needs the width; the one exception is a span-6 pair, below)
    and everything else (split text and visuals, span-4 cards, span-5/7/8 blocks) take the full row, so a split stacks and no row is left half empty. Phone < 640: one column. */
@@ -641,19 +557,19 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
   background: var(--surface); border-radius: var(--r-lg); border: 1px solid var(--line);
   padding: clamp(var(--s-4), 4vw, var(--s-7));
 }
-/* a zero-width spacer keeps --ratio (height / width) as the frame's minimum height */
-.frame::before { content: ""; flex: none; width: 0; padding-top: var(--ratio, 0px); }
+/* a zero-width spacer keeps --ratio (height / width) as the frame's minimum height. A frame that holds
+   only what is laid over it (a .frame__img photograph, a stage, a canvas, a print) and names no ratio
+   gets 4:3, so it never folds to 0px (in testing three pages lost every section photograph that way) */
+.frame::before { content: ""; flex: none; width: 0; padding-top: var(--ratio, var(--ratio-auto, 0px)); }
+:where(.frame:not(:has(> :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d)))) { --ratio-auto: 75%; }
 /* an object or scene (assets/objects) and a photograph (.frame__img) fill the frame themselves */
 .frame > :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d) { position: relative; max-width: 100%; min-width: 0; }
 /* a photograph is a plain rectangle in its frame: no border, no print, no filter */
 .frame--photo { padding: 0; border: 0; }
-/* .frame--fill: as tall as its row (a split's picture beside the words, down to the section's foot);
-   stacked on a tablet or a phone it takes what the screen leaves, at least 200px */
+/* .frame--fill: as tall as its row when the words beside it run taller than its ratio (a split's
+   picture, top-aligned with the words); stacked on a tablet or a phone it keeps its ratio */
 .frame--fill { height: 100%; }
-@media (max-width: 1023px) {
-  .grid.fill:has(> .frame--fill) { display: flex; flex-direction: column; gap: var(--s-6); }
-  .grid.fill > .frame--fill { flex: 1 1 0; height: auto; min-height: 200px; }
-}
+@media (max-width: 1023px) { .frame--fill { height: auto; } }
 /* a split's words as a column: the last block (stats, a link) on the picture's bottom line */
 .split-col { display: flex; flex-direction: column; gap: var(--s-5); }
 @media (min-width: 1024px) { .split-col { height: 100%; } .split-col > .split-col__end { margin-top: auto; } }
@@ -834,7 +750,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   .nav__links, .nav__actions { display: none; }
   /* the menu button takes the secondary button's look on a 44px tap area */
   .nav__toggle {
-    display: inline-grid; place-items: center; margin-left: auto; width: 44px; height: 44px; border-radius: var(--r-btn);
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-btn);
     border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; flex: none;
   }
   .nav.is-open .nav__links {
@@ -871,12 +787,15 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   body.nav-locked { overflow: hidden; }
 }
 /* a tablet and a phone (1023 and below, ST-15): the main button stays in the bar, at the right line
-   with the menu button 12px after it; the plain words go to the sheet */
+   with the menu button 12px after it; the plain words go to the sheet. The name takes the free space,
+   so the menu button ends on the right line whether the button shows or not, and these rules weigh one
+   class: a page's own .nav__actions { display: none } still hides the button (in testing it lost to
+   them and the menu button slid to the name) */
 @media (max-width: 1023px) {
   .nav__bar { gap: var(--s-3); }
-  .nav:not(.is-open) .nav__actions { display: flex; margin-left: auto; }
-  .nav:not(.is-open) .nav__actions > :not(.btn--primary) { display: none; }
-  .nav:not(.is-open) .nav__actions + .nav__toggle { margin-left: 0; }
+  .nav__bar > .nav__logo { margin-right: auto; }
+  :where(.nav:not(.is-open)) .nav__actions { display: flex; }
+  :where(.nav:not(.is-open)) .nav__actions > :not(.btn--primary) { display: none; }
 }
 @media (max-width: 639px) {
   /* a long name (15 characters, "Verdigris Works"), the main button and the menu button fit 342px (390 wide) on
@@ -992,7 +911,8 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .card--plan h3 .badge { margin-left: var(--s-2); }
 
 /* ---------------------------------------------------------------- FAQ
-   Every answer is open, always (ST-47, MO-70): no accordion, no +/- marker, nothing changes height.
+   Every answer is open (ST-47, MO-70): no accordion, no +/- marker, nothing changes height; only a long FAQ of ten
+   questions or more may fold (.faq--fold, below).
      <div class="faq"><div class="faq__item"><h3>[Question]</h3><p>[Answer]</p></div> ...</div>
    Older <details> markup shows its answer open too (system.js also sets [open]). */
 .faq > :is(.faq__item, details) { display: grid; gap: var(--s-2); padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }   /* each row closes with its rule (ST-43) */
@@ -1003,6 +923,16 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .faq details::details-content { content-visibility: visible; }
 .faq :is(.faq__item, details) p { color: var(--ink); max-width: 64ch; }
 @media (max-width: 639px) { .faq > :is(.faq__item, details) { padding: var(--s-4) 0; } }
+/* .faq--fold: a long FAQ (ten questions or more, from a brief with many questions): the questions closed, each
+   answer opening on a click at once (nothing animates its height), a chevron at the row's right; the section
+   simply grows with it. system.js leaves these closed.
+     <div class="faq faq--fold"><details><summary>[Question]</summary><p>[Answer]</p></details> ...</div> */
+.faq.faq--fold summary { pointer-events: auto; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); min-height: 44px; }
+.faq.faq--fold summary::after { content: ""; flex: none; width: 12px; height: 12px; background: currentColor; transition: transform var(--dur) var(--ease);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.faq.faq--fold details[open] > summary::after { transform: rotate(180deg); }
+.faq.faq--fold details:not([open])::details-content { content-visibility: hidden; }
 
 /* ---------------------------------------------------------------- footer */
 .footer { padding-block: var(--section) var(--s-6); border-top: 1px solid var(--line); }   /* an older footer after the last section; footer.closing (below) replaces it */
@@ -1122,33 +1052,33 @@ html[data-tone="dark"] .footer--dark {
 .credits > :not(summary) { margin-top: var(--s-2); max-width: 110ch; }
 .credits a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
 
-/* ---------------------------------------------------------------- footer.closing: the close and the footer, one screen
+/* ---------------------------------------------------------------- footer.closing: the close and the footer, one section
    The page ends on one more section: <footer class="footer closing [footer--dark | footer--statement |
-   footer--visit]"> whose .wrap holds exactly two children, the close (.closing__cta, row 1, the
-   rest of the screen) and the links (.closing__links, row 2: the columns, then the legal row). The
+   footer--visit]"> whose .wrap holds exactly two children, the close (.closing__cta, row 1) and the
+   links (.closing__links, row 2: the columns, then the legal row), 128px apart (64 on a phone), each as
+   tall as what it holds, so a form or a photograph never runs under the columns. The
    close sits on the footer's own ground, so it is never a slab flush on a footer under it. Its five
    looks (dealt by start.mjs deal, sections.md):
      .close--photo  the h2 and the button on one head row, then the client's photograph across the
                     .wrap down to the links (never the hero's photograph)
-     .close--type   the h2 set large from the screen's height, a line, the big button at the row's foot
+     .close--type   the h2 set large, a line, the big button under them
                     (never across the whole .wrap)
      .close--word   the name set across the .wrap in the display face under the h2 and the button
      .close--split  a panel on the tinted ground (h2, one line, the button, at most three short facts:
-                    the hours today, the price from, the reply time) beside a photograph, both to the
-                    row's foot
+                    the hours today, the price from, the reply time) beside a photograph, one height
      .close--form   the booking or order form is the close: the head left, the form right on the
                     tinted ground (then no other close and no second form on the page)
    A close never repeats the section right above it: a page whose last section is the form ends on
-   .close--form instead. A phone stacks it in one screen; add .g2m when the links need a screen of their own. */
+   .close--form instead. A phone stacks the close, then the links. */
 footer.closing { border-top: 0; }
-footer.closing > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-8); }
-footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
-.closing__cta { min-height: 0; display: flex; flex-direction: column; gap: var(--s-6); }
+footer.closing > .wrap { display: grid; grid-template-rows: auto auto; row-gap: var(--s-10); }
+.closing__cta { min-width: 0; display: flex; flex-direction: column; gap: var(--s-6); }
 .closing__cta > .section-head--split, .closing__cta > .section-head { margin-bottom: 0; }
 /* any button straight in the close keeps its own width (the column would stretch it across the .wrap) */
 .closing__cta > .btn { align-self: flex-start; justify-self: start; flex-shrink: 0; }
 .closing__cta h2 { max-width: 20ch; }
-.closing__cta > .close__media { flex: 1 1 0; min-height: clamp(120px, 18svh, 160px); position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
+/* the close's photograph: across the .wrap at 16:7 (beside the panel in close--split: as tall as the panel, 320px at least) */
+.closing__cta > .close__media { flex: none; aspect-ratio: 16 / 7; min-height: 240px; position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
 .close__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%); }
 .closing__cta.close--type > .btn--xl { align-self: flex-start; margin-top: auto; flex-shrink: 0; }
 .closing__cta.close--type h2 { font-size: clamp(var(--t-h2), min(5.6vw, 8svh), 120px); line-height: 1.02; max-width: 16ch; }
@@ -1163,7 +1093,7 @@ footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
 @media (min-width: 1024px) {
   .closing__cta.close--split { grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .closing__cta.close--split > .close__panel { grid-column: 1 / span 6; }
-  .closing__cta.close--split > .close__media { grid-column: 7 / -1; min-height: 0; }
+  .closing__cta.close--split > .close__media { grid-column: 7 / -1; aspect-ratio: auto; min-height: clamp(320px, 30vw, 480px); }
   .closing__cta.close--split[data-side="end"] > .close__panel { grid-column: 7 / -1; grid-row: 1; }
   .closing__cta.close--split[data-side="end"] > .close__media { grid-column: 1 / span 6; grid-row: 1; }
 }
@@ -1187,22 +1117,15 @@ footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
 .closing__links { display: grid; gap: var(--s-7); }
 .closing__links > .footer__legal { margin-top: 0; }
 .closing__links .footer__lede { font-size: var(--t-lead); max-width: 30ch; }
-/* a phone: a close with a photograph takes a screen of its own (the photograph fills what the words
-   leave) and the links the next; a close in type stays one screen with its links */
 @media (max-width: 639px) {
-  footer.closing:has(> .wrap > .closing__cta > .close__media) { --hm: 2; }
-  footer.closing:has(> .wrap > .closing__cta > .close__media) > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
-  footer.closing:has(> .wrap > .closing__cta > .close__media) .closing__links { align-self: start; }
-}
-@media (max-width: 639px) {
-  footer.closing > .wrap { row-gap: var(--s-7); }
+  footer.closing > .wrap { row-gap: var(--s-8); }
   .closing__links { gap: var(--s-5); }
   .closing__links > .grid { row-gap: var(--s-5); }
   .closing__links .footer__col { grid-column: auto / span 6; }
   /* at most two footer columns on a phone, whatever spans the page gave them */
   :is(.footer, .closing__links) .grid > :is(.footer__col, [class*="span-2"], [class*="span-3"]) { grid-column: auto / span 6; }
   :is(.footer, .closing__links) .grid > :not(.footer__col, [class*="span-2"], [class*="span-3"]) { grid-column: 1 / -1; }
-  .closing__cta > .close__media { min-height: 200px; }
+  .closing__cta > .close__media { aspect-ratio: 4 / 3; min-height: 200px; }
   .close__word { font-size: clamp(56px, 19vw, 96px); }
 }
 /* a phone: every link and control outside a line of running text is a 44px target (the bar's name, the
@@ -1284,10 +1207,11 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 
 /* .pl-photo: every single in-flow photograph on a place (visit, menu, story, booking, close; PH-80).
    It keeps its ratio (--pl-r as a number: 1.3333 for 4:3, .8 for 4:5, 1 for 1:1) and its column, and
-   when the screen is short it gets shorter, narrowing from its column's outer edge (.pl-photo--end
-   for a photograph in the right-hand column). Square corners, nothing on it.
+   it is never taller than the screen under the header less 128px: on a short screen it gets shorter,
+   narrowing from its column's outer edge (.pl-photo--end for a photograph in the right-hand column).
+   Square corners, nothing on it.
      <figure class="pl-photo" style="--pl-r: .8"><img src=".." alt=".." loading="lazy"></figure> */
-:root { --pl-room: calc(100svh - var(--padt) - var(--padb) - var(--bar)); }
+:root { --pl-room: calc(100svh - var(--nav) - var(--s-10)); }
 .pl-photo { container-type: inline-size; margin: 0; min-width: 0; }
 .pl-photo > img, .pl-photo > picture > img {
   display: block; aspect-ratio: var(--pl-r, 1.3333); width: auto; max-width: 100%;
@@ -1296,18 +1220,6 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 }
 .pl-photo--end > img, .pl-photo--end > picture > img { margin-left: auto; }
 @media (max-width: 1023px) { .pl-photo > img, .pl-photo > picture > img { width: 100%; height: auto; } }
-/* the visit screen on a phone ends in its photograph: the .pl-photo after the words (the last in its row of the
-   split) takes what they leave of the screen, from its own ratio to 4:5 at most, so the screen never ends in an
-   empty band (the row becomes a column, its gaps kept) */
-@media (max-width: 639px) {
-  [data-place="visit"] > .wrap:not(.grid) > .grid:has(> .pl-photo:last-child) { flex: 1 0 auto; }
-  [data-place="visit"] > .wrap.grid:has(> .pl-photo:last-child),
-  [data-place="visit"] > .wrap > .grid:has(> .pl-photo:last-child) { display: flex; flex-direction: column; }
-  [data-place="visit"] .grid > .pl-photo:last-child,
-  [data-place="visit"] .grid > .pl-photo:last-child > picture { display: flex; flex-direction: column; flex: 1 0 auto; }
-  [data-place="visit"] .grid > .pl-photo:last-child > img,
-  [data-place="visit"] .grid > .pl-photo:last-child > picture > img { flex: 1 0 auto; max-height: calc(100cqw * 1.25); }
-}
 
 /* .tile: an open tile, the picture on top and its words on the page ground under it, no box
    (a room, a model, a person, a case). One --tile-ratio per row so the pictures line up. */
@@ -1403,6 +1315,9 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 /* no rule above the first row, so no padding either: its words start on the line beside it (a photograph's top) */
 .rows > li:first-child { padding-top: 0; }
 .rows__name { font-weight: 500; }
+/* a line under the name written inside it (<span class="rows__name">Day pass<small>Whole session</small></span>):
+   its own line, in the body face and ink (in testing it ran on: "Day passWhole session") */
+.rows__name > small { display: block; margin-top: var(--s-1); font-size: var(--t-body); font-weight: 400; line-height: 1.5; color: var(--ink); }
 .rows__value { grid-column: 2; grid-row: 1; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* a narrow phone: a long value ("14 to 22 months") wraps in its own column instead of squeezing the name to a word a line */
 @media (max-width: 479px) { .rows__value { white-space: normal; max-width: 11ch; text-wrap: balance; } }
@@ -1434,12 +1349,12 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 /* sections part by a change of ground or by space only: no rule between them (.section--rule is plain) */
 
 /* the phone action bar (a place's directions and booking; other types may use it): fixed at the foot
-   under 640px, one 342x48 button or two of 165, and every section's foot pads for it (--bar).
+   under 640px, one 342x48 button or two of 165, and the page's foot (footer.closing) pads for it (--bar).
    system.js shows it (data-bar="shown") once the hero's main button has scrolled off the top, and hides it
    (data-bar="hidden", inert) while that button, or a control that does what one of the bar's does, is on the
    screen: the bar never repeats an action the screen already shows. The hero never pads for it then (the bar
-   is not on the first screen). Without script it is simply always there at the foot, under every section's
-   padding, covering nothing. */
+   is not on the first screen). Without script it is simply always there at the foot, over the page as it
+   scrolls by, and over the footer's padding at the end. */
 .actionbar { display: none; }
 @media (max-width: 639px) {
   :root:has(> body > nav.actionbar) { --bar: calc(64px + env(safe-area-inset-bottom)); }

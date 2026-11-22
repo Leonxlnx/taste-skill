@@ -388,13 +388,13 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
 .m-block { position: absolute; z-index: 1; pointer-events: none; background: var(--m-block, var(--accent, var(--ink))); transform-origin: 100% 50%; }
 
 /* ---------------------------------------------------------------- section reveals (automatic)
-   Below the first screen each section's h2 rises out of its line masks and its lead photograph settles from a
-   slight window, once, as they come on screen (motion.js reveals()). Never a card, row, tile or list. Only what
-   motion.js marked waits (.m-rv-wait), so without script, under reduced motion and in a headless shot nothing is
-   hidden; data-still on a section keeps it still. */
+   Below the first screen each section's h2 rises out of its line masks and its lead picture (a photograph or a
+   video's poster) settles from a slight window, once, as they come on screen (motion.js reveals()); so does the
+   close in the footer. Never a card, row, tile or list. Only what motion.js marked waits (.m-rv-wait), so without
+   script, under reduced motion and in a headless shot nothing is hidden; data-still on a section keeps it still. */
 @media screen and (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) .m-rv-wait:not(img) { opacity: 0; }
-  html:not([data-motion="off"]) img.m-rv-wait { clip-path: inset(7% 6%); scale: 1.06; }
+  html:not([data-motion="off"]) .m-rv-wait:not(img, video) { opacity: 0; }
+  html:not([data-motion="off"]) :is(img, video).m-rv-wait { clip-path: inset(7% 6%); scale: 1.06; }
 }
 
 /* ---------------------------------------------------------------- rows that answer the pointer (any kind)

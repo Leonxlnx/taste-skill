@@ -12,5 +12,8 @@
 .mo-lc__stage > .mo-lc__line { position: absolute; left: 0; right: 0; top: var(--mo-cut); height: 1px; background: var(--accent); will-change: top; }
 .mo-lc--surface { --mo-from: var(--p-surface, var(--surface)); }
 .mo-lc--inverse { --mo-from: var(--p-inv-bg, var(--bg)); }
+.mo-lc--close .mo-lc__stage > .mo-lc__line { height: 2px; }
 .mo-lc.is-open > .mo-lc__stage { display: none; }
+/* a phone: a wider gutter, so the panel never reads as content flush on the edge where the ground changes */
+@media (max-width: 639px) { .mo-lc { --mo-gap: 20px; } }
 @media (prefers-reduced-motion: reduce) { .mo-lc > .mo-lc__stage { display: none; } }

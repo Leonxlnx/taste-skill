@@ -56,18 +56,23 @@ where you can. Each field feeds a part of the page:
 | An enemy | A habit or a category ("re-typing invoices"), never the reader | the pain line, one section |
 | The offer | Price, trial, booking terms, the one action | buttons, the close |
 
-- **Nothing is invented** beyond what `copy.md` allows (a coined name; on a place, plausible hours and
-  prices; on a made-up client, a few odd details listed as assumed). An empty field stays empty: its
-  section shrinks or goes. In the notes a gap is written `[NEED: what]` under "Client must supply",
-  and that list goes into the report. Never a `[NEED]`, a bracket or a "coming soon" on the page.
+- **Nothing is invented** beyond what `copy.md` allows (What may be assumed): a coined name, and on
+  every kind the plausible facts the page needs to work and the brief leaves out (a price, a plan's
+  limits, hours, menu dishes, room types, delivery terms, a district), each under `Assumed:` in the
+  notes, `data-assumed` on the page and in the report; on a made-up client, a few odd details too.
+  Proof is never assumed: an empty field of reviews, quotes, customers, awards or result figures
+  stays empty, and its section shrinks or goes. In the notes a gap is written `[NEED: what]` under
+  "Client must supply", and that list goes into the report. Never a `[NEED]`, a bracket, a "Price on
+  request", an address "to come" or a "coming soon" on the page [copy-withheld].
 - **The six questions, answered by you from the brief.** A copywriter would ask the client these six,
   most useful first; on a build you answer them yourself in the notes, and each one the brief cannot
   answer goes to "Client must supply": who switched to them from what, and why; the one number they
   would bet the business on; the objection buyers raise most; what they are bad at or not for; a
   strange true detail of how they work; three real customer messages. Only when a person is in the
   conversation and asks for copy (not a build) do you ask them, in one message, then write anyway.
-- **A thin brief is no reason to stop:** write the best page the facts allow; a thin brief makes a
-  shorter page, never an invented one.
+- **A thin brief is no reason to stop:** write the best page the facts allow, its working facts
+  assumed and marked; a thin brief makes a page with less proof, never one with its prices, hours or
+  place left out, and never one with invented proof.
 - **A limit and an enemy come from the brief or from plain facts of the trade** ("closed Mondays",
   "Mac only", "no lift; rooms on three floors" when the brief says so). An invented flaw is still an
   invention.
@@ -78,10 +83,12 @@ where you can. Each field feeds a part of the page:
 ending paragraphs on a deadpan twist and saying honest, calm or quiet about itself. It is not bad; it is
 what every model writes now, and readers know it.
 
-Pick one register from `copy-registers.md` by the buyer, the price and the client's real character;
-you may borrow one move from a second. When the brief does not settle it, take the one least like the
-last page this session wrote, or deal it (`copy-registers.md`, the last table). Write the card in the
-notes (`.taste-skill/copy.md`), never on the page. A filled card, for a made-up rota app:
+Pick one register from `copy-registers.md` on purpose, from what the brief says about the buyer, the
+price, the occasion and the client's real character; you may borrow one move from a second. The
+register the last page this session used counts against it. Only when two registers fit the brief
+equally does the brand name's letter count break the tie (`copy-registers.md`, the last table); it
+never picks on its own. Write the card, with the brief's reason, in the notes (`.taste-skill/copy.md`),
+never on the page. A filled card, for a made-up rota app:
 
 ```
 Register: 2 technical-dry; the buyers are ward managers who distrust promises
@@ -213,5 +220,6 @@ the lint again):
    subagent, answer the same six from the hero and the headings alone, as a stranger, and write the
    answers under the voice card. Fix what it finds. Never iterate to beat an AI detector.
 
-The report carries the voice card in one line, every claim the client must check, every assumed price
-or hour (`copy.md`), and the "Client must supply" list from the notes.
+The report carries the voice card in one line, every claim the client must check, every assumed fact
+(the notes' `Assumed:` line and the checker's `assumed` list, `copy.md`), and the "Client must supply"
+list from the notes.

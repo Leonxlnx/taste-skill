@@ -10,8 +10,10 @@ folders: seventeen dealt by fit (below) and one retired (`headline-arrives`, now
 **Which pages: every page.** Two moments on every page, three on a long page (eight sections or
 more), each in a section of its own, never two in one section. The first one dealt is lively or
 bold and goes in the first three screens, so something clearly moves before the visitor decides to
-stay; the others go further down. A dealt scene (`scenes.md`) counts as its own beat, not as one of
-the moments.
+stay; the others go further down. At least one of them runs on a phone (the deal sees to it), and
+a moment that only answers a mouse (`liquid-hover`, `cursor-spotlight`, `pointerOnly` in its
+`meta.json`) is never one of the two: it comes only as the extra third on a long page. A dealt
+scene (`scenes.md`) counts as its own beat, not as one of the moments.
 
 ## The fit rule
 
@@ -37,11 +39,14 @@ The deal reads them against the page's kind:
 | gaming | playful, tech | any | yes |
 
 A moment fits a kind when one of its tones is in the kind's tones, its intensity is in the kind's
-list, and (with `webgl` 1) the kind takes WebGL. So a cafe gets letters that assemble, a marquee of
-its breads, a photograph passing through giant type or a statement that lights up, never a liquid
-WebGL ripple; a game gets the loud ones. `--tone` narrows the deal to the brief's own tone (a cafe:
-`warm`; a hotel brand or an architect: `editorial`). The index writes the kinds each moment fits as
-`pages` (the checker reads them); the fit fields are the source.
+list, and (with `webgl` 1) the kind takes WebGL. A place, service or product page is strict: the
+moment must also carry the kind's own tone (place `warm`, service `editorial`, product `product`),
+or the brief's `--tone` when one is passed, so a part made for games and software never reaches a
+florist through a shared second tone. So a cafe gets letters that assemble, a marquee of its
+breads, a photograph passing through giant type or a statement that lights up, never a liquid
+ripple; a game gets the loud ones. `--tone` narrows the deal to the brief's own tone (a cafe:
+`warm`; a hotel brand or an architect: `editorial`). The index writes every kind a moment can be
+dealt to, with or without a tone, as `pages` (the checker reads them); the fit fields are the source.
 
 | id | tones | intensity |
 |---|---|---|
@@ -54,7 +59,7 @@ WebGL ripple; a game gets the loud ones. `--tone` narrows the deal to the brief'
 | line-carries-colour | editorial, warm, product, tech | lively |
 | lines-rise | all five | quiet |
 | liquid-hover | tech, playful (WebGL) | bold |
-| liquid-type | playful, tech, editorial, product | lively |
+| liquid-type | playful, tech | lively |
 | marquee-row | all five | lively |
 | photo-chapters | warm, editorial, product | lively |
 | picture-develops | warm, editorial, product | quiet |
@@ -106,35 +111,46 @@ in. The first moment says "place it in the first three screens".
   kind only when one is a statement and the other a section; one pointer moment a page (hover and
   liquid); never two of one slot, never two that avoid each other, never two WebGL moments. A dealt
   moment with nothing to carry is dealt again with it added to `--exclude`.
+- **Phones and the mouse.** When none of the dealt moments runs on a phone, the last one that can
+  be swapped is dealt again from those that do. `pointerOnly` moments never fill the two.
+- **One close.** A dealt scene that is the close leaves `closing-lift` out; a closing scene or
+  `closing-lift` is the page's close, so the plan writes `close none` and the footer keeps its
+  links row only (`start.mjs plan`).
+- **The copy's count.** `pick` prints each moment's `needs.words` and, where its `meta.json` has
+  `text`, the count the checker measures on the built page (`moment-text`): `liquid-type` 2-6
+  words, `letters-assemble` 2-5, `giant-type-pass` 2-4, `word-highlight` 12-40, `closing-lift`'s
+  line 3-7, `marquee-row` 6-14 items, `counter-rolls` 2-4 figures (a FAIL), `lines-rise` 2-3 lines
+  at a desktop width (a WARN). Write the copy to the count, or deal again.
 - **Un-retired in 2.5.2:** `closing-lift` (the close as a section of its own, a plain footer after
   it; its words stand on the calm, darker lower part of the photograph), `lines-rise` (a statement
   heading of two or three lines, slower and larger than the automatic section reveal),
   `window-parallax` (one wide photograph in a frame, a quiet parallax for a guesthouse or a hotel)
-  and `word-rotate` (one word of a statement, the close or a hero other than the `word` hero, three
-  rounds then rest). **Retired:** `headline-arrives`: its look is one of the hero entrances
+  and `word-rotate` (one word of a statement, the close or a hero other than the `word` hero; since
+  2.5.3 it keeps changing while on screen, with a pause button under the headline). **Retired:**
+  `headline-arrives`: its look is one of the hero entrances
   (`motion.md`, The hero's entrance); as a moment it would be a second entrance.
 
 ## Where each fits
 
-| id | kind · fits | phone and reduced motion |
-|---|---|---|
-| word-rotate | text · one word of a statement, the close or a hero (not the `word` hero), three rounds then rests | the written word stands |
-| lines-rise | text · one statement heading of two or three lines, once | the heading and its lines stand |
-| counter-rolls | text · the proof figures, once; never in a card | the figures stand |
-| word-highlight | scroll · one statement | runs on a phone; reduced motion: the whole statement in ink |
-| giant-type-pass | scroll · one statement with a photograph of mid to dark tones | the photograph stands in the letters, smaller type |
-| letters-assemble | scroll · one statement of 2-5 words, set very large: its letters fly into the line | the statement as written |
-| pinned-chapters | scroll · one feature section of 2-4 steps, two screens live | static rows (or each step with its visual under it) |
-| window-parallax | scroll · one wide photograph in a frame, a little slower than the page | the photograph stands in its frame |
-| marquee-row | scroll · a row of real words (trades, cities, formats; never logos: a logo never moves), with a pause button | the words in a wrapped row |
-| line-carries-colour | transition · a section on a new ground keeps it edge to edge; inside, an inset panel in the old ground (even gutter, card corners) is cleared by a line climbing from its foot; each block shows whole once the line has passed it | the section on its own ground, no panel, no line |
-| iris-opens | transition · a section on a new ground keeps it edge to edge; inside, an inset panel in the old ground (even gutter, card corners) opens a disc with a hairline accent ring; each block shows whole once the disc holds it | the section on its own ground, no panel, no ring |
-| picture-develops | transition · one large photograph with a clear subject, once, 1.6 s (look `film`): it comes up out of a faint grey print, darks first, then colour; the halftone look `print` is not dealt | the film look runs on a phone; reduced motion: the photograph stands |
-| photo-chapters | scroll · one section of 3-5 chapters (a title and two lines each, one photograph each) under its h2 and lead: one photograph the width of the page, each next one uncovered from its foot over the last, the chapter on a panel at its lower left; about two thirds of a screen of scroll a chapter, so the section is three screens live (four with four or five chapters) | runs on a phone held upright; reduced motion: the chapters side by side, each photograph over its words (a phone stacks them), the section as tall as they are |
-| closing-lift | transition · the close as a section of its own, with a photograph; the last section lifts away like a sheet | a plain closing section |
-| cursor-spotlight | hover · the hero frame | the light rests |
-| liquid-type | liquid · a hero or statement headline ripples like water under the pointer, an SVG filter, no WebGL | the headline as written |
-| liquid-hover | liquid · one photograph with edges and detail, one WebGL context | the plain photograph, no canvas |
+| id | kind · fits | phone (390) | reduced motion |
+|---|---|---|---|
+| word-rotate | text · one word of a statement, the close or a hero (not the `word` hero); it keeps changing while on screen, with a pause button under the headline; a comma after it stays on its line | runs as on a desktop | the written word stands |
+| lines-rise | text · one statement heading of two or three lines, once | runs as on a desktop | the heading and its lines stand |
+| counter-rolls | text · the proof figures, once; never in a card | runs as on a desktop | the figures stand |
+| word-highlight | scroll · one statement | runs as on a desktop | the whole statement in ink |
+| giant-type-pass | scroll · one statement with a photograph of mid to dark tones | smaller type, two thirds of the travel | the photograph stands in the letters |
+| letters-assemble | scroll · one statement of 2-5 words, set very large: its letters fly into the line | no scrub: the letters fly in once, 1.1 s, from a third as far | the statement as written |
+| pinned-chapters | scroll · one feature section of 2-4 steps, two screens live | nothing pinned: the step at the middle takes the accent rule, each picture settles from a close crop | each step with its visual under it |
+| window-parallax | scroll · one wide photograph in a frame, a little slower than the page | two thirds of the travel | the photograph stands in its frame |
+| marquee-row | scroll · a row of real words (trades, cities, formats; never logos: a logo never moves); the first word whole as it starts, the pause button after the row, never over a word | runs slower | the words in a wrapped row |
+| line-carries-colour | transition · a section on a new ground keeps it edge to edge; inside, an inset panel in the old ground (even gutter, card corners) is cleared by a line climbing from its foot; each block shows whole once the line has passed it; two grounds too close to tell apart get a lighter or darker panel and a 2px line | runs, 20px gutter | the section on its own ground, no panel, no line |
+| iris-opens | transition · as line-carries-colour, the panel opening a disc with a hairline accent ring (2px on close grounds); each block shows whole once the disc holds it | runs, 20px gutter | the section on its own ground, no panel, no ring |
+| picture-develops | transition · one large photograph with a clear subject, once, 1.6 s (look `film`): it comes up out of a faint grey print, darks first, then colour; the halftone look `print` is not dealt | the film look runs | the photograph stands |
+| photo-chapters | scroll · one section of 3-5 chapters (a title and two lines each, one photograph each) under its h2 and lead: one photograph the width of the page, each next one uncovered from its foot over the last, the chapter on a panel at its lower left; about two thirds of a screen of scroll a chapter, so the section is three screens live (four with four or five chapters) | runs held upright; under 600px tall the chapters stack | the chapters side by side, each photograph over its words, the section as tall as they are |
+| closing-lift | transition · the close as a section of its own, with a photograph; the last section lifts away like a sheet | no held sheet: the photograph settles from a close crop as it rises, the line fades up | a plain closing section |
+| liquid-type | liquid · a hero or statement headline ripples like water: once as it comes on screen, under the pointer, at a tap or touch drag; an SVG filter, no WebGL | runs (the entry ripple and touch) | the headline as written |
+| cursor-spotlight | hover · the hero frame; mouse only (`pointerOnly`) | the light rests | the light rests |
+| liquid-hover | liquid · one photograph with edges and detail, one WebGL context; mouse only (`pointerOnly`) | the plain photograph, no canvas | the plain photograph |
 
 ## The still rule (every moment, no exception)
 
@@ -143,13 +159,15 @@ without script or when its module fails. The loader decides: it hands each momen
 `reduced()` answers `lib.still()`, which is true under `prefers-reduced-motion` and on a phone (under
 640px wide, or a touch screen turned sideways under 500px tall). A moment written against `reduced()`
 therefore shows its finished state there, and the host carries `data-moment-still="reduced"`,
-`"phone"` or `"card"`. **Phones still get a moment:** the ones light enough for a phone (one
-picture or one paragraph at a time; transform, clip, filter or colour) say `export const phone =
-true` in their `moment.js` and `"phoneRuns": true` in `meta.json`, and run there; only reduced
-motion and a card keep them still. Those are `word-highlight`, `picture-develops` (film) and
-`photo-chapters` (from 600px of height); on a phone the others show their finished state, and the hero entrance and the section reveals still run. The answer is taken when the moment mounts (a window resized across 640px
-applies it on the next load; `pinned-chapters` and `photo-chapters` ask again on resize). Each `meta.json` says what the
-still shows (`reduced`, `phone`). Hover moments do nothing on touch screens either.
+`"phone"` or `"card"`. **Phones get the moments too:** every moment but the two mouse ones says
+`export const phone = true` in its `moment.js` and `"phoneRuns": true` in `meta.json` and runs on a
+phone in a lighter version of the same idea (branching on `lib.phone()`: no pin and no scrub where a
+phone cannot hold one; transform, clip, filter or colour on one element); only reduced motion and a
+card keep them still. `liquid-hover` and `cursor-spotlight` show their finished state there, and
+the deal makes sure at least one of the page's moments runs on a phone. The answer is taken when the
+moment mounts (a window resized across 640px applies it on the next load; `pinned-chapters` and
+`photo-chapters` ask again on resize). Each `meta.json` says what a phone and reduced motion show
+(`phone`, `reduced`). Hover moments do nothing on touch screens either.
 
 **Nothing on a card moves on scroll** (house rule). A moment sits on a hero, a statement, one
 section, a transition or the close, never in a card, a plan, a result or a bento cell: the loader
@@ -160,7 +178,7 @@ leaves one that does still (`data-moment-still="card"`, `data-moments-card` on `
 
 The host is a section of the page (or, for the text moments, the headline or the row inside it);
 mark it as the moment's header comment shows (`data-moment="<id>"`, options in `data-moment-opts`).
-Every section stays one or two screens tall (`layout-v4.md`, `--h`), live and at rest, but the two
+A moment's section is as tall as its content plus the kit padding (`layout-v4.md` section 2), live and at rest, but the two
 chapters moments: `photo-chapters` is (hold + 1) screens live (three for three chapters, four for
 four or five; write no `--h` and no `data-screen` on it: the checker and the layout check both read a
 live photo-chapters section as whole screens, four at most) and both are as tall as their content at rest. A transition's
@@ -195,11 +213,11 @@ model.
 
 - **The kind's count, an id once.** `data-moments-over` and `data-moments-repeat` on `<html>` are faults.
 - **No random effects as you scroll.** A scroll moment is scrubbed to the scrollbar inside its own
-  section, which stays one or two screens tall (`photo-chapters` three or four), and does one purposeful thing; at the section's top
+  section, which is as tall as its content (`photo-chapters` three or four screens live), and does one purposeful thing; at the section's top
   and bottom it shows a finished state (every transition and `letters-assemble` finish before the
   section's top is a fifth of the screen down), so each judge tile shows one whole section. No card,
-  row or tile ever enters on scroll. `consistency.mjs` reports a scroll finding inside the dealt
-  `[data-moment]` section; that one is expected, any other is a fault.
+  row or tile ever enters on scroll. `consistency.mjs` leaves the scroll inside a dealt kit
+  `[data-moment]` section untold; any other scroll finding is a fault.
 - **Content is readable without the motion:** the words are in the HTML, in their finished place; a
   moment never hides a headline on load (the hero's own entrance is the motion layer's, `motion.md`).
 - **The client's own material:** a moment carries the client's
@@ -212,16 +230,17 @@ model.
   `photo-chapters` needs three photographs. Pass `--has photo,figures` when the brief has both.
 - **Nothing blinks, bounces or overshoots.** Ease-outs (cubic-bezier(.22,1,.36,1) for a settle),
   600-1,000 ms for a reveal, 1.6-1.8 s for a photograph developing; a scrubbed wipe or change takes
-  about half of its chapter's share of the scroll and holds for the rest; a loop runs its rounds and
-  rests, or carries a pause button.
+  about half of its chapter's share of the scroll and holds for the rest; a loop that runs past 5 s
+  (`word-rotate`, `marquee-row`) carries a pause button beside it, never over a word, and pauses
+  under the pointer.
 - **The page's edges.** A moment's text sits in a `.container` or `.wrap` like every other section: its
   words end on the page's left and right edges. A transition's cover is an inset panel inside the host
   section with an even gutter on every side (card corners, never touching the section's edges), its
   line or ring inside the panel; every heading, paragraph, button and picture appears whole, never cut
   by the line or the disc (each moment's `meta.json`, `look`, says how).
 - **Cost:** no WebGL but `liquid-hover` (tones tech and playful, intensity bold: never on a place, service or product page) (one context, only near the screen; a plain photograph without
-  WebGL or when the shader fails). `liquid-type` is one SVG filter on one headline, on only while a
-  ripple is alive. Every other moment costs CSS variables, a transform or a clip and a passive
+  WebGL or when the shader fails). `liquid-type` (tones playful and tech: tech, software and gaming
+  pages) is one SVG filter on one headline, on only while a ripple is alive. Every other moment costs CSS variables, a transform or a clip and a passive
   listener.
 - **One pointer effect a page:** a hover or liquid moment rules out `fx-button`, `fx-spotlight` and an
   object that turns to the pointer, and the reverse; `pick` never deals two of them.
@@ -235,7 +254,10 @@ model.
   reads the built page: how many moments (a fault over three, a warning under two), any twice,
   retired, off its page kind by the fit rule (its tones, intensity and WebGL against the kind), in a
   card, holding a figcaption, two that may not share a page, the WebGL total against 4, a missing
-  loader. Exit 1 on a fault.
+  loader. Exit 1 on a fault. `consistency.mjs` (the gate) measures the copy's count (`moment-text`)
+  and leaves the kit moment's own scroll, pin and reveal untold in its section (the first three
+  moments; a builder's own scroll moment WARNs), its still judged under reduced motion; the kit's
+  marquee track and the offset pair are no card row, split or stagger to it.
 - `node <skill>/scripts/moments.mjs shoot --out shots/moments --profile <own chrome dir> --port 5720 --only <id> [--reduced]`
   shoots the demo's start, middle and end states at 1440 and 390 in the skill's headless Chrome (WebGL
   on the CPU); the end must be the finished section. Under `--reduced`, and at 390 for a moment

@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generated": "2026-11-08T21:18:34.120Z",
+ "generated": "2026-11-22T02:15:16.825Z",
  "count": 18,
  "dealt": 17,
  "kinds": {
@@ -24,6 +24,7 @@
     "warm",
     "editorial"
    ],
+   "lead": "warm",
    "intensity": [
     "quiet",
     "lively"
@@ -36,6 +37,7 @@
     "warm",
     "product"
    ],
+   "lead": "editorial",
    "intensity": [
     "quiet",
     "lively"
@@ -48,6 +50,7 @@
     "editorial",
     "warm"
    ],
+   "lead": "product",
    "intensity": [
     "quiet",
     "lively",
@@ -114,13 +117,21 @@
    "intensity": "lively",
    "look": "The last content section scrolls away like a sheet and uncovers the closing photograph held under it; the photograph settles from a close crop and the closing line with the one action fades up on it.",
    "reduced": "A plain closing section with the photograph, the line and the action.",
-   "phone": "A plain closing section with the photograph, the line and the action after the sheet.",
+   "phone": "A lighter version on a phone: nothing is held under the sheet; the closing photograph comes after it as a plain section, settling from its close crop as it rises into the screen, and the closing line fades up on it.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
     "photo": true,
     "words": "a closing line of 3 to 7 words, one line and one action; the closing section of its own, the footer after it",
     "picture": "a calm, darker lower half where the words stand (sand, water, a wall, a table); the words never on a busy part"
+   },
+   "text": {
+    "words": [
+     3,
+     7
+    ],
+    "sel": ".mo-cl__band h2"
    },
    "avoidWith": [
     "pinned-chapters",
@@ -168,7 +179,8 @@
    "intensity": "lively",
    "look": "The digits of two to four proof figures roll once like an odometer when the row comes on screen, the right-most digit turning most; the strips rest on the real figures before and after, so the row never reads as zeros.",
    "reduced": "The figures stand.",
-   "phone": "The figures stand.",
+   "phone": "It runs on a phone as on a desktop: the figures roll once as the row comes on screen.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -176,6 +188,13 @@
      "figures"
     ],
     "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
+   },
+   "text": {
+    "items": [
+     2,
+     4
+    ],
+    "sel": "[data-count], .t-stat"
    },
    "avoidWith": [],
    "states": {
@@ -220,6 +239,7 @@
    "look": "A soft light on the hero's ground follows the pointer with a short lag and shows a fine dot grid around it; it drifts back to its resting spot when the pointer leaves.",
    "reduced": "The light rests at its spot; also on touch screens.",
    "phone": "The light rests at its spot; there is no pointer.",
+   "pointerOnly": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -294,13 +314,21 @@
    "intensity": "lively",
    "look": "Two to four words set at 12vw with a photograph showing through the letters under a 35% ink tint; the photograph passes upward through the type as the section crosses the screen.",
    "reduced": "The photograph stands still inside the letters.",
-   "phone": "The photograph stands still in the letters, the type smaller (19vw).",
+   "phone": "It runs on a phone with the type smaller (19vw) and two thirds of the travel: the photograph still passes up through the letters.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
     "photo": true,
     "picture": "mid to dark tones with detail, no pale sky; the lower half of the picture is what shows",
     "words": "a statement of 2 to 4 words and one line under it"
+   },
+   "text": {
+    "words": [
+     2,
+     4
+    ],
+    "sel": ".mo-gt__type, h2, h1"
    },
    "avoidWith": [
     "word-highlight"
@@ -392,9 +420,10 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut.",
+   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) opens a disc in the middle of what is visible, widening with a hairline accent ring at its edge. Each heading, paragraph, button and picture stays hidden until the disc holds all of it, then fades in whole, so no word is ever cut. When the two grounds are too close to tell apart, the panel is moved lighter or darker until the disc reads, and the ring is 2px with a soft shade.",
    "reduced": "The section stands on its own ground, no panel, no ring.",
-   "phone": "The section stands on its own ground, no panel, no ring.",
+   "phone": "It runs on a phone as on a desktop: the inset panel in the old ground opens its disc as the section rises, each block fading in whole.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -449,11 +478,19 @@
    "intensity": "lively",
    "look": "A statement of two to five words, set very large: its letters start scattered, shifted and turned, and fly into the line one after the other as the statement rises through the screen, whole before it reaches the middle.",
    "reduced": "The statement stands as written.",
-   "phone": "The statement stands as written, in a smaller size.",
+   "phone": "A lighter version on a phone, in a smaller size: no scrub; the letters start a third as far from home and fly into the line once, in 1.1 s, as the statement comes on screen.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
     "words": "a statement of 2 to 5 words (up to about 28 letters) and one or two lines under it"
+   },
+   "text": {
+    "words": [
+     2,
+     5
+    ],
+    "sel": ".mo-la__type, h2, h1"
    },
    "avoidWith": [
     "giant-type-pass",
@@ -501,9 +538,10 @@
     "tech"
    ],
    "intensity": "lively",
-   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) is cleared by a one-pixel accent line that climbs through it from its foot to its top: below the line the section's own ground and words, above it the old ground. Each heading, paragraph, button and picture stays hidden until the line has passed above all of it, then fades in whole, so no word is ever cut.",
+   "look": "A section that sits on a new ground keeps that ground edge to edge; inside it an inset panel in the old ground (even gutter, card corners, never touching the section's edges) is cleared by a one-pixel accent line that climbs through it from its foot to its top: below the line the section's own ground and words, above it the old ground. Each heading, paragraph, button and picture stays hidden until the line has passed above all of it, then fades in whole, so no word is ever cut. When the two grounds are too close to tell apart, the panel is moved lighter or darker until the change reads, and the line is 2px.",
    "reduced": "The section stands on its own ground, no panel, no line.",
-   "phone": "The section stands on its own ground, no panel, no line.",
+   "phone": "It runs on a phone as on a desktop: the accent line climbs through the inset panel as the section rises, each block fading in whole.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -558,11 +596,19 @@
    "intensity": "quiet",
    "look": "One statement heading of two or three lines rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once. Slower and larger than the automatic section reveal, so it reads as the statement arriving.",
    "reduced": "The section stands as written.",
-   "phone": "The heading and the lines after it stand as written.",
+   "phone": "It runs on a phone as on a desktop: the heading rises line by line once, the lines after it fade up.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 0.7,
    "needs": {
     "words": "a heading of 2 to 3 lines"
+   },
+   "text": {
+    "lines": [
+     2,
+     3
+    ],
+    "sel": "h2, h1, h3"
    },
    "avoidWith": [
     "headline-arrives"
@@ -609,6 +655,7 @@
    "look": "The pointer pushes a photograph like the surface of water: the picture bends along the pointer's path with a wet shine and a hair of colour split, and the ripple diffuses away in a second or two, back to the plain picture.",
    "reduced": "The photograph stands; also on touch screens and without WebGL.",
    "phone": "The plain photograph, no canvas, no WebGL context.",
+   "pointerOnly": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -672,23 +719,29 @@
     "hero",
     "statement"
    ],
-   "trigger": "pointer",
+   "trigger": "enter",
    "cost": "low",
    "webgl": 0,
    "tones": [
     "playful",
-    "tech",
-    "editorial",
-    "product"
+    "tech"
    ],
    "intensity": "lively",
-   "look": "A very large headline ripples and stretches like type seen through water wherever the pointer crosses it, and settles back to crisp type within about a second; one SVG filter, only while it moves.",
-   "reduced": "The headline stands as written; also on touch screens.",
-   "phone": "The headline stands as written; there is no pointer.",
+   "look": "A very large headline ripples and stretches like type seen through water: one ripple passes through it from left to right each time it comes on screen, the pointer ripples it wherever it crosses the letters, and a tap or a touch drag ripples it at the finger; it settles back to crisp type within about a second. One SVG filter, only while it moves.",
+   "reduced": "The headline stands as written.",
+   "phone": "It runs on a phone: the ripple passes through the headline as it comes on screen, and a tap or a touch drag ripples it again.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
     "words": "a headline of 2 to 6 words, set large"
+   },
+   "text": {
+    "sel": ".mo-lt__type, h1, h2",
+    "words": [
+     2,
+     6
+    ]
    },
    "avoidWith": [
     "liquid-hover",
@@ -701,20 +754,7 @@
     },
     "middle": {
      "see": true,
-     "pointer": {
-      "target": ".mo-lt__type",
-      "from": [
-       0.1,
-       0.5
-      ],
-      "to": [
-       0.55,
-       0.5
-      ],
-      "moves": 14,
-      "step": 16
-     },
-     "wait": 40
+     "wait": 1700
     },
     "end": {
      "see": true,
@@ -737,10 +777,7 @@
    "pages": [
     "tech",
     "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
+    "software"
    ]
   },
   {
@@ -761,13 +798,21 @@
     "product"
    ],
    "intensity": "lively",
-   "look": "One row of client words, trades, cities or formats moves slowly sideways in a loop, fading at both edges; it pauses under the pointer and has a pause button.",
+   "look": "One row of client words, trades, cities or formats moves slowly sideways in a loop, fading at both edges, the first word whole as it starts; it pauses under the pointer and has a pause button after the row, never over a word.",
    "reduced": "The words stand in a wrapped row.",
-   "phone": "The words stand in a wrapped row; nothing runs.",
+   "phone": "It runs on a phone, slower and with a narrower fade, the pause button after the row.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 0.8,
    "needs": {
     "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients"
+   },
+   "text": {
+    "sel": ".mo-mq__track:not(.mo-mq__clone) > *",
+    "items": [
+     6,
+     14
+    ]
    },
    "avoidWith": [],
    "states": {
@@ -921,7 +966,8 @@
    "intensity": "lively",
    "look": "A feature section holds on screen for two screens of scroll while its three steps open one at a time at the left and one frame at the right changes to each step's picture with a short crossfade.",
    "reduced": "Nothing is pinned: from 640px each step is a static row, its text at the left and its visual at the right (at most 30svh tall); on a phone each step stands with its 16:9 visual under it. Two to four steps fit two screens at 1440x900, 1024x768, 820x1180 and 390x844.",
-   "phone": "Nothing is pinned: each step stands with its title, two lines and its visual under it.",
+   "phone": "A lighter version on a phone, nothing pinned: each step stands with its title, two lines and its visual under it; the step crossing the middle of the screen takes the accent rule at its left, and each picture settles from a close crop to its framing as it rises.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -974,7 +1020,8 @@
    "intensity": "quiet",
    "look": "One wide photograph seen through a frame moves a little slower than the page, so the frame reads as a window onto a larger picture.",
    "reduced": "The photograph stands.",
-   "phone": "The photograph stands in its frame.",
+   "phone": "It runs on a phone with two thirds of the travel: the photograph still moves a little slower than the page in its frame.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
@@ -1032,6 +1079,13 @@
    "needs": {
     "words": "one statement of 12 to 40 words"
    },
+   "text": {
+    "words": [
+     12,
+     40
+    ],
+    "sel": ".mo-wh__text, p, h2, h3, blockquote"
+   },
    "avoidWith": [
     "giant-type-pass"
    ],
@@ -1078,9 +1132,10 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "One word of a headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests on the written word. In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word.",
+   "look": "One word of a headline keeps changing every two seconds while it is on screen, sliding up out of its mask as the next rises in, underlined in the accent, with a small pause button under the headline (it also pauses under the pointer). In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word. A comma or full stop after the word stays on its line.",
    "reduced": "The written word stands.",
-   "phone": "The written word stands; the other words are not shown.",
+   "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
+   "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
