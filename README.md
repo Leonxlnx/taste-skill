@@ -225,6 +225,7 @@ If Taste Skill helps you, consider sponsoring:
 <a href="https://github.com/AnthonyLiuVa"><img src="https://github.com/AnthonyLiuVa.png" width="40" height="40" style="border-radius:50%" alt="AnthonyLiuVa" title="AnthonyLiuVa" /></a>
 <a href="https://github.com/Wolfy18"><img src="https://github.com/Wolfy18.png" width="40" height="40" style="border-radius:50%" alt="Wolfy18" title="Wolfy18" /></a>
 <a href="https://github.com/Gigslol"><img src="https://github.com/Gigslol.png" width="40" height="40" style="border-radius:50%" alt="Gigslol" title="Gigslol" /></a>
+<a href="https://github.com/moritz-mode"><img src="https://github.com/moritz-mode.png" width="40" height="40" style="border-radius:50%" alt="moritz-mode" title="moritz-mode" /></a>
 </p>
 
 <p align="center">
