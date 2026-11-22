@@ -39,8 +39,10 @@
   quotes and semicolons aside) and checker-gaming (the page's own code looks for a headless browser or an automation
   tool). gaming-suspect, waivable: a user-agent test for headless, or aria-hidden stripped from many pictures.
   deal-drift: the page against what start.mjs plan dealt (.taste-skill/history.json, layout-history.json, else the plan
-  comment): a dealt moment or scene missing, or a place hero dealt bleed, split or name built as band, FAILs; another
-  hero form, close or composition WARNs; the fix names the file to copy from.
+  comment): the deal that counts is the whole deal the plan comment's moments part matches, else the latest whole
+  deal; a moment of it missing with no moment dealt after it standing in, a moment the plan names missing, a dealt
+  scene missing, or a place hero dealt bleed, split or name built as band, FAILs, naming the history.json line and the
+  page line that decided it; another hero form, close or composition WARNs; the fix names the file to copy from.
   photo-credit: every photograph of assets/img/credits.json the page uses has its line on the credits page the
   footer's credits link opens, that line names every source, and no author is a Commons category.
   photo-product (WARN): a heading names a product of the fact sheet (copy.md Products, else What it is) and its
@@ -561,11 +563,22 @@ function productChecks(html, dot) {
 }
 
 // ---------------------------------------------------------------- deal drift: the page against what was dealt
-// What start.mjs plan dealt for this page: .taste-skill/history.json (the moments of the last deal, the scene dealt
-// with them, the layout's close and compositions) and layout-history.json (the place hero's form), else the plan
-// comment at the top of <body>. A dealt moment or scene the page lacks, or a place hero dealt bleed, split or name
-// and built as band (data-form missing is band), FAILs; another hero form, close or composition WARNs. The fix names
-// the file to copy from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it with why.
+// What start.mjs plan dealt for this page: .taste-skill/history.json (the moments and the scene of a deal, the layout's
+// close and compositions) and layout-history.json (the place hero's form), else the plan comment at the top of <body>.
+// Which deal counts: the one the page says it builds. One pick run is one deal (one seed, one time); a run of two or
+// three is a whole deal, a run of one (--count 1) deals one slot again. The plan's moments part (the comment at the top
+// of <body>, else the "plan line" comment at the top of the file: "moments: a on .., b on .." or "moment 1  a ...")
+// picks the whole deal of this build it shares the most moments with; with no moments part, the latest whole deal
+// counts. A moment of that deal the page lacks is not asked for when a moment dealt after it (a later pick) is on the
+// page in its place, one for one: a moment the builder dealt again is not demanded, and the moments the new pick dealt
+// beside the one it took are not either. A moment the plan names, dealt in this project, and missing from the page
+// FAILs too, so the plan and the page say the same. Asides in brackets ("photo-chapters (re-dealt for iris-opens)")
+// and the words after "instead of", "replaces", "not" are never read as a moment the page builds. Each FAIL names the
+// history.json line of the deal and the page line of the plan that decided it (2.5.3: a builder that dealt again to
+// escape a FAIL was then asked for the two moments the new deal brought along, and ran out of rounds).
+// A dealt moment or scene the page lacks with nothing dealt later in its place, or a place hero dealt bleed, split
+// or name and built as band (data-form missing is band), FAILs; another hero form, close or composition WARNs. The
+// fix names the file to copy from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it.
 const COMP_MARK = {
   mirrored: [/\bgrid--mirror\b/, 'class="grid grid--mirror" on the split (sections-library.md, Compositions)'],
   'bleed-panel': [/\bcomp-bleed\b/, '<section class="section comp-bleed"> with the photograph as its layer and the words on .comp-panel (sections-library.md, Compositions)'],
@@ -576,11 +589,31 @@ const COMP_MARK = {
   'close-form': [/\bclose--form\b/, 'the <template data-part="close-form"> of <skill>/assets/starter.html as the close'],
 };
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
-async function dealDrift(html, dot, kind) {
+// the plan's words for one part (its moments): from the part's name at the start of a line or after a "·"
+// to the next "·" or the next line that starts another part. Asides in brackets, and the words from "instead of",
+// "replaces", "re-dealt for", "not" to the next comma, are blanked first (to spaces, so every offset still points at
+// its line of the page). Returns [{ words, at }], at: where the words start in text.
+const PLAN_KEYS = 'kind|plan|type|copy|palette|hero|entrance|nav|close|footer|buttons|mark|rhythm|bands|grounds|compositions?|photos|reveals|moments?|scenes?|effects?|hover|then';
+const blankOut = s => s.replace(/[^\n]/g, ' ');
+function planPart(text, key) {
+  let t = text, o;
+  do { o = t; t = t.replace(/\([^()]*\)/g, blankOut); } while (t !== o);
+  t = t.replace(/\([^)]*$/, blankOut)
+    .replace(/\b(?:re-?dealt (?:for|from)|dealt away|instead of|in place of|rather than|replac(?:es|ed|ing)|swapped for|not|no longer|without)\b[^,;·\n]*/gi, blankOut);
+  const out = [];
+  for (const m of t.matchAll(new RegExp(`(?:^|\\n|·)[ \\t]*(?:${key})(?![\\w-])`, 'gi'))) {
+    const from = m.index + m[0].length, rest = t.slice(from);
+    const end = rest.search(new RegExp(`·|\\n[ \\t]*(?:${PLAN_KEYS})(?![\\w-])`, 'i'));
+    out.push({ words: end < 0 ? rest : rest.slice(0, end), at: from });
+  }
+  return out;
+}
+async function dealDrift(html, dot, kind, page) {
   const fails = [], warns = [];
   if (!html) return { fails, warns };
-  const read = f => { try { return JSON.parse(fs.readFileSync(path.join(dot, f), 'utf8')); } catch { return null; } };
-  const h = read('history.json') || {}, lh = read('layout-history.json') || {};
+  const raw = f => { try { return fs.readFileSync(path.join(dot, f), 'utf8'); } catch { return ''; } };
+  const read = f => { try { return JSON.parse(raw(f)); } catch { return null; } };
+  const hRaw = raw('history.json'), h = read('history.json') || {}, lh = read('layout-history.json') || {};
   const plan = ((html.split(/<body\b/i)[1] || '').match(/<!--([\s\S]*?)-->/) || [])[1] || '';
   const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
   const has = (attr, id) => new RegExp(`\\b${attr}\\s*=\\s*["']?${reEsc(id)}(?![\\w-])`).test(live);
@@ -588,20 +621,69 @@ async function dealDrift(html, dot, kind) {
   let mo;
   try { mo = await import('./moments.mjs'); } catch { return { fails, warns }; }
   const ids = d => { try { return fs.readdirSync(path.join(SKILL, 'assets', d), { withFileTypes: true }).filter(x => x.isDirectory() && !x.name.startsWith('_')).map(x => x.name); } catch { return []; } };
-  // the moments and the scene of the last deal (one pick run: one seed, one time; its scene within a few seconds of it)
-  const ms = Array.isArray(h.moments) ? h.moments : [], last = ms[ms.length - 1];
-  let moments = last ? ms.filter(m => m.seed === last.seed && m.at === last.at).map(m => m.id) : [];
-  let scene = null, from = '.taste-skill/history.json';
-  if (last) {
-    const t = Date.parse(last.at), sc = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => Math.abs(t - Date.parse(s.at)) < 10000).pop();
-    scene = sc ? sc.id : null;
-  } else if (plan) {
-    from = 'the plan comment';
-    moments = ids('moments').filter(id => named(plan, id));
-    scene = ids('scenes').find(id => named(plan, id)) || null;
+  const lineOf = (text, i) => text.slice(0, i).split('\n').length;
+  const SRC = '.taste-skill/history.json';
+  // the plan's moments: the comment at the top of <body>, else a comment before it that holds the plan (the starter's
+  // "plan line 2"); the first one whose moments part names a moment
+  const bodyAt = html.search(/<body\b/i), comments = [...html.matchAll(/<!--([\s\S]*?)-->/g)];
+  const sources = [comments.find(c => bodyAt >= 0 && c.index > bodyAt), ...comments.filter(c => (bodyAt < 0 || c.index < bodyAt) && /\bplan\b/i.test(c[1]))].filter(Boolean);
+  const momentIds = ids('moments');
+  let P = [], planLine = '';
+  for (const c of sources) {
+    const parts = planPart(c[1], 'moments?(?:[ \\t]*\\d+)?').map(p => ({ ...p, ids: momentIds.filter(id => named(p.words, id)) })).filter(p => p.ids.length);
+    if (parts.length) { P = [...new Set(parts.flatMap(p => p.ids))]; planLine = page ? `${page} line ${lineOf(html, c.index + 4 + parts[0].at)}` : 'the plan comment'; break; }
   }
-  for (const id of moments) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the deal (${from}) dealt the moment ${id}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
-  if (scene && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `the deal (${from}) dealt the scene ${scene}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
+  const planHint = sources.length && page ? `${page} line ${lineOf(html, sources[0].index)}` : 'the top of <body>';
+  // the deals, oldest first (one pick run: one seed, one time), and the history.json line each starts on
+  const deals = [];
+  for (const m of (Array.isArray(h.moments) ? h.moments : []).filter(m => m && m.id)) {
+    const d = deals.find(x => x.seed === m.seed && x.at === m.at);
+    if (d) { if (!d.ids.includes(m.id)) d.ids.push(m.id); } else deals.push({ seed: m.seed, at: m.at, t: Date.parse(m.at) || 0, ids: [m.id] });
+  }
+  const histLine = (at, key) => { const k = hRaw.indexOf(key), i = at && k >= 0 ? hRaw.indexOf(String(at), k) : -1; if (i < 0) return SRC; const b = hRaw.lastIndexOf('{', i); return `${SRC} line ${lineOf(hRaw, b < 0 ? i : b)}`; };
+  // the deal that counts: the whole deal (two or three moments) of this build the plan's moments share the most with,
+  // the later one on a tie; with no moments part, or one that matches none, the latest whole deal. This build's deals:
+  // since the build marker's start, or the six hours before the latest deal when that reaches further back (a build
+  // armed again with --new after its deal); an older page's deal in this folder never counts
+  const whole = deals.filter(d => d.ids.length >= 2), pool = whole.length ? whole : deals, latest = pool[pool.length - 1] || null;
+  const mk = read('build.json') || read('build.done.json') || {};
+  const since = latest ? Math.min(Date.parse(mk.start) - 60000 || Infinity, latest.t - 6 * 3600e3) : 0;
+  let base = latest, matched = false;
+  if (latest && P.length) {
+    let best = 0;
+    for (const d of pool) {
+      if (d !== latest && d.t < since) continue;
+      const k = d.ids.filter(id => P.includes(id)).length;
+      if (k && k >= best) { best = k; base = d; matched = true; }
+    }
+  }
+  // what decided the deal, and the way out when the page builds another deal on purpose
+  const why = matched ? `in the deal the plan's moments (${planLine}) match` : P.length ? `in the last whole deal (the plan's moments, ${planLine}, match no deal)` : `in the last whole deal (the plan comment, ${planHint}, has no moments part to name another)`;
+  const instead = id => (matched
+    ? `or, when a moment dealt after it took its place, build that one and write "(re-dealt for ${id})" after it in the plan's moments part (${planLine})`
+    : `or, when the page builds an earlier deal with one moment dealt again, list the page's moments in the plan comment's moments part (${planLine || planHint}): the deal they match counts`);
+  let scene = null, sceneMsg = '';
+  if (base) {
+    // a moment of that deal the page lacks is not asked for while a moment dealt after it stands in on the page, one for one
+    const later = new Set(deals.filter(d => d.t > base.t).flatMap(d => d.ids));
+    const missing = base.ids.filter(id => !has('data-moment', id));
+    const standIns = momentIds.filter(id => has('data-moment', id) && !base.ids.includes(id) && later.has(id));
+    const told = missing.length > standIns.length ? missing : [];
+    for (const id of told) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `${histLine(base.at, '"moments"')} dealt ${id} ${why}; the page has no [data-moment="${id}"] and ${standIns.length ? `the ${standIns.length} dealt after it (${standIns.join(', ')}) stand in for fewer than the ${missing.length} missing` : 'no moment dealt after it stands in'}`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css; ${instead(id)}; a brief that cannot fill it: deal again` });
+    // a moment the plan names, dealt in this project, is built: the plan and the page say the same
+    const dealt = new Set(deals.flatMap(d => d.ids));
+    for (const id of P) if (dealt.has(id) && !has('data-moment', id) && !told.includes(id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan's moments part (${planLine}) names ${id}, dealt at ${histLine(deals.filter(d => d.ids.includes(id)).pop().at, '"moments"')}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css; a moment dealt away: off that part, or in brackets after its stand-in, "(re-dealt for ${id})"` });
+    // its scene (dealt within a few seconds of it); a scene dealt with a later pick and built stands in
+    const scenes = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => s && s.id), sc = scenes.filter(s => Math.abs(base.t - Date.parse(s.at)) < 10000).pop();
+    if (sc && !scenes.some(s => Date.parse(s.at) > base.t + 10000 && has('data-big-scene', s.id))) { scene = sc.id; sceneMsg = `${histLine(sc.at, '"scenes"')} dealt the scene ${scene} ${why}`; }
+  } else if (plan) {
+    // no deal in the history: the plan comment is the deal
+    const named0 = P.length ? P : momentIds.filter(id => named(plan, id));
+    for (const id of named0) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan comment (${planLine || planHint}) names the moment ${id} and ${SRC} holds no deal; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
+    scene = ids('scenes').find(id => named(plan, id)) || null;
+    sceneMsg = `the plan comment (${planHint}) names the scene ${scene}`;
+  }
+  if (scene && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `${sceneMsg}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
   // the place hero's form
   const heroTag = (live.match(/<(?:section|header)\b[^>]*\bclass\s*=\s*["'][^"']*\bhero--place\b[^>]*>/i) || [])[0];
   const pf = Array.isArray(lh.placeForms) && lh.placeForms.length ? lh.placeForms[lh.placeForms.length - 1] : (plan.match(/\bform\s*[:=]?\s*["']?(band|bleed|split|name)\b/i) || [])[1];
@@ -1104,7 +1186,7 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     const c = await safely('copy', () => copyChecks(P, kind, html, rendered), none, true);
     const mo = await safely('motion', () => motionChecks(P, kind, html, rendered), none, true);
     let renderedHtml = ''; if (!html) try { renderedHtml = fs.readFileSync(rendered, 'utf8'); } catch { /* none */ }
-    const dd = await safely('deal-drift', () => dealDrift(html || renderedHtml, dot, kind), { fails: [], warns: [] });
+    const dd = await safely('deal-drift', () => dealDrift(html || renderedHtml, dot, kind, html ? relPage : null), { fails: [], warns: [] });
     const pp = await safely('photo-product', () => productChecks(html || renderedHtml, dot), []);
     found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {

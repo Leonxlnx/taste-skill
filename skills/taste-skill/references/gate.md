@@ -71,11 +71,17 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
     (a framework's `src/lib/motion.js`, a `dist/assets/index-*.js`) gets this finding for the kit's
     line: waive it with "the kit's motion.js shot() test, ported unchanged" as the reason.
   - **deal-drift**: the page against what `start.mjs plan` dealt (`.taste-skill/history.json`: the
-    last deal's moments and the scene dealt with them, the close and the compositions;
-    `layout-history.json`: the place hero's form; else the plan comment at the top of `<body>`). FAIL:
-    a dealt moment without its `[data-moment]`, a dealt scene without its `[data-big-scene]`, a place
-    hero dealt bleed, split or name built as band. WARN: another hero form, close or composition. The
-    fix names the file whose section to copy. A dealt part the brief cannot fill: deal again
+    moments and the scene of a deal, the close and the compositions; `layout-history.json`: the place
+    hero's form; else the plan comment at the top of `<body>`). The deal that counts is the one the page
+    says it builds: the whole deal of this build that the plan comment's moments part
+    (`moments: a on .., b on ..`) shares the most moments with, else the latest whole deal. One moment
+    dealt again (a later pick) stands in for the one it replaced: write it as
+    `photo-chapters (re-dealt for iris-opens)`, and the moments the new pick dealt beside it are not
+    asked for. FAIL: a moment of that deal without its `[data-moment]` and nothing dealt after it in its
+    place, a dealt moment the plan names and the page lacks, a dealt scene without its
+    `[data-big-scene]`, a place hero dealt bleed, split or name built as band; each names the
+    `history.json` line of the deal and the page line of the plan that decided it. WARN: another hero
+    form, close or composition. The fix names the file whose section to copy. A dealt part the brief cannot fill: deal again
     (`start.mjs plan --has ...`), never a quiet swap.
   - **the copy** (waivable): `scripts/copy-lint.mjs --json --kind <kind>` on the page's file, or, when
     the file holds no sections (a built app, a dev server), on the page as the checker's browser built

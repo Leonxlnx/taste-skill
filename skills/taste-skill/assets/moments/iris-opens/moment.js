@@ -17,8 +17,10 @@
   When the two grounds are too close to tell apart (a contrast ratio under 1.3, such as #e8e8e3 after
   #dcdcd6), the panel is moved away from the new ground, lighter or darker, until the disc reads, and the
   ring is drawn at 2px with a soft shade.
-  It runs on a phone too (one mask, one ring, the blocks' opacity). Reduced motion, no script, a failed
-  module: no stage, every block as it is.
+  It runs on a phone too (one mask, one ring, the blocks' opacity). The hole and the ring are gradients
+  on boxes of a fixed size (the cover, the stage's ::after: moment.css) and only the custom properties
+  change, so no box moves or grows and nothing counts as a layout shift. Reduced motion, no script, a
+  failed module: no stage, every block as it is.
 
     <section class="section ground-inverse" data-moment="iris-opens" data-moment-opts='{"from": "base"}'>
       <div class="wrap">…the section's h2 and content…</div>
@@ -39,9 +41,7 @@ export default function (root, opts, lib) {
   stage.setAttribute('aria-hidden', 'true');
   const cover = document.createElement('div');
   cover.className = 'mo-io__cover';
-  const ring = document.createElement('div');
-  ring.className = 'mo-io__ring';
-  stage.append(cover, ring);
+  stage.append(cover);   // the ring is the stage's ::after (moment.css)
   root.append(stage);
   root.classList.add('is-live', `mo-io--${from}`);
   // two grounds too close to tell apart: the panel moves away from the section's own ground until the disc reads

@@ -517,6 +517,7 @@ function cmdPick(a) {
     if (dealtScene) console.log(sceneLine(dealtScene.scene));
     out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close: the footer keeps its links row only' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}${p.phoneRuns ? ' · runs on a phone' : ''}${p.pointerOnly ? ' · the extra: it answers a mouse only' : ''}\n   ${p.look}${p.needs?.words ? `\n   the copy: ${p.needs.words}${textRule(p.text)}` : ''}`));
     console.log('Each in a section of its own, never two in one section; write each id, its section and its purpose in the plan. Write the copy to each one\'s count (the checker measures it: moment-text).');
+    console.log('Dealt again to swap one moment: take one of these, keep the others, and write it on the plan comment\'s moments line as "<id> (re-dealt for <the old id>)"; the gate\'s deal-drift reads that line.');
   }
 }
 

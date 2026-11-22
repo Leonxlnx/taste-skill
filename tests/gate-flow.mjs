@@ -196,6 +196,51 @@ for (const [line, h2, alt, noun] of LINES) {
   check(w.length === 0, 'the lines that only look like it pass', JSON.stringify(w.map(x => x.hits)));
 }
 
+// ---------------------------------------------------------------- 7. deal-drift after a deal made again
+// (2.5.3: a builder dealt again to swap one moment, took one of the three the new pick dealt, and the gate asked for
+// the other two until its rounds ran out). The deal that counts is the one the plan comment's moments match; a moment
+// of it the page lacks is not asked for while a moment dealt after it stands in; a moment silently left out still FAILs.
+{
+  fs.copyFileSync(path.join(SCRIPTS, 'moments.mjs'), path.join(SKILL, 'scripts', 'moments.mjs'));
+  for (const id of ['iris-opens', 'word-highlight', 'word-rotate', 'photo-chapters', 'closing-lift', 'lines-rise']) fs.mkdirSync(path.join(SKILL, 'assets', 'moments', id), { recursive: true });
+  const at = s => new Date(Date.now() + s * 1000).toISOString();
+  const A = at(5), B = at(60), R = at(90);
+  const deal = (ids, t, seed) => ids.map(id => ({ id, at: t, seed }));
+  const site = (built, plan, moments) => {
+    const dir = path.join(TMP, 'deal' + (++n));
+    fs.mkdirSync(path.join(dir, '.taste-skill'), { recursive: true });
+    const secs = built.map((id, i) => `<section id="s${i}" data-moment="${id}"><h2>Part ${i}</h2><p>Words.</p></section>`).join('\n');
+    fs.writeFileSync(path.join(dir, 'index.html'), `<!doctype html><html lang="en"><head><meta name="page-type" content="product"><title>Test</title></head>
+<body>
+<!-- type: product
+     plan (start.mjs plan): palette sand, type geist, hero photo,
+${plan}
+     copy: .taste-skill/copy.md written and linted before this page -->
+<main><section id="hero"><h1>A test page</h1></section>
+${secs}
+</main></body></html>\n`);
+    fs.writeFileSync(path.join(dir, '.taste-skill', 'copy.md'), '# Copy notes\n\n## Fact sheet\nWhat it is: a test.\nProducts: none\n');
+    fs.writeFileSync(path.join(dir, 'stub.json'), JSON.stringify({ consistency: 'ok' }));
+    gate(dir, ['--start', 'index.html']);
+    fs.writeFileSync(path.join(dir, '.taste-skill', 'history.json'), JSON.stringify({ moments }, null, 1));
+    const r = gate(dir, []);
+    return { r, dd: ((state(dir).found || {}).fails || []).filter(f => f.check === 'deal-drift') };
+  };
+  const twoDeals = [...deal(['iris-opens', 'word-highlight', 'word-rotate'], A, 'aaa'), ...deal(['photo-chapters', 'closing-lift', 'lines-rise'], B, 'bbb')];
+  const built3 = ['photo-chapters', 'word-highlight', 'word-rotate'];
+  const said = '     moments: photo-chapters on the valley (screens 3 to 6, re-dealt for iris-opens, whose ring moved and\n     caused a layout shift), word-highlight on the statement,\n     word-rotate in the seasons statement · scene: none · effect: none';
+  let t = site(built3, said, twoDeals);
+  check(t.r.last === 'GATE: PASS' && !t.dd.length, `a re-deal the plan names (photo-chapters for iris-opens): no deal-drift (${t.r.last})`, JSON.stringify(t.dd));
+  t = site(built3, '     bands: flat · scene: none', twoDeals);
+  check(t.dd.length === 2 && t.dd.every(f => /closing-lift|lines-rise/.test(f.where) && /history\.json line \d+/.test(f.msg) && /index\.html line \d+/.test(f.msg)), `the same page with no moments in its plan: the latest deal counts, its FAILs name the history.json and index.html lines (${t.dd.map(f => f.where).join(', ')})`, JSON.stringify(t.dd));
+  t = site(['iris-opens', 'word-highlight'], '     moments: iris-opens on the process, word-highlight on the statement', deal(['iris-opens', 'word-highlight', 'word-rotate'], A, 'aaa'));
+  check(t.dd.length === 1 && t.dd[0].where === 'moment word-rotate', `a dealt moment left out silently still FAILs (${t.dd.map(f => f.where).join(', ')})`, JSON.stringify(t.dd));
+  t = site(built3, '     bands: flat', [...deal(['iris-opens', 'word-highlight', 'word-rotate'], A, 'aaa'), ...deal(['photo-chapters'], R, 'ccc')]);
+  check(t.r.last === 'GATE: PASS' && !t.dd.length, `one slot dealt again (pick --count 1): its moment stands in for the one it replaced (${t.r.last})`, JSON.stringify(t.dd));
+  t = site(built3, '     moments: iris-opens, word-highlight, word-rotate', [...deal(['iris-opens', 'word-highlight', 'word-rotate'], A, 'aaa'), ...deal(['photo-chapters'], R, 'ccc')]);
+  check(t.dd.length === 1 && t.dd[0].where === 'moment iris-opens' && /plan's moments part \(index\.html line \d+\)/.test(t.dd[0].msg), `a moment the plan names and the page lacks FAILs, naming the plan's line (${t.dd.map(f => f.where).join(', ')})`, JSON.stringify(t.dd));
+}
+
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* a profile still held: left in the temp folder */ }
 if (failed) { console.error(`\n${failed} check(s) failed`); process.exit(1); }
 console.log('\nall gate flow checks passed');

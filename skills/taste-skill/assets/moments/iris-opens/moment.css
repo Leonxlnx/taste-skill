@@ -2,21 +2,31 @@
    ground edge to edge. The stage is inset from all four sides by one even gutter (--mo-gap) and has the
    corners of a card, so it can neither sit flush against the section before or after, nor spill out of
    its own section. Inside the stage, the cover is the ground of the section before it with a round hole
-   (mask) of radius --mo-r at --mo-cx/--mo-cy, and the ring is a hairline circle of the same radius.
-   Once the hole has uncovered the whole stage (.is-open) the stage is taken off the screen. At rest (a
-   phone, reduced motion, no script) it does not exist. The words and pictures are made whole by the
+   (mask) of radius --mo-r at --mo-cx/--mo-cy, and the ring is a hairline circle of the same radius,
+   painted by the stage's ::after over the cover.
+   The cover and the ring keep one fixed box (inset 0 in the stage) the whole time: the hole and the ring
+   are gradients, never a box that moves or grows, so nothing counts as a layout shift (a ring placed by
+   left/top and sized by width/height counted 0.57 on a phone).
+   Once the hole has uncovered the whole stage (.is-open) the stage is taken off the screen. At rest
+   (reduced motion, no script) it does not exist. The words and pictures are made whole by the
    script (moment.js), not here: with no script nothing is hidden. */
-.mo-io { --mo-r: 0px; --mo-cx: 50%; --mo-cy: 50%; --mo-gap: clamp(8px, 1.2vw, 18px); position: relative; overflow: clip; }
+.mo-io { --mo-r: 0px; --mo-cx: 50%; --mo-cy: 50%; --mo-gap: clamp(8px, 1.2vw, 18px); --mo-rw: 1px; position: relative; overflow: clip; }
 .mo-io > .mo-io__stage { position: absolute; inset: var(--mo-gap); z-index: 20; pointer-events: none; overflow: clip; border-radius: var(--r-lg, 16px); }
 .mo-io__stage > .mo-io__cover { position: absolute; inset: 0; background: var(--mo-from, var(--p-bg, var(--bg)));
   -webkit-mask-image: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - 0.5px), #000 var(--mo-r));
   mask-image: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - 0.5px), #000 var(--mo-r)); will-change: mask-image; }
-.mo-io__stage > .mo-io__ring { position: absolute; left: var(--mo-cx); top: var(--mo-cy); width: calc(var(--mo-r) * 2); height: calc(var(--mo-r) * 2); transform: translate(-50%, -50%);
-  border-radius: 50%; border: 1px solid var(--accent); will-change: width, height; }
+/* the ring: a band --mo-rw wide just inside the hole's edge, with under a pixel of fall-off on each side so the circle stays smooth */
+.mo-io > .mo-io__stage::after { content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - var(--mo-rw) - 0.75px), var(--accent) calc(var(--mo-r) - var(--mo-rw)),
+    var(--accent) var(--mo-r), transparent calc(var(--mo-r) + 0.75px)); }
 .mo-io--surface { --mo-from: var(--p-surface, var(--surface)); }
 .mo-io--inverse { --mo-from: var(--p-inv-bg, var(--bg)); }
 /* two close grounds: the script has moved the panel's colour apart; the ring is drawn at 2px with a soft shade outside it */
-.mo-io--close .mo-io__stage > .mo-io__ring { border-width: 2px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent), 0 0 28px color-mix(in oklab, var(--ink) 14%, transparent); }
+.mo-io--close { --mo-rw: 2px; }
+.mo-io--close > .mo-io__stage::after {
+  background: radial-gradient(circle at var(--mo-cx) var(--mo-cy), transparent calc(var(--mo-r) - var(--mo-rw) - 0.75px), var(--accent) calc(var(--mo-r) - var(--mo-rw)),
+    var(--accent) var(--mo-r), color-mix(in oklab, var(--accent) 30%, transparent) calc(var(--mo-r) + 0.5px), color-mix(in oklab, var(--accent) 30%, transparent) calc(var(--mo-r) + 1px),
+    color-mix(in oklab, var(--ink) 14%, transparent) calc(var(--mo-r) + 1.5px), transparent calc(var(--mo-r) + 28px)); }
 .mo-io.is-open > .mo-io__stage { display: none; }
 /* a phone: a wider gutter, so the panel never reads as content flush on the edge where the ground changes */
 @media (max-width: 639px) { .mo-io { --mo-gap: 20px; } }

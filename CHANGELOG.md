@@ -25,6 +25,8 @@ What a 30-site test round of 2.5.2 (Haiku, Sonnet and Opus, low to xhigh, each b
 - **Scenes:** words no longer land under the fixed nav (`closing-line-in-a-field-of-words`, `seam-pocket-gathers-the-words`, which also shows all its words on a phone), `fly-into-the-shape`'s title no longer takes the ground colour, `parts-lock-into-the-whole`'s start word no longer lands on another word.
 - **Section reveals** now reach moment sections, video posters and the close in the footer.
 - **`effects-fit`** called two helpers that were never in its scope.
+- **`iris-opens` no longer shifts the layout on phones:** its ring was placed with `left`/`top` and grown by `width`/`height`, which Chrome counts as a layout shift (CLS 0.569 at 390 on a test build); the ring is now drawn on a box that never moves or grows (CLS 0.000).
+- **A re-deal no longer traps the builder in `deal-drift`:** the gate read only the last pick in `history.json`, so a page that re-dealt to escape a FAIL was asked for moments it never planned. The deal that counts is the one the page's PLAN comment names (else the latest whole deal); a moment swapped for a later pick's one is not demanded; each FAIL names the history line and the page line that decided it (`tests/gate-flow.mjs`).
 
 ---
 
