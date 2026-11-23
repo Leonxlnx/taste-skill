@@ -169,7 +169,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill-classics --skill "high-en
 ## Common Questions
 
 **What does the skill need?**  
-Node 22 or newer and Chrome, Edge or Chromium; ffmpeg is optional (WebP photographs and the phone crop of a hero photograph). It installs nothing and uses no API keys. Bundled Commons photographs are stored locally; network access is used only when downloading additional photographs, Google Fonts or brand icons.
+Node 22 or newer and Chrome, Edge or Chromium; ffmpeg is optional (WebP photographs and the phone crop of a hero photograph). It installs nothing and uses no API keys. Bundled Commons photographs are stored locally. Downloads may use the network, and browser checks can request remote resources referenced by the page, including when the [Claude Code Stop hook](skills/taste-skill/references/gate.md#as-a-hook) runs.
 
 **Where do the pictures come from, and can I use them?**  
 From the skill's vetted photograph library (`assets/photos/photos.json`, including bundled Wikimedia Commons WebP sets and Unsplash photographs) dealt by `scripts/photos.mjs`. Library frames are used for trade and material details (or marked explicitly as draft stand-ins when the client has no photographs yet), never passed off as the client's own room, staff or product, and credited in one expandable footer line (`photos.mjs credits`).
