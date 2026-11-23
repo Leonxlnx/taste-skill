@@ -488,7 +488,8 @@ async function browserChecks(target, proj, opts, gateDir) {
   // consistency.mjs, with what step 6 passes it
   {
     const prof = freshProfile('consistency'), out = path.join(gateDir, 'consistency'), t = Date.now();
-    try { fs.rmSync(path.join(out, 'rendered.html'), { force: true }); } catch { /* none */ }
+    // an earlier run's files: a run that dies before it writes its own must not be read as this one
+    for (const f of ['rendered.html', 'report.json']) { try { fs.rmSync(path.join(out, f), { force: true }); } catch { /* none */ } }
     const argv = [target, '--quick', '--widths', widths, '--json', '--profile', prof, '--out', out, ...root,
       ...(opts.kind ? ['--page', opts.kind] : []), ...(opts.category ? ['--category', opts.category] : []), ...(opts.primary ? ['--primary', opts.primary] : [])];
     const r = await run(path.join(here, 'consistency.mjs'), argv, proj, 420000, [prof]);
