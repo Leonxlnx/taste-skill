@@ -3,7 +3,7 @@
   taste-skill layout deal - deals the hero (heroes.json) for a page at random, weighted by the business
   type, away from the last pages' deals (references/layout-v4.md). It deals the hero only: the type
   pairing comes from start.mjs (VI-02), and its :root lines stay as start.mjs prints them. A place
-  with a photograph gets hero-place, in one of four forms dealt here (band, bleed, split, name: layout.css 0b),
+  with a photograph gets hero-place, in one of five forms dealt here (band, bleed, split, name, foot: layout.css 0b),
   away from the last two places' forms; --form <id> prints that one. No photograph: the statement hero.
 
     node <skill>/assets/layout/deal.mjs --type software|product|place|service
@@ -71,7 +71,7 @@ const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x
 const productPage = type === 'product' || ['tech', 'product'].includes(opt('kind'));
 function dealOnce(recentHeroes) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
-  // a place: the place hero in one of its four forms (dealt below); with no photograph, the statement hero on .ground-brand
+  // a place: the place hero in one of its five forms (dealt below); with no photograph, the statement hero on .ground-brand
   if (!hero && type === 'place') hero = heroes.find(h => h.id === (has.has('photo') ? 'place' : 'statement'));
   if (!hero && !productPage && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
   // A product with no photograph or art uses the split for its built view.
@@ -96,10 +96,11 @@ heroes: ${show(H)}`);
 const hero = dealOnce(hist.heroes.slice(-3));
 if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 
-// a place's hero has four forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.
+// a place's hero has five forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.
 // A place with no photograph keeps the statement hero (sections.md section 2), so no form is dealt.
-// band is the old place hero the rework moves away from: it stays in the deck at the lowest weight (about one place in nine)
+// band is the old place hero the rework moves away from: it stays in the deck at the lowest weight
 const PLACE_FORMS = [
+  { id: 'foot', w: 3, how: 'the photograph needs a calm lower left for the heading, one line and action. Fall back to bleed when the crop has none. data-form="foot"' },
   { id: 'band', w: 1, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
   { id: 'bleed', w: 3, how: 'the photograph over the whole first screen; the h1, the line and the button on a solid panel of the page ground in its lower left corner (data-corner="end" when the calm side is right). data-form="bleed"' },
   { id: 'split', w: 3, how: 'the words on five columns (title, lead and action together at the top), the photograph on seven down to the fold. data-form="split"' },

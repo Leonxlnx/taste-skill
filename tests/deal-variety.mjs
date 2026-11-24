@@ -22,6 +22,9 @@ const planFile = path.join(cwd, '.taste-skill/plan.json');
 const seeds = load(path.join(root, 'library/ideas.json'));
 const moments = load(path.join(root, 'assets/moments/index.json')).moments;
 const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-rise', 'giant-type-pass', 'liquid-type'];
+for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
+  assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
+}
 const keys = 'version kind pageType trade sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
@@ -75,7 +78,7 @@ for (const kind of kindsToRun) {
     const printed = result.stdout.slice(result.stdout.indexOf('==== PLAN'));
     assert(printed.startsWith('==== PLAN'));
     assert.deepEqual(Object.keys(p).sort(), (p.hero === 'place' ? [...keys, 'heroForm'] : [...keys]).sort());
-    if (p.hero === 'place') assert.ok(['band','bleed','split','name'].includes(p.heroForm));
+    if (p.hero === 'place') assert.ok(['band','bleed','split','name','foot'].includes(p.heroForm));
     assert.equal(p.version, '2.5.4');
     assert.equal(p.kind, kind);
     assert.equal(p.sections, sections);

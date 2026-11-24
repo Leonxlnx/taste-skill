@@ -42,8 +42,16 @@ still says what kind of business this is.
 | Two states | Toggle or divider |
 | Hours or a schedule | Day bar or week grid |
 | A dated stay, table or class | Booking bar on the hero, full form at the close |
+| Items sold or served | A captioned row of their pictures |
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A dealt composition (`sections-library.md`) |
+
+A section about goods, dishes or rooms shows them. Spend the available photographs in rows so the visitor can see the range.
+
+- Show independent choices together, with the selected language, environment or plan’s content visible. Reserve a scroll-held sequence for steps that depend on each other.
+- Place a fact, unit, source or link 16–32px from its picture or table at 1440 and 12–20px on a phone, closer than the next heading.
+- One standalone statement of twelve words or fewer may break into two or three lines starting on different column lines.
+- Related sections may share a ground. Change it when the visitor’s task changes.
 
 ## The section
 
@@ -75,6 +83,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Offer**
 
+- `menu-tabs` Use the menu categories as the heading, the open one in ink and the others muted. Without script all categories show in order.
 - `receipt` The offer as a receipt: items, dotted leaders, a total, what is included ticked off under it.
 - `meter` One slider or stepper for the quantity that sets the price; the plans answer it.
 - `ladder` Plans as rungs growing left to right, each saying only what it adds to the one before.
@@ -82,6 +91,8 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Product**
 
+- `record-handoff` Show one identifiable record at its source and destination with the changed field legible in both.
+- `setup-by-environment` Choose a supported environment and see its first working instruction, expected result and next action in the same panel.
 - `core-view` The product's central view built large, with three callouts pinned to real parts of it.
 - `switcher` One frame; three to five use cases as click tabs that change what the frame shows.
 - `anatomy` The product in the middle, thin leader lines to labelled parts round it.
@@ -93,12 +104,14 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Proof**
 
+- `test-record` Place a documented reading beside its object, unit, conditions and source.
 - `ledger` Figures in a ruled ledger with their sources as footnotes; one row set large.
 - `bars` Two or three bars comparing with and without; the difference is the label.
 - `big-figure` One figure from the brief set very large with its unit and one line of meaning.
 
 **Work**
 
+- `intro-rail` Put a heading, two lines and one button in a narrow column beside three or four item cards. Repeat with the column on the same side for the next category.
 - `case-rows` Each project a wide row: picture one side, name and fact line the other, sides alternating.
 - `index` A typographic index of every item (name, place, year); one picture changes with the row under the pointer or focus.
 - `contact-sheet` Many small frames in a grid like a photographer's sheet, three of them enlarged.
@@ -107,6 +120,9 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Place**
 
+- `edge-split` Keep words on five wrap columns and take the photograph from the next column to the screen edge. Alternate sides on a repeat.
+- `colour-half` Set a heading, short list and action on one brand-colour half with a photograph filling the other. Use it at most twice.
+- `shopfronts` Show each front in a portrait photograph with the street and one fact underneath.
 - `day-bar` Opening hours as a bar of the day with the open stretches filled.
 - `neighbourhood` A small drawn map: a few streets, water or a park, the place and two landmarks. No map tiles.
 - `postcard` Address and hours set like the back of a postcard beside its picture side.
@@ -119,11 +135,16 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Story**
 
+- `name-foot` Set the client’s name across the full wrap at the foot of the footer as the one oversized type moment.
+- `story-line` Set the origin in one sentence at 40–56px with two or three little photographs in the line at text height.
+- `archive-prints` Place four to six dated photographs on an offset grid around a short paragraph. Give each a white border and its year and keep the prints straight.
+- `release-documents` Give each release its date, one line on what changed and aligned links to its real files.
 - `margin-facts` A reading column with facts pulled large into the margin.
 - `year-axis` The history on a horizontal year axis; only dates the brief gives.
 
 **Detail**
 
+- `pantry-tiles` Show ingredients, materials or origins on square brand-ground tiles with one single-colour drawing and a name each.
 - `answer-index` Questions as an index on the left that stays; the answers scroll on the right.
 - `glossary` Terms with short definitions in three columns.
 

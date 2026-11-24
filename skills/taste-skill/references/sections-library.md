@@ -4,7 +4,7 @@ Read `compose.md` before the first page. Look up a recipe here when it fits the 
 
 ## What every recipe assumes
 
-- **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80 (a place 1200 at x 120), gutter 24, h1 72,
+- **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80, gutter 24, h1 72,
   h2 48; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
   it and `--padb` under its last block (`layout-v4.md` section 2); the "At 1440" sizes below are what
   the content takes, never a screen to fill. Never add a number the system lacks; a missing value
@@ -90,7 +90,7 @@ photograph cards).
 `a.menu-card.span-4` (410 wide): a `.panel` (page CSS `.menu-card .panel { --p-h: 200px }`) with
 that product's fragment `.at-corner` in a `.stage.stage--fade-br`, or its photograph filling the
 panel; the title in `.t-card`, one grey line of at most 52 characters, inside the card. A place:
-three span-4 cards at 384x288 (4:3), each the client's photograph, the name at 16/500 and the price
+three span-4 cards at 411x308 (4:3), each the client's photograph, the name at 16/500 and the price
 from, no fragment, ground or shadow.
 
 **At 390.** The sheet shows each menu card as a row, its title over its line, the picture hidden.
@@ -126,7 +126,7 @@ name, 28px in the display face) on the page's centre line and the actions in the
 Four words, the low end of `system.md` Nav's four to six, since they share the left third; at
 1024 a word never wraps.
 The menu word's `.nav__menu` holds `.wrap.grid` with three or four `a.menu-card.span-3` (on a place
-four at 282x212, 4:3), each the client's photograph (`img.frame__img`, no effect) with the name in
+four at 302x227, 4:3), each the client's photograph (`img.frame__img`, no effect) with the name in
 `.t-card` and the price from inside the card. Actions: the primary ("Book a table") and at most one
 plain word the client really has (Gift cards when it sells them), else none.
 
@@ -926,7 +926,7 @@ then the form full width, then the links.
 
 # Compositions
 
-A composition arranges photographs with words. The PLAN suggests one where that is the material. For steps, specs, comparisons and controls, choose the form in `compose.md`. Keep the wrap edges, text first on a phone, and a crop that shows the claim.
+A composition arranges photographs with words. The PLAN suggests one where that is the material. For steps, specs, comparisons and controls, choose the form in `compose.md`. Keep the text on the wrap lines and choose a crop that shows the claim.
 
 - **split-7-5, split-5-7, split-6-6**: the words and one picture.
   `<div class="wrap grid grid--top"><div class="span-7"> h2, lines, rows or a link </div><figure class="pl-photo span-5"><img ..></figure></div>`
@@ -939,6 +939,15 @@ A composition arranges photographs with words. The PLAN suggests one where that 
 - **bleed-panel**: the photograph is the section's layer, the words on a solid panel of the page
   ground in its lower corner. Once a page, never right after the hero.
   `<section class="section comp-bleed" [data-corner="end"]><img class="layer" src=".." alt=".."><div class="wrap"><div class="comp-panel"><h2>..</h2><p>..</p><a class="link" href="#..">..</a></div></div></section>`
+The new photo compositions are shown at both widths in `assets/layout/compositions.html`.
+
+- **edge-split** puts the words on five columns and the image on the remaining width to the screen edge. Repeating the section reverses the side. On a phone the photo leads.
+  `<section class="section edge-split"><img class="edge-photo" src="counter.jpg" alt="Bread on the counter"><div class="wrap"><div class="edge-copy"><h2>The morning bake</h2><p>...</p></div></div></section>`
+- **colour-half** uses the same markup with `class="section colour-half ground-brand"`. Put a heading, a short list and one action in .edge-copy. Use at most twice. Keep the ground’s own text colours and check for 4.5:1.
+- **near** uses a .near-stack inside the section’s .wrap. One to three .frame--near figures each hold an image and a div with a heading and action on the calm corner. The inset and gap are both 8px. Set --photo-ink to the ink that reads on the crop.
+- **item-row** places three to five named dishes, rooms, goods or projects inside the wrap. Use a shared ratio for goods that a buyer compares. Add .stagger for editorial pictures to align their tops and step their captions. On a phone swipe the row from the wrap line. Once per page the season’s item may take .ground-brand on its li.
+  `<ul class="item-row"><li><img src="loaf.jpg" alt="A seeded rye loaf"><div class="item-caption"><strong>Seeded rye</strong><span class="fact-line">Wholemeal with sunflower seeds</span><span class="price">£4.80</span></div></li><!-- two to four more items --></ul>`
+
 - **offset-pair**: two photographs of one subject on seven and five columns, tops on one line.
   `<div class="grid comp-offset"><figure class="media span-7"><img ..></figure><figure class="media span-5"><img ..></figure></div>` after the head.
 - **three-up**: three photographs on span-4, one height, filling the row.

@@ -26,7 +26,7 @@ for (const p of palettes) {
     assert(color.chroma(value) <= .021, p.id + ' --p-' + name + ' is too chromatic: ' + value);
   }
   const token = name => css.match(new RegExp('--p-' + name + ': (#[0-9a-f]{6});'))[1];
-  for (const [ground, text] of [['bg','ink'],['surface','ink'],['bg','muted'],['surface','muted'],['inv-bg','inv-ink'],['inv-surface','inv-ink'],['inv-bg','inv-muted'],['inv-surface','inv-muted'],['action','action-ink'],['inv-action','inv-action-ink']]) {
+  for (const [ground, text] of [['bg','ink'],['surface','ink'],['bg','muted'],['surface','muted'],['inv-bg','inv-ink'],['inv-surface','inv-ink'],['inv-bg','inv-muted'],['inv-surface','inv-muted'],['accent','accent-ink'],['action','action-ink'],['inv-action','inv-action-ink']]) {
     const minimum = ['ink','inv-ink'].includes(text) ? 7 : 4.5;
     assert(color.contrast(token(ground), token(text)) >= minimum, p.id + ': ' + text + ' on ' + ground);
   }

@@ -27,7 +27,7 @@ On `:root`, used everywhere (desktop / under 640px):
 | `--air-side` | 96 / 80 tablet / 72 phone | base for `--padt` and `--padb` at a ground change and after the hero |
 | `--air-same` | 144 / 128 tablet / 120 phone | total gap on one ground |
 | `--air-thin` | 64 / 56 tablet / 48 phone | padding per side of `.section--thin` |
-| `--gut` | 80 / 24 (place 120 from 1024) | the `.wrap`'s side margin: 1280 wide, 1200 on a place |
+| `--gut` | 80 / 24 | the `.wrap`'s side margin: 1280 wide at 1440 |
 | `--hgap` | 48 / 40 (place 40 / 24) | the header to the hero's words, under `--photo` on a place |
 | `--hpadb` | 64 / 24 | the hero's bottom padding (plus `--bar`) |
 | `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to the footer's bottom padding (the hero's only without script: the bar is never on the first screen), so the page's end clears it; content is never cut to hide behind the bar |
@@ -133,6 +133,8 @@ above prints them: then the nav's words beside it). The footer never repeats a f
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
 brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
 unless the brief gives the accounts.
+
+Inside .closing__links, an optional list with class .footer-promises sits directly above the link columns. Give each of its three small facts a kit line icon with aria-hidden="true". Use included items, delivery and returns, or seats, step-free access and dogs for a place. Use facts from the brief or mark each assumption with data-assumed. Set the phone or email in .footer-contact at 18–20px.
 
 ## Cards, lists and forms
 

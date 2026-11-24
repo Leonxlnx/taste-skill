@@ -12,13 +12,21 @@ The 24-site comparison showed price lists padded with photographs, games without
 
 - The PLAN deals the frame, grounds and density. Each content section gets a form that fits its job. Four idea seeds and twelve worked examples help with rails, comparisons, order pads and other layouts.
 - Five sub-skills cover product and game drawings, data pictures, photo direction, brand marks and mascots. The copy notes map each request in the brief to its section.
-- Stays and table bookings can start on the hero. Shops put the order controls within the first three sections. A dealt product window can extend below the fold.
+- Dated stays, tables and classes can start with a booking bar in the hero. On a phone one link opens the full form. Shops put the order controls within the first three sections.
+- A centred product window uses the peek hero by default. The first rows show above the fold and the rest stay in the page. Window frames take a neutral colour from the section.
+- An `edge-split` runs the photograph to the edge of the screen. A `colour-half` pairs it with a solid colour panel. Stacked `frame--near` pictures keep an 8px inset and gap.
+- The `foot` place hero puts its heading and action at the foot of a full-width photograph. Place pages use a 1280px wrap. Shops can add up to three `hero-picks` with a picture, name, price and link.
+- A captioned item row puts names, facts and prices under three to five comparable pictures. A footer promise row carries three short facts above the links. Thirteen more idea seeds cover places, shops and technical products.
 
 ### Fixes
 
 - Sections on the same ground sit closer together. Text moments can ride on an existing heading without adding a section.
 - A missing product photo can give way to a drawing of the product. Room pictures show a whole room or the building. A project, room or product can carry one short line of facts.
 - The offset pair uses seven and five columns with level tops. Detail strips stay out of price lists.
+- Short chapters stay in the page flow. A closing form or scene can lead straight to a single row of footer links. Reading text and field labels use neutral ink.
+- The checker measures a split, its picture and a padded form on their own grid. Held scenes are measured on their visible stage. A synthetic headline gives advice on an authored page. Waivers cover every matching finding at their target.
+- Stock headings and repeated openings fail the copy check. An unfamiliar word can draw a warning. Cases, repeated cards, lists, tables, FAQ items and details skip the vocabulary check.
+- A `thin-section` warning flags a section with little besides its heading and picture. A `boxed-run` warning flags three boxed photo sections in a row on a page with at least four photographs.
 
 ---
 

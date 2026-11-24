@@ -65,6 +65,7 @@ html[data-density="open"] { --density: 1.15; }
   /* grid: one .wrap (alias .container) for the header, every section and the footer, the same
      --gut on both sides: 1280 wide at x 80-1360 at 1440, 342 at x 24-366 at 390 */
   --container: 1280px;
+  --near: 8px;
   --gut: 80px;
   --pad: var(--gut);
   --gutter: 24px;
@@ -128,8 +129,6 @@ html[data-radius] .panel { --p-r: var(--r-md); }
 @media (min-width: 1024px) {
   :root { --gut: 80px; --section: 56px; --section-band: 96px; --card-gap: 24px;
           --t-lead: 20px; --t-card: 20px; --t-h3: 28px; }
-  /* a place (and a local service): the 1200 column at x 120-1320 */
-  html[data-type="place"] { --gut: 120px; --container: 1200px; }
 }
 /* a place (VI-06, ST-96, PH-23): its own smaller type (h1 48/53 and 32/37, h2 40/50 and 28/35, titles
    and the sub-line 20 and 18), the Recipe 3 hero's gap under its photograph (40, 24 on a phone),
@@ -367,6 +366,71 @@ section.comp-bleed[data-corner="end"] .comp-panel { margin-left: auto; }
   .comp-offset > figure:first-child { grid-column: 1 / span 7; }
   .comp-offset > figure + figure { grid-column: 8 / span 5; }
 }
+/* Edge compositions keep the words on five wrap columns. */
+main > :is(.edge-split, .colour-half) {
+  --side: max(var(--gut), (100% - var(--container)) / 2);
+  --photo-start: calc(var(--side) + (100% - 2 * var(--side) + var(--gutter)) * 5 / 12);
+  padding-block: 0;
+}
+main > .colour-half { --photo-start: 50%; }
+:is(.edge-split, .colour-half) > .edge-photo {
+  position: absolute; inset: 0 0 0 auto; width: calc(100% - var(--photo-start)); height: 100%;
+  object-fit: cover; object-position: var(--pos, center); display: block;
+}
+.edge-photo > img { width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, center); }
+:is(.edge-split, .colour-half) .edge-copy {
+  width: calc((100% + var(--gutter)) * 5 / 12 - var(--gutter));
+  min-height: clamp(380px, 36vw, 600px); padding-block: var(--padt) var(--padb);
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--s-5);
+}
+:is(.edge-split, .colour-half) .edge-copy > * { margin: 0; }
+.edge-copy > ul { list-style: none; padding-inline-start: 0; }
+.edge-copy li + li { margin-top: var(--s-2); }
+.edge-split:nth-child(even of .edge-split) > .edge-photo,
+.colour-half:nth-child(odd of .colour-half) > .edge-photo { inset-inline: 0 auto; }
+.edge-split:nth-child(even of .edge-split) .edge-copy,
+.colour-half:nth-child(odd of .colour-half) .edge-copy { margin-inline-start: auto; }
+@media (max-width: 767px) {
+  :is(.edge-split, .colour-half) > .edge-photo { position: static; width: 100%; height: auto; aspect-ratio: 4 / 3; }
+  :is(.edge-split, .colour-half) .edge-copy { width: 100%; min-height: 0; }
+}
+main > section:has(> .wrap > .near-stack) { container-type: inline-size; }
+.wrap > .near-stack { margin-inline: calc(50% - 50cqw + var(--near)); }
+.near-stack { display: grid; gap: var(--near); margin-inline: var(--near); }
+.frame--near {
+  position: relative; isolation: isolate; margin: 0; overflow: clip; border-radius: max(var(--near), var(--r-lg));
+  min-height: clamp(320px, 48vw, 680px); display: grid; align-items: end; justify-items: start;
+  padding-block: clamp(var(--s-5), 5vw, var(--s-8));
+  padding-inline: calc(max(var(--gut), (100cqw - var(--container)) / 2) - var(--near)); color: var(--photo-ink, white);
+}
+.frame--near > img { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, center); }
+.frame--near > div { display: grid; justify-items: start; gap: var(--s-4); }
+.frame--near :is(h2,h3) { margin: 0; color: inherit; }
+.frame--near:nth-child(even) { align-items: start; justify-items: end; }
+.item-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: start;
+  gap: var(--gutter); list-style: none; margin: 0; padding: 0; }
+.item-row img { display: block; width: 100%; aspect-ratio: var(--item-ratio, 1); object-fit: cover; object-position: var(--pos, center); }
+.item-row .item-caption { display: grid; gap: var(--s-1); padding-top: var(--s-3); font-size: var(--t-small); }
+.item-caption strong { font-size: 16px; font-weight: 500; }
+.item-caption .fact-line { color: var(--muted); margin: 0; }
+.item-caption .price { font-variant-numeric: tabular-nums; }
+.item-row .ground-brand .item-caption { padding: var(--s-3); }
+.item-row.stagger > :nth-child(3n + 1) { --item-ratio: 4 / 5; }
+.item-row.stagger > :nth-child(3n) { --item-ratio: 3 / 4; }
+@media (max-width: 639px) {
+  .item-row { grid-auto-columns: 72%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; }
+  .item-row > li { scroll-snap-align: start; }
+}
+.closing__links .footer-promises {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter);
+  margin: 0; padding: 0;
+  list-style: none; font-size: var(--t-small);
+}
+.footer-promises li { display: flex; align-items: center; gap: var(--s-3); }
+.footer-promises svg { width: 20px; height: 20px; flex: none; }
+.closing__links .footer-contact { font-size: clamp(18px, 1.4vw, 20px); line-height: 1.45; }
+@media (max-width: 639px) { .closing__links .footer-promises { grid-template-columns: 1fr; gap: var(--s-3); } }
+
 /* three-up: <div class="grid comp-three"><figure class="media span-4">..</figure> x3</div>, one height, filling the row */
 .comp-three > figure { margin: 0; position: relative; overflow: clip; min-height: 240px; }
 .comp-three > figure > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
@@ -1199,7 +1263,7 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
 }
 @media (max-width: 639px) { .close__form { padding: var(--s-5); } }
 /* the 640px button (product, service, place) stays within half the .wrap, so it never stands over half of it off its
-   right line: on a place's 1200px column it is 600 (SR-6) */
+   right line: on the 1280px wrap it is 640 (SR-6) */
 @media (min-width: 640px) { .closing__cta.close--type > .btn--xl { width: min(50%, 640px); } }
 /* The name wraps naturally without script. system.js fits one line when space permits. */
 .close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/1.02 var(--font-display); letter-spacing: -0.045em;

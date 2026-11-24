@@ -37,5 +37,18 @@
   {"id":"notebook","shape":"gaming","line":"Dated devlog posts as a notebook column, a picture with each.","kinds":["gaming"]},
   {"id":"booking-bar","shape":"booking","line":"Dates, guests and room in one row with a live total, docked under the hero.","kinds":["service","place"]},
   {"id":"configurator","shape":"booking","line":"Choices as chips (size, colour, set); the picture and the price follow.","kinds":["software","gaming","tech","product","place"]},
-  {"id":"order-pad","shape":"booking","line":"Items with steppers and a running total, like an order pad.","kinds":["product","service","place"]}
+  {"id":"order-pad","shape":"booking","line":"Items with steppers and a running total, like an order pad.","kinds":["product","service","place"]},
+  {"id":"edge-split","shape":"place","line":"Keep words on five wrap columns and take the photograph from the next column to the screen edge. Alternate sides on a repeat.","kinds":["place","product","service"]},
+  {"id":"colour-half","shape":"place","line":"Set a heading, short list and action on one brand-colour half with a photograph filling the other. Use it at most twice.","kinds":["place","product","service"]},
+  {"id":"intro-rail","shape":"work","line":"Put a heading, two lines and one button in a narrow column beside three or four item cards. Repeat with the column on the same side for the next category.","kinds":["place","product","service"]},
+  {"id":"shopfronts","shape":"place","line":"Show each front in a portrait photograph with the street and one fact underneath.","kinds":["place","service"]},
+  {"id":"name-foot","shape":"story","line":"Set the client’s name across the full wrap at the foot of the footer as the one oversized type moment.","kinds":["place","product","service","gaming","software","tech"]},
+  {"id":"story-line","shape":"story","line":"Set the origin in one sentence at 40–56px with two or three little photographs in the line at text height.","kinds":["place","product","service"]},
+  {"id":"menu-tabs","shape":"offer","line":"Use the menu categories as the heading, the open one in ink and the others muted. Without script all categories show in order.","kinds":["place"]},
+  {"id":"pantry-tiles","shape":"detail","line":"Show ingredients, materials or origins on square brand-ground tiles with one single-colour drawing and a name each.","kinds":["place","product","service"]},
+  {"id":"archive-prints","shape":"story","line":"Place four to six dated photographs on an offset grid around a short paragraph. Give each a white border and its year and keep the prints straight.","kinds":["place","product","service","gaming"]},
+  {"id":"record-handoff","shape":"product","line":"Show one identifiable record at its source and destination with the changed field legible in both.","kinds":["software","tech","service"]},
+  {"id":"setup-by-environment","shape":"product","line":"Choose a supported environment and see its first working instruction, expected result and next action in the same panel.","kinds":["software","tech","gaming"]},
+  {"id":"test-record","shape":"proof","line":"Place a documented reading beside its object, unit, conditions and source.","kinds":["tech","product","software","service"]},
+  {"id":"release-documents","shape":"story","line":"Give each release its date, one line on what changed and aligned links to its real files.","kinds":["software","tech","gaming","product"]}
 ]

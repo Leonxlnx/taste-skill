@@ -1,5 +1,5 @@
 {
- "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place with a matching photograph uses hero-place.html in one of four forms. Without one it uses the statement hero. The standard hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. Nothing is laid over a photograph to make words readable (no scrim, gradient or veil: PH-31). Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale. A dealt product window with hero--peek can extend below the fold with at least 420px visible at 1440x900.",
+ "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place with a matching photograph uses hero-place.html in one of five forms. Without one it uses the statement hero. The standard hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. The foot form allows a bottom scrim up to 35% over the lowest 40%. Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale. A dealt product window with hero--peek can extend below the fold with at least 420px visible at 1440x900.",
  "fields": {
   "types": "Eligible page types and weights. A game uses the gaming weights. A place with pictures takes the place hero. A product without a picture takes split with its own built view.",
   "needs": "Material the hero uses. A vertical bar means either. photo is a photograph of the subject, art its artwork, ui its screen, film actual footage, object a cut-out or render, setting a game world to illustrate, and ground a flat field.",
@@ -17,10 +17,10 @@
  "heroes": [
   {
    "id": "place",
-   "name": "Place: the client's photograph leads, in one of four dealt forms",
-   "from": "local-business Recipe 3 (bakeries, cafes, guesthouses, shops: Pentreath and Hall, Tartine, Ace Hotel)",
+   "name": "Place in one of five dealt forms",
+   "from": "Local place recipe",
    "demo": "hero-place.html",
-   "job": "The place hero (ST-53, ST-55, PH-47, PH-81) in the form deal.mjs deals (data-form: band, bleed, split, name; layout.css 0b): the client's own photograph of the place leads the first screen, the h1, the kind of place, where and today's hours, and one filled button end on the fold, never over an empty band.",
+   "job": "The place hero (ST-53, ST-55, PH-47, PH-81) in the form deal.mjs deals (data-form: band, bleed, split, name, foot; layout.css 0b): the client's own photograph of the place leads the first screen, the h1, the kind of place, where and today's hours, and one filled button end on the fold, never over an empty band.",
    "types": {
     "place": 1
    },
@@ -28,10 +28,10 @@
     "photo"
    ],
    "h1": {
-    "token": "--place-display (up to 72 / 36)",
+    "token": "--place-display (56–72 desktop, 36–44 phone; foot 56–64 and 36–40)",
     "size": [
      72,
-     36
+     44
     ],
     "leading": 1.104,
     "lines": [
@@ -42,21 +42,24 @@
    },
    "grid": {
     "photo": "band: full bleed under the header, filling the height left by the text, with room to crop the subject in the middle; the text is on the ground below",
-    "h1": "columns 1-8 on the 1200 place column, --hgap 40 under the photograph",
+    "h1": "columns 1-8 on the 1280px wrap, --hgap 40 under the photograph",
     "aside": "columns 9-12: the sub-line, two lines at most, then one filled 48px button 24 under it",
-    "below": "the band stacks the photograph above the h1, lead and button below 1024; a phone with data-phone-fill can use the height left by the words"
+    "below": "the band stacks the photograph above the h1, lead and button below 1024; a phone with data-phone-fill can use the height left by the words",
+    "foot": "The photo fills the viewport. The h1, line and action sit at the left wrap edge, about 72px above the desktop fold."
    },
    "at1440": {
     "hero": "1440x900: exactly one screen; the visit block is screen 2, never in screen 1",
-    "photo": "1440x580 at y 72 in the demo (the band fills the height left by its words)",
-    "text": "Display up to 72px on two lines, with lead and action in the right column.",
-    "measured": "hero 900/900, h1 72px on 2 lines from y 692, the photograph 1440x580 at x 0, y 72"
+    "photo": "1440×580 at x0, y72.",
+    "text": "Band display 72px with the lead and main action.",
+    "measured": "Band demo: 900px hero, h1 72px at x80, y692 on 2 lines. Wrap x80–1360.",
+    "foot": "Compositions demo: 1440×900 photograph, 64px h1 at x80, y652. The action ends at y828."
    },
    "at390": {
     "hero": "844: one screen, the action bar at its foot",
-    "photo": "390x488 at y 56 in the demo (the image uses data-phone-fill)",
-    "text": "Display up to 36px on three lines, then the opening hours and full-width action.",
-    "measured": "hero 844/844, h1 36px on 2 lines from y 593, the photograph 390x488 at x 0, y 56"
+    "photo": "390×446 at x0, y56.",
+    "text": "Band display 44px with the lead and main action.",
+    "measured": "Band demo: 844px hero, h1 44px at x24, y526 on 3 lines. Wrap x24–366.",
+    "foot": "390×844 photograph, 40px h1 at x24, y643. The action ends at y796."
    },
    "moment": "the dealt entrance only (start.mjs plan deals it from the deck: eligible entrances in assets/motion/meta.json), then the hero rests; the page's moments and scene are dealt apart, by fit",
    "moments": [],
@@ -68,7 +71,7 @@
    ],
    "effects": [],
    "mistakes": [
-    "words, a scrim or a gradient on the photograph (the bleed form's words stand on a solid panel of the page ground)",
+    "A busy patch behind the foot form’s text. Choose bleed when the lower-left crop cannot carry it.",
     "a photo-led form with no suitable photograph; the dealer uses the statement hero when none is available",
     "an empty band under the words: the band and name forms end the words on the fold",
     "the visit block or the address inside the first screen",
@@ -107,20 +110,23 @@
    },
    "grid": {
     "text": "span-5 (519), top-aligned: the first line (a notice line or the h1) on the picture's top line, y 120",
-    "visual": "span-6 start-7 (628), ending on the right line, as tall as the hero's content box (716 at 1440x900: 900 - 120 - 64)"
+    "visual": "span-6 start-7 (628), ending on the right line, as tall as the hero's content box (716 at 1440x900: 900 - 120 - 64)",
+    "work": "With data-work-window the copy is above the product window, which spans the wrap with a narrow matte."
    },
    "at1440": {
     "hero": "1440x900",
     "text": "519 wide; a notice line 14px at y 120, 16 to the h1; h1 72/1.02 on 3 lines from y 158 (from y 120 with no notice line, its capitals trimmed to the picture's top); lead 20/30 on 3 lines, max 42ch, 24 under the h1; buttons 44, 32 under the lead",
     "visual": "628x716 at x 732, y 120 (48 under the header), radius --r-lg on all four corners",
     "float": "one opaque card 300 wide, flat (a hairline, no shadow), 24 in from the picture's lower-left: a live fact (out of the oven at 10:30, next free slot)",
-    "measured": "hero 900/900, h1 72px on 3 lines from y 158, the visual 628x716 at x 732, y 120"
+    "measured": "hero 900/900, h1 72px on 3 lines from y 158, the visual 628x716 at x 732, y 120",
+    "work": "Software demo: 1248px window at x96, y377 inside the 1280px stage."
    },
    "at390": {
     "hero": "844: exactly one screen",
     "text": "h1 40 on 2 lines from y 134 under the notice line, lead 17/25.5 on 4 lines, buttons stacked full width (44 + 12 + 44)",
     "visual": "342 x what is left (303 here, at least 240), 32 under the buttons, cover-cropped round the subject",
-    "measured": "hero 844/844, h1 40px on 3 lines from y 134, the visual 342x262 at x 24, y 558"
+    "measured": "hero 844/844, h1 40px on 3 lines from y 134, the visual 342x262 at x 24, y 558",
+    "work": "310px window at x40, y354 inside the 342px stage."
    },
    "moment": "none on a photograph (the float card's dot breathes every 2.4 s); one loop inside a window or phone for software",
    "moments": [],
@@ -385,21 +391,19 @@
     "maxChars": 48
    },
    "grid": {
-    "text": "span-5 (519), top-aligned: the h1's capitals on the art frame's top line, y 120",
-    "art": "span-6 start-7 (628x716), ending on the right line, radius --r-lg on all corners"
+    "text": "With data-work-window the heading takes six columns. The lead, actions and proof start at column eight.",
+    "art": "Below the copy, the stage spans the wrap. An order note sits beside the main stock rows on desktop."
    },
    "at1440": {
-    "art": "628x716 at x 732, y 120: the lit ground (sand, sky, sage or painting) with one soft light, or an effect (no grain on its own)",
-    "window": "64 from the frame's left and top, the frame's width less 64 plus 28 (it runs 28px past the right edge); its content keeps 48px clear at the right, so the cut falls in empty margin after the status chips; no time column",
-    "card": "300 wide, 32 in from the frame's lower-left, over the window",
-    "text": "h1 64 (62.7) on 3 lines from y 120, lead 20/30, buttons 44, one muted proof line 24 under them",
-    "measured": "hero 900/900, h1 62.7px on 3 lines from y 120, the visual 628x716 at x 732, y 120"
+    "art": "1280px stage at x80, y361.",
+    "window": "1248px stock window at x96, y377 with a 16px matte.",
+    "card": "The order note occupies the reserved space at the right of the stock list.",
+    "text": "62.7px heading on two lines from y147."
    },
    "at390": {
-    "hero": "844: exactly one screen",
-    "art": "342 x what is left (244 here, at least 220), 32 under the text",
-    "window": "the window alone, 16 in, its side bar and quantity column hidden, the chips whole; the small card is not shown on a phone",
-    "measured": "hero 844/844, h1 39.2px on 3 lines from y 96, the visual 342x264 at x 24, y 556"
+    "art": "342px stage at x24, y485.",
+    "window": "310px window at x40, y501. The compact view shows two stock rows, including the one running low.",
+    "text": "39.2px heading on three lines from y96."
    },
    "moment": "a loop inside the small card: it shows finished first, holds 1.8 s, then its three steps arrive 0.7 s apart and it holds again; restarts when the pointer enters; pause disc bottom-right; a phone holds the finished card",
    "moments": [],
@@ -823,11 +827,13 @@
    },
    "at1440": {
     "hero": "At least one screen. Show the first 420px of the window, or the whole window if shorter.",
-    "window": "Content height up to 760px."
+    "window": "Content height up to 760px.",
+    "measured": "1256px window at x92, y479. The stage is 1280px wide."
    },
    "at390": {
     "frame": "Span the wrap below the actions.",
-    "window": "Keep the decisive rows and their result. Collapse the sidebar first."
+    "window": "Keep the decisive rows and their result. Collapse the sidebar first.",
+    "measured": "310px window at x40, y491. The stage is 342px wide."
    },
    "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
    "moments": [],

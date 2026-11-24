@@ -64,6 +64,13 @@
 @media (max-width: 639px) { .open-cards .panel { --p-h: 148px; } .stage > .at-rise { --ay-sm: 20px; } .open-cards > .card > .panel { margin-top: var(--s-5); } }
 /* a phone's 148px panel holds the receipt's first two sales */
 @media (max-width: 639px) { .d-receipt .ln:nth-of-type(n+4) { display: none; } }
+@media (max-width: 639px) {
+  .hero[data-work-window]:not(.hero--peek) .d-rows > :nth-child(n+3) { display: none; }
+}
+@media (min-width: 640px) {
+  .hero[data-work-window] .d-main { padding-right: min(32%, 340px); }
+  .hero[data-work-window] .ly-piece--note { left: auto; right: var(--s-6); bottom: var(--s-6); width: min(25%, 280px); }
+}
 </style>
 </head>
 <body>
@@ -94,16 +101,16 @@
 
 <main id="top">
   <!-- Add hero--peek to let the product view in .hero__art continue below the fold. -->
-  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
+  <section class="hero hero--collage" data-work-window data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
       <div class="hero__text span-5">
         <h1 id="hero-h">Stock and orders for independent grocers</h1>
-        <p class="hero__lead">Pickwell counts what sold at the till, tells you what runs low before Friday and sends the order to your wholesalers. Set up in an afternoon, €49 a month per shop.</p>
+        <p class="hero__lead">See what sold today and send Friday’s order to your wholesaler. €49 a month per shop.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#how">Start free for 30 days</a><a class="btn btn--secondary" href="#how">Book a demo</a></div>
         <p class="hero__proof">Reads sales from Square, SumUp and Zettle.</p>
       </div>
       <div class="hero__art span-6 start-7" role="img" aria-label="Pickwell's stock list with oat milk running low, and an order sent to a wholesaler">
-        <div class="ly-piece ly-piece--main d-win" aria-hidden="true">
+        <div class="ly-piece ly-piece--main d-win" data-ui aria-hidden="true">
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span>Pickwell · Corner Shop, Stockbridge</span></div>
           <div class="d-win__body">
             <div class="d-side">

@@ -55,12 +55,54 @@
 window.lyRules = (() => {
   const own = 'section[data-own]';
   const isPeek = hero => hero?.matches('.hero--peek, .hero--centred:has(.hero__window)');
+  const peekFrame = hero => hero.querySelector('.hero__window,.app-frame,.device') || hero.querySelector('.hero__collage,.hero__media,.hero__art,.hero-visual,.panel');
   function peek(hero) {
     if (!isPeek(hero)) return null;
-    const frame = hero.querySelector('.hero__window,.app-frame,.device') || hero.querySelector('.hero__collage,.hero__media,.hero__art,.hero-visual,.panel');
+    const frame = peekFrame(hero);
     if (!frame) return null;
     const r = frame.getBoundingClientRect(), top = r.top + scrollY;
     return top >= 0 && r.height <= 761 && r.height > 0 && innerHeight - top >= Math.min(r.height, innerWidth < 640 ? 300 : 420) - 1 ? frame : null;
+  }
+  function picks(hero) {
+    const row = hero?.querySelector(':scope > .hero-picks');
+    if (!row || !row.clientHeight || !row.children.length || row.children.length > 3) return null;
+    const valid = [...row.children].every(link => {
+      if (!link.matches('a[href^="#"]') || link.hash.length < 2) return false;
+      const target = document.getElementById(link.hash.slice(1));
+      const image = link.querySelector('img'), price = link.querySelector('small');
+      if (!target || hero.contains(target) || !image?.getBoundingClientRect().width || !price?.innerText.trim()) return false;
+      const name = link.innerText.replace(price.innerText, '').trim();
+      return name.length > 0 && link.getBoundingClientRect().height > 0;
+    });
+    return valid ? row : null;
+  }
+  function edgePicture(el) {
+    const frame = el.closest('.edge-split > .edge-photo,.colour-half > .edge-photo,.near-stack > .frame--near') || (el.matches('.near-stack') && el);
+    if (!frame) return false;
+    const r = frame.getBoundingClientRect(), w = document.documentElement.clientWidth;
+    const close = (a,b) => Math.abs(a-b) <= 2;
+    if (frame.matches('.frame--near,.near-stack')) {
+      const near = parseFloat(getComputedStyle(frame).getPropertyValue('--near')) || 8;
+      return close(r.left,near) && close(r.right,w-near);
+    }
+    if (innerWidth < 768) return close(r.left,0) && close(r.right,w);
+    const wrap = frame.parentElement.querySelector(':scope > .wrap')?.getBoundingClientRect();
+    if (!wrap) return false;
+    const gap = parseFloat(getComputedStyle(frame).getPropertyValue('--gutter'));
+    const start = frame.parentElement.matches('.colour-half') ? w / 2 : wrap.left + (wrap.width + gap) * 5 / 12;
+    return (close(r.left,start) && close(r.right,w)) || (close(r.left,0) && close(r.right,w-start));
+  }
+  function edgeWords(el) {
+    const block = el.closest('.edge-split > .wrap > .edge-copy,.colour-half > .wrap > .edge-copy');
+    if (!block) return null;
+    const wrap = block.parentElement.getBoundingClientRect(), r = block.getBoundingClientRect();
+    const gap = parseFloat(getComputedStyle(block).getPropertyValue('--gutter')) || 24;
+    const width = innerWidth < 768 ? wrap.width : (wrap.width + gap) * 5 / 12 - gap;
+    return Math.abs(r.width-width) <= 2 && (Math.abs(r.left-wrap.left)<=2 || Math.abs(r.right-wrap.right)<=2) ? block : null;
+  }
+  function itemRail(el) {
+    return innerWidth < 640 && el.matches('.wrap .item-row') && getComputedStyle(el).overflowX === 'auto' &&
+      getComputedStyle(el).scrollSnapType.startsWith('x ') && el.children.length >= 3 && el.children.length <= 5;
   }
   function mirrored(el) {
     const grid=el?.closest('.grid.grid--mirror');
@@ -143,7 +185,7 @@ window.lyRules = (() => {
   }
   const explaining = /\b(?:illustrative (?:image|picture|photo(?:graph)?|render(?:ing)?)|(?:drawing|illustration|picture|photo(?:graph)?|render(?:ing)?|image) of|(?:this|the) (?:picture|photo(?:graph)?|image|drawing|illustration) (?:is|shows|depicts|represents)|for (?:illustrative purposes|illustration only)|stock photo(?:graph)?|stand[- ]in|placeholder|shown (?:above|below|here)|made (?:in|with) code)\b/i;
   function factOwner(line) {
-    const scope=line.closest('figure,article') || line.parentElement;
+    const scope=line.closest('figure,article,.item-row > li') || line.parentElement;
     if (!scope) return null;
     const nodes=[...scope.querySelectorAll('picture,img,video,svg,canvas,.app-frame,[data-chart],[data-diagram],[data-ui],[role="img"],[aria-hidden="true"],.fact-line')];
     const pictures=nodes.filter(n=>!n.matches('.fact-line') && !n.parentElement?.closest('picture,svg,.app-frame,[role="img"]'));
@@ -153,7 +195,7 @@ window.lyRules = (() => {
   function fact(e) {
     const line = e.closest('.fact-line');
     if (!line) return null;
-    const t = line.textContent.trim().replace(/\s+/g,' '), frame = line.closest('figure,article') || line.parentElement;
+    const t = line.textContent.trim().replace(/\s+/g,' '), frame = line.closest('figure,article,.item-row > li') || line.parentElement;
     const picture = factOwner(line);
     return Boolean(picture && [...frame.querySelectorAll('.fact-line')].filter(x=>factOwner(x)===picture).length===1 && t && [...t].length <= 60 && !explaining.test(t) && !/^(?:illustration|drawing|render|image|photograph)[.!]?$/i.test(t));
   }
@@ -164,6 +206,24 @@ window.lyRules = (() => {
     if (secs.length && ownSections.length < (secs.length >= 6 ? 2 : 1)) add('own-count','page',secs.length + ' sections include ' + ownSections.length + ' own sections','WARN');
     if (secs.length >= 6 && new Set(secs.map(colour)).size === 1 && !secs.some(fullPicture)) add('ground-flat','page',secs.length + ' sections share one ground without a full-bleed picture');
     const kind = kindOverride || document.documentElement.dataset.type || document.querySelector('meta[name="page-type"],meta[name="page-kind"]')?.content;
+    const photosIn = section => [...section.querySelectorAll('img')].filter(img => {
+      const r = img.getBoundingClientRect(), src = img.currentSrc || img.src;
+      return !/[.]svg(?:[?#]|$)|^data:image[/]svg/i.test(src) && r.width >= 80 && r.height >= 64 && img.checkVisibility();
+    });
+    const pictures = secs.map(photosIn);
+    if (pictures.flat().length >= 4) {
+      let run = [];
+      secs.forEach((sec,i) => {
+        const bounds = sec.querySelector('.wrap,.container')?.getBoundingClientRect();
+        const boxed = !sec.matches('.hero,footer') && bounds && pictures[i].length && pictures[i].every(img => {
+          const r = img.getBoundingClientRect(), rail = img.closest('.item-row')?.getBoundingClientRect();
+          return (rail || r).left >= bounds.left-2 && (rail || r).right <= bounds.right+2;
+        });
+        run = boxed ? [...run,sec] : [];
+        if (run.length === 3) add('boxed-run',run.map(s => s.id ? '#' + s.id : s.querySelector('h2')?.textContent).join(' / '),
+          'Three consecutive sections keep every photograph inside the wrap. Let one reach a screen edge.', 'WARN');
+      });
+    }
     if (kind === 'place' && secs.length) {
       const visiblePicture=e=>{const r=e.getBoundingClientRect();return r.width>=120 && r.height>=80};
       const photos = new Set([...document.querySelectorAll('main img')].filter(visiblePicture).map(e=>e.currentSrc || e.src));
@@ -229,6 +289,26 @@ window.lyRules = (() => {
       out.push({rule:'still-wrong',sev:'FAIL',where:key,detail:'counter rests at "'+value+'", live value '+live[key]});
     return out;
   }
+  function faqAnswers(el) {
+    return [...el.querySelectorAll('.faq__item, .faq-item, [data-faq-item], details')].some(item => {
+      const question = item.querySelector('h2,h3,h4,summary');
+      return question?.textContent.trim() && [...item.querySelectorAll('p,dd')].some(p => p.textContent.trim() && !question.contains(p) && p.getClientRects().length);
+    });
+  }
+  // A choice indicator repeats for each option; only the selected option shows it.
+  function choiceStatus(el) {
+    if (!el?.matches('h2 > span, h3 > span, h4 > span, h2 > small, h3 > small, h4 > small')) return false;
+    const option = el.closest('article,li,[role=option]');
+    if (!option || !option.closest('section')?.querySelector('input[type=range],select,[role=radiogroup]')) return false;
+    const text = el.textContent.trim();
+    if (!text || text.length > 30) return false;
+    const choices = [...option.parentElement.children];
+    const selected = choices.filter(c => c.matches('[data-fit],[aria-selected=true],[aria-checked=true]'));
+    if (selected.length !== 1) return false;
+    const peers = choices.flatMap(c => [...c.querySelectorAll('h2 > span,h3 > span,h4 > span,h2 > small,h3 > small,h4 > small')])
+      .filter(p => p.tagName === el.tagName && p.textContent.trim() === text);
+    return peers.some(p => p !== el) && peers.some(p => selected[0].contains(p) && p.checkVisibility({visibilityProperty:true, opacityProperty:true}));
+  }
   function still(finals={}) {
     const out = [];
     const candidates = new Set(counterCandidates());
@@ -240,7 +320,7 @@ window.lyRules = (() => {
         const expected=targetValue(e) || finals[counterKey(e)];
         if (expected && number(expected)!=null && Number(number(t)) !== Number(number(expected))) reason = 'counter rests at "' + t + '", final value ' + expected;
       }
-      if (!reason && e.closest(own) && (e.matches('img,svg,canvas,input,select,textarea') || [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()))) {
+      if (!reason && e.closest(own) && !choiceStatus(e) && (e.matches('img,svg,canvas,input,select,textarea') || [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()))) {
         for (let p = e; p; p = p.parentElement) {
           const c = getComputedStyle(p);
           if (+c.opacity === 0 || c.visibility === 'hidden') { reason = 'content is hidden without script'; break; }
@@ -250,7 +330,7 @@ window.lyRules = (() => {
     }
     return out;
   }
-  return {isPeek,peek,mirrored,booking,colour,air,holdsStage,stickyStage,fullPicture,emptyRun,blankRun,explaining,fact,page,still,counters,changedCounters};
+  return {faqAnswers,choiceStatus,isPeek,peek,peekFrame,picks,edgePicture,edgeWords,itemRail,mirrored,booking,colour,air,holdsStage,stickyStage,fullPicture,emptyRun,blankRun,explaining,fact,page,still,counters,changedCounters};
 })();
 
 window.lyCheck = function lyCheck(opts = {}) {
@@ -323,7 +403,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     const cen = centred(r) && (getComputedStyle(el).textAlign === 'center' || el.parentElement && getComputedStyle(el.parentElement).textAlign === 'center' || getComputedStyle(el.parentElement || el).justifyItems === 'center' || Math.abs(r.width - (R - L)) > 2);
     const sec = el.closest('main > *');
     if (sec) { if (!bySection.has(sec)) bySection.set(sec, []); bySection.get(sec).push({ el, r, full, bleedR, bleedL, text, cen }); }
-    if (full) continue;
+    if (full || window.lyRules.edgePicture(el)) continue;
     if (bleedR) { add('bleed-one-side', name(el), `runs from x ${R1(r.left)} out to the right viewport edge; the left side stays at ${R1(L)}`); continue; }
     if (bleedL) { add('bleed-one-side', name(el), `runs from the left viewport edge to x ${R1(r.right)}; the right side stays at ${R1(vw - R)} from the edge`); continue; }
     if (r.left < L - tol || r.right > R + tol) {
@@ -332,7 +412,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     }
     if (cen && !(Math.abs(r.left - L) <= tol)) continue;      // centred on the axis: fine both sides
     if (!onStart(r.left)) add('edge-left', name(el), `starts at x ${R1(r.left)}; the lines are ${R1(L)} and the column starts`);
-    if (!text && !onEnd(r.right)) add('edge-right', name(el), `ends at x ${R1(r.right)}; the right line is ${R1(R)}`);
+    if (!text && !onEnd(r.right)) add('edge-right', name(el), `The box ends at x ${R1(r.right)}px, so align its right edge within ${tol}px of the nearest column end at x ${R1(ends.reduce((a, b) => Math.abs(r.right-a) <= Math.abs(r.right-b) ? a : b))}px.`);
   }
 
   /* one-sided sections: visuals that stop short of the right line while text holds the left one */
@@ -374,7 +454,7 @@ window.lyCheck = function lyCheck(opts = {}) {
   const acts = navEl && [...navEl.querySelectorAll('.nav__actions > *, .nav__toggle')].filter(shown);
   if (acts && acts.length) {
     const right = Math.max(...acts.map(a => a.getBoundingClientRect().right));
-    if (Math.abs(right - R) > tol) add('edge-right', 'nav actions', `end at x ${R1(right)}, the page's right line is ${R1(R)}`);
+    if (Math.abs(right - R) > tol) add('edge-right', 'nav actions', `The navigation actions end at x ${R1(right)}px, so align their right edge within ${tol}px of the wrap edge at x ${R1(R)}px.`);
   }
 
   /* screens */
@@ -437,7 +517,12 @@ window.lyCheck = function lyCheck(opts = {}) {
     const a = info[i], b = info[i + 1];
     if (a.free || b.free || a.held || b.held || !a.ink.length || !b.ink.length) continue;
     const gap = b.cTop - a.cBot;
-    if (gap < least - .5 && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + least + 'px');
+    const touchesPicture = (s, side, extent) => {
+      const pic = s.el.querySelector(':scope > .edge-photo');
+      return pic && window.lyRules.edgePicture(pic) && Math.abs(doc(pic.getBoundingClientRect())[side] - extent) <= 2;
+    };
+    const joinedPhotos = touchesPicture(a, 'bottom', a.cBot) && touchesPicture(b, 'top', b.cTop);
+    if (gap < least - .5 && !joinedPhotos && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + least + 'px');
     if (gap > max + .5 && window.lyRules.colour(a.el) === window.lyRules.colour(b.el)) {
       const blank = window.lyRules.blankRun([a.el,b.el],a.cBot,b.cTop);
       if (blank>max+.5) add('empty-band', name(a.el) + ' / ' + name(b.el), Math.round(blank) + 'px of continuous empty ground, limit ' + max + 'px');
@@ -445,17 +530,28 @@ window.lyCheck = function lyCheck(opts = {}) {
   }
   if (info.length && (info[0].el.matches('.hero,.section--hero') || info[0].el.querySelector('h1'))) {
     const hero = info[0];
-    if (hero.r.top > navH + tol + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0)) add('hero-fold', name(hero.el), `starts at y ${Math.round(hero.r.top)}, not under the nav`);
-    if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, above the fold (${vh})`);
+    const navBottom = navH + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0);
+    if (hero.r.top > navBottom + tol) add('hero-fold', name(hero.el), `The hero starts at y ${Math.round(hero.r.top)}px, so remove the gap above it to start by y ${navBottom + tol}px.`);
+    if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `The hero ends at y ${Math.round(hero.r.bottom)}px on a ${vh}px screen, so increase its height to reach the fold within ${tol}px.`);
     // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
     const frame = window.lyRules.peek(hero.el);
-    if (window.lyRules.isPeek(hero.el) && !frame) add('hero-fold', name(hero.el), 'the window must show ' + (vw < 640 ? 300 : 420) + 'px on load and be at most 760px tall');
-    if (hero.r.bottom > vh + tol && !frame) add('hero-fold', name(hero.el), 'ends past the fold at ' + Math.round(hero.r.bottom) + 'px');
+    if (window.lyRules.isPeek(hero.el) && !frame) {
+      const r = window.lyRules.peekFrame(hero.el)?.getBoundingClientRect();
+      const h = r?.height || 0, top = r ? r.top + sy : 0;
+      const visible = Math.max(0, Math.min(vh, top + h) - Math.max(0, top)), min = Math.min(h, vw < 640 ? 300 : 420);
+      const detail = !h ? 'The peek hero has no visible window and needs one, so add a .hero__window with content.'
+        : h > 761 ? `The window is ${Math.round(h)}px tall against a 760px maximum, so cap its height and let its contents scroll.`
+        : top < 0 ? `The window starts at y ${R1(top)}px and must start at or below 0px, so remove its negative offset.`
+        : `The first screen shows ${R1(visible)}px of the window and needs ${R1(min)}px, so reduce the space above it.`;
+      add('hero-fold', name(hero.el), detail);
+    }
+    const fold = vh + (window.lyRules.picks(hero.el)?.offsetHeight || 0);
+    if (hero.r.bottom > fold + tol && !frame) add('hero-fold', name(hero.el), `The hero ends at y ${Math.round(hero.r.bottom)}px, so reduce its vertical padding to reach y ${fold}px within ${tol}px.`);
     const next = info[1];
-    if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),'the next section starts at ' + Math.round(next.r.top) + 'px, inside the first screen');
+    if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),`The next section starts at y ${R1(next.r.top)}px on a ${vh}px screen, so extend the hero to the fold within ${tol}px.`);
     if (next) {
       const hit = next.ink.filter(k => k.top < vh - 2);
-      if (hit.length) add('hero-fold', name(next.el), `shows on the first screen from y ${Math.round(Math.min(...hit.map(k => k.top)))}`);
+      if (hit.length) add('hero-fold', name(next.el), `The next section shows content at y ${Math.round(Math.min(...hit.map(k => k.top)))}px before the ${vh}px fold, so move that content below the fold.`);
     }
   }
   /* the hero's numbers (heroes.json "at1440" / "at390"), measured, not read from the CSS */
@@ -479,6 +575,8 @@ window.lyCheck = function lyCheck(opts = {}) {
     const btns = [...hs.querySelectorAll('.btn')].filter(shown);
     hero = {
       height: Math.round(hs.getBoundingClientRect().height),
+      work: box(hs.querySelector('.hero__window > .ly-piece,.hero__art > .ly-piece--main,.hero__media > .app-frame') || hs.querySelector('.hero__window')),
+      stage: box(hs.querySelector('.hero__window,.hero__art,.hero__media')),
       h1: h1 && { size: parseFloat(getComputedStyle(h1).fontSize), leading: R1(parseFloat(getComputedStyle(h1).lineHeight) / parseFloat(getComputedStyle(h1).fontSize) * 100) / 100, lines: lineCount(h1), ...box(h1) },
       lead: lead && { size: parseFloat(getComputedStyle(lead).fontSize), lineHeight: parseFloat(getComputedStyle(lead).lineHeight), lines: lineCount(lead), ...box(lead) },
       buttons: btns.length ? { n: btns.length, h: Math.round(btns[0].getBoundingClientRect().height), first: box(btns[0]) } : null,
@@ -572,6 +670,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
         const rs = cols.map(c => c.getBoundingClientRect()), t0 = Math.min(...rs.map(q => q.top));
         const row = cols.filter((c, i) => rs[i].top - t0 < 48);   // the first row of the grid: the columns that start together
         if (row.length < 2) continue;
+        if (row.length === 2 && row.some(c => c.matches('.section-head') && !window.lyRules.faqAnswers(c)) && row.some(c => window.lyRules.faqAnswers(c))) continue;
         const rr = row.map(c => c.getBoundingClientRect());
         if (rr.some((q, i) => rr.some((p, j) => j !== i && Math.min(q.right, p.right) - Math.max(q.left, p.left) > 4))) continue;   // stacked, not side by side
         const bots = row.map(c => Math.max(-Infinity, ...ink.filter(i => c.contains(i.e)).map(i => i.bottom))).filter(Number.isFinite);

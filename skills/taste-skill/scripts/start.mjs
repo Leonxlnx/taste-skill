@@ -436,7 +436,7 @@ const COMPS = {
 };
 const KIND_COMPS = { software: ['feature', 'form'], gaming: ['showcase', 'form'], tech: ['feature', 'showcase'],
   product: ['feature', 'showcase', 'rooms'], service: ['offer', 'showcase', 'feature', 'visit', 'form'],
-  place: ['visit', 'offer', 'showcase', 'rooms', 'form'] };
+  place: ['visit', 'offer', 'showcase', 'feature', 'rooms', 'form'] };
 const COMP_WHAT = { offer: 'the offer (menu, prices, services)', showcase: 'the showcase (the place, the work, the house, in use)',
   rooms: 'rooms or goods', feature: 'each feature section', visit: 'the visit', form: 'the booking or order form' };
 // compositions sections-library.md allows once a page (2.5.3: a showcase and a feature were both dealt bleed-panel)
@@ -516,14 +516,16 @@ function dealLayout(h) {
   const lines = [], used = [];
   const dealt = v => { if (ONCE_A_PAGE.includes(v)) used.push(v); return v; };
   for (const sec of KIND_COMPS[k] || []) {
+    const edgeOptions = ['place', 'product', 'service'].includes(k) && ['showcase', 'feature'].includes(sec);
+    const pool = COMPS[sec] + (edgeOptions ? '|edge-split|colour-half' : '');
     if (sec === 'feature') {
-      const a = dealt(pick(`${k}:feature`, COMPS.feature, 2, used));
-      const b = dealt(pick(`${k}:feature`, COMPS.feature, 2, [...used, a]));
+      const a = dealt(pick(`${k}:feature`, pool, 2, used));
+      const b = dealt(pick(`${k}:feature`, pool, 2, [...used, a]));
       out.compositions.feature = [a, b];
       lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
     } else {
       const booking = action === 'booking' && k === 'place' && !!bookingSubject;
-      const options = sec === 'form' && booking ? 'close-form' : COMPS[sec];
+      const options = sec === 'form' && booking ? 'close-form' : pool;
       const v = dealt(pick(`${k}:${sec}`, options, 2, used));
       out.compositions[sec] = v;
       // a form dealt as close-form is the page's close: no other close row beside it (2.5.3: close-photo and
@@ -700,7 +702,7 @@ if (cmd === 'deal') {
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
   line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
   line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + ' --history ' + histFile.split(path.sep).join('/'));
-  line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
+  line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
   if (order) line('order', 'put the configurator or order pad within the first three sections, with delivery and return facts at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');

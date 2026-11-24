@@ -29,6 +29,8 @@ The first screen shows only the hero. The rest of the page grows to fit the whol
 <section class="section" id="features"><div class="wrap"> the h2 first, then the content </div></section>
 ```
 
+On a place page, or a product or service page with four or more photographs, put a photograph against a screen edge after the hero with full bleed, edge-split, colour-half or near. Break up three consecutive sections whose photographs all sit inside the wrap.
+
 - Use one in-flow `.wrap` per section. The h2 comes first, with 16px to its lead. Heading block to content is `--head-gap`, 48px at 1440 and 32px on a phone. Grid gaps are 24px, 12px on a phone.
 - On desktop a kit split fills the taller column up to a 2:3 portrait crop. Keep the focal point visible when it crops. Tiles keep `--tile-ratio`, panels `--p-h`. At phone width the stacked picture takes its own ratio.
 - Merge short quotes, logo rows and a few words of statement with their subject. For the page's one main claim that can stand alone, use `.section--thin`.
@@ -44,6 +46,8 @@ The first screen shows only the hero. The rest of the page grows to fit the whol
   smaller than an h2 (28 to 60px on a phone). A notice line (one 14px line in the body face with a
   number, 4.5:1: changed hours, a delivery cut-off) sits 16px above it; never a bar above the header.
 - **Product window.** Under a centred headline the complete product window always uses `.hero--peek`. On a split dealt with `.hero--peek` (software, gaming or tech), the hero's own window may continue below the fold. At 1440×900 at least 420px of it shows and its full height is at most 760px. Keep the next section below it. For an ordinary hero keep the picture whole or use the deliberate bleed below.
+- In a work-led software hero the actual window fills 85–100% of the wrap, with at most 40px of stage on either side. Aim for its top at y350–480 at 1440×900 when the copy allows. Use data-work-window on a split or collage to put the view under its heading.
+- A shop selling several kinds can put up to three linked picks under its buttons. Each .hero-picks link carries a small picture, name and price and lands on the item’s section. The hero may extend past the fold by the height of that row.
 - **Standard heroes at 768 and 820.** The split stacks: the words, then the picture in what is
   left. Its bottom edge ends on a whole element or clearly bleeds a large picture on purpose:
   - whole: the picture (a fragment, a phone, a render) ends 24px or more above the hero's foot;
@@ -88,7 +92,7 @@ dealt only without a strong photograph.
 | `photo` | a full-bleed photograph layer, the words on its calm, dark side on six columns (h1 80, two lines), four facts at the foot | the photograph cut to the top, the words under it on the ground | none |
 | `product` | a head row (h1 cols 1-7 on two lines; the lead and the buttons stacked on cols 9-12, their foot on the h1's), then the product itself big, nothing on it (hotspots only when the brief asks for them): a product photograph edge to edge down to the fold, square corners; a cut-out or a render (its widest view, `data-product-place="stage"`, only when the brief asks for 3D) on the page's ground across the wrap, no box, gradient or radius, the stage down to 24 above the fold (1280x566 at 1440x900: the city bike's side 1046 wide, 82% of the wrap). A game names itself in the h1; a `[data-print]` or `[data-scene]` on the stage keeps the lit, rounded stage | stacked; the photograph the screen width, a render 86% of the column (294 of 342) | none; a render is a still (live only when asked, `data-product-mode="live"`) |
 | `editorial` | the headline is the picture: 156px on three lines across the wrap, one or two photographs set in the line as pills | 56px on four lines | the pills open once on load (tech); still elsewhere |
-| `collage` | text span-5; a lit frame span-6 start-7 with the product window cut by its bottom, one result card that loops | the window alone | one card loop (tech) |
+| `collage` | work-led copy above a wrap-wide stock window, with a compact order result alongside its rows | the window alone | one card loop (tech) |
 | `word` | an oversized h1 (144px, two lines) with one live word last, underlined; lead and buttons span-6, four facts span-5 start-8 | 54px on three lines | the live word, two rounds then rest (tech only) |
 | `film` | a cinema frame on the lines holding the poster, h1 white on a calm part, the play disc at its foot | the frame, then the words | plays on a click |
 | `statement` | one calm sentence (56px, two lines) over the page ground (tech: a dark ground on a dark page), lead, buttons, four facts | 34px on three lines | none |
@@ -101,7 +105,7 @@ Keep one h1 within the hero's `maxChars` (`heroes.json`). Protect the action and
 
 On a photo-led place page the picture leads the first screen, in the form `deal.mjs
 --type place` deals (`data-form` on `<section class="hero hero--place">`, layout.css 0b; the
-markup is the same for all four, so only the attribute changes). In testing every place had the
+markup is the same for all five, so only the attribute changes). In testing every place had the
 same band hero with 120 to 200px of empty ground under its words; two cafes could not be told apart.
 It enters once on load like every hero (`motion.md`, The hero's entrance).
 
@@ -109,26 +113,25 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 |---|---|---|
 | `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1–8, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
 | `bleed` | the photograph over the whole screen; the h1, the line and the button on a solid panel of the page ground (580 wide, 48 inside) in its lower left corner, `data-corner="end"` for the right one when the calm side is right | the photograph, then the words on the ground |
+| `foot` | Full-screen photograph, h1 at 56–64px, one line and action starting at x80 and ending about 72px above the fold. Use a calm lower left with 4.5:1 text contrast, or fall back to bleed. The bottom scrim reaches 35% across the lowest 40%. | Same composition with a 36–40px h1. Check contrast on this crop too. |
 | `split` | the words on five columns (title, lead and action grouped at the top, with 24px and 32px gaps), the photograph on seven, from 48px under the header to the hero's foot | as band |
 | `name` | band, with the name or the street set large across the `.wrap` first in `.hero__text` (`<p class="hero__name">Henderson Street</p>`, up to 160px): the page's one type moment | the name at 44 to 72px |
 
 - At 1440 the photograph fills what the words leave. The place h1 uses the pairing’s display size, 56–72px at 1440 and 36–44px at 390. Longer titles take the smaller size. Keep it to two lines at 1440 and three on the phone, with the sub-line and one main action. Leave room for the booking bar when dealt.
-- A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
+- A shop or bookshop may take a letterbox inside the column instead: 1280 x 538, 24px under the
   header (`--photo: 528px`).
 - On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 show one link to the full booking form at the close. A service enquiry uses one enquiry action.
 - Show the room from the door, the counter in use, flowers in the shop, or the landscape the brief locates. See `photos.md` for choosing and cropping the picture. Keep the visit details high on the page.
 
-On a phone, a product or hardware split with offer facts places the picture and the price and dispatch facts side by side, directly after the h1. The lead and actions follow. Keep the identifying part of the product and its offer in the first screen.
+On a phone, a product or hardware split with offer facts places the picture and the price and dispatch facts side by side, directly after the h1. The lead and actions follow. At 390×844 show the object the buyer receives, its connection to the host for an accessory, and its offer within the first 844px.
 
 ## 4. Equal edges and the grid
 
 - **One `.wrap`** for the header, every section and the footer: `width: min(100% - 2 * var(--gut),
-  1280px)`. Lines at x 80 and 1360 at 1440 (a place: 1200 at x 120 to 1320), x 24 and 366 at 390.
+  1280px)`. Lines at x 80 and 1360 at 1440 for every kind, x 24 and 366 at 390.
   The same all the way down.
 - **12 columns, 24px gutter** (12 on a phone). Column starts at 1440: 80, 189, 297, 406, 515, 623,
-  732, 841, 949, 1058, 1167, 1275; spans 3 = 302, 4 = 410, 5 = 519, 6 = 628, 7 = 737. On a place
-  (1200): starts 120, 222, 324, 426, 528, 630, 732, 834, 936, 1038, 1140, 1242; spans 282, 384, 486,
-  588, 690. On a phone one 342 column or two 165 tiles 12 apart; nothing narrower than 165.
+  732, 841, 949, 1058, 1167, 1275; spans 3 = 302, 4 = 411, 5 = 519, 6 = 628, 7 = 737. On a phone one 342 column or two 165 tiles 12 apart; nothing narrower than 165.
 - **Every block starts on the left line or a column start,** and every block that ends on the right
   ends on a column end, the last on the right line. Anything wider than half the `.wrap` runs the
   full `.wrap`. Card rows (6+6, 4+4+4, 3+3+3+3): the first card on the left line, the last on the
@@ -136,17 +139,16 @@ On a phone, a product or hardware split with offer facts places the picture and 
 - **Text lines.** Align the left column to the wrap and the right to a column start. Keep repeated splits on a common line. Follow the PLAN for heading alignment: left throughout or centred on proof and close. The centred hero uses its own axis.
 - **Splits.** Align the tops. Keep text first on a phone, including a mirrored composition. A filled panel may pad its text 48px. In an own section use the column lines that fit the content (`compose.md`).
 - **Pictures:** a photograph spans 0 to the viewport as a layer, or starts and ends on the column
-  lines (628, 410, 302 wide; place 588, 384, 282), one ratio per row (4:5, 4:3, 3:2 or 1:1; a place
+  lines (628, 411, 302 wide), one ratio per row (4:5, 4:3, 3:2 or 1:1; a place
   4:5, 4:3, 1:1). No photograph taller than the screen under the header less 128px (700 at
   1440x900) outside the hero.
 - **Bleed:** full width only for layers: a section's photograph or ground behind its words
   (`img.layer`, `aria-hidden`, covering 90% or more of the section; the hero holds one layer).
-  Never out to one side only: a cut window is cut by its frame inside the `.wrap`. A picture wall
+  The edge-split and colour-half photographs reach one side. A near stack leaves 8px at each edge. A cut window stays inside the `.wrap`. A picture wall
   is `.wall` (gap 0 or 2px), from line to line.
 - Keep words, controls and focus rings inside the section. Pictures can overlap within their frame if the subject still reads at 390.
 - **1024 to 1279:** span-4 cards with a panel go two-up. **640 to 1023** (checked at 820 and 768):
-  splits stack text first, panel cards take the full row, no row half empty. Nothing scrolls
-  sideways at any width; no swipe rows.
+  splits stack text first, panel cards take the full row, no row half empty. The page stays inside the viewport. A captioned item-row scrolls within its own width on phones.
 
 ## 5. Type
 

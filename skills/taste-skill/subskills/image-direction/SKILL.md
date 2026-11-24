@@ -11,6 +11,14 @@ description: Compose local photographs into an editorial sequence for a place, p
 4. Use the page’s grid, spacing, ink, surface, radius and type tokens. Working alone, take these from the existing project. Use CSS on plain `<img>` elements in ratio-reserved boxes. Set intrinsic width and height, `object-fit: cover` and an intentional `object-position`. For a tint, give the wrapper an accent ground and lower image opacity slightly. A stronger duotone can use grayscale and luminosity blending on that ground. Preserve material colour when that colour is evidence. Never treat cropping as permission to invent a subject.
 5. At phone width choose the focal point and order again. Keep fact lines attached, constrain the overlap or release it, and retain the difference between lead and detail. Recompose a strip and an inset as a stepped pair if shrinking them into a row makes them look alike. The complete sequence remains visible without script. Any optional motion is limited to transform or opacity on the kit’s `--dur` and `--ease`. Keep the still under reduced motion.
 
+**Stagger.** Give three to five editorial pictures two or three ratios on a shared top line. Let each caption follow its own picture by 12px. Comparable goods share a ratio.
+
+**Near.** Inset one to three photographs 8px from the viewport, with 8px between them. Place each heading and action on a quiet corner of its crop.
+
+**Edge.** Keep the words on the wrap and let the image reach one screen edge. Reverse sides on a repeat. Check the phone crop where the image fills the width.
+
+**Shot test.** For reach, fit, size or movement, name the two reference points that let the eye judge the claim and keep both in the frame. For an accessory, show the part the buyer receives and its connection to the host in the first crop. Cover the copy and check both again at 390.
+
 **Reject** three equal tiles saying the same thing, a mask cutting a subject in two, an inset covering the reason for the main picture, white type over bright texture and a stock interior presented as completed work.
 
 **Deliver** a figure or section with scoped CSS and local images. Give informative frames concise alt text about the visible subject and use empty alt for a decorative repeat. Keep text assets below 60 KB. The studio layout in `example/` includes the shot brief, local path and ready-to-use `<img>` for each slot.

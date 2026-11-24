@@ -145,7 +145,7 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
 - **Credits:** the one footer line that links the credits list (`photos.md`, Credits), never one
   link per photograph in the footer.
 
-### The sections (1200 column, x 120 to 1320)
+### The sections (1280px column, x 80 to 1360)
 
 - **Hero:** the place hero in its dealt form (`layout-v4.md` section 3). What, where and one fact: an
   h1 with the place's own voice, never the brief's category ("Bread out of the oven before the
@@ -160,16 +160,16 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
   all"); leave `--head-gap` to the content.
   - **Menu or prices.** Group the full list by what the visitor orders. Use `.rows`, with the name left, price right in tabular figures, and a description beneath when needed. Rows are at least 44px high. On a phone stack the groups. Leave prices in live text. A photograph may show the dish or service named. Keep a price list free of detail strips.
   - **Rooms.** Show the room types and which beds they hold. Include the rate, its season and how to book that room. Use whole rooms for the photographs. A row, index or simple list can carry the room facts when no suitable picture exists.
-  - **Goods** (beans, bread, books, parts, bouquets): four linked cards on span-3, 1:1 at 282x282
-    (bouquets 4:5 at 282x352), one ratio per grid, one backdrop, angle and light. Each card a flat
+  - **Goods** (beans, bread, books, parts, bouquets): four linked cards on span-3, 1:1 at 302x302
+    (bouquets 4:5 at 302x378), one ratio per grid, one backdrop, angle and light. Each card a flat
     fill one step off the ground or a 1px hairline, no shadow, radius or pill; inside its padding
     under the photograph only the name (a two-line slot, 16/500) and the price; an outline Add
     button aligned across the row where it sells online. One or two full rows. At 390 two-up at 165,
-    four or six, then a full-width button to the range; no swipe row.
+    four or six, then a full-width button to the range. For a captioned shelf use the item-row recipe.
 - **The place.** If the photographs and words carry a story, use the suggested showcase. A wall suits a set, a split suits the owner beside their work. Use the fact-line rule in `copy.md` when a project needs identifying.
 - **Orders** (cakes, a bike service, weddings, classes): three kinds on span-4 under the head row,
   or two beside the head in the first span-4. Each: a 4:3 photograph of this business's own goods
-  (384x288), a 1px hairline, a 13px label, the title at 20/28, one or two sentences at 16/26 with the
+  (411x308), a 1px hairline, a 13px label, the title at 20/28, one or two sentences at 16/26 with the
   lead time, where to collect and the price from, one text link with an arrow. A florist's events
   kind says what to send: date, venue, guests, budget.
 - **Booking.** For a stay, table or class use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).

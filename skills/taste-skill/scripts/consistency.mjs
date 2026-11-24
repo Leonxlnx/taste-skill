@@ -49,7 +49,7 @@
 //              fragment's parts past its box or slot), ui-centre (a compact fragment off its panel's middle),
 //              dark-ground (on a dark card, the ground behind UI under 3:1), photo-upscale, photo-set, photo-credit
 //   copy       copy-headline (the h1 names the category, and the buyer or the place), copy-fact (a number, price,
-//              date, place, platform or game genre on the first screen), copy-headings (every heading names a thing), copy-buttons (a verb
+//              date, place, platform or game genre on the first screen), copy-headings (stock labels and repeated openings), copy-buttons (a verb
 //              and an object; never "Learn more"), copy-actions (2 in the hero, 10 labels, one wording)
 //   wiring     links ("#", missing anchors and pages), forms (submitted once with test values on a local page, every
 //              request held inside the browser: a form that sends nothing FAILs), assets
@@ -294,6 +294,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
+import { STOP, norm, words, stem, holds, holdsAny, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
 
 const layoutRules = readFileSync(new URL('../assets/layout/layout-check.js', import.meta.url), 'utf8');
 const browserFinding = f => ({check:f.rule, sev:f.sev || 'FAIL', sel:f.where, msg:f.detail, id:0, text:'', rects:[]});
@@ -2181,7 +2182,7 @@ function measure(opt) {
   // a big scene ([data-big-scene]; [data-scene] is the objects kit's photo scene, no big scene) or a dealt scroll moment ([data-scroll-moment], [data-moment])
   const SCENEQ = '[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]';
   // the kit's dealt parts that are uneven on purpose: the offset pair (.comp-offset) and marquee-row's running track
-  const KIT_UNEVEN = '.comp-offset, [data-moment="marquee-row"]';
+  const KIT_UNEVEN = '.comp-offset, .item-row.stagger, [data-moment="marquee-row"]';
   const sceneSec = (s) => window.lyRules.holdsStage(s.el);
   // the kit's own big scene (scenes.js mounted it: data-big-scene-mounted): a full-screen stage of its own, no .wrap, its
   // words centred on the stage by its module; its section is not held to the container (SR-6 T1)
@@ -2250,20 +2251,20 @@ function measure(opt) {
     const st = cs(s.el), raw = rectOf(k);
     // A transformed photographic layer is painted only inside the parent's crop.
     const r = /^(clip|hidden)$/.test(st.overflowX) && /^(clip|hidden)$/.test(st.overflowY) ? inter(raw, secR(s)) : raw;
-    if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('not img, picture, video or canvas');
-    if (cs(k).position !== 'absolute') probs.push('position ' + cs(k).position + ', not absolute');
-    if (!inPlacePicture(k0) && (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1)) probs.push('does not span the screen from 0 to ' + W + 'px');
-    if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('runs outside the section box');
-    if (cs(k).zIndex !== '0') probs.push('z-index ' + cs(k).zIndex + ', not 0');
+    if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('uses ' + k0.localName + ' where an image, picture, video or canvas is required');
+    if (cs(k).position !== 'absolute') probs.push('uses ' + cs(k).position + ' positioning where absolute is required');
+    if (!inPlacePicture(k0) && (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1)) probs.push('covers x ' + px(r.l - SX) + ' to ' + px(r.r - SX) + 'px instead of 0 to ' + W + 'px (1px tolerance)');
+    if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('extends ' + px(Math.max(s.top - r.t, r.b - s.bottom)) + 'px outside the section against a 1px limit');
+    if (cs(k).zIndex !== '0') probs.push('has z-index ' + cs(k).zIndex + ' where 0 is required');
     const ah = k.getAttribute('aria-hidden') === 'true';
     if (s.isHero) {
       const img = TU(k) === 'IMG' ? k : (k.querySelector && k.querySelector('img'));
-      if (!ah && !(img && img.hasAttribute('alt'))) probs.push('a hero layer with neither alt nor aria-hidden="true"');
+      if (!ah && !(img && img.hasAttribute('alt'))) probs.push('has no accessible description or decorative marker and needs one');
     } else {
       if (ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
       const picture = TU(k)==='IMG' ? k : k.querySelector?.('img');
       const described = picture?.hasAttribute('alt') || (k.getAttribute('role')==='img' && (k.getAttribute('aria-label') || k.getAttribute('aria-labelledby')));
-      if (!ah && !described) probs.push('a picture layer needs alternative text or aria-hidden="true"');
+      if (!ah && !described) probs.push('has no accessible description or decorative marker and needs one');
     }
     return probs;
   };
@@ -2399,7 +2400,7 @@ function measure(opt) {
     // lower and smaller) and the running row of marquee-row (its track runs past its rail on purpose)
     if (G.el.closest(KIT_UNEVEN)) continue;
     const items = G.kids.filter((k) => !isCtl(k)).map((k) => ({ el: k, r: rectOf(k) }));
-    const nest = nestAnc(G.el, G.z);
+    const nest = G.el.matches('form.close__form') ? G.el : nestAnc(G.el, G.z);
     const Cz = C(G.z), cw = Cz.r - Cz.l;
     if (G.kids.length === 2 && items.length === 2) {
       // two columns repeated in three or more sibling rows of one class are a table's rows (a comparison, a spec list),
@@ -2491,6 +2492,8 @@ function measure(opt) {
     let bx = boxesBySec[s.i]; if (s.wrap) bx = bx.filter((x) => s.wrap.contains(x.el));
     if (!bx.length) return null;
     const runs = bx.map((x) => [x.r.t, x.r.b]);
+    const edge = s.el.querySelector(':scope > .edge-photo');
+    if (edge && window.lyRules.edgePicture(edge)) { const r = rectOf(edge); runs.push([r.t, r.b]); }
     for (const d of decoBySec[s.i]) {
       if (d.el === s.el || d.el === s.wrap || (s.wrap && !s.wrap.contains(d.el))) continue;
       const ds = cs(d.el);
@@ -2516,7 +2519,8 @@ function measure(opt) {
     const frame = window.lyRules.peek(hero.el);
     const b = hero.bottom - SY;
     const book = window.lyRules.booking(hero.el);
-    const fits = window.lyRules.isPeek(hero.el) ? !!frame && b >= H - 1 : Math.abs(b - H) <= 1;
+    const picks = window.lyRules.picks(hero.el);
+    const fits = window.lyRules.isPeek(hero.el) ? !!frame && b >= H - 1 : b >= H - 1 && b <= H + (picks?.offsetHeight || 0) + 1;
     // T1: the hero's bottom at scroll 0 within H +/- 1 (the crop sits between the fold and the hero's bottom)
     T.push(test('T1', fits ? 'PASS' : 'FAIL', fits ? [] : [off(hero.el, heroR, 'hero ends at ' + px(b) + 'px on a ' + H + 'px screen; a peek needs a visible product window', {at:0})]));
     // T2: nothing of the second section (its own box or any part of it) on the first screen, 1px allowed
@@ -2539,7 +2543,7 @@ function measure(opt) {
     // strip at most 96px on a desktop
     const hb = boxesBySec[0], limit = H - 24 - barH, off4 = [];
     for (const x of hb) {
-      if (bleedPic(x.el,x.r) || (frame?.contains(x.el) && !x.el.closest('h1,h2,h3,h4,h5,h6')) || (book?.contains(x.el) && ((phone && x.r.b <= hero.bottom + 1) || x.r.b-SY <= H-barH+1))) continue;
+      if (picks?.contains(x.el) || bleedPic(x.el,x.r) || (frame?.contains(x.el) && !x.el.closest('h1,h2,h3,h4,h5,h6')) || (book?.contains(x.el) && ((phone && x.r.b <= hero.bottom + 1) || x.r.b-SY <= H-barH+1))) continue;
       if (frame?.contains(x.el) && (x.r.b-SY <= H || x.r.t-SY >= H)) continue;
       if (x.r.b - SY > limit + 0.5) off4.push(off(x.el, x.r, `${q(x.el)} ends at ${px(x.r.b - SY)}px, below the hero's content line at ${px(limit)}px (the ${H}px screen less 24px${andBar})`, { d: x.r.b - SY - limit, ref: [lineY(SY + limit)] }));
       else if (x.r.t - SY < navH - 0.5) off4.push(off(x.el, x.r, `${q(x.el)} starts at ${px(x.r.t - SY)}px, under the ${px(navH)}px nav`, { d: navH - (x.r.t - SY), ref: [lineY(SY + navH)], at: 0 }));
@@ -2612,7 +2616,7 @@ function measure(opt) {
     }
     T.push(test('T-fit', fOff.length ? 'FAIL' : 'PASS', fOff));
     // T-snap (ST-02, SR-9 T1): the rhythm comes from heights and padding only, never from scroll-snap
-    { const sn = [de, body, ...allEls].filter((e) => { const v = cs(e).scrollSnapType; return v && v !== 'none'; });
+    { const sn = [de, body, ...allEls].filter((e) => { const v = cs(e).scrollSnapType; return v && v !== 'none' && !window.lyRules.itemRail(e); });
       T.push(test('T-snap', sn.length ? 'FAIL' : 'PASS', sn.slice(0, 3).map((e) => off(e === de || e === body ? null : e, null, `scroll-snap-type: ${cs(e).scrollSnapType} on ${e === de ? 'the html element' : e === body ? 'the body' : q(e)}: the scroll is the browser's own`, { moving: null, doc: null })))); }
     return T;
   });
@@ -2737,18 +2741,18 @@ function measure(opt) {
     const mOff = [];
     const checkEdge = (what, c, el, t, b) => {
       if (!c) return;
-      const lm = c.l - SX, rm = SX + W - c.r, probs = [];
-      if (Math.abs(c.l - ref.l) > 2) probs.push(`the page's container starts at ${px(ref.l - SX)}px`);
-      if (Math.abs(lm - rm) > 2) probs.push(`${px(lm)} and ${px(rm)}px are not one margin`);
-      if (lm < lim[0] - 0.5 || lm > lim[1] + 0.5) probs.push(`the margin is ${lim[0]}-${lim[1]}px at ${W}px`);
-      if (probs.length) mOff.push(off(el, { l: c.l, r: c.r, t, b: Math.min(b, t + 0.6 * H) }, `${what} runs ${px(lm)}px from the left and ${px(rm)}px from the right${c.src === 'wrap' ? '' : ' (read from its outermost blocks: no .wrap)'}: ${probs.join('; ')} (one container, equal margins, 2px either way)`, { d: Math.max(Math.abs(c.l - ref.l), Math.abs(lm - rm), lim[0] - lm, lm - lim[1]), ref: [cbox(ref, t, Math.min(b, t + 0.6 * H))] }));
+      const lm = c.l - SX, rm = SX + W - c.r;
+      if (Math.abs(c.l - ref.l) > 2 || Math.abs(lm - rm) > 2 || lm < lim[0] - 0.5 || lm > lim[1] + 0.5) {
+        const target = Math.max(lim[0], Math.min(lim[1], px(ref.l - SX)));
+        mOff.push(off(el, { l: c.l, r: c.r, t, b: Math.min(b, t + 0.6 * H) }, `The margins of ${what} are ${px(lm)}px left and ${px(rm)}px right at ${W}px, so use the same ${target}px page margin on both sides within 2px (allowed range ${lim[0]}–${lim[1]}px).`, { d: Math.max(Math.abs(c.l - ref.l), Math.abs(lm - rm), lim[0] - lm, lm - lim[1]), ref: [cbox(ref, t, Math.min(b, t + 0.6 * H))] }));
+      }
     };
     if (header) {
       const hr = rectOf(header);
       checkEdge("the nav's content", headerCtn, header, hr.t, hr.b);
       if (headerEdges && headerWrap) {
         const hw = rectOf(headerWrap);
-        if (Math.abs(headerEdges.l - hw.l) > 2 || Math.abs(headerEdges.r - hw.r) > 2) mOff.push(off(header, { l: headerEdges.l, r: headerEdges.r, t: hr.t, b: hr.b }, `the nav's first box starts at ${px(headerEdges.l - SX)}px and its last ends at ${px(headerEdges.r - SX)}px, not on its .wrap at ${px(hw.l - SX)}-${px(hw.r - SX)}px`, { ref: [cbox(hw, hr.t, hr.b)], at: 0 }));
+        if (Math.abs(headerEdges.l - hw.l) > 2 || Math.abs(headerEdges.r - hw.r) > 2) mOff.push(off(header, { l: headerEdges.l, r: headerEdges.r, t: hr.t, b: hr.b }, `The nav content runs from x ${px(headerEdges.l - SX)} to ${px(headerEdges.r - SX)}px, so align its outer boxes within 2px of its wrap edges at ${px(hw.l - SX)} and ${px(hw.r - SX)}px.`, { ref: [cbox(hw, hr.t, hr.b)], at: 0 }));
       }
     }
     S.forEach((s, i) => { if (!kitSceneSec(s)) checkEdge(`the content of section ${i + 1}`, ctns[i], s.el, s.top, s.bottom); });
@@ -2759,35 +2763,35 @@ function measure(opt) {
     for (const c of body.children) {
       if (SKIPTAG.test(TU(c)) || !visible(c)) continue;
       const r = c.getBoundingClientRect(); if (r.width * r.height === 0) continue;
-      if (!c.matches('header.nav, main, footer.closing, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar`));
+      if (!c.matches('header.nav, main, footer.closing, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `One <${c.tagName.toLowerCase()}> sits outside the four allowed page containers, so move it into the header, main, footer or action bar.`));
     }
     for (const s of S) {
       const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k));
       // (2.5.2: the place hero's photograph is in the flow in its band, split and name forms: layout.css 0b)
-      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k) && !(k.matches('.hero__bg') && s.el.matches('.hero--place')));
+      const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k) && !window.lyRules.edgePicture(k) && !(k.matches('.hero__bg') && s.el.matches('.hero--place')));
       const wraps = inflow.filter((k) => k.classList.contains('wrap'));
-      if ((wraps.length !== 1 || inflow.length !== 1) && !kitSceneSec(s)) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `the section needs exactly one in-flow child .wrap (it has ${inflow.length} in-flow child${inflow.length === 1 ? '' : 'ren'}, ${wraps.length} .wrap)`));
+      if ((wraps.length !== 1 || inflow.length !== 1) && !kitSceneSec(s)) sOff.push(off(s.el, { l: s.l, r: s.r, t: s.top, b: Math.min(s.bottom, s.top + 0.6 * H) }, `The section has ${inflow.length} in-flow children including ${wraps.length} wraps and needs one child, so place its content inside a single .wrap.`));
       let heroLayers = 0;
       for (const k of kids) {
-        if (inflow.includes(k)) continue;
+        if (inflow.includes(k) || window.lyRules.edgePicture(k) || k === window.lyRules.picks(s.el)) continue;
         if (s.isHero) heroLayers++;
         if (k.matches('.hero__bg') && s.el.matches('.hero--place') && cs(k).position === 'relative') continue;   // its photograph in the flow (layout.css 0b)
         const probs = layerProblems(k, s);
-        if (probs.length) sOff.push(off(k, null, `a child of section ${s.i + 1} beside its .wrap is no valid background layer: ${probs.join('; ')}`, { ref: [box(secR(s))] }));
+        if (probs.length) sOff.push(off(k, null, `The background layer in section ${s.i + 1} ${probs[0]}, so ${probs[0].includes('description') ? 'give the image alt text' : probs[0].includes('z-index') ? 'set its z-index to 0' : 'use an absolutely positioned image sized to the section'}.`, { ref: [box(secR(s))] }));
       }
-      if (heroLayers > 1) sOff.push(off(s.el, null, `the hero holds ${heroLayers} background layers: one at most`, { at: 0 }));
-      if (s.wrap && kids.length > wraps.length) { const z = parseInt(cs(s.wrap).zIndex, 10); if (!(z >= 1)) sOff.push(off(s.wrap, null, `the .wrap has z-index ${cs(s.wrap).zIndex} beside a layer: 1 or more`)); }
+      if (heroLayers > 1) sOff.push(off(s.el, null, `The hero holds ${heroLayers} background layers against a limit of one, so combine them in one background.`, { at: 0 }));
+      if (s.wrap && kids.length > wraps.length) { const z = parseInt(cs(s.wrap).zIndex, 10); if (!(z >= 1)) sOff.push(off(s.wrap, null, `The wrap has z-index ${cs(s.wrap).zIndex} beside a background layer and needs at least 1, so set its z-index to 1.`)); }
       if (s.isHero && s.wrap) {
         const wk = [...s.wrap.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k));
         const ht2 = wk.filter((k) => k.classList.contains('hero-text'));
-        if (ht2.length !== 1 || wk.length - ht2.length > 1) sOff.push(off(s.wrap, null, `the hero's .wrap holds ${wk.length} children, ${ht2.length} of them .hero-text: one .hero-text and at most one strip`, { at: 0 }));
+        if (ht2.length !== 1 || wk.length - ht2.length > 1) sOff.push(off(s.wrap, null, `The hero wrap holds ${ht2.length} .hero-text blocks and ${wk.length - ht2.length} other children, so group its contents into one .hero-text block and at most one strip.`, { at: 0 }));
       }
       if (s.el.matches('footer.closing') && s.wrap) {
         const wk = [...s.wrap.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k));
         const last = S[s.i - 1]?.el;
         const singleClose = wk.length === 1 && wk[0].matches('.closing__links') &&
           (last?.matches('[data-big-scene][data-big-scene-mounted], [data-moment="closing-lift"]') || last?.querySelector('form, [data-big-scene][data-big-scene-mounted]'));
-        if (wk.length !== 2 && !singleClose) sOff.push(off(s.wrap, null, `footer.closing > .wrap holds ${wk.length} children: exactly two (the call, then the legal row)`));
+        if (wk.length !== 2 && !singleClose) sOff.push(off(s.wrap, null, `The footer wrap holds ${wk.length} visible row${wk.length === 1 ? '' : 's'} and needs 2 here, so group its content into a closing call followed by a links row.`));
       }
     }
     T.push(test('T1-structure', sOff.length ? 'FAIL' : 'PASS', sOff));
@@ -2796,10 +2800,10 @@ function measure(opt) {
     const cOff = [];
     const t2 = (el, z, r, kind) => {
       if (typeof z === 'number' && layerOf(el)) return;
-      if (el === header || el === actionbar || bleedPic(el, r)) return;
+      if (el === header || el === actionbar || el === window.lyRules.picks(S[0].el) || bleedPic(el, r) || window.lyRules.edgePicture(el)) return;
       const c = C(z);
       const zone = typeof z === 'number' ? `section ${z + 1}` : z === 'H' ? 'the nav' : 'the action bar';
-      if (r.l < c.l - 2 || r.r > c.r + 2) cOff.push(off(el, r, `${kind === 'boxed' ? 'a box' : q(el)} runs ${px(r.l - SX)}-${px(r.r - SX)}px, outside the container lines of ${zone} at ${px(c.l - SX)}-${px(c.r - SX)}px: full width is for background layers and grounds only`, { d: Math.max(c.l - r.l, r.r - c.r), ref: [cbox(c, r.t, r.b)] }));
+      if (r.l < c.l - 2 || r.r > c.r + 2) cOff.push(off(el, r, `${kind === 'boxed' ? 'a box' : q(el)} runs from x ${px(r.l - SX)} to ${px(r.r - SX)}px, so fit it within 2px of the wrap of ${zone} at ${px(c.l - SX)} and ${px(c.r - SX)}px.`, { d: Math.max(c.l - r.l, r.r - c.r), ref: [cbox(c, r.t, r.b)] }));
     };
     for (const b of boxes) t2(b.el, b.z, b.r, b.kind);
     for (const d of decorated) t2(d.el, d.z, d.r, 'boxed');
@@ -2813,6 +2817,20 @@ function measure(opt) {
     // the box's padding, never the container's left line
     const c0 = C(0);
     const centredOn = (el, r) => /center/.test(cs(el).textAlign) && Math.abs((r.l + r.r) / 2 - (c0.l + c0.r) / 2) <= 2;
+    // The dealt closing heading may be centred within its five tracks.
+    const centredHeading = (el, r) => {
+      const head = el.closest('.section-head--center');
+      if (!head || cs(el).textAlign !== 'center') return false;
+      if (centredOn(el, r)) return true;
+      const close = head.parentElement;
+      if (!close?.matches('.closing__cta.close--form') || cs(head).gridColumnStart !== '1') return false;
+      const tracks = cs(close).gridTemplateColumns.split(/\s+/).map(parseFloat);
+      const end = cs(head).gridColumnEnd;
+      const span = end === '-1' ? tracks.length : Number(end.match(/^span (\d+)$/)?.[1]);
+      if (!span || span > tracks.length || !tracks.every(Number.isFinite)) return false;
+      const width = tracks.slice(0, span).reduce((sum,n) => sum + n, 0) + (span - 1) * (parseFloat(cs(close).columnGap) || 0);
+      return Math.abs((r.l + r.r) / 2 - innerBox(close).l - width / 2) <= 2;
+    };
     const heroH1 = rendered.find((it) => it.z === 0 && TU(it.el) === 'H1');
     const heroCentred = !!heroH1 && centredOn(heroH1.el, heroH1.r);
     // (the box is the one that holds the h1: the words' box, never a drawn window or a card in the hero's picture)
@@ -2843,7 +2861,7 @@ function measure(opt) {
         const inL = !!pic && (Math.abs(pic.l - c0.l) <= 2 || pic.l <= SX + 1) && br.l - Math.max(pic.l, c0.l) >= -2 && br.l - Math.max(pic.l, c0.l) <= 48;
         const inR = !!pic && (Math.abs(pic.r - c0.r) <= 2 || pic.r >= SX + W - 1) && Math.min(pic.r, c0.r) - br.r >= -2 && Math.min(pic.r, c0.r) - br.r <= 48;
         const onGrid = inL || inR || Math.abs(br.l - c0.l) <= 2 || Math.abs(br.r - c0.r) <= 2 || kx.some((x) => Math.abs(br.l - x) <= 2) || Math.abs((br.l + br.r) / 2 - (c0.l + c0.r) / 2) <= 2;
-        if (!onGrid) lOff.push(off(hb, br, `the hero's box starts ${px(Math.abs(br.l - c0.l))}px ${br.l > c0.l ? 'right' : 'left'} of the container's left, on no column line: the box starts on the container's left or a split line (x ${kx.map((x) => px(x - SX)).join(', ')}), ends on its right, or is centred`, { d: Math.abs(br.l - c0.l), ref: [lineX(c0.l, br.t, br.b)] }));
+        if (!onGrid) lOff.push(off(hb, br, `The hero text box starts at x ${px(br.l - SX)}px off the grid, so align its left edge within 2px of the wrap at x ${px(c0.l - SX)}px.`, { d: Math.abs(br.l - c0.l), ref: [lineX(c0.l, br.t, br.b)] }));
       }
     }
     for (const it of rendered) {
@@ -2852,14 +2870,14 @@ function measure(opt) {
       if (!(TEXTTAG.test(tag) || (cs(el).display === 'block' && hasDirectText(el)))) continue;
       if (!contentAnc.has(el) || el.closest('.app-frame,.hero__window,[data-ui]')) continue;
       let ex = null;
-      if (el.closest('.section-head--center') && centredOn(el, it.r)) ex = 'centred section heading';
+      if (centredHeading(el, it.r)) ex = 'centred section heading';
       if (z === 0 && heroCentred && centredOn(el, it.r)) ex = 'the centred hero';
       if (!ex && z === 0 && !el.closest('button, a, select, textarea, input')) {
         const hb = heroBox(el);
         if (hb) {
           ex = "the hero's box";
           const dx = firstLeft(el) - innerBox(hb).l;
-          if (Math.abs(dx) > 2 && !/center|right|end/.test(cs(el).textAlign)) lOff.push(off(el, it.r, `${q(el)} starts ${px(Math.abs(dx))}px ${dx > 0 ? 'right' : 'left'} of the hero box's padding: the words in a box start on its inner left line, 2px either way`, { d: Math.abs(dx), ref: [lineX(innerBox(hb).l, it.r.t, it.r.b)] }));
+          if (Math.abs(dx) > 2 && !/center|right|end/.test(cs(el).textAlign)) lOff.push(off(el, it.r, `The text starts ${px(Math.abs(dx))}px from the hero box's inner left edge against a 2px limit, so align its start with the padding.`, { d: Math.abs(dx), ref: [lineX(innerBox(hb).l, it.r.t, it.r.b)] }));
         }
       }
       if (el.closest('section[data-own], button, select, textarea, input, td, th, caption, .hero-book .field')) ex = 'component content';
@@ -2884,9 +2902,13 @@ function measure(opt) {
       if (!leftmost) continue;
       // T4 is about the tested containers (leftmost on their row), not every text box
       const ta = cs(el).textAlign;
-      if (wd(er) > 0.5 * cw && /center|right|end/.test(ta)) aOff.push(off(el, er, `${q(el)} is set ${ta === 'center' ? 'centred' : 'to the right'} across ${px(wd(er))}px, over half the ${px(cw)}px container: text that wide is set left`, { d: wd(er) - 0.5 * cw, ref: [cbox(c, er.t, er.b)] }));
+      if (wd(er) > 0.5 * cw && /center|right|end/.test(ta)) aOff.push(off(el, er, `The ${ta === 'center' ? 'centred' : 'right-aligned'} text is ${px(wd(er))}px wide against a limit of ${px(0.5 * cw)}px, so set text-align to start.`, { d: wd(er) - 0.5 * cw, ref: [cbox(c, er.t, er.b)] }));
       const fl = firstLeft(el);
-      const mirrorWords = window.lyRules.mirrored(el);
+      const form = el.closest('form.close__form');
+      if (form && Math.abs(fl - innerBox(form).l) <= 2) continue;
+      const corner = el.closest('.frame--near > div');
+      if (corner && window.lyRules.edgePicture(el) && Math.abs(fl - rectOf(corner).l) <= 2) continue;
+      const mirrorWords = window.lyRules.mirrored(el) || window.lyRules.edgeWords(el);
       if (mirrorWords?.contains(el) && Math.abs(fl-mirrorWords.getBoundingClientRect().left-SX)<=2) continue;
       const visitColumn = el.closest('footer.footer--visit .closing__links .grid > [class*="span-"]');
       if (visitColumn && Math.abs(fl - visitColumn.getBoundingClientRect().left - SX) <= 2) continue;
@@ -2900,14 +2922,15 @@ function measure(opt) {
     const kRows = lineRows.filter((r) => r.line.startsWith('split'));
     const allowed = kl.map((k) => px(ref.l + k.dx - SX)).join(', ');
     const lineOff =(r, msg, d) => { const t0 = r.items[0]; const more = r.items.slice(1, 4).map((t) => q(t.el)).join(', '); return off(t0.el, t0.r, msg + (more ? ` (also ${more})` : ''), { d, ref: [lineX(ref.l, t0.r.t, t0.r.b)], name: `x ${px(r.x - SX)}` }); };
-    for (const r of lineRows) if (r.line === 'extra') lOff.push(lineOff(r, `${r.n} text block${r.n > 1 ? 's start' : ' starts'} on a left line at x ${px(r.x - SX)}, ${px(r.dx)}px from the container's left: text starts on the container's left, or on one split line (x ${allowed})`, Math.abs(r.dx)));
-    if (kRows.length > 1) for (const r of kRows.slice(1)) lOff.push(lineOff(r, `${r.n} text block${r.n > 1 ? 's start' : ' starts'} on a second split line at x ${px(r.x - SX)}, the first at x ${px(kRows[0].x - SX)}: one split line on the page`, Math.abs(r.x - kRows[0].x)));
+    for (const r of lineRows) if (r.line === 'extra') lOff.push(lineOff(r, `${r.n} text block${r.n > 1 ? 's start' : ' starts'} at x ${px(r.x - SX)}px, so move the text within 2px of the wrap edge at ${px(ref.l - SX)}px or a split line at ${allowed}px.`, Math.abs(r.dx)));
+    if (kRows.length > 1) for (const r of kRows.slice(1)) lOff.push(lineOff(r, `Text starts on a second split line at x ${px(r.x - SX)}px against a limit of one line per page, so align it within 2px of the first at x ${px(kRows[0].x - SX)}px.`, Math.abs(r.x - kRows[0].x)));
     for (const it of rendered) {
       if (typeof it.z !== 'number' || !/^H[12]$/.test(TU(it.el)) || it.el.closest('.app-frame,[data-ui],section[data-own] .wrap > :not(h1,h2)')) continue;
       // the centred hero's h1 stands on the page axis; a box hero's on its box's padding (told above)
-      if (it.el.closest('.section-head--center') && centredOn(it.el, it.r)) continue;
+      if (centredHeading(it.el, it.r)) continue;
       if (it.z === 0 && ((heroCentred && centredOn(it.el, it.r)) || heroBox(it.el))) continue;
-      const mirrorWords = window.lyRules.mirrored(it.el);
+      if (window.lyRules.edgePicture(it.el)) continue;
+      const mirrorWords = window.lyRules.mirrored(it.el) || window.lyRules.edgeWords(it.el);
       if (mirrorWords?.contains(it.el) && Math.abs(firstLeft(it.el)-mirrorWords.getBoundingClientRect().left-SX)<=2) continue;
       const closePanel = it.el.closest('.closing__cta.close--split .close__panel,.comp-bleed > .wrap > .comp-panel');
       if (closePanel) {
@@ -2916,7 +2939,7 @@ function measure(opt) {
         if (Math.abs(firstLeft(it.el)-inner)<=2) continue;
       }
       const dx = firstLeft(it.el) - C(it.z).l;
-      if (Math.abs(dx) > 2) lOff.push(off(it.el, it.r, `the ${TU(it.el).toLowerCase()} starts ${px(Math.abs(dx))}px ${dx > 0 ? 'right' : 'left'} of the container's left: every h1 and h2 starts on it, 2px either way`, { d: Math.abs(dx), ref: [lineX(C(it.z).l, it.r.t, it.r.b)] }));
+      if (Math.abs(dx) > 2) lOff.push(off(it.el, it.r, `The ${it.el.localName} starts ${px(Math.abs(dx))}px from the wrap edge against a 2px limit, so align its text to the wrap's left edge.`, { d: Math.abs(dx), ref: [lineX(C(it.z).l, it.r.t, it.r.b)] }));
     }
     T.push(test('T3-left-lines', lOff.length ? 'FAIL' : 'PASS', lOff));
     T.push(test('T4-alignment', aOff.length ? 'FAIL' : 'PASS', aOff));
@@ -2924,8 +2947,8 @@ function measure(opt) {
     const sw = de.scrollWidth, cwd = de.clientWidth, bsw = document.scrollingElement.scrollWidth;
     const ov = Math.max(sw, bsw) - cwd;
     const ovOff = ov <= 0 ? [] : rendered.filter((it) => !it.layer && it.raw.r > SX + cwd + 0.5).sort((a, b) => b.raw.r - a.raw.r).slice(0, 6)
-      .map((it) => off(it.el, it.raw, `the page scrolls sideways (${Math.max(sw, bsw)}px wide on a ${cwd}px screen): ${q(it.el)} ends at ${px(it.raw.r - SX)}px`, { d: it.raw.r - SX - cwd }));
-    if (ov > 0 && !ovOff.length) ovOff.push(off(body, null, `the page scrolls sideways: ${Math.max(sw, bsw)}px wide on a ${cwd}px screen`, { doc: null, text: '' }));
+      .map((it) => off(it.el, it.raw, `The page is ${Math.max(sw, bsw)}px wide on a ${cwd}px screen, so let the element ending at x ${px(it.raw.r - SX)}px shrink to the viewport.`, { d: it.raw.r - SX - cwd }));
+    if (ov > 0 && !ovOff.length) ovOff.push(off(body, null, `The page is ${Math.max(sw, bsw)}px wide on a ${cwd}px screen, so constrain its widest content to the viewport.`, { doc: null, text: '' }));
     T.push(test('T5-overflow', ov <= 0 ? 'PASS' : 'FAIL', ovOff));
     // T6-right-edges: an img, video, canvas, svg or boxed block over half the container wide (the outermost, not in a
     // row or split) runs from the container's left line to its right line, 2px either way
@@ -2933,7 +2956,7 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number' || it.layer || bleedPic(it.el, it.r)) continue;
       const el = it.el, z = it.z, c = C(z), cw = c.r - c.l;
-      if (el === S[z].wrap || el.closest('section[data-own]') || inPlacePicture(el)) continue;
+      if (el === S[z].wrap || el.closest('section[data-own]') || inPlacePicture(el) || window.lyRules.edgePicture(el) || el.closest('.item-row')) continue;
       // The text panel over a hero photograph has its own placement check above.
       // Its width follows the headline; the full-bleed visual is the photograph.
       if (z === 0 && heroH1 && el === heroBox(heroH1.el)) continue;
@@ -2944,7 +2967,7 @@ function measure(opt) {
       if (wd(it.r) <= 0.5 * cw || inRowOrSplit(el, z) || el.closest(KIT_UNEVEN)) continue;
       if (t6seen.some((p) => p.contains(el))) continue;
       t6seen.push(el);
-      if (Math.abs(it.r.l - c.l) > 2 || Math.abs(it.r.r - c.r) > 2) eOff.push(off(el, it.r, `${/^(IMG|VIDEO|CANVAS|SVG)$/.test(TU(el)) ? `a <${el.tagName.toLowerCase()}>` : 'a box'} over half the container wide runs ${px(it.r.l - SX)}-${px(it.r.r - SX)}px, not on the container's lines at ${px(c.l - SX)}-${px(c.r - SX)}px`, { d: Math.max(Math.abs(it.r.l - c.l), Math.abs(it.r.r - c.r)), ref: [cbox(c, it.r.t, it.r.b)] }));
+      if (Math.abs(it.r.l - c.l) > 2 || Math.abs(it.r.r - c.r) > 2) eOff.push(off(el, it.r, `The wide ${el.localName} runs from x ${px(it.r.l - SX)} to ${px(it.r.r - SX)}px, so size it to reach the wrap edges at ${px(c.l - SX)} and ${px(c.r - SX)}px within 2px.`, { d: Math.max(Math.abs(it.r.l - c.l), Math.abs(it.r.r - c.r)), ref: [cbox(c, it.r.t, it.r.b)] }));
     }
     T.push(test('T6-right-edges', eOff.length ? 'FAIL' : 'PASS', eOff));
     return T;
@@ -2981,7 +3004,7 @@ function measure(opt) {
       const s = cs(el), extra = el.scrollWidth - el.clientWidth;
       if (extra <= 2) continue;
       if (/auto|scroll/.test(s.overflowX)) {
-        if (/^(PRE|CODE)$/.test(TU(el)) && el.closest('.wrap')) continue;
+        if ((/^(PRE|CODE)$/.test(TU(el)) && el.closest('.wrap')) || window.lyRules.itemRail(el)) continue;
         oOff.push(off(el, null, `a sideways scroller: ${extra}px of it hidden behind overflow-x: ${s.overflowX}`, { d: extra }));
       } else if (/hidden|clip/.test(s.overflowX) && s.display !== 'inline') {
         let items = inFlowKids(el);
@@ -3007,7 +3030,7 @@ function measure(opt) {
     T.push(test('T-clipped-cards', pOff.length ? 'FAIL' : 'PASS', pOff));
     // T-right: no content box's right past wrap.right + 2px (layers exempt)
     const xOff = [];
-    for (const b of boxes) { if (typeof b.z !== 'number' || bleedPic(b.el, b.r)) continue; const c = C(b.z); if (b.r.r > c.r + 2) xOff.push(off(b.el, b.r, `${q(b.el)} ends at ${px(b.r.r - SX)}px, past the container's right line at ${px(c.r - SX)}px`, { d: b.r.r - c.r, ref: [lineX(c.r, b.r.t, b.r.b)] })); }
+    for (const b of boxes) { if (typeof b.z !== 'number' || bleedPic(b.el, b.r) || window.lyRules.edgePicture(b.el)) continue; const c = C(b.z); if (b.r.r > c.r + 2) xOff.push(off(b.el, b.r, `${q(b.el)} ends at ${px(b.r.r - SX)}px, past the container's right line at ${px(c.r - SX)}px`, { d: b.r.r - c.r, ref: [lineX(c.r, b.r.t, b.r.b)] })); }
     T.push(test('T-right', xOff.length ? 'FAIL' : 'PASS', xOff));
     return T;
   });
@@ -3052,25 +3075,23 @@ function measure(opt) {
       const kHit = ks.find((k) => Math.abs(rr.l - k.x) <= 2);
       const gr = rectOf(sp.G.el), cols = [box(lr), box(rr)];
       // T-mode: the tops of the two columns' first boxes agree within 8px (merged CK-33: a centred split FAILs)
-      if (!(mode === 'top' || mode === 'both')) mOff.push(off(sp.G.el, gr, `the two columns of the split start ${px(tops)}px apart at the top${mode === 'centre' ? ' (centred on each other)' : ''}: a split's columns are top-aligned, 8px either way`, { d: tops ?? 0, ref: cols }));
+      if (!(mode === 'top' || mode === 'both')) mOff.push(off(sp.G.el, gr, tops == null ? 'One column has no measurable content start and both need one, so give the empty column visible content.' : `The column tops are ${px(tops)}px apart against an 8px limit, so set align-items to start on the split.`, { d: tops ?? 0, ref: cols }));
       // T-orientation: text left on every split
-      if (orient !== 'text-left' && !window.lyRules.mirrored(sp.G.el)) oOff.push(off(sp.G.el, gr, "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split", { ref: cols }));
+      if (orient !== 'text-left' && !window.lyRules.mirrored(sp.G.el)) oOff.push(off(sp.G.el, gr, "The first item in the left column is a visual where text is required, so put the text in the left column.", { ref: cols }));
       // Compare both columns with their own grid and its spacing token.
-      const probs = [];
-      if (!kHit) probs.push(`its right column starts at x ${px(rr.l - SX)}, on none of the split lines ${ks.map((k) => `${px(k.x - SX)} (k=${k.k})`).join(', ')}`);
-      // the left column ends 24px before the right one, or one column earlier on that column's end: the kit's splits set
-      // their words on span-5 beside a visual on span-6 start-7 (heroes.json split and collage, the layout demos' sections)
-      else if (![kHit.x - gutter, kHit.x - gutter - pitch].some(end => Math.abs(lr.r - end) <= 2))
-        probs.push(`its left column ends at x ${px(lr.r - SX)}; expected a ${gutter}px gutter or one empty track before the right column`);
-      if (probs.length) {
-        const nearest = ks.reduce((a, b) => Math.abs(a.x - rr.l) <= Math.abs(b.x - rr.l) ? a : b);
-        pOff.push(off(sp.G.el, gr, `the split is off its grid (${cs(sp.G.el).columnGap} gap, ${gutter}px token): ${probs.join('; ')}`, { d: Math.abs(nearest.x - rr.l), ref: [lineX(nearest.x, gr.t, gr.b)] }));
+      const nearest = ks.reduce((a, b) => Math.abs(a.x - rr.l) <= Math.abs(b.x - rr.l) ? a : b);
+      if (!kHit) {
+        pOff.push(off(sp.G.el, gr, `The right column starts at x ${px(rr.l - SX)}px, so set the grid gap to ${gutter}px and start it within 2px of its nearest grid line at x ${px(nearest.x - SX)}px.`, { d: Math.abs(nearest.x - rr.l), ref: [lineX(nearest.x, gr.t, gr.b)] }));
+      } else {
+        const ends = [kHit.x - gutter, kHit.x - gutter - pitch];
+        const end = ends.reduce((a,b) => Math.abs(a - lr.r) <= Math.abs(b - lr.r) ? a : b);
+        if (Math.abs(lr.r - end) > 2) pOff.push(off(sp.G.el, gr, `The left column ends at x ${px(lr.r - SX)}px, so adjust its span to end within 2px of the track edge at x ${px(end - SX)}px.`, { d: Math.abs(lr.r - end), ref: [lineX(end, gr.t, gr.b)] }));
       }
       // T-edges: the left item on wrap.left, the right item on wrap.right, 2px either way
       const ep = [];
       if (Math.abs(lr.l - c.l) > 2) ep.push(`its left column starts at ${px(lr.l - SX)}px, the container's left at ${px(c.l - SX)}px`);
       if (Math.abs(rr.r - c.r) > 2) ep.push(`its right column ends at ${px(rr.r - SX)}px, the container's right at ${px(c.r - SX)}px`);
-      if (ep.length) eOff.push(off(sp.G.el, gr, `the split does not run edge to edge on the container: ${ep.join('; ')}`, { d: Math.max(Math.abs(lr.l - c.l), Math.abs(rr.r - c.r)), ref: [cbox(c, gr.t, gr.b)] }));
+      if (ep.length) eOff.push(off(sp.G.el, gr, `The split runs from x ${px(lr.l - SX)} to ${px(rr.r - SX)}px, so align its outside edges within 2px of the wrap at ${px(c.l - SX)} and ${px(c.r - SX)}px.`, { d: Math.max(Math.abs(lr.l - c.l), Math.abs(rr.r - c.r)), ref: [cbox(c, gr.t, gr.b)] }));
     }
     T.push(test('T-mode', mOff.length ? 'FAIL' : 'PASS', mOff));
     T.push(test('T-orientation', oOff.length ? 'FAIL' : 'PASS', oOff));
@@ -3412,7 +3433,7 @@ async function run(ctx) {
     if (res && res.abort) {
       ctx.errors.push(`rhythm: ${res.abort}`);
       // a page with no viewport meta tag is drawn 980px wide and shrunk on a phone: that is the fault, the rest unread
-      if (res.noViewport) return [{ check: 'container-edges', sev: 'FAIL', id: 0, sel: 'head', text: '', rule: 'SR-6 viewport', msg: `the page has no viewport meta tag: on a ${ctx.width}px screen it lays out ${res.W}px wide and is drawn shrunk to ${Math.round((ctx.width / res.W) * 100)}%, every margin, line and letter with it (SR-6)`, fix: 'add <meta name="viewport" content="width=device-width, initial-scale=1"> to the head' }, ...notMeasured(ctx, res.abort, checks.map((c) => c.id).filter((c) => c !== 'container-edges'))];
+      if (res.noViewport) return [{ check: 'container-edges', sev: 'FAIL', id: 0, sel: 'head', text: '', rule: 'SR-6 viewport', msg: `The page lays out at ${res.W}px on a ${ctx.width}px screen, so add a viewport meta tag with width=device-width to the head.`, fix: 'add <meta name="viewport" content="width=device-width, initial-scale=1"> to the head' }, ...notMeasured(ctx, res.abort, checks.map((c) => c.id).filter((c) => c !== 'container-edges'))];
       return notMeasured(ctx, res.abort);
     }
     if (!res || !res.harness || !Array.isArray(res.tests)) return notMeasured(ctx, 'the read gave nothing back');
@@ -4020,9 +4041,9 @@ function pageProbe() {
     if (drawn(h) || !shown(h)) continue;
     const hc = getComputedStyle(h).color;
     for (const c of h.children) {
-      if (!/^(SPAN|EM|SMALL|I|B|STRONG)$/.test(c.tagName) || c.closest('.ly-word, .ly-pic, .ly-mark')) continue;
+      if (!/^(SPAN|EM|SMALL|I|B|STRONG)$/.test(c.tagName) || c.closest('.ly-word, .ly-pic, .ly-mark') || (h.matches('[data-moment-mounted][aria-label]') && c.matches('.mo-w[aria-hidden=true]'))) continue;
       const other = c.classList.contains('muted') || getComputedStyle(c).color !== hc;
-      if (!other) continue;
+      if (!other || window.lyRules.choiceStatus(c)) continue;
       let before = ''; for (let n = c.previousSibling; n; n = n.previousSibling) { if (n.nodeType === 1 && n.tagName === 'BR') { before = '.'; break; } before = (n.textContent || '') + before; if (squash(before)) break; }
       const b = squash(before), t = squash(c.textContent);
       if (!b || !t || /[.!?:;,…–—)»"”’]$/.test(b) || !/^[\p{Lu}\d]/u.test(t)) continue;
@@ -4671,7 +4692,8 @@ class Tab {
 }
 
 // ---------------------------------------------------------------- the in-page probe (serialised into the page)
-function lib() {
+const browserLib = `(${lib.toString()})(${itemContext.toString()})`;
+function lib(itemContext) {
   if (window.__cc) return true;
   const MEDIA = new Set(['IMG', 'VIDEO', 'CANVAS', 'IFRAME', 'OBJECT', 'EMBED']);
   const SKIP = new Set(['SCRIPT', 'STYLE', 'LINK', 'META', 'NOSCRIPT', 'TEMPLATE', 'BR', 'WBR', 'SOURCE', 'TRACK', 'HEAD', 'TITLE', 'PARAM', 'AREA', 'MAP', 'DATALIST', 'OPTION', 'OPTGROUP']);
@@ -4829,9 +4851,9 @@ function lib() {
     return out;
   }
   function lines(el) { const out = []; for (const n of el.childNodes) if (n.nodeType === 3) nodeRects(n, out); return out; }
-  function deepLines(el) {
+  function deepLines(el, skipChoiceStatus = false) {
     const out = []; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n;
-    while ((n = w.nextNode())) { const p = n.parentElement; if (p && shown(p)) nodeRects(n, out); }
+    while ((n = w.nextNode())) { const p = n.parentElement; if (p && shown(p) && !(skipChoiceStatus && window.lyRules.choiceStatus(p))) nodeRects(n, out); }
     return out;
   }
 
@@ -5206,7 +5228,7 @@ function lib() {
       if (!el.matches('h1, h2, h3') || !first(seen.hlines, el, r) || inDrawn(el) || inFixed(el)) continue;
       // a picture set in the line (the editorial hero's pills, .ly-pic) is part of the line it starts
       const pics = [...el.querySelectorAll('img, picture, svg, video, .ly-pic')].filter((m) => !(m.parentElement && m.parentElement.closest('svg, picture, .ly-pic'))).map((m) => m.getBoundingClientRect()).filter((q) => q.width >= 4 && q.height >= 4);
-      const rs = [...deepLines(el), ...pics].sort((a, b) => a.top - b.top), ls = [];
+      const rs = [...deepLines(el, true), ...pics].sort((a, b) => a.top - b.top), ls = [];
       for (const q of rs) { const L = ls.find((x) => Math.abs(x.top - q.top) < 0.5 * Math.min(x.height, q.height)); if (L) { L.left = Math.min(L.left, q.left); L.right = Math.max(L.right, q.right); } else ls.push({ left: q.left, right: q.right, top: q.top, height: q.height, width: 0 }); }
       if (ls.length < 2) continue;
       for (const L of ls) L.width = L.right - L.left;
@@ -5838,9 +5860,9 @@ function lib() {
   function checkFold(view, out, vw, vh) {
     if (scrollY > 2 || document.scrollingElement.scrollHeight - vh < 40) return;
     const S = sectionsList(), hero = S[0], done = new Set();
-    const frame = window.lyRules.peek(hero);
+    const frame = window.lyRules.peek(hero), picks = window.lyRules.picks(hero);
     for (const [el, r] of view) {
-      if (r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || (inDrawn(el) && !el.closest(HEADS)) || el.closest(INTER) || (frame?.contains(el) && !el.closest(HEADS))) continue;
+      if (picks?.contains(el) || r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || (inDrawn(el) && !el.closest(HEADS)) || el.closest(INTER) || (frame?.contains(el) && !el.closest(HEADS))) continue;
       const fs = parseFloat(CS(el).fontSize) || 16, big = !!el.closest('h1, h2') || fs >= 32;
       const L = lines(el).find((l) => l.top < vh - 2 && l.bottom > vh + 4); if (!L) continue;
       const v = clipRect(el, L); if (v.bottom < L.bottom - 1) continue; // cut by an overflow: told under cut-text
@@ -5850,7 +5872,7 @@ function lib() {
     }
     // the hero's own button cut in two by the fold (a phone's "Book a test ride" half below the screen)
     if (hero) for (const b of hero.querySelectorAll(INTER)) {
-      if (frame?.contains(b)) continue;
+      if (picks?.contains(b) || frame?.contains(b)) continue;
       const q = b.getBoundingClientRect();
       if (q.top >= vh - 4 || q.bottom <= vh + 4 || q.height > 120 || !shown(b, q) || inFixed(b) || inDrawn(b)) continue;
       const bc = CS(b); if (!(buttonLook(b, true) || faintBox(bc) || bordered(bc) || rgba(bc.backgroundColor).a >= 0.3)) continue; // a text link is no box to cut
@@ -5992,6 +6014,7 @@ function lib() {
       const upper = (q.top + q.bottom) / 2 < vh / 2, where = atTop && upper ? 'top' : atEnd && !upper ? 'end' : null; if (!where) continue;
       for (const [el, r] of view) {
         if (rt.contains(el) || el.contains(rt) || inFixed(el) || toldRest.has(rt)) continue;
+        if (where === 'top' && el.matches('.hero--place[data-form="foot"] > img.hero__bg,.hero--place[data-form="foot"] > picture.hero__bg > img') && r.width >= vw - 2 && r.height >= vh - 2) continue;
         const rects = ownText(el) ? lineBoxes(el, vh) : el.matches(INTER) || MEDIA.has(el.tagName) ? [clipRect(el, r)] : [];
         for (const L of rects) {
           const [ix, iy] = meet(L, q); if (ix < 8 || iy < 4) continue;
@@ -6094,7 +6117,7 @@ function lib() {
       if (p.children.length < 2 || !first(seen.tops, p, r)) continue;
       if (inFixed(p) || inDrawn(p) || inScroller(p) || inChrome(p)) continue;
       // the kit's offset pair (start.mjs deals it): its second figure sits lower on purpose
-      if (p.matches('.comp-offset')) continue;
+      if (p.matches('.comp-offset,.item-row.stagger')) continue;
       if (/masonry/.test(CS(p).gridTemplateRows || '') || /masonry/i.test(typeof p.className === 'string' ? p.className : '')) continue;
       const kids = [];
       for (const k of p.children) {
@@ -6982,7 +7005,7 @@ function lib() {
       const textForm = [...s.querySelectorAll('table,form,details,ol,dl,ul')].some(substantial);
       const hours = s.querySelector('dl.hours');
       const schedule = hours && shown(hours, hours.getBoundingClientRect()) && hours.querySelector('dt + dd');
-      if (textForm || schedule) continue;
+      if (textForm || schedule || window.lyRules.faqAnswers(s)) continue;
       if (s.matches('section[data-own]')) {
         const painted = [...s.querySelectorAll('figure *, article *, [aria-hidden=true]')].some(e => {
           const r=e.getBoundingClientRect(), css=CS(e);
@@ -7086,15 +7109,24 @@ function lib() {
     }
     const actionVisible = e => visible(e) || revealedActions.has(e);
     const inCard = (e) => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const k = quickKind(a); if (k && k !== 'media' && a.getBoundingClientRect().width < vw * 0.6) return true; } return false; };
+    const isItem = h => {
+      for (let el = h; el?.parentElement; el = el.parentElement) {
+        const classes = [...el.classList];
+        const repeated = [...el.parentElement.children].some(peer => peer !== el && peer.localName === el.localName && (el.matches('article,figure') || !classes.length || classes.some(c => peer.classList.contains(c))) && peer.querySelector('h1,h2,h3,h4,h5,h6'));
+        if (itemContext(el.localName, classes, el.getAttribute('role'), el.matches('[data-case], [data-faq-item]'), [...el.parentElement.classList], repeated)) return true;
+      }
+      return false;
+    };
     const heads = [];
-    for (const h of document.querySelectorAll('h1, h2, h3, h4')) {
+    for (const h of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
       if (inDrawn(h) || inFixed(h) || h.closest('dialog, .nav__menu, [role="menu"], header nav') || !visible(h)) continue;
       let mx = ownText(h) ? parseFloat(CS(h).fontSize) || 16 : 0;
       for (const e of h.querySelectorAll('*')) if (ownText(e) && shown(e)) mx = Math.max(mx, parseFloat(CS(e).fontSize) || 0);
       if (!mx) mx = parseFloat(CS(h).fontSize) || 16;
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
+      const item = isItem(h);
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h), item, step: h.tagName === 'H3' && !!h.closest('[class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]'), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h) || (item && !!h.closest('article,[role=option]')), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h) });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -7145,6 +7177,9 @@ function lib() {
       let card = null;
       for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const k = quickKind(a); const q = a.getBoundingClientRect(); if (k && k !== 'media' && q.width >= 160 && q.height >= 120 && q.width <= vw * 0.7) { card = a; break; } }
       if (!card || priced.some((p) => p.el === card)) continue;
+      // A seasonal menu item can use the brand ground while its price stays a caption.
+      if (card.matches('.item-row > li.ground-brand') && e.closest('.item-caption') &&
+          card.querySelector(':scope > img,:scope > picture') && card.querySelector('.fact-line')) continue;
       const q = card.getBoundingClientRect();
       const act = [...card.querySelectorAll('a[href], button, input[type="submit"], [role="button"]')].some(actionVisible)
         || [...document.querySelectorAll('a[href], button')].some((b) => { const t = b.getBoundingClientRect(); return visible(b) && t.top >= q.bottom - 2 && t.top <= q.bottom + 160 && t.left < q.right && t.right > q.left; });
@@ -8052,7 +8087,7 @@ function lib() {
       const it = (e, sec) => ({ id: idOf(e || sec), sel: sel(e || sec), text: label(e || sec) });
       // (a layer of the kit's own big scene the width of the page, its ground or its light, bleeds like a picture: the
       // scene paints its stage to its edges, so it meets the section before and after with no seam)
-      const bleeds = (e) => e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e)) || (inKitScene(e) && !ownText(e))) && e.getBoundingClientRect().width >= vw * 0.9;
+      const bleeds = (e) => e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e)) || (inKitScene(e) && !ownText(e))) && (e.getBoundingClientRect().width >= vw * 0.9 || (e.matches('img,picture') && window.lyRules.edgePicture(e)));
       if (edgeA) {
         const d = (ruleAt != null && same(gA, rb.top - ra.bottom > 4 ? gGap : gB) ? Math.min(ra.bottom, ruleAt) : ra.bottom) - ea.bottom, e = lastItem(A, ea, 'bottom');
         const bleed = bleeds(e);
@@ -8065,7 +8100,7 @@ function lib() {
       }
       if (!edgeA && !edgeB) {
         const gap = eb.top - ea.bottom;
-        if (gap < 24) out.push(Object.assign(it(lastItem(A, ea, 'bottom'), A), { side: 'gap', d: Math.round(gap), a: sel(A), b: sel(B), foot: B.tagName === 'FOOTER', btn: false, doc: D({ left: 0, top: ea.bottom - 30, width: vw, height: Math.max(0, gap) + 60 }) }));
+        if (gap < 24 && !(bleeds(lastItem(A, ea, 'bottom')) && bleeds(lastItem(B, eb, 'top')))) out.push(Object.assign(it(lastItem(A, ea, 'bottom'), A), { side: 'gap', d: Math.round(gap), a: sel(A), b: sel(B), foot: B.tagName === 'FOOTER', btn: false, doc: D({ left: 0, top: ea.bottom - 30, width: vw, height: Math.max(0, gap) + 60 }) }));
       }
     }
     scrollToY(0); await wait(200);
@@ -9193,7 +9228,7 @@ const FIX = {
   webgl: 'at most 4 live WebGL contexts: mount each effect when it comes on screen and destroy it when it leaves',
   'copy-headline': 'say what is sold, and for whom or where, in the hero: the h1 in the form on the voice card (2 to 9 words), the category plain in the lead or a hero notice',
   'copy-fact': 'put one hard fact on the first screen: a number, a price, a date, the place, the platforms it runs on or a game\'s genre; take it from the brief, or when the brief has none, a plausible one marked data-assumed and listed in the report (a price, the district)',
-  'copy-headings': 'name the thing in every heading: the product, a part, the place or a section noun',
+  'copy-headings': 'give this heading a distinct opening that names its subject',
   'copy-buttons': 'label buttons with a verb and what the visitor gets ("Book a room", "Start free trial")',
   'copy-actions': 'few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close',
   placeholder: 'write the real words: take the name or figure from the brief, or remove the claim; no bracketed placeholder ships',
@@ -9244,21 +9279,6 @@ const CHECKS = Object.keys(FIX);
 // ---------------------------------------------------------------- copy (a study of fifteen company sites)
 // terms from --category, --audience, --place, --products, --primary and --known-brand; without them, from a <title>
 // written as the starter has it, "Name: what it is for whom" (and the meta description for the place)
-const STOP = new Set('a an the and or of for to in on at by with from your you our we it its is are be this that these those as into over under all any every each one two new more most very just about after before than then there their them they who what when where how why which not no yes will can do does did so up out off own per via plus also only near far'.split(' '));
-const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[þÞ]/g, 'th').replace(/[ðÐ]/g, 'd').replace(/æ/gi, 'ae').replace(/ø/gi, 'o').replace(/ß/g, 'ss').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-const terms = (s) => String(s || '').split(/[,;|]/).map(norm).filter(Boolean);
-const words = (s) => norm(s).split(' ').filter((w) => w.length >= 3 && !STOP.has(w));
-// plurals only: "read" is not "reader", and a headline that says "read" does not name the reader it sells
-const stem = (w) => w.replace(/ies$/, 'y').replace(/([^s])s$/, '$1').slice(0, Math.max(4, Math.min(w.length, 7)));
-// does the text hold the term (a word or a phrase; plurals and joined compounds count)
-function holds(text, term) {
-  const t = norm(text); if (!term || !t) return false;
-  if ((' ' + t + ' ').includes(' ' + term)) return true;
-  if (t.replace(/ /g, '').includes(term.replace(/ /g, '')) && term.replace(/ /g, '').length >= 6) return true;
-  const tw = term.split(' '); if (tw.length > 1) return false;
-  const s = stem(term); return s.length >= 4 && t.split(' ').some((w) => w.length >= 4 && stem(w) === s);
-}
-const holdsAny = (text, list) => list.find((x) => holds(text, x)) || null;
 // copy-fact's other hard facts: the platforms a product or game runs on, written as the brands write them (the names
 // that are plain words too, Windows, Chrome, Safari, Steam, Slack, Notion, Stripe, only on a tech, gaming or software
 // page), a game's genre (on a gaming page only: "a co-op of farmers" is no genre), and a place named after a preposition
@@ -9279,45 +9299,10 @@ const placeAt = (text) => {
   }
   return null;
 };
-// words of one trade that name the same goods (a category in one of them counts in any)
-const KIN = [['ceramics', 'ceramic', 'pottery', 'potter', 'stoneware', 'porcelain', 'tableware'], ['coffee', 'espresso', 'roastery', 'roaster', 'cafe'], ['guesthouse', 'guest house', 'inn', 'b&b', 'bed and breakfast', 'lodge'], ['bakery', 'bakehouse', 'bread', 'sourdough'], ['bicycle', 'bike', 'bikes', 'cycle']];
-const SECTION_NOUNS = terms('fee,fees,building,buildings,terms,conditions,privacy,legal,pricing,prices,price,plans,plan,faq,questions,contact,menu,seasons,season,rooms,room,getting here,directions,visit,hours,opening times,location,address,map,about,team,customers,integrations,works with,how it works,reviews,testimonials,booking,book,order,specs,specifications,download,security,support,help,docs,blog,news,changelog,careers,jobs,press,shop,store,delivery,shipping,returns,warranty,gallery,photos,events,history,process,steps,services,products,product,apps,api,partners,compare,comparison,examples,templates,resources');
 const VERBS = new Set('book buy order pre-order preorder reserve try start get download compare see watch read find join subscribe sign contact add send configure request call email message visit plan check apply create open view copy shop schedule talk chat log register rent hire claim explore ask save pay upgrade choose pick enquire inquire donate install wishlist'.split(' '));
 const BANNED = new Set(['learn more', 'read more', 'view more', 'show more', 'discover', 'discover more', 'explore', 'explore more', 'more', 'mehr erfahren', 'weitere infos', 'click here', 'find out more', 'see more', 'begin', 'an example', 'details', 'more info', 'go']);
-function copyTerms(P) {
-  const t = { category: terms(CATEGORY), audience: terms(AUDIENCE), place: terms(PLACE), products: terms(PRODUCTS), primary: PRIMARY.trim(), from: 'flags' };
-  // a category given as a phrase ("coffee roastery and bar") also counts word by word, as the title's does
-  for (const k of ['category', 'place', 'products']) for (const c of [...t[k]]) if (c.includes(' ')) for (const w of words(c)) if (!t[k].includes(w)) t[k].push(w);
-  // a trade's own words for one thing: "Ceramics studio" names pottery and tableware (a headline need not repeat the flag's noun)
-  for (const c of [...t.category]) for (const g of KIN) if (g.includes(c) || g.includes(stem(c))) for (const w of g) if (!t.category.includes(w)) t.category.push(w);
-  if (!t.category.length) {
-    // "Larkmoor: electric kettles for small offices", "Osk, a ceramics studio in Porto", "Brindle | Shoe repair shop in Leeds"
-    const m = String(P.title).match(/^\s*([^:|–—,-]{1,40})\s*[:|–—,-]\s*(.+)$/);
-    if (m && !/^\[/.test(m[2])) {
-      const brand = norm(m[1]);
-      let what = m[2], who = '';
-      const f = what.match(/^(.*?)\s+for\s+(.+)$/i); if (f) { what = f[1]; who = f[2]; }
-      const inP = what.match(/^(.*?)\s+(?:in|on|at|near)\s+(.+)$/i); if (inP) { what = inP[1]; t.place.push(...terms(inP[2]).flatMap((x) => [x, ...x.split(' ').filter((w) => w.length >= 4)])); }
-      t.category = words(what).filter((w) => !brand.split(' ').includes(w)); // each content word of "what it is" names the category
-      if (who) t.audience.push(...words(who));
-      if (t.category.length) t.from = 'the page title';
-      // the trade's own words count from the title too ("rye and sourdough" names bread)
-      for (const c of [...t.category]) for (const g of KIN) if (g.includes(c) || g.includes(stem(c))) for (const w of g) if (!t.category.includes(w)) t.category.push(w);
-    }
-  }
-  t.brand = norm(P.brand || String(P.title).split(/[:|–—,-]/)[0]);
-  // names written with a capital inside a sentence (a town, a river, a product): the page's own proper nouns
-  t.names = [];
-  for (const src of [P.title, P.description, P.after, P.heroText]) for (const sent of String(src || '').split(/[.!?:;|–—]\s+/)) {
-    for (const w of sent.trim().split(/\s+/).slice(1)) {
-      const c = w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, '');
-      if (c.length >= 4 && /^\p{Lu}/u.test(c) && !/^\p{Lu}+$/u.test(c)) { const k = norm(c); if (k && !STOP.has(k) && !t.names.includes(k)) t.names.push(k); }
-    }
-  }
-  return t;
-}
 function copyChecks(P) {
-  const F = [], T = copyTerms(P);
+  const F = [], T = copyTerms(P, { category: CATEGORY, audience: AUDIENCE, place: PLACE, products: PRODUCTS, primary: PRIMARY });
   const f = (check, sev, x, msg) => F.push({ check, sev, id: x && x.id || 0, sel: x && x.sel || '(the page)', text: x && (x.text || x.label) ? String(x.text || x.label).slice(0, 48) : '', msg, doc: x && x.doc || null });
   // 1. the hero (h1, hero notice and lead) names the category (and, for a brand nobody knows, the buyer or the place); the h1
   //    takes the hero form on the voice card (copy.md, rule 1), in 2 to 9 words
@@ -9339,19 +9324,7 @@ function copyChecks(P) {
   const techKind = TYPE === 'software' || TECH, platform = PLATFORMS.test(P.heroText) || (techKind && PLATFORM_WORDS.test(P.heroText));
   const spelledQuantity = /\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:person|people|users?|seats?|days?|hours?|minutes?|weeks?|months?|years?)\b/i.test(P.heroText);
   if (!spelledQuantity && !/\d/.test(P.heroText) && !holdsAny(P.heroText, T.place) && !platform && !(/^(gaming|game|games)$/.test(KIND) && GENRES.test(P.heroText)) && !placeAt(P.heroText)) f('copy-fact', 'FAIL', P.h1 || null, 'the first screen holds no number, price, date, place, platform or genre');
-  // 3. every section heading names a thing (card titles are feature titles, read by the judge)
-  const gloss = [...T.category, ...T.products, ...T.place, ...T.audience, ...T.names, ...SECTION_NOUNS, ...(T.brand ? [T.brand] : [])];
-  const bareAll = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && (/^(?:overview|features)$/i.test(h.full.trim()) || !holdsAny(h.full, gloss)));
-  // an h3 in a step or chapter list ("Baked in the morning", "Finished by hand") names a step of what the h2 names:
-  // a WARN at most and never counted toward the FAIL, so good step headings are not flattened into noun labels
-  const bare = bareAll.filter((h) => !h.step);
-  for (const h of bareAll.filter((x) => x.step)) f('copy-headings', 'WARN', h, `the step heading "${h.full.slice(0, 60)}" names no product, part or place: fine for a step when the section's h2 names the product`);
-  if (bare.length) {
-    const sev = bare.length >= 2 && T.category.length ? 'FAIL' : 'WARN';
-    for (const h of bare) f('copy-headings', /^(?:overview|features)$/i.test(h.full.trim()) ? 'FAIL' : sev, h, `"${h.full.slice(0, 60)}" names no product, part, place or section${bare.length >= 2 ? ` (${bare.length} headings like it; at most one brand line per page)` : ' (the one brand line a page may have)'}`);
-  }
-  const bareCards = P.heads.filter((h) => h.level === 3 && h.card && !h.foot && norm(h.full) && !/[0-9]/.test(h.full) && !holdsAny(h.full, gloss) && !h.full.split(/[ ]+/).every((w) => /^[A-ZÀ-ÖØ-Þ]/.test(w)));
-  if (bareCards.length >= 2 && T.category.length) for (const h of bareCards) f('copy-headings', 'WARN', h, `the card title "${h.full.slice(0, 50)}" names no product, part, place or section (${bareCards.length} card titles like it)`);
+  for (const { h, sev, msg } of headingFindings(P.heads, T)) f('copy-headings', sev, h, msg);
   // 4. button labels: a verb and what the visitor gets
   const labels = new Map();
   for (const c of P.ctas) { const k = norm(c.label); if (!k) continue; if (!labels.has(k)) labels.set(k, []); labels.get(k).push(c); }
@@ -9557,13 +9530,14 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
   let heroBare = false;
   if (first && TYPE === 'product' && M.hero && !(M.heroMedia || []).length) {
     heroBare = true;
-    push('product-shown','FAIL',M.hero,'the product hero has no visible product picture or built view',{fix:'show the product in a client picture, live view or drawing'});
+    push('product-shown','FAIL',M.hero,'The hero shows 0 product views and needs at least 1, so add a picture of the product.',{fix:'show the product in a client picture, live view or drawing'});
   }
   // A product hero shows the product at the size the judges read it: the drawn bounds of its picture (the subject, not the frame round it)
   // under 60% of the container's content width FAILs, 60-80% WARNs (at a desktop width: 1440 and 1024, where the stage is a wide box)
   if (vw >= 1000 && !heroBare && TYPE === 'product' && M.heroProduct && M.heroProduct.frac < 0.8) {
-    const h = M.heroProduct, fail = h.frac < 0.6, pc = Math.round(h.frac * 100);
-    push('product-shown', fail ? 'FAIL' : 'WARN', h, `the hero's product is drawn ${h.w} x ${h.h}px, ${pc}% of the ${h.content}px available for the product at ${vw}px (its ${h.tag} is ${h.boxW}px wide${h.how === 'estimate' ? '; the product inside a live canvas is estimated from its frame' : ''}): a product page shows the product at 80% of the content width or more (under 60% FAILs)`, { more: h.more, fix: "show the product clearly across its assigned picture slot; a render's still cropped to the product (data-product-fill up to 1.2, a wide view such as side), or the client's photograph at full width" });
+    const h = M.heroProduct, fail = h.frac < 0.6;
+    const amount = h.how === 'estimate' ? 'is estimated to fill' : 'fills';
+    push('product-shown', fail ? 'FAIL' : 'WARN', h, `The product ${amount} ${h.w}px of its ${h.content}px slot (${Math.floor(h.frac * 1000) / 10}%) against a ${fail ? 60 : 80}% minimum, so crop the picture to fill the slot.`, { more: h.more, fix: 'crop the product picture to fill its assigned slot' });
   }
   if (first && !heroBare && TYPE === 'product' && T && T.category && T.category.length) {
     // any word of the category names the product ("roasted coffee beans": coffee, beans), not only its last; a miss is a
@@ -9681,7 +9655,7 @@ async function glFallbackPass(cdp, helper, { w: width, h }) {
     await tab.eval('document.fonts ? document.fonts.ready.then(() => 1) : 1', 15000).catch(() => {});
     await waitReady(tab);
     await sleep(1200);
-    await tab.eval(`(${lib.toString()})()`);
+    await tab.eval(browserLib);
     let s = 0;
     for (let k = 0; k < 60; k++) {
       const y = await tab.eval(`window.__cc.scrollTo(${Math.round(s)})`); await sleep(1100);
@@ -9823,7 +9797,7 @@ async function reducedPass(cdp, helper, { w: width, h }) {
     await tab.eval('document.fonts ? document.fonts.ready.then(() => 1) : 1', 15000).catch(() => {});
     await waitReady(tab);
     await sleep(1500);
-    await tab.eval(`(${lib.toString()})()`);
+    await tab.eval(browserLib);
     let y = 0;
     for (let k = 0; k < 14; k++) {
       const sy = await tab.eval(`window.__cc.scrollTo(${Math.round(y)})`);
@@ -9908,7 +9882,7 @@ function hiddenProbe() {
     const r = el.getBoundingClientRect();
     if (pic && (r.width < 120 || r.height < 80)) continue;
     if (r.width < 4 || r.height < 4 || r.bottom < 30 || r.top > H - 30 || r.right < 0 || r.left > W) continue;
-    if (el.closest(EX)) continue;
+    if (el.closest(EX) || window.lyRules.choiceStatus(el)) continue;
     const det = el.closest('details:not([open])'); if (det && !el.closest('summary')) continue;
     const tp = el.closest('[role=tabpanel]'); if (tp && (tp.hidden || tp.getAttribute('aria-hidden') === 'true')) continue;
     let why = '', op = 1, popup = false, grad = false, tx = 0, ty = 0;
@@ -9972,7 +9946,8 @@ async function hiddenWalk(cdp, helper, { w: width, h }, how, skip = new Set(), f
       const findings = await tab.eval(layoutRules+'\n;window.lyRules.still('+JSON.stringify(finals || {})+')');
       return {F:findings.map(browserFinding),errors,read:1};
     }
-    if (how !== 'nojs') await waitReady(tab);
+    if (how === 'nojs') await tab.eval(layoutRules);
+    else await waitReady(tab);
     await sleep(how === 'nojs' ? 1500 : how === 'reduced' ? 2000 : 4000);
     let y = 0;
     for (let k = 0; k < 40; k++) {
@@ -10102,7 +10077,7 @@ function groupSame(F) {
   const shape = (f) => f.check === 'spill' ? (/^lies across the edge/.test(f.msg) ? 'spill|' + f.sev + '|across|' + f.sel.split(' > ').slice(0, -1).join(' > ') : 'spill|' + f.sel + '|' + f.msg) : f.check + '|' + f.sev + '|' + f.msg.replace(/"[^"]*"/g, '"*"').replace(/\(\d+ headings like it[^)]*\)/, '').replace(/\bh([1-6])\b/g, (m, d) => 'h' + 'abcdef'[d - 1]).replace(/\d+(\.\d+)?/g, '#');
   const firsts = new Map();
   for (const f of [...F]) {
-    if (!SAME.has(f.check)) continue;
+    if (!SAME.has(f.check) || (f.check === 'copy-headings' && f.sev === 'FAIL')) continue;
     const k = shape(f), g = firsts.get(k);
     if (!g) { firsts.set(k, { f, more: [] }); continue; }
     g.more.push(f); F.splice(F.indexOf(f), 1);
@@ -10162,7 +10137,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     await tab.eval('document.fonts ? document.fonts.ready.then(() => 1) : 1', 15000).catch(() => {});
     await waitReady(tab);
     await sleep(1800);
-    await tab.eval(`(${lib.toString()})()`);
+    await tab.eval(browserLib);
     if (first) frame = await tab.eval(`(() => {
       const root = document.documentElement, style = getComputedStyle(root);
       const hero = document.querySelector('main .hero, [role=main] .hero');
@@ -10591,7 +10566,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     for (const v of NV.nv) {
       if (v.textOnly) { const sev = nText >= 2 || v.quote || v.close ? 'FAIL' : 'WARN'; F.push(Object.assign({ check: 'text-only', sev, id: v.id, sel: v.sel, text: v.text, msg: `the ${v.quote ? 'quote section' : v.close ? 'closing section' : 'section'} is only text: no picture, icon, mock or effect in it${nText >= 2 ? ` (${nText} sections like it at this width)` : ''}` }, place(v.doc))); continue; }
       // under 15% is no visual; 15-25% is a small one
-      F.push(Object.assign({ check: 'no-visual', sev: v.slot || v.cover < 15 ? 'FAIL' : 'WARN', id: v.id, sel: v.sel, text: v.text, msg: v.slot ? `its visual is still a placeholder (${v.slot}), so pictures, effects and mocks cover ${v.cover}% of this section; fill the slot` : v.cover ?`pictures, effects and mocks cover ${v.cover}% of this section; a feature section needs a visual (about 25% or more)` : 'no picture, effect or mock in this section; a feature section needs a visual' }, place(v.doc)));
+      F.push(Object.assign({ check: 'no-visual', sev: v.slot || v.cover < 15 ? 'FAIL' : 'WARN', id: v.id, sel: v.sel, text: v.text, msg: v.slot ? `The section has 1 unfilled visual slot (${v.slot}) where none are allowed, so replace the placeholder with the section picture.` : `Pictures, effects and mocks cover ${v.cover}% of the section against a ${v.cover < 15 ? 15 : 25}% minimum, so add a picture showing the feature.` }, place(v.doc)));
     }
     for (const v of NV.holes) F.push(Object.assign({ check: 'hole', sev: v.sev, id: v.id, sel: v.sel, text: v.text, msg: v.msg }, place(v.doc)));
     // what was read from the page as a whole, put on the screen that shows it
@@ -11176,7 +11151,7 @@ async function sweepWidth(cdp, w) {
     await tab.eval('document.fonts ? document.fonts.ready.then(() => 1) : 1', 15000).catch(() => {});
     await waitReady(tab);
     await sleep(1500);
-    await tab.eval(`(${lib.toString()})()`);
+    await tab.eval(browserLib);
     const m = await tab.eval('window.__cc.measure(0)', 120000);
     vw = m.vw; vh = m.vh; shot = await tab.shot();
     takePage(errors, m.errors);
@@ -11186,7 +11161,7 @@ async function sweepWidth(cdp, w) {
     // a part caught mid-move (a card travelling between columns in a loop) is no spill: measured again 0.9 s later,
     // only what stays where it was is told
     await sleep(900);
-    await tab.eval(`(${lib.toString()})()`); // a fresh probe: each part is judged once per probe
+    await tab.eval(browserLib); // a fresh probe: each part is judged once per probe
     const m2 = await tab.eval('window.__cc.measure(0)', 120000).catch(() => null);
     const still = (f) => !m2 || m2.findings.some((g) => g.check === f.check && g.sel === f.sel && (!f.rects || !f.rects[0] || !g.rects || !g.rects[0] || (Math.abs(f.rects[0].left - g.rects[0].left) <= 4 && Math.abs(f.rects[0].top - g.rects[0].top) <= 4)));
     for (const f of m.findings) if (/^(spill|off-viewport|cut-text)$/.test(f.check) && still(f)) F.push(f);
@@ -11241,7 +11216,7 @@ async function narrowPass(cdp, helper, w) {
     for (let y = 0, k = 0; y < H && k < 40; y += height, k++) { await tab.eval(`scrollTo(0, ${y})`); await sleep(220); }
     await tab.eval('scrollTo(0, 0)'); await sleep(500);
     // collide and tap-size on every screen, the fold on the first (a WARN here: 320x640 is the smallest phone in use)
-    await tab.eval(`(${lib.toString()})()`);
+    await tab.eval(browserLib);
     const H2 = await tab.eval('document.scrollingElement.scrollHeight'), seen = new Set();
     for (let y = 0, k = 0; y < H2 && k < 40; y += height, k++) {
       await tab.eval(`window.__cc.scrollTo(${y})`); await sleep(350);
@@ -11364,7 +11339,7 @@ try {
       const ph = w.h || HEIGHTS[w.w] || (w.w < 700 ? 844 : 900), mob = w.w < 700;
       const pctx = { cdp, helper, url, width: w.w, height: ph, mobile: mob, first: i === 0, quick, type: TYPE, typeFlag: TYPE_FLAG, kind: KIND, flags: MOD_FLAGS.get(M.id), outDir, sleep, errors: r.errors, safe: (name, fn) => safe2(r.errors, name, fn), waitReady,
         notChecked: (ids, why) => { report.notChecked = [...(report.notChecked || []), ...ids.map((c) => `${c} (${why})`)]; },
-        openTab: (o = {}) => Tab.open(cdp, { width: w.w, height: ph, mobile: mob, ...o }), loadLib: (tab) => tab.eval(`(${lib.toString()})()`), crop: (shot, f, name) => cropTo(helper, shot, f, w.w, ph, name), log: (...a) => { if (process.env.CC_TIMING) console.error(`  [${w.w}] ${M.id}:`, ...a); } };
+        openTab: (o = {}) => Tab.open(cdp, { width: w.w, height: ph, mobile: mob, ...o }), loadLib: (tab) => tab.eval(browserLib), crop: (shot, f, name) => cropTo(helper, shot, f, w.w, ph, name), log: (...a) => { if (process.env.CC_TIMING) console.error(`  [${w.w}] ${M.id}:`, ...a); } };
       if (M.when ? !M.when(pctx) : i !== 0) continue;
       let got = (await pctx.safe(M.id, () => M.run(pctx))) || [];
       // a hero taller or shorter than the screen (SR-1 T1) is the fault: its rows past the content line (T4) follow from it

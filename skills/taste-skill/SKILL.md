@@ -52,7 +52,7 @@ These nine win over everything else in this skill.
    at most). Licence credits go in one footer line.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390, and every section
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
-3. **The hero alone on the first screen** (its own product window may run past the fold, nothing
+3. **The hero alone on the first screen** (its own product window or one row of up to three linked shop picks may run past the fold, nothing
    of the next section shows at load), **then air in a clear rhythm:** more across a change of
    ground, less between two sections on the same ground, least round a short block. The tokens do
    it (`layout-v4.md` section 1); never set a section's height or padding yourself. Grounds carry
@@ -284,8 +284,9 @@ For your eyes first, then the gate (its check ids in brackets):
   still-wrong].
 - **Air and grounds:** nothing cramped, no empty stretch on one ground, the dealt rhythm of
   grounds [section-air, empty-band, ground-flat].
-- **Equal edges,** nothing out to one side, no sideways scroll [container-edges, right-edge,
+- **Equal text edges,** with the page inside the viewport [container-edges, right-edge,
   spill, off-viewport].
+- **Photo-led pages** take a picture to a screen edge after the hero and keep runs of boxed picture sections to two [boxed-run].
 - **Pictures show their claim** (your eyes: heading says X, picture shows Y); every visual draws
   at every width; no explaining caption [visual-empty, no-visual, visual-caption]; no stand-in of
   the wrong subject.

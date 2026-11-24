@@ -47,6 +47,7 @@
   Exit 0 no FAIL, 1 a FAIL in any file, 2 usage or an unreadable file.
 */
 import fs from 'node:fs';
+import { copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -108,6 +109,8 @@ function readHtml(raw) {
   const html = strip(raw);
   const all = tidy(decode(html.replace(/<[^>]+>/g, ' ')));
   const blocks = [], lines = [], headings = [], unread = [];
+  const documentRoot = {tag: null, classes: [], children: []};
+  const ancestry = [documentRoot];
   let block = '', line = '', head = null, foot = 0, skip = null, eyebrows = 0;
   const flushLine = () => { const t = squash(line); if (t) lines.push({ text: t, footer: foot > 0 }); line = ''; };
   const flushBlock = () => { flushLine(); const t = squash(block); if (t) blocks.push({ text: t, heading: head ? head.level : 0, footer: foot > 0 }); block = ''; };
@@ -137,6 +140,16 @@ function readHtml(raw) {
       }
     }
     if (!close && hiddenOrMock(tag, a)) { if (!selfClose) { flushBlock(); skip = { tag, stack: [], text: '' }; } continue; }
+    if (close) {
+      const i = ancestry.findLastIndex(n => n.tag === tag);
+      if (i >= 0) ancestry.length = i;
+    } else if (!selfClose) {
+      if (SHUTS[ancestry.at(-1)?.tag]?.test(tag)) ancestry.pop();
+      const parent = ancestry.at(-1);
+      const node = {tag, classes:(attrOf(a, 'class') || '').split(/\s+/).filter(Boolean), role:attrOf(a, 'role'), marked:hasAttr(a, 'data-case') || hasAttr(a, 'data-faq-item'), parent, children:[]};
+      parent?.children.push(node);
+      ancestry.push(node);
+    }
     if (!close && (attrOf(a, 'class') || '').split(/\s+/).some((c) => EYEBROW.test(c))) eyebrows++;
     // a heading's grey second half (<span class="muted">, system.md) is the line under a name, not a second fragment
     if (head && !selfClose) {
@@ -145,8 +158,11 @@ function readHtml(raw) {
     }
     if (/^h[1-6]$/.test(tag)) {
       flushBlock();
-      if (!close) head = { level: +tag[1], text: '', main: '', grey: null };
-      else if (head) { const t = squash(head.text); if (t && head.level <= 4) headings.push({ level: head.level, text: t, main: squash(head.main), footer: foot > 0 }); head = null; }
+      if (!close) {
+        for (const n of ancestry) n.hasHeading = true;
+        head = { level: +tag[1], text: '', main: '', grey: null, node: ancestry.at(-1) };
+      }
+      else if (head) { const t = squash(head.text); if (t) headings.push({ node: head.node, level: head.level, text: t, main: squash(head.main), footer: foot > 0 }); head = null; }
       continue;
     }
     if (tag === 'footer') { flushBlock(); foot = Math.max(0, foot + (close ? -1 : 1)); continue; }
@@ -156,6 +172,13 @@ function readHtml(raw) {
   }
   flushBlock();
   if (skip) endSkip();
+  for (const h of headings) {
+    for (let n = h.node; n?.parent; n = n.parent) {
+      const repeated = n.parent.children.some(peer => peer !== n && peer.tag === n.tag && peer.hasHeading && (n.tag === 'article' || n.tag === 'figure' || !n.classes.length || n.classes.some(c => peer.classes.includes(c))));
+      if (itemContext(n.tag, n.classes, n.role, n.marked, n.parent.classes, repeated)) { h.item = true; break; }
+    }
+    delete h.node;
+  }
   return { title: squash(title), meta: squash(meta), blocks, lines, headings, eyebrows, all: squash(all), unread, kind: declaredKind(raw), brands: brandsOf(raw, squash(title)) };
 }
 // the client's name as the page writes it: og:site_name or application-name, the logo's text (a class ending in logo,
@@ -479,6 +502,8 @@ function pageTargets(raw) {
     const n = {name, id:attrOf(attrs,'id'), hidden:stack.at(-1)?.hidden || hasAttr(attrs,'hidden') || attrOf(attrs,'aria-hidden') === 'true'};
     if (!n.hidden && n.id) ids.set(n.id,n);
     const classes = (attrOf(attrs,'class') || '').split(/\s+/);
+    n.itemRow = classes.includes('item-row');
+    n.pictureItem = name === 'li' && stack.at(-1)?.itemRow;
     const fact = classes.includes('fact-line');
     if (!stack.at(-1)?.hidden && !hasAttr(attrs,'hidden') && (['svg','canvas','picture','img','video'].includes(name) || attrOf(attrs,'role')==='img' || hasAttr(attrs,'data-diagram') || hasAttr(attrs,'data-chart') || hasAttr(attrs,'data-ui') || classes.includes('app-frame') || (n.hidden && ['div','span'].includes(name)))) {
       const pic = stack.findLast(p=>p.picture)?.picture || n;
@@ -487,7 +512,7 @@ function pageTargets(raw) {
     }
     if (n.hidden) { if (!VOID.has(name) && !token.endsWith('/>')) stack.push(n); continue; }
     if (fact || name === 'figcaption' || classes.some(c => /^(?:photo-|visual-)?caption$/.test(c))) {
-      const frame = stack.findLast(p => p.name === 'figure' || p.name === 'article') || stack.at(-1);
+      const frame = stack.findLast(p => p.name === 'figure' || p.name === 'article' || p.pictureItem) || stack.at(-1);
       n.caption = {fact,text:'',scope:frame,frame:frame?.lastPicture}; captions.push(n.caption);
     }
     if ((/^(input|textarea|select|button)$/.test(name) && attrOf(attrs,'type') !== 'hidden' && !hasAttr(attrs,'disabled')) ||
@@ -609,8 +634,13 @@ function lintRead(R, isHtml) {
     else if (hits.length > max) add('WARN', id, hits, `${msg}: ${hits.length}, budget ${max}`, fix, { budget: max });
     else if (hits.length) add('INFO', id, hits, `${msg}: ${hits.length} of ${max}`, '', { budget: max });
   };
-  const hText = R.headings.filter((h) => !h.footer).map((h) => h.text);
-  const hMain = R.headings.filter((h) => !h.footer).map((h) => h.main ?? h.text);
+  const vocabulary = copyTerms({ title: R.title, description: R.meta, heroText: R.headings.find(h => h.level === 1)?.text }, { category: CATEGORY });
+  for (const {h, sev, msg} of headingFindings(R.headings.map(h => ({...h, full:h.text, foot:h.footer})), vocabulary)) {
+    add(sev, 'copy-headings', [h.full], msg, sev === 'WARN' ? 'name the subject if the heading is unclear' : '');
+  }
+  const bodyHeadings = R.headings.filter(h => !h.footer && h.level <= 4);
+  const hText = bodyHeadings.map(h => h.text);
+  const hMain = bodyHeadings.map(h => h.main ?? h.text);
   budget('copy-two-fragment', hMain.filter((h) => /^[^.?!]{2,48}[.!] [^.?!]{2,55}[.!]?$/.test(unabbr(h)) && wc(h) <= 14), 1, 'two-fragment headings "X. Y."', 'spend it once where it lands hardest; give the other headings a plain label, a claim or the thing they name');
   budget('copy-number-pair', hMain.filter((h) => new RegExp(`^${NUM}\\b[^.]*?[,.]\\s+${NUM}\\b`, 'i').test(unabbr(h))), 1, 'number-pair headings "Four X, one Y"', 'say what the section holds ("Recent buildings") and let the first line carry the claim');
   // a question in the buyer's words (an FAQ entry) is not the device

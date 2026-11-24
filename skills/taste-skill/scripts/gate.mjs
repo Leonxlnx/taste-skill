@@ -598,6 +598,8 @@ function productChecks(html, dot) {
 // built as close__form is the close-form, in the footer or in a section of its own. The fix names the file to copy
 // from. A dealt part the brief cannot fill: deal again (start.mjs plan --has), or waive it.
 const COMP_MARK = {
+  'edge-split': [/\bedge-split\b/, 'an .edge-split section with five columns of text beside its photograph'],
+  'colour-half': [/\bcolour-half\b/, 'a .colour-half.ground-brand section with the photograph beside the panel'],
   mirrored: [/\bgrid--mirror\b/, 'class="grid grid--mirror" on the split (sections-library.md, Compositions)'],
   'bleed-panel': [/\bcomp-bleed\b/, '<section class="section comp-bleed"> with the photograph as its layer and the words on .comp-panel (sections-library.md, Compositions)'],
   'offset-pair': [/\bcomp-offset\b/, '<div class="grid comp-offset"> with two figures of one subject (sections-library.md, Compositions)'],
@@ -683,7 +685,7 @@ async function dealDrift(html, dot, kind, page, frame, source) {
   try { momentIds = JSON.parse(fs.readFileSync(path.join(SKILL,'assets/moments/index.json'),'utf8')).moments.map(m => m.id); } catch { momentIds = ids('moments'); }
   momentIds = momentIds.filter(id => !archived.has(id));
   if (machine?.version === '2.5.4') {
-    const record = (field, expected, actual, list = fails) => list.push({check:'deal-drift',where:field + ' ' + expected,msg:'plan.json dealt ' + expected + '; built ' + (actual || 'none'),fix:'use the dealt ' + field + ' on the page'});
+    const record = (field, expected, actual, list = fails) => list.push({check:'deal-drift',where:field + ' ' + expected,msg:'The plan requires ' + field + ' ' + expected + ' and the page shows ' + (actual || 'none') + ', so apply ' + expected + ' from the plan to the ' + field + '.',fix:'use the dealt ' + field + ' on the page'});
     // A replacement is explicit, carried on a moments line and built in its slot.
     const replacements = new Map(), used = new Set();
     const history = Array.isArray(h.moments) ? h.moments : [];
@@ -704,7 +706,11 @@ async function dealDrift(html, dot, kind, page, frame, source) {
         if (machine[key] && machine[key] !== frame[key]) record(key,machine[key],frame[key]);
       }
       for (const [part,label] of [['heroPeek','hero--peek'],['heroBook','hero-book']]) {
-        if (machine[part] === true && !frame[part]) record('hero',label);
+        if (machine[part] !== true || frame[part]) continue;
+        const msg = part === 'heroBook'
+          ? 'The hero has 0 booking bars and the plan requires 1, so add the hero-book form from hero-place.html inside the hero.'
+          : 'The plan requires a peek hero and the page has none, so use the hero--peek layout for its product window.';
+        fails.push({check:'deal-drift', where:'hero ' + label, msg, fix:msg});
       }
       if (machine.density && frame.density !== machine.density) record('density',machine.density,frame.density,warns);
       const library = file => JSON.parse(fs.readFileSync(path.join(SKILL,'library',file + '.json'),'utf8'));
@@ -759,27 +765,27 @@ async function dealDrift(html, dot, kind, page, frame, source) {
     const missing = base.ids.filter(id => !has('data-moment', id));
     const standIns = momentIds.filter(id => has('data-moment', id) && !base.ids.includes(id) && later.has(id));
     const told = missing.length > standIns.length ? missing : [];
-    for (const id of told) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `${histLine(base.at, '"moments"')} dealt ${id} ${why}; the page has no [data-moment="${id}"] and ${standIns.length ? `the ${standIns.length} dealt after it (${standIns.join(', ')}) stand in for fewer than the ${missing.length} missing` : 'no moment dealt after it stands in'}`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; ${instead(id)}; a brief that cannot fill it: deal again` });
+    for (const id of told) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `${histLine(base.at, '"moments"')} requires ${id} ${why} and the page has ${standIns.length} replacements for ${missing.length} missing moments, so mount ${id} on its intended section.`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; ${instead(id)}; a brief that cannot fill it: deal again` });
     // a moment the plan names, dealt in this project, is built: the plan and the page say the same
     const dealt = new Set(deals.flatMap(d => d.ids));
-    for (const id of P) if (dealt.has(id) && !has('data-moment', id) && !told.includes(id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan's moments part (${planLine}) names ${id}, dealt at ${histLine(deals.filter(d => d.ids.includes(id)).pop().at, '"moments"')}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; a moment dealt away: off that part, or in brackets after its stand-in, "(re-dealt for ${id})"` });
+    for (const id of P) if (dealt.has(id) && !has('data-moment', id) && !told.includes(id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan's moments part (${planLine}) requires ${id} from ${histLine(deals.filter(d => d.ids.includes(id)).pop().at, '"moments"')} and the page has none, so mount ${id} on the section named in the plan.`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; a moment dealt away: off that part, or in brackets after its stand-in, "(re-dealt for ${id})"` });
     // its scene (dealt within a few seconds of it); a scene dealt with a later pick and built stands in
     const scenes = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => s && s.id && !archived.has(s.id)), sc = scenes.filter(s => Math.abs(base.t - Date.parse(s.at)) < 10000).pop();
     if (sc && !scenes.some(s => Date.parse(s.at) > base.t + 10000 && has('data-big-scene', s.id))) { scene = sc.id; sceneMsg = `${histLine(sc.at, '"scenes"')} dealt the scene ${scene} ${why}`; }
   } else if (plan) {
     // no deal in the history: the plan comment is the deal
     const named0 = P.length ? P : momentIds.filter(id => named(plan, id));
-    for (const id of named0) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan comment (${planLine || planHint}) names the moment ${id} and ${SRC} holds no deal; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
+    for (const id of named0) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan comment (${planLine || planHint}) requires one ${id} moment and the page has none, so mount ${id} on its intended content.`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
     scene = ids('scenes').find(id => named(plan, id)) || null;
     sceneMsg = `the plan comment (${planHint}) names the scene ${scene}`;
   }
-  if (scene && !archived.has(scene) && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `${sceneMsg}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
+  if (scene && !archived.has(scene) && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `${sceneMsg} and the page has none, so mount data-big-scene="${scene}" on the planned scene.`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
   // the place hero's form
   const heroTag = (live.match(/<(?:section|header)\b[^>]*\bclass\s*=\s*["'][^"']*\bhero--place\b[^>]*>/i) || [])[0];
-  const pf = Array.isArray(lh.placeForms) && lh.placeForms.length ? lh.placeForms[lh.placeForms.length - 1] : (plan.match(/\bform\s*[:=]?\s*["']?(band|bleed|split|name)\b/i) || [])[1];
+  const pf = Array.isArray(lh.placeForms) && lh.placeForms.length ? lh.placeForms[lh.placeForms.length - 1] : (plan.match(/\bform\s*[:=]?\s*["']?(band|bleed|split|name|foot)\b/i) || [])[1];
   if (heroTag && pf) {
     const built = (attrs(heroTag)['data-form'] || 'band').toLowerCase();
-    if (built !== pf) (built === 'band' ? fails : warns).push({ check: 'deal-drift', where: `hero data-form="${built}"`, msg: `the place hero was dealt the form ${pf} (layout-history.json); the page builds ${built}${built === 'band' ? ', the band hero the deal moves away from' : ''}`, fix: `data-form="${pf}" on <section class="hero hero--place">, built as <skill>/assets/layout/hero-place.html and layout.css 0b show it (deal.mjs --type place --form ${pf} prints its markup)` });
+    if (built !== pf && !(pf === 'foot' && built === 'bleed')) (built === 'band' ? fails : warns).push({ check: 'deal-drift', where: `hero data-form="${built}"`, msg: `The place hero uses ${built} and its plan requires ${pf}, so set data-form="${pf}" and use that layout from hero-place.html.`, fix: `data-form="${pf}" on <section class="hero hero--place">, built as <skill>/assets/layout/hero-place.html and layout.css 0b show it (deal.mjs --type place --form ${pf} prints its markup)` });
   }
   // the close and the compositions: the last value dealt per part for this kind
   const L = h.layout && typeof h.layout === 'object' ? h.layout : {};
@@ -794,7 +800,7 @@ async function dealDrift(html, dot, kind, page, frame, source) {
     }
     for (const key of ['visit', 'offer', 'showcase', 'rooms', 'feature', 'form', 'statement']) {
       const c = lastOf(key);
-      if (c && !/<section\b[^>]*\sdata-own(?:[\s=>])/i.test(live) && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) fails.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key} (${SRC}, "layout"); the page has none`, fix: `build it: ${COMP_MARK[c][1]}; a part the brief cannot fill: deal again (start.mjs plan --has), or waive it with the reason` });
+      if (c && !/<section\b[^>]*\sdata-own(?:[\s=>])/i.test(live) && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) fails.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `The plan requires one ${c} composition for ${key} and the page has none, so build the section with ${COMP_MARK[c][1]}.`, fix: `build it: ${COMP_MARK[c][1]}; a part the brief cannot fill: deal again (start.mjs plan --has), or waive it with the reason` });
     }
   }
   return { fails, warns };
@@ -904,7 +910,7 @@ const LAYOUT_FIX = {
   'section-air': 'keep the kit padding (--padt, --padb) on the section; never zero it or add your own', sparse: 'give the section the content its heading promises, or merge it into the section next to it',
   neighbour: "keep the next section's heading and picture out of this screen", 'neighbour-ground': 'end the ground with the section',
   'hero-fold': 'the hero fills the first screen alone, its button inside it', 'hero-maxchars': 'shorten the h1 or give the hero room for the longest headline',
-  'hero-lines': "the check fills the h1 to this hero's maxChars, not your own: take the next type pairing the deal printed (start.mjs); when the h1 is final and fits, waive it (target: section.hero h1)", 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
+  'hero-lines': 'widen the headline column so the test headline fits its line limit', 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
 };
 
 // two house rules the checker only WARNs (its own kit demos carry neither) and the gate holds: every hero enters
@@ -1285,7 +1291,9 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     let renderedHtml = ''; if (!HAS_COPY.test(html) || fs.existsSync(path.join(dot,'plan.json'))) try { renderedHtml = fs.readFileSync(rendered, 'utf8'); } catch { /* none */ }
     const dd = await safely('deal-drift', () => dealDrift(renderedHtml || html, dot, kind, html ? relPage : null, b.frame, html), { fails: [], warns: [] });
     const pp = await safely('photo-product', () => productChecks(html || renderedHtml, dot), []);
-    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
+    const headingMessages = new Set(b.fails.filter(f => f.check === 'copy-headings').map(f => f.msg));
+    const sourceFails = c.fails.filter(f => f.check !== 'copy-headings' || !headingMessages.has(f.msg));
+    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...sourceFails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };
@@ -1309,7 +1317,9 @@ if (!HOOK && !QUICK) state.manual = true;   // the gate has been run by hand: ho
 
 // ---------------------------------------------------------------- the verdict
 const idsOf = f => (f.ids && f.ids.length > 1 ? `${f.check} (${f.ids.slice(1).join(', ')})` : f.check);
-const line = f => `${idsOf(f)}, ${f.where.slice(0, 80)}${f.widths && f.widths.length ? ` [${f.widths.join(',')}]` : ''}, fix: ${(f.fix || f.msg).slice(0, 160)}`;
+// Keep the measurement and its remedy together in the short Stop-hook reply too.
+const directAdvice = f => ['container-edges','copy-headings','deal-drift','edge-right','hero-fold','hero-lines','hero-maxchars','no-visual','product-shown','split-pair'].includes(f.check) && /, so /.test(f.msg);
+const line = f => `${idsOf(f)}, ${f.where.slice(0, 80)}${f.widths && f.widths.length ? ` [${f.widths.join(',')}]` : ''}, ${directAdvice(f) ? f.msg : 'fix: ' + (f.fix || f.msg).slice(0, 160)}`;
 const waivedText = () => W.waived.length ? `Waived (put these in your report): ${W.waived.map(w => `${w.check} ${w.where.slice(0, 50)} - ${w.reason}`).join('; ')}.` : '';
 const waiverExample = w => {
   const candidate = found.fails.find(f => !f.hard && (f.ids || [f.check]).includes(w.check)) || found.fails.find(f => !f.hard);
@@ -1320,7 +1330,7 @@ const badWaivers = () => W.waivers.filter(w => w.invalid).map(ignoredWaiver).joi
 const rule = `To waive matching FAILs, add {"check":"<id>","target":"<part of where>","reason":"<specific reason, 12+ characters>"} to ${slash(path.relative(base, waiverFile)) || waiverFile} (${MAX_WAIVERS} entries at most). Record the reason in your report. Fix kit-edited and checker-gaming in the page.`;
 function printAll(head) {
   print(head);
-  for (const f of open) print(`  FAIL ${idsOf(f).padEnd(16)} ${f.where.slice(0, 90)}${f.widths && f.widths.length ? `  [${f.widths.join(', ')}]` : ''}\n       ${f.msg.slice(0, 220)}\n       fix: ${(f.fix || '').slice(0, 220)}`);
+  for (const f of open) print(`  FAIL ${idsOf(f).padEnd(16)} ${f.where.slice(0, 90)}${f.widths && f.widths.length ? `  [${f.widths.join(', ')}]` : ''}\n       ${directAdvice(f) ? f.msg : f.msg.slice(0, 220) + '\n       fix: ' + (f.fix || '').slice(0, 220)}`);
   for (const w of W.waived) print(`  WAIVED ${w.check} ${w.where.slice(0, 80)}: ${w.reason}`);
   for (const w of W.waivers.filter(x => x.invalid)) print(ignoredWaiver(w));
   if (found.warns.length) print(`  ${found.warns.length} WARN (not blocking), first: ${found.warns.slice(0, 5).map(x => `${x.check} ${x.where.slice(0, 40)}`).join('; ')}`);

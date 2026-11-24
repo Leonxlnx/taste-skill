@@ -214,9 +214,10 @@ try {
           const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? h.h1.lines[0] : W <= 420 ? h.h1.lines[1] : null;
           res.stress = { hero: id, maxChars: h.h1.maxChars, authored: st.authored, changed: st.changed, chars: st.chars, lines, height: again.hero?.height };
           const sameFold = f => res.findings.some(old => old.rule === f.rule && old.where === f.where && old.detail === f.detail);
-          for (const f of again.findings.filter(f => st.changed && f.rule === 'hero-fold' && !sameFold(f))) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (authored ${st.authored}, budget ${h.h1.maxChars}): ${f.detail}` });
-          if (st.changed && allowed && lines > allowed && lines !== res.hero?.h1?.lines) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `with ${st.chars} characters (authored ${st.authored}, budget ${h.h1.maxChars}) the h1 takes ${lines} lines at ${W}, ${allowed} at most` });
-          if (st.changed && !res.overflowX && await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
+          for (const f of again.findings.filter(f => st.changed && f.rule === 'hero-fold' && !sameFold(f))) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `With a test headline of ${st.chars} characters, ${f.detail[0].toLowerCase() + f.detail.slice(1)}` });
+          if (st.changed && allowed && lines > allowed && lines !== res.hero?.h1?.lines) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `The ${st.chars}-character test headline wraps to ${lines} lines at ${W}px against a limit of ${allowed}, so widen the headline column.` });
+          const overflow = st.changed && !res.overflowX ? await ev('document.documentElement.scrollWidth - document.documentElement.clientWidth') : 0;
+          if (overflow > 0) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `The ${st.chars}-character test headline adds ${overflow}px of horizontal scroll where 0px is allowed, so let long words wrap.` });
         }
       }
     }

@@ -155,28 +155,73 @@ if (!variant || variant==='booking') {
   }
 }
 if (!variant || variant==='headings') {
+  const items = '<ul><li><h4>Welcome!</h4></li></ul><table><tbody><tr><td><h4>About us</h4></td></tr></tbody></table>' +
+    '<div class="cases"><div class="section-head"><h2>What we offer</h2></div><article><h3>Jordaan canal house</h3></article><article><h3>Oud-Zuid study</h3></article></div>' +
+    '<div><div class="tile"><h3>Our mission</h3></div><div class="tile"><h3>Cherry and ash</h3></div></div>' +
+    '<div class="faq"><div class="faq__item"><h3>Which areas do you work in?</h3><p>The north shore and the islands.</p></div></div>' +
+    '<details open><summary>Other work</summary><h4>Learn more</h4></details>';
+  const repeated = '<ul><li><h4>First visit</h4></li><li><h4>First visit!</h4></li></ul>' +
+    '<h3>At the first sitting</h3><h3>At the first meeting</h3><h3>At the second sitting</h3>';
+  const components = '<section id="booking-fixture" class="section"><div class="wrap"><h2>Workshop dates</h2>' +
+    '<div class="closing__cta close--form" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px">' +
+    '<div class="section-head--center" style="grid-column:1/span 5;text-align:center"><h3 id="centred-close">Choose your dates</h3><p>Spring sessions.</p></div>' +
+    '<form class="close__form" style="grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:48px;gap:24px">' +
+    '<label>Arrival<input type="date"></label><label>Departure<input type="date"></label><label>Guests<input type="number"></label>' +
+    '<p id="form-note" style="grid-column:1/-1">Your dates go in the message.</p></form></div></div></section>' +
+    '<section id="plans-fixture" data-own="plans"><div class="wrap"><h2>Allowance by traffic</h2><input type="range" aria-label="Traffic">' +
+    '<div class="grid"><article data-fit class="plan span-6"><h3 id="plan-first" style="font-size:24px">Free <span class="fit" style="color:#555;margin-left:70px">Covers you</span></h3></article>' +
+    '<article class="plan span-6"><h3 style="font-size:24px">Team <span class="fit" style="visibility:hidden;color:#555">Covers you</span></h3></article></div></div></section>' +
+    '<section id="faq-fixture" class="section"><div class="wrap grid"><div class="section-head span-5"><h2>Before your visit</h2></div>' +
+    '<div class="faq span-7"><div class="faq__item"><h3 style="font-size:18px">Can I bring a guest?</h3><p style="min-height:420px">A second seat is available.</p></div></div></div></section>';
   const host = (id,words)=>'<h2 id="'+id+'" data-moment="word-highlight">'+words+'</h2>';
   const mid = host('supply','The workshop stocks a replacement part for every tool that apprentices use on the course');
   const close = host('return','Bring your finished piece back to the studio for firing the following Wednesday afternoon');
   const start=fs.readFileSync(fixture(false),'utf8')
-    .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"></head>')
+    .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"><style>body h3{font-size:18px}</style></head>')
     .replace('<h2>c</h2>',mid)
     .replace('<h2>a</h2>','<h2>Overview</h2><h3>Not in the fee</h3>')
     .replace('<h2>b</h2>','<h2>Features</h2><h3>Listed buildings: do you take them?</h3>')
+    .replace('<h2>d</h2>','<h2>How a project runs</h2>' + items)
+    .replace('<h2>e</h2>','<h2>What it costs</h2>' + repeated)
+    .replace('</main>',components + '</main>')
     .replace('</body>','<footer class="footer closing"><div class="wrap"><div class="closing__cta">'+close+'</div><div class="closing__links">Wednesday, 14:00</div></div></footer><script type="module" src="assets/moments/moments.js"></script></body>');
   const file=path.join(tmp,'headings.html');
   fs.writeFileSync(file,start);
+  function checkHeadings(terms) {
+    const has = (severity, text) => terms.some(f => f.sev === severity && f.msg.includes(text));
+    for (const text of ['Overview','Features','What we offer','First visit','at the first']) assert.ok(has('FAIL', text),text+' must fail');
+    for (const text of ['How a project runs','What it costs']) assert.ok(has('WARN',text) && !has('FAIL',text),text+' is advisory');
+    for (const text of ['Welcome!','About us','Jordaan canal house','Oud-Zuid study','Our mission','Cherry and ash','Which areas','Learn more','At the second']) {
+      assert.ok(!has('FAIL',text) && (!has('WARN',text) || text === 'At the second'),text+' passes');
+    }
+  }
+  const stockPage = path.join(tmp, 'stock-headings.html');
+  const labels = ['Overview','Features','Our services','Solutions','Why choose us','Welcome','Learn more','About us','Our mission','What we offer','OUR SOLUTIONS!'];
+  const specific = ['Features of the house','Welcome to Jordaan','About us and the builders'];
+  fs.writeFileSync(stockPage, '<main>' + [...labels,...specific].map(text=>'<h2>'+text+'</h2>').join('') + '</main>');
+  const stock = (await run(path.join(skill,'scripts/copy-lint.mjs'),[stockPage,'--json'])).files[0].findings.filter(f=>f.id==='copy-headings' && f.sev==='FAIL');
+  for (const text of labels) assert.ok(stock.some(f=>f.hits[0].match === text), text+' is a stock label');
+  for (const text of specific) assert.ok(!stock.some(f=>f.hits[0].match === text), text+' has a subject');
+  const lint = (await run(path.join(skill,'scripts/copy-lint.mjs'),[file,'--json'])).files[0].findings;
+  checkHeadings(lint.filter(f=>f.id==='copy-headings'));
   const inspect=()=>run(path.join(skill,'assets/layout/check.mjs'),['--url',file,'--profile',profile,'--sizes','1440x900,390x844','--json','--no-stress']);
   for (const w of await inspect()) {
     assert.ok(!w.findings.some(f=>['moment-target','moment-hidden','moment-text','one-heading'].includes(f.rule) && f.sev!=='WARN'),w.size+' heading moment rejected');
+    assert.ok(!w.findings.some(f=>f.rule==='uneven-columns' && f.where.includes('faq-fixture')), 'FAQ introduction can be shorter than its answers');
     console.log('ok - '+w.size+' content and closing h2 hosts meet the moment contract');
   }
   const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'heading-check')]);
   const terms = report.widths.flatMap(w => w.findings).filter(f => f.check === 'copy-headings');
+  checkHeadings(terms);
   for (const generic of ['Overview','Features']) assert.ok(terms.some(f => f.sev === 'FAIL' && f.msg.includes('"'+generic+'"')),generic+' still fails');
   assert.ok(!terms.some(f => /Not in the fee|Listed buildings/.test(f.msg)), 'specific fee and building headings pass');
   for(const w of report.widths) {
-    assert.ok(!w.errors?.length && !w.findings.some(f=>f.sev==='FAIL' && (['moment-text','one-heading','heading-scale'].includes(f.check) && /#(?:supply|return)/.test(f.sel||'') || f.check==='effect-kind' && /never run|never mounted/.test(f.msg))),w.width+' production heading moment rejected');
+    assert.ok(!w.findings.some(f=>f.check === 'heading-scale' && f.sev === 'FAIL' && /h3 headings in/.test(f.msg) && /plan-first|plans-fixture|Covers you/.test(f.sel + f.text)), w.width+' pricing card titles keep their own size alongside FAQ questions');
+    assert.ok(!w.findings.some(f=>f.sev==='FAIL' && (
+      (['row-lines','container-edges'].includes(f.check) && /form-note|form\.close__form|centred-close/.test(f.sel)) ||
+      (['stagger','hidden-content','still-wrong','run-on'].includes(f.check) && /fit|plan-first|Covers you|plans span/.test([f.sel,f.text,f.msg].join(' '))) ||
+      (['text-only','no-visual'].includes(f.check) && f.sel.includes('faq-fixture')))), 'local form lines, selected plan label and FAQ answers pass');
+    assert.ok(!w.errors?.length && !w.findings.some(f=>f.sev==='FAIL' && (['moment-text','one-heading','heading-scale','run-on'].includes(f.check) && /#(?:supply|return)/.test(f.sel||'') || f.check==='effect-kind' && /never run|never mounted/.test(f.msg))),w.width+' production heading moment rejected');
     console.log('ok - '+w.width+' production checker accepts mounted text at the h2 scale');
   }
   fs.writeFileSync(file,start.replace(mid,'<div data-moment="word-highlight"><span></span></div>'));
