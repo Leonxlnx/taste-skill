@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" >
+  <style>:root{color:#292d23}@media(prefers-color-scheme:dark){:root{color:#f6f1e5}}</style>
+  <g fill="currentColor">
+    <path fill-rule="evenodd" d="M82 56Q96 53 113 34Q117 62 101 78L88 84L80 75Q101 68 104 53Q95 62 85 65Z"/>
+    <path d="M17 51Q23 36 34 38Q44 39 45 51L48 63Q59 57 73 58Q89 58 96 68L101 79Q94 100 66 102Q43 103 33 83Q27 72 27 60L9 57Z"/>
+    <path d="M49 57Q74 39 90 57Z"/>
+  </g>
+</svg>

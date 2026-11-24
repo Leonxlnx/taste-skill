@@ -22,7 +22,7 @@
   "weight": 1,
   "needs": {
     "photo": true,
-    "picture": "hard edges and detail (a coast, a building, a street); a flat sea or sky shows no ripple"
+    "picture": "The game or creative tool's own picture is the product."
   },
   "avoidWith": [
     "picture-develops",
@@ -66,5 +66,6 @@
       },
       "wait": 6000
     }
-  }
+  },
+  "counts": false
 }

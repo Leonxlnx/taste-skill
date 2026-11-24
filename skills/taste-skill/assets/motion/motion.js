@@ -14,7 +14,7 @@
   - tabs: every .tabs[role=tablist] gets one indicator that slides to the selected tab (system.js
     still selects; this follows aria-selected).
   - numbers: [data-m-count] on a stat ticks from 0 to its own text once, when 60% of it is on
-    screen (1.2 s, ease-out); prefix, suffix, decimals and thousands separators are kept. The
+    screen (1.0 s, ease-out); prefix, suffix, decimals and thousands separators are kept. The
     number's width is measured once the web fonts are in and again when it is first seen (a stat
     in a hidden tab), so nothing beside it moves; a stat the observer never reports shows its own
     text after 6 s on screen. A headless screenshot (HeadlessChrome) sees the final number unless
@@ -47,6 +47,11 @@ function nav() {
   if (!links || bar.dataset.mNav) return;
   bar.dataset.mNav = '1';   // no pill under the words (ST-08, ST-11): system.css draws their underline
 
+  const phone = matchMedia('(max-width: 1023px)');
+  const syncSheet = () => { links.inert = phone.matches && !bar.classList.contains('is-open'); };
+  syncSheet();
+  new MutationObserver(syncSheet).observe(bar, { attributes: true, attributeFilter: ['class'] });
+  phone.addEventListener('change', syncSheet);
   // one menu open: the next word swaps the panel at once (figma.com); leaving the bar closes softly
   let t = 0;
   bar.querySelectorAll('.nav__item').forEach(item => {
@@ -65,6 +70,22 @@ function nav() {
 function tabs() {
   document.querySelectorAll('.tabs[role="tablist"], [role="tablist"].m-tabs').forEach(list => {
     if (!list.querySelector('[role="tab"]') || list.querySelector(':scope > .m-tab-ind')) return;
+    const panels = [...list.querySelectorAll('[aria-controls]')].flatMap(tab =>
+      tab.getAttribute('aria-controls').split(/\s+/).map(id => document.getElementById(id)).filter(Boolean));
+    const panelParents = new Set(panels.map(panel => panel.parentElement));
+    for (const parent of panelParents) {
+      if ([...parent.children].every(el => panels.includes(el)) && getComputedStyle(parent).display === 'block') parent.classList.add('m-tab-stack');
+    }
+    const fades = new MutationObserver(records => {
+      for (const { target } of records) {
+        if (target.hidden) continue;
+        for (const animation of target.getAnimations()) {
+          if (animation.constructor.name !== 'Animation' || !animation.effect?.getKeyframes().every(k => 'opacity' in k)) continue;
+          animation.effect.updateTiming({ duration: reduced() ? 120 : 180 });
+        }
+      }
+    });
+    panels.forEach(panel => fades.observe(panel, { attributes: true, attributeFilter: ['hidden'] }));
     const ind = document.createElement('span');
     ind.className = 'm-tab-ind';
     ind.setAttribute('aria-hidden', 'true');
@@ -150,7 +171,7 @@ function counts() {
     span.style.textAlign = 'right';
     span.textContent = p.raw;
     after.replaceWith(span);
-    const ms = +el.dataset.mCount || 1200;
+    const ms = +el.dataset.mCount || 1000;
     let state = 'wait', timer = 0;          // wait (own text) -> armed (0, width held) -> run -> done
     const stop = () => { clearTimeout(timer); io.unobserve(el); ro.unobserve(el); };
     const onScreen = () => {
@@ -174,7 +195,7 @@ function counts() {
         const w = span.getBoundingClientRect().width;
         if (!w) { state = 'wait'; clearTimeout(timer); return false; }
         span.style.minWidth = `${w}px`;
-        span.textContent = format(0, p);
+
         if (state !== 'armed') { state = 'armed'; watch(); }
         return true;
       },
@@ -187,7 +208,8 @@ function counts() {
         stop();
         const t0 = performance.now();
         const step = now => {
-          const k = Math.min(1, (now - t0) / ms);
+          if (state !== 'run') return;
+          const k = reduced() ? 1 : Math.min(1, (now - t0) / ms);
           span.textContent = k < 1 ? format(p.value * (1 - Math.pow(1 - k, 4)), p) : p.raw;
           if (k < 1) requestAnimationFrame(step); else state = 'done';
         };
@@ -277,7 +299,7 @@ document.addEventListener('click', e => {
 
 /* ---------------------------------------------------------------- the hero's entrance */
 // Once, on load (motion.md, The hero's entrance): the h1 rises line by line out of its masks, then what
-// follows it (the lead, each button, the facts) fades up 60ms apart, while the picture settles from a
+// follows it (the lead, each button, the facts) enters by role, while the picture settles from a
 // slight scale; about 1.1 s in all, ease-out, transform and opacity only. motion.css hides the words
 // (never the picture) only while the head line's html.m-enter is on and its 700ms safety mark
 // (m-enter-done) is not; the picture waits at its start scale and settles by a CSS transition, so it
@@ -341,6 +363,17 @@ function enterSteps(hero, h1, media) {
 // still stands. Each is settled by 1.4 s
 const DECK = { rise: 1150, 'set-type': 1320, 'line-blocks': 1250, 'product-at-work': 1320, focus: 1100, exposure: 1200, aperture: 1300, doors: 1200, still: 0 };
 const EASE_ENTER = 'cubic-bezier(.22, 1, .36, 1)', EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
+function animateFollowers(steps) {
+  const anims = [];
+  for (const el of steps) {
+    const facts = el.matches('dl,ul,ol,.hero-facts,.facts,[data-enter-facts]') || el.closest('.hero-facts,.facts');
+    const button = el.matches('.btn,button,[role="button"]');
+    const timing = { duration: facts ? 400 : button ? 460 : 520, delay: facts ? 260 : button ? 200 : 120, easing: EASE_ENTER, fill: 'both' };
+    anims.push(el.animate([{ opacity: 0 }, { opacity: 1 }], timing));
+    if (!facts) anims.push(el.animate([{ translate: button ? '0 8px' : '0 12px' }, { translate: '0 0' }], timing));
+  }
+  return anims;
+}
 function enter() {
   const hero = document.querySelector('.hero[data-enter]:not([data-enter="off"])');
   if (!hero || hero.classList.contains('is-entered') || hero.classList.contains('is-entering')) return;
@@ -370,6 +403,9 @@ function enter() {
     Promise.race([Promise.all([document.fonts?.ready, img?.decode?.().catch(() => {})]), new Promise(r => setTimeout(r, 250))]).then(() => {
       if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) return late();
       hero.classList.add('is-entering');
+      if (v === 'focus' || v === 'exposure') {
+        for (const animation of animateFollowers(enterSteps(hero, h1, media))) animation.finished.then(() => animation.cancel(), () => {});
+      }
       setTimeout(() => { hero.classList.remove('is-entering'); done(); }, total);
     });
     return;
@@ -388,7 +424,7 @@ function enter() {
   };
   // the fonts first (a line set in the fallback face breaks elsewhere), 250ms at most: the words are
   // hidden meanwhile, so nothing is seen twice
-  Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise(r => setTimeout(r, 250))]).then(() => {
+  Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise(r => setTimeout(r, v === 'line-blocks' ? 40 : 100))]).then(() => {
     if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) { over = true; return late(); }   // the safety mark won: CSS shows it
     masks = maskWords(h1);
     // .is-entering ends the CSS hold: the words are held by their animations from here, and the
@@ -408,29 +444,20 @@ function enter() {
         blk.setAttribute('aria-hidden', 'true');
         Object.assign(blk.style, { left: `${l - box.left - h1.clientLeft}px`, top: `${t - box.top - h1.clientTop}px`, width: `${rr - l}px`, height: `${b - t}px` });
         h1.append(blk);
-        anims.push(blk.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 650, delay: 120 + k * 90, easing: EASE_IO, fill: 'both' }));
+        anims.push(blk.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 180, delay: Math.min(k, 3) * 15, easing: EASE, fill: 'both' }));
       });
     } else {
       // a word starts wholly below its mask, which reaches .12em under the line: no tops show before it rises
       lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
         ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
         : [{ transform: 'translateY(.35em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
-        { duration: 700, delay: 80 + k * lineStep, easing: EASE, fill: 'both' }))));
+        { duration: 700, delay: k * lineStep, easing: EASE, fill: 'both' }))));
     }
     // product at work: the window's marked parts appear one after another while the headline rises (four at most)
     if (v === 'product-at-work') [...hero.querySelectorAll('[data-enter-step]')].slice(0, 4).forEach((el, i) => {
-      anims.push(el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: 380 + i * 200, easing: EASE, fill: 'both' }));
+      anims.push(el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 160 + i * 70, easing: EASE, fill: 'both' }));
     });
-    // a line above the h1 (a notice, a pill) comes with its first line; what follows starts as its
-    // last line is half way up
-    const after = 80 + (lines.length - 1) * lineStep + 220;
-    let k = 0;
-    steps.forEach(el => {
-      const above = !!(el.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING);
-      // the rise is added to whatever transform the part has of its own; the fade replaces its opacity
-      const t = { duration: 520, delay: above ? 40 : after + Math.min(k++, 6) * 60, easing: EASE, fill: 'both' };
-      anims.push(el.animate([{ opacity: 0 }, { opacity: 1 }], t), el.animate([{ transform: 'translateY(12px)' }, { transform: 'none' }], { ...t, composite: 'add' }));
-    });
+    anims.push(...animateFollowers(steps));
     // a panel the words sit on stands from the first paint (it was never hidden, so it never blinks);
     // the pictures settle by CSS over 1.1 s: the hero is done when both are through
     anims.push({ finished: new Promise(r => setTimeout(r, total)), cancel() {} });
@@ -608,13 +635,79 @@ function swapLabels() {
   });
 }
 
+/* ---------------------------------------------------------------- small content elements */
+const progressItems = new Set();
+const drawn = new WeakSet();
+const drawing = new Map();
+let progressFrame = 0;
+function updateProgress() {
+  progressFrame = 0;
+  for (const el of progressItems) {
+    if (!el.isConnected) { progressItems.delete(el); continue; }
+    const rect = el.getBoundingClientRect();
+    const progress = Math.min(1, Math.max(0, (innerHeight - rect.top) / (innerHeight + rect.height)));
+    const value = progress.toFixed(4);
+    if (el.style.getPropertyValue('--p') !== value) el.style.setProperty('--p', value);
+  }
+}
+function queueProgress() {
+  if (!progressFrame && progressItems.size) progressFrame = requestAnimationFrame(updateProgress);
+}
+const lineObserver = typeof IntersectionObserver === 'function' && new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    const line = entry.target;
+    lineObserver.unobserve(line); drawn.add(line);
+    const length = line.pathLength.baseVal.value || line.getTotalLength();
+    if (!length || reduced()) continue;
+    const animation = line.animate([
+      { strokeDasharray: String(length), strokeDashoffset: String(length) },
+      { strokeDasharray: String(length), strokeDashoffset: '0' },
+    ], { duration: 900, easing: 'ease-out' });
+    drawing.set(line, animation);
+    animation.finished.then(() => drawing.delete(line), () => drawing.delete(line));
+  }
+});
+function contentMotion() {
+  const still = reduced() || shot() || html.dataset.motion === 'off';
+  removeEventListener('scroll', queueProgress); removeEventListener('resize', queueProgress);
+  if (progressFrame) cancelAnimationFrame(progressFrame);
+  progressFrame = 0; progressItems.clear();
+  for (const el of document.querySelectorAll('[data-m-progress]')) {
+    if (el.getElementsByTagName('*').length > 20) { el.style.removeProperty('--p'); continue; }
+    if (still) el.style.setProperty('--p', '1'); else progressItems.add(el);
+  }
+  if (progressItems.size) {
+    addEventListener('scroll', queueProgress, { passive: true });
+    addEventListener('resize', queueProgress); updateProgress();
+  }
+  if (!lineObserver) return;
+  if (still) {
+    lineObserver.disconnect();
+    for (const animation of drawing.values()) animation.cancel();
+  } else {
+    for (const line of document.querySelectorAll('path[data-m-draw], polyline[data-m-draw]')) {
+      if (!drawn.has(line)) lineObserver.observe(line);
+    }
+  }
+}
+reducedQ.addEventListener('change', contentMotion);
+
 /* ---------------------------------------------------------------- start */
 export function init() {
   if (html.dataset.motion === 'off') { html.classList.add('m-enter-done'); return; }
   if (!html.hasAttribute('data-motion')) html.setAttribute('data-motion', '');
+  document.querySelectorAll('.btn:not(.m-swap)').forEach(button => {
+    for (const node of [...button.childNodes]) {
+      if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) continue;
+      const label = document.createElement('span');
+      node.replaceWith(label); label.append(node);
+    }
+  });
   try { enter(); } catch (e) { console.warn('motion.js: enter', e); document.querySelector('.hero[data-enter]')?.classList.add('is-entered'); }
   try { nav(); } catch (e) { console.warn('motion.js: nav', e); }
   try { tabs(); } catch (e) { console.warn('motion.js: tabs', e); }
+  contentMotion();
   try { counts(); } catch (e) { console.warn('motion.js: counts', e); }
   try { loops(); } catch (e) { console.warn('motion.js: loops', e); }
   try { reveals(); } catch (e) { console.warn('motion.js: reveals', e); document.querySelectorAll('.m-rv-wait').forEach(el => el.classList.remove('m-rv-wait')); }

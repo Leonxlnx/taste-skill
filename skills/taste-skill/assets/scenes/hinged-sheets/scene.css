@@ -181,7 +181,7 @@
 }
 [data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-name { font-size: 15cqi; line-height: 0.92; text-wrap: balance; }
 [data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-pitch { margin-top: 4.5cqi; font-size: max(15px, 4.8cqi); }
-[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-points { margin-top: auto; padding-top: 4cqi; }
+[data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-points { margin-top: 24px; padding-top: 0; }
 @container (min-width: 380px) {
   [data-big-scene="hinged-sheets"] .hs-face--front:not(:has(> .hs-photo)) .hs-pitch { font-size: 5.4cqi; }
 }
@@ -230,6 +230,9 @@
 }
 [data-big-scene="hinged-sheets"] .hs-cta:hover { background: color-mix(in srgb, var(--hs-ink) 82%, #000); }
 [data-big-scene="hinged-sheets"] .hs-cta:focus-visible { outline: 3px solid var(--hs-ink); outline-offset: 3px; }
+
+[data-big-scene="hinged-sheets"] .hs-sheet:not(:has(.hs-photo)) { aspect-ratio: auto; height: 100%; }
+[data-big-scene="hinged-sheets"] .hs-sheet:not(:has(.hs-photo)) > .hs-face--front { position: relative; inset: auto; min-height: 100%; }
 
 /* the back: one ink, one very large word at the top, the name and a line of detail on the stub */
 [data-big-scene="hinged-sheets"] .hs-big {

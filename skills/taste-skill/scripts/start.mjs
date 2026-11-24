@@ -30,25 +30,16 @@
       the same block from a client's own colours
   node scripts/start.mjs types --page <kind>
       every pairing the kind can be dealt, with its exact Google Fonts link
-  node scripts/start.mjs plan --page <kind> --trade <trade> [--type <page type>] [--has photo,ui,film,object,setting]
-                              [--long] [--tone warm|editorial|product|tech|playful] [--axis] --history .taste-skill/history.json
-      --has names what the brief can fill (default: software ui,figures; tech photo,product,figures; product
-      photo,product; place and service photo; gaming setting): add figures when the fact sheet holds two proof
-      figures (counter-rolls), archive for the client's own body of pictures, film, route, site (the client's own
-      site or world in wide pictures, from high up too: a launch site, a plant, a test range); moments and scenes
-      that need more are not dealt.
-      the whole deal in one block, for any model: it runs the dealers themselves (start.mjs deal for the palettes,
-      the type and the LAYOUT block; assets/layout/deal.mjs for the hero; moments.mjs pick --scene deal for 2-3
-      moments and 0-1 scene; effects.mjs pick for 0-1 effect) and deals the hero's entrance from
-      assets/motion/meta.json by fit. It ends with PLAN: one line per part, each naming the file or recipe to copy.
-      The hero's history goes to layout-history.json beside the --history file. The parts never contradict each
-      other or the checker: a closing scene or closing-lift is the page's close (the plan writes "close none", the
-      footer keeps its links row, a form dealt as close-form becomes form-band or form-photo, and the history's
-      close is null so the gate asks for no close row); a form dealt as close-form is the close itself (the plan's
-      close is close-form, never a second close row beside it); bleed-panel and mirrored come once a page and
-      bleed-panel never on the visit (the section right after a place's hero); a game's effect goes on a band (its
-      key art is the hero); a scene dealt as the hero takes no effect beside it; a kind without WebGL (place,
-      service, product without --tech-subject) is dealt no effect, as its plan line says.
+  node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
+      [--sections N] [--long] [--has photo,ui,film,object,setting,logo,art]
+      [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact]
+      [--tone warm|editorial|product|tech|playful] [--axis] [--history .taste-skill/history.json]
+      Deal the frame and four prompts for the content. Sections include the hero and close (default 7).
+      The plan has one moment, two with --long or at least seven sections. --carry names what the
+      copy notes hold. With no flag only place, product and service assume photos. --has names actual
+      assets, including product for a photograph of the client's own product, archive for a large set,
+      film for footage, route or site for those subjects. A booking docks a bar on a place or service hero.
+      The printed PLAN and the machine-readable plan.json beside the history describe the same page.
 
   --page, the SKILL.md kinds as start.mjs names them:
       Tech (software, an app, AI, developer tools, fintech) ......... software
@@ -71,12 +62,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { color } from '../assets/effects/fx.js';
+import { writeHistory } from './moments.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const lib = f => JSON.parse(fs.readFileSync(path.join(here, '..', 'library', f), 'utf8'));
 const args = process.argv.slice(2);
 const cmd = args[0];
-const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
+const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] !== undefined && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 
 // company-site palettes: quiet grounds
 const isViolet = c => { const [, C, h] = color.lch(c); return C > 0.05 && h > 275 && h < 330; };
@@ -91,10 +83,6 @@ function readHistory(file) {
   if (!h || typeof h !== 'object' || Array.isArray(h)) h = {};
   for (const k of ['palettes', 'types', 'dealt']) if (!Array.isArray(h[k])) h[k] = [];
   return h;
-}
-function writeHistory(file, h) {
-  fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(h, null, 2));
 }
 // fresh ones first in a random order, then the recent ones, the oldest first: n of them
 function drawFresh(list, n, recent) {
@@ -182,9 +170,12 @@ function readableMuted(muted, ink, grounds) {
 }
 function buttonInk(accent, ...cands) { return color.readable(accent, ...cands); }
 
-function tokens(p) {
+function tokens(p, adjustSurface = true) {
   const bg = color.hex(p.bg), ink = color.hex(p.ink);
-  const surface = color.hex(p.surface || color.mix(bg, ink, 0.05));
+  const supplied = color.hex(p.surface || color.mix(bg, ink, 0.05));
+  const distance = Math.abs(color.lab(supplied)[0] - color.lab(bg)[0]);
+  const derived = adjustSurface && (distance < 0.04 || distance > 0.09);
+  const surface = derived ? color.lighten(bg, color.isDark(bg) ? 0.06 : -0.06) : supplied;
   const muted = readableMuted(color.hex(p.muted || color.mix(ink, bg, 0.45)), ink, [bg, surface]);
   const accent = color.hex(p.accent || ink);
   const accentInk = color.contrast(accent, p.accentInk || bg) >= 4.5 ? color.hex(p.accentInk || bg) : buttonInk(accent, '#ffffff', '#111111', ink, bg);
@@ -202,7 +193,7 @@ function tokens(p) {
   const actionInk = action === accent ? accentInk : bg;
   const invAction = color.contrast(invAccent, invBg) >= 2.2 ? invAccent : invInk;
   const invActionInk = invAction === invAccent ? invAccentInk : invBg;
-  return { bg, surface, ink, muted, accent, accentInk, action, actionInk, invBg, invSurface, invInk, invMuted, invAccent, invAccentInk, invAction, invActionInk };
+  return { bg, surface, derived, ink, muted, accent, accentInk, action, actionInk, invBg, invSurface, invInk, invMuted, invAccent, invAccentInk, invAction, invActionInk };
 }
 
 // ---------------------------------------------------------------- type
@@ -228,7 +219,7 @@ const setPage = p => { page = p; placePage = p === 'place'; techPage = TECH.has(
 // css or brand run restyles a page that may be finished): a folder with an open build keeps it, a folder one or two below
 // an open build joins that one, any other gets a new one. The page is left to gate.mjs to find in this folder (or one
 // below); gate.mjs --start names it.
-if (cmd === 'deal') {
+if (cmd === 'deal' || cmd === 'plan') {
   try {
     const read = f => { try { return JSON.parse(fs.readFileSync(f, 'utf8').replace(/^﻿/, '')); } catch { return null; } };
     // an open build here, or one or two folders up (gate.mjs --start run in the session's folder, the site in site/ or
@@ -419,27 +410,74 @@ const LISTS = {
   buttons: { software: 'solid|pill|tonal|arrow', gaming: 'solid|pill|block', tech: 'arrow|solid|block|pill', product: 'arrow|solid|block|pill',
     service: 'solid|tonal|block|arrow', place: 'block|solid|arrow' },
   mark: { place: 'dots|arc|ring|petal|leaf|stack', '*': 'wordmark|initial|arc|ring|stack|dots' },
-  // grounds: one or two bands from the palette on every page (tint: .ground-surface; dark: .ground-inverse; brand: .ground-brand)
-  bands: { software: 'dark|tint|dark+tint', gaming: 'dark|dark+brand', tech: 'dark|brand|tint+dark', product: 'brand|dark|tint+brand|tint+dark',
-    service: 'tint|dark|tint+dark|brand', place: 'tint|brand|tint+brand|tint+dark' },
+  grounds: { software: 'blocks|blocks|alternate|calm|islands', gaming: 'islands|islands|alternate|blocks|calm', tech: 'blocks|blocks|alternate|islands|calm',
+    product: 'alternate|alternate|islands|blocks|calm', service: 'calm|calm|blocks|alternate|islands', place: 'calm|calm|islands|alternate|blocks' },
 };
 // section compositions (system.css, compositions; sections-library.md, Compositions), a pool per section type
 const COMPS = {
-  offer: 'list-tall|split-7-5|split-5-7|strip|offset-pair',            // a menu, prices, services, repairs
+  offer: 'list-tall|split-7-5|split-5-7|offset-pair',            // a menu, prices, services, repairs
   showcase: 'bleed-panel|offset-pair|three-up|mirrored|wall|story',      // the place, the work, the house, the product in use
   rooms: 'row|side|list-tall',                                           // rooms, goods, bouquets, models
   feature: 'split-7-5|split-5-7|mirrored|bleed-panel|offset-pair|three-up', // a product's or a service's point
   visit: 'split-6-6|mirrored|street-large',    // never bleed-panel: the visit comes right after a place's hero (sections-library.md)
   form: 'form-photo|form-band|close-form',
-  statement: 'statement-type|statement-short',
 };
-const KIND_COMPS = { software: ['feature', 'statement', 'form'], gaming: ['showcase', 'statement', 'form'], tech: ['feature', 'showcase', 'statement'],
-  product: ['feature', 'showcase', 'rooms', 'statement'], service: ['offer', 'showcase', 'feature', 'visit', 'form'],
+const KIND_COMPS = { software: ['feature', 'form'], gaming: ['showcase', 'form'], tech: ['feature', 'showcase'],
+  product: ['feature', 'showcase', 'rooms'], service: ['offer', 'showcase', 'feature', 'visit', 'form'],
   place: ['visit', 'offer', 'showcase', 'rooms', 'form'] };
 const COMP_WHAT = { offer: 'the offer (menu, prices, services)', showcase: 'the showcase (the place, the work, the house, in use)',
-  rooms: 'rooms or goods', feature: 'each feature section', visit: 'the visit', form: 'the booking or order form', statement: 'a statement section' };
+  rooms: 'rooms or goods', feature: 'each feature section', visit: 'the visit', form: 'the booking or order form' };
 // compositions sections-library.md allows once a page (2.5.3: a showcase and a feature were both dealt bleed-panel)
 const ONCE_A_PAGE = ['bleed-panel', 'mirrored'];
+const sectionsArg = opt('sections', 7);
+const sections = Number(sectionsArg);
+const action = opt('action');
+if (['plan', 'deal'].includes(cmd)) {
+  if (sectionsArg === true || !Number.isSafeInteger(sections) || sections < 1) { console.error('start: --sections needs a positive integer'); process.exit(2); }
+  if (action !== undefined && !['booking', 'order', 'trial', 'visit', 'contact'].includes(action)) { console.error('start: --action needs booking, order, trial, visit or contact'); process.exit(2); }
+}
+
+const groundCopy = {
+  alternate: 'alternate page and tint from section 2, moving the inverse to the strongest picture',
+  blocks: 'repeat two page sections and one tint, ending with an inverse close',
+  islands: 'keep the page ground around two full-width islands, one inverse and one brand or tint',
+  calm: 'change ground at the main picture and at the close when marked',
+};
+function groundsFor(pattern, n) {
+  const bySection = Array(n).fill('page');
+  const middle = Math.max(1, Math.floor((n - 1) / 2));
+  if (pattern === 'alternate') {
+    for (let i = 1; i < n; i += 2) bySection[i] = 'ground-surface';
+    if (n > 2) bySection[middle] = 'ground-inverse';
+  } else if (pattern === 'blocks') {
+    for (let i = 2; i < n; i += 3) bySection[i] = 'ground-surface';
+    if (n > 1) bySection[n - 1] = 'ground-inverse';
+  } else if (pattern === 'islands') {
+    if (n > 1) bySection[Math.max(1, Math.floor(n / 3))] = 'ground-inverse';
+    if (n > 2) bySection[Math.min(n - 1, Math.ceil(n * 2 / 3))] = Math.random() < 0.5 ? 'ground-brand' : 'ground-surface';
+  } else if (n > 1) {
+    bySection[middle] = Math.random() < 0.5 ? 'ground-surface' : 'ground-inverse';
+    if (n >= 5 && Math.random() < 0.5) bySection[n - 1] = 'ground-brand';
+  }
+  return { pattern, bySection };
+}
+function groundLine({ pattern, bySection }) {
+  const map = bySection.map((g, i) => (i + 1) + ' ' + (g === 'page' ? g : '.' + g));
+  return pattern + ' · ' + map.join(', ') + '. If the length changes, ' + groundCopy[pattern] + '.';
+}
+function dealIdeas(h) {
+  const recent = (h.ideas || []).slice(-8);
+  const pool = lib('ideas.json').filter(s => s.kinds.includes(page) && !recent.includes(s.id));
+  if (pool.length < 4) throw new Error('too few fresh idea seeds for ' + page);
+  const shuffled = drawFresh(pool, pool.length, []);
+  const picks = [];
+  while (picks.length < 4) {
+    const ix = shuffled.findIndex(s => !picks.some(p => p.shape === s.shape));
+    picks.push(shuffled.splice(Math.max(0, ix), 1)[0]);
+  }
+  h.ideas = [...recent, ...picks.map(s => s.id)].slice(-8);
+  return picks;
+}
 function dealLayout(h) {
   const L = (h.layout && typeof h.layout === 'object' && !Array.isArray(h.layout)) ? h.layout : (h.layout = {});
   // not: options this page cannot take (a once-a-page composition already dealt, the feature's first one)
@@ -455,38 +493,49 @@ function dealLayout(h) {
   const get = key => LISTS[key][k] || LISTS[key]['*'];
   const out = {};
   for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, get(key), key === 'close' ? 2 : 1);
-  out.bands = pick(`${k}:bands`, get('bands'));
+  out.grounds = groundsFor(pick(`${k}:grounds`, get('grounds'), 2), sections);
+  const densities = techPage ? 'compact|regular|compact|regular|open' : page === 'product' ? 'open|regular|compact' : 'open|regular|open|regular|compact';
+  out.density = pick(`${k}:density`, densities);
+  out.align = pick(`${k}:align`, 'left|centred heads on proof and close');
+  out.pictures = pick(`${k}:pictures`, 'square|soft|soft with one shaped mask');
+  out.compositions = {};
   const lines = [], used = [];
   const dealt = v => { if (ONCE_A_PAGE.includes(v)) used.push(v); return v; };
   for (const sec of KIND_COMPS[k] || []) {
     if (sec === 'feature') {
       const a = dealt(pick(`${k}:feature`, COMPS.feature, 2, used));
       const b = dealt(pick(`${k}:feature`, COMPS.feature, 2, [...used, a]));
+      out.compositions.feature = [a, b];
       lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
     } else {
-      const v = dealt(pick(`${k}:${sec}`, COMPS[sec], 2, used));
+      const booking = action === 'booking' && (k === 'place' || k === 'service');
+      const options = sec === 'form' && booking ? 'close-form' : COMPS[sec];
+      const v = dealt(pick(`${k}:${sec}`, options, 2, used));
+      out.compositions[sec] = v;
       // a form dealt as close-form is the page's close: no other close row beside it (2.5.3: close-photo and
       // close-form were both dealt, and one build made both, one after the other)
       if (sec === 'form' && v === 'close-form') { out.close = 'close-form'; L[`${k}:close`][L[`${k}:close`].length - 1] = 'close-form'; }
       lines.push(`${COMP_WHAT[sec]}: ${v}${v === 'close-form' ? ' (the form is the close)' : ''}`);
     }
   }
-  console.log(`\nLAYOUT for ${k} (dealt away from the last pages; build exactly these, write them on plan line 2):`);
+  if (cmd === 'plan') return out;
+  console.log(`\nLAYOUT for ${k} (build the frame as dealt, choose section forms from the content):`);
   console.log(`  nav ${out.nav} · footer ${out.footer} · close ${out.close} · buttons ${out.buttons} · mark ${out.mark}`);
-  console.log(`  bands: ${out.bands.split('+').map(b => ({ tint: 'one tinted band (.ground-surface)', dark: 'one dark band (.ground-inverse, the palette\'s dark)', brand: 'one band in the accent (.ground-brand)' })[b]).join(' and ')}; never two bands side by side, never the hero`);
+  console.log('  grounds: ' + groundLine(out.grounds));
   if (lines.length) {
     console.log('  compositions (markup: sections-library.md, Compositions; use only the sections the page has):');
     for (const l of lines) console.log('    ' + l);
   }
   console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)'
-    : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the footer\'s close row; no other close and no booking section above it'
+    : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the footer\'s close row; use one full form'
     : `${out.close}; a page whose last section is a form ends on close-form instead`}; the footer never repeats hours or a form printed above`);
+  return out;
 }
 
 const histFile = opt('history', '.taste-skill/history.json');
 
-if (cmd === 'deal') {
-  const h = readHistory(histFile);
+function dealFrame(h) {
+  let palette;
   const tys = dealTypes(h, { axis: !!opt('axis') });
   if (!opt('types-only')) {
     let pals = palettes;
@@ -513,6 +562,7 @@ if (cmd === 'deal') {
       console.log(`      ${groundWord(tk.bg)} ground, ${hueWord(tk.accent)} accent; ${made}`);
     }
     if (dealt.length) {
+      palette = dealt[0];
       const p = dealt[0], tk = tokens(p);
       console.log(`  plan line 2: "palette ${p.id}" and one sentence on why it fits ${trade ? TRADE_NAME[trade] : 'the client'}: what in the trade its ${groundWord(tk.bg)} ground and ${hueWord(tk.accent)} accent answer (the room, the material, the goods; never a fact the brief does not give)`);
     }
@@ -525,142 +575,146 @@ if (cmd === 'deal') {
   console.log(`TYPE for ${page}${placePage && PLACE_GROUP[trade] ? ` (${TRADE_NAME[trade]}: ${GROUPS[PLACE_GROUP[trade]]} first)` : ''} (take the first; all Google Fonts; headlines ${techPage ? '400 or 500' : '400'}, text 400, 500 for buttons and labels; sentence case, sizes come from system.css):`);
   for (const t of tys) console.log(describe(t, false));
   if (!tys.length) console.log('  (no pairing matches; drop --axis)');
-  dealLayout(h);
+  const layout = dealLayout(h);
   h.dealt = [...(h.dealt || []), ...tys.map(t => t.id)].slice(-30);
-  if (!opt('no-record')) writeHistory(histFile, h);
-  if (!opt('axis') && !placePage) console.log('  (a word or editorial hero needs a weight or width axis: deal again with --axis)');
+  if (cmd === 'deal' && !opt('axis') && !placePage) console.log('  (a word or editorial hero needs a weight or width axis: deal again with --axis)');
   const self = fileURLToPath(import.meta.url).split(path.sep).join('/');
-  console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
-} else if (cmd === 'plan') {
-  // one command for the whole deal: the dealers run as they are (never copied here), their output kept in full under
-  // each heading, then PLAN sums it up one line a part with the file to copy from
-  const { spawnSync } = await import('node:child_process');
-  const { FIT, fitsKind, momentSource } = await import('./moments.mjs');
-  const skill = path.join(here, '..');
-  const rel = p => p.split(path.sep).join('/');
-  const run = (file, list) => {
-    const r = spawnSync(process.execPath, [file, ...list], { encoding: 'utf8', cwd: process.cwd() });
-    if (r.stderr && r.stderr.trim()) process.stderr.write(r.stderr);
-    return (r.stdout || '').replace(/\s+$/, '');
-  };
-  const flag = k => (opt(k) === true ? ['--' + k] : []);
-  const val = k => (typeof opt(k) === 'string' ? ['--' + k, opt(k)] : []);
-  const histDir = path.dirname(histFile);
-  const layoutHist = path.join(histDir, 'layout-history.json');
-  const pageType = typeof opt('type') === 'string' ? opt('type')
-    : ({ software: 'software', gaming: 'software', tech: 'product', product: 'product', service: 'service', place: 'place' })[page];
-  // what the brief can fill (--has; default what the kind normally has: a place photographs, software its ui):
-  // the hero deal reads it, and the moment and scene deal leaves out what the page cannot fill (meta.needs.list)
-  const has = typeof opt('has') === 'string' ? opt('has')
-    : ({ software: 'ui,figures', gaming: 'setting', tech: 'photo,product,figures', product: 'photo,product', service: 'photo', place: 'photo' })[page];
-
-  // 1. palettes, type and the LAYOUT block (also arms the finish gate, as a deal always does)
-  const dealOut = run(fileURLToPath(import.meta.url), ['deal', '--page', page, ...val('trade'), '--history', histFile, ...flag('axis'), ...flag('dark'), ...flag('light'), ...flag('no-recent')]);
-  // 2. the hero
-  const heroOut = run(path.join(skill, 'assets', 'layout', 'deal.mjs'), ['--type', pageType, '--has', has, '--history', layoutHist,
-    ...(page === 'gaming' ? ['--kind', 'gaming'] : page === 'tech' ? ['--kind', 'tech'] : [])]);
-  // 3. moments and the scene, by fit
-  const momOut = run(path.join(here, 'moments.mjs'), ['pick', '--page', page, '--scene', 'deal', '--has', has, '--history', histFile, ...flag('long'), ...val('tone')]);
-  // 4. the effect: tech kinds always deal one for the hero; a game's hero is its key art, so its effect goes on a
-  //    band; a scene dealt as the hero is the hero's motion, so no effect then. One effect beside a scene elsewhere
-  //    is allowed (consistency.mjs scenes, MO-16). A kind without WebGL (place, service, product; the plan's first
-  //    line says "no WebGL") is dealt none: every effect is a shader, even the quiet treatments (2.5.3: a guesthouse
-  //    and a linen shop were dealt soft-light-bars beside "no WebGL", then FAILed effects-fit). A product with a
-  //    technical subject (--tech-subject) is dealt as tech, about one page in three, on a band
-  const bg = (dealOut.match(/\bbg (#[0-9a-f]{6})/i) || [])[1];
-  const ground = bg && color.isDark(bg) ? 'dark' : 'light';
-  const sceneFits0 = (momOut.match(/^scene \S+ · ([^·\n]+?) ·/m) || [])[1] || '';
-  const sceneIsHero = sceneFits0.trim().split('/').every(f => f === 'hero') && !!sceneFits0.trim();
-  const glKind = !!(FIT[page] && FIT[page].webgl) || (page === 'product' && opt('tech-subject') === true);
-  const fxRoll = techPage ? !sceneIsHero : glKind && Math.random() < 1 / 3;
-  const fxSlot = techPage && page !== 'gaming' ? 'hero' : 'band';
-  const fxOut = fxRoll ? run(path.join(here, 'effects.mjs'), ['pick', '--page', page, '--palette', ground, '--slots', fxSlot,
-    '--history', histFile, ...val('tone'), ...flag('tech-subject')]) : '';
-  // 5. the hero's entrance from the deck (assets/motion/meta.json), by fit, what the hero has, away from the last two
-  const deck = JSON.parse(fs.readFileSync(path.join(skill, 'assets', 'motion', 'meta.json'), 'utf8')).entrances || [];
-  const heroId = (heroOut.match(/^hero: (\S+)/m) || [])[1] || '';
-  const heroForm = (heroOut.match(/^\s*form: (\w+)/m) || [])[1] || '';
-  const hasSet = new Set(has.split(','));
-  const picture = hasSet.has('photo') || hasSet.has('film') || hasSet.has('object') || hasSet.has('setting') || /place|photo|film|product|editorial/.test(heroId);
-  const meets = need => /window|ui/i.test(need) ? (hasSet.has('ui') || heroId === 'ui')
-    : /moving|scene/i.test(need) ? (hasSet.has('film') || heroId === 'film')
-    : /70%|half/i.test(need) ? picture && !/split/.test(heroForm || heroId)
-    : /picture|photograph/i.test(need) ? picture : true;
+  if (cmd === 'deal') console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
+  return { palette, type: tys[0], layout };
+}
+if (cmd === 'deal') {
   const h = readHistory(histFile);
-  const lastEnter = Array.isArray(h.entrances) ? h.entrances.slice(-2) : [];
-  const fitE = deck.filter(e => fitsKind(e, page, { tone: typeof opt('tone') === 'string' ? opt('tone') : undefined }) && (e.needs || []).every(meets) && e.id !== 'still');
-  const freshE = fitE.filter(e => !lastEnter.includes(e.id));
-  const poolE = freshE.length ? freshE : fitE.length ? fitE : deck.filter(e => e.default);
-  const enter = poolE[Math.floor(Math.random() * poolE.length)] || { id: 'rise', sees: 'the h1 rises line by line', markup: 'data-enter' };
-  h.entrances = [...(h.entrances || []), enter.id].slice(-8);
-  // one close a page: a scene that is the close (fits close) or a closing moment (closing-lift) is the page's last
-  // section with its one action, so the footer drops the dealt close row and keeps its links. The dealt close is
-  // written into the history as null, so the gate's deal-drift asks for no close row
-  const sceneCloseId = /(^|\/)close(\/|$)/.test(sceneFits0.trim()) ? (momOut.match(/^scene (\S+)/m) || [])[1] : '';
-  const momentCloseId = ([...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) ·/gm)].find(m => m[2].trim() === 'closing') || [])[1] || '';
-  const closeTaken = sceneCloseId ? `the scene ${sceneCloseId}` : momentCloseId ? `the moment ${momentCloseId}` : '';
-  if (closeTaken && h.layout && Array.isArray(h.layout[`${page}:close`]) && h.layout[`${page}:close`].length) h.layout[`${page}:close`][h.layout[`${page}:close`].length - 1] = null;
-  // the form dealt as close-form would be a second close: it becomes a form section of its own (form-band or form-photo)
-  const formKey = `${page}:form`, formList = h.layout && Array.isArray(h.layout[formKey]) ? h.layout[formKey] : null;
-  const formSwap = closeTaken && formList && formList[formList.length - 1] === 'close-form' ? (Math.random() < 0.5 ? 'form-band' : 'form-photo') : '';
-  if (formSwap) formList[formList.length - 1] = formSwap;
+  dealFrame(h);
   if (!opt('no-record')) writeHistory(histFile, h);
-  // grounds: a lit ground for tech (the old one-liner, now here); flat tokens and the dealt bands elsewhere
-  const litGround = techPage ? ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] : '';
+} else if (cmd === 'plan') {
+  const { spawnSync } = await import('node:child_process');
+  const { randomBytes } = await import('node:crypto');
+  const { FIT, fitsKind, HAS_BY_KIND, carryFor, momentSource, rideLine, textRule, rng } = await import('./moments.mjs');
+  const skill = path.join(here, '..');
+  const dir = path.dirname(histFile);
+  const seed = String(opt('seed', randomBytes(8).toString('hex')));
+  const requestedType = opt('type', ({ gaming: 'software', tech: 'product' })[page] || page);
+  const pageType = requestedType === 'gaming' ? 'software' : requestedType;
+  const tone = opt('tone');
+  if (!['software', 'product', 'service', 'place'].includes(pageType)) throw new Error('invalid hero page type: ' + pageType);
+  if (tone && !FIT[page].tones.includes(tone)) throw new Error('invalid tone for ' + page + ': ' + tone);
+  const has = opt('has', HAS_BY_KIND[page].join(','));
+  if (typeof has !== 'string') throw new Error('--has needs a comma-separated list of assets');
+  const assets = new Set(String(has).split(',').map(s => s.trim()).filter(Boolean));
+  const carry = carryFor(page, opt('carry'));
+  const run = (file, args) => {
+    const result = spawnSync(process.execPath, [file, ...args, '--json'], { encoding: 'utf8', windowsHide: true });
+    if (result.stderr) process.stderr.write(result.stderr);
+    if (result.error || result.status !== 0) throw result.error || new Error(path.basename(file) + ' failed (exit ' + result.status + ')');
+    return JSON.parse(result.stdout);
+  };
+  const frameHistory = readHistory(histFile);
+  const { palette, type, layout } = dealFrame(frameHistory);
+  if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
+  const { hero, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
+    '--type', pageType, '--kind', page, '--has', has, '--history', path.join(dir, 'layout-history.json'),
+    ...(action ? ['--action', action] : []), ...(opt('no-record') ? ['--no-record'] : []),
+  ]);
+  const common = ['--page', page, '--history', histFile, '--seed', seed, ...(tone ? ['--tone', tone] : []),
+    ...(opt('no-record') ? ['--no-record'] : [])];
+  const motion = run(path.join(here, 'moments.mjs'), ['pick', ...common, '--scene', 'deal', '--has', has,
+    '--carry', [...carry].join(','), '--sections', String(sections), ...(opt('long') ? ['--long'] : []),
+    ...(peek || book ? ['--keep-hero'] : []), ...(action ? ['--action', action] : [])]);
+  const sceneHero = motion.sceneFits.includes('hero');
+  const sceneClose = motion.sceneFits.includes('close');
+  const effectSlot = page === 'gaming' ? 'band' : 'hero';
+  const effect = techPage && !sceneHero ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
+    color.isDark(palette.bg) ? 'dark' : 'light', '--slots', effectSlot]).picks[0]?.id || null : null;
 
-  const head = t => console.log(`\n==== ${t} ${'='.repeat(Math.max(4, 72 - t.length))}`);
-  head('PALETTES, TYPE, LAYOUT (start.mjs deal)'); console.log(dealOut);
-  head('HERO (assets/layout/deal.mjs)'); console.log(heroOut);
-  head('MOMENTS AND SCENE (moments.mjs pick --scene deal)'); console.log(momOut);
-  const noFx = `none: a ${page} page takes no WebGL (shader grounds and treatments are for tech, software and gaming); its motion is the entrance, the reveals, the moments${sceneFits0 ? ' and the scene' : ''}`;
-  head('EFFECT (effects.mjs pick)'); console.log(fxOut || (glKind ? '  none this page' : '  ' + noFx));
+  const h = readHistory(histFile);
+  h.layout = frameHistory.layout;
+  h.dealt = frameHistory.dealt;
+  const deck = JSON.parse(fs.readFileSync(path.join(skill, 'assets/motion/meta.json'), 'utf8')).entrances;
+  const picture = assets.has('art') || assets.has('photo') || assets.has('film') || assets.has('object') || ['place', 'split', 'photo', 'product', 'film'].includes(hero.id);
+  const meets = need => /window|ui/i.test(need) ? hero.window && assets.has('ui')
+    : /moving|scene/i.test(need) ? sceneHero || hero.id === 'film'
+    : /70%|half/i.test(need) ? picture && (form || hero.id) !== 'split'
+    : /photograph/i.test(need) ? assets.has('photo') : /picture/i.test(need) ? picture : true;
+  const fit = deck.filter(e => e.id !== 'still' && (e.weight ?? 1) > 0 && fitsKind(e, page, { tone }) && e.needs.every(meets));
+  const freshEntrances = fit.filter(e => !(h.entrances || []).slice(-2).includes(e.id));
+  const pool = freshEntrances.length ? freshEntrances : fit;
+  let ticket = Math.random() * pool.reduce((sum, e) => sum + (e.weight ?? 1), 0);
+  const entrance = sceneHero ? deck.find(e => e.id === 'still') : pool.find(e => (ticket -= e.weight ?? 1) < 0) || deck.find(e => e.default);
+  h.entrances = [...(h.entrances || []), entrance.id].slice(-8);
 
-  // the summary, read from the dealers' own lines
-  const pal = (dealOut.match(/^ {2}([a-z0-9-]+) {2,}/m) || [])[1] || '?';
-  const typ = (dealOut.match(/^TYPE[^\n]*\n {2}([a-z0-9-]+)/m) || [])[1] || '?';
-  const lay = (dealOut.match(/nav (\S+) · footer (\S+) · close (\S+) · buttons (\S+) · mark (\S+)/) || []);
-  const bands = (dealOut.match(/^ {2}bands: ([^;\n]+)/m) || [])[1] || 'flat';
-  const compBlock = (dealOut.split(/^ {2}compositions \(.*$/m)[1] || '').split(/\n(?! {4})/)[0];
-  const comps = [...compBlock.matchAll(/^ {4}(.+?): (.+)$/gm)].map(m => `${m[1]}: ${formSwap && m[1] === COMP_WHAT.form && /^close-form\b/.test(m[2]) ? `${formSwap} (not close-form: ${closeTaken} is the close)` : m[2]}`);
-  const [, scene = '', sceneAt = ''] = momOut.match(/^scene (\S+) · ([^·\n]+?) ·/m) || [];
-  const SCENE_AT = { hero: 'as the hero (the entrance becomes data-enter="still")', close: 'as the last section before the footer: it is the page\'s close, with the one action (the footer keeps its links row only)', between: 'between two sections', statement: 'as a statement section' };
-  const moments = [...momOut.matchAll(/^\d+\. (\S+)\s+\S+ · ([^·\n]+?) · (\w+)/gm)].map(m => ({ id: m[1], fits: m[2].trim(), intensity: m[3] }));
-  const fx = (fxOut.match(/^\s*\d+\. (\w+)\s+(\S+)/m) || []);
-  const skillRef = '<skill>';
-  head('PLAN (write it on plan line 2 and in the comment at the top of <body>; build exactly this)');
-  const L = [];
-  L.push(`kind ${page} · page type ${pageType}${trade ? ` · trade ${trade}` : ''} · ${FIT[page] ? `fits tones ${FIT[page].tones.join('/')}, ${FIT[page].intensity.join('/')}${FIT[page].webgl ? ', WebGL' : ', no WebGL'}` : ''}`);
-  L.push(`copy first   .taste-skill/copy.md from the block in references/copy.md (The copy notes); lint it: node ${skillRef}/scripts/copy-lint.mjs .taste-skill/copy.md`);
-  L.push(`palette      ${pal}, type ${typ}: node ${skillRef}/scripts/start.mjs css --page ${page} --palette ${pal} --type ${typ} --radius ${page === 'place' ? 'sharp' : 'soft'} --history ${rel(histFile)}  (paste its block into the starter's head)`);
-  L.push(`hero         ${heroId || '?'}${heroForm ? ` data-form="${heroForm}"` : ''}: copy only the <section class="hero ..."> of ${skillRef}/assets/layout/hero-${heroId || '<id>'}.html`);
-  const enterMore = String(enter.markup || '').replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1').trim();
-  L.push(`entrance     data-enter="${enter.id}" on that hero section${enterMore ? `, ${enterMore}` : ''}: ${enter.sees}; references/motion.md, The entrance deck`);
-  if (lay.length) {
-    L.push(`nav          ${lay[1]} (starter.html NAV comment for its class)`);
-    L.push(closeTaken
-      ? `close        none: ${closeTaken} is the page's close (its last section, the one action once); drop the starter's .closing__cta row so the footer holds its links row only (never two closes in a row)`
-      : lay[3] === 'close-form'
-        ? `close        close-form: the booking or order form is the page's close (starter.html: <template data-part="close-form"> in the footer); no other close row, no booking section above it`
-        : `close        ${lay[3]} (starter.html: <template data-part="${lay[3]}">, or the default close--type in the footer)`);
-    L.push(`footer       ${lay[2]}${page === 'place' ? ' (links-visit template on a place)' : ''}`);
-    L.push(`buttons      data-buttons="${lay[4]}" on <html> · mark data-mark="${lay[5]}" (or the client's logo)`);
+  const closeMoment = motion.picks.find(p => p.fits.length === 1 && p.fits[0] === 'closing');
+  const closeTaken = sceneClose ? motion.scene : closeMoment?.id;
+  const order = action === 'order';
+  const close = closeTaken ? null : order ? 'close-type' : layout.close;
+  const comps = layout.compositions;
+  if ((closeTaken || order) && comps.form === 'close-form') {
+    comps.form = assets.has('photo') ? 'form-photo' : 'form-band';
+    const forms = h.layout[page + ':form'];
+    forms[forms.length - 1] = comps.form;
   }
-  L.push(`rhythm       ${bands}; every other section on the page ground`);
-  L.push(`grounds      ${techPage ? `data-ground="${litGround}" on <html>; section grounds from references/backgrounds.md` : 'flat tokens and the bands above; no data-ground on <html>'}`);
-  for (const c of comps) L.push(`composition  ${c}  (references/sections-library.md, Compositions)`);
-  if (!techPage || hasSet.has('photo')) L.push(`photos       every product on copy.md's Products line gets a photograph of it in the section that sells it: photos.mjs pick${trade ? ` --trade ${trade}` : ''}, then photos.mjs search --out . "<product> ..." for each product pick dealt no frame of (required, not optional); name each here: "product cake: library c12" or "product cake: search" (references/photos.md)`);
-  L.push(`reveals      automatic: each section's h2 and lead photograph rise once (motion.js); nothing to add, data-still on a section to keep it still`);
-  const SLOT = { section: 'a content section', statement: 'a statement section', closing: 'the last section', hero: 'the hero', between: 'a section between two others' };
-  const slotOf = f => { const s = f.split('/'); return SLOT[s.find(x => x !== 'hero') || s[0]] || 'a section'; };
-  // the exact file whose section to copy (moments.mjs momentSource): the in-page demo that holds the moment, else its own demo;
-  // the gate's deal-drift check FAILs a page without a dealt moment or scene
-  moments.forEach((m, i) => L.push(`moment ${i + 1}     ${m.id} in ${slotOf(m.fits)} of its own (${m.intensity})${i === 0 ? ', within the first three screens' : ''}: ${momentSource(m.id, skillRef)}, link ${m.id}/moment.css; references/moments.md`));
-  if (!moments.length) L.push('moments      none dealt: run moments.mjs pick again (every page takes two)');
-  L.push(`scene        ${scene ? `${scene} ${SCENE_AT[sceneAt.trim().split('/')[0]] || 'in a section of its own'}: copy the whole <section data-big-scene="${scene}"> of ${skillRef}/assets/scenes/${scene}/demo.html (the gate's deal-drift check FAILs a page without it), link scenes.css and ${scene}/scene.css, load assets/scenes/scenes.js; references/scenes.md` : 'none this page'}`);
-  L.push(`effect       ${fx[2] ? `${fx[2]} on the ${fx[1] === 'hero' ? 'hero (or its one [data-visual] frame when a photograph fills the hero)' : `${fx[1]}: one of the dealt bands${page === 'gaming' ? ' (never over the key art)' : ''}`}${scene ? `, outside the scene's section (one effect beside the scene)` : ''} (${skillRef}/assets/effects/${fx[2]}/demo.html; references/effects-usage.md)` : sceneIsHero && techPage ? 'none: the scene is the hero\'s motion' : glKind ? 'none' : noFx}`);
-  L.push(`hover layer  automatic (motion.js): buttons, links, linked cards and photos; loops inside every card visual (references/motion.md)`);
-  L.push(`then         build in a copy of starter.html, then: node ${skillRef}/scripts/gate.mjs index.html`);
-  for (const l of L) console.log('  ' + l);
+  const closes = h.layout[page + ':close'];
+  closes[closes.length - 1] = close;
+
+  const ideas = dealIdeas(h);
+  const sub = {};
+  if (page === 'gaming' && !assets.has('art')) sub.illustrate = "draw the game's own world";
+  if (['product', 'tech'].includes(page) && !assets.has('photo')) sub.illustrate = 'show the product itself in a built picture';
+  if (['software', 'tech', 'service'].includes(page)) sub['data-picture'] = 'show a figure, range or comparison when the copy supplies one';
+  if (['place', 'product', 'service'].includes(page) && assets.has('photo')) sub['image-direction'] = 'direct the crops and scale when the page carries six or more photographs';
+  if (!assets.has('logo')) sub['brand-mark'] = 'draw a mark if the brief needs one, or use the dealt mark';
+  if (['software', 'gaming', 'product'].includes(page) && !['clinic', 'law', 'hotel'].includes(trade)) {
+    const mascot = rng(seed + ':mascot')() < 1 / 3;
+    h.mascot = [...(h.mascot || []), { seed, dealt: mascot }].slice(-40);
+    if (mascot) sub.mascot = 'give a recurring guide or character one consistent form';
+  }
+  const plan = {
+    version: '2.5.4', kind: page, pageType, trade: trade || null, sections, palette: palette.id, type: type.id,
+    hero: hero.id, ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, nav: layout.nav, footer: layout.footer,
+    close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
+    align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
+    ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
+    scene: motion.scene, effect,
+  };
+  if (!opt('no-record')) writeHistory(histFile, h);
+  writeHistory(path.join(dir, 'plan.json'), plan, 2);
+
+  const ref = '<skill>';
+  console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, grounds, density. Section forms come from the content.) ====');
+  const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
+  line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
+  line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
+  line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + ' --history ' + histFile.split(path.sep).join('/'));
+  line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
+  if (book) console.log('  ' + bookLine);
+  if (order) line('order', 'put the configurator or order pad within the first three sections, with delivery and return facts at the close');
+  const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
+  line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, The entrance deck)');
+  line('nav', plan.nav + ' (starter.html NAV comment)');
+  line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (starter.html close template)'));
+  line('footer', plan.footer + (plan.footer === 'footer-visit' ? ' (links-visit template)' : ''));
+  line('buttons', 'data-buttons="' + plan.buttons + '" on <html> · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
+  line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
+  line('density', 'data-density="' + plan.density + '" on <html>');
+  line('align', plan.align + (plan.align === 'left' ? '' : ': use .section-head--center on those headings'));
+  line('pictures', plan.pictures + ': set data-pictures="' + (plan.pictures === 'square' ? 'square' : 'soft') + '" on <html>' + (plan.pictures.includes('mask') ? ' and data-picture-mask on one inset picture frame' : ''));
+  for (const [key, v] of Object.entries(comps)) line('composition', COMP_WHAT[key] + ': ' + (Array.isArray(v) ? v.join(', then ') + ' (no composition twice in a row)' : v) + ' (references/sections-library.md, Compositions)');
+  console.log('  Use a dealt composition for photographs with words. Steps, a core view, plans, a comparison, cases with facts, hours or a booking take an own section (references/compose.md). An own section is never drift.');
+  line('own', 'at least ' + (plan.own === 1 ? 'one section of this page is' : 'two sections of this page are') + ' your own design for its content (data-own); name ' + (plan.own === 1 ? 'it' : 'them') + ' in the plan');
+  console.log('  Take a seed as a prompt for your own section where the content has that shape, or compose something else (references/compose.md).');
+  for (const s of ideas) line('ideas', s.id + ': ' + s.line);
+  for (const [name, why] of Object.entries(sub)) line('sub', name + ': ' + why + '. ' + ref + '/subskills/' + name + '/SKILL.md');
+  if (!techPage || assets.has('photo')) line('photos', "show the subject itself with client pictures, a built view or a matching photograph (references/photos.md)");
+  line('reveals', "each section's h2 and lead photograph rise once (motion.js). Use data-still to keep a section still.");
+  if (!motion.picks.length) line('moment', 'none: use the entrance, reveals, hover feedback and motion in own sections.');
+  motion.picks.forEach((m, i) => {
+    const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
+    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
+  });
+  line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
+  line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
+  line('hover layer', 'motion.js handles buttons, links, linked cards and photographs (references/motion.md)');
+  line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
+  line('then', 'record this plan in the comment at the top of <body>, build in index.html from starter.html, then run node ' + ref + '/scripts/gate.mjs index.html');
 } else if (cmd === 'types') {
   for (const t of allTypes.filter(t => suits(t, page))) console.log(describe(t, true));
 } else if (cmd === 'css' || cmd === 'brand') {
@@ -688,12 +742,14 @@ if (cmd === 'deal') {
     if (typeof p.bg !== 'string' || typeof p.ink !== 'string' || typeof p.accent !== 'string') { console.error('start: brand needs --bg --ink --accent'); process.exit(1); }
   }
   const radius = ['sharp', 'soft', 'round'].includes(opt('radius')) ? opt('radius') : 'soft';
-  console.log(block(tokens(p), typeVars(t), radius));
+  const tk = tokens(p, cmd === 'css');
+  if (tk.derived) console.log('<!-- Surface tint derived from the page ground at 6% OKLCH lightness distance. -->');
+  console.log(block(tk, typeVars(t), radius));
   if (cmd === 'css') {
     const h = readHistory(histFile);
     h.palettes.push(p.id); h.types.push(t.id);
     writeHistory(histFile, h);
   }
 } else {
-  console.log('usage: node scripts/start.mjs deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
+  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
 }

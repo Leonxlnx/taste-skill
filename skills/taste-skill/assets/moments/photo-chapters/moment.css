@@ -6,7 +6,7 @@
    width of the page's edges under them, each uncovered from its foot (--mo-c, the share still
    covered) and settling (--mo-z), and on the stage's lower left a panel in the page's ground with the
    chapter in hand. */
-[data-moment="photo-chapters"] { --mo-hold: 2; }
+[data-moment="photo-chapters"] { --mo-hold: 1.5; }
 main [data-moment="photo-chapters"][data-moment] > .mo-ph { display: grid; gap: var(--s-7); align-content: start; height: auto; }
 main > [data-moment="photo-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 100vh; min-height: 100svh; }
 [data-moment="photo-chapters"] .mo-ph__head { display: grid; gap: var(--s-4); max-width: 46ch; }
@@ -15,7 +15,7 @@ main > [data-moment="photo-chapters"][data-moment]:not(.is-live) { height: auto;
 [data-moment="photo-chapters"] .mo-ph__pic { margin: 0 0 var(--s-3); border-radius: var(--r-md); overflow: hidden; }
 [data-moment="photo-chapters"] .mo-ph__pic > img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 [data-moment="photo-chapters"] .mo-ph__ch h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
-[data-moment="photo-chapters"] .mo-ph__ch p { color: var(--ink); max-width: 44ch; }
+[data-moment="photo-chapters"] .mo-ph__ch p { font-size: clamp(16px, 1.4vw, 17px); color: var(--ink); max-width: 44ch; }
 [data-moment="photo-chapters"] .mo-ph__words { display: grid; gap: var(--s-2); }
 @media (min-width: 640px) {
   [data-moment="photo-chapters"]:not(.is-live) .mo-ph__list { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
@@ -50,8 +50,8 @@ main [data-moment="photo-chapters"][data-moment].is-live > .mo-ph {
 [data-moment="photo-chapters"].is-live .mo-ph__words { opacity: 0; transform: translateY(8px); pointer-events: none;
   transition: opacity 220ms ease, transform 220ms ease; }
 [data-moment="photo-chapters"].is-live .mo-ph__ch.is-on .mo-ph__words { opacity: 1; transform: none; pointer-events: auto;
-  transition: opacity 420ms cubic-bezier(.22, 1, .36, 1) 60ms, transform 520ms cubic-bezier(.22, 1, .36, 1) 60ms; }
-[data-moment="photo-chapters"].is-live .mo-ph__ch h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); font-size: var(--t-h3, 28px); line-height: 1.15; letter-spacing: var(--display-tracking, -0.02em); }
+  transition: opacity 180ms cubic-bezier(.22, 1, .36, 1), transform 200ms cubic-bezier(.22, 1, .36, 1); }
+[data-moment="photo-chapters"].is-live .mo-ph__ch h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); font-size: clamp(20px, 2vw, 24px); line-height: 1.15; letter-spacing: var(--display-tracking, -0.02em); }
 @media (max-width: 639px) {
   [data-moment="photo-chapters"].is-live .mo-ph__panel { left: var(--s-3); right: var(--s-3); bottom: var(--s-3); width: auto; padding: var(--s-5); gap: var(--s-3); }
 }

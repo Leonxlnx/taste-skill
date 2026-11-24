@@ -10,3 +10,5 @@
 .mo-la.is-live .mo-i { display: inline-block; will-change: transform, opacity; }
 @media (max-width: 639px) { .mo-la__type { font-size: clamp(48px, 16vw, 96px); } }
 @media (prefers-reduced-motion: reduce) { .mo-la .mo-i { transform: none !important; opacity: 1 !important; } }
+
+h2[data-moment="letters-assemble"] { font-size: var(--t-h2); line-height: 1.1; max-width: none; }

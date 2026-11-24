@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="sharp" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Own sections · Taste skill</title>
+<meta name="description" content="Twelve working examples of how a section can follow the shape of its content.">
+<meta name="twitter:card" content="summary">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Own sections · Taste skill">
+<meta property="og:description" content="Twelve working examples of how a section can follow the shape of its content.">
+<meta name="theme-color" content="#f7f9fa">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../motion/motion.css">
+<link rel="stylesheet" href="../backgrounds/backgrounds.css">
+<link rel="stylesheet" href="../layout/layout.css">
+<link rel="stylesheet" href="../icons/icon.css">
+<style>
+:root {
+  --p-bg: #f7f9fa; --p-surface: #e3e5e6; --p-ink: #1f3038; --p-muted: #58666d;
+  --p-accent: #0c6e79; --p-accent-ink: #ffffff; --p-action: #0c6e79; --p-action-ink: #ffffff;
+  --p-inv-bg: #1f3038; --p-inv-surface: #2c3c44; --p-inv-ink: #f7f9fa; --p-inv-muted: #9ea7ab;
+  --p-inv-accent: #f7f9fa; --p-inv-accent-ink: #1f3038; --p-inv-action: #f7f9fa; --p-inv-action-ink: #1f3038;
+}
+.gallery-head { position: relative; background: var(--ink); color: var(--bg); }
+.gallery-head .wrap { padding-block: var(--s-6); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); justify-content: space-between; }
+.gallery-head h1 { font-size: var(--t-h1); }
+.gallery-head a:focus-visible { outline-color: var(--bg); }
+.gallery-head a:not(.skip-link) { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: var(--s-1); }
+</style>
+<script src="../backgrounds/backgrounds.js"></script>
+<style id="own-css">
+[data-own="rail"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="rail"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="rail"] .steps { border-bottom: 1px solid var(--line); }
+[data-own="rail"] .steps li { position: relative; display: grid; grid-template-columns: var(--s-7) minmax(12em, 1fr) minmax(7em, .45fr) minmax(0, 1.2fr); gap: var(--s-5); align-items: start; padding-block: var(--s-4); }
+[data-own="rail"] .steps li::before, [data-own="rail"] .steps li::after { content: ""; position: absolute; inset: calc(var(--s-4) + var(--s-4)) auto auto var(--s-4); width: 1px; height: 100%; background: var(--line); }
+[data-own="rail"] .steps li::after { background: var(--action); transform: scaleY(var(--p, 1)); transform-origin: top; }
+[data-own="rail"] .steps li:last-child::before, [data-own="rail"] .steps li:last-child::after { display: none; }
+[data-own="rail"] .stop { position: relative; z-index: 1; width: var(--s-6); height: var(--s-6); display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--bg); font-variant-numeric: tabular-nums; }
+[data-own="rail"] .duration { color: var(--muted); font-variant-numeric: tabular-nums; }
+[data-own="rail"] .steps li + li h3::before { content: ""; position: absolute; inset: 0 0 auto calc(var(--s-7) + var(--s-5)); border-top: 1px solid var(--line); }
+@media (max-width: 750px) {
+  [data-own="rail"] .steps li { grid-template-columns: var(--s-6) 1fr; gap: var(--s-1) var(--s-4); padding-block: var(--s-4); }
+  [data-own="rail"] .stop { grid-row: 1 / 4; }
+  [data-own="rail"] .steps li::before, [data-own="rail"] .steps li::after { top: var(--s-6); }
+  [data-own="rail"] .steps li + li h3::before { left: var(--s-7); }
+  [data-own="rail"] .duration, [data-own="rail"] .steps p { grid-column: 2; }
+}
+
+[data-own="meter"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="meter"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="meter"] .seat-meter { font-variant-numeric: tabular-nums; }
+[data-own="meter"] .measure-head, [data-own="meter"] .ends { display: flex; justify-content: space-between; align-items: baseline; }
+[data-own="meter"] label { font-size: var(--t-card); }
+[data-own="meter"] input { width: 100%; min-height: var(--btn-h); accent-color: var(--action); margin: 0; cursor: pointer; }
+[data-own="meter"] .ends, [data-own="meter"] small { font-size: var(--t-small); }
+[data-own="meter"] .ends { color: var(--muted); }
+[data-own="meter"] .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); margin-block: var(--s-5); }
+[data-own="meter"] article { padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="meter"] article[data-fit] { background: var(--ink); color: var(--bg); }
+[data-own="meter"] article p { margin-block: var(--s-1) var(--s-5); }
+[data-own="meter"] strong { display: block; font-size: var(--t-stat); line-height: 1.2; font-weight: 500; }
+[data-own="meter"] small { font-weight: 400; }
+@media (max-width: 639px) {
+  [data-own="meter"] .plans { grid-template-columns: 1fr; gap: var(--s-2); }
+  [data-own="meter"] article { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: var(--s-1) var(--s-2); padding: var(--s-4); }
+  [data-own="meter"] article p { grid-row: 2; margin: 0; }
+  [data-own="meter"] strong { grid-column: 2; grid-row: 1 / 3; font-size: var(--t-h3); }
+}
+
+[data-own="core-view"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="core-view"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="core-view"] .run-view { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; font-variant-numeric: tabular-nums; }
+[data-own="core-view"] .run-head, [data-own="core-view"] .job-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+[data-own="core-view"] .run-head { padding: var(--s-4) var(--s-5); background: var(--ink); color: var(--bg); }
+[data-own="core-view"] .run-head span, [data-own="core-view"] .job-head span, [data-own="core-view"] .job-head p, [data-own="core-view"] .axis, [data-own="core-view"] .lanes li > div:first-child span { font-size: var(--t-small); }
+[data-own="core-view"] .run-body { padding: var(--s-5); }
+[data-own="core-view"] .job-head p, [data-own="core-view"] .axis, [data-own="core-view"] .job-head span { color: var(--muted); }
+[data-own="core-view"] .axis { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr; text-align: center; margin: var(--s-5) 0 var(--s-2) 22%; }
+[data-own="core-view"] .lanes li { display: grid; grid-template-columns: 22% 1fr; align-items: center; border-top: 1px solid var(--line); padding-block: var(--s-3); }
+[data-own="core-view"] .lanes li > div:first-child span { display: block; color: var(--muted); }
+[data-own="core-view"] .track { display: grid; grid-template-columns: repeat(8, 1fr); }
+[data-own="core-view"] .track > span { display: flex; gap: var(--s-2); align-items: center; padding: var(--s-2); font-size: var(--t-small); border-radius: var(--r-sm); }
+[data-own="core-view"] .proof { grid-column: 1 / 3; background: var(--ink); color: var(--bg); }
+[data-own="core-view"] .print { grid-column: 3 / 7; background: var(--action); color: var(--action-ink); }
+[data-own="core-view"] .bind { grid-column: 7 / 9; border: 1px solid var(--line); background: var(--bg); }
+[data-own="core-view"] b { display: inline-grid; place-items: center; width: var(--s-5); height: var(--s-5); border: 1px solid var(--line); border-radius: 50%; background: var(--bg); color: var(--ink); font-size: var(--t-label); }
+[data-own="core-view"] .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); margin: var(--s-5) 0 0; }
+[data-own="core-view"] dt { font-weight: 600; }
+[data-own="core-view"] dt b { margin-right: var(--s-1); }
+[data-own="core-view"] dd { margin: var(--s-2) 0 0; }
+@media (max-width: 639px) {
+  [data-own="core-view"] .run-body, [data-own="core-view"] .run-head { padding: var(--s-4); }
+  [data-own="core-view"] .notes { grid-template-columns: 1fr; gap: var(--s-4); }
+  [data-own="core-view"] .axis { margin-left: 0; }
+  [data-own="core-view"] .lanes li { grid-template-columns: 1fr; gap: var(--s-2); }
+  [data-own="core-view"] .lanes li > div:first-child { display: flex; justify-content: space-between; }
+  [data-own="core-view"] .track > span { justify-content: center; padding-inline: var(--s-1); gap: var(--s-1); }
+  [data-own="core-view"] .track b { width: auto; height: auto; border: 0; background: none; color: inherit; }
+}
+[data-own="core-view"] .axis span:first-child { text-align: left; }
+[data-own="core-view"] .axis span:last-child { text-align: right; }
+
+[data-own="switcher"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="switcher"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="switcher"] .choices { display: flex; flex-wrap: wrap; gap: var(--s-1); border-bottom: 1px solid var(--line); }
+[data-own="switcher"] button { background: none; border: 0; padding: var(--s-2) var(--s-4); min-height: var(--btn-h); cursor: pointer; }
+[data-own="switcher"] button[aria-selected="true"] { color: var(--action); border-bottom: 1px solid var(--action); font-weight: 600; }
+[data-own="switcher"] .hall-body { display: grid; grid-template-columns: 3fr 2fr; gap: var(--s-7); align-items: center; margin-top: var(--s-5); }
+[data-own="switcher"] figure { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="switcher"] svg { width: 100%; height: auto; }
+[data-own="switcher"] .walls { fill: none; stroke: var(--ink); stroke-width: 2; }
+[data-own="switcher"] .seats { fill: var(--ink); }
+[data-own="switcher"] .furniture { fill: var(--action); }
+[data-own="switcher"] dl { margin: var(--s-4) 0 0; }
+[data-own="switcher"] dl > div { display: flex; gap: var(--s-4); justify-content: space-between; padding-block: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="switcher"] dt { color: var(--muted); }
+[data-own="switcher"] dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) {
+  [data-own="switcher"] .hall-body { grid-template-columns: 1fr; gap: var(--s-5); }
+  [data-own="switcher"] button { flex: 1; padding-inline: var(--s-2); }
+}
+
+[data-own="bars"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="bars"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="bars"] .packing { display: grid; grid-template-columns: 1fr 2fr; gap: var(--s-6) var(--s-8); align-items: center; font-variant-numeric: tabular-nums; padding-top: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="bars"] .difference { display: grid; gap: var(--s-2); }
+[data-own="bars"] .difference strong { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+[data-own="bars"] .difference span { font-size: var(--t-lead); }
+[data-own="bars"] .bar-label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); }
+[data-own="bars"] .bar-label b { font-weight: 500; }
+[data-own="bars"] .length { margin-top: var(--s-2); height: var(--s-6); background: var(--surface); }
+[data-own="bars"] .length i { display: block; height: 100%; background: var(--ink); }
+[data-own="bars"] .length + .bar-label { margin-top: var(--s-5); }
+[data-own="bars"] .length:last-child i { width: 50%; background: var(--action); }
+[data-own="bars"] figcaption { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: var(--s-3); color: var(--muted); font-size: var(--t-small); }
+@media (max-width: 639px) { [data-own="bars"] .packing { grid-template-columns: 1fr; gap: var(--s-5); } }
+
+[data-own="scale"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="scale"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="scale"] .thermometer { padding: var(--s-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); font-variant-numeric: tabular-nums; }
+[data-own="scale"] .ruler svg { width: 100%; height: var(--s-7); overflow: visible; }
+[data-own="scale"] .ruler path { fill: none; stroke: var(--ink); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+[data-own="scale"] .points { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr; }
+[data-own="scale"] .points li { display: grid; grid-template-rows: auto 1fr; gap: var(--s-1); align-items: start; text-align: center; justify-items: center; }
+[data-own="scale"] .points li:first-child { text-align: left; justify-items: start; }
+[data-own="scale"] .points li:last-child { text-align: right; justify-items: end; }
+[data-own="scale"] .points strong { font-weight: 500; font-size: var(--t-h3); white-space: nowrap; }
+[data-own="scale"] figcaption { color: var(--muted); font-size: var(--t-small); margin-top: var(--s-6); }
+@media (max-width: 639px) {
+  [data-own="scale"] .thermometer { padding: var(--s-4); }
+  [data-own="scale"] .points strong { font-size: var(--t-small); }
+  [data-own="scale"] .points { grid-template-columns: minmax(0,1fr) repeat(3,minmax(0,2fr)) minmax(0,1fr); }
+  [data-own="scale"] .points span { font-size: var(--t-small); line-height: 1.3; }
+  [data-own="scale"] .ruler svg { height: var(--s-6); }
+}
+
+[data-own="case-rows"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="case-rows"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="case-rows"] .editions article { display: grid; grid-template-columns: 7fr 5fr; gap: var(--s-6); align-items: stretch; border-top: 1px solid var(--line); padding-block: var(--s-4); }
+[data-own="case-rows"] .jacket { min-height: calc(var(--s-10) + var(--s-6)); padding: var(--s-5); display: flex; align-items: flex-end; background: var(--surface); }
+[data-own="case-rows"] .jacket span { font-family: var(--font-display); font-size: var(--t-h2); line-height: 1; letter-spacing: var(--display-tracking); }
+[data-own="case-rows"] .jacket-2 { background: var(--ink); color: var(--bg); justify-content: flex-end; text-align: right; }
+[data-own="case-rows"] .jacket-3 { background: var(--action); color: var(--action-ink); align-items: center; justify-content: center; text-align: center; }
+[data-own="case-rows"] .jacket-4 { align-items: flex-start; }
+[data-own="case-rows"] .jacket-1 span { border-left: 1px solid var(--line-strong); padding-left: var(--s-3); }
+[data-own="case-rows"] .jacket-4 span { font-style: italic; }
+[data-own="case-rows"] .entry { display: grid; align-content: center; gap: var(--s-2); }
+[data-own="case-rows"] .fact-line { color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+[data-own="case-rows"] article:nth-child(even) { grid-template-columns: 5fr 7fr; }
+[data-own="case-rows"] article:nth-child(even) .jacket { grid-column: 2; grid-row: 1; }
+[data-own="case-rows"] article:nth-child(even) .entry { grid-column: 1; grid-row: 1; }
+@media (max-width: 639px) {
+  [data-own="case-rows"] .editions article, [data-own="case-rows"] .editions article:nth-child(even) { grid-template-columns: 1fr; gap: var(--s-3); }
+  [data-own="case-rows"] article:nth-child(even) :is(.jacket,.entry) { grid-column: auto; grid-row: auto; }
+}
+
+[data-own="index"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="index"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="index"] .catalogue { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); align-items: start; }
+[data-own="index"] .patterns { grid-column: 2; grid-row: 1; }
+[data-own="index"] svg { width: 100%; aspect-ratio: 4 / 3; display: block; background: var(--surface); color: var(--action); fill: currentColor; border: 1px solid var(--line); }
+[data-own="index"] .joint { stroke: var(--line); fill: none; stroke-width: 1px; }
+[data-own="index"] .fact-line { padding-top: var(--s-2); font-size: var(--t-small); }
+[data-own="index"] table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+[data-own="index"] caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="index"] th, [data-own="index"] td { text-align: left; border-bottom: 1px solid var(--line); font-weight: 400; }
+[data-own="index"] thead th { color: var(--muted); font-size: var(--t-small); padding-block: 0 var(--s-2); }
+[data-own="index"] th:last-child, [data-own="index"] td:last-child { text-align: right; }
+[data-own="index"] button { width: 100%; min-height: var(--btn-h); border: 0; background: none; padding: var(--s-2) var(--s-2) var(--s-2) 0; text-align: left; cursor: pointer; font-weight: 500; }
+[data-own="index"] tr:has([aria-pressed="true"]) { color: var(--action); }
+[data-own="index"] [aria-pressed="true"] { text-decoration: underline; text-underline-offset: var(--s-1); }
+@media (max-width: 639px) {
+  [data-own="index"] .catalogue { grid-template-columns: 1fr; gap: var(--s-4); }
+  [data-own="index"] .patterns { grid-column: 1; grid-row: auto; }
+  [data-own="index"] svg { height: var(--s-10); }
+}
+
+[data-own="day-bar"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="day-bar"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="day-bar"] .week { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+[data-own="day-bar"] th { text-align: left; font-weight: 500; }
+[data-own="day-bar"] th:first-child { width: 19%; padding-right: var(--s-3); }
+[data-own="day-bar"] thead th { color: var(--muted); font-size: var(--t-small); }
+[data-own="day-bar"] th, [data-own="day-bar"] td { border-bottom: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="day-bar"] .axis { display: grid; grid-template-columns: 1fr 2fr 2fr 1fr; text-align: center; }
+[data-own="day-bar"] .axis span:first-child { text-align: left; }
+[data-own="day-bar"] .axis span:last-child { text-align: right; }
+[data-own="day-bar"] .day-track { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); background: var(--surface); }
+[data-own="day-bar"] .session { display: flex; justify-content: space-between; gap: var(--s-1); background: var(--ink); color: var(--bg); padding: var(--s-1) var(--s-2); font-size: var(--t-small); }
+[data-own="day-bar"] tr:nth-child(4) .session { background: var(--action); color: var(--action-ink); }
+[data-own="day-bar"] .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 639px) {
+  [data-own="day-bar"] th:first-child { width: auto; }
+  [data-own="day-bar"] thead th:first-child { display: none; }
+  [data-own="day-bar"] tr, [data-own="day-bar"] td { display: block; }
+  [data-own="day-bar"] th { display: block; border: 0; padding-bottom: var(--s-1); }
+  [data-own="day-bar"] td { padding-top: 0; }
+  [data-own="day-bar"] .session { padding-inline: var(--s-1); }
+}
+
+[data-own="booking-bar"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="booking-bar"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="booking-bar"] .stay { grid-template-columns: repeat(2,minmax(0,1.2fr)) repeat(2,minmax(0,1fr)) minmax(6em,auto) auto; gap: var(--s-3); align-items: start; padding-block: var(--s-5); border-block: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+[data-own="booking-bar"] .field { min-width: 0; }
+[data-own="booking-bar"] .field :is(input,select) { min-width: 0; width: 100%; height: var(--s-7); }
+[data-own="booking-bar"] .quote { display: grid; gap: var(--s-2); }
+[data-own="booking-bar"] .quote > span { font-size: var(--t-small); font-weight: 500; }
+[data-own="booking-bar"] output { display: flex; align-items: center; min-height: var(--s-7); }
+[data-own="booking-bar"] .btn { margin-top: calc(var(--t-small) * 1.55 + var(--s-2)); min-height: var(--s-7); }
+[data-own="booking-bar"] .rates { font-size: var(--t-small); color: var(--ink); }
+[data-own="booking-bar"] [data-form-status]:empty { display: none; }
+@media (min-width: 640px) and (max-width: 1150px) { [data-own="booking-bar"] .stay { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 639px) {
+  [data-own="booking-bar"] .stay { grid-template-columns: 1fr; }
+  [data-own="booking-bar"] .quote { display: flex; justify-content: space-between; align-items: baseline; }
+  [data-own="booking-bar"] .btn { margin: 0; }
+}
+
+[data-own="configurator"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="configurator"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="configurator"] .builder { display: grid; grid-template-columns: 3fr 2fr; gap: var(--s-7); align-items: center; }
+[data-own="configurator"] .drawing { padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="configurator"] svg { width: 100%; }
+[data-own="configurator"] .parts { fill: var(--action); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+[data-own="configurator"] .slot { fill: none; stroke: var(--surface); stroke-width: 5; stroke-linecap: round; }
+[data-own="configurator"] .builder[data-finish="slate"] .parts { fill: var(--ink); }
+[data-own="configurator"] .builder[data-finish="chalk"] .parts { fill: var(--p-bg); }
+[data-own="configurator"] .builder[data-finish="slate"] .parts { stroke: var(--muted); }
+[data-own="configurator"] .builder[data-finish="chalk"] .slot { stroke: var(--ink); }
+[data-own="configurator"] .builder[data-height="20"] .height { transform: scaleY(1.28); }
+[data-own="configurator"] .builder[data-set="single"] .second { display: none; }
+[data-own="configurator"] .builder[data-set="single"] .parts { transform: translateX(19%); transform-box: view-box; }
+[data-own="configurator"] .fact-line { font-size: var(--t-small); font-variant-numeric: tabular-nums; margin-top: var(--s-3); }
+[data-own="configurator"] fieldset { border: 0; padding: 0; margin: 0 0 var(--s-4); min-width: 0; }
+[data-own="configurator"] legend { padding: 0; font-weight: 500; margin-bottom: var(--s-2); }
+[data-own="configurator"] fieldset > div { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+[data-own="configurator"] label { position: relative; cursor: pointer; }
+[data-own="configurator"] label input { position: absolute; inset: 0; margin: 0; width: 100%; height: 100%; appearance: none; border: 0; background: none; cursor: pointer; }
+[data-own="configurator"] label span { display: grid; place-items: center; padding-inline: var(--s-4); min-height: var(--btn-h); border: 1px solid var(--line); border-radius: var(--r-btn); }
+[data-own="configurator"] label input:checked + span { background: var(--ink); color: var(--bg); }
+[data-own="configurator"] label input:focus-visible + span { outline: 2px solid var(--action); outline-offset: 2px; }
+[data-own="configurator"] .cost { display: flex; align-items: baseline; justify-content: space-between; padding-top: var(--s-4); border-top: 1px solid var(--line); }
+@media (max-width: 639px) {
+  [data-own="configurator"] .builder { grid-template-columns: 1fr; gap: var(--s-5); }
+  [data-own="configurator"] .drawing { padding: var(--s-4); }
+}
+
+@media (max-width: 799px) {
+[data-own="receipt"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="receipt"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+}
+[data-own="receipt"] .picnic { display: block; background: var(--surface); border: 1px solid var(--line); padding: var(--s-6); font-variant-numeric: tabular-nums; }
+[data-own="receipt"] .bill { padding: 0; }
+[data-own="receipt"] .bill-head, [data-own="receipt"] .total { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+[data-own="receipt"] .bill-head span { white-space: nowrap; font-size: var(--t-small); color: var(--muted); }
+[data-own="receipt"] .items { margin: var(--s-5) 0; display: grid; gap: var(--s-3); }
+[data-own="receipt"] .items > div { display: flex; align-items: baseline; gap: var(--s-2); }
+[data-own="receipt"] .items > div::after { content: ""; border-bottom: 1px dotted var(--line-strong); flex: 1; }
+[data-own="receipt"] dd { order: 1; margin: 0; }
+[data-own="receipt"] .total { padding-top: var(--s-4); border-top: 1px solid var(--line); }
+[data-own="receipt"] .included { margin-top: var(--s-5); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="receipt"] ul { display: grid; gap: var(--s-2); margin: var(--s-4) 0; }
+[data-own="receipt"] li { display: flex; gap: var(--s-3); }
+[data-own="receipt"] li::before { content: ""; width: var(--s-3); height: var(--s-2); border-left: 2px solid var(--action); border-bottom: 2px solid var(--action); transform: translateY(var(--s-2)) rotate(-45deg); }
+[data-own="receipt"] .included p { color: var(--ink); max-width: 35ch; }
+@media (max-width: 639px) {
+  [data-own="receipt"] .picnic { padding: var(--s-4); }
+}
+@media (min-width: 800px) {
+  [data-own="receipt"].section > .wrap:not(.grid) { display: grid; grid-template-columns: 5fr 7fr; grid-template-rows: auto 1fr; gap: var(--s-4) var(--s-7); align-items: start; }
+  [data-own="receipt"] .wrap > p { grid-column: 1; margin: 0; max-width: 32ch; }
+  [data-own="receipt"] .picnic { grid-column: 2; grid-row: 1 / 3; margin: 0; }
+}
+</style>
+</head>
+<body>
+<header class="gallery-head"><div class="wrap"><a class="skip-link" href="#top">Skip to examples</a><h1>Content-shaped sections</h1><a href="README.md">Adapt these examples</a></div></header>
+<main id="top" tabindex="-1">
+<section class="section own" id="rail" data-own="rail" aria-labelledby="rail-title">
+  <div class="wrap">
+    <h2 id="rail-title">A bookcase, made to fit</h2>
+    <p class="t-lead measure">Elm &amp; Tenon builds to your room. You approve the drawing before we cut the boards.</p>
+    <ol class="steps" data-assumed>
+      <li data-m-progress><span class="stop" aria-hidden="true">1</span><h3>Measure the room</h3><span class="duration">Half a day</span><p>A measured plan, down to the last alcove.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">2</span><h3>Choose the timber</h3><span class="duration">1 week</span><p>Three oiled samples to try in your own light.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">3</span><h3>Set the shelves</h3><span class="duration">1 week</span><p>A full-size shelf layout to check against your books.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">4</span><h3>Build in the workshop</h3><span class="duration">3 weeks</span><p>A dry-fit photo to sign off before finishing.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">5</span><h3>Fit the bookcase</h3><span class="duration">1 day</span><p>Your fitted shelves and a tin of finishing oil.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="meter" data-own="meter" aria-labelledby="meter-title">
+  <div class="wrap">
+    <h2 id="meter-title">A plan for your reading room</h2>
+    <p class="t-lead measure">Leafcounter lends digital reading copies to book clubs. Each reader uses one seat.</p>
+    <div class="seat-meter" data-assumed>
+      <div class="measure-head"><label for="meter-seats">How many readers?</label><output for="meter-seats" class="t-stat" aria-live="polite">24 seats</output></div>
+      <input id="meter-seats" type="range" disabled min="5" max="100" value="24" aria-describedby="meter-answer">
+      <div class="ends"><span>5 seats</span><span>100 seats</span></div>
+      <div class="plans">
+        <article data-limit="15" data-price="12"><h3>Circle</h3><p>Up to 15 seats</p><strong>£12 <small>/ month</small></strong></article>
+        <article data-limit="40" data-price="28" data-fit><h3>Chapter</h3><p>Up to 40 seats</p><strong>£28 <small>/ month</small></strong></article>
+        <article data-limit="100" data-price="60"><h3>Library</h3><p>Up to 100 seats</p><strong>£60 <small>/ month</small></strong></article>
+      </div>
+      <p id="meter-answer" aria-live="polite">Chapter covers 24 seats for £28 a month.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section own" id="core-view" data-own="core-view" aria-labelledby="core-view-title">
+  <div class="wrap">
+    <h2 id="core-view-title">Where the press run stands</h2>
+    <p class="t-lead measure">Folio Relay puts a print job’s proof, press slot and bindery handoff on the same clock.</p>
+    <div class="run-view" data-assumed>
+      <div class="run-head"><strong>Folio Relay</strong><span>Production schedule</span></div>
+      <div class="run-body">
+        <div class="job-head"><div><h3>Estuary field guide</h3><p>Job 312 · 800 copies</p></div><span>Tuesday, 12 May</span></div>
+        <div class="axis" aria-hidden="true"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div>
+        <ol class="lanes">
+          <li><div>Prepress <span>09:00–11:00</span></div><div class="track"><span class="proof"><b>A</b> Proof</span></div></li>
+          <li><div>Press 2 <span>11:00–15:00</span></div><div class="track"><span class="print"><b>B</b> Run</span></div></li>
+          <li><div>Bindery <span>15:00–17:00</span></div><div class="track"><span class="bind"><b>C</b> Fold</span></div></li>
+        </ol>
+      </div>
+    </div>
+    <dl class="notes">
+      <div><dt><b>A</b> Signed proof</dt><dd>The editor signed the final sheet at 11:00.</dd></div>
+      <div><dt><b>B</b> Press slot</dt><dd>Four hours on the two-colour press, including wash-up.</dd></div>
+      <div><dt><b>C</b> Handoff</dt><dd>Bindery takes the printed sheets at 15:00.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="switcher" data-own="switcher" aria-labelledby="switcher-title">
+  <div class="wrap">
+    <h2 id="switcher-title">Four ways to use the hall</h2>
+    <p class="t-lead measure">The Northfold Rooms team sets the furniture before you arrive. Choose the gathering you have in mind.</p>
+    <div class="hall" data-assumed>
+      <div class="choices" role="tablist" aria-label="Hall setup">
+        <button class="press" type="button" role="tab" id="sw-tab-0" aria-controls="sw-panel-0" aria-selected="true" tabindex="0">Reading</button>
+        <button class="press" type="button" role="tab" id="sw-tab-1" aria-controls="sw-panel-1" aria-selected="false" tabindex="-1">Class</button>
+        <button class="press" type="button" role="tab" id="sw-tab-2" aria-controls="sw-panel-2" aria-selected="false" tabindex="-1">Supper</button>
+        <button class="press" type="button" role="tab" id="sw-tab-3" aria-controls="sw-panel-3" aria-selected="false" tabindex="-1">Critique</button>
+      </div>
+      <div class="hall-body">
+        <figure><svg viewBox="0 0 320 202" role="img" aria-label="Reading layout, sixteen seats facing a desk">
+          <defs>
+            <g id="sw-seat"><rect x="-5" y="-5" width="10" height="8" rx="2"/><path d="M-5 6h10" fill="none" stroke="currentColor" stroke-width="2"/></g>
+            <rect id="sw-table" width="42" height="12"/>
+          </defs>
+          <path class="walls" d="M58 87V22h204v157H58v-60m0-32 22 21m-22 11a32 32 0 0 0 22-11"/>
+          <g data-plan="0"><g class="furniture"><rect x="135" y="35" width="54" height="12"/></g><g class="seats"><use href="#sw-seat" transform="translate(116 70) rotate(0)"/><use href="#sw-seat" transform="translate(148 70) rotate(0)"/><use href="#sw-seat" transform="translate(180 70) rotate(0)"/><use href="#sw-seat" transform="translate(212 70) rotate(0)"/><use href="#sw-seat" transform="translate(116 95) rotate(0)"/><use href="#sw-seat" transform="translate(148 95) rotate(0)"/><use href="#sw-seat" transform="translate(180 95) rotate(0)"/><use href="#sw-seat" transform="translate(212 95) rotate(0)"/><use href="#sw-seat" transform="translate(116 120) rotate(0)"/><use href="#sw-seat" transform="translate(148 120) rotate(0)"/><use href="#sw-seat" transform="translate(180 120) rotate(0)"/><use href="#sw-seat" transform="translate(212 120) rotate(0)"/><use href="#sw-seat" transform="translate(116 145) rotate(0)"/><use href="#sw-seat" transform="translate(148 145) rotate(0)"/><use href="#sw-seat" transform="translate(180 145) rotate(0)"/><use href="#sw-seat" transform="translate(212 145) rotate(0)"/></g></g>
+          <g data-plan="1" hidden><g class="furniture"><use href="#sw-table" transform="translate(85 60) rotate(0)"/><use href="#sw-table" transform="translate(190 60) rotate(0)"/><use href="#sw-table" transform="translate(85 99) rotate(0)"/><use href="#sw-table" transform="translate(190 99) rotate(0)"/><use href="#sw-table" transform="translate(85 138) rotate(0)"/><use href="#sw-table" transform="translate(190 138) rotate(0)"/></g><g class="seats"><use href="#sw-seat" transform="translate(90 80) rotate(0)"/><use href="#sw-seat" transform="translate(110 80) rotate(0)"/><use href="#sw-seat" transform="translate(195 80) rotate(0)"/><use href="#sw-seat" transform="translate(215 80) rotate(0)"/><use href="#sw-seat" transform="translate(90 119) rotate(0)"/><use href="#sw-seat" transform="translate(110 119) rotate(0)"/><use href="#sw-seat" transform="translate(195 119) rotate(0)"/><use href="#sw-seat" transform="translate(215 119) rotate(0)"/><use href="#sw-seat" transform="translate(90 158) rotate(0)"/><use href="#sw-seat" transform="translate(110 158) rotate(0)"/><use href="#sw-seat" transform="translate(195 158) rotate(0)"/><use href="#sw-seat" transform="translate(215 158) rotate(0)"/></g></g>
+          <g data-plan="2" hidden><g class="furniture"><rect x="76" y="91" width="164" height="25"/></g><g class="seats"><use href="#sw-seat" transform="translate(90 81) rotate(180)"/><use href="#sw-seat" transform="translate(117 81) rotate(180)"/><use href="#sw-seat" transform="translate(144 81) rotate(180)"/><use href="#sw-seat" transform="translate(171 81) rotate(180)"/><use href="#sw-seat" transform="translate(198 81) rotate(180)"/><use href="#sw-seat" transform="translate(225 81) rotate(180)"/><use href="#sw-seat" transform="translate(90 126) rotate(0)"/><use href="#sw-seat" transform="translate(117 126) rotate(0)"/><use href="#sw-seat" transform="translate(144 126) rotate(0)"/><use href="#sw-seat" transform="translate(171 126) rotate(0)"/><use href="#sw-seat" transform="translate(198 126) rotate(0)"/><use href="#sw-seat" transform="translate(225 126) rotate(0)"/></g></g>
+          <g data-plan="3" hidden><g class="furniture"><rect x="145" y="91" width="30" height="24"/></g><g class="seats"><use href="#sw-seat" transform="translate(120 65) rotate(150)"/><use href="#sw-seat" transform="translate(160 55) rotate(180)"/><use href="#sw-seat" transform="translate(200 65) rotate(210)"/><use href="#sw-seat" transform="translate(226 105) rotate(270)"/><use href="#sw-seat" transform="translate(200 145) rotate(320)"/><use href="#sw-seat" transform="translate(160 156) rotate(0)"/><use href="#sw-seat" transform="translate(120 145) rotate(45)"/><use href="#sw-seat" transform="translate(95 105) rotate(90)"/></g></g>
+        </svg></figure>
+        <div aria-live="polite">
+          <div id="sw-panel-0" role="tabpanel" tabindex="0" aria-labelledby="sw-tab-0"><h3>Reading</h3><dl>
+            <div><dt>Places</dt><dd>16 seated</dd></div><div><dt>Furniture</dt><dd>Reading desk</dd></div><div><dt>Focal point</dt><dd>North wall</dd></div>
+          </dl></div>
+          <div id="sw-panel-1" role="tabpanel" tabindex="0" aria-labelledby="sw-tab-1" hidden><h3>Class</h3><dl>
+            <div><dt>Places</dt><dd>12 seated</dd></div><div><dt>Furniture</dt><dd>Six worktables</dd></div><div><dt>Focal point</dt><dd>Centre aisle</dd></div>
+          </dl></div>
+          <div id="sw-panel-2" role="tabpanel" tabindex="0" aria-labelledby="sw-tab-2" hidden><h3>Supper</h3><dl>
+            <div><dt>Places</dt><dd>12 seated</dd></div><div><dt>Furniture</dt><dd>One long table</dd></div><div><dt>Focal point</dt><dd>Both ends</dd></div>
+          </dl></div>
+          <div id="sw-panel-3" role="tabpanel" tabindex="0" aria-labelledby="sw-tab-3" hidden><h3>Critique</h3><dl>
+            <div><dt>Places</dt><dd>8 seated</dd></div><div><dt>Furniture</dt><dd>Display plinth</dd></div><div><dt>Focal point</dt><dd>Open circle</dd></div>
+          </dl></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section own" id="bars" data-own="bars" aria-labelledby="bars-title">
+  <div class="wrap">
+    <h2 id="bars-title">Packing a box of six</h2>
+    <p class="t-lead measure">Pith & Parcel tested a fold-in divider against six loose sleeves for its small-batch vinegar bottles.</p>
+    <figure class="packing" data-assumed>
+      <div class="difference"><strong class="t-h1">45 sec</strong><span>less packing time per box</span></div>
+      <div class="times">
+        <div class="bar-label"><span>Loose sleeves</span><b>90 seconds</b></div><div class="length" aria-hidden="true"><i></i></div>
+        <div class="bar-label"><span>Fold-in divider</span><b>45 seconds</b></div><div class="length" aria-hidden="true"><i></i></div>
+      </div>
+      <figcaption>Sample trial · Median time for 20 boxes per method, with the same bottles and packer.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="scale" data-own="scale" aria-labelledby="scale-title">
+  <div class="wrap">
+    <h2 id="scale-title">From ice water to a rolling boil</h2>
+    <p class="t-lead measure">The Thimble Point kitchen probe reads from 0 to 100 °C. These five familiar temperatures put its range in context.</p>
+    <figure class="thermometer" data-assumed aria-label="Thermometer range with five temperature references">
+      <div class="ruler"><svg viewBox="0 0 100 15" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h100"/><path d="M0 0v13"/><path d="M5 0v5"/><path d="M10 0v5"/><path d="M15 0v5"/><path d="M20 0v5"/><path d="M25 0v13"/><path d="M30 0v5"/><path d="M35 0v5"/><path d="M40 0v5"/><path d="M45 0v5"/><path d="M50 0v13"/><path d="M55 0v5"/><path d="M60 0v5"/><path d="M65 0v5"/><path d="M70 0v5"/><path d="M75 0v13"/><path d="M80 0v5"/><path d="M85 0v5"/><path d="M90 0v5"/><path d="M95 0v5"/><path d="M100 0v13"/></svg></div>
+      <ol class="points">
+        <li><strong>0 °C</strong><span>Ice water</span></li>
+        <li><strong>25 °C</strong><span>Warm room</span></li>
+        <li><strong>50 °C</strong><span>Hot tap</span></li>
+        <li><strong>75 °C</strong><span>Green tea</span></li>
+        <li><strong>100 °C</strong><span>Boiling water</span></li>
+      </ol>
+      <figcaption>Approximate reference points, at sea level.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section own" id="case-rows" data-own="case-rows" aria-labelledby="case-rows-title">
+  <div class="wrap">
+    <h2 id="case-rows-title">Editions from the bindery</h2>
+    <p class="t-lead measure">Still Gather binds short runs for artists and independent publishers.</p>
+    <div class="editions" data-assumed>
+      <article><div class="jacket jacket-1" aria-hidden="true"><span>Clay<br>Almanac</span></div><div class="entry"><h3>Clay Almanac</h3><p class="fact-line">Field guide · 320 copies · 2025</p></div></article>
+      <article><div class="jacket jacket-2" aria-hidden="true"><span>Sounding<br>Line</span></div><div class="entry"><h3>Sounding Line</h3><p class="fact-line">Poetry · 160 copies · 2024</p></div></article>
+      <article><div class="jacket jacket-3" aria-hidden="true"><span>After<br>Rain</span></div><div class="entry"><h3>After Rain</h3><p class="fact-line">Photobook · 240 copies · 2024</p></div></article>
+      <article><div class="jacket jacket-4" aria-hidden="true"><span>Soft<br>Margin</span></div><div class="entry"><h3>Soft Margin</h3><p class="fact-line">Essays · 400 copies · 2023</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="index" data-own="index" aria-labelledby="index-title">
+  <div class="wrap">
+    <h2 id="index-title">A catalogue of hand-pressed tiles</h2>
+    <p class="t-lead measure">Two Kiln Archive keeps the original mould for every commission. Select a design to see its repeat.</p>
+    <div class="catalogue" data-assumed>
+      <div class="patterns"><svg viewBox="0 0 320 224" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Millrace tile repeat">
+        <defs>
+          <pattern id="tile-repeat-0" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M-16 48Q16 48 16 16T48-16M16 80Q48 80 48 48T80 16" fill="none" stroke="currentColor" stroke-width="13"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-1" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0a32 32 0 0 1 64 0zM0 64a32 32 0 0 1 64 0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-2" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h18v46h46v18H0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-3" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h64L0 64z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-4" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 64V32a32 32 0 0 1 64 0v32H48V32a16 16 0 0 0-32 0v32z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-5" width="64" height="64" patternUnits="userSpaceOnUse"><path d="m32 0 20 32-20 32-20-32z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-6" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 32 32 0l32 32-12 12-20-20-20 20z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-7" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h64L44 32H20zm20 32h24l20 32H0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+        </defs>
+        <rect width="320" height="224" fill="url(#tile-repeat-0)"/>
+      </svg><p class="fact-line" aria-live="polite">Millrace · Leeds · 2026</p></div>
+      <table><caption>Tile commissions by year</caption><thead><tr><th scope="col">Design</th><th scope="col">Place</th><th scope="col">Year</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="true">Millrace</button></th><td>Leeds</td><td>2026</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Half Moon</button></th><td>York</td><td>2025</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Crosscut</button></th><td>Bath</td><td>2025</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Pennant</button></th><td>Hull</td><td>2024</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Bellmouth</button></th><td>Derby</td><td>2024</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Spindle</button></th><td>Bristol</td><td>2023</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Saltbox</button></th><td>Rye</td><td>2023</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Dovetail</button></th><td>Deal</td><td>2022</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section own" id="day-bar" data-own="day-bar" aria-labelledby="day-bar-title">
+  <div class="wrap">
+    <h2 id="day-bar-title">When the wheel room is open</h2>
+    <p class="t-lead measure">Bracken Wheel is a shared pottery studio. Thursday is the late session for members coming after work.</p>
+    <table class="week" data-assumed>
+      <thead><tr><th scope="col">Day</th><th scope="col"><span class="axis"><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span></span><span class="sr-only">Opening hours</span></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Monday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 9"><time>10:00</time><span class="sr-only"> to </span><time>16:00</time></span></div></td></tr>
+        <tr><th scope="row">Tuesday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Wednesday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Thursday</th><td><div class="day-track"><span class="session" style="grid-column: 5 / 13"><time>12:00</time><span class="sr-only"> to </span><time>20:00</time></span></div></td></tr>
+        <tr><th scope="row">Friday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Saturday</th><td><div class="day-track"><span class="session" style="grid-column: 2 / 10"><time>09:00</time><span class="sr-only"> to </span><time>17:00</time></span></div></td></tr>
+        <tr><th scope="row">Sunday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 7"><time>10:00</time><span class="sr-only"> to </span><time>14:00</time></span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="booking-bar" data-own="booking-bar" aria-labelledby="booking-bar-title">
+  <div class="wrap">
+    <h2 id="booking-bar-title">A stay at Wrenlock Weir</h2>
+    <p class="t-lead measure">Both rooms sleep two. Breakfast by the water is included in the nightly rate.</p>
+    <form class="form stay" method="post" action="mailto:stays@wrenlock-weir.example" enctype="text/plain" data-assumed>
+      <div class="field"><label for="stay-arrival">Arrival</label><input id="stay-arrival" name="arrival" type="date" value="2027-05-14" required></div>
+      <div class="field"><label for="stay-departure">Departure</label><input id="stay-departure" name="departure" type="date" value="2027-05-16" required></div>
+      <div class="field"><label for="stay-guests">Guests</label><select id="stay-guests" name="guests"><option value="1">1 guest</option><option value="2" selected>2 guests</option></select></div>
+      <div class="field"><label for="stay-room">Room</label><select id="stay-room" name="room"><option value="Bank room" data-rate="110">Bank room</option><option value="Weir room" data-rate="140">Weir room</option></select></div>
+      <div class="quote"><span class="night-count">2-night total</span><output class="t-stat" for="stay-arrival stay-departure stay-guests stay-room" aria-live="polite">£260</output></div>
+      <button class="press btn btn--primary" type="submit">Enquire by email</button>
+      <noscript><p>The total shown is for the two-night bank room stay above. Confirm any changes by email.</p></noscript>
+      <p class="rates">Bank room £110 · Weir room £140 · Second guest £20 per night</p>
+      <p class="form__status" data-form-status role="status"></p>
+    </form>
+  </div>
+</section>
+
+<section class="section own" id="configurator" data-own="configurator" aria-labelledby="configurator-title">
+  <div class="wrap">
+    <h2 id="configurator-title">The folded bookend</h2>
+    <p class="t-lead measure">Wickfold bends each bookend from a single sheet of steel. Pick a height, finish and set for your shelf.</p>
+    <div class="builder" data-assumed>
+      <figure class="drawing"><svg viewBox="40 16 340 182" role="img" aria-label="A pair of short teal steel bookends">
+        <defs><g id="wf-fold">
+          <path d="M0 0 45-20 45-89Q45-95 40-93L5-78Q0-76 0-70Z"/>
+          <path d="M0 0 45-20 90 1 45 22Z"/>
+          <path class="slot" d="M12-63 33-72"/>
+        </g></defs>
+        <g class="parts"><g transform="translate(78 159)"><g class="height"><use href="#wf-fold"/></g></g>
+        <g class="second" transform="translate(342 159) scale(-1 1)"><g class="height"><use href="#wf-fold"/></g></g></g>
+      </svg><figcaption class="fact-line">15 cm · Teal · Pair</figcaption></figure>
+      <div class="options">
+        <fieldset disabled><legend>Height</legend><div><label class="press"><input type="radio" name="ends-height" value="15" checked><span>15 cm</span></label><label class="press"><input type="radio" name="ends-height" value="20"><span>20 cm</span></label></div></fieldset>
+        <fieldset disabled><legend>Finish</legend><div><label class="press"><input type="radio" name="ends-finish" value="slate"><span>Slate</span></label><label class="press"><input type="radio" name="ends-finish" value="chalk"><span>Chalk</span></label><label class="press"><input type="radio" name="ends-finish" value="teal" checked><span>Teal</span></label></div></fieldset>
+        <fieldset disabled><legend>Set</legend><div><label class="press"><input type="radio" name="ends-set" value="single"><span>Single</span></label><label class="press"><input type="radio" name="ends-set" value="pair" checked><span>Pair</span></label></div></fieldset>
+        <div class="cost"><span>Set price</span><output class="t-stat" aria-live="polite">£54</output></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section own ground-surface" id="receipt" data-own="receipt" aria-labelledby="receipt-title">
+  <div class="wrap">
+    <h2 id="receipt-title">A picnic for four</h2>
+    <p class="t-lead measure">Meadow Fold packs one basket for four people to share on the towpath.</p>
+    <div class="picnic" data-assumed>
+      <div class="bill"><div class="bill-head"><h3>Towpath basket</h3><span>Serves 4</span></div>
+        <dl class="items">
+          <div><dt>Four cheddar rolls</dt><dd>£20</dd></div>
+          <div><dt>Potato &amp; herb salad</dt><dd>£8</dd></div>
+          <div><dt>Four plum cakes</dt><dd>£12</dd></div>
+          <div><dt>Elderflower cordial</dt><dd>£6</dd></div>
+        </dl>
+        <div class="total"><strong>Basket total</strong><b class="t-stat">£46</b></div>
+      </div>
+      <div class="included"><h3>In the basket</h3><ul>
+        <li>Four enamel plates and forks</li><li>A chilled flask for the cordial</li><li>A linen cloth for the grass</li>
+      </ul><p>Bring the basket, flask and tableware back to the hatch by 17:00.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+<script type="module" src="../system.js"></script>
+<script type="module" src="../motion/motion.js"></script>
+<script type="module" src="../layout/layout.js"></script>
+
+<script type="module">
+const root = document.querySelector('[data-own="meter"]');
+const slider = root.querySelector('input');
+slider.disabled = false;
+const plans = [...root.querySelectorAll('[data-limit]')];
+function priceSeats() {
+  const seats = slider.valueAsNumber;
+  const fit = plans.find(plan => seats <= Number(plan.dataset.limit));
+  for (const plan of plans) plan.toggleAttribute('data-fit', plan === fit);
+  root.querySelector('output').value = seats + ' seats';
+  root.querySelector('#meter-answer').textContent =
+    fit.querySelector('h3').textContent + ' covers ' + seats + ' seats for £' + fit.dataset.price + ' a month.';
+}
+slider.addEventListener('input', priceSeats);
+priceSeats();
+</script>
+<script type="module">
+const root = document.querySelector('[data-own="switcher"]');
+const tabs = [...root.querySelectorAll('[role="tab"]')];
+function select(index) {
+  tabs.forEach((tab, i) => {
+    const selected = index === i;
+    tab.setAttribute('aria-selected', String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+    root.querySelector('#' + tab.getAttribute('aria-controls')).hidden = !selected;
+  });
+  root.querySelectorAll('[data-plan]').forEach((plan, i) => plan.toggleAttribute('hidden', i !== index));
+  const panel = root.querySelector('#' + tabs[index].getAttribute('aria-controls'));
+  const facts = [...panel.querySelectorAll('dd')].map(fact => fact.textContent);
+  root.querySelector('svg').setAttribute('aria-label', tabs[index].textContent + ' layout, ' + facts.join(', '));
+}
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => select(index));
+  tab.addEventListener('keydown', event => {
+    const forward = (index + 1) % tabs.length;
+    const back = (index + tabs.length - 1) % tabs.length;
+    const next = { ArrowRight: forward, ArrowLeft: back, ArrowDown: forward, ArrowUp: back, Home: 0, End: tabs.length - 1 }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    select(next);
+    tabs[next].focus();
+  });
+});
+</script>
+<script type="module">
+const root = document.querySelector('[data-own="index"]');
+const rows = [...root.querySelectorAll('tbody tr')];
+const svg = root.querySelector('svg');
+function show(row, index) {
+  const name = row.querySelector('button').textContent;
+  rows.forEach(other => other.querySelector('button').setAttribute('aria-pressed', String(other === row)));
+  svg.querySelector(':scope > rect').setAttribute('fill', 'url(#tile-repeat-' + index + ')');
+  svg.setAttribute('aria-label', name + ' tile repeat');
+  root.querySelector('.fact-line').textContent = [...row.cells].map(cell => cell.textContent).join(' · ');
+}
+rows.forEach((row, index) => {
+  row.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') show(row, index); });
+  row.addEventListener('focusin', () => show(row, index));
+  row.addEventListener('click', () => show(row, index));
+});
+</script>
+<script type="module">
+const root = document.querySelector('[data-own="booking-bar"]');
+const form = root.querySelector('form');
+const { arrival, departure, guests, room } = form.elements;
+const total = form.querySelector('output');
+const nightCount = root.querySelector('.night-count');
+const pounds = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+function quote() {
+  const nights = (departure.valueAsNumber - arrival.valueAsNumber) / 86400000;
+  departure.setCustomValidity(nights <= 0 ? 'Choose a departure after arrival.' : '');
+  if (!Number.isFinite(nights) || nights <= 0) {
+    nightCount.textContent = 'Stay total';
+    total.value = '—';
+    total.setAttribute('aria-label', 'Select a valid date range for a total');
+    return;
+  }
+  nightCount.textContent = nights + '-night total';
+  total.removeAttribute('aria-label');
+  const rate = Number(room.selectedOptions[0].dataset.rate) + (Number(guests.value) - 1) * 20;
+  total.value = pounds.format(rate * nights);
+}
+form.addEventListener('input', quote);
+form.addEventListener('change', quote);
+quote();
+</script>
+<script type="module">
+const root = document.querySelector('[data-own="configurator"]');
+const builder = root.querySelector('.builder');
+builder.querySelectorAll('fieldset').forEach(field => field.disabled = false);
+function configure() {
+  const [height, finish, set] = [...builder.querySelectorAll('input:checked')].map(input => input.value);
+  builder.dataset.height = height;
+  builder.dataset.finish = finish;
+  builder.dataset.set = set;
+  const finishName = builder.querySelector('[name="ends-finish"]:checked + span').textContent;
+  const setName = set === 'pair' ? 'Pair' : 'Single';
+  builder.querySelector('figcaption').textContent = [height + ' cm', finishName, setName].join(' · ');
+  builder.querySelector('svg').setAttribute('aria-label', setName + ', ' + height + ' cm ' + finishName.toLowerCase() + ' bookend' + (set === 'pair' ? 's' : ''));
+  const prices = { '15': {single: 30, pair: 54}, '20': {single: 38, pair: 68} };
+  builder.querySelector('output').value = '£' + prices[height][set];
+}
+builder.addEventListener('change', configure);
+configure();
+</script>
+</body>
+</html>

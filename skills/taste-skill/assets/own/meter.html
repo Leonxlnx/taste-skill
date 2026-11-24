@@ -1,0 +1,57 @@
+<section class="section own" id="meter" data-own="meter" aria-labelledby="meter-title">
+  <div class="wrap">
+    <h2 id="meter-title">A plan for your reading room</h2>
+    <p class="t-lead measure">Leafcounter lends digital reading copies to book clubs. Each reader uses one seat.</p>
+    <div class="seat-meter" data-assumed>
+      <div class="measure-head"><label for="meter-seats">How many readers?</label><output for="meter-seats" class="t-stat" aria-live="polite">24 seats</output></div>
+      <input id="meter-seats" type="range" disabled min="5" max="100" value="24" aria-describedby="meter-answer">
+      <div class="ends"><span>5 seats</span><span>100 seats</span></div>
+      <div class="plans">
+        <article data-limit="15" data-price="12"><h3>Circle</h3><p>Up to 15 seats</p><strong>£12 <small>/ month</small></strong></article>
+        <article data-limit="40" data-price="28" data-fit><h3>Chapter</h3><p>Up to 40 seats</p><strong>£28 <small>/ month</small></strong></article>
+        <article data-limit="100" data-price="60"><h3>Library</h3><p>Up to 100 seats</p><strong>£60 <small>/ month</small></strong></article>
+      </div>
+      <p id="meter-answer" aria-live="polite">Chapter covers 24 seats for £28 a month.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="meter"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="meter"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="meter"] .seat-meter { font-variant-numeric: tabular-nums; }
+[data-own="meter"] .measure-head, [data-own="meter"] .ends { display: flex; justify-content: space-between; align-items: baseline; }
+[data-own="meter"] label { font-size: var(--t-card); }
+[data-own="meter"] input { width: 100%; min-height: var(--btn-h); accent-color: var(--action); margin: 0; cursor: pointer; }
+[data-own="meter"] .ends, [data-own="meter"] small { font-size: var(--t-small); }
+[data-own="meter"] .ends { color: var(--muted); }
+[data-own="meter"] .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); margin-block: var(--s-5); }
+[data-own="meter"] article { padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="meter"] article[data-fit] { background: var(--ink); color: var(--bg); }
+[data-own="meter"] article p { margin-block: var(--s-1) var(--s-5); }
+[data-own="meter"] strong { display: block; font-size: var(--t-stat); line-height: 1.2; font-weight: 500; }
+[data-own="meter"] small { font-weight: 400; }
+@media (max-width: 639px) {
+  [data-own="meter"] .plans { grid-template-columns: 1fr; gap: var(--s-2); }
+  [data-own="meter"] article { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: var(--s-1) var(--s-2); padding: var(--s-4); }
+  [data-own="meter"] article p { grid-row: 2; margin: 0; }
+  [data-own="meter"] strong { grid-column: 2; grid-row: 1 / 3; font-size: var(--t-h3); }
+}
+</style>
+
+<script type="module">
+const root = document.querySelector('[data-own="meter"]');
+const slider = root.querySelector('input');
+slider.disabled = false;
+const plans = [...root.querySelectorAll('[data-limit]')];
+function priceSeats() {
+  const seats = slider.valueAsNumber;
+  const fit = plans.find(plan => seats <= Number(plan.dataset.limit));
+  for (const plan of plans) plan.toggleAttribute('data-fit', plan === fit);
+  root.querySelector('output').value = seats + ' seats';
+  root.querySelector('#meter-answer').textContent =
+    fit.querySelector('h3').textContent + ' covers ' + seats + ' seats for £' + fit.dataset.price + ' a month.';
+}
+slider.addEventListener('input', priceSeats);
+priceSeats();
+</script>

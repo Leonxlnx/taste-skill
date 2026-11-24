@@ -9,10 +9,7 @@ buttons are a verb and an object, nothing is invented beyond the facts it lets y
 
 ## The hero: 14 forms
 
-Most professional heroes are 2 to 9 words, one clause, never two adjectives stacked. Choose the form
-on purpose and write it on the voice card (`copy.md`, The copy notes). The h1 may take any form; the
-lead or the eyebrow then says plainly what is sold and where or for whom, so a stranger still knows
-in five seconds. A form that needs a fact gets it in the very next line.
+Choose a hero form and record it on the voice card (`copy.md`). The h1 and lead together say what is sold and where or for whom. A form that needs a fact gets it in the next line.
 
 | # | Form | Made-up example (h1, then the line that carries the category) | Learn from | Use when |
 | --- | --- | --- | --- | --- |

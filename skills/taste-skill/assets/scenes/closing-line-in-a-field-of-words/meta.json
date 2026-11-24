@@ -58,7 +58,11 @@
       "pictures:0",
       "names:16"
     ],
-    "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face)."
+    "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face).",
+    "carry": [
+      "list",
+      "words"
+    ]
   },
   "never": "never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit.",
   "avoidWith": [],

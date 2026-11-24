@@ -20,14 +20,8 @@ checks open differ.
 
 ## The markup and the head
 
-- Components take the starter's markup and classes as written (`class` becomes `className` in JSX). Keep its
-  tree: `main > section`, `main > .hero`, `body > nav.actionbar`. system.css and system.js select by those
-  child steps, so a component returns a fragment, never a wrapper `div` around a section. An app mounted in
-  `#root` or `#app` (Vite) has no `body > nav.actionbar`: render the bar into `document.body` with a portal,
-  or the phone bar never shows.
-- The head as the starter has it, in the root layout: the kit's stylesheets in the starter's order, the
-  Google Fonts links and the `:root` block `start.mjs css` prints (an inline `<style>` after the kit's links),
-  `<html lang data-type data-radius data-ground data-buttons data-motion>`, the page meta (Next.js:
+- Keep the starter tree: `main > section`, `main > .hero`, `body > nav.actionbar`. A component returns the section itself. For `#root` or `#app`, portal the phone bar to `document.body`. Use the kit markup for the frame and `compose.md` for own sections.
+- In the root layout keep the starter's stylesheet order, Google Fonts links and the `:root` block from `start.mjs css`. Put `own-css` after the kit styles. Keep `<html lang data-type data-density data-radius data-ground data-buttons data-motion>` and the page meta (Next.js:
   `metadata`, `other: { 'site-kind': '<kind>' }`), the two one-line class scripts (`m-enter`, `mo-js`) and
   `/assets/backgrounds/backgrounds.js` as a plain script. These run before the first paint and set classes and
   attributes on `<html>` before the framework hydrates it: give `<html>` `suppressHydrationWarning` (React).

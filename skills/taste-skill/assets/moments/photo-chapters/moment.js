@@ -1,5 +1,5 @@
 /*
-  photo-chapters - a short story told in three to five photographs, one large frame at a time. The
+  photo-chapters - a short story told in three or four photographs, one large frame at a time. The
   section holds on screen while the page scrolls: its h2 and lead at the top, below them one big
   photograph the width of the page's edges, and on it, at its lower left, a panel in the page's ground
   with the chapter in hand (its number, a title and two lines). As the reader scrolls, each next
@@ -18,16 +18,12 @@
             <h3>Arrive by the coast road</h3>
             <p>Two lines.</p>
           </li>
-          …three to five chapters, one photograph each
+          …three or four chapters, one photograph each
         </ol>
       </div>
     </section>
 
-  Its height is its own: live the section is (hold + 1) screens, the hold growing with the chapters
-  (three chapters hold two screens, four or five hold three: about two thirds of a screen each), and
-  at rest it is as tall as its chapters, one screen at least. Write no --h and no data-screen on it:
-  the checker and the layout check read a live photo-chapters section (.is-live) as whole screens, four
-  at most, and still hold it to that.
+  Live height is one stage plus half a screen per chapter. At rest the section fits its content.
   At rest (reduced motion, no script, a failed module, a screen under 600px tall such as a phone
   turned sideways) the chapters stand side by side, each photograph over its title and lines (a phone
   stacks them): the same words and pictures, nothing hidden. Live at every width from 600px of
@@ -42,13 +38,12 @@ export default function (root, opts, lib) {
   const list = root.querySelector('.mo-ph__list');
   const chapters = [...root.querySelectorAll('.mo-ph__ch')];
   const pics = chapters.map(c => c.querySelector('.mo-ph__pic'));
-  if (!list || chapters.length < 2 || pics.some(p => !p)) return {};
+  if (!list || chapters.length < 3 || chapters.length > 4 || pics.some(p => !p)) return {};
   const homes = pics.map(p => p.parentElement);
   const listHome = { parent: list.parentElement, next: list.nextSibling };
   const zoom = lib.clamp(+opts.zoom || 1.06, 1, 1.1);
   const n = chapters.length;
-  // about two thirds of a screen of scroll a chapter, in whole screens so the section stays on the grid
-  const hold = n <= 3 ? 2 : 3;
+  const hold = n / 2;
   // each chapter's words in a box of their own, so the live panel can stack them in one place
   chapters.forEach(c => {
     if (c.querySelector(':scope > .mo-ph__words')) return;

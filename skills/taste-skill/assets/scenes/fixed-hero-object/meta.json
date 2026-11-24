@@ -24,10 +24,16 @@
   "reduced": "The hero with the object's still in its right half, the chapters as sections under it.",
   "phone": "The finished composition: the hero copy first, then the still, then the chapters under it.",
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0.15,
   "needs": {
     "object": "one object: a render from assets/objects (print-globe, print-cards, print-wheel, print-lamp, print-cup) with its still made by shoot.mjs make, or the client's own cut-out photograph (an <img class=\"fho__img\">)",
-    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows"
+    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows",
+    "carry": [
+      "steps"
+    ],
+    "list": [
+      "object"
+    ]
   },
   "never": "a gauge, a counter or a frame readout under the object; copy over the object; a second moving ground behind it; an object of another trade than the client's; a print effect on a product page (the render shows). Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
   "avoidWith": [
@@ -54,5 +60,6 @@
     "headline-arrives",
     "cursor-spotlight",
     "liquid-hover"
-  ]
+  ],
+  "demoted": true
 }

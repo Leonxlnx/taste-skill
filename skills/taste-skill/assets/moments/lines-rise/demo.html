@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-radius="round" data-ground="sage">
+<html data-type="software" lang="en" data-radius="round" data-ground="sage">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,24 +10,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
 <link rel="stylesheet" href="../../system.css">
 <link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../../layout/layout.css">
 <link rel="stylesheet" href="moment.css">
 <style>
   :root { --p-bg: #fbfaf7; --p-surface: #f0eee8; --p-ink: #1c1d1a; --p-muted: #666a60; --p-accent: #2f7d4f; --p-accent-ink: #ffffff; --p-action: #1c1d1a; --p-action-ink: #fbfaf7;
           --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 500; }
+  [data-moment="lines-rise"] .demo-split { height: auto; }
 </style>
 </head>
 <body>
-<header class="demo-nav"><div class="container">
-  <a class="demo-nav__logo" href="#">Relay</a>
-  <nav class="demo-nav__links"><a href="#">Agents</a><a href="#">Pricing</a><a href="#">Developers</a><a href="#">Company</a></nav>
-  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Contact sales</a><a class="btn btn--primary btn--sm" href="#">Download</a></div>
+<header class="nav"><div class="wrap nav__bar">
+  <a class="nav__logo" href="#top">Relay</a>
+  <nav class="nav__links" aria-label="Main"><a class="nav__link" href="#top">Jobs</a><a class="nav__link" href="#record">Activity</a><a class="nav__link" href="#connections">Integrations</a></nav>
+  <div class="nav__actions"><a class="btn btn--primary btn--sm" href="mailto:hello@relay.example">Contact Relay</a></div>
 </div></header>
-<main>
-  <section class="section section--hero">
-    <div class="container demo-split">
-      <div class="section-head"><h1>Give an agent a job, not a prompt</h1><p>Relay runs the work you hand it: the inbox, the tickets, the weekly report. You see every step and sign off the ones that matter.</p><div class="btn-row"><a class="btn btn--primary" href="#">Download for Mac</a><a class="btn btn--secondary" href="#">Contact sales</a></div></div>
-      <div class="frame frame--hero demo-lit" style="--ratio: 72%">
-        <div class="dw">
+<main id="top">
+  <section class="hero hero--split"><div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-6"><h1>Give an agent a job, not a prompt</h1><p class="hero__lead">Relay runs the inbox, tickets and weekly report. Follow the 14 support tickets in the queue and sign off the replies.</p><div class="btn-row"><a class="btn btn--primary" href="mailto:hello@relay.example">Contact Relay</a><a class="btn btn--secondary" href="#record">View activity</a></div></div>
+      <div data-ui class="hero__media demo-lit demo-window span-6 start-7"><div class="dw ui">
           <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Jobs</span></div>
           <div class="dw__body">
             <div class="dw__side"><span class="on">Running</span><span>Done</span><span>Review</span><span>Settings</span></div>
@@ -37,19 +37,17 @@
               <div class="dw__row"><div><b>Onboarding emails · Sales</b><span>3 drafts waiting for you</span></div><span class="dw__tag">Review</span></div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section" data-moment="lines-rise">
-    <div class="container demo-split demo-split--flip">
-      <div class="section-head">
-        <h2>Every step on record, every decision yours</h2>
+        </div></div>
+    </div></div></section>
+  <section class="section" id="record">
+    <div class="wrap grid grid--top">
+      <div class="split-col span-6">
+        <h2 data-moment="lines-rise">Every step on record, every decision yours</h2>
         <p>Each job keeps a log of what Relay read, wrote and sent. A manager can check any day's work in a minute, and nothing goes out without the sign-off you set.</p>
-        <a class="link" href="#">See the audit log</a>
+        <a class="link split-col__end" href="#audit-log">See the audit log</a>
       </div>
-      <div class="frame demo-lit mo-lr__follow" style="--ratio: 80%">
-        <div class="dw">
+      <div id="audit-log" data-ui data-visual class="span-6 frame demo-lit" style="padding: var(--s-4)">
+        <div class="dw ui">
           <div class="dw__bar"><i></i><i></i><i></i><span>Relay · Log</span></div>
           <div class="dw__body">
             <div class="dw__side"><span>Running</span><span>Done</span><span class="on">Log</span><span>Settings</span></div>
@@ -63,14 +61,13 @@
       </div>
     </div>
   </section>
-  <section class="section ground-surface">
-    <div class="container demo-split">
-      <div class="section-head"><h2>Works where you work. <span class="muted">Mail, files, code.</span></h2><p>Relay signs in to the tools you already use and keeps the context across them, so a question about a file can end in a sent reply.</p><a class="link" href="#">See the integrations</a></div>
-      <img class="demo-photo" src="../_demo/photo-1081.jpg" alt="A glass building against the sky" width="1800" height="1200">
-    </div>
-  </section>
+  <section class="section ground-surface" id="connections"><div class="wrap"><div class="section-head"><h2>Mail, files and code</h2></div><ul class="rows"><li><span class="rows__name">Zendesk</span><span class="rows__value">Support tickets</span></li><li><span class="rows__name">Finance</span><span class="rows__value">Ledger exports</span></li><li><span class="rows__name">Sales</span><span class="rows__value">Onboarding drafts</span></li></ul></div></section>
 </main>
-<footer class="container demo-footer"><span>Relay · demo page for the moment “Lines rise”</span><span>Photograph by Julien Moreau on Unsplash</span></footer>
+<footer class="footer closing"><div class="wrap">
+    <div class="closing__cta"><div class="section-head--split"><div><h2>Discuss your team’s workflow</h2></div><a class="btn btn--primary" href="mailto:hello@relay.example">Contact Relay</a></div></div>
+    <div class="closing__links"><div class="footer__legal"><a href="#top">Relay</a><a href="#record">Activity log</a></div></div>
+  </div></footer>
+<script type="module" src="../../system.js"></script>
 <script type="module" src="../moments.js"></script>
 </body>
 </html>

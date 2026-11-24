@@ -2,6 +2,8 @@
 
 Run `node scripts/perf.mjs <site/index.html>` (Node 22 or later) on every finished page. It loads the page in headless CPU Chrome at 1440 and 390 wide, waits until the effects near the viewport are mounted, scrolls to the bottom and prints PASS, WARN or FAIL. Fix every FAIL. Each run on a page with a `.taste-skill` folder is kept in `.taste-skill/perf.json`, and the finish gate lists its FAILs as its own until the page changes; then it asks for a new run. `--json <file>` also writes the result to that file; `--runs N` sets the number of timing loads (default 3).
 
+Built drawings, HTML views and photographs share the same transfer and layout-shift budgets. Reserve the final dimensions of a peek window, booking bar and interactive section in the initial HTML and CSS. Run the finish gate separately for the script-free resting state.
+
 Reading the numbers:
 
 - **Timing is a median of 3 loads** with the spread printed (`runs 3, 33..161`). One load on a CPU is noise; a wide spread means the host was busy.

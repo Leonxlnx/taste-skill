@@ -58,7 +58,7 @@ export default function (root, opts, lib) {
     if (i === k) return;
     k = i;
     steps.forEach((s, n) => s.classList.toggle('is-on', n === i));
-    figures.forEach((f, n) => { f.classList.toggle('is-on', n === i); f.classList.toggle('is-past', n < i); });
+    figures.forEach((f, n) => { f.inert = n !== i; f.classList.toggle('is-on', n === i); f.classList.toggle('is-past', n < i); });
   };
   const go = () => {
     if (live) return;
@@ -76,7 +76,7 @@ export default function (root, opts, lib) {
     root.classList.remove('is-live');
     grid?.removeAttribute('data-edge-free');
     scrubber?.destroy(); scrubber = null;
-    figures.forEach((f, n) => { homes[n].append(f); f.classList.remove('is-on', 'is-past'); });
+    figures.forEach((f, n) => { homes[n].append(f); f.inert = false; f.classList.remove('is-on', 'is-past'); });
     steps.forEach(s => s.classList.remove('is-on'));
     k = -1;
   };

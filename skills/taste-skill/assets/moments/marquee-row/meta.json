@@ -23,9 +23,18 @@
   "maxPerPage": 1,
   "weight": 0.8,
   "needs": {
-    "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients"
+    "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients",
+    "carry": [
+      "list"
+    ]
   },
-  "text": { "sel": ".mo-mq__track:not(.mo-mq__clone) > *", "items": [6, 14] },
+  "text": {
+    "sel": ".mo-mq__track:not(.mo-mq__clone) > *",
+    "items": [
+      6,
+      14
+    ]
+  },
   "avoidWith": [],
   "states": {
     "start": {
@@ -40,5 +49,6 @@
       "see": true,
       "wait": 5200
     }
-  }
+  },
+  "counts": false
 }

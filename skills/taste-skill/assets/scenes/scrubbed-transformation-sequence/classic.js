@@ -399,8 +399,8 @@
     const count = Math.round(num(opts.count ?? (canvas && canvas.dataset.count), 120, 2, 400));
     const pPattern = opts.phoneFrames || (canvas && canvas.dataset.phoneFrames) || pattern;
     const pCount = Math.round(num(opts.phoneCount ?? (canvas && canvas.dataset.phoneCount), pPattern === pattern ? count : 60, 2, 400));
-    const hold = num(opts.hold, 4, 3, 5);
-    const phoneHold = num(opts.phoneHold, 3, 2, 4);
+    const hold = 1;
+    const phoneHold = hold;
     const scrub = opts.scrub ?? (Stage.lenis ? 0.3 : 0.6);
     const split = num(opts.split, 0.85, 0.5, 0.95);
     // the page's own ground unless an old page asks for the iris by name

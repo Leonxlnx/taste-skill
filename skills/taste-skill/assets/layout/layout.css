@@ -1,19 +1,20 @@
 /*
   taste-skill layout.css - layout v4 (references/layout-v4.md): the hero alone on the first screen, equal
-  left and right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
+  left and right edges, the hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
   Link it after system.css, ui/cards.css and backgrounds/backgrounds.css; load layout.js after system.js.
 
   Section   system.css sets the rhythm: every main > section as tall as its content, its h2 first,
             --padt over it and --padb under its last block; this file adds the heroes and the display tokens.
   Hero      <section class="hero hero--<type>"><div class="wrap"><div class="hero-text ..">..</div></div>
-            first in main: exactly the first screen, the fixed header over its top.
+            first in main: one screen, or a full product window with hero--peek.
   Edges     one container; no one-sided bleed (a block stands on the lines or runs edge to edge).
   Type      start.mjs deals the pairing (VI-02) and prints --font-*, --display-weight (400; 400 to 500
             on tech) and --display-tracking; a page may add --display-stretch, --display-axes and
             --ly-scale (the face's optical size against the default grotesk, 1 when unsure).
-  Place     always hero--place, in the form deal.mjs deals (band, bleed, split, name: section 0b).
+  Place     a suitable photograph takes hero--place (band, bleed, split or name: section 0b).
+            Without one, the dealer uses the statement hero.
             Nothing is laid over a photograph to make words readable, on any type: no scrim,
-            gradient or veil (PH-31, VI-49); the bleed form's words stand on a solid panel.
+            gradient or veil (PH-31, VI-49). The bleed form can put words on a calm photograph or on a panel.
 
   Every number here is in references/layout-v4.md with what it was measured on; change it there first.
 */
@@ -22,7 +23,7 @@
 :root {
   --ly-nav: var(--nav, 72px);
   --ly-screen: calc(100svh - var(--ly-nav));      /* one screen under the fixed header: 828 at 1440x900, 788 at 390x844 */
-  --ly-pad: var(--padt, 160px);
+  --ly-pad: var(--padt, 112px);
   --ly-hero-pad: var(--hgap, 48px);
   --ly-head-gap: var(--head-gap, 48px);            /* a section's heading block to its visual (system.css) */
   /* the tallest a picture in a section gets, the screen under the header less 128px (700 at 1440x900), and the
@@ -48,7 +49,7 @@ h1, h2, h3, .ly-display { font-stretch: var(--display-stretch, 100%); font-varia
 /* ---------------------------------------------------------------- sections
    system.css makes every main > section as tall as its content with its h2 first; nothing here centres a
    section's content or stretches it */
-main > .section .section-head { margin-bottom: var(--ly-head-gap); }
+main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var(--ly-head-gap); }
 /* a visual about a screen tall with its heading (--ly-head, about 160px for a two-line h2 and a sub-line) */
 .fit-screen { height: clamp(280px, calc(var(--ly-fit) - var(--ly-head, 160px) - var(--ly-head-gap)), 720px); }
 @media (max-width: 1023px) { .fit-screen { height: auto; } }
@@ -175,11 +176,11 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 }
 @media (max-width: 639px) { .hero--photo { --photo: 42svh; } }
 
-/* 0. hero--place: the only place hero, never dealt (local-business Recipe 3; ST-53, PH-47, PH-81).
-      The client's photograph full-bleed under the header (--photo: 480 at 1440x900, y 72-552, at most
-      53% of the screen; on a phone a 4:3 crop, 390x292, or with data-phone-fill grown to what the words leave, up to
-      4:5), nothing on it. On the ground below, --hgap
-      (40, 24 on a phone) under it: the h1 on columns 1-6 (48/53, 32/37 on a phone), and from the
+/* 0. hero--place: the photo-led place hero, shown here in its band form (ST-53, PH-47, PH-81).
+      The band photograph sits full-bleed under the header and fills the height left by its words (0b).
+      The older place photo uses --photo. The phone band starts at 4:3; data-phone-fill can grow its crop
+      into the remaining space. On the ground below, --hgap
+      (40, 24 on a phone) under it: the h1 on columns 1-8 (up to 72px at 1440 and 36px at 390), and from the
       split line the sub-line (the kind of place, where, today's hours) and one filled 48px button.
       html[data-type="place"] .hero--photo is drawn the same way (the older markup).
       <section class="hero hero--place"><img class="hero__bg" src=".." alt=".." fetchpriority="high">
@@ -207,9 +208,12 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-content: start; align-items: start;
   width: 100%; margin: 0; padding: 0; background: none; border-radius: 0;
 }
-:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { grid-column: 7 / -1; margin: 0; }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { grid-column: 9 / -1; margin: 0; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 {
-  grid-column: 1 / span 6; grid-row: 1 / span 3; max-width: none; font-size: var(--t-h1); line-height: 1.104; text-box: trim-start cap alphabetic;
+  grid-column: 1 / span 8; grid-row: 1 / span 3; max-width: none;
+  --place-display: clamp(36px, calc(36px + (100vw - 390px) * 36 / 1050), 72px);
+  font-size: min(var(--place-display), calc(var(--ly-scale) * var(--place-display)));
+  line-height: 1.104; text-box: trim-start cap alphabetic;
 }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; max-width: 40ch; color: var(--ink); }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: var(--s-5); }
@@ -250,7 +254,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
    120 to 200px of empty ground under it), so two cafes could not be told apart without their colours.
      band   the photograph under the header down to the words, which end on the fold (no empty band)
      bleed  the photograph over the whole first screen; the words on a solid panel of the page ground in
-            its lower corner (data-corner="end": the right one). Never words on the photograph itself
+            its lower corner (data-corner="end": the right one). For a calm desktop crop, data-box="none"
+            and data-tone="light|dark" put the words directly on the photograph.
      split  the words on five columns (the h1 at the top, the line and the button at the foot), the
             photograph on seven down to the fold; under 1024 it stacks as band
      name   band, with the name or the street set large across the .wrap above the h1:
@@ -271,6 +276,10 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   :root .hero--place[data-form="bleed"][data-corner="end"] .hero__text { margin-left: auto; }
 }
 @media (min-width: 1024px) {
+  .hero--place[data-form="bleed"][data-box="none"][data-tone] .hero__text { background: transparent; padding: 0; }
+  .hero--place[data-form="bleed"][data-box="none"][data-tone="dark"] .hero__text { --ink: white; color: var(--ink); }
+  .hero--place[data-form="bleed"][data-box="none"][data-tone="light"] .hero__text { --ink: #111; color: var(--ink); }
+  .hero--place[data-form="bleed"][data-box="none"] .btn--secondary { background: var(--p-bg); color: var(--p-ink); }
   main > .hero--place[data-form="split"] { display: block; padding-top: calc(var(--nav) + var(--hgap)); }
   main > .hero--place[data-form="split"] > .wrap { height: 100%; }
   main > .hero--place[data-form="split"] > .wrap { margin-top: 0; }
@@ -292,6 +301,14 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 @media (max-width: 639px) {
   :root .hero--place[data-form="bleed"] .hero__text { padding: 0; background: none; }
   :root .hero--place[data-form="name"] .hero__name { font-size: clamp(44px, 14vw, 72px); margin-bottom: 0; }
+}
+
+@media (min-width: 1024px) {
+  :root .hero--place[data-form="bleed"] .hero__text { width: min(100%, 720px); }
+  .hero--place:is([data-form="bleed"], [data-form="split"]) .hero__text { container-type: inline-size; }
+  :root .hero--place:is([data-form="bleed"], [data-form="split"]) .hero__text > h1 {
+    font-size: min(var(--place-display), max(32px, 7cqi));
+  }
 }
 
 /* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
@@ -430,6 +447,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
       (the right half has a job: the prices and promises a visitor checks first) */
 .hero--word, .hero--editorial { overflow-x: clip; }
 .hero--word .hero__in { justify-content: center; }
+@media (min-width: 1024px) { .hero--word .hero__in { padding-top: var(--s-7); } }
 .hero--word h1 { font-size: var(--ly-h1-word); line-height: .92; max-width: none; }
 .hero--word .hero__foot { margin-top: var(--s-8); align-items: start; }
 .hero--word .hero__foot .btn-row { margin-top: var(--s-6); }
@@ -555,7 +573,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
        stands whole above the fade, which starts at 82% of the frame */
 .hero--centred .hero__c { display: grid; justify-items: center; text-align: center; gap: var(--s-4); max-width: 880px; margin-inline: auto; }
 .hero--centred h1 { max-width: 16ch; }
-.hero--centred .hero__lead { max-width: 52ch; color: var(--muted); }
+.hero--centred .hero__lead { max-width: 52ch; color: var(--ink); }
 .hero--centred .btn-row { justify-content: center; margin-top: var(--s-3); }
 .hero--centred > .wrap > .hero-text { display: flex; flex-direction: column; }
 .hero--centred .hero__window { flex: 1 1 0; min-height: clamp(220px, 32svh, 340px);
@@ -576,6 +594,63 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 }
 
 /* ---------------------------------------------------------------- micro-interactions the heroes share */
+/* A product window keeps its own block in the page as the reader scrolls past the fold. */
+main > .hero.hero--peek {
+  --peek-height: clamp(560px, 72vw, 760px); --hgap: var(--s-6);
+  height: auto; min-height: 100svh; padding-bottom: var(--padb);
+}
+main > .hero.hero--peek > .wrap,
+main > .hero.hero--peek > .wrap > .hero-text { height: auto; }
+.hero--peek .hero-text > :is(.hero__window, .hero__media, .hero__art, .hero-visual, .app-frame, .device, .panel) {
+  flex: none; height: var(--peek-height); min-height: 0;
+  mask-image: none;
+}
+.hero--peek .hero__window > .ly-piece { top: var(--s-4); height: calc(100% - 2 * var(--s-4)); overflow: auto; }
+.hero--peek .hero__window { margin-top: var(--s-5); }
+.hero--peek .hero__art > .ly-piece--main { min-height: calc(100% - var(--s-8) - var(--s-5)); }
+.hero--peek .hero__c { gap: var(--s-3); }
+.hero--peek .hero__c > .btn-row { margin-top: var(--s-1); }
+@media (min-width: 1024px) {
+  .hero--peek .hero-text:is(.hero__grid, .hero-split) { height: auto; grid-template-rows: auto; }
+  .hero--peek .hero-text:is(.hero__grid, .hero-split) > :is(.hero__media, .hero__art, .hero-visual, .app-frame, .device, .panel) {
+    margin-top: max(0px, calc(100svh - var(--peek-height) - var(--nav) - var(--hgap) + var(--s-8)));
+  }
+}
+@media (max-width: 639px) {
+  main > .hero.hero--peek { --hgap: var(--s-5); }
+  .hero--peek .hero__window > .ly-piece { max-height: calc(100% - 2 * var(--s-4)); }
+  .hero--peek .hero__art, .hero--peek .hero__media { margin-top: var(--s-4); }
+  .hero--peek .hero__art > .ly-piece--main { min-height: calc(100% - 2 * var(--s-4)); }
+}
+
+/* Put the booking form just after .hero-text in the same .wrap. */
+main > .hero:has(> .wrap > .hero-book) > .wrap {
+  display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-5);
+}
+.hero-book {
+  display: flex; align-items: end; gap: var(--s-4); min-width: 0;
+  padding: var(--s-5); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+  background: var(--bg); color: var(--ink);
+}
+.hero-book .field { flex: 1; min-width: 0; }
+.hero-book .field :is(input, select) { min-width: 0; height: var(--btn-h); }
+.hero-book > small { align-self: center; font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (min-width: 640px) {
+  main > .hero--place:not([data-form="bleed"], [data-form="split"]):has(.hero-book) > .hero__bg { min-height: min(18svh, 150px); }
+}
+@media (min-width: 1024px) {
+  main > .hero--place[data-form="split"]:has(.hero-book) { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: var(--s-5); }
+  main > .hero--place[data-form="split"]:has(.hero-book) > .wrap { display: grid; grid-template-rows: subgrid; grid-row: 1 / -1; }
+  main > .hero--place[data-form="split"]:has(.hero-book) > .hero__bg { grid-row: 1 / 2; top: 0; height: 100%; }
+}
+@media (max-width: 850px) {
+  .hero-book { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 639px) {
+  main > .hero:has(> .wrap > .hero-book) > .wrap { grid-template-rows: auto auto; align-content: start; }
+  .hero-book { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* buttons keep the page's one hover (system.css, motion.css: the fill steps, the arrow moves 3px, the
    press sinks 1px; no shadow on a button, ST-105); a text link draws its underline from the left */
 .ly-link { position: relative; font-weight: 500; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .28s var(--ease); }

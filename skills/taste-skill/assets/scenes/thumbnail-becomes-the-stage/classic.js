@@ -142,8 +142,8 @@
 
   function make(root, opts = {}) {
     const o = {
-      hold: clamp(num(opts.hold, 2), 1.4, 2.6),
-      phoneHold: clamp(num(opts.phoneHold, 1.6), 1.4, 2.6),
+      hold: 1,
+      phoneHold: 1,
       phone: opts.phone === 'rest' ? 'rest' : 'same',
       scrub: opts.scrub,
       heading: clamp(num(opts.heading, 0.15), 0.1, 0.25),

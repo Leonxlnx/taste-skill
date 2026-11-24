@@ -27,9 +27,13 @@
   "reduced": "The statement on the page ground, then the next statement on the inverse ground under it.",
   "phone": "The finished composition.",
   "maxPerPage": 1,
-  "weight": 0.6,
+  "weight": 0,
   "needs": {
-    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures"
+    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures",
+    "carry": [
+      "words"
+    ],
+    "list": []
   },
   "never": "an accent on the column; a statement whose stem letter has a curl, a bar or a serif; a light section after it",
   "avoidWith": [
@@ -56,5 +60,6 @@
     "giant-type-pass",
     "letters-assemble",
     "iris-opens"
-  ]
+  ],
+  "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
 }

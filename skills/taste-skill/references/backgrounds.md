@@ -1,44 +1,19 @@
 # Backgrounds
 
-Better grounds come from fewer, better colours (house rule 6: "nicer backgrounds"), and on tech
-from a small catalogue of grounds drawn in CSS. Every kind uses the three ground tokens; only tech
-adds CSS grounds.
+Use the four palette grounds on every kind. Tech may also use the CSS grounds below.
 
-## The three tokens (every kind)
+## Palette grounds
 
-Section and panel grounds use `--g-main`, `--g-alt` and `--g-dark` only (system.css: the base,
-`.ground-surface`, `.ground-inverse`): one to three colours down the page, footer included, in the
-same order at 390. Photograph layers and the tech grounds below do not count among them.
-
-- **`--g-main`:** white, or a tint of lightness 0.80 to 0.97 with low saturation (channel spread
-  0.12 or less), taken from the client: a place's walls, paper or shopfront (the palette
-  `start.mjs deal --page place --trade <trade>` deals for its trade, never one fixed off-white for
-  every place; white for a shop that sells mostly online), a product's photo backdrop, warm
-  greys for a service, blue-leaning or cool grey for software. It covers 55% of the page's height or
-  more (60% on software and product). Never pure-white panels on a cream page.
-- **`--g-alt`:** the same hue (within 20 degrees), 0.06 to 0.15 darker, never under 0.70
-  (`#ffffff` to `#f2f2ef`, `#f7f3ec` to `#ede6da`). Panels, tiles, cards and at most one full band.
-- **`--g-dark`:** lightness 0.05 or less: near-black (`#111` to `#1a1a1a`) or the deepest shade of
-  the brand hue, never charcoal, never violet. One dark body section at most (one screen tall), at
-  the page's middle or later, never right under the hero; the footer may be dark. A dark page (main
-  ground 0.02 or darker) and a dark hero are for tech only.
-- **The brand band** (`.ground-brand`, product and place): one section in the brand's own colour
-  (from the product or the shopfront) may replace the dark band, once, in the second half. On a
-  place its lightness is 0.03 to 0.60 and its saturation 0.25 or more, never a neutral near-black;
-  every word on it (heading, text, label, link) takes the colour that passes 7:1, the one number: darken the brand colour until it does (`check.mjs` and `consistency.mjs` ask 7:1 for text people read and 4.5:1 for labels, so 7:1 clears both); the primary button is inverted. Otherwise
-  saturated colour lives in the accent and the pictures; one mid-tone section at most, never as the
-  main ground.
+- **Page.** `--bg` is the base. Use the ground from the dealt palette or the client's own colours.
+- **Tint.** `.ground-surface` uses a tint in the same hue family, four to nine OKLCH lightness points from the page. `start.mjs css` derives it if needed.
+- **Inverse.** `.ground-inverse` uses the palette's contrasting ground and ink. Follow the section map in the PLAN.
+- **Brand.** `.ground-brand` uses the brand colour. Keep the ink legible. On a place, check every word on this ground reaches 7:1.
 - Grounds change in big blocks at the section edge: never on `.wrap` or a wrapper, no border-top or
   rule between sections, no band inside a section (a box of 80% of its width or more with its own
   ground holding the heading), no inset coloured box standing in for a ground. A frame holding a
   visual is fine.
 
-- **The dealt bands** (every kind): `start.mjs deal` prints one or two bands under LAYOUT (`tint`:
-  `.ground-surface`, `dark`: `.ground-inverse`, `brand`: `.ground-brand`), so a page of one ground
-  throughout gets a change of pace (in testing, one cobalt band behind the work was the only ground
-  change on four pages, and it gave the page its beat). The rules above hold for each: one dark
-  body section at most, never right under the hero, never two bands side by side. A place's dark
-  band is the palette's own dark ink (`--p-inv-bg`), never near-black on a light cafe.
+Use the `grounds` line from `start.mjs plan`. Repeated grounds and changes take their spacing from `layout-v4.md`.
 
 ## Other kinds stay flat
 
@@ -84,8 +59,7 @@ ground's mood, roles, pairs, avoids and sections.
   reduced motion.
 - **The lit ground** (`<html data-ground="sand|sky|sage|painting">`) is tech only: behind UI, in a
   closing band, in `footer-statement`; it is the tone of `band` and `field`.
-- **Words on `photo`** sit on its calm, dark part (`--g-photo-pos`, `--g-photo-pos-m` for the
-  subject); only in the hero and one closing band (`system.md`).
+- Direct the crop beneath words on a photograph as in `photos.md`.
 - **Tune:** `--g-hue` tint, `--g-k` strength, `--tone` second tone, `--halo-x`/`--halo-y`,
   `--stage-w`. Tints lean to the accent, never violet.
 - A ground never changes a section's height (`layout-v4.md`); a soft one fades over 120px, a hard
@@ -94,8 +68,7 @@ ground's mood, roles, pairs, avoids and sections.
 ## Tech: code-drawn grounds, how they look
 
 Calm and specific as a studio photograph: one light, one palette, grain you notice only up close.
-Colours from the tokens (`--ground`, `--ground-2`, `--ink`, `--tone`, `--tone-hi` = L +0.12,
-`--tone-lo` = L -0.18), mixed in OKLCH, ground chroma under 0.12. A gradient is built light first:
+Mix the palette's ground and ink with the second tone (`--tone`) in OKLCH. Keep ground chroma under 0.12. A gradient is built light first:
 a radial with four to six stops in one hue, then grain (4 to 10%); every dark gradient gets a static
 dither; never a two-stop linear gradient as decoration (linear only as an edge fade inside a
 visual); a two-tone seam is a hard stop. Grain only inside the one effect: one tile made at load,

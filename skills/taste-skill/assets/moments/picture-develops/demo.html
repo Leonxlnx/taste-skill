@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-radius="soft" data-ground="sand">
+<html data-type="service" lang="en" data-radius="soft" data-ground="sand">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,10 +10,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
 <link rel="stylesheet" href="../../system.css">
 <link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../../layout/layout.css">
 <link rel="stylesheet" href="moment.css">
 <style>
   :root { --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #111111; --p-muted: #6b6b6b; --p-accent: #c8102e; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
           --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
+  @media (min-width: 1024px) { #prints .grid > .start-7 { grid-column: 7 / -1; grid-row: 1; } #prints .grid > .photo-frame { grid-column: 1 / 7; grid-row: 1; } }
   .photo-frame { aspect-ratio: 3 / 2; border-radius: var(--r-lg); margin: 0; }
   .facts { display: grid; gap: var(--s-3); margin-top: var(--s-5); }
   .facts div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); padding: var(--s-3) 0; border-top: 1px solid var(--line); }
@@ -21,21 +23,19 @@
 </style>
 </head>
 <body>
-<header class="demo-nav"><div class="container">
-  <a class="demo-nav__logo" href="#">Kiln & Co</a>
-  <nav class="demo-nav__links"><a href="#">Prints</a><a href="#">Books</a><a href="#">Studio</a><a href="#">Contact</a></nav>
-  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Visit</a><a class="btn btn--primary btn--sm" href="#">Get a quote</a></div>
+<header class="nav"><div class="wrap nav__bar">
+  <a class="nav__logo" href="#top">Kiln &amp; Co</a>
+  <nav class="nav__links" aria-label="Main"><a class="nav__link" href="#prints">Prints</a><a class="nav__link" href="#quote">Quotes</a></nav>
+  <div class="nav__actions"><a class="btn btn--primary btn--sm" href="mailto:studio@kiln.example">Get a print quote</a></div>
 </div></header>
-<main>
-  <section class="section section--hero">
-    <div class="container demo-split">
-      <div class="section-head"><h1>Offset and letterpress printing for small runs</h1><p>Books, posters, packaging and stationery from 50 copies, printed in our own shop in Rotterdam and shipped within ten days.</p><div class="btn-row"><a class="btn btn--primary" href="#">Get a quote</a><a class="btn btn--secondary" href="#">See the paper stock</a></div></div>
-      <img class="demo-photo" src="../_demo/photo-855.jpg" alt="A painted wall in morning light" width="1800" height="1200">
-    </div>
-  </section>
-  <section class="section">
-    <div class="container demo-split demo-split--flip">
-      <div class="section-head">
+<main id="top">
+  <section class="hero hero--split"><div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-6"><h1>Offset and letterpress printing for small runs</h1><p class="hero__lead">Books, posters, packaging and stationery from 50 copies, printed in our own shop in Rotterdam and shipped within ten days.</p><div class="btn-row"><a class="btn btn--primary" href="mailto:studio@kiln.example">Get a print quote</a><a class="btn btn--secondary" href="#prints">See the paper stock</a></div></div>
+      <div class="hero__media span-6 start-7"><img src="../_demo/photo-855.jpg" alt="A painted wall in morning light" width="1800" height="1200"></div>
+    </div></div></section>
+  <section id="prints" class="section">
+    <div class="wrap grid grid--mirror grid--top">
+      <div class="span-6 start-7">
         <h2>Posters that hold up outdoors. <span class="muted">Printed on 200 g stock.</span></h2>
         <p>Offset on heavy coated paper with a matt varnish, so a poster keeps its colour through a season on a wall. From 50 copies, A2 to A0.</p>
         <div class="facts">
@@ -44,19 +44,17 @@
           <div><span>Delivery</span><b>Within ten working days</b></div>
         </div>
       </div>
-      <figure class="photo-frame" data-moment="picture-develops" data-moment-opts='{"cell": 7}'>
+      <figure class="photo-frame span-6 start-1" data-moment="picture-develops" data-moment-opts='{"look":"film"}'>
         <img src="../_demo/photo-1049.jpg" alt="A poster print of a rock off the coast at low tide" width="1800" height="1200">
       </figure>
     </div>
   </section>
-  <section class="section ground-surface">
-    <div class="container demo-split">
-      <div class="section-head"><h2>One quote, one price. <span class="muted">No surprises on the invoice.</span></h2><p>Send the file and the quantity; you get a price, a proof and a delivery date back within a working day.</p><a class="link" href="#">How a quote works</a></div>
-      <img class="demo-photo" src="../_demo/photo-1081.jpg" alt="A glass building against the sky" width="1800" height="1200">
-    </div>
-  </section>
 </main>
-<footer class="container demo-footer"><span>Kiln & Co · demo page for the moment “Picture develops”</span><span>Photographs by Rodion Kutsaev, Rosan Harmens and Julien Moreau on Unsplash</span></footer>
+<footer class="footer closing" id="quote"><div class="wrap">
+    <div class="closing__cta"><div class="section-head--split"><div><h2>A price, a proof and a delivery date</h2><p>Send the print file and the quantity. The studio returns a quote within one working day.</p></div><a class="btn btn--primary" href="mailto:studio@kiln.example">Get a print quote</a></div></div>
+    <div class="closing__links"><div class="footer__legal"><a href="#top">Kiln &amp; Co</a><span>Photographs by Rodion Kutsaev and Rosan Harmens on Unsplash.</span></div></div>
+  </div></footer>
+<script type="module" src="../../system.js"></script>
 <script type="module" src="../moments.js"></script>
 </body>
 </html>

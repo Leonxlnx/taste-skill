@@ -1,0 +1,34 @@
+<section class="section own" id="case-rows" data-own="case-rows" aria-labelledby="case-rows-title">
+  <div class="wrap">
+    <h2 id="case-rows-title">Editions from the bindery</h2>
+    <p class="t-lead measure">Still Gather binds short runs for artists and independent publishers.</p>
+    <div class="editions" data-assumed>
+      <article><div class="jacket jacket-1" aria-hidden="true"><span>Clay<br>Almanac</span></div><div class="entry"><h3>Clay Almanac</h3><p class="fact-line">Field guide · 320 copies · 2025</p></div></article>
+      <article><div class="jacket jacket-2" aria-hidden="true"><span>Sounding<br>Line</span></div><div class="entry"><h3>Sounding Line</h3><p class="fact-line">Poetry · 160 copies · 2024</p></div></article>
+      <article><div class="jacket jacket-3" aria-hidden="true"><span>After<br>Rain</span></div><div class="entry"><h3>After Rain</h3><p class="fact-line">Photobook · 240 copies · 2024</p></div></article>
+      <article><div class="jacket jacket-4" aria-hidden="true"><span>Soft<br>Margin</span></div><div class="entry"><h3>Soft Margin</h3><p class="fact-line">Essays · 400 copies · 2023</p></div></article>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="case-rows"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="case-rows"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="case-rows"] .editions article { display: grid; grid-template-columns: 7fr 5fr; gap: var(--s-6); align-items: stretch; border-top: 1px solid var(--line); padding-block: var(--s-4); }
+[data-own="case-rows"] .jacket { min-height: calc(var(--s-10) + var(--s-6)); padding: var(--s-5); display: flex; align-items: flex-end; background: var(--surface); }
+[data-own="case-rows"] .jacket span { font-family: var(--font-display); font-size: var(--t-h2); line-height: 1; letter-spacing: var(--display-tracking); }
+[data-own="case-rows"] .jacket-2 { background: var(--ink); color: var(--bg); justify-content: flex-end; text-align: right; }
+[data-own="case-rows"] .jacket-3 { background: var(--action); color: var(--action-ink); align-items: center; justify-content: center; text-align: center; }
+[data-own="case-rows"] .jacket-4 { align-items: flex-start; }
+[data-own="case-rows"] .jacket-1 span { border-left: 1px solid var(--line-strong); padding-left: var(--s-3); }
+[data-own="case-rows"] .jacket-4 span { font-style: italic; }
+[data-own="case-rows"] .entry { display: grid; align-content: center; gap: var(--s-2); }
+[data-own="case-rows"] .fact-line { color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+[data-own="case-rows"] article:nth-child(even) { grid-template-columns: 5fr 7fr; }
+[data-own="case-rows"] article:nth-child(even) .jacket { grid-column: 2; grid-row: 1; }
+[data-own="case-rows"] article:nth-child(even) .entry { grid-column: 1; grid-row: 1; }
+@media (max-width: 639px) {
+  [data-own="case-rows"] .editions article, [data-own="case-rows"] .editions article:nth-child(even) { grid-template-columns: 1fr; gap: var(--s-3); }
+  [data-own="case-rows"] article:nth-child(even) :is(.jacket,.entry) { grid-column: auto; grid-row: auto; }
+}
+</style>

@@ -1,0 +1,49 @@
+<section class="section own" id="receipt" data-own="receipt" aria-labelledby="receipt-title">
+  <div class="wrap">
+    <h2 id="receipt-title">A picnic for four</h2>
+    <p class="t-lead measure">Meadow Fold packs one basket for four people to share on the towpath.</p>
+    <div class="picnic" data-assumed>
+      <div class="bill"><div class="bill-head"><h3>Towpath basket</h3><span>Serves 4</span></div>
+        <dl class="items">
+          <div><dt>Four cheddar rolls</dt><dd>£20</dd></div>
+          <div><dt>Potato &amp; herb salad</dt><dd>£8</dd></div>
+          <div><dt>Four plum cakes</dt><dd>£12</dd></div>
+          <div><dt>Elderflower cordial</dt><dd>£6</dd></div>
+        </dl>
+        <div class="total"><strong>Basket total</strong><b class="t-stat">£46</b></div>
+      </div>
+      <div class="included"><h3>In the basket</h3><ul>
+        <li>Four enamel plates and forks</li><li>A chilled flask for the cordial</li><li>A linen cloth for the grass</li>
+      </ul><p>Bring the basket, flask and tableware back to the hatch by 17:00.</p></div>
+    </div>
+  </div>
+</section>
+
+<style>
+@media (max-width: 799px) {
+[data-own="receipt"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="receipt"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+}
+[data-own="receipt"] .picnic { display: block; background: var(--surface); border: 1px solid var(--line); padding: var(--s-6); font-variant-numeric: tabular-nums; }
+[data-own="receipt"] .bill { padding: 0; }
+[data-own="receipt"] .bill-head, [data-own="receipt"] .total { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+[data-own="receipt"] .bill-head span { white-space: nowrap; font-size: var(--t-small); color: var(--muted); }
+[data-own="receipt"] .items { margin: var(--s-5) 0; display: grid; gap: var(--s-3); }
+[data-own="receipt"] .items > div { display: flex; align-items: baseline; gap: var(--s-2); }
+[data-own="receipt"] .items > div::after { content: ""; border-bottom: 1px dotted var(--line-strong); flex: 1; }
+[data-own="receipt"] dd { order: 1; margin: 0; }
+[data-own="receipt"] .total { padding-top: var(--s-4); border-top: 1px solid var(--line); }
+[data-own="receipt"] .included { margin-top: var(--s-5); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="receipt"] ul { display: grid; gap: var(--s-2); margin: var(--s-4) 0; }
+[data-own="receipt"] li { display: flex; gap: var(--s-3); }
+[data-own="receipt"] li::before { content: ""; width: var(--s-3); height: var(--s-2); border-left: 2px solid var(--action); border-bottom: 2px solid var(--action); transform: translateY(var(--s-2)) rotate(-45deg); }
+[data-own="receipt"] .included p { color: var(--ink); max-width: 35ch; }
+@media (max-width: 639px) {
+  [data-own="receipt"] .picnic { padding: var(--s-4); }
+}
+@media (min-width: 800px) {
+  [data-own="receipt"].section > .wrap:not(.grid) { display: grid; grid-template-columns: 5fr 7fr; grid-template-rows: auto 1fr; gap: var(--s-4) var(--s-7); align-items: start; }
+  [data-own="receipt"] .wrap > p { grid-column: 1; margin: 0; max-width: 32ch; }
+  [data-own="receipt"] .picnic { grid-column: 2; grid-row: 1 / 3; margin: 0; }
+}
+</style>

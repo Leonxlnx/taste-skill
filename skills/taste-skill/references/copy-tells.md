@@ -75,8 +75,7 @@ These look like good copy, which is why they survive review.
   of plain facts the brief gives (a price, the hours, a count). A menu's prices, a timetable and a column
   of one unit are not strips.
 - **Two-fragment headings "X. Y."** (cap 1) [copy-two-fragment]. "Twelve rooms. Three ways to stay."
-  Fix: the other heading shapes in `copy-moves.md`: a name with a claim under it, a verb and the thing,
-  a full-sentence claim, a question kicker with its answer, a real customer's words.
+  Fix: use a different heading shape from `copy-moves.md`: a name, a claim, a verb with its object or a customer's own words.
 - **Number-pair headings** (cap 0 to 1) [copy-number-pair]. "Four projects, four very different
   problems." Two unrelated model pages wrote almost exactly this. Fix: say what the section holds.
 - **Contrast frames and their substitutes** (cap 2 in all) [copy-contrast]. "Freshness isn't a

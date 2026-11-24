@@ -138,7 +138,7 @@
       hand: num(opts.hand, 0.8, 0.5, 1.2),
     };
     if (o.from > o.grow - 0.1) o.from = o.grow - 0.1;
-    o.pace = Math.min(o.pace, (2.5 - o.rest) / N);
+    o.pace = (1.2 - o.rest) / N;
     const hold = N * o.pace + o.rest;
     const scrub = opts.scrub !== undefined ? opts.scrub : Stage.lenis ? true : 0.4;
     root.style.setProperty('--pr-grow', o.grow);

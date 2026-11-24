@@ -14,18 +14,24 @@
     "product"
   ],
   "intensity": "lively",
-  "look": "The last content section scrolls away like a sheet and uncovers the closing photograph held under it; the photograph settles from a close crop and the closing line with the one action fades up on it.",
+  "look": "The last section uncovers the closing photograph. The photograph settles from a close crop, the line stays at full opacity and only the action fades.",
   "reduced": "A plain closing section with the photograph, the line and the action.",
-  "phone": "A lighter version on a phone: nothing is held under the sheet; the closing photograph comes after it as a plain section, settling from its close crop as it rises into the screen, and the closing line fades up on it.",
+  "phone": "The closing photograph follows in ordinary flow. Its line stands at full opacity and its action fades in.",
   "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
     "photo": true,
     "words": "a closing line of 3 to 7 words, one line and one action; the closing section of its own, the footer after it",
-    "picture": "a calm, darker lower half where the words stand (sand, water, a wall, a table); the words never on a busy part"
+    "picture": "A calm dark lower third under light text, or a solid reading band."
   },
-  "text": { "words": [3,7], "sel": ".mo-cl__band h2" },
+  "text": {
+    "words": [
+      3,
+      7
+    ],
+    "sel": ".mo-cl__band h2"
+  },
   "avoidWith": [
     "pinned-chapters",
     "line-carries-colour"

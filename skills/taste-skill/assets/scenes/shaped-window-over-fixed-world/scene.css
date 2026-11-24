@@ -41,3 +41,8 @@
 [data-big-scene="shaped-window-over-fixed-world"].is-live .sw__word { grid-column: 1; grid-row: 1 / 3; font-size: clamp(48px, 6.4vw, 104px); white-space: nowrap; opacity: 0; will-change: transform, opacity; }
 [data-big-scene="shaped-window-over-fixed-world"].is-live .sw__lede > :not(.sw__word) { grid-column: 2; opacity: 0; will-change: transform, opacity; }
 [data-big-scene="shaped-window-over-fixed-world"].is-live .sw__lede .btn { width: auto; }
+
+@media (max-width: 767px) {
+  main > .sc[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) { min-height: 0; height: auto; }
+  main > .sc[data-big-scene="shaped-window-over-fixed-world"]:not(.is-live) > .sc__stage { height: auto; grid-auto-rows: max-content; }
+}

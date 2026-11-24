@@ -16,8 +16,7 @@ Motion: `assets/ui/ui.js`. Objects instead of photographs: `assets/ui/_lab/objec
    thing in the card: x.ai puts a daylight painting behind its dark UI.
 3. The UI on it is a real product at true size, cut by the panel's edge: a glimpse of something
    bigger, not a toy floating in the middle.
-4. One thing moves per card group, inside a panel (tech pages). The card never moves by itself; a
-   card with a link lifts 2px on hover (`motion.md`).
+4. One thing moves inside a panel per tech card group. A linked card gives hover feedback on an inner layer (`motion.md`).
 5. Everything lines up: panel edge with text edge, radii nested, titles level across a row.
 
 ## The card
@@ -27,8 +26,7 @@ Motion: `assets/ui/ui.js`. Objects instead of photographs: `assets/ui/_lab/objec
   or flat fill is the card.
 - Border 1px, ink at 8 to 14%; inner top highlight 1px (white 5-7%, dark only). No blurred shadow at
   rest (a hard zero-blur offset is allowed as the rest style); a card with a link may show a soft
-  shadow on hover only (`motion.md`). A card with a link lifts 2px on hover; a card without one
-  carries `.m-nolift`. Never tilted, never a carousel: rows show whole cards; press quotes stack.
+  shadow on hover only (`motion.md`). Keep the hit area still. Rows show whole cards. Stack press quotes.
 - Rows on the grid: two-up 6+6, three-up 4+4+4, four-up 3+3+3+3, the first card on the left line,
   the last on the right, one height per row, every row full (`layout-v4.md` section 4). Mark every
   frame that holds a visual or UI with `.frame` or `[data-visual]` so it never counts as a band.
@@ -100,7 +98,7 @@ A card holds a picture, and the picture holds the product. That is all:
   tile (`.ui-logo`, `.ui-file__icon`, `.ui-field__tile`) sits on a light tile on every surface, in
   its brand colours: a colour file from `assets/icons` (`icons.mjs fetch` or `scan`,
   `references/icons.md`) as `<img>`. The kit's sample marks are local files in `assets/ui/icons`
-  (`<img src="assets/ui/icons/x.svg">`): after pasting, write each as the client's tool,
+  (`<img src="assets/ui/icons/slack.svg">`): after pasting, write each as the client's tool,
   `<img data-icon="<id>" src="assets/icons/<id>.svg" alt="">`, and `icons.mjs scan --colour` fetches it; no page calls a CDN for an icon. One treatment per set: never colour marks beside ink marks. A small mark inline beside text (a breadcrumb, a source chip) stays in the ink.
   Glyph marks only; a wordmark (Zoom's) is illegible at tile size.
 - Placement (`.stage` holds them, absolute in the panel; each `meta.json` has its own `place`):

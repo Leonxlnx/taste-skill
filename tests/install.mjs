@@ -32,6 +32,12 @@ try {
   const skill = join(fixture, 'skills', 'different-folder');
   mkdirSync(skill, { recursive: true });
   mkdirSync(home);
+  const shipped = ['assets/own/index.html', 'assets/own/index.fragment.html', 'library/ideas.json', 'references/compose.md',
+    ...['mascot','illustrate','brand-mark','data-picture','image-direction'].map(name => 'subskills/' + name + '/SKILL.md')];
+  for (const file of shipped) {
+    mkdirSync(dirname(join(skill, file)), { recursive: true });
+    copyFileSync(join(root, 'skills', 'taste-skill', file), join(skill, file));
+  }
   const writeSkill = (name, newline) => writeFileSync(join(skill, 'SKILL.md'), ['---', `name: ${name}`, 'description: Test fixture', '---', ''].join(newline));
   for (const newline of ['\n', '\r\n']) {
     for (const name of ['design-taste-frontend', '"design-taste-frontend"', "'design-taste-frontend'"]) {
@@ -48,6 +54,7 @@ try {
   run('--all-agents');
   const agents = [join(home, '.claude', 'skills'), join(home, '.codex', 'skills')];
   for (const dir of agents) {
+    for (const file of shipped) assert.ok(existsSync(join(dir, 'design-taste-frontend', file)), 'Missing installed ' + file);
     assert.deepEqual(readdirSync(dir), ['design-taste-frontend'], `${dir} holds the wrong links`);
     assert.ok(lstatSync(join(dir, 'design-taste-frontend')).isSymbolicLink(), `${dir}/design-taste-frontend is not a link`);
   }

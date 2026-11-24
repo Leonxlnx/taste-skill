@@ -18,11 +18,14 @@
 export const phone = true;
 
 export default function (root, opts, lib) {
+  const block = root.closest('h1, h2');
+  if (!block || root.closest('p') || lib.reduced()) return {};
   const first = root.textContent.trim();
   const words = Array.isArray(opts.words) ? opts.words.map(w => String(w).trim()).filter(Boolean) : [];
   // the written word leads (and is where the list comes to rest), wherever the list names it
   const k = words.indexOf(first);
   if (k < 0) words.unshift(first); else words.push(...words.splice(0, k));
+  if (words.length < 2) return {};
   root.setAttribute('aria-label', first);
   root.textContent = '';
   root.classList.add('mo-wr');
@@ -46,20 +49,13 @@ export default function (root, opts, lib) {
     keep.append(root, tail);
     next.data = next.data.slice(lead[0].length);
   }
-  // the slot is as wide as the word on view, not the longest one, so no gap opens before a full stop after it
   let i = 0;
-  const fit = () => { root.style.width = Math.ceil(cells[i].getBoundingClientRect().width) + 'px'; };
-  fit();
-  if (document.fonts) document.fonts.ready.then(fit, () => {});
-  addEventListener('resize', fit);
   const unkeep = () => { if (!keep) return; keep.before(root); if (root.nextSibling && root.nextSibling.nodeType === 3) root.nextSibling.data = tail.data + root.nextSibling.data; else root.after(tail.data); keep.remove(); keep = null; };
-  if (lib.reduced() || cells.length < 2) return { destroy() { removeEventListener('resize', fit); unkeep(); } };
   const every = Math.max(1200, opts.every || 2200), cycles = Math.max(0, +opts.cycles || 0);
   let timer = 0, visible = false, shown = 0, paused = false, hover = false;
   const rests = () => cycles > 0 && shown >= cycles * cells.length;
   const running = () => visible && !paused && !hover && !rests();
   // the pause button: under the headline (a sibling after it), on its own line, aligned as the headline is
-  const block = root.closest('h1, h2, h3, h4, p, li, blockquote') || root.parentElement;
   const pause = document.createElement('button');
   pause.type = 'button';
   pause.className = 'loop-pause mo-wr__pause';
@@ -75,8 +71,7 @@ export default function (root, opts, lib) {
     const inn = cells[i];
     out.classList.remove('is-on'); out.classList.add('is-out');
     inn.classList.remove('is-out'); inn.classList.add('is-on');
-    fit();
-    setTimeout(() => out.classList.remove('is-out'), 700);
+    root.setAttribute('aria-label', words[i]);
     shown++;
     if (rests()) { pause.remove(); return; }
     arm();
@@ -91,9 +86,9 @@ export default function (root, opts, lib) {
   io.observe(root);
   return {
     destroy() {
-      clearTimeout(timer); io.disconnect(); removeEventListener('resize', fit);
+      clearTimeout(timer); io.disconnect();
       block.removeEventListener('pointerenter', over); block.removeEventListener('pointerleave', out);
-      pause.remove(); unkeep();
+      pause.remove(); unkeep(); root.replaceChildren(first); root.classList.remove('mo-wr'); root.removeAttribute('aria-label');
     },
   };
 }

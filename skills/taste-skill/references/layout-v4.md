@@ -7,110 +7,54 @@ section box, the grid and the hero frame; `assets/layout/` holds the heroes (`la
 `motion/motion.css` and (tech) `backgrounds/backgrounds.css`; load `layout.js` after `system.js`
 (`starter.html` does both). Tokens, buttons and the nav: `system.md`.
 
-## 1. What the good sites do
+## 1. Air follows the ground
 
-- figma.com and x.ai (the reference recording): the hero fills the first screen and nothing of the next
-  section shows at load; sections hold 0.45 to 1.25 screens of content with about a quarter screen
-  between them, and a shot of one section often shows the next: the air between them does the parting.
-- A study of 327 sites at 1440x900 and 390x844: the hero is alone on the first screen on 78% of
-  company sites; a section shows alone more often the taller it is (0.29 under 0.6 screens, 0.80
-  at 0.95 to 1.1) and the wider the gap (0.42 under 60px, 0.82 at 220px and more). Its place sample
-  holds no local shops, so the place numbers below are the house's own ask and taste, not measurements.
-- So the look comes from the first screen and the air: the hero alone on it, then every section as
-  tall as its content with the same generous padding round it (a third of a screen between two
-  sections' content at 1440). A section held to a whole screen stretched short content into empty
-  bands on every test page and made builders cut content to fit; that model is gone.
+Use the PLAN's ground on each section. Page inherits `--bg`. Tint, inverse and brand use `.ground-surface`, `.ground-inverse` and `.ground-brand`. Adjacent sections may share a ground. The hero stays on its page ground except on tech. The four rhythms are in `sections.md`, The deal.
+
+The kit sets three distances. These are CSS pixels at regular density.
+
+| Boundary | Desktop | Tablet | Phone |
+|---|---:|---:|---:|
+| Across a ground change and after the hero | 96 each side | 80 each side | 72 each side |
+| Between content on the same ground | 144 total | 128 total | 120 total |
+| Thin section padding | 64 each side | 56 each side | 48 each side |
+
+`--padt` and `--padb` use `--air-side`. Between sections of the same ground the kit shortens the next top padding to reach `--air-same`. `.section--thin` uses `--air-thin` on both sides. Set the dealt `data-density` on `html`. Open multiplies air by 1.15, regular by 1 and compact by 0.85. Leave the arithmetic to the kit.
 
 ## 2. Sections as tall as their content
 
-**The first screen.** The hero fills it alone and nothing of the next section shows at load (section
-3). It is the one screen the page is cut to. `html { scroll-padding-top: 0; scroll-behavior: auto }`,
-so an anchor jump lands on a section's top (the fixed header covers part of its top padding).
-
-**The shell.** `body` renders only `header.nav`, `main`, `footer.closing` and, on a phone,
-`nav.actionbar` (plus script, style, template). No popups, newsletter modals, chat bubbles, help
-pills, back-to-top squares, badges, award strips or asks in a modal; nothing else is fixed.
-
-**The section box.** `main > section` and `footer.closing` are as tall as their content: `--padt`
-above the h2 and `--padb` under the last block (128 and 128 from 1024, 104 on a tablet, 88 on a
-phone; `footer.closing` adds `--bar`, the phone action bar). So the content of two sections always
-sits `--padb + --padt` apart, 256px at 1440, 208 on a tablet, 176 on a phone: the same air
-everywhere, generous but never an empty band. `.wrap` is a section's only in-flow child (`z-index: 1`); a layer sits
-beside it, and from 640 a section with a layer is at least 80% of the screen. Never a height,
-min-height or padding of your own on a section, never `dvh`, never a height set by script. `--h`,
-`--hm`, `.g2`, `.g2m` and `.fill` (the old screen counts) are read nowhere: they change nothing.
+The first screen shows only the hero. The rest of the page grows to fit the whole menu, all rooms or every question. The shell is `header.nav`, `main`, `footer.closing` and the phone's `nav.actionbar`. Keep popups and floating controls out of it.
 
 ```html
 <section class="section" id="features"><div class="wrap"> the h2 first, then the content </div></section>
 ```
 
-- **Content decides the length.** Never cut content to fit a screen, and never hide it on a phone
-  to make a section shorter. In testing, builders dropped a wine bar's menu, a hotel's location and
-  an FAQ question, and hid six blocks with `display: none` at 390, to meet a screen count. A long
-  menu, six rooms, ten questions: the section grows. Split a section only where the subject
-  changes, each part with its own h2.
-- **Air, never an empty band.** A section ends where its content ends, `--padb` under it; nothing
-  is stretched to fill a screen. Pictures keep their own ratio: a split's photograph stands beside
-  the words at its ratio, top-aligned with them (a `.frame--fill` also grows with its row when the
-  words run taller); tiles keep `--tile-ratio`, a card's panel its `--p-h`. A frame names its ratio
-  (`.frame--portrait`, `--square`, `--split`, or `--ratio`); one that names none and holds only a
-  photograph laid over it is 4:3, never 0px. Nothing is pulled apart with `space-between`.
-- **Short blocks merge.** A quote, a logo row or a stat row that alone is a few lines goes into the
-  section above as its last element, with no heading or ground of its own. No strip sections.
-- **Top-aligned:** the one h2 is the first content, `--padt` (160, 96 on a phone) under the section
-  top, about 88px under the header when an anchor lands on it. Without a `.section-head` round them,
-  the h2 and its lead keep the head's spacing (16px, then `--head-gap` before the content). Never
-  centre content vertically; never a second h2.
-- **Separation** by a full-width ground change or space only: no rules, shadows or inner hairlines
-  between or inside sections, and no inset coloured box standing in for a ground. A list may close
-  each row with a 1px rule inside the content edges.
-- **The close and the footer are one section,** `footer.closing`, as tall as what it holds:
-  `footer.closing > .wrap` holds exactly two children, row 1 the dealt close and row 2 the links and
-  the legal row, 128px apart (64 on a phone), so a form or a photograph never runs under the
-  columns. No separate closing band.
-- **No scroll tricks:** no scroll-snap, scroll-jacking or smooth-scroll library. The one exception:
-  the big scene and a dealt scroll moment (every kind, `moments.md`) run inside their own section
-  (`data-big-scene`, `data-moment`) at the heights their own modules set: a scene's section keeps
-  the `--h` it writes (its composition at rest one or two screens, (hold + 1) live: `scenes.md`, Its
-  height); `photo-chapters` and `pinned-chapters` are (hold + 1) whole screens live, set by the
-  moment, and as tall as their chapters at rest. They may pin only with `position: sticky` inside
-  that box. Nothing else on any page is sticky.
-
-`consistency.mjs` reads it (SR-2 `section-height`: an empty band beyond a section's padding, or a hole
-inside it, a third of its height or more FAILs, a sixth WARNs; SR-3 `section-air`: two sections'
-content under 128px apart, 96 on a phone, or over 600 FAILs), at 1440, 768 and 390 by default;
-`--rhythm-widths 1440,820,768,390` adds the tablet held upright.
+- Use one in-flow `.wrap` per section. The h2 comes first, with 16px to its lead. Heading block to content is `--head-gap`, 48px at 1440 and 32px on a phone. Grid gaps are 24px, 12px on a phone.
+- On desktop a kit split fills the taller column up to a 2:3 portrait crop. Keep the focal point visible when it crops. Tiles keep `--tile-ratio`, panels `--p-h`. At phone width the stacked picture takes its own ratio.
+- Merge short quotes, logo rows and a few words of statement with their subject. For the page's one main claim that can stand alone, use `.section--thin`.
+- Change ground at the section edge. Use a rule to separate list rows inside the wrap. A tinted box behind the heading cannot replace the section ground.
+- `footer.closing > .wrap` holds the close above the links and legal row. Its bottom padding is 64px plus the phone bar.
+- A composed section can hold one sticky element when the section is at most 2.5 screens tall (`compose.md`). Keep normal scrolling. A pinned kit moment or scene holds at most half a screen per chapter, up to three chapters. A one-sentence scene gets at most one screen in total (`moments.md`, `scenes.md`).
 
 ## 3. The hero
 
-- **Exactly the first screen,** `100svh`, the fixed header over its top:
-  padding-top `--nav + --photo + --hgap` (120 at 1440, 96 on a phone), padding-bottom `--hpadb +
-  --bar` (64, 24 + bar on a phone). Content ends by y 836 at 1440x900. Nothing of the next section
-  shows at 1440, 1280, 1024, 820, 768 and 390.
-- **Content:** `.wrap > .hero-text` holds the composition: an optional notice line, the h1, the
-  sub-line (`p.hero__lead`, layout.css), at most two buttons (a place one), and the picture. One plain claim, never a slogan;
-  no caption under the picture, no second float card, no three button styles. The buttons sit above
-  the fold at every width.
+- **The first screen.** The fixed nav, hero heading and main action fit at every width. A standard hero fills `100svh`. Nothing of the next section shows at load.
+- **Content.** The h1, lead and at most two buttons (one main action on a place). Use the client's subject for the picture. On a place or service taking stays or table bookings, dock `.hero-book` at the foot of the hero's wrap. Include dates or day, guests, room or time, the “from” price and the main button. Carry the choices to the full closing form.
 - **The h1** first, top at y 120 (96 on a phone), at most three lines at every width, never
   smaller than an h2 (28 to 60px on a phone). A notice line (one 14px line in the body face with a
   number, 4.5:1: changed hours, a delivery cut-off) sits 16px above it; never a bar above the header.
-- **The picture ends inside the hero:** a layer behind the words, beside them in a split, or above
-  or below them only if the whole hero ends by H - 24. A frame under the words ends by y 836 (about
-  296px under a 356px text block); larger becomes a layer. Never a first screen that ends on a
-  visual cut by the fold, never half a picture under the text.
-- **The first screen at 768 and 820.** The split stacks: the words, then the picture in what is
+- **Product window.** On a dealt `.hero--peek` (software, gaming or tech), the hero's own window may continue below the fold. At 1440×900 at least 420px of it shows and its full height is at most 760px. Keep the next section below it. For an ordinary hero keep the picture whole or use the deliberate bleed below.
+- **Standard heroes at 768 and 820.** The split stacks: the words, then the picture in what is
   left. Its bottom edge ends on a whole element or clearly bleeds a large picture on purpose:
   - whole: the picture (a fragment, a phone, a render) ends 24px or more above the hero's foot;
   - a bleed: a photograph or ground filling its frame (`.frame--photo`, `object-fit: cover`), or a
     fragment in `.frame > .stage` cut by the frame's bottom through 96px or more of its rows under
     `.stage--fade-b`, the point (the comment, the button, the row worked on) above the fade.
-  Never a card, window or diff in a wrapper of your own whose lower edge the fold slices (in testing:
-  a 480x688 diff in `div.hero__art` lost its lower edge at 820, `fold-card` FAIL); never 1 to 95px
-  of a box under the fold. Below 1024 `.at-over` pieces hide; give the main piece a `.fit` width
+  Avoid accidental cuts through a card or control. A dealt peek keeps the window inside the hero as it extends below the fold. Below 1024 `.at-over` pieces hide; give the main piece a `.fit` width
   (it narrows), never a fixed one. Shoot 820x1180 and 768x1024 and read the first screen's foot.
 - **Docked strip:** software and product may dock one row under the hero's content (real customer
   logos with permission, a rating line the brief gives, or three facts), at most 96px, still, hidden
-  on a phone unless it ends by H - 24 - bar. Service and place dock nothing.
+  on a phone unless it clears the action. A place or service booking uses the bar above.
 - **Phone:** the text first; a photograph above it only when the whole hero ends by H - 24 - bar.
   Hero buttons stack at one width, unless both fit on one line.
 - **Allowed types:** a full-bleed still photograph, a product whole on a stage, an inset frame, a
@@ -123,26 +67,13 @@ content under 128px apart, 96 on a phone, or over 600 FAILs), at 1440, 768 and 3
 
 ### The eleven heroes
 
-Dealt by kind and by the material the brief really has, never by taste, never the same within three
-pages; a place gets the place hero in a dealt form (below):
+Deal the hero from the page kind and the available material:
 
 ```bash
 node <skill>/assets/layout/deal.mjs --type software|product|place|service [--kind gaming|tech] --has photo,ui,film,object,setting --history .taste-skill/layout-history.json
 ```
 
-`--type` is the page type (`SKILL.md` section 1: a game is `software`, hardware `product`; a place
-prints the place hero and deals its form). A game
-adds `--kind gaming` (its own weights, never `ui`): `--has film,photo` when the brief supplies its
-trailer or key art, `--has setting` without art files (stand-in photographs of its setting from
-`photos.mjs search`: it prints the `photo` hero, the game's name set large on the calm side; a
-game never deals `statement` or `word`, and always passes `--has`); hardware adds `--kind tech`.
-A product or hardware with no photographs of its own passes `--has photo` for its stand-ins
-(`photos.md`, A product without photographs); `--has object` only for a cut-out or when the brief
-asks for 3D or a render, and it always prints the `product` hero: the product whole on the
-full-width stage, its widest view, never a `split` column or an order form alone (`sections.md`,
-Product). A product page is dealt only the `product`, `photo` and `film` heroes: a `split`,
-`word`, `statement` or `triptych` hero cannot show the product at 80% of the content width.
-The place hero is printed, its form dealt (The place hero, below).
+Use the page type from the PLAN. Gaming uses software with `--kind gaming`, hardware uses product with `--kind tech`. Pass assets the client actually supplied. A film hero needs a film. Without a product photo, art or film, hardware gets a split for its built view. An edge-to-edge product stage needs the product photograph or a drawing that shows it. Without game art, fill the dealt hero with the built world. For a place, use the dealt form below.
 
 It prints the hero (its demo, numbers, and the moment, ground and effect ids that fit the kind; on
 other only the hero itself counts). Copy only its `<section class="hero …">` from
@@ -164,15 +95,11 @@ dealt only without a strong photograph.
 | `triptych` | h1 52 on span-3, a collage of three to five pieces on span-6 start-4 whose sets change every 2.8 s, one large button ending on the right line | collage 342 wide, button full width | set change (tech only; still elsewhere) |
 | `centred` | pill, centred h1 72 with the mark inline, lead, two pill buttons, then a lit frame across the wrap holding the product window, fading over its last 18% | the window less its list column | the window's story (tech) |
 
-Every hero is one screen, stands on the edge lines, has one h1 within its `maxChars`
-(`heroes.json`) and one motion of its own at most, which rests under reduced motion and on a phone.
-A hero fails with a picture out to one viewport edge, a hero taller than the screen, the visual
-above the text on a phone, words over the busy part of a picture, a second float card, a slogan, a
-caption under the picture.
+Keep one h1 within the hero's `maxChars` (`heroes.json`). Protect the action and the subject at the phone crop. Follow `photos.md` for type over pictures and `copy.md` for fact lines.
 
 ### The place hero
 
-Every place page: one still photograph of the place leads the first screen, in the form `deal.mjs
+On a photo-led place page the picture leads the first screen, in the form `deal.mjs
 --type place` deals (`data-form` on `<section class="hero hero--place">`, layout.css 0b; the
 markup is the same for all four, so only the attribute changes). In testing every place had the
 same band hero with 120 to 200px of empty ground under its words; two cafes could not be told apart.
@@ -180,29 +107,16 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 
 | form | at 1440 | at 390 |
 |---|---|---|
-| `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1-6, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
+| `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1–8, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
 | `bleed` | the photograph over the whole screen; the h1, the line and the button on a solid panel of the page ground (580 wide, 48 inside) in its lower left corner, `data-corner="end"` for the right one when the calm side is right | the photograph, then the words on the ground |
 | `split` | the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven, from 40px under the header to the hero's foot | as band |
 | `name` | band, with the name or the street set large across the `.wrap` first in `.hero__text` (`<p class="hero__name">Henderson Street</p>`, up to 160px): the page's one type moment | the name at 44 to 72px |
 
-- 1440, `band` and `name`: the photograph takes what the words leave (at least 340px), so the words
-  always end on the fold, never over an empty band. `--hgap: 40px`; the h1 at 48/53 on columns 1 to
-  6, at most three lines; from the split line (x 732) the sub-line at 20/30 (the kind of place and
-  where, with today's hours; at most two lines, 80 characters) and one filled 48px button 24px under it.
+- At 1440 the photograph fills what the words leave. The place h1 may take the pairing's display size up to 72px on its own ground or a calm part of the photograph. Keep it to two lines at 1440 and three on the phone, with the sub-line and one main action. Leave room for the booking bar when dealt.
 - A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
   header (`--photo: 528px`).
-- 640 to 1023: the photograph at most 56vw tall, the words stacked under it, the hero ending by
-  H - 24. 390: the photograph at least 390 x 292 (a phone crop, subject centred); with
-  `data-phone-fill` on it (photos.mjs prints it with the 4:5 phone crop) it grows by whatever the
-  words leave of the screen, to 390 x 488 at most (about 390 x 480 at 390x844), so the screen ends
-  on the button and never on an empty band; `--hgap` 24, the h1 at 32/37 (three lines at most), the
-  sub-line at 18/28, one 342 x 48 button; the stack ends at H - 24 (the phone bar waits until the
-  button has scrolled away; without script, H - 24 - bar).
-- The photograph is real and of this place in daylight: the room from the door, the counter with
-  the machine, bread on shelves, the shopfront with customers, the workshop stand, an arrangement in
-  a real room, the best room or the house. Never a mood shot, scenery, a cut-out or a hazy file; a
-  florist never opens without flowers. The visit block is the section after the hero, never inside
-  the first screen.
+- On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 a booking form can use one column. Keep its date choices, price and button visible and reachable.
+- Show the room from the door, the counter in use, flowers in the shop, or the landscape the brief locates. See `photos.md` for choosing and cropping the picture. Keep the visit details high on the page.
 
 ## 4. Equal edges and the grid
 
@@ -217,15 +131,8 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
   ends on a column end, the last on the right line. Anything wider than half the `.wrap` runs the
   full `.wrap`. Card rows (6+6, 4+4+4, 3+3+3+3): the first card on the left line, the last on the
   right, all one height, every row full. Text inside a card or visual is not a page line.
-- **Two text lines:** the left line and the page's split line (the right column's start: k = 5, 6
-  or 7, x 623, 732 or 841; a place always 6/6 at 732). Pick the split pair before building and use
-  it on every split, the hero split, FAQ and visit included. Centred text moves left: the h1,
-  section heads, the close and pricing heads all start on the left line (the `centred` hero is the
-  one exception, on the page axis). No centred or right-aligned block wider than half the `.wrap`.
-- **Splits:** text left, the visual right, top-aligned, on every split of the page: never mirrored,
-  never alternating. The h2 and its intro sit on the left line above the grid. A filled column is a
-  card and may pad its text 48px; text never sits inset in a bare column. Phone: text, then the
-  visual, both 342.
+- **Text lines.** Align the left column to the wrap and the right to a column start. Keep repeated splits on a common line. Follow the PLAN for heading alignment: left throughout or centred on proof and close. The centred hero uses its own axis.
+- **Splits.** Align the tops. Keep text first on a phone, including a mirrored composition. A filled panel may pad its text 48px. In an own section use the column lines that fit the content (`compose.md`).
 - **Pictures:** a photograph spans 0 to the viewport as a layer, or starts and ends on the column
   lines (628, 410, 302 wide; place 588, 384, 282), one ratio per row (4:5, 4:3, 3:2 or 1:1; a place
   4:5, 4:3, 1:1). No photograph taller than the screen under the header less 128px (700 at
@@ -234,8 +141,7 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
   (`img.layer`, `aria-hidden`, covering 90% or more of the section; the hero holds one layer).
   Never out to one side only: a cut window is cut by its frame inside the `.wrap`. A picture wall
   is `.wall` (gap 0 or 2px), from line to line.
-- **Nothing** crosses a section edge, is cut off (no sliced heading, no ellipsis), staggered or
-  peeking out behind another, and there is no dead space beside a short text.
+- Keep words, controls and focus rings inside the section. Pictures can overlap within their frame if the subject still reads at 390.
 - **1024 to 1279:** span-4 cards with a panel go two-up. **640 to 1023** (checked at 820 and 768):
   splits stack text first, panel cards take the full row, no row half empty. Nothing scrolls
   sideways at any width; no swipe rows.
@@ -263,7 +169,7 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
   light weight under 20px.
 - **Sizes** (1440/390): h1 72/38 (the hero; each hero's own token in `heroes.json`), h2 48/30, h3
   and quotes 28/24, lead and card titles 20/18, body 16/26, small 14, labels 13/500 in sentence
-  case, a stat 38/28 (`--t-stat`, under the h2). A place: h1 48/53 and 32/37, h2 32/40 and 24/30, names 20/28 and
+  case, a stat 38/28 (`--t-stat`). Place h1 as above, h2 32/40 and 24/30, names 20/28 and
   18/26, sub-line 20/30 and 18/28, body 16/26, small 14/20, labels 13/16. Each level at least 1.3x
   the next from 1024 (1.2x below); nothing under 13px; lines at most 62 characters.
 - Display text of 40px or more outside a grid item counts as a heading; a statement set at h2 size
@@ -281,13 +187,16 @@ node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
 
 | Finding | Means |
 |---|---|
-| `hero-fold` | the hero does not fill the first screen, runs past it, or the next section shows |
+| `hero-fold` | the hero misses the first screen, a window exceeds the dealt peek, or the next section shows |
 | `hero-maxchars`, `hero-lines` | with the h1 lengthened to its `maxChars`, the hero runs past the screen or the h1 takes too many lines |
 | `section-height` | a section stretched past its content: an empty band beyond its padding, or a hole between its parts, a third of its height or more |
-| `section-air` | the content of two sections under 128px apart (96 on a phone) |
+| `section-air` | content in adjacent sections is closer than 72px at 1440 or 56px on a phone |
+| `empty-band` | an empty stretch exceeds 280px at 1440 or 200px on a phone, without a ground change, picture or moment |
 | `edge-left`, `edge-right`, `spill`, `bleed-one-side`, `one-sided` | a block off the lines, past them, out to one viewport edge, or visuals stopping short of the right line |
 | `lines` | text starts on more than two left lines |
 | `overflow-x` | the page scrolls sideways |
+
+The air limits above are for regular density. The checker scales them with `--density`.
 
 Run it without `--no-stress`; every finding fails the page. In another script:
 `await page.evaluate(src + ';window.lyCheck()')` returns `{ vw, vh, L, R, nav, screen, hero, sections, findings }`.

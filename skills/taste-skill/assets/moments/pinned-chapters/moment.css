@@ -10,8 +10,8 @@ main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid
 [data-moment="pinned-chapters"] .mo-pc__text { display: grid; gap: var(--s-6); align-content: start; }
 [data-moment="pinned-chapters"] .mo-pc__steps { display: grid; gap: var(--s-5); }
 [data-moment="pinned-chapters"] .mo-pc__step { display: grid; gap: var(--s-2); padding-left: var(--s-5); border-left: 2px solid var(--line); }
-[data-moment="pinned-chapters"] .mo-pc__step h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
-[data-moment="pinned-chapters"] .mo-pc__step p { color: var(--ink); max-width: 46ch; }
+[data-moment="pinned-chapters"] .mo-pc__step h3 { font-family: var(--font-text); font-weight: 500; font-size: 18px; line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
+[data-moment="pinned-chapters"] .mo-pc__step p { font-size: var(--t-body); color: var(--ink); max-width: 46ch; }
 [data-moment="pinned-chapters"] .mo-pc__step p > .mo-pc__p-in { display: block; }
 [data-moment="pinned-chapters"] .mo-pc__visual { margin: var(--s-4) 0 0; border-radius: var(--r-md); overflow: hidden; }
 [data-moment="pinned-chapters"] .mo-pc__visual > img, [data-moment="pinned-chapters"] .mo-pc__visual > picture > img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
@@ -23,7 +23,7 @@ main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid
 @media (min-width: 640px) {
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__steps { gap: var(--s-6); }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); row-gap: var(--s-2); align-items: center;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--gutter); row-gap: var(--s-2); align-items: center;
     border-left: 0; border-top: 1px solid var(--line); padding: var(--s-6) 0 0; }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step h3 { grid-column: 1; align-self: end; }
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__step p { grid-column: 1; align-self: start; }
@@ -46,13 +46,13 @@ main > [data-moment="pinned-chapters"][data-moment]:not(.is-live) { height: auto
 
 /* live */
 [data-moment="pinned-chapters"].is-live { height: calc((var(--mo-hold) + 1) * 100svh); padding: 0; }
-main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: start; align-content: center; overflow: clip; }
-/* (the text and the frame on the page's 6/6 split pair, x 732 at 1440, top-aligned like every split of the page) */
+main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: sticky; top: 0; height: 100svh; box-sizing: border-box; padding-top: var(--nav, var(--nav-h, 72px)); grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--gutter); align-items: start; align-content: center; overflow: clip; }
+/* (the text and the frame on the page's 5/7 split pair, top-aligned like every split of the page) */
 [data-moment="pinned-chapters"].is-live .mo-pc__step { border-left-color: var(--line); transition: border-color 300ms ease; }
 [data-moment="pinned-chapters"].is-live .mo-pc__step h3 { color: var(--muted); transition: color 300ms ease; }
 /* a closed step's lines collapse to nothing: the grid row goes to 0fr and the inner span (min-height 0,
    overflow hidden) lets it; the text sits in that span, never as an anonymous item with its own height */
-[data-moment="pinned-chapters"].is-live .mo-pc__step p { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 420ms cubic-bezier(.2, .7, .2, 1), opacity 300ms ease; }
+[data-moment="pinned-chapters"].is-live .mo-pc__step p { display: grid; grid-template-rows: 0fr; opacity: 0; transition: opacity 150ms ease-out; }
 [data-moment="pinned-chapters"].is-live .mo-pc__step p > .mo-pc__p-in { min-height: 0; overflow: hidden; }
 [data-moment="pinned-chapters"].is-live .mo-pc__step.is-on { border-left-color: var(--accent); }
 [data-moment="pinned-chapters"].is-live .mo-pc__step.is-on h3 { color: var(--ink); }

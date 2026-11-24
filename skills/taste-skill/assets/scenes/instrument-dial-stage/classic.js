@@ -532,8 +532,8 @@
       let t = 0;
       document.fonts.addEventListener('loadingdone', () => { clearTimeout(t); t = setTimeout(() => ScrollTrigger.refresh(), 150); });
     }
-    const holdD = r2(clamp(num(opts.hold, Math.min(7, 0.85 * N + 0.6)), 1, 12));
-    const holdP = r2(holdD * 0.9);
+    const holdD = 1;
+    const holdP = holdD;
     const live = { n: -1, deg: 0, bz: { a: 0 }, rot: null, st: null, phone: false, tilt: o.tilt, geo: null, scale: null };
 
     // the finished composition: the item tones, and nothing the live stage wrote by hand

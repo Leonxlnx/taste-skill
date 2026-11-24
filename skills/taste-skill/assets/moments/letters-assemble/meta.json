@@ -21,11 +21,17 @@
   "phone": "A lighter version on a phone, in a smaller size: no scrub; the letters start a third as far from home and fly into the line once, in 1.1 s, as the statement comes on screen.",
   "phoneRuns": true,
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "words": "a statement of 2 to 5 words (up to about 28 letters) and one or two lines under it"
   },
-  "text": { "words": [2,5], "sel": ".mo-la__type, h2, h1" },
+  "text": {
+    "words": [
+      2,
+      5
+    ],
+    "sel": ".mo-la__type, h2, h1"
+  },
   "avoidWith": [
     "giant-type-pass",
     "word-highlight",
@@ -45,5 +51,6 @@
       "view": 0.5,
       "wait": 300
     }
-  }
+  },
+  "retired": "Letters cross the preceding section."
 }

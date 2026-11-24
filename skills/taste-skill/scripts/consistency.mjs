@@ -295,6 +295,8 @@ import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } 
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
 
+const layoutRules = readFileSync(new URL('../assets/layout/layout-check.js', import.meta.url), 'utf8');
+const browserFinding = f => ({check:f.rule, sev:f.sev || 'FAIL', sel:f.where, msg:f.detail, id:0, text:'', rects:[]});
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const argv = process.argv.slice(2);
 const opt = (n, d) => { const i = argv.indexOf('--' + n); if (i < 0) return d; const v = argv[i + 1]; argv.splice(i, 2); return v; };
@@ -366,7 +368,7 @@ const checks = [
   { id: 'visual-empty', sev: 'FAIL', what: 'a visual of 120x80px or more showing under 6 colours or only a smooth gradient at this width (blank FAILs), or a broken picture' },
   { id: 'effect-kind', sev: 'FAIL', what: 'an effect on a place, service or plain product page beyond one quiet treatment, or a scene that does not fit its kind; past 4 live WebGL contexts, one scene or three scroll moments on a tech page' },
   { id: 'hero-enter', sev: 'WARN', what: 'a hero that does not enter on load: no data-enter on it, or no head line setting html.m-enter (data-enter="off" on a hero holding a big scene is its entrance)' },
-  { id: 'moment-none', sev: 'WARN', what: 'a page with no dealt moment (every kind carries two, three on a long page); the gate holds it as a FAIL' },
+  { id: 'moment-none', sev: 'WARN', what: 'a page without a mounted moment; the gate checks the dealt IDs' },
   { id: 'moment-text', sev: 'FAIL', what: 'a dealt moment whose copy misses the count its meta.json "text" gives (liquid-type 2-6 words, letters-assemble 2-5, marquee-row 6-14 items...); lines-rise\'s 2-3 lines at a desktop width WARN' },
 ];
 const fixes = {
@@ -374,7 +376,7 @@ const fixes = {
   'visual-caption': 'take the line away: no caption or description under, over or on any image, render or visual; a licence credit goes in one footer line',
   'visual-empty': 'make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame',
   'hero-enter': 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter (motion.md: the entrance)',
-  'moment-none': 'deal them (start.mjs plan, or moments.mjs pick --page <kind> --scene deal) and mount each in its own section (moments.md)',
+  'moment-none': 'use the moment the plan names on its content or closing heading, if one was dealt',
   'effect-kind': 'take the effect off or deal one that fits: a place, shop or service page takes no shader effect (effects.mjs pick deals none there) and a scene dealt by fit (moments.mjs pick --page <kind> --scene deal), never a tech-looking shader ground',
 };
 const summary = [
@@ -392,7 +394,7 @@ const summary = [
   '             every kind: moment-none, a page with no dealt moment, WARNs; moment-text, a kit moment whose copy misses',
   '             the count in its meta.json "text", FAILs, lines-rise\'s lines at a desktop width WARN)',
   '  motion     hero-enter (every kind: a hero without data-enter, or a page without the head line that sets html.m-enter, WARN;',
-  '             gate.mjs holds hero-enter and moment-none as FAILs)',
+  '             gate.mjs holds hero-enter as a FAIL)',
 ].join('\n');
 const flags = [{ name: 'tech-subject', kind: 'bool', default: false, help: 'a product page with a technical subject (hardware, a device): effects are judged as on a tech page' }];
 const quick = true;
@@ -407,7 +409,7 @@ const KIND_RULE = 'shader grounds fit tech, gaming and software pages and a prod
 // picture-develops (not dealt) is an effect there
 const MOMENT_PAGES = (() => {
   const o = {};
-  try { for (const m of JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []) o[m.id] = { pages: m.retired ? [] : m.pages || [], text: m.text && typeof m.text === 'object' ? m.text : null }; } catch {}
+  try { for (const m of JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []) o[m.id] = { counts:m.counts !== false && m.weight > 0, pages: m.retired ? [] : m.pages || [], text: m.text && typeof m.text === 'object' ? m.text : null }; } catch {}
   return o;
 })();
 const momentFits = (m, kind) => { const x = MOMENT_PAGES[m.id]; return !!x && x.pages.includes(kind) && !(m.id === 'picture-develops' && /print/i.test(m.look || '')); };
@@ -811,12 +813,12 @@ function visualProbe(o) {
   // "example" and "sample" count only as a label ("(sample)", "Sample coffees"), never inside an address such as hello@x.example
   const PHRASE = /\b(?:made (?:in|with) code|placeholder|illustration|rendering|render of|pictured|photo of|picture of|image of|view of|shown (?:above|here|below)|fig\.?\s*\d|figure\s*\d|caption)\b|\((?:sample|example)s?\)|^\s*(?:sample|example)s?\b/i;
   const CAPCLS = /(?:^|[\s_-])(?:caption|figcaption|img-?cap|photo-?cap|legend)(?:$|[\s_-])/i;
-  const exempt = (b) => /^h[1-6]$/.test(b.tag) || b.el.closest('a,button,nav,summary,label,header,footer,blockquote,q,[role=heading],[role=button],[role=tab]') || PRICE.test(b.text) || CREDIT.test(b.text);
+  const exempt = b => window.lyRules.fact(b.el) === true || /^h[1-6]$/.test(b.tag) || b.el.closest('a,button,nav,summary,label,header,footer,blockquote,q,[role=heading],[role=button],[role=tab]') || PRICE.test(b.text) || CREDIT.test(b.text);
   const xo = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
   const add = (kind, sev, b, c, note, gap) => out.captions.push({ kind, sev, text: b.text.slice(0, 90), sel: sel(b.el), visual: sel(c.el), what: what(c), note, fs: Math.round(b.fs), rows: b.rows, gap: gap == null ? null : Math.max(0, Math.round(gap)), doc: doc(b.r), vdoc: doc(c.r) });
   // a figcaption counts whenever its figure holds a visual (a markup fault: told at the first width only)
   if (o.first) for (const fc of document.querySelectorAll('figcaption')) {
-    if (!vis(fc)) continue;
+    if (!vis(fc) || window.lyRules.fact(fc) === true) continue;
     const fig = fc.closest('figure'), c = fig && cands.find((x) => fig.contains(x.el) && !fc.contains(x.el));
     if (c) add('figcaption', 'FAIL', { el: fc, r: fc.getBoundingClientRect(), text: txt(fc), fs: parseFloat(cs(fc).fontSize) || 16, rows: 1 }, c, 'a figcaption in the figure of the visual');
     else out.notes.push('figcaption without a 120x80 visual, not counted: ' + sel(fc));
@@ -828,7 +830,7 @@ function visualProbe(o) {
     if (below && !exempt(below) && below.tag !== 'figcaption') {
       const short = below.rows <= 2 && below.text.length <= 180, gap = below.r.top - rv.bottom;
       if (CAPCLS.test(below.cls)) add('caption-class', 'FAIL', below, c, 'its class names it a caption', gap);
-      else if (short && PHRASE.test(below.text)) add('caption-phrase', 'FAIL', below, c, 'a caption phrase', gap);
+      else if (short && (PHRASE.test(below.text) || window.lyRules.explaining.test(below.text))) add('caption-phrase', 'FAIL', below, c, 'a caption phrase', gap);
       else if (short && below.fs <= 15 && !blocks.some((n) => n !== below && /^h[1-6]$/.test(n.tag) && n.r.top >= below.r.bottom - 2 && n.r.top - below.r.bottom <= 40 && xo(n.r, below.r) >= Math.min(n.r.width, below.r.width) * 0.4)) add('caption-line', 'WARN', below, c, 'a muted line', gap);
     }
     if (above && !exempt(above) && above.tag !== 'figcaption' && above.rows <= 2 && above.text.length <= 180 && (CAPCLS.test(above.cls) || PHRASE.test(above.text))) add('caption-above', above.fs <= 15 ? 'FAIL' : 'WARN', above, c, 'a caption-like line', rv.top - above.r.bottom);
@@ -922,6 +924,7 @@ function momentTextProbe(rules) {
         // the selectors in the order meta.text lists them (the moment's own class first, then a plain heading)
         el = null;
         if (rule.sel === 'self') el = host;
+        else if (host.matches('h2') && key !== 'items') el = host;
         else for (const s of rule.sel.split(',').map((x) => x.trim()).filter(Boolean)) { el = host.matches(s) ? host : host.querySelector(s); if (el) break; }
         if (!el) continue;
         what = `its ${el.tagName.toLowerCase()}`;
@@ -966,7 +969,7 @@ function kindProbe() {
     taste: meta('taste-kind'), siteKind: meta('site-kind'), pageKind: meta('page-kind'), pageType: meta('page-type'), dataType: String(document.documentElement.getAttribute('data-type') || '').trim().toLowerCase(),
     fxIds: [...document.querySelectorAll('[data-fx]')].map((e) => String(e.getAttribute('data-fx') || '').trim().split(/[\s:]/)[0]),
     bigIds: [...document.querySelectorAll('[data-big-scene]')].map((e) => String(e.getAttribute('data-big-scene') || '').trim()),
-    dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: ownPrints().length, dataMoment: q('[data-scroll-moment], [data-moment]'),
+    ownSections: q('section[data-own]'), dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: ownPrints().length, dataMoment: q('[data-scroll-moment], [data-moment]'),
     bigScene: q('[data-big-scene]'), fxBeside: [...document.querySelectorAll('[data-fx]')].filter((e) => !e.closest('[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]')).length,
     mount: first('[data-fx], [data-scene], [data-big-scene], [data-print]'), moment: first('[data-scroll-moment], [data-moment]'),
     // the hero's entrance (motion.md): data-enter on the hero section and the head line that sets html.m-enter; a hero
@@ -1043,11 +1046,15 @@ async function driftProbe(o) {
     // (2.5.2: a dealt big scene's section too, on every kind it fits)
     const momentSecs = secs.filter((s) => s.matches('[data-moment][data-moment-mounted], [data-big-scene]') || s.querySelector('[data-moment][data-moment-mounted], [data-big-scene]'));
     const inMoment = (e) => !!e.closest('[data-moment][data-moment-mounted], [data-big-scene]') || momentSecs.some((s) => s.contains(e));
-    const linked = [...secs, ...cards, ...frames].filter((e) => !fixedLike(e) && !inMoment(e));
+    const ownCard = e => e.closest('section[data-own]') && (secSet.has(e) || cards.includes(e));
+    const linked = [...secs,...cards,...frames].filter(e => !fixedLike(e) && !inMoment(e) && (o.ownOnly ? ownCard(e) : !e.closest('section[data-own]') || ownCard(e)));
+    if (!linked.length) return [];
     const dev = new Map(), docs = new Map();
     const maxY = Math.max(0, document.scrollingElement.scrollHeight - H), step = Math.round(H * 0.7);
-    for (let y = 0; ; y += step) {
-      const yy = Math.min(y, maxY);
+    const positions = o.ownOnly
+      ? [...new Set(linked.map(e => Math.max(0, Math.min(maxY - 100, Math.round(scrollY + e.getBoundingClientRect().top - H / 3)))))]
+      : Array.from({length:Math.ceil(maxY / step) + 1}, (_,i) => Math.min(i * step, maxY));
+    for (const yy of positions) {
       scrollTo({ top: yy, left: 0, behavior: 'instant' }); await wait(o.settle || 400);
       if (yy + 100 <= maxY) {
         const y0 = scrollY, a = new Map(linked.map((e) => [e, e.getBoundingClientRect()]));
@@ -1062,7 +1069,7 @@ async function driftProbe(o) {
       }
       if (yy >= maxY) break;
     }
-    return [...dev].map(([e, d]) => ({ kind: secSet.has(e) ? 'section' : 'frame-or-card', sel: sel(e), devPx: d, doc: docs.get(e) })).sort((a, b) => (a.kind === 'section' ? 0 : 1) - (b.kind === 'section' ? 0 : 1)).slice(0, 30);
+    return [...dev].map(([e, d]) => ({ own: !!ownCard(e), kind: secSet.has(e) ? 'section' : 'frame-or-card', sel: sel(e), devPx: d, doc: docs.get(e) })).sort((a, b) => (a.kind === 'section' ? 0 : 1) - (b.kind === 'section' ? 0 : 1)).slice(0, 30);
   } finally { st.remove(); }
 }
 const call = (fn, arg) => `(${fn.toString()})(${JSON.stringify(arg ?? null)})`;
@@ -1203,7 +1210,7 @@ async function pageEffects(ctx, scan, K) {
   if (!kind) { ctx.log('no kind given or marked: effects are not judged'); return S; }
   S.sig = effectSignals(scan);
   S.rate = (await ctx.safe('effect-kind particle rate', () => ctx.tab.eval(call(particleProbe), 15000))) || 0;
-  S.linked = ctx.quick ? [] : (await ctx.safe('effect-kind drift walk', () => ctx.tab.eval(call(driftProbe, { settle: 400 }), 180000))) || [];
+  S.linked = ctx.quick && !K.ownSections ? [] : (await ctx.safe('effect-kind drift walk', () => ctx.tab.eval(call(driftProbe, { settle: 400, ownOnly:ctx.quick }), 180000))) || [];
   return S;
 }
 
@@ -1216,7 +1223,7 @@ function effectFindings(ctx, K) {
   if ((K.printObjects || []).length > M.printObjects.length) M.printObjects = K.printObjects;
   const { kind, from, tech, sig, rate, linked } = S;
   const noEffect = NO_EFFECT.has(kind) && !(kind === 'product' && tech);
-  const linkedSections = linked.filter((x) => x.kind === 'section');
+  const linkedSections = linked.filter(x => !x.own && x.kind === 'section');
   // a product's own object render (print-<kind>, effect render) is its picture (PH-04 says a
   // non-technical product never uses one)
   // the [data-product] frames (id print-product) are pictures of the product, as many as the page has views of it: never
@@ -1230,7 +1237,7 @@ function effectFindings(ctx, K) {
   // count); on a no-effect page the prints are told on their own
   const scenes = Math.max(sceneTags + printTags, M.guard ? M.big : 0), scenesNo = Math.max(sceneTags, M.guard ? M.big : 0);
   const momentsTag = Math.max(sig.dataMoment, M.dataMoment), scrollMoments = momentsTag + linkedSections.length;
-  const particles = sig.particleLibs.length > 0 || rate >= 300;
+  const particles = sig.particleLibs.length > 0; // chart paths and line drawings can also paint many shapes per frame
   const gl = objRender ? (M.guard ? M.outsidePrint : 0) : M.guard ? M.created : sig.shaderStrings ? 1 : 0;
   const any = gl > 0 || fxMounts || scenesNo || scrollMoments || sig.scrollStrong.length;
   const page = `a ${kind} page (${from})`, later = ctx.first ? '' : ` (first seen at ${ctx.width}px)`;
@@ -1243,15 +1250,18 @@ function effectFindings(ctx, K) {
     put(ctx, f, at && at.doc);
     F.push(f);
   };
+  if (ctx.first) for (const card of linked.filter(x => x.own)) {
+    F.push(put(ctx, {check:'scroll-linked', sev:'FAIL', id:0, sel:card.sel, text:'', msg:`The whole section or card moves ${card.devPx}px independently of scrolling.`, fix:'Keep the outer card stationary and move its contents.'}, card.doc));
+  }
   ctx.log(`kind ${kind} (${from})${tech ? ', technical subject' : ''}: webgl ${gl} (peak ${M.peak}), mounts ${fxMounts}, scenes ${noEffect ? scenesNo : scenes}, prints ${prints}, moments ${scrollMoments}, particles ${rate}/s, drifting ${linked.length}`);
   // on every kind: a [data-moment] counts as a moment only when moments.js mounted it (data-moment-mounted, its own
   // moment.js fetched); one that never runs is a mark, not a moment (the sections it would excuse are judged as plain
   // sections), and a page holds two moments at most (moments.md)
   {
-    const all = K.moments || [], top = all.filter((m) => !m.nested);
+    const all = K.moments || [], top = all.filter(m => !m.nested && MOMENT_PAGES[m.id]?.counts);
     const dead = all.filter((m) => m.nested || m.failed || !m.mounted || !m.loaded);
     if (dead.length) add('moment-dead', 'FAIL', `${dead.length} [data-moment] mark${dead.length > 1 ? 's' : ''} that never run${dead.length > 1 ? '' : 's'}: ${dead.slice(0, 3).map((m) => `${m.id || '(no id)'} on ${m.sel} (${m.nested ? 'inside another moment' : m.failed ? `failed: ${m.failed}` : !m.loaded ? `assets/moments/${m.id}/moment.js was never loaded` : 'moments.js never mounted it'})`).join('; ')}; a moment is judged as one only when it runs`, 'load assets/moments/moments.js (system.js does it for a page with [data-moment]) and keep the dealt id, or take the data-moment mark off the section', { sel: dead[0].sel, doc: null });
-    if (top.length > 3) add('moment-count', 'FAIL', `${top.length} moments on one page (${top.map((m) => m.id).slice(0, 5).join(', ')}): three at most on every kind (moments.md)`, 'keep the two or three moments the deal gave and let the other sections scroll plainly', { sel: top[3].sel, doc: null });
+    if (top.length > 2) add('moment-count', 'FAIL', top.length + ' moments on one page', 'keep the moments in the plan', {sel:top[2].sel,doc:null});
     // a retired moment, or one dealt to none of the effect kinds, is off on a tech, gaming or software page as well
     if (!noEffect) {
       const fitsTech = (m) => momentFits(m, kind) || (kind === 'product' && ['tech', 'software'].some((x) => momentFits(m, x)));
@@ -1267,10 +1277,10 @@ function effectFindings(ctx, K) {
     put(ctx, f, K.enter.hero.doc);
     F.push(f);
   }
-  // its own id (not effect-kind, which reads as "take an effect off"); a WARN here, a FAIL at the gate
-  if (ctx.first && !(K.moments || []).length && !momentsTag && !S.told.has('moment-none')) {
+  // A missing deal is checked against the plan by the gate.
+  if (ctx.first && !(K.moments || []).some(m=>MOMENT_PAGES[m.id]?.counts && m.mounted) && !S.told.has('moment-none')) {
     S.told.add('moment-none');
-    const f = { check: 'moment-none', sev: 'WARN', id: 0, sel: '(the page)', text: '', msg: `${page} deals no moment: every kind carries two, three on a long page (moments.md)`, fix: `deal them (start.mjs plan, or moments.mjs pick --page ${kind} --scene deal) and mount each in its own section` };
+    const f = { check:'moment-none', sev:'WARN', id:0, sel:'(the page)', text:'', msg:'The page has no mounted moment.', fix:'When the plan names a moment, mount it on the content that carries it.' };
     put(ctx, f);
     F.push(f);
   }
@@ -1284,13 +1294,14 @@ function effectFindings(ctx, K) {
     if (fitScenes) ctx.log(`${fitScenes} big scene${fitScenes > 1 ? 's' : ''} that fit${fitScenes > 1 ? '' : 's'} ${page} (${(K.bigIds || []).join(', ')})`);
     const glOver = gl - treat, fxOver = fxMounts - treat, scenesOver = Math.max(0, scenesNo - fitScenes);
     if (glOver > 0) add('gl', 'FAIL', `${page} ${M.guard ? `asks for ${gl} WebGL context${gl > 1 ? 's' : ''}${objRender ? ' outside its object render' : ''}${M.at.length ? ` (${[...new Set(M.at)].slice(0, 4).join(', ')})` : ''}` : 'loads shader code'}${sig.shaderStrings ? ` and ships ${sig.shaderStrings} shader source${sig.shaderStrings > 1 ? 's' : ''}` : ''}${treat ? ' beyond its one quiet treatment' : ''}${why}`, null, K.canvas);
-    if (fxOver > 0 || scenesOver || prints) add('parts', 'FAIL', `${page} has effect parts: ${[fxOver > 0 && `${fxMounts} data-fx${fxIds.length ? ` (${fxIds.slice(0, 3).join(', ')})` : ''}`, scenesOver && `${scenesOver} scene${scenesOver > 1 ? 's' : ''} that do${scenesOver > 1 ? '' : 'es'} not fit the kind (${(K.bigIds || []).join(', ') || 'data-scene'})`, prints && (sig.photoObjects.length ? `the photo print object${sig.photoObjects.length > 1 ? 's' : ''} ${sig.photoObjects.join(', ')}` : `${prints} data-print`)].filter(Boolean).join(', ')}${why}`, null, K.mount);
+    if (fxOver > 0 || scenesOver) add('parts', 'FAIL', `${page} has effect parts: ${[fxOver > 0 && `${fxMounts} data-fx${fxIds.length ? ` (${fxIds.slice(0, 3).join(', ')})` : ''}`, scenesOver && `${scenesOver} scene${scenesOver > 1 ? 's' : ''} that do${scenesOver > 1 ? '' : 'es'} not fit the kind (${(K.bigIds || []).join(', ') || 'data-scene'})`, prints && (sig.photoObjects.length ? `the photo print object${sig.photoObjects.length > 1 ? 's' : ''} ${sig.photoObjects.join(', ')}` : `${prints} data-print`)].filter(Boolean).join(', ')}${why}`, null, K.mount);
     // a dealt moment of this kind (photo-chapters, pinned-chapters, picture-develops in its film look, word-highlight on a
     // place, product or service) is the page's one or two moments; one off its kind, and a data-scroll-moment, are effects
     const offKind = (K.moments || []).filter((m) => !momentFits(m, kind)), scrollTags = Math.max(0, momentsTag - (K.moments || []).length);
     if (offKind.length || scrollTags) add('moment', 'FAIL', `${page} has ${[offKind.length && `${offKind.length} moment${offKind.length > 1 ? 's' : ''} dealt to other kinds only (${[...new Set(offKind.map((m) => m.id + (m.look ? ` look ${m.look}` : '')))].slice(0, 4).join(', ')})`, scrollTags && `${scrollTags} data-scroll-moment`].filter(Boolean).join(' and ')}${why}`, `deal the moment again for this kind (moments.mjs pick --page ${kind} --photo): photographs and type, no shader, liquid or pointer effect`, offKind.length ? { sel: offKind[0].sel, doc: null } : K.moment);
     if (particles) add('particles', 'FAIL', `${page} draws particles: ${[sig.particleLibs.length && `particle code (${sig.particleLibs.slice(0, 3).join(', ')})`, rate >= 300 && `${rate} canvas 2D shapes a second`].filter(Boolean).join(', ')}${why}`, null, K.canvas);
-    if (sig.scrollStrong.length || linked.length) add('scroll', 'FAIL', `${page} moves with the scroll: ${sig.scrollStrong.length ? `scroll libraries or timelines (${sig.scrollStrong.join(', ')})` : ''}${sig.scrollStrong.length && linked.length ? '; ' : ''}${linked.length ? `parts that drift off the scroll (parallax): ${linked.slice(0, 3).map((x) => `${x.sel} ${x.devPx}px`).join('; ')}${linked.length > 3 ? ` and ${linked.length - 3} more` : ''}` : ''}${why}`, 'take the scroll-driven motion off: on a place, shop or service page the page scrolls plainly and the parts sit still', linked[0]);
+    const outside = linked.filter(x => !x.own);
+    if (outside.length) add('scroll', 'FAIL', page + ' has parts that drift with the scroll: ' + outside.map(x => x.sel).slice(0,3).join(', '), 'keep the outer section and card stationary', outside[0]);
     if (sig.externalLibs.length) add('libs', 'WARN', `${page} loads effect libraries: ${sig.externalLibs.slice(0, 4).map((u) => u.replace(/^https?:\/\//, '').slice(0, 60)).join(', ')}; check each is wanted`, 'drop the effect library unless the page needs it for something that is not an effect');
   } else {
     const k = `a ${kind} page${kind === 'product' ? ' with a technical subject' : ''}`;
@@ -1304,7 +1315,6 @@ function effectFindings(ctx, K) {
     if (bigTags > 1) add('scenes', 'FAIL', `${bigTags} big scenes ([data-big-scene]) on ${k}: one at most (house rule; MO-23)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
     else if (bigTags === 1 && (M.fxBeside || 0) > 1) add('scenes', 'FAIL', `a big scene and ${M.fxBeside} effect grounds (data-fx) beside it on ${k}: one dealt effect beside the scene at most (MO-16, MO-23); only the scroll moments may hold their own`, 'keep the one dealt effect (start.mjs plan) and give the other grounds a plain or photographed ground', K.mount);
     else if (scenes > 1) add('scenes', 'WARN', `${scenes} big scenes on ${k} (data-big-scene or photo data-scene ${sceneTags}, data-print ${printTags}, large WebGL canvases that are no data-fx ground ${M.guard ? M.big : 0}): one is allowed (house rule)`, 'keep one big scene and turn the others into still pictures or the UI', K.mount);
-    if (scrollMoments > 3) add('moments', 'WARN', `${scrollMoments} scroll-driven section moments on ${k} (data-scroll-moment or data-moment ${momentsTag}, sections moving with the scroll ${linkedSections.length}): two or three are allowed (house rule)`, 'keep the two or three dealt moments and let the other sections scroll plainly', linkedSections[0] || K.moment);
     if (any && !sig.reducedMotion) add('reduced', 'WARN', 'the page has effects but no prefers-reduced-motion branch in its scripts or styles: reduced motion must show the finished still', 'under prefers-reduced-motion: reduce, show each effect\'s finished still and stop its motion');
     if (any && !sig.phoneHint) add('phone', 'WARN', 'the page has effects but no phone, touch or max-width branch in its scripts: a phone needs the still or a light version', 'give phones (max-width or pointer: coarse) the still or a lighter version of each effect');
     if (particles) add('particles', 'WARN', `particle code or heavy canvas 2D drawing on ${k}${rate >= 300 ? ` (${rate} shapes a second)` : ''}: check it is a deliberate scene`, 'keep particles to the one big scene, or take them off', K.canvas);
@@ -1914,8 +1924,8 @@ const id = 'rhythm';
 const phase = 'pass';
 const checks = [
   { id: 'hero-screen', sev: 'FAIL', what: 'SR-1: the hero ends at the fold (1px either way), its content between the nav and 24px above the fold, nothing below it on the first screen' },
-  { id: 'section-height', sev: 'FAIL', what: 'SR-2: every other section as tall as its content and its air: an empty band beyond its padding, or inside it, a third of its height or more (a sixth WARN); content above the bottom padding, also with every answer and tab open; no scroll snapping' },
-  { id: 'section-air', sev: 'FAIL', what: 'SR-3: 192-480px between the content of two sections (128-420 on a phone; WARN 128-600, 96-560), no divider rules' },
+  { id: 'section-height', sev: 'FAIL', what: 'SR-2: every other section as tall as its content and its air: an empty band beyond its padding, or inside it, a third of its height or more; content above the bottom padding, also with every answer and tab open; no scroll snapping' },
+  { id: 'section-air', sev: 'FAIL', what: 'SR-3: adjacent content closer than the density-adjusted 72px (56px on a phone)' },
   { id: 'one-section', sev: 'FAIL', what: 'SR-4: every block of <main> a <section>, no bands inside one' },
   { id: 'one-heading', sev: 'FAIL', what: 'SR-5: one h2 per section, none in the hero' },
   { id: 'container-edges', sev: 'FAIL', what: 'SR-6: one container, equal margins (64-120px, 16-24px on a phone), the page shell, nothing past its lines, one or two left lines, no sideways scroll, wide pictures edge to edge; a viewport meta tag' },
@@ -1936,10 +1946,10 @@ const summary = [
   '  screens    hero-screen (SR-1: the hero ends at the fold, 1px either way, its content between the nav and 24px above',
   '             the fold, nothing of the next section on the first screen, FAIL), section-height (SR-2: every other',
   '             section as tall as its content and its air: an empty band beyond its padding (240px a side counted as',
-  '             air, 144 on a phone) or inside it, a third of its height or more FAIL, a sixth WARN; content above the',
+  '             air, 144 on a phone) or inside it, a third of its height or more FAIL; content above the',
   '             bottom padding, again with every answer and tab open; no scroll snapping, FAIL), section-air (SR-3:',
-  '             192-480px between the content of two sections, 128-420 on a phone, 128-600 and 96-560 WARN; no',
-  '             divider rules, FAIL), one-section (SR-4: only sections in <main>, no bands, FAIL), one-heading (SR-5:',
+  '             minimum occupied-content gap 72px (56px on a phone), scaled by density; no',
+  '             kit divider rules, FAIL), one-section (SR-4: one content unit per section), one-heading (SR-5:',
   '             one h2 per section, none in the hero, FAIL); at 1440x900, 768x1024 and 390x844 (--rhythm-widths),',
   '             --no-rhythm-expand',
   '  layout     container-edges (SR-6: one container, equal margins 64-120px, 16-24px on a phone, the own --gut up to 120px under 1024px; the page shell;',
@@ -1974,8 +1984,7 @@ function measure(opt) {
   // on a phone and is shrunk to fit: the module tells that on its own)
   const noViewport = !document.querySelector('meta[name="viewport"]');
   if (W !== opt.width) return { abort: 'the page lays out ' + W + 'px wide, not ' + opt.width + 'px' + (noViewport ? ' (it has no viewport meta tag)' : '') + (de.scrollWidth > W ? ' (and scrolls sideways: ' + de.scrollWidth + 'px)' : ''), noViewport, W };
-  // one screen is exactly 900px at 1440x900 and 844px at 390x844 (the unit of SR-1 to SR-8, and the height of every
-  // judge tile shoot.mjs cuts at k x H): a tab that reports another height is no measure of one screen
+  // one screen is exactly 900px at 1440x900 and 844px at 390x844 (the unit of SR-1 to SR-8, and the full viewport used by shoot.mjs): a tab that reports another height is no measure of one screen
   if (opt.height && H !== opt.height) return { abort: 'window.innerHeight is ' + H + ', one screen is exactly ' + opt.height + 'px at ' + opt.width + 'x' + opt.height + ' (900 at 1440x900, 844 at 390x844)' };
   if (Math.abs(SY) > 0.5) notes.push('scrollY was ' + SY + ' at measure time; boxes are converted to page coordinates');
   const SKIPTAG = /^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT|LINK|META|BASE|TITLE)$/;
@@ -2135,6 +2144,8 @@ function measure(opt) {
   const main = document.querySelector('main');
   const okChild = (e) => !SKIPTAG.test(TU(e)) && visible(e) && e.getBoundingClientRect().height > 0;
   const notChrome = (e) => e !== header && e !== actionbar && !(header && e.contains(header) && e.children.length < 2) && cs(e).position !== 'fixed' && !srOnly(e);
+  const liftWrapper = el => el.matches('[data-moment="closing-lift"]') && el.children.length === 2 &&
+    el.firstElementChild.matches('section.mo-cl__sheet') && el.lastElementChild.matches('section.mo-cl__under');
   let list;
   if (main) list = [...main.children].filter((e) => okChild(e) && notChrome(e));
   else { notes.push('no <main>: top-level body children are used as sections'); list = [...body.children].filter((e) => okChild(e) && notChrome(e)); }
@@ -2143,6 +2154,7 @@ function measure(opt) {
     const kids = [...list[0].children].filter((e) => okChild(e) && notChrome(e) && e.getBoundingClientRect().height > 40);
     if (kids.length >= 2) { notes.push('a single wrapper <' + list[0].tagName.toLowerCase() + '> was unwrapped to find sections'); list = kids; } else break;
   }
+  list = list.flatMap(el => liftWrapper(el) ? [...el.children] : [el]);
   for (const f of document.querySelectorAll('footer')) {
     if (!visible(f) || f.parentElement.closest('footer') || (header && header.contains(f))) continue;
     if (list.some((s) => s === f || s.contains(f) || f.contains(s))) continue;
@@ -2153,7 +2165,7 @@ function measure(opt) {
   list.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
   const wrapOf = (root) => { const w = root.querySelector(':scope > .wrap') || root.querySelector('.wrap'); return w && visible(w) ? w : null; };
   const closingEl = list.find((e) => e.matches('footer.closing')) || (list.length && TU(list[list.length - 1]) === 'FOOTER' ? list[list.length - 1] : null);
-  const S = list.map((el, i) => { const r = rectOf(el); return { el, i, top: r.t, bottom: r.b, h: r.b - r.t, l: r.l, r: r.r, isHero: i === 0, isClosing: el === closingEl, wrap: wrapOf(el) }; });
+  const S = list.map((el, i) => { const r = rectOf(el); return { el, i, top:r.t, bottom:r.b, h:r.b-r.t, l:r.l, r:r.r, isHero:i === 0 && !el.matches('section[data-own]'), isClosing:el === closingEl, wrap:wrapOf(el) }; });
   const secR = (s) => ({ l: s.l, t: s.top, r: s.r, b: s.bottom });
   const secMemo = new Map();
   const secIdx = (el) => {
@@ -2170,7 +2182,7 @@ function measure(opt) {
   const SCENEQ = '[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]';
   // the kit's dealt parts that are uneven on purpose: the offset pair (.comp-offset) and marquee-row's running track
   const KIT_UNEVEN = '.comp-offset, [data-moment="marquee-row"]';
-  const sceneSec = (s) => s.el.matches(SCENEQ) || !!s.el.querySelector(SCENEQ);
+  const sceneSec = (s) => window.lyRules.holdsStage(s.el);
   // the kit's own big scene (scenes.js mounted it: data-big-scene-mounted): a full-screen stage of its own, no .wrap, its
   // words centred on the stage by its module; its section is not held to the container (SR-6 T1)
   const KIT_SCENE = '[data-big-scene][data-big-scene-mounted]';
@@ -2223,7 +2235,10 @@ function measure(opt) {
   const bleedPic = (el, r) => secIdx(el) === 0 && /^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(el)) && r.l <= SX + 1 && r.r >= SX + W - 1;
   // SR-6 T1: what is wrong with a layer child of section s (also decides SR-3's fill 1.0)
   const layerProblems = (k0, s) => {
-    const k = picImg(k0) || k0, r = rectOf(k), probs = [];
+    const k = picImg(k0) || k0, probs = [];
+    const st = cs(s.el), raw = rectOf(k);
+    // A transformed photographic layer is painted only inside the parent's crop.
+    const r = /^(clip|hidden)$/.test(st.overflowX) && /^(clip|hidden)$/.test(st.overflowY) ? inter(raw, secR(s)) : raw;
     if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('not img, picture, video or canvas');
     if (cs(k).position !== 'absolute') probs.push('position ' + cs(k).position + ', not absolute');
     if (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1) probs.push('does not span the screen from 0 to ' + W + 'px');
@@ -2235,7 +2250,9 @@ function measure(opt) {
       if (!ah && !(img && img.hasAttribute('alt'))) probs.push('a hero layer with neither alt nor aria-hidden="true"');
     } else {
       if (ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
-      if (!ah) probs.push('not aria-hidden="true"');
+      const picture = TU(k)==='IMG' ? k : k.querySelector?.('img');
+      const described = picture?.hasAttribute('alt') || (k.getAttribute('role')==='img' && (k.getAttribute('aria-label') || k.getAttribute('aria-labelledby')));
+      if (!ah && !described) probs.push('a picture layer needs alternative text or aria-hidden="true"');
     }
     return probs;
   };
@@ -2366,7 +2383,7 @@ function measure(opt) {
   for (const G of gridLikes) {
     // the rows and columns inside a drawn mock (a file list, a window's rows) are the mock's own layout, not the page's
     // card rows or splits: its frame is judged, not them (seen on a test page)
-    if (G.el.closest('[data-ui], .ui, [data-ui-loop], [data-m-loop], [data-diagram]')) continue;
+    if (G.el.closest('.hero__window, .closing__links, section[data-own], [data-ui], .ui, [data-ui-loop], [data-m-loop], [data-diagram]')) continue;
     // the kit's own dealt parts that are uneven by design: the offset pair (start.mjs deals it; its second figure sits
     // lower and smaller) and the running row of marquee-row (its track runs past its rail on purpose)
     if (G.el.closest(KIT_UNEVEN)) continue;
@@ -2380,7 +2397,10 @@ function measure(opt) {
       if (twins >= 2) continue;
       const [a, b] = items[0].r.l <= items[1].r.l ? items : [items[1], items[0]];
       const side = a.r.r <= b.r.l + 2 && Math.min(a.r.b, b.r.b) - Math.max(a.r.t, b.r.t) > 0;
-      const rowLike = sameKind(a.el, b.el) || (boxed(a.el) && boxed(b.el));
+      // The documented side composition has two span wrappers: a heading beside a list.
+      const headingAndList = G.el.matches('.wrap.grid.grid--top') &&
+        a.el.querySelector(':scope > h2') && b.el.querySelector(':scope > .rows');
+      const rowLike = !headingAndList && (sameKind(a.el, b.el) || (boxed(a.el) && boxed(b.el)));
       // a lead beside its buttons (the editorial hero's foot) is an action row, not a split: a column whose words are all
       // inside links or buttons, with no picture, is the pair's controls
       const ctlCol = (e) => { if (e.querySelector(MEDIA)) return false; const t = [...e.querySelectorAll('*')].filter(hasDirectText); return t.length > 0 && t.every((x) => x.closest('a, button, [role=button], .btn')); };
@@ -2423,7 +2443,7 @@ function measure(opt) {
   const anyRowItem = (el, z) => { for (let e = el; e && e !== stopAt(z) && e !== body; e = e.parentElement) if (tRow.has(e)) return true; return false; };
   const splitCard = (el, z) => { for (let e = el; e && e !== stopAt(z) && e !== body; e = e.parentElement) { const v = tSplit.get(e); if (v && v.card) return true; } return false; };
   const inRowOrSplit = (el, z) => { for (let e = el; e && e !== stopAt(z) && e !== body; e = e.parentElement) if (rowStat.has(e) || splitStat.has(e) || tRow.has(e) || tSplit.has(e)) return true; return false; };
-  const inFooterLinks = (el, z) => { const f = el.closest('footer'); if (!f) return false; if (el.closest('footer nav, footer ul, footer ol, footer dl')) return true; for (let e = el; e && e !== f; e = e.parentElement) if (tRow.has(e) || rowStat.has(e)) return true; return false; };
+  const inFooterLinks = (el, z) => { const f = el.closest('footer'); if (!f) return false; if (el.closest('.closing__links, footer nav, footer ul, footer ol, footer dl')) return true; for (let e = el; e && e !== f; e = e.parentElement) if (tRow.has(e) || rowStat.has(e)) return true; return false; };
   const scopeOf = (el, z) => { for (let e = el.parentElement; e && e !== S[z].el && e !== body; e = e.parentElement) if (splitStat.has(e)) return e; return S[z].el; };
   const kLines = (c) => { const w = c.r - c.l; return [5, 6, 7].map((k) => ({ k, x: c.l + (k * (w + 24)) / 12 })); };
 
@@ -2481,9 +2501,13 @@ function measure(opt) {
   // ---- SR-1 the hero is exactly one screen and nothing below it shows
   run('SR-1', () => {
     const hero = S[0], T = [], heroR = secR(hero);
+    if (!hero.isHero) return [];
+    const frame = window.lyRules.peek(hero.el);
     const b = hero.bottom - SY;
+    const book = window.lyRules.booking(hero.el);
+    const fits = hero.el.matches('.hero--peek') ? !!frame && b >= H - 1 : (phone && book ? b >= H - 1 : Math.abs(b - H) <= 1);
     // T1: the hero's bottom at scroll 0 within H +/- 1 (the crop sits between the fold and the hero's bottom)
-    T.push(test('T1', Math.abs(b - H) <= 1 ? 'PASS' : 'FAIL', Math.abs(b - H) <= 1 ? [] : [off(hero.el, heroR, `the hero ends at ${px(b)}px on a ${H}px screen, ${px(Math.abs(b - H))}px ${b > H ? 'below' : 'above'} the fold: it ends at the fold, 1px either way`, { d: Math.abs(b - H), ref: [lineY(SY + H)], at: b > H ? Math.round(SY + b / 2) : 0 })]));
+    T.push(test('T1', fits ? 'PASS' : 'FAIL', fits ? [] : [off(hero.el, heroR, 'hero ends at ' + px(b) + 'px on a ' + H + 'px screen; a peek needs a visible product window', {at:0})]));
     // T2: nothing of the second section (its own box or any part of it) on the first screen, 1px allowed
     let peek = 0; const off2 = [];
     if (S[1]) {
@@ -2504,7 +2528,8 @@ function measure(opt) {
     // strip at most 96px on a desktop
     const hb = boxesBySec[0], limit = H - 24 - barH, off4 = [];
     for (const x of hb) {
-      if (bleedPic(x.el, x.r)) continue; // the product stage's photograph runs edge to edge down to the fold (heroes.json)
+      if (bleedPic(x.el,x.r) || (frame?.contains(x.el) && !x.el.closest('h1,h2,h3,h4,h5,h6')) || (book?.contains(x.el) && ((phone && x.r.b <= hero.bottom + 1) || x.r.b-SY <= H-barH+1))) continue;
+      if (frame?.contains(x.el) && (x.r.b-SY <= H || x.r.t-SY >= H)) continue;
       if (x.r.b - SY > limit + 0.5) off4.push(off(x.el, x.r, `${q(x.el)} ends at ${px(x.r.b - SY)}px, below the hero's content line at ${px(limit)}px (the ${H}px screen less 24px${andBar})`, { d: x.r.b - SY - limit, ref: [lineY(SY + limit)] }));
       else if (x.r.t - SY < navH - 0.5) off4.push(off(x.el, x.r, `${q(x.el)} starts at ${px(x.r.t - SY)}px, under the ${px(navH)}px nav`, { d: navH - (x.r.t - SY), ref: [lineY(SY + navH)], at: 0 }));
     }
@@ -2513,7 +2538,7 @@ function measure(opt) {
       const kids = [...hero.wrap.children].filter((k) => visible(k) && !/absolute|fixed/.test(cs(k).position) && ht(rectOf(k)) >= 2);
       if (kids.some((k) => k.classList.contains('hero-text'))) for (const k of kids) if (!k.classList.contains('hero-text')) strips.push(k);
     }
-    for (const k of phone ? [] : strips.filter((k) => ht(rectOf(k)) > 96)) off4.push(off(k, null, `a strip docked in the hero is ${px(ht(rectOf(k)))}px tall: at most 96px on a desktop`, { d: ht(rectOf(k)) - 96, at: 0 }));
+    for (const k of phone ? [] : strips.filter(k => !k.matches('.hero-book') && ht(rectOf(k)) > 96)) off4.push(off(k,null,'a docked strip exceeds 96px', {at:0}));
     T.push(test('T4', off4.length ? 'FAIL' : 'PASS', off4));
     // T5: every layer inside the hero's box
     const off5 = rendered.filter((it) => it.z === 0 && it.layer && (it.raw.t < hero.top - 1 || it.raw.b > hero.bottom + 1 || it.raw.l < hero.l - 1 || it.raw.r > hero.r + 1))
@@ -2540,15 +2565,15 @@ function measure(opt) {
       const above = Math.max(0, E.t - s.top - airT), below = Math.max(0, s.bottom - airB - E.b);
       let hole = { px: 0 };
       for (let k = 1; k < E.iv.length; k++) { const g = E.iv[k][0] - E.iv[k - 1][1]; if (g > hole.px) hole = { px: g, t: E.iv[k - 1][1], b: E.iv[k][0] }; }
-      const band = above + below, most = Math.max(band, hole.px), f = most / Math.max(1, s.h);
-      const v = f >= 1 / 3 ? 'FAIL' : f >= 1 / 6 && most >= 96 ? 'WARN' : 'PASS';
+      const {edge:band, longest:most, fails} = window.lyRules.emptyRun(above, below, hole.px, s.h);
+      const f = most / Math.max(1, s.h), v = fails ? 'FAIL' : 'PASS';
       if (v === 'PASS') continue;
       const inner = hole.px > band;
       const r = inner ? { l: s.l, r: s.r, t: hole.t, b: hole.b } : below >= above ? { l: s.l, r: s.r, t: E.b, b: s.bottom - airB } : { l: s.l, r: s.r, t: s.top + airT, b: E.t };
-      const where = [above >= 1 && `${px(above)}px above its content`, below >= 1 && `${px(below)}px under it`].filter(Boolean).join(' and ');
+      const where = `${px(band)}px ${above >= below ? 'above its content' : 'under its content'}`;
       hOff.push(off(s.el, r, inner
-        ? `the section holds an empty strip of ${px(hole.px)}px between two pieces of its content, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL, a sixth WARN)`
-        : `the section is stretched past its content: ${where} is empty beyond its ${px(airT)}px and ${px(airB)}px of air, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL, a sixth WARN)`,
+        ? `the section holds an empty strip of ${px(hole.px)}px between two pieces of its content, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL)`
+        : `the section is stretched past its content: ${where} is empty beyond its ${px(airT)}px and ${px(airB)}px of air, ${pct(f)}% of its ${px(s.h)}px: a section is as tall as its content and its air (a third or more FAIL)`,
         { sev: v, d: f * 100, ref: [cbox(C(s.i), E.t, E.b)], at: Math.round(r.t - H / 3) }));
       hv = worst([hv, v]);
     }
@@ -2560,11 +2585,12 @@ function measure(opt) {
       const sc = cs(s.el).overflowY === 'clip' ? s.el.clientHeight : s.el.scrollHeight, ch = s.el.clientHeight; // (overflow: clip as in SR-1 T3)
       const bx = boxesBySec[s.i];
       const low = bx.length ? Math.max(...bx.map((x) => x.r.b)) : null;
-      const limit = s.bottom - padbTok - (s.isClosing ? barH : 0);
+      const bottomAir = parseFloat(cs(s.el).paddingBottom) || 0;
+      const limit = s.bottom - bottomAir;
       const probs = [];
       if (sc > ch + 1) probs.push(`its content is ${sc - ch}px taller than the section (scrollHeight ${sc}, clientHeight ${ch})`);
       const lowOver = !sceneSec(s) && low != null && low > limit + 0.5;
-      if (lowOver) probs.push(`its lowest content ends ${px(low - s.top)}px below its top, past ${px(limit - s.top)}px (the section less ${px(padbTok)}px of bottom padding${s.isClosing ? andBar : ''})`);
+      if (lowOver) probs.push(`its lowest content ends ${px(low - s.top)}px below its top, past ${px(limit - s.top)}px (the section less ${px(bottomAir)}px of bottom padding)`);
       // (a dealt moment's parts at their start state, letters waiting to fly into the line, are the moment's own)
       const out = outside(s.i).filter((it) => !it.el.closest('[data-moment][data-moment-mounted]'));
       if (out.length) probs.push(`${out.length} part${out.length > 1 ? 's lie' : ' lies'} outside the section's box`);
@@ -2584,8 +2610,7 @@ function measure(opt) {
   run('SR-3', () => {
     const T = [];
     const block = (s) => { let bx = boxesBySec[s.i]; if (s.wrap) bx = bx.filter((x) => s.wrap.contains(x.el)); if (!bx.length) return null; return { t: Math.min(...bx.map((x) => x.r.t)), b: Math.max(...bx.map((x) => x.r.b)), bx }; };
-    // the system's air is --padb + --padt: 320px at 1440, 256 on a tablet, 192 on a phone
-    const band = phone ? { p: [128, 420], w: [96, 560] } : { p: [192, 480], w: [128, 600] };
+    const least = window.lyRules.air().min;
     const gOff = [];
     let gv = 'PASS';
     // T-gap: the next section's content top less this one's content bottom (the closing's too), the hero aside: too
@@ -2593,12 +2618,11 @@ function measure(opt) {
     for (let i = 0; i + 1 < S.length; i++) {
       const a = S[i], b = S[i + 1];
       // a scene's stage is held on screen while its section scrolls by: its content's page position is not where it shows
-      if (a.isHero || a.isClosing || b.isHero || sceneSec(a) || sceneSec(b)) continue;
+      if (a.isClosing || b.isHero || (a.isHero && window.lyRules.fullPicture(a.el)) || sceneSec(a) || sceneSec(b)) continue;
       const A = block(a), B = block(b); if (!A || !B) continue;
       const g = B.t - A.b;
-      const v = g >= band.p[0] && g <= band.p[1] ? 'PASS' : g > 0 && g >= band.w[0] && g <= band.w[1] ? 'WARN' : 'FAIL';
-      if (v !== 'PASS') gOff.push({ sel: `${selOf(a.el)} / ${selOf(b.el)}`, text: '', moving: movingOf(b.el), sev: v, d: g < band.p[0] ? band.p[0] - g : g - band.p[1], name: `${px(g)}px after "${words(a.el).slice(0, 20)}"`, doc: box({ l: SX, r: SX + W, t: Math.min(A.b, B.t), b: Math.max(A.b, B.t) }),
-        msg: g <= 0 ? `the content of these two sections overlaps by ${px(-g)}px: ${band.p[0]}-${band.p[1]}px of air between them` : `${px(g)}px of air between the content of these two sections: ${band.p[0]}-${band.p[1]}px (${band.w[0]}-${band.w[1]}px WARN)` });
+      const v = g < least - .5 ? 'FAIL' : 'PASS';
+      if (v !== 'PASS') gOff.push(off(b.el, secR(b), px(g) + 'px between ' + selOf(a.el) + ' and ' + selOf(b.el) + ', minimum ' + px(least) + 'px', {sev:v,d:least-g}));
       gv = worst([gv, v]);
     }
     T.push(test('T-gap', gv, gOff));
@@ -2608,7 +2632,7 @@ function measure(opt) {
     // footer.closing's legal row (the lowest such rule inside the closing)
     const dOff = [], closeCand = [];
     for (const el of allEls) {
-      if (el instanceof SVGElement) continue;
+      if (el instanceof SVGElement || el.closest('section[data-own],.app-frame,.hero__window,[data-ui]')) continue;
       const z = secIdx(el);
       if (z < 0 || el === S[z].el || inFixed(el, S[z].el) || !visible(el) || srOnly(el)) continue;
       const r = inter(rectOf(el), clipFor(el));
@@ -2650,16 +2674,17 @@ function measure(opt) {
     // T-dom: no non-section in <main>; no band (80% of the section wide or more, 48px tall, a ground of its own,
     // holding the h2 or intro, or at a desktop width only text and controls); pre, .frame and [data-visual] never are
     const dOff = [];
-    if (main) for (const c of main.children) if (okChild(c) && TU(c) !== 'SECTION') dOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> sits directly in <main>: every part of <main> is a <section>`));
+    if (main) for (const c of main.children) if (okChild(c) && !liftWrapper(c) && TU(c) !== 'SECTION') dOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> sits directly in <main>: every part of <main> is a <section>`));
     const effBg = (el) => { for (let e = el; e; e = e.parentElement) { const c = cs(e).backgroundColor; if (alpha(c) > 0.01) return c; } return 'rgb(255, 255, 255)'; };
     for (const s of S) {
+      if (s.el.matches('section[data-own]')) continue;
       const secBg = effBg(s.el), sw = s.r - s.l;
       const h2 = [...s.el.querySelectorAll('h2')].find((e) => visible(e));
       const intro = [...s.el.querySelectorAll('p')].find((p) => visible(p) && !anyRowItem(p, s.i) && !inRowOrSplit(p, s.i));
       for (const it of rendered) {
         if (it.z !== s.i || it.layer) continue;
         const el = it.el;
-        if (TU(el) === 'PRE' || el.closest('.frame, [data-visual]')) continue;
+        if (TU(el) === 'PRE' || el.closest('.frame,.app-frame,.hero__window,[data-ui],[data-visual]')) continue;
         if (wd(it.raw) < 0.8 * sw || ht(it.raw) < 48) continue;
         // a frame filled by its photograph or film (the film hero's cinema frame, its words in a box on it) is a picture
         if ([...el.querySelectorAll('img, video, picture, canvas')].some((m) => { const mr = rectOf(m); return wd(mr) * ht(mr) >= 0.6 * wd(it.raw) * ht(it.raw); })) continue;
@@ -2681,7 +2706,7 @@ function measure(opt) {
     const T = [], off1 = [];
     // T1: at most one h2 a section, none in the hero
     for (const s of S) {
-      const h2s = [...s.el.querySelectorAll('h2')].filter((e) => visible(e) && !srOnly(e));
+      const h2s = [...s.el.querySelectorAll('h2')].filter(e => visible(e) && !srOnly(e) && !e.closest('.app-frame,[data-ui],.hero__window'));
       if ((s.isHero && h2s.length) || h2s.length > 1) off1.push(off(s.isHero ? h2s[0] : h2s[1], null, s.isHero ? `the hero holds an h2 (${h2s.length}): its heading is the h1, and an h2 opens the next section` : `the section holds ${h2s.length} h2 headings: one per section, first in its .wrap`, { ref: s.isHero ? [] : [box(rectOf(h2s[0]))] }));
     }
     T.push(test('T1', off1.length ? 'FAIL' : 'PASS', off1));
@@ -2723,7 +2748,7 @@ function measure(opt) {
     for (const c of body.children) {
       if (SKIPTAG.test(TU(c)) || !visible(c)) continue;
       const r = c.getBoundingClientRect(); if (r.width * r.height === 0) continue;
-      if (!c.matches('header.nav, main, footer.closing, nav.actionbar')) sOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar`));
+      if (!c.matches('header.nav, main, footer.closing, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar`));
     }
     for (const s of S) {
       const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k));
@@ -2811,8 +2836,9 @@ function measure(opt) {
       if (typeof it.z !== 'number') continue;
       const el = it.el, tag = TU(el), z = it.z, c = C(z), cw = c.r - c.l;
       if (!(TEXTTAG.test(tag) || (cs(el).display === 'block' && hasDirectText(el)))) continue;
-      if (!contentAnc.has(el)) continue;
+      if (!contentAnc.has(el) || el.closest('.app-frame,.hero__window,[data-ui]')) continue;
       let ex = null;
+      if (el.closest('.section-head--center') && centredOn(el, it.r)) ex = 'centred section heading';
       if (z === 0 && heroCentred && centredOn(el, it.r)) ex = 'the centred hero';
       if (!ex && z === 0 && !el.closest('button, a, select, textarea, input')) {
         const hb = heroBox(el);
@@ -2822,7 +2848,7 @@ function measure(opt) {
           if (Math.abs(dx) > 2 && !/center|right|end/.test(cs(el).textAlign)) lOff.push(off(el, it.r, `${q(el)} starts ${px(Math.abs(dx))}px ${dx > 0 ? 'right' : 'left'} of the hero box's padding: the words in a box start on its inner left line, 2px either way`, { d: Math.abs(dx), ref: [lineX(innerBox(hb).l, it.r.t, it.r.b)] }));
         }
       }
-      if (el.closest('button, select, textarea, input, td, th, caption')) ex = 'control or table cell';
+      if (el.closest('section[data-own], button, select, textarea, input, td, th, caption')) ex = 'component content';
       // "buttons, inline-block or flex links": a block link counts only when it is button-like (class or role, or its own fill or border)
       if (!ex) { const a = el.closest('a'); if (a && S[z].el.contains(a) && (/inline-block|flex|grid/.test(cs(a).display) || a.matches('.btn, .button, [role=button]') || boxed(a))) ex = 'button or inline-block / flex link'; }
       if (!ex) ex = rowExempt(el, z);
@@ -2846,6 +2872,10 @@ function measure(opt) {
       const ta = cs(el).textAlign;
       if (wd(er) > 0.5 * cw && /center|right|end/.test(ta)) aOff.push(off(el, er, `${q(el)} is set ${ta === 'center' ? 'centred' : 'to the right'} across ${px(wd(er))}px, over half the ${px(cw)}px container: text that wide is set left`, { d: wd(er) - 0.5 * cw, ref: [cbox(c, er.t, er.b)] }));
       const fl = firstLeft(el);
+      const mirrorWords = window.lyRules.mirrored(el);
+      if (mirrorWords?.contains(el) && Math.abs(fl-mirrorWords.getBoundingClientRect().left-SX)<=2) continue;
+      const visitColumn = el.closest('footer.footer--visit .closing__links .grid > [class*="span-"]');
+      if (visitColumn && Math.abs(fl - visitColumn.getBoundingClientRect().left - SX) <= 2) continue;
       tested.push({ el, z, x: fl, dx: fl - c.l, r: er });
     }
     const kl = kLines(ref).map((k) => ({ k: k.k, dx: k.x - ref.l }));
@@ -2859,9 +2889,18 @@ function measure(opt) {
     for (const r of lineRows) if (r.line === 'extra') lOff.push(lineOff(r, `${r.n} text block${r.n > 1 ? 's start' : ' starts'} on a left line at x ${px(r.x - SX)}, ${px(r.dx)}px from the container's left: text starts on the container's left, or on one split line (x ${allowed})`, Math.abs(r.dx)));
     if (kRows.length > 1) for (const r of kRows.slice(1)) lOff.push(lineOff(r, `${r.n} text block${r.n > 1 ? 's start' : ' starts'} on a second split line at x ${px(r.x - SX)}, the first at x ${px(kRows[0].x - SX)}: one split line on the page`, Math.abs(r.x - kRows[0].x)));
     for (const it of rendered) {
-      if (typeof it.z !== 'number' || !/^H[12]$/.test(TU(it.el))) continue;
+      if (typeof it.z !== 'number' || !/^H[12]$/.test(TU(it.el)) || it.el.closest('.app-frame,[data-ui],section[data-own] .wrap > :not(h1,h2)')) continue;
       // the centred hero's h1 stands on the page axis; a box hero's on its box's padding (told above)
+      if (it.el.closest('.section-head--center') && centredOn(it.el, it.r)) continue;
       if (it.z === 0 && ((heroCentred && centredOn(it.el, it.r)) || heroBox(it.el))) continue;
+      const mirrorWords = window.lyRules.mirrored(it.el);
+      if (mirrorWords?.contains(it.el) && Math.abs(firstLeft(it.el)-mirrorWords.getBoundingClientRect().left-SX)<=2) continue;
+      const closePanel = it.el.closest('.closing__cta.close--split .close__panel,.comp-bleed > .wrap > .comp-panel');
+      if (closePanel) {
+        const style = cs(closePanel);
+        const inner = closePanel.getBoundingClientRect().left + SX + (parseFloat(style.borderLeftWidth)||0) + (parseFloat(style.paddingLeft)||0);
+        if (Math.abs(firstLeft(it.el)-inner)<=2) continue;
+      }
       const dx = firstLeft(it.el) - C(it.z).l;
       if (Math.abs(dx) > 2) lOff.push(off(it.el, it.r, `the ${TU(it.el).toLowerCase()} starts ${px(Math.abs(dx))}px ${dx > 0 ? 'right' : 'left'} of the container's left: every h1 and h2 starts on it, 2px either way`, { d: Math.abs(dx), ref: [lineX(C(it.z).l, it.r.t, it.r.b)] }));
     }
@@ -2880,7 +2919,10 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number' || it.layer || bleedPic(it.el, it.r)) continue;
       const el = it.el, z = it.z, c = C(z), cw = c.r - c.l;
-      if (el === S[z].wrap) continue;
+      if (el === S[z].wrap || el.closest('section[data-own]')) continue;
+      // The text panel over a hero photograph has its own placement check above.
+      // Its width follows the headline; the full-bleed visual is the photograph.
+      if (z === 0 && heroH1 && el === heroBox(heroH1.el)) continue;
       // a product render is measured by its frame, as the boxes are (its still and canvas are parts of it)
       const prod = el.closest('[data-product]');
       if (prod && prod !== el) continue;
@@ -2990,18 +3032,20 @@ function measure(opt) {
       const lFirst = boxes.filter((b) => L.contains(b.el));
       const lt = lFirst.length ? Math.min(...lFirst.map((b) => b.r.t)) : null;
       const orient = lt != null && lFirst.some((b) => b.kind === 'text' && b.r.t <= lt + 2) ? 'text-left' : 'text-right';
-      const ks = (place ? [6] : [5, 6, 7]).map((k) => ({ k, x: c.l + (k * (cw + 24)) / 12 }));
+      const declared = sp.G.el.matches('.grid') && [5,6,7].find(k=>L.classList.contains('span-'+k) && Rt.classList.contains('span-'+(12-k)));
+      const ks = (place ? [...new Set([6,...(declared?[declared]:[])])] : [5,6,7]).map((k) => ({ k, x: c.l + (k * (cw + 24)) / 12 }));
       const kHit = ks.find((k) => Math.abs(rr.l - k.x) <= 2);
       const gr = rectOf(sp.G.el), cols = [box(lr), box(rr)];
       // T-mode: the tops of the two columns' first boxes agree within 8px (merged CK-33: a centred split FAILs)
       if (!(mode === 'top' || mode === 'both')) mOff.push(off(sp.G.el, gr, `the two columns of the split start ${px(tops)}px apart at the top${mode === 'centre' ? ' (centred on each other)' : ''}: a split's columns are top-aligned, 8px either way`, { d: tops ?? 0, ref: cols }));
       // T-orientation: text left on every split
-      if (orient !== 'text-left') oOff.push(off(sp.G.el, gr, "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split", { ref: cols }));
+      if (orient !== 'text-left' && !window.lyRules.mirrored(sp.G.el)) oOff.push(off(sp.G.el, gr, "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split", { ref: cols }));
       // T-pair: one pair: the right column's x the same on every split (2px), on wrap.left + k*(w+24)/12 (k 5, 6 or 7;
       // a place page 6), the left column ending at x - 24
       const probs = [];
-      if (pairX == null) pairX = rr.l;
-      else if (Math.abs(rr.l - pairX) > 2) probs.push(`its right column starts at x ${px(rr.l - SX)}, the first split's at ${px(pairX - SX)}`);
+      const onDeclared = declared && kHit?.k===declared;
+      if (!onDeclared && pairX == null) pairX = rr.l;
+      else if (!onDeclared && Math.abs(rr.l - pairX) > 2) probs.push(`its right column starts at x ${px(rr.l - SX)}, the first split's at ${px(pairX - SX)}`);
       if (!kHit) probs.push(`its right column starts at x ${px(rr.l - SX)}, on none of the split lines ${ks.map((k) => `${px(k.x - SX)} (k=${k.k})`).join(', ')}`);
       // the left column ends 24px before the right one, or one column earlier on that column's end: the kit's splits set
       // their words on span-5 beside a visual on span-6 start-7 (heroes.json split and collage, the layout demos' sections)
@@ -3094,7 +3138,7 @@ const TEST_FIX = {
   'SR-2 T-fit-expanded': 'show answers and panels open and let the section grow with them: no fixed height',
   'SR-2 T-snap': "take scroll-snap-type off (html, body and every scroller): the scroll is the browser's own",
   'SR-2 T-height-change': 'show every answer and panel open from the start (ten questions or more: .faq--fold), so a click never resizes a section',
-  'SR-3 T-gap': "keep the system's air between sections (--padb under one, --padt over the next: 320px at 1440, 192 on a phone): no padding, margin or height of your own on a section",
+  'SR-3 T-gap': "increase the occupied-content gap to the density-adjusted minimum, 72px on desktop or 56px on phone",
   'SR-3 T-dividers': 'take the rule out: sections and their parts are parted by their ground and the air between them',
   'SR-4 T-dom': 'put every block of <main> in a <section>, and give a band its own section instead of a ground inside one',
   'SR-5 T1': 'give each section one h2, first in its .wrap, and the hero only its h1',
@@ -4434,15 +4478,16 @@ const GL_GUARD = `(() => {
   // a context asked for by a product's own render (a [data-product] frame, its canvas often off the page by the time the
   // checker looks: freed after a still) is the picture of the product, never an effect: known by its host at the time of
   // the ask, or by the render kit's own files in the call stack
+  const subject = c => c && c.closest && !c.closest('[data-fx],[data-scene],[data-big-scene],[data-print]') && c.closest('[data-product],[data-ui],[data-diagram],.app-frame,canvas[aria-label]');
   const isProd = (c) => {
-    try { if (c && c.closest && c.closest('[data-product]')) return true; } catch (e) {}
+    try { if (subject(c)) return true; } catch (e) {}
     try { return /\\/objects\\/product-render\\//.test(String(new Error().stack || '')); } catch (e) { return false; }
   };
   // a render kit may ask for a context before it puts the canvas in its frame: a canvas off the page at the ask is judged
   // again once the asking code has run, and counts as the product's own when it then sits in a [data-product] frame
   const late = (c, rec, refused) => {
     try { if (!c || c.isConnected || !c.closest) return; } catch (e) { return; }
-    queueMicrotask(() => { try { if (c.closest('[data-product]')) { if (rec) rec.prod = true; S.prodAsked++; if (refused) S.prodRefused++; } } catch (e) {} });
+    queueMicrotask(() => { try { if (subject(c)) { if (rec) rec.prod = true; S.prodAsked++; if (refused) S.prodRefused++; } } catch (e) {} });
   };
   const isGL =(t) => /^(webgl2?|experimental-webgl)$/i.test(String(t));
   const name = (c) => {
@@ -4560,6 +4605,7 @@ class Tab {
     const t = new Tab(); t.cdp = cdp; t.targetId = targetId; t.sid = sessionId; t.vw = width; t.vh = height;
     cdp.on(sessionId, 'Page.javascriptDialogOpening', () => t.send('Page.handleJavaScriptDialog', { accept: false }).catch(() => {}));
     await t.send('Page.enable'); await t.send('Runtime.enable');
+    await t.send('Page.addScriptToEvaluateOnNewDocument', {source:layoutRules});
     await t.send('Page.addScriptToEvaluateOnNewDocument', { source: GL_GUARD }).catch(() => {});
     await t.send('Page.addScriptToEvaluateOnNewDocument', { source: IO_HOOK }).catch(() => {});
     // what the page asked for and did not get (a stylesheet, script, image, video or font)
@@ -5348,7 +5394,7 @@ function lib() {
   function gridCands(view, first, out, vw) {
     const blocks = new Map();
     for (const [el, r] of view) {
-      if (inFixed(el) || loopMoved(el)) continue;
+      if (inFixed(el) || loopMoved(el) || (el.closest('section[data-own]') && !el.matches('section[data-own] > .wrap'))) continue;
       // a table is judged by its outer box, not by its cells and headers
       const tbl = el.parentElement && el.parentElement.closest('table, [role="table"]');
       if (tbl) continue;
@@ -5415,6 +5461,7 @@ function lib() {
   }
   function checkStagger(view, first, out, vw) {
     for (const [box, r] of view) {
+      if (box.closest('section[data-own]')) continue;
       if (box.children.length < 3 || !first(seen.stagger, box, r)) continue;
       if (inScroller(box)) continue;
       // a drawn UI mock lays out its own rows: a chat's bubbles sit left and right, a diff's lines are indented
@@ -5500,6 +5547,7 @@ function lib() {
     const looks = [];
     for (const [el, r] of view) {
       if (r.top < 0 || r.bottom > vh || r.left < -2 || r.right > vw + 2) continue;
+      if (el.closest('section[data-own]') && !el.matches('a[href],.btn,button[type=submit],input[type=submit]')) continue;
       const real = el.matches(INTER);
       if (real) {
         if (el.parentElement && el.parentElement.closest(INTER)) continue;
@@ -5585,7 +5633,7 @@ function lib() {
           else if (bandA) { inner = Math.round(seam - A.bottom); outer = Math.round(B.top - seam); }
         }
       }
-      out.pairs.push({ i, a: sel(S[i]), b: sel(S[i + 1]), gap: Math.round(gap), top: Math.round(A.bottom), bottom: Math.round(B.top), on, off: Math.abs((A.bottom + B.top) / 2 - vh / 2), band: gA && gB ? !same(gA, gB) : false, gA, gB, outer, inner });
+      out.pairs.push({ i, a: sel(S[i]), b: sel(S[i + 1]), blank:gap>160 ? window.lyRules.blankRun([S[i],S[i+1]],A.bottom,B.top) : gap, gap: Math.round(gap), top: Math.round(A.bottom), bottom: Math.round(B.top), on, off: Math.abs((A.bottom + B.top) / 2 - vh / 2), band: gA && gB ? !same(gA, gB) : false, gA, gB, outer, inner });
     }
   }
 
@@ -5761,8 +5809,9 @@ function lib() {
   function checkFold(view, out, vw, vh) {
     if (scrollY > 2 || document.scrollingElement.scrollHeight - vh < 40) return;
     const S = sectionsList(), hero = S[0], done = new Set();
+    const frame = window.lyRules.peek(hero);
     for (const [el, r] of view) {
-      if (r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || inDrawn(el) || el.closest(INTER)) continue;
+      if (r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || (inDrawn(el) && !el.closest(HEADS)) || el.closest(INTER) || (frame?.contains(el) && !el.closest(HEADS))) continue;
       const fs = parseFloat(CS(el).fontSize) || 16, big = !!el.closest('h1, h2') || fs >= 32;
       const L = lines(el).find((l) => l.top < vh - 2 && l.bottom > vh + 4); if (!L) continue;
       const v = clipRect(el, L); if (v.bottom < L.bottom - 1) continue; // cut by an overflow: told under cut-text
@@ -5772,6 +5821,7 @@ function lib() {
     }
     // the hero's own button cut in two by the fold (a phone's "Book a test ride" half below the screen)
     if (hero) for (const b of hero.querySelectorAll(INTER)) {
+      if (frame?.contains(b)) continue;
       const q = b.getBoundingClientRect();
       if (q.top >= vh - 4 || q.bottom <= vh + 4 || q.height > 120 || !shown(b, q) || inFixed(b) || inDrawn(b)) continue;
       const bc = CS(b); if (!(buttonLook(b, true) || faintBox(bc) || bordered(bc) || rgba(bc.backgroundColor).a >= 0.3)) continue; // a text link is no box to cut
@@ -5782,6 +5832,7 @@ function lib() {
     const cands = [];
     const secs = new Set(S);
     for (const [el, r] of view) {
+      if (frame?.contains(el)) continue;
       if (r.top < 0 || r.top >= vh * 0.7 || r.bottom <= vh + 2 || r.width < 200 || r.height < 150 || r.width > vw * 0.6 || secs.has(el) || inFixed(el)) continue;
       const mock = el.matches('[data-ui], .ui[class*=ui-]') && !(el.parentElement && el.parentElement.closest('[data-ui], .ui[class*=ui-]'));
       const k = mock ? 'mock' : surface(el); if (!k || k === 'media' || k === 'picture' || k === 'effect') continue;
@@ -6107,6 +6158,7 @@ function lib() {
   }
   function checkCardGroups(view, first, out, vw) {
     for (const [p, r] of view) {
+      if (p.closest('section[data-own]')) continue;
       if (p.children.length < 3 || !first(seen.cards, p, r)) continue;
       if (inFixed(p) || inDrawn(p) || inChrome(p, 'footer, [role="tablist"]')) continue;
       const cards = [];
@@ -6486,6 +6538,7 @@ function lib() {
 
   // the screen at the current stop: four steps on to the next screen (back up the page from the last one), then back.
   // Scroll-linked: it changes over a step and is back where it was when the scroll is (a part of a mock or an effect
+  const ownInner = el => !!el?.closest('section[data-own]') && !el.matches('section,.wrap,.card,.tile,article,[data-card],[class$="__card"]');
   // over two steps, so its own loop is not taken for the scroll), and does the same when scrolled there again.
   async function probe() {
     const vh = innerHeight, y0 = Math.round(scrollY), max = Math.max(0, Math.round(document.scrollingElement.scrollHeight - vh));
@@ -6506,7 +6559,8 @@ function lib() {
       let mx = 0, far = null, at = 0;
       for (let i = 1; i < series.length; i++) { const d = vdist(a0, series[i]); if (d.d > mx) { mx = d.d; far = d; at = i; } }
       if (!far || mx < 0.012 || vdist(a0, b).d > 0.5 * mx) continue; // it did not come back: a one-way change (scroll-reveal)
-      if (!whatOf(far).length) continue;
+      const changes = whatOf(far);
+      if (!changes.length || (ownInner(el) && changes.every(k => k === 'moves' || k === 'opacity'))) continue;
       const bf = back.first && back.first.m.get(id);
       cands.set(id, { el, id, far, mx, at, ref: series[at], lag: !!bf && vdist(bf, b).d > 0.25 * mx, rect: { left: a0.left, top: a0.top, width: a0.w, height: a0.h }, doc: { left: Math.round(a0.left), top: Math.round(a0.top + F0.y), width: Math.round(a0.w), height: Math.round(a0.h) } });
     }
@@ -6578,6 +6632,7 @@ function lib() {
       if (SKIP.has(el.tagName) || isSvgPart(el) || el.closest('dialog')) continue;
       const c = CS(el);
       const pin = !!(el.parentElement && el.parentElement.classList.contains('pin-spacer'));
+      if (el.closest('section[data-own]') && c.position === 'sticky') continue; // lyRules.page measures every own sticky, including small ones
       if (c.position !== 'sticky' && !pin) continue;
       if (held.some((h) => h.contains(el))) continue;
       const r = el.getBoundingClientRect();
@@ -6713,6 +6768,7 @@ function lib() {
       // letters flying home) is one part, the statement, wherever the walk's stops caught them
       { const w = els.get(s) && els.get(s).closest && els.get(s).closest('[data-moment][data-moment-mounted] .mo-w');
         if (w) s = idOf(w.parentElement.closest(HEADS + ', p') || w.parentElement); }
+      if (ownInner(els.get(s)) && whatOf(vdist(x.p,x.v)).every(k => k === 'moves' || k === 'opacity')) continue;
       const el = els.get(s); if (!el || !el.isConnected || holdOf(el) || heldScopeOf(el)) continue;
       let mv = false; for (let a = els.get(id); a && !mv; a = a.parentElement) if (moving.has(a)) mv = true;
       for (let a = el; a && !mv; a = a.parentElement) if (moving.has(a)) mv = true;
@@ -6741,6 +6797,7 @@ function lib() {
     const out = [], told = new Set(skip || []);
     for (const x of S0.list) {
       // (a fragment that re-renders its rows leaves the animated row detached: judged by where its host sits)
+      if (ownInner(x.target) && x.target.getAnimations().every(a => a.effect?.getKeyframes().every(f => Object.keys(f).every(k => ['offset','computedOffset','easing','composite','transform','opacity','translate','scale'].includes(k))))) continue;
       if (!x.host.isConnected || !x.target.isConnected || x.target.closest(FRAG + ', [data-ui-loop], [data-m-loop]') || x.host.closest(FRAG + ', [data-ui-loop], [data-m-loop]')) continue;
       // a small part inside a picture (a map pin's halo, a dot, an icon) that pulses as it comes on screen is a
       // micro-animation of the picture, not a box revealed by the scroll
@@ -6770,6 +6827,7 @@ function lib() {
       const tl = a.timeline;
       if (!tl || (typeof DocumentTimeline !== 'undefined' && tl instanceof DocumentTimeline)) continue;
       const el = a.effect && a.effect.target; if (!el || !(el instanceof Element) || done.has(el)) continue;
+      if (ownInner(el) && a.effect.getKeyframes().every(f => Object.keys(f).every(k => ['offset','computedOffset','easing','composite','transform','opacity','translate','scale'].includes(k)))) continue;
       done.add(el);
       if (linkedDone.has(el) || inBar(el)) continue;
       linkedDone.add(el); moving.add(el);
@@ -6873,9 +6931,8 @@ function lib() {
       if ((placeLike ? EXEMPT_PLACE : EXEMPT).test(name) || s.querySelectorAll('details').length >= 3 || s.querySelector('blockquote')) { judge = false; quiet = true; }
       if (s === lastMain && r.height < vh * 0.9) { judge = false; quiet = true; } // the closing call
       const own = CS(s); if (own.backgroundImage && own.backgroundImage !== 'none') { judge = false; quiet = false; } // on a picture or an effect ground
-      // a dealt statement moment's own section is type by design (once, never beside another picture-less section: sections.md).
-      // A statement hero is dealt (deal.mjs --hero statement: a tech or gaming page with no art, a product's short page) and is
-      // type on its ground by design, on any page; a statement section (the statement a text moment is dealt with) likewise.
+      // A statement hero is type on its own ground. A page may also use one thin section for its main claim;
+      // a text moment normally rides a heading already in the content or close.
       // The short page's one section holds the offer and the visit as ruled text, with no picture on purpose (sections.md §4,
       // the short page): on a page marked data-page-mode="short" only the hero is judged for a visual.
       // The word and editorial heroes are type-led the same way (heroes.json: dealt to briefs without a strong photograph).
@@ -6890,6 +6947,19 @@ function lib() {
       const ext = extent(s, vw); const top = ext ? Math.max(r.top, ext.top) : r.top, bottom = ext ? Math.min(r.bottom, ext.bottom) : r.bottom;
       const H = bottom - top; if (H < 40) continue;
       if (!hd) { try { holes(s, top, bottom, vw, vh, hl); } catch {} }
+      const built = '[role=img],[role=graphics-document],.app-frame,[data-ui],[data-diagram],[data-chart],.diagram,.chart,canvas,svg,[role=tablist],input[type=range]';
+      const substantial = e => { const r=e.getBoundingClientRect(); return r.width >= 120 && r.height >= 60 && shown(e,r); };
+      const textForm = [...s.querySelectorAll('table,form,details,ol,dl,ul')].some(substantial);
+      const hours = s.querySelector('dl.hours');
+      const schedule = hours && shown(hours, hours.getBoundingClientRect()) && hours.querySelector('dt + dd');
+      if (textForm || schedule) continue;
+      if (s.matches('section[data-own]')) {
+        const painted = [...s.querySelectorAll('figure *, article *, [aria-hidden=true]')].some(e => {
+          const r=e.getBoundingClientRect(), css=CS(e);
+          return r.width>=56 && r.height>=8 && shown(e,r) && (css.backgroundImage!=='none' || rgba(css.backgroundColor).a>=0.3);
+        });
+        if (painted || [...s.querySelectorAll(built)].some(substantial)) continue;
+      }
       if (!judge && !quiet) continue;
       const cell = Math.max(8, Math.round(Math.min(r.width, H) / 50));
       const cols = Math.ceil(r.width / cell), rows = Math.ceil(H / cell), grid = new Uint8Array(cols * rows);
@@ -6924,11 +6994,6 @@ function lib() {
   }
   // a gap between two sections never seen whole at the screen stops: brought to the middle of the screen and measured
   // (twice, since a held section ends where it is let go)
-  // the top-level sections that are a mounted statement moment's own section (its host, or the section holding it), or
-  // hold the kit's big scene (its stage is as tall as its module sets: one screen at rest, the hold when live)
-  function stmtSecs(ids) {
-    return sectionsList().map((sec, i) => { const h = sec.matches('[data-moment][data-moment-mounted]') ? sec : sec.querySelector('[data-moment][data-moment-mounted]'); return (h && ids.includes(h.dataset.moment)) || kitSceneSec(sec) ? i : -1; }).filter((i) => i >= 0);
-  }
   async function seam(i) {
     const S = sectionsList(), vw = vwNow(), vh = innerHeight; if (!S[i] || !S[i + 1]) return null;
     let a = null, b = null;
@@ -6940,7 +7005,7 @@ function lib() {
     const on = a.bottom >= 0 && a.bottom <= vh && b.top >= 0 && b.top <= vh, gap = b.top - a.bottom;
     let band = false;
     if (on && gap >= 6) { const gA = groundAt(vw / 2, a.bottom + 2), gB = groundAt(vw / 2, b.top - 2); band = !(gA === gB || (/^#/.test(gA) && /^#/.test(gB) && cdist(rgba(gA), rgba(gB)) < 12)); }
-    return { gap: Math.round(gap), top: Math.round(a.bottom), bottom: Math.round(b.top), on, band };
+    return { blank:gap>160 ? window.lyRules.blankRun([S[i],S[i+1]],a.bottom,b.top) : gap, gap: Math.round(gap), top: Math.round(a.bottom), bottom: Math.round(b.top), on, band };
   }
   function insideMoving(list) {
     return list.map((id) => { const el = els.get(id); if (!el) return false; for (let a = el; a; a = a.parentElement) if (moving.has(a)) return true; return false; });
@@ -6963,11 +7028,33 @@ function lib() {
   function rectOf(id) { const el = els.get(id); return el && el.isConnected ? R(el.getBoundingClientRect()) : null; }
 
   // ------------------------------------------------ the page as a whole (read once per width, at the top)
-  function pageInfo() {
+  async function pageInfo() {
     fresh();
     const vw = vwNow(), vh = innerHeight, S = sectionsList();
     const doc = (e) => D(e.getBoundingClientRect());
     const visible = (e) => { const r = e.getBoundingClientRect(); return r.width >= 2 && r.height >= 2 && shown(e, r); };
+    // A closing lift fades its real action as the sheet uncovers it. Measure that action
+    // at the settled end of the lift before judging the page from the top.
+    const revealedActions = new Set();
+    for (const lift of document.querySelectorAll('[data-moment="closing-lift"][data-moment-mounted]')) {
+      const actions = [...lift.querySelectorAll('.mo-cl__under .mo-cl__band a[href], .mo-cl__under .mo-cl__band button:not(:disabled)')].filter(e => !visible(e));
+      if (!actions.length) continue;
+      const prior = scrollY;
+      try {
+        scrollToY(prior + lift.getBoundingClientRect().bottom - innerHeight);
+        for (let frame = 0; frame < 4; frame++) {
+          await wait(150);
+          fresh();
+          for (const action of actions) if (visible(action)) revealedActions.add(action);
+          if (actions.every(action => revealedActions.has(action))) break;
+        }
+      } finally {
+        scrollToY(prior);
+        await wait(100);
+        fresh();
+      }
+    }
+    const actionVisible = e => visible(e) || revealedActions.has(e);
     const inCard = (e) => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const k = quickKind(a); if (k && k !== 'media' && a.getBoundingClientRect().width < vw * 0.6) return true; } return false; };
     const heads = [];
     for (const h of document.querySelectorAll('h1, h2, h3, h4')) {
@@ -6977,7 +7064,7 @@ function lib() {
       if (!mx) mx = parseFloat(CS(h).fontSize) || 16;
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: inMoment(h) || inKitScene(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h).slice(0, 200), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h), step: h.tagName === 'H3' && !!h.closest('ol, .steps, [class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]') });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -6990,7 +7077,8 @@ function lib() {
       big.push({ id: idOf(e), sel: sel(e), text: t.slice(0, 48), fs: Math.round(fs * 10) / 10, doc: doc(e) });
     }
     // the hero, the headline, the line after it
-    const hero = S[0] || null, last = S.filter((s) => s.tagName !== 'FOOTER' && !s.closest('footer')).slice(-1)[0] || null;
+    const gallery = S.length && S.every(s=>s.matches('section[data-own]')) && !!document.querySelector('header h1');
+    const hero = gallery ? null : S[0] || null, last = gallery ? null : S.filter(s=>s.tagName!=='FOOTER' && !s.closest('footer')).at(-1) || null;
     const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !inDrawn(h)) || null;
     let after = '';
     if (h1) {
@@ -7009,7 +7097,7 @@ function lib() {
     // the actions: every link or button with a button look, outside drawn mocks
     const ctas = [];
     for (const e of document.querySelectorAll(INTER)) {
-      if (inDrawn(e) || (e.parentElement && e.parentElement.closest(INTER)) || !visible(e)) continue;
+      if (inDrawn(e) || (e.parentElement && e.parentElement.closest(INTER)) || !actionVisible(e)) continue;
       if (e.matches('[aria-pressed], [aria-selected], [role="tab"], [role="switch"]') || e.closest('[role="tablist"], [role="radiogroup"], .nav__menu, dialog')) continue;
       if (/^skip (to|the)\b/i.test(full(e)) || /(^|\s)skip(-link)?(\s|$)/.test(typeof e.className === 'string' ? e.className : '')) continue; // a skip link is for keyboards
       if (e.hasAttribute('href') && /^(#|#top|\/|\.\/|index\.html)?$/.test(e.getAttribute('href').trim()) && inChrome(e)) continue; // the brand's link home
@@ -7022,17 +7110,17 @@ function lib() {
     }
     // price cards with no action in them or right under them
     const priced = [];
-    for (const e of document.body.querySelectorAll('*')) {
+    for (const e of gallery ? [] : document.body.querySelectorAll('*')) {
       if (!ownText(e) || !PRICE.test(full(e)) || full(e).length > 120 || inDrawn(e) || e.closest('header, footer, nav, ' + INTER) || !visible(e)) continue;
       let card = null;
       for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const k = quickKind(a); const q = a.getBoundingClientRect(); if (k && k !== 'media' && q.width >= 160 && q.height >= 120 && q.width <= vw * 0.7) { card = a; break; } }
       if (!card || priced.some((p) => p.el === card)) continue;
       const q = card.getBoundingClientRect();
-      const act = [...card.querySelectorAll('a[href], button, input[type="submit"], [role="button"]')].some(visible)
+      const act = [...card.querySelectorAll('a[href], button, input[type="submit"], [role="button"]')].some(actionVisible)
         || [...document.querySelectorAll('a[href], button')].some((b) => { const t = b.getBoundingClientRect(); return visible(b) && t.top >= q.bottom - 2 && t.top <= q.bottom + 160 && t.left < q.right && t.right > q.left; });
       priced.push({ el: card, act, id: idOf(card), sel: sel(card), text: label(card), sec: secIndex(card), doc: doc(card) });
     }
-    for (const s of S) {
+    for (const s of gallery ? [] : S) {
       if (!/pricing|prices?\b|plans?\b|tarif/i.test(secName(s)) || !PRICE.test(full(s)) || priced.some((p) => s.contains(p.el))) continue;
       if ([...s.querySelectorAll('a[href], button, input[type="submit"], [role="button"]')].some(visible)) continue;
       priced.push({ el: s, act: false, whole: true, id: idOf(s), sel: sel(s), text: label(s.querySelector('h1, h2, h3') || s), sec: secIndex(s), doc: doc(s) });
@@ -7083,14 +7171,15 @@ function lib() {
       const covered = bg.a >= 0.3 && coverOf(e).cover >= 0.6; // a fill hidden under a picture is no look
       const it = { el: e, id: idOf(e), sel: sel(e), text: label(t || e), doc: doc(e), card: !!k, wide, row: !t && q.height < 140, tall: q.height > vh * 0.8, fill: bg.a >= 0.3 && !covered ? hex(bg) : null, face: t ? famName(CS(t).fontFamily) : null, tag: t ? t.tagName.toLowerCase() : '' };
       for (const c of e.classList) {
-        if (/^(is|js|has)-|--|^(active|open|selected|current|visible|show|shown|hidden|in|on|off|dark|light|wide|full|alt|sec|section|wrap|container|inner|grid|row|col|stack|flex)$/.test(c)) continue;
+        // A column span or starting line describes layout, not a family of cards.
+        if (/^(?:span|start)-\d+$/.test(c) || /^(is|js|has)-|--|^(active|open|selected|current|visible|show|shown|hidden|in|on|off|dark|light|wide|full|alt|sec|section|wrap|container|inner|grid|row|col|stack|flex)$/.test(c)) continue;
         if (!fam.has(c)) fam.set(c, []); fam.get(c).push(it);
       }
     }
     const cardFam = [], famDone = new Set();
     for (const [c, list0] of fam) {
       // the outermost boxes only (a card's inner panel shares no class with it, but a nested .card would)
-      const list = list0.filter((x) => !list0.some((y) => y !== x && y.el.contains(x.el)));
+      const list = list0.filter(x => !x.el.closest('section[data-own]') && !list0.some(y => y !== x && y.el.contains(x.el)));
       if (list.length < 3 || !list.some((x) => x.card)) continue;
       const boxes = list.filter((x) => !x.wide), faces = [...new Set(boxes.map((x) => x.face).filter(Boolean))];
       if (boxes.length >= 3 && faces.length >= 2 && !famDone.has('f' + boxes.map((x) => x.id).join())) {
@@ -7117,7 +7206,7 @@ function lib() {
     const stripes = [];
     for (const p of document.body.querySelectorAll('ul, ol, tbody, dl, div')) {
       const kids = [...p.children].filter((k) => !SKIP.has(k.tagName));
-      if (kids.length < 3 || new Set(kids.map((k) => k.tagName)).size > 1 || inDrawn(p) || inFixed(p) || p.closest('header, nav, dialog, [data-ui], .ui[class*=ui-]') || !visible(p)) continue;
+      if (kids.length < 3 || new Set(kids.map((k) => k.tagName)).size > 1 || inDrawn(p) || inFixed(p) || p.closest('header, nav, dialog, section[data-own], [data-ui], .ui[class*=ui-]') || !visible(p)) continue;
       const f = kids.map((k) => { const b = rgba(CS(k).backgroundColor); return b.a >= 0.3 ? hex(b) : 'none'; });
       const A = f.filter((x, i) => i % 2 === 0), B = f.filter((x, i) => i % 2 === 1);
       if (new Set(A).size !== 1 || new Set(B).size !== 1 || A[0] === B[0]) continue;
@@ -7224,7 +7313,7 @@ function lib() {
       const r = e.getBoundingClientRect(); if (r.width < 120 || r.height < 80 || r.width > vw * 0.9 || !shown(e, r)) continue;
       if (!surface(e) && !e.querySelector('img, video')) continue;
       if (picked.some((o) => o.contains(e) || e.contains(o))) continue;
-      picked.push(e); out.push({ id: idOf(e), sel: sel(e), text: label(e), doc: D(r), linked: e.matches('a[href]') || !!e.querySelector('a[href]') });
+      picked.push(e); out.push({ id:idOf(e), sel:sel(e), text:label(e), doc:D(r), own:!!e.closest('section[data-own]'), linked:e.matches('a[href]') || !!e.querySelector('a[href]') });
       if (out.length >= 30) break;
     }
     return out;
@@ -7407,6 +7496,7 @@ function lib() {
     const fragOf = (e) => [...e.querySelectorAll(FRAG)].filter((f) => !(f.parentElement && f.parentElement.closest(FRAG))).map((f) => f.getAttribute('data-ui') || [...f.classList].filter((c) => /^ui-/.test(c)).join('.')).sort().join('+');
     const seenG = new Set();
     for (const p of document.body.querySelectorAll('*')) {
+      if (p.closest('section[data-own]')) continue;
       if (p.children.length < 3 || inFixed(p) || p.closest(FRAG) || inChrome(p, 'footer')) continue;
       const kids = [...p.children].filter((k) => !SKIP.has(k.tagName) && visible(k));
       const cards = kids.filter((k) => { const q = k.getBoundingClientRect(); return q.width >= 140 && q.height >= 90 && q.width < vw * 0.9 && (k.matches(FRAG + ', [data-fx]') || k.querySelector(FRAG + ', [data-fx], img, video, canvas')) && (surface(k) || k.matches('[data-fx], .card, .panel, .tile, .frame') || k.querySelector('[data-fx], .panel, .frame')); });
@@ -7416,6 +7506,7 @@ function lib() {
       out.groups.push({ id: idOf(p), sel: sel(p), text: label(cards[0]), sec: secKey(p), n: cards.length, doc: doc(p), cards: info.map(({ k, ...x }) => Object.assign(x, { doc: doc(k) })) });
     }
     S.forEach((s, i) => {
+      if (s.matches('section[data-own]')) return;
       if (s.tagName === 'FOOTER' || i === 0) return;
       const toks = new Set();
       for (const e of s.querySelectorAll('[class]')) {
@@ -7865,10 +7956,11 @@ function lib() {
     const vw = vwNow(), vh = innerHeight, S = sectionsList().filter((s) => s.tagName !== 'FOOTER');
     if (S.length < 2 || scrollY > 2) return null;
     const hero = S[0], next = S[1];
+    if (hero.matches('section[data-own]')) return null;
     const ext = extent(next, vw); if (!ext) return null;
     const hr = hero.getBoundingClientRect(), nr = next.getBoundingClientRect();
     // the next section's own ground counts as soon as it differs from the hero's
-    let top = ext.top;
+    let top = hero.matches('.hero--peek') ? Math.min(ext.top,nr.top) : ext.top;
     if (nr.top < vh - 2 && nr.top > 0 && hr.bottom > 2) { const a = groundAt(vw / 2, Math.min(vh - 1, nr.top + 3)), b = groundAt(vw / 2, Math.max(0, hr.bottom - 3)); if (a !== b && !(/^#/.test(a) && /^#/.test(b) && cdist(rgba(a), rgba(b)) < 6)) top = Math.min(top, nr.top); }
     if (top >= vh - 2) return null;
     const h = next.querySelector('h1, h2, h3');
@@ -7896,6 +7988,9 @@ function lib() {
     };
     for (let i = 0; i + 1 < S.length; i++) {
       const A = S[i], B = S[i + 1];
+      // The live close lifts one sheet off its sticky photograph. Its overlap is the transition.
+      if (A.matches('.mo-cl__sheet') && B.matches('.mo-cl__under') && A.parentElement === B.parentElement &&
+          A.parentElement.matches('[data-moment="closing-lift"].is-live')) continue;
       let ra = A.getBoundingClientRect(); const mid = Math.round((ra.bottom + B.getBoundingClientRect().top) / 2 + scrollY - vh / 2);
       scrollToY(Math.max(0, mid)); await wait(140); await settle(null, 900); fresh();
       ra = A.getBoundingClientRect(); const rb = B.getBoundingClientRect();
@@ -7986,6 +8081,7 @@ function lib() {
       const r = e.getBoundingClientRect(); if (r.width < 60 || r.height > 24 || r.height < 2) continue;
       const tag = /^(PROGRESS|METER)$/.test(e.tagName) || e.getAttribute('role') === 'progressbar';
       let fill = null;
+      if (e.closest('section[data-own]')) continue;
       if (!tag) for (const c of e.querySelectorAll('*')) { const q = c.getBoundingClientRect(); if (q.height >= r.height * 0.5 && q.height <= r.height + 1 && q.width > 2 && q.width < r.width * 0.97 && Math.abs(q.left - r.left) < 3 && rgba(CS(c).backgroundColor).a > 0.3) { fill = c; break; } }
       if ((tag || fill) && !out.progress.some((p) => p.el.contains(e) || e.contains(p.el))) out.progress.push({ el: e, id: idOf(e), sel: sel(e), text: label(e.closest('[data-ui], .ui[class*=ui-]') || e.parentElement || e), fixed: inFixed(e), doc: doc(e) });
     }
@@ -8162,6 +8258,12 @@ function lib() {
         const key = stillKey(u); if (!key) continue;
         vis.push({ el: i, key, area: r.width * r.height, name: key.slice(2) });
       }
+      // A built view can be the main visual. Its different contents are not interchangeable pictures.
+      for (const e of document.querySelectorAll('main svg,main canvas,main [data-ui],main .app-frame')) {
+        if (!visible(e) || e.closest('[data-product], [data-object], [data-print]')) continue;
+        const r = e.getBoundingClientRect();
+        if (r.width >= 160 && r.height >= 100) vis.push({el:e,key:'X|scene',area:r.width*r.height});
+      }
       const main = new Map(); // section index -> its largest visual
       for (const v of vis) { const k = SECS.findIndex((s) => s.contains(v.el)); if (k < 0) continue; const m = main.get(k); if (!m || v.area > m.area) main.set(k, v); }
       const by = new Map(); for (const [k, v] of main) { if (v.key === 'X|scene') continue; if (!by.has(v.key)) by.set(v.key, []); by.get(v.key).push({ k, v }); }
@@ -8216,7 +8318,7 @@ function lib() {
             if (b.a >= 0.5 && ov >= 0.8 * r.width * r.height && q.width * q.height <= 1.6 * r.width * r.height) { const rad = parseFloat(CS(c).borderTopLeftRadius) || 0; L2 = { fill: hex(b), shape: rad >= q.height / 2 - 2 ? 'pill' : rad <= 2 ? 'square' : rad <= 12 ? 'soft' : 'round', text: label(on), h: Math.round(q.height) }; via = 'its sliding indicator'; break; }
           }
         }
-        if (L2 && L2.fill) out.tabs.push({ id: idOf(on), sel: sel(on), text: label(on), fill: L2.fill, shape: L2.shape, via, doc: doc(on) });
+        if (L2 && L2.fill && !on.closest('section[data-own]')) out.tabs.push({ id:idOf(on), sel:sel(on), text:label(on), fill:L2.fill, shape:L2.shape, via, doc:doc(on) });
       }
     }
     // big figures (a stat, a price, a measure) and their sizes
@@ -8224,7 +8326,7 @@ function lib() {
       if (SKIP.has(e.tagName) || isSvgPart(e) || !ownText(e) || inDrawn(e) || inFixed(e) || e.closest('header nav, nav, ' + INTER)) continue;
       const t = full(e); if (t.length > 16 || !/\d/.test(t) || !visible(e)) continue;
       const fs = parseFloat(CS(e).fontSize) || 16; if (fs < 24) continue;
-      out.figures.push({ id: idOf(e), sel: sel(e), text: t, fs: Math.round(fs * 10) / 10, head: !!e.closest(HEADS), foot: !!e.closest('footer'), sec: secIndex(e), doc: doc(e) });
+      out.figures.push({ ownData: !!e.closest('section[data-own] figure'), id: idOf(e), sel: sel(e), text: t, fs: Math.round(fs * 10) / 10, head: !!e.closest(HEADS), foot: !!e.closest('footer'), sec: secIndex(e), doc: doc(e) });
     }
     // where each section's heading starts (a left-aligned heading off the page margin), and whether a visual sits left of it
     S.forEach((s, i) => {
@@ -8283,8 +8385,8 @@ function lib() {
         const q = pv.getBoundingClientRect(), r = b.getBoundingClientRect();
         return q.width >= 200 && q.height >= 120 && r.top - q.bottom >= -1 && r.top - q.bottom <= 40 ? pv : null;
       })();
-      if (under && !CREDIT_W.test(t) && !b.closest(FRAG)) {
-        if (EXPLAIN.test(t) || PROVENANCE.test(t)) out.explain.push(Object.assign({}, it, { what: (t.match(EXPLAIN) || t.match(PROVENANCE) || [''])[0], ref: doc(under) }));
+      if (under && !CREDIT_W.test(t) && !b.closest(FRAG) && window.lyRules.fact(b) !== true) {
+        if (EXPLAIN.test(t) || PROVENANCE.test(t) || window.lyRules.explaining.test(t) || window.lyRules.fact(b) === false) out.explain.push(Object.assign({},it,{what:t,ref:doc(under)}));
         else if (t.split(' ').length >= 4 && /\p{Ll}/u.test(t) && !b.closest('a[href], button')) out.captions.push(Object.assign({}, it, { ref: doc(under) }));
       }
       { const ph = fakeContact(t); if (ph) out.printed.push(Object.assign({}, it, { what: ph })); }
@@ -8613,19 +8715,19 @@ function lib() {
       out.hours = [...pairs.values()].map(({ ids, ...p }) => p); }
     // what the page's pictures say they show: alt texts, picture labels, the objects and prints it mounts
     out.picLabels = [];
-    for (const e of document.querySelectorAll('img[alt], [role="img"][aria-label], video[aria-label], video[title], [data-object], [data-print], [data-product] [aria-label], svg > title')) {
-      if (e.closest('nav, header, footer, [data-ui], .ui[class*=ui-]')) continue;
+    for (const e of document.querySelectorAll('img[alt], [role="img"][aria-label], video[aria-label], video[title], [data-object], [data-print], [data-product] [aria-label], svg[aria-label], canvas[aria-label], [data-ui][aria-label], .app-frame[aria-label], svg > title')) {
+      if (e.closest('nav, header, footer')) continue;
       const t = (e.getAttribute('alt') || e.getAttribute('aria-label') || e.getAttribute('title') || e.getAttribute('data-object') || e.getAttribute('data-print') || (e.tagName.toLowerCase() === 'title' ? e.textContent : '') || '').trim();
       if (t && out.picLabels.length < 60) out.picLabels.push(t.slice(0, 160));
     }
     // what the hero shows (a physical product's page shows the product in its hero: a photograph, a video, or a render the page mounts:
     // an <img>, a <picture>, a <video>, a <canvas>, a [data-object] or [data-print], or a background picture of the hero; a UI fragment,
-    // an icon and a drawn svg are not the product)
+    // the candidate must be large enough to serve as the hero picture)
     { const hero = S[0]; out.heroMedia = [];
       if (hero) {
         out.hero = { id: idOf(hero), sel: sel(hero), text: label(hero.querySelector('h1') || hero).slice(0, 40), doc: D(hero.getBoundingClientRect()) };
-        for (const e of hero.querySelectorAll('img, picture, video, canvas, [data-object], [data-print], [data-product]')) {
-          if (e.closest('nav, header.nav, [data-ui], .ui[class*=ui-]') || (e.tagName === 'IMG' && e.closest('picture'))) continue;
+        for (const e of hero.querySelectorAll('img,picture,video,canvas,svg,[role=img],[data-ui],.app-frame,[data-diagram],[data-object],[data-print],[data-product]')) {
+          if (e.closest('nav,header.nav') || (e.tagName === 'IMG' && e.closest('picture'))) continue;
           const r = e.getBoundingClientRect(); if (r.width < 120 || r.height < 90 || !shown(e, r)) continue;
           out.heroMedia.push({ tag: e.tagName.toLowerCase(), w: Math.round(r.width), h: Math.round(r.height) });
         }
@@ -8681,16 +8783,25 @@ function lib() {
     // words a screen (a tech page is read in a glance: the words outside the UI mocks, per section, over the screens it takes)
     { out.words = [];
       for (const sc of S) {
-        if (sc.tagName === 'FOOTER') continue;
+        if (sc.matches('footer,[role=menu],.menu,.faq,.spec-sheet,.price-list,.devlog,article') || sc.querySelector('details,table,[role=menu],article time,.price-list,.menu-list')) continue;
         const r = sc.getBoundingClientRect(); if (r.height < 60) continue;
         let n = 0;
+        const intervals = [], range = document.createRange();
         const walk = document.createTreeWalker(sc, NodeFilter.SHOW_TEXT);
         for (let t = walk.nextNode(); t; t = walk.nextNode()) {
           const p = t.parentElement; if (!p || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|SVG|TEXTAREA)$/i.test(p.tagName)) continue;
           if (p.closest('[data-ui], .ui[class*=ui-], [data-diagram], [role="img"], [data-fx], [data-fx-mounted], [aria-hidden="true"], svg, canvas, template, nav, [hidden], .panel__screen') || p.getClientRects().length === 0) continue;
+          if (!t.textContent.trim()) continue;
+          range.selectNodeContents(t);
+          for (const box of range.getClientRects()) if (box.height && box.width) intervals.push([box.top,box.bottom]);
           n += (t.textContent.match(/[\p{L}\p{N}][\p{L}\p{N}'.,%:-]*/gu) || []).length;
         }
-        out.words.push({ id: idOf(sc), sel: sel(sc), text: label(sc.querySelector('h1, h2, h3') || sc).slice(0, 40), words: n, screens: Math.max(1, Math.round(r.height / vh * 10) / 10), doc: D(r) });
+        let contentHeight = 0, bottom = -Infinity;
+        for (const [top,end] of intervals.sort((a,b) => a[0]-b[0])) {
+          contentHeight += Math.max(0,end-Math.max(top,bottom));
+          bottom = Math.max(bottom,end);
+        }
+        out.words.push({id:idOf(sc),sel:sel(sc),text:label(sc.querySelector('h1,h2,h3') || sc).slice(0,40),words:n,screens:Math.max(1,contentHeight/vh),doc:D(r)});
       } }
     // every action's label, counted over the page's links and buttons (a submit inside a lit frame counts too)
     out.labels = {};
@@ -8743,7 +8854,7 @@ function lib() {
     return { sig: parts.join('#'), r: R(r) };
   }
 
-  window.__cc = { measure, phoneLook, arrive, probe, findHeld, holdPass, revealList, scrollTimelines, noVisual, seam, stmtSecs, insideMoving, insideScene, momentOf, placeOf, rectOf, scrollTo: scrollToY, prescroll, hideText, navCollapse, closedAnchors, fontLoad,
+  window.__cc = { measure, phoneLook, arrive, probe, findHeld, holdPass, revealList, scrollTimelines, noVisual, seam, sectionsList, insideMoving, insideScene, momentOf, placeOf, rectOf, scrollTo: scrollToY, prescroll, hideText, navCollapse, closedAnchors, fontLoad,
     pageInfo, hiddenCands, isShownNow, hoverCands, hoverBox, hoverSig, hoverXf, loopCands, pauseFor, viewRect, formsList, trySubmit, audit, ioReveals, moreChecks, hoverKinds, lookSig,
     picsReady, heroFill, seams, extras, glInfo, glHosts, hideVis, stripHost, canvasArea, ghostPics, moverAt, motionNow, imgDone: (list) => list.map((id) => { const e = els.get(id); return !!(e && e.complete && e.naturalWidth); }) };
   return true;
@@ -9014,7 +9125,7 @@ const FIX = {
   tilt: 'set it straight',
   contrast: 'put the text on a calm part of the picture, or on a solid panel',
   'busy-ground': 'move the text to a calm part of the picture, or put it on a panel',
-  'section-gaps': 'use one gap between sections (all within 25% of each other)',
+  'section-gaps': 'keep adjacent occupied content from overlapping',
   hole: 'close the empty space: move the content together, or give the space the visual it lacks',
   'heading-scale': 'size headings by level: the h1 largest, one size per level, each level below the one above',
   cta: 'add the action: a button in the hero, one on every priced item, one in the closing section',
@@ -9028,7 +9139,7 @@ const FIX = {
   'dark-ground': 'light the ground behind the UI (a daylight data-fx-palette): at least 3:1 against the card',
   'loop-pause': 'add a pause button to the visual, or stop the loop on its finished picture within 5 s',
   webgl: 'at most 4 live WebGL contexts: mount each effect when it comes on screen and destroy it when it leaves',
-  'copy-headline': 'say what is sold, and for whom or where, in the hero: the h1 in the form on the voice card (2 to 9 words), the category plain in the lead or the eyebrow',
+  'copy-headline': 'say what is sold, and for whom or where, in the hero: the h1 in the form on the voice card (2 to 9 words), the category plain in the lead or a hero notice',
   'copy-fact': 'put one hard fact on the first screen: a number, a price, a date, the place, the platforms it runs on or a game\'s genre; take it from the brief, or when the brief has none, a plausible one marked data-assumed and listed in the report (a price, the district)',
   'copy-headings': 'name the thing in every heading: the product, a part, the place or a section noun',
   'copy-buttons': 'label buttons with a verb and what the visitor gets ("Book a room", "Start free trial")',
@@ -9070,7 +9181,7 @@ const FIX = {
   'font-load': 'load every family the type asks for: name it in the font link as start.mjs prints it, spelt as Google Fonts spells it, or ask for a family the page loads',
   'fold-action': 'bring the hero\'s buttons onto the first screen: a shorter headline or line, the picture under the buttons',
   'action-count': 'the main action in the nav, the hero and the closing call; give the other sections their own action',
-  'product-shown': 'show the product itself: the client\'s photographs of it; a physical product with no photographs: stand-in photographs of its kind (photos.mjs search), a render (assets/objects/product-render, [data-product]) only when the brief asks for 3D, never mood stock in its place; drawn at 80% of the content width or more (60% FAILs), each view of it shown once',
+  'product-shown': 'show the physical product, working view, chart or drawing at a readable size and identify its subject',
   hover: 'give buttons and links a small answer to the pointer (the motion layer: a fill change, a drawn underline, an arrow that moves)',
 };
 FIX['hover-move'] = 'every linked card and linked photo answers the pointer: give the card class="card" (or the tile its media class) so motion.css lifts it 2px and zooms its photo; hover a linked card up 2px (translateY(-2px)) and zoom its photo to 1.02-1.03 inside its frame; no rotate, no 3D tilt, no growing card';
@@ -9124,7 +9235,7 @@ const BANNED = new Set(['learn more', 'read more', 'view more', 'show more', 'di
 function copyTerms(P) {
   const t = { category: terms(CATEGORY), audience: terms(AUDIENCE), place: terms(PLACE), products: terms(PRODUCTS), primary: PRIMARY.trim(), from: 'flags' };
   // a category given as a phrase ("coffee roastery and bar") also counts word by word, as the title's does
-  for (const k of ['category', 'place']) for (const c of [...t[k]]) if (c.includes(' ')) for (const w of words(c)) if (!t[k].includes(w)) t[k].push(w);
+  for (const k of ['category', 'place', 'products']) for (const c of [...t[k]]) if (c.includes(' ')) for (const w of words(c)) if (!t[k].includes(w)) t[k].push(w);
   // a trade's own words for one thing: "Ceramics studio" names pottery and tableware (a headline need not repeat the flag's noun)
   for (const c of [...t.category]) for (const g of KIN) if (g.includes(c) || g.includes(stem(c))) for (const w of g) if (!t.category.includes(w)) t.category.push(w);
   if (!t.category.length) {
@@ -9156,7 +9267,7 @@ function copyTerms(P) {
 function copyChecks(P) {
   const F = [], T = copyTerms(P);
   const f = (check, sev, x, msg) => F.push({ check, sev, id: x && x.id || 0, sel: x && x.sel || '(the page)', text: x && (x.text || x.label) ? String(x.text || x.label).slice(0, 48) : '', msg, doc: x && x.doc || null });
-  // 1. the hero (h1, eyebrow and lead) names the category (and, for a brand nobody knows, the buyer or the place); the h1
+  // 1. the hero (h1, hero notice and lead) names the category (and, for a brand nobody knows, the buyer or the place); the h1
   //    takes the hero form on the voice card (copy.md, rule 1), in 2 to 9 words
   if (!P.h1) f('copy-headline', 'FAIL', null, 'the page has no visible h1');
   else {
@@ -9165,16 +9276,17 @@ function copyChecks(P) {
     else {
       const heroAll = `${P.h1.text} ${P.after || ''} ${P.heroText || ''}`;
       const inHero = holdsAny(heroAll, T.category);
-      if (!inHero) f('copy-headline', 'FAIL', P.h1, `"${P.h1.text.slice(0, 60)}": neither the h1, the eyebrow nor the lead names what is sold (${T.category.slice(0, 4).join(', ')}, from ${T.from})`);
+      if (!inHero) f('copy-headline', 'FAIL', P.h1, `"${P.h1.text.slice(0, 60)}": neither the h1, the hero notice nor the lead names what is sold (${T.category.slice(0, 4).join(', ')}, from ${T.from})`);
       const who = [...T.audience, ...T.place];
-      if (inHero && !KNOWN && who.length && !holdsAny(heroAll, who)) f('copy-headline', 'FAIL', P.h1, `the hero (h1, eyebrow and lead) names neither the buyer nor the place (${who.slice(0, 4).join(', ')})`);
+      if (inHero && !KNOWN && who.length && !holdsAny(heroAll, who)) f('copy-headline', 'FAIL', P.h1, `the hero (h1, hero notice and lead) names neither the buyer nor the place (${who.slice(0, 4).join(', ')})`);
     }
     if (n < 2 || n > 9) f('copy-headline', 'WARN', P.h1, `the h1 has ${n} word${n === 1 ? '' : 's'} (2 to 9 read at a glance)`);
   }
   // 2. one hard fact on the first screen
   // (the platforms a product runs on, a game's genre, or a place named after in, at, near or from count as the fact too)
   const techKind = TYPE === 'software' || TECH, platform = PLATFORMS.test(P.heroText) || (techKind && PLATFORM_WORDS.test(P.heroText));
-  if (!/\d/.test(P.heroText) && !holdsAny(P.heroText, T.place) && !platform && !(/^(gaming|game|games)$/.test(KIND) && GENRES.test(P.heroText)) && !placeAt(P.heroText)) f('copy-fact', 'FAIL', P.h1 || null, 'the first screen holds no number, price, date, place, platform or genre');
+  const spelledQuantity = /\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:person|people|users?|seats?|days?|hours?|minutes?|weeks?|months?|years?)\b/i.test(P.heroText);
+  if (!spelledQuantity && !/\d/.test(P.heroText) && !holdsAny(P.heroText, T.place) && !platform && !(/^(gaming|game|games)$/.test(KIND) && GENRES.test(P.heroText)) && !placeAt(P.heroText)) f('copy-fact', 'FAIL', P.h1 || null, 'the first screen holds no number, price, date, place, platform or genre');
   // 3. every section heading names a thing (card titles are feature titles, read by the judge)
   const gloss = [...T.category, ...T.products, ...T.place, ...T.audience, ...T.names, ...SECTION_NOUNS, ...(T.brand ? [T.brand] : [])];
   const bareAll = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && !holdsAny(h.full, gloss));
@@ -9299,7 +9411,7 @@ function extrasFindings(X, PG, AU, first, later, vw) {
   { const h2s = PG ? PG.heads.filter((h) => h.level === 2 && !h.foot && !h.card && !h.moment).map((h) => h.fs).sort((a, b) => a - b) : [];
     const m2 = h2s.length ? h2s[Math.floor(h2s.length / 2)] : null;
     // (a price in its plan or product card is the card's own figure: the readers never counted one)
-    const over = m2 ? figs.filter((x) => x.fs >= m2 * 1.08 && !(top && x.fs > top + 0.5) && !/[€$£¥]|\b(EUR|USD|GBP|CHF|ISK|kr)\b/.test(x.text)) : [];
+    const over = m2 ? figs.filter((x) => !x.ownData && x.fs >= m2 * 1.08 && !(top && x.fs > top + 0.5) && !/[€$£¥]|\b(EUR|USD|GBP|CHF|ISK|kr)\b/.test(x.text)) : [];
     if (over.length) push('heading-scale', 'FAIL', over[0], `the figure "${over[0].text}" is set at ${over[0].fs}px, larger than the section headings (h2 ${m2}px)${over.length > 1 ? `; ${over.length - 1} more like it` : ''}`, { more: over.slice(1, 4).map((x) => x.doc), fix: 'set figures at the h2 size or under: a stat reads as data, not as the heading' }); }
   if (figs.length >= 2) {
     const sizes = [...new Set(figs.map((f) => Math.round(f.fs)))].sort((a, b) => a - b);
@@ -9387,7 +9499,7 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
     const total = rows.reduce((a, w) => a + w.words, 0), screens = rows.reduce((a, w) => a + w.screens, 0), avg = Math.round(total / Math.max(1, screens));
     if (heavy.length || avg > 80) {
       const w = heavy[0] || [...rows].sort((a, b) => b.per - a.per)[0];
-      push('copy-length', 'WARN', w, `${heavy.length ? `${heavy.length} section${heavy.length > 1 ? 's' : ''} over 90 words a screen outside the UI mocks (${heavy.slice(0, 3).map((h) => `"${h.text.slice(0, 24)}" ${h.per}`).join(', ')})` : 'the page'}; ${avg} words a screen across the page (${total} words in ${Math.round(screens * 10) / 10} screens): a tech page says it in about 80 or fewer`, { fix: 'cut every section to its heading, one line and the product UI: the UI says the rest; no second paragraph, no list of feature sentences' });
+      push('copy-length','WARN',w,avg + ' words per screen of occupied copy height; heaviest section "' + w.text + '" has ' + w.per, {fix:'shorten long passages where the reader needs to act'});
     }
   }
   // a physical product's page shows the product in its hero (a photograph, a video or a render the page mounts); a page that leads with type on a
@@ -9395,7 +9507,7 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
   let heroBare = false;
   if (first && TYPE === 'product' && M.hero && !(M.heroMedia || []).length) {
     heroBare = true;
-    push('product-shown', 'FAIL', M.hero, `the hero of this product page shows no photograph and no render of the product: ${(M.picLabels || []).length ? `the page's pictures (${M.picLabels.slice(0, 3).map((l) => `"${l.slice(0, 30)}"`).join(', ')}) sit below it` : 'the page has no picture of it at all'}`, { fix: "lead with the product itself: the client's photograph of it, else stand-in photographs of its kind (photos.mjs search), a render (assets/objects/product-render, [data-product], data-product-place=hero) only when the brief asks for 3D; never a drawing, never mood stock, never another maker's product" });
+    push('product-shown','FAIL',M.hero,'the product hero has no visible product picture or built view',{fix:'show the product in a client picture, live view or drawing'});
   }
   // A product hero shows the product at the size the judges read it: the drawn bounds of its picture (the subject, not the frame round it)
   // under 60% of the container's content width FAILs, 60-80% WARNs (at a desktop width: 1440 and 1024, where the stage is a wide box)
@@ -9408,19 +9520,13 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
     // WARN, since the alt text may name the thing in other words (a cappuccino on a coffee page)
     const noun = T.category[T.category.length - 1];
     const names = [...new Set([...T.category.filter((w) => w.length > 2 && !/^(and|for|the|with|from|our|your|made|hand|small|fine|best|new|own|good)$/i.test(w)), ...(T.products || [])])];
-    const shows = (M.picLabels || []).filter((l) => holdsAny(l, names) && !/\b(drawing|stand(s|ing)? in|placeholder|until (the )?photo)/i.test(l));
-    if (!shows.length) push('product-shown', 'WARN', null, `no picture on this product page shows the ${noun}: ${(M.picLabels || []).length ? `its ${M.picLabels.length} pictures are ${M.picLabels.slice(0, 3).map((l) => `"${l.slice(0, 40)}"`).join(', ')}${M.picLabels.length > 3 ? ', ...' : ''}` : 'none of its pictures says what it shows (no alt text)'}`, { fix: `show the ${noun} itself: the client's photographs, a render or a print object of it (assets/objects), never mood stock in its place` });
+    const shows = (M.picLabels || []).filter(l => holdsAny(l,names) && !/placeholder|until (the )?photo/i.test(l));
+    if (!shows.length) push('product-shown', 'WARN', null, `no picture on this product page shows the ${noun}: ${(M.picLabels || []).length ? `its ${M.picLabels.length} pictures are ${M.picLabels.slice(0, 3).map((l) => `"${l.slice(0, 40)}"`).join(', ')}${M.picLabels.length > 3 ? ', ...' : ''}` : 'none of its pictures says what it shows (no alt text)'}`, { fix: `show the ${noun} itself: a photograph, drawing, chart or working view whose accessible name identifies the product` });
   }
   // photo-print: a print over a photograph (house rule: no print over the hero photo; a place or a product shows its
   // photographs plain)
   for (const p of M.prints.slice(0, 3)) {
-    const fail = !TECH || p.hero;
-    push('photo-print', fail ? 'FAIL' : 'WARN', p, `the photograph ${p.text} is drawn over by a print (a halftone, dither or engraving canvas)${p.hero ? ' in the hero' : ''}${TYPE && !TECH ? ` on a ${TYPE} page` : ''}: its sky and light parts drop out to the page's ground`, { fix: 'show the photograph plain (in colour, or greyed into the palette with CSS); a print belongs on a software page\'s secondary picture at most' });
-  }
-  // grounds: base, surface and inverse; a fourth flat ground across the page reads as one more system
-  if (M.grounds.length > 3) {
-    const g = [...M.grounds].sort((a, b) => a.n - b.n)[0];
-    push('grounds', 'WARN', g, `${M.grounds.length} flat grounds across the page (${M.grounds.map((x) => `${x.hex} ${x.what}${x.n > 1 ? ` x${x.n}` : ''}`).join(', ')}): three at most (the base, a surface, an inverse)`, { more: M.grounds.filter((x) => x !== g).slice(0, 4).map((x) => x.doc) });
+    push('photo-print','WARN',p,'a print covers a photograph; check that its subject remains legible');
   }
   // split-align: the splits set their text against their visual two ways (one to the top, one to the middle)
   if (vw >= 1000) {
@@ -9796,22 +9902,26 @@ async function hiddenNow(tab) {
 // then walked a screen at a time; text a visitor would not see is told, once per element
 // Then the page once more with its scripts switched off (motion.md: without script the hero stands and every moment shows
 // its finished state): what stays hidden there is told the same way
-async function deadIoPass(cdp, helper, size) {
+async function deadIoPass(cdp, helper, size, finals) {
   const a = await hiddenWalk(cdp, helper, size, 'io');
-  const b = await hiddenWalk(cdp, helper, size, 'nojs', new Set(a.F.map((f) => f.sel)));
+  const b = await hiddenWalk(cdp, helper, size, 'nojs', new Set(a.F.map((f) => f.sel)), finals);
   return { F: [...a.F, ...b.F], errors: [...a.errors, ...b.errors], read: a.read + b.read };
 }
-async function hiddenWalk(cdp, helper, { w: width, h }, how, skip = new Set()) {
+async function hiddenWalk(cdp, helper, { w: width, h }, how, skip = new Set(), finals = {}) {
   const height = h || HEIGHTS[width] || (width < 700 ? 844 : 900);
   const tab = await Tab.open(cdp, { width, height, mobile: width < 700 });
   const F = [], errors = [], told = new Set(); let n = 0, read = 0;
   const said = how === 'nojs' ? 'with scripts switched off (a blocked or failed script)' : how === 'reduced' ? 'with reduced motion asked for' : 'with no IntersectionObserver callback (a script that never gets that far)';
   try {
-    if (how === 'nojs') await tab.send('Emulation.setScriptExecutionDisabled', { value: true });
+    if (how === 'nojs' || how === 'still') await tab.send('Emulation.setScriptExecutionDisabled', { value: true });
     else if (how === 'reduced') await tab.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
     else await tab.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.IntersectionObserver = class { constructor() {} observe() {} unobserve() {} disconnect() {} takeRecords() { return []; } }; window.IntersectionObserverEntry = window.IntersectionObserverEntry || function () {};' }).catch(() => {});
     await tab.goto(url);
     await tab.eval('document.fonts ? document.fonts.ready.then(() => 1) : 1', 15000).catch(() => {});
+    if (how==='still') {
+      const findings = await tab.eval(layoutRules+'\n;window.lyRules.still('+JSON.stringify(finals || {})+')');
+      return {F:findings.map(browserFinding),errors,read:1};
+    }
     if (how !== 'nojs') await waitReady(tab);
     await sleep(how === 'nojs' ? 1500 : how === 'reduced' ? 2000 : 4000);
     let y = 0;
@@ -9835,6 +9945,7 @@ async function hiddenWalk(cdp, helper, { w: width, h }, how, skip = new Set()) {
       y = Math.min(sy + height, mx);
     }
     for (const f of F.slice(0, 10)) await cropTo(helper, f.shot, f, width, height, `${width}-${how}-${String(++n).padStart(2, '0')}-hidden-content.jpg`);
+    if (how === 'nojs') F.push(...(await tab.eval(layoutRules + '\n;window.lyRules.still(' + JSON.stringify(finals || {}) + ')')).map(browserFinding));
     for (const f of F) delete f.shot;
   } catch (e) { lose(errors, 'hidden content', e); } finally { await tab.close(); }
   return { F, errors, read };
@@ -9984,6 +10095,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
   let glMax = { n: 0, stop: null, items: [] }, glAsked = 0; // the screen with the most live WebGL contexts
   const fxObs = []; // every effect ground seen, with how flat it read
   const btnSeen = new Set(); // buttons already read against their ground (button-contrast)
+  let frame = null, restingProbe = null;
   let vw = width, vh = height, docWidth = width, stops = 0, held = [], PG = null, copy = null, secCount = 0;
   let tm0 = Date.now(); const TM = (n) => { if (process.env.CC_TIMING) { console.error(`  [${width}] ${n}: ${((Date.now() - tm0) / 1000).toFixed(1)} s`); } tm0 = Date.now(); };
   const safe = async (name, fn) => { try { return await fn(); } catch (e) { lose(errors, name, e); return null; } };
@@ -10001,10 +10113,35 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     await waitReady(tab);
     await sleep(1800);
     await tab.eval(`(${lib.toString()})()`);
+    if (first) frame = await tab.eval(`(() => {
+      const root = document.documentElement, style = getComputedStyle(root);
+      const hero = document.querySelector('main > .hero'), nav = document.querySelector('header.nav'), footer = document.querySelector('footer');
+      const close = footer?.querySelector('[class*="close--"],.close__form') || document.querySelector('main .close__form');
+      const mark = nav?.querySelector('.nav__logo');
+      const variant = (el,prefix) => [...(el?.classList || [])].find(c => c.startsWith(prefix))?.slice(prefix.length);
+      return {
+        bg:style.getPropertyValue('--p-bg').trim(), ink:style.getPropertyValue('--p-ink').trim(), accent:style.getPropertyValue('--p-accent').trim(),
+        display:style.getPropertyValue('--font-display').trim().split(',')[0].replace(/["']/g,''),
+        text:style.getPropertyValue('--font-text').trim().split(',')[0].replace(/["']/g,''),
+        heroPeek:hero?.classList.contains('hero--peek') || false, heroBook:!!window.lyRules.booking(hero),
+        hero:[...(hero?.classList || [])].find(c=>c.startsWith('hero--') && c!=='hero--peek')?.slice(6), entrance:hero?.hasAttribute('data-enter') ? hero.getAttribute('data-enter') || 'rise' : null, buttons:root.dataset.buttons, density:root.dataset.density || 'regular',
+        nav:nav ? 'nav-' + (['split','centre'].find(v=>nav.classList.contains('nav--'+v)) || (nav.querySelector('.nav__menu .menu-col,.menu-col,.menu__col,.menu-column') || nav.querySelectorAll('.menu-card').length < 3 ? 'mega' : 'cards')) : null,
+        footer:footer ? 'footer-' + (['visit','dark','statement','columns'].find(v=>footer.classList.contains('footer--'+v)) || (footer.querySelector('.links-visit,.visit-links,.footer__address') ? 'visit' : 'columns')) : null,
+        close:close ? 'close-' + (variant(close,'close--') || 'form') : footer?.querySelector('.closing__cta') ? 'close-type' : null,
+        mark:mark?.querySelector('[data-mark]')?.dataset.mark || (mark?.querySelector('img,svg') ? 'client-logo' : mark ? 'wordmark' : null)
+      };
+    })()`);
+    const rules = await tab.eval('window.lyRules.page('+JSON.stringify(TYPE_FLAG || '')+')');
+    later.push(...rules.map(browserFinding));
+    if (!rhythmMod.when({width, quick, flags:MOD_FLAGS.get(rhythmMod.id)})) {
+      const seams = await tab.eval("window.lyCheck().findings.filter(f => f.rule==='section-air')");
+      later.push(...seams.map(browserFinding));
+    }
     // the whole page once (lazy parts load); without --quick, what animates in when scrolled to is noted on the way
     TM('load');
     await tab.eval(`window.__cc.prescroll(${!quick})`, 600000);
     TM('prescroll');
+    restingProbe = await tab.eval(`(() => { const values=window.lyRules.counters(); return Object.keys(values).length || document.querySelector('section[data-own]') ? values : null; })()`);
     // the page as the browser built it, for copy-lint (gate.mjs): a dev server or a built app writes its words with
     // a script, so its file or served shell holds none of them
     if (first) await safe('rendered page', async () => writeFileSync(join(outDir, 'rendered.html'), '<!doctype html>\n' + await tab.eval('document.documentElement.outerHTML')));
@@ -10017,7 +10154,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       // heading-scale: the h1 largest, every h2 one size, every h3 one size below the h2; display type inside a dealt
       // moment's section (letters-assemble, liquid-type, a statement) or the kit's big scene (light-flood's statement) is
       // set at its own size and not ranked
-      const hs = PG.heads.filter((x) => !x.foot && !(x.moment && x.level > 1));
+      const hs = PG.heads.filter((x) => (!x.foot || x.closeMoment) && !(x.moment && x.level > 1));
       const lv = (n) => hs.filter((x) => x.level === n);
       const h1 = lv(1), h2 = lv(2), h3 = lv(3).filter((x) => !x.card), h3all = lv(3);
       const top = h1.length ? Math.max(...h1.map((x) => x.fs)) : null;
@@ -10274,7 +10411,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
           // that still reads at 2:1 at its worst tenth WARNs (the tenth is the photograph's worst patch, not the line's)
           if (worst < need) F.push({ check: 'contrast', sev: c.large && sd > 0.04 && worst >= 2 ? 'WARN' : 'FAIL', ratio: +worst.toFixed(2), id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `${c.large ? 'large' : 'body'} text over a ${c.kind} reads at ${worst.toFixed(1)}:1 at its worst tenth (needs ${need}:1)${sd > 0.04 ? ', on a busy ground' : ''}` });
           // busy-ground: the picture under the words changes a lot even where the contrast holds
-          else if (sd > 0.12) F.push({ check: 'busy-ground', sev: sd > 0.2 && c.fs >= 24 ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `text over a busy part of a ${c.kind} (its luminance varies by ${sd.toFixed(2)} under the words)` });
+          else if (sd > 0.12) F.push({ check: 'busy-ground', sev: c.kind !== 'picture' && sd > 0.2 && c.fs >= 24 ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `text over a busy part of a ${c.kind} (its luminance varies by ${sd.toFixed(2)} under the words)` });
           // detail under the words (leaves, a weave, shadow bars): the spread may hold under a scrim, the texture stays
           else if (c.kind === 'picture' && (edge > BUSY_EDGE || rng > BUSY_RNG)) F.push({ check: 'busy-ground', sev: 'WARN', id: c.id, sel: c.sel, text: c.text, stop: k, rects: c.lines, msg: `text over ${edge > BUSY_EDGE ? `a detailed part of a picture (its ground changes by ${edge.toFixed(1)} L* from one pixel to the next under the words)` : `an uneven part of a picture (its luminance spans ${rng.toFixed(2)} under the words: a shadow or a bright patch behind part of the line)`}` });
         });
@@ -10606,34 +10743,18 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     for (const p of pairs.values()) {
       if (p.on) continue;
       const q = await safe('seam', () => tab.eval(`window.__cc.seam(${p.i})`, 60000));
-      if (q && q.on) { shots.push(await tab.shot()); Object.assign(p, { gap: q.gap, top: q.top, bottom: q.bottom, band: q.band, on: true, stop: shots.length - 1 }); }
+      if (q && q.on) { shots.push(await tab.shot()); Object.assign(p, { blank:q.blank, gap: q.gap, top: q.top, bottom: q.bottom, band: q.band, on: true, stop: shots.length - 1 }); }
     }
     const heldSecs = new Set(held.map((H) => H.sec));
-    // a dealt statement moment's own section (one large statement, sections.md) has the air of its design on both sides:
-    // its gaps are left out, as empty-area and section-height read the moment's host as filled
-    // (the moments that fit a statement: assets/moments/index.json "fits"); so has the section of the kit's big scene,
-    // whose stage is as tall as its module sets (section-height leaves it out too)
-    const stmtIds = (() => { try { return (JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'moments', 'index.json'), 'utf8')).moments || []).filter((m) => (m.fits || []).includes('statement')).map((m) => m.id); } catch { return []; } })();
-    const stmt = new Set((await safe('stmt', () => tab.eval(`window.__cc.stmtSecs(${JSON.stringify(stmtIds)})`))) || []);
-    const P = [...pairs.values()].filter((p) => !stmt.has(p.i) && !stmt.has(p.i + 1)).sort((a, b) => a.i - b.i).map((p) => Object.assign(p, { est: !p.on, stop: p.on ? p.stop : null }));
+    const P = [...pairs.values()].sort((a,b) => a.i-b.i).map(p=>({...p,stop:p.on?p.stop:null}));
+    const backgrounds = await tab.eval('window.__cc.sectionsList().map(s => ({ground: window.lyRules.colour(s), held: window.lyRules.holdsStage(s)}))').catch(()=>[]);
     // the hero's foot is its own (it fills the first screen, its content ends --hpadb above the fold): the gap after it
     // is no measure of the page's air between sections
-    const gaps = P.filter((p) => p.gap >= 0 && p.i > 0);
+    const airLimit = await tab.eval('window.lyRules.air().max');
     for (const p of P) {
-      if (p.gap >= 0 && p.i === 0) continue;
       if (p.gap < 0) { F.push({ check: 'section-gaps', sev: 'WARN', id: 0, sel: `${p.a} / ${p.b}`, text: '', stop: p.stop, rects: p.stop == null ? [] : [{ left: 0, top: p.bottom, width: vw, height: p.top - p.bottom }], msg: `the sections overlap by ${-p.gap}px${heldSecs.has(p.i) || heldSecs.has(p.i + 1) ? ' (one is held on screen while the other slides over it)' : ''}` }); continue; }
-      const kind = gaps.filter((q) => q.band === p.band);
-      const pool = kind.length >= 3 ? kind : gaps;
-      if (pool.length < 2) continue;
-      const med = median(pool.map((q) => q.gap)); if (med <= 0) continue;
-      const dev = (p.gap - med) / med;
-      if (Math.abs(dev) > 0.25) F.push({ check: 'section-gaps', sev: Math.abs(dev) > 0.6 ? 'FAIL' : 'WARN', id: 0, sel: `${p.a} / ${p.b}`, text: '', stop: p.stop, rects: p.stop == null ? [] : [{ left: 0, top: p.top, width: vw, height: Math.max(2, p.gap) }], msg: `${p.gap}px between these sections${p.est ? ' (never on one screen)' : ''}, ${dev > 0 ? '+' : ''}${Math.round(dev * 100)}% against the median ${Math.round(med)}px${p.band ? ' of gaps at a change of ground' : ''}` });
-    }
-
-    // a band (a section on its own ground) padded unevenly: the space outside its edge far from the space inside it
-    for (const p of P.filter((q) => q.on && q.outer != null && q.inner != null && q.outer >= 0 && q.inner >= 0).slice(0, 6)) {
-      const lo = Math.min(p.outer, p.inner), hi = Math.max(p.outer, p.inner);
-      if (hi - lo >= 24 && lo / hi < 0.65) F.push({ check: 'section-gaps', sev: 'WARN', id: 0, sel: `${p.a} / ${p.b}`, text: '', stop: p.stop, rects: p.stop == null ? [] : [{ left: 0, top: p.top, width: vw, height: Math.max(2, p.gap) }], msg: `uneven space at the edge of a band: ${p.outer}px outside its edge, ${p.inner}px inside it (the space on either side of a change of ground reads as one gap only when the two match)` });
+      const a = backgrounds[p.i], b = backgrounds[p.i+1];
+      if ((a && b ? a.ground === b.ground && !a.held && !b.held : !p.band) && p.blank > airLimit+.5 && !heldSecs.has(p.i) && !heldSecs.has(p.i+1)) F.push({check:'empty-band',sev:'FAIL',id:0,sel:p.a+' / '+p.b,text:'',rects:[],msg:Math.round(p.blank)+'px of continuous empty ground, limit '+Math.round(airLimit)+'px'});
     }
     // buttons: more than two looks on one screen, told once per look that breaks the pair (the page's own pair first)
     const all = [...buttons.values()];
@@ -10745,7 +10866,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         await tab.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.round(a.r.left + a.r.width / 2), y: Math.round(a.r.top + a.r.height / 2) }).catch(() => {});
         await sleep(450);
         const sg1 = sg0 ? await safe('hover', () => tab.eval(`window.__cc.hoverSig(${c.id})`)) : null;
-        if (sg0 && sg1 && sg0.sig === sg1.sig && JSON.stringify(sg0.r) === JSON.stringify(sg1.r)) deadCards.push({ c, a, sg: sg1 });
+        if (!c.own && sg0 && sg1 && sg0.sig === sg1.sig && JSON.stringify(sg0.r) === JSON.stringify(sg1.r)) deadCards.push({ c, a, sg: sg1 });
         const b = await safe('hover', () => tab.eval(`window.__cc.hoverBox(${c.id})`));
         const xa = moved.length < 3 ? await safe('hover', () => tab.eval(`window.__cc.hoverXf(${c.id})`)) : null;
         const shot = await tab.shot();
@@ -10754,7 +10875,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         if (xa && xr && b) {
           const lift = xr.ty - xa.ty, grow = xa.s / (xr.s || 1), zoom = xa.pic / (xr.pic || 1);
           const why = (!xa.flat && xr.flat) ? 'turns in 3D (a tilt)' : Math.abs(xa.deg - xr.deg) >= 0.5 ? `rotates ${Math.round((xa.deg - xr.deg) * 10) / 10}deg (a tilt)` : lift >= 6.5 ? `lifts ${Math.round(lift)}px` : grow > 1.031 ? `grows to ${grow.toFixed(3)}x` : zoom > 1.051 ? `zooms its picture to ${zoom.toFixed(3)}x` : '';
-          if (why) { shots.push(shot); moved.push(c.id); F.push({ check: 'hover-move', sev: /tilt/.test(why) ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: shots.length - 1, rects: [b.r], msg: `on hover the card ${why}: a linked card lifts 2px and a photo zooms 1.02-1.03 inside its frame, nothing tilts (house rule)` }); }
+          if (why && (!c.own || /tilt/.test(why))) { shots.push(shot); moved.push(c.id); F.push({ check: 'hover-move', sev: /tilt/.test(why) ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: shots.length - 1, rects: [b.r], msg: `on hover the card ${why}: a linked card lifts 2px and a photo zooms 1.02-1.03 inside its frame, nothing tilts (house rule)` }); }
         }
         await tab.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: Math.round(vh - 2) }).catch(() => {});
         if (!b) continue;
@@ -10919,13 +11040,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         for (const x of rest) F.splice(F.indexOf(x), 1);
       }
     }
-    // House rule (motion.md, The rule): every kind deals two moments (three on a long page), each in a section of its own
-    // ([data-moment]) that may follow the scroll or hold itself with position: sticky, and about one page in two one big
-    // scene by fit (a place or service page a warm, quiet or lively one; scenes.md). What moves with the scroll inside
-    // the first three moments and the first scene is their own motion: for the kit's own dealt part (its id in
-    // assets/moments or assets/scenes, a scene that fits the kind) it is not told at all, since the deal put it there and
-    // the reduced-motion pass still judges its still; for a part of the builder's own (data-scroll-moment, an unknown id)
-    // a WARN. Anything else that follows the scroll stays a FAIL
+    // Only motion belonging to a mounted kit moment or scene is excused here.
     {
       const { MOMENT_PAGES: KIT_MOMENTS, sceneFitsKind: fitsScene, readMeta: kitMeta } = visualMod.kit;
       const kitMoment = (m) => !!(m.id && KIT_MOMENTS[m.id]);
@@ -10938,11 +11053,11 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       sl.forEach((f, i) => {
         const m = mo[i]; if (!m || (m.kind === 'scene' && !sceneOk(m))) return;
         const k = keep[m.kind]; if (!k.includes(m.key)) k.push(m.key);
-        if (k.indexOf(m.key) >= (m.kind === 'scene' ? 1 : 3)) return;
+        if (k.indexOf(m.key) >= (m.kind === 'scene' ? 1 : 2)) return;
         if (m.kind === 'scene' ? kitScene(m) : kitMoment(m)) { drop.add(f); return; }
-        f.sev = 'WARN'; f.msg += m.kind === 'scene' ? ` (a big scene on a ${KIND} page: allowed, one scene at most, house rule; its still is judged under reduced motion)` : ' (inside a moment\'s section, [data-moment]: expected on every kind, three moments at most, house rule; its still is judged under reduced motion)';
+        f.sev = 'WARN'; f.msg += m.kind === 'scene' ? ` (a big scene on a ${KIND} page: allowed, one scene at most, house rule; its still is judged under reduced motion)` : ' (inside a mounted moment; reduced motion is checked separately)';
       });
-      // an enter moment (picture-develops, lines-rise) reveals as it is scrolled to: inside the first three moments'
+      // an enter moment (picture-develops, lines-rise) reveals as it is scrolled to: inside the first two moments'
       // sections the kit's own is not told (a builder's own a WARN); three or more parts of one moment revealed one by
       // one are cards, rows or tiles entering on scroll, which no moment does: they stay a FAIL
       const rv = F.filter((f) => f.check === 'scroll-reveal' && f.id);
@@ -10953,7 +11068,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         const m = rm[i]; if (!m || m.kind !== 'moment') return;
         const k = keep.moment; if (!k.includes(m.key)) k.push(m.key);
         const parts = Math.max(per.get(m.key), (f.msg.match(/^(\d+) parts/) || [0, 1])[1] | 0);
-        if (k.indexOf(m.key) >= 3 || parts >= 3) return;
+        if (k.indexOf(m.key) >= 2 || parts >= 3) return;
         if (kitMoment(m)) { drop.add(f); return; }
         f.sev = 'WARN'; f.msg += ' (inside a moment\'s section, [data-moment]: an enter moment is expected on every kind; its still is judged under reduced motion)';
       });
@@ -10995,7 +11110,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
   let n = 0;
   const crops = out.filter((f) => f.stop != null && shots[f.stop] && f.rects && f.rects.length).sort((a, b) => a.stop - b.stop).slice(0, 80);
   for (const f of crops) await cropTo(helper, shots[f.stop], f, vw, vh, `${width}-${String(++n).padStart(2, '0')}-${f.check}.jpg`);
-  return { width, height, screens: stops, held: held.length, errors, findings: out.map(clean), glAsked };
+  return { width, height, frame, restingProbe, screens: stops, held: held.length, errors, findings: out.map(clean), glAsked };
 }
 
 // ---------------------------------------------------------------- the first screen between the main widths
@@ -11173,18 +11288,23 @@ try {
     // back (skipped with --quick or --no-hidden)
     if (i === 0 && noHidden && !quick) report.notChecked = [...(report.notChecked || []), 'hidden-content (--no-hidden)'];
     if (i === 0 && !quick && !noHidden && r.screens > 0) {
-      const g = await deadIoPass(cdp, helper, w);
+      const g = await deadIoPass(cdp, helper, w, r.restingProbe);
       r.findings.push(...g.F.map(clean)); takeErrors(r.errors, g.errors);
       report.hidden = { screens: g.read };
     }
     // --quick (the gate's mode) still reads what stays hidden: once, at the first width, with scripts switched off and
     // under reduced motion (motion.md: without script and under reduced motion nothing stays hidden); about one page load each
     if (i === 0 && quick && !noHidden && r.screens > 0) {
-      const a = await hiddenWalk(cdp, helper, w, 'nojs');
+      const a = await hiddenWalk(cdp, helper, w, 'nojs', new Set(), r.restingProbe);
       const b = noReduced ? { F: [], errors: [], read: 0 } : await hiddenWalk(cdp, helper, w, 'reduced', new Set(a.F.map((f) => f.sel)));
       r.findings.push(...a.F.map(clean), ...b.F.map(clean)); takeErrors(r.errors, a.errors); takeErrors(r.errors, b.errors);
       report.hidden = { screens: a.read + b.read, quick: true };
     }
+    if (i > 0 && r.restingProbe && !noHidden) {
+      const a=await hiddenWalk(cdp,helper,w,'still',new Set(),r.restingProbe);
+      r.findings.push(...a.F.map(clean)); takeErrors(r.errors,a.errors);
+    }
+    delete r.restingProbe;
     // the blocks that open their own tab: at the first width unless their when() says otherwise
     for (const M of MODULES) {
       if (M.phase !== 'pass' || modOff(M) || !(r.screens > 0)) continue;

@@ -1,7 +1,7 @@
 <!doctype html>
-<!-- layout v4 demo: hero-place (heroes.json "place"): local-business Recipe 3, the only place hero, never dealt
+<!-- layout v4 demo: hero-place (heroes.json "place"): local-business Recipe 3, the photo-led place hero, shown in its band form
      (ST-53, PH-47, PH-81). The client's photograph full-bleed under the header with nothing on it; the h1 on
-     columns 1-6 under it, the sub-line and one button from the split line. type: place. fonts: fraunces. -->
+     columns 1-8 under it, the sub-line and one button from the split line. type: place. fonts: fraunces. -->
 <html lang="en" data-type="place" data-radius="sharp" data-ground="sand" data-buttons="block">
 <head>
 <meta charset="utf-8">
@@ -51,7 +51,18 @@
         <p class="hero__lead">A bakery and coffee bar on Henderson Street, open today from 7:30 to 16:00.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#counter">See today's bake</a></div>
       </div>
-    </div></div>
+    </div>
+    <!-- For table bookings, place this form after .hero-text and use it as the hero's main action.
+         Give the full form at the close id="booking" and matching field names. Replace the sample price.
+    <form class="hero-book" method="get" action="#booking" aria-label="Choose a table">
+      <label class="field">Day<input type="date" name="date" required></label>
+      <label class="field">Time<input type="time" name="time" required></label>
+      <label class="field">People<select name="guests"><option>2</option><option>3</option><option>4</option></select></label>
+      <button class="btn btn--primary" type="submit">Request a table</button>
+      <small data-assumed>From £18 per person</small>
+    </form>
+    -->
+    </div>
   </section>
 
   <section class="section" id="counter" aria-labelledby="counter-h">

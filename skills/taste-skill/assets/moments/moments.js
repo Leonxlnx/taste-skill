@@ -1,5 +1,5 @@
 /*
-  moments.js - the loader for the page's two creative moments (three on a long page) (taste-skill, references/moments.md).
+  moments.js - the loader for the page's creative moments (taste-skill, references/moments.md).
 
     <section data-moment="pinned-chapters" data-moment-opts='{"hold": 2.4}'>…</section>
 
@@ -18,8 +18,7 @@
   Marks on <html>: .mo-js as soon as this runs (a moment's CSS may hide what it will reveal only under
   .mo-js, and .mo-safe arrives 2.5 s later as a fallback that shows everything); data-moments-ready="n"
   when every moment is mounted (shoot scripts wait for it); data-moments-over="n" when a page holds
-  more than three, and data-moments-repeat when an id is used twice (both are faults: two a page, three on a long one,
-  an id once). A moment whose module fails gets data-moment-failed and the class mo-safe on its own
+  more than two counted moments, and data-moments-repeat when an id repeats. A moment whose module fails gets data-moment-failed and the class mo-safe on its own
   element (its CSS shows the finished state at once). The 2.5 s timer and .mo-js can also be set
   earlier by one line in <head>, with modulepreload links for this file, lib.js and the dealt moment:
     <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
@@ -81,7 +80,9 @@ export function mountAll(root = document) {
     const ids = els.map(el => el.dataset.moment);
     const repeat = ids.filter((id, i) => ids.indexOf(id) !== i);
     if (repeat.length) { html.dataset.momentsRepeat = [...new Set(repeat)].join(' '); console.warn(`moments: an id twice on one page: ${repeat.join(', ')}`); }
-    if (ids.length > 3) { html.dataset.momentsOver = String(ids.length); console.warn(`moments: ${ids.length} moments on one page (two, three on a long page)`); }
+    const details = ['lines-rise', 'marquee-row', 'liquid-hover'];
+    const counted = ids.filter(id => !details.includes(id)).length;
+    if (counted > 2) { html.dataset.momentsOver = String(counted); console.warn('moments: more than two counted moments'); }
     await Promise.all(els.map(el => mount(el).catch(e => {
       if (!el.dataset.momentFailed) console.warn(`moments: ${el.dataset.moment} failed: ${e.message}`);
       el.dataset.momentFailed = e.message;

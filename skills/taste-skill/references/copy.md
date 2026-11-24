@@ -9,11 +9,7 @@ signature effect.
 
 ## The copy layer
 
-This file holds the rules every page keeps. What the words say and how they sound is the copy layer, read at step 2
-before the first sentence:
-
-- **The copy notes** (below): `.taste-skill/copy.md`, written before the page. The fact sheet, the
-  voice card and the draft. copy-lint FAILs a page without them.
+Write `.taste-skill/copy.md` before the page. It holds the fact sheet, asks, voice card and draft.
 - `copy-voice.md`: how to fill the notes: the fact sheet from the brief, the voice card, the page's
   shape from the reader's questions, the device budget, the checks. Start here.
 - `copy-registers.md`: the twelve voices to choose from, and which suit which trade.
@@ -22,9 +18,7 @@ before the first sentence:
 - `copy-tells.md`: what gives model copy away and the fix for each, what over-correction breeds, and
   what is not a tell.
 
-Where they differ, this file wins: nothing invented beyond what may be assumed (below), nothing
-bracketed, held back or left open on the page, no captions, the hero tells a stranger in five seconds
-what is sold, buttons are a verb and an object.
+Use the rules here for assumptions, picture facts and buttons. The hero tells a stranger what is sold within five seconds.
 
 **copy-lint.** `node <skill>/scripts/copy-lint.mjs index.html --kind <kind> --category "<what is sold>"`
 counts the countable tells in well under a second a page (no browser). FAIL: no copy notes, or a
@@ -63,8 +57,11 @@ Numbers: <each figure the brief gives, with where it came from; none invented>
 People: <names and roles the brief gives, or none>
 Odd true details: <history, an object, a ritual, a house word, the awkward bit, from the brief>
 Offer: <price, trial, booking terms, the one action>
-Products: <each thing sold a visitor wants to see, plain nouns: cake, espresso, filter coffee; each gets a photograph of it (photos.md)>
-Assumed: <each fact the page needs that the brief leaves out, with the value chosen: day pass 14.50 €, Mon to Fri 7:30 to 18:00, district Kirkstall; each data-assumed on the page and listed in the report>
+Products: <plain nouns for what is sold and shown>
+Assumed: <working facts the brief leaves out, their values and where each is marked data-assumed>
+
+Asks:
+- <ask> -> #<id>
 
 ## Six questions, answered from the brief
 1. Who switched to them from what, and why? <answer, or: not in the brief>
@@ -89,7 +86,6 @@ Five seconds: <what a stranger says after reading only the hero: what is sold, w
 
 ## Draft
 H1: <the hero line in the chosen form>
-Eyebrow: <optional; the category or the place when the h1 does not say it>
 Lead: <one fact or one mechanism, 15 to 30 words; a place: the fact and today's hours>
 Button: <verb and object>
 H2: <each section's heading, then its lines>
@@ -104,10 +100,9 @@ Footer: <the facts line>
 - <each fact the client must send or confirm (every assumed one, the street, the photographs, any proof), as [NEED: what]; a [NEED] never reaches the page>
 ```
 
-The draft lints on its own: `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md` reads only
-what stands under `## Draft` (each line names its part: `H1:`, `H2:`, `Lead:`, `Button:`), and a
-`[NEED]` there is only listed. On the page, copy-lint finds the notes beside it or one or two folders
-up.
+Under `Asks:`, give every request its own line, such as `- Book a double room -> #booking`. Use the id where the visitor can do it. The gate fails `brief-ask` for a missing block or a target absent from the page.
+
+Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. Label each line under `## Draft` with its part (`H1:`, `Lead:`, `Button:`).
 
 ## Five rules
 
@@ -116,10 +111,7 @@ up.
    state, a mission, plain news, a question, a mantra, the category with a twist, a striking
    customer, a scope, an enemy, an outcome, a place and a year, a twisted idiom with the spec under
    it, a narrow superlative), chosen on purpose and written on the voice card, 2 to 9 words. The
-   category and the place or buyer then sit in the lead or the eyebrow, plainly ("Bakery on Mill
-   Street, Leith. Open from 7:30."). Never a riddle: a stranger who reads the h1, the eyebrow and the
-   lead must be able to say what this is. A game: its name, and its genre in the h1 or the line under
-   it; the launch date or status the brief gives is the hard fact. A bare category label as the h1
+   category and place or buyer belong in the lead when the h1 leaves them out. Read both aloud. A stranger should know what is sold. For a game, include the name, genre and release date or status from the brief. A bare category label as the h1
    ("Yoga studio in Brooklyn") is the default this replaces: copy-lint WARNs it unless the voice card
    chose that form (9 or 12).
 2. **The first screen holds one hard fact:** a number, a place, a price or a date; the brief's, else an
@@ -136,7 +128,7 @@ up.
 5. **Few actions, each with one wording:** at most 2 in the hero (one on a place), 10 different
    labels a page at most. The main action names the transaction (Book a room, Order a cake, Start a
    free trial; on a place the brief's order or booking, else Get directions, never a side event) and
-   reads the same in the nav, the hero, the close and the phone bar, and nowhere else. One screen
+   reads the same in the nav, hero, phone bar and form or order controls. One screen
    shows it twice at most: the nav's button and the hero's on a desktop (the checker WARNs it, so
    look that nothing else repeats it), the hero's on a phone (system.js keeps the phone bar away
    from a screen that already shows its action); a third copy on one screen FAILs [action-repeat].
@@ -169,8 +161,7 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
   do X for Y", a full-sentence claim, a real figure from the brief, or a verb with the thing it acts
   on ("Send invoices from the van"); never a bare command ("Get started", "Come climb"), a colon
   heading or a line that only makes sense after the page ("Continuity slips", "It reads everything
-  you decide"). A question only in the FAQ, the close, or once as a kicker with a short answer under
-  it. Two fragments ("Twelve rooms. Three ways to stay.") once a page at most (`copy-tells.md`).
+   you decide"). Use questions where the page answers them, such as an FAQ. Two fragments in a heading once a page at most (`copy-tells.md`).
   The story section may take one odd heading in the register (a year, "The fairly short history"),
   with the facts under it. Mix the shapes: a page whose headings all share one shape reads as a form.
   **Card titles:** a verb and an object ("Warns about double shifts"), one line, real words, never a
@@ -181,18 +172,12 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
   words at most, in the buyer's words with one concrete detail; no paragraph over five lines at
   1440. A price does the selling, not a mood heading ("Rooms from 140 € a night, breakfast
   included").
-- **Words per screen** stay low: product 47, place 44, service 34; a page about 900 words at most,
-  the footer aside. Long copy goes to sub-pages.
-- **The tech word budget** (software, gaming, hardware): 60 to 80 words a screen at 1440, counted
-  outside UI mocks, diagrams and code (headings, lines, card titles and bodies, buttons, labels);
-  over 80 the checker WARNs (in testing: a fintech page at 117 words a screen read as wordy). Cut in
-  this order: a second sentence under a heading, card bodies to one sentence of 12 to 18 words, a
-  fourth card, a list a fragment already shows. The UI says the rest.
+- **Words per screen.** For general copy at 1440, aim for roughly 47 words on product, 44 on place, 34 on service and 60 to 80 on tech (software, gaming and hardware). Exclude product UI, diagrams, code, devlog posts, FAQ answers, spec rows, menus and price lists. Give each item the words it needs. Cut repeated claims first.
+- **Guesthouses.** Name the room types, beds and rates, and what breakfast includes. Give the dishes and serving time when known. Mark any assumed room or breakfast facts `data-assumed` and record them in the notes.
 - **Numbers** sit in sentences with their unit ("4.5 hours a week"), uneven where real (212, 38%).
   A real claim from the brief that needs a source gets a numbered footnote near the footer (13px
   and up).
-- **Pictures** stand beside short copy, never in place of it, and words never stand where a
-  photograph fits. Every word is live text.
+- Keep the words live. Show the subject using the ladder in `photos.md`.
 - **Form words:** a label says what goes in ("Arrival", "Guests"), never a question or a
   placeholder in its place; an error names the field and what to type ("Write the day you want to
   come"); the sent line names what was sent in the button's own words ("Your table request is in. We
@@ -238,11 +223,7 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
 - **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
   kit sample text, and no link to `#` or an empty href. Write the real words, an assumed fact
   (above), or leave the element out. "Coming soon" only for what the brief says is coming.
-- **No caption, label or description under or on any visual** (house rule): not "A drawing made in code",
-  "Photographs follow", "Representative image", not a name, price or link line under a bare picture,
-  no hashtags. A heading names the set; a sold item's name and price sit inside its card's padding.
-  The picture shows the thing or is left out; the report lists the photographs the client must
-  supply.
+- **House rule 1.** No caption that explains, apologises for or labels a picture. A work, project, room or product may carry one `.fact-line` under or beside the picture. Use name, place, size, year or price, up to 60 characters. Mark assumed facts `data-assumed`.
 - **Credits:** one short line at the end of the footer naming only the sources used, never the
   photographers: "Photographs via Unsplash and Wikimedia Commons" (as `photos.mjs credits` prints
   it; 110 characters at most, one line from 1024) that links or opens the credits list. Paste the
@@ -300,7 +281,7 @@ phone number still gets the address, email and imprint rules.
 
 Metaphors and "where X meets Y" (the one brand line aside); a slogan, greeting or boast in the hero
 that the voice card did not choose, or one with no fact beside it; questions as section headings
-outside the FAQ, the close and one kicker; exclamation marks; all-caps labels; invented capitalised concepts ("the Proof Layer"); unexplained
+outside the FAQ and close; exclamation marks; all-caps labels; invented capitalised concepts; unexplained
 programme names; jokes or slang in labels; mood paragraphs; a literary quote as a full-screen band;
 filler (seamless, effortless, cutting-edge, unlock, elevate, supercharge, reimagine,
 next-generation, game-changing, powerful, robust, and the rest of `copy-tells.md`); virtue words about the client (honest, calm, quiet, actually, simply); a sign-off or a pun

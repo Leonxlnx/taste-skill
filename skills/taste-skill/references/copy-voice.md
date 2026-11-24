@@ -45,7 +45,7 @@ where you can. Each field feeds a part of the page:
 | Field | What it holds | Where it goes |
 | --- | --- | --- |
 | What it is | One plain sentence, no adjective | the lead (the h1 too when its form is a label) |
-| For whom, and not for whom | The best-fit buyer; who should look elsewhere | the lead or the eyebrow, one line in the FAQ |
+| For whom, and not for whom | The best-fit buyer and who should look elsewhere | The lead or an FAQ answer |
 | What they do today instead | A spreadsheet, the big rival, the bakery across town, nothing | the pain line, the comparison |
 | The true difference | What is true here and not elsewhere, with its proof | the claims worth a heading |
 | Customer words | Phrases from reviews, emails, the brief's own quotes | the pain line, headings |
@@ -129,13 +129,10 @@ what does it cost, what if it goes wrong, what do I do now. How much they alread
 - **They are comparing:** lead with the mechanism, what this does differently.
 - **They know the client:** the product, the offer, the price, the action.
 
-- **A section exists only if the brief has true material for it.** Five full sections beat eight
-  padded ones; on a place, the photographs set the count (`sections.md`).
+- **Build a section when the brief gives it a job.** Its content determines the length and form (`sections.md`).
 - **Counts follow the content:** four real features are four cards, one quote is one quote, two plans
   are two plans. Zero testimonials is a normal page.
-- **Find the organising idea** when the brief has one: the menu as the page (Intelligentsia), a
-  timetable, a founder's letter (HEY), a timeline of failures (innocent), one object carried through
-  every section (Mother's kitchen table), a spec sheet (Apple). Let it break the template once.
+- **Find the organising idea:** a timetable, a founder's letter, a history of failures or a spec sheet. Give it the space its material needs.
 - **A fixed number of sections** (the brief or the plan asks for eight): fill them with different
   kinds of material, a menu, a timeline, a letter, a map, a spec table, a long FAQ, never eight card
   grids.
@@ -189,7 +186,6 @@ counts them: over the budget is a WARN, twice the budget plus one or more is a F
 | Virtue words about ourselves | 0 | the lint skips literal ones (a quiet room, calm water, genuine parts) and allows 2 |
 | Lists of three | when there are three things | never in consecutive sentences |
 | Step numbers on cards | only where the order is the content (a booking's steps) | none on features that read in any order |
-| Eyebrow labels | 1 or 2 a page | a heading that names the thing needs none |
 | Testimonials | the brief's only | name and role or town; none is fine |
 | Response-time promise | 1, from the brief | the same words wherever it repeats |
 | "Since [year]" | 1, from the brief | |

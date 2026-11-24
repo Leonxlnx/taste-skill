@@ -266,7 +266,32 @@ function film(btn) {
   });
 }
 
+// A local booking bar hands the chosen fields to the full form at the close.
+// An action pointing at a booking service keeps its native GET or POST.
+function bookingBar(bar) {
+  const action = bar.getAttribute('action');
+  if (!action?.startsWith('#')) return;
+  const target = document.getElementById(action.slice(1));
+  const form = target?.matches('form') ? target : target?.querySelector('form');
+  if (!form) return;
+  bar.addEventListener('submit', event => {
+    event.preventDefault();
+    for (const [name, value] of new FormData(bar)) {
+      const field = form.elements.namedItem(name);
+      if (!field || typeof value !== 'string' || !('value' in field)) continue;
+      field.value = value;
+      const control = field instanceof RadioNodeList ? [...field].find(input => input.checked) : field;
+      control?.dispatchEvent(new Event('input', { bubbles: true }));
+      control?.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    location.hash = action;
+    const next = Array.from(form.elements).find(field => field.willValidate && !field.validity.valid);
+    (next || form.querySelector('[type="submit"]'))?.focus();
+  });
+}
+
 function init() {
+  document.querySelectorAll('form.hero-book').forEach(bookingBar);
   document.querySelectorAll('[data-ly-word]').forEach(liveWord);
   document.querySelectorAll('h1[data-ly-letters]').forEach(letters);
   document.querySelectorAll('h1[data-ly-letters], h1:has(.ly-word)').forEach(lockLines);

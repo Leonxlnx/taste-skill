@@ -33,8 +33,7 @@
   place, service or product page takes no WebGL, so no effect is dealt there: the quiet treatments
   (meta.treatment true: grain-gradient, soft-light-bars, line-engraving, film-light-leak, duotone-grade)
   are shaders too, and naming one there stops. Only a treatment drawn without WebGL could reach those
-  kinds (one slot at most); none is in the kit yet. A product with a technical subject: --page product
-  --tech-subject. When none fits, the deal is empty (exit 0) and the caller places no effect. --quiet leaves out the focal grounds (meta "focal": true: a sphere,
+  kinds (one slot at most); none is in the kit yet. Pass --page tech for hardware. When none fits, the deal is empty (exit 0) and the caller places no effect. --quiet leaves out the focal grounds (meta "focal": true: a sphere,
   a beam, peaks), for slots that carry a big UI window, a screenshot or text.
 */
 import fs from 'node:fs';
@@ -44,7 +43,7 @@ import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { pick as dealEffects, filterEffects, SLOTS, KINDS } from '../assets/effects/pick.js';
-import { pageKind, fitsKind, FIT, TONES, INTENSITIES } from './moments.mjs';
+import { pageKind, fitsKind, FIT, TONES, INTENSITIES, writeHistory } from './moments.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FX = path.join(ROOT, 'assets', 'effects');
@@ -208,20 +207,21 @@ async function pick(a) {
   if (!a.palette || a.palette === true) die('pick: pass --palette light, dark or colour (the kind of the page\'s ground)');
   // the page's kind deals by fit (moments.mjs FIT, references/effects-usage.md): every effect carries
   // tones, an intensity and webgl; a kind without WebGL (place, service, product) is dealt no WebGL
-  // effect, the quiet treatments included. A product with a technical subject: --page product --tech-subject.
+  // effect, the quiet treatments included. Hardware uses --page tech.
   const pgWord = a.page != null && a.page !== true ? a.page : a.type;
-  if (pgWord == null || pgWord === true) die('pick: pass --page <kind> (tech, gaming, software, place, product or service). A product with a technical subject: --page product --tech-subject.');
+  if (pgWord == null || pgWord === true) die('pick: pass --page <kind> (tech, gaming, software, place, product or service).');
   const pg = pageKind(pgWord);
   if (!pg.page) die('pick: ' + pg.none);
-  const kind = pg.page === 'product' && a['tech-subject'] ? 'tech' : pg.page;
+  const kind = pg.page;
   const tone = a.tone != null && a.tone !== true ? String(a.tone).toLowerCase() : undefined;
-  if (tone && !FIT[kind].tones.includes(tone)) die(`pick: --tone ${tone} is not a tone a ${kind} page takes (${FIT[kind].tones.join(', ')})`);
+  const legacyTone = kind === 'product' && a['tech-subject'] && FIT.tech.tones.includes(tone);
+  if (tone && !FIT[kind].tones.includes(tone) && !legacyTone) die(`pick: --tone ${tone} is not a tone a ${kind} page takes (${FIT[kind].tones.join(', ')})`);
   // 2.5.3: a kind without WebGL is dealt no WebGL at all, the quiet treatments included (they are shaders too): the
   // plan's first line says "no WebGL" there, and a guesthouse and a linen shop dealt soft-light-bars FAILed effects-fit.
   // Only a treatment drawn without WebGL (meta.webgl 0) could reach them; none is in the kit yet
   const fitting = idx.effects.filter(e => fitsKind(e, kind, { tone }) && (FIT[kind].webgl || (e.treatment === true && !e.webgl)));
   const namedGl = !FIT[kind].webgl && a.slots && a.slots !== true ? String(a.slots).split(',').map(s => s.split(':')[1]).filter(Boolean).find(id => (idx.effects.find(e => e.id === id) || {}).webgl) : null;
-  if (namedGl) die(`pick: ${namedGl} is a WebGL shader and a ${kind} page takes no WebGL (shader grounds and treatments are for tech, software and gaming; a product with a technical subject: --tech-subject)`);
+  if (namedGl) die(`pick: ${namedGl} is a WebGL shader and a ${kind} page takes no WebGL (shader grounds and treatments are for tech, software and gaming, hardware uses --page tech)`);
   if (!fitting.length) {
     const why = `no effect fits a ${kind} page${tone ? ` in the ${tone} tone` : ''}${FIT[kind].webgl ? '' : ' (no WebGL there)'}: the page carries its photographs and moments`;
     console.error(why);
@@ -250,12 +250,11 @@ async function pick(a) {
   const { seed } = dealt;
   const out = dealt.picks.map(p => p.id);
   if (slots) for (let i = 0; i < slots.length; i++) slots[i] = dealt.slots[i]; // 'hero:dotted-globe' -> 'hero'
-  if (a.history) {
+  if (a.history && !a['no-record']) {
     const at = new Date().toISOString();
     hist.picks.push(...out.map(id => ({ id, at, seed })));
     hist.picks = hist.picks.slice(-500);
-    fs.mkdirSync(path.dirname(path.resolve(a.history)), { recursive: true });
-    fs.writeFileSync(a.history, JSON.stringify(hist, null, 1) + '\n');
+    writeHistory(a.history, hist);
   }
   if (a.json) console.log(JSON.stringify({ seed, picks: slots ? dealt.picks : out }));
   else if (slots) out.forEach((id, i) => console.log(`${String(i + 1).padStart(2)}. ${slots[i].padEnd(6)} ${id}${dealt.picks[i].named ? '  (named)' : ''}`));

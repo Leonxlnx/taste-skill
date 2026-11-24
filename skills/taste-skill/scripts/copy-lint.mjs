@@ -466,6 +466,78 @@ function sentenceAt(b, i) {
   return b.slice(s, e < 0 ? b.length : i + e + 1).trim();
 }
 
+// Read nested targets from the same HTML that is linted. Void elements never
+// capture a control from the next section. Script and template markup is inert.
+function pageTargets(raw) {
+  const ids = new Map(), captions = [], stack = [], frames = new Map();
+  const html = raw.replace(/<!--[\s\S]*?-->|<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+  for (const m of html.matchAll(/<("[^"]*"|'[^']*'|[^'">])+>|[^<]+/g)) {
+    const token = m[0], tag = token.match(/^<(\/?)([\w:-]+)\b([\s\S]*?)\/?>$/);
+    if (!tag) { if (!token.startsWith('<')) for (const n of stack) if (n.caption) n.caption.text += decode(token); continue; }
+    const name = tag[2].toLowerCase(), attrs = tag[3];
+    if (tag[1]) { const i = stack.map(n => n.name).lastIndexOf(name); if (i >= 0) stack.length = i; continue; }
+    const n = {name, id:attrOf(attrs,'id'), hidden:stack.at(-1)?.hidden || hasAttr(attrs,'hidden') || attrOf(attrs,'aria-hidden') === 'true'};
+    if (!n.hidden && n.id) ids.set(n.id,n);
+    const classes = (attrOf(attrs,'class') || '').split(/\s+/);
+    const fact = classes.includes('fact-line');
+    if (!stack.at(-1)?.hidden && !hasAttr(attrs,'hidden') && (['svg','canvas','picture','img','video'].includes(name) || attrOf(attrs,'role')==='img' || hasAttr(attrs,'data-diagram') || hasAttr(attrs,'data-chart') || hasAttr(attrs,'data-ui') || classes.includes('app-frame') || (n.hidden && ['div','span'].includes(name)))) {
+      const pic = stack.findLast(p=>p.picture)?.picture || n;
+      n.picture = pic;
+      for (const p of stack) { p.lastPicture=pic; p.firstPicture ||= pic; }
+    }
+    if (n.hidden) { if (!VOID.has(name) && !token.endsWith('/>')) stack.push(n); continue; }
+    if (fact || name === 'figcaption' || classes.some(c => /^(?:photo-|visual-)?caption$/.test(c))) {
+      const frame = stack.findLast(p => p.name === 'figure' || p.name === 'article') || stack.at(-1);
+      n.caption = {fact,text:'',scope:frame,frame:frame?.lastPicture}; captions.push(n.caption);
+    }
+    if ((/^(input|textarea|select|button)$/.test(name) && attrOf(attrs,'type') !== 'hidden' && !hasAttr(attrs,'disabled')) ||
+        (name === 'a' && attrOf(attrs,'href') && (classes.includes('btn') || attrOf(attrs,'role') === 'button'))) {
+      for (const parent of [...stack,n]) if (parent.id) parent.control = true;
+    }
+    if (!VOID.has(name) && !token.endsWith('/>')) stack.push(n);
+  }
+  for (const c of captions) { c.frame ||= c.scope?.firstPicture; if (c.fact && c.frame) frames.set(c.frame,(frames.get(c.frame)||0)+1); }
+  return {ids,captions,frames};
+}
+
+function staticPageForNotes(file) {
+  const folder=path.dirname(path.resolve(file));
+  const project=path.basename(folder)==='.taste-skill' ? path.dirname(folder) : folder;
+  let target='index.html';
+  for (const name of ['build.json','build.done.json']) {
+    let build;
+    try { build=JSON.parse(fs.readFileSync(path.join(project,'.taste-skill',name),'utf8')); } catch { continue; }
+    if (build.url && !build.page) return null;
+    if (build.page) target=build.page;
+    break;
+  }
+  if (typeof target!=='string' || !/\.html?$/i.test(target) || /^https?:/i.test(target)) return null;
+  try { return pageTargets(fs.readFileSync(path.resolve(project,target),'utf8')); } catch { return null; }
+}
+function briefAsks(notes, page, add) {
+  const fix = 'write each ask under Asks: as "- ask -> #id" or "- ask -> none: reason"';
+  const lines = notes.split(/\r?\n/);
+  const head = lines.findIndex(l => /^\s*(?:#{1,6}\s*)?(?:\*\*)?Asks:(?:\*\*)?\s*$/i.test(l));
+  const asks = [];
+  if (head !== -1) for (const line of lines.slice(head+1)) {
+    if (!line.trim()) continue;
+    if (!/^\s*[-*]\s+/.test(line)) break;
+    asks.push(line.replace(/^\s*[-*]\s+/,'').trim());
+  }
+  if (!asks.length) add('FAIL','brief-ask',['Asks:'],'the copy notes need an Asks: block with a mapping',fix);
+  for (const line of asks) {
+    const skip = line.match(/^(.+?)\s*->\s*none:\s*(\S.*)$/i);
+    if (skip) { add('WARN','brief-ask',[skip[1]],skip[1] + ' deferred: ' + skip[2],fix); continue; }
+    const match = line.match(/^(.+?)\s*->\s*#([^\s#]+)$/);
+    if (!match) { add('FAIL','brief-ask',[line],'invalid ask mapping',fix); continue; }
+    if (!page) continue;
+    const target = page.ids.get(match[2]);
+    if (!target) add('FAIL','brief-ask',[line],'target #' + match[2] + ' is missing from the page',fix);
+    else if (/\b(book(?:ing|ings)?|reserv(?:e|ation|ations)|order(?:ing|s)?|checkout|sign[- ]?up|register|registration|subscribe)\b/i.test(match[1]) && !target.control)
+      add('FAIL','brief-ask',[line],'#' + match[2] + ' needs a field or button for "' + match[1] + '"',fix);
+  }
+}
+
 function lint(file) {
   const raw = fs.readFileSync(file, 'utf8');
   const isHtml = /\.html?$/i.test(file);
@@ -609,11 +681,13 @@ function lintRead(R, isHtml) {
   const brandAll = cos.filter((n) => COINED.has(n) && new RegExp(`\\b${esc(n)}\\b`).test(brandText));
   // a name the brief gives is the client's, not coined: names.json beside the page says so (2.5.3: "Kestrel" FAILed
   // twice although the brief named it and names.json said "given by the brief")
-  const given = isHtml ? givenNames(R.file) : new Set();
+  const given = givenNames(R.file);
   const brandCos = brandAll.filter((n) => ![...given].some((g) => new RegExp(`\\b${esc(n.toLowerCase())}\\b`).test(g)));
   if (brandAll.length > brandCos.length) add('INFO', 'copy-cast-company', brandAll.filter((n) => !brandCos.includes(n)), `the brand is a name models coin, given by the brief (names.json): ${brandAll.filter((n) => !brandCos.includes(n)).join(', ')}`, 'keep it; say in the report that the brief gives it');
   if (brandCos.length) add('FAIL', 'copy-cast-company', brandCos, `the brand is a name every model coins: ${brandCos.join(', ')}`, 'coin another name and search it (copy.md, names.json); if the brief gives this name, write it in names.json beside the page as {"name": "<it>", "coined": false, "source": "the brief"}');
-  const otherCos = cos.filter((n) => !brandAll.includes(n));
+  let otherText = R.all;
+  for (const name of given) otherText = otherText.replace(new RegExp(`\\b${esc(name)}\\b`, 'gi'), ' ');
+  const otherCos = cos.filter(n => !brandAll.includes(n) && new RegExp(`\\b${esc(n)}\\b`).test(otherText));
   if (otherCos.length) add('WARN', 'copy-cast-company', otherCos, `default fictional company names: ${otherCos.join(', ')}`, 'coin another name (copy.md, names.json)');
   const quotes = body.filter((b) => /^["“][^\n]{20,}["”]$/.test(b)).length;
   if (quotes >= 3) add('INFO', 'copy-quotes', quotes, `${quotes} quoted testimonials`, 'only quotes the brief gives, with name and role or town; none is fine');
@@ -645,6 +719,18 @@ function lintRead(R, isHtml) {
     const nf = findNotes(R.file);
     if (!nf) add('FAIL', 'copy-notes', ['.taste-skill/copy.md'], 'no copy notes: .taste-skill/copy.md is missing beside the page (or one or two folders up)', 'before the page, copy the block in references/copy.md (The copy notes) to .taste-skill/copy.md and fill the fact sheet, the voice card and the draft');
     else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf); }
+  }
+  if ((isHtml && !insideSkill) || (!isHtml && /^copy\.md$/i.test(path.basename(R.file || '')))) {
+    const nf = isHtml ? findNotes(R.file) : R.file;
+    const page = isHtml ? pageTargets(R.raw) : null;
+    briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page || (!isHtml && staticPageForNotes(R.file)),add);
+    if (page) for (const c of page.captions) {
+      const t = c.text.trim().replace(/\s+/g,' ');
+      if (!t && !c.fact) continue;
+      const explanation = /\b(illustrative (?:image|picture|photo(?:graph)?|render(?:ing)?)|(?:drawing|illustration|picture|photo(?:graph)?|render(?:ing)?|image) of|(?:this|the) (?:picture|photo(?:graph)?|image|drawing|illustration) (?:is|shows|depicts|represents)|for (?:illustrative purposes|illustration only)|stock photo(?:graph)?|stand[- ]in|placeholder|shown (?:above|below|here)|made (?:in|with) code)\b/i.test(t);
+      if (explanation || /^(?:illustration|drawing|render|image|photograph)[.!]?$/i.test(t) || !c.fact || !t || !c.frame || [...t].length > 60 || page.frames.get(c.frame) > 1)
+        add('FAIL','caption',[t],'a picture may carry one short fact line','use one .fact-line of at most 60 characters for a name, place, size, year or price');
+    }
   }
   if (notes) for (const [sev, hits, msg, fix] of notes.out) add(sev, 'copy-notes', hits, msg, fix);
 

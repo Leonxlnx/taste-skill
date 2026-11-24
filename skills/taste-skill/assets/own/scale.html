@@ -1,0 +1,38 @@
+<section class="section own" id="scale" data-own="scale" aria-labelledby="scale-title">
+  <div class="wrap">
+    <h2 id="scale-title">From ice water to a rolling boil</h2>
+    <p class="t-lead measure">The Thimble Point kitchen probe reads from 0 to 100 °C. These five familiar temperatures put its range in context.</p>
+    <figure class="thermometer" data-assumed aria-label="Thermometer range with five temperature references">
+      <div class="ruler"><svg viewBox="0 0 100 15" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h100"/><path d="M0 0v13"/><path d="M5 0v5"/><path d="M10 0v5"/><path d="M15 0v5"/><path d="M20 0v5"/><path d="M25 0v13"/><path d="M30 0v5"/><path d="M35 0v5"/><path d="M40 0v5"/><path d="M45 0v5"/><path d="M50 0v13"/><path d="M55 0v5"/><path d="M60 0v5"/><path d="M65 0v5"/><path d="M70 0v5"/><path d="M75 0v13"/><path d="M80 0v5"/><path d="M85 0v5"/><path d="M90 0v5"/><path d="M95 0v5"/><path d="M100 0v13"/></svg></div>
+      <ol class="points">
+        <li><strong>0 °C</strong><span>Ice water</span></li>
+        <li><strong>25 °C</strong><span>Warm room</span></li>
+        <li><strong>50 °C</strong><span>Hot tap</span></li>
+        <li><strong>75 °C</strong><span>Green tea</span></li>
+        <li><strong>100 °C</strong><span>Boiling water</span></li>
+      </ol>
+      <figcaption>Approximate reference points, at sea level.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+[data-own="scale"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="scale"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="scale"] .thermometer { padding: var(--s-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); font-variant-numeric: tabular-nums; }
+[data-own="scale"] .ruler svg { width: 100%; height: var(--s-7); overflow: visible; }
+[data-own="scale"] .ruler path { fill: none; stroke: var(--ink); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+[data-own="scale"] .points { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr; }
+[data-own="scale"] .points li { display: grid; grid-template-rows: auto 1fr; gap: var(--s-1); align-items: start; text-align: center; justify-items: center; }
+[data-own="scale"] .points li:first-child { text-align: left; justify-items: start; }
+[data-own="scale"] .points li:last-child { text-align: right; justify-items: end; }
+[data-own="scale"] .points strong { font-weight: 500; font-size: var(--t-h3); white-space: nowrap; }
+[data-own="scale"] figcaption { color: var(--muted); font-size: var(--t-small); margin-top: var(--s-6); }
+@media (max-width: 639px) {
+  [data-own="scale"] .thermometer { padding: var(--s-4); }
+  [data-own="scale"] .points strong { font-size: var(--t-small); }
+  [data-own="scale"] .points { grid-template-columns: minmax(0,1fr) repeat(3,minmax(0,2fr)) minmax(0,1fr); }
+  [data-own="scale"] .points span { font-size: var(--t-small); line-height: 1.3; }
+  [data-own="scale"] .ruler svg { height: var(--s-6); }
+}
+</style>

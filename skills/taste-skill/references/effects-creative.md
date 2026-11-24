@@ -32,8 +32,7 @@ colours and never move (rule 7, MO-57; `sections-library.md` logo-row).
   only once, on a click or as a hero reveal, inside the `[data-visual]`; scroll-driven only as a
   dealt section moment. Ray marching only in a dark hero, at half resolution; halftone and dither
   only as a still ground, never on a photograph.
-- Nothing moves with scroll; a card never moves by itself. Motion lives inside a visual: a pointer
-  clicking in a UI window, rotors that spin up under the pointer, a seat that swivels after it.
+- Keep the effect inside its visual. A pointer can work a UI, turn a seat or spin the rotors. For motion built into an own section, see `compose.md`.
 
 ## Cost: light enough for a laptop's integrated GPU
 
@@ -109,11 +108,7 @@ picture or the visual of one split section.
   turns, the rotors spin up into discs and the drone lifts off its legs and tips toward the pointer.
 - The accent paints one part: the ear cups, the seat and back, the camera's body band and shutter,
   the drone's shell; their shaded side is a deep accent, never grey.
-- Only an object the product really is or sells, on a tech page (a drone, a camera, headphones as
-  hardware). One per page, with no caption under the stage: the section
-  heading or copy says what it is and gives one real fact from the client.
-- A product none of the four fits gets its own photographs or a render from `assets/objects`, never
-  the nearest of these four and never mood stock in its place.
+- Only use the object the product really is or sells. Use the picture ladder in `photos.md` for other subjects. Any product facts follow `copy.md`.
 - The print is the render to use. `data-cx-render="studio"` (the same form as a smooth shaded render)
   is not for pages yet: at one sample per CSS pixel its edges stair-step, and next to a real product
   shot its forms read as toys. Never pick it for a shop or a product page; use the print, or the
@@ -158,9 +153,7 @@ colours: the judges marked a contour pattern standing in for a map as a fake dra
 
 ## A photograph with copy (`fx-photo`)
 
-- The client's photograph in its natural colour, the copy on its calm, dark corner (white type, no
-  scrim), as figma.com and x.ai show theirs; in a link it zooms 1.02 to 1.03 inside its frame
-  (`motion.md`). Words on a photograph only in the hero and one band a page, never on a place.
+- Put type on a calm part of the client's photograph. Check both crops and contrast (`photos.md`). Keep hover inside the frame (`motion.md`).
 - No filter over it: no halftone, dither, dissolve, print, duotone or blur (`data-cx-grade` stays
   off).
 - The photographer's credit goes in the page's one footer credit line, never under the picture.

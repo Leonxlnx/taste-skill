@@ -1,0 +1,33 @@
+<section class="section own" id="rail" data-own="rail" aria-labelledby="rail-title">
+  <div class="wrap">
+    <h2 id="rail-title">A bookcase, made to fit</h2>
+    <p class="t-lead measure">Elm &amp; Tenon builds to your room. You approve the drawing before we cut the boards.</p>
+    <ol class="steps" data-assumed>
+      <li data-m-progress><span class="stop" aria-hidden="true">1</span><h3>Measure the room</h3><span class="duration">Half a day</span><p>A measured plan, down to the last alcove.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">2</span><h3>Choose the timber</h3><span class="duration">1 week</span><p>Three oiled samples to try in your own light.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">3</span><h3>Set the shelves</h3><span class="duration">1 week</span><p>A full-size shelf layout to check against your books.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">4</span><h3>Build in the workshop</h3><span class="duration">3 weeks</span><p>A dry-fit photo to sign off before finishing.</p></li>
+      <li data-m-progress><span class="stop" aria-hidden="true">5</span><h3>Fit the bookcase</h3><span class="duration">1 day</span><p>Your fitted shelves and a tin of finishing oil.</p></li>
+    </ol>
+  </div>
+</section>
+
+<style>
+[data-own="rail"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="rail"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="rail"] .steps { border-bottom: 1px solid var(--line); }
+[data-own="rail"] .steps li { position: relative; display: grid; grid-template-columns: var(--s-7) minmax(12em, 1fr) minmax(7em, .45fr) minmax(0, 1.2fr); gap: var(--s-5); align-items: start; padding-block: var(--s-4); }
+[data-own="rail"] .steps li::before, [data-own="rail"] .steps li::after { content: ""; position: absolute; inset: calc(var(--s-4) + var(--s-4)) auto auto var(--s-4); width: 1px; height: 100%; background: var(--line); }
+[data-own="rail"] .steps li::after { background: var(--action); transform: scaleY(var(--p, 1)); transform-origin: top; }
+[data-own="rail"] .steps li:last-child::before, [data-own="rail"] .steps li:last-child::after { display: none; }
+[data-own="rail"] .stop { position: relative; z-index: 1; width: var(--s-6); height: var(--s-6); display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--bg); font-variant-numeric: tabular-nums; }
+[data-own="rail"] .duration { color: var(--muted); font-variant-numeric: tabular-nums; }
+[data-own="rail"] .steps li + li h3::before { content: ""; position: absolute; inset: 0 0 auto calc(var(--s-7) + var(--s-5)); border-top: 1px solid var(--line); }
+@media (max-width: 750px) {
+  [data-own="rail"] .steps li { grid-template-columns: var(--s-6) 1fr; gap: var(--s-1) var(--s-4); padding-block: var(--s-4); }
+  [data-own="rail"] .stop { grid-row: 1 / 4; }
+  [data-own="rail"] .steps li::before, [data-own="rail"] .steps li::after { top: var(--s-6); }
+  [data-own="rail"] .steps li + li h3::before { left: var(--s-7); }
+  [data-own="rail"] .duration, [data-own="rail"] .steps p { grid-column: 2; }
+}
+</style>

@@ -52,7 +52,11 @@
     "list": [
       "pictures:4"
     ],
-    "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene."
+    "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene.",
+    "carry": [
+      "photos",
+      "list"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

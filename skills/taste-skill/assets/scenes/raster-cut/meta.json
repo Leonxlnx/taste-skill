@@ -52,7 +52,10 @@
     "list": [
       "pictures:1"
     ],
-    "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage."
+    "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

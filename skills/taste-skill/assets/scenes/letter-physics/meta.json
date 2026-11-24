@@ -24,10 +24,14 @@
   "reduced": "The claim with the answer under it on the inverse ground, the photograph faint at the edges.",
   "phone": "The light version: the letters fade and drift instead of flying in depth.",
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "words": "a claim of 12-36 characters and an answer of 16-60 characters that answers it",
-    "photo": "optional: one dark photograph with a calm centre"
+    "photo": "optional: one dark photograph with a calm centre",
+    "carry": [
+      "words"
+    ],
+    "list": []
   },
   "never": "a glow or blurred type under the answer; a claim over 40 characters; on a calm or clinical brief (the burst reads as loud); on a product page about a physical thing",
   "avoidWith": [
@@ -52,5 +56,6 @@
     "word-highlight",
     "giant-type-pass",
     "letters-assemble"
-  ]
+  ],
+  "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
 }

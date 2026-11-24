@@ -122,7 +122,7 @@ function lintCss(src, where, base, F, ctx) {
   const endlessSel = new Set(rules.filter((r) => /infinite/i.test(r.decls)).map((r) => r.sel));
   for (const r of rules) {
     const ds = declsOf(r.decls);
-    if (r.at.includes('prefers-reduced-motion') && /reduce/.test(r.at)) continue;   // the reduced rules stop motion; they are no fault
+    if (/prefers-reduced-motion\s*:\s*reduce\b/.test(r.at)) continue;   // the reduced rules stop motion; they are no fault
     for (const [k, v] of ds) {
       const show = `${clip(r.sel, 60)} { ${k}: ${clip(v, 60)} }`;
       if (k === 'transition' || k === 'transition-property') {
@@ -130,7 +130,9 @@ function lintCss(src, where, base, F, ctx) {
         for (const it of items) {
           const p = (it.first || (k === 'transition' && it.dur != null ? 'all' : '')).toLowerCase();
           if (p === 'all') hit('motion-transition-all', r, show);
-          else if (LAYOUT.test(p)) hit('motion-layout', r, show);
+          // Native details disclosure is a user-operated height change in the motion floor.
+          const disclosure = p === 'block-size' && r.sel.includes('details::details-content') && /\.faq--fold|\[data-own\]/.test(r.sel);
+          if (LAYOUT.test(p) && !disclosure) hit('motion-layout', r, show);
           if (k !== 'transition') continue;
           const c = curve(it.ease);
           if (c === 'in') hit('motion-ease-in-ui', r, show);
@@ -158,6 +160,7 @@ function lintCss(src, where, base, F, ctx) {
         }
       }
       // a positive delay per nth-child on something that plays once (a negative one, or one on a loop, only sets a loop's phase)
+      if (k === 'will-change' && splitTop(v).some(p => /^(top|left|width|height)$/.test(p))) hit('motion-layout', r, show);
       if (k === 'animation-delay' && /nth-child|nth-of-type/.test(r.sel) && !/^-/.test(v.trim()) && !endlessSel.has(r.sel.replace(/:nth-(child|of-type)\([^)]*\)/g, ''))) hit('motion-stagger', r, show);
       if (k === 'animation-delay' || k === 'transition-delay') { if (/var\(--(i|index|n|idx|delay-i)\)|calc\([^)]*var\(--(i|index|n|idx)\)/.test(v)) hit('motion-stagger', r, show); }
       if ((k === 'transform' || k === 'scale') && (isZeroScale(v) || (k === 'scale' && /^0(\.0+)?$/.test(v.trim())))) {
@@ -208,10 +211,39 @@ function lintJs(src, where, base, F, ctx) {
       if (curve(it.ease) === 'in') F('motion-ease-in-ui', at(m.index), clip(m[0], 90));
     }
   });
-  each(/requestAnimationFrame\s*\(([\s\S]{0,500}?)\)/g, (m) => {
-    const w = m[1].match(/\.style\.(width|height|top|left|right|bottom|margin\w*|padding\w*)\s*=/);
-    if (w) F('motion-layout', at(m.index), `an animation frame writes style.${w[1]}`);
+  // Inspect the callback, including a named function reused by a timer or animation frame.
+  const functions = new Map();
+  const bodyAt = i => {
+    let depth = 1, quote = '';
+    for (let j = i + 1; j < s.length; j++) {
+      const ch = s[j];
+      if (quote) { if (ch === '\\') j++; else if (ch === quote) quote = ''; continue; }
+      if (/['"\x60]/.test(ch)) { quote = ch; continue; }
+      if (ch === '{') depth++;
+      if (ch === '}' && --depth === 0) return s.slice(i + 1, j);
+    }
+    return '';
+  };
+  each(/(?:\bfunction\s+(\w+)\s*\([^)]*\)|\b(?:const|let)\s+(\w+)\s*=\s*(?:\([^)]*\)|\w+)\s*=>)\s*\{/g, m => {
+    functions.set(m[1] || m[2], bodyAt(m.index + m[0].length - 1));
   });
+  each(/\b(requestAnimationFrame|setInterval|setTimeout)\s*\(\s*/g, m => {
+    const start = m.index + m[0].length;
+    const arg = s.slice(start, start + 600);
+    const named = arg.match(/^(\w+)\s*[,)]/);
+    const inline = arg.match(/^(?:function\s*\w*\s*\([^)]*\)|(?:\([^)]*\)|\w+)\s*=>)\s*/);
+    if (!named && !inline) return;
+    const pos = start + (inline?.[0].length || 0);
+    const body = named ? functions.get(named[1]) || '' : s[pos] === '{' ? bodyAt(pos) : s.slice(pos).split(/[,;\n]/, 1)[0];
+    if (m[1] === 'requestAnimationFrame') {
+      const prop = body.match(/\.style\.(top|left|width|height)\s*=|\.style\.setProperty\(\s*['"](top|left|width|height)['"]/);
+      if (prop) F('motion-layout', at(m.index), 'animation frame writes ' + (prop[1] || prop[2]));
+    } else if (/\.(textContent|innerText|innerHTML)\s*=|\.replaceChildren\(/.test(body) ||
+      (/\.classList\.(toggle|replace|add|remove)\(/.test(body) && (m[1] === 'setInterval' || /words?|text|slides?|headlines?|captions?|phrases?/i.test(body)))) {
+      ctx.timed.push({ at: at(m.index), code: clip(m[0] + (named?.[1] || body), 100) });
+    }
+  });
+  if (/createElement\(\s*['"]button['"]/.test(s) && /['"]Pause\b/i.test(s) && /addEventListener\(\s*['"]click/.test(s)) ctx.paused = true;
   // GSAP: an ease that starts slow on a from() or to() entrance, a scale of 0, a staggered list
   each(/gsap\.(from|to|fromTo)\s*\(([\s\S]{0,400}?)\)/g, (m) => {
     ctx.animates = true;
@@ -230,15 +262,19 @@ function lintJs(src, where, base, F, ctx) {
 
 // ---------------------------------------------------------------- one file
 const RULES = {
+  'motion-timed-text': ['FAIL', 'a timer changes the text without a pause control', 'use a button to advance, or provide a working pause button'],
+  'motion-rotate-paragraph': ['FAIL', 'a rotating word is inside a paragraph', 'keep the paragraph still and use this effect only in an h1 or h2'],
+  'motion-counter-still': ['FAIL', 'the resting counter shows zero before the script runs', 'put the final figure in the markup'],
+
   'motion-transition-all': ['FAIL', 'transition: all (or a shorthand with no property) animates whatever changes next, layout included', 'name the properties: transition: transform 150ms var(--m-ease), opacity 150ms var(--m-ease)'],
   'motion-ease-in': ['FAIL', 'an entrance or animation that starts slow and ends hard (ease-in): it feels late, then lands with a thud', 'use var(--m-ease-enter) for an entrance, var(--m-ease) for a UI step'],
   'motion-scale-zero': ['FAIL', 'something grows from scale 0: nothing in the world appears from nothing', 'start at scale .9 to .96 with opacity 0, or let it fade'],
   'motion-layout': ['FAIL', 'a layout property animates (width, height, top, left, margin, padding): every frame reflows the page and the neighbours jump', 'move it with transform (translate, scale) or a clip-path, and fade with opacity'],
   'motion-no-reduced': ['FAIL', 'the page animates on its own but has no prefers-reduced-motion rule', 'add @media (prefers-reduced-motion: reduce) { ... } that shows the finished frame: animation: none, transition-property: opacity, color'],
-  'motion-enter-variant': ['FAIL', 'a hero data-enter value the kit does not have, or one that needs a picture the hero lacks', 'use one of the entrances in assets/motion/meta.json (rise, set-type, focus, exposure, aperture, line-blocks, doors, product-at-work, still), as dealt'],
+  'motion-enter-variant': ['FAIL', 'a hero data-enter value the kit does not have, or one that needs a picture the hero lacks', 'use one of the entrances in assets/motion/meta.json (rise, set-type, focus, exposure, line-blocks, product-at-work, still), as dealt'],
   'motion-scroll-library': ['FAIL', 'a smooth-scroll library takes the scroll from the visitor', 'delete it: the page scrolls natively; a moment holds its section with position: sticky'],
   'motion-ease-in-ui': ['WARN', 'a UI transition that starts slow (ease-in): the control seems to hesitate', 'var(--m-ease): a fast start and a soft landing'],
-  'motion-slow-ui': ['WARN', 'a hover, focus or press transition over 400ms: the control answers late', '150ms in and 120ms out (--m-in, --m-out); a menu 200ms; only a photograph may take 600ms'],
+  'motion-slow-ui': ['WARN', 'a hover, focus or press transition over 400ms: the control answers late', '150ms in and 120ms out (--m-in, --m-out); a menu 200ms; a photograph takes 400ms'],
   'motion-linear-ui': ['WARN', 'linear timing on a UI step: it starts and stops like a machine', 'linear is for loops and drifts; a step takes var(--m-ease)'],
   'motion-overshoot': ['WARN', 'a curve that passes its mark (a y value outside 0 to 1): a bounce', 'no bounce on a page; a spring only for a thing the hand moves (a switch knob), at most 2% past the mark'],
   'motion-endless': ['WARN', 'an animation that never ends, outside a card loop, and no pause button on the page', 'run it 1 to 2 times, or put it in a [data-m-loop] panel (motion.js adds its pause button)'],
@@ -251,7 +287,7 @@ function lint(file) {
   const ext = path.extname(file).toLowerCase(), dir = path.dirname(file);
   const found = new Map();
   const F = (id, where, code) => { if (!found.has(id)) found.set(id, []); found.get(id).push({ where, code }); };
-  const ctx = { animates: false, reduced: false, endless: [], paused: false, kind: KIND };
+  const ctx = { animates: false, reduced: false, endless: [], timed: [], paused: false, kind: KIND };
   const rel = (p) => path.relative(process.cwd(), p).split(path.sep).join('/') || p;
   if (ext === '.css') lintCss(raw, rel(file), 1, F, ctx);
   else if (ext === '.js' || ext === '.mjs') lintJs(raw, rel(file), 1, F, ctx);
@@ -271,12 +307,24 @@ function lint(file) {
     for (const [t, href] of linked) {
       if (!href || /^(https?:)?\/\//i.test(href) || href.startsWith('data:')) { if (href && /lenis|locomotive/i.test(href)) F('motion-scroll-library', where, href); continue; }
       const p = path.resolve(dir, href.split(/[?#]/)[0]);
-      const kit = /(^|\/)assets\//.test(href.replace(/\\/g, '/'));
+      const kit = /(^|\/)assets\//.test(p.replace(/\\/g, '/'));
       if (kit && !KIT) { if (/motion\.(css|js)$/.test(href)) ctx.reduced = true; continue; }
       let txt = ''; try { txt = fs.readFileSync(p, 'utf8'); } catch { continue; }
       if (t === 'css') lintCss(txt, rel(p), 1, F, ctx); else lintJs(txt, rel(p), 1, F, ctx);
     }
-    ctx.paused = /class=["'][^"']*\bloop-pause\b|aria-label=["'](Pause|Play)\b|ui\.pausable\(|data-m-loop/i.test(html);
+    ctx.paused ||= /class=["'][^"']*\bloop-pause\b|aria-label=["'](Pause|Play)\b|ui\.pausable\(|data-m-loop/i.test(html);
+    const markup = html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, m => m.replace(/[^\n]/g, ' '));
+    for (const p of markup.matchAll(/<p\b[^>]*>[\s\S]*?(?:<\/p>|(?=<(?:p|section|div|h[1-6])\b)|$)/gi)) {
+      if (/\bdata-moment\s*=\s*["']?word-rotate\b|\bdata-(?:rotating-words?|word-rotate)\b/i.test(p[0])) F('motion-rotate-paragraph', where + ':' + lineAt(markup, p.index), clip(p[0]));
+    }
+    for (const tag of markup.matchAll(/<([a-z][\w-]*)\b([^>]*(?:\bdata-(?:m-count|count(?:-to|-up)?|counter(?:-end)?)\b|class\s*=\s*["'][^"']*\b(?:counter|count-up)\b)[^>]*)>/gi)) {
+      const body = markup.slice(tag.index + tag[0].length).split(new RegExp('</' + tag[1] + '\\s*>', 'i'), 1)[0].replace(/<[^>]*>/g, '');
+      const first = body.match(/[-+]?\d[\d,.]*/)?.[0];
+      const target = tag[2].match(/\bdata-(?:count-to|counter-end|target|count|counter)\s*=\s*["']?([-+\d.,]+)/i)?.[1];
+      if (first && /^[-+]?0+[,.0]*$/.test(first) && !(target && Number(target) === 0))
+        F('motion-counter-still', where + ':' + lineAt(markup, tag.index), clip(tag[0] + body));
+    }
+    if (/<button\b[^>]*(?:data-[\w-]*pause|aria-label=["']Pause\b)|<button\b[^>]*>\s*Pause\b/i.test(markup)) ctx.paused = true;
     // the hero's entrance: a variant the kit has, and the picture it needs
     const hero = html.match(/<section\b[^>]*\bclass=["'][^"']*\bhero\b[^"']*["'][^>]*>/i);
     const ev = hero && hero[0].match(/\bdata-enter(?:\s*=\s*["']([^"']*)["'])?/i);
@@ -292,6 +340,7 @@ function lint(file) {
   }
   // a page is judged whole; a lone .css or .js file has no page round it, so these two are only told (INFO)
   const page = !['.css', '.js', '.mjs'].includes(ext);
+  if (page && !ctx.paused) for (const item of ctx.timed) F('motion-timed-text', item.at, item.code);
   if (ctx.endless.length && !ctx.paused) for (const e of ctx.endless) F(page ? 'motion-endless' : 'motion-endless-info', e.at, e.code);
   if (ctx.animates && !ctx.reduced) F(page ? 'motion-no-reduced' : 'motion-no-reduced-info', rel(file), 'animations, and no prefers-reduced-motion anywhere in its CSS or scripts');
   const findings = [...found].map(([id, hits]) => {

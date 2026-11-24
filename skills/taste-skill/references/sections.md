@@ -1,27 +1,12 @@
 # Sections
 
-A page is built from its kind's plan; a deal changes the parts a template would fix. Every id has a
-recipe in `sections-library.md`. The kind and what it may carry: `SKILL.md` sections 1 to 3 and
-`effects-usage.md`. Heights and edges: `layout-v4.md`.
+Build the dealt frame. Choose each section's form from its content. Read `compose.md` before the first page, then the recipes you use in `sections-library.md`. Edges and spacing are in `layout-v4.md`.
 
 ## 1. Plan the sections
 
-Write the plan before building: line 1 the kind, line 2 the deal, then one line per section: its
-id, its one idea, its picture, what it holds (every item the brief gives: the whole menu, every
-room, every question; a section is as tall as its content, `layout-v4.md` section 2, and nothing is
-cut to fit a screen) and, on tech, the section that holds the effect, the scene or a moment.
+Write the kind, then the frame from the PLAN. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
 
-- **Every section shows the real thing:** a photograph, a portrait, real icons, the client's UI, a
-  diagram card or (tech only) the effect. A section without a picture is allowed only for a price
-  list, an FAQ, a specs table, a booking form or a dealt statement moment's own section, once each,
-  and two picture-less sections are never neighbours (the short page with no photograph, its
-  statement hero, its statement moment and its one section, is the one exception, section 4). A quote needs a face or merges into the section above. The picture takes a real share:
-  half a tile or more, 50/50 in a split, the whole section as a layer. The close is its own picture (a
-  photograph, the big button or the name set wide).
-- **What the brief asks for is built, never a mailto in its place.** Under the section lines the
-  plan lists each ask as `brief asks -> element`, and the page has every element (in testing: "book
-  a repair slot" was a free text box, "see the rooms" had no room choice, "sell beans online" was a
-  mailto, a product had no price):
+**Match each ask to an element.** In `.taste-skill/copy.md`, put every ask under `Asks:` as `- <ask> -> #<id>`. The id must be on the page. The gate checks the block and its targets (`brief-ask`). A contact link cannot take a booking or an order.
 
   | Brief asks | Element on the page |
   |---|---|
@@ -34,50 +19,38 @@ cut to fit a screen) and, on tech, the section that holds the effect, the scene 
 
   The form's markup and errors: `system.md`, Forms; `sections-library.md`, booking-form. Without a
   form service the action stays a `mailto:` on `.example`, but the fields are still the real ones.
-- **Each photograph is picked against its heading's claim, not its keyword** (`photos.md`): the plan
-  writes one line per photograph, `heading says X, picture shows Y`, and X and Y must agree.
-- **One object never carries the page** (in testing: a robot arm in six sections and a game's
-  salvage rig in six, each "one object six times", both capped at 4 to 4.5). The object shown whole
-  (the product's photograph, a game's key art) leads the hero and **at most two
-  more sections**; every other picture section is carried by another kind of visual the brief
-  supports, from its row below, no kind more than twice. A new angle, a recolour or a crop of the
-  whole is the object again; a use photograph counts as use only when its setting fills the frame
-  (the bench, the street, the room, half the picture or more; the object one thing in it). Write
-  each plan line's kind; three object lines at most.
 
-  | Kind | the object whole: hero + 2 | carries the other sections |
-  |---|---|---|
-  | Software | the `app-frame` | UI fragments of its subject on cards, a diagram card, real tool icons, a type moment, a named quote with its face, the effect or scene |
-  | Gaming | the client's key art (none: the setting's photograph under the game's name) | the world (in-engine shots, else photographs of its setting), the crew at work (the client's screenshots), the trailer frame, the screenshot strip, a type moment, the real platform marks |
-  | Tech hardware | the product (photograph, the client's CAD render; a render only when the brief asks for 3D) | its use (the device at a bench or in its place), parts close up, the motion video frame, a diagram card held still, a type moment (one figure set large), a context photograph of the trade (a workshop, a lab) |
-  | Product | the product (photograph; a render only when the brief asks for 3D) | its use (loaded, carried, at home), people with it, close-ups of its parts, a diagram card held still, a type moment, a context photograph of where it lives |
+**Match the content to a form.** The section can show a rail, comparison, booking bar, chart or working UI as its picture.
 
-- **The client's own assets get designed slots.** When the brief says the client has a trailer,
-  key art, in-engine screenshots, CAD renders, an exploded model or a motion video, each gets a slot
-  that reads finished now: the frame at the file's final ratio, holding a stand-in photograph (a
-  kept live-search frame of the game's setting or of the product's kind in use, `photos.md`; a kit
-  render still only when the brief asks for 3D), named in a comment for the client's file, never an
-  empty, grey or broken frame and never a line saying the file is missing. The slots
-  (`sections-library.md`, client-slots): the **trailer or motion video frame** (a real `<video>`
-  with a stand-in poster, and a play control only when there is a page or file to play), the **screenshot strip** (three to five
-  stand-in photographs of the setting, framed like captures), the **CAD or render frame**, the **exploded
-  frame**; key art fills the hero's stage. The report lists every slot, its file and its stand-in.
+| Content | Form |
+|---|---|
+| Ordered steps with times or handoffs | Numbered rail, week strip or route |
+| The product's timeline, diff, board or map | Build that view large in HTML or SVG |
+| Several uses of one product | One frame with tabs or a switcher |
+| Plans priced by quantity | Slider or stepper above the plans |
+| A price argument or two costs | Comparison bars or an itemised receipt |
+| A range or spec | Scale with reference points, or spec rows beside a dimension drawing |
+| Projects, rooms or goods with facts | Case rows or an index with a fact line per item |
+| Two states | Toggle or divider |
+| Hours or a schedule | Day bar or week grid |
+| A stay or table to book | Booking bar on the hero, full form at the close |
+| Goods sold here | Configurator or order pad within the first three sections |
+| Photographs with words | A composition from `sections-library.md` |
+
+**Show the subject.** Use the client's pictures first, including screens, art and renders. Next build the actual view, draw the product or its world, or plot its data. Start here for a game without art, an unphotographed product or a software claim. Use a stand-in photograph only for what it shows, such as a street, a material, hands at work or a whole room of the right kind. Never use another maker's product, a detail for a whole or mood beside prices. For each photograph write “heading says X, picture shows Y”. A list, table, form or FAQ may stand on type alone. Change ground between two such neighbours.
+
+- **One object cannot show every claim.** Show the whole product in the hero and at most two further sections. Elsewhere show its use, parts, output or setting. A recolour of the whole product still counts as a whole view. A game's crew, tools and world can share one drawing style.
+- **Client files.** Reserve slots at their final ratio for promised art, renders, screenshots or films. Use a complete built picture until the file arrives. Name the file in a comment and the handoff report. Show a play control only for a playable source. See `sections-library.md`, client-slots.
 - **One idea per section,** one h2, one action at most besides the main one (a pair only in the
   hero, or where a product needs "compare" beside "buy"). A long section holds one list, table or
   form, or one idea in two groups, never two ideas.
-- **The main action** reads the same, word for word, in the nav, the hero, the close (or the
-  booking) and the phone bar, and nowhere else as a filled button (a place whose action is Get
-  directions keeps it out of the nav, section 4).
-- **Merge short blocks:** a quote, logo row or stat row that alone is a few lines, or an FAQ of two
-  or three questions, goes into the section above as its last element, 64 to 96px under its
-  content, with no heading or ground of its own. A longer FAQ is its own section.
+- **Main action.** Use the same words in the nav, hero, phone bar and wherever the visitor completes it. For orders put the controls early. For stays and tables dock the booking bar on the hero and keep the full form at the close.
+- **Merge short blocks.** Put a quote, logo row or short FAQ with the section it belongs to. A text moment rides on an existing h2 or the close. Only the page's main claim may stand alone, once, in a thin statement section.
 - **Repeats:** a card layout (2x2, bento, three cards, split card, open tiles) at most twice a page;
   neighbours never share a layout; on software, product and service a calmer section (quote, prices,
   FAQ) after at most two visual ones, and the back third of the page calm before the close. Repeat
   the section scaffold (head, padding, ground logic) so it is learned once.
-- **Proof as small exact objects,** only from the brief: a named quote with a face, a footnoted
-  figure, press lines, a rating line, real customer logos with permission. No row of big stat
-  numbers, no filler stat strips, no check-icon lists, no customer-logo wall.
+- **Proof.** Use the brief's named quotes, footnoted figures, reviews or permitted customer logos. A comparison needs comparable numbers and a source.
 - **Two boxes deep at most:** a card and its picture panel, or a panel and its UI. A card whose
   panel holds UI drops its box (`.card--open`) or runs the panel flush (`.panel--flush`).
 - **One page, real links:** every nav word, button and footer link goes to an `#id` on the page, the
@@ -94,34 +67,14 @@ cut to fit a screen) and, on tech, the section that holds the effect, the scene 
 
 ## 2. The deal
 
-Deal the parts a template fixes, never by taste. `start.mjs deal` prints them under LAYOUT, after
-the palettes and the pairings, each away from the last pages' (the `--history` file keeps them), so
-two pages from one brief differ:
+Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
 
-```
-LAYOUT for place (dealt away from the last pages; build exactly these, write them on plan line 2):
-  nav nav-cards · footer footer-visit · close close-photo · buttons solid · mark petal
-  bands: one tinted band (.ground-surface); never two bands side by side, never the hero
-  compositions (markup: sections-library.md, Compositions; use only the sections the page has):
-    the visit: street-large
-    the offer (menu, prices, services): strip
-    the showcase (the place, the work, the house, in use): bleed-panel
-    rooms or goods: row
-    the booking or order form: form-band
-```
+Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, grounds and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay or table gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
-In testing, pages of one kind had the same parts in the same order (one place hero, one close,
-the same visit split): only the palette told them apart. The hero comes from `assets/layout/deal.mjs`
-(a place: one of its four forms, `layout-v4.md` section 3). Write the results on plan line 2 and in the
-comment at the top of `<body>`, and build exactly those. A composition the page has no section for
-is skipped ("not used" on plan line 2); one composition never on two neighbouring sections. Deal one part again only when its recipe's
-"use" does not fit. With no photograph to show, these dealt parts do not fit, and each is dealt
-again from its own list without them, never drawn: `nav-cards` (and any nav panel of photograph
-cards) to `nav-split` with no panel, or `nav-centre`; `close-photo` to the head row of `close-word`
-without the name (the h2 and one line on the left, the main button on the right, both on the
-`.wrap` lines); `media-band` to `space` (a game without art keeps it: a photograph of its setting is the layer); a place's hero to the `statement` hero on `.ground-brand`.
-Write the change and its reason on plan line 2.
-
+- `grounds` lists a ground per section. `alternate` alternates page and tint from section two, with inverse for the strongest picture. `blocks` repeats page, page, tint and closes on inverse. `islands` sets an inverse island and a brand or tint island on the page ground. `calm` changes ground at the main picture and sometimes again at the close. Neighbours may share a ground. Keep non-tech heroes off bands.
+- `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
+- `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).
+- `moment` names the host or heading. Use one, with a second from seven sections. A scene appears about once in three eligible deals and needs content to carry it. See `moments.md` and `scenes.md`.
 - **Nav** (one fixed, opaque bar on the `.wrap`; `system.md`): `nav-mega` (link columns and one
   picture card in the panel), `nav-cards` (three or four picture cards), `nav-centre` (the words in
   the middle), `nav-split` (the words left, the name in the middle). `nav--tone` puts the bar on the
@@ -132,198 +85,29 @@ Write the change and its reason on plan line 2.
   line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
   client's photograph down to the links), `close-word` (the h2 and the button, then the name set
   across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
-  and the button, beside a photograph), `close-form` (the booking or order form is the close).
-  Never a button across the whole `.wrap`. The close never repeats the section above it: a page
-  whose last section is a form ends on `close-form` instead (the form moves into the close; dealt as the
-  form's composition, `close-form` is the plan's close, never a second close row beside it). The
-  footer never prints again what a section above printed (the hours under a visit section, a
-  second form): `footer-visit` then holds the address, the way there and the nav row.
-- **Bands** (every kind, not only tech): one or two sections on a dealt ground from the palette,
-  `tint` (`.ground-surface`), `dark` (`.ground-inverse`, the palette's own dark) or `brand`
-  (`.ground-brand`), at the page's middle or later, holding a strong picture; never two bands side
-  by side, never the hero, never the visit. The older rhythm words read the same: `dark-band` is
-  dark, `surface-pairs` tint, `brand-band` and `colour-band` brand, `space` none.
+  and the button, beside a photograph), `close-form` (the full form at the close). Keep the links row below it. If the visit section already gives the hours, put the address, way there and nav in `footer-visit`.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
 
 ## 3. The plans
 
-Optional parts in brackets; each list is the order on the page. Tell it as a story: say what it
-does, show it, prove it, let people explore. Tabs only on software, click only.
+Start with the material the brief gives. Use these routes to place it.
 
-**Software** (and AI, developer tools, fintech). nav, hero, [logo-row docked in the hero],
-**app-frame** (the product big: its list beside the open item in one app window across the
-`.wrap`, as section 2 or 3; `sections-library.md`), two or three feature sections in different layouts (features-2x2, bento, split-text-left,
-tabs-tour, chapter, steps), [integrations as a `fanin-warehouse` or `hub-tools` diagram card;
-integrations-grid only for 9 or more tools the brief lists],
-[quote-stat (a quote the brief gives) or customer-proof-row (customers the brief names); with
-neither, the calm section is pricing or the FAQ], [pricing-three, pricing-two or
-comparison-table], faq, footer.closing. Pictures:
-the client's screens as live HTML, else fragments from `assets/ui` rewritten to its names, each
-showing the product's own subject (`cards.md`, The fragment on it: a code-review tool shows a red
-and green diff with its Accept action); diagram cards for how things connect; real icons for the
-tools it works with. The effect, moments and scene as `effects-usage.md` deals them.
-Nav `nav-mega|nav-cards|nav-centre` · footer `footer-dark|footer-statement|footer-columns` · close
-`close-type|close-word` · rhythm `dark-band|surface-pairs|space` · buttons `solid|pill|tonal|arrow`.
-Never: stock people at screens; an object render in place of the product; a page whose product
-shows only as small fragments centred on coloured panels (in testing: about 3.5 points under Linear).
+**Software** (including developer tools and fintech). Show the product's central view near the top. Build its timeline, diff, board or map large enough to read. If the real task is to select a record and read its details, `app-frame` fits. For several uses, switch one frame by click, tap or keyboard. Show real tool icons for integrations. Put quantity-sensitive plans under a meter, then the FAQ and close. Use supplied customer proof only. Rewrite any kit fragment to the client's subject and data (`cards.md`).
 
-**Gaming** (a game, a studio launching its game; page type software, site-kind gaming). nav, hero
-(the game, named), [the trailer frame], the world (one or two sections, full bleed), what you do
-(the screenshot strip as three to five open cards, one verb each, sail, salvage, rebuild, each
-with its capture), [a system of
-the game as a diagram card: matchmaking, saves, stores], platforms and editions (the real store and
-platform icons, prices from), [press lines or a quote the brief gives], [faq], footer.closing with
-the main action (Add to Steam wishlist, Pre-order). In testing, a game page that never named the game
-and showed an abstract effect for key art lost 3.5 to 5.5 to one with a launch date, a scene of the
-game's world, feature cards and real platform icons. So:
-- **The hero names the game:** the h1 is its name and genre ("Northline, a co-op survival game",
-  40 characters at most on the `product` stage, 32 on the `photo` hero), or its wordmark (the client's logo file) over an
-  h1 naming the genre. The lead or a line under it carries the launch date or status the brief
-  gives ("Out 12 March on Steam", "Early access now"); with no date, the status ("Coming to PC"),
-  never an invented date.
-- **Key art in the hero and the world sections, full bleed:** the client's trailer (a film hero),
-  key art and in-engine shots, one grade, as layers or on the column lines. Deal the hero with
-  `deal.mjs --type software --kind gaming --has film,photo` when the art is supplied.
-- **The world and the crew carry the page, not the hero object** (section 1, One object): the
-  hero object whole in the hero and two more sections at most; the world, the crew at their jobs,
-  the trailer frame and the screenshot strip carry the rest. Art the brief names gets its slot
-  either way (section 1, client slots): a trailer frame, the screenshot strip, key art on the
-  stage.
-- **No art files** (the brief names art it does not supply, or none): the hero is **type-led over
-  a photograph of the game's setting**, never an effect or a random object in its place. Search the
-  place its world is set in, in plain words (`photos.mjs search "flooded coastal town at dusk"`, a
-  harbour at night, a desert mining town, a city in rain), keep three to five frames of one light
-  and grade with nothing readable on them, and deal `deal.mjs --type software --kind gaming --has
-  setting`: it prints the `photo` hero, the game's name as the h1 set large in the box (or straight
-  on a dark, empty part of the frame, `data-box="none"`), the status line under it. The world
-  section takes the widest of the frames full bleed in a `media-band` or `dark-band`, the h2 above
-  it; the trailer frame's poster and the screenshot strip are client slots holding the other
-  frames (section 1, client slots), each named in a comment for the client's file. One shader
-  effect may sit behind the words in a section of its own, never on the photographs. Every frame
-  is a stand-in: the report lists each one and the art to replace it. A rendered hero object or
-  world (`effects-objects.md`, Product renders) only when the brief asks for 3D or a render.
-- **Platforms:** the real Steam, PlayStation and Epic Games marks (`icons.mjs apps --tag gaming`);
-  Xbox and Nintendo named in type, never a drawn mark.
-Nav `nav-mega|nav-centre|nav-cards` · footer `footer-dark|footer-statement` · close
-`close-word|close-type` · rhythm `dark-band|media-band|space` · buttons `solid|pill|block`.
-Never: a hero that never names the game; an abstract effect, pattern or `statement` hero in place
-of key art; UI fragments from `assets/ui` (no UI kit on gaming), a dashboard, SaaS widgets on
-panels; a toy object of another kind, a drawn SVG or an empty panel in place of the world; stock
-players at screens.
+**Gaming.** Name the game and its genre in the hero. Give the release date or status from the brief and the main action, such as wishlisting. A supplied trailer gets the film hero only when the dealer picks it. Make the poster playable when there is a film. For a world section show what the player does through in-engine shots or the game's own key art. Without art files, draw the world in one style (`subskills/illustrate/SKILL.md`). Let a player switch the light or inspect an item if that shows how the game works.
 
-**Product.** nav, hero, the range or line-up within the first three sections, two or three feature
-sections (one benefit each, each its own composition, below), specs (`rows--spec` or
-comparison-table), proof (a review or press line the brief gives), [visit-map for a showroom],
-[faq, five questions at most], footer.closing with the newsletter. Every main section shows the
-product's world, two or three photographs a screen (one per feature section of the part it names;
-a grid of 4 to 8 cut-outs on one backdrop): the product whole in three at most (section 1, One
-object), its use, its parts and the people with it in the rest. Prices are "from" prices on cards or in a table, never a plan
-table or a monthly switch; only prices the brief gives (none given: "Price on request" or no price, `copy.md`, What may
-be assumed). Photographs first: the client's, else stand-ins (below). A technical
-product (site-kind tech) may take the effect; any other product takes no effect; a render on
-either only when the brief asks for 3D or a render (below).
-- **The product is the hero, not every frame.** The bar is Figure and 1X: where the product is
-  shown whole it fills the frame at large scale, and its use, parts and place carry the rest. In testing, a rendered product page scored 5.5,
-  creativity 4.5 ("a safe grey template"), because every visual was a mid-size product in a grey
-  rounded panel on a grey ground, five pictures in three poses, one structure three times. With
-  photographs or with the render alike:
-  1. **Big.** In the hero and at least one more section the product fills most of its frame (its
-     long side 80 to 100% of the frame's width, or cropped so it runs off an edge) or stands on the
-     section's own ground at anchor scale (8 or more of the 12 columns at 1440, the full column at
-     390). The `product` hero does it by itself (`layout.css` 3b): a render or a cut-out stands
-     on the page's ground across the wrap, no box, no gradient, no radius, the stage down to 24px
-     above the fold and the product as tall as the stage, so its widest view spans 80% or more of
-     the wrap at 1440 (the kit's city bike: its `side` 1046 of 1280; its `three-quarter` only
-     818, under 8 columns); a product photograph runs edge to edge down to the fold, cropped
-     (`--ly-pos`) so the product spans 80% of the wrap. Never a mid-size product inside a grey
-     rounded `.panel` on a grey ground: a render is transparent and stands on the ground itself
-     (`layout.css` takes the fill, border and padding off every `.frame[data-product]`), a
-     cut-out the same; a photograph is the frame.
-  2. **The whole product in three sections at most, a different picture in every section.** The
-     product whole (any angle, any colour) in the hero and two more; the rest carried by its use
-     (loaded, at the bench, at home: the setting fills the frame), close-ups of its parts, an
-     exploded view, people with it, a diagram card held still or a type moment (section 1, One
-     object). Never one view twice: a smaller file (`-700`), a recolour or a mirror of a view is
-     the same view. Each plan line names its section's picture and its kind; no two alike.
-  3. **Every promise in a headline is shown in a picture.** A family bike shows the child bench
-     with its belts; a lamp shows the light it throws on the table; "takes four crates" shows four
-     crates, readable at the section's size. A promise with no picture: add the picture or cut
-     the promise.
-  4. **Dealt compositions, one contrasting ground.** Each picture section deals its composition
-     from section 4's five (`bleed`, `pair`, `trio`, `strip`, `tall-small`), plus `split` (text
-     beside one big picture, once a page, never right after a `bleed`) and the order
-     section (the order card beside the product, last, a form, never counted as the split);
-     neighbours never the same, no structure (heading,
-     panel, picture) twice. For the product: `bleed` the product at anchor scale across the
-     viewport; `pair` two views at one ratio; `trio` the whole, a part, a detail; `strip` four
-     close-ups of the parts the rows name; `tall-small` the product in use tall, a detail small.
-     One section stands on a contrasting ground (the rhythm below, `dark-band` or `brand-band`)
-     and holds the strongest view; the rest share one flat ground. Frames take the page radius,
-     never a panel inside a panel.
-  5. **The colour choice changes the picture.** The order card's swatches swap the product's
-     picture beside it (a render: each swatch, a button or radio, carries `data-product-swatch="#<frame
-     id>"` and `value="<colour id>"` (an id of the spec's `colors`), and `auto.js` swaps the frame's
-     still with no page script, `effects-objects.md`, Views; photographs: one per colour, the swatch
-     swaps the `src` and `alt`), and every colour offered is shown at least once on the
-     page (one colour per section: the hero, the split, the use scene and the order frame each in
-     another colour). A colour offered and never shown is a fault.
-  6. **No fact twice.** A stat strip never repeats the spec rows below it: the strip takes the
-     three figures that sell (load, range, price), the rows the rest (sizes, weight, motor,
-     battery, warranty). One fact, one place, one wording.
-  7. **Buttons step on hover and press on click.** The motion layer does it (`motion.md`,
-     Button); no page CSS sets a `.btn`'s `transform` or `transition`. A feature card that leads
-     somewhere is a linked card (it lifts 2px, its picture zooms 1.03).
-- **No photographs: the product is shown, never hidden, in photographs** (in testing: a cargo
-  bike's page that never showed the bike scored 3 of 10, and pages carried by renders and their
-  props read as random 3D objects). A picture the brief gives (a cut-out, a CAD view, its own
-  render) goes on the hero's stage. Else **stand-ins**: `photos.mjs pick --product-without-photos`
-  prints the search, and `photos.mjs search "<the thing in plain words>"` (a cargo bicycle, a desk
-  lamp, a robot arm), then its parts and the places it is used, finds licensed photographs. Keep a
-  frame only when it shows the same kind of thing whole or in use (a cargo bike for a cargo bike,
-  never a wheel for a bicycle), with no maker's name, logo or badge readable (crop it out or drop
-  the frame), no face passed off as a customer, and one light and grade across the set. Deal the
-  hero with `deal.mjs --type product --has photo` (hardware adds `--kind tech`). The page is the
-  **full product page**, never the short page: the plan gives each section one picture of its own
-  kind (the product whole, its use, parts close up, people with it, where it lives), the product
-  whole in three sections at most (rule 2), the hero first and the order card last, no other fixed
-  order. A colour the stand-ins cannot show stays a named swatch in the order card and goes on the
-  report's shot list (rule 5 waits for the client's photographs). Every frame is a stand-in: the
-  report lists each one with the photograph to shoot in its place (`photos.md`); nothing on the page
-  says so. **Hardware without photographs goes here too** (in testing: a robot arm's page with a
-  silk shader and an order form lost): stand-ins of the same kind of machine at work; CAD renders,
-  an exploded model or a film the brief names but does not supply each get their slot (section 1,
-  client slots). Never a `split` hero holding only an order form or the effect in place of the
-  product; the order card is its own section, last.
-- **A render only when the brief asks for 3D or a render** (a configurator, "show it in 3D", a
-  product that exists only as a model): one crafted studio render of this product with the objects
-  kit's product-render helper (`effects-objects.md`, Product renders): a short JSON spec of its own
-  parts, sized from the brief's figures, in its own materials and colours (never a kit spec shipped
-  as the client's), its posters made with `make-posters.mjs`, mounted on the `product` stage
-  (`deal.mjs --type product --has object`), each section a different view (`effects-objects.md`,
-  Views). Stills by default, live only when asked, at most one live context, on the page's flat
-  ground; props only where a headline's promise needs them (the four crates of "takes four
-  crates"), never a set added for mood. The heading and the text say what the thing is; no line
-  calls it a render, model or illustration (house rule 1). Never a drawn SVG, a model of loose
-  primitives the helper did not compose, mood stock, a photograph of another maker's product
-  passed off as the client's, or an object of another kind.
-Nav `nav-cards|nav-split|nav-mega` · footer `footer-columns|footer-dark` · close
-`close-photo|close-type|close-word` · rhythm `dark-band|brand-band` (one contrasting ground,
-rule 4) · buttons `arrow|solid|block|pill`.
-Never: a photograph of something else; screens of an app the product does not have; logo rows;
-tabs; anything that apologises for what is missing; the product mid-size in a grey panel; the
-product whole in more than three sections; one
-view twice; a promise not shown; a colour offered and never shown; a fact twice.
+- `devlog`: two or three dated posts, each with a picture and enough text to say what changed.
+- `press-kit`: link to the downloadable file and give its size. Test the link.
+- Use real store marks where available and plain type elsewhere (`icons.md`). Keep the wishlist or purchase action easy to find at the close.
 
-**Service** (clinics, firms, agencies, studios, trades). nav, hero, services-list (each with one line
-and a price from when the brief gives one; a peek-list when each service has its own photograph), work (a grid of 3 to 6
-project photographs, or photo-pair, one per case), steps, people-row, proof (a quote the brief
-gives), [pricing-two or a `rows` price list], [faq], booking-form with the address, footer.closing.
-Pictures: photographs of the work, the team at work and the rooms, one or two a screen; real icons
-for tools a studio really uses.
-Nav `nav-mega|nav-split|nav-centre` · footer `footer-visit|footer-dark|footer-columns` · close
-`close-type|close-photo` · rhythm `surface-pairs|dark-band|space` · buttons `solid|tonal|block|arrow`.
-Never: product UI the firm does not run; stock handshakes; logos of invented clients; tabs.
+**Product and hardware.** The hero shows the thing itself. Use supplied photographs, art or CAD first. If there is no product picture, draw the product or its output. Choose views for what they show: a cargo bike carrying the stated load, the controls at the bench, the light a lamp casts. Use the product-render helper for a requested 3D view (`effects-objects.md`). An edge-to-edge product hero needs a product picture or a drawing to fill it. A film hero needs a film.
+
+- Give the product room. Where the whole object leads, use about eight columns or let the photograph bleed. Put dimensions beside a drawing. Put use cases in a switcher when the same view can show each one.
+- **Selling on the page:** place the order pad or configurator within the first three sections. A colour choice changes the photograph or recolours the drawing and updates the chosen variant and price. Keep the delivery and return facts at the close.
+- Give a spec, price or unit once where it helps the decision. Use actual figures for results. A supporting photograph shows the part named or the claimed use. Never fill a price list with prop photographs.
+
+**Service.** Name each service and its fee where applicable. Give each project a row with its work, name and a fact the visitor can use. Put a process with durations and deliverables on a rail. Follow with the people the brief names, supplied proof and the enquiry or booking. A visitor booking a stay or table starts at the hero bar and finishes in the full form at the close.
 
 ## 4. Place
 
@@ -331,118 +115,29 @@ Cafes, bars, bakeries, restaurants, guesthouses and small hotels, shops, booksho
 shops, local studios (pottery, yoga; a creative agency stays service; a maker people visit who
 also teaches or sells online stays a place: the door decides, the web shop is its goods section).
 `<html data-type="place">`,
-`<meta name="page-kind" content="place">`, place CSS under `html[data-type="place"]`. Real still
-photographs, type and flat colour carry the page; the interface around them is one ground, one ink,
-hairlines and one button style. Where a recipe and this section differ on a place, this section
-wins. Open these references first for the feel (never copy one): Daunt Books, Prufrock, Bourke
-Street Bakery, Gail's, Tartine, Bonanza (a still where Bonanza has film).
+`<meta name="page-kind" content="place">` and place styles under `html[data-type="place"]`. The door, counter, rooms or work give the pictures their subjects. The plan sets the grounds and picture corners.
 
-**Motion on a place** is dealt by fit, as on every kind (`moments.md`, The fit rule): the two
-moments (three on a long page) and the 0 or 1 scene `moments.mjs pick --page place` deals, each in its
-own section, warm and quiet to lively. **What the brief asks for is built:** a booking calendar (the
-days and times as choices, section 1's table) where it asks for booking or a stay, and a
-`.faq--fold` (`system.css`) where it gives ten questions or more.
-
-**Never on a place:** an effect or shader ground, WebGL or canvas outside the dealt scene, a CSS
-gradient, grain, glass, print, a moment or scene the deal did not give, a loop, count, UI fragment or
-diagram; feature or plan cards, tabs, switches, logo rows, timelines, fact strips (address or hours
-as labels: the visit block holds them), a map of a street the brief does not give; a rating, review, figure or quote the brief does not give; words on a photograph (a
-bleed panel is a solid ground the words stand on, not words on the photograph), a rounded or filtered photograph, a see-through or blurred nav; outline, pale, blurred or rotated
-display type; SaaS furniture (a two-tone headline, a filled-plus-outline pair, a dotted timeline
-rail, a carousel); a dark section other than the dealt band.
+A season toggle can share one room view. Hours can use a day bar. A direct-booking price can use comparison bars if the figures support it. Keep shaders, WebGL, tech-looking gradients and prints off a place page. Apply the ordinary rules for contrast, motion and assumed facts.
 
 ### Plan and length
 
 The length follows the content: every section as tall as what the brief gives it (the whole menu,
 every room, the location), never a section dropped or cut to make the page shorter.
 
-- **Full page,** 12 to 20 photographs, about 2 to 3 a screen of scroll: hero, visit, the offer (a
-  second offer may follow: a roaster's beans after the menu), the place, then orders or booking when
-  taken (last before the footer, its cards or form in place of the close), footer.closing.
-- **Compact page,** 8 to 12 photographs: hero, visit, the offer, [the place], footer.closing.
-- **Short page,** under 8 usable photographs (below): hero, one section holding the visit and the
-  offer, footer.closing, `<html data-page-mode="short">`.
-- **No client photographs (the draft path):** `photos.mjs pick --trade <trade> --sections <words>
-  --draft-lead --pictures 12` lifts the 1-in-3 cap, and the page is a whole place page that leads
-  with photographs when it reaches 8 frames. `pick` deals one frame per word: repeat a word for each
-  row or detail (`bar,bar,coffee,coffee,beans,beans`; `rooms,rooms,rooms,breakfast,breakfast`)
-  until it returns 8 or more (a cafe 8 to 12, a guesthouse 9). **The hero is always a photograph
-  when any frame fits:** the lead `pick` returns (a cafe's bar); a place whose trade leads with land
-  (a guesthouse, a lodge, a remote inn) and whose brief names its region (Westfjords, Lofoten, the
-  Lake District, a town) passes that region as `--place "<region as written>"`, and the landscape
-  of that region leads, because a remote place is sold by where it stands (in testing: a remote
-  guesthouse shown as a type band scored 3.5). The `statement` hero on `.ground-brand` only when
-  the library holds no frame of the region and no lead. Every frame is listed in the report as a
-  stand-in to replace; nothing on the page says so. **The count decides, not the trade:** after
-  the words are repeated until `pick` answers "no new motif left" and a live search
-  (`photos.mjs search --trade <trade>`, `photos.md`) has added the frames it finds that pass the
-  full-size look, under 8 frames in all (the client's own included) is the short page, whatever
-  the trade (the library holds a bakery 4, a florist 3, pottery or a restaurant none: examples,
-  not a list); 8 to 12 is the compact page, 12 or more the full page.
-
-These three names mean only these lengths everywhere in the skill.
-- **Photographs by section,** all distinct: hero 1; visit 1 (0 with a map); menu or prices 1; rooms
-  2 to 6; goods 4; the place 3 (row), 1 (story) or a wall; orders 2 or 3, or booking 1; close 1. Nav
-  panel photographs do not count.
+Use the usable photographs for the parts they show. A full set may cover the visit, rooms, goods and work. With fewer pictures, combine related material. For a photo-led place, 8 to 12 usable frames suit a compact page and 12 or more a full one. With fewer, a short page can put the offer and visit together. Built pictures can carry a longer brief. Keep every ask, including the order or booking. The form, menu, map or room facts can carry the section.
 
 ### The deal
 
-Never by taste: `deal.mjs --type place` deals the hero's form (band, bleed, split, name) and
-`start.mjs deal --page place --trade <trade>` prints the LAYOUT block (section 2): nav, footer,
-close, buttons, mark, the bands and a composition for the visit, the offer, the showcase (the
-place), rooms or goods and the form. With no photograph left for the close, `close-photo` and
-`close-split` become `close-type` (section 2). One type moment a page: the hero's `name` form, the
-visit's `street-large` (the `address` moment below) or `close-word`; when two are dealt, the first
-on the page stays and the others take their pool's next entry. Bands: a tinted band is the offer
-or the showcase on `.ground-surface`; a brand band the showcase or the close on `.ground-brand`; a
-dark band (`.ground-inverse`, the palette's dark ink) the showcase, its photograph whole.
+Use the frame and ground map from section 2. A place hero has a dealt form (`band`, `bleed`, `split` or `name`). Set the main action with `--action booking` or `--action order` where it applies.
 
-### Designed variety without effects
+### Photographs and type
 
-A place earns its creativity from photographs, their arrangement and one moment of type, never
-from an effect (in testing: correct cafe and guesthouse pages scored creativity 2.5 to 4 and motion 3
-to 4.5 because every section was text beside one picture and nothing answered the pointer).
+For photographs with words, see `sections-library.md`, Compositions. A pair can put the whole room beside its joinery. A trio can show the workshop, a bench and the work in hand. A strip suits four details of the same process. Keep it away from price lists. Give the main picture enough width and check its crop at 390.
 
-- **Never two sections built round one picture the same way.** Each section takes the composition
-  the deal printed (`sections-library.md`, Compositions: split 7/5, 5/7, 6/6, mirrored, bleed-panel,
-  offset-pair, three-up, list-tall, strip, wall, story, street-large), neighbours never the same.
-  Every picture grows to its section's foot (`system.css`, fill): no empty band under a section.
-- **The five compositions** (1200 column, gap 24; grid widths span-3 282, span-4 384, span-5 486,
-  span-6 588; square corners, one grade, no words on any photograph):
+In `street-large`, set the supplied street or district beneath the visit h2 in `.type-moment`. If the brief gives only a district, use that. Link the address where the visitor can find it. Align headings, rows, controls and picture edges to the wrap.
 
-  | id | at 1440 | at 390 |
-  |---|---|---|
-  | `bleed` | the head row on the `.wrap` (its line at the right), then one photograph across the whole viewport, 1440x560, nothing on it; once a page, never right after the hero | 390x488 (4:5 crop) |
-  | `pair` | two photographs on span-6, the same ratio (4:3 at 588x441 or 4:5 at 588x735), tops level; the head row above | stacked, 342 wide, 24 apart |
-  | `trio` | the offset trio: three photographs on span-5 (4:5, 486x607), span-4 (1:1, 384x384) and span-3 (4:3, 282x212), tops on one line, three sizes of one subject family (the room, its table, a cup) | the first 342 wide, the other two two-up at 165 |
-  | `strip` | the detail strip: four 1:1 details on span-3 (282x282) or six on span-2 (180x180) from line to line, hands, tools and materials of one trade, under the section's text or groups | two-up at 165, four at most |
-  | `tall-small` | a tall 4:5 photograph on span-6 (588x735) at the left line; on span-5 at the right the h2, its lines and link at the top and a 1:1 on span-3 (282x282) at the bottom, its foot level with the tall one's | text, the tall one at 342, the small one at 165 |
-
-  These five stay as the shapes inside a composition: `strip` runs under the menu's groups, `pair`
-  and `tall-small` take the photograph slot beside them (the groups narrow to span-6), `trio` is
-  three-up in three sizes, `bleed` is a bleed-panel without its panel. At 390 a photograph is never
-  under 200px tall: a strip goes two-up at 4:5 (165x206), four at most. Rooms keep their own grid.
-- **One display-type moment** (the visit's `street-large`, the hero's `name` form or `close-word`, as dealt): `address` (street-large) sets the street and district large (no street in the brief: the
-  district alone, never an invented street, `copy.md`) right under the visit section's h2 ("Find us" at the page's h2 size, so the heading scale holds):
-  `<p class="type-moment"><a href="<map search>">Mill Street, Leith</a></p>`, page CSS
-  `.type-moment { font: var(--display-weight) clamp(48px, 7vw, 104px)/1.02 var(--font-display);
-  letter-spacing: -0.03em }`, one or two lines on the `.wrap`'s left line, the drawn underline on
-  hover; `name` makes the
-  close `close-word` (the h2 and the button, then the name across the `.wrap`), its photograph
-  going to the place's composition. Ink on the ground or on the brand
-  band, never outline, pale, rotated or on a photograph. One a page; the footer's name set wide is
-  then capped at `12vw` (about 170px at 1440) or left out.
-- **Hover you can see:** every photograph that leads somewhere is a link (a room to its booking, a
-  goods photograph to its card, the place to its story) and zooms 1.03 inside its frame while its
-  card lifts 2px; the head row's link carries the arrow; the nav words draw their underline
-  (`motion.md`). Each section after the hero holds at least one such link.
-- **One main action a screen:** a transaction (Book a room, Order a cake) is the nav's button and
-  the hero's, as on any page, and nowhere else but the booking or close and the phone bar. Get
-  directions is never repeated: the hero's one button and the phone bar's (and the nav's button on a desktop: two on a
-  screen at most, `action-repeat`); the nav says "Visit"
-  as a word to `#visit`, the visit block adds no second button for it, and the footer gives the
-  address linked to the map, never a button (in testing: Get directions in the bar, the hero and the
-  footer read as clutter).
+- Link a room to its booking or a product to its order when that is the next task. Keep hover on an inner layer (`motion.md`).
+- **Main action.** Use the same words where the visitor books or orders. On a visit page, link the address to directions. The phone bar waits until the hero action scrolls away.
 - **List text at 16px:** menu rows, descriptions, room facts and hours at 16/24 at least (the muted
   colour, never a smaller size, marks a description); 13px only for a group label.
 - **Credits:** the one footer line that links the credits list (`photos.md`, Credits), never one
@@ -453,85 +148,31 @@ to 4.5 because every section was text beside one picture and nothing answered th
 - **Hero:** the place hero in its dealt form (`layout-v4.md` section 3). What, where and one fact: an
   h1 with the place's own voice, never the brief's category ("Bread out of the oven before the
   street wakes up", not "Bakery in Leith"; the kind and the street go in the sub-line), 48 characters at most; sub-line "Sourdough, rye and cardamom buns from 7:30,
-  Tuesday to Sunday." (80 at most); one button, the main action.
-- **Visit, always the section after the hero,** marked `data-place="visit"` and `id="visit"`, directly after the hero:
-  a panel on `--g-alt` (page CSS: `.visit { background: var(--g-alt); padding: 48px }`, on span-6
-  only: a ground box 80% of the section or wider is a band and FAILs `one-section`) and a 1:1 or 4:3 photograph of the shopfront straight-on or the
-  room from the door, 6/6, the panel left. With the `address` type moment the h2 and the street
-  set large run across the `.wrap` above the split (the photograph then 4:3) and the panel opens
-  with the open-now line; else the panel's top line is the h2 "Visit", the open-now line
-  (`[data-open-now]`) at its right, never a 13px eyebrow; the open-now line only with hours the brief gives (assumed
-  hours carry `data-assumed` and no such line, `copy.md`). 16px below, two columns 24 apart: the address on two lines at
-  20/30, linked to the map search, the phone as a `tel:` link only when the brief gives one, then
-  one secondary button: "Get directions" when the main action is something else and the brief gives the street ("See
-  the area" with a district only; no map link with only a town), "Call" only when
-  the brief gives a phone, else none; and
-  the week's hours (days left, times right in tabular figures, one line per day or range, one size;
-  a holiday change as one line above). Under both, at most two 44px rows: access, a florist's
-  delivery (area, price, cut-off), a guesthouse's check-in and check-out, a bike shop's repair
-  turnaround, or "By appointment" for a studio. At 390 the panel first (24px padding, address
-  18/28), then the photograph at 342 at its own ratio (a `.pl-photo`, the last child of the
-  split). Hours, address and directions are never only in the footer.
+  Tuesday to Sunday." (80 at most). For a stay or table, the hero's booking button belongs to `.hero-book` (`layout-v4.md`).
+- **Visit** (`data-place="visit"`, `id="visit"`) near the top:
+  put the address, routes and opening hours where visitors can find them. Give directions to a supplied street, an area link for a district, and a call link only for a supplied phone. Use a day bar, ruled week or a split with a shopfront view, according to the material. `[data-open-now]` requires supplied hours. Mark assumed hours `data-assumed` and leave them as text.
 - **Map** only when the brief gives the street: `fx-map` baked still (`effects-creative.md`) in the
   photograph's frame, the pin on the street line; never an embed, a contour or a dot pattern.
 - **The offer** opens with a head row: the h2 on the left line, one line, 40 characters at most
   (32/40; 24/30 at 390); at its right, on its baseline, one 16px line and a link ("Full menu", "See
-  all"); 56px to the content.
-  - **Menu or prices** (drinks, a bakery counter, repairs, bouquet sizes, classes): the groups with
-    the offer's dealt composition (Designed variety): `strip`: three groups on span-4, the strip of
-    four details under them; `pair` or `tall-small`: two groups on span-3 at the left, the
-    photographs on the right span-6, their top level with the group labels; the two groups hold
-    the same number of rows (4 against 5 fails `row-lines`, SR-7: 245/303px). A group: a 13px label
-    (`.t-label`, weight 500, ink), 12px of air under it and no rule (a rule under a label fails
-    `section-air`, SR-3: parts are told apart by air and weight), then `.rows` (each row closes
-    with its own 1px rule, none above the first): the name at 16/24/500 left, the price right in tabular
-    figures, an optional description at 16/24 muted; rows 44px (64 with a description); every item
-    the brief gives, a long menu in more groups (the section grows; the head row's link only for a
-    menu that also lives on a page of its own). Always text, whole, prices visible: never an image,
-    a PDF, tabs or an accordion. At 390 one column, the photographs after the first group.
-  - **Rooms:** h2 "Rooms and prices", the side line "Breakfast 8 to 10. Check-in from 15, check-out
-    by 11." Each room: a 4:3 photograph of the whole room, straight-on, window light; 20px; the name
-    (`h3.t-card`, 20/28); the facts at 16/24 muted ("2 guests · 18 m² · garden side"); the price
-    from with its season at 16/24; a "Book this room" link. `row`: three rooms on span-4 (384x288)
-    or four on span-3 (282x212); two rooms always `side`. `side`: the head as the first cell at the
-    left line, top-aligned with the tiles (two rooms span-4; three span-3; four: rooms 2x2 on span-4,
-    beside the head). Five or six rooms: rows of three on span-4. At 390 one column,
-    342x256, 48px apart.
+  all"); leave `--head-gap` to the content.
+  - **Menu or prices.** Group the full list by what the visitor orders. Use `.rows`, with the name left, price right in tabular figures, and a description beneath when needed. Rows are at least 44px high. On a phone stack the groups. Leave prices in live text. A photograph may show the dish or service named. Keep a price list free of detail strips.
+  - **Rooms.** Show the room types and which beds they hold. Include the rate, its season and how to book that room. Use whole rooms for the photographs. A row, index or simple list can carry the room facts when no suitable picture exists.
   - **Goods** (beans, bread, books, parts, bouquets): four linked cards on span-3, 1:1 at 282x282
     (bouquets 4:5 at 282x352), one ratio per grid, one backdrop, angle and light. Each card a flat
     fill one step off the ground or a 1px hairline, no shadow, radius or pill; inside its padding
     under the photograph only the name (a two-line slot, 16/500) and the price; an outline Add
     button aligned across the row where it sells online. One or two full rows. At 390 two-up at 165,
     four or six, then a full-width button to the range; no swipe row.
-- **The place** (dealt): one of the five compositions under the head row (Designed variety), `wall`
-  (the head row, then a wall of photographs from line to line, gap 0 or 2px) or `story` (6/6, text
-  left: the h2 on one or two lines, three to six lines at 20/30 on who runs it, since when and what
-  exactly, one link; a 4:3 photograph of people at work right, 588x441). One story row a page. No
-  names under the photographs. At 390 `wall` two-up, `story` text first.
+- **The place.** If the photographs and words carry a story, use the suggested showcase. A wall suits a set, a split suits the owner beside their work. Use the fact-line rule in `copy.md` when a project needs identifying.
 - **Orders** (cakes, a bike service, weddings, classes): three kinds on span-4 under the head row,
   or two beside the head in the first span-4. Each: a 4:3 photograph of this business's own goods
   (384x288), a 1px hairline, a 13px label, the title at 20/28, one or two sentences at 16/26 with the
   lead time, where to collect and the price from, one text link with an arrow. A florist's events
   kind says what to send: date, venue, guests, budget.
-- **Booking** (rooms, or classes with dates): the head row ("Book a room"; "We reply within a
-  day."), then a 4:3 photograph on span-6 (588x441) and beside it the form on `--g-alt`, the same
-  height, 48px padding: arrival and departure as `type="date"` on one row, the room (a `<select>`
-  with each room's name and price) and guests on the next, name, email, the main action, the reply
-  line at 14px; a class or a repair takes the day and the time as choices instead of the dates.
-  Text fields, not `type=date`, on a page not in English. Never a photograph, texture or glass
-  under the form. A booking system the brief names replaces the form. As the dealt `form-band` the
-  form sits on a tinted band across the section with the head left; as `close-form` it is the close.
-- **Close:** as dealt (section 2). `close-photo`: the h2 (eight words at most), one line ("Open today
-  7:30 to 16:00"), the main action, a photograph never used above and never with words on it;
-  `close-split` the same words on the tinted panel with up to three facts beside the photograph. On
-  a brand band it sits on `.ground-brand`, every word at 7:1 (`backgrounds.md`), the button inverted.
-- **Footer:** `footer-visit` (the address at 32/40 on span-7, linked to the map search, with one
-  line on the way there and no button, the hours from the split line with today marked only when no
-  section above prints them (a page with a visit section: the nav's words there instead), the nav
-  row, the legal row with the one credits line; then the name set wide across the `.wrap` in the
-  display face at 400, at most `12vw`, except on `colour-band` or with the `name` moment) or
-  `footer-columns` (Visit, Contact as given, the nav's words, delivery or check-in or the
-  newsletter; the legal row).
+- **Booking.** For a stay or table use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).
+- **Close.** Follow the PLAN. A shop states delivery and returns here. Keep booking and newsletter forms distinct.
+- **Footer.** Use the dealt link layout. Keep one credits line. Include directions, delivery or check-in where useful and avoid repeating hours or forms.
 - **Phone bar** (`nav.actionbar`, required): the order or booking as one full-width button; without
   either, Get directions (primary; "See the area" when the brief gives no street) and Call (secondary, only with a
   phone the brief gives). system.js keeps it off the phone's first screen until the hero's button has scrolled away,
@@ -545,18 +186,11 @@ to 4.5 because every section was text beside one picture and nothing answered th
 
 ### Order by trade
 
-Each starts hero, visit; the rest in this order:
-- **Cafe:** menu as text with its composition; the place (its composition or a story row); beans
-  or goods only if sold.
-- **Bakery:** what it bakes (goods with prices); orders (one card per kind); the process (its
-  composition, a `strip` or `trio`). Several shops: a ruled list, each with its street.
-  Under 8 frames (the library deals a bakery 4) it is the short page (section 4, The short page).
-- **Guesthouse or small hotel:** the hero is the landscape of its region when the brief names one
-  (a remote house is sold by where it stands, as Fogo Island Inn is); location as the visit (how to
-  arrive, the `address` moment fits); rooms; the house (shared spaces and breakfast in its
-  composition, `bleed` for the land around it, no labels); booking. Check-in and check-out beside the rooms and in the footer.
-- **Shop or bookshop:** new in (goods with Add); categories as a plain text list; one story row; the
-  footer with each shop's address and hours and the newsletter. Nav: four to six category words (`system.md` Nav; four on nav-split).
+Keep the main task near the top. Place the remaining material in the order a visitor uses it.
+
+- **Cafe or bakery.** Visit and opening hours, full menu, the counter and the work. If the page sells beans or takes bread orders, its order pad belongs in the first three sections. For multiple shops, give each address.
+- **Guesthouse or small hotel.** Start with the house or its region and a booking bar. Show the room types and prices, what breakfast includes, how to arrive and the full booking form. Use a season switch when the same stay has two different uses.
+- **Shop or bookshop.** Show the goods and order controls early, then categories, a story and each shop's address and hours.
 - **Bike shop:** visit and workshop (usual repair turnaround); workshop prices as ruled rows with
   "Book a service"; new in (cut-outs on white, name and price); brands as a plain text list; story.
 - **Florist:** a notice line with delivery area, cut-off and price; delivery and visit as the section after the hero;
@@ -565,85 +199,20 @@ Each starts hero, visit; the rest in this order:
 
 ### Look
 
-- **Palette, dealt by trade:** `start.mjs deal --page place --trade <trade>` deals three palettes
-  made for the trade (`library/palettes.json`, `trades`: a cafe, a bakery, a guesthouse, a yoga
-  studio and a bike shop each have their own), away from the last builds, so two cafes never share
-  a ground and an accent. Only grounds that fit a place come (light, low saturation: the `--g-main`
-  rule in `backgrounds.md`). Take the first, then `start.mjs css --page place --palette <id> --type
-  <pairing>`; the next only when the first clashes with the client's own logo or photographs.
-  Plan line 2 names it with one sentence on why it fits the trade, from what the palette answers
-  in it ("flour-terracotta: a flour-white ground and the terracotta of a bread oven's tiles"),
-  never a fact the brief does not give. The client's own colours (a painted shopfront, a logo, a
-  bag label the brief gives) replace the deal: `start.mjs brand --bg "#.." --ink "#.." --accent
-  "#.." --type <pairing>`, the ground from its walls, paper or shopfront (colours quoted: a bare `#`
-  starts a shell comment).
-- **Grounds:** the palette's ground and surface, one full surface band at most; one brand band
-  (`backgrounds.md`); no dark section except that band (the nav bar may take the dark ink). Flat
-  colour only (`backgrounds.md`).
-- **Accent:** the palette's one accent on the primary button, the focus ring and the `colour-band`
-  close, as `start.mjs` prints it (`--p-action` and its label). A client's own colour through
-  `brand`: darken it in steps until its label passes 4.5:1 and it passes 3:1 on both grounds.
-- **Type:** the first pairing `start.mjs deal --page place --trade <trade>` prints (it puts the
-  trade's group first), display 400, text 400 and 500: a serif head with a plain sans for a bakery,
-  restaurant or guesthouse; one plain sans in two weights for a shop, bike shop, florist or studio;
-  a soft sans for a cafe or a yoga studio. Sizes in `layout-v4.md` section 5.
-- **Motion:** the hover layer only (`motion.md`), and it must show: the nav words and links draw
-  their underline, a linked photograph zooms 1.03 inside its frame while its card lifts 2px,
-  buttons step and press, arrows move 3px. On load the hero enters once (`motion.md`); on scroll only
-  the dealt moments' and the dealt scene's own sections move (`moments.md`); nothing else moves by itself.
+- **Palette.** Use the palette and pairing on the PLAN. For client colours, run `start.mjs brand` with `--bg`, `--ink`, `--accent` and `--type`. Quote hex values so the shell reads the colour.
+- **Grounds.** Use the flat grounds on the PLAN. The palette's accent colours the main button and focus ring through `--p-action`. Check the label reaches 4.5:1 and the control 3:1 against its ground.
+- **Type.** Use the display and text faces printed by the dealer. Sizes are in `layout-v4.md` section 5.
+- **Motion.** Keep hover inside the link or picture. Use the dealt entrance and moments. A section can show its own content working within the limits in `compose.md`.
 
-### The short page (under 8 photographs)
+### The short page
 
-Under 8 usable, whatever the trade (the count in Plan and length): hero, one section holding the
-visit and the offer, footer.closing (with no photograph a statement section after the hero too, Its
-one moment below). With one or two good photographs, the best is the hero's and
-the other is the section's, in one row with the groups (With its photograph, below). With none, the hero is a statement on `.ground-brand` (`deal.mjs --hero statement`: the
-h1, the sub-line, the inverted button) and the section has no picture on purpose (the one
-exception to "two picture-less sections are never neighbours").
-- **The section** is open type on the page ground, never a card or a ground box (across the `.wrap`
-  that is a band): the offer as ruled text in groups (a maker's tableware and its classes are two
-  groups of rows, prices visible), then the visit block as three `span-4` columns on the grid
-  (address, hours with today marked, access; a phone only when the brief gives one). A maker's
-  story is one 20/30 paragraph at the head of the visit block, never a section of its own.
-- **With its photograph** (a bakery deals 4 frames, so this is the usual case): the groups and the
-  photograph in one `.grid.grid--top` row, the photograph last (the next frame after the hero's, its
-  `<img>` as `photos.mjs fetch` prints it), its top level with the group
-  labels; the visit block across under the row at `margin-top: var(--s-7)`. Three groups: each on
-  `span-3` and `<figure class="pl-photo span-3" style="--pl-r: 1">` (1:1, 282x282). Two groups: each
-  on `span-3` and `<figure class="pl-photo span-6" style="--pl-r: 1.5">` (3:2, 588x392). Every group
-  holds the same number of rows and every name fits one line beside its price on `span-3` (about 24
-  characters: "Rye chocolate cake, 10 slices" wraps, 245/270px, `row-lines`; shorten it, "Rye cake,
-  10 slices"). At 390 the photograph comes after the groups.
-- **Nav and the main action:** three or four words, one per group, each pointing at an `id` on that
-  group (`#tableware`, `#classes`, `#visit`); the main action points at the group that does it
-  (section 1, One page). One section has no scroll-marked word: leave `aria-current` off.
-- **Re-dealt without pictures** (section 2): `nav-split` with no panel, the close as the head row
-  of `close-word` without the name. Either the brand band (the close on `colour-band`) or the name
-  set wide in the footer, not both.
-- **Its one moment** (the gate holds `moment-none` on every page). With a photograph in the section,
-  it is `picture-develops` on that photograph: `data-moment="picture-develops"` on its
-  `<figure>` (the moment wants half the wrap or more: two groups and the `span-6` photograph), dealt with `moments.mjs pick --page place` (two, by fit; `start.mjs plan` runs it), and dealt
-  again with `--exclude photo-chapters` when it gives `photo-chapters` (three or four screens of its
-  own, longer than the whole short page). With no photograph, add one statement section after the
-  hero for `word-highlight` (`--fits statement`): one statement of 12 to 40 words from the brief.
-- **What the deal drops.** The page has no place section and no second offer:
-  of the printed deal build the nav, footer, rhythm (`space`), buttons, mark and the offer's
-  groups, and skip the place's composition, the type moment and the rooms layout (the `address`
-  moment is not built; the visit block's three columns are the address). Write "not used" beside
-  each skipped part on plan line 2.
-- **At the tablet (640 to 1023)** the groups and the visit block stack and the section grows with
-  them; nothing is cut or hidden to keep it short.
-
-No mood stock, code ground, drawing, empty box or note. The report lists the shots to take
-(`photos.md`). At 8 good photographs it grows to the compact page, at 12 to the full page. A place
-with no photographs of its own takes the draft path and a live search first (Plan and length); the
-short page is for a place whose frames, counted as in Plan and length, total under 8.
+Use `<html data-page-mode="short">` for this form. Keep the hero, the visit and offer, and the closing footer. Combine the hours and access with the address and put the menu or services in ruled groups. Give each group an id so the nav lands on it. Use a fitting picture where one exists. At 390 stack the groups in reading order. A text moment can ride the section's h2. A small page still has at least one own section.
 
 ## 5. Visuals
 
 - **UI** (`cards.md`): paste `assets/ui/<name>/fragment.html` into the slot its recipe gives and
   rewrite every name, number, subject and logo, and a loop's arriving text in `data-ui-opts` (its
-  `meta.json` `edit`). A pasted `<img src="assets/ui/icons/x.svg">` is the kit's sample mark: write
+  `meta.json` `edit`). A pasted `<img src="assets/ui/icons/slack.svg">` is the kit's sample mark: write
   each as the client's tool, `<img data-icon="<id>" src="assets/icons/<id>.svg" alt="">`, and
   `icons.mjs scan --colour` fetches it. The product UI section shows the product's own subject, never a stand-in
   fragment. `data-ui-load` shows the kit's sample text: drafts only. None on gaming.
@@ -653,5 +222,4 @@ short page is for a place whose frames, counted as in Plan and length, total und
   other pages only tools the client really uses.
 - **Shader grounds** (tech only): the one effect and the card group's still grounds
   (`effects-usage.md`).
-- **Photographs** (`photos.md`): the client's, else `photos.mjs pick`; every `<img>` carries
-  `data-source` and `data-subject`.
+- **Pictures.** Use the ladder in `photos.md`. Give photographs a `data-source` and `data-subject`.

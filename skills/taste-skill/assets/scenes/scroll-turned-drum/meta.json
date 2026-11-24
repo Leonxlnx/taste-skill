@@ -50,7 +50,11 @@
       "names:8",
       "pictures:8"
     ],
-    "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue."
+    "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue.",
+    "carry": [
+      "photos",
+      "list"
+    ]
   },
   "never": "Never a time or a date that steps with the names: beside them it reads as a second readout.",
   "avoidWith": [],

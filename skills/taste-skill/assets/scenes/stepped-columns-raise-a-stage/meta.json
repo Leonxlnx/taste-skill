@@ -47,7 +47,10 @@
     "list": [
       "pictures:0"
     ],
-    "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more."
+    "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more.",
+    "carry": [
+      "list"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

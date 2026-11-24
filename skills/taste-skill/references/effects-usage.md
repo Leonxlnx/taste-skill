@@ -11,18 +11,15 @@ any card detail; `motion.md` holds every timing.
 
 Effects are dealt by fit, like the moments and the scenes (`moments.md`, The fit rule): each effect's
 `meta.json` carries `tones`, `intensity` and `webgl`, and `effects.mjs pick --page <kind>` deals
-only what the page's kind takes. Nothing is locked to tech, but a cafe gets nothing too wild:
+only what the page's kind takes.
 
 | page kind | effects it is dealt |
 |---|---|
 | tech (hardware), software, gaming | any effect whose tones the kind takes (tech: product, tech, editorial; software: tech, editorial, product; gaming: playful, tech), any intensity |
 | place, service | none: the plan says "no WebGL" there, and every effect is a shader, the quiet treatments too |
-| product (site-kind other) | none the same; a technical subject (hardware, devices) is passed as `--tech-subject` and dealt as tech |
+| product | none. For hardware eligible for shaders, use `--page tech` |
 
-The quiet treatments (`"treatment": true`) are the calm ones a tech page or a product with a technical
-subject may take on a band. They are WebGL like the rest, so `effects.mjs pick` deals none of them to a
-place, service or product page and stops when one is named there (2.5.3: a guesthouse and a linen shop
-were dealt `soft-light-bars` beside "no WebGL" and FAILed effects-fit). What each looks like:
+Quiet treatments also use WebGL. The dealer keeps them off place, service and product pages.
 
 - `grain-gradient`: soft page colours under still-looking film grain; it reads as printed paper, not
   as a screen.
@@ -40,45 +37,21 @@ Kept off place and service, and why: the light shows (`orb-sphere`, `spotlight-c
 the patterns (`grid-pulse`, `dotted-globe`, `dot-terrain`, `ruled-grounds`, `contour-lines`,
 `ridgeline`) and the dithers (`ascii-shade`, `bayer-dither`, `halftone-screen`) read as data or code;
 `gradient-mesh`, `silk-folds`, `fluted-glass` and `painterly-landscape` are made to sit under a UI
-window; `edge-glow` lights a prompt box. A product page with a technical subject takes them.
-
-On place, service and product pages photographs, type and flat colour still carry the page. Banned
-there: autoplay video, any CSS gradient (grounds, panels, glows, scrims), SVG pattern or texture
-grounds, `backdrop-filter` (the nav too), `mix-blend-mode`, glass, a custom cursor and any scroll or
-animation library; canvas and WebGL only for a product render the brief asks for. Dealt on every kind: the hero's entrance, the section reveals, the two or three dealt
-moments, a dealt scene (`scenes.md`), the hover layer, loops inside a card's visual, `fx-map` baked
-still, `fx-photo` as a plain photograph, real icons, a diagram, and on a physical product whose
-brief asks for 3D its own product render (`[data-product]`, `effects-objects.md`): the product's
-picture, not an effect: stills by default, live only when asked (`data-product-mode="live"`), at
-most one live context, on the flat ground, its poster beneath. Without that ask a product with no
-photographs is shown in stand-in photographs (`photos.md`).
+`edge-glow` lights a prompt box. Use a flat interface on place, service and product. Choose the lead picture with the ladder in `photos.md`. A built drawing, chart or working control can show the subject. Keep shaders, tech gradients, glass and prints off these pages. A requested 3D product view can use its own rendered still.
 
 ## What each kind gets
 
 | | tech | product, service (other) | place |
 |---|---|---|---|
-| Lead picture | the client's UI (hardware: its photographs or CAD render, else stand-in photographs of its kind, never an effect or an order form alone; a game: its name and its art, else its name over a stand-in photograph of its setting; a render only when the brief asks for 3D) | its photographs; a product without them: stand-in photographs of its kind (a render only when the brief asks for 3D) | its photographs (a remote place: its region's landscape) |
-| The one effect | a live ground, a WebGL part, an object | none (no WebGL; a technical subject: as tech) | none (no WebGL) |
-| Card panel grounds | one card group, still, from the effect's family; with a big scene the lit ground (`data-ground`), no `data-fx` | the client's photograph | the client's photograph |
-| Moments | 2, 3 on a long page, dealt by fit (`moments.md`) | 2, 3 on a long page, dealt by fit | 2, 3 on a long page, dealt by fit |
+| Lead picture | Client art, product UI or built world | Product, work or a drawing of it | The place or its region |
+| The one effect | A live ground, WebGL part or object | None | None |
+| Card panel grounds | One group from the effect's family, held still | Flat ground | Flat ground |
 | Big scene | 0 or 1, dealt by fit (`scenes.md`) | 0 or 1, dealt by fit | 0 or 1, dealt by fit |
 | Diagram cards | 0 to 2, pulsing | 0 or 1 | none |
 | Loops | inside card visuals, one per card group | inside card visuals | inside card visuals |
 | CSS grounds | 0 to 2 (`backgrounds.md`) | flat tokens | flat tokens |
 
-**The subject before the effect** (in testing: a robot arm shown as a silk shader and an order form,
-and an unnamed game shown as an abstract effect, both lost to pages that showed the thing). An
-effect never stands where the product, the device or the game's world should be. Hardware with no
-photographs or client renders takes stand-in photographs of the same kind of machine at work, and
-a game with no art files its name set large over stand-in photographs of its setting (`photos.md`,
-Live search; `sections.md`, Product and Gaming), full bleed in the world section. When the brief
-asks for 3D, a product render (`effects-objects.md`, Product renders) is the picture instead, not
-the effect: the page's one effect may sit behind it as the stage's ground (every render placement
-is transparent over its frame), counts as the beat and shares the four contexts with it; it never
-replaces the picture and never sits beside it as a second focal visual.
-
-Every visual that is not the effect, a card ground, a moment, the scene or a product render is a
-real UI capture or a real photograph. A photograph is never filtered, printed, dithered or graded on any page.
+**Show the subject first.** Put the product or game world in the hero. Use `photos.md` for missing pictures. Keep the effect behind the subject and the photograph free of filters.
 
 ## Tech budget
 
@@ -95,14 +68,7 @@ real UI capture or a real photograph. A photograph is never filtered, printed, d
   drawn once and held as pictures (system.js frees their contexts); not a second live effect. With
   a big scene the one dealt effect is the only `data-fx` outside a moment (a second FAILs, MO-16,
   MO-23): the card panels take the lit ground (`data-ground`).
-- **Moments** (house rule): two section moments, three on a long page, dealt by fit
-  (`moments.md`), each in its own section; a hero moment only when the dealt hero lists it; never in
-  or beside the scene's section. A moment built as an `fx` part carries its own `data-fx` id on its
-  own section; it is not a second ground.
-- **Beats:** the effect, the scene and the moments are the page's beats (one effect, 0 or 1 scene,
-  two or three moments). Name each and its section in the plan; never two in one section; a calm
-  section between two scrubbed ones; the first lively one in the first three screens. CSS grounds, card
-  grounds, diagrams, card loops and hovers are not beats.
+- **Moments and scenes.** Follow the PLAN's host for each. A text moment belongs on an existing heading unless the notes hold the page's main claim. See `moments.md` for carries and counts. Keep a calm section between two scrubbed parts.
 - **One pointer effect** a page: a hover or liquid moment, `fx-button`, `fx-spotlight` or an object
   that turns to the pointer, never two. Never a replaced cursor, never a magnetic button.
 - **At most four live WebGL contexts** at once (house rule): the effect plus the moments' own canvases;
@@ -139,23 +105,13 @@ fragment, a card group), add the patterns and prints to `--exclude`; `<NOUI>` is
 
 ## Deal the moments and the scene
 
-**Moments and the scene** (every kind): one command deals 0 or 1 scene by fit and then two moments
-(three with `--long`) around it, leaving out the scene's `avoidMoments`; pass the dealt effect so the
-WebGL total stays within four:
+`start.mjs plan` runs the motion dealer. For a direct pick pass the actual section count, material in the copy notes and the dealt effect:
 
 ```bash
-node <skill>/scripts/moments.mjs pick --page <kind> --scene deal --effects <the effect> --history .taste-skill/history.json
+node <skill>/scripts/moments.mjs pick --page <kind> --sections <N> --carry <material> --scene deal --effects <id> --history .taste-skill/history.json
 ```
 
-The scene is dealt about one page in two, never one the history already holds, from every
-`assets/scenes/*/meta.json` that fits the kind (`scenes.md`, Who gets one). When the dealt scene's
-`needs` turn out unmet, deal again with it in `--exclude`. A scene is the hero only when its `restH`
-is 1; the three hero scenes rest in two screens today, so they go below the dealt hero as a
-two-screen section. Never a moment in the scene's section or beside it.
-Markup and checks: `scenes.md`.
-
-**Its height (rule 3):** `{"hold": 1}` and `--h` = the scene's `restH`, as `scenes.md` (Its
-height) says; no page CSS; the scene's section stays one or two screens like every other.
+Use the printed host and the matching recipe in `moments.md` or `scenes.md`. A scene needs its own material.
 
 ## Where things sit
 

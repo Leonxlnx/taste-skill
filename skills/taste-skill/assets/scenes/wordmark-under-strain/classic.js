@@ -160,7 +160,7 @@
       // a deeper crush without the echo, so the strain reads at every step of its longer run
       squash: num(o.squash, o.echo === true ? 0.1 : 0.14, 0, 0.15),
       spring: num(o.spring, 3, 1.5, 3),
-      drop: o.drop !== false,
+      drop: false,
       // what falls: 'stop' (an added square full stop, so the word rests whole), 'straight' (the word's own
       // I, l or 1, which leaves a gap in the word at rest) or a 0-based letter index
       letter: Number.isInteger(o.letter) ? o.letter : o.letter === 'straight' ? 'straight' : 'stop',

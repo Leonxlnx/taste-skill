@@ -99,8 +99,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 - **Learn from:** Blue Bottle (1683 Vienna, beans thought "camel feed"), Dishoom (a run of who sat where at breakfast).
 - **Sounds like:** "In 1958 the tram stopped outside, and the bakery opened at five for the drivers. It
   still does."
-- **Moves:** opens on a dated moment, not on the brand; streets, furniture and people named; old
-  photographs as evidence, never captioned on the page (`copy.md`).
+- **Moves:** opens on a dated event. Names the street, furniture and people. Use old photographs as evidence (`copy.md`, house rule 1).
 - **Fits:** restaurants, family firms, anything with a real lineage in the brief.
 - **Fails when:** the history is invented or generic ("rooted in tradition").
 

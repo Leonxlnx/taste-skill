@@ -21,14 +21,20 @@
   "phone": "It runs on a phone as on a desktop: the figures roll once as the row comes on screen.",
   "phoneRuns": true,
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "list": [
       "figures"
     ],
     "words": "2 to 4 figures the brief gives (a price, a count, a time), each with a short caption; never an invented outcome"
   },
-  "text": { "items": [2,4], "sel": "[data-count], .t-stat" },
+  "text": {
+    "items": [
+      2,
+      4
+    ],
+    "sel": "[data-count], .t-stat"
+  },
   "avoidWith": [],
   "states": {
     "start": {
@@ -43,5 +49,6 @@
       "see": true,
       "wait": 2400
     }
-  }
+  },
+  "retired": "The rolling digits show incorrect figures."
 }

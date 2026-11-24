@@ -57,8 +57,7 @@
   kit file's, wherever it sits, is the kit's and is skipped. The two checkers' ids for the
   same fault on the same section (section-height / screen-height / screen-short, one-section / neighbour) are one
   finding. And the motion: scripts/motion-lint.mjs, once it exists, run exactly as copy-lint (its FAILs block).
-  WARNs never block, except three the checker WARNs and the gate holds as FAILs: hero-enter (the hero does not
-  enter on load), moment-none (the page deals no moment) and photo-repeat (one photograph shown twice).
+  The gate promotes two warnings to failures, hero-enter and photo-repeat. A missing planned moment fails deal-drift.
   Only a local page is checked: a file, or a URL on localhost, 127.0.0.1, [::1], *.localhost or *.test.
 
   Waivers: a FAIL judged false is waived in .taste-skill/waivers.json, an array of
@@ -382,7 +381,10 @@ function fingerprint(dir, m, P, html) {
   const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
   const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(dir, 'package.json')) ? sourceFiles(dir) : [])])];
   const h = crypto.createHash('sha1');
-  h.update(JSON.stringify({ target, opts }));
+  h.update(JSON.stringify({ rules:'2.5.4', target, opts }));
+  for (const name of ['copy.md','plan.json','history.json','layout-history.json']) {
+    try { h.update(name).update(fs.readFileSync(path.join(dir,'.taste-skill',name))); } catch { /* optional building input */ }
+  }
   for (const f of files) {
     try { const st = fs.statSync(f); h.update(f + '\0' + (/\.(html?|m?js|css|jsx|tsx?|vue|svelte|astro)$/i.test(f) && st.size < 2e6 ? fs.readFileSync(f) : `${st.size}:${st.mtimeMs}`)); } catch { /* gone */ }
   }
@@ -562,14 +564,16 @@ function productChecks(html, dot) {
   const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
   for (const m of live.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/gi)) {
     const body = m[2], id = (attrs('<x ' + m[1] + '>').id || '');
-    const imgs = [...body.matchAll(/<img\b[^>]*>/gi)].map(t => attrs(t[0])).filter(a => !/^\s*$/.test(a.alt || '') || a['data-subject']);
-    if (!imgs.length) continue;
+    const imgs = [...body.matchAll(/<(img|svg|canvas|figure|div|section)\b[^>]*>/gi)].map(t => ({...attrs(t[0]),tag:t[1].toLowerCase()})).filter(a =>
+      a.alt || a['data-subject'] || (a['aria-label'] && (['svg','canvas'].includes(a.tag) || a.role==='img' || a['data-ui'] !== undefined || /app-frame|chart|diagram/.test(a.class || ''))));
+    const titles = [...body.matchAll(/<svg\b[^>]*>[\s\S]*?<title>([^<]+)<\/title>[\s\S]*?<\/svg>/gi)].map(m=>m[1]);
+    if (!imgs.length && !titles.length) continue;
     const heads = [...body.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)].map(h => h[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
-    const shows = imgs.map(a => `${a.alt || ''} ${a['data-subject'] || ''}`).join(' ');
+    const shows = [...imgs.map(a => [a.alt,a['aria-label'],a['data-subject']].filter(Boolean).join(' ')),...titles].join(' ');
     for (const n of nouns) {
       const h = heads.find(x => word(esc(n)).test(x));
       if (!h || word(esc(n) + (Object.hasOwn(SAME, n) ? '|' + SAME[n] : '')).test(shows)) continue;
-      W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's photograph shows "${shows.trim().slice(0, 70)}"`, fix: `a photograph of the ${n} itself: photos.mjs pick for the trade, else photos.mjs search --out . "${n} ..." (photos.md, Every product on the fact sheet gets its picture), its alt naming it` });
+      W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's picture identifies "${shows.trim().slice(0, 70)}"`, fix: `show the ${n} in a photograph, drawing or working view and name it in the accessible description` });
     }
   }
   return W;
@@ -608,7 +612,7 @@ const reEsc = s => s.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 // to the next "·" or the next line that starts another part. Asides in brackets, and the words from "instead of",
 // "replaces", "re-dealt for", "not" to the next comma, are blanked first (to spaces, so every offset still points at
 // its line of the page). Returns [{ words, at }], at: where the words start in text.
-const PLAN_KEYS = 'kind|plan|type|copy|palette|hero|entrance|nav|close|footer|buttons|mark|rhythm|bands|grounds|compositions?|photos|reveals|moments?|scenes?|effects?|hover|then';
+const PLAN_KEYS = 'kind|plan|type|copy|palette|hero|entrance|nav|close|footer|buttons|mark|rhythm|bands|grounds|density|align|pictures|ideas|sub|own|compositions?|photos|reveals|moments?|scenes?|effects?|hover|then';
 const blankOut = s => s.replace(/[^\n]/g, ' ');
 function planPart(text, key) {
   let t = text, o;
@@ -648,7 +652,7 @@ function perfFindings(dot, file, files) {
   for (const x of by.values()) out.fails.push({ check: 'perf', where: `perf ${x.name}`, msg: `perf.mjs (${when}) FAILs ${x.name}: ${x.value}${x.note ? ` (${x.note})` : ''}`, fix: 'fix it as references/perf.md says (a layout shift: reserve the space the moving part takes), then run perf.mjs again: the gate reads its last run', widths: x.ws, from: 'perf' });
   return out;
 }
-async function dealDrift(html, dot, kind, page) {
+async function dealDrift(html, dot, kind, page, frame, source) {
   const fails = [], warns = [];
   if (!html) return { fails, warns };
   const raw = f => { try { return fs.readFileSync(path.join(dot, f), 'utf8'); } catch { return ''; } };
@@ -656,32 +660,79 @@ async function dealDrift(html, dot, kind, page) {
   const hRaw = raw('history.json'), h = read('history.json') || {}, lh = read('layout-history.json') || {};
   const plan = ((html.split(/<body\b/i)[1] || '').match(/<!--([\s\S]*?)-->/) || [])[1] || '';
   const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
-  const has = (attr, id) => new RegExp(`\\b${attr}\\s*=\\s*["']?${reEsc(id)}(?![\\w-])`).test(live);
+  const markup = live.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+  const mounts = [...markup.matchAll(/<[a-z][\w:-]*\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi)].map(m => attrs(m[0]));
+  const has = (attr,id) => mounts.some(a=>a[attr]===id);
   const named = (text, id) => new RegExp(`(^|[^\\w-])${reEsc(id)}(?![\\w-])`).test(text);
-  let mo;
-  try { mo = await import('./moments.mjs'); } catch { return { fails, warns }; }
   const ids = d => { try { return fs.readdirSync(path.join(SKILL, 'assets', d), { withFileTypes: true }).filter(x => x.isDirectory() && !x.name.startsWith('_')).map(x => x.name); } catch { return []; } };
   const lineOf = (text, i) => text.slice(0, i).split('\n').length;
   const SRC = '.taste-skill/history.json';
   // the plan's moments: the comment at the top of <body>, else a comment before it that holds the plan (the starter's
   // "plan line 2"); the first one whose moments part names a moment
-  const bodyAt = html.search(/<body\b/i), comments = [...html.matchAll(/<!--([\s\S]*?)-->/g)];
+  const planSource = source || html;
+  const bodyAt = planSource.search(/<body\b/i), comments = [...planSource.matchAll(/<!--([\s\S]*?)-->/g)];
   const sources = [comments.find(c => bodyAt >= 0 && c.index > bodyAt), ...comments.filter(c => (bodyAt < 0 || c.index < bodyAt) && /\bplan\b/i.test(c[1]))].filter(Boolean);
-  const momentIds = ids('moments');
+  const machine = read('plan.json');
+  const archived = new Set();
+  for (const deck of ['moments','scenes']) {
+    try {
+      const index = JSON.parse(fs.readFileSync(path.join(SKILL,'assets',deck,'index.json'),'utf8'));
+      for (const part of index[deck]) if (part.retired || part.weight === 0 || (deck === 'moments' && part.counts === false)) archived.add(part.id);
+    } catch { /* an older installed deck may have no index */ }
+  }
+  let momentIds = [];
+  try { momentIds = JSON.parse(fs.readFileSync(path.join(SKILL,'assets/moments/index.json'),'utf8')).moments.map(m => m.id); } catch { momentIds = ids('moments'); }
+  momentIds = momentIds.filter(id => !archived.has(id));
+  if (machine?.version === '2.5.4') {
+    const record = (field, expected, actual, list = fails) => list.push({check:'deal-drift',where:field + ' ' + expected,msg:'plan.json dealt ' + expected + '; built ' + (actual || 'none'),fix:'use the dealt ' + field + ' on the page'});
+    // A replacement is explicit, carried on a moments line and built in its slot.
+    const replacements = new Map(), used = new Set();
+    const history = Array.isArray(h.moments) ? h.moments : [];
+    const recordedLater = (oldId,newId) => {
+      const old = history.findLastIndex(m=>m.id===oldId);
+      return old < 0 || history.slice(old+1).some(m=>m.id===newId);
+    };
+    for (const c of sources) for (const line of c[1].split(/[\n·]/).filter(t => /^\s*moments?\b/i.test(t))) {
+      for (const m of line.matchAll(/([\w-]+)\s*\(\s*re-dealt for ([\w-]+)\s*\)/gi)) {
+        if (!used.has(m[1]) && !replacements.has(m[2]) && (machine.moments || []).includes(m[2]) && recordedLater(m[2],m[1]) && !(machine.moments || []).includes(m[1]) && momentIds.includes(m[1]) && has('data-moment',m[1])) { replacements.set(m[2],m[1]); used.add(m[1]); }
+      }
+    }
+    for (const id of machine.moments || []) if (!archived.has(id) && !has('data-moment',id) && !replacements.has(id)) record('moment', id);
+    if (machine.scene && !archived.has(machine.scene) && !has('data-big-scene',machine.scene)) record('scene',machine.scene);
+    if (frame) {
+      for (const key of ['hero','entrance','nav','footer','close','buttons','mark']) {
+        if (key === 'mark' && frame.mark === 'client-logo') continue;
+        if (machine[key] && machine[key] !== frame[key]) record(key,machine[key],frame[key]);
+      }
+      for (const [part,label] of [['heroPeek','hero--peek'],['heroBook','hero-book']]) {
+        if (machine[part] === true && !frame[part]) record('hero',label);
+      }
+      if (machine.density && frame.density !== machine.density) record('density',machine.density,frame.density,warns);
+      const library = file => JSON.parse(fs.readFileSync(path.join(SKILL,'library',file + '.json'),'utf8'));
+      const palette = machine.palette && library('palettes').find(p => p.id === machine.palette);
+      const colour = c => String(c).trim().toLowerCase().replace(/^#([\da-f])([\da-f])([\da-f])$/, '#$1$1$2$2$3$3');
+      if (palette && ['bg','ink','accent'].some(k => colour(frame[k]) !== colour(palette[k]))) record('palette',machine.palette,[frame.bg,frame.ink,frame.accent].join(', '));
+      const type = machine.type && library('type').find(t => t.id === machine.type);
+      if (type && (frame.display !== type.display.family || frame.text !== type.text.family)) record('type',machine.type,[frame.display,frame.text].join(', '));
+    }
+    return { fails, warns };
+  }
+  let mo;
+  try { mo = await import('./moments.mjs'); } catch { return { fails, warns }; }
   let P = [], planLine = '';
   for (const c of sources) {
     const parts = planPart(c[1], 'moments?(?:[ \\t]*\\d+)?').map(p => ({ ...p, ids: momentIds.filter(id => named(p.words, id)) })).filter(p => p.ids.length);
-    if (parts.length) { P = [...new Set(parts.flatMap(p => p.ids))]; planLine = page ? `${page} line ${lineOf(html, c.index + 4 + parts[0].at)}` : 'the plan comment'; break; }
+    if (parts.length) { P = [...new Set(parts.flatMap(p => p.ids))]; planLine = page ? `${page} line ${lineOf(planSource, c.index + 4 + parts[0].at)}` : 'the plan comment'; break; }
   }
   const planHint = sources.length && page ? `${page} line ${lineOf(html, sources[0].index)}` : 'the top of <body>';
   // the deals, oldest first (one pick run: one seed, one time), and the history.json line each starts on
   const deals = [];
-  for (const m of (Array.isArray(h.moments) ? h.moments : []).filter(m => m && m.id)) {
+  for (const m of (Array.isArray(h.moments) ? h.moments : []).filter(m => m && m.id && !archived.has(m.id))) {
     const d = deals.find(x => x.seed === m.seed && x.at === m.at);
     if (d) { if (!d.ids.includes(m.id)) d.ids.push(m.id); } else deals.push({ seed: m.seed, at: m.at, t: Date.parse(m.at) || 0, ids: [m.id] });
   }
   const histLine = (at, key) => { const k = hRaw.indexOf(key), i = at && k >= 0 ? hRaw.indexOf(String(at), k) : -1; if (i < 0) return SRC; const b = hRaw.lastIndexOf('{', i); return `${SRC} line ${lineOf(hRaw, b < 0 ? i : b)}`; };
-  // the deal that counts: the whole deal (two or three moments) of this build the plan's moments share the most with,
+  // Older histories identify this build by the complete deal that shares the most moments with its plan,
   // the later one on a tie; with no moments part, or one that matches none, the latest whole deal. This build's deals:
   // since the build marker's start, or the six hours before the latest deal when that reaches further back (a build
   // armed again with --new after its deal); an older page's deal in this folder never counts
@@ -709,21 +760,21 @@ async function dealDrift(html, dot, kind, page) {
     const missing = base.ids.filter(id => !has('data-moment', id));
     const standIns = momentIds.filter(id => has('data-moment', id) && !base.ids.includes(id) && later.has(id));
     const told = missing.length > standIns.length ? missing : [];
-    for (const id of told) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `${histLine(base.at, '"moments"')} dealt ${id} ${why}; the page has no [data-moment="${id}"] and ${standIns.length ? `the ${standIns.length} dealt after it (${standIns.join(', ')}) stand in for fewer than the ${missing.length} missing` : 'no moment dealt after it stands in'}`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css; ${instead(id)}; a brief that cannot fill it: deal again` });
+    for (const id of told) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `${histLine(base.at, '"moments"')} dealt ${id} ${why}; the page has no [data-moment="${id}"] and ${standIns.length ? `the ${standIns.length} dealt after it (${standIns.join(', ')}) stand in for fewer than the ${missing.length} missing` : 'no moment dealt after it stands in'}`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; ${instead(id)}; a brief that cannot fill it: deal again` });
     // a moment the plan names, dealt in this project, is built: the plan and the page say the same
     const dealt = new Set(deals.flatMap(d => d.ids));
-    for (const id of P) if (dealt.has(id) && !has('data-moment', id) && !told.includes(id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan's moments part (${planLine}) names ${id}, dealt at ${histLine(deals.filter(d => d.ids.includes(id)).pop().at, '"moments"')}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css; a moment dealt away: off that part, or in brackets after its stand-in, "(re-dealt for ${id})"` });
+    for (const id of P) if (dealt.has(id) && !has('data-moment', id) && !told.includes(id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan's moments part (${planLine}) names ${id}, dealt at ${histLine(deals.filter(d => d.ids.includes(id)).pop().at, '"moments"')}; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css; a moment dealt away: off that part, or in brackets after its stand-in, "(re-dealt for ${id})"` });
     // its scene (dealt within a few seconds of it); a scene dealt with a later pick and built stands in
-    const scenes = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => s && s.id), sc = scenes.filter(s => Math.abs(base.t - Date.parse(s.at)) < 10000).pop();
+    const scenes = (Array.isArray(h.scenes) ? h.scenes : []).filter(s => s && s.id && !archived.has(s.id)), sc = scenes.filter(s => Math.abs(base.t - Date.parse(s.at)) < 10000).pop();
     if (sc && !scenes.some(s => Date.parse(s.at) > base.t + 10000 && has('data-big-scene', s.id))) { scene = sc.id; sceneMsg = `${histLine(sc.at, '"scenes"')} dealt the scene ${scene} ${why}`; }
   } else if (plan) {
     // no deal in the history: the plan comment is the deal
     const named0 = P.length ? P : momentIds.filter(id => named(plan, id));
-    for (const id of named0) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan comment (${planLine || planHint}) names the moment ${id} and ${SRC} holds no deal; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} into a section of its own and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
+    for (const id of named0) if (!has('data-moment', id)) fails.push({ check: 'deal-drift', where: `moment ${id}`, msg: `the plan comment (${planLine || planHint}) names the moment ${id} and ${SRC} holds no deal; the page has no [data-moment="${id}"]`, fix: `${mo.momentSource(id)} on the content it carries and link assets/moments/${id}/moment.css (references/moments.md); a brief that cannot fill it: deal again with start.mjs plan --has` });
     scene = ids('scenes').find(id => named(plan, id)) || null;
     sceneMsg = `the plan comment (${planHint}) names the scene ${scene}`;
   }
-  if (scene && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `${sceneMsg}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
+  if (scene && !archived.has(scene) && !has('data-big-scene', scene)) fails.push({ check: 'deal-drift', where: `scene ${scene}`, msg: `${sceneMsg}; the page has no [data-big-scene="${scene}"]`, fix: `${mo.sceneSource(scene)} (references/scenes.md)` });
   // the place hero's form
   const heroTag = (live.match(/<(?:section|header)\b[^>]*\bclass\s*=\s*["'][^"']*\bhero--place\b[^>]*>/i) || [])[0];
   const pf = Array.isArray(lh.placeForms) && lh.placeForms.length ? lh.placeForms[lh.placeForms.length - 1] : (plan.match(/\bform\s*[:=]?\s*["']?(band|bleed|split|name)\b/i) || [])[1];
@@ -744,7 +795,7 @@ async function dealDrift(html, dot, kind, page) {
     }
     for (const key of ['visit', 'offer', 'showcase', 'rooms', 'feature', 'form', 'statement']) {
       const c = lastOf(key);
-      if (c && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) fails.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key} (${SRC}, "layout"); the page has none`, fix: `build it: ${COMP_MARK[c][1]}; a part the brief cannot fill: deal again (start.mjs plan --has), or waive it with the reason` });
+      if (c && !/<section\b[^>]*\sdata-own(?:[\s=>])/i.test(live) && COMP_MARK[c] && !COMP_MARK[c][0].test(live)) fails.push({ check: 'deal-drift', where: `composition ${key} ${c}`, msg: `the deal dealt ${c} for ${key} (${SRC}, "layout"); the page has none`, fix: `build it: ${COMP_MARK[c][1]}; a part the brief cannot fill: deal again (start.mjs plan --has), or waive it with the reason` });
     }
   }
   return { fails, warns };
@@ -839,9 +890,10 @@ const inProject = (p, name) => {
   return to;
 };
 const profileBase = () => path.resolve(typeof opt('profile') === 'string' ? inProject(opt('profile'), 'gate') : process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome') : os.tmpdir());
-const freshProfile = name => { const d = path.join(profileBase(), `gate-${process.pid}-${name}-${Date.now().toString(36)}`); fs.mkdirSync(d, { recursive: true }); return d; };
+const exactProfile = process.env.TASTE_SKILL_CHROME_PROFILE && path.resolve(process.env.TASTE_SKILL_CHROME_PROFILE);
+const freshProfile = name => { if (exactProfile) { fs.mkdirSync(exactProfile,{recursive:true}); return exactProfile; } const d = path.join(profileBase(), `gate-${process.pid}-${name}-${Date.now().toString(36)}`); fs.mkdirSync(d, { recursive: true }); return d; };
 // Chrome's helpers can hold the profile's files for a moment after it exits
-const rmProfile = d => { for (let i = 0; i < 20; i++) { try { fs.rmSync(d, { recursive: true, force: true }); return; } catch { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); } } };
+const rmProfile = d => { if (d === exactProfile) return; for (let i = 0; i < 20; i++) { try { fs.rmSync(d, { recursive: true, force: true }); return; } catch { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); } } };
 const parseJson = t => { try { return JSON.parse(t); } catch { const i = t.indexOf('{'), j = t.indexOf('['); const k = [i, j].filter(x => x >= 0).sort((a, b) => a - b)[0]; try { return k >= 0 ? JSON.parse(t.slice(k)) : null; } catch { return null; } } };
 
 // the line of a child's stderr that says what went wrong: Node's own "XError: ..." line before a quoted source line
@@ -859,7 +911,7 @@ const LAYOUT_FIX = {
 // two house rules the checker only WARNs (its own kit demos carry neither) and the gate holds: every hero enters
 // once on load, and every page deals a moment (SKILL.md house rules 5 and 8)
 // photo-repeat too: one photograph shown twice on a page (the 2.5.2 builds showed the oven, the bread twice)
-const HELD = new Set(['hero-enter', 'moment-none', 'photo-repeat']);
+const HELD = new Set(['hero-enter', 'photo-repeat']);
 async function browserChecks(target, proj, opts, gateDir) {
   const res = { fails: [], warns: [], crashed: [], seconds: {} };
   // 390 always, the quick look too (the phone is where sections run into each other); the 320 pass (overflow, collide, tap-size) comes with it
@@ -869,15 +921,21 @@ async function browserChecks(target, proj, opts, gateDir) {
   {
     const prof = freshProfile('consistency'), out = path.join(gateDir, 'consistency'), t = Date.now();
     try { fs.rmSync(path.join(out, 'rendered.html'), { force: true }); } catch { /* none */ }
-    const argv = [target, '--quick', '--widths', widths, '--json', '--profile', prof, '--out', out, ...root,
+    let products = '';
+    try {
+      const notes = fs.readFileSync(path.join(gateDir, '..', 'copy.md'), 'utf8');
+      products = notes.match(/^\s*Products:\s*([^\r\n]+)/im)?.[1].trim() || '';
+    } catch { /* copy lint reports missing notes */ }
+    const argv = [target, ...(products ? ['--products', products] : []), '--quick', '--widths', widths, '--json', '--profile', prof, '--out', out, ...root,
       ...(opts.kind ? ['--page', opts.kind] : []), ...(opts.category ? ['--category', opts.category] : []), ...(opts.primary ? ['--primary', opts.primary] : [])];
-    const r = await run(path.join(here, 'consistency.mjs'), argv, proj, 420000, [prof]);
+    const r = await run(path.join(here, 'consistency.mjs'), argv, proj, 420000, exactProfile ? [] : [prof]);
     rmProfile(prof); res.seconds.consistency = Math.round((Date.now() - t) / 1000);
     const rep = parseJson(r.out) || readJson(path.join(out, 'report.json'), null);
     if (r.timedOut) res.crashed.push('consistency.mjs timed out');
     else if (!rep || !Array.isArray(rep.widths)) res.crashed.push(`consistency.mjs gave no report (exit ${r.code}${errLine(r.err)})`);
     else {
       if (r.code === 2 || (rep.notCheckedAt || []).length) res.crashed.push(`consistency.mjs could not walk ${(rep.notCheckedAt || []).join(', ') || 'every width'}`);
+      res.frame = rep.widths.find(w => w.frame)?.frame;
       const lists = [...rep.widths.map(w => w.findings.map(f => ({ ...f, width: w.width }))), ...(rep.sweep ? [rep.sweep.findings] : []), ...(rep.narrow ? [rep.narrow.findings] : [])];
       for (const f of lists.flat()) {
         const item = { check: f.check, where: (f.sel || '(the page)') + (f.text ? ` "${String(f.text).slice(0, 40)}"` : ''), msg: f.msg || '', fix: f.fix || '', widths: [f.width].filter(Boolean), from: 'consistency' };
@@ -888,7 +946,7 @@ async function browserChecks(target, proj, opts, gateDir) {
   // check.mjs: every finding fails
   if (left() > 60000) {
     const prof = freshProfile('layout'), t = Date.now();
-    const r = await run(path.join(SKILL, 'assets', 'layout', 'check.mjs'), ['--url', target, '--profile', prof, '--sizes', sizes, '--json', ...root], proj, 300000, [prof]);
+    const r = await run(path.join(SKILL, 'assets', 'layout', 'check.mjs'), ['--url', target, '--profile', prof, '--sizes', sizes, '--json', ...root], proj, 300000, exactProfile ? [] : [prof]);
     rmProfile(prof); res.seconds.layout = Math.round((Date.now() - t) / 1000);
     const rep = parseJson(r.out);
     if (r.timedOut) res.crashed.push('check.mjs timed out');
@@ -1229,8 +1287,8 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     const b = await safely('browser', () => browserChecks(target, projDir, opts, gateDir), { ...none, seconds: {} }, true);
     const c = await safely('copy', () => copyChecks(P, kind, html, rendered), none, true);
     const mo = await safely('motion', () => motionChecks(P, kind, html, rendered), none, true);
-    let renderedHtml = ''; if (!html) try { renderedHtml = fs.readFileSync(rendered, 'utf8'); } catch { /* none */ }
-    const dd = await safely('deal-drift', () => dealDrift(html || renderedHtml, dot, kind, html ? relPage : null), { fails: [], warns: [] });
+    let renderedHtml = ''; if (!HAS_COPY.test(html) || fs.existsSync(path.join(dot,'plan.json'))) try { renderedHtml = fs.readFileSync(rendered, 'utf8'); } catch { /* none */ }
+    const dd = await safely('deal-drift', () => dealDrift(renderedHtml || html, dot, kind, html ? relPage : null, b.frame, html), { fails: [], warns: [] });
     const pp = await safely('photo-product', () => productChecks(html || renderedHtml, dot), []);
     found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...c.fails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {

@@ -11,9 +11,7 @@ kinds it suits (`types`: software, tech, gaming, product, service); `demo.html` 
   parallel jobs, many sources into one place, two systems in sync, steps in order, regions.
 - A UI fragment (`assets/ui`), when the point is what the user sees or does: a drafted reply, a
   calendar, a dashboard. Never a diagram of a screen.
-- One diagram a section, two a page at most (tech; a product or service page one, held still). A
-  place page has none. On a gaming page a diagram shows a system of the game (matchmaking, saves,
-  stores), never in place of the game's own pictures.
+- Use up to two kit diagram cards on tech, one still on product or service. The kit has no place preset. For a place's hours, route or price comparison see `compose.md`. On gaming show a game system here.
 
 ## Pick a layout and a preset
 
@@ -64,9 +62,7 @@ fetches every id the page's diagrams name (curated short names such as `gmail`, 
 Colour marks come from the logos set in full colour; where none exists (Google Docs, Sheets, Slides) the Simple Icons mark in its brand hex,
 painted by `icons.mjs`. An icon that is missing shows the name's first letter, and the console says
 `diagram.js: N icons are not in .../assets/icons ...` with the fetch line: run it. A finished page has no such line.
-Marks that are mostly violet (Stripe, Twitch) are drawn in the text colour, black marks take the ink, a wordmark gets a 2:1 slot and its
-tile becomes a pill: all decided by `icons.mjs` and baked into the file (`data-ic`). `data-icon-base` on the element or around it
-moves the folder.
+Use the resolver's full-colour logo for a real tool (`icons.md`). A wide wordmark takes a 2:1 slot. `data-icon-base` sets the folder.
 
 ## Motion: one cycle of 2.5 to 4 s
 
@@ -92,5 +88,5 @@ moves the folder.
 - Real-looking numbers in `meta` (2,481, 14 ms).
 - No jargon nodes ("Orchestration layer", "AI engine"): the core is called what the product calls it.
 - Up to 8 spokes, up to 12 nodes in a card. Crowded means it should be a list.
-- No caption under the diagram. The card title says what it shows; `alt` in the spec says it for screen readers.
+- Put the subject in the card title and the accessible description in `alt`. For a picture's fact line see `copy.md`.
 - Tool marks in their own colours, never a letter in a circle. A core without an icon is a pill with its name.

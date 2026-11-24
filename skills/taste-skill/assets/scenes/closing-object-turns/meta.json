@@ -49,7 +49,11 @@
       "product-photo",
       "pictures:1"
     ],
-    "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw."
+    "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw.",
+    "carry": [
+      "photos",
+      "words"
+    ]
   },
   "never": "never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Never a drawn object: without a real photograph of the thing, redraw.",
   "avoidWith": [],

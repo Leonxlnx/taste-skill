@@ -103,7 +103,7 @@ export default function mount(root, opts = {}) {
     }
   };
   const ctrl = scene(root, {
-    hold: opts.hold ?? 1,
+    hold: 1,
     phone: 'rest',
     start() { build(); },
     measure(ctx) { g = { H: ctx.vh }; },
@@ -113,8 +113,8 @@ export default function mount(root, opts = {}) {
       // the layers: the far one rises first and slower, the near one later and faster; both leave upward.
       // the full-mist beat is short: the near layer is already leaving while the note stands
       const y = (a, b, c0, c1, d0, d1) => lerp(lerp(a, b, seg(p, c0, c1, ease.inOut)), -2.6 * H, seg(p, d0, d1, ease.inOut));
-      const yB = y(1.02 * H, -0.08 * H, 0.04, 0.48, 0.56, 0.94);
-      const yA = y(1.28 * H, 0.3 * H, 0.14, 0.48, 0.52, 0.86);
+      const yB = y(1.02 * H, -0.08 * H, 0.36, 0.49, 0.49, 0.63);
+      const yA = y(1.28 * H, 0.3 * H, 0.39, 0.50, 0.50, 0.61);
       if (layers[0]) layers[0].style.transform = `translate3d(0, ${yB.toFixed(1)}px, 0)`;
       if (layers[1]) layers[1].style.transform = `translate3d(0, ${yA.toFixed(1)}px, 0)`;
       // the picture above zooms slowly and goes once the deck has closed
@@ -122,20 +122,20 @@ export default function mount(root, opts = {}) {
       above.style.transform = `scale(${zoom.toFixed(4)})`;
       above.style.visibility = p > 0.5 ? 'hidden' : '';
       // the band with the name leaves downward as the cloud reaches it
-      const kh = 1 - seg(p, 0.28, 0.4, ease.inOut);
+      const kh = 1 - seg(p, 0.36, 0.44, ease.inOut);
       hero.style.opacity = kh.toFixed(3); hero.style.visibility = kh <= 0 ? 'hidden' : '';
       hero.style.transform = `translate3d(0, ${((1 - kh) * H * 0.12).toFixed(1)}px, 0)`;
       // the line inside the cloud: it comes as soon as the band has gone and holds the mist until the frame starts to clear
       if (note) {
-        const kn = seg(p, 0.4, 0.46, ease.out) * (1 - seg(p, 0.58, 0.64, ease.in2));
+        const kn = seg(p, 0.44, 0.48, ease.out) * (1 - seg(p, 0.52, 0.57, ease.in2));
         note.style.opacity = kn.toFixed(3); note.style.visibility = kn <= 0 ? 'hidden' : '';
         note.style.transform = `translate3d(0, ${(lerp(30, -30, seg(p, 0.38, 0.66, ease.linear))).toFixed(1)}px, 0)`;
       }
       // the place below: a slow settle from a close crop
       below.style.transform = `scale(${(1.12 - 0.12 * seg(p, 0.56, 1, ease.out)).toFixed(4)})`;
-      if (statement) { const ks = seg(p, 0.74, 0.86, ease.out); statement.style.opacity = ks.toFixed(3); statement.style.visibility = ks <= 0 ? 'hidden' : ''; }
-      lines.forEach((l, i) => {
-        const k = seg(p, 0.78 + i * 0.07, 0.92 + i * 0.07, ease.out);
+      if (statement) { const ks = seg(p, 0.56, 0.65, ease.out); statement.style.opacity = ks.toFixed(3); statement.style.visibility = ks <= 0 ? 'hidden' : ''; }
+      lines.forEach(l => {
+        const k = seg(p, 0.56, 0.65, ease.out);
         l.style.transform = `translate3d(0, ${((1 - k) * 110).toFixed(1)}%, 0)`;
         l.style.opacity = k > 0 ? '1' : '0';
       });

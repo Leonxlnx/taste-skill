@@ -1,11 +1,18 @@
 {
  "version": 2,
- "generated": "2026-11-22T09:31:58.342Z",
+ "generated": "2026-11-24T01:42:15.303Z",
  "count": 46,
- "dealt": 40,
+ "dealt": 33,
  "retired": [
   "arrive-and-settle-track",
   "depth-card-flythrough",
+  "dot-becomes-the-full-stop",
+  "letter-bar-floods-the-ground",
+  "letter-physics",
+  "light-flood",
+  "object-through-giant-type",
+  "parts-lock-into-the-whole",
+  "product-assembles-into-its-action",
   "raster-cut",
   "stepped-columns-raise-a-stage",
   "type-flip-relayout",
@@ -30,7 +37,7 @@
   "lively": 27,
   "bold": 13
  },
- "rule": "At most one big scene a page, on any kind of page whose fit it meets: its tones, intensity and webgl against the page kind (moments.mjs FIT; place and service pages take quiet or lively scenes without WebGL), its fits, types and needs against the brief (references/scenes.md). About one page in two gets one; a retired scene is never dealt. Phones and reduced motion get the finished composition or the light version; the rest of the page stays calm.",
+ "rule": "At most one big scene a page, on any kind of page whose fit it meets: its tones, intensity and webgl against the page kind (moments.mjs FIT; place and service pages take quiet or lively scenes without WebGL), its fits, types and needs against the brief (references/scenes.md). About one eligible page in three gets one; a retired scene is never dealt. Phones and reduced motion get the finished composition or the light version; the rest of the page stays calm.",
  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"> and <link rel=\"stylesheet\" href=\"assets/scenes/<id>/scene.css\"> in <head>; <section class=\"sc\" data-big-scene=\"<id>\" data-big-scene-opts='{…}'><div class=\"sc__stage\">…</div></section> (a classic scene: class=\"sc scene\" and <div class=\"scene-stage\">, as its demo.html writes it); <script type=\"module\" src=\"assets/scenes/scenes.js\"></script> once at the end of <body>.",
  "scenes": [
   {
@@ -82,7 +89,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action."
+    "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action.",
+    "carry": [
+     "words"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -108,7 +118,7 @@
    "name": "Closing cut under the rise",
    "family": "camera-through-space",
    "classic": 1,
-   "look": "In the last section the one thing the page is about stands, as a cut-out masked from the closing photograph itself, in a flat room of two tints: that photograph's own wall and floor, split exactly on the row where its floor meets its wall, the cut-out starting low on the flat floor. From the first frame a carrier lifts it steadily up the frame, whole on every frame and never sliced by the top edge, onto the row where the thing stands in the picture, while the stage counter-moves a fifth of a screen down and back at most, so the camera seems to duck under the rise. There, in one frame and under the motion, the flat room and the cut-out are gone and the full-bleed closing photograph that was waiting beneath fills the screen, the same thing in the same place and the floor line on the same row, so the cut reads as the room coming into focus rather than a jump; the camera's return carries on through it. On a short flat band of the floor's tint at its foot the page's last sentence arrives in two or three whole phrases, the one plain action together with the last, and the frame rests finished for about the last tenth of the hold.",
+   "look": "A cut-out lifted from the closing product photograph rises into place. The photograph takes over in the same position. The complete closing sentence and its action stand together from the first frame.",
    "fits": [
     "close"
    ],
@@ -128,16 +138,16 @@
    "intensity": "lively",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 1.6,
+   "hold": 1,
    "restH": 1,
    "cost": "low",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same rise and cut at full width: the cut-out fitted to the width less 16px margins, starting low and rising whole onto the subject's place in the portrait crop, the closing photograph's own portrait crop with its own floor line and the subject whole, a shallower dip (phoneDip 0.1, lowered where it would sink the subject's foot under the band) so the crop keeps its height and the subject stays whole above the band, the line over the action on the short band at the foot, the caption left out (it would sit on the cut-out). phone: 'rest' gives the finished composition, the closing photograph a screen tall with the band, the line and the action.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "place": "The end of the page: the order, the booking or the visit, straight after one quiet section. The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, never right after another scene. Pages that sell or show one ordinary physical thing: a teapot, a jug, a stool, a lamp, a bottle, a dish, a garment.",
-   "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient.",
-   "options": "hold 1.6 (1.4-2.4); rise 1 (1-2.4) the rise's speed in screens over the whole hold (only the stretch before the cut shows): the cut-out starts lower by the distance it travels before the cut, so at the cut it stands on the subject's own row, never under the stage's foot margin (there the rise is shortened to the room it has, so the cut still lands it on its row), and the rise slows where the top edge would slice it, so it is whole on every frame; phoneRise (rise) (1-2.4) the same below 768px, where the cut-out is fitted to the width and smaller; ease 'none' (steady, so it is visibly moving within the first tenth; an in-out ease starts slower); dip 0.2 (0-0.3) screens the stage counter-moves down and back (the camera ducks; deepest at the cut, settled at 100%; the script lowers it where it would sink the subject's foot under the band); phoneDip 0.1 (0-0.3) the same on portrait screens; cut 0.3 (0.25-0.6) where the room and the cut-out give way to the photograph (0.28 for a short thing standing low): the rise before it is the part that shows; size 0.5 (0.35-0.6) the cut-out's height share of the stage, about the subject's own height in the photograph as cropped (larger has no room to rise and shrinks at the cut; fitted to the width less the margins); from (cut + 0.04) where the first phrase has arrived (the band is solid from the cut frame, so it never sits empty); to 0.88 (0.65-0.9) where the last phrase and the action have arrived, the rest of the hold the finished frame settling; band 'floor' (a short flat band of the floor's tint at the photograph's foot, the same field as the flat room's floor, so it does not change at the cut) | 'none' (straight on the photograph's calm area, the words riding with the picture so they stay on it); place 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'; tint 'token' (--ccr-wall, --ccr-floor) | 'auto' (medians of the photograph's wall and floor as cropped on this screen; same-origin pictures); foot unset by default (the designed footer follows the scene); a selector pulls that element up over the stage's foot, only for a page that ends on the scene with one plain line; scrub true | 0.1-1; phone 'same' | 'rest'. Scene tokens: --ccr-wall, --ccr-floor, --ccr-ink, --ccr-band, --ccr-band-ink, --ccr-object, --ccr-object-portrait, --ccr-base, --ccr-btn-radius.",
+   "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), visible with the whole sentence; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient.",
+   "options": "The held scroll is capped at 1 screen plus the stage. See the demo for framing options.",
    "roles": [
     "cta",
     "contact"
@@ -157,7 +167,11 @@
      "product-photo",
      "pictures:1"
     ],
-    "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient."
+    "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), visible with the whole sentence; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient.",
+    "carry": [
+     "photos",
+     "words"
+    ]
    },
    "never": "never a drawing, never a second photograph of a lookalike. never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object.",
    "avoidWith": [],
@@ -176,7 +190,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-cut-under-the-rise/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-cut-under-the-rise\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-cut-under-the-rise/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-cut-under-the-rise\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "closing-line-in-a-field-of-words",
@@ -238,7 +253,11 @@
      "pictures:0",
      "names:16"
     ],
-    "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face)."
+    "content": "No pictures. 16-30 real single words of the subject (its dishes, places, materials or services; never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit. One last word of 4-9 letters that can carry the close as a heading (a time, a place, a verb: 'Tonight', 'Aboard', 'Visit'). One closing line of 9-12 words in two clauses of about 22 characters each (44 in all), a <br> between them, two lines at display size on every screen, a phone included (a statement, so it reads in a breath and a short line is never held alone over an empty stage; 'Off the boats at dawn,<br> on the table by seven.'). One plain button of 1-3 words. One calm flat ground, one ink for the words, the heading and the line, one accent for the button only. Set --display-weight to a weight the page loads (400 for a single-weight display face).",
+    "carry": [
+     "list",
+     "words"
+    ]
    },
    "never": "never client or partner names), 9 letters or fewer, in an aria-hidden list with the best first (a desktop flies about the first 25, a phone about the first 14); phrases do not fit.",
    "avoidWith": [],
@@ -310,7 +329,11 @@
      "product-photo",
      "pictures:1"
     ],
-    "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw."
+    "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw.",
+    "carry": [
+     "photos",
+     "words"
+    ]
    },
    "never": "never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Never a drawn object: without a real photograph of the thing, redraw.",
    "avoidWith": [],
@@ -399,7 +422,10 @@
     "list": [
      "pictures:6"
     ],
-    "content": "One backdrop picture, landscape, 2400px wide or more, with a strong one-point perspective (a jetty, a road, a runway, a rail line, a long hall) whose lines meet on the vertical centre line, and a calm band above that point for the statement; or a 6-10 s muted forward move as a video encoded with a keyframe on every frame. Five to twelve card photographs (six hold three screens, and each more adds about 0.36), landscape 3:2 at 1200x800, at most two 4:5 portraits and never two in a row, all of the subject's world and all in one grade baked into the files; on the work, the cards are the work itself, each piece once. The cards stand apart from the backdrop: dim, soften or flatten the backdrop, or mat each card in the ground colour, so a card never melts into a busy picture of the same grade, and keep endScale near 4 so each card passes at more than half the screen's width. On the work, 4-6 pieces in stop mode (byRole below), each stopped flat and large with its own title. One statement per card, 4-7 words (about 34 characters); one caption per card, 1-4 words. Set --fly-vp, --fly-ground and --fly-focus-w to the backdrop's own lines. Without a picture whose lines meet at one point, or with photographs that cannot be made to look like one place, redraw."
+    "content": "One backdrop picture, landscape, 2400px wide or more, with a strong one-point perspective (a jetty, a road, a runway, a rail line, a long hall) whose lines meet on the vertical centre line, and a calm band above that point for the statement; or a 6-10 s muted forward move as a video encoded with a keyframe on every frame. Five to twelve card photographs (six hold three screens, and each more adds about 0.36), landscape 3:2 at 1200x800, at most two 4:5 portraits and never two in a row, all of the subject's world and all in one grade baked into the files; on the work, the cards are the work itself, each piece once. The cards stand apart from the backdrop: dim, soften or flatten the backdrop, or mat each card in the ground colour, so a card never melts into a busy picture of the same grade, and keep endScale near 4 so each card passes at more than half the screen's width. On the work, 4-6 pieces in stop mode (byRole below), each stopped flat and large with its own title. One statement per card, 4-7 words (about 34 characters); one caption per card, 1-4 words. Set --fly-vp, --fly-ground and --fly-focus-w to the backdrop's own lines. Without a picture whose lines meet at one point, or with photographs that cannot be made to look like one place, redraw.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -453,7 +479,10 @@
      "pictures:2"
     ],
     "pictures": "two photographs of the client's own site or world, one from above the cloud or high up (a launch site, a test range, a data centre on its plain, a game's world from above), one from below with a calm lower half",
-    "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines"
+    "words": "a name of one word, one sentence of 8-14 words, a line of 3-7 words for the cloud, a statement of two short lines",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a brief with no high and low pictures of its own site; a software page whose product is a screen (the hero shows the product); a local-business or place page; stock cloud photographs pasted in. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
    "avoidWith": [
@@ -527,7 +556,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots."
+    "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots.",
+    "carry": [
+     "words"
+    ]
    },
    "never": "never a decorative glyph or a stand-in.",
    "avoidWith": [],
@@ -577,9 +609,13 @@
    "reduced": "The claim and the line as a plain statement section.",
    "phone": "The light version: the same stage, nothing overlapping, the claim on two rows.",
    "maxPerPage": 1,
-   "weight": 0.8,
+   "weight": 0,
    "needs": {
-    "words": "one claim of 4-6 words ending on a full stop, in a display face whose full stop is a round dot, and optionally one line of 8-16 words; the section after it on the inverse ground when the cut is used"
+    "words": "one claim of 4-6 words ending on a full stop, in a display face whose full stop is a round dot, and optionally one line of 8-16 words; the section after it on the inverse ground when the cut is used",
+    "carry": [
+     "words"
+    ],
+    "list": []
    },
    "never": "an accent on the dot; a claim of seven words or more; right after another type scene",
    "avoidWith": [
@@ -603,7 +639,8 @@
    "avoidMoments": [
     "word-highlight",
     "counter-rolls"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "fixed-hero-object",
@@ -631,10 +668,16 @@
    "reduced": "The hero with the object's still in its right half, the chapters as sections under it.",
    "phone": "The finished composition: the hero copy first, then the still, then the chapters under it.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "needs": {
     "object": "one object: a render from assets/objects (print-globe, print-cards, print-wheel, print-lamp, print-cup) with its still made by shoot.mjs make, or the client's own cut-out photograph (an <img class=\"fho__img\">)",
-    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows"
+    "words": "a title, one line and one action; 1 to 4 chapters of a heading, two lines and 3-6 spec rows",
+    "carry": [
+     "steps"
+    ],
+    "list": [
+     "object"
+    ]
    },
    "never": "a gauge, a counter or a frame readout under the object; copy over the object; a second moving ground behind it; an object of another trade than the client's; a print effect on a product page (the render shows). Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
    "avoidWith": [
@@ -661,7 +704,8 @@
     "headline-arrives",
     "cursor-spotlight",
     "liquid-hover"
-   ]
+   ],
+   "demoted": true
   },
   {
    "id": "fly-into-the-shape",
@@ -696,7 +740,14 @@
    "needs": {
     "mark": "the client's own solid mark as one closed SVG path in a 100 x 100 box (a monogram, an emblem, a symbol), never a plain circle",
     "photo": "one photograph of the chapter's world with a calm, dark middle for light type on its face (nothing is laid over it: no scrim, gradient or veil)",
-    "words": "a title of 2-6 words on two lines and one sentence of 10-18 words"
+    "words": "a title of 2-6 words on two lines and one sentence of 10-18 words",
+    "carry": [
+     "photos"
+    ],
+    "list": [
+     "logo",
+     "pictures:1"
+    ]
    },
    "never": "an extruded, bevelled or shaded mark; a generic circle or square as the mark; a bright photograph; words on the photograph outside the band",
    "avoidWith": [
@@ -727,7 +778,7 @@
    "name": "Hinged sheets",
    "family": "layer-stack",
    "classic": 1,
-   "look": "Two to four tickets lie face-down in one row under the section's headline, ink-coloured backs with one large word each, and turn over one by one as the page scrolls, left to right on a shared vanishing point, to their paper fronts. Each turn runs on a clock of 0.8s once the scroll passes its moment, never with the scroll, so wherever the visitor stops every ticket lies flat, face-down or face-up, and the row fills the screen from the first frame. It is for prices, passes, letters or figures on a page with a real paper, ticket or print idea; without that idea the turn is a trick.",
+   "look": "A row of printed sheets turns to show the programme.",
    "fits": [
     "statement"
    ],
@@ -753,15 +804,12 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "No held stage: the tickets stand face-down in a column, and each turns over on its clock once its top is three quarters up the screen, face-up before it is read; the fine print comes in after the last. Tablets, short windows and more than four tickets get the same; with phone 'rest' all of them show the finished composition.",
    "maxPerPage": 1,
-   "weight": 0.6,
-   "place": "In the middle, on the pricing, the tickets or the figures. The headline and the line over the row stand over the row from the first frame, never a headline alone on a screen, and the backs are what the row shows first, so their words count.",
-   "content": "Two to four tickets (three reads best; five or more run as the flow version), every front with the same amount of copy: a name of 1-2 words, a pitch of up to 20 words (10-16 with a photograph), 2-3 points of 2-5 words, a price with what it buys, an optional action; every back one or two short words set very large, the brand and a small line. A headline of 4-7 words on two lines, an optional sentence under it (the held stage leaves it out), a line over the row of 3-8 words, and fine print of 10-20 words. About 120 words for the whole section, the backs not counted. At rest the row reads as printed tickets, not pricing cards: type set to the edges of the stub, the copy filling the sheet, the page's own corners (square when its buttons are). A photograph on the top 29% of a ticket only when it is the ticket's own picture (a show's poster), never one already used on the page. One ink (--accent) for the backs and every word, a paper colour that stands clearly off both tints of the ground (a paper the colour of the ground reads as empty boxes), and two tints of a ground.",
+   "weight": 0.15,
+   "place": "A programme or an editorial list.",
+   "content": "Two to four named programme items with a short description and two or three points each. Keep prices, orders and bookings outside the scene.",
    "options": "hold 1.2-4 (0.6 + 0.5 a ticket: 2.1 for three); scrub true with Lenis, else 0.5 (0.2-0.6), for the ground's brightening; turn 0.5-1.2 s (0.8), one ticket's turn; lift 0-60 px towards the viewer at mid-turn (48); phone 'flip' | 'rest' ('rest' gives tablets and short windows the finished composition too). The tickets turn at (i + 0.5) / (tickets + 0.3) of the hold; two tickets make only two beats.",
    "roles": [
-    "pricing",
-    "stats",
-    "list",
-    "features"
+    "list"
    ],
    "position": "middle",
    "sectors": [
@@ -779,7 +827,13 @@
     "list": [
      "pictures:0"
     ],
-    "content": "Two to four tickets (three reads best; five or more run as the flow version), every front with the same amount of copy: a name of 1-2 words, a pitch of up to 20 words (10-16 with a photograph), 2-3 points of 2-5 words, a price with what it buys, an optional action; every back one or two short words set very large, the brand and a small line. A headline of 4-7 words on two lines, an optional sentence under it (the held stage leaves it out), a line over the row of 3-8 words, and fine print of 10-20 words. About 120 words for the whole section, the backs not counted. At rest the row reads as printed tickets, not pricing cards: type set to the edges of the stub, the copy filling the sheet, the page's own corners (square when its buttons are). A photograph on the top 29% of a ticket only when it is the ticket's own picture (a show's poster), never one already used on the page. One ink (--accent) for the backs and every word, a paper colour that stands clearly off both tints of the ground (a paper the colour of the ground reads as empty boxes), and two tints of a ground."
+    "content": "Two to four named programme items with a short description and two or three points each. Keep prices, orders and bookings outside the scene.",
+    "carry": [
+     "list"
+    ],
+    "excludes": [
+     "purchase"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -798,7 +852,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/hinged-sheets/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"hinged-sheets\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/hinged-sheets/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"hinged-sheets\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "instrument-dial-stage",
@@ -824,16 +879,16 @@
    "intensity": "lively",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 4,
+   "hold": 1,
    "restH": 2,
    "cost": "high",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same dial with phone numbers: the ring fitted under the heading, the list of items hidden, the value full width at the foot; hold 0.9 of the desktop's.",
    "maxPerPage": 1,
-   "weight": 0.5,
+   "weight": 0.15,
    "place": "In the middle, on the features, the range, the figures, a few projects with one number each, or the stages of a climb or a process.",
    "content": "Three to six items (up to twelve work; the hold grows), each with a name of one word, 8 letters or fewer (it becomes the huge word); one 4:5 picture, 840x1050 or more, all from the same angle and in the same light (photographs of the products when the items are products; otherwise real pictures of each item's world, as the demo's four heights of one climb); a line of a few words; one value with its unit (9 characters or fewer) and a caption of 4 words or fewer. Each picture shows its own item, and its caption names only what the picture shows. Optional data-at (the reading on the dial) and data-tone (the item's ground); give range and data-at when the items are readings on one scale, so the dial reads as an instrument. A heading of 6-10 words on two lines. Not for long copy or items with more than one number.",
-   "options": "hold 0.85 an item + 0.6, at most 7 (the phone holds 0.9 of it); scrub 0.8 or true; grow 0.28 (0.18-0.40) start scale of the first name; ticks about one every 12px of arc (16-200); range [low, high] of the scale; turn 1.2 (0-3) degrees each picture rolls; tilt true, the pictures lean toward a fine pointer; field true (each item's own ground below the horizon) | false; wash true (the incoming ground washes over the name before it settles); snap false; phone 'same' | 'rest'.",
+   "options": "The held scroll is capped at 1 screen plus the stage. See the demo for framing options.",
    "roles": [
     "features",
     "showcase",
@@ -866,7 +921,12 @@
     "list": [
      "series:3"
     ],
-    "content": "Three to six items (up to twelve work; the hold grows), each with a name of one word, 8 letters or fewer (it becomes the huge word); one 4:5 picture, 840x1050 or more, all from the same angle and in the same light (photographs of the products when the items are products; otherwise real pictures of each item's world, as the demo's four heights of one climb); a line of a few words; one value with its unit (9 characters or fewer) and a caption of 4 words or fewer. Each picture shows its own item, and its caption names only what the picture shows. Optional data-at (the reading on the dial) and data-tone (the item's ground); give range and data-at when the items are readings on one scale, so the dial reads as an instrument. A heading of 6-10 words on two lines. Not for long copy or items with more than one number."
+    "content": "Three to six items (up to twelve work; the hold grows), each with a name of one word, 8 letters or fewer (it becomes the huge word); one 4:5 picture, 840x1050 or more, all from the same angle and in the same light (photographs of the products when the items are products; otherwise real pictures of each item's world, as the demo's four heights of one climb); a line of a few words; one value with its unit (9 characters or fewer) and a caption of 4 words or fewer. Each picture shows its own item, and its caption names only what the picture shows. Optional data-at (the reading on the dial) and data-tone (the item's ground); give range and data-at when the items are readings on one scale, so the dial reads as an instrument. A heading of 6-10 words on two lines. Not for long copy or items with more than one number.",
+    "carry": [
+     "list",
+     "photos",
+     "figures"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -885,7 +945,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/instrument-dial-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"instrument-dial-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/instrument-dial-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"instrument-dial-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "lens-over-thumbnail-stream",
@@ -918,7 +979,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same index with a fixed lens in the centre and the strip doing the travel, six pictures a project; hold about 4.4 for eight projects.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "place": "In the middle, on the work, the archive or the catalogue, where a grid of project cards would otherwise go.",
    "content": "Five or six projects of five to ten pictures each, 25-60 in all (five hold about three screens: set {\"hold\":3}, since the file's own clamp starts at four; each project more adds about 0.6): one landscape key picture a project (about 960px wide) and the rest in mixed orientations (480-640px on the long side), each with its real width and height, never cropped. They are the client's own: its work, its collection, its products. Per project a name of 1-2 words, a year (shown in the caption's meta row), a category of 2-3 words and a link; a section title of 2-3 words and a line with the range of years. With fewer than five projects, use a plain index instead.",
    "options": "hold clamp(0.62 a project, 4, 7.5) (2-10); phoneHold clamp(0.55 a project, 3.5, 6.5) (2-10); phone 'same' (a fixed lens in the centre) | 'rest' (the contact sheet); sweep 0.5 (0-0.6) share of the width the line travels, 0 a fixed lens; bloom 10 (4-10) the key picture's height in bloom units; phoneBloom 9 (4-10); reach 0.45 (0.15-0.8; phone 0.7) the lens radius; gate 0.35 (0.15-1): 0.15 one collage at a time, 1 two always mix; push 0.35 (-0.55 dense to 0.35 roomy; phone -0.55); dwell 0.7 (0-0.9) how much the strip slows at each project; seed 0, reshuffles the collages; scrub 0.6, locked with Lenis.",
@@ -940,10 +1001,13 @@
    ],
    "needs": {
     "list": [
-     "product-photo",
      "pictures:25"
     ],
-    "content": "Five or six projects of five to ten pictures each, 25-60 in all (five hold about three screens: set {\"hold\":3}, since the file's own clamp starts at four; each project more adds about 0.6): one landscape key picture a project (about 960px wide) and the rest in mixed orientations (480-640px on the long side), each with its real width and height, never cropped. They are the client's own: its work, its collection, its products. Per project a name of 1-2 words, a year (shown in the caption's meta row), a category of 2-3 words and a link; a section title of 2-3 words and a line with the range of years. With fewer than five projects, use a plain index instead."
+    "content": "Five or six projects of five to ten pictures each, 25-60 in all (five hold about three screens: set {\"hold\":3}, since the file's own clamp starts at four; each project more adds about 0.6): one landscape key picture a project (about 960px wide) and the rest in mixed orientations (480-640px on the long side), each with its real width and height, never cropped. They are the client's own: its work, its collection, its products. Per project a name of 1-2 words, a year (shown in the caption's meta row), a category of 2-3 words and a link; a section title of 2-3 words and a line with the range of years. With fewer than five projects, use a plain index instead.",
+    "carry": [
+     "photos",
+     "list"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -962,7 +1026,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/lens-over-thumbnail-stream/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"lens-over-thumbnail-stream\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/lens-over-thumbnail-stream/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"lens-over-thumbnail-stream\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "letter-bar-floods-the-ground",
@@ -993,9 +1058,13 @@
    "reduced": "The statement on the page ground, then the next statement on the inverse ground under it.",
    "phone": "The finished composition.",
    "maxPerPage": 1,
-   "weight": 0.6,
+   "weight": 0,
    "needs": {
-    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures"
+    "words": "a statement of 2-4 words with an l or an I near its middle, the next section's opening statement of 4-8 words with one line, and a following section on the inverse ground; no pictures",
+    "carry": [
+     "words"
+    ],
+    "list": []
    },
    "never": "an accent on the column; a statement whose stem letter has a curl, a bar or a serif; a light section after it",
    "avoidWith": [
@@ -1022,7 +1091,8 @@
     "giant-type-pass",
     "letters-assemble",
     "iris-opens"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "letter-physics",
@@ -1050,10 +1120,14 @@
    "reduced": "The claim with the answer under it on the inverse ground, the photograph faint at the edges.",
    "phone": "The light version: the letters fade and drift instead of flying in depth.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a claim of 12-36 characters and an answer of 16-60 characters that answers it",
-    "photo": "optional: one dark photograph with a calm centre"
+    "photo": "optional: one dark photograph with a calm centre",
+    "carry": [
+     "words"
+    ],
+    "list": []
    },
    "never": "a glow or blurred type under the answer; a claim over 40 characters; on a calm or clinical brief (the burst reads as loud); on a product page about a physical thing",
    "avoidWith": [
@@ -1078,7 +1152,8 @@
     "word-highlight",
     "giant-type-pass",
     "letters-assemble"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "light-flood",
@@ -1113,7 +1188,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same day with phone numbers: a broad, low dome, smaller blur steps; hold 1.2.",
    "maxPerPage": 1,
-   "weight": 0.7,
+   "weight": 0,
    "place": "In the middle, between the hero and the detail, as the intro or the about; or as the last word before the booking or the action. The section after it starts on the night colour. Once per page.",
    "content": "No pictures. One sentence in two lines of 18 characters or fewer each, spaces and punctuation counted: a lead of 2-4 setup words, which must read alone as the title for the first quarter, and a key phrase of 2-3 words. Nothing else on the stage: no body copy, buttons, labels or logos. Six colours (day, halo, core, night, ink, key) or a checked preset; the core needs a relative luminance of 0.15-0.25.",
    "options": "palette '' | 'dusk' | 'sky' | 'sage' (sets all six colours); direction 'dusk' (day, light, night) | 'dawn' (night, light, day; add class lf--dawn); ending 'night' | 'flood' (holds on the full flood; add class lf--flood); focus 'rack' (the lead goes soft, the key comes sharp) | 'flat' (opacity only); hold 1.2 (1-1.5); phoneHold 1.2 (1-1.5); flood 3 (2.4-3.6) end scale of the dome; phoneFlood 3.6 (2.4-4.2); scrub 0.6; header '', the selector of a fixed header, and headerClass 'is-dark', the class it gets while the night is under it; phone 'same' | 'rest'.",
@@ -1131,7 +1206,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "No pictures. One sentence in two lines of 18 characters or fewer each, spaces and punctuation counted: a lead of 2-4 setup words, which must read alone as the title for the first quarter, and a key phrase of 2-3 words. Nothing else on the stage: no body copy, buttons, labels or logos. Six colours (day, halo, core, night, ink, key) or a checked preset; the core needs a relative luminance of 0.15-0.25."
+    "content": "No pictures. One sentence in two lines of 18 characters or fewer each, spaces and punctuation counted: a lead of 2-4 setup words, which must read alone as the title for the first quarter, and a key phrase of 2-3 words. Nothing else on the stage: no body copy, buttons, labels or logos. Six colours (day, halo, core, night, ink, key) or a checked preset; the core needs a relative luminance of 0.15-0.25.",
+    "carry": [
+     "words"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -1150,7 +1228,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/light-flood/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"light-flood\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/light-flood/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"light-flood\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "object-lowered-onto-the-last-line",
@@ -1179,7 +1258,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The line breaks at .olo-br into two lines, the longer across nearly the full width; the object, narrower than the line (about 15% of the screen tall at 390px, sized so its foot stays on the letter and its body clear of the l and on screen), comes down onto the shelf letter of the last line, clear of the first, whole from the start, over a shorter travel (34svh), no drift. phone: 'rest' gives the finished composition.",
    "maxPerPage": 1,
-   "weight": 0.7,
+   "weight": 0.15,
    "place": "The end of the page: the order or the booking, straight after one quiet section. The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, never right after another scene. Pages that sell or show one physical thing: a jug, a lamp, a bottle, a bag, a shoe, a stool.",
    "content": "One cut-out photograph of the client's own product (a transparent PNG or WebP, never another maker's), upright, cut to its own edges with no ground or shadow baked in, its lowest opaque row the image's bottom edge (that row stands on the letter), 0.5-1 wide to 1 tall, 1000px tall or more, width and height set on the img. One closing line of 2-5 words in sentence case, 10-16 characters, with one lowercase x-height letter of its last word wrapped in .olo-shelf (one with no tall letter on at least one side, like the e of \"table\" beside the full stop) and a <br class=\"olo-br\"> where it breaks on a phone, placed so the last line runs on past the first under that letter. The action of 2-4 words (an order, a booking; never an email address or a phone number) and the price beside it. Never an outline wordmark. Without a real photograph of the product, redraw.",
    "options": "hold 0.8 (0.6-1.6) screens held; under 0.6 (a section under 1.6 screens) the creep and the drop squash into one jump; creep 0.33 (0.1-0.36) share of the travel over the first half of the hold; drop 0.55 (0.45-0.8) share over the last third; enter 0.6 (0-20) svh of clear ground over the object as the hold starts (it starts whole); travel 'auto' | 20-90 svh, a cap on the auto travel (from the top of the stage down to the letter); phoneTravel 34 (20-80) the cap on a phone; fill 0.97 (0.8-1) share of the row the line runs across; phoneFill 0.88 (0.7-1) for the longer phone line; footX 0.49 (0.2-0.8) where the foot's middle is across the picture; drift 11 (0-16) vw it starts off to one side, home before its foot reaches the tallest letters; phoneDrift 0; side 'auto' | 'left' | 'right'; nav a selector for a fixed bar; foot unset by default (the designed footer follows the scene); a selector pulls that element up over the stage's foot, only for a page that ends on the scene with one plain line; scrub true | 0.1-1; phone 'same' | 'rest'. Scene tokens: --olo-size (0.3 of the screen; 0.26 on a tablet; 0.2 on a phone; the script shrinks it only to keep its foot on the letter and its body clear and on screen), --olo-line-em and --olo-line-em-2 (the line's width in ems, for the no-script size), --olo-xh and --olo-desc (for the no-script placement), --olo-footx, --olo-btn-radius; it reads --display-stretch.",
@@ -1199,7 +1278,11 @@
      "product-photo",
      "pictures:1"
     ],
-    "content": "One cut-out photograph of the client's own product (a transparent PNG or WebP, never another maker's), upright, cut to its own edges with no ground or shadow baked in, its lowest opaque row the image's bottom edge (that row stands on the letter), 0.5-1 wide to 1 tall, 1000px tall or more, width and height set on the img. One closing line of 2-5 words in sentence case, 10-16 characters, with one lowercase x-height letter of its last word wrapped in .olo-shelf (one with no tall letter on at least one side, like the e of \"table\" beside the full stop) and a <br class=\"olo-br\"> where it breaks on a phone, placed so the last line runs on past the first under that letter. The action of 2-4 words (an order, a booking; never an email address or a phone number) and the price beside it. Never an outline wordmark. Without a real photograph of the product, redraw."
+    "content": "One cut-out photograph of the client's own product (a transparent PNG or WebP, never another maker's), upright, cut to its own edges with no ground or shadow baked in, its lowest opaque row the image's bottom edge (that row stands on the letter), 0.5-1 wide to 1 tall, 1000px tall or more, width and height set on the img. One closing line of 2-5 words in sentence case, 10-16 characters, with one lowercase x-height letter of its last word wrapped in .olo-shelf (one with no tall letter on at least one side, like the e of \"table\" beside the full stop) and a <br class=\"olo-br\"> where it breaks on a phone, placed so the last line runs on past the first under that letter. The action of 2-4 words (an order, a booking; never an email address or a phone number) and the price beside it. Never an outline wordmark. Without a real photograph of the product, redraw.",
+    "carry": [
+     "photos",
+     "words"
+    ]
    },
    "never": "never an email address or a phone number) and the price beside it.",
    "avoidWith": [],
@@ -1218,7 +1301,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/object-lowered-onto-the-last-line/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"object-lowered-onto-the-last-line\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/object-lowered-onto-the-last-line/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"object-lowered-onto-the-last-line\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "object-through-giant-type",
@@ -1247,10 +1331,16 @@
    "reduced": "The quote in ink with the object's still standing above it and the credit under.",
    "phone": "The finished composition.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a quote of 10-18 words in 3-5 lines of 9-13 characters with the gap near the middle, and a credit of 5 words at most",
-    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)"
+    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)",
+    "carry": [
+     "words"
+    ],
+    "list": [
+     "object"
+    ]
    },
    "never": "an archive or black-and-white photograph as the object; a line longer than 13 characters; an eyebrow above the quote; an object of another trade than the client's; on a local-business or place page",
    "avoidWith": [
@@ -1275,7 +1365,8 @@
     "giant-type-pass",
     "word-highlight",
     "letters-assemble"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "one-figure-reforms",
@@ -1332,7 +1423,11 @@
     "list": [
      "product-ui"
     ],
-    "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most."
+    "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most.",
+    "carry": [
+     "steps",
+     "figures"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -1376,16 +1471,16 @@
    "intensity": "bold",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 4,
+   "hold": 2,
    "restH": 1,
    "cost": "high",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same wheel with phone numbers: a tall ten-card ring, then the wheel sinks to the bottom edge instead of rolling aside and the figures rise out from behind it; hold 4.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "place": "In the middle, on the about, the gallery or the figures: the stretch that says who the people are or how long the place has been there. Hold 4, the lowest the scene file allows (it raises a lower hold to 4 and still defaults to 5): where the sheet gives less, set {\"hold\":4}. Not on the work: its cards are small, so the work is shown at size elsewhere.",
    "content": "Twelve to sixteen distinct square photographs (14 by default; phones use the first ten), 560px or more, in one grade, the subject inside the central 60% so a tilted or upside-down card still reads. Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding). People, hands and studio moments only when they are the client's own; otherwise real pictures of its world (the place, its materials, its work in use: modern, well-lit photographs, never archive or documentary ones), never stand-ins for its team. A statement of 6-10 words that holds two lines (about 45 characters keeps the full size). One figure of 4 glyphs or fewer (a year, a count) with an optional second line of 3 words or fewer, and a caption of 12 words or fewer. Four rows of figures (2-6 work), each of 4 glyphs or fewer with a label of 4 words or fewer: real facts about the subject from the brief (a year, a height, a number of rooms or days), never invented business numbers, never a constant of the medium (25 frames a second) or a figure worked out from another on the list; count true only with such real figures.",
-   "options": "hold 4 (4-7); phoneHold 4 (3-6); scrub 0.6, locked with Lenis; radius 1 (0.7-1.6) the arch's radius as a share of the width, 0.7 steep, 1.6 flat; crest 0.24 (0.18-0.30) height of the arch's top card; phoneCrest 'auto' or 0.14-0.44; ring 0.46 (0.36-0.48) the ring's width, spilling past the frame from 0.44; stagger 0.2 (0-0.5) how far the cards peel off one after another; wind 'close' | 'spring'; tilt 1 (the faces follow the wheel) or 0.2-0.9 (the faces stay near upright); dim 0.4 (0.4-0.8) opacity of a figure row off the reading line; count false (true counts each figure up as it lights); phone 'same' | 'rest'; phoneCards 10 (6-14).",
+   "options": "The held scroll is capped at 2 screens plus the stage. See the demo for framing options.",
    "roles": [
     "about",
     "gallery",
@@ -1417,7 +1512,11 @@
     "list": [
      "pictures:12"
     ],
-    "content": "Twelve to sixteen distinct square photographs (14 by default; phones use the first ten), 560px or more, in one grade, the subject inside the central 60% so a tilted or upside-down card still reads. Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding). People, hands and studio moments only when they are the client's own; otherwise real pictures of its world (the place, its materials, its work in use: modern, well-lit photographs, never archive or documentary ones), never stand-ins for its team. A statement of 6-10 words that holds two lines (about 45 characters keeps the full size). One figure of 4 glyphs or fewer (a year, a count) with an optional second line of 3 words or fewer, and a caption of 12 words or fewer. Four rows of figures (2-6 work), each of 4 glyphs or fewer with a label of 4 words or fewer: real facts about the subject from the brief (a year, a height, a number of rooms or days), never invented business numbers, never a constant of the medium (25 frames a second) or a figure worked out from another on the list; count true only with such real figures."
+    "content": "Twelve to sixteen distinct square photographs (14 by default; phones use the first ten), 560px or more, in one grade, the subject inside the central 60% so a tilted or upside-down card still reads. Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding). People, hands and studio moments only when they are the client's own; otherwise real pictures of its world (the place, its materials, its work in use: modern, well-lit photographs, never archive or documentary ones), never stand-ins for its team. A statement of 6-10 words that holds two lines (about 45 characters keeps the full size). One figure of 4 glyphs or fewer (a year, a count) with an optional second line of 3 words or fewer, and a caption of 12 words or fewer. Four rows of figures (2-6 work), each of 4 glyphs or fewer with a label of 4 words or fewer: real facts about the subject from the brief (a year, a height, a number of rooms or days), never invented business numbers, never a constant of the medium (25 frames a second) or a figure worked out from another on the list; count true only with such real figures.",
+    "carry": [
+     "photos",
+     "figures"
+    ]
    },
    "never": "Never the same picture twice, at most two from one source (one film, one shoot, one building) and never side by side; with fewer than twelve distinct pictures, redraw rather than repeat them (the script repeats a short set whole, which reads as padding).",
    "avoidWith": [],
@@ -1436,7 +1535,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/orbit-to-formation/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"orbit-to-formation\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/orbit-to-formation/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"orbit-to-formation\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "page-lifts-off-closing-picture",
@@ -1486,7 +1586,10 @@
     "list": [
      "pictures:1"
     ],
-    "content": "One picture and one line. Photo mode: one photograph 2400px wide or more (3000+ for full sharpness at the 1.35x start), its top edge even (fog, sky, a plain wall, a table top) and its subject in the lower half; a busy or textured top edge shows the seam, so smooth it or redraw. Interface mode: a close crop of the real product in HTML with data-ui, full bleed with no card, frame or rounded edge: an app bar in var(--lift-band-c) (so it meets the band with no seam), a title and two to four rows at true size (labels 14px or more at 1440, any heading in it under 24px), believable figures that add up, one item picked; side padding var(--lift-ui-inset). Its words end in the top ~37% of the stage (about 335px at 1440x900) because it grows 1.35x from its top edge and must never pass under the label; the rest is the product's own empty surface, where the label sits. Its CSS under [data-ui]. Words: a closing line of 3-7 words (h2, display face at clamp(40px, 5vw, 80px) over seven columns, two lines at most), a contact block of one to three short paragraphs at body size (address, email and phone, hours; never a giant name or email), and a label of 1-3 words for the one action. --lift-band set to the photograph's top-edge sample at 1440x900 for no script (the script samples it live), or to a tone step of --ground in interface mode."
+    "content": "One picture and one line. Photo mode: one photograph 2400px wide or more (3000+ for full sharpness at the 1.35x start), its top edge even (fog, sky, a plain wall, a table top) and its subject in the lower half; a busy or textured top edge shows the seam, so smooth it or redraw. Interface mode: a close crop of the real product in HTML with data-ui, full bleed with no card, frame or rounded edge: an app bar in var(--lift-band-c) (so it meets the band with no seam), a title and two to four rows at true size (labels 14px or more at 1440, any heading in it under 24px), believable figures that add up, one item picked; side padding var(--lift-ui-inset). Its words end in the top ~37% of the stage (about 335px at 1440x900) because it grows 1.35x from its top edge and must never pass under the label; the rest is the product's own empty surface, where the label sits. Its CSS under [data-ui]. Words: a closing line of 3-7 words (h2, display face at clamp(40px, 5vw, 80px) over seven columns, two lines at most), a contact block of one to three short paragraphs at body size (address, email and phone, hours; never a giant name or email), and a label of 1-3 words for the one action. --lift-band set to the photograph's top-edge sample at 1440x900 for no script (the script samples it live), or to a tone step of --ground in interface mode.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "never a giant name or email), and a label of 1-3 words for the one action.",
    "avoidWith": [],
@@ -1530,7 +1633,7 @@
    "intensity": "quiet",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 2.2,
+   "hold": 1.2,
    "restH": 1,
    "cost": "low",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
@@ -1539,7 +1642,7 @@
    "weight": 1,
    "place": "The first screen, as the hero: the statement is the h1 and the panels are the programmes, buildings or imprints, so the first screen is that section, told as a scene; the first panel stands half and half at load and changes on the first scroll. A quiet section follows it. (The demo runs it under a short intro to show the page around it.)",
    "content": "A statement of 4-7 words whose two lines are short (eight to ten characters a line: 'A year / by hand.'), since it is set as large as two lines in a column a third of the width allow (about 100px at 1440x900) and never takes a third line; one sentence of 8-18 words for the column's foot; the one action as a plain link-button. Four or five panels (three runs, six is the most), each one place or offer: one photograph, never repeated, all five graded as one set (same light and colour treatment: grade the files together), at least 1300px wide, its subject in the middle so one picture serves the square main slot, the tall narrow slot (its middle third) and a 4:3 window on a phone; the first picture landscape, since it also fills the whole window as it arrives (about 1.6:1). Frame each with --pr-pos and --pr-pos-phone. A name of two or three words, 8-20 characters, no word over 10 (set on two lines in large type; a one-word name stays on one line and loses the re-set); an optional short line of 3-6 words. No numbers or counts on the panels, no colour per panel. The weights come from --display-weight (500 when the page sets none).",
-   "options": "pace 0.42 (0.3-0.7) screens of scroll per panel: a still moment after it arrives, the change, a rest settled; from 0.5 (0.4-0.56) share of the panel the picture fills as it arrives; grow 0.7 (0.62-0.78) share once settled; column 0.33 (0.26-0.4) share of the width the statement's column keeps on wide screens; panel 0.42 (0.36-0.46) share of the width a panel takes in the main slot (the narrow slot takes the rest, at least 16%); zoom 1.06 (1-1.15) picture scale as it arrives, settling to 1; rest 0.1 (0-0.5) screens of still end frame; hand 0.8 (0.5-1.2) seconds of the hand-over between two panels; hold auto, panels x pace + rest, 2.2 screens for five and never over 2.5; scrub true with Lenis, else 0.4; phone 'same' | 'rest'. Per panel --pr-pos and --pr-pos-phone (object-position).",
+   "options": "The held scroll is capped at 1.2 screens plus the stage. See the demo for framing options.",
    "roles": [
     "hero",
     "intro",
@@ -1565,7 +1668,11 @@
      "pictures:4",
      "names:4"
     ],
-    "content": "A statement of 4-7 words whose two lines are short (eight to ten characters a line: 'A year / by hand.'), since it is set as large as two lines in a column a third of the width allow (about 100px at 1440x900) and never takes a third line; one sentence of 8-18 words for the column's foot; the one action as a plain link-button. Four or five panels (three runs, six is the most), each one place or offer: one photograph, never repeated, all five graded as one set (same light and colour treatment: grade the files together), at least 1300px wide, its subject in the middle so one picture serves the square main slot, the tall narrow slot (its middle third) and a 4:3 window on a phone; the first picture landscape, since it also fills the whole window as it arrives (about 1.6:1). Frame each with --pr-pos and --pr-pos-phone. A name of two or three words, 8-20 characters, no word over 10 (set on two lines in large type; a one-word name stays on one line and loses the re-set); an optional short line of 3-6 words. No numbers or counts on the panels, no colour per panel. The weights come from --display-weight (500 when the page sets none)."
+    "content": "A statement of 4-7 words whose two lines are short (eight to ten characters a line: 'A year / by hand.'), since it is set as large as two lines in a column a third of the width allow (about 100px at 1440x900) and never takes a third line; one sentence of 8-18 words for the column's foot; the one action as a plain link-button. Four or five panels (three runs, six is the most), each one place or offer: one photograph, never repeated, all five graded as one set (same light and colour treatment: grade the files together), at least 1300px wide, its subject in the middle so one picture serves the square main slot, the tall narrow slot (its middle third) and a 4:3 window on a phone; the first picture landscape, since it also fills the whole window as it arrives (about 1.6:1). Frame each with --pr-pos and --pr-pos-phone. A name of two or three words, 8-20 characters, no word over 10 (set on two lines in large type; a one-word name stays on one line and loses the re-set); an optional short line of 3-6 words. No numbers or counts on the panels, no colour per panel. The weights come from --display-weight (500 when the page sets none).",
+    "carry": [
+     "photos",
+     "list"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -1609,10 +1716,16 @@
    "reduced": "The finished screen beside the heading and spec list.",
    "phone": "The finished composition: the screen with its toolbar and main pane, the spec under it.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "ui": "the product's real screen as HTML cut along its own panels (a toolbar, a sidebar, a main pane, an inspector), 2 to 4 detail layers marked data-layer",
-    "words": "one word that sits in the screen's title, a heading and 3-4 spec rows"
+    "words": "one word that sits in the screen's title, a heading and 3-4 spec rows",
+    "carry": [
+     "list"
+    ],
+    "list": [
+     "product-ui"
+    ]
    },
    "never": "an illustration drawn for the page or a screenshot cut into tiles; a screen that cannot be cut into meaningful parts; a caption under the screen; a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
    "avoidWith": [
@@ -1635,7 +1748,8 @@
    },
    "avoidMoments": [
     "lines-rise"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "peel-tear-and-drag",
@@ -1665,7 +1779,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "Drag turns vertical: the plane flies bottom to top, nose up, on the same two clocks and at the same surging pace over 0.12-0.88 of a 2.2-screen hold, and drags the page in from below; the closing line lifts as the plane climbs in, and each block of words lands as soon as the tail has passed it. Under 360px wide or 560px tall, the finished composition.",
    "maxPerPage": 1,
-   "weight": 0.5,
+   "weight": 0.15,
    "place": "Between two sections, in the middle of the page, bringing in two quotes or a short list. The new page has exactly the ground of the section that follows.",
    "content": "A top-down landscape photograph for the old chapter (sea, coast, fields from the air) with a closing line of 4-10 words; a cut-out photograph of a plane seen straight from above or below, nose to the right, about 2400px long, its wingspan about its length (the client's own aircraft, or one of its kind with no maker's or airline's marks); up to seven soft-edged cut-outs of cloud for the deck, each at least 1.5 times the width it is shown (the scene shows them at 40-60% of a 1440 screen, so 1000-1300px pieces there; about 2000px for a tablet held upright); a new page with a heading of 3-8 words, two short real quotes with credits or 3-12 rows, an optional aside of 20 words or fewer, and a wide photograph along its foot. The new page must fit one screen. A page without a real top-down cut-out of a plane and real cloud cut-outs takes another scene: never the drawn jet, never the demo's plane or cloud.",
    "options": "mode 'drag' (the only mode dealt; 'peel' and 'tear' still run for old pages). Drag: dir 'ltr' | 'rtl' (for a second use on one page); hold 3 (1.5-4; 2 without the cloud); phoneHold 2.2 (1.5-3.5); phone 'vertical' | 'rest'; scrub 0.6, true with Lenis; pace 'surge' (the closing line stands with the first two clouds until 0.085; then, on a clock of about half a second, the line lifts, the deck closes and the plane breaks out until three fifths of it is on screen; the scroll carries it across, slower over the middle and never more than three times faster in one place than in another, and at 0.90, with three fifths still on screen, it speeds away on a second clock, so no frame the reader stops on shows a sliver of nose or of tail; the phone's climb 0.12-0.88) | 'even' (a linear crossing between the same clocks); object 'none' | 'jet', what to paint with no cut-out (nothing, a bare wipe; or a drawn jet for a sketch, never shipped); len 0.8 (0.3-0.9) length as a share of the width; phoneLen 0.62 (0.4-0.8); grow 1.25 (1-1.35), phoneGrow 1.15, tallGrow 1.12 (the cap on a stage taller than wide); apex and sweep (measured from the cut-out); bleed true; shadow false (true casts a soft shadow on the new page: old pages only); veil true (false skips the cloud); tint 0.35 (0-0.7). The closing line and the new page's blocks land on a clock, never half faded. Peel and tear (old pages): hold and phoneHold 1.5 (1-3); angle -34 peel, 163 tear (phoneAngle -58 / 163); band 0.09 (0.05-0.15); from and to (0.12-0.86 peel, 0.04-0.85 tear); lift true (peel); tilt 11.25, at 0.55 and phoneAt 0.5 (0.3-0.7), seed 11 (tear).",
@@ -1683,7 +1797,11 @@
     "list": [
      "pictures:2"
     ],
-    "content": "A top-down landscape photograph for the old chapter (sea, coast, fields from the air) with a closing line of 4-10 words; a cut-out photograph of a plane seen straight from above or below, nose to the right, about 2400px long, its wingspan about its length (the client's own aircraft, or one of its kind with no maker's or airline's marks); up to seven soft-edged cut-outs of cloud for the deck, each at least 1.5 times the width it is shown (the scene shows them at 40-60% of a 1440 screen, so 1000-1300px pieces there; about 2000px for a tablet held upright); a new page with a heading of 3-8 words, two short real quotes with credits or 3-12 rows, an optional aside of 20 words or fewer, and a wide photograph along its foot. The new page must fit one screen. A page without a real top-down cut-out of a plane and real cloud cut-outs takes another scene: never the drawn jet, never the demo's plane or cloud."
+    "content": "A top-down landscape photograph for the old chapter (sea, coast, fields from the air) with a closing line of 4-10 words; a cut-out photograph of a plane seen straight from above or below, nose to the right, about 2400px long, its wingspan about its length (the client's own aircraft, or one of its kind with no maker's or airline's marks); up to seven soft-edged cut-outs of cloud for the deck, each at least 1.5 times the width it is shown (the scene shows them at 40-60% of a 1440 screen, so 1000-1300px pieces there; about 2000px for a tablet held upright); a new page with a heading of 3-8 words, two short real quotes with credits or 3-12 rows, an optional aside of 20 words or fewer, and a wide photograph along its foot. The new page must fit one screen. A page without a real top-down cut-out of a plane and real cloud cut-outs takes another scene: never the drawn jet, never the demo's plane or cloud.",
+    "carry": [
+     "photos",
+     "list"
+    ]
    },
    "never": "never the drawn jet, never the demo's plane or cloud.",
    "avoidWith": [],
@@ -1702,7 +1820,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/peel-tear-and-drag/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"peel-tear-and-drag\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/peel-tear-and-drag/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"peel-tear-and-drag\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "powers-of-ten-pullback",
@@ -1732,7 +1851,11 @@
    "weight": 1,
    "needs": {
     "ui": "the product's interface at its true size: a screenshot (16:10) or an HTML fragment. The scene ships the device, its ground and its copy (scene.css); the screen inside is the page's own and the page links its CSS (a ui fragment: assets/ui/base.css and its fragment.css). The .ux window in demo.html is drawn by _demo/demo.css, which is for the demo pages only: never copy it to a page",
-    "words": "a label, a heading, one line and one action"
+    "words": "a label, a heading, one line and one action",
+    "carry": [],
+    "list": [
+     "product-ui"
+    ]
    },
    "never": "as the page's hero (the first screen would open with no headline and no action); a stock photograph of a room as the place; a drawn device with a notch, a keyboard or a stand (a thin bezel is enough); two devices",
    "avoidWith": [
@@ -1781,10 +1904,17 @@
    "reduced": "The copy and its step list beside the finished screen.",
    "phone": "The finished composition: the copy and its steps above the finished screen.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "ui": "the product's real screen as HTML in its finished state, each part marked with the step it arrives at (data-at)",
-    "words": "4 to 6 steps a user would really take, one list item a step in the same order, 4-10 words each; the action labelled with the figure the screen built; a closing line of 4-8 words"
+    "words": "4 to 6 steps a user would really take, one list item a step in the same order, 4-10 words each; the action labelled with the figure the screen built; a closing line of 4-8 words",
+    "carry": [
+     "steps",
+     "figures"
+    ],
+    "list": [
+     "product-ui"
+    ]
    },
    "never": "a screenshot cut into parts; a counter or progress bar; a heading that counts the steps wrongly; beside the hero's product window (it carries another view); a hardware, game or any page whose screen is not the product itself (it assembles the product's own UI, so it runs on software only)",
    "avoidWith": [
@@ -1807,7 +1937,8 @@
    },
    "avoidMoments": [
     "lines-rise"
-   ]
+   ],
+   "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
    "id": "raster-cut",
@@ -1863,7 +1994,10 @@
     "list": [
      "pictures:1"
     ],
-    "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage."
+    "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -1913,7 +2047,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "Below 900px wide or on a portrait screen: no pin and no sideways travel; the rooms stand as a vertical column in the same colour order, each with its own small scrubbed move, except the letters: the card names and the question rise on a clock of under a second once half of them is on screen, so no name stands half-drawn.",
    "maxPerPage": 1,
-   "weight": 0.4,
+   "weight": 0.15,
    "place": "From the middle to the end of the page: the work, the projects or the tour of the building, handing over to the contact, whose ground it ends on. About ten screens: it is a whole page on its own (the work, the about and the contact in one), over the six screens the draw gives all of a page's scenes, so it is never dealt beside another scene. Build it only when the client's own photographs carry the whole page, with the hero and at most one short section around it, and nothing loud after it.",
    "content": "Fourteen photographs of the client's own work or building, from one shoot or in one grade: a wide interior (2200px or more) and two views of one room, close and wide, for the photo room; two 3:4 portraits; five landscape project pictures with the subject centred; two more for the held column; two at 16:9 for the last room. Words, about 280: a threshold headline of two lines and a lede of 25-35 words; a two-line heading and about 30 words for the photo room; a statement of 35-45 words in five lines; one chapter word; three value words of 13 characters or fewer with a note; five projects (a name of 14 characters or fewer, a year, a place, a link); a question of two lines with 40-60 words; two captions; a closing headline of 2-4 words. Rooms can be left out; the photographs cannot: without the client's own pictures, redraw. No counter, no progress bar, no filler band: the rooms carry the walk. Words show only while wholly on screen.",
    "options": "rate 0.8-1.25 screen widths walked per screen of scroll (1.25); ramp 0.15-0.35 screens the walk takes to start and stop (0.25); open 50-66 vw, an open project card (60); closed 12-18 vw, a waiting strip (15); stack 0.5-1.2 screens held on the column while its photos stack (0.7); swap 0.5-1 screens held on the last room's photo swap (0.5); rest 0.2-0.6 screens of still closing headline (0.2); scrub 0.3 with Lenis, else 0.6 (0.1-1.5); intro true, the threshold title rises once when the walk is on screen at load. The hold is measured from the rooms: about 8.6 screens for the full set with five cards, about 0.5 more a card.",
@@ -1935,10 +2069,12 @@
    ],
    "needs": {
     "list": [
-     "product-photo",
      "pictures:14"
     ],
-    "content": "Fourteen photographs of the client's own work or building, from one shoot or in one grade: a wide interior (2200px or more) and two views of one room, close and wide, for the photo room; two 3:4 portraits; five landscape project pictures with the subject centred; two more for the held column; two at 16:9 for the last room. Words, about 280: a threshold headline of two lines and a lede of 25-35 words; a two-line heading and about 30 words for the photo room; a statement of 35-45 words in five lines; one chapter word; three value words of 13 characters or fewer with a note; five projects (a name of 14 characters or fewer, a year, a place, a link); a question of two lines with 40-60 words; two captions; a closing headline of 2-4 words. Rooms can be left out; the photographs cannot: without the client's own pictures, redraw. No counter, no progress bar, no filler band: the rooms carry the walk. Words show only while wholly on screen."
+    "content": "Fourteen photographs of the client's own work or building, from one shoot or in one grade: a wide interior (2200px or more) and two views of one room, close and wide, for the photo room; two 3:4 portraits; five landscape project pictures with the subject centred; two more for the held column; two at 16:9 for the last room. Words, about 280: a threshold headline of two lines and a lede of 25-35 words; a two-line heading and about 30 words for the photo room; a statement of 35-45 words in five lines; one chapter word; three value words of 13 characters or fewer with a note; five projects (a name of 14 characters or fewer, a year, a place, a link); a question of two lines with 40-60 words; two captions; a closing headline of 2-4 words. Rooms can be left out; the photographs cannot: without the client's own pictures, redraw. No counter, no progress bar, no filler band: the rooms carry the walk. Words show only while wholly on screen.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -1957,7 +2093,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/room-walk-track/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"room-walk-track\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/room-walk-track/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"room-walk-track\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "route-journey",
@@ -1991,7 +2128,7 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same journey with phone numbers: tilt 46, zoom 0.9, the traveller centred, the intro across the top and the stops on a plate at the foot; hold 0.85 of the desktop's.",
    "maxPerPage": 1,
-   "weight": 0.6,
+   "weight": 0.15,
    "place": "In the middle, on how it works or the about (the route a shipment, a walker or a season really takes), or as the contact when the way to the place is the story. The arrival line and its action close that part of the argument. Never for a plain list of steps, and only when the map can be drawn as the real place: a coast, a fjord or a mountain road is drawn as one, never as the demo's inland town.",
    "content": "One route as an SVG path in map pixels, 3000-4200 long, corners of 160px radius or more (300 at the stops), the first leg heading up the map; three to five stops (four by default), each with a 2-4 word title, a 25-40 word body and a gauge value in one real unit (km, days, metres, a year). A heading of 4-8 words, a lede of 30 words or fewer, an arrival line of 6-10 words and a 2-3 word action. Draw the map for this subject as the page's own .route-art, in the scene's classes so it takes the page's colours: the real route and what it really passes, with water, coast and relief where they really lie (traced from an open map of the place, in map px), and the destination drawn as the subject itself seen from above, as #route-dest (the house by the water, the shop front, the farm; never a grid of tiles), with the parts that light up on arrival classed .rd-lit. Without .route-art the scene rides a bare ground with only the road on it: honest but empty, a stand-in, never the place. The demo's town, lakes, fields and tile plot are placeholders, and a fjord or a coast shown as an inland town reads as the demo. The traveller is drawn in SVG; a cut-out of the real vehicle can replace it. Never invent a route for something that does not travel.",
    "options": "hold 1.6 + 0.8 a leg, 4.0 for four stops, at most 5 (1-6); phoneHold hold x 0.85; phone 'same' | 'rest'; scrub 0.6 (0-1), locked with Lenis; heading 'up' (the road ahead points up the screen) | 'north'; tilt 52 (0-62), 0 a flat map chase; phoneTilt 46; zoom 1.25 (1-1.5); phoneZoom 0.9; push 0.09 (0-0.12) push-in at each stop; phonePush 0.07; arrive 2.0 (1.3-2.4) zoom over the destination; phoneArrive 1.0; orbit 8 (0-12) degrees of swing at each stop; smooth 320 (160-400) map px of heading smoothing; plotGap 96 map px from the route's end to the centre of #route-dest; unit 'auto' or a step such as 0.5; perspective 1000 desktop, 900 compact, 760 phone (600-2400); bake true (the map is painted into bitmaps before the ride) | false.",
@@ -2018,7 +2155,11 @@
     "list": [
      "route"
     ],
-    "content": "One route as an SVG path in map pixels, 3000-4200 long, corners of 160px radius or more (300 at the stops), the first leg heading up the map; three to five stops (four by default), each with a 2-4 word title, a 25-40 word body and a gauge value in one real unit (km, days, metres, a year). A heading of 4-8 words, a lede of 30 words or fewer, an arrival line of 6-10 words and a 2-3 word action. Draw the map for this subject as the page's own .route-art, in the scene's classes so it takes the page's colours: the real route and what it really passes, with water, coast and relief where they really lie (traced from an open map of the place, in map px), and the destination drawn as the subject itself seen from above, as #route-dest (the house by the water, the shop front, the farm; never a grid of tiles), with the parts that light up on arrival classed .rd-lit. Without .route-art the scene rides a bare ground with only the road on it: honest but empty, a stand-in, never the place. The demo's town, lakes, fields and tile plot are placeholders, and a fjord or a coast shown as an inland town reads as the demo. The traveller is drawn in SVG; a cut-out of the real vehicle can replace it. Never invent a route for something that does not travel."
+    "content": "One route as an SVG path in map pixels, 3000-4200 long, corners of 160px radius or more (300 at the stops), the first leg heading up the map; three to five stops (four by default), each with a 2-4 word title, a 25-40 word body and a gauge value in one real unit (km, days, metres, a year). A heading of 4-8 words, a lede of 30 words or fewer, an arrival line of 6-10 words and a 2-3 word action. Draw the map for this subject as the page's own .route-art, in the scene's classes so it takes the page's colours: the real route and what it really passes, with water, coast and relief where they really lie (traced from an open map of the place, in map px), and the destination drawn as the subject itself seen from above, as #route-dest (the house by the water, the shop front, the farm; never a grid of tiles), with the parts that light up on arrival classed .rd-lit. Without .route-art the scene rides a bare ground with only the road on it: honest but empty, a stand-in, never the place. The demo's town, lakes, fields and tile plot are placeholders, and a fjord or a coast shown as an inland town reads as the demo. The traveller is drawn in SVG; a cut-out of the real vehicle can replace it. Never invent a route for something that does not travel.",
+    "carry": [
+     "steps",
+     "figures"
+    ]
    },
    "never": "Never for a plain list of steps, and only when the map can be drawn as the real place: a coast, a fjord or a mountain road is drawn as one, never as the demo's inland town. never a grid of tiles), with the parts that light up on arrival classed . Never invent a route for something that does not travel.",
    "avoidWith": [],
@@ -2037,7 +2178,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/route-journey/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"route-journey\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/route-journey/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"route-journey\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "scatter-and-lock",
@@ -2105,7 +2247,10 @@
     "list": [
      "pictures:1"
     ],
-    "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw."
+    "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2178,7 +2323,11 @@
      "names:8",
      "pictures:8"
     ],
-    "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue."
+    "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue.",
+    "carry": [
+     "photos",
+     "list"
+    ]
    },
    "never": "Never a time or a date that steps with the names: beside them it reads as a second readout.",
    "avoidWith": [],
@@ -2223,16 +2372,16 @@
    "intensity": "lively",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 4,
+   "hold": 1,
    "restH": 1,
    "cost": "high",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The same fractions on the phone frame set, the object centred and wider than the screen, the after line in a top slot at about the before statement's size, and the callouts as a stack of up to four plain rows (no bullets) that takes the statement's slot as it lifts away; hold 3. Data-saving visitors get the finished composition and download no frames.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "place": "In the middle, on the showcase or how it is made, or as the page's finale before the action: the before statement opens it and the after line with one action closes it.",
    "content": "A frame sequence of the object changing, about 120 frames (80-250), square with alpha, from a locked-off camera, the object filling most of the frame with its foot in the same place at the end: desktop frames about twice the box's size (1600px), a phone set of every second frame (about 1000px). Optional cut-outs of the before context (what it came from) and the receiver (the plinth, shelf or pad it ends on), rendered by the same cameras. A before statement of 5-7 words (36 characters at most) as the headline, up to six callouts of 2-6 words set beside the last frame's silhouette, with no marker (three is right), an after line of 3-6 words and a 2-3 word action. Never fake it by turning one still: without the footage, redraw.",
-   "options": "frames, the desktop URL pattern (#### is the zero-padded index; required, else the finished composition); count 120 (2-400; 80-250 for a good scrub); phoneFrames and phoneCount (60 with its own pattern); hold 4 (3-5); phoneHold 3 (2-4); scrub 0.6, 0.3 with Stage.smooth(); split 0.85 (0.5-0.95) share of the frames played evenly; ground 'none' (the page's own ground, the default) | 'iris' (old pages only, never dealt: a drawn disc that becomes a second ground); irisAt [0.5, 0.54] the camera's pivot; push 1.25 (1-1.4) how far the camera starts pushed in; firstBox [0.17, 0.3, 0.83, 0.81] the object's outline in the first frame; centre true, the object glides to the centre while the title is away (laptop). Labels, the statement and the after line land on a clock, never half-way on the scroll.",
+   "options": "The held scroll is capped at 1 screen plus the stage. See the demo for framing options.",
    "roles": [
     "showcase",
     "how-it-works",
@@ -2257,7 +2406,10 @@
      "product-photo",
      "video"
     ],
-    "content": "A frame sequence of the object changing, about 120 frames (80-250), square with alpha, from a locked-off camera, the object filling most of the frame with its foot in the same place at the end: desktop frames about twice the box's size (1600px), a phone set of every second frame (about 1000px). Optional cut-outs of the before context (what it came from) and the receiver (the plinth, shelf or pad it ends on), rendered by the same cameras. A before statement of 5-7 words (36 characters at most) as the headline, up to six callouts of 2-6 words set beside the last frame's silhouette, with no marker (three is right), an after line of 3-6 words and a 2-3 word action. Never fake it by turning one still: without the footage, redraw."
+    "content": "A frame sequence of the object changing, about 120 frames (80-250), square with alpha, from a locked-off camera, the object filling most of the frame with its foot in the same place at the end: desktop frames about twice the box's size (1600px), a phone set of every second frame (about 1000px). Optional cut-outs of the before context (what it came from) and the receiver (the plinth, shelf or pad it ends on), rendered by the same cameras. A before statement of 5-7 words (36 characters at most) as the headline, up to six callouts of 2-6 words set beside the last frame's silhouette, with no marker (three is right), an after line of 3-6 words and a 2-3 word action. Never fake it by turning one still: without the footage, redraw.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "Never fake it by turning one still: without the footage, redraw.",
    "avoidWith": [],
@@ -2276,7 +2428,8 @@
      "wait": 600
     }
    },
-   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scrubbed-transformation-sequence/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scrubbed-transformation-sequence\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+   "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scrubbed-transformation-sequence/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scrubbed-transformation-sequence\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+   "demoted": true
   },
   {
    "id": "seam-pocket-gathers-the-words",
@@ -2344,7 +2497,11 @@
     "list": [
      "names:8"
     ],
-    "content": "A section heading of 2-5 words (two lines at most at every width) and one sentence of 30 words at most. Eight to twelve real names that sum the section up, one or two words each, 14 characters at most (longer labels make the columns too wide for the cup), in reading order: the first half reads down the left column, the rest down the right; the first six to eight are the ones a phone keeps. Nothing else in the scene: no pictures, no pills, no boxes, no icons. The next section continues on --spg-next (the ink by default)."
+    "content": "A section heading of 2-5 words (two lines at most at every width) and one sentence of 30 words at most. Eight to twelve real names that sum the section up, one or two words each, 14 characters at most (longer labels make the columns too wide for the cup), in reading order: the first half reads down the left column, the rest down the right; the first six to eight are the ones a phone keeps. Nothing else in the scene: no pictures, no pills, no boxes, no icons. The next section continues on --spg-next (the ink by default).",
+    "carry": [
+     "list",
+     "words"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2421,7 +2578,10 @@
     "list": [
      "pictures:2"
     ],
-    "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw."
+    "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2466,7 +2626,7 @@
    "cost": "low",
    "webgl": 0,
    "reduced": "The title, the photograph, the word, the lede and the action under it.",
-   "phone": "The finished composition.",
+   "phone": "The finished composition takes its content height at 390px.",
    "maxPerPage": 1,
    "weight": 0.7,
    "needs": {
@@ -2475,9 +2635,12 @@
      "pictures:1"
     ],
     "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
-    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
+    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action",
+    "carry": [
+     "photos"
+    ]
    },
-   "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+   "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Place below the hero. The wide resting composition needs two screens.",
    "avoidWith": [
     "descend-through-weather",
     "fly-into-the-shape",
@@ -2557,10 +2720,12 @@
    ],
    "needs": {
     "list": [
-     "product-photo",
      "pictures:3"
     ],
-    "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless."
+    "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2631,10 +2796,12 @@
    ],
    "needs": {
     "list": [
-     "product-photo",
      "pictures:6"
     ],
-    "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead."
+    "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "Never on the first screen (its row needs the scroll to read as one object) and never beside another horizontal scene.",
    "avoidWith": [],
@@ -2704,7 +2871,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more."
+    "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more.",
+    "carry": [
+     "list"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2778,7 +2948,10 @@
     "list": [
      "pictures:1"
     ],
-    "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink."
+    "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2826,7 +2999,7 @@
    "intensity": "lively",
    "webgl": 0,
    "trigger": "scroll",
-   "hold": 2,
+   "hold": 1,
    "restH": 2,
    "cost": "low",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
@@ -2835,7 +3008,7 @@
    "weight": 0.5,
    "place": "In the middle, as the door from the intro into the showcase or the work; the opened picture carries the chapter's feature notes on a solid band at its foot, and below 600px they follow it in the page's flow.",
    "content": "One chapter picture or muted loop of 8-15 s (16:9, 1920x1080 or more, 8MB at most, with a poster; for software, a screen recording of the product), its subject in the centre: the keyhole opens on about the central half of its width and three quarters of its height on desktop (that crop is the thumbnail); its upper left calm and dark for the white heading; a 4:5 cut for phones. One or two satellite stills a side of neighbouring chapters in the same grade, 960px wide or more with the subject in the centre (the row crops them close to square on desktop, 3:4 on tablets, 3:5 on phones). No text burned into the pictures. A statement of up to two lines of 20 characters or fewer that names the chapter and becomes its heading word for word; an optional note under the heading; three or four feature items of a 2-3 word label and 16 words or fewer.",
-   "options": "hold 2 (1.4-2.6); phoneHold 1.6 (1.4-2.6); phone 'same' | 'rest'; scrub 0.5, true with Lenis (0-0.8); thumb, the layout's columns by default (0.12-0.5; a share under the columns is lifted to them, a larger one runs the neighbours off the edges); radius, the page's --radius or 0 (0-16 px), always 0 at full bleed; shade 0.3 (0-0.6) flat scrim over the picture under the heading; band 1 (0-1) the band under the notes, solid by default; heading 0.15 (0.1-0.25) where the heading settles, the statement starting at the same height; nav '', the selector of a fixed nav that gets is-on-dark over the picture.",
+   "options": "The held scroll is capped at 1 screen plus the stage. See the demo for framing options.",
    "roles": [
     "showcase",
     "features",
@@ -2851,7 +3024,10 @@
     "list": [
      "pictures:3"
     ],
-    "content": "One chapter picture or muted loop of 8-15 s (16:9, 1920x1080 or more, 8MB at most, with a poster; for software, a screen recording of the product), its subject in the centre: the keyhole opens on about the central half of its width and three quarters of its height on desktop (that crop is the thumbnail); its upper left calm and dark for the white heading; a 4:5 cut for phones. One or two satellite stills a side of neighbouring chapters in the same grade, 960px wide or more with the subject in the centre (the row crops them close to square on desktop, 3:4 on tablets, 3:5 on phones). No text burned into the pictures. A statement of up to two lines of 20 characters or fewer that names the chapter and becomes its heading word for word; an optional note under the heading; three or four feature items of a 2-3 word label and 16 words or fewer."
+    "content": "One chapter picture or muted loop of 8-15 s (16:9, 1920x1080 or more, 8MB at most, with a poster; for software, a screen recording of the product), its subject in the centre: the keyhole opens on about the central half of its width and three quarters of its height on desktop (that crop is the thumbnail); its upper left calm and dark for the white heading; a 4:5 cut for phones. One or two satellite stills a side of neighbouring chapters in the same grade, 960px wide or more with the subject in the centre (the row crops them close to square on desktop, 3:4 on tablets, 3:5 on phones). No text burned into the pictures. A statement of up to two lines of 20 characters or fewer that names the chapter and becomes its heading word for word; an optional note under the heading; three or four feature items of a 2-3 word label and 16 words or fewer.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -2929,7 +3105,10 @@
     "list": [
      "product-photo"
     ],
-    "content": "Two pictures of the same thing on the same 4:5 canvas, 1600x2000 or more, registered pixel for pixel: a cut-out photograph or render of the client's own product, machine or building, and a line drawing of the same framing (two passes from one 3D camera, or traced over the photograph at 1:1; dashed lines for the hidden parts, the accent only on the core). With only a photograph shot on white, data-trace=\"lines\" draws the structure from its edges, which shows nothing hidden. A headline of 4-8 words on two lines, two tags of 1-2 words naming the two materials, 1-12 callouts of 3 words or fewer naming real parts (three read best, one marked is-focus), an outro of 18-30 words and a 2-3 word action. Without the subject's own photograph or render, redraw."
+    "content": "Two pictures of the same thing on the same 4:5 canvas, 1600x2000 or more, registered pixel for pixel: a cut-out photograph or render of the client's own product, machine or building, and a line drawing of the same framing (two passes from one 3D camera, or traced over the photograph at 1:1; dashed lines for the hidden parts, the accent only on the core). With only a photograph shot on white, data-trace=\"lines\" draws the structure from its edges, which shows nothing hidden. A headline of 4-8 words on two lines, two tags of 1-2 words naming the two materials, 1-12 callouts of 3 words or fewer naming real parts (three read best, one marked is-focus), an outro of 18-30 words and a 2-3 word action. Without the subject's own photograph or render, redraw.",
+    "carry": [
+     "photos"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -3000,7 +3179,11 @@
     "list": [
      "pictures:0"
     ],
-    "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1."
+    "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1.",
+    "carry": [
+     "list",
+     "words"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -3077,7 +3260,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "No pictures. Words written fresh for the subject, 35-60 in all: an anchor of 1-2 words (10 letters or fewer); two or three endings of 2-4 words (16 letters or fewer, 12 on a phone); three to twelve principles of two short sentences each (4-8 words, 40 letters or fewer); a final line of 3-6 words on two lines. One accent of any hue but violet, indigo or purple, light enough to read as a 1px line on black. enter 'photo' adds one photograph 1600px wide or more (an aerial view, terrain, a machine, a city at night) and a lead sentence of 8-16 words."
+    "content": "No pictures. Words written fresh for the subject, 35-60 in all: an anchor of 1-2 words (10 letters or fewer); two or three endings of 2-4 words (16 letters or fewer, 12 on a phone); three to twelve principles of two short sentences each (4-8 words, 40 letters or fewer); a final line of 3-6 words on two lines. One accent of any hue but violet, indigo or purple, light enough to read as a 1px line on black. enter 'photo' adds one photograph 1600px wide or more (an aerial view, terrain, a machine, a city at night) and a lead sentence of 8-16 words.",
+    "carry": [
+     "words"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -3144,7 +3330,10 @@
     "list": [
      "product-ui"
     ],
-    "content": "The product's real screen rebuilt in HTML as 12 to 18 separate parts, each a direct child of the window and its own interface fragment (data-ui): the frame, and parts a user knows (a sidebar, a header, three or so figure blocks, three or four rows, a search, two buttons), told apart by flat fills mixed from the page's ground and ink and by the gaps of the grid, never by borders, outlines, hairlines or shadows. Believable names and figures that add up, at 16px or more at rest. One table in the options: each named part's key, its tier (1-4) and its name in plain sentence case, what it does for the user ('Receipts read from a photo', 'Tax to set aside, worked out daily'), a short clause after the name at most, never a code-style tag or numbering. A section heading that is a plain sentence (two lines at most), an optional lead of one or two sentences, and the list's names in the HTML for no script. An accent the ink reads on at 4.5:1 (the window's words sit on it), and never violet, indigo or lavender. A screenshot, a product without parts worth naming, or parts named as dashboard furniture ('Sidebar', 'Card') take a redraw."
+    "content": "The product's real screen rebuilt in HTML as 12 to 18 separate parts, each a direct child of the window and its own interface fragment (data-ui): the frame, and parts a user knows (a sidebar, a header, three or so figure blocks, three or four rows, a search, two buttons), told apart by flat fills mixed from the page's ground and ink and by the gaps of the grid, never by borders, outlines, hairlines or shadows. Believable names and figures that add up, at 16px or more at rest. One table in the options: each named part's key, its tier (1-4) and its name in plain sentence case, what it does for the user ('Receipts read from a photo', 'Tax to set aside, worked out daily'), a short clause after the name at most, never a code-style tag or numbering. A section heading that is a plain sentence (two lines at most), an optional lead of one or two sentences, and the list's names in the HTML for no script. An accent the ink reads on at 4.5:1 (the window's words sit on it), and never violet, indigo or lavender. A screenshot, a product without parts worth naming, or parts named as dashboard furniture ('Sidebar', 'Card') take a redraw.",
+    "carry": [
+     "list"
+    ]
    },
    "never": "Never the opening or the closing scene.",
    "avoidWith": [],
@@ -3219,7 +3408,11 @@
     "list": [
      "pictures:4"
     ],
-    "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene."
+    "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene.",
+    "carry": [
+     "photos",
+     "list"
+    ]
    },
    "never": "a page whose brief lacks what the content asks for",
    "avoidWith": [],
@@ -3245,7 +3438,7 @@
    "name": "Wordmark under strain",
    "family": "type-choreography",
    "classic": 1,
-   "look": "A closing word in giant type is held and put under load by the scroll: it is crushed onto its baseline and springs back, and its full stop loosens, falls out and lands flat as the call-to-action button, leaving the word whole. It is the closing moment of a page for a loud brand: the word is the page's last call, never the brand's name.",
+   "look": "A closing word compresses and settles above its action. The complete word and working button stand from the first frame.",
    "fits": [
     "close"
    ],
@@ -3266,12 +3459,12 @@
    "restH": 1,
    "cost": "low",
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
-   "phone": "The same strain with phone numbers and no echo: the word fitted to the width (narrower if the face has a width axis), its full stop falling into the button under the word's centre, the meta row in two lines; hold 1.",
+   "phone": "The word fits the phone width, the action stays underneath and the meta row wraps.",
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0.15,
    "place": "At the end of the page, as the call to action; the footer after it keeps the same ground. Once per page. For a loud brand only (a band, a race or a sports brand, a studio that shouts): never deal it to a calm house, a guesthouse, a craft or a care practice, where the strain reads as a broken word. At rest the word reads whole.",
-   "content": "One word of 4-8 letters (4-6 best), a closing word and never the brand's name (a giant name fails giant-contact), in capitals, best with no I, l or 1. A square full stop is added after it, hangs in the margin and is what falls, so the word rests whole and centred. A button label of 2-3 words, 18 characters at most; a sentence of 45 characters or more about the offer and a place line for the top row; a meta row of three short items (an email, a city, a link). Type only: one heavy display face, one flat ground shared with what follows, one ink at 7:1, an optional accent for the landed button.",
-   "options": "hold 1 (1-4); phoneHold 1 (1-2); phone 'same' | 'rest'; scrub 0.8, true with Lenis; echo false (true adds the stepped echo of stacked copies at 768px and wider; it reads as a winged badge, so leave it off); copies 6 (4-8) in the echo; step 1/13 (1/16-1/9) scale each copy loses; shift 2 (1-4) % of the word's height each copy sinks; squash 0.14 (0-0.15), 0.10 with echo; spring 3 (1.5-3); drop true (false keeps the word as it is and the button under it from the start); letter 'stop' | 'straight' | index, what falls ('stop', an added square full stop, keeps the word whole; 'straight' drops its I, l or 1 and leaves a gap); size [300, 64] the landed button in px, phoneSize [240, 52]; radius 0 (0-8); accent '', the button's colour as it lands; reveal 'wipe' | 'fade', on a 0.4s clock once the bar is flat; fill 0.92 (0.8-0.96); maxHeight 0.42 (0.3-0.45); stretch 'normal'; phoneStretch 'condensed'.",
+   "content": "One closing word of four to eight letters, a two- or three-word action, a short offer and real contact details. Use a heavy display face with at least 7:1 ink contrast.",
+   "options": "Hold 1, phoneHold 1. Echo is off by default. Squash up to 0.15. The closing button stays in place.",
    "roles": [
     "cta",
     "contact"
@@ -3288,7 +3481,10 @@
     "list": [
      "pictures:0"
     ],
-    "content": "One word of 4-8 letters (4-6 best), a closing word and never the brand's name (a giant name fails giant-contact), in capitals, best with no I, l or 1. A square full stop is added after it, hangs in the margin and is what falls, so the word rests whole and centred. A button label of 2-3 words, 18 characters at most; a sentence of 45 characters or more about the offer and a place line for the top row; a meta row of three short items (an email, a city, a link). Type only: one heavy display face, one flat ground shared with what follows, one ink at 7:1, an optional accent for the landed button."
+    "content": "One closing word of four to eight letters, a two- or three-word action, a short offer and real contact details. Use a heavy display face with at least 7:1 ink contrast.",
+    "carry": [
+     "words"
+    ]
    },
    "never": "never deal it to a calm house, a guesthouse, a craft or a care practice, where the strain reads as a broken word.",
    "avoidWith": [],
@@ -3311,7 +3507,8 @@
    "oldTones": [
     "bold",
     "playful"
-   ]
+   ],
+   "demoted": true
   }
  ]
 }

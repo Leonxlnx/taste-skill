@@ -1,13 +1,14 @@
 <!doctype html>
 <!-- data-type: the page's type, plan line 1 (SKILL.md section 1): software, product, place or service,
      the same value as <meta name="page-type">.
-     data-radius: sharp, soft or round. data-ground: the lit ground behind UI (sand, sky, sage, or
+     data-density sets the dealt section spacing (open, regular or compact).
+     data-radius: sharp, soft or round. Set data-pictures to square or soft as dealt. data-ground: the lit ground behind UI (sand, sky, sage, or
      painting with painterly-landscape). data-buttons: the dealt button look (sections.md, section 2):
      solid, pill, tonal, arrow or block; the button markup stays the same. data-motion: the
      micro-interactions of assets/motion (references/motion.md); keep it.
      lang: the language the page is written in, from the brief (or its market when the brief does not say): "de" for
      a German page, "en" for an English one; screen readers read in it and system.css hyphenates headings by it. -->
-<html lang="[en]" data-type="[software]" data-radius="soft" data-ground="sand" data-buttons="solid" data-motion>
+<html lang="[en]" data-type="[software]" data-radius="soft" data-ground="sand" data-buttons="solid" data-density="regular" data-motion>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -31,7 +32,7 @@
      (type software, site-kind software); a game (type software, site-kind gaming); hardware or a
      tech device (type product, site-kind tech). Every other product or brand (type product), a
      service firm or studio (type service) and a place (type place) are site-kind other:
-     photographs, type and flat colour, no shader ground. Every kind's motion is the hero's dealt entrance, the section reveals, the hover layer, two dealt moments (three on a long page), a scene when one is dealt and loops inside card visuals, each by fit (start.mjs plan deals them all). A place adds
+     photographs, type and flat colour, no shader ground. Every kind's motion is the hero's dealt entrance, the section reveals, the hover layer, one dealt moment (a second only from seven sections), a scene when one is dealt and loops inside card visuals, each by fit (start.mjs plan deals them all). A place adds
      <meta name="page-kind" content="place">. -->
 <meta name="site-kind" content="[software]">
 <meta name="page-type" content="[software]">
@@ -60,35 +61,36 @@
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <!-- the grounds' page tokens before the first paint (assets/backgrounds; plain, not deferred) -->
 <script src="assets/backgrounds/backgrounds.js"></script>
-<!-- moments (every kind is dealt two, three on a long page: start.mjs plan, or moments.mjs pick --page <kind>): the guard, then one
+<!-- moments (one per page, a second only from seven sections: start.mjs plan, or moments.mjs pick --page <kind>): the guard, then one
      preload for the core, its lib and each dealt moment (assets/moments/<id>/moment.js). system.js mounts them.
 <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
 <link rel="modulepreload" href="assets/moments/moments.js">
 <link rel="modulepreload" href="assets/moments/lib.js">
 <link rel="modulepreload" href="assets/moments/[dealt id]/moment.js">
 -->
-<!-- page CSS: only what sits inside a visual and the kit lacks, and one --p-h per card group -->
+<!-- Set the panel height once per card group. -->
 <style>
   #features .panel { --p-h: 300px; }
   /* a phone stacks the four tiles one under another on shorter panels; the chat drops its day line and fades
      over 40px, so its question and the answer's first line stand clear of the fade */
   @media (max-width: 639px) { #features .panel { --p-h: 180px; } #features .ui-chat__day { display: none; } #features .stage { --fade-h: 40px; } }
 </style>
+<style id="own-css">
+  /* Scope each composition to its section's [data-own] value.
+     Use the kit's type, spacing, radius and palette tokens. */
+</style>
 </head>
-<!-- grounds (tech only; assets/backgrounds/pick.mjs deals 0 to 2 section grounds, never a page ground):
-     a section ground is one class on its <section>; bg-topglow goes on a wrapper round the nav and the
-     hero only when the deal lists it. On kind other (product, service, place: cafes, shops, studios) no
-     ground class at all, and no data-ground on <html>: flat colour and photographs. -->
+<!-- Follow the dealt ground rhythm with the page ground, ground-surface, ground-inverse
+     and ground-brand. A tech page may also receive a visual effect from backgrounds/pick.mjs. -->
 <body>
 <!-- type: [software | product | place | service]
-     plan (start.mjs plan prints it; build exactly this): palette [..], type [..], hero [..] form [..], entrance [..],
-     nav [..], close [..], footer [..], buttons [..], mark [..], bands [..], compositions [section: id, ..], grounds [..]
+     plan (start.mjs plan prints it; build the frame as dealt; compose the sections): palette [..], type [..], hero [..] form [..], entrance [..],
+     nav [..], close [..], footer [..], buttons [..], mark [..], grounds [..], density [..], section forms [section: form, ..]
      moments: [dealt ids and their sections] · scene: [id and its section, or none] · effect: [id or none]
      copy: .taste-skill/copy.md written and linted before this page (references/copy.md, The copy notes)
-     The hero fills the first screen alone; every other section and the footer is as tall as its content,
-     its h2 first, with the same air above and below it (system.css pads each one --padt and --padb:
-     layout-v4.md section 2). Never a height, min-height or padding of your own on a section, and never
-     content cut or hidden to make a section shorter.
+     The hero opens the page. A dealt hero--peek carries its product window across the fold.
+     Sections fit their content. The kit spaces neighbours by ground and density.
+     Compose the sections the content calls for in .section.own with data-own on the section.
      Every [bracket] in this file is replaced before the page ships: system.js outlines any left in red.
      One page: every link goes to an #id on it (a section's id, #contact, #top for the logo); Privacy,
      Terms and Imprint go to small pages you write (privacy.html ...) or are deleted (sections.md). -->
@@ -153,14 +155,14 @@
 </header>
 
 <main id="top">
-  <!-- HERO: exactly the first screen; the fixed header lies over its top. Paste the dealt hero from
+  <!-- HERO: the first screen, with a product window continuing below it when dealt; the fixed header lies over its top. Paste the dealt hero from
        assets/layout/hero-<id>.html (layout/deal.mjs deals it; heroes.json has its numbers) in place of
        this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most), and give it
        data-enter="<the dealt entrance>" (its one entrance on load from the deck: rise, set-type, focus, exposure,
        aperture, line-blocks, doors, product-at-work, still; data-enter alone is the rise; motion.md, The entrance
        deck; the head line above makes it run).
        A place's hero is always assets/layout/hero-place.html in the form deal.mjs deals: copy its section and set
-       data-form="band|bleed|split|name" (layout.css 0b); never words, a scrim or a gradient on its photograph.
+       data-form="band|bleed|split|name" (layout.css 0b); use a calm crop or the page ground behind its words.
        Every later section's h2 and lead photograph rise once as it comes on screen (motion.js, automatic; never a
        card, row or tile); data-still on a section keeps it still.
        This default is the split: the words on span-6, the client's photograph on span-6 start-7 (the
@@ -171,7 +173,7 @@
         <div class="hero-copy span-6">
           <!-- optional notice line: one line with a number (changed hours, a delivery cut-off) -->
           <p class="hero-notice">[One line with a number]</p>
-          <!-- the h1 in the hero form on the voice card (copy-moves.md); the eyebrow or the notice may carry the
+          <!-- the h1 in the hero form on the voice card (copy-moves.md); a notice may carry the
                category when the h1 does not, and the lead always says it plainly -->
           <h1 id="hero-h">[The hero line, in your voice card's form]</h1>
           <p class="t-lead">[What is sold and where or for whom, plainly; then one hard fact or how it works.]</p>
@@ -187,7 +189,8 @@
             <div><dt>[Label]</dt><dd>[Fact]</dd></div>
           </dl>
         </div>
-        <!-- a photograph of the client's work, place or product (its own frame: no caption under it);
+        <!-- a photograph of the client's work, place or product. A .fact-line of up to 60 characters may give
+             its name, place, size, year or price. Leave out explaining captions;
              or a window, a phone or an object as the dealt hero says -->
         <div class="hero-visual frame frame--photo span-6 start-7">
           <img class="frame__img" src="[photo]" alt="[what it shows]" fetchpriority="high" data-source="[client | library | shoot]" data-subject="[what it is of]">
@@ -196,13 +199,13 @@
     </div>
   </section>
 
-  <!-- SECTIONS: the type's plan (references/sections.md), each built to its recipe. One example: the 2x2
+  <!-- SECTIONS: use the form the content needs (references/compose.md), or a kit composition. One example: the 2x2
        of feature tiles, two boxes deep (.card--open: the words on the page ground, the panel under them),
        the h2 and then the four tiles in one grid; the section is as tall as they are.
        Each fragment is pasted from
        assets/ui/<name>/fragment.html and rewritten, at its recipe's place; one loop in the group
        (data-ui-loop); the others hold their finished picture and play while the pointer is on them. -->
-  <section class="section" id="features" aria-labelledby="features-h">
+  <section class="section ground-surface" id="features" aria-labelledby="features-h">
     <div class="wrap">
         <div class="section-head">
           <h2 id="features-h">[What it does.] <span class="muted">[One sentence that sums up the four.]</span></h2>
@@ -210,7 +213,7 @@
         <div class="grid">
           <article class="card card--row card--open span-6">
             <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
+            <p>[One or two short sentences with one concrete detail.]</h2>
             <div class="panel" data-fx="[card effect: a tech page only]" data-fx-seed="21">
               <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:400px;--ax:max(24px, 50% - 200px);--ay:48px;--ay-sm:16px" data-ui-loop>
                 <div class="ui ui-panel ui-chat" data-ui="chat">
@@ -236,19 +239,19 @@
                from assets/diagrams) or the client's photograph in the panel (<img class="frame__img">) -->
           <article class="card card--row card--open span-6">
             <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
+            <p>[One or two short sentences with one concrete detail.]</h2>
             <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
           </article>
           <!-- the third and fourth tiles, built like the first two, the same --p-h, so both rows match; a section
                with only two tiles drops them -->
           <article class="card card--row card--open span-6">
             <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
+            <p>[One or two short sentences with one concrete detail.]</h2>
             <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
           </article>
           <article class="card card--row card--open span-6">
             <h3>[Verb + object]</h3>
-            <p>[One or two short sentences with one concrete detail.]</p>
+            <p>[One or two short sentences with one concrete detail.]</h2>
             <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]" loading="lazy"></div>
           </article>
         </div>
@@ -262,7 +265,7 @@
        motion.js) is a tech page's one count, in its hero only (a fact in .hero-facts), never in a card,
        a panel or a section further down; a count, never a year or a price. -->
   <template data-part="quote-stat">
-    <section class="section" id="[section id]" aria-labelledby="[quote id]">
+    <section class="section ground-inverse" id="[section id]" aria-labelledby="[quote id]">
       <div class="wrap">
         <div class="section-head"><h2 id="[quote id]">[Who uses it, plainly]</h2></div>
         <div class="grid">
@@ -290,8 +293,8 @@
         <div class="section-head"><h2>[What the rows are: rooms, the house, services]</h2><p>[One line.]</p></div>
         <div class="grid grid--top" data-peek>
           <ul class="rows span-6">
-            <li data-peek-to="[key 1]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
-            <li data-peek-to="[key 2]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</p><span class="rows__value">[Price, hours or size]</span></li>
+            <li data-peek-to="[key 1]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</h2><span class="rows__value">[Price, hours or size]</span></li>
+            <li data-peek-to="[key 2]" tabindex="0"><span class="rows__name">[Name]</span><p>[One line with one concrete detail.]</h2><span class="rows__value">[Price, hours or size]</span></li>
           </ul>
           <div class="frame frame--photo frame--fill span-6 start-7">
             <img class="frame__img" data-peek-for="[key 1]" src="[photo of row 1]" alt="[what it shows]">
@@ -314,7 +317,7 @@
        Hours the brief does not give are assumed: data-assumed on the dl (the report lists them), and then no
        open-now line (delete the <p data-open-now>): system.js never says "Open now" from assumed hours. -->
   <template data-part="visit">
-    <section class="section" id="visit" data-place="visit" aria-label="Visit">
+    <section class="section ground-brand" id="visit" data-place="visit" aria-label="Visit">
       <div class="wrap">
         <div class="visit">
           <div class="visit__head"><p class="t-label muted">Visit</p><p class="t-small" data-open-now></p></div>
@@ -337,13 +340,8 @@
     </section>
   </template>
 
-  <!-- DRAWING: only a dimension figure beside a product's specs (sections-library.md): the real side
-       view with its measured spans, one SVG unit a millimetre, the viewBox the product plus 6% all
-       round, --ar its width over height; every real part a g.part (lines .ln, a filled part .fill,
-       one part .acc in the accent); two or three dimension lines (.dim) whose figures are the
-       spans, placed in percent of the figure. Never the picture of a product that has no photograph
-       (that is a shot ladder or a short page, sections.md, never a drawing), never hardware drawn as
-       an SVG, clip-art or an icon. -->
+  <!-- A dimension drawing shows the product at its true proportions. Give its viewBox
+       the product ratio and label its measured spans. See subskills/illustrate for a built picture. -->
   <template data-part="drawing">
     <figure class="drawing" style="--ar: [viewBox width / height]" role="img" aria-label="[The product, from the side, its main sizes]">
       <svg viewBox="0 0 [width] [height]" aria-hidden="true">
@@ -449,13 +447,10 @@
 </template>
 
 <template data-part="statement">
-  <!-- STATEMENT: one sentence set large, its label just above it, in a section of its own as tall as the words
-       and their air (system.css sizes them); .statement--short for 12 to 20 words. A dealt lines-rise, letters-assemble
-       or word-rotate moment may carry it (moments.md). -->
-  <section class="section statement" id="[section id]">
+  <!-- STATEMENT: only the main claim may stand alone, once, with thin air. Other text moments ride a content or closing heading (moments.md). -->
+  <section class="section statement section--thin" id="[section id]">
     <div class="wrap">
-      <p class="t-label">[Label]</p>
-      <p class="statement__text">[One sentence of 20 to 40 words in the voice on the card, with one concrete detail.]</p>
+      <h2 class="statement__text">[One sentence of 20 to 40 words in the voice on the card, with one concrete detail.]</h2>
     </div>
   </section>
 </template>
@@ -484,6 +479,8 @@
 </template>
 
 <template data-part="booking-form">
+  <!-- For a booking hero, copy the commented .hero-book from layout/hero-place.html into its .wrap.
+       Point its action at this full form's id and give corresponding fields the same names. -->
   <!-- BOOKING FORM (references/system.md, Forms; sections-library.md booking-form): every field with a label you can
        see, the type, autocomplete and inputmode that fit it, its error line kept hidden until a submit fails
        (system.js shows it, sets aria-invalid and moves the focus to the first field to fix). data-endpoint: the

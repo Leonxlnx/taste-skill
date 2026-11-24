@@ -15,7 +15,7 @@
     "product"
   ],
   "intensity": "quiet",
-  "look": "One large photograph develops once as it comes on screen. In its dealt look (\"film\") it comes up out of the paper like a print in the developer tray: a faint grey print at first, its darks arriving before its light tones, then its colour, while it settles from a slight zoom, about 1.6 s. The halftone look (\"print\", a two-tone dot print in the page's ground and ink giving way to the photograph) is not dealt; it is kept as opts look \"print\".",
+  "look": "The photograph develops from grey to colour once, with the film look.",
   "reduced": "The photograph stands.",
   "phone": "The film look runs on a phone too (one picture, a filter and a transform, once); the print look shows the photograph.",
   "maxPerPage": 1,

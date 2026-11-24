@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../system.css">
 <link rel="stylesheet" href="../ui/cards.css">
 <link rel="stylesheet" href="motion.css">
-<style>:root{--bg:#f3f3f1;--card:#fff;--ink:#0f0f0e;--muted:#686863;--accent:#e5531c}body{background:var(--bg);color:var(--ink);padding:40px}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px}</style>
+<style>:root{--bg:#f3f3f1;--card:#fff;--ink:#0f0f0e;--muted:#686863;--accent:#e5531c}body{background:var(--bg);color:var(--ink);padding:40px}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px}@media(max-width:600px){body{padding:16px}.row{grid-template-columns:1fr}}</style>
 </head>
 <body>
 <main>
@@ -16,6 +16,11 @@
   <a class="tile" id="t1" href="#b"><div class="tile__media"><img id="i1" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23b9a98f'/%3E%3C/svg%3E"></div><div class="tile__head"><h3>Tile</h3></div></a>
   <div class="m-zoom" id="z1" style="border-radius:16px"><img id="i2" alt="" style="display:block;width:100%" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%238fa9b9'/%3E%3C/svg%3E"></div>
 </div>
+<div class="section own" data-own="controls">
+  <details><summary>Delivery times</summary><p>Orders leave the workshop on Friday.</p></details>
+  <button class="press" type="button">Choose Friday</button>
+</div>
 </main>
+<script type="module" src="motion.js"></script>
 </body>
 </html>

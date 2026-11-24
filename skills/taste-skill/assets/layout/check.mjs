@@ -53,6 +53,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const chrome = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
 if (!chrome) { console.error('no Chrome found (set CHROME_PATH)'); process.exit(2); }
+const catalogue = JSON.parse(fs.readFileSync(path.join(here,'../moments/index.json'),'utf8')).moments.map(({id,text})=>({id,text}));
 const src = fs.readFileSync(path.join(here, 'layout-check.js'), 'utf8');
 // a page file is served from its folder (or --root) over http on 127.0.0.1 (5770-5779), never opened from file://
 let url = target, server = null;
@@ -150,6 +151,16 @@ try {
   const snap = async file => { const { data } = await S('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(file, Buffer.from(data, 'base64')); };
   for (const [W, H] of sizes) {
     await S('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: W < 600 });
+    let still = [], resting = {};
+    if (opt('still')) {
+      await S('Emulation.setScriptExecutionDisabled', {value:true});
+      const ready = new Promise(r => subs.push(m => { if (m.method === 'Page.loadEventFired') r(); }));
+      await S('Page.navigate', {url});
+      await Promise.race([ready,sleep(20000)]);
+      still = await ev(src + '\n;window.lyRules.still()');
+      resting = await ev('window.lyRules.counters(true)');
+      await S('Emulation.setScriptExecutionDisabled', {value:false});
+    }
     const loaded = new Promise(r => subs.push(m => { if (m.method === 'Page.loadEventFired') r(); }));
     await S('Page.navigate', { url });
     await Promise.race([loaded, sleep(20000)]);
@@ -157,14 +168,19 @@ try {
     await ev('document.fonts ? document.fonts.ready.then(() => 1) : 1');
     await sleep(900);
     const res = await ev(src + '\n;window.lyCheck()');
+    res.findings.push(...still);
     res.size = `${W}x${H}`;
     res.overflowX = await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth');
     if (res.overflowX) res.findings.push({ rule: 'overflow-x', where: 'page', detail: 'the page scrolls sideways' });
     // the finish checks (layout-check.js lyFinish): they scroll, so they run before the shots and the stress
     if (!opt('no-finish')) {
       await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.momentsReady || !document.querySelector('[data-moment]') || performance.now() - t > 4000) r(); else setTimeout(w, 50); })(); })`);
-      try { res.findings.push(...await ev(`window.lyFinish(${JSON.stringify({ reveal })})`)); } catch (e) { res.findings.push({ rule: 'finish-check', where: 'page', detail: `the finish checks could not run: ${e.message.split('\n')[0]}`, fix: 'fix the page error it names' }); }
+      try { res.findings.push(...await ev(`window.lyFinish(${JSON.stringify({ reveal, catalogue })})`)); } catch (e) { res.findings.push({ rule: 'finish-check', where: 'page', detail: `the finish checks could not run: ${e.message.split('\n')[0]}`, fix: 'fix the page error it names' }); }
       await ev('scrollTo(0, 0)'); await sleep(300);
+    }
+    if (opt('still')) {
+      const changed=await ev('window.lyRules.changedCounters('+JSON.stringify(resting)+',window.lyRules.counters(true))');
+      res.findings.push(...changed.filter(f => !still.some(s=>s.rule===f.rule && s.where===f.where && /counter/.test(s.detail))));
     }
     const errFix = e => /import\.meta|import statement|export|Unexpected token/i.test(e) ? 'a module loaded as a classic script: load it once, as <script type="module" src="assets/system.js"></script> (the starter\'s last lines), and delete the other <script> for it'
       : /Failed to load resource|404|ERR_/i.test(e) ? 'the page names a file that does not load: fix the path, or take the reference out'

@@ -397,13 +397,14 @@ const inProject = (p, name) => {
 };
 // a fresh profile folder per run (a reused one can still be locked by the Chrome just closed); removed once Chrome has exited
 // default profile folder: --profile, else $TASTE_SKILL_TMP/chrome/perf, else a folder under the system temp dir
-const profileBase = path.resolve(profileArg ? inProject(profileArg, 'perf') : (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
+const exactProfile = process.env.TASTE_SKILL_CHROME_PROFILE;
+const profileBase = path.resolve(exactProfile || (profileArg ? inProject(profileArg, 'perf') : (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf'))));
 fs.mkdirSync(profileBase, { recursive: true });
 // sweep only folders whose run has exited: run-<pid> of a live run is still that run's Chrome profile.
 // run-<own pid> is always stale (left by an earlier run whose PID was reused), so it is swept too.
 const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
-for (const d of fs.readdirSync(profileBase)) { const m = /^run-(\d+)$/.exec(d); if (m && (Number(m[1]) === process.pid || !alive(Number(m[1])))) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* locked */ } } }
-const profile = path.join(profileBase, 'run-' + process.pid);
+for (const d of exactProfile ? [] : fs.readdirSync(profileBase)) { const m = /^run-(\d+)$/.exec(d); if (m && (Number(m[1]) === process.pid || !alive(Number(m[1])))) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* locked */ } } }
+const profile = exactProfile ? profileBase : path.join(profileBase, 'run-' + process.pid);
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
 // if the sweep could not remove run-<own pid> (a file still locked), its old port file must not be read as this Chrome's
@@ -447,7 +448,7 @@ try {
 } finally {
   clearTimeout(guard); kill(); if (srvObj) srvObj.srv.close();
   await Promise.race([exited, sleep(4000)]);
-  for (let i = 0; i < 8; i++) { try { fs.rmSync(profile, { recursive: true, force: true }); break; } catch { await sleep(500); } }
+  for (let i = 0; !exactProfile && i < 8; i++) { try { fs.rmSync(profile, { recursive: true, force: true }); break; } catch { await sleep(500); } }
 }
 loadAfter = await hostLoad(800);
 const load = Math.max(loadBefore, loadAfter);

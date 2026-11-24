@@ -22,8 +22,7 @@
                              section is as tall as its content and its air (system.css pads it --padt and --padb).
                              The hero, a scene, a moment that holds its stage and a section its layer fills are
                              left out.
-    section-air              the content of two neighbouring sections under 128px apart (96 on a phone): the
-                             system's air is --padb under one and --padt over the next, 256px at 1440.
+    section-air              neighbouring content closer than 72px (56 on a phone), scaled by density.
     hero-fold                the hero does not fill the first screen, runs past it (taller than one
                              screen), or the next section shows on it.
   Elements inside a visual (cards, frames, panels, stages, UI fragments, a collage) are not page edges.
@@ -33,8 +32,7 @@
   shipped. Each finding: { rule, where, detail, fix, sev } (sev 'WARN' never blocks; no sev is a FAIL).
     empty-band       the empty strip above a section's first content and under its lowest (text, picture, control,
                      a box with its own ground) beyond its own padding (240px a side at most, 144 on a phone), or
-                     a strip between two pieces of it, a third of the section's height or more (FAIL), a sixth
-                     and 96px or more (WARN). A section that holds a pinned moment or a scene is left out: it
+                     a strip between two pieces of it, a third of the section's height or more (FAIL). A section that holds a pinned moment or a scene is left out: it
                      holds its stage on purpose.
     uneven-columns   a split (.grid columns side by side, at any width where they still stand side by side) whose
                      shorter column's lowest content ends above the taller one's by over 30% of the section's
@@ -53,10 +51,177 @@
     number-repeat    (WARN) one UI number ("2,412 ms", "$48") printed in three sections or more.
     heading-repeat   (WARN) two headings with the same words, or one holding the whole of the other.
 */
+// Geometry and resting-state probes used by both browser checks.
+window.lyRules = (() => {
+  const own = 'section[data-own]';
+  function peek(hero) {
+    if (!hero?.matches('.hero--peek')) return null;
+    const frame = hero.querySelector('.hero__window,.app-frame,.device') || hero.querySelector('.hero__collage,.hero__media,.hero__art,.hero-visual,.panel');
+    if (!frame) return null;
+    const r = frame.getBoundingClientRect(), top = r.top + scrollY;
+    return top >= 0 && r.height <= 761 && Math.min(innerHeight - top, r.height) >= (innerWidth < 640 ? 300 : 420) - 1 ? frame : null;
+  }
+  function mirrored(el) {
+    const grid=el?.closest('.grid.grid--mirror');
+    if (!grid || grid.children.length!==2 || innerWidth<1024) return null;
+    const first=[...document.querySelectorAll('main .grid.grid--mirror')].find(g=>!g.closest('section[data-own]'));
+    if (grid !== first) return null;
+    const [words,picture]=grid.children, wr=words.getBoundingClientRect(), pr=picture.getBoundingClientRect();
+    return words.querySelector('h1,h2,h3') && (picture.matches('img,svg,canvas,video') || picture.querySelector('img,svg,canvas,video')) && wr.left>=pr.right-2 ? words : null;
+  }
+  function booking(hero) {
+    const form=hero?.querySelector(':scope > .wrap > form.hero-book');
+    if (!form || form.querySelectorAll('input:not([type=hidden]),select').length < 2 || !form.querySelector('button,input[type=submit]')) return null;
+    const r=form.getBoundingClientRect(), h=hero.getBoundingClientRect();
+    return r.height>0 && r.bottom <= h.bottom+1 ? form : null;
+  }
+  function holdsStage(section) {
+    if (section.matches('.mo-cl__under') && section.parentElement?.matches('[data-moment="closing-lift"].is-live') &&
+        section.previousElementSibling?.matches('.mo-cl__sheet') && getComputedStyle(section).position === 'sticky') return true;
+    if (section.matches('[data-big-scene],[data-scene],.sc') || section.querySelector('[data-big-scene],[data-scene]')) return true;
+    return [section,...section.querySelectorAll('[data-moment]')].filter(m=>m.matches('[data-moment]')).some(m=>
+      [m,...m.querySelectorAll('*')].some(e=>getComputedStyle(e).position==='sticky' && e.getBoundingClientRect().height>0));
+  }
+  function colour(el) {
+    for (let p = el; p; p = p.parentElement) {
+      const c = getComputedStyle(p).backgroundColor;
+      if (!/transparent|rgba\([^)]*,\s*0\)$/.test(c)) return c;
+    }
+    return 'rgb(255, 255, 255)';
+  }
+  function air() {
+    const root = document.documentElement, phone = root.clientWidth < 640;
+    const scale = parseFloat(getComputedStyle(root).getPropertyValue('--density')) || ({open:1.15,compact:.85}[root.dataset.density] || 1);
+    return {min:(phone ? 56 : 72) * scale, max:(phone ? 200 : 280) * scale};
+  }
+  function emptyRun(above, below, inside, height, limit = air().max) {
+    const edge = Math.max(above, below), longest = Math.max(edge, inside);
+    return {edge, longest, fails: longest >= height / 3 || longest > limit};
+  }
+  function fullPicture(sec) {
+    return /url\(|image-set\(/.test(getComputedStyle(sec).backgroundImage) || [...sec.querySelectorAll('img,video,canvas,svg,[role="img"]')].some(e => {
+      const r = e.getBoundingClientRect();
+      return r.width >= document.documentElement.clientWidth - 3 && r.height >= 120;
+    });
+  }
+  function blankRun(sections, top, bottom) {
+    const painted=[];
+    for (const section of sections) {
+      const layers=[...section.querySelectorAll('img,video,canvas,svg,.app-frame,[role=img],.layer,[data-scene],[data-big-scene],[data-moment]:not(section)')];
+      if (/url\(|image-set\(/.test(getComputedStyle(section).backgroundImage)) layers.push(section);
+      for (const el of layers) {
+        const r=el.getBoundingClientRect();
+        if (r.width<120 || r.height<48 || r.bottom<=top || r.top>=bottom) continue;
+        const style=getComputedStyle(el);
+        if (style.visibility!=='hidden' && +style.opacity>0) painted.push([Math.max(top,r.top),Math.min(bottom,r.bottom)]);
+      }
+    }
+    let edge=top, longest=0;
+    for (const [from,to] of painted.sort((a,b)=>a[0]-b[0])) { longest=Math.max(longest,from-edge); edge=Math.max(edge,to); }
+    return Math.max(longest,bottom-edge);
+  }
+  const explaining = /\b(?:illustrative (?:image|picture|photo(?:graph)?|render(?:ing)?)|(?:drawing|illustration|picture|photo(?:graph)?|render(?:ing)?|image) of|(?:this|the) (?:picture|photo(?:graph)?|image|drawing|illustration) (?:is|shows|depicts|represents)|for (?:illustrative purposes|illustration only)|stock photo(?:graph)?|stand[- ]in|placeholder|shown (?:above|below|here)|made (?:in|with) code)\b/i;
+  function factOwner(line) {
+    const scope=line.closest('figure,article') || line.parentElement;
+    if (!scope) return null;
+    const nodes=[...scope.querySelectorAll('picture,img,video,svg,canvas,.app-frame,[data-chart],[data-diagram],[data-ui],[role="img"],[aria-hidden="true"],.fact-line')];
+    const pictures=nodes.filter(n=>!n.matches('.fact-line') && !n.parentElement?.closest('picture,svg,.app-frame,[role="img"]'));
+    const index=nodes.indexOf(line);
+    return pictures.findLast(n=>nodes.indexOf(n)<index) || pictures[0] || null;
+  }
+  function fact(e) {
+    const line = e.closest('.fact-line');
+    if (!line) return null;
+    const t = line.textContent.trim().replace(/\s+/g,' '), frame = line.closest('figure,article') || line.parentElement;
+    const picture = factOwner(line);
+    return Boolean(picture && [...frame.querySelectorAll('.fact-line')].filter(x=>factOwner(x)===picture).length===1 && t && [...t].length <= 60 && !explaining.test(t) && !/^(?:illustration|drawing|render|image|photograph)[.!]?$/i.test(t));
+  }
+  function page(kindOverride='') {
+    const secs = [...document.querySelectorAll('main > section,main > .section,footer.closing')].filter(e => e.getBoundingClientRect().height);
+    const out = [], ownSections = secs.filter(s => s.matches(own));
+    const add = (rule, where, detail, sev = 'FAIL') => out.push({rule, where, detail, sev});
+    if (secs.length && ownSections.length < (secs.length >= 6 ? 2 : 1)) add('own-count','page',secs.length + ' sections include ' + ownSections.length + ' own sections','WARN');
+    if (secs.length >= 6 && new Set(secs.map(colour)).size === 1 && !secs.some(fullPicture)) add('ground-flat','page',secs.length + ' sections share one ground without a full-bleed picture');
+    const kind = kindOverride || document.documentElement.dataset.type || document.querySelector('meta[name="page-type"],meta[name="page-kind"]')?.content;
+    if (kind === 'place' && secs.length) {
+      const visiblePicture=e=>{const r=e.getBoundingClientRect();return r.width>=120 && r.height>=80};
+      const photos = new Set([...document.querySelectorAll('main img')].filter(visiblePicture).map(e=>e.currentSrc || e.src));
+      const built = [...document.querySelectorAll('main svg,main canvas,main [data-ui],main [data-chart],main [data-diagram],main .chart,main .app-frame,main [role="img"]')].some(visiblePicture);
+      const target = secs.length >= 6 ? 12 : 8;
+      if (built && photos.size < target) add('photo-set','page',photos.size+' photographs and a built subject view. The photo-led reference for this length is '+target+'.','WARN');
+    }
+    for (const sec of ownSections) {
+      const at = sec.id ? '#' + sec.id : 'section[data-own="' + sec.dataset.own + '"]';
+      const sticky = [sec,...sec.querySelectorAll('*')].filter(e => getComputedStyle(e).position === 'sticky' && e.getClientRects().length);
+      if (sticky.length && (sticky.length > 1 || sticky.includes(sec) || sec.getBoundingClientRect().height > innerHeight * 2.5)) add('pinned',at,sticky.length + ' sticky elements in a section ' + (sec.offsetHeight / innerHeight).toFixed(2) + ' screens tall');
+      const auto = '[data-autoplay]:not([data-autoplay="false"]),[data-auto-advance]:not([data-auto-advance="false"]),[aria-roledescription="carousel"][data-interval],swiper-container[autoplay]';
+      const timer = sec.matches(auto) || !!sec.querySelector(auto) || [...document.scripts].some(s => {
+        const code=s.textContent;
+        const local=sec.contains(s) || (sec.id && ["'#"+sec.id+"'",'"#'+sec.id+'"',"getElementById('"+sec.id+"')",'getElementById("'+sec.id+'")'].some(key=>code.includes(key)));
+        return local && /\bsetInterval\s*\(/.test(code) && /\b(nextSlide|advance|selectedIndex|aria-selected|showSlide)\b/i.test(code);
+      });
+      const pause = [...sec.querySelectorAll('button,[role="button"]')].some(b =>
+        !b.disabled && b.getAttribute('aria-disabled')!=='true' && b.getClientRects().length && (/pause|stop/i.test((b.getAttribute('aria-label') || '')+' '+b.textContent) || b.hasAttribute('data-pause')));
+      if (timer && !pause) add('own-timer',at,'content advances on a timer without a pause control');
+    }
+    for (const el of document.querySelectorAll('svg,canvas,img,[role="img"]')) {
+      const desc=[el.getAttribute('aria-label'),el.getAttribute('alt'),el.querySelector('title')?.textContent,el.getAttribute('data-lookalike')].filter(Boolean).join(' ');
+      if (el.hasAttribute('data-lookalike') || /\b(?:redrawn|imitation|look[- ]?alike|replica)\b.{0,45}\b(?:logo|trademark)\b|\b(?:logo|trademark)\b.{0,45}\b(?:redrawn|imitation|look[- ]?alike|replica)\b/i.test(desc))
+        add('brand-lookalike',el.id || el.localName,'The mark is identified as a reproduction. Use the supplied or licensed brand artwork.');
+    }
+    for (const line of document.querySelectorAll('.fact-line')) if (!fact(line)) add('visual-caption',line.id || '.fact-line','Use one factual line of up to 60 characters for this picture.');
+    return out;
+  }
+  const countSelector='[data-count],[data-m-count],[data-count-to],[data-counter-end],[data-counter],.counter,.count-up,[data-count-up]';
+  function counterKey(e) {
+    if (e.id) return '#'+e.id;
+    const parts=[];
+    for (let p=e;p && p!==document.body;p=p.parentElement) {
+      if (p.id) { parts.unshift('#'+p.id); break; }
+      parts.unshift(p.localName+':'+([...p.parentElement.children].indexOf(p)+1));
+    }
+    return parts.join('/');
+  }
+  const numberLeaf = 'section[data-own] *,strong,b,output,[class*=stat],[class*=count]';
+  const counterCandidates = () => [...document.querySelectorAll(countSelector+','+numberLeaf)].filter(e =>
+    e.getClientRects().length && (e.matches(countSelector) || (!e.children.length && /^[-+]?\d[\d,.\s]*\s*(?:[%×x]|sec|ms)?$/i.test(e.textContent.trim()) && !e.closest('time,[role=timer],input,button,select,script,style'))));
+  const targetValue = e => ['data-count-to','data-counter-end','data-final','data-target','data-to','data-count','data-m-count','data-counter','data-count-up'].map(a=>e.getAttribute(a)).find(v=>v && /^\s*[-+]?\d[\d.,\s]*%?\s*$/.test(v));
+  const counters = (undeclaredOnly=false) => Object.fromEntries(counterCandidates().filter(e=>!undeclaredOnly || !targetValue(e)).map(e=>[counterKey(e),e.textContent.trim()]));
+  const number = s => String(s).replace(/[,\s]/g,'').match(/[-+]?\d+(?:\.\d+)?/)?.[0];
+  function changedCounters(resting, live) {
+    const out=[];
+    for (const [key, value] of Object.entries(resting)) if (key in live && number(value)!=null && number(live[key])!=null && Number(number(value)) !== Number(number(live[key])))
+      out.push({rule:'still-wrong',sev:'FAIL',where:key,detail:'counter rests at "'+value+'", live value '+live[key]});
+    return out;
+  }
+  function still(finals={}) {
+    const out = [];
+    const candidates = new Set(counterCandidates());
+    for (const e of new Set([...document.querySelectorAll('section[data-own] *'),...candidates])) {
+      if (e.closest('template,script,style,noscript,[hidden],details:not([open]) > :not(summary)') || !e.getBoundingClientRect().width) continue;
+      let reason = '';
+      const t = e.textContent.trim();
+      if (candidates.has(e)) {
+        const expected=targetValue(e) || finals[counterKey(e)];
+        if (expected && number(expected)!=null && Number(number(t)) !== Number(number(expected))) reason = 'counter rests at "' + t + '", final value ' + expected;
+      }
+      if (!reason && e.closest(own) && (e.matches('img,svg,canvas,input,select,textarea') || [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()))) {
+        for (let p = e; p; p = p.parentElement) {
+          const c = getComputedStyle(p);
+          if (+c.opacity === 0 || c.visibility === 'hidden') { reason = 'content is hidden without script'; break; }
+        }
+      }
+      if (reason) out.push({rule:'still-wrong',sev:'FAIL',where:e.id ? '#' + e.id : (e.closest(own)?.dataset.own || 'counter') + ' ' + e.localName,detail:reason});
+    }
+    return out;
+  }
+  return {peek,mirrored,booking,colour,air,holdsStage,fullPicture,emptyRun,blankRun,explaining,fact,page,still,counters,changedCounters};
+})();
+
 window.lyCheck = function lyCheck(opts = {}) {
   const tol = opts.tol ?? 1.5;
   const vw = document.documentElement.clientWidth, vh = innerHeight, sy = scrollY;
-  const out = [], add = (rule, where, detail, fix) => out.push(fix ? { rule, where, detail, fix } : { rule, where, detail });
+  const out = window.lyRules.page(), add = (rule, where, detail, fix) => out.push({ rule, where, detail, fix });
   const R1 = n => Math.round(n * 10) / 10;
   const name = el => {
     if (!el) return '?';
@@ -102,8 +267,9 @@ window.lyCheck = function lyCheck(opts = {}) {
     }
     return false;
   };
-  const blocks = [...new Set(document.querySelectorAll(SEL))].filter(el => {
-    if (el.matches('[data-edge-free], script, style, template')) return false;
+  const blocks = [...new Set([...document.querySelectorAll(SEL), ...document.querySelectorAll('section[data-own] > .wrap')])].filter(el => {
+    if (el.closest('section[data-own]') && !el.matches('section[data-own] > .wrap')) return false;
+    if (el.matches('[data-edge-free],button.loop-pause[aria-pressed], script, style, template')) return false;
     if (el.parentElement && el.parentElement.closest(INSIDE)) return false;
     if (inBox(el)) return false;
     const p = getComputedStyle(el).position;
@@ -142,13 +308,20 @@ window.lyCheck = function lyCheck(opts = {}) {
     const all = list.filter(b => !b.full);
     const aL = Math.min(...all.map(b => b.r.left));
     const sym = Math.abs((uL - L) - (R - uR)) <= tol + 1;
-    if (!sym && uR < R - tol && !vis.some(b => b.bleedR) && aL <= L + tol) add('one-sided', name(sec), `its visuals end at x ${R1(uR)}, short of the right line ${R1(R)}`);
+    const mirror=vis.every(b=>window.lyRules.mirrored(b.el)) && Math.abs(uL-L)<=tol;
+    // A working booking form can fill the right-hand column opposite a photograph.
+    const rightForm = [...sec.querySelectorAll('form')].some(form => {
+      const field = form.querySelector('input:not([type=hidden]), select, textarea');
+      return field && shown(field) && Math.abs(form.getBoundingClientRect().right - R) <= tol;
+    });
+    if (!mirror && !rightForm && !sym && uR < R - tol && !vis.some(b => b.bleedR) && aL <= L + tol) add('one-sided', name(sec), `its visuals end at x ${R1(uR)}, short of the right line ${R1(R)}`);
   }
 
   /* left lines: every page heading and lead starts on L or on one split line (the same on every split) */
   const heads = [...document.querySelectorAll('main :is(h1, h2, .hero__lead, .section-head > p)')].filter(e => shown(e) && !e.closest(INSIDE.replace(', .btn-row', '')) || (e.matches('h1') && shown(e)));
   const lefts = [];
   for (const e of heads) {
+    if (e.closest('section[data-own]')) continue;
     const r = e.getBoundingClientRect(), ta = getComputedStyle(e).textAlign;
     if (ta === 'center' || centred(r) && Math.abs(r.left - L) > tol) continue;
     if (e.closest('.hero__media, .hero__over') || inBox(e)) continue;   // words inside a picture (the film's frame) or a solid box are not a page line
@@ -192,9 +365,7 @@ window.lyCheck = function lyCheck(opts = {}) {
   const inkOf = sec => [...sec.querySelectorAll('*')].filter(e => (e.matches(INK) || ownText(e)) && shown(e) && !e.closest('[data-edge-free]')).map(e => doc(clipped(e, sec))).filter(r => r.bottom - r.top > 1 && r.right > 0 && r.left < vw && r.right - r.left > 1);
   // a section that holds its stage at the height its own module sets (a scene, or a moment that pins while it plays),
   // and a section its own layer (a photograph or ground behind its words) fills
-  const PINNED = ['photo-chapters', 'pinned-chapters', 'closing-lift', 'giant-type-pass', 'iris-opens', 'line-carries-colour'];
-  const holds = s => s.matches('[data-big-scene], [data-scene], .sc') || !!s.querySelector('[data-big-scene], [data-scene]')
-    || [s, ...s.querySelectorAll('[data-moment]')].some(m => m.matches('[data-moment]') && (PINNED.includes(m.dataset.moment) || getComputedStyle(m).position === 'sticky'));
+  const holds = window.lyRules.holdsStage;
   const layered = s => !!s.querySelector(':scope > :is(img, picture, video, canvas).layer') || getComputedStyle(s).backgroundImage !== 'none';
   const info = secs.map(s => {
     const r = doc(s.getBoundingClientRect());
@@ -212,36 +383,41 @@ window.lyCheck = function lyCheck(opts = {}) {
     // with a header that is not fixed, its top under the nav
     const y0 = i === 0 ? 0 : (navPos === 'fixed' ? s.r.top : s.r.top - navH);
     s.frame = Math.max(0, Math.round(y0));
-    if (i === 0 || s.free || s.held || s.layer) return;
+    if (s.el.matches('.hero') || s.free || s.held || s.layer) return;
     if (!s.ink.length) { add('section-height', name(s.el), `${Math.round(h)}px tall with no content in it`, 'give the section its content or take it out'); return; }
     const c = getComputedStyle(s.el), airT = Math.min(parseFloat(c.paddingTop) || 0, cap), airB = Math.min(parseFloat(c.paddingBottom) || 0, cap);
     const above = Math.max(0, s.cTop - s.r.top - airT), below = Math.max(0, s.r.bottom - airB - s.cBot);
     const iv = s.ink.map(k => [k.top, k.bottom]).sort((a, b) => a[0] - b[0]);
     let end = iv[0][1], hole = 0;
     for (const [a, z] of iv.slice(1)) { if (a - end > hole) hole = a - end; end = Math.max(end, z); }
-    const band = above + below, most = Math.max(band, hole);
-    if (most >= h / 3) add('section-height', name(s.el), hole > band
+    const {edge:band, longest:most, fails} = window.lyRules.emptyRun(above, below, hole, h);
+    if (fails) add('section-height', name(s.el), hole > band
       ? `an empty strip of ${Math.round(hole)}px between two pieces of its content, ${Math.round(100 * most / h)}% of its ${Math.round(h)}px`
       : `stretched past its content: ${Math.round(band)}px of its ${Math.round(h)}px (${Math.round(100 * most / h)}%) empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
     'let the section be as tall as its content and its air (no height, min-height or padding of its own) and close a hole between its parts; merge a short block into the section above, or give it the picture it lacks');
   });
-  // the air between two sections' content: --padb under one and --padt over the next (256px at 1440, 176 on a phone);
-  // under 128px (96 on a phone) the two run together. The hero's foot is hero-fold's
-  const least = vw < 640 ? 96 : 128;
-  for (let i = 1; i + 1 < info.length; i++) {
+  // Measure adjacent occupied edges, including the padding chosen for same-ground and thin sections.
+  const {min: least, max} = window.lyRules.air();
+  for (let i = 0; i + 1 < info.length; i++) {
     const a = info[i], b = info[i + 1];
     if (a.free || b.free || a.held || b.held || !a.ink.length || !b.ink.length) continue;
     const gap = b.cTop - a.cBot;
-    if (gap < least) add('section-air', `${name(a.el)} / ${name(b.el)}`, `${Math.round(gap)}px between the content of the two sections: ${least}px at least (the system's air is ${vw < 640 ? 176 : 256}px)`,
-      "keep the system's padding on both sections (--padb under one, --padt over the next): no padding, margin or height of their own");
+    if (gap < least - .5 && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + least + 'px');
+    if (gap > max + .5 && window.lyRules.colour(a.el) === window.lyRules.colour(b.el)) {
+      const blank = window.lyRules.blankRun([a.el,b.el],a.cBot,b.cTop);
+      if (blank>max+.5) add('empty-band', name(a.el) + ' / ' + name(b.el), Math.round(blank) + 'px of continuous empty ground, limit ' + max + 'px');
+    }
   }
-  if (info.length) {
+  if (info.length && (info[0].el.matches('.hero,.section--hero') || info[0].el.querySelector('h1'))) {
     const hero = info[0];
     if (hero.r.top > navH + tol + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0)) add('hero-fold', name(hero.el), `starts at y ${Math.round(hero.r.top)}, not under the nav`);
     if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, above the fold (${vh})`);
     // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
-    if (hero.r.bottom > vh + tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, past the fold (${vh}): ${((hero.r.bottom - hero.r.top) / screen).toFixed(2)} screens tall`);
+    const frame = window.lyRules.peek(hero.el);
+    if (hero.el.matches('.hero--peek') && !frame) add('hero-fold', name(hero.el), 'the window must show ' + (vw < 640 ? 300 : 420) + 'px on load and be at most 760px tall');
+    if (hero.r.bottom > vh + tol && !frame && !(vw < 640 && window.lyRules.booking(hero.el))) add('hero-fold', name(hero.el), 'ends past the fold at ' + Math.round(hero.r.bottom) + 'px');
     const next = info[1];
+    if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),'the next section starts at ' + Math.round(next.r.top) + 'px, inside the first screen');
     if (next) {
       const hit = next.ink.filter(k => k.top < vh - 2);
       if (hit.length) add('hero-fold', name(next.el), `shows on the first screen from y ${Math.round(Math.min(...hit.map(k => k.top)))}`);
@@ -271,12 +447,12 @@ window.lyCheck = function lyCheck(opts = {}) {
       h1: h1 && { size: parseFloat(getComputedStyle(h1).fontSize), leading: R1(parseFloat(getComputedStyle(h1).lineHeight) / parseFloat(getComputedStyle(h1).fontSize) * 100) / 100, lines: lineCount(h1), ...box(h1) },
       lead: lead && { size: parseFloat(getComputedStyle(lead).fontSize), lineHeight: parseFloat(getComputedStyle(lead).lineHeight), lines: lineCount(lead), ...box(lead) },
       buttons: btns.length ? { n: btns.length, h: Math.round(btns[0].getBoundingClientRect().height), first: box(btns[0]) } : null,
-      visual: box(hs.querySelector('.hero__media, .hero__art, .hero__stage, .ly-collage, .hero__window')),
+      visual: box(hs.querySelector('.hero__media, .hero__art, .hero__stage, .ly-collage, .hero__window') || hs.querySelector('.hero__bg, .ly-pic')),
     };
   }
   return {
     vw, vh, L: R1(L), R: R1(R), nav: Math.round(navH), screen: Math.round(screen), hero,
-    sections: info.map(s => ({ where: name(s.el), top: Math.round(s.r.top), height: Math.round(s.r.bottom - s.r.top), content: Math.round(s.cBot - s.cTop), frame: s.frame })),
+    sections: info.map(s => ({ where: name(s.el), top: Math.round(s.r.top), height: Math.round(s.r.bottom - s.r.top), content: Math.round(s.cBot - s.cTop), contentTop: s.cTop, contentBottom: s.cBot, frame: s.frame })),
     findings: out,
   };
 };
@@ -322,9 +498,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
     return list;
   };
   // a section that holds its screens on purpose: a scene, or a moment that pins (sticky) while it plays
-  const PINNED = new Set(['photo-chapters', 'pinned-chapters', 'closing-lift', 'giant-type-pass', 'iris-opens', 'line-carries-colour']);
-  const pins = s => !!(s.matches('[data-big-scene], [data-scene]') || s.querySelector('[data-big-scene], [data-scene]')
-    || [s, ...s.querySelectorAll('[data-moment]')].some(m => m.matches('[data-moment]') && (PINNED.has(m.dataset.moment) || getComputedStyle(m).position === 'sticky' || !!m.querySelector('.is-pinned, [data-pin]'))));
+  const pins = window.lyRules.holdsStage;
   const ground = s => getComputedStyle(s).backgroundImage !== 'none';
 
   /* empty-band and blank-screen, section by section */
@@ -343,12 +517,13 @@ window.lyFinish = async function lyFinish(opts = {}) {
       let end = iv[0][1], gap = { px: 0 };
       for (const [a, z] of iv.slice(1)) { if (a - end > gap.px) gap = { px: a - end, from: end, to: a }; end = Math.max(end, z); }
       const above = Math.max(0, iv[0][0] - top - airT), below = Math.max(0, bot - airB - end);
-      const band = above + below, most = Math.max(band, gap.px), f = most / h, inner = gap.px > band;
-      if (f >= 1 / 3 || (f >= 1 / 6 && most >= 96)) add('empty-band', secName(s), inner
+      const {edge:band, longest:most, fails} = window.lyRules.emptyRun(above, below, gap.px, h);
+      const f = most / h, inner = gap.px > band;
+      if (fails) add('empty-band', secName(s), inner
         ? `a strip of ${Math.round(gap.px)}px (${pct(f)} of its ${Math.round(h)}px) between two pieces of its content is empty (y ${Math.round(gap.from - top)} to ${Math.round(gap.to - top)} in the section)`
-        : `${[above >= 1 && `${Math.round(above)}px above its first content`, below >= 1 && `${Math.round(below)}px under its lowest`].filter(Boolean).join(' and ')} (${pct(f)} of its ${Math.round(h)}px) are empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
+        : `${Math.round(band)}px ${above >= below ? 'above its first content' : 'below its last content'} (${pct(f)} of its ${Math.round(h)}px) are empty beyond its ${Math.round(airT)}px and ${Math.round(airB)}px of air`,
       inner ? 'close the hole: keep the heading and what follows together (no justify-content: space-between, no height of its own)'
-        : 'let the section be as tall as its content and its air: take out the height, min-height or padding that stretches it, or give it the picture it lacks', f >= 1 / 3 ? undefined : 'WARN');
+        : 'let the section be as tall as its content and air');
     }
     // uneven columns: in a split that still stands side by side, the shorter column's lowest content against the
     // taller's, relative to the section (empty-band measures the whole section, so a tall photograph hid a text
@@ -356,7 +531,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
     if (ink.length && !pinned && !s.matches('.hero')) {
       let worst = null;
       for (const g of s.querySelectorAll('.grid')) {
-        if (g.closest('[data-moment], [data-big-scene], .card, .frame, .panel')) continue;
+        if (g.closest('section[data-own], [data-moment], [data-big-scene], .card, .frame, .panel')) continue;
         const cols = [...g.children].filter(c => { const r0 = c.getBoundingClientRect(); return r0.width > 0.15 * r.width && r0.height > 40 && getComputedStyle(c).position !== 'sticky'; });
         if (cols.length < 2) continue;
         const rs = cols.map(c => c.getBoundingClientRect()), t0 = Math.min(...rs.map(q => q.top));
@@ -417,9 +592,12 @@ window.lyFinish = async function lyFinish(opts = {}) {
     'closing-lift': [el => ['.mo-cl__sheet', '.mo-cl__under', '.mo-cl__img', '.mo-cl__band'].every(q => el.querySelector(q)), '.mo-cl__sheet, .mo-cl__under, .mo-cl__img and .mo-cl__band', 'copy the markup of assets/moments/closing-lift/demo.html'],
     'counter-rolls': [el => el.matches('[data-count], .t-stat') || !!el.querySelector('[data-count], .t-stat'), 'a number marked data-count or .t-stat', 'mark each figure: <strong class="t-stat" data-count>48</strong>'],
     'marquee-row': [el => { const t = el.querySelector('.mo-mq__track') || el.firstElementChild; return !!t && t.children.length >= 2; }, 'a .mo-mq__track with two or more items', 'copy the markup of assets/moments/marquee-row/demo.html'],
-    'word-highlight': [el => el.matches('p, h2, h3, blockquote') || !!el.querySelector('.mo-wh__text, p, h2, h3, blockquote'), 'a paragraph, h2, h3 or blockquote of words', 'put it on the statement section that holds the words'],
+    'word-highlight': [el => el.matches('p, h2, h3, blockquote') || !!el.querySelector('.mo-wh__text, p, h2, h3, blockquote'), 'a paragraph, h2, h3 or blockquote of words', 'use the heading or paragraph whose words it highlights'],
   };
-  for (const id of ['headline-arrives', 'lines-rise', 'letters-assemble', 'giant-type-pass', 'liquid-type']) NEEDS[id] = [el => el.matches('h1, h2') || !!el.querySelector('h1, h2'), 'an h1 or h2', 'put it on the section (or heading) whose h1 or h2 it moves'];
+  for (const m of opts.catalogue || []) {
+    if (NEEDS[m.id] || !/\bh[12]\b/.test(m.text?.sel || '')) continue;
+    NEEDS[m.id] = [el => el.matches('h1,h2') || !!el.querySelector(m.text.sel), 'the heading it moves', 'use the content or closing heading from its demo'];
+  }
   const moms = [...document.querySelectorAll('[data-moment]')].filter(el => !el.parentElement?.closest('[data-moment]'));
   let srcDoc = null;
   try { srcDoc = new DOMParser().parseFromString(await (await fetch(location.href, { cache: 'force-cache' })).text(), 'text/html'); } catch { /* a dev server that will not serve it twice */ }
@@ -428,7 +606,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
   for (const [k, el] of moms.entries()) {
     const id = el.dataset.moment, where = `${secName(secOf(el) || el)} [data-moment="${id}"]`;
     // read as written (a mounted moment rebuilds its root: photo-chapters moves its list into a stage)
-    const need = NEEDS[id], as = srcMoms[k] && srcMoms[k].dataset.moment === id ? srcMoms[k] : el;
+    const need = (!opts.catalogue || opts.catalogue.some(m=>m.id===id)) && NEEDS[id], as = srcMoms[k] && srcMoms[k].dataset.moment === id ? srcMoms[k] : el;
     if (need && !need[0](as)) { add('moment-target', where, `${id} needs ${need[1]}; this ${as.tagName.toLowerCase()} holds ${as.querySelectorAll('img').length} img in ${as.children.length} children`, need[2]); continue; }
     const r = el.getBoundingClientRect(), top = r.top + scrollY;
     await go(top - Math.max(0, (vh - Math.min(r.height, vh)) / 2), 1300);
@@ -443,7 +621,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
   if (vw >= 1280) {
     const MOVE = '[data-moment]:not([data-moment-failed]), [data-big-scene], [data-scene], [data-effect], [data-fx]';
     const early = [...document.querySelectorAll(MOVE)].filter(e => { const r = e.getBoundingClientRect(); return r.height > 2 && r.top + scrollY < 3 * vh; });
-    // a page with no moment, scene or effect at all is moment-none's (the checker's, held as a FAIL by the gate); the
+    // a page with no moment, scene or effect at all is moment-none's (a warning unless a required deal is missing); the
     // hero demos are heroes only. Here: the page has its motion, but all of it past the third screen
     const later = early.length ? [] : [...document.querySelectorAll(MOVE)].map(e => `${e.dataset.moment || e.dataset.bigScene || e.dataset.scene || e.dataset.effect || e.dataset.fx || '?'} at screen ${Math.floor((e.getBoundingClientRect().top + scrollY) / vh) + 1}`);
     if (later.length) add('motion-visible', 'page', `after the hero's entrance nothing moves in the first three screens (the page's motion: ${later.join(', ')})`, 'move the first dealt moment (start.mjs plan names it) into the second or third section, on the element its demo.html names');

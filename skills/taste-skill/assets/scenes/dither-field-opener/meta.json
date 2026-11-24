@@ -43,7 +43,10 @@
     "list": [
       "pictures:0"
     ],
-    "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots."
+    "content": "No pictures. One mark of 1-4 characters that belongs to the subject: an issue number, a version, a year, the initial of the name; never a decorative glyph or a stand-in. A headline of 4-7 words on two lines at most, a sentence of 14-30 words and one action. One ground, one ink and one accent from the page's tokens (the accent only for the disturbance and the action). The display face needs a strong, open figure or letter at very large size; hairline serifs under about 4% of the em break up in 4px dots.",
+    "carry": [
+      "words"
+    ]
   },
   "never": "never a decorative glyph or a stand-in.",
   "avoidWith": [],

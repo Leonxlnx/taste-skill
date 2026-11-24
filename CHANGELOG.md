@@ -4,6 +4,24 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ---
 
+## 2.5.4 - unreleased
+
+The 24-site comparison showed price lists padded with photographs, games without pictures of their worlds, and booking forms a long scroll from the first booking button.
+
+### What's new
+
+- The PLAN deals the frame, grounds and density. Each content section gets a form that fits its job. Four idea seeds and twelve worked examples help with rails, comparisons, order pads and other layouts.
+- Five sub-skills cover product and game drawings, data pictures, photo direction, brand marks and mascots. The copy notes map each request in the brief to its section.
+- Stays and table bookings can start on the hero. Shops put the order controls within the first three sections. A dealt product window can extend below the fold.
+
+### Fixes
+
+- Sections on the same ground sit closer together. Text moments can ride on an existing heading without adding a section.
+- A missing product photo can give way to a drawing of the product. Room pictures show a whole room or the building. A project, room or product can carry one short line of facts.
+- The offset pair uses seven and five columns with level tops. Detail strips stay out of price lists.
+
+---
+
 ## 2.5.3 - unreleased
 
 What a 30-site test round of 2.5.2 (Haiku, Sonnet and Opus, low to xhigh, each beside a build without the skill) showed, fixed: empty screens, a gate that crashed on its own notes, photos that folded to nothing, moments that never moved on a phone, and a dealer that dealt what its own checker failed.

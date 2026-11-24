@@ -44,8 +44,7 @@
 .demo-footer { padding: var(--s-7) 0; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--t-small); display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
 .demo-logos { display: flex; flex-wrap: wrap; gap: var(--s-5) var(--s-8); align-items: center; color: var(--muted); font: 500 var(--t-lead)/1 var(--font-display); letter-spacing: -0.01em; }
 
-/* Under system.css every main > section is --h screens tall and its .container a full-height column
-   (layout-v4.md). A demo split stays a grid inside that box, and its photograph fills its cell. */
+/* Within a content-height section, a demo split stays a grid and its photograph fills its cell. */
 main > :is(.section, .section--hero) > .container.demo-split { display: grid; height: 100%; align-content: start; align-items: center; min-height: 0; }
 main > .section--hero > .container.demo-split { align-content: center; }
 .demo-split > .demo-photo { aspect-ratio: auto !important; width: 100%; height: 100%; max-height: min(100%, 62svh); min-height: 0; }
@@ -68,3 +67,10 @@ main > .section--hero > .container.demo-split { align-content: center; }
 /* a drawn window in a hero frame beside the text (1024-1279): the side list goes, so the rows keep one line
    each and the window stays shorter than its frame (it was cut at the frame's top and foot at 1024x768) */
 @media (max-width: 1279px) { .frame .dw__body { grid-template-columns: 1fr; min-height: 0; } .frame .dw__side { display: none; } .frame .dw__row:nth-of-type(n+3) { display: none; } }
+
+/* A real product window in the shared split hero. Its rows stay inside the visible panel. */
+.hero__media.demo-window { display: flex; align-items: center; padding: var(--s-5); }
+@media (max-width: 639px) { .hero__media.demo-window { padding: var(--s-3); } }
+
+/* The example footer has one utility row below the call. */
+footer.closing:has(.closing__links > .footer__legal:only-child) > .wrap { row-gap: var(--s-5); }

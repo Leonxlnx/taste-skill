@@ -1,0 +1,58 @@
+<section class="section own" id="core-view" data-own="core-view" aria-labelledby="core-view-title">
+  <div class="wrap">
+    <h2 id="core-view-title">Where the press run stands</h2>
+    <p class="t-lead measure">Folio Relay puts a print job’s proof, press slot and bindery handoff on the same clock.</p>
+    <div class="run-view" data-assumed>
+      <div class="run-head"><strong>Folio Relay</strong><span>Production schedule</span></div>
+      <div class="run-body">
+        <div class="job-head"><div><h3>Estuary field guide</h3><p>Job 312 · 800 copies</p></div><span>Tuesday, 12 May</span></div>
+        <div class="axis" aria-hidden="true"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div>
+        <ol class="lanes">
+          <li><div>Prepress <span>09:00–11:00</span></div><div class="track"><span class="proof"><b>A</b> Proof</span></div></li>
+          <li><div>Press 2 <span>11:00–15:00</span></div><div class="track"><span class="print"><b>B</b> Run</span></div></li>
+          <li><div>Bindery <span>15:00–17:00</span></div><div class="track"><span class="bind"><b>C</b> Fold</span></div></li>
+        </ol>
+      </div>
+    </div>
+    <dl class="notes">
+      <div><dt><b>A</b> Signed proof</dt><dd>The editor signed the final sheet at 11:00.</dd></div>
+      <div><dt><b>B</b> Press slot</dt><dd>Four hours on the two-colour press, including wash-up.</dd></div>
+      <div><dt><b>C</b> Handoff</dt><dd>Bindery takes the printed sheets at 15:00.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<style>
+[data-own="core-view"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="core-view"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="core-view"] .run-view { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; font-variant-numeric: tabular-nums; }
+[data-own="core-view"] .run-head, [data-own="core-view"] .job-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+[data-own="core-view"] .run-head { padding: var(--s-4) var(--s-5); background: var(--ink); color: var(--bg); }
+[data-own="core-view"] .run-head span, [data-own="core-view"] .job-head span, [data-own="core-view"] .job-head p, [data-own="core-view"] .axis, [data-own="core-view"] .lanes li > div:first-child span { font-size: var(--t-small); }
+[data-own="core-view"] .run-body { padding: var(--s-5); }
+[data-own="core-view"] .job-head p, [data-own="core-view"] .axis, [data-own="core-view"] .job-head span { color: var(--muted); }
+[data-own="core-view"] .axis { display: grid; grid-template-columns: 1fr 2fr 2fr 2fr 1fr; text-align: center; margin: var(--s-5) 0 var(--s-2) 22%; }
+[data-own="core-view"] .lanes li { display: grid; grid-template-columns: 22% 1fr; align-items: center; border-top: 1px solid var(--line); padding-block: var(--s-3); }
+[data-own="core-view"] .lanes li > div:first-child span { display: block; color: var(--muted); }
+[data-own="core-view"] .track { display: grid; grid-template-columns: repeat(8, 1fr); }
+[data-own="core-view"] .track > span { display: flex; gap: var(--s-2); align-items: center; padding: var(--s-2); font-size: var(--t-small); border-radius: var(--r-sm); }
+[data-own="core-view"] .proof { grid-column: 1 / 3; background: var(--ink); color: var(--bg); }
+[data-own="core-view"] .print { grid-column: 3 / 7; background: var(--action); color: var(--action-ink); }
+[data-own="core-view"] .bind { grid-column: 7 / 9; border: 1px solid var(--line); background: var(--bg); }
+[data-own="core-view"] b { display: inline-grid; place-items: center; width: var(--s-5); height: var(--s-5); border: 1px solid var(--line); border-radius: 50%; background: var(--bg); color: var(--ink); font-size: var(--t-label); }
+[data-own="core-view"] .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); margin: var(--s-5) 0 0; }
+[data-own="core-view"] dt { font-weight: 600; }
+[data-own="core-view"] dt b { margin-right: var(--s-1); }
+[data-own="core-view"] dd { margin: var(--s-2) 0 0; }
+@media (max-width: 639px) {
+  [data-own="core-view"] .run-body, [data-own="core-view"] .run-head { padding: var(--s-4); }
+  [data-own="core-view"] .notes { grid-template-columns: 1fr; gap: var(--s-4); }
+  [data-own="core-view"] .axis { margin-left: 0; }
+  [data-own="core-view"] .lanes li { grid-template-columns: 1fr; gap: var(--s-2); }
+  [data-own="core-view"] .lanes li > div:first-child { display: flex; justify-content: space-between; }
+  [data-own="core-view"] .track > span { justify-content: center; padding-inline: var(--s-1); gap: var(--s-1); }
+  [data-own="core-view"] .track b { width: auto; height: auto; border: 0; background: none; color: inherit; }
+}
+[data-own="core-view"] .axis span:first-child { text-align: left; }
+[data-own="core-view"] .axis span:last-child { text-align: right; }
+</style>

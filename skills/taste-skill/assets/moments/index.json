@@ -1,8 +1,8 @@
 {
  "version": 3,
- "generated": "2026-11-22T02:15:16.825Z",
+ "generated": "2026-11-24T01:55:52.270Z",
  "count": 18,
- "dealt": 17,
+ "dealt": 7,
  "kinds": {
   "transition": 4,
   "text": 4,
@@ -115,16 +115,16 @@
     "product"
    ],
    "intensity": "lively",
-   "look": "The last content section scrolls away like a sheet and uncovers the closing photograph held under it; the photograph settles from a close crop and the closing line with the one action fades up on it.",
+   "look": "The last section uncovers the closing photograph. The photograph settles from a close crop, the line stays at full opacity and only the action fades.",
    "reduced": "A plain closing section with the photograph, the line and the action.",
-   "phone": "A lighter version on a phone: nothing is held under the sheet; the closing photograph comes after it as a plain section, settling from its close crop as it rises into the screen, and the closing line fades up on it.",
+   "phone": "The closing photograph follows in ordinary flow. Its line stands at full opacity and its action fades in.",
    "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
     "photo": true,
     "words": "a closing line of 3 to 7 words, one line and one action; the closing section of its own, the footer after it",
-    "picture": "a calm, darker lower half where the words stand (sand, water, a wall, a table); the words never on a busy part"
+    "picture": "A calm dark lower third under light text, or a solid reading band."
    },
    "text": {
     "words": [
@@ -182,7 +182,7 @@
    "phone": "It runs on a phone as on a desktop: the figures roll once as the row comes on screen.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "list": [
      "figures"
@@ -211,14 +211,8 @@
      "wait": 2400
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "retired": "The rolling digits show incorrect figures.",
+   "pages": []
   },
   {
    "id": "cursor-spotlight",
@@ -241,7 +235,7 @@
    "phone": "The light rests at its spot; there is no pointer.",
    "pointerOnly": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a hero frame on a lit ground holding the product"
    },
@@ -286,13 +280,8 @@
      "wait": 900
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "product",
-    "service"
-   ]
+   "retired": "The pointer treatment collapses its host.",
+   "pages": []
   },
   {
    "id": "giant-type-pass",
@@ -312,12 +301,12 @@
     "tech"
    ],
    "intensity": "lively",
-   "look": "Two to four words set at 12vw with a photograph showing through the letters under a 35% ink tint; the photograph passes upward through the type as the section crosses the screen.",
+   "look": "Two to four words set at 12vw with a photograph showing through the letters under a 65% ink tint, dark enough to read over any photograph; the photograph passes upward through the type as the section crosses the screen.",
    "reduced": "The photograph stands still inside the letters.",
    "phone": "It runs on a phone with the type smaller (19vw) and two thirds of the travel: the photograph still passes up through the letters.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "photo": true,
     "picture": "mid to dark tones with detail, no pale sky; the lower half of the picture is what shows",
@@ -347,14 +336,8 @@
      "wait": 350
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "retired": "The tint hides the photograph.",
+   "pages": []
   },
   {
    "id": "headline-arrives",
@@ -425,7 +408,7 @@
    "phone": "It runs on a phone as on a desktop: the inset panel in the old ground opens its disc as the section rises, each block fading in whole.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "grounds": "the section sits on another ground than the one before it (ground-inverse, ground-surface)",
     "words": "a section of one or two screens with its h2 first"
@@ -449,14 +432,8 @@
      "wait": 300
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "retired": "The mask obscures the arriving section.",
+   "pages": []
   },
   {
    "id": "letters-assemble",
@@ -481,7 +458,7 @@
    "phone": "A lighter version on a phone, in a smaller size: no scrub; the letters start a third as far from home and fly into the line once, in 1.1 s, as the statement comes on screen.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a statement of 2 to 5 words (up to about 28 letters) and one or two lines under it"
    },
@@ -512,14 +489,8 @@
      "wait": 300
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "retired": "Letters cross the preceding section.",
+   "pages": []
   },
   {
    "id": "line-carries-colour",
@@ -543,7 +514,7 @@
    "phone": "It runs on a phone as on a desktop: the accent line climbs through the inset panel as the section rises, each block fading in whole.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "grounds": "the section sits on another ground than the one before it (ground-inverse, ground-surface)",
     "words": "a section of one or two screens with its h2 first"
@@ -567,14 +538,8 @@
      "wait": 300
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "retired": "The moving slab covers content.",
+   "pages": []
   },
   {
    "id": "lines-rise",
@@ -594,9 +559,9 @@
     "playful"
    ],
    "intensity": "quiet",
-   "look": "One statement heading of two or three lines rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once. Slower and larger than the automatic section reveal, so it reads as the statement arriving.",
+   "look": "A content heading rises line by line on first entry, with 90 ms between lines. The surrounding content stays readable. On an older section mount, marked parts follow the heading.",
    "reduced": "The section stands as written.",
-   "phone": "It runs on a phone as on a desktop: the heading rises line by line once, the lines after it fade up.",
+   "phone": "The heading rises line by line once on a phone and on desktop.",
    "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 0.7,
@@ -627,6 +592,7 @@
      "wait": 2200
     }
    },
+   "counts": false,
    "pages": [
     "tech",
     "gaming",
@@ -660,7 +626,7 @@
    "weight": 1,
    "needs": {
     "photo": true,
-    "picture": "hard edges and detail (a coast, a building, a street); a flat sea or sky shows no ripple"
+    "picture": "The game or creative tool's own picture is the product."
    },
    "avoidWith": [
     "picture-develops",
@@ -705,6 +671,7 @@
      "wait": 6000
     }
    },
+   "counts": false,
    "pages": [
     "tech",
     "gaming",
@@ -732,7 +699,7 @@
    "phone": "It runs on a phone: the ripple passes through the headline as it comes on screen, and a tap or a touch drag ripples it again.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "a headline of 2 to 6 words, set large"
    },
@@ -774,11 +741,8 @@
      "wait": 2400
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software"
-   ]
+   "retired": "The distortion breaks the type.",
+   "pages": []
   },
   {
    "id": "marquee-row",
@@ -805,7 +769,10 @@
    "maxPerPage": 1,
    "weight": 0.8,
    "needs": {
-    "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients"
+    "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients",
+    "carry": [
+     "list"
+    ]
    },
    "text": {
     "sel": ".mo-mq__track:not(.mo-mq__clone) > *",
@@ -829,6 +796,7 @@
      "wait": 5200
     }
    },
+   "counts": false,
    "pages": [
     "tech",
     "gaming",
@@ -854,7 +822,7 @@
     "product"
    ],
    "intensity": "lively",
-   "look": "A short story in three to five photographs, one large frame at a time: the section holds on screen while, under its h2, one photograph the width of the page is uncovered by the next from its foot upward, settling from a slight zoom, and a panel in the page's ground on the photograph's lower left changes to that chapter (its number, a title and two lines). Each chapter has about two thirds of a screen of scroll: the wipe takes under half of it and the photograph holds for the rest. Live at every width on a screen 600px or taller, phones included.",
+   "look": "One photograph gives way to the next while its chapter stays in a reading panel.",
    "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
    "phone": "It runs on a phone held upright (one photograph at a time, the panel across its foot); a phone turned sideways, under 600px tall, gets the chapters stacked, each photograph over its words.",
    "maxPerPage": 1,
@@ -864,7 +832,7 @@
      "pictures:3"
     ],
     "photo": true,
-    "words": "3 to 5 chapters, a title and two lines each, under one h2 and a short lead",
+    "words": "Three or four chapters, each with a title and two lines.",
     "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"
    },
    "avoidWith": [
@@ -885,7 +853,7 @@
     }
    },
    "phoneRuns": true,
-   "height": "(hold + 1) screens live: hold 2 for three chapters, 3 for four or five; at rest as tall as its chapters. No --h and no data-screen on the section: the checks read it live as whole screens, four at most.",
+   "height": "Half a screen per chapter plus the stage. Three chapters span 2.5 screens, four span 3.",
    "pages": [
     "tech",
     "software",
@@ -911,7 +879,7 @@
     "product"
    ],
    "intensity": "quiet",
-   "look": "One large photograph develops once as it comes on screen. In its dealt look (\"film\") it comes up out of the paper like a print in the developer tray: a faint grey print at first, its darks arriving before its light tones, then its colour, while it settles from a slight zoom, about 1.6 s. The halftone look (\"print\", a two-tone dot print in the page's ground and ink giving way to the photograph) is not dealt; it is kept as opts look \"print\".",
+   "look": "The photograph develops from grey to colour once, with the film look.",
    "reduced": "The photograph stands.",
    "phone": "The film look runs on a phone too (one picture, a filter and a transform, once); the print look shows the photograph.",
    "maxPerPage": 1,
@@ -964,7 +932,7 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "A feature section holds on screen for two screens of scroll while its three steps open one at a time at the left and one frame at the right changes to each step's picture with a short crossfade.",
+   "look": "A process section holds one screen of scroll while its steps open on the left. A frame taking 55 to 60 percent of the container crossfades between their photographs or UI views.",
    "reduced": "Nothing is pinned: from 640px each step is a static row, its text at the left and its visual at the right (at most 30svh tall); on a phone each step stands with its 16:9 visual under it. Two to four steps fit two screens at 1440x900, 1024x768, 820x1180 and 390x844.",
    "phone": "A lighter version on a phone, nothing pinned: each step stands with its title, two lines and its visual under it; the step crossing the middle of the screen takes the accent rule at its left, and each picture settles from a close crop to its framing as it rises.",
    "phoneRuns": true,
@@ -972,7 +940,10 @@
    "weight": 1,
    "needs": {
     "words": "2 to 4 steps, a title and two lines each",
-    "pictures": "one picture or screen per step"
+    "pictures": "one picture or screen per step",
+    "carry": [
+     "steps"
+    ]
    },
    "avoidWith": [
     "closing-lift",
@@ -1071,20 +1042,23 @@
     "playful"
    ],
    "intensity": "quiet",
-   "look": "One large statement rests at half ink (readable, about 4 to 1) and turns to ink word by word as it crosses the middle of the screen, a strong word to the accent; it runs back on the way up.",
+   "look": "A complete statement stands in readable muted ink. Words take full ink in reading order as the heading crosses the middle of the screen.",
    "reduced": "The statement in ink.",
-   "phone": "It runs on a phone as on a desktop (one paragraph's colours); under reduced motion the whole statement is in ink, the accent word in the accent.",
+   "phone": "The full heading stays in flow with the same change of ink. Reduced motion holds the final colour.",
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
-    "words": "one statement of 12 to 40 words"
+    "words": "One existing statement of 12 to 40 words on a heading.",
+    "carry": [
+     "words"
+    ]
    },
    "text": {
     "words": [
      12,
      40
     ],
-    "sel": ".mo-wh__text, p, h2, h3, blockquote"
+    "sel": "h2, .mo-wh__text"
    },
    "avoidWith": [
     "giant-type-pass"
@@ -1132,14 +1106,17 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "One word of a headline keeps changing every two seconds while it is on screen, sliding up out of its mask as the next rises in, underlined in the accent, with a small pause button under the headline (it also pauses under the pointer). In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word. A comma or full stop after the word stays on its line.",
+   "look": "A word changes in a fixed-width grid cell inside an h1 or h2. The pause button sits below the heading. Refuse it if the widest alternative changes the line count at 390px.",
    "reduced": "The written word stands.",
    "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
    "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 1,
    "needs": {
-    "words": "a headline with one word that can take 2 to 4 alternatives (what the product is for)"
+    "words": "An h1 or h2 with two to four alternatives in the brief. Refuse it if the widest word changes the line count at 390px.",
+    "carry": [
+     "words"
+    ]
    },
    "avoidWith": [],
    "states": {

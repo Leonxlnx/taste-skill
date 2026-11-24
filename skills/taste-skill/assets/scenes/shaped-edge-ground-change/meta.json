@@ -54,7 +54,10 @@
     "list": [
       "pictures:2"
     ],
-    "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw."
+    "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

@@ -130,7 +130,7 @@ function tabs() {
           el.hidden = !on;
           // a panel or a screen in a frame fades in on a chosen tab only (opacity only, nothing moves;
           // the panel shown at load is there on the first frame, MO-62)
-          if (on && was && !first && !reduced()) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 280, easing: 'ease-out' });
+          if (on && was && !first) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 140 : 280, easing: 'ease-out' });
         });
       });
       if (focus) tab.focus();
@@ -529,12 +529,28 @@ async function visuals() {
 /* ------------------------------------------------------------------ page tone
    <html data-tone="dark|light"> from the palette's base, so a dark footer stays dark on a dark page
    (system.css .footer--dark) instead of turning into the light inverse */
-function tone() {
-  const c = rgb(getComputedStyle(document.documentElement).getPropertyValue('--p-bg'));
-  if (!c) return;
+function luminance(c) {
   const lin = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
-  const L = 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
-  document.documentElement.dataset.tone = L < 0.18 ? 'dark' : 'light';
+  return 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+}
+function tone() {
+  const html = document.documentElement;
+  const style = getComputedStyle(html);
+  const c = rgb(style.getPropertyValue('--p-bg'));
+  if (c) html.dataset.tone = luminance(c) < 0.18 ? 'dark' : 'light';
+  // Soften secondary text only as far as this particular brand colour allows.
+  if (!document.querySelector('.ground-brand')) return;
+  const brand = rgb(style.getPropertyValue('--p-accent')), ink = rgb(style.getPropertyValue('--p-accent-ink'));
+  if (!brand || !ink) return;
+  const ground = luminance(brand) + .05;
+  for (const share of [.24, .16, .08]) {
+    const muted = ink.map((v, i) => Math.round(v + (brand[i] - v) * share));
+    const text = luminance(muted) + .05;
+    if (Math.max(text, ground) / Math.min(text, ground) >= 4.6) {
+      html.style.setProperty('--p-brand-muted', hex(muted));
+      break;
+    }
+  }
 }
 
 // sRGB (0-255) to OKLab and back (Ottosson), for the ground's hue below
@@ -636,10 +652,34 @@ async function moments() {
   await m.ready;
 }
 
+function fitClosingName() {
+  const word = document.querySelector('.close__word');
+  if (!word) return;
+  let lastWidth = 0;
+  function fit() {
+    const width = word.clientWidth;
+    if (!width) return;
+    lastWidth = width;
+    word.style.fontSize = '';
+    word.style.whiteSpace = 'nowrap';
+    const range = document.createRange();
+    range.selectNodeContents(word);
+    const natural = range.getBoundingClientRect().width;
+    if (natural <= width) return;
+    const size = Math.floor(parseFloat(getComputedStyle(word).fontSize) * width / natural);
+    if (size >= 32) word.style.fontSize = size + 'px';
+    else word.style.whiteSpace = 'normal';
+  }
+  fit();
+  document.fonts?.ready.then(fit);
+  new ResizeObserver(() => { if (word.clientWidth !== lastWidth) fit(); }).observe(word);
+}
+
 function init() {
   try { tone(); } catch (e) { console.warn('system.js: tone', e); }
   try { groundHue(); } catch (e) { console.warn('system.js: ground', e); }
   nav();
+  fitClosingName();
   tabs();
   try { faq(); } catch (e) { console.warn('system.js: faq', e); }
   try { hours(); } catch (e) { console.warn('system.js: hours', e); }

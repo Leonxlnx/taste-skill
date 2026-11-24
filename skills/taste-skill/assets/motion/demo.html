@@ -147,6 +147,9 @@
 
   @media (max-width: 1023px) { .board { inset: 24px 24px auto; grid-template-columns: repeat(2, minmax(0, 1fr)); } .board .col:nth-child(3), .board .mover, .board .ptr { display: none; } }
   @media (max-width: 639px) { .board { grid-template-columns: minmax(0, 1fr); } .board .col:nth-child(2) { display: none; } .hero-panel { --p-h: 340px; } .screen .mini { left: 20px; right: 20px; top: 20px; } }
+  .demo-progress { width: min(100%, 360px); height: 3px; background: var(--line); margin-block: var(--s-5); }
+  .demo-progress::after { content: ""; display: block; height: 100%; background: var(--action); transform-origin: left; transform: scaleX(var(--p, 1)); }
+  #delivery svg { display: block; max-width: 100%; height: auto; margin-block: var(--s-5); }
 </style>
 </head>
 <body>
@@ -398,6 +401,17 @@
     </div>
   </section>
 
+  <section class="section own" data-own="delivery" id="delivery">
+    <div class="container">
+      <h2>Issues closed this week</h2>
+      <div class="demo-progress" data-m-progress aria-hidden="true"></div>
+      <svg viewBox="0 0 360 82" width="360" role="img" aria-label="Closed issues rose from 12 on Monday to 28 on Friday">
+        <polyline data-m-draw points="4,72 90,60 180,43 270,35 356,6" fill="none" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      <p>Monday, 12 issues. Friday, 28.</p>
+    </div>
+  </section>
+
   <section class="section" id="numbers">
     <div class="container">
       <div class="section-head"><h2>What changes in the first month</h2></div>
@@ -434,7 +448,7 @@
     <div class="container">
       <div class="grid">
         <div class="span-4"><h2>Questions</h2></div>
-        <div class="span-8 faq">
+        <div class="span-8 faq faq--fold">
           <details><summary>Is it free for small teams?</summary><p>Yes. Up to three people use every feature for free, with no time limit.</p></details>
           <details><summary>Can we import from Jira?</summary><p>Yes. The import keeps issues, comments, labels and links, and takes a few minutes for most projects.</p></details>
           <details><summary>Where is our data stored?</summary><p>In Frankfurt, on servers we run with an EU provider. You can export everything at any time.</p></details>

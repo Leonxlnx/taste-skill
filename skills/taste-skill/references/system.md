@@ -1,11 +1,6 @@
 # System
 
-One system for the whole page, in `assets/system.css` and `system.js`. Use its classes and tokens;
-never add a second grid, spacing scale, type scale, radius, button, card, hairline, fade or link
-style. One strict system per page: one button shape, one radius family, one card recipe, one
-hairline, one corner-control size, one link look, one block template repeated. Section heights,
-the hero frame, edges, splits and type sizes: `layout-v4.md`. Grounds: `backgrounds.md`. Every hover
-and loop number: `motion.md`.
+Use the kit's fonts, palette, spacing, radius and button families throughout. Use `layout-v4.md` for edges and air, `backgrounds.md` for grounds and `motion.md` for timings. For a content-shaped section, see `compose.md`.
 
 ## Base
 
@@ -13,8 +8,7 @@ and loop number: `motion.md`.
   initial-scale=1, viewport-fit=cover">` (without the reset the hero ends at 908 and `.wrap` at x 88).
 - Spacing scale 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 (`--s-1` to `--s-10`) for every margin, gap
   and padding you write. Heading to content 48px (32 on a phone); cards 24px apart (12).
-- One height per card row and per tile kind, page-wide; every section as tall as its content,
-  the same air round each (`--padt`, `--padb`), never stretched to a screen.
+- Let each section grow with its content. Keep cards aligned within a row.
 - The skip link is the first child of the header's `.wrap`, as `starter.html` has it:
   `<a class="skip-link" href="#top">Skip to content</a>` (`main id="top"`), in the page's language.
   `.skip-link` keeps it out of the layout until the first Tab, then shows it over the logo, so it
@@ -30,16 +24,17 @@ On `:root`, used everywhere (desktop / under 640px):
 | Token | Value | Use |
 |---|---|---|
 | `--nav` | 72 / 56 | the fixed header |
-| `--padt` | 128 / 88 (104 on a tablet) | a section's top padding: the h2 sits here |
-| `--padb` | 128 / 88 (104 on a tablet) | a section's bottom padding (`footer.closing` adds `--bar`); with `--padt` the air between two sections, 256px at 1440 |
+| `--air-side` | 96 / 80 tablet / 72 phone | base for `--padt` and `--padb` at a ground change and after the hero |
+| `--air-same` | 144 / 128 tablet / 120 phone | total gap on one ground |
+| `--air-thin` | 64 / 56 tablet / 48 phone | padding per side of `.section--thin` |
 | `--gut` | 80 / 24 (place 120 from 1024) | the `.wrap`'s side margin: 1280 wide, 1200 on a place |
 | `--hgap` | 48 / 40 (place 40 / 24) | the header to the hero's words, under `--photo` on a place |
 | `--hpadb` | 64 / 24 | the hero's bottom padding (plus `--bar`) |
 | `--bar` | 0, or `calc(64px + env(safe-area-inset-bottom))` with `nav.actionbar` under 640 | added to the footer's bottom padding (the hero's only without script: the bar is never on the first screen), so the page's end clears it; content is never cut to hide behind the bar |
 
-Grid: `.grid` is 12 columns with a 24px gap (12 under 640); the column numbers are in
-`layout-v4.md` section 4. A picture wall is its own grid with a gap of 0 or 2px (page CSS
-`.wall`), so the base grid keeps its gap.
+These air values are at regular density. The PLAN sets `data-density` on `html`. The kit scales the three distances by 1.15, 1 or 0.85. A closing footer ends with 64px plus `--bar`.
+
+`.grid` has twelve columns and a 24px gap (12px on a phone). Section and header edges share `.wrap`.
 
 ## Type
 
@@ -60,9 +55,9 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
   for quotes, attributions and contact lines. Curly quotes; a number never breaks from its unit
   (never "250 / W"); lines at most 62 characters (`.measure`). Nothing under 13px: notes, the legal
   line, dropdown heads, image text.
-- One size per kind of element across the page (every card title, address, figure). A figure never
-  outgrows the h2 or the h1, at 390 too. Every word is live text, never baked into a picture; text
-  never shrinks to fit.
+- Use one type size per role. An own section may use the page's one off-scale display word or numeral (`compose.md`). Keep text live and legible at 390.
+
+The centred proof and close deal uses `.section-head--center` on the heading or heading group. A close with a button may combine it with `.section-head--split`.
 
 ## Colour
 
@@ -74,15 +69,11 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
   (`icons.md`). A fictional client's own mark is designed, not borrowed.
 - **One accent at most,** from the client (its product, shopfront paint, tiles, a bag label): the
   primary button (the only filled accent), the focus ring, links, state in visuals, small marks and
-  the one brand band; under 3% of a screen elsewhere; its label 4.5:1 on it and it 3:1 on the
-  ground. `--action` drives buttons, links and focus.
-- **Grounds:** three tokens (`--g-main`, `--g-alt`, `--g-dark`), a brand band on product and place,
-  and the tech CSS grounds: `backgrounds.md`. Dark pages and dark heroes are for tech only.
+  brand ground. Use `--action` for buttons, links and focus. Check the label reaches 4.5:1 and the button 3:1 on its ground.
+- **Grounds.** Any section can take its planned ground. Page inherits `--bg`. Add `.ground-surface`, `.ground-inverse` or `.ground-brand` directly to the section for tint, inverse or brand. The hero uses the page ground outside tech.
 - **The grade** (light or evening) is chosen once on load or by a click, never by scrolling; the dark
   evening grade is tech only.
-- **Words on a photograph** only in the hero and one closing band, on tech, product and service, on
-  a crop whose calm part is dark and empty at the phone crop too, or on a solid box; no scrim or
-  gradient over a photograph; never on a place.
+- **Words on a photograph.** Choose the crop and check contrast at each width (`photos.md`).
 - **Never violet or lavender:** a token whose OKLCH hue falls between about 270 and 330 degrees is
   turned to 255 (blue) or 345 (rose), whichever is nearer; a deal that returns violet is dealt again.
 
@@ -90,8 +81,7 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
 
 - `<html data-radius>`: `sharp` 4/6/8, `soft` 8/12/20 (default), `round` 10/16/24. `--r-lg` cards
   and frames, `--r-md` panels, `--r-sm` controls, `--r-btn` buttons; software windows one radius
-  (12 to 20) with a 1px line. A place: `--r-lg: 0; --r-md: 0; --r-sm: 2px; --r-btn: 2px` (square
-  photographs and cards, 2px buttons).
+  (12 to 20) with a 1px line. Set the PLAN's `data-pictures="square|soft"` on html. For a shaped mask, mark one inset picture frame `data-picture-mask`. Full-bleed grounds reach the edges.
 - `.btn.btn--primary` and `.btn.btn--secondary`, 44px high (48 on a place, with
   `data-buttons="block"` and in the phone bar; the nav's button is the same `--btn-h`, never
   smaller), label 16px, 24px side padding, at most two in a `.btn-row`, full width on a phone.
@@ -106,14 +96,10 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
 
 - `header.nav`: `position: fixed`, full width, `--nav` tall, opaque ground, a 1px hairline under it
   from the first paint, `z-index: 10`, the same at every scroll depth: no blur, transparency,
-  shrink, hide, shadow, colour flip or floating pill, and nothing else on the page is sticky. Its
-  `.wrap` is the page's: the logo on the left line, the main button ending on the right one.
+  shrink, hide, shadow, colour flip or floating pill. Its `.wrap` puts the logo and main action on the page's edges. Sticky content belongs inside its own section (`compose.md`).
 - The dealt type is a class (`sections.md`): `nav` (nav-mega, nav-cards), `nav nav--centre`,
   `nav nav--split`; `nav--tone` puts the bar on the inverse ground (tech).
-- The logo: the client's SVG; else the dealt mark and the name at 20px in the display face
-  (each kind deals from its own list in `sections.md`: `<span class="mark"
-  data-mark="arc|ring|stack|dots|petal|leaf">`, `<span class="mark mark--initial">K</span>`, or the
-  name alone for `wordmark`). The footer repeats it.
+- Use the client's logo, the mark supplied by `brand-mark`, or the dealt `data-mark` and name. Repeat it in the footer.
 - Four to six plain one-word nouns (ST-09; a place: Menu, Rooms, Workshop, Visit, About) at
   15px/500 that never wrap, each with its own anchor; a second action as a plain word only when the client has one
   (Sign in for an app with accounts, Gift cards for a shop that sells them); the main action as the
@@ -144,15 +130,14 @@ name large, columns right; on a dark page a step darker), `footer--statement` (t
 `footer--visit` (the address set large with the way there and the hours beside it, unless a section
 above prints them: then the nav's words beside it). The footer never repeats a form or hours shown above. The legal row:
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
-brief) and the one credits line (`<details class="credits">`, `copy.md`). `.socials` stays empty
+brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
 unless the brief gives the accounts.
 
 ## Cards, lists and forms
 
 - `.card` as `cards.md` builds it; one height per row; never text in a box in a box. Open tiles
   (`.tile`) for rooms, models and people; `.rows` for menus, prices and specs (a 1px rule closing
-  each row); FAQs open in full (`.faq`, no accordion), except a long one of ten questions or more
-  from a brief with many: `.faq.faq--fold`, each answer opening on a click, nothing animated.
+  each row). `.faq` shows answers in full. Use `.faq.faq--fold` for a long set. For a composed accordion follow `compose.md` and `motion.md`.
 - Opening hours: `<dl class="hours">` of `dt`/`dd` pairs with `data-days="tue-sun"` or `data-days="sat,sun"` on each `dt` (the row's label; the `dd` takes none) and
   `data-tz="Europe/Berlin"` on the `dl.hours` itself (the venue's zone; system.js reads it only there): system.js marks today's row (weight 500) and
   fills `[data-open-now]` ("Open now, until 16:00"; "Closed, opens Tuesday at 7:30"); never
@@ -169,18 +154,12 @@ unless the brief gives the accounts.
 
 ## Pictures, statements and compositions
 
-- Nothing grows to fill a screen: a split's picture (`.pl-photo`, `figure.media`, a `.frame`) keeps
-  its own ratio beside the words, top-aligned (a `.frame--fill` also grows with its row when the
-  words run taller), tiles keep `--tile-ratio`, open cards their panel's `--p-h` (`layout-v4.md`
-  section 2). A `.frame` names its ratio (`.frame--portrait`, `--square`, `--split` or `--ratio`);
-  one that names none and holds only a picture laid over it (`.frame__img`) is 4:3, never 0px.
-- A statement is `<section class="section statement">` with a `.t-label` and one
-  `.statement__text`; `.statement--short` for 12 to 20 words. Only the sentence is set large: a
-  line after it keeps the lead's size.
-- The compositions `start.mjs deal` deals per section (`.grid--mirror`, `.comp-bleed` with
-  `.comp-panel`, `.comp-offset`, `.comp-three`) and the five closes (`.close--photo`, `--type`,
-  `--word`, `--split`, `--form`): markup in `sections-library.md`, Compositions and Closes.
-  `.btn--xl` is at most 640px wide (720 with `.btn--wide`), never across the `.wrap`.
+- A split picture fills its row beside the text and takes its own ratio when stacked. See `layout-v4.md`.
+- `.fact-line` styles one line under a picture. Add `.fact-line--beside` when it sits alongside. Content and length are in `copy.md`, house rule 1.
+- Use `section.own[data-own]` for a composed section. Put its scoped rules in `<style id="own-css">` after the kit styles or link `own.css` there. See `compose.md` for the markup and interaction limits.
+- A text moment rides on a heading. For a standalone main claim use `.section.statement.section--thin`.
+- `.hero--peek` lets the dealt hero window cross the fold. `.hero-book` docks a booking row inside the hero's wrap. See `layout-v4.md`, The hero.
+- Photo compositions and closes keep the markup in `sections-library.md`. `.btn--xl` fits the closing row.
 
 ## Forms
 

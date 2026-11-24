@@ -64,7 +64,10 @@
     "list": [
       "pictures:1"
     ],
-    "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw."
+    "content": "One landscape photograph, 16:9 at 1920 and 3200px (it ends at about 1.55x), with one strong subject near the centre, texture in every part of the frame (moss, water, rock, foliage: every shard must read as a piece of a photograph, not a grey square), mid to light in tone; plus a 4:5 crop at 1000 and 1600px for phones. Served with CORS and never lazy-loaded. A headline of two lines; an optional caption of up to 24 words; an optional poster word of 12 characters or fewer and a short corner note on the poster (both arrive whole after the lock, never cut into the pieces). Without one picture strong enough to be the whole screen, redraw.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

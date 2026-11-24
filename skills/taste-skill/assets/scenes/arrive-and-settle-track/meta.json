@@ -47,7 +47,10 @@
     "list": [
       "pictures:0"
     ],
-    "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action."
+    "content": "Type preset: one line of 3-5 words, 14-28 characters, a question or an invitation, its first word of four letters or more and no word over 16 characters; a support line of 6-12 words and a button of 2-3 words. No pictures: the type is the picture, on one flat ground. The end frame shows the whole line, verb included: read the 100% frame at 1440, 768 and 390, and if it rests on the last words alone, shorten the line or set it smaller. The line is set at --display-weight (600 when the page sets none): set that token to a weight the page loads, or load 600 of the display face. Stair preset: a heading of six words or fewer and 5-7 real quotes of 25-45 words, each with name, role and a square portrait. Rise preset: a heading of up to five words and one sentence, 3-5 projects each with a 1.46:1 picture, a 1-3 word title, 12-20 words and a link, and one closing sentence with an action.",
+    "carry": [
+      "words"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

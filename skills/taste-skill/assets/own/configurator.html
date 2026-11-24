@@ -1,0 +1,74 @@
+<section class="section own" id="configurator" data-own="configurator" aria-labelledby="configurator-title">
+  <div class="wrap">
+    <h2 id="configurator-title">The folded bookend</h2>
+    <p class="t-lead measure">Wickfold bends each bookend from a single sheet of steel. Pick a height, finish and set for your shelf.</p>
+    <div class="builder" data-assumed>
+      <figure class="drawing"><svg viewBox="40 16 340 182" role="img" aria-label="A pair of short teal steel bookends">
+        <defs><g id="wf-fold">
+          <path d="M0 0 45-20 45-89Q45-95 40-93L5-78Q0-76 0-70Z"/>
+          <path d="M0 0 45-20 90 1 45 22Z"/>
+          <path class="slot" d="M12-63 33-72"/>
+        </g></defs>
+        <g class="parts"><g transform="translate(78 159)"><g class="height"><use href="#wf-fold"/></g></g>
+        <g class="second" transform="translate(342 159) scale(-1 1)"><g class="height"><use href="#wf-fold"/></g></g></g>
+      </svg><figcaption class="fact-line">15 cm · Teal · Pair</figcaption></figure>
+      <div class="options">
+        <fieldset disabled><legend>Height</legend><div><label class="press"><input type="radio" name="ends-height" value="15" checked><span>15 cm</span></label><label class="press"><input type="radio" name="ends-height" value="20"><span>20 cm</span></label></div></fieldset>
+        <fieldset disabled><legend>Finish</legend><div><label class="press"><input type="radio" name="ends-finish" value="slate"><span>Slate</span></label><label class="press"><input type="radio" name="ends-finish" value="chalk"><span>Chalk</span></label><label class="press"><input type="radio" name="ends-finish" value="teal" checked><span>Teal</span></label></div></fieldset>
+        <fieldset disabled><legend>Set</legend><div><label class="press"><input type="radio" name="ends-set" value="single"><span>Single</span></label><label class="press"><input type="radio" name="ends-set" value="pair" checked><span>Pair</span></label></div></fieldset>
+        <div class="cost"><span>Set price</span><output class="t-stat" aria-live="polite">£54</output></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="configurator"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="configurator"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="configurator"] .builder { display: grid; grid-template-columns: 3fr 2fr; gap: var(--s-7); align-items: center; }
+[data-own="configurator"] .drawing { padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="configurator"] svg { width: 100%; }
+[data-own="configurator"] .parts { fill: var(--action); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+[data-own="configurator"] .slot { fill: none; stroke: var(--surface); stroke-width: 5; stroke-linecap: round; }
+[data-own="configurator"] .builder[data-finish="slate"] .parts { fill: var(--ink); }
+[data-own="configurator"] .builder[data-finish="chalk"] .parts { fill: var(--p-bg); }
+[data-own="configurator"] .builder[data-finish="slate"] .parts { stroke: var(--muted); }
+[data-own="configurator"] .builder[data-finish="chalk"] .slot { stroke: var(--ink); }
+[data-own="configurator"] .builder[data-height="20"] .height { transform: scaleY(1.28); }
+[data-own="configurator"] .builder[data-set="single"] .second { display: none; }
+[data-own="configurator"] .builder[data-set="single"] .parts { transform: translateX(19%); transform-box: view-box; }
+[data-own="configurator"] .fact-line { font-size: var(--t-small); font-variant-numeric: tabular-nums; margin-top: var(--s-3); }
+[data-own="configurator"] fieldset { border: 0; padding: 0; margin: 0 0 var(--s-4); min-width: 0; }
+[data-own="configurator"] legend { padding: 0; font-weight: 500; margin-bottom: var(--s-2); }
+[data-own="configurator"] fieldset > div { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+[data-own="configurator"] label { position: relative; cursor: pointer; }
+[data-own="configurator"] label input { position: absolute; inset: 0; margin: 0; width: 100%; height: 100%; appearance: none; border: 0; background: none; cursor: pointer; }
+[data-own="configurator"] label span { display: grid; place-items: center; padding-inline: var(--s-4); min-height: var(--btn-h); border: 1px solid var(--line); border-radius: var(--r-btn); }
+[data-own="configurator"] label input:checked + span { background: var(--ink); color: var(--bg); }
+[data-own="configurator"] label input:focus-visible + span { outline: 2px solid var(--action); outline-offset: 2px; }
+[data-own="configurator"] .cost { display: flex; align-items: baseline; justify-content: space-between; padding-top: var(--s-4); border-top: 1px solid var(--line); }
+@media (max-width: 639px) {
+  [data-own="configurator"] .builder { grid-template-columns: 1fr; gap: var(--s-5); }
+  [data-own="configurator"] .drawing { padding: var(--s-4); }
+}
+</style>
+
+<script type="module">
+const root = document.querySelector('[data-own="configurator"]');
+const builder = root.querySelector('.builder');
+builder.querySelectorAll('fieldset').forEach(field => field.disabled = false);
+function configure() {
+  const [height, finish, set] = [...builder.querySelectorAll('input:checked')].map(input => input.value);
+  builder.dataset.height = height;
+  builder.dataset.finish = finish;
+  builder.dataset.set = set;
+  const finishName = builder.querySelector('[name="ends-finish"]:checked + span').textContent;
+  const setName = set === 'pair' ? 'Pair' : 'Single';
+  builder.querySelector('figcaption').textContent = [height + ' cm', finishName, setName].join(' · ');
+  builder.querySelector('svg').setAttribute('aria-label', setName + ', ' + height + ' cm ' + finishName.toLowerCase() + ' bookend' + (set === 'pair' ? 's' : ''));
+  const prices = { '15': {single: 30, pair: 54}, '20': {single: 38, pair: 68} };
+  builder.querySelector('output').value = '£' + prices[height][set];
+}
+builder.addEventListener('change', configure);
+configure();
+</script>

@@ -797,8 +797,8 @@
   window.Scenes = window.Scenes || {};
   window.Scenes['orbit-to-formation'] = (root, opts = {}) => {
     const o = {
-      hold: clamp(num(opts.hold, 4), 4, 7),
-      phoneHold: clamp(num(opts.phoneHold, 4), 3, 6),
+      hold: 2,
+      phoneHold: 2,
       radius: clamp(num(opts.radius, 1), 0.7, 1.6),
       crest: clamp(num(opts.crest, 0.24), 0.18, 0.3),
       phoneCrest: opts.phoneCrest === undefined || opts.phoneCrest === 'auto' || isNaN(+opts.phoneCrest) ? 'auto' : clamp(+opts.phoneCrest, 0.14, 0.44),

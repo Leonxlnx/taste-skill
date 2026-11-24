@@ -8,7 +8,7 @@
 // page (a layout finding as "layout <rule>") and exits 1 when any page has one, 2 when a page could not be checked.
 //
 //   node tests/kit-clean.mjs [--profile <dir>] [--out <dir>] [--only <part of a path>] [--save <file.json>] [--check <file>]
-//                            [--demos] [--no-layout]
+//                            [--demos] [--no-layout] [--page <recipe-page>]
 //
 // --demos adds every moment's own demo page (one moment alone on a stand-in page, not a page model). --no-layout runs
 // consistency.mjs alone.
@@ -25,18 +25,20 @@
 // copy is all stand-ins), is listed under "template stand-ins" and does not fail the run; every other FAIL of the
 // starter (its layout, its sections, its motion) does.
 //
-// A page that runs past 20 minutes is stopped with its whole process tree (the checker and the Chrome it started), so no
+// A checker that runs past nine minutes is stopped with its whole process tree (the checker and the Chrome it started), so no
 // Chrome is left behind; the page is listed as not checked.
 import { readdirSync, existsSync, mkdirSync, rmSync, rmdirSync, lstatSync, writeFileSync, statSync, copyFileSync, symlinkSync } from 'node:fs';
 import { join, dirname, relative, basename } from 'node:path';
 import { tmpdir } from 'node:os';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import {runCheck} from './run-check.mjs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SKILL = join(ROOT, 'skills', 'taste-skill');
 const argv = process.argv.slice(2);
 const opt = (n, d) => { const i = argv.indexOf('--' + n); return i < 0 ? d : argv[i + 1]; };
+const kind = opt('type','');
 const CHECK = opt('check', join(SKILL, 'scripts', 'consistency.mjs'));
 const PROFILE = opt('profile', join(tmpdir(), 'taste-skill-kit-clean-chrome'));
 const OUT = opt('out', join(tmpdir(), 'taste-skill-kit-clean'));
@@ -51,7 +53,7 @@ const DEMOS = argv.includes('--demos');
 const pages = [];
 const layout = join(SKILL, 'assets', 'layout');
 for (const f of readdirSync(layout).sort()) if (/^hero-.+\.html$/.test(f)) pages.push(join(layout, f));
-pages.push(join(SKILL, 'assets', 'starter.html'));
+pages.push(join(SKILL, 'assets', 'starter.html'), join(SKILL, 'assets', 'own', 'index.html'));
 const moments = join(SKILL, 'assets', 'moments');
 for (const f of readdirSync(join(moments, '_demo')).sort()) if (/^in-page.*\.html$/.test(f)) pages.push(join(moments, '_demo', f));
 if (DEMOS) for (const d of readdirSync(moments).sort()) {
@@ -59,7 +61,8 @@ if (DEMOS) for (const d of readdirSync(moments).sort()) {
   if (d.startsWith('_') || !statSync(dir).isDirectory()) continue;
   for (const f of readdirSync(dir).sort()) if (/^demo.*\.html$/.test(f)) pages.push(join(dir, f));
 }
-const todo = pages.filter((p) => !ONLY || relative(SKILL, p).replace(/\\/g, '/').includes(ONLY));
+const customPage = opt('page', '');
+const todo = customPage ? [customPage] : pages.filter((p) => !ONLY || relative(SKILL, p).replace(/\\/g, '/').includes(ONLY));
 if (!todo.length) { console.error(`kit-clean: no page matches --only ${ONLY}`); process.exit(2); }
 
 // the starter's scratch folder goes: its assets link first, alone (a non-recursive rmdir removes a junction and never
@@ -75,28 +78,17 @@ const dropSite = (site) => {
 
 // the checker, stopped with its process tree when it runs past the time (spawnSync's timeout would end node alone on
 // Windows, leaving its Chrome running)
-const LIMIT = 20 * 60 * 1000;
-const runCheck = (args) => new Promise((res) => {
-  const p = spawn(process.execPath, args, { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
-  let stdout = '', stderr = '', timedOut = false, error = null;
-  p.stdout.setEncoding('utf8').on('data', (d) => { stdout += d; });
-  p.stderr.setEncoding('utf8').on('data', (d) => { stderr += d; });
-  const t = setTimeout(() => {
-    timedOut = true;
-    if (process.platform === 'win32') spawnSync('taskkill', ['/pid', String(p.pid), '/T', '/F'], { stdio: 'ignore' });
-    else { try { p.kill('SIGTERM'); } catch {} setTimeout(() => { try { p.kill('SIGKILL'); } catch {} }, 10000).unref(); }
-  }, LIMIT);
-  p.on('error', (e) => { error = e; });
-  p.on('close', (code) => { clearTimeout(t); res({ status: code, stdout, stderr, timedOut, error: error || (timedOut ? new Error(`stopped after ${LIMIT / 60000} minutes`) : null) }); });
-});
+const LIMIT = 9 * 60 * 1000;
+
 // the checks a template stand-in can trip (its words, links and files), and the copy checks
 const HELD = new Set(['placeholder', 'links', 'assets', 'empty-visual', 'lang']);
 
 const rows = [];
 for (const [i, page] of todo.entries()) {
-  const name = relative(SKILL, page).replace(/\\/g, '/');
+  const name = customPage ? 'recipes/' + basename(page) : relative(SKILL, page).replace(/\\/g, '/');
   const slug = name.replace(/^assets\//, '').replace(/[\\/]/g, '-').replace(/\.html$/, '');
-  const profile = join(PROFILE, slug), out = join(OUT, slug);
+  const exactProfile = process.env.TASTE_SKILL_CHROME_PROFILE;
+  const profile = exactProfile || join(PROFILE, slug), out = join(OUT, slug);
   mkdirSync(profile, { recursive: true }); mkdirSync(out, { recursive: true });
   const t0 = Date.now();
   process.stderr.write(`[${i + 1}/${todo.length}] ${name} ... `);
@@ -110,8 +102,8 @@ for (const [i, page] of todo.entries()) {
     symlinkSync(join(SKILL, 'assets'), join(site, 'assets'), 'junction');
     target = join(site, 'index.html');
   }
-  const r = await runCheck([CHECK, target, '--quick', '--widths', '1440,390', '--json', '--profile', profile, '--out', out]);
-  for (let k = 0; k < 20 && existsSync(profile); k++) { try { rmSync(profile, { recursive: true, force: true }); } catch { spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},250)']); } }
+  const r = await runCheck([CHECK, target, ...(kind ? ['--type',kind] : []), '--quick', '--widths', '1440,390', '--json', '--profile', profile, '--out', out], ROOT, LIMIT);
+  for (let k = 0; k < 20 && !exactProfile && existsSync(profile); k++) { try { rmSync(profile, { recursive: true, force: true }); } catch { spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},250)']); } }
   let report = null;
   if (!r.timedOut) try { report = JSON.parse(r.stdout.slice(r.stdout.indexOf('{'))); } catch {}
   const row = { page: name, code: r.status, secs: Math.round((Date.now() - t0) / 1000), fails: {}, held: {}, warns: 0, notCheckedAt: [], error: '' };
@@ -124,6 +116,7 @@ for (const [i, page] of todo.entries()) {
       // the template's own stand-ins: a bracketed placeholder named by a words, links or files check (in its message or
       // its element, never the section's heading it quotes), and the copy checks (its copy is all stand-ins)
       const own = template && (/^copy-/.test(f.check) || (HELD.has(f.check) && /\[[^\]]{1,60}\]|%5B[^%]{1,60}%5D/.test(`${f.sel || ''} ${f.msg || ''}`)));
+      if (!own) (row.issues ||= []).push({at:f.at, id, where:f.sel, section:f.section, message:f.msg, fix:f.fix});
       const into = own ? row.held : row.fails;
       (into[id] = into[id] || []).push(f.at);
     }
@@ -132,13 +125,14 @@ for (const [i, page] of todo.entries()) {
   // the layout check, as the gate runs it: every FAIL finding fails (a template's stand-ins: its placeholders and the
   // files its brackets name, held below)
   if (LAYOUT && !row.error) {
-    const lprof = join(PROFILE, slug + '-layout');
+    const lprof = exactProfile || join(PROFILE, slug + '-layout');
     mkdirSync(lprof, { recursive: true });
-    const l = await runCheck([LAYOUT, '--url', target, '--profile', lprof, '--sizes', '1440x900,390x844', '--json']);
-    for (let k = 0; k < 20 && existsSync(lprof); k++) { try { rmSync(lprof, { recursive: true, force: true }); } catch { spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},250)']); } }
+    const l = await runCheck([LAYOUT, '--url', target, '--profile', lprof, '--sizes', '1440x900,390x844', '--json'], ROOT, Math.max(1, LIMIT-(Date.now()-t0)));
+    for (let k = 0; k < 20 && !exactProfile && existsSync(lprof); k++) { try { rmSync(lprof, { recursive: true, force: true }); } catch { spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},250)']); } }
     let rep = null;
     if (!l.timedOut && l.status !== 2) try { rep = JSON.parse(l.stdout.slice(l.stdout.indexOf('['))); } catch {}
-    if (!Array.isArray(rep)) row.error = `check.mjs: ${(l.error && l.error.message) || (l.stderr || '').trim().split('\n').pop() || `exit ${l.status}`}`;
+    if (Array.isArray(rep)) writeFileSync(join(out, 'layout.json'), JSON.stringify(rep, null, 2) + '\n');
+    if (!Array.isArray(rep) || rep.length !== 2) row.error = `check.mjs: ${(l.error && l.error.message) || (l.stderr || '').trim().split('\n').pop() || `exit ${l.status}`}`;
     else for (const sz of rep) for (const f of sz.findings || []) {
       // a finding marked WARN is listed by the gate and never blocks (2.5.2 finish checks), so it never fails the run
       if (f.sev === 'WARN') { row.warns++; continue; }
@@ -150,14 +144,16 @@ for (const [i, page] of todo.entries()) {
       }
       (row.fails[id] = row.fails[id] || []).push(Number(String(sz.size).split('x')[0]));
       (row.layout = row.layout || []).push(`${sz.size} ${f.rule} ${f.where}: ${f.detail}`);
+      (row.layoutIssues ||= []).push({at:sz.size, id:'layout '+f.rule, where:f.where, message:f.detail, fix:f.fix});
     }
     row.secs = Math.round((Date.now() - t0) / 1000);
   }
   rows.push(row);
+  if (SAVE) writeFileSync(SAVE, JSON.stringify(rows, null, 1));
   const n = Object.keys(row.fails).length;
-  process.stderr.write(`${row.error ? 'ERROR' : n ? `${n} FAIL id${n > 1 ? 's' : ''}` : 'clean'} (${row.secs}s)\n`);
+  process.stderr.write(`${row.error ? 'ERROR' : row.notCheckedAt.length ? 'NOT CHECKED' : n ? `${n} FAIL id${n > 1 ? 's' : ''}` : 'clean'} (${row.secs}s)\n`);
 }
-try { rmSync(PROFILE, { recursive: true, force: true }); } catch {}
+// Page-owned ephemeral profiles have already been removed.
 dropSite(join(OUT, 'starter-site'));
 
 const w = Math.max(...rows.map((r) => r.page.length));
@@ -173,4 +169,4 @@ const bad = rows.filter((r) => Object.keys(r.fails).length), lost = rows.filter(
 const clean = rows.filter((r) => !bad.includes(r) && !lost.includes(r));
 console.log(`\n${rows.length} pages: ${clean.length} clean, ${bad.length} with a FAIL, ${lost.length} not checked`);
 if (SAVE) writeFileSync(SAVE, JSON.stringify(rows, null, 1));
-process.exit(bad.length ? 1 : lost.length ? 2 : 0);
+process.exit(lost.length ? 2 : bad.length ? 1 : 0);

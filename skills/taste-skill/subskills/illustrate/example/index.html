@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" data-ready="true">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lantern Sound</title>
+    <meta name="description" content="A small fishing game about learning an island by its tides.">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body id="top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" aria-hidden="true" focusable="false" class="defs">
+      <defs>
+        <g id="pine">
+          <path fill="var(--rock)" d="M-2 0V-17H2V0Z"/>
+          <path fill="var(--pine)" d="M0-47L9-26H6L13-10H-12L-6-25H-9Z"/>
+        </g>
+        <g id="hut">
+          <path fill="var(--wall)" d="M0 0V-15L12-25L24-15V0Z"/>
+          <path fill="var(--red)" d="M-3-14L11-27H32L46-14H22L11-22L3-14Z"/>
+          <path fill="var(--rock)" d="M24-14H43V0H24Z"/>
+          <path fill="var(--pine)" d="M8 0V-9H14V0Z"/>
+        </g>
+        <g id="light">
+          <path fill="var(--wall)" d="M-14 0L-8-65H8L15 0Z"/>
+          <path fill="var(--red)" d="M-11-42H10L12-25H-12Z"/>
+          <path fill="var(--rock)" d="M-13-63H13V-68H-13ZM-10-86L0-94L11-86Z"/>
+          <path fill="var(--lamp)" d="M-8-84H8V-68H-8Z"/>
+          <path fill="var(--rock)" d="M-10-86H10V-82H-10ZM-9-82H-6V-68H-9ZM6-82H9V-68H6ZM-4 0V-12H2V0Z M-2-55H2V-48H-2Z"/>
+          <path fill="var(--lamp)" opacity="var(--beam,0)" d="M-8-81L-195-43L-207-7L-8-73Z"/>
+        </g>
+        <g id="skiff">
+          <path fill="var(--rock)" d="M-49-9L-30-2H36L53-15L39 5Q-14 17-40 1Z"/>
+          <path fill="var(--wall)" d="M-48-10L-27-6H32L53-15L37-4H-27Z"/>
+          <path fill="var(--red)" d="M-15-6L-13-22Q-8-28-2-23L5-14L15-15L16-11L2-9L-5-13L-4-6Z"/>
+          <circle fill="var(--wall)" cx="-7" cy="-29" r="5"/>
+          <path fill="var(--rock)" d="M-16-30L-13-34L-9-37L-3-35L-1-30Z"/>
+          <path fill="none" stroke="var(--rock)" stroke-width="2" d="M10-13Q42-50 65-36"/>
+          <path fill="none" stroke="var(--rock)" stroke-width="1" d="M65-36Q72-10 72 7"/>
+          <path fill="var(--red)" d="M69 5H75L73 12H71Z"/>
+        </g>
+        <g id="sound">
+          <rect width="800" height="400" fill="var(--sky)"/>
+          <circle cx="208" cy="81" r="25" fill="var(--lamp)"/>
+          <g opacity="var(--after-dark,0)">
+            <circle cx="219" cy="71" r="24" fill="var(--sky)"/>
+            <path d="M116 45h3v3h-3z M325 83h2v2h-2z M440 40h3v3h-3z M689 80h2v2h-2z M541 55h2v2h-2z M638 39h3v2h-3z" fill="var(--lamp)"/>
+          </g>
+          <path fill="var(--far)" d="M0 157C34 152 61 127 86 130L112 136Q148 123 176 111Q194 105 218 120L235 127Q281 131 308 122Q337 125 373 149L394 154Q431 149 458 132L498 138Q530 122 562 107Q581 100 601 118L638 137L676 124Q701 120 740 142L800 149V201H0Z"/>
+          <path fill="var(--sea)" d="M0 173H800V400H0Z"/>
+          <path fill="var(--mid)" d="M0 180V151L33 154L67 145L125 158L156 169L213 173L228 180L158 184L108 190L26 193Z"/>
+          <path fill="var(--rock)" d="M392 207L426 191L535 173L640 177L678 194L720 210L690 223L609 225L570 238L489 228L448 230Z"/>
+          <path fill="var(--grass)" d="M382 206L404 199L422 190L470 184L506 173L550 171L576 151L609 153L635 173L664 177L708 199L670 203L623 197L586 209L517 215L477 207L431 216Z"/>
+          <path fill="var(--mid)" d="M401 210L432 218L455 210L482 226L450 223L437 228Z M519 216L546 212L570 227L590 211L612 207L587 230L568 235Z M643 202L671 205L691 201L679 214L650 221L629 219Z"/>
+          <path fill="var(--pine)" d="M427 197l7-9 5 8 8 2-6 2zM609 184l7-6 8 2 8 6-10 2z"/>
+          <path fill="var(--wall)" d="M474 206Q521 195 574 182L594 174L596 177Q582 190 559 194L507 209Z"/>
+          <use href="#pine" transform="translate(452 190) scale(0.65)"/>
+          <use href="#pine" transform="translate(469 186) scale(0.87)"/>
+          <use href="#pine" transform="translate(482 188) scale(0.55)"/>
+          <use href="#pine" transform="translate(644 180) scale(0.7)"/>
+          <use href="#pine" transform="translate(657 183) scale(0.52)"/>
+          <use href="#pine" transform="translate(671 188) scale(0.62)"/>
+          <use href="#hut" transform="translate(493 188) scale(0.86)"/>
+          <use href="#hut" transform="translate(540 178) scale(0.51)"/>
+          <use href="#light" transform="translate(597 168)"/>
+          <g fill="var(--foam)">
+            <path d="M44 232q20 -3 34 0q-17 4 -34 2Z"/>
+            <path d="M112 249q16 -3 26 0q-13 4 -26 2Z"/>
+            <path d="M182 228q25 -3 42 0q-21 4 -42 2Z"/>
+            <path d="M284 258q22 -3 36 0q-18 4 -36 2Z"/>
+            <path d="M72 341q34 -3 56 0q-28 4 -56 2Z"/>
+            <path d="M156 325q20 -3 33 0q-17 4 -33 2Z"/>
+            <path d="M216 356q23 -3 38 0q-19 4 -38 2Z"/>
+            <path d="M283 337q44 -3 74 0q-37 4 -74 2Z"/>
+            <path d="M325 223q20 -3 34 0q-17 4 -34 2Z"/>
+            <path d="M377 257q35 -3 59 0q-30 4 -59 2Z"/>
+            <path d="M490 260q27 -3 45 0q-23 4 -45 2Z"/>
+            <path d="M653 242q25 -3 42 0q-21 4 -42 2Z"/>
+            <path d="M724 267q34 -3 57 0q-29 4 -57 2Z"/>
+            <path d="M695 317q26 -3 43 0q-22 4 -43 2Z"/>
+            <path d="M748 341q20 -3 33 0q-17 4 -33 2Z"/>
+            <path d="M530 319q31 -3 51 0q-26 4 -51 2Z"/>
+            <path d="M572 361q24 -3 40 0q-20 4 -40 2Z"/>
+            <path d="M377 370q17 -3 28 0q-14 4 -28 2Z"/>
+            <path d="M432 337q27 -3 45 0q-23 4 -45 2Z"/>
+            <path d="M23 378q37 -3 61 0q-31 4 -61 2Z"/>
+            <path d="M641 390q36 -3 60 0q-30 4 -60 2Z"/>
+            <path d="M303 289q21 -3 35 0q-18 4 -35 2Z"/>
+            <path d="M169 280q19 -3 32 0q-16 4 -32 2Z"/>
+            <path d="M20 276q28 -3 46 0q-23 4 -46 2Z"/>
+          </g>
+          <g fill="var(--rock)">
+            <path d="M450 214L483 222L478 226L444 217Z M448 216L451 217V225L448 226Z M473 223L476 224V232L473 232Z"/>
+          </g>
+          <g fill="var(--foam)">
+            <path d="M376 229L411 225L401 231Z M465 236L505 231L496 235Z M516 242L550 239L578 241L545 245Z M579 249L605 246L601 250Z M622 232L658 229L646 234Z M677 227L713 223L704 228Z"/>
+          </g>
+          <path fill="var(--mid)" d="M248 302Q277 299 320 303L337 308L283 309Z M224 311Q238 306 258 307L243 312Z"/>
+          <use href="#skiff" transform="translate(309 291) scale(1.13)"/>
+          <g fill="var(--pine)">
+            <path d="M185 145q7-6 13 1q5-9 15-6q-10 1-14 11q-6-7-14-6Z M210 129q5-4 9 0q4-6 10-4q-6 1-9 8q-5-5-10-4Z"/>
+          </g>
+          <path fill="var(--rock)" d="M0 371L20 365L30 356L49 356L65 361L68 370L89 374L95 380L120 383L136 389L156 400H0Z M724 400L738 392L758 388L765 381L782 379L800 350V400Z"/>
+          <use href="#pine" transform="translate(14 379) scale(1.1)"/>
+          <use href="#pine" transform="translate(38 376) scale(0.72)"/>
+        </g>
+      </defs>
+    </svg>
+    <header>
+      <nav class="wrap">
+        <a href="#top" class="home">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="-19 -97 38 100" aria-hidden="true" class="light-icon">
+            <use href="#light" />
+          </svg>
+          <span class="word">Lantern Sound</span>
+        </a>
+        <a href="#the-skiff">The skiff</a>
+      </nav>
+    </header>
+    <main>
+      <section class="wrap">
+        <div class="intro">
+          <h1>Gone with the tide.</h1>
+          <p class="lead">A small fishing game about learning an island by its tides. Cast beneath the lantern, then row home before dusk.</p>
+        </div>
+        <figure>
+          <svg preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="A fisher casts from a skiff in the sheltered channel below a striped island lighthouse." class="world">
+            <use href="#sound" />
+          </svg>
+          <figcaption>
+            <span>Lantern Island · East channel</span>
+            <fieldset>
+              <legend>Time of day</legend>
+              <label class="choice">
+                <input name="time" type="radio" id="day" checked>
+                <span>Day</span>
+              </label>
+              <label class="choice">
+                <input name="time" type="radio" id="night" >
+                <span>Night</span>
+              </label>
+            </fieldset>
+          </figcaption>
+        </figure>
+      </section>
+      <section class="feature" id="the-skiff">
+        <div class="wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="-57 -50 147 80" aria-hidden="true" class="skiff">
+            <use href="#skiff" />
+          </svg>
+          <div>
+            <h2>Out in the skiff</h2>
+            <p>Drop your line where the tide breaks around the point.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="wrap footerline">
+        <span>Lantern Sound</span>
+        <a href="#top">Back to top</a>
+      </div>
+    </footer>
+  </body>
+</html>

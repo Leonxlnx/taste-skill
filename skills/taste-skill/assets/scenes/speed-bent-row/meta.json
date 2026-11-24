@@ -48,10 +48,12 @@
   ],
   "needs": {
     "list": [
-      "product-photo",
       "pictures:6"
     ],
-    "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead."
+    "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "Never on the first screen (its row needs the scroll to read as one object) and never beside another horizontal scene.",
   "avoidWith": [],

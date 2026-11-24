@@ -15,7 +15,7 @@
    "retail"
   ],
   "bg": "#ffffff",
-  "surface": "#f4f4f4",
+  "surface": "#ebebeb",
   "ink": "#111111",
   "muted": "#6b6b6b",
   "accent": "#1a4be0",
@@ -48,7 +48,7 @@
    "hardware"
   ],
   "bg": "#f7f9fa",
-  "surface": "#ecf0f2",
+  "surface": "#e3e5e6",
   "ink": "#1f3038",
   "muted": "#5d6b72",
   "accent": "#0d7480",
@@ -74,7 +74,7 @@
    "retail"
   ],
   "bg": "#ebe5e3",
-  "surface": "#e1dad7",
+  "surface": "#d7d1cf",
   "ink": "#2b2622",
   "muted": "#6a615d",
   "accent": "#0f7d45",
@@ -98,7 +98,7 @@
    "law"
   ],
   "bg": "#e8e8e3",
-  "surface": "#dcdcd6",
+  "surface": "#d4d4cf",
   "ink": "#181715",
   "muted": "#63625c",
   "accent": "#bfb21a",
@@ -128,7 +128,7 @@
    "devtool"
   ],
   "bg": "#dfdedb",
-  "surface": "#d3d2ce",
+  "surface": "#cbcbc8",
   "ink": "#26251e",
   "muted": "#5f5d55",
   "accent": "#2456d6",
@@ -152,7 +152,7 @@
    "clinic"
   ],
   "bg": "#ffffff",
-  "surface": "#f4f4f2",
+  "surface": "#ebebeb",
   "ink": "#1f2b4d",
   "muted": "#6a7186",
   "accent": "#f7941d",
@@ -189,7 +189,7 @@
    "clinic"
   ],
   "bg": "#eeecea",
-  "surface": "#e4e1dd",
+  "surface": "#dad8d6",
   "ink": "#333231",
   "muted": "#6b6763",
   "accent": "#5c6b54",
@@ -222,7 +222,7 @@
    "consumer-product"
   ],
   "bg": "#dedad3",
-  "surface": "#d3cec6",
+  "surface": "#cbc7c0",
   "ink": "#0a0a0a",
   "muted": "#5c5852",
   "accent": "#256f82",
@@ -249,7 +249,7 @@
    "consumer-product"
   ],
   "bg": "#ddd6c6",
-  "surface": "#d2cab8",
+  "surface": "#cac3b3",
   "ink": "#2a2a26",
   "muted": "#59574e",
   "accent": "#4f6238",
@@ -281,7 +281,7 @@
    "retail"
   ],
   "bg": "#e5e1d8",
-  "surface": "#dad5ca",
+  "surface": "#d1cdc5",
   "ink": "#2a1d17",
   "muted": "#6b5b51",
   "accent": "#456f3a",
@@ -602,7 +602,7 @@
    "hardware"
   ],
   "bg": "#ffffff",
-  "surface": "#f2f2f2",
+  "surface": "#ebebeb",
   "ink": "#0a0a0a",
   "muted": "#6b6b6b",
   "accent": "#d92b21",
@@ -633,7 +633,7 @@
    "consumer-product"
   ],
   "bg": "#ffffff",
-  "surface": "#f3f3f3",
+  "surface": "#ebebeb",
   "ink": "#232323",
   "muted": "#6e6e6e",
   "accent": "#a1ffcb",
@@ -667,7 +667,7 @@
    "hardware"
   ],
   "bg": "#eef0f3",
-  "surface": "#e2e5ea",
+  "surface": "#dadcdf",
   "ink": "#0b0c0e",
   "muted": "#5d6470",
   "accent": "#1f2de6",
@@ -698,7 +698,7 @@
    "consumer-product"
   ],
   "bg": "#f7f7f7",
-  "surface": "#ebebeb",
+  "surface": "#e3e3e3",
   "ink": "#0d2a1c",
   "muted": "#5f6b64",
   "accent": "#f6e016",
@@ -729,7 +729,7 @@
    "saas"
   ],
   "bg": "#f7f9f8",
-  "surface": "#ebf0ee",
+  "surface": "#e3e5e4",
   "ink": "#06525c",
   "muted": "#2f737d",
   "accent": "#06525c",
@@ -757,7 +757,7 @@
    "game"
   ],
   "bg": "#1a2039",
-  "surface": "#212846",
+  "surface": "#282f49",
   "ink": "#f9a3c0",
   "muted": "#b9879c",
   "accent": "#f9a3c0",
@@ -780,7 +780,7 @@
    "consumer-product"
   ],
   "bg": "#edccbe",
-  "surface": "#e8c2b2",
+  "surface": "#d9b9ab",
   "ink": "#351a2b",
   "muted": "#6c4857",
   "accent": "#351a2b",
@@ -812,7 +812,7 @@
    "workshop"
   ],
   "bg": "#e6dbc7",
-  "surface": "#ddd0b9",
+  "surface": "#d2c8b4",
   "ink": "#062b8a",
   "muted": "#3a5aa8",
   "accent": "#062b8a",
@@ -836,7 +836,7 @@
    "studio"
   ],
   "bg": "#e2e2e2",
-  "surface": "#d6d6d6",
+  "surface": "#cecece",
   "ink": "#7d0c14",
   "muted": "#7a4a4e",
   "accent": "#7d0c14",
@@ -868,7 +868,7 @@
    "law"
   ],
   "bg": "#ecebe7",
-  "surface": "#e1dfd9",
+  "surface": "#d8d7d3",
   "ink": "#38450f",
   "muted": "#5d683a",
   "accent": "#38450f",
@@ -938,7 +938,7 @@
    "game"
   ],
   "bg": "#0034eb",
-  "surface": "#002fd6",
+  "surface": "#002ac3",
   "ink": "#ffffff",
   "muted": "#dfe4f2",
   "accent": "#e9e34a",
@@ -981,7 +981,7 @@
    "game"
   ],
   "bg": "#9c1220",
-  "surface": "#8a101c",
+  "surface": "#830115",
   "ink": "#ffffff",
   "muted": "#f0b9bd",
   "accent": "#ffd9dc",
@@ -1009,7 +1009,7 @@
    "agency"
   ],
   "bg": "#ff87ab",
-  "surface": "#ff739d",
+  "surface": "#ea7498",
   "ink": "#0a0a0a",
   "muted": "#6b1f3a",
   "accent": "#def915",
@@ -1037,7 +1037,7 @@
    "agency"
   ],
   "bg": "#6bb4ee",
-  "surface": "#7dbdf0",
+  "surface": "#82c7ff",
   "ink": "#0e1822",
   "muted": "#1b3d5c",
   "accent": "#ff5a1f",
@@ -1070,7 +1070,7 @@
    "consumer-product"
   ],
   "bg": "#ff7a1f",
-  "surface": "#ff8633",
+  "surface": "#ff9c67",
   "ink": "#050f16",
   "muted": "#5a2306",
   "accent": "#050f16",
@@ -1131,7 +1131,7 @@
    "consumer-product"
   ],
   "bg": "#e6e0d2",
-  "surface": "#dcd5c5",
+  "surface": "#d2ccbf",
   "ink": "#1a1a1a",
   "muted": "#5f5b52",
   "accent": "#18bc42",
@@ -1174,7 +1174,7 @@
    "devtool"
   ],
   "bg": "#ffffff",
-  "surface": "#f3f3f3",
+  "surface": "#ebebeb",
   "ink": "#0a0a0a",
   "muted": "#6b6b6b",
   "accent": "#1f30e0",
@@ -1252,7 +1252,7 @@
    "game"
   ],
   "bg": "#1423b8",
-  "surface": "#1220a6",
+  "surface": "#0e00a1",
   "ink": "#ffffff",
   "muted": "#e4e2d6",
   "accent": "#1fc27a",
@@ -1292,7 +1292,7 @@
    "game"
   ],
   "bg": "#ffd249",
-  "surface": "#f5c63c",
+  "surface": "#ebbe2e",
   "ink": "#0a0a0a",
   "muted": "#5e4a0a",
   "accent": "#f53fd6",
@@ -1335,7 +1335,7 @@
    "agency"
   ],
   "bg": "#ff8126",
-  "surface": "#ff8d3a",
+  "surface": "#ffa26b",
   "ink": "#111111",
   "muted": "#5c2a05",
   "accent": "#de194b",
@@ -1375,7 +1375,7 @@
    "restaurant"
   ],
   "bg": "#e2dccf",
-  "surface": "#d7d0c1",
+  "surface": "#cec9bc",
   "ink": "#2a1110",
   "muted": "#6b524c",
   "accent": "#4a6f84",
@@ -1418,7 +1418,7 @@
    "saas"
   ],
   "bg": "#ffffff",
-  "surface": "#f5f5f5",
+  "surface": "#ebebeb",
   "ink": "#000000",
   "muted": "#666666",
   "accent": "#a7ff9c",
@@ -1457,7 +1457,7 @@
    "fintech"
   ],
   "bg": "#ffffff",
-  "surface": "#f6f6f6",
+  "surface": "#ebebeb",
   "ink": "#000000",
   "muted": "#5f5f5f",
   "accent": "#fe7141",
@@ -1498,7 +1498,7 @@
    "studio"
   ],
   "bg": "#f7f7f5",
-  "surface": "#ebebe8",
+  "surface": "#e3e3e1",
   "ink": "#000000",
   "muted": "#666662",
   "accent": "#d0106f",
@@ -1539,7 +1539,7 @@
    "retail"
   ],
   "bg": "#f8f8f8",
-  "surface": "#eeeeee",
+  "surface": "#e4e4e4",
   "ink": "#0a0a0a",
   "muted": "#6a6a6a",
   "accent": "#1f6b3a",
@@ -1576,7 +1576,7 @@
    "ai"
   ],
   "bg": "#c3d7e5",
-  "surface": "#d0e0eb",
+  "surface": "#d6ebf9",
   "ink": "#141414",
   "muted": "#4a5068",
   "accent": "#0f5257",
@@ -1622,7 +1622,7 @@
    "consumer-product"
   ],
   "bg": "#a6b3bc",
-  "surface": "#b2bdc5",
+  "surface": "#b9c6cf",
   "ink": "#1c1c1c",
   "muted": "#38424a",
   "accent": "#2c3620",
@@ -1662,7 +1662,7 @@
    "ai"
   ],
   "bg": "#000000",
-  "surface": "#0d0d0d",
+  "surface": "#010101",
   "ink": "#ffffff",
   "muted": "#999999",
   "accent": "#93f1f7",
@@ -1706,7 +1706,7 @@
    "studio"
   ],
   "bg": "#cbe4f2",
-  "surface": "#bcdcee",
+  "surface": "#b8d0de",
   "ink": "#0a0a0a",
   "muted": "#44606e",
   "accent": "#b0298f",
@@ -1745,7 +1745,7 @@
    "consumer-product"
   ],
   "bg": "#a8a8aa",
-  "surface": "#b4b4b6",
+  "surface": "#bbbbbd",
   "ink": "#0e0e0e",
   "muted": "#3a3a3c",
   "accent": "#1f5c49",
@@ -1806,7 +1806,7 @@
    "retail"
   ],
   "bg": "#f7f3ec",
-  "surface": "#ede6da",
+  "surface": "#e3dfd8",
   "ink": "#2a2622",
   "muted": "#665e55",
   "accent": "#7a4a2c",
@@ -1956,7 +1956,7 @@
    "consumer-product"
   ],
   "bg": "#eeeeeb",
-  "surface": "#e1e1dd",
+  "surface": "#dadad7",
   "ink": "#1c1d1f",
   "muted": "#5c5e62",
   "accent": "#c2501b",

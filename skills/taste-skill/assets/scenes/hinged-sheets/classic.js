@@ -1,7 +1,7 @@
 // assets/scenes/hinged-sheets/classic.js - the 2.4 scene file, kept as it was; scene.js loads it through classic/classic.js.
 // tasteskill / scenes / hinged-sheets.js — paper with two printed sides, turned over one by one.
 //
-// Two to four tickets (prices, passes, stats, letters) lie face-down in one row under the section's
+// Two to four editorial programme items lie face-down in one row under the section's
 // headline: ink-coloured backs, each with one very large word. As the page scrolls they turn over, one
 // by one, left to right, on a shared vanishing point, lifting a little towards the viewer at mid-turn,
 // to their paper fronts. Each turn runs on a clock (0.8s) once the scroll passes its moment, and turns
@@ -32,7 +32,7 @@
 //                                                               for it, so it may say nothing the lead,
 //                                                               the tickets or the note do not
 //       </div>
-//       <p class="hs-lead">Prices for October to April</p>      3-8 words: what the prices are for (the
+//       <p class="hs-lead">Three winter sessions</p>
 //                                                               season, the unit); it sits between the
 //                                                               headline and the row
 //       <ol class="hs-row" role="list">
@@ -44,13 +44,13 @@
 //                                                             name large and the copy filling the sheet
 //                                                             (a photo on top reads as a pricing card)
 //               <div class="hs-body">
-//                 <h3 class="hs-name">One swim</h3>             1-2 words
+//                 <h3 class="hs-name">Morning swim</h3>             1-2 words
 //                 <p class="hs-pitch">…</p>                     10-16 words with a photo, up to 20 without
 //                 <ul class="hs-points"><li>…</li></ul>         2-3 points of 2-5 words
 //               </div>
 //               <div class="hs-stub">                          below the perforation
-//                 <p class="hs-price"><span class="hs-amount">€14</span><span class="hs-per">a visit</span></p>
-//                 <a class="hs-cta" href="…">Buy one swim</a>   optional
+//                 <p>Friday mornings</p>
+//                 <a class="hs-cta" href="…">Session details</a>   optional editorial link
 //               </div>
 //             </article>
 //             <div class="hs-face hs-face--back" aria-hidden="true">   shown only while live, and what
@@ -241,6 +241,7 @@
     const untouched = () => {
       sheets.forEach((sheet, i) => { delete sheet.dataset.face; shades[i].last = 0; for (const el of shades[i]) el.style.opacity = ''; });
       unpunch();
+      root.style.removeProperty('--hs-h');
       row.removeAttribute('data-shut');
     };
     // One ticket's turn from its back to its front, on its own clock: paused, played forward when the
@@ -348,6 +349,7 @@
     // and when the tickets changed size, their punched surfaces are drawn again at the new size.
     const refreshed = () => {
       if (!root.classList.contains('is-live')) return;
+      if (dealing) root.style.setProperty('--hs-h', row.offsetHeight + 'px');
       if (current) current.update(true); else for (let i = 0; i < N; i++) turn(i);
       if (Math.abs(sheets[0].offsetWidth - cutW) > 2) punch();
     };
@@ -364,7 +366,10 @@
           root.classList.remove('hs-flow');
           measureTitle();
           dealing = roomy();
-          if (dealing) return deal(tl);
+          if (dealing) {
+            root.style.setProperty('--hs-h', row.offsetHeight + 'px');
+            return deal(tl);
+          }
           if (opts.phone === 'rest') return Stage.REST;
           root.classList.add('hs-flow');
           return flow();

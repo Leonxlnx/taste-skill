@@ -4,6 +4,9 @@
   it. Once; nothing moves again. For the one section the page wants the visitor to stop at, not for
   every section. Under reduced motion and without script the section stands as written.
 
+    <h2 data-moment="lines-rise">…</h2>
+
+  Older builds may put the mount on the section to reveal its other parts too:
     <section class="section" data-moment="lines-rise">
       <div class="container demo-split">
         <div class="section-head"><h2>…</h2><p>…</p><a class="link">…</a></div>
@@ -20,7 +23,8 @@
 export const phone = true;
 
 export default function (root, opts, lib) {
-  const heading = root.querySelector(opts.heading || 'h2, h1, h3');
+  const target = opts.heading || 'h2, h1, h3';
+  const heading = root.matches(target) ? root : root.querySelector(target);
   if (!heading || lib.reduced() || document.documentElement.classList.contains('mo-safe')) { root.classList.add('is-done'); return {}; }
   const inners = lib.split(heading, 'words');
   const words = inners.map(i => i.parentElement);

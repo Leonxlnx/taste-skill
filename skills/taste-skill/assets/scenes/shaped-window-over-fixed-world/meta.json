@@ -22,15 +22,21 @@
   "cost": "low",
   "webgl": 0,
   "reduced": "The title, the photograph, the word, the lede and the action under it.",
-  "phone": "The finished composition.",
+  "phone": "The finished composition takes its content height at 390px.",
   "maxPerPage": 1,
   "weight": 0.7,
   "needs": {
-    "list": ["site", "pictures:1"],
+    "list": [
+      "site",
+      "pictures:1"
+    ],
     "photo": "one wide photograph of the client's own site or world (a plant, a test range, a fleet at sea, a game's world)",
-    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action"
+    "words": "a title of 3-7 words, one word of 6-12 letters, a lede of 18-32 words and one action",
+    "carry": [
+      "photos"
+    ]
   },
-  "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Never the page's hero: its rest composition is two screens tall (restH 2), so on a phone, under reduced motion and without script the hero would be two screens; it comes below the hero, in a statement slot.",
+  "never": "a software page whose product is a screen (the hero shows the product); a local-business or place page; two different pictures in the two windows; a word of fewer than 4 letters. Place below the hero. The wide resting composition needs two screens.",
   "avoidWith": [
     "descend-through-weather",
     "fly-into-the-shape",

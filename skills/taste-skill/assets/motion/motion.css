@@ -18,12 +18,12 @@
 :root {
   --m-in: 150ms;                              /* hover in: buttons, links, nav, tabs */
   --m-out: 120ms;                             /* hover out */
-  --m-press: 90ms;                            /* a press */
+  --m-press: 100ms;                            /* a press */
   --m-panel: 200ms;                           /* a menu or sheet opening */
   --m-close: 120ms;                           /* a menu closing */
   --m-slide: 240ms;                           /* an indicator travelling between two tabs or links */
-  --m-image: 600ms;                           /* a photograph scaling inside its mask */
-  --m-image-out: 400ms;                       /* ...and settling back */
+  --m-image: 400ms;                           /* a photograph scaling inside its mask */
+  --m-image-out: 300ms;                       /* ...and settling back */
   --m-ease: var(--ease, cubic-bezier(.2, .8, .2, 1)); /* the one UI ease-out (system.css --ease): fast start, soft landing */
   --m-ease-io: cubic-bezier(.65, 0, .35, 1);  /* the indicator: leaves and lands softly */
   --m-ease-enter: cubic-bezier(.22, 1, .36, 1); /* an entrance settling: long soft tail, never past its mark */
@@ -46,17 +46,10 @@ html:not([data-motion="off"]) .btn--secondary:hover {
   background: color-mix(in oklab, var(--bg) 92%, var(--ink));
   border-color: color-mix(in oklab, var(--ink) 32%, transparent);
 }
-html:not([data-motion="off"]) .btn:hover { transition-duration: var(--m-in), var(--m-in), var(--m-in), var(--m-in), var(--m-press); }
-html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
-/* the step: a button rises 1px on hover (2px on the large size) and presses 1px down with a 1.5% shrink on
-   click; pointer only. The text-link secondary (arrow and block looks) keeps its underline and does not step.
-   Reduced motion keeps the colour change only (see the end of this file). */
-@media (hover: hover) and (pointer: fine) {
-  html:not([data-motion="off"]) .btn:hover { transform: translateY(-1px); }
-  html:not([data-motion="off"]) .btn--xl:hover { transform: translateY(-2px); }
-  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:hover { transform: none; }
-  html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
-  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:active { transform: scale(.985); }
+/* The hit box stays put. Text and icons rise inside its edge. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .btn > :not(.sr-only) { transition: translate var(--m-out) var(--m-ease); }
+  html:not([data-motion="off"]) .btn:hover > :not(.sr-only) { translate: 0 -1px; transition-duration: 180ms; }
 }
 
 /* the arrow: the text arrow (.btn--arrow, .link) nudges 3px; the drawn arrow (.m-arrow) grows its
@@ -118,21 +111,35 @@ html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
     transition: opacity var(--m-close) var(--m-ease), transform var(--m-close) var(--m-ease), visibility 0s linear var(--m-close);
   }
   html:not([data-motion="off"]) .nav__item:is(:hover, :focus-within) > .nav__menu {
+    transform: none;
     transition: opacity var(--m-panel) var(--m-ease) 150ms, transform var(--m-panel) var(--m-ease) 150ms, visibility 0s linear 150ms;
   }
   /* .m-menu-open comes on when the first panel starts to show (150ms): from then the next word swaps
      the panel at once. Duration and delay go to 0, the properties stay listed, so the panel that is
      still fading in finishes its own 200ms instead of snapping */
-  html:not([data-motion="off"]) .nav.m-menu-open .nav__menu,
-  html:not([data-motion="off"]) .nav.m-menu-open .nav__item:is(:hover, :focus-within) > .nav__menu { transition-duration: 0s; transition-delay: 0s; }
+  html:not([data-motion="off"]) .nav.m-menu-open .nav__item:hover > .nav__menu { transition-delay: 0s; }
+  html:not([data-motion="off"]) .nav__item:has(:focus-visible) > .nav__menu { transition: none; }
   html:not([data-motion="off"]) .menu-col a { transition: color var(--m-out) var(--m-ease); }
   html:not([data-motion="off"]) .menu-col a:hover { transition-duration: var(--m-in); }
   html:not([data-motion="off"]) .menu-card .panel { transition: border-color var(--m-out) var(--m-ease); }
 }
-/* the phone sheet slides in 8px and fades (system.js opens it) */
+/* Keep the phone sheet laid out until its exit fades. The closed sheet is inert. */
 @media (max-width: 1023px) {
-  html:not([data-motion="off"]) .nav.is-open .nav__links { transition: opacity var(--m-panel) var(--m-ease), transform var(--m-panel) var(--m-ease); }
-  @starting-style { html:not([data-motion="off"]) .nav.is-open .nav__links { opacity: 0; transform: translateY(-8px); } }
+  html:not([data-motion="off"]) .nav[data-m-nav] .nav__links {
+    display: flex; flex-direction: column; position: fixed; inset: var(--nav) 0 0;
+    padding: var(--s-4) var(--gut) calc(var(--btn-h) * 2 + 56px); background: var(--bg); overflow-y: auto; gap: 0;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--m-close) var(--m-ease), visibility 0s linear var(--m-close);
+  }
+  html:not([data-motion="off"]) .nav[data-m-nav].is-open .nav__links {
+    opacity: 1; visibility: visible; pointer-events: auto; transition: opacity var(--m-panel) var(--m-ease);
+    animation: m-sheet-in var(--m-panel) var(--m-ease);
+  }
+  .nav[data-m-nav]:not(.is-open) .nav__links .nav__item { display: grid; grid-template-columns: 1fr auto; height: auto; border-bottom: 1px solid var(--line); }
+  .nav[data-m-nav]:not(.is-open) .nav__links .nav__link { height: 56px; padding: 0; font-size: 20px; }
+  .nav[data-m-nav]:not(.is-open) .nav__links .nav__expand { display: inline-grid; place-items: center; width: 44px; border: 0; background: none; color: inherit; }
+  .nav[data-m-nav]:not(.is-open) .nav__links :is(.chev,.nav__menu) { display: none; }
+  @keyframes m-sheet-in { from { transform: translateY(-8px); } to { transform: none; } }
 }
 
 /* ---------------------------------------------------------------- tabs: the indicator slides */
@@ -151,6 +158,11 @@ html:not([data-motion="off"]) .tabs.m-has-ind .tab[aria-selected="true"] { backg
 .m-tab-ind.is-jump { transition: none; }
 html:not([data-motion="off"]) .tab { transition: color var(--m-slide) var(--m-ease), border-color var(--m-out) var(--m-ease), background-color var(--m-out) var(--m-ease); }
 
+/* Panels sharing a frame overlap during the exit. Hidden panels leave the layout after 180ms. */
+.m-tab-stack { display: grid; }
+.m-tab-stack > [role="tabpanel"] { grid-area: 1 / 1; transition: opacity 180ms ease-out, display 180ms allow-discrete; }
+.m-tab-stack > [role="tabpanel"][hidden] { opacity: 0; pointer-events: none; }
+
 /* ---------------------------------------------------------------- focus */
 /* the ring (system.css) is drawn in full in the frame the focus lands; no transition */
 
@@ -163,12 +175,17 @@ html:not([data-motion="off"]) .card:not(.card--open, .card--plan) {
 html:not([data-motion="off"]) .card--open > .panel { transition: transform var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease); }
 @media (hover: hover) and (pointer: fine) {
   html:not([data-motion="off"]) .card:not(.card--open, .card--plan, .m-nolift):hover {
-    transform: translateY(var(--m-lift));
     border-color: color-mix(in oklab, var(--ink) 16%, transparent);
     /* the shadow is deeper on a dark card (its lightness l): about .2 on white, .64 on near-black */
     box-shadow: inset 0 1px 0 var(--c-hi, transparent), 0 1px 2px rgb(0 0 0 / .06),
                 0 14px 32px -18px oklch(from var(--card, #fff) 0 0 0 / calc(0.75 - l * 0.55));
-    transition-duration: 180ms;
+    transition-duration: var(--m-in);
+  }
+  html:not([data-motion="off"]) .card:not(.card--open, .card--plan, .m-nolift) > :not(.sr-only) {
+    transition: translate var(--m-out) var(--m-ease);
+  }
+  html:not([data-motion="off"]) .card:not(.card--open, .card--plan, .m-nolift):hover > :not(.sr-only) {
+    translate: 0 var(--m-lift); transition-duration: 180ms;
   }
   html:not([data-motion="off"]) .card--open:not(.m-nolift):hover > .panel {
     transform: translateY(var(--m-lift)); box-shadow: 0 14px 32px -18px oklch(from var(--bg, #fff) 0 0 0 / calc(0.75 - l * 0.55)); transition-duration: 180ms;
@@ -189,14 +206,14 @@ html:not([data-motion="off"]) :is(.frame__img, .tile__media > img, .m-zoom img, 
 
 /* ---------------------------------------------------------------- inputs, switches, checks */
 html:not([data-motion="off"]) .field :is(input, select, textarea), .m-input {
-  transition: border-color var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease), background-color var(--m-out) var(--m-ease);
+  transition: border-color 140ms var(--m-ease), box-shadow 140ms var(--m-ease), background-color var(--m-out) var(--m-ease);
 }
 html:not([data-motion="off"]) .field :is(input, select, textarea):hover, .m-input:hover { border-color: color-mix(in oklab, var(--ink) 48%, transparent); }
 html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-input:focus {
   /* the field's own ring in place of the outline: a 2px line in --action (3:1 on the ground) and a soft halo,
      there at once like every focus ring (the hover's fade does not apply to focus) */
   outline: none; border-color: var(--action);
-  box-shadow: 0 0 0 1px var(--action), 0 0 0 4px color-mix(in oklab, var(--action) 20%, transparent); transition-duration: 0s;
+  box-shadow: 0 0 0 1px var(--action), 0 0 0 4px color-mix(in oklab, var(--action) 20%, transparent); transition-duration: 140ms;
 }
 /* a switch: <button class="m-switch" role="switch" aria-checked="false" aria-label="..."></button>
    (motion.js flips aria-checked on click unless the page handles it). The knob slides in 180ms and
@@ -308,12 +325,14 @@ html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-inpu
    when to start (.is-entering) and when it is over (.is-entered). Under reduced motion, in print, without script and
    with data-motion="off" none of these rules apply: the hero stands as written. */
 @media screen and (prefers-reduced-motion: no-preference) {
+  html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero:is([data-enter="focus"],[data-enter="exposure"]):not(.is-entering,.is-entered)
+    :is(h1 ~ p,h1 ~ .btn-row,h1 ~ dl,h1 ~ .facts) { opacity: 0; }
   /* focus: the picture racks into focus from soft and a touch large, the headline from half strength; nothing travels */
   html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="focus"]:not(.is-entering, .is-entered) h1 { opacity: .4; filter: blur(6px); }
   html.m-enter:not([data-motion="off"]) .hero[data-enter="focus"]:not(.is-still) h1 { transition: opacity 900ms var(--m-ease-enter), filter 900ms var(--m-ease-enter); }
   html.m-enter:not(.m-enter-done, [data-motion="off"]) .hero[data-enter="focus"]:not(.is-entering, .is-entered)
     :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
-        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { filter: blur(12px); scale: 1.04; }
+        :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) { filter: blur(8px); scale: 1.04; }
   html.m-enter:not([data-motion="off"]) .hero[data-enter="focus"]:not(.is-still)
     :is(:is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage):is(img, picture, video),
         :is([data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage) > :is(img, picture, video, .frame__img)) {
@@ -443,7 +462,7 @@ html:not([data-motion="off"]) .m-swap:focus-visible .m-swap__b { transform: none
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px transparent;
   transition: box-shadow var(--m-out) var(--m-ease), transform var(--m-press) var(--m-ease); }
 .m-swatch[aria-pressed="true"] { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px var(--ink); }
-.m-swatch:active { transform: scale(.94); }
+
 @media (hover: hover) and (pointer: fine) {
   .m-swatch:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 0 0 2px var(--bg), 0 0 0 3px var(--line-strong); transition-duration: var(--m-in); }
 }
@@ -471,6 +490,28 @@ html:not([data-motion="off"]) .m-swap:focus-visible .m-swap__b { transform: none
   100% { stroke-dashoffset: 0; opacity: .3; }
 }
 
+/* Press lives on its own transform component, independent of an icon or photo inside. */
+html:root:not([data-motion="off"]) :is(.btn,.tab,.nav__toggle,a.card,.pill,.m-swatch,summary,.press) {
+  transition: scale 160ms ease-out, color var(--m-colour-time, var(--m-out)) var(--m-ease),
+    background-color var(--m-colour-time, var(--m-out)) var(--m-ease),
+    border-color var(--m-colour-time, var(--m-out)) var(--m-ease), box-shadow var(--m-colour-time, var(--m-out)) var(--m-ease);
+}
+html:root:not([data-motion="off"]) :is(.btn,.tab,.nav__toggle,a.card,.pill,.m-swatch,summary,.press):hover { --m-colour-time: var(--m-in); transition-duration: 160ms, var(--m-in), var(--m-in), var(--m-in), var(--m-in); }
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .btn:active { transform: none; }
+  html:root:not([data-motion="off"]) :is(.btn,.tab,.nav__toggle,a.card,.pill,.m-swatch,summary,.press):active {
+    scale: .97; transition-duration: var(--m-press), var(--m-in), var(--m-in), var(--m-in), var(--m-in);
+  }
+  html:not([data-motion="off"]) :is(.faq--fold,[data-own]) details::details-content {
+    interpolate-size: allow-keywords; block-size: 0; overflow: clip; opacity: 0;
+    transition: block-size 200ms cubic-bezier(.25, 1, .5, 1), opacity 150ms ease-out, content-visibility 200ms allow-discrete;
+  }
+  html:not([data-motion="off"]) :is(.faq--fold,[data-own]) details[open]::details-content { block-size: auto; opacity: 1; }
+}
+html:not([data-motion="off"]) .field__error { opacity: 1; transition: opacity 150ms ease-out, display 150ms allow-discrete; }
+html:not([data-motion="off"]) .field__error[hidden] { opacity: 0; }
+@starting-style { html:not([data-motion="off"]) .field__error:not([hidden]) { opacity: 0; } }
+
 /* ---------------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion="off"]) .card:hover, html:not([data-motion="off"]) .card--open:hover > .panel,
@@ -482,6 +523,8 @@ html:not([data-motion="off"]) .m-swap:focus-visible .m-swap__b { transform: none
   /* the controls keep their state and their colour change, without travel: the tab pill and the switch
      knob jump, the tick fades in at full size, the underline is drawn at once */
   .m-tab-ind { transition: none; }
+  html:not([data-motion="off"]) .nav[data-m-nav].is-open .nav__links { animation: none; }
+  html:not([data-motion="off"]) :is(.btn,.card):hover > * { translate: none; }
   .m-switch::before { transition-property: background-color; }
   .m-switch:active::before { transform: none; }
   .m-switch[aria-checked="true"]::before, .m-switch[aria-checked="true"]:active::before { transform: translateX(16px); }

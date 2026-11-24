@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 128" role="img">
+  <title>Kettle wren pose sheet</title>
+  <style>:root{--coat:#292d23;--fold:#bd5639;--cut:#f6f1e5}</style>
+  <defs>
+    <g id="handle">
+      <path fill-rule="evenodd" d="M82 56Q96 53 113 34Q117 62 101 78L88 84L80 75Q101 68 104 53Q95 62 85 65Z"/>
+    </g>
+    <g id="breast">
+      <path d="M17 51Q23 36 34 38Q44 39 45 51L48 63Q59 57 73 58Q89 58 96 68L101 79Q94 100 66 102Q43 103 33 83Q27 72 27 60L9 57Z"/>
+    </g>
+    <path id="lid" d="M48 60Q55 49 65 48L65 45Q65 41 69 41Q73 41 73 45L73 48Q84 48 89 55L89 60Z"/>
+    <path id="wing" d="M49 76Q58 66 68 71Q75 74 87 65Q80 82 65 86Q55 86 49 76Z"/>
+    <path id="foot" d="M-2 0H3L2 10H10V14H-7V10H-2Z"/>
+    <path id="eye" d="M25 48Q30 44 34 48Q31 53 26 51Z"/>
+    <g id="pose-0" fill="var(--coat)">
+      <use href="#foot" transform="translate(51 97) rotate(0)"/>
+      <use href="#foot" transform="translate(73 97) rotate(0)"/>
+      <g transform="rotate(0 64 94)">
+        <use href="#handle" />
+        <use href="#breast" />
+        <use href="#lid" />
+        <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(0 53 79)"/>
+        <use href="#eye" fill="var(--cut)" transform="translate(0 0) scale(1 1)"/>
+      </g>
+    </g>
+    <g id="pose-1" fill="var(--coat)">
+      <use href="#foot" transform="translate(48 94) rotate(48)"/>
+      <use href="#foot" transform="translate(74 94) rotate(-32)"/>
+      <g transform="rotate(-12 64 94)">
+        <use href="#handle" />
+        <use href="#breast" />
+        <use href="#lid" />
+        <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(-36 53 79)"/>
+        <use href="#eye" fill="var(--cut)" transform="translate(0 0) scale(1 1)"/>
+      </g>
+    </g>
+    <g id="pose-2" fill="var(--coat)">
+      <use href="#foot" transform="translate(51 97) rotate(0)"/>
+      <use href="#foot" transform="translate(73 97) rotate(0)"/>
+      <g transform="rotate(17 64 94)">
+        <use href="#handle" />
+        <use href="#breast" />
+        <use href="#lid" />
+        <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(12 53 79)"/>
+        <use href="#eye" fill="var(--cut)" transform="translate(0 24) scale(1 0.5)"/>
+      </g>
+    </g>
+  </defs>
+  <g transform="translate(0)">
+    <title>At the window</title>
+    <use href="#pose-0" />
+  </g>
+  <g transform="translate(128)">
+    <title>On the way</title>
+    <use href="#pose-1" />
+  </g>
+  <g transform="translate(256)">
+    <title>Roosting</title>
+    <use href="#pose-2" />
+  </g>
+</svg>

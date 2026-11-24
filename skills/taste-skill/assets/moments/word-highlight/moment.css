@@ -1,8 +1,13 @@
-/* word-highlight: the statement in the display face; each word rests at half ink on the ground and turns to ink when
-   the scroll reaches it, a <strong> word to the accent. Without script every word is ink. */
-.mo-wh__text, [data-moment="word-highlight"] > .container > p { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--t-h2); line-height: 1.16; letter-spacing: var(--display-tracking); max-width: 960px; text-wrap: pretty; }
-.mo-wh .mo-w { color: color-mix(in oklab, var(--ink) 50%, var(--bg)); transition: color 160ms ease; }
+/* word-highlight: the statement in the display face; each word rests at 72% ink on the ground and turns to ink when
+   the scroll reaches it. Without script every word is ink. */
+[data-moment="word-highlight"]:is(h1,h2), [data-moment="word-highlight"] :is(.mo-wh__text,h2) {
+  font: var(--display-weight, 500) max(var(--t-h2), clamp(28px, 3vw, 40px))/1.16 var(--font-display);
+  letter-spacing: var(--display-tracking); min-inline-size: 60%; max-inline-size: 36ch; text-wrap: pretty;
+}
+main > .section.section--thin[data-moment="word-highlight"] { height: auto; min-height: 0; }
+main > .section.section--thin[data-moment="word-highlight"] > :is(.wrap,.container) { height: auto; }
+.mo-wh .mo-w { color: color-mix(in oklab, currentColor 72%, transparent); transition: color 160ms ease; }
 .mo-wh .mo-w.is-on { color: var(--ink); }
 .mo-wh strong { font-weight: inherit; }
-.mo-wh strong .mo-w.is-on { color: var(--accent); }
-@media (prefers-reduced-motion: reduce) { .mo-wh .mo-w { color: var(--ink); transition: none; } .mo-wh strong .mo-w { color: var(--accent); } }
+.mo-wh strong .mo-w.is-on { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .mo-wh .mo-w { color: var(--ink); transition: none; } .mo-wh strong .mo-w { color: var(--ink); } }

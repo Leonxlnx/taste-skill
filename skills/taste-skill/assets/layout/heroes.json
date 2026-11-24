@@ -1,8 +1,8 @@
 {
- "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place's hero is never dealt: it is always 'place' (local-business Recipe 3, hero-place.html), and no other hero lists place. Every hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. Nothing is laid over a photograph to make words readable (no scrim, gradient or veil: PH-31). Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale.",
+ "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place with a matching photograph uses hero-place.html in one of four forms. Without one it uses the statement hero. The standard hero is exactly one screen (height 100svh) with the fixed header (72px, 56 on a phone) over its top: its words start 48px under the header (y 120 at 1440x900, y 96 at 390x844; 40 and 24 under a place's photograph), its content ends 64px above the fold (24 on a phone, plus the action bar), and nothing of the next section shows. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. Nothing is laid over a photograph to make words readable (no scrim, gradient or veil: PH-31). Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale. A dealt product window with hero--peek can extend below the fold with at least 420px visible at 1440x900.",
  "fields": {
-  "types": "business types it may be dealt to, with weights; a type missing is never dealt. place is never dealt: deal.mjs always prints the 'place' hero for it. gaming is a kind, not a page type (a game is page type software): its weights are read by deal.mjs for a game (--kind gaming, or --type software --has film,photo without ui) and never for a software brief; no hero for a game lists ui. A game without art files passes --has setting (stand-in photographs of its setting, found with photos.mjs search) and is printed the photo hero, its name set large on the photograph's calm side; --has object (its key art rendered with assets/objects/product-render) only when the brief asks for 3D. A game never deals statement or word: an effect never replaces its key art",
-  "needs": "the material it cannot do without (a|b means either): photo (a strong photograph of the real thing, at least 1920 wide for a full-bleed one: the client's own, else a stand-in found with photos.mjs search and listed in the report), ui (the client's screens or kit fragments from assets/ui rewritten to its names), film (a real film; without one the control links to the film's page, never a dead button), object (a product photograph on a plain ground, a cut-out, the client's render, or a product render composed with assets/objects/product-render when the brief asks for 3D or a render), setting (a game without art files: stand-in photographs of the place its world is set in), ground (nothing: a CSS ground from assets/backgrounds)",
+  "types": "Eligible page types and weights. A game uses the gaming weights. A place with pictures takes the place hero. A product without a picture takes split with its own built view.",
+  "needs": "Material the hero uses. A vertical bar means either. photo is a photograph of the subject, art its artwork, ui its screen, film actual footage, object a cut-out or render, setting a game world to illustrate, and ground a flat field.",
   "h1": "the layout.css token, its size at 1440 and 390 before --ly-scale, the leading, the most lines at each width and the longest headline that fits",
   "grid": "where each block stands on the 12 columns at 1440 (from 1024 up); below 1024 everything stacks in the order given",
   "at1440": "measured on the demo at 1440x900 (the fixed header 72 over the hero's top, the hero exactly 900, words from y 120, content ending by y 836, container x 80 to 1360)",
@@ -28,10 +28,10 @@
     "photo"
    ],
    "h1": {
-    "token": "--t-h1 (place: 48 / 32)",
+    "token": "--place-display (up to 72 / 36)",
     "size": [
-     48,
-     32
+     72,
+     36
     ],
     "leading": 1.104,
     "lines": [
@@ -41,24 +41,24 @@
     "maxChars": 48
    },
    "grid": {
-    "photo": "full bleed, y 72 to 552 (--photo: min(480px, 53svh)), the subject in the middle 640px, nothing on it (no text, scrim, gradient, fade or box)",
-    "h1": "columns 1-6 (x 120-708 on the 1200 place column), --hgap 40 under the photograph",
-    "aside": "columns 7-12 (from x 732): the sub-line, two lines at most, then one filled 48px button 24 under it",
-    "below": "below 1024 everything stacks: the photograph 56vw (at most 46svh), then the h1, the sub-line and the button"
+    "photo": "band: full bleed under the header, filling the height left by the text, with room to crop the subject in the middle; the text is on the ground below",
+    "h1": "columns 1-8 on the 1200 place column, --hgap 40 under the photograph",
+    "aside": "columns 9-12: the sub-line, two lines at most, then one filled 48px button 24 under it",
+    "below": "the band stacks the photograph above the h1, lead and button below 1024; a phone with data-phone-fill can use the height left by the words"
    },
    "at1440": {
     "hero": "1440x900: exactly one screen; the visit block is screen 2, never in screen 1",
-    "photo": "1440x477 at y 72 (53svh at 900 tall; 480 on a taller screen)",
-    "text": "h1 48/53 on 2 lines, its capitals at y 589; sub 20/30 from x 732; button 48, 24 under the sub; the row ends by about y 750",
-    "measured": "hero 900/900, h1 48px on 2 lines from y 589, the photograph 1440x477 at y 72"
+    "photo": "1440x580 at y 72 in the demo (the band fills the height left by its words)",
+    "text": "Display up to 72px on two lines, with lead and action in the right column.",
+    "measured": "hero 900/900, h1 72px on 2 lines from y 692, the photograph 1440x580 at x 0, y 72"
    },
    "at390": {
     "hero": "844: one screen, the action bar at its foot",
-    "photo": "390x293 (4:3) at y 56, the subject centred (a phone crop through <picture> when the desktop one cuts it)",
-    "text": "--hgap 24: h1 32/37 on at most 3 lines from y 373, sub 18/28 (the opening days and time), one full-width 48px button; ends by 844 - 24 - the bar",
-    "measured": "hero 844/844, h1 32px on 2 lines from y 373"
+    "photo": "390x488 at y 56 in the demo (the image uses data-phone-fill)",
+    "text": "Display up to 36px on three lines, then the opening hours and full-width action.",
+    "measured": "hero 844/844, h1 36px on 2 lines from y 593, the photograph 390x488 at x 0, y 56"
    },
-   "moment": "the dealt entrance only (start.mjs plan deals it from the deck: rise, set-type, focus, exposure or aperture), then the hero rests; the page's moments and scene are dealt apart, by fit",
+   "moment": "the dealt entrance only (start.mjs plan deals it from the deck: eligible entrances in assets/motion/meta.json), then the hero rests; the page's moments and scene are dealt apart, by fit",
    "moments": [],
    "grounds": [
     {
@@ -69,11 +69,11 @@
    "effects": [],
    "mistakes": [
     "words, a scrim or a gradient on the photograph (the bleed form's words stand on a solid panel of the page ground)",
-    "a form chosen by taste, or another hero (split, photo, film, editorial) on a place",
+    "a photo-led form with no suitable photograph; the dealer uses the statement hero when none is available",
     "an empty band under the words: the band and name forms end the words on the fold",
     "the visit block or the address inside the first screen",
     "a stock photograph standing in for the client's own place",
-    "rounded corners on the photograph (place photographs are square)",
+    "a picture corner that differs from the plan",
     "two buttons, or a pill button"
    ]
   },
@@ -82,13 +82,15 @@
    "name": "Split, the picture on the right",
    "from": "Stripe, Linear customer pages, Aesop, Cowboy, most hotel and clinic sites",
    "demo": "hero-split.html",
-   "job": "Text left, the real thing right, both whole on the first screen: a photograph of the product in use, the place or the people; a phone or one window for software.",
+   "job": "Text left, the subject on the right. Use its own photograph, a built product view or a drawing in the page's style. A supplied software or game window can fill the visual.",
    "types": {
     "service": 3,
-    "software": 2
+    "software": 2,
+    "gaming": 1,
+    "product": 2
    },
    "needs": [
-    "photo|ui|object"
+    "photo|ui|object|art|ground"
    ],
    "h1": {
     "token": "--ly-h1",
@@ -112,21 +114,16 @@
     "text": "519 wide; a notice line 14px at y 120, 16 to the h1; h1 72/1.02 on 3 lines from y 158 (from y 120 with no notice line, its capitals trimmed to the picture's top); lead 20/30 on 3 lines, max 42ch, 24 under the h1; buttons 44, 32 under the lead",
     "visual": "628x716 at x 732, y 120 (48 under the header), radius --r-lg on all four corners",
     "float": "one opaque card 300 wide, flat (a hairline, no shadow), 24 in from the picture's lower-left: a live fact (out of the oven at 10:30, next free slot)",
-    "measured": "hero 900/900, h1 72px (weight 400) on 3 lines, its box from y 158, the visual 628x716 at x 732, y 120"
+    "measured": "hero 900/900, h1 72px on 3 lines from y 158, the visual 628x716 at x 732, y 120"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "text": "h1 40 on 2 lines from y 134 under the notice line, lead 17/25.5 on 4 lines, buttons stacked full width (44 + 12 + 44)",
     "visual": "342 x what is left (303 here, at least 240), 32 under the buttons, cover-cropped round the subject",
-    "measured": "hero 844/844, h1 40px on 2 lines from y 134, the visual 342x303 at y 517"
+    "measured": "hero 844/844, h1 40px on 3 lines from y 134, the visual 342x262 at x 24, y 558"
    },
    "moment": "none on a photograph (the float card's dot breathes every 2.4 s); one loop inside a window or phone for software",
-   "moments": [
-    {
-     "id": "liquid-hover",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "paper",
@@ -145,21 +142,22 @@
     "a picture narrower than six columns",
     "the float card covering the subject",
     "a second float card"
-   ]
+   ],
+   "window": true
   },
   {
    "id": "photo",
    "name": "Full-bleed photograph, the words on its calm side",
    "from": "Aman, Ace Hotel, Le Labo, Cowboy, x.ai's film section",
    "demo": "hero-photo.html",
-   "job": "A place or a product with one strong photograph that has a calm area for the words: sky, a wall, cloud, shadow. Never for a software product (its own UI leads); a game with key art is dealt it, and a game without art files is printed it (--has setting): the game's name as the h1, set large in the box or straight on a dark calm part of a stand-in photograph of its setting (photos.mjs search), never an effect in its place.",
+   "job": "One wide picture of the subject, with the words on its calm side. A game shows its world in the client's art style or builds the picture with subskills/illustrate/SKILL.md.",
    "types": {
     "product": 2,
     "service": 2,
     "gaming": 3
    },
    "needs": [
-    "photo"
+    "photo|art|setting"
    ],
    "h1": {
     "token": "--ly-h1-xl",
@@ -182,22 +180,17 @@
     "hero": "1440x900: the photograph edge to edge under the fixed header (full bleed is symmetric)",
     "text": "in its box: h1 80 (89.6 after the pairing's scale) on 3 lines from y 231; lead 20/30 on 3 or 4 lines, max 42ch; buttons 44, the page's own pair",
     "photo": "at least 1920 wide; object-position keeps the subject off the words",
-    "measured": "hero 900/900, h1 90px (weight 400) on 3 lines, its box from y 231, the visual 1440x900 at x 0, y 0",
+    "measured": "hero 900/900, h1 89.6px on 3 lines from y 231, the visual 1440x900 at x 0, y 0",
     "box": "a solid box in the page's ground colour, radius --r-lg, never a scrim, gradient, veil or blurred panel (PH-31, VI-49)"
    },
    "at390": {
     "hero": "844: the photograph a layer under the header (42svh: 354 here), the words under it on the page ground; from 1023 down the same (56vw, at most 46svh)",
     "text": "h1 44 (49) on 2 lines from y 450, lead 17 on 4 lines, buttons stacked",
     "facts": "not shown below 1024 (a desktop line); the next section carries them",
-    "measured": "hero 844/844, h1 49px on 2 lines from y 450, the visual 390x354 at y 56"
+    "measured": "hero 844/844, h1 49.3px on 2 lines from y 450, the visual 390x354 at x 0, y 56"
    },
    "moment": "none: the photograph is the hero",
-   "moments": [
-    {
-     "id": "liquid-hover",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "photo"
@@ -220,14 +213,14 @@
    "name": "Product stage with one object",
    "from": "Figma's hero row, Apple product pages, Cowboy, Teenage Engineering",
    "demo": "hero-product.html",
-   "job": "The product itself, big, under one head row: the headline left, the lead and the buttons right. A render or a cut-out stands on the page's own ground across the wrap (no box, no gradient, no radius), its widest view (a bike's side) spanning 80% or more of the wrap at 1440; a product photograph runs edge to edge down to the fold, cropped so the product spans 80% or more of the wrap. Nothing on the product: no hotspots by default (the parts are named in the sections below). A product or hardware without photographs of its own: a stand-in photograph of the same kind of thing (photos.mjs search), listed in the report; its product render (assets/objects/product-render), a still, only when the brief asks for 3D or a render. A game puts its name in the h1 (or its wordmark above it), the launch date or status in the lead, and the stage holds its key art (a rendered hero object or world only when the brief asks for 3D; a print or scene keeps the lit stage), an effect allowed only behind it.",
+   "job": "The product itself under one head row. The headline stands on the left, the lead and buttons on the right. A cut-out or drawing spans the wrap, or the client's product photograph fills the stage. A game shows its own world or key art.",
    "types": {
     "product": 3,
     "software": 1,
     "gaming": 1
    },
    "needs": [
-    "object|photo"
+    "photo|art|object"
    ],
    "h1": {
     "token": "--ly-h1",
@@ -251,21 +244,16 @@
     "head": "h1 72 on 2 lines from y 131; lead 20/30 on 3 lines, 411 wide; buttons 44; the head ends at y 278",
     "stage": "1280x566 at y 310, the product whole on the page ground: the city bike's side still 1046x554 (81.7% of the wrap), its three-quarter 818x554 (63.9%, under 8 columns: the hero takes the widest view)",
     "spots": "none by default; only when the brief asks for the parts to be pointed out on the product: one to three 32px discs (layout.js .ly-spot), each opening a 230px spec card on hover, focus or tap",
-    "measured": "the city bike's side still: hero 900/900, stage 1280x566 at y 310, product 1046x554 at x 197 (81.7%); 1024x768 744x394 of 864 (86.1%); 768x1024 578 of 672 (86.0%); 390x844 294 of 342 (86.0%)"
+    "measured": "hero 900/900, h1 80.6px on 2 lines from y 120, the visual 1440x568 at x 0, y 333"
    },
    "at390": {
     "hero": "844: one screen",
     "stage": "a render: 342 wide and what the head leaves (394 at 390x844), the product 86% of the wrap (294 wide), centred in it; a photograph: the screen width at its own ratio (390x293)",
     "spots": "none by default; when asked for, a tap opens the card under its disc, centred on it and kept 16px inside the stage",
-    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the stage 342x394 at y 426, the bike 294x156"
+    "measured": "hero 844/844, h1 44.8px on 2 lines from y 96, the visual 390x293 at x 0, y 461"
    },
    "moment": "none: the product is the hero (hotspots only when the brief asks for them); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
-   "moments": [
-    {
-     "id": "cursor-spotlight",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "paper",
@@ -337,13 +325,13 @@
     "hero": "1440x900",
     "h1": "156 (146.6 after the 0.94 scale) on 3 lines from y 173; pills 117 tall, about 246 and 199 wide",
     "foot": "hairline at y 737, lead 20/30 on 3 or 4 lines, buttons 44 on the right line",
-    "measured": "hero 900/900, h1 147px (weight 400) on 3 lines, its box from y 173, the visual 308x117 at x 794, y 222"
+    "measured": "hero 900/900, h1 146.6px on 3 lines from y 173, the visual 308x117 at x 794, y 222"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "h1": "56 (52.6) on 4 to 5 lines with a long lead; keep it to 4 (cut the headline)",
     "foot": "lead 17 on 4 lines, buttons stacked",
-    "measured": "hero 844/844, h1 53px on 5 lines from y 211"
+    "measured": "hero 844/844, h1 52.6px on 4 lines from y 211, the visual 111x42 at x 26, y 292"
    },
    "moment": "the pills are whole on the first frame (no opening, no settle: the h1 never reflows after load) and still under the pointer; letters thicken and widen near the pointer (data-ly-letters=wdth, fine pointers only).",
    "moments": [],
@@ -405,21 +393,16 @@
     "window": "64 from the frame's left and top, the frame's width less 64 plus 28 (it runs 28px past the right edge); its content keeps 48px clear at the right, so the cut falls in empty margin after the status chips; no time column",
     "card": "300 wide, 32 in from the frame's lower-left, over the window",
     "text": "h1 64 (62.7) on 3 lines from y 120, lead 20/30, buttons 44, one muted proof line 24 under them",
-    "measured": "hero 900/900, h1 63px (weight 500) on 3 lines, its box from y 249, the visual 628x716 at x 732, y 120"
+    "measured": "hero 900/900, h1 62.7px on 3 lines from y 120, the visual 628x716 at x 732, y 120"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "art": "342 x what is left (244 here, at least 220), 32 under the text",
     "window": "the window alone, 16 in, its side bar and quantity column hidden, the chips whole; the small card is not shown on a phone",
-    "measured": "hero 844/844, h1 39px on 3 lines from y 96, the visual 342x256 at y 564"
+    "measured": "hero 844/844, h1 39.2px on 3 lines from y 96, the visual 342x264 at x 24, y 556"
    },
    "moment": "a loop inside the small card: it shows finished first, holds 1.8 s, then its three steps arrive 0.7 s apart and it holds again; restarts when the pointer enters; pause disc bottom-right; a phone holds the finished card",
-   "moments": [
-    {
-     "id": "cursor-spotlight",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "topglow",
@@ -460,7 +443,8 @@
     "a frosted wrapper round the window",
     "UI text under 12px",
     "a status chip cut by the frame's edge"
-   ]
+   ],
+   "window": true
   },
   {
    "id": "word",
@@ -498,13 +482,13 @@
     "h1": "144 (129.6 after the 0.9 scale) on 2 lines from y 227, 1280 wide from x 80; the lines locked, the live word's slot as wide as its widest word",
     "underline": "the accent, 0.05em thick, under the live word only; each word brings its own",
     "foot": "64 under the h1: the lead 20/30 on 3 lines on span-6, the buttons 44 32 under it; the four facts as a column on span-5 start-8 (rows of 50, hairlines), ending on the right line",
-    "measured": "hero 900/900, h1 130px (weight 400) on 2 lines, its box from y 227"
+    "measured": "hero 900/900, h1 129.6px on 2 lines from y 251"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "h1": "54 (48.6) on 3 lines",
     "facts": "2 x 2 under the buttons",
-    "measured": "hero 844/844, h1 49px on 3 lines from y 149"
+    "measured": "hero 844/844, h1 48.6px on 3 lines from y 149"
    },
    "moment": "the live word (data-ly-word): a new word every 2 s for two rounds, then it rests on the first and plays again when the pointer enters; no line moves (the slot is as wide as the widest word). Letters near the pointer thicken (+200) and widen (+10%) on a face with a wdth axis (data-ly-letters=wdth), on lines locked at rest. A phone and reduced motion hold the first word, no letters",
    "moments": [],
@@ -561,7 +545,7 @@
    "name": "Cinema frame: the film's poster with the words on it",
    "from": "x.ai ('Play, We recently hired a new teammate'), Apple, Cowboy, Netlify, tour operators",
    "demo": "hero-film.html",
-   "job": "One rounded frame on the container's lines fills the first screen less 16px; the film's poster in it, the headline, the line and the buttons on its dark foot ( For a client with a real film, or a strong photograph with a calm dark foot.",
+   "job": "One rounded frame on the container's lines holds the film's poster, with the headline, buttons and play control on its calm foot.",
    "types": {
     "product": 2,
     "service": 2,
@@ -569,7 +553,7 @@
     "gaming": 3
    },
    "needs": [
-    "film|photo"
+    "film"
    ],
    "h1": {
     "token": "--ly-h1",
@@ -594,21 +578,16 @@
     "frame": "1280x716 at x 80, y 120",
     "h1": "72 (70.6) on 3 lines from y 358, in the box (padding 48)",
     "play": "a 64px white disc, its label 20px in a solid pill of the inverse ground, the running time 14px under it",
-    "measured": "hero 900/900, h1 71px (weight 400) on 3 lines, its box from y 358, the visual 1280x716 at x 80, y 120"
+    "measured": "hero 900/900, h1 70.6px on 3 lines from y 358, the visual 1280x716 at x 80, y 120"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "frame": "342x724 at y 96",
     "words": "the box across the frame's foot, 12 in, padding 24; the play disc (52) and its label first, then the h1 40 on 3 lines, lead 17, buttons stacked",
-    "measured": "hero 844/844, h1 39px on 3 lines from y 389, the visual 342x724 at y 96"
+    "measured": "hero 844/844, h1 39.2px on 3 lines from y 389, the visual 342x724 at x 24, y 96"
    },
    "moment": "the play control: the film plays in the frame with controls (data-film) or the control goes to the film's page; the poster never autoplays sound",
-   "moments": [
-    {
-     "id": "cursor-spotlight",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "deep",
@@ -666,21 +645,16 @@
     "hero": "1440x900, the text block top-aligned (layout-v4.md section 3: the h1 first, top at y 120), the facts docked at the foot",
     "order": "pill 32 at y 120 (only for real news), 32, h1 56 (59.4) on 2 lines (from y 120 without the pill, y 184 with it), 24, lead 20/30 on 3 or 4 lines, 32, buttons 44; the four facts under a hairline at the hero's foot",
     "ground": "the demo: bg-horizon on a dark page (the lit rim rises from the hero's foot behind the facts)",
-    "measured": "hero 900/900, h1 59px (weight 400) on 2 lines, its box from y 120 (no pill)"
+    "measured": "hero 900/900, h1 59.4px on 2 lines from y 184"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "h1": "34 (36) on 3 lines",
     "facts": "2 x 2",
-    "measured": "hero 844/844, h1 36px on 3 lines from y 96 (80 on a place page: --hgap 24)"
+    "measured": "hero 844/844, h1 36px on 3 lines from y 172"
    },
    "moment": "the ground: liquid (two slow blobs, software only, with its pause disc) or a still horizon, field, halo, dusk or grain",
-   "moments": [
-    {
-     "id": "liquid-type",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "horizon",
@@ -780,14 +754,14 @@
     "collage": "628x716 at x 406, y 120: each set three to five pieces placed in % of the collage (photographs, a printed piece, a small UI card), overlapping only where no line of text sits; one piece in each set ends at 96% x 96%, and the pause disc sits on its corner",
     "headline": "52 on 3 lines (302 wide) centred in the height (from y 365), a 16/24 line under it",
     "button": "64 tall, 20px label, the page's primary, its right edge on the right line",
-    "measured": "hero 900/900, h1 52px (weight 500) on 3 lines, its box from y 365, the visual 628x716 at x 406, y 120"
+    "measured": "hero 900/900, h1 52px on 3 lines from y 353, the visual 628x716 at x 406, y 120"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "headline": "40 on 2 lines",
     "collage": "342 x what is left (433 here, at least 300), the same picture smaller",
     "button": "56 tall, full width, under the collage",
-    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the visual 342x433 at y 287"
+    "measured": "hero 844/844, h1 40px on 2 lines from y 96, the visual 342x409 at x 24, y 311"
    },
    "moment": "the sets crossfade (0.7 s) every 2.8 s through ui.loop with its pause disc; nothing moves inside a set; a phone holds set one",
    "moments": [],
@@ -851,21 +825,16 @@
     "hero": "1440x900: one screen; the frame shows its top 335px, solid to 82%",
     "order": "pill 32 at y 120, 16, h1 72 (74.9) on 2 lines, 16, lead 20/30 grey on 2 lines max 52ch, 28, buttons 44 (centred)",
     "window": "880 wide, 32 under the frame's top; the exchange (the question on one line, the tool line, a two-line answer, Send and Edit) ends 278px into the frame, above the fade; the inbox column beside it is context and may run into the fade",
-    "measured": "hero 900/900, h1 75px (weight 500) on 2 lines, its box from y 168, the visual 1280x335 at x 80, y 501"
+    "measured": "hero 900/900, h1 74.9px on 2 lines from y 168, the visual 1280x335 at x 80, y 501"
    },
    "at390": {
     "hero": "844: exactly one screen",
     "frame": "342 x what the words leave (313 here, at least 240, so a three-line headline still ends on the first screen), fading over its last 28px",
     "window": "the frame's width less 32, 16 in, its list column, the bar's right label and the tool line hidden; the question and the answer end about 230px in, above the fade (its last 28px)",
-    "measured": "hero 844/844, h1 42px on 2 lines from y 144, the visual 342x313 at y 507"
+    "measured": "hero 844/844, h1 41.6px on 2 lines from y 156, the visual 342x301 at x 24, y 519"
    },
    "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
-   "moments": [
-    {
-     "id": "cursor-spotlight",
-     "only": "tech"
-    }
-   ],
+   "moments": [],
    "grounds": [
     {
      "id": "deep",
@@ -902,7 +871,8 @@
     "the hero taller than one screen, so the window's foot meets the next section",
     "the window cut through its first rows",
     "the exchange (question, answer, actions) in the fade"
-   ]
+   ],
+   "window": true
   }
  ]
 }

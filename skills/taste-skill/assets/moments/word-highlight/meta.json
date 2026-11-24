@@ -16,15 +16,24 @@
     "playful"
   ],
   "intensity": "quiet",
-  "look": "One large statement rests at half ink (readable, about 4 to 1) and turns to ink word by word as it crosses the middle of the screen, a strong word to the accent; it runs back on the way up.",
+  "look": "A complete statement stands in readable muted ink. Words take full ink in reading order as the heading crosses the middle of the screen.",
   "reduced": "The statement in ink.",
-  "phone": "It runs on a phone as on a desktop (one paragraph's colours); under reduced motion the whole statement is in ink, the accent word in the accent.",
+  "phone": "The full heading stays in flow with the same change of ink. Reduced motion holds the final colour.",
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
-    "words": "one statement of 12 to 40 words"
+    "words": "One existing statement of 12 to 40 words on a heading.",
+    "carry": [
+      "words"
+    ]
   },
-  "text": { "words": [12,40], "sel": ".mo-wh__text, p, h2, h3, blockquote" },
+  "text": {
+    "words": [
+      12,
+      40
+    ],
+    "sel": "h2, .mo-wh__text"
+  },
   "avoidWith": [
     "giant-type-pass"
   ],

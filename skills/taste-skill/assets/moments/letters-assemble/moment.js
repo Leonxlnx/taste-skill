@@ -24,7 +24,7 @@
 export const phone = true;
 
 export default function (root, opts, lib) {
-  const type = root.querySelector(opts.heading || '.mo-la__type, h2, h1');
+  const type = root.matches('h1,h2') ? root : root.querySelector(opts.heading || '.mo-la__type, h2, h1');
   if (!type) return {};
   root.classList.add('mo-la');
   if (lib.reduced()) { root.classList.add('is-done'); return {}; }

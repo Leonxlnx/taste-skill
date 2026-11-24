@@ -25,10 +25,16 @@
   "reduced": "The quote in ink with the object's still standing above it and the credit under.",
   "phone": "The finished composition.",
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "words": "a quote of 10-18 words in 3-5 lines of 9-13 characters with the gap near the middle, and a credit of 5 words at most",
-    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)"
+    "object": "one object: print-globe, print-cards, print-wheel, print-lamp or print-cup with its still made by shoot.mjs make, or the client's clean cut-out (an <img class=\"ott__img\">)",
+    "carry": [
+      "words"
+    ],
+    "list": [
+      "object"
+    ]
   },
   "never": "an archive or black-and-white photograph as the object; a line longer than 13 characters; an eyebrow above the quote; an object of another trade than the client's; on a local-business or place page",
   "avoidWith": [
@@ -53,5 +59,6 @@
     "giant-type-pass",
     "word-highlight",
     "letters-assemble"
-  ]
+  ],
+  "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
 }

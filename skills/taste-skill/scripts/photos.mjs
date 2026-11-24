@@ -8,7 +8,7 @@
     node <skill>/scripts/photos.mjs pick --trade cafe --sections hero,bar,roastery,coffee,visit --seed s1 --history .taste-skill/history.json
                                     [--count 6] [--tone light|dark] [--place "Lofoten, Norway"] [--setting coast,mountain]
                                     [--pictures 12] [--brief BRIEF.md] [--draft-lead | --no-client-photos] [--own-land] [--shop] [--mono] [--commons-only] [--json]
-    node <skill>/scripts/photos.mjs pick --product-without-photos   a physical product with no photographs: no library frame; prints the search for stand-ins
+    node <skill>/scripts/photos.mjs pick --product-without-photos   a physical product with no photographs: no library frame; prints the picture ladder
     node <skill>/scripts/photos.mjs search "yoga studio interior" [--trade wellness] [--count 12] [--min 1600] [--orientation landscape|portrait] [--out .]
     node <skill>/scripts/photos.mjs search --trade hotel          a live search of Wikimedia Commons (CC0, CC BY, CC BY-SA, public domain JPEGs), by
                                                                   the trade's own search words when no words are given; writes .taste-skill/found.json
@@ -36,12 +36,8 @@
                   ("Lofoten, Norway", "Iceland; Faroe Islands"; list --places): a frame is dealt when its source
                   names the client's place exactly or a place inside it; a broader tag (Iceland for Reykjavik) is not.
                   --setting (coast, mountain, lake...) only narrows frames with no named place.
-  A physical product (a maker or brand of bikes, chairs, scooters, devices...) without photographs of its own is dealt
-  no library frame: the client's own photographs lead; until they exist, stand-ins found with search (photographs of the
-  same kind of thing, in use, its parts, where it lives; no maker's name, logo or face readable), each listed in the
-  report as a stand-in to replace. A render (assets/objects/product-render) only when the brief asks for 3D or a render;
-  never a drawing, never another kind's object (PH-04, PH-07). --shop (or "bike shop") is for a shop or workshop that
-  sells or fixes every make: it gets parts and loads only.
+  A physical product uses the client's picture or a built drawing of the product and its parts.
+  A stand-in may show the actual material or process. Use --shop for a shop that fixes many makes.
   search asks Wikimedia Commons for JPEGs under CC0, CC BY, CC BY-SA or in the public domain, at least --min pixels wide
   (1600), and keeps them in .taste-skill/found.json under --out, so fetch and credits treat them as library frames. With
   no words it runs the trade's own search words (TERMS below: yoga and studio interiors, bike workshop benches and whole
@@ -75,6 +71,7 @@
   the library holds nothing of (the Lake District) deals no land, never another place's.
 */
 import fs from 'node:fs';
+import { imageSize } from './image-size.mjs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -96,24 +93,10 @@ const positional = () => { const out = []; for (let i = 1; i < argv.length; i++)
 const die = (m) => { console.error('photos: ' + m); process.exit(1); };
 
 // ------------------------------------------------------------------ a physical product without photographs
-const PRODUCT = 'A physical product without photographs of its own is dealt no library frame: the library holds other places\' details, never a product. '
-  + 'The product is still shown, never hidden, and by photographs (references/photos.md, A product without photographs; references/sections.md, Product), in this order: '
-  + '(1) the client\'s own photographs, or a picture the brief supplies (a cut-out, a CAD view, its own render); '
-  + '(2) until they exist, stand-ins found with photos.mjs search: the same kind of thing whole (a cargo bike for a cargo bike, never a wheel for a bicycle), '
-  + 'in use where it lives, close-ups of the parts the page names, one light and grade across the set, no maker\'s name, logo or face readable; '
-  + 'every one listed in the build report as a stand-in with the client\'s photograph to shoot in its place, nothing on the page saying so; '
-  + '(3) a render from assets/objects/product-render (effects-objects.md, Product renders) only when the brief asks for 3D or a render (deal.mjs --has object). '
-  + 'The page is the full product page (the product, what it carries, how it is used, specs as rows, a live order card), never the short page. '
-  + 'Never a drawn SVG or a drawing of the product (PH-07), never mood stock (a forest for "the ride", groceries for "what it carries"), never an object of another kind. '
-  + 'The report also lists the photographs to shoot (the product on one plain backdrop, three angles, a detail of each part, the product in use). '
-  + 'A shop, workshop or rental that sells or fixes every make is a place: pick --trade bike --shop.';
-// what to search for a product: its own word, whole and close (add the place it lives in plain words: "cargo bicycle street")
-const productSearches = (word) => { const w = String(word || '<the product>').replace(/\b(brand|maker|company|startup|label|manufacturer)s?\b/gi, '').replace(/\s+/g, ' ').trim() || '<the product>'; return [w, `${w} detail`]; };
+const PRODUCT = "Show the client's own picture first. Without one, build the product and its output in one drawing style (subskills/illustrate/SKILL.md). A stand-in may show a matching material, setting or process. Never show another maker's product as this one. List the product views the client should supply.";
 function refuse(trade, why) {
-  const qs = productSearches(trade);
-  const next = qs.map((q) => `node ${cmdPath(path.join(HERE, 'photos.mjs'))} search "${q}" --out .`);
-  if (opt('json')) console.log(JSON.stringify({ trade: trade || null, refused: true, why, ids: [], photos: [], next: PRODUCT, search: next }, null, 1));
-  else console.log(`NO LIBRARY FRAMES (${why}).\n\n${PRODUCT}\n\nthe search for stand-ins (look at each result full size; list every one you use in the report):\n${next.map((x) => '  ' + x).join('\n')}`);
+  if (opt('json')) console.log(JSON.stringify({ trade: trade || null, refused: true, why, ids: [], photos: [], next: PRODUCT, search: [] }, null, 1));
+  else console.log(PRODUCT);
   process.exit(0);
 }
 
@@ -173,7 +156,7 @@ const ALIAS = [
   [/tour|guide|outdoor|hike|camp|travel/i, 'outdoors'],
   [/farm|garden|nursery|grow/i, 'farm'], [/wine|vineyard|winery/i, 'wine'], [/bar\b|taproom|brew|pub|cocktail/i, 'bar'],
 ];
-const NO_TRADE = (word) => `no trade for "${word}": the library holds ${Object.keys(lib.trades).join(', ')}, and none shows this business without passing another's work, room or goods as its own. Use the client's own photographs; until they exist, stand-ins from a live search (photos.mjs search${termsFor(word).length ? ` --trade "${word}"` : ' "<its subject>"'}), each listed in the report, else type and its real UI. A physical product: pick --product-without-photos (stand-ins of the same kind of thing; never a drawing).`;
+const NO_TRADE = (word) => `no trade for "${word}": the library holds ${Object.keys(lib.trades).join(', ')}, and none shows this business without passing another's work, room or goods as its own. Use the client's own photographs; until they exist, stand-ins from a live search (photos.mjs search${termsFor(word).length ? ` --trade "${word}"` : ' "<its subject>"'}), each listed in the report, else type and its real UI. A physical product: pick --product-without-photos (build its own form and output).`;
 function tradeOf(word) {
   if (!word || word === true) die('name a trade: --trade ' + Object.keys(lib.trades).join('|') + ' (a physical product without photographs: --product-without-photos)');
   if (lib.trades[word]) return word;
@@ -219,7 +202,7 @@ const PLACE = {
   breakfast: 'breakfast: beside its hours and what is served; never captioned as a named dish',
   food: 'beside the produce or supplier it stands for; a dish on the menu stays type or the client\'s own photograph',
   hands: 'the making: beside how it is made, or a half-width picture in a split',
-  detail: 'the rooms: one detail beside each room\'s facts (the linen, the chair, the lamp), never called the room itself',
+  detail: 'a detail of the material or furnishing, beside a whole view of the room',
   desk: 'beside the line about the work it shows',
   street: 'a band or the visit section: the town and the weather, never captioned as the client\'s street',
   road: 'a full-width band, or the getting-there section',
@@ -234,10 +217,10 @@ const PLACE = {
   oven: 'the process of baking: beside the bake times or the bread it makes; another oven, never called the client\'s own',
   dough: 'the making: beside how the dough is made and rested; never called the client\'s own bake room',
 };
-// a place page (every SLOTTED trade) has no photo band, no tab and no text on a photograph: the hero is Recipe 3 (a full-bleed
+// a place hero follows its dealt form (one option is a full-bleed
 // top photograph with nothing on it, the words under it on the ground), a closing is the 1:1 shopfront without words, a menu is plain text
 const PLACE_PAGE = {
-  lead: 'stand-in for the hero only (a place page, or --draft-lead): Recipe 3, the full-bleed top photograph with nothing on it, replaced by the client\'s own before the page ships',
+  lead: 'stand-in for the hero only (a place page, or --draft-lead): follow the dealt hero and keep text on its own ground or on a calm, contrast-checked crop, replaced by the client\'s own before the page ships',
   road: 'stand-in for the client\'s own land photograph (the brief\'s region, or --own-land): in its place section beside the facts (distance, season), never a band',
   landscape: 'stand-in for the client\'s own land photograph (the brief\'s region, or --own-land): in its place section beside the facts (distance, season), never a band',
   sky: 'never dealt to a place page',
@@ -248,7 +231,6 @@ const PLACE_PAGE = {
   desk: 'beside the line about the work it shows',
   texture: 'a quiet detail in a row or beside a card; never a band or a ground for words',
 };
-const WORDS_PLACE = 'under it on the ground (Recipe 3: the words sit below or beside the photograph, never over it)';
 // where the words go, from the photograph's calm side (product, service and software pages only): photo-band sets them lower
 // left (or centre left with --left), so a photograph calm only at the top or right takes its words beside it or above it, never over it
 const WORDS = {
@@ -280,7 +262,7 @@ const SECTIONS = [
   [/brew|pour|filter|making|craft|how|process/, ['hands', 'bar']],
   [/coffee|drink|cup|order/, ['drink', 'bar', 'roast']],
   [/breakfast|morning|kitchen|dining|eat|food|meal/, ['breakfast', 'food']],
-  [/room|bed|stay|sleep|suite|cabin|house|apartment/, ['detail'], /linen|pillow|bed|blanket|cushion|lamp|chair|teapot/],
+  [/room|bed|stay|sleep|suite|cabin|house|apartment/, "show the whole room or building with the client's picture or a verified whole-room search result. A detail goes beside a whole view"],
   [/area|around|landscape|place|walk|hike|nature|view|surround|getting|journey|arriv|season|weather|coast|fjord|mountain|lake|land/, ['landscape', 'road']],
   [/workshop|repair|parts?|servic/, ['part']],
   [/load|carry|cargo|basket|deliver/, ['load']],
@@ -596,7 +578,7 @@ function pick() {
   if (got.some((c) => c.slot === 'lead')) notes.push((draftPath ? '--draft-lead: ' : 'a place page leads with a photograph: ') + 'the lead is a stand-in for the client\'s hero photograph: say so in the report, list the hero photograph to shoot, replace it before the page ships');
   if (got.some((c) => LAND.has(c.p.subject))) notes.push("--own-land: the land frames are another photographer's picture of the client's place, a draft stand-in: list the client's own land photographs to shoot and replace them");
   if (ps.some((p) => p.subject === 'street') && T.town) notes.push('a street here is another town\'s: never caption it as the client\'s');
-  notes.push('every photograph stays plain and in colour: no halftone, dither, engraving or reveal over the lead, no caption under any; credits go in the footer (photos.mjs credits)');
+  notes.push('every photograph stays plain and in colour: no halftone, dither, engraving or reveal over the lead, one short fact line where it belongs; credits go in the footer (photos.mjs credits)');
 
   const leadId = got.find((c) => c.slot === 'lead')?.p.id || null;
   const deal = { trade, ...(draftPath ? { draft: true } : {}), lead: leadId, ids: ps.map((p) => p.id), ...(sections.length ? { sections } : {}), seed, at: new Date().toISOString() };
@@ -609,7 +591,7 @@ function pick() {
   // a place page (every SLOTTED trade) has no band, tab or text on a photograph: its hints and words come from PLACE_PAGE
   const slotted = SLOTTED.has(trade);
   const where = (c) => (slotted && (PLACE_PAGE[c.slot] || PLACE_PAGE[c.p.subject])) || PLACE[c.slot] || PLACE[c.p.subject] || PLACE.landscape;
-  const wordsFor = (p) => (slotted ? WORDS_PLACE : WORDS[p.calm] || WORDS.none);
+  const wordsFor = (p) => (WORDS[p.calm] || WORDS.none) + '; use text over a calm crop only when contrast passes';
   // a place page never prints its photographs (references/photos.md): the hint stays out of the deal
   const strip = ({ prints, weak, set, needsSetting, lqip, files, why, ...p }) => (files ? { ...p, local: true } : p);
   // a draft frame, as the build report lists it: what it stands in for and what the client shoots in its place
@@ -976,7 +958,9 @@ async function fetchCmd() {
     names = [...files.map((f) => f.file), ...(crop ? [crop.file] : [])];
     cred.photos = cred.photos.filter((x) => x.id !== id);
     cred.photos.push({ file: srcName, files: names, id, alt: p.alt, ...(p.where ? { where: p.where.join(', ') } : {}), by: p.by, licence: p.licence, licenceUrl: p.licenceUrl, page: p.page, source: p.source === 'commons' ? 'Wikimedia Commons' : 'Unsplash' });
-    const h = Math.round(srcW / p.ratio);
+    const dimensions = imageSize(fs.readFileSync(fileIn(dir, srcName)));
+    const h = dimensions?.[1] || Math.round(srcW * (p.height / p.width || 1 / p.ratio));
+    srcW = dimensions?.[0] || srcW;
     const srcset = files.map((f) => rel + '/' + f.file + ' ' + f.w + 'w').join(', ');
     const style = [p.focus ? 'object-position: ' + p.focus : '', lqip && p.lqip ? 'background: center / cover url(' + p.lqip + ')' : ''].filter(Boolean).join('; ');
     tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero && (crop ? 'crop' : 'whole')) + '" width="' + srcW + '" height="' + h + '" alt="' + escH(p.alt) + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + (isHero && !crop ? ' data-phone-fill' : '') + ' data-source="' + (p.standIn ? 'stand-in' : 'library-057') + '" data-subject="' + escH(p.subject) + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));

@@ -51,7 +51,10 @@
     "list": [
       "pictures:1"
     ],
-    "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink."
+    "content": "One full-colour photograph of the place, landscape about 3:2 or 16:10 and 2400px wide or more, with a 9:16 crop of about 1080px for phones; something to see at its centre (the innermost window shows the middle of it first) and a calm, light area (a sky, a pale wall) for the headline. Take the opening shape from the place itself: the arches of its arcade, its doors. One optional line of 3-7 words on the nearest sheet, above its opening (it leaves with the sheet on the first movement); a headline of 2-6 words on one or two lines. The page's ground must be one flat colour. No fog, glow, blur, colour fringe or gradient anywhere: the sheets are flat, their tones are the ground and the ground mixed with a little ink.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

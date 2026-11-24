@@ -2,23 +2,38 @@
   "id": "liquid-type",
   "name": "Liquid type",
   "kind": "liquid",
-  "fits": ["hero", "statement"],
+  "fits": [
+    "hero",
+    "statement"
+  ],
   "trigger": "enter",
   "cost": "low",
   "webgl": 0,
-  "tones": ["playful", "tech"],
+  "tones": [
+    "playful",
+    "tech"
+  ],
   "intensity": "lively",
   "look": "A very large headline ripples and stretches like type seen through water: one ripple passes through it from left to right each time it comes on screen, the pointer ripples it wherever it crosses the letters, and a tap or a touch drag ripples it at the finger; it settles back to crisp type within about a second. One SVG filter, only while it moves.",
   "reduced": "The headline stands as written.",
   "phone": "It runs on a phone: the ripple passes through the headline as it comes on screen, and a tap or a touch drag ripples it again.",
   "phoneRuns": true,
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "words": "a headline of 2 to 6 words, set large"
   },
-  "text": { "sel": ".mo-lt__type, h1, h2", "words": [2, 6] },
-  "avoidWith": ["liquid-hover", "cursor-spotlight"],
+  "text": {
+    "sel": ".mo-lt__type, h1, h2",
+    "words": [
+      2,
+      6
+    ]
+  },
+  "avoidWith": [
+    "liquid-hover",
+    "cursor-spotlight"
+  ],
   "states": {
     "start": {
       "see": true,
@@ -32,12 +47,19 @@
       "see": true,
       "pointer": {
         "target": ".mo-lt__type",
-        "from": [0.1, 0.5],
-        "to": [0.55, 0.5],
+        "from": [
+          0.1,
+          0.5
+        ],
+        "to": [
+          0.55,
+          0.5
+        ],
         "moves": 14,
         "step": 16
       },
       "wait": 2400
     }
-  }
+  },
+  "retired": "The distortion breaks the type."
 }

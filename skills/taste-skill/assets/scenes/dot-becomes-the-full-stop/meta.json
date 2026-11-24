@@ -3,9 +3,21 @@
   "name": "The dot becomes the full stop",
   "family": "type-choreography",
   "look": "One large dot drops onto the page's ground and the claim grows out of it to the left one whole word at a time, the first word right behind the drop; the dot steps right and a step smaller with every word until it is exactly the sentence's own full stop as the last word lands. An optional second beat cuts the ground to the inverse in one step and sets one supporting line under the claim.",
-  "fits": ["statement"],
-  "types": ["software", "tech", "gaming"],
-  "tones": ["tech", "editorial", "product", "warm", "playful"],
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "software",
+    "tech",
+    "gaming"
+  ],
+  "tones": [
+    "tech",
+    "editorial",
+    "product",
+    "warm",
+    "playful"
+  ],
   "intensity": "lively",
   "trigger": "scroll",
   "hold": 1,
@@ -15,12 +27,19 @@
   "reduced": "The claim and the line as a plain statement section.",
   "phone": "The light version: the same stage, nothing overlapping, the claim on two rows.",
   "maxPerPage": 1,
-  "weight": 0.8,
+  "weight": 0,
   "needs": {
-    "words": "one claim of 4-6 words ending on a full stop, in a display face whose full stop is a round dot, and optionally one line of 8-16 words; the section after it on the inverse ground when the cut is used"
+    "words": "one claim of 4-6 words ending on a full stop, in a display face whose full stop is a round dot, and optionally one line of 8-16 words; the section after it on the inverse ground when the cut is used",
+    "carry": [
+      "words"
+    ],
+    "list": []
   },
   "never": "an accent on the dot; a claim of seven words or more; right after another type scene",
-  "avoidWith": ["letter-physics", "letter-bar-floods-the-ground"],
+  "avoidWith": [
+    "letter-physics",
+    "letter-bar-floods-the-ground"
+  ],
   "states": {
     "start": {
       "p": 0.12,
@@ -35,5 +54,9 @@
       "wait": 600
     }
   },
-  "avoidMoments": ["word-highlight", "counter-rolls"]
+  "avoidMoments": [
+    "word-highlight",
+    "counter-rolls"
+  ],
+  "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
 }

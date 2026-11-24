@@ -1,0 +1,43 @@
+<section class="section own" id="day-bar" data-own="day-bar" aria-labelledby="day-bar-title">
+  <div class="wrap">
+    <h2 id="day-bar-title">When the wheel room is open</h2>
+    <p class="t-lead measure">Bracken Wheel is a shared pottery studio. Thursday is the late session for members coming after work.</p>
+    <table class="week" data-assumed>
+      <thead><tr><th scope="col">Day</th><th scope="col"><span class="axis"><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span></span><span class="sr-only">Opening hours</span></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Monday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 9"><time>10:00</time><span class="sr-only"> to </span><time>16:00</time></span></div></td></tr>
+        <tr><th scope="row">Tuesday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Wednesday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Thursday</th><td><div class="day-track"><span class="session" style="grid-column: 5 / 13"><time>12:00</time><span class="sr-only"> to </span><time>20:00</time></span></div></td></tr>
+        <tr><th scope="row">Friday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 11"><time>10:00</time><span class="sr-only"> to </span><time>18:00</time></span></div></td></tr>
+        <tr><th scope="row">Saturday</th><td><div class="day-track"><span class="session" style="grid-column: 2 / 10"><time>09:00</time><span class="sr-only"> to </span><time>17:00</time></span></div></td></tr>
+        <tr><th scope="row">Sunday</th><td><div class="day-track"><span class="session" style="grid-column: 3 / 7"><time>10:00</time><span class="sr-only"> to </span><time>14:00</time></span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+[data-own="day-bar"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="day-bar"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="day-bar"] .week { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+[data-own="day-bar"] th { text-align: left; font-weight: 500; }
+[data-own="day-bar"] th:first-child { width: 19%; padding-right: var(--s-3); }
+[data-own="day-bar"] thead th { color: var(--muted); font-size: var(--t-small); }
+[data-own="day-bar"] th, [data-own="day-bar"] td { border-bottom: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="day-bar"] .axis { display: grid; grid-template-columns: 1fr 2fr 2fr 1fr; text-align: center; }
+[data-own="day-bar"] .axis span:first-child { text-align: left; }
+[data-own="day-bar"] .axis span:last-child { text-align: right; }
+[data-own="day-bar"] .day-track { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); background: var(--surface); }
+[data-own="day-bar"] .session { display: flex; justify-content: space-between; gap: var(--s-1); background: var(--ink); color: var(--bg); padding: var(--s-1) var(--s-2); font-size: var(--t-small); }
+[data-own="day-bar"] tr:nth-child(4) .session { background: var(--action); color: var(--action-ink); }
+[data-own="day-bar"] .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 639px) {
+  [data-own="day-bar"] th:first-child { width: auto; }
+  [data-own="day-bar"] thead th:first-child { display: none; }
+  [data-own="day-bar"] tr, [data-own="day-bar"] td { display: block; }
+  [data-own="day-bar"] th { display: block; border: 0; padding-bottom: var(--s-1); }
+  [data-own="day-bar"] td { padding-top: 0; }
+  [data-own="day-bar"] .session { padding-inline: var(--s-1); }
+}
+</style>

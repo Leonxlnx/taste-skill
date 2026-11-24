@@ -162,7 +162,7 @@
     const cut = num(opts.cut, 0.3, 0.25, 0.6);
     const PLACE = ['bottom-left', 'bottom-right', 'top-left', 'top-right'];
     const o = {
-      hold: num(opts.hold, 1.6, 1.4, 2.4),
+      hold: 1,
       rise: num(opts.rise, 1, 1, 2.4),
       phoneRise: num(opts.phoneRise, NaN, 1, 2.4),
       dip: num(opts.dip, 0.2, 0, 0.3),
@@ -336,17 +336,8 @@
       const state = { t: 0 };
       tl.fromTo(state, { t: 0 }, { t: 1, duration: 1, ease: 'none', onUpdate: () => render(state.t) }, 0);
       S.state = state;
-      // the words: whole phrases, one by one, each whole at its point; then the action
-      const span = 0.035, phrases = arrive.filter((el) => el !== action), n = phrases.length;
-      // the band is solid on the cut frame: before the cut that strip was the flat room's own floor, so it
-      // does not change at the cut (a fade here showed the table's legs through it for a beat); the CSS
-      // keeps it hidden before the cut, and the first phrase follows at `from`
-      tl.set(words, { opacity: 1 }, o.cut);
-      arrive.forEach((el) => {
-        const i = el === action ? n - 1 : phrases.indexOf(el);
-        const end = n > 1 ? o.from + ((o.to - o.from) * i) / (n - 1) : o.to;
-        tl.fromTo(el, { opacity: 0, y: '0.32em' }, { opacity: 1, y: 0, duration: span, ease: 'power2.out', immediateRender: true }, Math.max(o.cut + 0.005, end - span));
-      });
+      // Keep the complete closing line and action together through the cut.
+      tl.set([words, ...arrive], { opacity: 1, y: 0 }, 0);
       render(0);
       if (window.gsap && gsap.context) gsap.context(() => () => unhook());
     };

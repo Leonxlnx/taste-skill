@@ -48,7 +48,11 @@
     "list": [
       "pictures:0"
     ],
-    "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1."
+    "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1.",
+    "carry": [
+      "list",
+      "words"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

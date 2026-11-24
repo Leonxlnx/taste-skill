@@ -1,0 +1,63 @@
+<section class="section own" id="booking-bar" data-own="booking-bar" aria-labelledby="booking-bar-title">
+  <div class="wrap">
+    <h2 id="booking-bar-title">A stay at Wrenlock Weir</h2>
+    <p class="t-lead measure">Both rooms sleep two. Breakfast by the water is included in the nightly rate.</p>
+    <form class="form stay" method="post" action="mailto:stays@wrenlock-weir.example" enctype="text/plain" data-assumed>
+      <div class="field"><label for="stay-arrival">Arrival</label><input id="stay-arrival" name="arrival" type="date" value="2027-05-14" required></div>
+      <div class="field"><label for="stay-departure">Departure</label><input id="stay-departure" name="departure" type="date" value="2027-05-16" required></div>
+      <div class="field"><label for="stay-guests">Guests</label><select id="stay-guests" name="guests"><option value="1">1 guest</option><option value="2" selected>2 guests</option></select></div>
+      <div class="field"><label for="stay-room">Room</label><select id="stay-room" name="room"><option value="Bank room" data-rate="110">Bank room</option><option value="Weir room" data-rate="140">Weir room</option></select></div>
+      <div class="quote"><span class="night-count">2-night total</span><output class="t-stat" for="stay-arrival stay-departure stay-guests stay-room" aria-live="polite">£260</output></div>
+      <button class="press btn btn--primary" type="submit">Enquire by email</button>
+      <noscript><p>The total shown is for the two-night bank room stay above. Confirm any changes by email.</p></noscript>
+      <p class="rates">Bank room £110 · Weir room £140 · Second guest £20 per night</p>
+      <p class="form__status" data-form-status role="status"></p>
+    </form>
+  </div>
+</section>
+
+<style>
+[data-own="booking-bar"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="booking-bar"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="booking-bar"] .stay { grid-template-columns: repeat(2,minmax(0,1.2fr)) repeat(2,minmax(0,1fr)) minmax(6em,auto) auto; gap: var(--s-3); align-items: start; padding-block: var(--s-5); border-block: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+[data-own="booking-bar"] .field { min-width: 0; }
+[data-own="booking-bar"] .field :is(input,select) { min-width: 0; width: 100%; height: var(--s-7); }
+[data-own="booking-bar"] .quote { display: grid; gap: var(--s-2); }
+[data-own="booking-bar"] .quote > span { font-size: var(--t-small); font-weight: 500; }
+[data-own="booking-bar"] output { display: flex; align-items: center; min-height: var(--s-7); }
+[data-own="booking-bar"] .btn { margin-top: calc(var(--t-small) * 1.55 + var(--s-2)); min-height: var(--s-7); }
+[data-own="booking-bar"] .rates { font-size: var(--t-small); color: var(--ink); }
+[data-own="booking-bar"] [data-form-status]:empty { display: none; }
+@media (min-width: 640px) and (max-width: 1150px) { [data-own="booking-bar"] .stay { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 639px) {
+  [data-own="booking-bar"] .stay { grid-template-columns: 1fr; }
+  [data-own="booking-bar"] .quote { display: flex; justify-content: space-between; align-items: baseline; }
+  [data-own="booking-bar"] .btn { margin: 0; }
+}
+</style>
+
+<script type="module">
+const root = document.querySelector('[data-own="booking-bar"]');
+const form = root.querySelector('form');
+const { arrival, departure, guests, room } = form.elements;
+const total = form.querySelector('output');
+const nightCount = root.querySelector('.night-count');
+const pounds = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+function quote() {
+  const nights = (departure.valueAsNumber - arrival.valueAsNumber) / 86400000;
+  departure.setCustomValidity(nights <= 0 ? 'Choose a departure after arrival.' : '');
+  if (!Number.isFinite(nights) || nights <= 0) {
+    nightCount.textContent = 'Stay total';
+    total.value = '—';
+    total.setAttribute('aria-label', 'Select a valid date range for a total');
+    return;
+  }
+  nightCount.textContent = nights + '-night total';
+  total.removeAttribute('aria-label');
+  const rate = Number(room.selectedOptions[0].dataset.rate) + (Number(guests.value) - 1) * 20;
+  total.value = pounds.format(rate * nights);
+}
+form.addEventListener('input', quote);
+form.addEventListener('change', quote);
+quote();
+</script>

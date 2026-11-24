@@ -13,20 +13,7 @@ Thirteen objects in three families and one builder; each family's README is the 
 ## When to use one
 
 - **One strong object moment a page.** Never beside a second effect or over a moving ground.
-- **Place, service and every page of site-kind other** (cafe, guesthouse, shop, studio, clinic,
-  product brand): no object or print; plain photographs lead. Objects and prints carry the tech
-  tone and WebGL, so the fit rule (`effects-usage.md`, The fit rule) keeps them on tech, software
-  and gaming; a place or service page takes its motion from its dealt moments, a scene dealt by fit
-  (`scenes.md`), never a shader. The one exception is below: a product whose brief
-  asks for 3D shows its own render.
-- **Product with photographs**: the photograph leads.
-- **Any physical product without photographs** (a lamp, a chair, a bike, a stroller, a robot arm),
-  of site-kind other or tech: **photographs first, never a render by default.** The client's own
-  photographs, a cut-out or a CAD view the brief supplies; else stand-in photographs of the same
-  kind of thing found with `photos.mjs search` and listed in the report (`photos.md`, A product
-  without photographs; `sections.md`, Product). In testing, a cargo bike's page that never showed
-  the bike scored 3 of 10, and pages carried by a render and a fixed set of props read as random
-  3D objects: be clean, show the real kind of thing.
+- Keep shader objects and prints off place, service and product pages. Use the picture ladder in `photos.md` for any missing subject. For a requested 3D product view use its still.
 - **A render only when the brief asks for 3D or a render** (a configurator, "show it in 3D", a
   product that exists only as a model): `assets/objects/product-render` composes this product from
   a JSON spec of its own parts, sizes and materials (Product renders, below) and it leads the hero
@@ -35,16 +22,8 @@ Thirteen objects in three families and one builder; each family's README is the 
   parts carry the others (Views, below; `sections.md` section 1, One object, and Product). It is
   the product's picture, not an effect: on the page's flat ground or the lit ground on tech, stills
   by default, live only when asked (`data-product-mode="live"`), at most one live context, no
-  print and no shader ground beside it on site-kind other (the dealt moments go in other sections), no props unless a headline's
-  promise needs one. Never an object of another kind (a wheel is not a bicycle), a drawn SVG, a
-  model of loose primitives the helper did not compose, mood stock or another maker's product. A
-  curved shell is composed of rounded boxes, cylinders and fillets at its real measurements; never
-  a `split` hero holding only an order form, never an effect in its place.
-- **A game without art files**: its hero is the game's name set large over a stand-in photograph of
-  its setting (`deal.mjs --type software --kind gaming --has setting`, the `photo` hero), its world
-  section the widest of those photographs full bleed; an effect may sit in a section of its own,
-  never replace the key art (`sections.md`, Gaming). A render of its hero object or world only when
-  the brief asks for 3D.
+  print or shader ground on a non-tech page. Include props only when they show a stated use. Build curved shells to the product's measurements. Keep other makers' products out.
+- For a game without art, build its world (`subskills/illustrate/SKILL.md`).
 - **Software, AI, games with art**: a print object as a print on the card it is about (a globe for
   regions); a game's own world object for `fixed-hero-object` (`scenes.md`).
 - **Photo prints and the photo scenes** print a photograph, and no page prints, dithers or grades a
@@ -81,8 +60,7 @@ only; `data-scene` here is not a big scene, which is `data-big-scene`, `scenes.m
 
 `assets/objects/product-render`: the picture of a physical thing when the brief asks for 3D or a
 render: a product of site-kind other (a bike, a lamp, a chair), hardware (a robot arm, a drone, a
-device) or a game's hero object or world. Without that ask, a thing with no photographs is shown in
-photographs, the client's or stand-ins (`photos.md`, `sections.md`, Product and Gaming).
+device) or a game's hero object or world. For other missing product art see `photos.md`.
 `build.js` turns a JSON spec of the thing's own parts into a raymarched studio render (real
 materials, soft light and shadows, a softbox in glossy parts, a floor shadow, the page's accent on
 the parts that ask for it); `auto.js` mounts it; `make-posters.mjs` checks the spec and prints its
@@ -272,9 +250,7 @@ leaves out the file lines.
   springs; a lamp's springs, knobs, cord; a robot's caps, seams, gripper pads; a barge's bollards,
   cables and lamps). Accent on the part a maker would paint; metals and rubber stay themselves.
   Check it at 1440 and 390 before it ships.
-- **Never** a product of another kind, never on a place page, never captioned or called a render,
-  model or illustration on the page; it is the thing's picture, not an effect (on tech an effect
-  may sit behind it, never beside it as a second beat).
+- Keep the stage for the actual product. Follow `copy.md` for facts beside it. On tech an effect may sit behind it.
 
 ## GPU cost
 

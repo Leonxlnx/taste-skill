@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Threadline · Checkout incident</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap mast"><strong>Threadline</strong><span>Incident review</span></div></header>
+<main class="wrap">
+  <div class="intro"><h1>The release that<br>slowed checkout.</h1><p>Release 2.18 added a blocking request to the checkout path. The request trace shows where the extra time went.</p></div>
+  <!-- figure -->
+<figure class="trace" data-picture aria-labelledby="trace-title">
+  <div class="trace-head"><h2 id="trace-title">Checkout response time</h2><span>95th percentile · 1-minute samples</span></div>
+  <div class="chart" role="img" aria-label="Checkout latency averaged 210 ms before the 14:12 deploy, peaked at 680 ms, and fell below the 400 ms budget at 14:30 after rollback.">
+    <div class="plot">
+      <div class="budget" style="top:50%"><span>400 ms budget</span></div>
+      <div class="event" style="left:30%"><span><b>14:12</b> Deploy</span><i style="top:69.375%"></i></div><div class="event" style="left:70%"><span><b>14:28</b> Rollback</span><i style="top:19.374999999999996%"></i></div>
+      <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs><clipPath id="checkout-over"><rect width="100" height="50"/></clipPath></defs>
+        <path d="M0,74.375 L2.5,74.375 L5,74.375 L7.5,75 L10,75 L12.5,74.375 L15,73.75 L17.5,71.875 L20,72.5 L22.5,71.875 L25,74.375 L27.500000000000004,73.125 L30,69.375 L32.5,45.62500000000001 L35,32.49999999999999 L37.5,24.375000000000004 L40,21.875 L42.5,18.75 L45,18.75 L47.5,19.999999999999996 L50,22.499999999999996 L52.5,16.874999999999996 L55.00000000000001,15.625 L57.49999999999999,16.874999999999996 L60,15.000000000000002 L62.5,19.999999999999996 L65,16.249999999999996 L67.5,19.999999999999996 L70,19.374999999999996 L72.5,35 L75,54.37499999999999 L77.5,64.375 L80,71.875 L82.5,71.875 L85,72.5 L87.5,71.25 L90,73.125 L92.5,73.75 L95,74.375 L97.5,74.375 L100,74.375"/><path class="breach" clip-path="url(#checkout-over)" d="M0,74.375 L2.5,74.375 L5,74.375 L7.5,75 L10,75 L12.5,74.375 L15,73.75 L17.5,71.875 L20,72.5 L22.5,71.875 L25,74.375 L27.500000000000004,73.125 L30,69.375 L32.5,45.62500000000001 L35,32.49999999999999 L37.5,24.375000000000004 L40,21.875 L42.5,18.75 L45,18.75 L47.5,19.999999999999996 L50,22.499999999999996 L52.5,16.874999999999996 L55.00000000000001,15.625 L57.49999999999999,16.874999999999996 L60,15.000000000000002 L62.5,19.999999999999996 L65,16.249999999999996 L67.5,19.999999999999996 L70,19.374999999999996 L72.5,35 L75,54.37499999999999 L77.5,64.375 L80,71.875 L82.5,71.875 L85,72.5 L87.5,71.25 L90,73.125 L92.5,73.75 L95,74.375 L97.5,74.375 L100,74.375"/>
+      </svg>
+      <span class="peak" style="left:60%;top:15.000000000000002%">680 ms</span>
+      <span class="start-value" style="top:74.375%">205 ms</span>
+      <div class="clock"><time style="left:0%">14:00</time><time style="left:25%">14:10</time><time style="left:50%">14:20</time><time style="left:75%">14:30</time><time style="left:100%">14:40</time></div>
+    </div>
+  </div>
+</figure>
+<p class="trace-summary">Sample incident · From a 210 ms average before deploy to 680 ms at 14:24. Back within budget at 14:30.</p>
+<!-- end figure -->
+  <details class="log"><summary>Read the incident log</summary>
+    <dl><div><dt>14:12</dt><dd>Release 2.18 deployed to checkout.</dd></div>
+    <div><dt>14:15</dt><dd>A sample request spent 440 ms waiting for a new inventory lookup before returning.</dd></div>
+    <div><dt>14:28</dt><dd>Rollback removed the blocking lookup.</dd></div></dl>
+  </details>
+</main>
+</body>
+</html>

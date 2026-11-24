@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" data-ready="true">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Wren & Kettle</title>
+    <meta name="description" content="Our house blend, a warm bun and a seat on Alder Street.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body id="top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" aria-hidden="true" focusable="false" class="defs">
+      <defs>
+        <g id="handle">
+          <path fill-rule="evenodd" d="M82 56Q96 53 113 34Q117 62 101 78L88 84L80 75Q101 68 104 53Q95 62 85 65Z"/>
+        </g>
+        <g id="breast">
+          <path d="M17 51Q23 36 34 38Q44 39 45 51L48 63Q59 57 73 58Q89 58 96 68L101 79Q94 100 66 102Q43 103 33 83Q27 72 27 60L9 57Z"/>
+        </g>
+        <path id="lid" d="M48 60Q55 49 65 48L65 45Q65 41 69 41Q73 41 73 45L73 48Q84 48 89 55L89 60Z"/>
+        <path id="wing" d="M49 76Q58 66 68 71Q75 74 87 65Q80 82 65 86Q55 86 49 76Z"/>
+        <path id="foot" d="M-2 0H3L2 10H10V14H-7V10H-2Z"/>
+        <path id="eye" d="M25 48Q30 44 34 48Q31 53 26 51Z"/>
+        <g id="pose-0" fill="var(--coat)">
+          <use href="#foot" transform="translate(51 97) rotate(0)"/>
+          <use href="#foot" transform="translate(73 97) rotate(0)"/>
+          <g transform="rotate(0 64 94)">
+            <use href="#handle" />
+            <use href="#breast" />
+            <use href="#lid" />
+            <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(0 53 79)"/>
+            <use href="#eye" fill="var(--cut)" transform="translate(0 0) scale(1 1)"/>
+          </g>
+        </g>
+        <g id="pose-1" fill="var(--coat)">
+          <use href="#foot" transform="translate(48 94) rotate(48)"/>
+          <use href="#foot" transform="translate(74 94) rotate(-32)"/>
+          <g transform="rotate(-12 64 94)">
+            <use href="#handle" />
+            <use href="#breast" />
+            <use href="#lid" />
+            <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(-36 53 79)"/>
+            <use href="#eye" fill="var(--cut)" transform="translate(0 0) scale(1 1)"/>
+          </g>
+        </g>
+        <g id="pose-2" fill="var(--coat)">
+          <use href="#foot" transform="translate(51 97) rotate(0)"/>
+          <use href="#foot" transform="translate(73 97) rotate(0)"/>
+          <g transform="rotate(17 64 94)">
+            <use href="#handle" />
+            <use href="#breast" />
+            <use href="#lid" />
+            <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(12 53 79)"/>
+            <use href="#eye" fill="var(--cut)" transform="translate(0 24) scale(1 0.5)"/>
+          </g>
+        </g>
+      </defs>
+    </svg>
+    <header class="wrap">
+      <nav>
+        <a class="home" href="#top">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true" class="icon">
+            <use href="#pose-0" />
+          </svg>
+          <span class="word">Wren &amp; Kettle</span>
+        </a>
+        <a href="#visit">Opening hours</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero wrap">
+        <div>
+          <h1>Coffee by the window.</h1>
+          <p class="lead">Our house blend, a warm bun and a seat on Alder Street.</p>
+          <a class="go" href="#visit">Plan a visit &darr;</a>
+        </div>
+        <figure class="stage" aria-label="House coffee bag">
+          <div class="bag">
+            <div class="bag-seal">
+            </div>
+            <div class="bag-name">Window blend</div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Wren with a kettle lid for a crown and a loop handle for a tail." class="large">
+              <g class="gesture">
+                <g class="hero-parts" fill="var(--coat)">
+                  <use href="#foot" transform="translate(51 97) rotate(0)"/>
+                  <use href="#foot" transform="translate(73 97) rotate(0)"/>
+                  <g transform="rotate(0 64 94)">
+                    <use href="#handle" />
+                    <use href="#breast" />
+                    <use href="#lid" />
+                    <use href="#wing" fill="var(--fold)" class="plume" transform="rotate(0 53 79)"/>
+                    <use href="#eye" fill="var(--cut)" transform="translate(0 0) scale(1 1)"/>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <div class="bag-base">
+              <span>Whole bean</span>
+              <span>250 g</span>
+            </div>
+          </div>
+        </figure>
+      </section>
+      <section id="visit" class="close">
+        <div class="wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true" class="return">
+            <use href="#pose-2" />
+          </svg>
+          <div>
+            <h2>Walk up to the window</h2>
+            <p>16 Alder Street · Tuesday–Sunday, 7 am to 2 pm</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="wrap footerline">
+        <span>Wren &amp; Kettle</span>
+        <a href="#top">Back to top</a>
+      </div>
+    </footer>
+  </body>
+</html>

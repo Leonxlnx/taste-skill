@@ -1,11 +1,10 @@
 /*
   word-highlight - one statement's words turn from grey to ink, word by word, as the statement crosses
-  the middle of the screen. Scrubbed to the scrollbar (it runs back when the visitor scrolls up); a
-  <strong> word turns to the accent instead of the ink. For the one statement a page stands on, 12 to
+  the middle of the screen. Scrubbed to the scrollbar (it runs back when the visitor scrolls up); a <strong> word keeps its emphasis. For the one statement a page stands on, 12 to
   40 words, on its own ground or beside one picture.
 
     <section class="section" data-moment="word-highlight">
-      <div class="container"><p class="mo-wh__text">Give tasks to <strong>Relay</strong> like a teammate …</p></div>
+      <div class="container"><h2 class="mo-wh__text">Give tasks to <strong>Relay</strong> like a teammate …</h2></div>
     </section>
 
   opts: from 0.85 (the statement's top at this share of the screen's height turns the first word),
@@ -15,7 +14,7 @@
 */
 export const phone = true;
 export default function (root, opts, lib) {
-  const text = root.matches('p, h2, h3, blockquote') ? root : (root.querySelector('.mo-wh__text') || [...root.querySelectorAll('p, h2, h3, blockquote')].find(p => !p.matches('.t-label, .t-small, .muted')));
+  const text = root.matches('h1, h2, .mo-wh__text') ? root : root.querySelector('.mo-wh__text, h1, h2');
   if (!text) return {};
   root.classList.add('mo-wh');
   const words = lib.split(text, 'words').map(i => i.parentElement);

@@ -1,8 +1,6 @@
 <!doctype html>
-<!-- moments in a page: the place moments photo-chapters and word-highlight dealt onto a page built like
-     assets/starter.html (the nav, the place hero, sections on .wrap, footer.closing), the way a builder mounts them.
-     A moment's own demo.html shows it alone; copy the section from here. in-page-service.html does the same for
-     picture-develops (the film look) and pinned-chapters. type: place. fonts: fraunces. -->
+<!-- Integration fixture for photo-chapters and word-highlight in the place layout. Copy one selected part.
+     On a real page follow its own deal and leave a plain section between set pieces. -->
 <html lang="en" data-type="place" data-radius="sharp" data-buttons="block" data-motion>
 <head>
 <meta charset="utf-8">
@@ -82,7 +80,7 @@
     </div>
   </section>
 
-  <!-- photo-chapters (references/moments.md): the section is the host; its h2 and lead, then 3 to 5 chapters,
+  <!-- photo-chapters (references/moments.md): the section is the host; its h2 and lead, then 3 or 4 chapters,
        one photograph each, none used elsewhere on the page. moment.js makes the section (hold + 1) screens tall -->
   <section class="section" id="weekend" data-moment="photo-chapters" aria-labelledby="weekend-h">
     <div class="wrap mo-ph">
@@ -107,11 +105,10 @@
     </div>
   </section>
 
-  <!-- word-highlight: one statement of 12 to 40 words in its own section, one strong word in <strong> -->
-  <section class="section statement" id="house" data-moment="word-highlight" aria-label="The house">
+  <!-- word-highlight: the main claim on a thin section heading; ordinary text moments ride an existing heading -->
+  <section class="section section--thin" id="house" data-moment="word-highlight" aria-label="The house">
     <div class="wrap">
-      <p class="t-label">The house</p>
-      <p class="mo-wh__text">We are a family of four with six rooms, a kitchen and a shed of bikes. Dinner is one menu of what the boats bring in, and we will tell you where <strong>the tide</strong> is before you ask.</p>
+      <h2 class="mo-wh__text">We are a family of four with six rooms, a kitchen and a shed of bikes. Dinner is one menu of what the boats bring in, and we will tell you where <strong>the tide</strong> is before you ask.</h2>
     </div>
   </section>
 </main>

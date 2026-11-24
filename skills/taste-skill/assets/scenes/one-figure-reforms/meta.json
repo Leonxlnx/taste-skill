@@ -53,7 +53,11 @@
     "list": [
       "product-ui"
     ],
-    "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most."
+    "content": "Three to five chapters (four suits it best; two show the finished composition, more than five make it long). Per chapter: one name of one word, 3-7 letters; one or two lines of 10-20 words; one key figure (a rate, a time, a fee) with a caption of 3-7 words, never a restated line; and one pane for the window: the product's own interface for that job built as an interface fragment set straight on the accent (data-ui on the pane: the accent window is the product's window): no card of its own and no filled rows, pills or bands inside it, its parts set apart by space, size and weight (14-16px text and labels, never under 14px and no initials in small discs, sized for the narrowest shape it lands in, rows that drop on phones), with one or two late parts marked data-build that land on room the fragment keeps free (a paid line under the total, a sent line under the run). Each pane a different interface, never the same twice. data-shape per pane: bar, disc, arch, pill, slab (neighbours differing). A section heading of two lines at most.",
+    "carry": [
+      "steps",
+      "figures"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

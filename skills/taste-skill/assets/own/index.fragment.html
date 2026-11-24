@@ -1,0 +1,74 @@
+<section class="section own" id="index" data-own="index" aria-labelledby="index-title">
+  <div class="wrap">
+    <h2 id="index-title">A catalogue of hand-pressed tiles</h2>
+    <p class="t-lead measure">Two Kiln Archive keeps the original mould for every commission. Select a design to see its repeat.</p>
+    <div class="catalogue" data-assumed>
+      <div class="patterns"><svg viewBox="0 0 320 224" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Millrace tile repeat">
+        <defs>
+          <pattern id="tile-repeat-0" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M-16 48Q16 48 16 16T48-16M16 80Q48 80 48 48T80 16" fill="none" stroke="currentColor" stroke-width="13"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-1" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0a32 32 0 0 1 64 0zM0 64a32 32 0 0 1 64 0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-2" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h18v46h46v18H0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-3" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h64L0 64z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-4" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 64V32a32 32 0 0 1 64 0v32H48V32a16 16 0 0 0-32 0v32z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-5" width="64" height="64" patternUnits="userSpaceOnUse"><path d="m32 0 20 32-20 32-20-32z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-6" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 32 32 0l32 32-12 12-20-20-20 20z"/><path d="M0 64V0h64" class="joint"/></pattern>
+          <pattern id="tile-repeat-7" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0 0h64L44 32H20zm20 32h24l20 32H0z"/><path d="M0 64V0h64" class="joint"/></pattern>
+        </defs>
+        <rect width="320" height="224" fill="url(#tile-repeat-0)"/>
+      </svg><p class="fact-line" aria-live="polite">Millrace · Leeds · 2026</p></div>
+      <table><caption>Tile commissions by year</caption><thead><tr><th scope="col">Design</th><th scope="col">Place</th><th scope="col">Year</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="true">Millrace</button></th><td>Leeds</td><td>2026</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Half Moon</button></th><td>York</td><td>2025</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Crosscut</button></th><td>Bath</td><td>2025</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Pennant</button></th><td>Hull</td><td>2024</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Bellmouth</button></th><td>Derby</td><td>2024</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Spindle</button></th><td>Bristol</td><td>2023</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Saltbox</button></th><td>Rye</td><td>2023</td></tr>
+          <tr><th scope="row"><button class="press" type="button" aria-pressed="false">Dovetail</button></th><td>Deal</td><td>2022</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="index"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="index"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="index"] .catalogue { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); align-items: start; }
+[data-own="index"] .patterns { grid-column: 2; grid-row: 1; }
+[data-own="index"] svg { width: 100%; aspect-ratio: 4 / 3; display: block; background: var(--surface); color: var(--action); fill: currentColor; border: 1px solid var(--line); }
+[data-own="index"] .joint { stroke: var(--line); fill: none; stroke-width: 1px; }
+[data-own="index"] .fact-line { padding-top: var(--s-2); font-size: var(--t-small); }
+[data-own="index"] table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+[data-own="index"] caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="index"] th, [data-own="index"] td { text-align: left; border-bottom: 1px solid var(--line); font-weight: 400; }
+[data-own="index"] thead th { color: var(--muted); font-size: var(--t-small); padding-block: 0 var(--s-2); }
+[data-own="index"] th:last-child, [data-own="index"] td:last-child { text-align: right; }
+[data-own="index"] button { width: 100%; min-height: var(--btn-h); border: 0; background: none; padding: var(--s-2) var(--s-2) var(--s-2) 0; text-align: left; cursor: pointer; font-weight: 500; }
+[data-own="index"] tr:has([aria-pressed="true"]) { color: var(--action); }
+[data-own="index"] [aria-pressed="true"] { text-decoration: underline; text-underline-offset: var(--s-1); }
+@media (max-width: 639px) {
+  [data-own="index"] .catalogue { grid-template-columns: 1fr; gap: var(--s-4); }
+  [data-own="index"] .patterns { grid-column: 1; grid-row: auto; }
+  [data-own="index"] svg { height: var(--s-10); }
+}
+</style>
+
+<script type="module">
+const root = document.querySelector('[data-own="index"]');
+const rows = [...root.querySelectorAll('tbody tr')];
+const svg = root.querySelector('svg');
+function show(row, index) {
+  const name = row.querySelector('button').textContent;
+  rows.forEach(other => other.querySelector('button').setAttribute('aria-pressed', String(other === row)));
+  svg.querySelector(':scope > rect').setAttribute('fill', 'url(#tile-repeat-' + index + ')');
+  svg.setAttribute('aria-label', name + ' tile repeat');
+  root.querySelector('.fact-line').textContent = [...row.cells].map(cell => cell.textContent).join(' · ');
+}
+rows.forEach((row, index) => {
+  row.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') show(row, index); });
+  row.addEventListener('focusin', () => show(row, index));
+  row.addEventListener('click', () => show(row, index));
+});
+</script>

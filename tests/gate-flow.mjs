@@ -46,7 +46,7 @@ const STUB = "import fs from 'node:fs';\nconst s = JSON.parse(fs.readFileSync(pr
 fs.writeFileSync(path.join(SKILL, 'scripts', 'consistency.mjs'), STUB +
   "if (s.consistency === 'crash') { console.error('Error: a stand-in crash'); process.exit(2); }\n" +
   "const f = s.consistency === 'fail' ? [{ check: 'contrast', sev: 'FAIL', sel: 'section#board h2', text: 'The keyboard', msg: 'a stand-in FAIL', fix: 'a stand-in fix' }] : [];\n" +
-  "console.log(JSON.stringify({ widths: [{ width: 1440, findings: f }, { width: 390, findings: [] }] }));\n");
+  "console.log(JSON.stringify({ widths: [{ width: 1440, findings: f, frame:s.frame }, { width: 390, findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'scripts', 'copy-lint.mjs'), "console.log(JSON.stringify({ files: [{ findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'assets', 'layout', 'check.mjs'), "console.log('[]');\n");
 
@@ -313,6 +313,51 @@ for (const whole of [false, true]) {
   check(comp.where === 'composition showcase bleed-panel' && /comp-bleed/.test(comp.fix || ''), `a dealt bleed-panel the page lacks is a deal-drift finding (${comp.where})`, JSON.stringify(dd));
 }
 
+// Machine plans take precedence over stale composition and moment history.
+{
+  const dir = project('none','Capacity','workshop');
+  const dot = path.join(dir,'.taste-skill'), id = 'word-highlight';
+  const section = '<section data-own="capacity"><h2 data-moment="word-highlight">Capacity this week</h2></section>';
+  fs.writeFileSync(path.join(dir,'index.html'),PAGE('The workshop','bench',section));
+  fs.writeFileSync(path.join(dot,'history.json'),JSON.stringify({moments:[{id:'closing-lift',seed:1},{id:'lines-rise',seed:1}],layout:{'product:close':['close-type'],'product:showcase':['bleed-panel']}}));
+  fs.writeFileSync(path.join(dot,'plan.json'),JSON.stringify({version:'2.5.4',moments:[id],compositions:{showcase:'bleed-panel'},grounds:{},ideas:['rail'],own:1,sub:['illustrate']}));
+  gate(dir,['--start','index.html']);
+  let r = gate(dir,[]);
+  check(r.last === 'GATE: PASS','one moment and a composed section satisfy a whole machine plan',r.out);
+  fs.writeFileSync(path.join(dot,'plan.json'),JSON.stringify({version:'2.5.4',moments:['word-rotate']}));
+  r = gate(dir,[]);
+  check(((state(dir).found || {}).fails || []).some(f => f.check === 'deal-drift' && f.where === 'moment word-rotate'),'changing only the machine plan catches its missing moment',r.out);
+}
+// Archived IDs from a saved machine plan do not become requirements after updating the kit.
+{
+  for (const deck of ['moments','scenes']) {
+    const dest = path.join(SKILL,'assets',deck);
+    fs.mkdirSync(dest,{recursive:true});
+    fs.copyFileSync(path.join(SCRIPTS,'../assets',deck,'index.json'),path.join(dest,'index.json'));
+  }
+  const dir = project('none','Availability','workshop');
+  fs.writeFileSync(path.join(dir,'.taste-skill','plan.json'),JSON.stringify({version:'2.5.4',moments:['iris-opens'],scene:'letter-physics'}));
+  gate(dir,['--start','index.html']);
+  const r = gate(dir,[]);
+  check(r.last === 'GATE: PASS','retired moments and scenes never become a gate requirement',r.out);
+}
+// A typography or palette change still blocks even when all suggested sections differ.
+{
+  fs.mkdirSync(path.join(SKILL,'library'),{recursive:true});
+  for (const name of ['palettes','type']) fs.copyFileSync(path.join(SCRIPTS,'../library',name+'.json'),path.join(SKILL,'library',name+'.json'));
+  const dir=project('none','Opening hours','room'), dot=path.join(dir,'.taste-skill');
+  const frame={nav:'nav-mega',close:'close-form',footer:'footer-visit',mark:'petal',hero:'split',entrance:'rise',buttons:'solid',density:'compact',bg:'#fff',ink:'#111111',accent:'#1a4be0',display:'Geist',text:'Geist'};
+  fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame}));
+  const plan={version:'2.5.4',nav:frame.nav,footer:frame.footer,close:frame.close,hero:frame.hero,entrance:frame.entrance,mark:frame.mark,buttons:frame.buttons,palette:'white-link-blue',type:'geist',density:'regular',moments:[]};
+  fs.writeFileSync(path.join(dot,'plan.json'),JSON.stringify(plan));
+  gate(dir,['--start','index.html']); gate(dir,[]);
+  const good=state(dir).found;
+  check(!good.fails.length && good.warns.some(w=>w.check==='deal-drift' && w.where==='density regular'),'matching frame passes and a different density only warns',JSON.stringify(good));
+  fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame:{...frame,bg:'#ffffff',accent:'#abcdef',display:'Arial',mark:'wrong',nav:'nav-centre',close:'close-word',footer:'footer-dark',hero:'word',entrance:'still',buttons:'outline'}}));
+  touch(dir,3); gate(dir,[]);
+  const bad=state(dir).found.fails.filter(x=>x.check==='deal-drift').map(x=>x.where.split(' ')[0]);
+  check(['palette','type','mark','nav','close','footer','hero','entrance','buttons'].every(f=>bad.includes(f)),'each changed frame field remains a blocking drift',JSON.stringify(bad));
+}
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* a profile still held: left in the temp folder */ }
 if (failed) { console.error(`\n${failed} check(s) failed`); process.exit(1); }
 console.log('\nall gate flow checks passed');

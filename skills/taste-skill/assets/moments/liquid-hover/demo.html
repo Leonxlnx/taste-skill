@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-radius="soft" data-ground="sky">
+<html data-type="software" lang="en" data-radius="soft" data-ground="sky">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,38 +10,39 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500&family=Hanken+Grotesk:wght@400;500&display=swap">
 <link rel="stylesheet" href="../../system.css">
 <link rel="stylesheet" href="../_demo/demo.css">
+<link rel="stylesheet" href="../../layout/layout.css">
 <link rel="stylesheet" href="moment.css">
 <style>
   :root { --p-bg: #0b1016; --p-surface: #141b24; --p-ink: #eef2f6; --p-muted: #8e99a6; --p-accent: #6cc3ff; --p-accent-ink: #0b1016; --p-action: #eef2f6; --p-action-ink: #0b1016;
           --font-display: "Schibsted Grotesk", system-ui, sans-serif; --font-text: "Hanken Grotesk", system-ui, sans-serif; --display-weight: 400; }
-  .hero-photo { aspect-ratio: 16 / 8; border-radius: var(--r-lg); margin: var(--s-8) 0 0; }
-  @media (max-width: 639px) { .hero-photo { aspect-ratio: 4 / 5; } }
+  .demo-study { display: flex; flex-direction: column; background: var(--surface); }
+  .study-bar, .study-settings > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-3) var(--s-4); }
+  .study-bar { align-items: center; min-height: 44px; }
+  .study-settings { margin-top: auto; }
+  .study-settings > div { border-top: 1px solid var(--line); }
+  .study-settings dd { margin: 0; }
+  .demo-study .hero-photo { height: min(45svh, 414px); max-height: 100%; margin: 0; border-radius: var(--r-lg); }
+  @media (max-width: 1023px) { .demo-study .hero-photo { flex: 1; height: auto; min-height: 0; } }
   .hero-head { max-width: 760px; display: grid; gap: var(--s-5); }
 </style>
 </head>
 <body>
-<header class="demo-nav"><div class="container">
-  <a class="demo-nav__logo" href="#">Northbound</a>
-  <nav class="demo-nav__links"><a href="#">Rides</a><a href="#">Dates</a><a href="#">Bikes</a><a href="#">About</a></nav>
-  <div class="demo-nav__actions"><a class="btn btn--secondary btn--sm" href="#">Call us</a><a class="btn btn--primary btn--sm" href="#">Book a ride</a></div>
+<header class="nav"><div class="wrap nav__bar">
+  <a class="nav__logo" href="#top">Northbound Studio</a>
+  <nav class="nav__links" aria-label="Main"><a class="nav__link" href="#top">Preview</a><a class="nav__link" href="#notes">Field notes</a></nav>
+  <div class="nav__actions"><a class="btn btn--primary btn--sm" href="#study">Open the study</a></div>
 </div></header>
-<main>
-  <section class="section section--hero">
-    <div class="container">
-      <div class="hero-head"><h1>Three days of sea air on the north coast road</h1><p class="t-lead">Guided rides for groups of eight, with two guesthouses, every meal and a van for the bags. From €640 a person, May to September.</p><div class="btn-row"><a class="btn btn--primary" href="#">See the dates</a><a class="btn btn--secondary" href="#">Hire a bike</a></div></div>
-      <figure class="hero-photo" data-moment="liquid-hover" data-moment-opts='{"strength": 0.8}'>
+<main id="top">
+  <section class="hero hero--split"><div class="wrap"><div class="hero-text grid hero__grid"><div class="hero__text span-6"><h1>Give a still photograph motion</h1><p class="hero__lead">Northbound Studio previews a coastal photograph in the browser. Move the pointer to displace the water at a strength of 0.8.</p><div class="btn-row"><a class="btn btn--primary" href="#study">Open the study</a><a class="btn btn--secondary" href="#notes">Field notes</a></div></div><div class="hero__media span-6 start-7 demo-study" data-ui><div class="study-bar"><strong>Coastal study</strong><span>Preview</span></div><figure class="hero-photo" id="study" data-moment="liquid-hover" data-moment-opts='{"strength": 0.8}'>
         <img src="../_demo/photo-702.jpg" alt="The cliffs and the beach at the end of the pass" width="1800" height="1200">
-      </figure>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container demo-split">
-      <div class="section-head"><h2>Guesthouses, not hotels. <span class="muted">Dinner is included.</span></h2><p>You sleep in two family-run houses by the water and eat what they cook that evening. Rooms are for two; a single room is €90 more.</p><a class="link" href="#">See the houses</a></div>
-      <img class="demo-photo" src="../_demo/photo-1049.jpg" alt="An island off the coast" width="1800" height="1200">
-    </div>
-  </section>
+      </figure><dl class="study-settings"><div><dt>Strength</dt><dd>0.8</dd></div><div><dt>Input</dt><dd>Pointer movement</dd></div></dl></div></div></div></section>
+  <section id="notes" class="section"><div class="wrap grid grid--top"><div class="span-6"><h2>Coastal field notes</h2><p>The study follows the waterline beneath the cliff. The foreground moves with the pointer while the original photograph remains visible on a phone.</p></div><figure class="span-6 pl-photo"><img src="../_demo/photo-1049.jpg" alt="An island off the coast at low tide" width="1800" height="1200"></figure></div></section>
 </main>
-<footer class="container demo-footer"><span>Northbound · demo page for the moment “Liquid hover”</span><span>Photographs by Dominik Schröder and Rosan Harmens on Unsplash</span></footer>
+<footer class="footer closing"><div class="wrap">
+    <div class="closing__cta"><div class="section-head--split"><div><h2>Return to the coastal study</h2></div><a class="btn btn--primary" href="#study">Open the study</a></div></div>
+    <div class="closing__links"><div class="footer__legal"><a href="#top">Northbound Studio</a><span>Photographs by Dominik Schröder and Rosan Harmens on Unsplash.</span></div></div>
+  </div></footer>
+<script type="module" src="../../system.js"></script>
 <script type="module" src="../moments.js"></script>
 </body>
 </html>

@@ -7,10 +7,10 @@
     node scripts/moments.mjs pick --page tech|gaming|software|place|product|service --history .taste-skill/history.json
                                   [--long] [--tone warm|editorial|product|tech|playful] [--scene deal|<id>]
                                   [--has photo,ui,film,product,figures,archive,route]
-                                  [--count 1|2|3] [--seed S] [--effects a,b] [--contexts n]
+                                  [--sections N] [--carry words,list,photos,steps,figures] [--count 1|2] [--seed S] [--effects a,b] [--contexts n]
                                   [--exclude a,b] [--kind text,scroll] [--fits hero,section] [--photo|--no-photo] [--json]
     node scripts/moments.mjs scene --page <kind> --history .taste-skill/history.json [--tone t] [--has ...] [--seed S] [--json]
-                                  deal 0 or 1 scene by fit (about one page in two gets one)
+                                  deal 0 or 1 scene by fit (about one eligible page in three gets one)
     node scripts/moments.mjs check <page.html> [--page tech] [--scene <id>] [--effects a,b] [--contexts n]
                                   audit a built page: its moments, the still rule, cards, the WebGL budget
     node scripts/moments.mjs gallery                    write assets/moments/gallery.html (every demo, one page)
@@ -29,10 +29,9 @@
   service or product page also wants the kind's own tone on the part (warm, editorial, product), or the
   brief's --tone in its place: --tone narrows the deal to one tone of the brief (a cafe: warm; a hotel
   brand or an architect: editorial).
-  Every page gets two moments, three on a long page (--long: eight sections or more), in different
-  sections, and the first one dealt is lively or bold: it goes in the first three screens. Two may
-  share a kind when one is a statement and the other a section. A retired moment (meta.retired,
-  weight 0) is never dealt. --scene deal deals the scene first (as the scene command does) and then
+  Deal one moment, or two with --long or seven or more sections. A text moment rides on a heading.
+  --carry names the material the notes hold. Its default is photos on place, product and service only.
+  Only --carry words can give a main claim one thin statement section. A retired moment is never dealt. --scene deal deals the scene first (as the scene command does) and then
   the moments around it. The WebGL budget: a page holds at most 4 live contexts (perf.mjs glPeak). The deal
   counts the contexts the page already spends - the big scene (--scene <id>: its `webgl` in
   assets/scenes/<id>/meta.json; it also leaves out that scene's avoidMoments, its twins and the ones that
@@ -41,36 +40,34 @@
   total over 4. Every moment has a still variant for reduced motion (meta.reduced) and says what a phone
   shows (meta.phone; the loader enforces it, moments.js); every moment but the two mouse ones runs on a
   phone in a lighter version (meta.phoneRuns true, and `export const phone = true` in its moment.js), and
-  the deal makes sure at least one of the page's moments does. A moment that only answers a mouse
-  (meta.pointerOnly: liquid-hover, cursor-spotlight) is never one of the page's two: it comes only as the
-  extra third on a long page. None may sit in a card (check reports it). meta.text gives the counts the
+  the deal makes sure at least one of the page's moments does. A pointer-only moment is left out of the deal. None may sit in a card (check reports it). meta.text gives the counts the
   checker measures on the built page (words or lines of its heading, items of its row); pick prints them.
 
   scene reads every assets/scenes/<id>/meta.json at run time (a scene without tones is read by its
   `types`; on tech, software and gaming its `types` still name which of the three it suits), leaves
-  out retired ones and every scene the history's `scenes` list holds (never one scene twice), never
-  deals a game a scene that takes the hero (its key art is the hero), and deals one about half the
+  out retired ones and favours scenes still fresh in this folder, never
+  deals a game a scene that takes the hero (its key art is the hero), and deals one about a third of the
   time when one fits; "none" is an answer, not a fault. A scene that is the close leaves out the
   closing moments (closing-lift): one close a page.
 
-  --has names what the brief can fill (default by kind: place and service photo; product photo,product;
-  tech photo,product,figures; software ui,figures; gaming setting). A moment or scene whose meta.needs.list
-  asks for more is never dealt: pictures:N over 8 needs archive (the client's own body of pictures),
+  --has names supplied assets (default by kind: place and service photo, product and tech ground,
+  software ui, gaming setting). A moment or scene whose meta.needs.list
+  asks for more is never dealt: pictures:N over 8 needs an explicit --has pictures:N count,
   product-photo needs product, product-ui needs ui, video needs film, figures needs two proof figures in
   the fact sheet (counter-rolls; opening hours are not proof), route a real route, site the client's own
   site or world seen from high up and from below (a launch site, a plant, a test range, a game's world:
-  setting brings it; a pocket device has none). Add figures to --has when the fact sheet's Numbers line
+  setting brings it; a pocket device has none). Add figures to --carry when the fact sheet's Numbers line
   holds two counts, times or prices. A scene that writes its needs as keys, not a list: ui needs ui, a
   photo that is not optional one picture.
 
-  pick deals two or three moments at random, seeded. The history file's `moments` list is read as
+  pick deals up to two moments at random, seeded. The history file's `moments` list is read as
   cycles: once every moment that fits has been dealt, the next cycle starts empty, so an id comes
-  back only after all the others, never straight after itself (the three dealt last stay out even
+  back only after all the others, never straight after itself (recent ids stay out even
   across a cycle's end), and when a cycle has one fresh id left and two are asked for, that one is
   dealt first and the second comes from the ids dealt longest ago. Never two of one kind on a page
   (hover and liquid count as one kind: one pointer effect a page), never two of one slot, never two
   that list each other in meta.avoidWith, never two WebGL moments, and a moment that needs a
-  photograph only with --photo. It appends the deal to the history (the same file start.mjs and
+  photograph only when photos are carried. It appends the deal to the history (the same file start.mjs and
   effects.mjs use; their keys are kept).
 
   shoot opens every moment's demo page in one headless Chrome with WebGL on the CPU (SwiftShader),
@@ -121,6 +118,7 @@ export const tonesOf = x => (Array.isArray(x.tones) && x.tones.length ? x.tones 
 // WebGL item through on a kind without WebGL (an effect marked as a photo treatment)
 export function fitsKind(x, kind, { tone, webglOk = false } = {}) {
   const f = FIT[kind];
+  if (x.retired || x.weight === 0 || (x.kinds && !x.kinds.includes(kind))) return false;
   if (!f) return false;
   const tones = tonesOf(x);
   if (!tones.some(t => f.tones.includes(t))) return false;
@@ -138,18 +136,22 @@ const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k) || FIT[
 // archive, a room-by-room shoot); product: a photograph or cut-out of the client's own product; ui: its
 // screens; film: footage or a frame sequence; figures: two or more proof figures the brief gives (counts,
 // times, prices; opening hours are not proof); route: a real route to draw. pictures:0, names:N and series:N
-// are words the copy writes, always met.
-export const HAS_BY_KIND = { place: ['photo'], service: ['photo'], product: ['photo', 'product'], tech: ['photo', 'product', 'figures'], software: ['ui', 'figures'], gaming: ['setting'] };
+// use the brief’s named list. An explicit pictures:N gives its actual photograph count.
+export const HAS_BY_KIND = { place: ['photo'], service: ['photo'], product: ['ground'], tech: ['ground'], software: ['ui'], gaming: ['setting'] };
 export function hasFor(page, given) {
-  const s = new Set(given && given !== true ? String(given).split(',').map(x => x.trim()).filter(Boolean) : HAS_BY_KIND[page] || []);
+  const s = new Set(typeof given === 'string' ? String(given).split(',').map(x => x.trim()).filter(Boolean) : HAS_BY_KIND[page] || []);
   if (s.has('setting')) { s.add('photo'); s.add('site'); }   // a game's stand-in photographs of its setting, its world from above
+  if ([...s].some(n => /^pictures:\d+$/.test(n))) s.add('photo');
   if (s.has('archive')) s.add('photo');
   if (s.has('object')) s.add('product');
   return s;
 }
 // the exact file whose section a page copies for a dealt moment or scene (start.mjs plan prints it, the gate's
 // deal-drift fix names it): the in-page demo that already holds the moment in a page section, else its own demo
+export const headingMoments = new Set(['letters-assemble', 'word-highlight', 'word-rotate', 'lines-rise', 'giant-type-pass', 'liquid-type']);
 export function momentSource(id, ref = '<skill>') {
+  if (id === 'word-rotate') return 'use an h1 or h2 and refuse the rotation if its widest word changes the line count at 390px. Adapt the inline slot from ' + ref + '/assets/moments/word-rotate/demo.html';
+  if (headingMoments.has(id)) return 'adapt the heading and its data-moment host from ' + ref + '/assets/moments/' + id + '/demo.html';
   for (const f of ['in-page.html', 'in-page-service.html']) {
     let src = '';
     try { src = fs.readFileSync(path.join(DIR, '_demo', f), 'utf8'); } catch { continue; }
@@ -159,24 +161,39 @@ export function momentSource(id, ref = '<skill>') {
   return 'copy the [data-moment="' + id + '"] element and its section from ' + ref + '/assets/moments/' + id + '/demo.html (section shape: ' + ref + '/assets/moments/_demo/in-page.html)';
 }
 export const sceneSource = (id, ref = '<skill>') => 'copy the whole <section data-big-scene="' + id + '"> of ' + ref + '/assets/scenes/' + id + '/demo.html, link ' + ref + '/assets/scenes/scenes.css and ' + id + '/scene.css, load assets/scenes/scenes.js once';
-export function needsMet(x, has) {
-  const unmet = [], nd = x.needs && typeof x.needs === 'object' ? x.needs : {};
-  // a scene written without a list says its needs as keys: its screen (ui) and a photograph that is not optional count
-  // (2.5.3: descend-through-weather wrote its pictures as a key, unread, and reached a pocket camera's page; it and
-  // shaped-window-over-fixed-world now list site)
-  const list = Array.isArray(nd.list) ? nd.list
-    : [...(nd.ui ? ['product-ui'] : []), ...(typeof nd.photo === 'string' && !/^\s*optional/i.test(nd.photo) ? ['pictures:1'] : [])];
-  for (const n of list) {
-    const [k, v] = String(n).split(':'), num = +v || 0;
-    const ok = k === 'pictures' ? (num === 0 || ((has.has('photo') || has.has('film')) && (num <= 8 || has.has('archive'))))
-      : k === 'product-photo' ? has.has('product')
-      : k === 'product-ui' ? has.has('ui')
-      : k === 'video' ? has.has('film')
-      : k === 'figures' || k === 'route' || k === 'site' ? has.has(k)
-      : true;                                  // names:N, series:N and the rest: words the copy writes
-    if (!ok) unmet.push(n);
+const carryNames = ['words', 'list', 'photos', 'steps', 'figures'];
+export function carryFor(page, value) {
+  if (value instanceof Set) return value;
+  const items = value == null ? (OTHER.includes(page) ? ['photos'] : []) : String(value).split(',').map(s => s.trim()).filter(Boolean);
+  for (const name of items) if (!carryNames.includes(name)) throw new Error('unknown --carry value "' + name + '": use ' + carryNames.join(', '));
+  return new Set(items);
+}
+
+export function needsMet(x, has, carry) {
+  const nd = x.needs || {};
+  const needs = new Set([...(nd.list || []), ...(nd.carry || [])]);
+  if (nd.ui) needs.add('product-ui');
+  if (nd.object) needs.add('object');
+  if (nd.mark) needs.add('logo');
+  if (nd.photo && !/^optional/i.test(String(nd.photo))) needs.add('pictures:1');
+  if (x.id === 'pinned-chapters' && !has.has('ui')) needs.add('pictures:1');
+  const suppliedPictures = [...has].find(n => /^pictures:\d+$/.test(n));
+  const minimum = suppliedPictures ? Number(suppliedPictures.split(':')[1]) : null;
+  const missing = [];
+  for (const need of needs) {
+    const [key, count] = need.split(':');
+    if (key === 'pictures' && Number(count) === 0) continue;
+    if (key === 'pictures' && (minimum !== null ? minimum < Number(count) : Number(count) > 8)) { missing.push(need); continue; }
+    const material = { pictures: 'photos', 'product-photo': 'photos', names: 'list', series: 'list' }[key] || key;
+    if (carry && carryNames.includes(material) && !carry.has(material)) missing.push(need);
+    else if (key === 'pictures' && (!carry && !has.has('photo') && !has.has('film'))) missing.push(need);
+    else if (key === 'product-photo' && !has.has('product')) missing.push(need);
+    else if (key === 'product-ui' && !has.has('ui')) missing.push(need);
+    else if (key === 'video' && !has.has('film')) missing.push(need);
+    else if (['route', 'site', 'object', 'logo'].includes(key) && !has.has(key)) missing.push(need);
+    else if (key === 'figures' && !carry && !has.has(key)) missing.push(need);
   }
-  return unmet;
+  return missing;
 }
 // meta.text: the counts the checker measures on the built page (consistency.mjs moment-text): words or
 // lines of its heading, or items of its row
@@ -259,7 +276,7 @@ function buildIndex({ quiet = false } = {}) {
   }
   const kinds = {};
   moments.forEach(m => { kinds[m.kind] = (kinds[m.kind] || 0) + 1; });
-  const dealt = moments.filter(m => !m.retired);
+  const dealt = moments.filter(m => !m.retired && m.counts !== false && m.weight > 0);
   const index = { version: 3, generated: new Date().toISOString(), count: moments.length, dealt: dealt.length, kinds, pages: PAGES, fit: FIT, budget: BUDGET, moments };
   fs.writeFileSync(INDEX, JSON.stringify(index, null, 1) + '\n');
   if (!quiet) {
@@ -288,7 +305,7 @@ function cmdList(a) {
 }
 
 /* ------------------------------------------------------------------ pick */
-function rng(seed) {
+export function rng(seed) {
   let h = 1779033703 ^ seed.length;
   for (let i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
   let a = (h >>> 0) || 1;
@@ -311,7 +328,7 @@ const group = m => (m.kind === 'hover' || m.kind === 'liquid' ? 'pointer' : m.ki
 const isStatement = m => m.fits.includes('statement');
 // two moments that may share a page (pick and check use the same rule)
 export function canShare(m, p) {
-  const kindOk = group(m) !== group(p) || (group(m) !== 'pointer' && isStatement(m) !== isStatement(p));
+  const kindOk = group(m) !== group(p) || (m.id !== p.id && headingMoments.has(m.id) && headingMoments.has(p.id)) || (group(m) !== 'pointer' && isStatement(m) !== isStatement(p));
   return kindOk && !(p.avoidWith || []).includes(m.id) && !(m.avoidWith || []).includes(p.id)
     && !(m.fits.length === 1 && p.fits.length === 1 && m.fits[0] === p.fits[0])
     && !((m.webgl || 0) && (p.webgl || 0));
@@ -342,9 +359,8 @@ export function readScenes() {
   }
   return out;
 }
-// 0 or 1 scene by fit: never a retired one, never one dealt in this cycle of the history's scenes,
-// and about one page in two (chance) gets one when any fits
-export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5, exclude = [], has } = {}) {
+// Choose among eligible scenes, cycling the eligible pool before repeating.
+export function dealScene(scenes, { page, tone, seed, history = [], chance = 1 / 3, exclude = [], has, carry, keepClose = false, keepHero = false, room = BUDGET, accepts = () => true } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed + ':scene');
   const notes = [];
@@ -356,23 +372,35 @@ export function dealScene(scenes, { page, tone, seed, history = [], chance = 0.5
   const heroOnly = s => Array.isArray(s.fits) && s.fits.length > 0 && s.fits.every(f => f === 'hero');
   const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s) && !(page === 'gaming' && heroOnly(s)));
   // only what the page can fill (meta.needs.list against --has): never a picture archive on a page without one
-  const pool = fit.filter(s => !needsMet(s, has).length);
+  carry = carryFor(page, carry);
+  const pool = fit.filter(s => !needsMet(s, has, carry).length && (s.webgl || 0) <= room
+    && !(keepClose && s.needs?.excludes?.includes('purchase'))
+    && !(keepClose && s.fits?.includes('close')) && !(keepHero && heroOnly(s)) && accepts(s));
   if (!pool.length) return { seed, scene: null, notes: [`scene: none fits a ${page} page${tone ? ` in the ${tone} tone` : ''} with ${[...has].join(', ') || 'nothing'}`] };
-  // never a scene the history already holds, so no two sites share one
-  const seen = new Set(history);
-  const cands = pool.filter(s => !seen.has(s.id));
-  if (!cands.length) return { seed, scene: null, notes: [`scene: every scene that fits a ${page} page is in the history already (${pool.map(s => s.id).join(', ')})`] };
-  if (rand() >= chance) return { seed, scene: null, notes: [`scene: none this time (${cands.length} would fit; about one page in two gets one)`] };
+  const eligible = new Set(pool.map(s => s.id));
+  const fresh = new Set(eligible);
+  let last;
+  for (const id of history) {
+    if (!eligible.has(id)) continue;
+    if (!fresh.size) for (const next of eligible) fresh.add(next);
+    fresh.delete(id);
+    last = id;
+  }
+  const cands = fresh.size ? pool.filter(s => fresh.has(s.id)) : pool.filter(s => pool.length === 1 || s.id !== last);
+  if (rand() >= chance) return { seed, scene: null, notes: ['scene: none this time (about one eligible page in three gets one)'] };
   const total = cands.reduce((t, s) => t + (s.weight ?? 1), 0);
   let r = rand() * total, chosen = cands[cands.length - 1];
   for (const s of cands) { r -= (s.weight ?? 1); if (r <= 0) { chosen = s; break; } }
   return { seed, scene: chosen, notes };
 }
-export function deal(moments, { count = 2, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, used: spent = 0, has } = {}) {
+export function deal(moments, { count = 1, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, used: spent = 0, has, carry } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed);
   const notes = [];
-  let pool = moments.filter(m => !exclude.includes(m.id) && (m.weight ?? 1) > 0 && !m.retired);
+  count = Math.min(2, Math.max(1, count));
+  carry = carryFor(page, carry);
+  has = has instanceof Set ? has : hasFor(page, has);
+  let pool = moments.filter(m => m.counts !== false && !m.pointerOnly && !exclude.includes(m.id) && (m.weight ?? 1) > 0 && !m.retired);
   if (page) pool = pool.filter(m => fitsKind(m, page, { tone }));
   // the WebGL budget: what the page already holds plus the moment's own contexts stays within BUDGET
   const room = BUDGET - spent;
@@ -382,11 +410,8 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
   if (fits) pool = pool.filter(m => m.fits.some(f => fits.includes(f)));
   if (!photo) pool = pool.filter(m => !m.needs?.photo);
   // what the page cannot fill (meta.needs.list against --has): counter-rolls only with two proof figures
-  if (has) {
-    const cant = pool.filter(m => needsMet(m, has).length);
-    if (cant.length) { notes.push(`pick: left out, the page cannot fill them (--has ${[...has].join(',')}): ${cant.map(m => `${m.id} (${needsMet(m, has).join(', ')})`).join(', ')}`); pool = pool.filter(m => !cant.includes(m)); }
-  }
-  if (!pool.length) throw new Error('pick: no moment fits these filters');
+  pool = pool.filter(m => !needsMet(m, has, carry).length);
+  if (!pool.length) return { seed, picks: [], notes };
   const ids = new Set(pool.map(m => m.id));
   // the history as cycles: walking it forward, each time every id in the pool has been dealt a cycle
   // ends and the next starts empty. `used` is the current, unfinished cycle; those ids are out.
@@ -404,16 +429,17 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
   // kind only when one is a statement and the other a section (type, then photographs); one of a
   // slot, never two that avoid each other, never two WebGL contexts
   const together = (m, p) => canShare(m, p) && (m.webgl || 0) + (p.webgl || 0) <= room;
-  // the first one dealt is lively or bold, so something clearly moves in the first three screens
+  // On a two-moment page, put the more visible one first. A single moment can be quiet.
   // (a moment that fits only the close cannot be early)
   const early = m => m.intensity !== 'quiet' && m.fits.some(f => f !== 'closing');
   const picks = [];
   for (let n = 0; n < count; n++) {
     let open = pool.filter(m => !picks.includes(m) && picks.every(p => together(m, p)));
-    // a moment that only answers a mouse (meta.pointerOnly: no touch or idle mode) is never one of the
-    // page's two: it comes only as the extra third on a long page
-    if (n < 2) open = open.filter(m => !m.pointerOnly);
-    if (n === 0 && open.some(early)) open = open.filter(early);
+    if (n === 0 && count > 1) {
+      const withPartner = open.filter(m => pool.some(p => p !== m && together(m, p)));
+      if (withPartner.length) open = withPartner;
+    }
+    if (count > 1 && n === 0 && open.some(early)) open = open.filter(early);
     if (!open.length) { notes.push(`pick: only ${picks.length} moment(s) fit together`); break; }
     let cands = open.filter(m => !used.has(m.id) && !tail.has(m.id));
     if (!cands.length) {
@@ -450,20 +476,28 @@ export function deal(moments, { count = 2, seed, history = [], exclude = [], kin
   return { seed, picks, notes };
 }
 const seedArg = a => (a.seed != null && a.seed !== true ? String(a.seed) : undefined);
-function writeHistory(file, hist) {
+export function writeHistory(file, hist, indent = 1) {
   if (!file || file === true) return;
   fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(hist, null, 1) + '\n');
+  const pending = file + '.' + process.pid + '.tmp';
+  try {
+    fs.writeFileSync(pending, JSON.stringify(hist, null, indent) + '\n');
+    fs.renameSync(pending, file);
+  } finally {
+    fs.rmSync(pending, { force: true });
+  }
 }
 function pageArg(a, cmd) {
   const pg = pageKind(a.page || a.type);
-  if (!pg) die(`${cmd}: pass --page <kind>, one of ${PAGES.join(', ')} (SKILL.md section 1). Every kind gets two moments, three on a long page.`);
+  if (!pg) die(`${cmd}: pass --page <kind>, one of ${PAGES.join(', ')} (SKILL.md section 1). Every kind gets one moment, up to two on a long page.`);
   if (!pg.page) die(`${cmd}: ` + pg.none);
   return pg.page;
 }
 // the scene deal, shared by `scene` and `pick --scene deal`; it appends the scene to the history
-function sceneFor(a, page, tone, hist) {
-  const out = dealScene(readScenes(), { page, tone, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has) });
+function sceneFor(a, page, tone, hist, accepts) {
+  const out = dealScene(readScenes(), { page, tone, accepts, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has),
+    carry: carryFor(page, a.carry), keepClose: a.action === 'booking' || a.action === 'order', keepHero: !!a['keep-hero'] || a.action === 'booking',
+    room: BUDGET - (list(a.effects) || []).length - (+a.contexts || 0) });
   out.notes.forEach(n => console.error(n));
   if (out.scene) hist.scenes = [...(hist.scenes || []), { id: out.scene.id, at: new Date().toISOString(), seed: out.seed }].slice(-200);
   return out;
@@ -474,54 +508,73 @@ function cmdScene(a) {
   const tone = toneArg(a, page);
   const hist = readHistory(a.history);
   const out = sceneFor(a, page, tone, hist);
-  writeHistory(a.history, hist);
+  if (!a['no-record']) writeHistory(a.history, hist);
   if (a.json) console.log(JSON.stringify({ seed: out.seed, page, scene: out.scene ? { id: out.scene.id, fits: out.scene.fits, intensity: out.scene.intensity, webgl: out.scene.webgl || 0, needs: out.scene.needs } : null }));
   else console.log(sceneLine(out.scene));
 }
+export const rideLine = ride => ({ h2: "on the h2 of a content section", close: "on the close's heading", statement: "on the main claim in one thin statement section (section--thin)" })[ride];
 function cmdPick(a) {
   const idx = readIndex();
   const page = pageArg(a, 'pick');
   const tone = toneArg(a, page);
-  const count = Math.max(1, Math.min(3, +(a.count || (a.long ? 3 : 2))));
+  const count = Math.max(1, Math.min(2, Number(a.count) || (a.long || Number(a.sections) >= 7 ? 2 : 1)));
+  const carry = carryFor(page, a.carry);
   const hist = readHistory(a.history);
-  // --scene deal: deal the scene first, then the moments around it
-  let scene = a.scene && a.scene !== true ? String(a.scene) : null, dealtScene;
-  if (scene === 'deal') { dealtScene = sceneFor(a, page, tone, hist); scene = dealtScene.scene ? dealtScene.scene.id : null; }
-  const ctx = pageContexts({ scene, effects: list(a.effects) || [], contexts: a.contexts });
-  ctx.notes.forEach(n => console.error(n));
-  // the scene's own avoidMoments are left out of the deal: the caller need not pass them as --exclude
-  const exclude = [...new Set([...(list(a.exclude) || []), ...ctx.avoid])];
-  if (ctx.avoid.length) console.error(`pick: scene ${scene} keeps off its page: ${ctx.avoid.join(', ')} (its avoidMoments, left out of the deal)`);
-  // a scene that is the close takes the close's place: no closing moment beside it (two closes in a row)
-  const sceneMeta = scene ? readScenes().find(x => x.id === scene) : null;
-  if (sceneMeta && (sceneMeta.fits || []).includes('close')) {
-    const closers = idx.moments.filter(m => m.fits.length === 1 && m.fits[0] === 'closing').map(m => m.id);
-    exclude.push(...closers.filter(id => !exclude.includes(id)));
-    if (closers.length) console.error(`pick: scene ${scene} is the close; left out: ${closers.join(', ')}`);
-  }
-  const history = (hist.moments || []).map(p => p.id);
-  // photographs: every place, product and service page has them; elsewhere --photo says so
   const has = hasFor(page, a.has);
-  const photo = a['no-photo'] ? false : (!!a.photo || isOther(page) || has.has('photo') || has.has('film'));
-  // the slots a page deals by default: sections, statements, the close; a hero moment only with --fits hero
-  const fits = list(a.fits) || ['section', 'statement', 'closing', 'between'];
+  const base = pageContexts({ effects: list(a.effects) || [], contexts: a.contexts });
+  const excluded = list(a.exclude) || [];
+  const closingMoments = idx.moments.filter(m => m.fits.length === 1 && m.fits[0] === 'closing').map(m => m.id);
+  const options = {
+    count, seed: seedArg(a), history: (hist.moments || []).map(m => m.id),
+    kinds: list(a.kind), fits: list(a.fits) || ['section', 'statement', 'closing', 'between'],
+    photo: !a['no-photo'] && (!!a.photo || carry.has('photos')), page, tone, has, carry,
+  };
+  const beside = sc => {
+    const keepClose = a.action === 'booking' || a.action === 'order' || sc?.fits?.includes('close');
+    const exclude = [...excluded, ...(sc?.avoidMoments || []), ...(keepClose ? closingMoments : [])];
+    return deal(idx.moments, { ...options, exclude, used: base.n + (sc?.webgl || 0) });
+  };
+  let scene = a.scene && a.scene !== true ? String(a.scene) : null;
+  let sceneMeta, dealtScene;
+  if (scene === 'deal') {
+    // An optional scene must leave a compatible place for every required moment.
+    const available = beside(null).picks.length;
+    dealtScene = sceneFor(a, page, tone, hist, sc => beside(sc).picks.length >= available);
+    sceneMeta = dealtScene.scene;
+    scene = sceneMeta?.id || null;
+  } else if (scene) {
+    sceneMeta = readScenes().find(sc => sc.id === scene);
+    if (!sceneMeta) {
+      console.error('pick: unknown scene ' + scene + ', reserving one WebGL context');
+      sceneMeta = { id: scene, webgl: 1 };
+    }
+  }
+  const ctx = { n: base.n + (sceneMeta?.webgl || 0) };
   let out;
-  try {
-    out = deal(idx.moments, { count, seed: seedArg(a), history, exclude, kinds: list(a.kind), fits, photo, page, tone, used: ctx.n, has });
-  } catch (e) { die(e.message); }
+  try { out = beside(sceneMeta); } catch (e) { die(e.message); }
+  if (a.json && !out.picks.length) console.error('moment none · The entrance, section reveals, hover feedback and own sections carry the motion.');
   out.notes.forEach(n => console.error(n));
-  if (a.history && a.history !== true) {
+  if (a.history && a.history !== true && !a['no-record']) {
     const at = new Date().toISOString();
     hist.moments = [...(hist.moments || []), ...out.picks.map(p => ({ id: p.id, at, seed: out.seed }))].slice(-200);
     writeHistory(a.history, hist);
   }
+  const rides = {};
+  let statement = !!sceneMeta?.fits?.includes('statement');
+  const rideRoll = rng(out.seed + ':headings');
+  for (const [i, m] of out.picks.entries()) {
+    if (!headingMoments.has(m.id)) continue;
+    if (carry.has('words') && !statement && rideRoll() < 1 / 3) { rides[m.id] = 'statement'; statement = true; }
+    else rides[m.id] = i > 0 && !sceneMeta?.fits?.includes('close') && !out.picks.some(p => p.fits.length === 1 && p.fits[0] === 'closing') && rideRoll() < 0.5 ? 'close' : 'h2';
+  }
   const gl = ctx.n + out.picks.reduce((t, p) => t + (p.webgl || 0), 0);
-  if (a.json) console.log(JSON.stringify({ seed: out.seed, page, tone: tone || null, scene: dealtScene ? (dealtScene.scene ? dealtScene.scene.id : null) : scene, contexts: { page: ctx.n, moments: gl - ctx.n, budget: BUDGET }, picks: out.picks.map((p, i) => ({ id: p.id, kind: p.kind, fits: p.fits, intensity: p.intensity, early: i === 0 && p.intensity !== 'quiet', trigger: p.trigger, webgl: p.webgl, phone: p.phone, phoneRuns: !!p.phoneRuns, pointerOnly: !!p.pointerOnly, needs: p.needs, text: p.text || null })) }));
+  if (a.json) console.log(JSON.stringify({ seed: out.seed, page, tone: tone || null, rides, sceneFits: sceneMeta?.fits || [], scene: dealtScene ? (dealtScene.scene ? dealtScene.scene.id : null) : scene, contexts: { page: ctx.n, moments: gl - ctx.n, budget: BUDGET }, picks: out.picks.map((p, i) => ({ id: p.id, kind: p.kind, fits: p.fits, intensity: p.intensity, early: i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing'), trigger: p.trigger, webgl: p.webgl, phone: p.phone, phoneRuns: !!p.phoneRuns, pointerOnly: !!p.pointerOnly, needs: p.needs, text: p.text || null })) }));
   else {
     console.log(`seed ${out.seed} · page ${page}${tone ? ' · tone ' + tone : ''} · live WebGL contexts ${gl} of ${BUDGET}`);
     if (dealtScene) console.log(sceneLine(dealtScene.scene));
-    out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close: the footer keeps its links row only' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}${p.phoneRuns ? ' · runs on a phone' : ''}${p.pointerOnly ? ' · the extra: it answers a mouse only' : ''}\n   ${p.look}${p.needs?.words ? `\n   the copy: ${p.needs.words}${textRule(p.text)}` : ''}`));
-    console.log('Each in a section of its own, never two in one section; write each id, its section and its purpose in the plan. Write the copy to each one\'s count (the checker measures it: moment-text).');
+    if (!out.picks.length) { console.log('moment none · The entrance, section reveals, hover feedback and own sections carry the motion.'); return; }
+    out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close: the footer keeps its links row only' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}${p.phoneRuns ? ' · runs on a phone' : ''}${p.pointerOnly ? ' · the extra: it answers a mouse only' : ''}\n   ${p.look}${rides[p.id] ? '\n   ' + rideLine(rides[p.id]) + textRule(p.text) : p.needs?.words ? '\n   the copy: ' + p.needs.words.replace('the closing section of its own', 'the close') + textRule(p.text) : ''}`));
+    console.log("Give each moment a different content section. Write its id, section and purpose in the plan and use the indicated copy count.");
     console.log('Dealt again to swap one moment: take one of these, keep the others, and write it on the plan comment\'s moments line as "<id> (re-dealt for <the old id>)"; the gate\'s deal-drift reads that line.');
   }
 }
@@ -553,7 +606,7 @@ function cmdGallery() {
   const rows = shown.map(m => `<li><a href="${m.id}/demo.html"><b>${m.name}</b> <span>${m.kind} · ${m.fits.join(', ')} · ${m.trigger} · ${m.intensity}${m.webgl ? ' · WebGL' : ''} · ${(m.tones || []).join(', ')}</span><p>${m.look}</p><p class="ph">Phone and reduced motion: ${m.phone}</p></a></li>`).join('\n');
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moments</title>
 <style>body{margin:0;font:16px/1.5 system-ui,sans-serif;color:#111;background:#fff;padding:48px 24px}h1{font-size:28px;font-weight:500;margin:0 0 8px}p.lead{color:#555;margin:0 0 32px;max-width:60ch}ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}li a{display:block;padding:16px 20px;border:1px solid #e5e5e5;border-radius:12px;color:inherit;text-decoration:none}li a:hover{border-color:#999}li b{font-weight:500}li span{display:block;color:#666;font-size:13px;margin:2px 0 6px}li p{margin:0;color:#333;font-size:14px}li p.ph{margin-top:6px;color:#666;font-size:13px}</style></head>
-<body><h1>Moments</h1><p class="lead">${shown.length} creative moments, two a page on every kind (three on a long page), dealt by fit: each carries tones (warm, editorial, product, tech, playful) and an intensity, and every kind takes the tones and intensities that fit it (references/moments.md, The fit rule). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
+<body><h1>Moments</h1><p class="lead">${shown.length} creative moments, one a page, two on a long page, dealt by fit: each carries tones (warm, editorial, product, tech, playful) and an intensity, and every kind takes the tones and intensities that fit it (references/moments.md, The fit rule). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
   fs.writeFileSync(path.join(DIR, 'gallery.html'), html);
   console.log(`wrote ${path.join(DIR, 'gallery.html')} (${shown.length} moments)`);
 }
@@ -756,8 +809,8 @@ function cmdCheck(a) {
   if (pg && !pg.page) faults.push(pg.none);
   const found = auditPage(html);
   if (found.length && !pg) warns.push('pass --page <kind> to check the page kind and the WebGL budget');
-  if (found.length > 3) faults.push(`${found.length} moments on the page (two, three on a long page)`);
-  if (found.length < 2) warns.push(`${found.length} moment(s) on the page: every page gets two (moments.mjs pick --page <kind>), three on a long page`);
+  const counted = found.filter(f => byId.get(f.id)?.counts !== false);
+  if (counted.length > 2) faults.push(`${counted.length} moments on the page (at most two on a long page)`);
   const ids = found.map(f => f.id);
   ids.filter((id, i) => ids.indexOf(id) !== i).forEach(id => faults.push(`${id} twice`));
   let gl = 0;
@@ -776,12 +829,12 @@ function cmdCheck(a) {
     const m = byId.get(f.id), n = byId.get(g.id);
     if (m && n && f.id < g.id) {
       if ((m.avoidWith || []).includes(n.id) || (n.avoidWith || []).includes(m.id)) faults.push(`${f.id} and ${g.id} avoid each other`);
-      else if (!canShare(m, n)) faults.push(`${f.id} and ${g.id} do not share a page: two of one kind are one statement and one section, one pointer moment a page, one WebGL moment a page`);
+      else if (m.counts !== false && n.counts !== false && !canShare(m, n)) faults.push(`${f.id} and ${g.id} do not share a page: two of one kind are one statement and one section, one pointer moment a page, one WebGL moment a page`);
     }
   }
-  const known = found.map(f => byId.get(f.id)).filter(Boolean);
+  const known = counted.map(f => byId.get(f.id)).filter(Boolean);
   if (known.length && !known.some(m => m.phoneRuns)) warns.push('no moment on the page runs on a phone: deal again (every moment but liquid-hover and cursor-spotlight runs there)');
-  if (known.length >= 2 && known.filter(m => !m.pointerOnly).length < 2) warns.push(`${known.filter(m => m.pointerOnly).map(m => m.id).join(', ')} answers a mouse only: it is never one of the page's two (deal again; it comes only as a long page's third)`);
+  if (known.some(m => m.pointerOnly)) warns.push('a dealt moment must also work without a mouse');
   const ctx = pageContexts({ scene: a.scene && a.scene !== true ? a.scene : null, effects: list(a.effects) || [], contexts: a.contexts });
   for (const f of found) if (ctx.avoid.includes(f.id)) faults.push(`${f.id} is in the avoidMoments of the scene ${a.scene} (assets/scenes/${a.scene}/meta.json)`);
   if (ctx.n + gl > BUDGET) faults.push(`${ctx.n + gl} live WebGL contexts (${ctx.n} on the page, ${gl} in moments), the cap is ${BUDGET}`);

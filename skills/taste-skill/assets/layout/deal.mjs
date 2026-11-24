@@ -3,7 +3,7 @@
   taste-skill layout deal - deals the hero (heroes.json) for a page at random, weighted by the business
   type, away from the last pages' deals (references/layout-v4.md). It deals the hero only: the type
   pairing comes from start.mjs (VI-02), and its :root lines stay as start.mjs prints them. A place
-  always gets hero-place, in one of four forms dealt here (band, bleed, split, name: layout.css 0b),
+  with a photograph gets hero-place, in one of four forms dealt here (band, bleed, split, name: layout.css 0b),
   away from the last two places' forms; --form <id> prints that one. No photograph: the statement hero.
 
     node <skill>/assets/layout/deal.mjs --type software|product|place|service
@@ -11,21 +11,11 @@
                                                and effects print as for software; without it a product, service or
                                                place prints none (kind other is flat)
          [--kind gaming]                       a game: page type software, kind gaming (SKILL.md section 1).
-                                               It deals from heroes.json's gaming weights (photo, film, and
-                                               statement or word when no art is supplied), never ui, and
+                                               It deals the game's world or actual product window;
                                                --type gaming means the same. Also read as a game:
                                                --type software with film, photo or setting in --has and no ui
-         [--has photo,ui,film,object,setting,ground]   the material the brief really has (default by type:
-                                               software ui; product photo (the client's photographs, else
-                                               stand-ins from photos.mjs search); service photo; a game
-                                               ground, so a game with art passes --has film,photo).
-                                               word and statement are dealt only without photo or film (heroes.json avoid)
-                                               object (a cut-out, the client's render, or a product render when
-                                               the brief asks for 3D) with no photo or film always prints product
-                                               (the full-width stage)
-                                               setting (a game without art files: stand-in photographs of its
-                                               setting, photos.mjs search) always prints photo: the game's name
-                                               set large on the photograph's calm side
+         [--has photo,ui,film,object,setting,ground,logo,art]   material supplied by the brief
+         [--action booking|order|trial|visit|contact]          booking adds a bar to a place or service hero
          [--hero <id>]                         print that one instead of dealing it
          [--history .taste-skill/layout-history.json] [--json] [--stats 1000]
 
@@ -40,19 +30,19 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
-const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
+const opt = (k, d) => { const i = args.indexOf('--' + k); return i < 0 ? d : (args[i + 1] !== undefined && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 const { heroes } = JSON.parse(fs.readFileSync(path.join(here, 'heroes.json'), 'utf8'));
 const TYPES = ['software', 'product', 'place', 'service'];
 let type = opt('type');
 if (type === 'gaming') type = 'software';   // a game is page type software, kind gaming
 if (!TYPES.includes(type) && !opt('hero')) { console.error('deal: --type software|product|place|service (a game: --kind gaming)'); process.exit(2); }
-// a product's default is photographs (its own, else stand-ins): a render only when the brief asks for 3D (--has object)
-const HAS = { software: ['ui', 'ground'], product: ['photo', 'ground'], place: ['photo', 'ground'], service: ['photo', 'ground'] };
-const given = opt('has') && opt('has') !== true ? String(opt('has')).split(',').map(s => s.trim()).filter(Boolean) : null;
+// A product uses a built view until the brief supplies its own picture.
+const HAS = { software: ['ui', 'ground'], product: ['ground'], place: ['photo', 'ground'], service: ['photo', 'ground'] };
+const given = typeof opt('has') === 'string' ? String(opt('has')).split(',').map(s => s.trim()).filter(Boolean) : null;
 const gaming = type === 'software' && (opt('kind') === 'gaming' || opt('type') === 'gaming'
-  || (given && !given.includes('ui') && (given.includes('film') || given.includes('photo') || given.includes('setting'))));
+  || (!opt('kind') && given && !given.includes('ui') && (given.includes('film') || given.includes('photo') || given.includes('setting'))));
 const has = new Set(given ? given.concat('ground') : (gaming ? ['ground'] : (HAS[type] || [])));
-if (gaming) has.delete('ui');                  // never a UI hero on a game
+// A game can supply its actual playable window with --has ui.
 if (!gaming && has.delete('setting')) has.add('photo');   // only a game has a setting: on any other page it is a photograph
 const weightKey = gaming ? 'gaming' : type;    // the types weights to read
 const histFile = opt('history');
@@ -78,17 +68,17 @@ const fits = x => (tech ? (!x.only || x.only === 'tech') : (!x.only && x.id === 
 const ids = list => (list || []).filter(fits).filter(x => !x.dark).map(x => x.id);
 const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x.id);
 
+const productPage = type === 'product' || ['tech', 'product'].includes(opt('kind'));
 function dealOnce(recentHeroes) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
   // a place: the place hero in one of its four forms (dealt below); with no photograph, the statement hero on .ground-brand
   if (!hero && type === 'place') hero = heroes.find(h => h.id === (has.has('photo') ? 'place' : 'statement'));
-  // the product shown by its render or a cut-out (object, no photograph or film): always the full-width
-  // product stage, never the split's six columns (in testing: a render at 44% of the stage read as small)
-  if (!hero && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
-  // a game without art files: its name set large over a stand-in photograph of its setting (the photo hero's calm side)
-  if (!hero && gaming && has.has('setting') && !has.has('photo') && !has.has('film') && !has.has('object')) hero = heroes.find(h => h.id === 'photo');
+  if (!hero && !productPage && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
+  // A product with no photograph or art uses the split for its built view.
+  if (!hero && productPage && !has.has('photo') && !has.has('art') && !has.has('film')) hero = heroes.find(h => h.id === 'split');
+  if (!hero && gaming && has.has('setting') && !has.has('ui') && !has.has('film')) hero = heroes.find(h => h.id === 'photo');
   if (!hero) {
-    const ok = heroes.filter(h => h.id !== 'place' && (h.types[weightKey] || 0) > 0 && needsMet(h));
+    const ok = heroes.filter(h => h.id !== 'place' && (h.id !== 'product' || !productPage || has.has('photo') || has.has('art')) && (h.types[weightKey] || 0) > 0 && needsMet(h));
     if (!ok.length) { console.error(`deal: no hero for ${gaming ? 'a game' : type} with ${[...has].join(', ')}`); process.exit(1); }
     hero = draw(ok, h => h.types[weightKey], recentHeroes);
   }
@@ -122,25 +112,38 @@ if (hero.id === 'place') {
   placeForm = forced || draw(PLACE_FORMS, f => f.w, recent);
 }
 
-if (histFile && !opt('hero')) {
+const window = !!hero.window && has.has('ui') && tech;
+const recentPeeks = (hist.heroPeek || []).slice(-2);
+const peek = window && (recentPeeks.length === 2 && recentPeeks[0] === recentPeeks[1] ? !recentPeeks[0] : Math.random() < 0.5);
+const book = opt('action') === 'booking' && ['place', 'service'].includes(opt('kind') || type);
+const peekLine = 'class hero--peek: the window may run past the first screen (its top inside it, at least 420 px showing at 1440x900), up to 760 px tall';
+const bookLine = "hero-book: a one-row booking bar docked on the hero's foot (copy the commented form in assets/layout/hero-place.html; assets/own/booking-bar.html shows the full section); the full form stays at the close";
+if (histFile && !opt('hero') && !opt('no-record')) {
+  if (window) hist.heroPeek = [...(hist.heroPeek || []), peek].slice(-20);
   if (type !== 'place') { hist.heroes.push(hero.id); hist.heroes = hist.heroes.slice(-20); }
   if (placeForm && !opt('form')) hist.placeForms = [...(hist.placeForms || []), placeForm.id].slice(-12);
   fs.mkdirSync(path.dirname(path.resolve(histFile)), { recursive: true });
-  fs.writeFileSync(histFile, JSON.stringify(hist, null, 1));
+  const pending = histFile + '.' + process.pid + '.tmp';
+  try {
+    fs.writeFileSync(pending, JSON.stringify(hist, null, 1) + '\n');
+    fs.renameSync(pending, histFile);
+  } finally {
+    fs.rmSync(pending, { force: true });
+  }
 }
 
 if (opt('json')) {
-  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero, form: placeForm ? placeForm.id : undefined }, null, 1));
+  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero, peek, book, peekLine, bookLine, form: placeForm ? placeForm.id : undefined }, null, 1));
 } else {
   const s = h => (typeof h === 'object' ? Object.entries(h).map(([k, v]) => `    ${k}: ${v}`).join('\n') : h);
   const axis = hero.id === 'word' || hero.id === 'editorial' ? ' This hero needs a face with a wght or wdth axis.' : '';
   console.log(`hero: ${hero.id} (${hero.name})  demo: <skill>/assets/layout/${hero.demo}${placeForm ? `\n  form: ${placeForm.id}: ${placeForm.how}` : ''}
-  ${hero.job}
+  ${hero.job}${peek ? '\n  ' + peekLine : ''}${book ? '\n  ' + bookLine : ''}
   h1: ${hero.h1.token} ${hero.h1.size.join(' / ')}px, leading ${hero.h1.leading}, at most ${hero.h1.lines.join(' / ')} lines, ${hero.h1.maxChars} characters
   grid:\n${s(hero.grid)}
   at 1440:\n${s(hero.at1440)}
   at 390:\n${s(hero.at390)}
-  moment: ${hero.moment}${tech ? '' : '\n  grounds: flat (kind other: flat colour, photographs, type; --kind tech for hardware); the two or three moments of the page, 0-1 scene and 0-1 quiet treatment are dealt by fit (start.mjs plan, or moments.mjs pick --page <kind> --scene deal)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
+  moment: ${hero.moment}${tech ? '' : '\n  grounds: flat (kind other: flat colour, photographs, type; --kind tech for hardware); one moment, a second on a long page and an occasional scene are dealt by fit (start.mjs plan, or moments.mjs pick --page <kind> --scene deal)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
   mistakes: ${hero.mistakes.join('; ')}
 
 type: the pairing start.mjs dealt (VI-02); keep its :root lines as printed (headlines 400; 400 to 500 on tech).${axis}`);

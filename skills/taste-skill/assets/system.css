@@ -5,13 +5,33 @@
   Do not add a second grid, spacing scale, type scale, radius scale, button or card style.
 */
 
+/* Section air in CSS pixels. The incoming section owns the adjustment on a shared ground. */
+:root {
+  --density: 1;
+  --air-side: 96px;
+  --same-distance: 144px;
+  --thin-side: 64px;
+  --padt: calc(var(--air-side) * var(--density));
+  --padb: calc(var(--air-side) * var(--density));
+  --air-same: calc(var(--same-distance) * var(--density));
+  --air-thin: calc(var(--thin-side) * var(--density));
+}
+@media (640px <= width < 1024px) {
+  :root { --air-side: 80px; --same-distance: 128px; --thin-side: 56px; }
+}
+@media (width < 640px) {
+  :root { --air-side: 72px; --same-distance: 120px; --thin-side: 48px; }
+}
+html[data-density="compact"] { --density: .85; }
+html[data-density="open"] { --density: 1.15; }
+
 /* ---------------------------------------------------------------- tokens */
 :root {
   /* palette (hex only; fx.js reads --bg --surface --ink --muted --accent --accent-ink) */
   --p-bg: #ffffff;
-  --p-surface: #f4f4f4;
+  --p-surface: #ebebeb;
   --p-ink: #111111;
-  --p-muted: #6b6b6b;
+  --p-muted: #686868;
   --p-accent: #1a4be0;
   --p-accent-ink: #ffffff;
   --p-action: #1a4be0;      /* buttons, links, focus: the accent, or the ink when the accent is too pale */
@@ -36,14 +56,8 @@
   --display-weight: 400;    /* headlines 400; 500 on a tech page (software, gaming, hardware) */
   --display-tracking: -0.025em;
 
-  /* the page rhythm (references/layout-v4.md): the hero alone on the first screen, then sections as
-     tall as their content with the same air round each. The header is fixed and --nav tall; every
-     section is padded --padt above and --padb below (128 and 128 at 1024 and up, 104 on a tablet, 88
-     on a phone), so two sections' content sits --padb + --padt apart. The hero's words start --hgap
-     under the header and its content ends --hpadb above the fold. */
+  /* The fixed header and the hero's own clearances. */
   --nav: 72px;
-  --padt: 128px;
-  --padb: 128px;
   --hgap: 48px;
   --hpadb: 64px;
   --bar: 0px;
@@ -103,17 +117,12 @@ html[data-ground="painting"] { --ground-bg: #79a8d6; --ground-surface: #a6c4e2; 
 html[data-radius] .card { --c-r: var(--r-lg); }
 html[data-radius] .panel { --p-r: var(--r-md); }
 
-/* a phone: the header 56, the sections padded 96 / 96, the hero's words 40 under the header and its
-   content ending 24 above the fold, 24 at both sides, 12 between columns */
+/* Phone header, content gutters and heading gap. */
 @media (max-width: 639px) {
-  :root { --nav: 56px; --padt: 88px; --padb: 88px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
+  :root { --nav: 56px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
 }
 @media (min-width: 640px) {
   :root { --gut: 48px; --section: 48px; --section-band: 72px; --card-pad: 24px; }
-}
-/* a tablet: the sections padded 104 / 104 */
-@media (min-width: 640px) and (max-width: 1023px) {
-  :root { --padt: 104px; --padb: 104px; }
 }
 @media (min-width: 1024px) {
   :root { --gut: 80px; --section: 56px; --section-band: 96px; --card-gap: 24px;
@@ -138,7 +147,15 @@ html[data-radius] .panel { --p-r: var(--r-md); }
   :root[data-type="place"] :is(h1, .t-h1) { line-height: 1.156; }
 }
 
-/* ---------------------------------------------------------------- grounds (at most three) */
+/* Inset pictures take the plan's corners independently of controls and the page radius. */
+html[data-pictures="square"] { --picture-radius: 0px; }
+html[data-pictures="soft"] { --picture-radius: var(--s-4); }
+html[data-pictures] :is(.pl-photo, .media, figure:has(> img), figure:has(> picture)) {
+  border-radius: var(--picture-radius); overflow: clip;
+}
+html[data-pictures="soft"] [data-picture-mask] { border-start-start-radius: 28% 38%; overflow: clip; }
+
+/* ---------------------------------------------------------------- section grounds */
 :root, .ground-base {
   --bg: var(--p-bg); --surface: var(--p-surface); --ink: var(--p-ink); --muted: var(--p-muted);
   --accent: var(--p-accent); --accent-ink: var(--p-accent-ink); --card: var(--p-surface);
@@ -154,7 +171,19 @@ html[data-radius] .panel { --p-r: var(--r-md); }
   --accent: var(--p-inv-accent); --accent-ink: var(--p-inv-accent-ink); --card: var(--p-inv-surface);
   --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink);
 }
-:root, .ground-base, .ground-surface, .ground-inverse {
+.ground-brand {
+  --bg: var(--p-accent); --ink: var(--p-accent-ink);
+  --surface: var(--bg);
+  --card: var(--surface); --muted: var(--p-brand-muted, var(--ink));
+  --accent: var(--ink); --accent-ink: var(--bg);
+  --action: var(--ink); --action-ink: var(--bg);
+}
+/* Deepen the card away from its text. Contrasting supplied ink also works in older browsers. */
+@supports (color: contrast-color(red)) {
+  .ground-brand { --surface: color-mix(in oklab, var(--bg) 93%, contrast-color(var(--ink))); }
+}
+.ground-brand .card { --c-text: var(--ink); }
+:root, .ground-base, .ground-surface, .ground-inverse, .ground-brand {
   --line: color-mix(in oklab, var(--ink) 11%, transparent);
   --line-strong: color-mix(in oklab, var(--ink) 20%, transparent);
   /* effects (fx.js) and UI fragments (assets/ui) take the colours of the ground they sit on */
@@ -162,7 +191,7 @@ html[data-radius] .panel { --p-r: var(--r-md); }
   --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
   --ui-font: var(--font-text); --ui-mono: var(--font-mono); --ui-radius: var(--r-md);
 }
-.ground-base, .ground-surface, .ground-inverse { background: var(--bg); color: var(--ink); }
+.ground-base, .ground-surface, .ground-inverse, .ground-brand { background: var(--bg); color: var(--ink); }
 
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -178,6 +207,10 @@ img, svg, video, canvas { display: block; max-width: 100%; }
 [hidden] { display: none !important; }
 img, video { height: auto; }
 a { color: inherit; text-decoration: none; }
+:where(button, .btn, a.pill, a.link, .nav__link, input, select, textarea, summary) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 button { font: inherit; color: inherit; }
 h1, h2, h3, h4, p, ul, ol, figure, blockquote { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -202,7 +235,7 @@ p { text-wrap: pretty; }
 .muted { color: var(--muted); }
 .mono  { font-family: var(--font-mono); }
 .measure { max-width: 62ch; }
-:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; }
 ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
 
 /* ---------------------------------------------------------------- grid */
@@ -211,58 +244,62 @@ p { text-wrap: pretty; }
 .grid > * { min-width: 0; grid-column: 1 / -1; }
 .section { padding-block: var(--section); }
 
-/* ---------------------------------------------------------------- sections: as tall as their content
-   The hero alone fills the first screen (below). Every other section, and footer.closing (the close and
-   the footer in one), is as tall as its content plus the same air above and below it: --padt over its
-   h2, --padb under its last block, so the content of two sections sits --padb + --padt apart (256 at
-   1440, 208 on a tablet, 176 on a phone). Short content is never stretched to a screen, and long content
-   is never cut or hidden to fit one. A moment or a scene that holds its stage (photo-chapters,
-   pinned-chapters, a pinned scene) keeps the height its own module sets.
-     <section class="section" id="..">
-       <div class="wrap"> the h2 first, then the content </div>     (the one in-flow child)
-     </section>
-   A layer (a full-bleed photograph or ground behind the words) is an <img class="layer" aria-hidden="true">
-   beside the .wrap; from 640 a section with a layer is at least 80% of the screen, so the photograph has
-   room. Pictures keep their own ratio: a split's photograph stands beside the words at its ratio,
-   top-aligned with them (a .frame--fill also grows with its row when the words run taller); tiles keep
-   --tile-ratio, a card's panel its --p-h. --h, --hm, .g2, .g2m and .fill (the old screen counts) are
-   read nowhere here: they change nothing. */
+/* Sections share a content column. A layer fills its section, while the hero, a moment, a scene
+   and the close keep their own boundaries. An own section inherits only the section box. */
 main > :is(section, .section), footer.closing {
   position: relative; box-sizing: border-box;
   padding: var(--padt) 0 var(--padb);
 }
+/* A main-claim statement may explicitly opt into thin air even when it hosts a text moment. */
+main > section.statement.section--thin { padding-block: var(--air-thin); }
+/* A thin section spends its own padding on both sides. Its successor can use the
+   actual bottom edge to make the same-ground distance, including after a thin section. */
+main > :is(section, .section):not(:where(.hero, .section--hero, .photo-band--hero, [data-moment], .scene, .sc, [data-scene], [data-big-scene])) {
+  &.section--thin { padding-block: var(--air-thin); }
+  &:has(> .layer) + * { --previous-bottom: 0px; }
+  &.section--thin + * { --previous-bottom: var(--air-thin); }
+  & + :where(section, .section):not(:where(.section--thin, .hero, .section--hero, .photo-band--hero, [data-moment], .scene, .sc, [data-scene], [data-big-scene])):where(
+    :not(.ground-surface, .ground-inverse, .ground-brand) + :not(.ground-surface, .ground-inverse, .ground-brand),
+    .ground-surface + .ground-surface,
+    .ground-inverse + .ground-inverse,
+    .ground-brand + .ground-brand
+  ) {
+    padding-top: calc(var(--air-same) - var(--previous-bottom, var(--padb)));
+    scroll-margin-top: max(0px, calc(var(--nav) + var(--s-2) - var(--air-same) + var(--previous-bottom, var(--padb))));
+  }
+}
 /* the phone action bar covers the foot of the screen, not of a section: the page's last block pads for it */
-footer.closing { padding-bottom: calc(var(--padb) + var(--bar)); }
-main > :is(section, .section) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; }
-main > :is(section, .section) > :is(.wrap, .container):not(.grid) { display: flex; flex-direction: column; }
+footer.closing { padding-bottom: calc(var(--s-8) + var(--bar)); }
+main > :is(section, .section):not(:where(.own, [data-own])) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; }
+main > :is(section, .section):not(:where(.own, [data-own])) > :is(.wrap, .container):not(.grid) { display: flex; flex-direction: column; }
 /* a .wrap that is the section's grid too (class="wrap grid"): its rows start at the top */
-main > :is(section, .section) > :is(.wrap, .container).grid { align-content: start; }
+main > :is(section, .section):not(:where(.own, [data-own])) > :is(.wrap, .container).grid { align-content: start; }
 /* a group (older markup: the h2 and the first rows, then the rest): one block under the other, a card
    row's gap between them */
 .group { display: flex; flex-direction: column; min-width: 0; }
 .group + .group { margin-top: var(--card-gap); }
 @media (min-width: 640px) {
-  main > :is(section, .section):has(> :is(img, video, canvas, picture).layer) { min-height: 80vh; min-height: 80svh; }
+  main > :is(section, .section):not(:where(.own, [data-own])):has(> :is(img, video, canvas, picture).layer) { min-height: 80vh; min-height: 80svh; }
 }
 /* a heading and its line with no .section-head round them (straight in the .wrap, or in a split's
    column): the head's own spacing, 16px under the h2 and between its lines, then --head-gap before the
    content (in testing the h2, its lead and the list under them touched). At the weight of one or two
    tags, so a moment's or a card's own class still sets its own margins. */
-:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > :where(h2, p) + :is(p, h2) { margin-top: var(--s-4); }
-:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + :where(:not(p, h2, h3, br)) { margin-top: var(--head-gap); }
-:where(main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + p + :where(:not(p, h2, h3, address, br)) { margin-top: var(--head-gap); }
+:where(main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > :where(h2, p) + :is(p, h2) { margin-top: var(--s-4); }
+:where(main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + :where(:not(p, h2, h3, br)) { margin-top: var(--head-gap); }
+:where(main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap, main > :is(section, .section):not(.own, [data-own], .statement, [data-moment], .sc) > .wrap > :not(.section-head, .section-head--split, .section-head--row, .card, .tile, [data-moment])) > h2 + p + :where(:not(p, h2, h3, address, br)) { margin-top: var(--head-gap); }
 /* a layer: the photograph or ground of a whole section, under its words, edge to edge */
-main > :is(section, .section) > :is(img, video, canvas, picture).layer,
+main > :is(section, .section):not(:where(.own, [data-own])) > :is(img, video, canvas, picture).layer,
 footer.closing > :is(img, video, canvas, picture).layer {
   position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%);
 }
-main > :is(section, .section) > picture.layer > img { width: 100%; height: 100%; object-fit: cover; }
+main > :is(section, .section):not(:where(.own, [data-own])) > picture.layer > img { width: 100%; height: 100%; object-fit: cover; }
 
-/* the statement: one sentence of 12 to 40 words in a section of its own (a moment's host or plain type),
+/* the statement: a main claim in its own section.section--thin (a moment's host or plain type),
    set large, the label just above it: a section as tall as the words and the air round them. 12 to 20
    words: add .statement--short (larger still). Two statements never follow each other. A line under it
    (a .t-lead) stays the lead's size: only the sentence is set large, never the paragraph after it.
-     <section class="section statement" id=".."><div class="wrap">
+     <section class="section section--thin statement" id=".."><div class="wrap">
        <p class="t-label">The house</p>
        <p class="statement__text">We are a family of four with six rooms and a shed of bikes.</p>
      </div></section> */
@@ -290,7 +327,7 @@ main > section.statement.statement--short > .wrap:not(:has(> :is(.statement__tex
                                         a phone keeps the words first)
      bleed-panel                        the photograph as the section's layer, the words on a solid panel of
                                         the page ground in one corner (never on the photograph itself)
-     offset-pair                        two photographs, the second smaller and lower: .comp-offset
+     offset-pair                        two photographs, seven and five columns on a shared top line: .comp-offset
      three-up                           three photographs or tiles on span-4, one height
      list-tall                          the list (rows, hours, prices) beside one tall photograph: the split
                                         with the list on span-6/7, the picture grows to the foot (fill, above)
@@ -310,14 +347,18 @@ section.comp-bleed[data-corner="end"] .comp-panel { margin-left: auto; }
   main > section.comp-bleed { display: flex; flex-direction: column; padding-top: 0; }
   main > section.comp-bleed > .layer { position: relative; inset: auto; height: 62svh; flex: 1 0 62svh; }
   main > section.comp-bleed > .wrap { padding-top: var(--s-6); }
+  /* Below the photo, the in-flow caption supplies its own bottom air. */
+  main > section.comp-bleed:has(> .layer) + * { --previous-bottom: var(--padb); }
   .comp-panel { width: 100%; padding: 0; background: none; }
 }
-/* offset-pair: <div class="grid comp-offset"><figure class="media span-7">..</figure><figure class="media span-4 start-9">..</figure></div>
-   the second starts a fifth of the way down and ends on the first's foot */
-.comp-offset > figure { margin: 0; position: relative; overflow: clip; min-height: 240px; }
-.comp-offset > figure > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
-@media (min-width: 1024px) { .comp-offset { align-items: stretch; } .comp-offset > figure + figure { margin-top: 22%; } }
-@media (max-width: 1023px) { .comp-offset > figure { aspect-ratio: 4 / 3; min-height: 0; } .comp-offset > figure + figure { width: 72%; margin-left: auto; } }
+/* Two photographs share a top line and one gutter, including older span-4/start-9 markup. */
+.comp-offset > figure { margin: 0; position: relative; overflow: clip; aspect-ratio: 4 / 3; }
+.comp-offset > figure > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 1024px) {
+  .comp-offset { align-items: start; }
+  .comp-offset > figure:first-child { grid-column: 1 / span 7; }
+  .comp-offset > figure + figure { grid-column: 8 / span 5; }
+}
 /* three-up: <div class="grid comp-three"><figure class="media span-4">..</figure> x3</div>, one height, filling the row */
 .comp-three > figure { margin: 0; position: relative; overflow: clip; min-height: 240px; }
 .comp-three > figure > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
@@ -438,9 +479,11 @@ main > :is(.hero, .section--hero) {
 
 /* ---------------------------------------------------------------- section heading */
 .section-head { max-width: 760px; margin-bottom: var(--head-gap); display: grid; gap: var(--s-4); }
-/* every heading starts on the left line (a centred head among left ones reads as a mistake): the
-   old centred head is left-aligned too */
-.section-head--center { text-align: left; justify-items: start; }
+/* The dealer may centre proof and closing heads. Other sections keep their left edge. */
+.section-head--center { text-align: center; justify-items: center; margin-inline: auto; }
+.section-head--split.section-head--center { display: grid; justify-content: center; justify-items: center; }
+.section-head--center > div { margin-inline: auto; }
+.section-head--center :is(h2, p) { margin-inline: auto; }
 /* a head row: the h2 (and its line) left, one link or the section's button at the right line */
 .section-head--split { max-width: none; display: flex; align-items: end; justify-content: space-between; gap: var(--s-5); flex-wrap: wrap; }
 .section-head--split > div { display: grid; gap: var(--s-4); max-width: 760px; }
@@ -449,6 +492,20 @@ main > :is(.hero, .section--hero) {
 .section-head--row > div { display: grid; gap: var(--s-4); max-width: 760px; }
 /* the hero row (hero-product, hero-cycle): the h1 and its line left, the buttons right, across 1280 */
 .section--hero .section-head--row { max-width: none; }
+
+/* Up to 60 characters of identifying facts. Two lines accommodate a narrow column. */
+.fact-line {
+  margin-block-start: var(--s-3);
+  font: 400 var(--t-small)/1.5 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere;
+}
+.tile:has(> .fact-line) { row-gap: var(--s-3); }
+.tile > .fact-line { margin: 0; color: var(--muted); }
+.fact-line--beside { margin-block-start: 0; margin-inline-start: var(--s-3); }
+.card > p.fact-line { font-size: var(--t-small); color: var(--muted); }
 
 /* ---------------------------------------------------------------- buttons (one pair, a dealt look)
    One pair a page, .btn--primary and .btn--secondary, in the look dealt with the page (sections.md)
@@ -467,7 +524,8 @@ main > :is(.hero, .section--hero) {
 .btn--primary { background: var(--action); color: var(--action-ink); }
 .btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--ink)); }
 /* an inverted primary (the action is the ground's ink: a brand band, a lit ground): its hover steps toward the ground, as the filled one steps toward the ink */
-.ground-brand .btn--primary:hover { background: color-mix(in oklab, var(--action) 88%, var(--bg)); }
+:root .ground-brand .btn--primary:is(:hover, :active) { background: var(--action); text-decoration: underline; text-underline-offset: .16em; }
+:root[data-buttons] .ground-brand .btn.btn--secondary { background: var(--bg); }
 /* the ground's own colour with a clear border: never grey on grey, readable on an effect too */
 .btn--secondary { background: var(--bg); color: var(--ink); border-color: var(--line-strong); }
 .btn--secondary:hover { background: color-mix(in oklab, var(--bg) 94%, var(--ink)); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
@@ -570,6 +628,29 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
    picture, top-aligned with the words); stacked on a tablet or a phone it keeps its ratio */
 .frame--fill { height: 100%; }
 @media (max-width: 1023px) { .frame--fill { height: auto; } }
+/* A split photo fills the taller column up to a 2:3 crop. The grid supplies the column width
+   for the cap. Stacked media keep their intrinsic ratio. */
+@media (min-width: 1024px) {
+  .grid:where(:has(> :nth-child(2):last-child)):has(> :is(.frame--photo, .frame--split, .pl-photo)):not(:where(.hero *, .own *, [data-own] *)) {
+    container-type: inline-size;
+    & > :is(.frame--photo, .frame--split, .pl-photo) {
+      --photo-span: 6;
+      --photo-width: calc((100cqi + var(--gutter)) * var(--photo-span) / 12 - var(--gutter));
+      align-self: stretch;
+      max-height: calc(var(--photo-width) * 1.5);
+    }
+    /* An in-flow image's natural height would size the row before the words can. */
+    &.grid--top:has(> :not(figure, picture, .frame, .pl-photo, .media)) > .pl-photo:has(> img:only-child) {
+      position: relative;
+      & > img { position: absolute; inset: 0; }
+    }
+    & > .span-5 { --photo-span: 5; }
+    & > .span-7 { --photo-span: 7; }
+    & > .pl-photo > img, & > .pl-photo > picture > img {
+      height: 100%; width: 100%; object-fit: cover;
+    }
+  }
+}
 /* a split's words as a column: the last block (stats, a link) on the picture's bottom line */
 .split-col { display: flex; flex-direction: column; gap: var(--s-5); }
 @media (min-width: 1024px) { .split-col { height: 100%; } .split-col > .split-col__end { margin-top: auto; } }
@@ -965,7 +1046,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
    on top (system.js sets <html data-tone="dark">), never a light slab under a dark page. */
 .footer--dark { border-top: 0; padding-block: var(--section-band) var(--s-6); }   /* a change of ground: the gap a band gets */
 html[data-tone="dark"] .footer--dark {
-  --bg: color-mix(in oklab, var(--p-bg) 72%, #000); --surface: var(--p-surface); --ink: var(--p-ink); --muted: var(--p-muted);
+  --bg: color-mix(in oklab, var(--p-bg) 72%, #000); --surface: var(--p-surface); --card: var(--p-surface); --ink: var(--p-ink); --muted: var(--p-muted);
   --accent: var(--p-accent); --accent-ink: var(--p-accent-ink); --action: var(--p-action); --action-ink: var(--p-action-ink);
   border-top: 1px solid var(--line);
 }
@@ -1032,7 +1113,7 @@ html[data-tone="dark"] .footer--dark {
 .visit__rows > li > :first-child { color: var(--muted); }
 .visit__rows > li > :last-child { text-align: right; }
 @media (min-width: 1024px) {
-  .visit--card { --bg: var(--p-surface); --surface: var(--p-bg); --card: var(--p-bg); background: var(--bg); border-radius: var(--r-lg); padding: var(--s-7); }
+  .visit--card { background: var(--surface); border-radius: var(--r-lg); padding: var(--s-7); }
 }
 @media (max-width: 1023px) { .visit--cols .visit__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 639px) {
@@ -1111,9 +1192,9 @@ footer.closing > .wrap { display: grid; grid-template-rows: auto auto; row-gap: 
 /* the 640px button (product, service, place) stays within half the .wrap, so it never stands over half of it off its
    right line: on a place's 1200px column it is 600 (SR-6) */
 @media (min-width: 640px) { .closing__cta.close--type > .btn--xl { width: min(50%, 640px); } }
-/* the name across the .wrap: sized in layout.js-free CSS from the container (8 letters fill 1280) */
-.close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/.86 var(--font-display); letter-spacing: -0.045em;
-               white-space: nowrap; overflow: clip; color: var(--ink); }
+/* The name wraps naturally without script. system.js fits one line when space permits. */
+.close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/1.02 var(--font-display); letter-spacing: -0.045em;
+               min-width: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--ink); }
 .closing__links { display: grid; gap: var(--s-7); }
 .closing__links > .footer__legal { margin-top: 0; }
 .closing__links .footer__lede { font-size: var(--t-lead); max-width: 30ch; }
@@ -1379,13 +1460,6 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
   .actionbar, .actionbar[data-bar="hidden"] { transition: none; }
 }
 
-/* a brand-colour band (product and place may add one, in the page's second half): the accent as the
-   section's ground, its words in the accent's ink */
-.ground-brand { --bg: var(--p-accent); --surface: color-mix(in oklab, var(--p-accent) 88%, var(--p-accent-ink)); --ink: var(--p-accent-ink);
-  --muted: color-mix(in oklab, var(--p-accent-ink) 82%, var(--p-accent)); --card: var(--surface);
-  --action: var(--p-accent-ink); --action-ink: var(--p-accent); background: var(--bg); color: var(--ink); }
-.ground-brand { --line: color-mix(in oklab, var(--ink) 16%, transparent); --line-strong: color-mix(in oklab, var(--ink) 30%, transparent); }
-
 /* a [bracketed placeholder] or a "(sample)" tag left in visible text: system.js marks it so it shows
    in every screenshot; nothing like it ships (copy.md) */
 /* a stand-in still to replace: outlined only while the checker runs (html[data-check]); a visitor never sees it.
@@ -1399,9 +1473,22 @@ html[data-check] [data-placeholder] { outline: 2px dashed #d92d20; outline-offse
 .enter { animation: none; }
 @keyframes fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  /* a card loop of motion.css ([data-m-loop]) holds its own finished frame */
-  :not([data-m-loop], [data-m-loop] *), ::before, ::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important;
-                           transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  /* The loop kit selects its complete frame with a negative delay and a paused animation. */
+  :where(:not([data-m-loop], [data-m-loop] *)),
+  :where(:not([data-m-loop], [data-m-loop] *))::before,
+  :where(:not([data-m-loop], [data-m-loop] *))::after { animation: none !important; }
+  [data-m-loop], [data-m-loop] *, [data-m-loop] *::before, [data-m-loop] *::after { animation-play-state: paused !important; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-property: opacity, color, background-color, border-color, text-decoration-color, fill, stroke !important;
+    transition-duration: 140ms !important;
+    transition-delay: 0s !important;
+  }
+  .btn:active, .btn:hover::after, .link:hover::after, a.tile:hover .tile__media > img,
+  .nav__menu, .ly-play:hover .ly-play__disc { transform: none !important; }
+  .actionbar { transform: none !important; }
+  .actionbar[data-bar="hidden"] { opacity: 0; }
+  [data-ly-steps] [data-step].is-off { opacity: 1; transform: none; }
 }
 
 /* ---------------------------------------------------------------- helpers */

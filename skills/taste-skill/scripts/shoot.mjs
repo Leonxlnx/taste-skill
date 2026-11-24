@@ -10,12 +10,10 @@
   script from file://, so a page opened that way shows its kit, effects and diagrams empty. Never port 3000.
   --root serves from that folder instead (a built site whose links start at its root, /style.css).
 
-  Section tiles: at 1440 and at a phone width (under 600) it first shoots one screen
-  per top-level section (the children of main, a body > section, a closing footer, the footer), starting at the
-  section's top with the fixed header over it as a visitor sees it (check CK-16: a judge tile at k x 900 at 1440x900, k x 844 at 390x844: one screen is exactly that tall, as consistency.mjs section-height measures it), every
-  whole screen after it, and a last screen with its bottom on the section's bottom when the section is taller than one
-  screen. A section whose top the page cannot scroll to (the last short one) is cut out of the last screen, so its tile
-  shows it alone. That is the judge's tile: one section per tile, never the next one peeking in. They go to --tiles,
+  At 1440 and phone widths below 600, save a JPG for each visible section of the page. The hero
+  includes its navigation. Later tiles scroll content below the fixed header and crop at the section
+  boundary; a short section makes a short tile. Larger sections get a tile for each screen of
+  content, including their last visible part. They go to --tiles,
   else tiles/ beside --out, as desktop-sec-NN-a.jpg (-b, -c in order down the section) or mobile-sec-NN-a.jpg, with
   sections.json (each section's top, its height in screens, its tiles; both views of one page kept, whatever port
   served it). Each tile waits for the screen to settle (fonts
@@ -206,6 +204,9 @@ function sectionsProbe(o) {
   const sections = secs.map((e) => {
     const r = e.getBoundingClientRect();
     const row = { tag: e.tagName.toLowerCase(), id: e.id || '', cls: typeof e.className === 'string' ? e.className.slice(0, 60) : '', top: Math.round(r.top + scrollY), h: Math.round(r.height) };
+    if (e.matches('.is-live[data-moment="pinned-chapters"],.is-live[data-moment="photo-chapters"]')) {
+      row.chapters = e.querySelectorAll('.mo-pc__step, .mo-ph__ch').length;
+    }
     if (o && o.full) Object.assign(row, { sel: sel(e), text: label(e.querySelector('h1, h2, h3') || e), foot: e.tagName === 'FOOTER' || e.getAttribute('role') === 'contentinfo', held: held(e) });
     return row;
   });
@@ -272,18 +273,24 @@ async function tilesOf(page, outDir, o) {
   const sections = [];
   for (const [i, s] of info.sections.entries()) {
     const nn = String(i + 1).padStart(2, '0');
-    // the judge's tile (check CK-16, 1H/2H sections on the screen grid): the screen starting at the section's top, the
-    // fixed header over its top padding as a visitor sees it; a section taller than one screen also gets the screen
-    // ending at its bottom, and every whole screen between (a three-screen section gets three tiles). A section the page
-    // cannot scroll to the top of (the last short one: its top is past the max scroll) is cut out of the last screen, so
-    // its tile shows that section alone, never mostly the one before it
-    // (consistency.mjs section-height: one screen is H +/- 2px, two screens 2H +/- 2px)
+    // Content can be shorter than a screen. Leave room for the fixed navigation
+    // while scrolling, then capture only this section's visible pixels.
+    const header = i === 0 ? 0 : info.navH;
+    const available = info.H - header;
     const want = [s.top];
-    for (let y = s.top + info.H; y < s.top + s.h - info.H - 2; y += info.H) want.push(y);
-    if (s.h > info.H + 2) want.push(s.top + s.h - info.H);
+    if (s.chapters >= 2 && s.h > info.H) {
+      // One stable view of each live chapter. A viewport-sized jump can skip the middle state.
+      const runway = s.h - info.H;
+      for (let chapter = 1; chapter < s.chapters; chapter++) {
+        want.push(s.top + header + Math.round(runway * (chapter + 0.5) / s.chapters));
+      }
+    } else {
+      for (let y = s.top + available; y < s.top + s.h - available - 2; y += available) want.push(y);
+      if (s.h > available + 2) want.push(s.top + s.h - available);
+    }
     const tiles = [];
     for (const [k, y0] of want.slice(0, 8).entries()) {
-      const y = Math.min(maxY, Math.max(0, y0));
+      const y = Math.min(maxY, Math.max(0, y0 - header));
       await page.eval(call(jumpTo, y));
       const at = await page.eval('Math.round(scrollY)');
       await page.eval(call(settleProbe, { max: 6000, tail: 800 }));
@@ -291,10 +298,11 @@ async function tilesOf(page, outDir, o) {
       // clip in page coordinates: from the section's top (or the screen's) to the screen's bottom or the section's end
       const cut = y0 > at + 1 ? Math.round(y0 - at) : 0;
       const clipH = Math.min(info.H - cut, Math.max(1, s.top + s.h - (at + cut)));
-      const shot = cut > 0 ? { format: 'jpeg', quality: 78, clip: { x: 0, y: at + cut, width: info.vw, height: clipH, scale: 1 } } : { format: 'jpeg', quality: 78 };
+      const cropped = cut > 0 || clipH < info.H;
+      const shot = cropped ? { format: 'jpeg', quality: 78, clip: { x: 0, y: at + cut, width: info.vw, height: clipH, scale: 1 } } : { format: 'jpeg', quality: 78 };
       const { data } = await page.send('Page.captureScreenshot', shot);
       fs.writeFileSync(path.join(out, file), Buffer.from(data, 'base64'));
-      tiles.push(cut > 0 ? { file, scrollY: at, cutTop: cut, height: clipH } : { file, scrollY: at });
+      tiles.push(cropped ? { file, scrollY: at, cutTop: cut, height: clipH } : { file, scrollY: at });
     }
     sections.push({ n: i + 1, ...s, hScreens: Math.round((s.h / info.H) * 100) / 100, offGrid: Math.round(((s.h / info.H) % 1) * info.H), tiles });
   }

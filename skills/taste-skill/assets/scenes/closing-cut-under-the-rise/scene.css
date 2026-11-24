@@ -119,7 +119,7 @@
   max-width: 26ch;
   font-family: var(--font-display, inherit);
   font-weight: var(--display-weight, 500);
-  font-size: clamp(28px, 2.9vw, 46px);
+  font-size: clamp(32px, 3.4vw, 52px);
   line-height: 1.02;
   letter-spacing: -0.025em;
   text-wrap: balance;
@@ -157,7 +157,7 @@
   .scene[data-big-scene="closing-cut-under-the-rise"] .ccr { min-height: 0; }
   /* the band stays short, so the photograph's subject above it stays whole: two lines over the action */
   .scene[data-big-scene="closing-cut-under-the-rise"] .ccr-words { gap: 14px; padding: 16px var(--ccr-pad) calc(var(--ccr-tail, 0px) + 18px); }
-  .scene[data-big-scene="closing-cut-under-the-rise"] .ccr-line { max-width: none; font-size: clamp(20px, 5.5vw, 24px); line-height: 1.06; }
+  .scene[data-big-scene="closing-cut-under-the-rise"] .ccr-line { max-width: none; font-size: clamp(28px, 7vw, 40px); line-height: 1.06; }
   .scene[data-big-scene="closing-cut-under-the-rise"] .ccr-action { min-height: 46px; padding: 0 22px; font-size: 16px; }
 }
 
@@ -217,7 +217,7 @@ html.sc-js .scene.is-live[data-big-scene="closing-cut-under-the-rise"] > .scene-
 .scene.is-live[data-big-scene="closing-cut-under-the-rise"][data-ccr-cut="after"] .ccr-carrier,
 .scene.is-live[data-big-scene="closing-cut-under-the-rise"][data-ccr-cut="after"] .ccr-caption { visibility: hidden; }
 /* the band arrives with the photograph: before the cut the flat room is the whole stage */
-.scene.is-live[data-big-scene="closing-cut-under-the-rise"][data-ccr-cut="before"] .ccr-words { visibility: hidden; }
+
 @media (max-width: 1023px), (max-aspect-ratio: 4/5) {
   /* where the cut-out fills the width the caption would sit on its legs, so it stays out */
   .scene.is-live[data-big-scene="closing-cut-under-the-rise"] .ccr-caption { display: none; }

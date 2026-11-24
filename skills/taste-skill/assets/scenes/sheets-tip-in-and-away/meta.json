@@ -52,10 +52,12 @@
   ],
   "needs": {
     "list": [
-      "product-photo",
       "pictures:3"
     ],
-    "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless."
+    "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless.",
+    "carry": [
+      "photos"
+    ]
   },
   "never": "a page whose brief lacks what the content asks for",
   "avoidWith": [],

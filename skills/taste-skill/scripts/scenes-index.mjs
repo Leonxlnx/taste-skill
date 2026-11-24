@@ -38,6 +38,7 @@ for (const id of fs.readdirSync(DIR).sort()) {
   if (!INTENSITY.includes(m.intensity)) notes.push(`${id}: intensity missing (${INTENSITY.join(', ')})`);
   if (m.webgl !== 0 && m.webgl !== 1) notes.push(`${id}: webgl must be 0 or 1`);
   if (m.retired && (m.weight ?? 1) !== 0) problems.push(`${id}: a retired scene needs weight 0`);
+  if (!Array.isArray(m.needs?.list) || !Array.isArray(m.needs?.carry)) problems.push(`${id}: needs.list and needs.carry must be arrays`);
   scenes.push(m);
 }
 
@@ -52,7 +53,7 @@ const index = {
   fits: count('fits'),
   tones: count('tones'),
   intensity: count('intensity'),
-  rule: 'At most one big scene a page, on any kind of page whose fit it meets: its tones, intensity and webgl against the page kind (moments.mjs FIT; place and service pages take quiet or lively scenes without WebGL), its fits, types and needs against the brief (references/scenes.md). About one page in two gets one; a retired scene is never dealt. Phones and reduced motion get the finished composition or the light version; the rest of the page stays calm.',
+  rule: 'At most one big scene a page, on any kind of page whose fit it meets: its tones, intensity and webgl against the page kind (moments.mjs FIT; place and service pages take quiet or lively scenes without WebGL), its fits, types and needs against the brief (references/scenes.md). About one eligible page in three gets one; a retired scene is never dealt. Phones and reduced motion get the finished composition or the light version; the rest of the page stays calm.',
   load: '<link rel="stylesheet" href="assets/scenes/scenes.css"> and <link rel="stylesheet" href="assets/scenes/<id>/scene.css"> in <head>; <section class="sc" data-big-scene="<id>" data-big-scene-opts=\'{…}\'><div class="sc__stage">…</div></section> (a classic scene: class="sc scene" and <div class="scene-stage">, as its demo.html writes it); <script type="module" src="assets/scenes/scenes.js"></script> once at the end of <body>.',
   scenes,
 };
