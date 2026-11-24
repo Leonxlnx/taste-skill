@@ -29,6 +29,14 @@
 <table align="center">
   <tr>
     <td align="center" width="104">
+      <a href="https://serpapi.com/?utm_source=tasteskill">
+        <img src="assets/sponsors/serpapi-icon.svg" alt="SerpApi" width="72" height="72" />
+      </a>
+    </td>
+    <td><a href="https://serpapi.com/?utm_source=tasteskill"><strong>SerpApi</strong></a> · SerpApi is the world's leading provider of search data, pioneering APIs that turn search engine results into structured, developer-ready information.</td>
+  </tr>
+  <tr>
+    <td align="center" width="104">
       <a href="https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship">
         <img src="assets/sponsors/interfaces-dev-icon.webp" alt="Interfaces" width="52" height="52" />
       </a>
