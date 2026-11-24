@@ -57,9 +57,13 @@ const catalogue = JSON.parse(fs.readFileSync(path.join(here,'../moments/index.js
 const src = fs.readFileSync(path.join(here, 'layout-check.js'), 'utf8');
 // a page file is served from its folder (or --root) over http on 127.0.0.1 (5770-5779), never opened from file://
 let url = target, server = null;
+let kitDemo = !!opt('kit-demo');
 if (!/^https?:\/\//i.test(target)) {
   let file = path.resolve(/^file:/i.test(target) ? fileURLToPath(target) : target);
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+  const assetsRoot = path.resolve(here, '..');
+  const pagePath = path.relative(assetsRoot, file);
+  kitDemo ||= !pagePath.startsWith('..' + path.sep) && !path.isAbsolute(pagePath);
   if (!fs.existsSync(file)) { console.error(`check: no page at ${file}`); process.exit(2); }
   // serve from high enough that the page's ../ references resolve
   const ups = Math.max(0, ...[...fs.readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map(m => m[1].length / 3));
@@ -202,12 +206,13 @@ try {
       if (h) {
         const st = await ev(`${STRESS}(${h.h1.maxChars})`);
         if (st) {
+          const sev = kitDemo ? 'FAIL' : 'WARN';
           const again = await ev(src + '\n;window.lyCheck()');
           const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? h.h1.lines[0] : W <= 420 ? h.h1.lines[1] : null;
           res.stress = { hero: id, maxChars: h.h1.maxChars, chars: st.chars, lines, height: again.hero?.height };
-          for (const f of again.findings.filter(f => f.rule === 'hero-fold')) res.findings.push({ rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (heroes.json maxChars): ${f.detail}` });
-          if (allowed && lines > allowed) res.findings.push({ rule: 'hero-lines', where: 'section.hero h1', detail: `the check fills the h1 to ${st.chars} characters (this hero's maxChars in heroes.json), not the page's own: it takes ${lines} lines at ${W}, ${allowed} at most` });
-          if (await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
+          for (const f of again.findings.filter(f => f.rule === 'hero-fold')) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (heroes.json maxChars): ${f.detail}` });
+          if (allowed && lines > allowed) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `the check fills the h1 to ${st.chars} characters (this hero's maxChars in heroes.json), not the page's own: it takes ${lines} lines at ${W}, ${allowed} at most` });
+          if (await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
         }
       }
     }

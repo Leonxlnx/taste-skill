@@ -10,8 +10,8 @@ node <skill>/scripts/moments.mjs pick --page service --sections 7 --carry photos
 
 | Moment | Use it on | What the content supplies |
 | --- | --- | --- |
-| `photo-chapters` | A picture story | Three or four related photographs, each with a title and two lines. Half a screen of hold per chapter. |
-| `pinned-chapters` | A process or product explanation | Two to four steps, each with a UI frame or photograph and body copy. The phone shows them in order. |
+| `photo-chapters` | A picture story | Three or four related photographs, each with a title and two lines. Desktop holds half a screen per chapter. On a phone each photograph flows above its words. |
+| `pinned-chapters` | A process or product explanation | Two steps or short descriptions flow beside their frames. Longer sequences can pin on desktop. Phones show each step with its frame. |
 | `picture-develops` | An existing section’s main picture | One clear subject from the carried photographs, at least half the container wide. Use the film look. |
 | `window-parallax` | A wide picture already in the section | A photograph with room above and below its subject for a small crop. |
 | `closing-lift` | The close | A closing photograph, line and action. Light text needs a calm, dark lower third. Use a solid reading band if the crop is bright. |

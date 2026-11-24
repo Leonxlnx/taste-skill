@@ -114,7 +114,8 @@ if (hero.id === 'place') {
 
 const window = !!hero.window && has.has('ui') && tech;
 const recentPeeks = (hist.heroPeek || []).slice(-2);
-const peek = window && (recentPeeks.length === 2 && recentPeeks[0] === recentPeeks[1] ? !recentPeeks[0] : Math.random() < 0.5);
+const stackedWindow = window && hero.id === 'centred';
+const peek = stackedWindow || (window && (recentPeeks.length === 2 && recentPeeks[0] === recentPeeks[1] ? !recentPeeks[0] : Math.random() < 0.5));
 const book = opt('action') === 'booking' && ['place', 'service'].includes(opt('kind') || type);
 const peekLine = 'class hero--peek: the window may run past the first screen (its top inside it, at least 420 px showing at 1440x900), up to 760 px tall';
 const bookLine = "hero-book: a one-row booking bar docked on the hero's foot (copy the commented form in assets/layout/hero-place.html; assets/own/booking-bar.html shows the full section); the full form stays at the close";

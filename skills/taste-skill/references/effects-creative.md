@@ -236,6 +236,4 @@ and a green mixed into the land). Never violet or lavender.
 
 Link `system.css`, `components/base.css` and the part's `component.css`, paste its markup, then
 `const part = init(root)` from its `component.js` (`part.destroy()` to remove). Text, controls and
-data stay real HTML; the effect is the picture or the light on them. Replace every number, name and
-the stand-in photograph with the client's own; a figure the brief does not give is left out, never
-invented and never tagged "sample" (`copy.md`).
+data stay real HTML; the effect is the picture or the light on them. Use the client's own names, photographs and figures for factual claims. For example data inside a working object, follow `copy.md`.

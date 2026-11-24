@@ -58,6 +58,7 @@ html[data-density="open"] { --density: 1.15; }
 
   /* The fixed header and the hero's own clearances. */
   --nav: 72px;
+  --hero-clearance: 50px; /* allows for cap ink rounding above the line box */
   --hgap: 48px;
   --hpadb: 64px;
   --bar: 0px;
@@ -119,7 +120,7 @@ html[data-radius] .panel { --p-r: var(--r-md); }
 
 /* Phone header, content gutters and heading gap. */
 @media (max-width: 639px) {
-  :root { --nav: 56px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
+  :root { --nav: 56px; --hero-clearance: 32px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
 }
 @media (min-width: 640px) {
   :root { --gut: 48px; --section: 48px; --section-band: 72px; --card-pad: 24px; }
@@ -184,6 +185,7 @@ html[data-pictures="soft"] [data-picture-mask] { border-start-start-radius: 28% 
 }
 .ground-brand .card { --c-text: var(--ink); }
 :root, .ground-base, .ground-surface, .ground-inverse, .ground-brand {
+  --ui-matte: oklch(from color-mix(in oklab, var(--bg) 90%, var(--ink)) l min(c, .018) h);
   --line: color-mix(in oklab, var(--ink) 11%, transparent);
   --line-strong: color-mix(in oklab, var(--ink) 20%, transparent);
   /* effects (fx.js) and UI fragments (assets/ui) take the colours of the ground they sit on */
@@ -191,6 +193,7 @@ html[data-pictures="soft"] [data-picture-mask] { border-start-start-radius: 28% 
   --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
   --ui-font: var(--font-text); --ui-mono: var(--font-mono); --ui-radius: var(--r-md);
 }
+[data-matte="colour"] { --ui-matte: var(--ground-bg); }
 .ground-base, .ground-surface, .ground-inverse, .ground-brand { background: var(--bg); color: var(--ink); }
 
 /* ---------------------------------------------------------------- base */
@@ -373,7 +376,7 @@ section.comp-bleed[data-corner="end"] .comp-panel { margin-left: auto; }
    one docked strip (logos, three facts) may follow it, at most 96px, desktop only. */
 main > :is(.hero, .section--hero) {
   height: 100vh; height: 100svh; min-height: 0;
-  padding: calc(var(--nav) + var(--photo, 0px) + var(--hgap)) 0 calc(var(--hpadb) + var(--bar));
+  padding: calc(var(--nav) + var(--photo, 0px) + max(var(--hgap), var(--hero-clearance))) 0 calc(var(--hpadb) + var(--bar));
 }
 :is(.hero, .section--hero) > .wrap { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-7); }
 :is(.hero, .section--hero) > .wrap > .hero-text { min-height: 0; }
@@ -618,6 +621,7 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 /* a zero-width spacer keeps --ratio (height / width) as the frame's minimum height. A frame that holds
    only what is laid over it (a .frame__img photograph, a stage, a canvas, a print) and names no ratio
    gets 4:3, so it never folds to 0px (in testing three pages lost every section photograph that way) */
+.frame:has(pre, .ui, [data-ui], [data-ui-load], .app-frame), .hero__media:has(.app-frame, [data-ui]) { background: var(--ui-matte); }
 .frame::before { content: ""; flex: none; width: 0; padding-top: var(--ratio, var(--ratio-auto, 0px)); }
 :where(.frame:not(:has(> :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d)))) { --ratio-auto: 75%; }
 /* an object or scene (assets/objects) and a photograph (.frame__img) fill the frame themselves */
@@ -668,7 +672,7 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 .frame--cta { min-height: 420px; }
 /* .frame--lit: the same for an object's frame that holds a few words in its clear half (the
    product statement's facts in a .frame__text, lower left; the object stands right of centre) */
-.frame--cta, .frame--lit {
+.frame--cta, .frame--lit:not(:has(pre, .ui, [data-ui], [data-ui-load], .app-frame)), .frame--lit[data-matte="colour"] {
   border-color: transparent; background: var(--ground-bg); color: var(--ground-ink);
   --bg: var(--ground-surface); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
   --action: var(--ground-ink); --action-ink: var(--ground-surface);
@@ -1152,7 +1156,7 @@ html[data-tone="dark"] .footer--dark {
    A close never repeats the section right above it: a page whose last section is the form ends on
    .close--form instead. A phone stacks the close, then the links. */
 footer.closing { border-top: 0; }
-footer.closing > .wrap { display: grid; grid-template-rows: auto auto; row-gap: var(--s-10); }
+footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-10); }
 .closing__cta { min-width: 0; display: flex; flex-direction: column; gap: var(--s-6); }
 .closing__cta > .section-head--split, .closing__cta > .section-head { margin-bottom: 0; }
 /* any button straight in the close keeps its own width (the column would stretch it across the .wrap) */

@@ -8,7 +8,7 @@
    chapter in hand. */
 [data-moment="photo-chapters"] { --mo-hold: 1.5; }
 main [data-moment="photo-chapters"][data-moment] > .mo-ph { display: grid; gap: var(--s-7); align-content: start; height: auto; }
-main > [data-moment="photo-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 100vh; min-height: 100svh; }
+main > [data-moment="photo-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 0; }
 [data-moment="photo-chapters"] .mo-ph__head { display: grid; gap: var(--s-4); max-width: 46ch; }
 [data-moment="photo-chapters"] .mo-ph__list { display: grid; gap: var(--s-6) var(--s-5); margin: 0; padding: 0; list-style: none; }
 [data-moment="photo-chapters"] .mo-ph__ch { display: grid; gap: var(--s-2); align-content: start; }

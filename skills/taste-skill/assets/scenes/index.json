@@ -1,12 +1,13 @@
 {
  "version": 2,
- "generated": "2026-11-24T01:42:15.303Z",
+ "generated": "2026-11-24T09:16:40.216Z",
  "count": 46,
- "dealt": 33,
+ "dealt": 31,
  "retired": [
   "arrive-and-settle-track",
   "depth-card-flythrough",
   "dot-becomes-the-full-stop",
+  "hinged-sheets",
   "letter-bar-floods-the-ground",
   "letter-physics",
   "light-flood",
@@ -16,7 +17,8 @@
   "raster-cut",
   "stepped-columns-raise-a-stage",
   "type-flip-relayout",
-  "warp-jump"
+  "warp-jump",
+  "wordmark-under-strain"
  ],
  "fits": {
   "close": 7,
@@ -804,7 +806,8 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "No held stage: the tickets stand face-down in a column, and each turns over on its clock once its top is three quarters up the screen, face-up before it is read; the fine print comes in after the last. Tablets, short windows and more than four tickets get the same; with phone 'rest' all of them show the finished composition.",
    "maxPerPage": 1,
-   "weight": 0.15,
+   "weight": 0,
+   "retired": "Available by explicit request only.",
    "place": "A programme or an editorial list.",
    "content": "Two to four named programme items with a short description and two or three points each. Keep prices, orders and bookings outside the scene.",
    "options": "hold 1.2-4 (0.6 + 0.5 a ticket: 2.1 for three); scrub true with Lenis, else 0.5 (0.2-0.6), for the ground's brightening; turn 0.5-1.2 s (0.8), one ticket's turn; lift 0-60 px towards the viewer at mid-turn (48); phone 'flip' | 'rest' ('rest' gives tablets and short windows the finished composition too). The tickets turn at (i + 0.5) / (tickets + 0.3) of the hold; two tickets make only two beats.",
@@ -3461,7 +3464,8 @@
    "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
    "phone": "The word fits the phone width, the action stays underneath and the meta row wraps.",
    "maxPerPage": 1,
-   "weight": 0.15,
+   "weight": 0,
+   "retired": "Available by explicit request only.",
    "place": "At the end of the page, as the call to action; the footer after it keeps the same ground. Once per page. For a loud brand only (a band, a race or a sports brand, a studio that shouts): never deal it to a calm house, a guesthouse, a craft or a care practice, where the strain reads as a broken word. At rest the word reads whole.",
    "content": "One closing word of four to eight letters, a two- or three-word action, a short offer and real contact details. Use a heavy display face with at least 7:1 ink contrast.",
    "options": "Hold 1, phoneHold 1. Echo is off by default. Squash up to 0.15. The closing button stays in place.",

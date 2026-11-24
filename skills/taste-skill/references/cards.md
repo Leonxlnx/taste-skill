@@ -169,7 +169,7 @@ cards of UI), one card group a page, still, from the family of the
 page's one effect (`effects-usage.md`). On a product or service page a panel holds the client's
 photograph (`<img class="frame__img">`, zooming 1.02 to 1.03 inside it when the card links), real
 icons or a still diagram on a flat `--g-alt` or `--g-main` panel; a place has no feature cards.
-Other tech card groups take a flat panel, the lit ground plain, a photograph or a diagram.
+A product window, code card or UI fragment takes the neutral matte of its section. Set `data-matte="colour"` on an art-directed frame to use the named ground.
 
 - One ground id for the card group, a new `data-fx-seed` per panel, never the id of the hero's
   effect (one effect in hero, cards and close reads as a stock motif).
@@ -185,8 +185,7 @@ Other tech card groups take a flat panel, the lit ground plain, a photograph or 
   - painting: `{"bg":"#a3b0b6","accent":"#c49a6c"}` with params `"blur":1,"brush":0.35,"slope":0,
     "hillY":0.3,"horizon":0.62` (a level mist over warm sand, fully soft). Never a blue sky over a
     green hill with a diagonal crest: it reads as a stock desktop wallpaper, not a crafted ground.
-    At most one painted panel in a card group (one per page is better); the others take the sand, sky
-    or sage palette on grain, mesh or silk.
+    At most one painted panel in a card group (one per page is better); the others keep their section’s neutral matte.
   - sand: `{"bg":"#d9ccb7","surface":"#e9e0d2","ink":"#2a2622","accent":"#a8794a"}`
   - sky: `{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","accent":"#3f6a92"}` (silk-folds
     takes a softer accent, `#7f9fbd`, with `"tone":1`)

@@ -188,6 +188,8 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
 
 ## What may be assumed
 
+Label a working object once on the object itself, for example “Example incident” or “Sample week”. Calculate public totals from confirmed prices and limits. Write invented dated entries as plain notes and identify them as examples in the report.
+
 - **What the brief gives is printed as given.** A plausible fact the page needs to work and the brief
   leaves out is assumed, on every kind of page: a price or a "from" price, a plan's limits, the
   opening hours, the dishes on a menu, the room types, the delivery terms and times, a district, a
@@ -218,8 +220,7 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
   than feel natural, stranger, true only of this one place, one of them a little unflattering, each
   listed in the report as assumed. Still never a figure, a quote, a review, a customer or an award:
   the demo shows the voice, never fake proof.
-- **No sample notes:** no "sample", "(sample)", "examples", "illustrative" tag, note or asterisk
-  footnote anywhere. A target value the brief itself gives is worded inside it ("target 2 days").
+- Word a target from the brief inside the value itself ("target 2 days").
 - **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
   kit sample text, and no link to `#` or an empty href. Write the real words, an assumed fact
   (above), or leave the element out. "Coming soon" only for what the brief says is coming.

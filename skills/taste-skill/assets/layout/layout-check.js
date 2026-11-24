@@ -54,12 +54,13 @@
 // Geometry and resting-state probes used by both browser checks.
 window.lyRules = (() => {
   const own = 'section[data-own]';
+  const isPeek = hero => hero?.matches('.hero--peek, .hero--centred:has(.hero__window)');
   function peek(hero) {
-    if (!hero?.matches('.hero--peek')) return null;
+    if (!isPeek(hero)) return null;
     const frame = hero.querySelector('.hero__window,.app-frame,.device') || hero.querySelector('.hero__collage,.hero__media,.hero__art,.hero-visual,.panel');
     if (!frame) return null;
     const r = frame.getBoundingClientRect(), top = r.top + scrollY;
-    return top >= 0 && r.height <= 761 && Math.min(innerHeight - top, r.height) >= (innerWidth < 640 ? 300 : 420) - 1 ? frame : null;
+    return top >= 0 && r.height <= 761 && r.height > 0 && innerHeight - top >= Math.min(r.height, innerWidth < 640 ? 300 : 420) - 1 ? frame : null;
   }
   function mirrored(el) {
     const grid=el?.closest('.grid.grid--mirror');
@@ -81,6 +82,17 @@ window.lyRules = (() => {
     if (section.matches('[data-big-scene],[data-scene],.sc') || section.querySelector('[data-big-scene],[data-scene]')) return true;
     return [section,...section.querySelectorAll('[data-moment]')].filter(m=>m.matches('[data-moment]')).some(m=>
       [m,...m.querySelectorAll('*')].some(e=>getComputedStyle(e).position==='sticky' && e.getBoundingClientRect().height>0));
+  }
+  // The distance a full-width sticky stage travels is scroll space, not a blank band.
+  function stickyStage(section) {
+    for (const el of section.querySelectorAll('*')) {
+      const style = getComputedStyle(el);
+      if (style.position !== 'sticky' && !el.parentElement?.matches('.pin-spacer')) continue;
+      const host = el.parentElement, stage = el.getBoundingClientRect(), box = host.getBoundingClientRect();
+      if (stage.width >= section.clientWidth * .6 && stage.height >= innerHeight * .35 &&
+          box.height > stage.height + innerHeight * .25) return {stage, box};
+    }
+    return null;
   }
   function colour(el) {
     for (let p = el; p; p = p.parentElement) {
@@ -107,6 +119,12 @@ window.lyRules = (() => {
   function blankRun(sections, top, bottom) {
     const painted=[];
     for (const section of sections) {
+      const hold = stickyStage(section);
+      if (hold) {
+        for (const [a,b] of [[hold.box.top, hold.stage.top], [hold.stage.bottom, hold.box.bottom]]) {
+          if (b > top && a < bottom && b > a) painted.push([Math.max(top,a),Math.min(bottom,b)]);
+        }
+      }
       const layers=[...section.querySelectorAll('img,video,canvas,svg,.app-frame,[role=img],.layer,[data-scene],[data-big-scene],[data-moment]:not(section)')];
       if (/url\(|image-set\(/.test(getComputedStyle(section).backgroundImage)) layers.push(section);
       for (const el of layers) {
@@ -149,6 +167,20 @@ window.lyRules = (() => {
       const built = [...document.querySelectorAll('main svg,main canvas,main [data-ui],main [data-chart],main [data-diagram],main .chart,main .app-frame,main [role="img"]')].some(visiblePicture);
       const target = secs.length >= 6 ? 12 : 8;
       if (built && photos.size < target) add('photo-set','page',photos.size+' photographs and a built subject view. The photo-led reference for this length is '+target+'.','WARN');
+    }
+    for (const sec of secs) {
+      const element = 'ul,ol,dl,table,form,[role="table"],[data-chart],.chart,[data-diagram],[data-ui],[data-own],[role="tablist"],input[type="range"]';
+      if (sec.matches('.hero,.section--hero,footer,.closing,[data-moment],[data-big-scene],[data-own]') ||
+          sec.querySelector(element + ',[data-moment],[data-big-scene],.closing__cta') || sec === secs[0] && sec.querySelector('h1')) continue;
+      const copy = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT);
+      const words = [];
+      while (copy.nextNode()) {
+        const node = copy.currentNode, parent = node.parentElement;
+        if (parent.closest('h1,h2,h3,h4,h5,h6,script,style,template,svg,[hidden],[aria-hidden="true"]') || !parent.checkVisibility()) continue;
+        words.push(...(node.textContent.match(/[\p{L}\p{N}]+(?:[’'-][\p{L}\p{N}]+)*/gu) || []));
+      }
+      if (words.length < 25) add('thin-section',sec.id ? '#' + sec.id : sec.querySelector('h2')?.textContent || 'section',
+        words.length + ' words outside headings. Merge with a neighbour or show the fact that earns this section.', 'WARN');
     }
     for (const sec of ownSections) {
       const at = sec.id ? '#' + sec.id : 'section[data-own="' + sec.dataset.own + '"]';
@@ -215,7 +247,7 @@ window.lyRules = (() => {
     }
     return out;
   }
-  return {peek,mirrored,booking,colour,air,holdsStage,fullPicture,emptyRun,blankRun,explaining,fact,page,still,counters,changedCounters};
+  return {isPeek,peek,mirrored,booking,colour,air,holdsStage,stickyStage,fullPicture,emptyRun,blankRun,explaining,fact,page,still,counters,changedCounters};
 })();
 
 window.lyCheck = function lyCheck(opts = {}) {
@@ -414,7 +446,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `ends at y ${Math.round(hero.r.bottom)}, above the fold (${vh})`);
     // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
     const frame = window.lyRules.peek(hero.el);
-    if (hero.el.matches('.hero--peek') && !frame) add('hero-fold', name(hero.el), 'the window must show ' + (vw < 640 ? 300 : 420) + 'px on load and be at most 760px tall');
+    if (window.lyRules.isPeek(hero.el) && !frame) add('hero-fold', name(hero.el), 'the window must show ' + (vw < 640 ? 300 : 420) + 'px on load and be at most 760px tall');
     if (hero.r.bottom > vh + tol && !frame && !(vw < 640 && window.lyRules.booking(hero.el))) add('hero-fold', name(hero.el), 'ends past the fold at ' + Math.round(hero.r.bottom) + 'px');
     const next = info[1];
     if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),'the next section starts at ' + Math.round(next.r.top) + 'px, inside the first screen');

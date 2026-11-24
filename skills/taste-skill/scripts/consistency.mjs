@@ -2505,7 +2505,7 @@ function measure(opt) {
     const frame = window.lyRules.peek(hero.el);
     const b = hero.bottom - SY;
     const book = window.lyRules.booking(hero.el);
-    const fits = hero.el.matches('.hero--peek') ? !!frame && b >= H - 1 : (phone && book ? b >= H - 1 : Math.abs(b - H) <= 1);
+    const fits = window.lyRules.isPeek(hero.el) ? !!frame && b >= H - 1 : (phone && book ? b >= H - 1 : Math.abs(b - H) <= 1);
     // T1: the hero's bottom at scroll 0 within H +/- 1 (the crop sits between the fold and the hero's bottom)
     T.push(test('T1', fits ? 'PASS' : 'FAIL', fits ? [] : [off(hero.el, heroR, 'hero ends at ' + px(b) + 'px on a ' + H + 'px screen; a peek needs a visible product window', {at:0})]));
     // T2: nothing of the second section (its own box or any part of it) on the first screen, 1px allowed
@@ -2773,7 +2773,10 @@ function measure(opt) {
       }
       if (s.el.matches('footer.closing') && s.wrap) {
         const wk = [...s.wrap.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k));
-        if (wk.length !== 2) sOff.push(off(s.wrap, null, `footer.closing > .wrap holds ${wk.length} children: exactly two (the call, then the legal row)`));
+        const last = S[s.i - 1]?.el;
+        const singleClose = wk.length === 1 && wk[0].matches('.closing__links') &&
+          (last?.matches('[data-big-scene][data-big-scene-mounted], [data-moment="closing-lift"]') || last?.querySelector('form, [data-big-scene][data-big-scene-mounted]'));
+        if (wk.length !== 2 && !singleClose) sOff.push(off(s.wrap, null, `footer.closing > .wrap holds ${wk.length} children: exactly two (the call, then the legal row)`));
       }
     }
     T.push(test('T1-structure', sOff.length ? 'FAIL' : 'PASS', sOff));
@@ -3593,9 +3596,11 @@ function areaProbe() {
     // the statement hero (deal.mjs --hero statement) is type on its ground by design: with no picture in it, its h1,
     // sub-line and button leave most of the screen ground at every width (sections.md section 4), so it is not judged
     if (sec === top[0] && sec.matches('.hero--statement, [class*="hero--statement"]') && !sec.querySelector('img, picture, video, canvas, iframe')) continue;
-    const S = D(sr), area = (S.r - S.l) * (S.b - S.t);
+    const hold = window.lyRules.stickyStage(sec);
+    const stageOnly = hold && Math.abs(hold.box.height - sr.height) < 3;
+    const S = D(stageOnly ? hold.stage : sr), area = (S.r - S.l) * (S.b - S.t);
     // filled as a whole: a mounted moment's host or a background photograph
-    if (sec.matches('[data-moment][data-moment-mounted]') || photoBg(s0)) continue;
+    if ((!hold && sec.matches('[data-moment][data-moment-mounted]')) || photoBg(s0)) continue;
     const wrap = sec.querySelector(':scope > .wrap') || sec.querySelector('.wrap');
     const wr = wrap && shownCss(wrap) ? wrap.getBoundingClientRect() : null;
     const cl = wr ? wr.left : sr.left + (parseFloat(s0.paddingLeft) || 0), cr = wr ? wr.right : sr.right - (parseFloat(s0.paddingRight) || 0), cw = cr - cl;
@@ -3659,6 +3664,18 @@ function areaProbe() {
       const x0 = Math.max(0, Math.floor((b.l - G - cl) / C)), x1 = Math.min(cols, Math.ceil((b.r + G - cl) / C)), y0 = Math.max(0, Math.floor((b.t - G - T0) / C)), y1 = Math.min(rows, Math.ceil((b.b + G - T0) / C));
       for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) cov[y * cols + x] = 1;
     }
+    // A section may also have a heading or other content outside a nested pin spacer.
+    // Discount only the full cells inside its travel, keeping the stage and its neighbours.
+    let measuredRows = rows;
+    if (hold && !stageOnly) {
+      for (const [from, to] of [[hold.box.top, hold.stage.top], [hold.stage.bottom, hold.box.bottom]]) {
+        const first = Math.max(0, Math.ceil((from + scrollY - T0) / C));
+        const last = Math.min(rows, Math.floor((to + scrollY - T0) / C));
+        if (last <= first) continue;
+        cov.fill(1, first * cols, last * cols);
+        measuredRows -= last - first;
+      }
+    }
     const covered = []; for (let y = 0; y < rows; y++) { let n = 0; for (let x = 0; x < cols; x++) n += cov[y * cols + x]; covered.push(n / cols); }
     // counted: a row with no content at all, and every row of a run of rows under half covered 25% of a screen tall
     const counts = new Uint8Array(rows);
@@ -3675,7 +3692,7 @@ function areaProbe() {
     for (let y = rows - 1; y >= 0 && covered[y] === 0; y--) below++;
     if (above === rows) below = 0;
     let between = 0; for (let y = above; y < rows - below; y++) if (covered[y] === 0) between++;
-    const share = empty / (cols * rows), side = Math.max(0, empty - (above + below + between) * cols);
+    const share = empty / (cols * Math.max(1, measuredRows)), side = Math.max(0, empty - (above + below + between) * cols);
     // the crop: the largest block of counted empty cells (the histogram method)
     let best = null; const hgt = new Array(cols).fill(0);
     for (let y = 0; y < rows; y++) {
@@ -6929,7 +6946,8 @@ function lib() {
       // quiet: a section not judged for a visual (prices, questions, quotes, the closing call), told when it is text only
       let judge = r.height >= vh * 0.35, quiet = false;
       if ((placeLike ? EXEMPT_PLACE : EXEMPT).test(name) || s.querySelectorAll('details').length >= 3 || s.querySelector('blockquote')) { judge = false; quiet = true; }
-      if (s === lastMain && r.height < vh * 0.9) { judge = false; quiet = true; } // the closing call
+      if (s === lastMain && (s.matches('[data-big-scene][data-big-scene-mounted]') || s.querySelector('[data-big-scene][data-big-scene-mounted]'))) { judge = false; quiet = false; }
+      else if (s === lastMain && r.height < vh * 0.9) { judge = false; quiet = true; } // the closing call
       const own = CS(s); if (own.backgroundImage && own.backgroundImage !== 'none') { judge = false; quiet = false; } // on a picture or an effect ground
       // A statement hero is type on its own ground. A page may also use one thin section for its main claim;
       // a text moment normally rides a heading already in the content or close.
@@ -7446,6 +7464,14 @@ function lib() {
   const PATTERN_FX = new Set(['grid-pulse', 'contour-lines', 'dot-terrain', 'dotted-globe', 'ridgeline', 'ruled-grounds']);
   const blockOf = (e) => { let b = e; while (b && b !== document.body && /^(inline|contents)/.test(CS(b).display) && !b.matches('a, button, label')) b = b.parentElement; return b || e; };
   const fxOf = (e) => (e.getAttribute('data-fx') || e.getAttribute('data-cx-effect') || e.getAttribute('data-glow') || '').trim();
+  function workingExampleLabel(el, text, labelled) {
+    if (!/^(example|sample) [\p{L}\p{N}-]+(?: [\p{L}\p{N}-]+){0,2}$/iu.test(text)) return false;
+    if (/\b(?:reviews?|quotes?|testimonials?|prices?|addresses?|contacts?|customers?|awards?)\b/i.test(text)) return false;
+    const object = el.closest('[data-ui], [data-chart], [data-own], .app-frame, .hero__window, .panel__screen, .device');
+    if (!object || labelled.has(object)) return false;
+    labelled.add(object);
+    return true;
+  }
   function audit(families) {
     fresh();
     const vw = vwNow(), vh = innerHeight, S = sectionsList();
@@ -7466,11 +7492,12 @@ function lib() {
       if (!visible(p)) continue;
       blocks.add(b);
     }
+    const labelledObjects = new Set();
     for (const b of blocks) {
       const t = full(b); if (!t) continue;
       const it = () => ({ id: idOf(b), sel: sel(b), text: t.slice(0, 80), doc: doc(b), drawn: inDrawn(b) });
       const ph = placeholderIn(t); if (ph) out.placeholders.push(Object.assign(it(), { what: ph }));
-      if (SAMPLE.test(t)) out.samples.push(it());
+      if (SAMPLE.test(t) && !workingExampleLabel(b, t, labelledObjects)) out.samples.push(it());
       // (a licence credit that names its source "... Free Stock Photos" is a credit, not a note about the page)
       const nw = NOTE.test(t) && t.length <= 400 ? (t.match(NOTE) || [''])[0] : null;
       if (nw && !(/stock/i.test(nw) && (CREDIT.test(t) || b.closest('footer')))) out.notes.push(Object.assign(it(), { what: nw }));
@@ -7960,7 +7987,7 @@ function lib() {
     const ext = extent(next, vw); if (!ext) return null;
     const hr = hero.getBoundingClientRect(), nr = next.getBoundingClientRect();
     // the next section's own ground counts as soon as it differs from the hero's
-    let top = hero.matches('.hero--peek') ? Math.min(ext.top,nr.top) : ext.top;
+    let top = window.lyRules.isPeek(hero) ? Math.min(ext.top,nr.top) : ext.top;
     if (nr.top < vh - 2 && nr.top > 0 && hr.bottom > 2) { const a = groundAt(vw / 2, Math.min(vh - 1, nr.top + 3)), b = groundAt(vw / 2, Math.max(0, hr.bottom - 3)); if (a !== b && !(/^#/.test(a) && /^#/.test(b) && cdist(rgba(a), rgba(b)) < 6)) top = Math.min(top, nr.top); }
     if (top >= vh - 2) return null;
     const h = next.querySelector('h1, h2, h3');
@@ -8369,13 +8396,13 @@ function lib() {
       if (links.length) { const ft = links[0].closest('footer'); out.creditLinks = { id: idOf(ft), sel: sel(ft), text: label(links[0]), n: links.length, hidden: links.filter((a) => !visible(a)).length, doc: doc(ft) }; } }
     // a note that the page's names and figures are examples; a caption that explains the picture; any line of words
     // right under a photograph; a stand-in address printed on the page
-    const seenB = new Set();
+    const seenB = new Set(), labelledObjects = new Set();
     for (const e of document.body.querySelectorAll('p, li, small, span, div, figcaption, dd, address, em')) {
       if (!ownText(e) || inDrawn(e) || !visible(e)) continue;
       const b = blockOf(e); if (seenB.has(b)) continue; seenB.add(b);
       const t = full(b); if (!t || t.length > 400) continue;
       const it = { id: idOf(b), sel: sel(b), text: t.slice(0, 80), doc: doc(b) };
-      if (EXAMPLES.test(t)) out.examples.push(Object.assign(it, { what: (t.match(EXAMPLES) || [''])[0] }));
+      if (EXAMPLES.test(t) && !workingExampleLabel(b, t, labelledObjects)) out.examples.push(Object.assign(it, { what: (t.match(EXAMPLES) || [''])[0] }));
       const under = (() => {
         if (b.closest('figcaption')) { const fg = b.closest('figure'); return fg && [...fg.querySelectorAll('img, picture, video, canvas, svg')].some((x) => { const q = x.getBoundingClientRect(); return q.width >= 200 && q.height >= 120; }) ? fg : null; }
         let pv = b.previousElementSibling; while (pv && (SKIP.has(pv.tagName) || !visible(pv))) pv = pv.previousElementSibling;
@@ -9145,7 +9172,7 @@ const FIX = {
   'copy-buttons': 'label buttons with a verb and what the visitor gets ("Book a room", "Start free trial")',
   'copy-actions': 'few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close',
   placeholder: 'write the real words: take the name or figure from the brief, or remove the claim; no bracketed placeholder ships',
-  'sample-label': 'drop the "sample" tags and any note that names and figures are examples: take each from the brief, or remove the claim',
+  'sample-label': 'label example data once on its working object and use the brief for public claims',
   caption: 'no line under a picture: never how it was made, what it shows, what is missing or what will follow (credits: one footer line)',
   'effect-repeat': 'one effect id in two sections at most: deal another effect for the rest',
   'card-layout': 'a card layout at most twice on a page: build the other sections another way',
@@ -10754,7 +10781,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     for (const p of P) {
       if (p.gap < 0) { F.push({ check: 'section-gaps', sev: 'WARN', id: 0, sel: `${p.a} / ${p.b}`, text: '', stop: p.stop, rects: p.stop == null ? [] : [{ left: 0, top: p.bottom, width: vw, height: p.top - p.bottom }], msg: `the sections overlap by ${-p.gap}px${heldSecs.has(p.i) || heldSecs.has(p.i + 1) ? ' (one is held on screen while the other slides over it)' : ''}` }); continue; }
       const a = backgrounds[p.i], b = backgrounds[p.i+1];
-      if ((a && b ? a.ground === b.ground && !a.held && !b.held : !p.band) && p.blank > airLimit+.5 && !heldSecs.has(p.i) && !heldSecs.has(p.i+1)) F.push({check:'empty-band',sev:'FAIL',id:0,sel:p.a+' / '+p.b,text:'',rects:[],msg:Math.round(p.blank)+'px of continuous empty ground, limit '+Math.round(airLimit)+'px'});
+      if ((a && b ? a.ground === b.ground : !p.band) && p.blank > airLimit+.5) F.push({check:'empty-band',sev:'FAIL',id:0,sel:p.a+' / '+p.b,text:'',rects:[],msg:Math.round(p.blank)+'px of continuous empty ground, limit '+Math.round(airLimit)+'px'});
     }
     // buttons: more than two looks on one screen, told once per look that breaks the pair (the page's own pair first)
     const all = [...buttons.values()];

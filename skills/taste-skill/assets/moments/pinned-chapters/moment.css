@@ -31,8 +31,8 @@ main [data-moment="pinned-chapters"][data-moment] > .mo-pc__grid { display: grid
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img, [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > picture > img { max-height: 30svh; }
 }
 
-/* at rest the section is as tall as its steps (one screen at least) and never runs over the next one */
-main > [data-moment="pinned-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 100vh; min-height: 100svh; }
+/* At rest the steps and their visuals set the height. */
+main > [data-moment="pinned-chapters"][data-moment]:not(.is-live) { height: auto; min-height: 0; }
 /* a phone: shorter visuals */
 @media (max-width: 639px) {
   [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > img, [data-moment="pinned-chapters"]:not(.is-live) .mo-pc__visual > picture > img { aspect-ratio: 16 / 9; max-height: 26svh; }
@@ -63,7 +63,10 @@ main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { posit
 [data-moment="pinned-chapters"].is-live .mo-pc__visual.is-on { opacity: 1; transform: none; z-index: 1; }
 [data-moment="pinned-chapters"].is-live .mo-pc__visual.is-past { transform: scale(1); }
 /* a drawn window inside a visual sits on the lit ground with a margin */
-[data-moment="pinned-chapters"] .mo-pc__visual.mo-pc__visual--lit { display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 40px); background: var(--ground-bg); aspect-ratio: 4 / 3; }
+[data-moment="pinned-chapters"] .mo-pc__visual.mo-pc__visual--lit { display: flex; align-items: center; justify-content: center; padding: var(--s-3); background: var(--ui-matte); aspect-ratio: auto; }
+[data-moment="pinned-chapters"] .mo-pc__visual--lit > :only-child { width: 100%; min-width: 75%; min-height: calc(5 * var(--s-3)); }
+[data-moment="pinned-chapters"].is-live .mo-pc__visuals:has(.mo-pc__visual--lit.is-on) { aspect-ratio: auto; max-height: none; }
+[data-moment="pinned-chapters"].is-live .mo-pc__visual--lit.is-on { position: relative; }
 @media print {
   [data-moment="pinned-chapters"].is-live { height: auto; }
   main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: static; height: auto; display: block; overflow: visible; }   /* same selector as the live rule, so print wins: nothing clips */

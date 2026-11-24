@@ -151,6 +151,9 @@ What each kind leads with (the full plans: `sections.md` section 3):
    figures. An assumed fact never contradicts the brief.
 
 3. **Plan the page from its content** (`compose.md`, `sections.md` section 1). Line 1: the kind.
+   Name what the visitor needs to know before acting and the fact in the brief that answers it.
+   Give that answer its own section high on the page in the form the fact takes.
+   Merge a heading, one sentence and a picture with a neighbour.
    Then one line per section: its id, its one idea, **what the content is and the form that shape
    asks for**, its picture and where that picture comes from on the ladder of rule 6, its ground.
    Mark the sections that are your own design. Count the sections, and note what the page really
@@ -163,7 +166,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
    node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
-   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold.
+   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold. Pass `--last-section form` when the page ends with its own form or booking panel.
    It ends with a PLAN block and writes `.taste-skill/plan.json`. Copy the PLAN into the comment
    at the top of `<body>` and onto plan line 2.
 
@@ -184,7 +187,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class; copy only the
    `<section class="hero …" data-enter>` of the dealt `assets/layout/hero-<id>.html` and make
    every word and picture the client's; move the dealt close and footer out of their
-   `<template>`s and delete the rest. Content sections are `main > section` with one `.wrap`, h2 first. The close and links share `footer.closing`. Count hero and close.
+   `<template>`s and delete the rest. Content sections are `main > section` with one `.wrap`, h2 first. A final form or booking panel is the close. Put only links in the footer after an own form section. A dealt `close-form` shares the footer with its links. Count hero and close.
 
    - **Own sections:** `<section class="section own" id="…" data-own="<what it is>">`, styled in
      the one `<style id="own-css">` block with the kit's tokens only (spacing, type, colour,

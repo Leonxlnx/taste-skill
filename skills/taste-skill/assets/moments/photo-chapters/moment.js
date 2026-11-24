@@ -26,8 +26,7 @@
   Live height is one stage plus half a screen per chapter. At rest the section fits its content.
   At rest (reduced motion, no script, a failed module, a screen under 600px tall such as a phone
   turned sideways) the chapters stand side by side, each photograph over its title and lines (a phone
-  stacks them): the same words and pictures, nothing hidden. Live at every width from 600px of
-  height, so a phone held upright gets it too (one picture at a time, a clip and a transform).
+  stacks them): the same words and pictures, nothing hidden. Pin only when the viewport is at least 640px wide and 600px tall.
   Every chapter's words stay in the page for a screen reader; only the one in hand is shown.
   opts: zoom (the settle, 1.06; 1-1.1).
 */
@@ -62,7 +61,7 @@ export default function (root, opts, lib) {
   panel.append(count);
   const pad = v => String(v).padStart(2, '0');
   let live = false, scrubber = null, on = -1;
-  const fits = () => !lib.reduced() && innerHeight >= 600;
+  const fits = () => !lib.reduced() && innerWidth >= 640 && innerHeight >= 600;
   const show = k => {
     if (k === on) return;
     on = k;

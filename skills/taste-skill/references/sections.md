@@ -4,6 +4,8 @@ Build the dealt frame. Choose each section's form from its content. Read `compos
 
 ## 1. Plan the sections
 
+Before planning, name what the visitor needs to know before acting and which supplied fact answers it. Give that answer a section high on the page in its natural form: a guesthouse explains what guests get by booking direct and what follows their request, while an integration shows one real example in the existing system. Merge a section with only a heading, a sentence and a picture into its neighbour.
+
 Write the kind, then the frame from the PLAN. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
 
 **Match each ask to an element.** In `.taste-skill/copy.md`, put every ask under `Asks:` as `- <ask> -> #<id>`. The id must be on the page. The gate checks the block and its targets (`brief-ask`). A contact link cannot take a booking or an order.
@@ -85,7 +87,7 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
   line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
   client's photograph down to the links), `close-word` (the h2 and the button, then the name set
   across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
-  and the button, beside a photograph), `close-form` (the full form at the close). Keep the links row below it. If the visit section already gives the hours, put the address, way there and nav in `footer-visit`.
+  and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. If the visit section already gives the hours, put the address, way there and nav in `footer-visit`.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
 

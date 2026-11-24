@@ -127,6 +127,7 @@ for (const kind of kindsToRun) {
     if (['product', 'tech'].includes(kind) && !assets.includes('photo') && !assets.includes('art')) assert.notEqual(p.hero, 'product');
     assert.equal(p.heroBook, action === 'booking');
     if (p.heroBook) assert.equal(p.close, 'close-form');
+    if (p.hero === 'centred' && assets.includes('ui')) assert.equal(p.heroPeek, true);
     if (p.heroPeek) assert(assets.includes('ui') && printed.includes('class hero--peek'));
     if (['place', 'service', 'tech'].includes(kind)) assert(!p.sub.includes('mascot'));
     assert.equal(p.sub.includes('brand-mark'), !assets.includes('logo'));

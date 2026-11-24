@@ -76,7 +76,6 @@
 .run-sheet th:last-child, .run-sheet td:last-child { text-align: right; }
 .run-sheet__foot { padding: var(--s-5) var(--s-6); color: var(--muted); }
 @media (max-width: 639px) {
-  .hero.hero--peek .run-sheet { height: auto; min-height: var(--peek-height); }
   .run-sheet__bar, .run-sheet__foot { padding: var(--s-4); }
   .run-sheet__head, .run-sheet table { margin-inline: var(--s-4); }
   .run-sheet__head { margin-block: var(--s-5); }

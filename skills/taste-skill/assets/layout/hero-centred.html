@@ -79,9 +79,8 @@
 }
 @media (max-width: 639px) { .stat-cards .panel { --p-h: 148px; } .stage > .at-rise { --ay-sm: 20px; } .stat-cards > .card > .panel { margin-top: var(--s-5); } }
 @media (max-width: 639px) { .d-win--dark .d-win__body { grid-template-columns: 1fr; } .inbox { display: none; } .hero__window .d-chat { font-size: 13px; padding: 12px 14px; } }
-/* a phone keeps the exchange inside the frame (its draft note and the tool line go, so the whole answer ends
-   above the fade) and two of the four times in the 148px panel */
-@media (max-width: 639px) { .hero__window .d-msg--bot small, .hero__window .d-tool { display: none; } .stat-cards .d-times span:nth-child(n+3) { display: none; } }
+/* The compact statistic keeps two times. The conversation above it stays complete. */
+@media (max-width: 639px) { .stat-cards .d-times span:nth-child(n+3) { display: none; } }
 </style>
 </head>
 <body>
@@ -111,8 +110,7 @@
 </header>
 
 <main id="top">
-  <!-- Add hero--peek when the full product window continues below the fold. See hero-peek-demo.html. -->
-  <section class="hero hero--centred" data-enter aria-labelledby="hero-h">
+  <section class="hero hero--centred hero--peek" data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text">
       <div class="hero__c">
         <a class="pill" href="#numbers"><span>Relay 2 is here</span><span class="muted">Read the launch post</span></a>
@@ -120,7 +118,7 @@
         <p class="hero__lead">It answers the questions it is sure about, drafts the rest for your team and learns from every reply. Works inside Zendesk, Front and Help Scout.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#numbers">Start free for 14 days</a><a class="btn btn--secondary" href="#numbers">Contact sales</a></div>
       </div>
-      <div class="hero__window" data-fx="painterly-landscape" data-fx-seed="7" role="img" aria-label="Relay drafting a reply to a customer about a late order">
+      <div class="hero__window" data-matte="colour" data-fx="painterly-landscape" data-fx-seed="7" role="img" aria-label="Relay drafting a reply to a customer about a late order">
         <div class="ly-piece d-win d-win--dark" aria-hidden="true">
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Heike Brandt</b> · Order 4468</span><span class="sp"></span><span>Shopify · DHL</span></div>
           <div class="d-win__body">

@@ -797,7 +797,7 @@
    "name": "Centred headline over one window (x.ai's hero)",
    "from": "x.ai ('Meet Grok Bot'), Cursor, Raycast, Vercel",
    "demo": "hero-centred.html",
-   "job": "Software whose product is one window or one assistant: a news pill, a centred headline with the mark inline, a grey line, two pill buttons, then the window rising out of a lit frame that takes the rest of the first screen and fades into the ground at the hero's foot.",
+   "job": "A centred headline, lead and actions above one complete product window. Keep the example and its result in reading order on both widths.",
    "types": {
     "software": 3
    },
@@ -819,19 +819,15 @@
    },
    "grid": {
     "text": "centred on the page axis, max 880; h1 max 16ch (a centred block is symmetric, so both edges stay equal)",
-    "frame": "span-12 (1280), 32 under the buttons, down to the hero's foot, its last 18% fading out (mask from 82%)"
+    "frame": "Span the wrap, with the product window in normal flow."
    },
    "at1440": {
-    "hero": "1440x900: one screen; the frame shows its top 335px, solid to 82%",
-    "order": "pill 32 at y 120, 16, h1 72 (74.9) on 2 lines, 16, lead 20/30 grey on 2 lines max 52ch, 28, buttons 44 (centred)",
-    "window": "880 wide, 32 under the frame's top; the exchange (the question on one line, the tool line, a two-line answer, Send and Edit) ends 278px into the frame, above the fade; the inbox column beside it is context and may run into the fade",
-    "measured": "hero 900/900, h1 74.9px on 2 lines from y 168, the visual 1280x335 at x 80, y 501"
+    "hero": "At least one screen. Show the first 420px of the window, or the whole window if shorter.",
+    "window": "Content height up to 760px."
    },
    "at390": {
-    "hero": "844: exactly one screen",
-    "frame": "342 x what the words leave (313 here, at least 240, so a three-line headline still ends on the first screen), fading over its last 28px",
-    "window": "the frame's width less 32, 16 in, its list column, the bar's right label and the tool line hidden; the question and the answer end about 230px in, above the fade (its last 28px)",
-    "measured": "hero 844/844, h1 41.6px on 2 lines from y 156, the visual 342x301 at x 24, y 519"
+    "frame": "Span the wrap below the actions.",
+    "window": "Keep the decisive rows and their result. Collapse the sidebar first."
    },
    "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
    "moments": [],
@@ -864,13 +860,10 @@
     }
    ],
    "mistakes": [
-    "a lone fragment floating in the middle of the frame",
     "a third button",
     "a frame wider than the container",
-    "dark UI on a dark ground",
-    "the hero taller than one screen, so the window's foot meets the next section",
-    "the window cut through its first rows",
-    "the exchange (question, answer, actions) in the fade"
+    "a fade over the example",
+    "hiding the result on a phone"
    ],
    "window": true
   }

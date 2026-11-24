@@ -496,7 +496,7 @@ function pageArg(a, cmd) {
 // the scene deal, shared by `scene` and `pick --scene deal`; it appends the scene to the history
 function sceneFor(a, page, tone, hist, accepts) {
   const out = dealScene(readScenes(), { page, tone, accepts, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has),
-    carry: carryFor(page, a.carry), keepClose: a.action === 'booking' || a.action === 'order', keepHero: !!a['keep-hero'] || a.action === 'booking',
+    carry: carryFor(page, a.carry), keepClose: !!a['keep-close'] || a.action === 'booking' || a.action === 'order', keepHero: !!a['keep-hero'] || a.action === 'booking',
     room: BUDGET - (list(a.effects) || []).length - (+a.contexts || 0) });
   out.notes.forEach(n => console.error(n));
   if (out.scene) hist.scenes = [...(hist.scenes || []), { id: out.scene.id, at: new Date().toISOString(), seed: out.seed }].slice(-200);
@@ -530,7 +530,7 @@ function cmdPick(a) {
     photo: !a['no-photo'] && (!!a.photo || carry.has('photos')), page, tone, has, carry,
   };
   const beside = sc => {
-    const keepClose = a.action === 'booking' || a.action === 'order' || sc?.fits?.includes('close');
+    const keepClose = !!a['keep-close'] || a.action === 'booking' || a.action === 'order' || sc?.fits?.includes('close');
     const exclude = [...excluded, ...(sc?.avoidMoments || []), ...(keepClose ? closingMoments : [])];
     return deal(idx.moments, { ...options, exclude, used: base.n + (sc?.webgl || 0) });
   };

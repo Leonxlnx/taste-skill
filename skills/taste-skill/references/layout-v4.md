@@ -43,7 +43,7 @@ The first screen shows only the hero. The rest of the page grows to fit the whol
 - **The h1** first, top at y 120 (96 on a phone), at most three lines at every width, never
   smaller than an h2 (28 to 60px on a phone). A notice line (one 14px line in the body face with a
   number, 4.5:1: changed hours, a delivery cut-off) sits 16px above it; never a bar above the header.
-- **Product window.** On a dealt `.hero--peek` (software, gaming or tech), the hero's own window may continue below the fold. At 1440×900 at least 420px of it shows and its full height is at most 760px. Keep the next section below it. For an ordinary hero keep the picture whole or use the deliberate bleed below.
+- **Product window.** Under a centred headline the complete product window always uses `.hero--peek`. On a split dealt with `.hero--peek` (software, gaming or tech), the hero's own window may continue below the fold. At 1440×900 at least 420px of it shows and its full height is at most 760px. Keep the next section below it. For an ordinary hero keep the picture whole or use the deliberate bleed below.
 - **Standard heroes at 768 and 820.** The split stacks: the words, then the picture in what is
   left. Its bottom edge ends on a whole element or clearly bleeds a large picture on purpose:
   - whole: the picture (a fragment, a phone, a render) ends 24px or more above the hero's foot;
@@ -93,7 +93,7 @@ dealt only without a strong photograph.
 | `film` | a cinema frame on the lines holding the poster, h1 white on a calm part, the play disc at its foot | the frame, then the words | plays on a click |
 | `statement` | one calm sentence (56px, two lines) over the page ground (tech: a dark ground on a dark page), lead, buttons, four facts | 34px on three lines | none |
 | `triptych` | h1 52 on span-3, a collage of three to five pieces on span-6 start-4 whose sets change every 2.8 s, one large button ending on the right line | collage 342 wide, button full width | set change (tech only; still elsewhere) |
-| `centred` | pill, centred h1 72 with the mark inline, lead, two pill buttons, then a lit frame across the wrap holding the product window, fading over its last 18% | the window less its list column | the window's story (tech) |
+| `centred` | pill, centred h1 72 with the mark inline, lead, two pill buttons, then the complete product window in flow, on a neutral matte across the wrap | the window less its list column | the window's story (tech) |
 
 Keep one h1 within the hero's `maxChars` (`heroes.json`). Protect the action and the subject at the phone crop. Follow `photos.md` for type over pictures and `copy.md` for fact lines.
 
@@ -109,10 +109,10 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 |---|---|---|
 | `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1–8, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
 | `bleed` | the photograph over the whole screen; the h1, the line and the button on a solid panel of the page ground (580 wide, 48 inside) in its lower left corner, `data-corner="end"` for the right one when the calm side is right | the photograph, then the words on the ground |
-| `split` | the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven, from 40px under the header to the hero's foot | as band |
+| `split` | the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven, from 48px under the header to the hero's foot | as band |
 | `name` | band, with the name or the street set large across the `.wrap` first in `.hero__text` (`<p class="hero__name">Henderson Street</p>`, up to 160px): the page's one type moment | the name at 44 to 72px |
 
-- At 1440 the photograph fills what the words leave. The place h1 may take the pairing's display size up to 72px on its own ground or a calm part of the photograph. Keep it to two lines at 1440 and three on the phone, with the sub-line and one main action. Leave room for the booking bar when dealt.
+- At 1440 the photograph fills what the words leave. The place h1 uses the pairing’s display size, 56–72px at 1440 and 36–44px at 390. Longer titles take the smaller size. Keep it to two lines at 1440 and three on the phone, with the sub-line and one main action. Leave room for the booking bar when dealt.
 - A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
   header (`--photo: 528px`).
 - On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 a booking form can use one column. Keep its date choices, price and button visible and reachable.

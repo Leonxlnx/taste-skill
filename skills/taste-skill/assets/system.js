@@ -438,20 +438,20 @@ function groundTokens() {
   const t = k => cs.getPropertyValue(`--ground-${k}`).trim();
   return { bg: t('bg'), surface: t('surface'), ink: t('ink'), muted: t('muted'), accent: t('accent') };
 }
-// every ground that holds UI, and the closing band's, takes the lit ground on light and dark pages
-// alike: clearly lighter than a dark card, a clear step darker than white UI, so page, card, panel and
-// UI are never four near-black layers. data-fx-palette on the element wins; --hue changes its accent.
+// Match UI effects to their section. An explicit art palette or coloured matte keeps its direction.
 function lightGrounds() {
   const g = groundTokens();
   document.querySelectorAll('[data-fx]').forEach(el => {
     if (el.dataset.fxPalette) return;
     const band = el.matches('.frame--cta > .frame__fx');
     if (!band && !el.matches('.panel, .panel__screen, .frame')) return;
-    const hue = rgb(getComputedStyle(el).getPropertyValue('--hue'));
-    el.dataset.fxPalette = JSON.stringify({ ...g, ...(hue ? { accent: hex(hue) } : {}) });
-    // the box itself takes the lit colour too: an effect that keeps its host's own background (a
-    // frame's dark surface on a dark page) then still draws on the lit ground, and nothing flashes dark
-    if (!band) el.style.backgroundColor = g.bg;
+    const style = getComputedStyle(el);
+    const art = band || el.closest('[data-matte="colour"]');
+    const colour = token => hex(rgb(style.getPropertyValue(token)) || [64, 64, 64]);
+    const palette = art ? g : { bg: colour('--ui-matte'), surface: colour('--surface'),
+      ink: colour('--ink'), muted: colour('--muted'), accent: colour('--ink') };
+    el.dataset.fxPalette = JSON.stringify(palette);
+    if (!band) el.style.backgroundColor = palette.bg;
   });
 }
 
@@ -553,39 +553,6 @@ function tone() {
   }
 }
 
-// sRGB (0-255) to OKLab and back (Ottosson), for the ground's hue below
-const lab = c => {
-  const [r, g, b] = c.map(v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
-  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
-  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
-};
-const unlab = ([L, a, b]) => {
-  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, s = (L - 0.0894841775 * a - 1.2914855480 * b) ** 3;
-  return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s]
-    .map(v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055); });
-};
-// the lit ground (sand, sky, sage) on a coloured palette whose hue is far from its own (sand on a teal page
-// reads as a second colour that clashes) takes the hue of --p-accent: every --ground-* token keeps its own
-// lightness and strength, so the UI on it reads as before. A neutral palette, one already near the ground's
-// hue and the painting (drawn with its landscape) keep the named ground.
-function groundHue() {
-  const html = document.documentElement;
-  if (html.dataset.ground === 'painting' || document.querySelector('[data-fx="painterly-landscape"]')) return;
-  const cs = getComputedStyle(html), acc = rgb(cs.getPropertyValue('--p-accent')), bg = rgb(cs.getPropertyValue('--ground-bg'));
-  if (!acc || !bg) return;
-  const A = lab(acc), G = lab(bg);
-  if (Math.hypot(A[1], A[2]) < 0.04) return;
-  const h = Math.atan2(A[2], A[1]);
-  let d = Math.abs(h - Math.atan2(G[2], G[1]));
-  if (Math.min(d, 2 * Math.PI - d) < Math.PI / 4) return;
-  for (const k of ['bg', 'surface', 'ink', 'muted', 'accent']) {
-    const c = rgb(cs.getPropertyValue(`--ground-${k}`));
-    if (!c) continue;
-    const [L, a, b] = lab(c), ch = Math.hypot(a, b);
-    html.style.setProperty(`--ground-${k}`, hex(unlab([L, ch * Math.cos(h), ch * Math.sin(h)])));
-  }
-}
-
 /* ------------------------------------------------------------------ pictures always draw
    A photograph never shows as an empty frame: once the page has loaded, every lazy image is fetched
    (so one far down the page is there when a visitor or a screenshot reaches it), and one that fails
@@ -677,7 +644,6 @@ function fitClosingName() {
 
 function init() {
   try { tone(); } catch (e) { console.warn('system.js: tone', e); }
-  try { groundHue(); } catch (e) { console.warn('system.js: ground', e); }
   nav();
   fitClosingName();
   tabs();

@@ -24,7 +24,7 @@
     </section>
 
   The stage holds for one screen of scroll, so the live section is exactly two screens (layout-v4.md);
-  with 2 to 4 steps each step gets a quarter to a half of a screen of scroll.
+  two steps or explanations averaging fewer than 25 words stay in flow.
   A phone gets the light version, nothing pinned: the steps stand with their visuals under them, the step
   in hand (the one crossing the middle of the screen) takes the accent rule at its left, and each visual's
   picture settles from a close crop (scale 1.08) to its framing as it rises through the screen. One
@@ -37,6 +37,9 @@ export default function (root, opts, lib) {
   const frame = root.querySelector('.mo-pc__visuals');
   const figures = steps.map(s => s.querySelector('.mo-pc__visual'));
   if (steps.length < 2 || !frame || figures.some(f => !f)) return {};
+  // A short explanation reads in one pass alongside its picture.
+  const words = steps.reduce((count, step) => count + (step.querySelector('p')?.textContent.match(/\S+/g) || []).length, 0);
+  if (steps.length === 2 || words < steps.length * 25) return {};
   const homes = figures.map(f => f.parentElement);
   // the section stays exactly two screens (layout-v4.md: 1H or 2H), so the stage holds for one screen of scroll
   const hold = 1;
@@ -53,7 +56,15 @@ export default function (root, opts, lib) {
   const grid = root.querySelector('.mo-pc__grid');
   let live = false, scrubber = null, k = -1;
   const wide = () => matchMedia('(min-width: 1024px)').matches;
-  const fits = () => !lib.reduced() && wide() && innerHeight >= 640;
+  const fits = () => {
+    if (lib.reduced() || !wide() || innerHeight < 640) return false;
+    const available = innerHeight - (document.querySelector('header.nav')?.offsetHeight || 72) - 32;
+    return figures.every(f => {
+      if (!f.matches('.mo-pc__visual--lit')) return true;
+      const style = getComputedStyle(f);
+      return (f.firstElementChild?.scrollHeight || 0) + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) <= available;
+    });
+  };
   const show = i => {
     if (i === k) return;
     k = i;

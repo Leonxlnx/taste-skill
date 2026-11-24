@@ -22,7 +22,8 @@ on a page has a shape of its own, and the section takes that shape. This file is
    size and the muted colour. Hairlines rule a list, space groups, and a ground is for the one
    thing that is a surface (a window, a ticket, a card). No decoration that carries no fact.
 6. **Build it with the kit's tokens** and this client's content: real names, plausible numbers
-   rounded as a person would write them, units.
+   rounded as a person would write them, units. Changing one item preserves every other item’s selection.
+   On a phone keep the chosen result in the same view as its control, with the picture directly under its picker.
 7. **Check the phone first** (390): one column, the dominant element still dominant, controls 44
    px tall. Then read it without script, try touch and keyboard, then the desktop edges and air.
 

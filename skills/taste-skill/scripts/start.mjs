@@ -32,7 +32,7 @@
       every pairing the kind can be dealt, with its exact Google Fonts link
   node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
       [--sections N] [--long] [--has photo,ui,film,object,setting,logo,art]
-      [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact]
+      [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--last-section form]
       [--tone warm|editorial|product|tech|playful] [--axis] [--history .taste-skill/history.json]
       Deal the frame and four prompts for the content. Sections include the hero and close (default 7).
       The plan has one moment, two with --long or at least seven sections. --carry names what the
@@ -615,11 +615,13 @@ if (cmd === 'deal') {
     '--type', pageType, '--kind', page, '--has', has, '--history', path.join(dir, 'layout-history.json'),
     ...(action ? ['--action', action] : []), ...(opt('no-record') ? ['--no-record'] : []),
   ]);
+  const ownFormClose = opt('last-section') === 'form';
+  const reserveClose = ownFormClose || layout.close === 'close-form';
   const common = ['--page', page, '--history', histFile, '--seed', seed, ...(tone ? ['--tone', tone] : []),
     ...(opt('no-record') ? ['--no-record'] : [])];
   const motion = run(path.join(here, 'moments.mjs'), ['pick', ...common, '--scene', 'deal', '--has', has,
     '--carry', [...carry].join(','), '--sections', String(sections), ...(opt('long') ? ['--long'] : []),
-    ...(peek || book ? ['--keep-hero'] : []), ...(action ? ['--action', action] : [])]);
+    ...(peek || book ? ['--keep-hero'] : []), ...(reserveClose ? ['--keep-close'] : []), ...(action ? ['--action', action] : [])]);
   const sceneHero = motion.sceneFits.includes('hero');
   const sceneClose = motion.sceneFits.includes('close');
   const effectSlot = page === 'gaming' ? 'band' : 'hero';
@@ -643,7 +645,7 @@ if (cmd === 'deal') {
   h.entrances = [...(h.entrances || []), entrance.id].slice(-8);
 
   const closeMoment = motion.picks.find(p => p.fits.length === 1 && p.fits[0] === 'closing');
-  const closeTaken = sceneClose ? motion.scene : closeMoment?.id;
+  const closeTaken = ownFormClose ? 'the final form section' : sceneClose ? motion.scene : closeMoment?.id;
   const order = action === 'order';
   const close = closeTaken ? null : order ? 'close-type' : layout.close;
   const comps = layout.compositions;
@@ -690,7 +692,7 @@ if (cmd === 'deal') {
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
   line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, The entrance deck)');
   line('nav', plan.nav + ' (starter.html NAV comment)');
-  line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (starter.html close template)'));
+  line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
   line('footer', plan.footer + (plan.footer === 'footer-visit' ? ' (links-visit template)' : ''));
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html> · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
@@ -708,7 +710,7 @@ if (cmd === 'deal') {
   if (!motion.picks.length) line('moment', 'none: use the entrance, reveals, hover feedback and motion in own sections.');
   motion.picks.forEach((m, i) => {
     const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
-    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
+    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
   line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
@@ -751,5 +753,5 @@ if (cmd === 'deal') {
     writeHistory(histFile, h);
   }
 } else {
-  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
+  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--last-section form] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
 }

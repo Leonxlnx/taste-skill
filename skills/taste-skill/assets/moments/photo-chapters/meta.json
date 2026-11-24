@@ -16,7 +16,7 @@
   "intensity": "lively",
   "look": "One photograph gives way to the next while its chapter stays in a reading panel.",
   "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
-  "phone": "It runs on a phone held upright (one photograph at a time, the panel across its foot); a phone turned sideways, under 600px tall, gets the chapters stacked, each photograph over its words.",
+  "phone": "Each photograph flows above its title and description.",
   "maxPerPage": 1,
   "weight": 1,
   "needs": {
@@ -45,5 +45,5 @@
     }
   },
   "phoneRuns": true,
-  "height": "Half a screen per chapter plus the stage. Three chapters span 2.5 screens, four span 3."
+  "height": "Desktop holds half a screen per chapter plus the stage. Phone chapters take their natural height."
 }

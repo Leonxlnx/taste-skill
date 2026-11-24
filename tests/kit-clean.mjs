@@ -127,7 +127,7 @@ for (const [i, page] of todo.entries()) {
   if (LAYOUT && !row.error) {
     const lprof = exactProfile || join(PROFILE, slug + '-layout');
     mkdirSync(lprof, { recursive: true });
-    const l = await runCheck([LAYOUT, '--url', target, '--profile', lprof, '--sizes', '1440x900,390x844', '--json'], ROOT, Math.max(1, LIMIT-(Date.now()-t0)));
+    const l = await runCheck([LAYOUT, '--kit-demo', '--url', target, '--profile', lprof, '--sizes', '1440x900,390x844', '--json'], ROOT, Math.max(1, LIMIT-(Date.now()-t0)));
     for (let k = 0; k < 20 && !exactProfile && existsSync(lprof); k++) { try { rmSync(lprof, { recursive: true, force: true }); } catch { spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},250)']); } }
     let rep = null;
     if (!l.timedOut && l.status !== 2) try { rep = JSON.parse(l.stdout.slice(l.stdout.indexOf('['))); } catch {}

@@ -211,8 +211,9 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { grid-column: 9 / -1; margin: 0; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 {
   grid-column: 1 / span 8; grid-row: 1 / span 3; max-width: none;
-  --place-display: clamp(36px, calc(36px + (100vw - 390px) * 36 / 1050), 72px);
-  font-size: min(var(--place-display), calc(var(--ly-scale) * var(--place-display)));
+  --place-display: clamp(44px, calc(44px + (100vw - 390px) * 28 / 1050), 72px);
+  --place-floor: clamp(36px, calc(36px + (100vw - 390px) * 20 / 1050), 56px);
+  font-size: clamp(var(--place-floor), calc(var(--ly-scale) * var(--place-title, var(--place-display))), var(--place-title, var(--place-display)));
   line-height: 1.104; text-box: trim-start cap alphabetic;
 }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; max-width: 40ch; color: var(--ink); }
@@ -268,7 +269,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
     position: relative; inset: auto; flex: 1 1 0; min-height: min(36svh, 340px); height: auto; width: 100%;
   }
   main > .hero--place:not([data-form="bleed"]) > .wrap { flex: none; height: auto; margin-top: var(--hgap); }
-  main > .hero--place[data-form="bleed"] { padding-top: calc(var(--nav) + var(--hgap)); }
+  main > .hero--place[data-form="bleed"] { padding-top: calc(var(--nav) + max(var(--hgap), var(--hero-clearance))); }
   :root .hero--place[data-form="bleed"] > .hero__bg { top: var(--nav); bottom: auto; height: calc(100% - var(--nav)); }
   :root .hero--place[data-form="bleed"] > .wrap > .hero-text { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
   :root .hero--place[data-form="bleed"] .hero__text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--s-5); width: min(100%, 580px); padding: var(--s-7); background: var(--bg); }
@@ -280,11 +281,11 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   .hero--place[data-form="bleed"][data-box="none"][data-tone="dark"] .hero__text { --ink: white; color: var(--ink); }
   .hero--place[data-form="bleed"][data-box="none"][data-tone="light"] .hero__text { --ink: #111; color: var(--ink); }
   .hero--place[data-form="bleed"][data-box="none"] .btn--secondary { background: var(--p-bg); color: var(--p-ink); }
-  main > .hero--place[data-form="split"] { display: block; padding-top: calc(var(--nav) + var(--hgap)); }
+  main > .hero--place[data-form="split"] { display: block; padding-top: calc(var(--nav) + max(var(--hgap), var(--hero-clearance))); }
   main > .hero--place[data-form="split"] > .wrap { height: 100%; }
   main > .hero--place[data-form="split"] > .wrap { margin-top: 0; }
   main > .hero--place[data-form="split"] > .hero__bg {
-    position: absolute; min-height: 0; top: calc(var(--nav) + var(--hgap)); bottom: auto; left: auto;
+    position: absolute; min-height: 0; top: calc(var(--nav) + max(var(--hgap), var(--hero-clearance))); bottom: auto; left: auto;
     height: calc(100% - var(--nav) - var(--hgap) - var(--hpadb) - var(--bar));   /* a replaced box never stretches between top and bottom */
     right: max(var(--gut), calc((100% - var(--container)) / 2));
     width: calc(min(100% - 2 * var(--gut), var(--container)) * 7 / 12 - var(--gutter) * 5 / 12);
@@ -305,11 +306,9 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 
 @media (min-width: 1024px) {
   :root .hero--place[data-form="bleed"] .hero__text { width: min(100%, 720px); }
-  .hero--place:is([data-form="bleed"], [data-form="split"]) .hero__text { container-type: inline-size; }
-  :root .hero--place:is([data-form="bleed"], [data-form="split"]) .hero__text > h1 {
-    font-size: min(var(--place-display), max(32px, 7cqi));
-  }
 }
+
+.hero--place .hero__text > h1[data-long-title] { --place-title: var(--place-floor); }
 
 /* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
       one object on a stage that fills the rest of the screen. The lit, rounded stage below is for a print
@@ -419,8 +418,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 .hero--collage h1 { font-size: var(--ly-h1-col); }
 .hero__art {
   position: relative; overflow: hidden; height: 100%; min-height: 0;
-  border-radius: var(--r-lg); background: var(--ground-bg, #d9ccb7);
-  --fx-bg: var(--ground-bg); --fx-surface: var(--ground-surface); --fx-ink: var(--ground-ink); --fx-accent: var(--ground-accent);
+  border-radius: var(--r-lg); background: var(--ui-matte);
+  --fx-bg: var(--ui-matte); --fx-surface: var(--surface); --fx-ink: var(--ink); --fx-accent: var(--muted);
 }
 /* the frame stands on the container's right line; the window inside is cut by the frame's right and
    bottom edges, never by the viewport. It runs --ly-cut (28px) past the right edge and keeps that much
@@ -567,49 +566,41 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
   .ly-collage { height: auto; flex: 1 1 0; min-height: 300px; margin-block: var(--s-6); }
 }
 
-/* 10. hero--centred: news pill, centred headline and two buttons, one product window rising out of
-       a lit frame that takes the rest of the screen and fades at the hero's foot (x.ai's hero). The
-       window's story (the question, the work, the answer, its actions) sits in its top 260px, so it
-       stands whole above the fade, which starts at 82% of the frame */
+/* 10. Centred copy above a complete product window in normal flow. */
 .hero--centred .hero__c { display: grid; justify-items: center; text-align: center; gap: var(--s-4); max-width: 880px; margin-inline: auto; }
 .hero--centred h1 { max-width: 16ch; }
-.hero--centred .hero__lead { max-width: 52ch; color: var(--ink); }
+.hero--centred .hero__lead { max-width: 66ch; color: var(--ink); }
 .hero--centred .btn-row { justify-content: center; margin-top: var(--s-3); }
 .hero--centred > .wrap > .hero-text { display: flex; flex-direction: column; }
-.hero--centred .hero__window { flex: 1 1 0; min-height: clamp(220px, 32svh, 340px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent); mask-image: linear-gradient(to bottom, #000 82%, transparent);
-  position: relative; overflow: hidden; margin-top: var(--s-6);
-  border-radius: var(--r-lg); background: var(--ground-bg, #d9ccb7);
-  --fx-bg: var(--ground-bg); --fx-surface: var(--ground-surface); --fx-ink: var(--ground-ink); --fx-accent: var(--ground-accent); }
-.hero--centred .hero__window > .ly-piece { position: absolute; z-index: 1; left: 50%; top: var(--s-6); width: min(880px, calc(100% - 2 * var(--s-6))); transform: translateX(-50%); }
+.hero--centred .hero__window {
+  position: relative; flex: none; margin-top: var(--s-4); border-radius: var(--r-lg);
+  background: var(--ui-matte); max-height: 760px; overflow: auto;
+}
+.hero--centred .hero__window:has(> .ly-piece) { padding: var(--s-5); }
+.hero--centred .hero__window > .ly-piece { position: relative; z-index: 1; width: min(880px, 100%); margin-inline: auto; }
 .ly-mark { display: inline-block; width: .8em; height: .8em; vertical-align: -.06em; margin-inline: .06em; border-radius: 50%; background: var(--ink); position: relative; }
 .ly-mark::before, .ly-mark::after { content: ""; position: absolute; top: 27%; width: 13%; height: 42%; border-radius: 99px; background: var(--bg); transform: skewX(-12deg); }
 .ly-mark::before { left: 31%; } .ly-mark::after { left: 56%; }
 @media (max-width: 639px) {
   .hero--centred .btn-row { width: 100%; }
-  /* the frame can be 240 to 300px tall here, so its fade is the last 28px, not the last 18% */
-  .hero--centred .hero__window { margin-top: var(--s-6); min-height: 240px;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); }
-  .hero--centred .hero__window > .ly-piece { top: var(--s-4); width: calc(100% - 2 * var(--s-4)); left: var(--s-4); transform: none; }
+  .hero--centred .hero__window:has(> .ly-piece) { padding: var(--s-4); }
 }
 
 /* ---------------------------------------------------------------- micro-interactions the heroes share */
 /* A product window keeps its own block in the page as the reader scrolls past the fold. */
-main > .hero.hero--peek {
+main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) {
   --peek-height: clamp(560px, 72vw, 760px); --hgap: var(--s-6);
   height: auto; min-height: 100svh; padding-bottom: var(--padb);
 }
-main > .hero.hero--peek > .wrap,
-main > .hero.hero--peek > .wrap > .hero-text { height: auto; }
-.hero--peek .hero-text > :is(.hero__window, .hero__media, .hero__art, .hero-visual, .app-frame, .device, .panel) {
+main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) > .wrap,
+main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) > .wrap > .hero-text { height: auto; }
+.hero--peek .hero-text > :is(.hero__media, .hero__art, .hero-visual, .app-frame, .device, .panel):not(.hero__window) {
   flex: none; height: var(--peek-height); min-height: 0;
   mask-image: none;
 }
-.hero--peek .hero__window > .ly-piece { top: var(--s-4); height: calc(100% - 2 * var(--s-4)); overflow: auto; }
-.hero--peek .hero__window { margin-top: var(--s-5); }
 .hero--peek .hero__art > .ly-piece--main { min-height: calc(100% - var(--s-8) - var(--s-5)); }
-.hero--peek .hero__c { gap: var(--s-3); }
-.hero--peek .hero__c > .btn-row { margin-top: var(--s-1); }
+:is(.hero--peek, .hero--centred:has(.hero__window)) .hero__c { gap: var(--s-3); }
+:is(.hero--peek, .hero--centred:has(.hero__window)) .hero__c > .btn-row { margin-top: var(--s-1); }
 @media (min-width: 1024px) {
   .hero--peek .hero-text:is(.hero__grid, .hero-split) { height: auto; grid-template-rows: auto; }
   .hero--peek .hero-text:is(.hero__grid, .hero-split) > :is(.hero__media, .hero__art, .hero-visual, .app-frame, .device, .panel) {
@@ -617,8 +608,7 @@ main > .hero.hero--peek > .wrap > .hero-text { height: auto; }
   }
 }
 @media (max-width: 639px) {
-  main > .hero.hero--peek { --hgap: var(--s-5); }
-  .hero--peek .hero__window > .ly-piece { max-height: calc(100% - 2 * var(--s-4)); }
+  main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) { --hgap: var(--s-5); }
   .hero--peek .hero__art, .hero--peek .hero__media { margin-top: var(--s-4); }
   .hero--peek .hero__art > .ly-piece--main { min-height: calc(100% - 2 * var(--s-4)); }
 }
@@ -680,5 +670,4 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
   .hero--centred .hero__c { gap: var(--s-3); }
   .hero--centred .btn-row { margin-top: var(--s-1); }
   .hero--centred .hero__window { margin-top: var(--s-4); }
-  .hero--centred .hero__window > .ly-piece { top: var(--s-3); }
 }

@@ -34,7 +34,7 @@ node <skill>/scripts/moments.mjs pick --page product --sections 7 --carry photos
 | window-names-its-parts | The actual interface and the names of its parts. |
 | window-relay-with-stamps | Four photographs and their names. |
 
-Rare draws require their specific material. Use `closing-cut-under-the-rise` and `object-lowered-onto-the-last-line` for a product close, `fixed-hero-object` for an object and steps, `hinged-sheets` for an editorial list with no prices or purchase actions, `instrument-dial-stage` for three pictured, measured items, `lens-over-thumbnail-stream` for 25 named pictures, `orbit-to-formation` for twelve pictures and figures, `peel-tear-and-drag` for two pictures and a list, `room-walk-track` for fourteen pictures, `route-journey` for an actual route with steps and figures, `scrubbed-transformation-sequence` for product film and photography, and `wordmark-under-strain` for a real closing line and visible action.
+Rare draws require their specific material. Use `closing-cut-under-the-rise` and `object-lowered-onto-the-last-line` for a product close, `fixed-hero-object` for an object and steps, `instrument-dial-stage` for three pictured, measured items, `lens-over-thumbnail-stream` for 25 named pictures, `orbit-to-formation` for twelve pictures and figures, `peel-tear-and-drag` for two pictures and a list, `room-walk-track` for fourteen pictures, `route-journey` for an actual route with steps and figures, `scrubbed-transformation-sequence` for product film and photography.
 
 By name in the brief only: `arrive-and-settle-track`, `depth-card-flythrough`, `dot-becomes-the-full-stop`, `letter-bar-floods-the-ground`, `letter-physics`, `light-flood`, `object-through-giant-type`, `parts-lock-into-the-whole`, `product-assembles-into-its-action`, `raster-cut`, `stepped-columns-raise-a-stage`, `type-flip-relayout`, `warp-jump`.
 
@@ -51,3 +51,5 @@ Film the live range at 1440 and 390. Keep one plain section between set pieces. 
 A stretch with less than 12% of the viewport different from the ground may last at most 0.15 screen. An empty panel in a second colour still counts as empty. Allow at most one screen of held scroll per chapter with its own picture or per 25 words. Reveal anything to read or buy within a quarter screen and 300 ms. Use the client’s picture where a picture carries the effect. Its crop and the material in the brief must meet the part’s needs.
 
 Animate transforms, clips or opacity. Keep per-frame custom properties off elements with more than 20 descendants. Never animate top, height, width or a mask image in a set piece. Without script and under reduced motion, show the complete content in ordinary flow.
+
+Use `hinged-sheets` or `wordmark-under-strain` only when the brief requests it by name.

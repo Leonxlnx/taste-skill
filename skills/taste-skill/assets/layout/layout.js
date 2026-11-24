@@ -291,6 +291,8 @@ function bookingBar(bar) {
 }
 
 function init() {
+  const title = document.querySelector('.hero--place h1');
+  if (title) title.toggleAttribute('data-long-title', title.textContent.trim().split(/\s+/).length >= 7);
   document.querySelectorAll('form.hero-book').forEach(bookingBar);
   document.querySelectorAll('[data-ly-word]').forEach(liveWord);
   document.querySelectorAll('h1[data-ly-letters]').forEach(letters);
