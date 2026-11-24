@@ -141,7 +141,8 @@ What each kind leads with (the full plans: `sections.md` section 3):
 2. **Write the copy notes, then all the copy,** before the page. Copy the block in `copy.md` (The
    copy notes) to `.taste-skill/copy.md` and fill it from the brief: the fact sheet; the six
    questions; the voice card (`copy-voice.md`, `copy-registers.md`, `copy-moves.md`); `Asks:` with
-   one line per thing the brief asks for, `- <ask> -> #<section id>`; then the draft, one line per
+   one line per request, `- <ask> -> #<id> : <outcome>`. Use `play` for media, `go` for a destination,
+   `send` for a form, `file` for a download or `show` for on-page content. Write the draft one line per
    part (`H1:`, `Lead:`, `H2:`, `Button:`). Lint it: `node <skill>/scripts/copy-lint.mjs
    .taste-skill/copy.md`. The hero tells a stranger in five seconds what is sold and where or for
    whom, with one hard fact; a noun in every heading; buttons a verb and an object; the close says
@@ -238,7 +239,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
 
 7. **Report:** the `GATE:` line first, then every waiver with its reason and every open FAIL;
    the kind and the deal; which sections are your own and what form each took; where each ask of
-   the brief landed; every assumed fact; the pictures the client must supply, every stand-in
+   the brief landed and its gate state; what the client must supply for each preview; every assumed fact; the pictures the client must supply, every stand-in
    among them; the form's `.example` stand-in; what you could not check.
 
 ## 3. What to read
@@ -277,8 +278,7 @@ For your eyes first, then the gate (its check ids in brackets):
 
 - **First screen:** the hero says what is sold, for whom or where, with one hard fact; it fills
   the screen alone, its main button inside it [hero-screen, hero-fill, fold-action, fold-cut].
-- **Every ask of the brief is on the page** as a working element [brief-ask]; the main action
-  early.
+- **Each ask lands at its named element** [brief-ask, ask-outcome]. Put the main action early and label any preview.
 - **Sections from their content:** two own sections from six sections up, one below six [own-count]; no section holds a few
   words in an empty band; no content cut or hidden to fit [section-height, empty-area,
   still-wrong].

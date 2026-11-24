@@ -12,7 +12,8 @@ The gate checks 1440 and 390 px, with a 320 px overflow and controls probe. It r
 ## What the gate holds
 
 - `deal-drift` reads the 2.5.4 `.taste-skill/plan.json` first. Build the dealt frame and mount the listed moments and scene. One moment can be the whole deal. An explicit replacement goes on the moments line as `new-id (re-dealt for old-id)`. Pages with an older plan use their history and plan comment. Compositions are suggestions for content. A different density warns.
-- `brief-ask` reads the `Asks:` block in `.taste-skill/copy.md`. Write one `- ask -> #id` per line. Booking, order and sign-up targets need a field or button. A deferred ask uses `- ask -> none: reason` and prints the reason as a warning.
+- `brief-ask` checks the target in each `- ask -> #id : outcome` line. A legacy `none: reason` line keeps its warning.
+- `ask-outcome` reports `works`, `preview: needs …` (WARN) or `pretends: …` (FAIL). It checks local files and the form of an external URL. For an older mapping, it suggests an outcome or asks the builder to choose one.
 - `section-air` measures content to content. The minimum is 72 px on desktop and 56 px on a phone. `empty-band` catches continuous empty ground over 280 or 200 px respectively, and holes occupying a third of a section. Density scales the pixel limits. Six sections on one ground without a full-width picture fail `ground-flat`.
 - Composed sections keep the same wrap, overflow, visibility, focus, contrast and reduced-motion checks. `own-count` warns below two composed sections on a page of six sections or more, or one on a shorter page. `still-wrong` reads the page without scripts and checks hidden content and counter targets. `own-timer` catches detectable automatic advances without a pause button.
 - A picture may be a photograph, drawing, chart or live interface. Give a picture at most one `.fact-line` of up to 60 characters naming the work, place, size, year or price. Explaining the picture fails.

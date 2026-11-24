@@ -37,6 +37,7 @@
                         Admission, Enemy or Customer words. WARN: no fact sheet or no draft in it, or an admission or
                         an enemy written as "none". A .md named copy.md is checked the same way. The skill's own
                         files (the starter) are never asked for notes.
+    ask-outcome         One line per mapped ask. A disclosed preview warns. A control that cannot deliver fails.
     copy-h1-category    WARN: the h1 is only a category label ("Yoga studio in Brooklyn", "Observability tool for
                         developers"): a noun phrase with a category noun (or the --category words, or the notes'
                         Category: line), no verb, no person, no figure. INFO when the voice card's hero form chose it.
@@ -47,6 +48,7 @@
   Exit 0 no FAIL, 1 a FAIL in any file, 2 usage or an unreadable file.
 */
 import fs from 'node:fs';
+import {assessAsk, inferOutcome, outcomes, remedy} from './ask-outcome.mjs';
 import { copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -55,10 +57,13 @@ const args = process.argv.slice(2);
 const die = (m) => { console.error('copy-lint: ' + m); process.exit(2); };
 const files = [];
 const SKILL_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+let assetRoot, assetPage;
 let asJson = false, KIND = '', YEAR = new Date().getFullYear(), CATEGORY = '';
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === '--json') asJson = true;
+  else if (a === '--asset-root') assetRoot = path.resolve(args[++i] || die('--asset-root needs a folder'));
+  else if (a === '--asset-page') assetPage = path.resolve(args[++i] || die('--asset-page needs a page'));
   else if (a === '--category') { CATEGORY = String(args[++i] || ''); if (!CATEGORY.trim()) die('--category needs the words for what is sold'); }
   else if (a === '--kind' || a === '--page') { KIND = String(args[++i] || '').toLowerCase(); if (!/^(tech|software|gaming|product|place|service)$/.test(KIND)) die('--kind takes tech, software, gaming, product, place or service'); }
   else if (a === '--year') { YEAR = parseInt(args[++i], 10); if (!(YEAR > 1990 && YEAR < 2200)) die('--year needs a year'); }
@@ -491,15 +496,49 @@ function sentenceAt(b, i) {
 
 // Read nested targets from the same HTML that is linted. Void elements never
 // capture a control from the next section. Script and template markup is inert.
-function pageTargets(raw) {
+function pageTargets(raw, file, root) {
+  const nodes = [], modules = [];
+  function closeFrom(index) {
+    for (const n of stack.splice(index)) n.end = nodes.length;
+  }
   const ids = new Map(), captions = [], stack = [], frames = new Map();
-  const html = raw.replace(/<!--[\s\S]*?-->|<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+  const html = raw.replace(/<!--[\s\S]*?-->|<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,(match,kind)=>{
+    if (kind?.toLowerCase()==='script') {
+      const tag = match.slice(0,match.indexOf('>'));
+      if (attrOf(tag,'type')==='module' && attrOf(tag,'src')) modules.push(decode(attrOf(tag,'src')));
+    }
+    return ' '.repeat(match.length);
+  });
   for (const m of html.matchAll(/<("[^"]*"|'[^']*'|[^'">])+>|[^<]+/g)) {
     const token = m[0], tag = token.match(/^<(\/?)([\w:-]+)\b([\s\S]*?)\/?>$/);
-    if (!tag) { if (!token.startsWith('<')) for (const n of stack) if (n.caption) n.caption.text += decode(token); continue; }
+    if (!tag) {
+      if (!token.startsWith('<') && stack.length && token.trim()) {
+        const dialog = stack.findLast(n=>n.name==='dialog' && !n.hidden);
+        if (dialog) dialog.dialogText += ' '+decode(token);
+      }
+      if (!token.startsWith('<') && stack.length && !stack.at(-1).hidden) {
+        const value = token.trim() ? decode(token) : ' ';
+        stack.at(-1).text += value;
+        for (const n of stack) {
+          if (n.caption) n.caption.text += value;
+          if (n.labelText!==undefined) n.labelText += value;
+        }
+      }
+      continue;
+    }
     const name = tag[2].toLowerCase(), attrs = tag[3];
-    if (tag[1]) { const i = stack.map(n => n.name).lastIndexOf(name); if (i >= 0) stack.length = i; continue; }
-    const n = {name, id:attrOf(attrs,'id'), hidden:stack.at(-1)?.hidden || hasAttr(attrs,'hidden') || attrOf(attrs,'aria-hidden') === 'true'};
+    if (tag[1]) { const i = stack.findLastIndex(n=>n.name===name); if (i>=0) closeFrom(i); continue; }
+    if (SHUTS[stack.at(-1)?.name]?.test(name)) closeFrom(stack.length-1);
+    const parent = stack.at(-1);
+    const get = key => { const value = attrOf(attrs,key); return value===null ? (hasAttr(attrs,key) ? '' : null) : decode(value); };
+    const n = {name, get, id:get('id'), at:m.index, start:nodes.length, end:nodes.length+1, text:'',
+      hidden:parent?.hidden || hasAttr(attrs,'hidden') || get('aria-hidden')==='true' || /(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*hidden)\b/i.test(get('style') || ''),
+      disabled:parent?.disabled || hasAttr(attrs,'disabled'), inLabel:parent?.inLabel || ['a','button'].includes(name),
+      inHeading:parent?.inHeading || /^h[1-6]$/.test(name)};
+    n.form = name==='form' ? n : parent?.form;
+    if (name==='a' || name==='button' || get('role')==='button') n.labelText='';
+    if (name==='dialog') n.dialogText='';
+    if (!n.hidden) nodes.push(n);
     if (!n.hidden && n.id) ids.set(n.id,n);
     const classes = (attrOf(attrs,'class') || '').split(/\s+/);
     n.itemRow = classes.includes('item-row');
@@ -516,32 +555,41 @@ function pageTargets(raw) {
       n.caption = {fact,text:'',scope:frame,frame:frame?.lastPicture}; captions.push(n.caption);
     }
     if ((/^(input|textarea|select|button)$/.test(name) && attrOf(attrs,'type') !== 'hidden' && !hasAttr(attrs,'disabled')) ||
-        (name === 'a' && attrOf(attrs,'href') && (classes.includes('btn') || attrOf(attrs,'role') === 'button'))) {
+        (name === 'a' && hasAttr(attrs,'href')) || get('role') === 'button') {
       for (const parent of [...stack,n]) if (parent.id) parent.control = true;
     }
     if (!VOID.has(name) && !token.endsWith('/>')) stack.push(n);
   }
   for (const c of captions) { c.frame ||= c.scope?.firstPicture; if (c.fact && c.frame) frames.set(c.frame,(frames.get(c.frame)||0)+1); }
-  return {ids,captions,frames};
+  closeFrom(0);
+  return {ids,captions,frames,nodes,modules,file:assetPage || file,root:assetRoot || root || path.dirname(path.resolve(file))};
 }
 
 function staticPageForNotes(file) {
   const folder=path.dirname(path.resolve(file));
   const project=path.basename(folder)==='.taste-skill' ? path.dirname(folder) : folder;
-  let target='index.html';
+  let target='index.html', root;
   for (const name of ['build.json','build.done.json']) {
     let build;
     try { build=JSON.parse(fs.readFileSync(path.join(project,'.taste-skill',name),'utf8')); } catch { continue; }
     if (build.url && !build.page) return null;
     if (build.page) target=build.page;
+    if (typeof build.root==='string') root=path.resolve(project,build.root);
     break;
   }
   if (typeof target!=='string' || !/\.html?$/i.test(target) || /^https?:/i.test(target)) return null;
-  try { return pageTargets(fs.readFileSync(path.resolve(project,target),'utf8')); } catch { return null; }
+  try { return pageTargets(fs.readFileSync(path.resolve(project,target),'utf8'),path.resolve(project,target),root); } catch { return null; }
 }
 function briefAsks(notes, page, add) {
-  const fix = 'write each ask under Asks: as "- ask -> #id" or "- ask -> none: reason"';
+  const rows = [];
+  const fix = 'write each ask as "- ask -> #id : outcome" using play, go, send, file or show';
   const lines = notes.split(/\r?\n/);
+  const client = lines.findIndex(l=>/^\s*(?:#{1,6}\s*)?Client must supply:?\s*$/i.test(l));
+  const supply = [];
+  if (client>=0) for (const line of lines.slice(client+1)) {
+    if (/^\s*#{1,6}\s/.test(line)) break;
+    if (line.trim()) supply.push(line.trim());
+  }
   const head = lines.findIndex(l => /^\s*(?:#{1,6}\s*)?(?:\*\*)?Asks:(?:\*\*)?\s*$/i.test(l));
   const asks = [];
   if (head !== -1) for (const line of lines.slice(head+1)) {
@@ -550,17 +598,50 @@ function briefAsks(notes, page, add) {
     asks.push(line.replace(/^\s*[-*]\s+/,'').trim());
   }
   if (!asks.length) add('FAIL','brief-ask',['Asks:'],'the copy notes need an Asks: block with a mapping',fix);
+  const mappings = [];
   for (const line of asks) {
     const skip = line.match(/^(.+?)\s*->\s*none:\s*(\S.*)$/i);
-    if (skip) { add('WARN','brief-ask',[skip[1]],skip[1] + ' deferred: ' + skip[2],fix); continue; }
-    const match = line.match(/^(.+?)\s*->\s*#([^\s#]+)$/);
-    if (!match) { add('FAIL','brief-ask',[line],'invalid ask mapping',fix); continue; }
-    if (!page) continue;
-    const target = page.ids.get(match[2]);
-    if (!target) add('FAIL','brief-ask',[line],'target #' + match[2] + ' is missing from the page',fix);
-    else if (/\b(book(?:ing|ings)?|reserv(?:e|ation|ations)|order(?:ing|s)?|checkout|sign[- ]?up|register|registration|subscribe)\b/i.test(match[1]) && !target.control)
-      add('FAIL','brief-ask',[line],'#' + match[2] + ' needs a field or button for "' + match[1] + '"',fix);
+    if (skip) add('WARN','brief-ask',[skip[1]],skip[1]+' — '+skip[2],fix);
+    const match = line.match(/^(.+?)\s*->\s*#([^\s#:]+)(?:\s*:\s*(.*))?$/);
+    if (!match && !skip) { add('FAIL','brief-ask',[line],'invalid ask mapping',fix); continue; }
+    const ask = (match || skip)[1].trim();
+    const declared = match?.[3]?.trim().toLowerCase();
+    const outcome = declared ? (outcomes.includes(declared) ? declared : null) : inferOutcome(ask);
+    // A deferral can mention a planned, absent ID. Only resolve a reading
+    // answer that the notes explicitly say is already present.
+    const answer = skip && outcome==='show' && /\b(answered|shown|covered|provided)\b/i.test(skip[2])
+      ? skip[2].match(/#([\w-]+)/)?.[1] : null;
+    const id = match?.[2] || (page?.ids?.has(answer) ? answer : null);
+    const row = {ask,id:id || null,outcome};
+    mappings.push({row,line,skip,declared});
   }
+  const legacy = mappings.every(m=>!m.declared);
+  for (const {row,line,skip,declared} of mappings) {
+    row.legacy = legacy;
+    const {ask,id,outcome} = row;
+    rows.push(row);
+    const target = page && id && page.ids.get(id);
+    if (page && id && !target) add('FAIL','brief-ask',[line],'target #'+id+' is missing from the page',fix);
+    if (!outcome) {
+      row.detail = 'choose play, go, send, file or show';
+      add('WARN','ask-outcome',[ask],'"'+ask+'": '+row.detail,fix);
+      continue;
+    }
+    if (!declared && !skip) add('WARN','ask-outcome',[ask],'"'+ask+'": add ": '+outcome+'" to confirm the inferred outcome.',fix);
+    if (skip && !id) { row.state='preview'; row.detail=skip[2]; continue; }
+    if (!page) continue; // A writer can lint the notes before the page exists.
+    const sharedOutcome = mappings.some(m=>m.row.outcome===outcome && m.row.id && m.row.id!==id);
+    Object.assign(row,assessAsk(row,page,supply,sharedOutcome));
+    if (!target) continue;
+    if (outcome==='send' && !target.control && !skip && row.missingForm && !declared) {
+      add('FAIL','brief-ask',[line],'#'+id+' needs a field or button for "'+ask+'"',fix);
+    } else if (row.state==='pretends') {
+      add('FAIL','ask-outcome',[line],'"'+ask+'" at #'+id+': '+row.detail+'.',remedy(outcome),{where:'#'+id+' ('+outcome+')'});
+    } else if (row.state==='preview') {
+      add('WARN','ask-outcome',[line],'"'+ask+'" is a preview: needs '+row.detail+'.'+(row.hint ? ' '+row.hint : ''),remedy(outcome));
+    }
+  }
+  return rows;
 }
 
 function lint(file) {
@@ -743,7 +824,7 @@ function lintRead(R, isHtml) {
   }
   // ---- the copy notes: the fact sheet, the voice card and the draft come before the page
   const insideSkill = R.file && (path.resolve(R.file) + path.sep).startsWith(SKILL_DIR + path.sep);
-  let notes = null;
+  let notes = null, asks = [];
   if (!isHtml && /^copy\.md$/i.test(path.basename(R.file || ''))) notes = notesFindings(R.raw, path.basename(R.file));
   else if (isHtml && !insideSkill) {
     const nf = findNotes(R.file);
@@ -752,8 +833,8 @@ function lintRead(R, isHtml) {
   }
   if ((isHtml && !insideSkill) || (!isHtml && /^copy\.md$/i.test(path.basename(R.file || '')))) {
     const nf = isHtml ? findNotes(R.file) : R.file;
-    const page = isHtml ? pageTargets(R.raw) : null;
-    briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page || (!isHtml && staticPageForNotes(R.file)),add);
+    const page = isHtml ? pageTargets(R.raw,R.file) : null;
+    asks = briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page || (!isHtml && staticPageForNotes(R.file)),add);
     if (page) for (const c of page.captions) {
       const t = c.text.trim().replace(/\s+/g,' ');
       if (!t && !c.fact) continue;
@@ -794,7 +875,7 @@ function lintRead(R, isHtml) {
 
   const order = { FAIL: 0, WARN: 1, INFO: 2 };
   out.sort((a, b) => order[a.sev] - order[b.sev]);
-  return { words, headings: hText, findings: out };
+  return { words, headings: hText, findings: out, asks };
 }
 
 // ---------------------------------------------------------------- across files
@@ -826,6 +907,10 @@ const paths = files.map((f) => { try { return fs.statSync(f).isDirectory() ? pat
 const results = [];
 for (const f of paths) { try { results.push(lint(f)); } catch (e) { die(`cannot read ${f}: ${e.message}`); } }
 const cross = crossFile(results);
+for (const r of results) for (const a of r.asks) {
+  const state = a.state || (a.outcome ? 'awaiting page' : a.detail);
+  a.line = a.ask+' -> '+(a.outcome || 'outcome needed')+' — '+state+(a.state && a.detail ? ': '+(a.state==='preview' ? 'needs ' : '')+a.detail : '');
+}
 const failed = results.some((r) => r.findings.some((f) => f.sev === 'FAIL'));
 if (asJson) console.log(JSON.stringify({ files: results, cross }, null, 1));
 else {
@@ -837,6 +922,7 @@ else {
       for (const e of f.examples) console.log(`       - ${e}`);
       if (f.fix && f.sev !== 'INFO') console.log(`       fix: ${f.fix}`);
     }
+    for (const a of r.asks) console.log('  '+a.line);
   }
   if (cross.heroes.length) {
     console.log('\n== across files: the first headings side by side');

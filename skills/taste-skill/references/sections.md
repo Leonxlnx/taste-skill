@@ -8,7 +8,7 @@ Before planning, name what the visitor needs to know before acting and which sup
 
 Write the kind, then the frame from the PLAN. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
 
-**Match each ask to an element.** In `.taste-skill/copy.md`, put every ask under `Asks:` as `- <ask> -> #<id>`. The id must be on the page. The gate checks the block and its targets (`brief-ask`). A contact link cannot take a booking or an order.
+**Match each ask to an element.** Write `- <ask> -> #<id> : <outcome>` under `Asks:` in the copy notes, using `play` for media, `go` for an external destination, `send` for a form, `file` for a download or `show` for content, including a local area map. The gate checks what the visitor gets at that id.
 
   | Brief asks | Element on the page |
   |---|---|

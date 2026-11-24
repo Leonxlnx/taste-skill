@@ -48,7 +48,84 @@ function fixture(bad) {
   return file;
 }
 const variant = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only')+1] : '';
-if (variant && !['good','broken','booking','bands','headings'].includes(variant)) throw Error('Use --only good, broken, booking, bands or headings');
+if (variant && !['good','broken','booking','bands','headings','outcomes'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
+if (!variant || variant==='outcomes') {
+  const form = (action,body,extra='') => '<form action="'+action+'" '+extra+'><input type="email" name="email">'+body+'</form>';
+  const cases = [
+    ['Watch the film','play','works','<video controls><source src="film.mp4"></video>'],
+    ['Hear the recording','play','works','<audio controls src="audio.wav"></audio>'],
+    ['See the trailer','play','works','<iframe src="https://www.youtube.com/embed/clip-id"></iframe>'],
+    ['Trailer still','play','preview','<img src="poster.svg" alt="Trailer still">','film'],
+    ['Play the clip','play','pretends','<video controls poster="poster.svg" src="missing.mp4"></video>'],
+    ['Play the trailer','play','pretends','<button class="ly-play">Watch trailer</button><img src="poster.svg">','trailer'],
+    ['Wishlist the game','go','works','<a href="https://store.steampowered.com/app/1245/">Wishlist</a>'],
+    ['Get the app','go','works','<a href="https://apps.apple.com/us/app/pebble/id1234">Get for iPhone</a><a href="https://play.google.com/store/apps/details?id=com.pebble">Get for Android</a>'],
+    ['Store listing','go','preview','<a href="https://game.example/">Store page preview</a>','store URL'],
+    ['Visit the shop','go','pretends','<a href="https://store.steampowered.com/search?term=shop">Visit shop</a>','real store page'],
+    ['Get both versions','go','pretends','<a href="https://apps.apple.com/us/app/id1234">Download for iPhone</a><a href="https://play.google.com/store/apps">Download for Android</a>'],
+    ['Get the store page','go','pretends','<a href="#">Wishlist</a>'],
+    ['Join the list','send','works',form('/api/join','<button>Join</button>')],
+    ['Sign up','send','preview',form('mailto:hello@list.example','<button>Draft an email</button>'),'sign-up endpoint'],
+    ['Request news','send','preview',form('https://news.example/join','<button>Preview signup</button>'),'form address'],
+    ['Sign up for news','send','pretends',form('#','<button>Join</button><output>Success! You are signed up.</output>')],
+    ['Book a table','send','pretends',form('/tables','<button>Book a table</button>')],
+    ['Download the facts','file','works','<a download href="press%20kit.txt?v=1">Download facts</a>'],
+    ['Download the guide','file','preview','<p>Guide preview. The PDF is coming soon.</p>','guide PDF'],
+    ['Download the file','file','pretends','<a download href="absent.zip">Download</a>','file'],
+    ['Download the menu','file','pretends','<a href="more.html">Download</a>'],
+    ['Download the sheet','file','pretends','<a href="empty.pdf">Download the sheet</a>'],
+    ['Read the menu','show','works','<h2>Menu</h2><ul><li>Pea soup, 7 euros</li></ul>'],
+    ['See the area','show','works','<a href="https://www.openstreetmap.org/search?query=Ottensen">See the area</a>'],
+    ['Read the menu','show','preview','<h2>Menu</h2><p>Menu preview coming soon.</p>','menu copy'],
+    ['Read the menu','show','pretends','<h2>Menu</h2><div hidden>Soup, 7 euros</div>'],
+    ['Download the pack',null,'works','<a href="press%20kit.txt">Download</a>'],
+    ['Make the connection',null,null,'<h2>Connections</h2>'],
+    ['Visit a product','go','pretends','<a href="https://game.example/">Buy now</a>','store URL'],
+    ['Preview another product','go','pretends','<a href="https://other.example/">Preview the store</a>'],
+    ['Get the press kit','file','preview','<a href="https://press.example/">Press kit preview</a>','press kit ZIP'],
+    ['Install the preview app','go','preview','<a href="https://shop.example/" aria-describedby="app-note">Store link</a><p id="app-note">Store preview.</p>','app store URL'],
+    ['Film from a decoy','play','pretends','<video controls src="more.html"></video>'],
+    ['Open the artist page','go','works','<a href="more.html">Visit the artist</a>'],
+    ['Download a brochure','file','pretends','<a href="page-without-extension" download>Download</a>'],
+    ['Join our mailing list','send','pretends',form('','<button>Join</button><output>Signed up!</output>','onsubmit="return false"')],
+    ['Join the preview','send','pretends',form('mailto:list@list.example','<button>Join now</button>'),'form address'],
+    ['Join the mailing list','send','pretends',form('','<button>Join</button>','data-endpoint="/api/signup"')],
+    ['Send the enquiry','send','works',form('','<textarea name="message"></textarea><button>Send enquiry</button>','onsubmit="event.preventDefault();fetch(\'/api/send\', {method:\'POST\',body:new FormData(this)})"')],
+    ['Join from the kit form','send','works',form('','<button>Join</button>','class="form" data-endpoint="/api/signup"')],
+    ['Book a table for four','send','works',form('/api/tables','<input name="name"><input type="date" name="date"><input type="time" name="time"><select name="guests"><option>4</option></select><button>Book</button>')],
+    ['See film two','play','pretends','<button>Play trailer</button><template><video src="film.mp4"></video></template>'],
+  ];
+  const file = path.join(tmp,'index.html');
+  for (const name of ['film.mp4','audio.wav','poster.svg','press kit.txt','more.html','empty.pdf']) {
+    // Only presence, size and destination form are checked.
+    fs.writeFileSync(path.join(tmp,name),name==='empty.pdf' ? '' : 'fixture');
+  }
+  fs.writeFileSync(path.join(tmp,'page-without-extension'),'<!doctype html><title>Home</title>');
+  fs.copyFileSync(path.join(skill,'assets/system.js'),path.join(tmp,'system.js'));
+  fs.writeFileSync(file,'<script type="module" src="system.js"></script><main>'+cases.map((v,i)=>'<section id="case-'+i+'">'+v[3]+'</section>').join('')+'</main>');
+  fs.writeFileSync(notes,'Asks:\n'+cases.map(([ask,outcome],i)=>'- '+ask+' -> #case-'+i+(outcome?' : '+outcome:'')).join('\n')+
+    '\n\n## Client must supply\n'+cases.map((v,i)=>v[4] ? '- #case-'+i+' '+v[4] : '').join('\n'));
+  for (const input of [file,notes]) {
+    const report = (await run(path.join(skill,'scripts/copy-lint.mjs'),[input,'--json'])).files[0];
+    assert.equal(report.asks.length,cases.length);
+    for (const [i,[ask,outcome,state]] of cases.entries()) {
+      const row=report.asks[i];
+      assert.equal(row.ask,ask);
+      assert.equal(row.outcome,outcome || (state ? 'file' : null));
+      assert.equal(row.state || null,state,row.line);
+      const findings=report.findings.filter(f=>f.id==='ask-outcome' && f.hits.some(h=>h.match.includes('#case-'+i+' ')));
+      if (state==='pretends') assert.ok(findings.some(f=>f.sev==='FAIL' && /Client must supply/.test(f.fix)),row.line);
+      if (state==='preview') assert.ok(findings.some(f=>f.sev==='WARN' && /needs/.test(f.msg)),row.line);
+      if (!state) assert.ok(report.findings.some(f=>f.id==='ask-outcome' && f.sev==='WARN' && f.msg.includes(ask)),row.line);
+    }
+    console.log('ok - '+cases.length+' outcome mappings from '+path.basename(input));
+  }
+  fs.writeFileSync(notes,'Asks:\n- Send an enquiry -> none: add #enquiry after the client supplies the receiving address\n');
+  const deferred = (await run(path.join(skill,'scripts/copy-lint.mjs'),[file,'--json'])).files[0];
+  assert.ok(!deferred.findings.some(f=>f.id==='brief-ask' && f.sev==='FAIL'));
+  assert.equal(deferred.asks[0].state,'preview');
+  console.log('ok - a deferred ask may name a future target');
+}
 if (!variant || variant==='bands') {
   const scope={window:{},getComputedStyle:()=>({backgroundImage:'none',visibility:'visible',opacity:'1'})};
   vm.runInNewContext(fs.readFileSync(path.join(skill,'assets/layout/layout-check.js'),'utf8'),scope);

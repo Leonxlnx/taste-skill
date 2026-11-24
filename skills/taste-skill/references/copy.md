@@ -61,7 +61,7 @@ Products: <plain nouns for what is sold and shown>
 Assumed: <working facts the brief leaves out, their values and where each is marked data-assumed>
 
 Asks:
-- <ask> -> #<id>
+- <ask> -> #<id> : <outcome>
 
 ## Six questions, answered from the brief
 1. Who switched to them from what, and why? <answer, or: not in the brief>
@@ -100,7 +100,7 @@ Footer: <the facts line>
 - <each fact the client must send or confirm (every assumed one, the street, the photographs, any proof), as [NEED: what]; a [NEED] never reaches the page>
 ```
 
-Under `Asks:`, give every request its own line, such as `- Book a double room -> #booking`. Use the id where the visitor can do it. The gate fails `brief-ask` for a missing block or a target absent from the page.
+Write each request at its target, for example `- Book a double room -> #booking : send`, choosing `play` for media, `go` for a product destination, `send` for a form, `file` for a download or `show` for on-page content. For a preview, name what the visitor can do now and list the missing piece under “Client must supply” with its `#id`.
 
 Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. Label each line under `## Draft` with its part (`H1:`, `Lead:`, `Button:`).
 

@@ -372,6 +372,32 @@ for (const whole of [false, true]) {
   const bad=state(dir).found.fails.filter(x=>x.check==='deal-drift').map(x=>x.where.split(' ')[0]);
   check(['palette','type','mark','nav','close','footer','hero','entrance','buttons'].every(f=>bad.includes(f)),'each changed frame field remains a blocking drift',JSON.stringify(bad));
 }
+// Use the real copy checker with the stand-in browser. The gate must print
+// all three states, preserve them between runs and check a newly supplied file.
+{
+  for (const script of ['copy-lint.mjs','ask-outcome.mjs','heading-copy.mjs']) {
+    fs.copyFileSync(path.join(SCRIPTS,script),path.join(SKILL,'scripts',script));
+  }
+  const dir = project('none','Press desk','a desk');
+  fs.writeFileSync(path.join(dir,'.taste-skill','copy.md'),
+    'Asks:\n- Watch the film -> #clip : play\n- Get the kit -> #kit : file\n- Read the fees -> #fees : show\n- Store listing -> #listing : go\n\n## Client must supply\n- #listing product URL\n');
+  const controls = '<section id="clip"><button class="ly-play">Play film</button></section>'+
+    '<a id="kit" href="kit.txt">Download the kit</a><p id="fees">A day costs €15.</p>'+
+    '<a id="listing" href="https://studio.example/">Store preview</a>'+
+    '<section><button class="ly-play">Play another film</button></section>';
+  fs.writeFileSync(path.join(dir,'index.html'),PAGE('Press desk','a desk',controls));
+  gate(dir,['--start','index.html']);
+  let run = gate(dir,[]);
+  let found = state(dir).found;
+  check(found.asks?.map(a=>a.state).join('/')==='pretends/pretends/works/preview' &&
+    found.asks.every(a=>run.out.includes(a.line)), 'gate prints every ask after its findings',run.out);
+  check(found.fails.filter(f=>f.check==='play-dead').length===1 && found.fails.filter(f=>f.check==='ask-outcome').length===2,
+    'one mapped play failure, with the independent unmapped dead control still reported',run.out);
+  fs.writeFileSync(path.join(dir,'kit.txt'),'Studio press contact');
+  run = gate(dir,[]);
+  found = state(dir).found;
+  check(found.asks?.find(a=>a.id==='kit')?.state==='works','adding the missing download refreshes the cached gate result',run.out);
+}
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* a profile still held: left in the temp folder */ }
 if (failed) { console.error(`\n${failed} check(s) failed`); process.exit(1); }
 console.log('\nall gate flow checks passed');

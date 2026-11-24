@@ -380,7 +380,20 @@ function fingerprint(dir, m, P, html) {
   const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
   const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(dir, 'package.json')) ? sourceFiles(dir) : [])])];
   const h = crypto.createHash('sha1');
-  h.update(JSON.stringify({ rules:'2.5.4', target, opts }));
+  h.update(JSON.stringify({ rules:'2.5.4-ask-outcome', target, opts }));
+  // Download anchors aren't loaded by the browser. Installing or removing the
+  // file after a gate run must invalidate its verdict too.
+  if (P.file) for (const m of html.matchAll(/<a\b[^>]*>/gi)) {
+    const ref = attrs(m[0]).href;
+    if (!local(ref) || /\\|^[a-z][\w+.-]*:/i.test(ref)) continue;
+    try {
+      const name = stripRef(ref);
+      if (!name || /\\|^\/\/|:/.test(name)) continue;
+      const file = name.startsWith('/') ? path.join(root || path.dirname(P.file), name) : path.resolve(path.dirname(P.file), name);
+      const st = fs.statSync(file, {throwIfNoEntry:false});
+      h.update(file + '\0' + (st?.isFile() ? `${st.size}:${st.mtimeMs}` : 'absent'));
+    } catch { /* malformed href */ }
+  }
   for (const name of ['copy.md','plan.json','history.json','layout-history.json']) {
     try { h.update(name).update(fs.readFileSync(path.join(dir,'.taste-skill',name))); } catch { /* optional building input */ }
   }
@@ -477,7 +490,7 @@ function staticChecks(page, html, proj, files) {
     // a play control with no film behind it (2.5.3: a trailer poster's play disc opened a store search): it plays a
     // video file the page has, or opens the trailer's own page the brief gives (a store page, a video page), or is not
     // there (sections-library.md, the trailer slot); a search, "#" or no target is a dead control
-    const live = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<template\b[\s\S]*?<\/template>/gi, '');
+    const live = html.replace(/<!--[\s\S]*?-->|<(template|script|style|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, m=>' '.repeat(m.length));
     const film = /<video\b[^>]*\ssrc\s*=\s*["'][^"']+|<source\b[^>]*\ssrc\s*=\s*["'][^"']+\.(mp4|webm|mov|m4v|ogv)\b|<iframe\b[^>]*\ssrc\s*=\s*["'][^"']*(youtube|youtu\.be|vimeo|player\.)/i.test(live);
     for (const m of live.matchAll(/<(a|button)\b([^>]*)>/gi)) {
       const at = attrs(m[0]), cls = at.class || '', label = at['aria-label'] || '';
@@ -485,7 +498,7 @@ function staticChecks(page, html, proj, files) {
       const href = m[1].toLowerCase() === 'a' ? String(at.href || '').trim() : '';
       const search = /[?&](q|query|term|search|s|k|keywords?)=|\/search\b|\/results\b/i.test(href);
       const dead = m[1].toLowerCase() === 'a' ? (!href || href === '#' || /^javascript:/i.test(href) || search || (href.startsWith('#') && !film)) : !film;
-      if (dead) F.push({ check: 'play-dead', where: `${m[1].toLowerCase()}${cls ? '.' + cls.trim().split(/\s+/)[0] : ''}${label ? ` "${label.slice(0, 40)}"` : ''}`, msg: `a play control with no film behind it: ${search ? `it opens a search (${href.slice(0, 70)})` : href ? `it goes to ${href.slice(0, 40)}, and the page has no video file` : 'the page has no video file for it to play'}`, fix: 'link the trailer\'s own page the brief gives (its store or video page), or the video file with controls; with neither, no play control: the poster stands as the still (sections-library.md, the trailer slot)' });
+      if (dead) F.push({ check: 'play-dead', at: m.index, where: `${m[1].toLowerCase()}${cls ? '.' + cls.trim().split(/\s+/)[0] : ''}${label ? ` "${label.slice(0, 40)}"` : ''}`, msg: `a play control with no film behind it: ${search ? `it opens a search (${href.slice(0, 70)})` : href ? `it goes to ${href.slice(0, 40)}, and the page has no video file` : 'the page has no video file for it to play'}`, fix: 'link the trailer\'s own page the brief gives (its store or video page), or the video file with controls; with neither, no play control: the poster stands as the still (sections-library.md, the trailer slot)' });
     }
   }
   for (const s of own) {
@@ -831,9 +844,16 @@ function lintChecks(L, P, kind, html, rendered) {
   const k = L === LINTS.copy ? kind : /^(tech|software|gaming|product|place|service)$/.test(kind || '') ? kind : '';   // motion-lint takes the six kinds only
   // copy-lint also takes the marker's category (copy-h1-category reads it; runs after opts is set, line ~802)
   const cat = L === LINTS.copy && opts && opts.category ? ['--category', opts.category] : [];
-  const r = spawnSync(process.execPath, [path.join(here, L.script), file, '--json', ...(k ? ['--kind', k] : []), ...cat], { encoding: 'utf8', timeout: 30000, windowsHide: true, maxBuffer: 1 << 24 });
+  const assets = [];
+  if (L === LINTS.copy) {
+    const root = opts.root || (P.file ? path.dirname(P.file) : projDir);
+    const page = P.file || path.join(root, new URL(P.url).pathname.replace(/\/$/,'/index.html'));
+    assets.push('--asset-root',root,'--asset-page',page);
+  }
+  const r = spawnSync(process.execPath, [path.join(here, L.script), file, '--json', ...(k ? ['--kind', k] : []), ...cat, ...assets], { encoding: 'utf8', timeout: 30000, windowsHide: true, maxBuffer: 1 << 24 });
   const rep = parseJson(r.stdout || '');
   if (r.error || !rep || !Array.isArray(rep.files) || !rep.files[0]) { res.crashed.push(`${L.script} could not run (exit ${r.status}${errLine(r.stderr || (r.error && r.error.message))})`); return res; }
+  if (L === LINTS.copy) res.asks = rep.files[0].asks || [];
   // a word or a phrase is one finding per hit, named by the word and its sentence, so a waiver covers that one hit and
   // never a word added later; a device used as a tic is one finding whose where carries its count and its hits, and a
   // waiver must give that whole where (a new hit changes it, and the waiver no longer matches)
@@ -841,7 +861,8 @@ function lintChecks(L, P, kind, html, rendered) {
   const tag = L === LINTS.copy ? 'copy' : 'motion';
   for (const f of rep.files[0].findings || []) {
     if (f.sev !== 'FAIL' && f.sev !== 'WARN') continue;
-    const base = { check: f.id, msg: f.msg || '', fix: (f.fix || '') + ` (${L.ref})`, widths: [], from: tag };
+    const ref = f.id==='ask-outcome' ? 'references/copy.md' : L.ref;
+    const base = { check: f.id, msg: f.msg || '', fix: (f.fix || '') + ` (${ref})`, widths: [], from: tag };
     const list = f.sev === 'FAIL' ? res.fails : res.warns;
     const hits = Array.isArray(f.hits) ? f.hits.filter((h) => h && (h.match || h.sentence)) : [];
     if (L.perHit && L.perHit.test(f.id) && hits.length) {
@@ -849,7 +870,7 @@ function lintChecks(L, P, kind, html, rendered) {
       continue;
     }
     const ex = hits.length ? [...new Set(hits.map((h) => q(h.match === h.sentence ? h.sentence : h.match, 24)))] : (f.examples || []).filter((x) => typeof x === 'string' && x.trim()).map((x) => q(x, 24));
-    const where = tag === 'motion' && f.where ? q(`${tag} ${f.where}`, 80) : ex.length ? q(`${tag} x${f.count || ex.length}: ${ex.map((x) => `"${x}"`).join(', ')}`, 80) : `(${L.what})`;
+    const where = (tag === 'motion' || f.id==='ask-outcome') && f.where ? q(`${tag} ${f.where}`, 80) : ex.length ? q(`${tag} x${f.count || ex.length}: ${ex.map((x) => `"${x}"`).join(', ')}`, 80) : `(${L.what})`;
     list.push({ ...base, where, exact: f.sev === 'FAIL' && ex.length > 0 });
   }
   return res;
@@ -1293,7 +1314,9 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     const pp = await safely('photo-product', () => productChecks(html || renderedHtml, dot), []);
     const headingMessages = new Set(b.fails.filter(f => f.check === 'copy-headings').map(f => f.msg));
     const sourceFails = c.fails.filter(f => f.check !== 'copy-headings' || !headingMessages.has(f.msg));
-    found = { fails: mergeFamilies(merge([...stat, ...b.fails, ...sourceFails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
+    const covered = new Set((c.asks || []).flatMap(a=>a.playControls || []));
+    const staticFails = stat.filter(f=>f.check!=='play-dead' || !covered.has(f.at));
+    found = { asks: c.asks || [], fails: mergeFamilies(merge([...staticFails, ...b.fails, ...sourceFails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };
@@ -1335,6 +1358,7 @@ function printAll(head) {
   for (const w of W.waivers.filter(x => x.invalid)) print(ignoredWaiver(w));
   if (found.warns.length) print(`  ${found.warns.length} WARN (not blocking), first: ${found.warns.slice(0, 5).map(x => `${x.check} ${x.where.slice(0, 40)}`).join('; ')}`);
   if (crashed) print(`  not checked: ${found.crashed.join('; ')}`);
+  for (const ask of found.asks || []) print('  '+ask.line+(ask.hint ? ' '+ask.hint : ''));
 }
 const record = (status, extra = {}) => {
   Object.assign(state, { status, fp: FP, page: relPage, found, open: open.map(({ hard, ...f }) => f), waived: W.waived, ignoredWaivers: W.waivers.filter(w => w.invalid).map(ignoredWaiver), warnCount: found.warns.length, ...extra });
